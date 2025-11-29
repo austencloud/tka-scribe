@@ -1,13 +1,13 @@
 <!-- GraphEditor.svelte - Professional Graph Editor ported from desktop -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import type { IRotationOverrideManager } from "$shared/pictograph/arrow/positioning/placement/services/implementations";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IRotationOverrideManager } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations";
   import { onMount, onDestroy } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
-  import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
 
   let hapticService: IHapticFeedbackService;
   let rotationOverrideManager: IRotationOverrideManager;

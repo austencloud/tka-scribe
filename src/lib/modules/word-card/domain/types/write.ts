@@ -5,7 +5,7 @@
  * for consistent data structures across the application.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /**
  * Represents act data for the write tab.

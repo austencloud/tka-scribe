@@ -9,10 +9,10 @@
  */
 
 import type { BeatData } from "../../domain/models/BeatData";
-import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { createComponentLogger } from "$shared/utils/debug-logger";
-import { createMotionData, type MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { createArrowPlacementData } from "$shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { createArrowPlacementData } from "$lib/shared/pictograph/arrow/positioning/placement/domain/createArrowPlacementData";
 import { injectable } from "inversify";
 import type { IKeyboardArrowAdjustmentService } from "../contracts/IKeyboardArrowAdjustmentService";
 

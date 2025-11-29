@@ -12,7 +12,7 @@ import type {
   SequenceData,
   WordCardExportOptions,
   WordCardExportResult,
-} from "$shared/index";
+} from "$lib/shared/index";
 import type {
   GridCalculationOptions,
   GridLayout,

@@ -6,8 +6,8 @@
  */
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import type { MotionEndpoints } from "$shared/pictograph/shared/domain/models/MotionEndpoints";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import type { MotionEndpoints } from "$lib/shared/pictograph/shared/domain/models/MotionEndpoints";
 import type { InterpolationResult } from "./IAnimationStateManager";
 
 export interface IPropInterpolator {

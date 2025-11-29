@@ -5,7 +5,7 @@
  * Handles both primary and secondary sequences with consistent logic.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export type SequenceType = "primary" | "secondary";
 export type TransformOperation = "mirror" | "rotate" | "colorSwap" | "reverse";

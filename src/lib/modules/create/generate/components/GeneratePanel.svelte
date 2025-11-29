@@ -11,9 +11,9 @@ Card-based architecture with integrated Generate button:
 -->
 <script lang="ts">
   import type { SequenceState } from "$create/shared/state";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-  import type { IDeviceDetector } from "$shared/device/services/contracts";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts";
   import { onMount } from "svelte";
   import {
     createDeviceState,

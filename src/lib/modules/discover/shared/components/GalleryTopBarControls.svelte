@@ -12,10 +12,10 @@ Modern Filter UX Pattern:
 <script lang="ts">
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+  import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount } from "svelte";
   import { FilterChips } from "../../gallery/filtering/components";
   import SegmentedControl from "./SegmentedControl.svelte";

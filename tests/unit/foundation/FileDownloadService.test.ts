@@ -5,7 +5,7 @@
  * Tests file download functionality with blob handling and batch downloads.
  */
 
-import { FileDownloadService } from "$shared/foundation/services/implementations/FileDownloadService";
+import { FileDownloadService } from "$lib/shared/foundation/services/implementations/FileDownloadService";
 import type { MockInstance } from "vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 

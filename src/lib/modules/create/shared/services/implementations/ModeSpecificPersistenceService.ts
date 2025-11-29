@@ -8,9 +8,9 @@
  * because they were all reading from/writing to the same active tab's storage.
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 import type { ISequencePersistenceService } from "../contracts";
 
 /**

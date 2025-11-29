@@ -1,10 +1,10 @@
 <!-- DualOrientationPicker.svelte - Blue and red orientation controls for start positions -->
 <script lang="ts">
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props

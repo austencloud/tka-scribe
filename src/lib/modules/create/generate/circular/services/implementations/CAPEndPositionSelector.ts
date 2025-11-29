@@ -1,6 +1,6 @@
-import { GridPosition } from "$shared/index";
+import { GridPosition } from "$lib/shared/index";
 import { inject, injectable } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 
 import {
   SWAPPED_POSITION_MAP,

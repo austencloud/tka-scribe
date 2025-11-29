@@ -23,13 +23,13 @@ import {
   type Timestamp,
   type DocumentData,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
-import { getUserAchievementsPath } from "$shared/gamification/data/firestore-collections";
-import { ALL_ACHIEVEMENTS } from "$shared/gamification/domain/constants";
+import { firestore } from "$lib/shared/auth/firebase";
+import { getUserAchievementsPath } from "$lib/shared/gamification/data/firestore-collections";
+import { ALL_ACHIEVEMENTS } from "$lib/shared/gamification/domain/constants";
 import type {
   Achievement,
   UserAchievement,
-} from "$shared/gamification/domain/models";
+} from "$lib/shared/gamification/domain/models";
 import type { IUserService } from "../contracts/IUserService";
 import type {
   EnhancedUserProfile,

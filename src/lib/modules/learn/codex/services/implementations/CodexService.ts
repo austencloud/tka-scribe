@@ -5,11 +5,11 @@
  * No more hardcoded mappings or mixed responsibilities!
  */
 
-import type { Letter } from "$shared/foundation/domain/models/Letter";
-import type { ILetterQueryHandler } from "$shared/index";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { TYPES } from "$shared/inversify/types";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { ILetterQueryHandler } from "$lib/shared/index";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IQuizRepoManager } from "../../../quiz/services/contracts";
 import type { CodexLetterMapping, CodexLetterRow } from "../../domain";

@@ -1,7 +1,7 @@
 /**
  * Interface for sequence CRUD operations (Create, Read, Update, Delete)
  */
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceCreateRequest } from "../../domain/models/sequence-models";
 

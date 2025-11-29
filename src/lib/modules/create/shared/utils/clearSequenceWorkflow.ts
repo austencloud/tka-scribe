@@ -18,7 +18,7 @@
  * Domain: Create module - Sequence management
  */
 
-import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
 import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
 import type { createPanelCoordinationState as PanelCoordinationStateType } from "../state/panel-coordination-state.svelte";

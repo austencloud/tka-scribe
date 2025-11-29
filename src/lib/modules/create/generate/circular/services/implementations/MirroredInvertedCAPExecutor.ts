@@ -16,16 +16,16 @@
  */
 
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
+import { MotionType, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import type {
   GridLocation,
   GridPosition,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import type { ICAPParameterProvider } from "$lib/modules/create/generate/shared/services/contracts/ICAPParameterProvider";
 import {
   MIRRORED_INVERTED_VALIDATION_SET,

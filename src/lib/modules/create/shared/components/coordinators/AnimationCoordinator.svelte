@@ -13,10 +13,10 @@
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
   import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import { createComponentLogger } from "$shared/utils/debug-logger";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,

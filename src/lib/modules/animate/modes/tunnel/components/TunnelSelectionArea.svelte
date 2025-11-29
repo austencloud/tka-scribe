@@ -5,7 +5,7 @@
   Shows visual preview of tunnel effect and sequence selector cards.
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   // Props
   let {

@@ -13,7 +13,7 @@
    * Domain: Create module - Sequence Editing Coordination
    */
 
-  import { createComponentLogger } from "$shared/utils/debug-logger";
+  import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import FullscreenEditorPanel from "../FullscreenEditorPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 

@@ -3,7 +3,7 @@
  * Models for aggregate community statistics and achievement showcase
  */
 
-import type { Achievement } from "$shared/gamification/domain/models/achievement-models";
+import type { Achievement } from "$lib/shared/gamification/domain/models/achievement-models";
 
 export interface CommunityStats {
   totalUsers: number;

@@ -8,13 +8,13 @@
  * Always use this loader to get real, validated data.
  */
 
-import type { ILetterQueryHandler } from "$shared/foundation/services/contracts/data/data-contracts";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { Letter } from "$shared/foundation/domain/models/Letter";
-import { CsvLoader } from "$shared/foundation/services/implementations/data/CsvLoader";
-import { container, initializeContainer } from "$shared/inversify/container";
-import { TYPES } from "$shared/inversify/types";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { CsvLoader } from "$lib/shared/foundation/services/implementations/data/CsvLoader";
+import { container, initializeContainer } from "$lib/shared/inversify/container";
+import { TYPES } from "$lib/shared/inversify/types";
 
 /**
  * Test helper class for loading real pictographs

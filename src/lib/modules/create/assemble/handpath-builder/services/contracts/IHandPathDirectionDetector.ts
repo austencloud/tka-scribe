@@ -10,7 +10,7 @@ import type {
   GridMode,
   HandMotionType,
   RotationDirection,
-} from "$shared/index";
+} from "$lib/shared/index";
 
 export interface IHandPathDirectionDetector {
   /**

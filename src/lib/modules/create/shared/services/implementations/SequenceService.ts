@@ -9,10 +9,10 @@
  * Import operations moved to SequenceImportService.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceCreateRequest } from "../../domain/models/sequence-models";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
   IPersistenceService,

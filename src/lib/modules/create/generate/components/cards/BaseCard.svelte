@@ -3,10 +3,10 @@ BaseCard.svelte - Base component for all setting cards
 Provides consistent styling and interaction patterns for all generation setting cards
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import type { IRippleEffectService } from "$shared/application/services/contracts/IRippleEffectService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import CardHeader from "./shared/CardHeader.svelte";
 

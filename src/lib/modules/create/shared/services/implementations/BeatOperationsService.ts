@@ -8,17 +8,17 @@
  * Achieves Single Responsibility Principle by centralizing beat operation logic.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-import { createComponentLogger } from "$shared/utils/debug-logger";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import { createMotionData, type MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
-import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
 
 const START_POSITION_BEAT_NUMBER = 0; // Beat 0 = start position, beats 1+ are in the sequence

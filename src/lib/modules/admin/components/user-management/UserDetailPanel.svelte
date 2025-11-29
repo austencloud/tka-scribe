@@ -3,8 +3,8 @@
    * UserDetailPanel
    * Detailed view of a selected user with info, stats, and actions
    */
-  import type { UserRole } from "$shared/auth/domain/models/UserRole";
-  import { ROLE_DISPLAY } from "$shared/auth/domain/models/UserRole";
+  import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import { ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
   import type { UserData, UserActionType } from "./types";
   import { getRoleColor, getRoleIcon, getInitials, formatDate } from "./utils";
   import UserStatsGrid from "./UserStatsGrid.svelte";

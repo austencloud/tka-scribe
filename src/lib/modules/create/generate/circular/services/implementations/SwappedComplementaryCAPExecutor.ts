@@ -17,12 +17,12 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { Letter } from "$shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums"
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { TYPES } from "$shared/inversify/types";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums"
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   INVERTED_CAP_VALIDATION_SET,
   getInvertedLetter,

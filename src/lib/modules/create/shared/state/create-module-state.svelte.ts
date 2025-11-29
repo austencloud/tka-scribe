@@ -20,11 +20,11 @@ import type { IUndoService } from "../services/contracts/IUndoService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";
-import type { BuildModeId } from "$shared/foundation/ui/UITypes";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { AssemblerTabState } from "./assembler-tab-state.svelte";
 import type { GeneratorTabState } from "./generator-tab-state.svelte";
 

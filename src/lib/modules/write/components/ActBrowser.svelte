@@ -1,8 +1,8 @@
 <!-- ActBrowser.svelte - Act browser component with grid layout -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import type { ActThumbnailInfo } from "$wordcard/domain";
   import { onMount } from "svelte";
   import ActThumbnail from "./ActThumbnail.svelte";

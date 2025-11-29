@@ -5,7 +5,7 @@
  * Provides consistent sorting behavior across the gallery.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 import type { IDiscoverSortService } from "../contracts/IDiscoverSortService";

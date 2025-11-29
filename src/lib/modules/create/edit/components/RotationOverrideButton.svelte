@@ -1,9 +1,9 @@
 <!-- RotationOverrideButton.svelte - Toggle rotation override for DASH/STATIC arrows -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-  import type { IRotationOverrideManager } from "$shared/pictograph/arrow/positioning/placement/services/implementations";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+  import type { IRotationOverrideManager } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations";
   import type { BeatData } from "$create/shared/workspace-panel";
   import { onMount } from "svelte";
 

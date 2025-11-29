@@ -17,10 +17,10 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
-import { db } from "$shared/persistence";
-import type { DailyChallenge } from "$shared/gamification/domain/models";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { firestore } from "$lib/shared/auth/firebase";
+import { db } from "$lib/shared/persistence";
+import type { DailyChallenge } from "$lib/shared/gamification/domain/models";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   ChallengeScheduleEntry,
   ChallengeFormData,

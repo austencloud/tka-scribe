@@ -5,7 +5,7 @@ Main panel for the Record tab.
 Combines video feed with playback controls for practicing sequences.
 -->
 <script lang="ts">
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onDestroy, onMount } from "svelte";
   import { MetronomeService } from "../services/MetronomeService";
   import { createRecordTabState } from "../state/record-tab-state.svelte";

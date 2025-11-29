@@ -10,9 +10,9 @@
   Navigation via tabs controlled by bottom navigation
 -->
 <script lang="ts">
-import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { createAnimateModuleState } from "./shared/state/animate-module-state.svelte.ts";

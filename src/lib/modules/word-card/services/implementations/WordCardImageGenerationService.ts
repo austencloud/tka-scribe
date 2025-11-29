@@ -6,7 +6,7 @@
  */
 
 // Domain types
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { WordCardDimensions, WordCardExportOptions } from "../../domain/models/word-card-export";
 
 // Behavioral contracts
@@ -17,7 +17,7 @@ import type {
 import {} from "../contracts";
 import type { IWordCardImageGenerationService } from "../contracts";
 
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 
 @injectable()

@@ -3,9 +3,9 @@ SimpleAdvancedToggle.svelte - Single-button toggle showing opposite view mode
 Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 
   const { isAdvanced = false, onToggle } = $props<{
     isAdvanced?: boolean;

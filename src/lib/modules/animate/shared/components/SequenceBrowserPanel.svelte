@@ -10,10 +10,10 @@
   - onClose: Callback to close the panel
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import { Drawer } from "$shared/foundation/ui";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { Drawer } from "$lib/shared/foundation/ui";
 
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "../../../discover";

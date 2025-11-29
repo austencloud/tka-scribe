@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import { TYPES } from "../../../../inversify/types";
 import type {
   MarineLife,

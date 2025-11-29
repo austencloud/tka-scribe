@@ -1,7 +1,7 @@
 <!-- Slide-up Panel for Sequence Actions -->
 <script lang="ts">
-  import Drawer from "$shared/foundation/ui/Drawer.svelte";
-  import SheetDragHandle from "$shared/foundation/ui/SheetDragHandle.svelte";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
   import { tryGetCreateModuleContext } from "../../../context";
 
   let {

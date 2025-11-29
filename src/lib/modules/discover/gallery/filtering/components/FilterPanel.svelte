@@ -9,9 +9,9 @@ Matches the legacy desktop app's FilterPanel structure:
 Follows Svelte 5 runes + microservices architecture.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ExploreFilterValue } from "$shared";
   import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";

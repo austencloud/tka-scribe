@@ -5,10 +5,10 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData"
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";;
-import { MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData"
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";;
+import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { IReversalChecker } from "../contracts/IReversalChecker";
 

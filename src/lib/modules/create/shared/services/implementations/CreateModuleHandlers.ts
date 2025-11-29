@@ -6,10 +6,10 @@
  */
 
 import { injectable, inject } from "inversify";
-import { TYPES } from "$shared/inversify/types";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { BuildModeId } from "$shared/foundation/ui/UITypes";
-import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+import type { NavigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type {

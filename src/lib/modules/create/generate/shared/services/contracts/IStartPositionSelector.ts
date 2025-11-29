@@ -4,7 +4,7 @@
  * Responsible for selecting random start positions for sequence generation.
  */
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 
 export interface IStartPositionSelector {

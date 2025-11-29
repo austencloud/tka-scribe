@@ -3,7 +3,7 @@
   import type { Container } from "inversify";
   import type { Snippet } from "svelte";
   import { onMount, setContext } from "svelte";
-  import { authStore } from "$shared/auth/stores/authStore.svelte";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { registerCacheClearShortcut } from "$lib/shared/utils/cache-buster";
   import "../app.css";
   // Import modern view transitions CSS

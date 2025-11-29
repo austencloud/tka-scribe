@@ -1,12 +1,12 @@
 <script lang="ts">
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+  import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount, setContext } from "svelte";
   import { fade } from "svelte/transition";
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
 
   import type { IDiscoverEventHandlerService } from "../services/contracts";
@@ -16,7 +16,7 @@ import { TYPES } from "$shared/inversify/types";
   import DiscoverSequencesTab from "./DiscoverSequencesTab.svelte";
   import { discoverScrollState } from "../state/DiscoverScrollState.svelte";
   import { DiscoverScrollBehaviorService } from "../services/implementations/DiscoverScrollBehaviorService";
-  import { desktopSidebarState } from "$shared/layout/desktop-sidebar-state.svelte";
+  import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
 

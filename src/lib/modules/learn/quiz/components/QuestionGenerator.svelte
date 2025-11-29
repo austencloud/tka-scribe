@@ -6,10 +6,10 @@
 -->
 
 <script lang="ts">
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   // TODO: Fix service import - temporarily commented out
   // import { QuestionGeneratorService } from "../../services/implementations";
   import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";

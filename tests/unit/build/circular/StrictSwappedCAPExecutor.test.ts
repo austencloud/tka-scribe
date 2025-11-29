@@ -13,10 +13,10 @@
  */
 
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { GridPosition } from "$shared/pictograph/grid/domain/models/GridPosition";
-import { Letter } from "$shared/foundation/domain/models/Letter";
-import { MotionColor, MotionType, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$lib/shared/pictograph/grid/domain/models/GridPosition";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SliceSize } from "../../../../src/lib/modules/create/generate/circular/domain";
 import { StrictSwappedCAPExecutor } from "../../../../src/lib/modules/create/generate/circular/services/implementations";

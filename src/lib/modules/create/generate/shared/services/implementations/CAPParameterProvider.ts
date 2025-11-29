@@ -11,8 +11,8 @@
  * - TurnIntensityManagerService
  */
 
-import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
+import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { getInvertedLetter } from "../../../circular/domain/constants/strict-cap-position-maps";
 import {

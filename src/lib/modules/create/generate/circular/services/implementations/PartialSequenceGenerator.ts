@@ -4,17 +4,17 @@
  * Generates partial sequences for circular mode (CAP preparation).
  * Extracted from SequenceGenerationService - EXACT original logic preserved.
  */
-import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
-import type { ILetterQueryHandler } from "$shared/foundation/services/contracts/data/data-contracts";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridPosition, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
+import { GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { GenerationOptions } from "$lib/modules/create/generate/shared/domain/models/generate-models";
 import { PropContinuity } from "$lib/modules/create/generate/shared/domain/models/generate-models";
-import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import type { IBeatConverterService } from "$lib/modules/create/generate/shared/services/contracts/IBeatConverterService";
 import type { ICAPParameterProvider } from "$lib/modules/create/generate/shared/services/contracts/ICAPParameterProvider";
 import type { IPictographFilterService } from "$lib/modules/create/generate/shared/services/contracts/IPictographFilterService";

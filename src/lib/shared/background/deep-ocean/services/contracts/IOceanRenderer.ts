@@ -1,4 +1,4 @@
-import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import type {
   MarineLife,
   Bubble,

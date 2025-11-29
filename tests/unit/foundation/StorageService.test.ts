@@ -5,7 +5,7 @@
  * Tests localStorage and sessionStorage wrappers with error handling.
  */
 
-import { StorageService } from "$shared/foundation/services/implementations/StorageService";
+import { StorageService } from "$lib/shared/foundation/services/implementations/StorageService";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("StorageService", () => {

@@ -8,9 +8,9 @@
   import type {
     IHapticFeedbackService,
     IMobileFullscreenService,
-  } from "$shared/index";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+  } from "$lib/shared/index";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Services

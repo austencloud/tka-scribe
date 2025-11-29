@@ -16,16 +16,16 @@
  * REPLACES: The 890-line god object sequence-state.svelte.ts
  */
 
-import type { BuildModeId } from "$shared/foundation/ui/UITypes";
-import type { ArrowPosition } from "$shared/pictograph/arrow/orchestration/domain/arrow-models";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+import type { ArrowPosition } from "$lib/shared/pictograph/arrow/orchestration/domain/arrow-models";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { ValidationResult } from "$shared/validation/ValidationResult";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { tryResolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import type { IActivityLogService } from "$shared/analytics/services/contracts/IActivityLogService";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { tryResolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
 import type {
   ISequencePersistenceService,
   ISequenceService,
@@ -107,8 +107,8 @@ export function createSequenceState(services: SequenceStateServices) {
     // This prevents overwriting deep link sequences with old saved state
     let hasDeepLink = false;
     try {
-      const { resolve } = await import("$shared/inversify");
-      const { TYPES } = await import("$shared/inversify/types");
+      const { resolve } = await import("$lib/shared/inversify");
+      const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
     } catch {

@@ -9,11 +9,11 @@
 import {
   GridLocation,
   GridMode,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   HandMotionType,
   RotationDirection,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 export class HandPathMotionCalculator {
   // Clockwise ordering for diamond mode

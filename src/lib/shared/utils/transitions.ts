@@ -155,7 +155,7 @@ export function flyTransition(
  * DEPRECATED: springScaleTransition has been replaced by the unified animation system
  *
  * The old springScaleTransition used hardcoded spring physics approximations (40+ lines).
- * It has been migrated to use PresenceAnimation from $shared/animation which provides:
+ * It has been migrated to use PresenceAnimation from $lib/shared/animation which provides:
  * - Real spring physics via Svelte 5's native Spring class
  * - Consistent animation behavior across the app
  * - Configurable spring presets (gentle, snappy, wobbly, etc.)

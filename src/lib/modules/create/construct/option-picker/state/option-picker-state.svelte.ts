@@ -5,8 +5,8 @@
  * Follows the same pattern as the simplified start position picker.
  */
 
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type {
   OptionPickerState,
   SortMethod,

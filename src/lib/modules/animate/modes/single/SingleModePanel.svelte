@@ -14,8 +14,9 @@
     SingleAnimationHeader,
     SingleAnimationViewMobile,
     SingleStatsBar,
-    SingleControlsPanel,
   } from "./components";
+  import { AnimationControlsV2, TrailPresetPanel, AdvancedSettingsDrawer, applyPreset, type TrailPresetId } from "../../components/v2";
+  import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
   import SequenceBrowserPanel from "../../shared/components/SequenceBrowserPanel.svelte";
   import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 
@@ -44,6 +45,11 @@
   let animatingBeatNumber = $state<number | null>(null);
   let isPlaying = $state(false);
   let shouldLoop = $state(true);
+
+  // Drawer states (rendered at panel level for proper z-index)
+  let isAdvancedSettingsOpen = $state(false);
+  let isTrailPanelOpen = $state(false);
+  const trailSettings = $derived(animationSettings.trail);
 
   // Sync local state with animateState
   $effect(() => {
@@ -102,6 +108,48 @@
   function handleStop() {
     animateState.setIsPlaying(false);
     animatingBeatNumber = null;
+  }
+
+  // Trail panel handlers
+  function handleOpenTrailPanel() {
+    isTrailPanelOpen = true;
+  }
+
+  function handlePresetSelect(presetId: TrailPresetId) {
+    const presetSettings = applyPreset(presetId);
+    if (presetSettings) {
+      animationSettings.updateSettings({
+        trail: {
+          ...animationSettings.trail,
+          ...presetSettings
+        }
+      });
+    }
+  }
+
+  // Advanced settings handlers
+  function handleOpenAdvancedSettings() {
+    isAdvancedSettingsOpen = true;
+  }
+
+  function handleFadeDurationChange(ms: number) {
+    animationSettings.setFadeDuration(ms);
+  }
+
+  function handleLineWidthChange(width: number) {
+    animationSettings.setTrailAppearance({ lineWidth: width });
+  }
+
+  function handleOpacityChange(opacity: number) {
+    animationSettings.setTrailAppearance({ maxOpacity: opacity });
+  }
+
+  function handleGlowToggle(enabled: boolean) {
+    animationSettings.setTrailAppearance({ glowEnabled: enabled });
+  }
+
+  function handleHidePropsToggle(hide: boolean) {
+    animationSettings.setHideProps(hide);
   }
 </script>
 
@@ -169,13 +217,19 @@
           </div>
         {/if}
 
-        <SingleControlsPanel
-          bind:isPlaying
-          bind:shouldLoop
-          speed={animateState.speed}
-          onStop={handleStop}
-          onSpeedChange={(newSpeed) => animateState.setSpeed(newSpeed)}
-        />
+        <div class="controls-area">
+          <AnimationControlsV2
+            mode="fullscreen"
+            bind:isPlaying
+            showExport={true}
+            onPlayToggle={(playing) => {
+              isPlaying = playing;
+              if (!playing) handleStop();
+            }}
+            onOpenTrailPanel={handleOpenTrailPanel}
+            onOpenAdvancedSettings={handleOpenAdvancedSettings}
+          />
+        </div>
       </div>
     {/if}
   {/if}
@@ -190,6 +244,25 @@
       animateState.closeSequenceBrowser();
     }}
     onClose={animateState.closeSequenceBrowser}
+  />
+
+  <!-- Trail Preset Panel (rendered at panel level for proper overlay) -->
+  <TrailPresetPanel
+    bind:isOpen={isTrailPanelOpen}
+    currentSettings={trailSettings}
+    onPresetSelect={handlePresetSelect}
+    onCustomize={handleOpenAdvancedSettings}
+  />
+
+  <!-- Advanced Settings Drawer (rendered at panel level for proper overlay) -->
+  <AdvancedSettingsDrawer
+    bind:isOpen={isAdvancedSettingsOpen}
+    settings={trailSettings}
+    onFadeDurationChange={handleFadeDurationChange}
+    onLineWidthChange={handleLineWidthChange}
+    onOpacityChange={handleOpacityChange}
+    onGlowToggle={handleGlowToggle}
+    onHidePropsToggle={handleHidePropsToggle}
   />
 </div>
 
@@ -245,5 +318,12 @@
     font-size: 0.85rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Controls Area */
+  .controls-area {
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 </style>

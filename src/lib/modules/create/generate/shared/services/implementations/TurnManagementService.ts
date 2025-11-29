@@ -10,7 +10,7 @@ import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData
 import {
   MotionType,
   RotationDirection,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PropContinuity } from "../../domain/models/generate-models";
 
 // Legacy constants for rotation directions

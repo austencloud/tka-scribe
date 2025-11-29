@@ -5,7 +5,7 @@
   Orchestrates TunnelSequencePanel components with operators between them.
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { NormalizedSequenceData } from "../../../services/contracts";
   import TunnelSequencePanel from "./TunnelSequencePanel.svelte";
   import TunnelResultPanel from "./TunnelResultPanel.svelte";

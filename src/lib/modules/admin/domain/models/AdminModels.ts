@@ -8,8 +8,8 @@ import type {
   DailyChallenge,
   ChallengeType,
   ChallengeDifficulty,
-} from "$shared/gamification/domain/models";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+} from "$lib/shared/gamification/domain/models";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /**
  * Challenge schedule entry

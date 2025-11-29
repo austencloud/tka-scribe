@@ -13,10 +13,10 @@
   - Deep link (editing a shared sequence)
 -->
 <script lang="ts">
-import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
   import { createEditModuleState, type EditMode } from "./state/edit-module-state.svelte";
   import type { ISequenceTransformationService } from "$create/shared/services/contracts";

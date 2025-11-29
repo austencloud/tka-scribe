@@ -7,9 +7,9 @@
 
 import { Letter, getLetterType } from "$lib/shared/foundation/domain/models/Letter";
 import { LetterType } from "$lib/shared/foundation/domain/models/LetterType";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { GridPositionGroup } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { TYPES } from "$shared/inversify/types";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
   EndPositionFilter,

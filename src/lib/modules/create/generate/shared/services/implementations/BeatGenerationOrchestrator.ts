@@ -7,10 +7,10 @@
 import type {
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
-} from "$shared/index";
+} from "$lib/shared/index";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
 import type {

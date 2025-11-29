@@ -5,14 +5,14 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { IMotionQueryHandler } from "$shared/index";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { TYPES } from "$shared/inversify/types";
+import type { IMotionQueryHandler } from "$lib/shared/index";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPositionAnalyzer } from "../contracts";
 import type { IOptionLoader } from "../contracts";
-import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
 export class OptionLoader implements IOptionLoader {

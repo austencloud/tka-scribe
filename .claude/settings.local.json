@@ -70,7 +70,8 @@
       "Bash(do echo \"=== $dir ===\")",
       "Bash(if [ -f \"src/lib/shared/$dir/index.ts\" ])",
       "Bash(then grep \"from.*$shared\" \"src/lib/shared/$dir/index.ts\")",
-      "Bash(git show:*)"
+      "Bash(git show:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File fix-imports.ps1)"
     ],
     "deny": [],
     "ask": []

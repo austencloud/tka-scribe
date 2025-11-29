@@ -5,7 +5,7 @@
   Shows selected sequence or empty state with selection prompt.
 -->
 <script lang="ts">
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   type ColorIndicator = { color: string; label: string };
 

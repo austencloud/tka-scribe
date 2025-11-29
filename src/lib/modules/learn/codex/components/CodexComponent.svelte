@@ -6,11 +6,11 @@
 	Now featuring beautiful glass scrollbars.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import { SimpleGlassScroll } from "$shared/foundation/ui";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { SimpleGlassScroll } from "$lib/shared/foundation/ui";
   import { onMount } from "svelte";
   import { createCodexState } from "../state/codex-state.svelte";
   import CodexControlPanel from "./CodexControlPanel.svelte";

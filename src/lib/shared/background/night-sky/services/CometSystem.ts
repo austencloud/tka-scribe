@@ -1,7 +1,7 @@
 // src/lib/components/backgrounds/systems/nightSky/CometSystem.ts
 
-import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
-import type { Dimensions, QualityLevel } from "$shared/background/shared/domain/types/background-types";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type { Dimensions, QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
 import type { EasterEggState, Star, StarConfig } from "../domain/models/night-sky-models";
 import type { INightSkyCalculationService } from "../services";
 // Removed resolve import - calculation service now injected via constructor

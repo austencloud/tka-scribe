@@ -5,7 +5,7 @@
  * Converts raw pointer events into semantic swipe gestures between grid positions.
  */
 
-import { GridMode, type GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode, type GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { GridPositionPoint, SwipeGesture } from "../../domain";
 
 export interface ISwipeDetectionService {

@@ -1,6 +1,6 @@
 <!-- SpotlightViewer.svelte - Simplified fullscreen image viewer -->
 <script lang="ts">
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IDiscoverThumbnailService } from "../../display";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes

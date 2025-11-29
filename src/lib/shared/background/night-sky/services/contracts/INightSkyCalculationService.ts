@@ -1,5 +1,5 @@
-import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
-import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import type { StarConfig, Star } from "../../domain/models/night-sky-models";
 
 /**

@@ -6,7 +6,7 @@
  * - Quartered CAPs: 90° rotation (position +2 or -2 for clockwise/counter-clockwise)
  */
 
-import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * Half position map - 180° rotation
@@ -266,8 +266,8 @@ export const QUARTERED_CAPS = new Set<string>([
  * Location Rotation Maps
  */
 
-import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 /**
  * Eighth location rotation map - 45° clockwise rotation

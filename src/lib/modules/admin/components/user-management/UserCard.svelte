@@ -3,7 +3,7 @@
    * UserCard
    * Displays a user in the user list with avatar, info, and stats
    */
-  import { ROLE_DISPLAY } from "$shared/auth/domain/models/UserRole";
+  import { ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
   import type { UserData } from "./types";
   import { getRoleColor, getRoleIcon, getInitials } from "./utils";
 

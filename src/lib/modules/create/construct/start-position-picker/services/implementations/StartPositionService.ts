@@ -1,10 +1,10 @@
-import { GridMode, GridPosition, GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode, GridPosition, GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, Orientation, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-import { TYPES } from "$shared/inversify/types";
+import { MotionType, MotionColor, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IStartPositionService } from "../contracts";
 import { createPictographData } from "../../../../../../shared/pictograph/shared/domain/factories/createPictographData";

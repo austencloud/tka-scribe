@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-  import Drawer from "$shared/foundation/ui/Drawer.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { FilterModal, SequenceDetailContent } from "../../gallery";
   import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
   import SortJumpSheet from "../../gallery/navigation/components/SortJumpSheet.svelte";

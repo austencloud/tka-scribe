@@ -3,9 +3,9 @@ PositionVisualizer - Interactive 8-point grid showing two hand positions
 Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 
   type HandPosition = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
   type PositionType = "alpha" | "beta" | "gamma";

@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import { getInfoBackground, setInfoBackground } from "$shared/application/state/app-mode-state.svelte";
-  import { resolve, TYPES } from "$shared/inversify";
+  import { getInfoBackground, setInfoBackground } from "$lib/shared/application/state/app-mode-state.svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify";
   import SettingsModal from "./SettingsModal.svelte";
 
   let { onBackgroundChange } = $props<{

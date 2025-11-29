@@ -7,8 +7,8 @@
   Uses instant content swap - the workspace expansion is the "hero" animation.
 -->
 <script lang="ts">
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { OptionViewer, StartPositionPicker } from "../../construct";
   import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 

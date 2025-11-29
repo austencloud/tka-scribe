@@ -9,8 +9,8 @@
  * - Connection-aware image request throttling
  */
 
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type {
   ExploreLoadingState,
   IOptimizedDiscoverService,

@@ -4,9 +4,9 @@
   Opens a sheet with various sequence actions (Animate, Mirror, Rotate, etc.)
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 
   let { onclick } = $props<{
     onclick?: () => void;

@@ -5,10 +5,10 @@
  * Follows the same simplification pattern as OptionPickerState.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../../domain/models/BeatData";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { IWorkbenchService } from "../services/contracts";
 
 /**

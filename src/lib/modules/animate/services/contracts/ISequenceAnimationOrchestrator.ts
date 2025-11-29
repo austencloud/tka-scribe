@@ -5,9 +5,9 @@
  * Higher-level orchestration of animation components.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { SequenceMetadata } from "$shared/foundation/domain/models/SequenceData";
-import type { Letter } from "$shared/foundation/domain/models/Letter";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { SequenceMetadata } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { PropState, PropStates } from "../../domain";
 
 export interface ISequenceAnimationOrchestrator {

@@ -11,8 +11,8 @@
  * - Persistent history across sessions
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 
 /**
  * Types of undoable operations in the Create module

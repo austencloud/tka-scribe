@@ -6,7 +6,7 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
 -->
 <script lang="ts">
   import type { BeatData } from "$create/shared/workspace-panel";
-  import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
   // Props
   const { currentBeatData, onPropTypeChanged } = $props<{

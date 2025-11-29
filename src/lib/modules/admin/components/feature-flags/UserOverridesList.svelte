@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AdminSearchBox, AdminActionButton, AdminListItem, AdminEmptyState } from "$shared/admin";
+	import { AdminSearchBox, AdminActionButton, AdminListItem, AdminEmptyState } from "$lib/shared/admin";
 	import { getRoleColor, getRoleIcon, type UserData } from './utils';
 
 	interface Props {

@@ -7,10 +7,10 @@
 
 // HMR deep path test - testing file watcher in nested directory with spaces
 
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import type { MotionEndpoints } from "$shared/pictograph/shared/domain/models/MotionEndpoints";
-import { MotionType, Orientation, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import type { MotionEndpoints } from "$lib/shared/pictograph/shared/domain/models/MotionEndpoints";
+import { MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";

@@ -4,9 +4,9 @@
  * Simplified interface focused on core functionality.
  */
 
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
 export interface IStartPositionService {
   // Core functionality - load and select positions

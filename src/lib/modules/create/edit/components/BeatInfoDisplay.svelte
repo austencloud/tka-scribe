@@ -11,8 +11,8 @@ Primarily for desktop where we have extra space to show this information.
 -->
 <script lang="ts">
   import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-  import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-  import { RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+  import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   // Props
   const { currentBeatData } = $props<{

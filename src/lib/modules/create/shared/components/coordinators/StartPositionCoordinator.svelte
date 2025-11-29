@@ -8,7 +8,7 @@
    * Domain: Create module - Start Position Panel Coordination
    */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import StartPositionSelectionPanel from "../../../generate/components/modals/StartPositionSelectionPanel.svelte";
   import { getCreateModuleContext } from "../../context";
 

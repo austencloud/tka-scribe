@@ -5,11 +5,11 @@
  * Handles DOM element selection, export orchestration, and file downloads.
  */
 
-import type { IFileDownloadService, DownloadResult } from "$shared/foundation/services/contracts/IFileDownloadService";
-import type { ExportResult } from "$shared/foundation/ui/UITypes";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { IFileDownloadService, DownloadResult } from "$lib/shared/foundation/services/contracts/IFileDownloadService";
+import type { ExportResult } from "$lib/shared/foundation/ui/UITypes";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { inject, injectable } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import type {
   BatchExportResult,
   WordCardExportOptions,

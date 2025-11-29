@@ -1,4 +1,4 @@
-import type { IViewportService } from "$shared/device/services/contracts/IViewportService";
+import type { IViewportService } from "$lib/shared/device/services/contracts/IViewportService";
 /**
  * CreateModule Orchestration Types
  *
@@ -6,7 +6,7 @@ import type { IViewportService } from "$shared/device/services/contracts/IViewpo
  * These types define the contracts between different layers of the system.
  */
 
-import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
 import type {
   ICreateModuleService,

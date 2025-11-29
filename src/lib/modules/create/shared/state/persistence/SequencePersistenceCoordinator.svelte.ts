@@ -9,13 +9,13 @@
  * RESPONSIBILITY: Persistence coordination, observes state changes
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ISequencePersistenceService } from "../../services/contracts";
-import { tryResolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import type { IActivityLogService } from "$shared/analytics";
-import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
+import { tryResolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IActivityLogService } from "$lib/shared/analytics";
+import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 
 export interface PersistenceState {
   currentSequence: SequenceData | null;

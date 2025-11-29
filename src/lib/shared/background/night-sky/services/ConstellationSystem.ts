@@ -1,6 +1,6 @@
 // src/lib/components/backgrounds/systems/nightSky/ConstellationSystem.ts
-import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
-import type { QualityLevel } from "$shared/background/shared/domain/types/background-types";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type { QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
 import type { Star } from "../domain/models/night-sky-models";
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "../services";

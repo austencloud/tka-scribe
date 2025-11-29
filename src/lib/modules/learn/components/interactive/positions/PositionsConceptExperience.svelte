@@ -6,9 +6,9 @@ Page 3: Gamma position (hands at right angles)
 Page 4: Interactive quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import PositionVisualizer from "./PositionVisualizer.svelte";
   import PositionIdentificationQuiz from "./PositionIdentificationQuiz.svelte";
 

@@ -8,16 +8,16 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared/inversify";
-  import { authStore } from "$shared/auth";
-  import { getLevelProgress } from "$shared/gamification/domain/constants/xp-constants";
+  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { authStore } from "$lib/shared/auth";
+  import { getLevelProgress } from "$lib/shared/gamification/domain/constants/xp-constants";
   import type {
     IAchievementService,
     IStreakService,
-  } from "$shared/gamification/services/contracts";
+  } from "$lib/shared/gamification/services/contracts";
   import type { ILeaderboardService } from "$lib/modules/community/services/contracts/ILeaderboardService";
   import type { LeaderboardCategory } from "$lib/modules/community/domain/models/leaderboard-models";
-  import AchievementsBrowser from "$shared/gamification/components/AchievementsBrowser.svelte";
+  import AchievementsBrowser from "$lib/shared/gamification/components/AchievementsBrowser.svelte";
 
   // Services
   let achievementService: IAchievementService | null = $state(null);

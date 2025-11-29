@@ -5,8 +5,8 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { TYPES } from "$shared/inversify/types";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { SortMethod } from "../../domain";
 import type { IPositionAnalyzer, IReversalChecker } from "../contracts";

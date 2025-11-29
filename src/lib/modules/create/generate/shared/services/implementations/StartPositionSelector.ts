@@ -10,10 +10,10 @@ import type {
   ILetterQueryHandler,
   IArrowPositioningOrchestrator,
   GridMode,
-} from "$shared/index";
+} from "$lib/shared/index";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
   IBeatConverterService,

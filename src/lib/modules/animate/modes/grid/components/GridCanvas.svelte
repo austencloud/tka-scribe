@@ -4,7 +4,7 @@
   2x2 grid canvas with cells for sequences.
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   type GridIndex = 0 | 1 | 2 | 3;
 

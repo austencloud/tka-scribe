@@ -1,8 +1,8 @@
 <!-- AdvancedStartPositionPicker.svelte - Advanced start position picker with all 16 variations -->
 <script lang="ts">
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import { SimpleGlassScroll } from "$shared/foundation/ui";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { SimpleGlassScroll } from "$lib/shared/foundation/ui";
   import { onMount } from "svelte";
   import { createAdvancedPickerState } from "../state/advanced-picker-state.svelte";
   import PositionGroupGrid from "./PositionGroupGrid.svelte";

@@ -1,12 +1,12 @@
 // src/lib/components/backgrounds/auroraBorealis/AuroraBorealisBackgroundSystem.ts
 
-import type { AccessibilitySettings } from "$shared/background/shared/domain/models/background-models";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
 import type {
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
-} from "$shared/background/shared/domain/types/background-types";
-import type { IBackgroundSystem } from "$shared/background/shared/services/contracts/IBackgroundSystem";
+} from "$lib/shared/background/shared/domain/types/background-types";
+import type { IBackgroundSystem } from "$lib/shared/background/shared/services/contracts/IBackgroundSystem";
 
 export class AuroraBorealisBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";

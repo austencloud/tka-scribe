@@ -4,7 +4,7 @@
  * Interface for handling tab transitions and animations in the Create module.
  */
 
-import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
+import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 
 export interface ICreateModuleTransitionService {
   /**

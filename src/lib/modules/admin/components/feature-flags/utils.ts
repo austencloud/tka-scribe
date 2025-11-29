@@ -1,5 +1,5 @@
-import type { FeatureId, UserRole, UserFeatureOverrides, FeatureFlagConfig } from "$shared/auth/domain";
-import { ROLE_DISPLAY } from "$shared/auth/domain";
+import type { FeatureId, UserRole, UserFeatureOverrides, FeatureFlagConfig } from "$lib/shared/auth/domain";
+import { ROLE_DISPLAY } from "$lib/shared/auth/domain";
 import { CREATE_TABS, LEARN_TABS, DISCOVER_TABS, COMMUNITY_TABS, COLLECT_TABS, ANIMATE_TABS, EDIT_TABS, ABOUT_TABS, ADMIN_TABS, MODULE_DEFINITIONS } from "../../../../shared";
 
 export interface UserData {

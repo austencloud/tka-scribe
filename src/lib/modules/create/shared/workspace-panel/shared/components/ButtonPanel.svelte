@@ -13,7 +13,7 @@
 -->
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { PresenceAnimation } from "$shared/animation";
+  import { PresenceAnimation } from "$lib/shared/animation";
   import { getCreateModuleContext } from "$create/shared/context";
   import {
     ClearSequencePanelButton,

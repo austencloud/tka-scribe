@@ -33,7 +33,7 @@ export class PixiTextureLoader {
   }> {
     try {
       // Import SVGGenerator to generate prop SVGs
-      const { TYPES } = await import("$shared/inversify/types");
+      const { TYPES } = await import("$lib/shared/inversify/types");
       const { resolve } = await import("$shared");
       const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
 
@@ -78,7 +78,7 @@ export class PixiTextureLoader {
   }> {
     try {
       // Import SVGGenerator to generate prop SVGs
-      const { TYPES } = await import("$shared/inversify/types");
+      const { TYPES } = await import("$lib/shared/inversify/types");
       const { resolve } = await import("$shared");
       const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
 
@@ -120,7 +120,7 @@ export class PixiTextureLoader {
   }> {
     try {
       // Import SVGGenerator to generate prop SVGs
-      const { TYPES } = await import("$shared/inversify/types");
+      const { TYPES } = await import("$lib/shared/inversify/types");
       const { resolve } = await import("$shared");
       const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
 
@@ -164,7 +164,7 @@ export class PixiTextureLoader {
     canvasSize: number
   ): Promise<Texture> {
     try {
-      const { TYPES } = await import("$shared/inversify/types");
+      const { TYPES } = await import("$lib/shared/inversify/types");
       const { resolve, GridMode } = await import("$shared");
       const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
 

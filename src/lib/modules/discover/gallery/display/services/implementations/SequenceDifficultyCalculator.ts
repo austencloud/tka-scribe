@@ -13,7 +13,7 @@ import type { BeatData } from "../../../../../create/shared/domain/models/BeatDa
 import {
   Orientation,
   MotionColor,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 @injectable()

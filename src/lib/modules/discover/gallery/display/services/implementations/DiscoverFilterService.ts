@@ -5,9 +5,9 @@
  * Each filter type has its own dedicated method for clarity.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { ExploreFilterType } from "$shared/persistence/domain/enums/FilteringEnums";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { ExploreFilterType } from "$lib/shared/persistence/domain/enums/FilteringEnums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ExploreFilterValue } from "$shared";
 import type { IDiscoverFilterService } from "../contracts/IDiscoverFilterService";

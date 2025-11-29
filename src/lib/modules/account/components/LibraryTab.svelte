@@ -9,7 +9,7 @@
   import LibraryDashboard from "../../library/components/LibraryDashboard.svelte";
   import SequencesView from "../../library/components/SequencesView.svelte";
   import { fade, fly } from "svelte/transition";
-  import { authStore } from "$shared/auth";
+  import { authStore } from "$lib/shared/auth";
 
   // Navigation state (local to this tab)
   let currentView = $state<"dashboard" | LibraryViewSection>("dashboard");

@@ -1,5 +1,5 @@
-import { GridMode, GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import { GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 /**
  * Sequence Transformation Service
  *
@@ -10,17 +10,17 @@ import type { IGridPositionDeriver } from "$shared/pictograph/grid/services/cont
  */
 
 import type { BeatData } from "../../domain/models/BeatData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { updateSequenceData, createSequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { IMotionQueryHandler } from "$shared/index";
-import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { updateSequenceData, createSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { IMotionQueryHandler } from "$lib/shared/index";
+import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { StartPositionData } from "../../domain/models/StartPositionData";
 import { isStartPosition } from "$create/shared/domain/type-guards/pictograph-type-guards";
 import { isBeat } from "$create/shared";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
-import { resolve } from "$shared/inversify";
+import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
 import { inject, injectable } from "inversify";
 import { createBeatData } from "../../domain/factories/createBeatData";
 import { createStartPositionData } from "../../domain/factories/createStartPositionData";

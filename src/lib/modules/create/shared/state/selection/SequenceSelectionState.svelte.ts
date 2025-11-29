@@ -16,7 +16,7 @@
  * - beatNumber 2 = beats[1] (second beat in array)
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
 export type SelectionMode = "single" | "multi";
 

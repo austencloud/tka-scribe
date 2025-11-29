@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { container } from "$shared/inversify/container";
-  import { TYPES } from "$shared/inversify/types";
+  import { container } from "$lib/shared/inversify/container";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { ISequenceRenderService } from "$render";
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   // Your actual 16-beat sequence from the request
   const TEST_SEQUENCE: SequenceData = {

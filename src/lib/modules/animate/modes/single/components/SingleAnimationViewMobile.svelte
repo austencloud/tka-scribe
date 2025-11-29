@@ -8,7 +8,7 @@
   - Single row of 48px touch controls
 -->
 <script lang="ts">
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { BeatData } from "$create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$create/shared/domain/models/StartPositionData";
   import SingleModeCanvas from "./SingleModeCanvas.svelte";

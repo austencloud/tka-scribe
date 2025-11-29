@@ -6,13 +6,13 @@
  */
 
 import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
-import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionColor, MotionType, Orientation, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-import { UniversalMetadataExtractor } from "$shared/services/UniversalMetadataExtractor";
+import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import { UniversalMetadataExtractor } from "$lib/shared/services/UniversalMetadataExtractor";
 import { inject, injectable } from "inversify";
 import type {
   IDiscoverMetadataExtractor,

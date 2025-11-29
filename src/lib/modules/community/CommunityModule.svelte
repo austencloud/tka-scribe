@@ -6,7 +6,7 @@
    */
 
   import { fade } from "svelte/transition";
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { communityViewState } from "./state/community-view-state.svelte";
   import type { CommunitySection } from "./domain/types/community-types";
   import CreatorsPanel from "./components/creators/CreatorsPanel.svelte";

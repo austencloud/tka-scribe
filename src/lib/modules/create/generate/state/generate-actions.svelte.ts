@@ -7,9 +7,9 @@
 
 import type { SequenceState } from "$create/shared/state";
 import { setPendingGenerationAnimation } from "$create/shared/workspace-panel/sequence-display/state/beat-grid-display-state.svelte";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { GenerationOptions } from "../shared/domain";
 import type { IGenerationOrchestrationService } from "../shared/services/contracts";
 

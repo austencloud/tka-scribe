@@ -6,9 +6,9 @@ Pure presentation component that delegates to sequence transform services.
 Moved from workbench to edit tab as these are editing functions.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import type { Snippet } from "svelte";
   import { onMount } from "svelte";
 

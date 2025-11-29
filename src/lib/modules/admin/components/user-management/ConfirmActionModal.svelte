@@ -3,7 +3,7 @@
    * ConfirmActionModal
    * Confirmation dialog for user management actions
    */
-  import { ROLE_DISPLAY } from "$shared/auth/domain/models/UserRole";
+  import { ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
   import type { ConfirmActionData } from "./types";
 
   interface Props {

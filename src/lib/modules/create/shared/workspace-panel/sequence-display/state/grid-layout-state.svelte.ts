@@ -5,7 +5,7 @@
  * Handles column count, row count, and cell sizing based on container dimensions.
  */
 
-import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
+import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 import { getBeatFrameLayout } from "../domain/models/beat-frame-layouts";
 import type {
   GridLayout,

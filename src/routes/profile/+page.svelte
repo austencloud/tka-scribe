@@ -5,7 +5,7 @@
    * Displays user profile information and provides account management options
    */
 
-  import { authStore } from "$shared/auth";
+  import { authStore } from "$lib/shared/auth";
   import { goto } from "$app/navigation";
 
   let copying = $state(false);

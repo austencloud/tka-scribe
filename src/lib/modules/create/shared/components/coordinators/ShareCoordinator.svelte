@@ -8,9 +8,9 @@
    * Domain: Create module - Share Panel Coordination
    */
 
-import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import { createComponentLogger } from "$shared/utils/debug-logger";
+import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import ShareDrawer, { type ViewMode } from "$lib/shared/share/components/ShareDrawer.svelte";
   import { createShareState } from "$lib/shared/share/state";
   import { getCreateModuleContext } from "../../context";
@@ -19,7 +19,7 @@ import { resolve } from "$shared/inversify";
     ILetterDeriverService,
     IDeepLinkService,
   } from "$lib/shared/navigation/services/contracts";
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
 

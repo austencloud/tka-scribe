@@ -9,7 +9,7 @@ Features:
 -->
 <script lang="ts">
   import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-  import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props
   const { selectedBeats = [] } = $props<{

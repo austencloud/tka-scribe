@@ -6,10 +6,10 @@
  */
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
-import { MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import type { MotionEndpoints } from "$shared/pictograph/shared/domain/models/MotionEndpoints";
-import { TYPES } from "$shared/inversify/types";
+import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import type { MotionEndpoints } from "$lib/shared/pictograph/shared/domain/models/MotionEndpoints";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IPropInterpolator, InterpolationResult } from "../contracts";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";

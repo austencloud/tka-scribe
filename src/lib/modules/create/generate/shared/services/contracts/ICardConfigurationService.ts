@@ -1,7 +1,7 @@
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
 import type { DifficultyLevel, GenerationMode, PropContinuity } from "../../domain/models";
 import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * Card descriptor for rendering in the UI

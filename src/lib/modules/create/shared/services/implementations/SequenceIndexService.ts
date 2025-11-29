@@ -5,7 +5,7 @@
  * Provides search capabilities across sequence metadata.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import type { ISequenceIndexService } from "../contracts/ISequenceIndexService";
 

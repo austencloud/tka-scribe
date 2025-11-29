@@ -6,14 +6,14 @@
    * Domain: Create module - Composition Root
    */
 
-  import { createComponentLogger } from "$shared/utils/debug-logger";
-  import { ensureContainerInitialized, resolve, TYPES } from "$shared/inversify";
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
-  import type { BuildModeId } from "$shared/foundation/ui/UITypes";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import { setAnyPanelOpen, setSideBySideLayout } from "$shared/application/state/animation-visibility-state.svelte";
-  import { AnimationSheetCoordinator } from "$shared/coordinators";
-  import { getSettings } from "$shared/application/state/app-state.svelte";
+  import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+  import { ensureContainerInitialized, resolve, TYPES } from "$lib/shared/inversify";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { setAnyPanelOpen, setSideBySideLayout } from "$lib/shared/application/state/animation-visibility-state.svelte";
+  import { AnimationSheetCoordinator } from "$lib/shared/coordinators";
+  import { getSettings } from "$lib/shared/application/state/app-state.svelte";
   import { onMount, setContext, tick } from "svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
   import type { CreateModuleServices } from "../services/ServiceInitializer";

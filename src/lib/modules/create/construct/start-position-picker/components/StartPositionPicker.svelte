@@ -3,13 +3,13 @@ StartPositionPicker.svelte - Simplified version with advanced variations
 Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variations
 -->
 <script lang="ts">
-  import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type {
     IHapticFeedbackService,
     PictographData,
-  } from "$shared/index";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  } from "$lib/shared/index";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import {

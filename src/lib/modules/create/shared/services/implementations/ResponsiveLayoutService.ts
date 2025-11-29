@@ -1,4 +1,4 @@
-import type { IViewportService } from "$shared/device/services/contracts/IViewportService";
+import type { IViewportService } from "$lib/shared/device/services/contracts/IViewportService";
 /**
  * Responsive Layout Service Implementation
  *
@@ -8,8 +8,8 @@ import type { IViewportService } from "$shared/device/services/contracts/IViewpo
  * Domain: Create module - Sequence Construction Interface
  */
 
-import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
-import { TYPES } from "$shared/inversify/types";
+import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IResponsiveLayoutService } from "../contracts/IResponsiveLayoutService";
 

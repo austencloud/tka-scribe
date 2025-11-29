@@ -9,7 +9,7 @@ import type {
   CondensedStartMotion,
 } from "../contracts/ISequenceExportService";
 import type { BeatData } from "../../domain/models/BeatData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 
 /**
  * Service for exporting sequence data in various formats

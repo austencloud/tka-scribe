@@ -4,7 +4,7 @@
  * Contract for user management operations
  */
 
-import type { UserRole } from "$shared/auth/domain/models/UserRole";
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 import type { UserData } from "../../components/user-management/types";
 
 export interface IUserManagementService {

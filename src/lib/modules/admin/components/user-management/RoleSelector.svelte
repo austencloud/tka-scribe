@@ -3,8 +3,8 @@
    * RoleSelector
    * Grid of role options for changing user role
    */
-  import type { UserRole } from "$shared/auth/domain/models/UserRole";
-  import { ROLE_DISPLAY, ROLE_HIERARCHY } from "$shared/auth/domain/models/UserRole";
+  import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import { ROLE_DISPLAY, ROLE_HIERARCHY } from "$lib/shared/auth/domain/models/UserRole";
   import type { UserData } from "./types";
 
   interface Props {

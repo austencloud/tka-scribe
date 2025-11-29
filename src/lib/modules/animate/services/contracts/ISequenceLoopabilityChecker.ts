@@ -5,7 +5,7 @@
  * the start position beat again (when end state matches start state).
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export interface ISequenceLoopabilityChecker {
   /**

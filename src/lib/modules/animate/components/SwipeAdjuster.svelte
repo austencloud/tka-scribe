@@ -9,9 +9,9 @@
   - Smooth animations and micro-interactions
 -->
 <script lang="ts">
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
 
   let {
     value = $bindable(),

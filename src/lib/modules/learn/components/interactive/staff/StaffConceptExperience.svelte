@@ -7,9 +7,9 @@ Page 4: Antispin Rotation (prop rotates opposite direction of handpath)
 Page 5: Summary & Quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import StaffPositionVisualizer from "./StaffPositionVisualizer.svelte";
   import StaffIdentificationQuiz from "./StaffIdentificationQuiz.svelte";
 

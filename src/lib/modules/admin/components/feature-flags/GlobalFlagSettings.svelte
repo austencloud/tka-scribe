@@ -5,9 +5,9 @@
 	 */
 
 	import { onMount } from 'svelte';
-	import { featureFlagService } from '$shared/auth/services';
-	import type { FeatureFlagConfig, UserRole } from "$shared/auth/domain";
-	import { AdminTwoPanelLayout, AdminModal } from "$shared/admin";
+	import { featureFlagService } from '$lib/shared/auth/services';
+	import type { FeatureFlagConfig, UserRole } from "$lib/shared/auth/domain";
+	import { AdminTwoPanelLayout, AdminModal } from "$lib/shared/admin";
 	import GlobalFlagList from './GlobalFlagList.svelte';
 	import GlobalFlagDetail from './GlobalFlagDetail.svelte';
 	import { buildHierarchicalFlags } from './utils';

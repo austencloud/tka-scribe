@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import { CAPType } from "../../domain/models/circular-models";
 import type { ICAPExecutor } from "../contracts/ICAPExecutor";
 import type { ICAPExecutorSelector } from "../contracts/ICAPExecutorSelector";

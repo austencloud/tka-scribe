@@ -1,13 +1,13 @@
 <script lang="ts">
-	import type { FeatureFlagConfig, UserRole } from "$shared/auth/domain";
-	import { ROLE_DISPLAY } from "$shared/auth/domain";
+	import type { FeatureFlagConfig, UserRole } from "$lib/shared/auth/domain";
+	import { ROLE_DISPLAY } from "$lib/shared/auth/domain";
 	import {
 		AdminSearchBox,
 		AdminFilterGroup,
 		AdminListItem,
 		AdminEmptyState,
 		type FilterOption,
-	} from "$shared/admin";
+	} from "$lib/shared/admin";
 	import { getFeatureIconAndColor, getRoleColor, getRoleIcon } from './utils';
 
 	interface HierarchicalFlags {

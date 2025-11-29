@@ -16,9 +16,9 @@ import {
   limit,
   Timestamp,
 } from "firebase/firestore";
-import { firestore, auth } from "$shared/auth/firebase";
-import { TYPES } from "$shared/inversify/types";
-import type { IActivityLogService } from "$shared/analytics";
+import { firestore, auth } from "$lib/shared/auth/firebase";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IActivityLogService } from "$lib/shared/analytics";
 import type {
   IAnalyticsDataService,
   SummaryMetrics,

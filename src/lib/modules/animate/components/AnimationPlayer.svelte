@@ -10,10 +10,10 @@ avoiding complex animation state and Svelte reactivity issues.
 <script lang="ts">
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
   import { onMount, untrack } from "svelte";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-  import { tryResolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import type { IActivityLogService } from "$shared/analytics";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { tryResolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IActivityLogService } from "$lib/shared/analytics";
 
   // Props
   let {

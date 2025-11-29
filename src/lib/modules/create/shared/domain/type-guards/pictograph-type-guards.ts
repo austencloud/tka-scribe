@@ -7,7 +7,7 @@
 
 import type { BeatData } from "../models/BeatData";
 import type { StartPositionData } from "../models/StartPositionData";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
 /**
  * Union type for all pictograph-based data structures

@@ -5,7 +5,7 @@
  * Handles coordinate mapping and closest-point detection.
  */
 
-import { GridMode, type GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode, type GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { GridPositionPoint, SwipeGesture } from "../../domain";

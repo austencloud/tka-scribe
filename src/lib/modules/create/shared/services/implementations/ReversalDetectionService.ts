@@ -5,10 +5,10 @@
  * Ported from desktop app's ReversalDetector logic.
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
-import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import { createBeatData } from "../../domain/factories/createBeatData";
 import type {

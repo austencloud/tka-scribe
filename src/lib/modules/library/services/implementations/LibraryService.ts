@@ -24,11 +24,11 @@ import {
 	type Unsubscribe,
 	type DocumentData,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
-import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
-import { TYPES } from "$shared/inversify/types";
-import type { IAchievementService } from "$shared/gamification/services/contracts";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { firestore } from "$lib/shared/auth/firebase";
+import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IAchievementService } from "$lib/shared/gamification/services/contracts";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
 	ILibraryService,
 	LibraryStats,

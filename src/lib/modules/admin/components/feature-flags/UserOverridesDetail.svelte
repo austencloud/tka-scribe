@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { FeatureFlagConfig, FeatureId } from "$shared/auth/domain";
-	import { ROLE_DISPLAY } from "$shared/auth/domain";
-	import { AdminDetailPanel, AdminActionButton } from "$shared/admin";
+	import type { FeatureFlagConfig, FeatureId } from "$lib/shared/auth/domain";
+	import { ROLE_DISPLAY } from "$lib/shared/auth/domain";
+	import { AdminDetailPanel, AdminActionButton } from "$lib/shared/admin";
 	import { getRoleColor, getRoleIcon, getFeatureIconAndColor, type UserData } from './utils';
 
 	interface Props {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import PWAInstallGuide from "$shared/mobile/components/PWAInstallGuide.svelte";
+import PWAInstallGuide from "$lib/shared/mobile/components/PWAInstallGuide.svelte";
 
 const meta = {
   title: "PWA/PWAInstallGuide",

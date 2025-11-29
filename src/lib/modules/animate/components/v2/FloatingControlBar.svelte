@@ -1,0 +1,162 @@
+<!--
+  FloatingControlBar.svelte
+
+  Tier 1: Always-visible floating control bar.
+  Contains BPM control, Play/Pause button, and optional Export button.
+
+  Uses glassmorphism styling for modern appearance.
+-->
+<script lang="ts">
+	import BpmControl from './BpmControl.svelte';
+	import PlayPauseButton from './PlayPauseButton.svelte';
+
+	let {
+		bpm = $bindable(60),
+		isPlaying = $bindable(false),
+		showExport = true,
+		onBpmChange,
+		onPlayToggle,
+		onExport
+	}: {
+		bpm: number;
+		isPlaying: boolean;
+		showExport?: boolean;
+		onBpmChange?: (bpm: number) => void;
+		onPlayToggle?: (playing: boolean) => void;
+		onExport?: () => void;
+	} = $props();
+</script>
+
+<div class="floating-control-bar">
+	<div class="bar-content">
+		<!-- BPM Control -->
+		<div class="control-section bpm-section">
+			<BpmControl bind:bpm {onBpmChange} />
+		</div>
+
+		<!-- Divider -->
+		<div class="divider"></div>
+
+		<!-- Play/Pause Button -->
+		<div class="control-section play-section">
+			<PlayPauseButton bind:isPlaying onToggle={onPlayToggle} />
+		</div>
+
+		<!-- Export Button (optional) -->
+		{#if showExport}
+			<div class="divider"></div>
+			<div class="control-section export-section">
+				<button class="export-btn" onclick={onExport} aria-label="Export video">
+					<i class="fas fa-video"></i>
+					<span class="export-label">Export</span>
+				</button>
+			</div>
+		{/if}
+	</div>
+</div>
+
+<style>
+	.floating-control-bar {
+		background: rgba(20, 25, 35, 0.85);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 16px;
+		padding: 12px 16px;
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.3),
+			0 2px 8px rgba(0, 0, 0, 0.2);
+	}
+
+	.bar-content {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.control-section {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.divider {
+		width: 1px;
+		height: 40px;
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.play-section {
+		padding: 0 4px;
+	}
+
+	.export-btn {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 10px 16px;
+		background: linear-gradient(
+			135deg,
+			rgba(16, 185, 129, 0.85) 0%,
+			rgba(5, 150, 105, 0.85) 100%
+		);
+		border: none;
+		border-radius: 10px;
+		color: white;
+		font-size: 0.85rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		-webkit-tap-highlight-color: transparent;
+		box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+	}
+
+	.export-btn:hover {
+		background: linear-gradient(
+			135deg,
+			rgba(16, 185, 129, 1) 0%,
+			rgba(5, 150, 105, 1) 100%
+		);
+		box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+		transform: translateY(-1px);
+	}
+
+	.export-btn:active {
+		transform: scale(0.98) translateY(0);
+	}
+
+	.export-btn i {
+		font-size: 0.9rem;
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 480px) {
+		.floating-control-bar {
+			padding: 10px 12px;
+			border-radius: 12px;
+		}
+
+		.bar-content {
+			gap: 8px;
+		}
+
+		.divider {
+			height: 32px;
+		}
+
+		.export-label {
+			display: none;
+		}
+
+		.export-btn {
+			padding: 10px 12px;
+		}
+	}
+
+	/* Very small screens */
+	@media (max-width: 360px) {
+		.export-section {
+			display: none;
+		}
+	}
+</style>

@@ -8,17 +8,17 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { GridMode, GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import { GridMode, GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import {
   MotionType,
   RotationDirection,
   Orientation,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { createBeatData, createStartPositionData } from "$create/shared";
 
 export interface IBeatConverterService {

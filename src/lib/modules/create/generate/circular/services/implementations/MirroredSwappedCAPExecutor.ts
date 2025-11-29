@@ -17,15 +17,15 @@
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { RotationDirection, MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { TYPES } from "$shared/inversify/types";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { RotationDirection, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { TYPES } from "$lib/shared/inversify/types";
 import type {
   GridPosition,
   GridLocation,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculator } from "$shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,

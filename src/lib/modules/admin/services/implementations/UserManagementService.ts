@@ -17,8 +17,8 @@ import {
   startAfter,
   getDoc,
 } from "firebase/firestore";
-import { firestore } from "$shared/auth/firebase";
-import type { UserRole } from "$shared/auth/domain/models/UserRole";
+import { firestore } from "$lib/shared/auth/firebase";
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 import type { UserData } from "../../components/user-management/types";
 import type { IUserManagementService } from "../contracts/IUserManagementService";
 

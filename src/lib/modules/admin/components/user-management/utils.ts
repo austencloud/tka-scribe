@@ -4,8 +4,8 @@
  * Helper functions for user management components
  */
 
-import type { UserRole } from "$shared/auth/domain/models/UserRole";
-import { ROLE_DISPLAY } from "$shared/auth/domain/models/UserRole";
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+import { ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
 
 /**
  * Get role badge color

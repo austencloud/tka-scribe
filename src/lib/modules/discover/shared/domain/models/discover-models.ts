@@ -1,4 +1,4 @@
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ExploreSortMethod } from "../enums";
 
 /**

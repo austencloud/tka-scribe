@@ -3,9 +3,9 @@ PresetSelectionModal.svelte - Modal for selecting saved generation presets
 Displays user-saved presets with delete option and allows loading preset configuration
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { GenerationPreset } from "../../state/preset.svelte";
   import ModalHeader from "./ModalHeader.svelte";

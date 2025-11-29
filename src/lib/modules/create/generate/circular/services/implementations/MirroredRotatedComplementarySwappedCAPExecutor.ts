@@ -30,7 +30,7 @@
 import { inject, injectable } from "inversify";
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 
 import { SliceSize } from "../../domain/models/circular-models";
 import type { ICAPExecutor } from "../contracts/ICAPExecutor";

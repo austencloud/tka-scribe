@@ -11,11 +11,11 @@
   - Generate (auto-generation)
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared/inversify";
-  import type { BuildModeId } from "$shared/foundation/ui/UITypes";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve, TYPES } from "$lib/shared/inversify";
+  import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import { authStore } from "$shared/auth";
+  import { authStore } from "$lib/shared/auth";
   import CreationWelcomeCue from "../../components/CreationWelcomeCue.svelte";
   import MethodCard from "./MethodCard.svelte";
   import SelectorUndoButton from "./SelectorUndoButton.svelte";

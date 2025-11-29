@@ -10,7 +10,7 @@
 
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   DeepLinkLoadResult,
   IDeepLinkSequenceService,

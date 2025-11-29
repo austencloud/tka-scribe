@@ -6,13 +6,13 @@
  */
 
 import type { BeatData } from "../../../../create/shared/domain/models/BeatData";
-import { Letter } from "$shared/foundation/domain/models/Letter";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { GridPosition } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { safeParseOrNull } from "$shared/validation/validation-utils";
-import { SequenceDataSchema } from "$shared/foundation/domain/schemas";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { safeParseOrNull } from "$lib/shared/validation/validation-utils";
+import { SequenceDataSchema } from "$lib/shared/foundation/domain/schemas";
 import { injectable } from "inversify";
 import type { IPersistenceService } from "../../../../create/shared/services/contracts";
 

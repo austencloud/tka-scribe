@@ -4,7 +4,7 @@
  * Reactive state management for spotlight module using Svelte 5 runes.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IDiscoverThumbnailService } from "../../display";
 import type {
   SpotlightDisplayState,

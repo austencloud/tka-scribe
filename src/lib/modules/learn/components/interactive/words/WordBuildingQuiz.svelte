@@ -3,9 +3,9 @@ WordBuildingQuiz - Quiz to test understanding of TKA word formation
 Questions about letter sequences, motion types, position transitions, and CAPs
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import WordVisualizer from "./WordVisualizer.svelte";
 
   let { onComplete } = $props<{

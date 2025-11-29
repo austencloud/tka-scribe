@@ -5,10 +5,10 @@
   Provides controls for turns, rotation direction, and motion type.
 -->
 <script lang="ts">
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   interface Props {
     selectedBeatNumber: number | null;

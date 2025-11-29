@@ -11,12 +11,12 @@
 import type {
   GridLocation,
   GridMode,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   RotationDirection,
   MotionColor,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
 import { HandPathMotionCalculator } from "../services/HandPathMotionCalculator";
 

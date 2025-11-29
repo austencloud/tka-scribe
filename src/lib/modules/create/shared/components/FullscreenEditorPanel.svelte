@@ -10,17 +10,17 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { BeatData } from "../domain/models/BeatData";
-  import { MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { CreatePanelDrawer } from "$create/shared/components";
   import PanelHeader from "$create/shared/components/PanelHeader.svelte";
   import { getCreateModuleContext } from "../context";
   import { goto } from "$app/navigation";
   import { container } from "$lib/shared/inversify";
   import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
   type EditMode = "turns" | "transforms";
 

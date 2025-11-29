@@ -9,7 +9,7 @@
   Navigation via bottom tabs (mobile-first UX pattern)
 -->
 <script lang="ts">
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
   import SequencesView from "./components/SequencesView.svelte";
 

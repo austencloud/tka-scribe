@@ -17,10 +17,10 @@ Allows user to set name, visibility, tags, collections, and notes.
 </script>
 
 <script lang="ts">
-  import Drawer from "$shared/foundation/ui/Drawer.svelte";
-  import SheetDragHandle from "$shared/foundation/ui/SheetDragHandle.svelte";
-  import { authStore } from "$shared/auth";
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
+  import { authStore } from "$lib/shared/auth";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {
     isOpen = false,

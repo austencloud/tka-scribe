@@ -10,8 +10,8 @@
  * ✅ Component-scoped state (not global singleton)
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { createHMRState } from "$shared/utils/hmr-state-backup";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { createHMRState } from "$lib/shared/utils/hmr-state-backup";
 import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state";
 import type { BeatData } from "../domain/models/BeatData";
 import type {

@@ -6,13 +6,13 @@
    */
 
 
-  import { authStore } from "$shared/auth";
+  import { authStore } from "$lib/shared/auth";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { getRedirectResult } from "firebase/auth";
-  import { auth } from "$shared/auth/firebase";
-  import { SocialAuthButton, EmailPasswordAuth } from "$shared/auth/components";
-  import EmailLinkAuth from "$shared/auth/components/EmailLinkAuth.svelte";
+  import { auth } from "$lib/shared/auth/firebase";
+  import { SocialAuthButton, EmailPasswordAuth } from "$lib/shared/auth/components";
+  import EmailLinkAuth from "$lib/shared/auth/components/EmailLinkAuth.svelte";
 
   let loadingRedirect = $state(true);
   let redirectError = $state<string | null>(null);

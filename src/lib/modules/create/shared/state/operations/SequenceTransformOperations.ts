@@ -12,15 +12,15 @@
  * RESPONSIBILITY: Transform operations coordinator, orchestrates state + services
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { updateSequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { updateSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { ISequenceStatisticsService } from "../../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../../services/contracts/ISequenceValidationService";
 import type { SequenceCoreState } from "../core/SequenceCoreState.svelte";
 import type { SequenceSelectionState } from "../selection/SequenceSelectionState.svelte";
-import type { ValidationResult } from "$shared/validation/ValidationResult";
+import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
 
 export interface TransformOperationsConfig {
   coreState: SequenceCoreState;

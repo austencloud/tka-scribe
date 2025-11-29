@@ -4,10 +4,10 @@ PositionButton.svelte - Individual position selection button
 Displays a pictograph with a location label in a selectable button
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import { GridLocation, GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-  import { MotionColor } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-  import Pictograph from "$shared/pictograph/shared/components/Pictograph.svelte";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
 
   const { pictograph, location, handColor, gridMode, onSelect } = $props<{
     pictograph: PictographData;

@@ -1,5 +1,5 @@
 import type { Bubble } from "../../domain/models/DeepOceanModels";
-import type { Dimensions } from "$shared/background/shared/domain/types/background-types";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 
 /**
  * Contract for bubble physics calculations and management

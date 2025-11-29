@@ -6,9 +6,9 @@
  * that was previously scattered throughout the massive ConstructTab component.
  */
 
-import { resolve } from "$shared/inversify";
-import type { SequenceData } from "$shared/foundation/domain/models";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
+import type { SequenceData } from "$lib/shared/foundation/domain/models";
+import { TYPES } from "$lib/shared/inversify/types";
 import { injectable } from "inversify";
 import type {
   ICreateModuleEventService,

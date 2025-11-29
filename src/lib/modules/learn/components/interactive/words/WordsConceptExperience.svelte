@@ -7,9 +7,9 @@ Page 4: Word variations (thumb orientation, direction)
 Page 5: Interactive quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import WordVisualizer from "./WordVisualizer.svelte";
   import WordBuildingQuiz from "./WordBuildingQuiz.svelte";
 

@@ -12,8 +12,8 @@
  * Extracted from CreateModule.svelte onMount monolith.
  */
 
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IBeatOperationsService } from "./IBeatOperationsService";
 import type { ICreateModuleEffectCoordinator } from "./ICreateModuleEffectCoordinator";

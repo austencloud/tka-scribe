@@ -4,7 +4,7 @@ PathControlPanel.svelte - Control panel for path builder configuration
 Displays current state, beat progress, rotation selector, and action buttons.
 -->
 <script lang="ts">
-import { RotationDirection, HandMotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import type { GesturalPathState } from "../state";
 
   // Props

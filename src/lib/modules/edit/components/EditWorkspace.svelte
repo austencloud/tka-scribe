@@ -5,9 +5,9 @@
   Reuses the existing BeatGrid component from the Create module.
 -->
 <script lang="ts">
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData"
 import type { BeatData } from "../../create/shared/domain/models/BeatData";;
   import { isStartPosition } from "$create/shared";

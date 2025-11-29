@@ -12,13 +12,13 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
 </script>
 
 <script lang="ts">
-  import TKAGlyph from "$shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData";
   import type { BeatData } from "../../create/shared/domain/models/BeatData";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import type { ITurnsTupleGeneratorService } from "$shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
   import { onMount } from "svelte";
 
   // Resolve service

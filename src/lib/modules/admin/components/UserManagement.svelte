@@ -11,8 +11,8 @@
    * - Reset user data
    */
   import { onMount } from "svelte";
-  import type { UserRole } from "$shared/auth/domain/models/UserRole";
-  import { AdminTwoPanelLayout } from "$shared/admin/index";
+  import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import { AdminTwoPanelLayout } from "$lib/shared/admin/index";
   import { userManagementService } from "../services/implementations";
   import {
     UserCard,

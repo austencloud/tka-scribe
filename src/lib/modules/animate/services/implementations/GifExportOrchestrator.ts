@@ -11,11 +11,11 @@ import {
   GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "../../constants/timing";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
-import type { Letter } from "$shared/foundation/domain/models/Letter";
-import type { ISvgImageService } from "$shared/foundation/services/contracts/ISvgImageService";
-import { TYPES } from "$shared/inversify/types";
-import type { IFileDownloadService } from "$shared/foundation/services/contracts";
-import { getLetterImagePath } from "$shared/pictograph/tka-glyph/utils";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { ISvgImageService } from "$lib/shared/foundation/services/contracts/ISvgImageService";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IFileDownloadService } from "$lib/shared/foundation/services/contracts";
+import { getLetterImagePath } from "$lib/shared/pictograph/tka-glyph/utils";
 import { inject, injectable } from "inversify";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";

@@ -12,7 +12,7 @@ All actions (favorite, edit, animate, delete) are in the detail panel.
 Enhanced with Svelte 5 runes for reactive state management.
 -->
 <script lang="ts">
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceCardMedia from "./SequenceCardMedia.svelte";
   import SequenceCardFooter from "./SequenceCardFooter.svelte";
 

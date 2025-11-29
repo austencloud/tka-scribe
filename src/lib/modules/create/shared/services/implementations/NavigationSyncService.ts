@@ -9,8 +9,8 @@
  * Extracted from CreateModule.svelte monolith.
  */
 
-import { createComponentLogger } from "$shared/utils/debug-logger";
-import type { BuildModeId } from "$shared/foundation/ui/UITypes";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import { injectable } from "inversify";
 import type {
   BuildSection,

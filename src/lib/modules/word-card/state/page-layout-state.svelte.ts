@@ -13,7 +13,7 @@ import type {
   PrintConfig,
   SequenceData,
   WordCardPaperSize,
-} from "$shared/index";
+} from "$lib/shared/index";
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,

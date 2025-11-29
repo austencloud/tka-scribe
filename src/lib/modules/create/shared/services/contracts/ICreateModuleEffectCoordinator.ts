@@ -7,7 +7,7 @@
  * Domain: Create module - Effect Orchestration
  */
 
-import type { NavigationState } from "$shared/navigation/state/navigation-state.svelte";
+import type { NavigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";

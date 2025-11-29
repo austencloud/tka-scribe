@@ -2,12 +2,12 @@
  * Motion parameter utilities and helper functions
  */
 
-import { GridLocation } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   HandMotionType,
   MotionType,
   Orientation,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 // Helper function to determine motion type based on start/end locations
 export function getHandpath(

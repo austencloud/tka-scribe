@@ -3,7 +3,7 @@
  * Extends base UserProfile with gamification and social data
  */
 
-import type { Achievement } from "$shared/gamification/domain/models/achievement-models";
+import type { Achievement } from "$lib/shared/gamification/domain/models/achievement-models";
 
 /**
  * Base User Profile

@@ -3,7 +3,7 @@
  * All reactive effects in one manageable place
  */
 
-import { navigationState } from "$shared/index";
+import { navigationState } from "$lib/shared/index";
 import type { LayoutConfiguration } from "../orchestration/types";
 
 export interface EffectConfig {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   /**
    * Creation Tool Panel Slot
    *
@@ -9,8 +9,8 @@ import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
    * Domain: Create module - Tool panel presentation
    */
 
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { createBeatData } from "../domain/factories/createBeatData";
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { getCreateModuleContext } from "../context";

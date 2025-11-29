@@ -11,7 +11,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app } from "$shared/auth/firebase";
+import { app } from "$lib/shared/auth/firebase";
 
 // Initialize Firebase Storage
 const storage = getStorage(app);

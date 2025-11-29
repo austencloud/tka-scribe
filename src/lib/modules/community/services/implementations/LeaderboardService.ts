@@ -16,7 +16,7 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { firestore } from "$shared/auth/firebase";
+import { firestore } from "$lib/shared/auth/firebase";
 import type { ILeaderboardService } from "../contracts/ILeaderboardService";
 import type {
   LeaderboardCategory,

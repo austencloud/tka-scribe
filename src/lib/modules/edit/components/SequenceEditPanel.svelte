@@ -5,7 +5,7 @@
   Provides mirror, rotate, swap colors, and reverse operations.
 -->
 <script lang="ts">
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   interface Props {
     sequence: SequenceData | null;

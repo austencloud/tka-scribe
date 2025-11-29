@@ -6,9 +6,9 @@
 -->
 <script lang="ts">
   import type { IBeatOperationsService } from "$create/shared/services/contracts";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
   import MultiSelectOverlay from "../components/MultiSelectOverlay.svelte";
   import SelectionToolbar from "../components/SelectionToolbar.svelte";

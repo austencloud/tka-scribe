@@ -4,7 +4,7 @@
  * Service for importing sequences from various sources (PNG metadata, etc.)
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export interface ISequenceImportService {
   /**

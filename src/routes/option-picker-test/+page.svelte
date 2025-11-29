@@ -1,11 +1,11 @@
 <script lang="ts">
   import { OptionViewer } from "$lib/modules/create/construct/option-picker";
   import type { IStartPositionService } from "$lib/modules/create/construct/start-position-picker/services/contracts";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import { TYPES } from "$shared/inversify/types";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { getContainer } from "$shared/inversify";
-  import { GridMode } from "$shared/pictograph";
+  import { getContainer } from "$lib/shared/inversify";
+  import { GridMode } from "$lib/shared/pictograph";
 
   // Use real services to load actual pictograph data
   let currentSequence = $state<PictographData[]>([]);

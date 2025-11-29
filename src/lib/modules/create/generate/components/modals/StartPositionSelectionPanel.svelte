@@ -3,12 +3,12 @@ StartPositionSelectionPanel.svelte - Drawer for selecting start position
 Reuses the existing StartPositionPicker component in a clean drawer interface
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import Drawer from "$shared/foundation/ui/Drawer.svelte";
-  import SheetDragHandle from "$shared/foundation/ui/SheetDragHandle.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
   import { tryGetCreateModuleContext } from "$create/shared/context";
   import { onMount } from "svelte";
   import { createSimplifiedStartPositionState } from "../../../construct/start-position-picker/state/start-position-state.svelte";

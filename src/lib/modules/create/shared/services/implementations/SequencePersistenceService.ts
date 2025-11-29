@@ -8,14 +8,14 @@
  * with independent localStorage persistence.
  */
 
-import type { IPersistenceService } from "$shared/persistence/services/contracts/IPersistenceService";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
-import { TYPES } from "$shared/inversify/types";
+import type { IPersistenceService } from "$lib/shared/persistence/services/contracts/IPersistenceService";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { ISequencePersistenceService } from "../contracts";
-import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
 @injectable()
 export class SequencePersistenceService implements ISequencePersistenceService {

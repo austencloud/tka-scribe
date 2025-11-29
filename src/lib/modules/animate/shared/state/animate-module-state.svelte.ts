@@ -8,7 +8,7 @@
  * - Sequence browser panel state
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export type AnimateMode = "single" | "tunnel" | "mirror" | "grid";
 

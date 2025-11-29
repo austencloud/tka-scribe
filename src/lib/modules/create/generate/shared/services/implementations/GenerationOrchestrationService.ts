@@ -1,10 +1,10 @@
 import type { IReversalDetectionService } from "$create/shared/services/contracts";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import { inject, injectable } from "inversify";
 // Import TYPES directly from inversify/types to avoid HMR issues with re-exports
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { ICAPEndPositionSelector } from "../../../circular/services/contracts/ICAPEndPositionSelector";
 import type { ICAPExecutorSelector } from "../../../circular/services/contracts/ICAPExecutorSelector";
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";

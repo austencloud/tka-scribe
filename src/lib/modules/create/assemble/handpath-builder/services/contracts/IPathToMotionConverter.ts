@@ -11,7 +11,7 @@ import type {
   MotionType,
   PropType,
   RotationDirection,
-} from "$shared/index";
+} from "$lib/shared/index";
 import type { HandPath, HandPathSegment } from "../../domain";
 
 export interface IPathToMotionConverter {

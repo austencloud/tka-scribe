@@ -5,12 +5,12 @@
  * without actual IndexedDB dependencies.
  */
 
-import type { AppSettings } from "$shared/settings/domain/models/app-settings-models";
+import type { AppSettings } from "$lib/shared/settings/domain/models/app-settings-models";
 import type { CompleteExploreState } from "$lib/modules/discover/shared/domain/models/discover-models";
-import type { IPersistenceService } from "$shared/persistence/services/contracts/IPersistenceService";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { TabId } from "$shared/navigation/domain/models/navigation-types";
+import type { IPersistenceService } from "$lib/shared/persistence/services/contracts/IPersistenceService";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { TabId } from "$lib/shared/navigation/domain/models/navigation-types";
 import type { UserProject } from "$lib/modules/account/domain/models/library-models";
 import { injectable } from "inversify";
 

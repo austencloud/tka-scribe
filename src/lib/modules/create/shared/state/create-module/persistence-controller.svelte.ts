@@ -9,7 +9,7 @@
  * Each tab (constructor, generator, assembler) has its own independent sequence state.
  */
 
-import type { BuildModeId } from "$shared/foundation/ui/UITypes";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type { ISequencePersistenceService } from "../../services/contracts";
 import type { IUndoService } from "../../services/contracts/IUndoService";
@@ -127,8 +127,8 @@ export function createCreateModulePersistenceController({
     // This prevents overwriting deep link sequences with empty/old persisted state
     let hasDeepLink = false;
     try {
-      const { resolve } = await import("$shared/inversify");
-      const { TYPES } = await import("$shared/inversify/types");
+      const { resolve } = await import("$lib/shared/inversify");
+      const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<import("$lib/shared/navigation/services/contracts").IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService?.hasDataForModule("create") ?? false;
     } catch {

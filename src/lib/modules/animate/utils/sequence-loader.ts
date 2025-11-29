@@ -7,7 +7,7 @@
  */
 
 import type { ISequenceService } from "$create/shared/services/contracts";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export interface SequenceLoadResult {
   success: boolean;

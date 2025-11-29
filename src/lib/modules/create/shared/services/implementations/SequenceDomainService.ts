@@ -10,10 +10,10 @@ import type {
   SequenceData,
   ValidationErrorInfo,
   ValidationResult,
-} from "$shared/index";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/index";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 // Domain types
-// import type { SequenceCreateRequest } from "$shared/index";
+// import type { SequenceCreateRequest } from "$lib/shared/index";
 
 // Behavioral contracts
 import { injectable } from "inversify";

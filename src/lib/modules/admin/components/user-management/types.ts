@@ -4,7 +4,7 @@
  * Type definitions for user management components
  */
 
-import type { UserRole } from "$shared/auth/domain/models/UserRole";
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 
 /**
  * User data displayed in admin management

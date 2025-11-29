@@ -5,7 +5,7 @@
  * Extracted from SequenceGenerationService for single responsibility.
  */
 import { inject, injectable } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import type {
   ITurnAllocator,
   TurnAllocation,

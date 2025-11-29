@@ -9,7 +9,7 @@
   import { Pictograph } from "$lib/shared/pictograph/shared/components";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { resolve, TYPES } from "$lib/shared/inversify";
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
   import { QuizType, type QuizQuestionData } from "../domain";

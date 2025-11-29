@@ -5,9 +5,9 @@ Two quiz phases:
 2. Point Identification: Click the correct point for a given direction (8 questions)
 -->
 <script lang="ts">
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import LessonGridDisplay from "./LessonGridDisplay.svelte";
 
   let { onComplete } = $props<{

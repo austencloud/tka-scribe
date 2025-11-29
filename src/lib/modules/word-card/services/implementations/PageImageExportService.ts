@@ -9,13 +9,13 @@ import type {
   ExportResult,
   Html2CanvasFunction,
   WindowWithHtml2Canvas,
-} from "$shared/index";
+} from "$lib/shared/index";
 import { injectable } from "inversify";
 
 import type {
   ExportProgress,
   SequenceExportOptions,
-} from "$shared/render";
+} from "$lib/shared/render";
 import type { Page } from "../../domain/models/PageLayout";
 import type {
   BatchExportResult,

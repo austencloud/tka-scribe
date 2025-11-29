@@ -2,8 +2,8 @@
  * Service for filtering gallery sequences
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { ExploreFilterType } from "$shared/persistence/domain";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ExploreFilterType } from "$lib/shared/persistence/domain";
 import type { ExploreFilterValue } from "$shared";
 
 export interface IDiscoverFilterService {

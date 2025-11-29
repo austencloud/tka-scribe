@@ -5,8 +5,8 @@
  * export options, device capabilities, and cache management.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import type { ExportResult } from "$shared/foundation/ui/UITypes";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { ExportResult } from "$lib/shared/foundation/ui/UITypes";
 import type { CacheEntry } from "./cache-models";
 import type { WordCardExportOptions } from "./word-card-export";
 
@@ -172,7 +172,7 @@ export interface BatchProgress {
 
 // ============================================================================
 // Import shared validation types instead of defining locally
-// Using shared ValidationResult from $shared/domain
+// Using shared ValidationResult from $lib/shared/domain
 
 // VALIDATION & ERROR TYPES
 // ============================================================================

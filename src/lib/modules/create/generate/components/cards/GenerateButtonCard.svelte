@@ -3,13 +3,13 @@ GenerateButtonCard.svelte - Generate button as a card in the grid
 Integrates the "Generate New" button into the card grid layout so it scales with other cards
 -->
 <script lang="ts">
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   import { onMount } from "svelte";
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { uiConfigToGenerationOptions } from "../../shared";
 
   let { isGenerating, onGenerateClicked, config } = $props<{

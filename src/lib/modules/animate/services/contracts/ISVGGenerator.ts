@@ -4,7 +4,7 @@
  * Handles generation of SVG strings for grid and prop staffs.
  */
 
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface PropSvgData {
   svg: string;

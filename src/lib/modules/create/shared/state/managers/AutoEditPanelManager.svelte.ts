@@ -7,7 +7,7 @@
  * Domain: Create module - Edit Panel Automation
  */
 
-import { createComponentLogger } from "$shared/utils/debug-logger";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { PanelCoordinationState } from "../panel-coordination-state.svelte";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";

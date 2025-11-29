@@ -5,7 +5,7 @@
  * Single responsibility: Adding titles, beat numbers, and styling.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 // Domain types
 // import type { WordCardDimensions, WordCardMetadata } from "$wordcard/domain";

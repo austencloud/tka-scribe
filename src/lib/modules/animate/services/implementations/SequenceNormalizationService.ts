@@ -7,7 +7,7 @@
  */
 
 import { injectable } from "inversify";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { isStartPosition } from "$create/shared/domain/type-guards/pictograph-type-guards";
 import type {
   ISequenceNormalizationService,

@@ -3,10 +3,10 @@ MotionVisualizer - Animated visualization of hand motions on 4-point diamond gri
 Shows shift (adjacent), dash (opposite), and static (stay) motions with animated arrows
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 
   type HandPosition = "N" | "E" | "S" | "W";
   type MotionType = "shift" | "dash" | "static";

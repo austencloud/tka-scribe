@@ -7,7 +7,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
-  import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceBrowserPanel from "../../shared/components/SequenceBrowserPanel.svelte";
   import {
     GridSelectionArea,

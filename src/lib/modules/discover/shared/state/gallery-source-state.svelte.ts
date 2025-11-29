@@ -5,7 +5,7 @@
  * Uses Svelte 5 runes pattern for reactive state.
  */
 
-import { authStore } from "$shared/auth/stores/authStore.svelte";
+import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
 export type GallerySource = "community" | "my-library";
 

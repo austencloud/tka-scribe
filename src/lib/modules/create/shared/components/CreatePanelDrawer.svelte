@@ -12,7 +12,7 @@
   Use CreatePanelDrawer with bind:isOpen, provide panel content via children slot
 -->
 <script lang="ts">
-  import { Drawer } from "$shared/foundation/ui";
+  import { Drawer } from "$lib/shared/foundation/ui";
   import { tryGetCreateModuleContext } from "$create/shared/context";
   import type { Snippet } from "svelte";
 

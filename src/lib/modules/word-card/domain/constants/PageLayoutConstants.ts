@@ -10,7 +10,7 @@ import type {
   PageMargins,
   PaperSpecification,
   WordCardPaperSize,
-} from "$shared/index";
+} from "$lib/shared/index";
 
 // ============================================================================
 // CONSTANTS

@@ -3,8 +3,8 @@
  */
 
 import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
 export interface SequenceMetadata {
   beats: BeatData[];

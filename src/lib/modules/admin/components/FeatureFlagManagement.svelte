@@ -4,7 +4,7 @@
    * Admin interface for managing feature flags and access control
    */
 
-  import { featureFlagService } from "$shared/auth/services/index";
+  import { featureFlagService } from "$lib/shared/auth/services/index";
   import {
     FeatureFlagHeader,
     GlobalFlagSettings,

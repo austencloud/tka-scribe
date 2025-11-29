@@ -6,7 +6,7 @@
  * embedded in the massive ConstructTab component.
  */
 
-import type { ActiveCreateModule } from "$shared/foundation/ui/UITypes";
+import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 
 // Simplified transition service without complex fade orchestrator
 

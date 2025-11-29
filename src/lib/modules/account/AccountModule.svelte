@@ -11,7 +11,7 @@
   - Security: Sign in/out, linked accounts, privacy
 -->
 <script lang="ts">
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { fade } from "svelte/transition";
   import OverviewTab from "./components/OverviewTab.svelte";
   import LibraryTab from "./components/LibraryTab.svelte";

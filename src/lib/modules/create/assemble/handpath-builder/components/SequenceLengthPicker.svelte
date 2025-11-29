@@ -4,7 +4,7 @@
 Compact inline panel for configuring sequence length and grid mode.
 -->
 <script lang="ts">
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
   // Props
   let {

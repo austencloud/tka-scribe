@@ -3,9 +3,9 @@ CAPSelectionModal.svelte - Bottom sheet for selecting CAP components
 Refactored to use Drawer component for consistent behavior
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { tryGetCreateModuleContext } from "$create/shared/context";
   import { onMount } from "svelte";
   import { CAPComponent } from "$create/generate/shared/domain/constants/cap-components";

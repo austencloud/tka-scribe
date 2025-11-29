@@ -5,20 +5,20 @@ Shows 4 cardinal positions (N, E, S, W) or 4 corner positions (NE, SE, SW, NW)
 With grid mode toggle to switch between Diamond and Box mode
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import {
     GridLocation,
     GridMode as GridModeEnum,
-  } from "$shared/pictograph/grid/domain/enums/grid-enums";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import { createPictographData } from "$shared/pictograph/shared/domain/factories";
-  import { createMotionData } from "$shared/pictograph/shared/domain/models";
-  import { MotionColor, MotionType, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-  import { Orientation } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-  import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories";
+  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models";
+  import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   import { onMount } from "svelte";
   import GridModeToggle from "../../construct/shared/components/GridModeToggle.svelte";
   import PositionGrid from "./PositionGrid.svelte";

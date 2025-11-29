@@ -1,8 +1,8 @@
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IDiscoverThumbnailService } from "../../gallery/display/services/contracts";
 import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
-import { openSpotlightViewer } from "$shared/application/state/app-state.svelte";
-import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+import { openSpotlightViewer } from "$lib/shared/application/state/app-state.svelte";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
 interface ExploreHandlersParams {

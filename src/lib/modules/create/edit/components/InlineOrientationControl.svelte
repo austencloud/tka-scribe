@@ -1,9 +1,9 @@
 <!-- InlineOrientationControl.svelte - Full orientation controls shown inline when space permits -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props

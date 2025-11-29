@@ -12,7 +12,7 @@
 import {
   GridPosition,
   GridLocation,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * Vertical Mirror Position Map

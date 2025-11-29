@@ -5,8 +5,8 @@
  * Pure business logic with no side effects - transforms sequence data only.
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { createSequenceData, updateSequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { createSequenceData, updateSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { createBeatData } from "../../../../domain/factories/createBeatData";
 import type { ISequenceTransformService } from "../contracts";

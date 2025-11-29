@@ -10,8 +10,8 @@
  * RESPONSIBILITY: Pure state management, no business logic or side effects
  */
 
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface SequenceCoreStateData {
   currentSequence: SequenceData | null;

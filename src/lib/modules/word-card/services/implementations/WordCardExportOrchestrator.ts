@@ -13,10 +13,10 @@ import type {
   WordCardDimensions,
   WordCardExportResult,
   WordCardMetadata,
-} from "$shared/index";
+} from "$lib/shared/index";
 
 // Behavioral contracts
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
   IWordCardBatchProcessingService,

@@ -13,18 +13,18 @@ Integrates HandPathGrid, HandDisplay, and RotationSelector.
 import {
     GridLocation,
     GridMode,
-  } from "$shared/pictograph/grid/domain/enums/grid-enums";
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import {
     MotionColor,
     RotationDirection,
     MotionType,
     Orientation,
-  } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData"
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";;
-  import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-  import { createPictographData } from "$shared/pictograph/shared/domain/factories/createPictographData";
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData"
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";;
+  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+  import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
   import { createHandPathAssembleState } from "../state/handpath-assemble-state.svelte";
   import HandPathGrid from "./HandPathGrid.svelte";
   import RotationSelector from "./RotationSelector.svelte";

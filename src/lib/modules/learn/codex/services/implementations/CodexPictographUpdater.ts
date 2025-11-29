@@ -9,11 +9,11 @@
  * Uses the same transformation maps as SequenceTransformationService
  */
 
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { MotionColor, RotationDirection } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { GridMode } from "$shared/pictograph/grid/domain/enums/grid-enums";
-import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import {
   LOCATION_MAP_EIGHTH_CW,
 } from "../../../../create/generate/circular/domain/constants/circular-position-maps";

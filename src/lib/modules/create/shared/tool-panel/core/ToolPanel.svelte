@@ -17,10 +17,10 @@
 	✅ No TODOs (all implemented or documented)
 -->
 <script lang="ts">
-  import type { IDeviceDetector } from "$shared/device/services/contracts/IDeviceDetector";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { createBeatData } from "../../domain/factories/createBeatData";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";

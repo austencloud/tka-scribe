@@ -7,8 +7,8 @@
  * Starting with ONE motion: PRO from North→East, 0 turns, IN orientation
  */
 
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { MotionType } from "$shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 

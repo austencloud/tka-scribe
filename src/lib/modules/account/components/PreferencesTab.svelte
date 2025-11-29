@@ -5,15 +5,15 @@
   Wraps existing settings tab components.
 -->
 <script lang="ts">
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import {
     getSettings,
     updateSettings,
-  } from "$shared/application/state/app-state.svelte";
-  import PropTypeTab from "$shared/settings/components/tabs/PropTypeTab.svelte";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
+  } from "$lib/shared/application/state/app-state.svelte";
+  import PropTypeTab from "$lib/shared/settings/components/tabs/PropTypeTab.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { BackgroundTab } from "../../../shared";
   import AccessibilityTab from "../../../shared/settings/components/tabs/AccessibilityTab.svelte";
   import VisibilityTab from "../../../shared/settings/components/tabs/VisibilityTab.svelte";

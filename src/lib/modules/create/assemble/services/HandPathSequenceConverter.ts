@@ -8,19 +8,19 @@
 import type {
   GridLocation,
   GridMode,
-} from "$shared/pictograph/grid/domain/enums/grid-enums";
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   MotionColor,
   MotionType,
   Orientation,
   RotationDirection,
   HandMotionType,
-} from "$shared/pictograph/shared/domain/enums/pictograph-enums";
-import { PropType } from "$shared/pictograph/prop/domain/enums/PropType";
-import { createMotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import { createPictographData } from "$shared/pictograph/shared/domain/factories/createPictographData";
-import type { MotionData } from "$shared/pictograph/shared/domain/models/MotionData";
-import type { PictographData } from "$shared/pictograph/shared/domain/models/PictographData";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { HandPathMotionCalculator } from "./HandPathMotionCalculator";
 
 export class HandPathSequenceConverter {

@@ -9,18 +9,18 @@
 
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-  import { resolve } from "$shared/inversify";
-  import { TYPES } from "$shared/inversify/types";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-  import { PanelButton, PanelTabs } from "$shared/components/panel";
-  import { authStore } from "$shared/auth/stores/authStore.svelte.ts";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { PanelButton, PanelTabs } from "$lib/shared/components/panel";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
   import type { IUserService } from "../../services/contracts/IUserService";
   import type { ILeaderboardService } from "../../services/contracts/ILeaderboardService";
   import type { ILibraryService } from "$lib/modules/library/services/contracts/ILibraryService";
   import type { LibrarySequence } from "$lib/modules/library/domain/models/LibrarySequence";
   import type { EnhancedUserProfile } from "../../domain/models/enhanced-user-profile";
   import { communityViewState } from "../../state/community-view-state.svelte";
-  import PanelState from "$shared/components/panel/PanelState.svelte";
+  import PanelState from "$lib/shared/components/panel/PanelState.svelte";
 
   interface Props {
     userId: string;

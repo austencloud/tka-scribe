@@ -6,16 +6,16 @@
    */
 
   import { onMount } from "svelte";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
-import { loadFeatureModule } from "$shared/inversify/container";
+import { resolve } from "$lib/shared/inversify";
+import { TYPES } from "$lib/shared/inversify/types";
+import { loadFeatureModule } from "$lib/shared/inversify/container";
   import type { IAdminChallengeService } from "../services/contracts";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import DataMigration from "./DataMigration.svelte";
-  import { navigationState } from "$shared/navigation/state/navigation-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Services
   let adminChallengeService = $state<IAdminChallengeService | null>(null);
