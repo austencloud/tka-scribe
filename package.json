@@ -182,6 +182,7 @@
     "lz-string": "^1.5.0",
     "page-flip": "^2.0.7",
     "pixi.js": "^8.14.2",
+    "potrace": "^2.1.8",
     "reflect-metadata": "^0.2.2",
     "vaul-svelte": "^0.3.2",
     "webp-encoder": "^2.1.2",
