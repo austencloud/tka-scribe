@@ -6,6 +6,7 @@
    * Uses View Transitions API for smooth, modern tab switching
    */
 
+  import { onMount } from "svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { communityViewState } from "./state/community-view-state.svelte";
   import type { CommunitySection } from "./domain/types/community-types";
@@ -13,6 +14,21 @@
   import UserProfilePanel from "./components/profile/UserProfilePanel.svelte";
   import SupportPanel from "./components/support/SupportPanel.svelte";
   import { ChallengesPanel } from "./challenges/components";
+  import ChallengesPanelDesktop from "./challenges/components/ChallengesPanelDesktop.svelte";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+
+  // Device detection for responsive panel selection
+  const deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+  let isDesktop = $state(deviceDetector.isDesktop());
+
+  // Subscribe to device capability changes for reactive updates
+  onMount(() => {
+    return deviceDetector.onCapabilitiesChanged(() => {
+      isDesktop = deviceDetector.isDesktop();
+    });
+  });
 
   // Current active section (default to creators)
   let activeSection = $state<CommunitySection>("creators");
@@ -61,7 +77,11 @@
       </div>
     {:else if activeSection === "challenges"}
       <div class="section-panel" data-panel="challenges">
-        <ChallengesPanel />
+        {#if isDesktop}
+          <ChallengesPanelDesktop />
+        {:else}
+          <ChallengesPanel />
+        {/if}
       </div>
     {:else if activeSection === "support"}
       <div class="section-panel" data-panel="support">
