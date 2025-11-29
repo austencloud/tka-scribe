@@ -172,24 +172,24 @@ import { TYPES } from "$lib/shared/inversify/types";
 
 <style>
   /* ============================================================================
-     DRAWER STYLING - Compact Auto-Height
+     DRAWER STYLING - Refined Minimal Design
      ============================================================================ */
   :global(.module-switcher-drawer) {
-    /* Auto-height based on content - no longer full viewport */
-    --sheet-max-height: min(85vh, 600px);
-    max-height: min(85vh, 600px) !important;
-    height: auto !important;
-    /* Don't override --sheet-width, use default min(720px, 100%) for centered drawer */
-    --sheet-bg: rgba(12, 12, 18, 0.97);
-    --sheet-filter: blur(32px) saturate(160%);
-    --sheet-border: 1px solid rgba(255, 255, 255, 0.12);
+    /* Full viewport height - positioned from top to bottom */
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    --sheet-bg: rgba(12, 12, 18, 0.96);
+    --sheet-filter: blur(24px) saturate(140%);
+    --sheet-border: 1px solid rgba(255, 255, 255, 0.08);
     --sheet-radius-large: 20px;
     box-sizing: border-box !important;
   }
 
   :global(.module-switcher-backdrop) {
-    --sheet-backdrop-bg: rgba(0, 0, 0, 0.5);
-    --sheet-backdrop-filter: blur(4px);
+    --sheet-backdrop-bg: rgba(0, 0, 0, 0.4);
+    --sheet-backdrop-filter: blur(3px);
   }
 
   /* Sheet content - ensure proper z-index */
@@ -197,32 +197,55 @@ import { TYPES } from "$lib/shared/inversify/types";
     z-index: 1100 !important;
   }
 
-  /* Allow drawer-inner to size naturally */
+  /* Drawer inner fills available height */
   :global(.drawer-content.module-switcher-drawer .drawer-inner) {
     overflow-y: auto;
-    max-height: calc(85vh - 80px); /* Account for header */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 
   /* ============================================================================
-     CONTAINER
+     CONTAINER - Fills drawer height
      ============================================================================ */
   .module-switcher-container {
     display: flex;
     flex-direction: column;
     width: 100%;
+    flex: 1;
+    min-height: 0;
   }
 
   /* ============================================================================
-     HEADER - Compact
+     HEADER - Refined Minimal
      ============================================================================ */
   .module-switcher-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 18px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
     gap: 12px;
+    position: relative;
+  }
+
+  /* Subtle gradient accent at top of header */
+  .module-switcher-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.3),
+      rgba(139, 92, 246, 0.3),
+      transparent
+    );
   }
 
   .header-content {
@@ -234,7 +257,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     margin: 0 0 2px 0;
     font-size: 17px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(255, 255, 255, 0.9);
     letter-spacing: -0.01em;
   }
 
@@ -243,48 +266,52 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.45);
   }
 
   .module-name {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.65);
   }
 
-  /* Close button */
+  /* Close button - refined */
   .close-button {
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.6);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .close-button:active {
     transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   /* ============================================================================
-     CONTENT - Compact padding
+     CONTENT - Fill available space with generous padding
      ============================================================================ */
   .module-switcher-content {
-    padding: 14px;
+    padding: 16px 18px 40px; /* Extra bottom padding for intentional spacing */
     overflow-y: auto;
     overflow-x: hidden;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 
     /* Smooth scrolling */
     scroll-behavior: smooth;
@@ -292,7 +319,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
     /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   }
 
   .module-switcher-content::-webkit-scrollbar {
@@ -308,13 +335,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     border-radius: 2px;
   }
 
-  /* Menu sections */
+  /* Menu sections - install button at bottom */
   .menu-section {
-    margin-top: 16px;
+    margin-top: auto; /* Push to bottom of flex container */
+    padding-top: 20px;
   }
 
   .menu-section:first-child {
-    margin-top: 0;
+    margin-top: auto;
   }
 
   .menu-items {

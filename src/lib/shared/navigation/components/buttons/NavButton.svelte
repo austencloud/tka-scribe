@@ -78,6 +78,10 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
+    /* Ensure proper touch handling */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
 
   /* Section buttons - rounded rectangles */
@@ -125,6 +129,8 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     justify-content: center;
     flex-shrink: 0;
     transition: all var(--transition-fast);
+    /* Ensure clicks pass through to the button */
+    pointer-events: none;
   }
 
   /* Style Font Awesome icons with gradient colors */
@@ -178,6 +184,8 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     text-align: center;
     white-space: nowrap;
     line-height: 1.2;
+    /* Ensure clicks pass through to the button */
+    pointer-events: none;
   }
 
   /* Labels hidden by default - parent layout controls visibility */

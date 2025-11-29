@@ -44,6 +44,7 @@ export interface ModuleDefinition {
   id: ModuleId;
   label: string;
   icon: string;
+  color?: string; // Module theme color (e.g., "#f59e0b" for amber)
   description?: string;
   isMain: boolean;
   sections: Section[]; // Sections within this module

@@ -262,7 +262,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "create",
     label: "Create",
-    icon: '<i class="fas fa-tools" style="color: #f59e0b;"></i>', // Amber - construction/creation
+    icon: '<i class="fas fa-tools" style="color: #f59e0b;"></i>',
+    color: "#f59e0b", // Amber - construction/creation
     description: "Construct and generate sequences",
     isMain: true,
     sections: CREATE_TABS,
@@ -270,7 +271,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "discover",
     label: "Discover",
-    icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>', // Purple - discovery/exploration
+    icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>',
+    color: "#a855f7", // Purple - discovery/exploration
     description: "Discover and discover sequences",
     isMain: true,
     sections: DISCOVER_TABS,
@@ -278,7 +280,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "community",
     label: "Community",
-    icon: '<i class="fas fa-users" style="color: #06b6d4;"></i>', // Cyan - social/community
+    icon: '<i class="fas fa-users" style="color: #06b6d4;"></i>',
+    color: "#06b6d4", // Cyan - social/community
     description: "Discover creators and challenges",
     isMain: true,
     sections: COMMUNITY_TABS,
@@ -286,7 +289,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "learn",
     label: "Learn",
-    icon: '<i class="fas fa-graduation-cap" style="color: #3b82f6;"></i>', // Blue - education/knowledge
+    icon: '<i class="fas fa-graduation-cap" style="color: #3b82f6;"></i>',
+    color: "#3b82f6", // Blue - education/knowledge
     description: "Study and practice TKA",
     isMain: true,
     sections: LEARN_TABS,
@@ -294,7 +298,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "library",
     label: "Library",
-    icon: '<i class="fas fa-book" style="color: #10b981;"></i>', // Green - personal collection
+    icon: '<i class="fas fa-book" style="color: #10b981;"></i>',
+    color: "#10b981", // Green - personal collection
     description: "Your sequences, collections, and acts",
     isMain: true,
     sections: LIBRARY_TABS,
@@ -302,7 +307,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "animate",
     label: "Animate",
-    icon: '<i class="fas fa-play-circle" style="color: #ec4899;"></i>', // Pink - animation/motion
+    icon: '<i class="fas fa-play-circle" style="color: #ec4899;"></i>',
+    color: "#ec4899", // Pink - animation/motion
     description: "Advanced animation visualization",
     isMain: true,
     sections: ANIMATE_TABS,
@@ -313,7 +319,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "account",
     label: "Account",
-    icon: '<i class="fas fa-user-circle" style="color: #6366f1;"></i>', // Indigo - personal/account
+    icon: '<i class="fas fa-user-circle" style="color: #6366f1;"></i>',
+    color: "#6366f1", // Indigo - personal/account
     description: "Your profile, library, and settings",
     isMain: true, // Shown in sidebar with expandable tabs like other modules
     sections: ACCOUNT_TABS,
@@ -321,7 +328,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "admin",
     label: "Admin",
-    icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>', // Gold - admin/privileged
+    icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>',
+    color: "#ffd700", // Gold - admin/privileged
     description: "System management & configuration",
     isMain: true, // Visibility controlled by getModuleDefinitions() based on admin status
     sections: ADMIN_TABS,

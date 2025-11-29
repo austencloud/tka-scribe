@@ -6,6 +6,14 @@ import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelt
 import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
 import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
   import { shouldHideUIForPanels } from "../../../application/state/animation-visibility-state.svelte";
+  import { navigationState, MODULE_DEFINITIONS } from "../../state/navigation-state.svelte";
+
+  // Get current module color for themed navigation
+  let moduleColor = $derived(() => {
+    const currentModuleId = navigationState.currentModule;
+    const moduleDefinition = MODULE_DEFINITIONS.find(m => m.id === currentModuleId);
+    return moduleDefinition?.color ?? "#667eea"; // Default indigo
+  });
 
   let {
     sections = [],
@@ -91,6 +99,7 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
   class="bottom-navigation"
   class:hidden={!isUIVisible}
   bind:this={navElement}
+  style="--module-color: {moduleColor()}"
 >
   <!-- Module Switcher Button (Left) -->
   {#if showModuleSwitcher}
@@ -136,9 +145,15 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     align-items: center;
     gap: 4px;
     padding: 8px;
-    background: rgba(255, 255, 255, 0.08);
+    /* Module-colored background with subtle sheen */
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--module-color, #667eea) 12%, rgba(255, 255, 255, 0.08)) 0%,
+      color-mix(in srgb, var(--module-color, #667eea) 6%, rgba(255, 255, 255, 0.04)) 100%
+    );
     backdrop-filter: var(--glass-backdrop-strong);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    /* Module-colored top border */
+    border-top: 1px solid color-mix(in srgb, var(--module-color, #667eea) 30%, rgba(255, 255, 255, 0.15));
     /* Account for iOS safe area */
     padding-bottom: max(8px, env(safe-area-inset-bottom));
     min-height: 64px;
@@ -153,7 +168,9 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
 
     transition:
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      background 0.4s ease-out,
+      border-color 0.4s ease-out;
   }
 
   /* Hidden state for bottom layout - slide down */
@@ -170,13 +187,16 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     display: flex;
     flex-direction: row;
     gap: 4px;
-    flex: 1;
+    flex: 1 1 0%;
     justify-content: center;
     align-items: center;
     min-width: 0; /* Allow flex shrinking */
+    max-width: calc(100% - 112px); /* Leave room for 48px buttons + gaps on each side */
     opacity: 1;
     transition: opacity 0.3s ease;
     pointer-events: auto;
+    /* Ensure sections don't extend outside their bounds */
+    overflow: visible;
   }
 
   /* Hidden state - fade to invisible while maintaining space */
@@ -196,14 +216,37 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     max-width: 80px;
   }
 
-  /* Menu and Settings buttons match top bar style - circular */
+  /* Menu and Settings buttons - circular with visible background */
   .bottom-navigation :global(.nav-button.special) {
-    flex: 0 0 auto;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    flex: 0 0 auto !important;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: 48px;
     padding: 0;
+    /* Glass background to make button clearly tappable */
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    /* Ensure proper touch handling */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    /* Create stacking context to prevent overlap issues */
+    isolation: isolate;
+    z-index: 1;
+  }
+
+  .bottom-navigation :global(.nav-button.special:hover) {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .bottom-navigation :global(.nav-button.special.active) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    /* Override the section-style top border indicator */
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    padding-top: 0;
   }
 
   /*

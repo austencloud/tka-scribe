@@ -67,10 +67,11 @@ import { TYPES } from "../../inversify/types";
    */
   function extractModuleColor(iconHtml: string): string {
     // Try to find gradient color in SVG or inline styles
-    const gradientMatch = iconHtml.match(/stop-color[:\s=]["']?([#\w]+)/);
+    const gradientMatch = iconHtml.match(/stop-color[:\s=]\s*["']?([#\w]+)/);
     if (gradientMatch?.[1]) return gradientMatch[1];
 
-    const colorMatch = iconHtml.match(/color[:\s=]["']?([#\w]+)/);
+    // Match inline style color (e.g., style="color: #f59e0b;")
+    const colorMatch = iconHtml.match(/color[:\s=]\s*["']?([#\w]+)/);
     if (colorMatch?.[1]) return colorMatch[1];
 
     // Default fallback gradient color
@@ -171,7 +172,7 @@ import { TYPES } from "../../inversify/types";
   <h3 class="section-title">Modules</h3>
   <div class="module-grid">
     {#each mainModules as module}
-      {@const moduleColor = extractModuleColor(module.icon)}
+      {@const moduleColor = module.color || extractModuleColor(module.icon)}
       {@const isActive = currentModule === module.id}
       {@const isDisabled = module.disabled ?? false}
 
@@ -213,7 +214,7 @@ import { TYPES } from "../../inversify/types";
     <h3 class="section-title">Developer</h3>
     <div class="module-grid dev-grid">
       {#each devModules as module}
-        {@const moduleColor = extractModuleColor(module.icon)}
+        {@const moduleColor = module.color || extractModuleColor(module.icon)}
         {@const isActive = currentModule === module.id}
         {@const isDisabled = module.disabled ?? false}
 
@@ -258,6 +259,14 @@ import { TYPES } from "../../inversify/types";
 
   .module-section {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Main modules section fills available space */
+  .module-section:first-child {
+    flex: 1;
+    min-height: 0;
   }
 
   .module-section:last-child {
@@ -265,35 +274,40 @@ import { TYPES } from "../../inversify/types";
   }
 
   .dev-section {
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .section-title {
     margin: 0 0 12px 4px;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 1.2px;
+    color: rgba(255, 255, 255, 0.35);
   }
 
   /* ============================================================================
-     2-COLUMN GRID LAYOUT
+     2-COLUMN GRID LAYOUT - Fills available space
      ============================================================================ */
   .module-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+    align-content: space-evenly; /* Distribute rows evenly */
   }
 
   /* Developer grid - single column if only one item */
   .dev-grid {
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    flex: 0; /* Don't grow dev section */
   }
 
   /* ============================================================================
-     MODULE CELL - COMPACT CARD DESIGN
+     MODULE CELL - COMPACT CARD DESIGN (Fluid Responsive)
+     Uses clamp() for truly fluid sizing across all viewports
      ============================================================================ */
   .module-cell {
     position: relative;
@@ -301,7 +315,8 @@ import { TYPES } from "../../inversify/types";
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 88px;
+    /* Fluid height: min 88px, preferred 12vh, max 140px */
+    min-height: clamp(88px, 12vh, 140px);
     padding: 0;
     background: transparent;
     border: none;
@@ -314,16 +329,16 @@ import { TYPES } from "../../inversify/types";
     isolation: isolate;
   }
 
-  /* Layered Background System */
+  /* Layered Background System - With prominent module-colored accent */
   .cell-background {
     position: absolute;
     inset: 0;
     background: linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.07) 0%,
-      rgba(255, 255, 255, 0.03) 100%
+      color-mix(in srgb, var(--module-color) 18%, rgba(255, 255, 255, 0.06)) 0%,
+      color-mix(in srgb, var(--module-color) 8%, rgba(255, 255, 255, 0.02)) 100%
     );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid color-mix(in srgb, var(--module-color) 25%, rgba(255, 255, 255, 0.1));
     border-radius: 14px;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
@@ -333,11 +348,11 @@ import { TYPES } from "../../inversify/types";
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      circle at 50% 40%,
+      circle at 50% 25%,
       var(--module-color, #667eea) 0%,
-      transparent 70%
+      transparent 60%
     );
-    opacity: 0;
+    opacity: 0.1; /* Prominent default glow */
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1;
     mix-blend-mode: screen;
@@ -350,26 +365,28 @@ import { TYPES } from "../../inversify/types";
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 14px 8px;
+    gap: 8px;
+    padding: 16px 10px;
     width: 100%;
+    height: 100%;
     z-index: 2;
   }
 
   /* ============================================================================
-     HOVER STATES
+     HOVER STATES - Enhanced with module color
      ============================================================================ */
   .module-cell:hover .cell-background {
     background: linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.11) 0%,
-      rgba(255, 255, 255, 0.05) 100%
+      color-mix(in srgb, var(--module-color) 20%, rgba(255, 255, 255, 0.08)) 0%,
+      color-mix(in srgb, var(--module-color) 10%, rgba(255, 255, 255, 0.03)) 100%
     );
-    border-color: rgba(255, 255, 255, 0.16);
+    border-color: color-mix(in srgb, var(--module-color) 35%, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--module-color) 18%, transparent);
   }
 
   .module-cell:hover .cell-glow {
-    opacity: 0.06;
+    opacity: 0.12;
   }
 
   .module-cell:hover {
@@ -377,32 +394,30 @@ import { TYPES } from "../../inversify/types";
   }
 
   /* ============================================================================
-     ACTIVE STATE - MODULE-SPECIFIC COLORS
+     ACTIVE STATE - MODULE-SPECIFIC COLORS (Refined)
      ============================================================================ */
   .module-cell.active .cell-background {
     background: linear-gradient(
       145deg,
-      color-mix(in srgb, var(--module-color) 18%, transparent) 0%,
-      color-mix(in srgb, var(--module-color) 6%, transparent) 100%
+      color-mix(in srgb, var(--module-color) 12%, transparent) 0%,
+      color-mix(in srgb, var(--module-color) 4%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--module-color) 45%, transparent);
-    box-shadow:
-      0 0 16px color-mix(in srgb, var(--module-color) 12%, transparent),
-      0 2px 8px rgba(0, 0, 0, 0.15),
-      inset 0 0 20px color-mix(in srgb, var(--module-color) 8%, transparent);
+    border-color: color-mix(in srgb, var(--module-color) 35%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--module-color) 10%, transparent);
   }
 
   .module-cell.active .cell-glow {
-    opacity: 0.1;
+    opacity: 0.06;
   }
 
   /* ============================================================================
-     ICON STYLING
+     ICON STYLING - Fluid sizing with viewport
      ============================================================================ */
   .cell-icon {
-    font-size: 26px;
-    width: 36px;
-    height: 36px;
+    /* Fluid size: min 26px, preferred 3.5vh, max 34px */
+    font-size: clamp(26px, 3.5vh, 34px);
+    width: clamp(36px, 5vh, 48px);
+    height: clamp(36px, 5vh, 48px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -413,24 +428,25 @@ import { TYPES } from "../../inversify/types";
     transform: scale(1.1);
   }
 
-  /* Icon shadow and glow */
+  /* Icon shadow and glow - subtle */
   .cell-icon :global(svg),
   .cell-icon :global(i) {
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   }
 
   .module-cell.active .cell-icon :global(svg),
   .module-cell.active .cell-icon :global(i) {
     filter: drop-shadow(
-      0 0 8px color-mix(in srgb, var(--module-color) 50%, transparent)
+      0 0 6px color-mix(in srgb, var(--module-color) 35%, transparent)
     );
   }
 
   /* ============================================================================
-     LABEL STYLING
+     LABEL STYLING - Fluid sizing with viewport
      ============================================================================ */
   .cell-label {
-    font-size: 13px;
+    /* Fluid size: min 13px, preferred 1.8vh, max 16px */
+    font-size: clamp(13px, 1.8vh, 16px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.88);
     letter-spacing: 0.01em;
@@ -499,15 +515,11 @@ import { TYPES } from "../../inversify/types";
 
   /* ============================================================================
      RESPONSIVE - 3 columns on wider screens
+     (Height/sizing now handled by clamp() for fluid responsiveness)
      ============================================================================ */
   @media (min-width: 400px) {
     .module-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .module-cell {
-      min-height: 82px;
     }
   }
 

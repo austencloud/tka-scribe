@@ -89,7 +89,7 @@ const MOTION_TYPE_DECODE: Record<string, MotionType> = Object.fromEntries(
   Object.entries(MOTION_TYPE_ENCODE).map(([k, v]) => [v, k as MotionType])
 );
 
-const PROP_TYPE_ENCODE: Partial<Record<PropType, string>> = {
+const PROP_TYPE_ENCODE: Record<PropType, string> = {
   [PropType.STAFF]: "S",
   [PropType.CLUB]: "C",
   [PropType.BUUGENG]: "B",
@@ -97,6 +97,15 @@ const PROP_TYPE_ENCODE: Partial<Record<PropType, string>> = {
   [PropType.TRIAD]: "T",
   [PropType.MINIHOOP]: "M",
   [PropType.HAND]: "X",
+  [PropType.SIMPLESTAFF]: "s",
+  [PropType.TRIQUETRA]: "Q",
+  [PropType.TRIQUETRA2]: "q",
+  [PropType.SWORD]: "W",
+  [PropType.CHICKEN]: "K",
+  [PropType.GUITAR]: "G",
+  [PropType.DOUBLESTAR]: "D",
+  [PropType.EIGHTRINGS]: "E",
+  [PropType.QUIAD]: "U",
 };
 
 const PROP_TYPE_DECODE: Record<string, PropType> = Object.fromEntries(
@@ -530,18 +539,22 @@ export class SequenceEncoderService implements ISequenceEncoderService {
   }
 
   private decodeBeat(encoded: string, beatNumber: number): BeatData {
-    const [blueEncoded, redEncoded] = encoded.split(":");
+    const parts = encoded.split(":");
 
-    if (!blueEncoded || !redEncoded) {
+    // Need exactly 2 parts (blue:red), but either can be empty for no motion
+    if (parts.length !== 2) {
       throw new Error(`Invalid beat encoding: ${encoded}`);
     }
+
+    const blueEncoded = parts[0]!;
+    const redEncoded = parts[1]!;
 
     return {
       beatNumber,
       duration: 1,
       blueReversal: false,
       redReversal: false,
-      isBlank: false,
+      isBlank: !blueEncoded && !redEncoded,
       motions: {
         blue: this.decodeMotion(blueEncoded, "blue"),
         red: this.decodeMotion(redEncoded, "red"),
