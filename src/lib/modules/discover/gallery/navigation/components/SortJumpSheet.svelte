@@ -5,7 +5,7 @@ Touch-friendly interface for changing sort method and jumping to sections
 -->
 <script lang="ts">
   import type { NavigationSection } from "$lib/modules/discover/shared/domain/types/discover-types";
-  import { ExploreSortMethod } from "$shared";
+  import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 
   let {
     currentSortMethod,

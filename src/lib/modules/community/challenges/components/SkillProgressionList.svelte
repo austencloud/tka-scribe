@@ -486,6 +486,7 @@
     .skill-description {
       white-space: normal;
       display: -webkit-box;
+      line-clamp: 2;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
     }

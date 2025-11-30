@@ -8,11 +8,11 @@
 import type {
   DiscoverDisplayState,
   ExploreLoadingState,
-} from "$shared";
+} from "$lib/modules/discover/shared/domain/models/discover-models";
 import {
   createDefaultDisplayState,
   createDefaultLoadingState,
-} from "$shared";
+} from "$lib/modules/discover/shared/domain/models/discover-models";
 
 export interface IDiscoverDisplayStateService {
   // Reactive state getters

@@ -362,13 +362,6 @@
     flex-shrink: 0;
   }
 
-  .user-list-avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
   .user-list-info {
     flex: 1;
     min-width: 0;

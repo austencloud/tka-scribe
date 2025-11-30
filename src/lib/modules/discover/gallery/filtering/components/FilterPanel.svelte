@@ -13,7 +13,7 @@ Follows Svelte 5 runes + microservices architecture.
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import type { ExploreFilterValue } from "$shared";
+  import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
   import { ExploreSortMethod } from "$lib/modules/discover/shared/domain/enums/discover-enums";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes

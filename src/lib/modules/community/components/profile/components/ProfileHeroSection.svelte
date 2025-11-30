@@ -78,13 +78,6 @@
     height: 120px;
   }
 
-  .avatar {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
   .level-badge {
     position: absolute;
     bottom: 0;

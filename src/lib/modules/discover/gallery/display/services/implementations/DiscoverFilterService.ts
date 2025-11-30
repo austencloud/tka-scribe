@@ -9,7 +9,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { ExploreFilterType } from "$lib/shared/persistence/domain/enums/FilteringEnums";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import type { ExploreFilterValue } from "$shared";
+import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 import type { IDiscoverFilterService } from "../contracts/IDiscoverFilterService";
 
 // Constants
