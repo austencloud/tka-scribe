@@ -1,17 +1,22 @@
 <!-- BottomNavigation - Portrait/Bottom Navigation Layout -->
 <script lang="ts">
-import { onMount } from "svelte";
-import type { Section } from "$lib/shared/navigation/domain/types";
-import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
-import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
-import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
+  import { onMount } from "svelte";
+  import type { Section } from "$lib/shared/navigation/domain/types";
+  import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
+  import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
+  import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
   import { shouldHideUIForPanels } from "../../../application/state/animation-visibility-state.svelte";
-  import { navigationState, MODULE_DEFINITIONS } from "../../state/navigation-state.svelte";
+  import {
+    navigationState,
+    MODULE_DEFINITIONS,
+  } from "../../state/navigation-state.svelte";
 
   // Get current module color for themed navigation
   let moduleColor = $derived(() => {
     const currentModuleId = navigationState.currentModule;
-    const moduleDefinition = MODULE_DEFINITIONS.find(m => m.id === currentModuleId);
+    const moduleDefinition = MODULE_DEFINITIONS.find(
+      (m) => m.id === currentModuleId
+    );
     return moduleDefinition?.color ?? "#667eea"; // Default indigo
   });
 
@@ -101,9 +106,9 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
   bind:this={navElement}
   style="--module-color: {moduleColor()}"
 >
-  <!-- Module Switcher Button (Left) -->
-  {#if showModuleSwitcher}
-    <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
+  <!-- Settings Button (Left) - Matches desktop sidebar position -->
+  {#if showSettings}
+    <SettingsButton active={isSettingsActive} onClick={onSettingsTap} />
   {/if}
 
   <!-- Current Module's Sections -->
@@ -125,9 +130,9 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     {/each}
   </div>
 
-  <!-- Settings Button (Right) -->
-  {#if showSettings}
-    <SettingsButton active={isSettingsActive} onClick={onSettingsTap} />
+  <!-- Module Switcher Button (Right) -->
+  {#if showModuleSwitcher}
+    <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
   {/if}
 </nav>
 
@@ -141,17 +146,32 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 4px;
+    gap: 6px; /* Slightly more space between buttons for easier tapping */
     padding: 8px;
     /* Module-colored background with subtle sheen */
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--module-color, #667eea) 12%, rgba(255, 255, 255, 0.08)) 0%,
-      color-mix(in srgb, var(--module-color, #667eea) 6%, rgba(255, 255, 255, 0.04)) 100%
+      color-mix(
+          in srgb,
+          var(--module-color, #667eea) 12%,
+          rgba(255, 255, 255, 0.08)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--module-color, #667eea) 6%,
+          rgba(255, 255, 255, 0.04)
+        )
+        100%
     );
     backdrop-filter: var(--glass-backdrop-strong);
     /* Module-colored top border */
-    border-top: 1px solid color-mix(in srgb, var(--module-color, #667eea) 30%, rgba(255, 255, 255, 0.15));
+    border-top: 1px solid
+      color-mix(
+        in srgb,
+        var(--module-color, #667eea) 30%,
+        rgba(255, 255, 255, 0.15)
+      );
     /* Account for iOS safe area */
     padding-bottom: max(8px, env(safe-area-inset-bottom));
     min-height: 64px;
@@ -191,12 +211,14 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
   .sections {
     display: flex;
     flex-direction: row;
-    gap: 4px;
+    gap: 6px; /* Match parent navigation gap */
     flex: 1 1 0%;
     justify-content: center;
     align-items: center;
     min-width: 0; /* Allow flex shrinking */
-    max-width: calc(100% - 112px); /* Leave room for 48px buttons + gaps on each side */
+    max-width: calc(
+      100% - 132px
+    ); /* Leave room for 60px buttons + 6px gaps on each side (60+6+6+60) */
     opacity: 1;
     transition: opacity 0.3s ease;
     pointer-events: auto;
@@ -221,24 +243,48 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     max-width: 80px;
   }
 
-  /* Menu and Settings buttons - circular with visible background */
+  /* Menu and Settings buttons - larger touch targets with labels */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto !important;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    max-width: 48px;
-    padding: 0;
+    /* Larger base size for better touch targets */
+    width: 60px;
+    height: 52px;
+    min-width: 60px;
+    min-height: 52px;
+    max-width: 60px;
+    padding: 6px 4px;
+    gap: 3px !important; /* Space between icon and label */
     /* Glass background to make button clearly tappable */
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
+    /* More rounded to soften the larger size */
+    border-radius: 14px !important;
     /* Ensure proper touch handling */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     /* Create stacking context to prevent overlap issues */
     isolation: isolate;
     z-index: 1;
+  }
+
+  /* Always show labels for special buttons (Menu/Settings) */
+  .bottom-navigation :global(.nav-button.special .nav-label-full) {
+    display: block !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  /* Hide compact labels for special buttons */
+  .bottom-navigation :global(.nav-button.special .nav-label-compact) {
+    display: none !important;
+  }
+
+  /* Slightly smaller icon for special buttons to make room for labels */
+  .bottom-navigation :global(.nav-button.special .nav-icon) {
+    font-size: 18px !important;
   }
 
   .bottom-navigation :global(.nav-button.special:hover) {
@@ -249,9 +295,8 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
   .bottom-navigation :global(.nav-button.special.active) {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
-    /* Override the section-style top border indicator */
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    padding-top: 0;
+    /* Special buttons maintain uniform border (no top indicator) */
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
 
   /*
@@ -272,8 +317,10 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
       gap: 4px;
     }
 
+    /* Special buttons stay at fixed 60px width */
     .bottom-navigation :global(.nav-button.special) {
-      max-width: 80px;
+      width: 60px;
+      max-width: 60px;
     }
   }
 
@@ -305,6 +352,12 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     .bottom-navigation :global(.nav-icon) {
       /* Larger icons when labels are hidden */
       font-size: clamp(20px, 5cqi, 24px);
+    }
+
+    /* Special buttons remain at 60px width with labels always visible */
+    .bottom-navigation :global(.nav-button.special) {
+      width: 60px;
+      min-width: 60px;
     }
   }
 

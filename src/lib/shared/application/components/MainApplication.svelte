@@ -221,27 +221,27 @@
         switch (event.key) {
           case "1":
             event.preventDefault();
-            switchTab("create"); // Maps to construct/Create module
+            switchTab("create");
             break;
           case "2":
             event.preventDefault();
-            switchTab("discover"); // Maps to browse/explore module
+            switchTab("discover");
             break;
           case "3":
             event.preventDefault();
-            switchTab("word_card");
+            switchTab("community");
             break;
           case "4":
             event.preventDefault();
-            switchTab("write");
+            switchTab("learn");
             break;
           case "5":
             event.preventDefault();
-            switchTab("learn");
+            switchTab("animate");
             break;
           case "6":
             event.preventDefault();
-            switchTab("create"); // Animator is part of Create module
+            switchTab("train");
             break;
         }
       }

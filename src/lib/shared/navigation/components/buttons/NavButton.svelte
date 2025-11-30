@@ -89,10 +89,16 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     border-radius: 12px;
   }
 
-  /* Special buttons (Menu/Settings) - circular */
+  /* Special buttons (Menu/Settings) - rounded rectangle */
   .nav-button.special {
-    border-radius: 50%;
+    border-radius: 14px;
     flex: 0 0 auto;
+  }
+
+  /* Special buttons don't get the top border indicator when active */
+  .nav-button.special.active {
+    border-top: none;
+    padding-top: 0;
   }
 
   .nav-button:hover:not(.disabled) {

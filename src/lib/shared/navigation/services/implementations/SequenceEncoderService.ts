@@ -90,21 +90,46 @@ const MOTION_TYPE_DECODE: Record<string, MotionType> = Object.fromEntries(
 );
 
 const PROP_TYPE_ENCODE: Record<PropType, string> = {
+  // Staff family
   [PropType.STAFF]: "S",
-  [PropType.CLUB]: "C",
-  [PropType.BUUGENG]: "B",
-  [PropType.FAN]: "F",
-  [PropType.TRIAD]: "T",
-  [PropType.MINIHOOP]: "M",
-  [PropType.HAND]: "X",
   [PropType.SIMPLESTAFF]: "s",
+  [PropType.BIGSTAFF]: "1",
+  [PropType.STAFF2]: "2",
+  // Club
+  [PropType.CLUB]: "C",
+  // Fan family
+  [PropType.FAN]: "F",
+  [PropType.BIGFAN]: "f",
+  // Triad family
+  [PropType.TRIAD]: "T",
+  [PropType.BIGTRIAD]: "t",
+  // Hoop family
+  [PropType.MINIHOOP]: "M",
+  [PropType.BIGHOOP]: "H",
+  // Buugeng family
+  [PropType.BUUGENG]: "B",
+  [PropType.BIGBUUGENG]: "b",
+  [PropType.FRACTALGENG]: "R",
+  // Hand
+  [PropType.HAND]: "X",
+  // Triquetra family
   [PropType.TRIQUETRA]: "Q",
   [PropType.TRIQUETRA2]: "q",
+  // Sword
   [PropType.SWORD]: "W",
+  // Chicken family
   [PropType.CHICKEN]: "K",
+  [PropType.BIGCHICKEN]: "k",
+  // Guitar family
   [PropType.GUITAR]: "G",
+  [PropType.UKULELE]: "u",
+  // Doublestar family
   [PropType.DOUBLESTAR]: "D",
+  [PropType.BIGDOUBLESTAR]: "d",
+  // Eightrings family
   [PropType.EIGHTRINGS]: "E",
+  [PropType.BIGEIGHTRINGS]: "e",
+  // Quiad
   [PropType.QUIAD]: "U",
 };
 

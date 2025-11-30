@@ -61,6 +61,7 @@ export function moduleHasPrimaryNav(moduleId: string): boolean {
     moduleId === "train" ||
     moduleId === "edit" ||
     moduleId === "about" ||
-    moduleId === "admin"
+    moduleId === "admin" ||
+    moduleId === "account"
   );
 }

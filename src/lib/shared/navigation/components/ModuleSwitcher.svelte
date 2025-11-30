@@ -11,9 +11,9 @@ import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import ModuleList from "./ModuleList.svelte";
-  import InstallPromptButton from "./InstallPromptButton.svelte";
-  import type { IMobileFullscreenService } from "../../mobile/services/contracts/IMobileFullscreenService";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import type { ResponsiveSettings } from "../../device/domain/models/device-models";
   import Drawer from "../../foundation/ui/Drawer.svelte";
 
   let {
@@ -34,12 +34,18 @@ import { TYPES } from "$lib/shared/inversify/types";
   }>();
 
   let hapticService: IHapticFeedbackService;
-  let fullscreenService: IMobileFullscreenService;
+  let deviceDetector: IDeviceDetector | null = null;
   let isOpen = $state(false);
 
-  // PWA install state
-  let showInstallOption = $state(false);
-  let canUseNativeInstall = $state(false);
+  // Responsive settings from DeviceDetector (same as PrimaryNavigation)
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  // Determine drawer placement based on navigation layout
+  // - Landscape mobile (side navigation) → drawer from left
+  // - Portrait mobile (bottom navigation) → drawer from bottom
+  let drawerPlacement = $derived<"left" | "bottom">(
+    responsiveSettings?.isLandscapeMobile ? "left" : "bottom"
+  );
 
   function closeDrawer() {
     hapticService?.trigger("selection");
@@ -55,50 +61,34 @@ import { TYPES } from "$lib/shared/inversify/types";
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-    fullscreenService = resolve<IMobileFullscreenService>(
-      TYPES.IMobileFullscreenService
-    );
 
-    // Check if PWA install should be shown
+    // Resolve DeviceDetector service (same pattern as PrimaryNavigation)
+    let deviceCleanup: (() => void) | undefined;
     try {
-      const isPWA = fullscreenService?.isPWA?.() ?? false;
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
-      // Only show install option if not already installed as PWA
-      if (!isPWA) {
-        showInstallOption = true;
-        canUseNativeInstall = fullscreenService?.canInstallPWA?.() ?? false;
+      // Get initial responsive settings
+      responsiveSettings = deviceDetector.getResponsiveSettings();
 
-        // Listen for install prompt availability
-        const unsubscribe = fullscreenService?.onInstallPromptAvailable?.(
-          (available: boolean) => {
-            canUseNativeInstall = available;
-          }
-        );
-
-        // Listen for app installation
-        const handleAppInstalled = () => {
-          showInstallOption = false;
-        };
-        window.addEventListener("appinstalled", handleAppInstalled);
-
-        return () => {
-          unsubscribe?.();
-          window.removeEventListener("appinstalled", handleAppInstalled);
-        };
-      }
+      // Subscribe to device capability changes
+      deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
     } catch (error) {
-      console.warn("Failed to check PWA install status:", error);
+      console.warn(
+        "ModuleSwitcher: Failed to resolve DeviceDetector",
+        error
+      );
     }
 
-    return undefined;
+    // Return cleanup function
+    return () => {
+      deviceCleanup?.();
+    };
   });
 
   function handleModuleSelect(moduleId: ModuleId) {
     onModuleChange?.(moduleId);
-    closeDrawer();
-  }
-
-  function handleInstallClose() {
     closeDrawer();
   }
 
@@ -125,6 +115,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   ariaLabel="Module navigation menu"
   class="module-switcher-drawer"
   backdropClass="module-switcher-backdrop"
+  placement={drawerPlacement}
   showHandle={true}
   closeOnBackdrop={true}
 >
@@ -154,18 +145,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         {modules}
         onModuleSelect={handleModuleSelect}
       />
-
-      <!-- App Actions Section -->
-      <section class="menu-section">
-        <div class="menu-items">
-          {#if showInstallOption}
-            <InstallPromptButton
-              {canUseNativeInstall}
-              onInstall={handleInstallClose}
-            />
-          {/if}
-        </div>
-      </section>
     </div>
   </div>
 </Drawer>
@@ -175,16 +154,30 @@ import { TYPES } from "$lib/shared/inversify/types";
      DRAWER STYLING - Refined Minimal Design
      ============================================================================ */
   :global(.module-switcher-drawer) {
-    /* Full viewport height - positioned from top to bottom */
-    top: 0 !important;
-    bottom: 0 !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
+    /* Drawer fills viewport appropriately based on placement */
     --sheet-bg: rgba(12, 12, 18, 0.96);
     --sheet-filter: blur(24px) saturate(140%);
     --sheet-border: 1px solid rgba(255, 255, 255, 0.08);
     --sheet-radius-large: 20px;
     box-sizing: border-box !important;
+  }
+
+  /* Bottom placement: Full width, full height for focused navigation */
+  :global(.module-switcher-drawer[data-placement="bottom"]) {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  /* Left placement: Full height, partial width */
+  :global(.module-switcher-drawer[data-placement="left"]) {
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    width: 320px !important;
+    max-width: 85vw !important;
   }
 
   :global(.module-switcher-backdrop) {
@@ -224,10 +217,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 18px 12px;
+    padding: 16px 16px 14px; /* Adjusted for larger close button */
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
-    gap: 12px;
+    gap: 16px; /* More space between header content and close button */
     position: relative;
   }
 
@@ -254,8 +247,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .module-switcher-header h2 {
-    margin: 0 0 2px 0;
-    font-size: 17px;
+    margin: 0 0 4px 0;
+    font-size: 20px; /* Larger, more prominent on mobile */
     font-weight: 700;
     color: rgba(255, 255, 255, 0.9);
     letter-spacing: -0.01em;
@@ -265,20 +258,20 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.45);
+    font-size: 14px; /* Increased from 12px for better mobile readability */
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .module-name {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(255, 255, 255, 0.75); /* Slightly more prominent */
   }
 
-  /* Close button - refined */
+  /* Close button - accessible touch target (48px minimum) */
   .close-button {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 48px; /* Increased from 36px for proper touch target */
+    height: 48px; /* Increased from 36px for proper touch target */
+    border-radius: 12px; /* Slightly larger to match new size */
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.06);
     color: rgba(255, 255, 255, 0.5);
@@ -286,7 +279,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 16px; /* Slightly larger icon */
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
   }
@@ -306,7 +299,7 @@ import { TYPES } from "$lib/shared/inversify/types";
      CONTENT - Fill available space with generous padding
      ============================================================================ */
   .module-switcher-content {
-    padding: 16px 18px 40px; /* Extra bottom padding for intentional spacing */
+    padding: 20px 20px 40px; /* More generous padding for modern spacious feel */
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1;
@@ -335,36 +328,49 @@ import { TYPES } from "$lib/shared/inversify/types";
     border-radius: 2px;
   }
 
-  /* Menu sections - install button at bottom */
-  .menu-section {
-    margin-top: auto; /* Push to bottom of flex container */
-    padding-top: 20px;
-  }
-
-  .menu-section:first-child {
-    margin-top: auto;
-  }
-
-  .menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
   /* ============================================================================
      RESPONSIVE ADJUSTMENTS
      ============================================================================ */
-  @media (max-width: 500px) {
+
+  /* Landscape mobile - optimize for left drawer */
+  @media (max-height: 600px) and (orientation: landscape) {
     .module-switcher-header {
-      padding: 12px 14px 8px;
+      padding: 12px 14px 10px;
     }
 
     .module-switcher-header h2 {
-      font-size: 16px;
+      font-size: 18px; /* Keep it readable in landscape */
+    }
+
+    .current-location {
+      font-size: 13px;
     }
 
     .module-switcher-content {
-      padding: 12px;
+      padding: 14px 16px 24px;
+    }
+
+    :global(.module-switcher-drawer[data-placement="left"]) {
+      width: 280px !important; /* Slightly narrower in landscape */
+    }
+  }
+
+  /* Portrait mobile - maintain readability */
+  @media (max-width: 500px) and (orientation: portrait) {
+    .module-switcher-header {
+      padding: 14px 14px 12px;
+    }
+
+    .module-switcher-header h2 {
+      font-size: 19px; /* Slightly smaller on very small screens */
+    }
+
+    .current-location {
+      font-size: 14px; /* Maintain readability */
+    }
+
+    .module-switcher-content {
+      padding: 16px 16px 32px; /* Maintain generous padding on mobile */
     }
   }
 

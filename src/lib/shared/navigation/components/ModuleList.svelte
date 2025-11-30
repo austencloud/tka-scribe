@@ -258,7 +258,7 @@ import { TYPES } from "../../inversify/types";
      ============================================================================ */
 
   .module-section {
-    margin-bottom: 20px;
+    margin-bottom: 24px; /* More generous section spacing */
     display: flex;
     flex-direction: column;
   }
@@ -274,12 +274,12 @@ import { TYPES } from "../../inversify/types";
   }
 
   .dev-section {
-    padding-top: 14px;
+    padding-top: 20px; /* More space before dev section */
     border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .section-title {
-    margin: 0 0 12px 4px;
+    margin: 0 0 16px 4px; /* More space before grid for better visual hierarchy */
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
@@ -293,10 +293,11 @@ import { TYPES } from "../../inversify/types";
   .module-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    gap: 18px; /* More generous spacing for modern aesthetics */
     flex: 1;
     min-height: 0;
-    align-content: space-evenly; /* Distribute rows evenly */
+    align-content: stretch; /* Stretch rows to fill all vertical space */
+    grid-auto-rows: 1fr; /* Make all rows equal height and fill available space */
   }
 
   /* Developer grid - single column if only one item */
@@ -315,12 +316,13 @@ import { TYPES } from "../../inversify/types";
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* Fluid height: min 88px, preferred 12vh, max 140px */
-    min-height: clamp(88px, 12vh, 140px);
+    /* Fluid height with generous expansion: min 100px, preferred 15vh, max 200px */
+    min-height: clamp(100px, 15vh, 200px);
+    height: 100%; /* Fill the grid cell to expand vertically */
     padding: 0;
     background: transparent;
     border: none;
-    border-radius: 14px;
+    border-radius: 16px; /* Slightly larger radius for modern feel */
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     text-align: center;
@@ -339,7 +341,7 @@ import { TYPES } from "../../inversify/types";
       color-mix(in srgb, var(--module-color) 8%, rgba(255, 255, 255, 0.02)) 100%
     );
     border: 1px solid color-mix(in srgb, var(--module-color) 25%, rgba(255, 255, 255, 0.1));
-    border-radius: 14px;
+    border-radius: 16px; /* Match parent border-radius */
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
   }
@@ -365,8 +367,8 @@ import { TYPES } from "../../inversify/types";
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 16px 10px;
+    gap: 10px; /* More breathing room between icon and label */
+    padding: 20px 12px; /* More generous vertical padding */
     width: 100%;
     height: 100%;
     z-index: 2;
@@ -414,10 +416,10 @@ import { TYPES } from "../../inversify/types";
      ICON STYLING - Fluid sizing with viewport
      ============================================================================ */
   .cell-icon {
-    /* Fluid size: min 26px, preferred 3.5vh, max 34px */
-    font-size: clamp(26px, 3.5vh, 34px);
-    width: clamp(36px, 5vh, 48px);
-    height: clamp(36px, 5vh, 48px);
+    /* Larger icons for more prominent display: min 32px, preferred 4.5vh, max 44px */
+    font-size: clamp(32px, 4.5vh, 44px);
+    width: clamp(44px, 6vh, 56px);
+    height: clamp(44px, 6vh, 56px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -445,8 +447,8 @@ import { TYPES } from "../../inversify/types";
      LABEL STYLING - Fluid sizing with viewport
      ============================================================================ */
   .cell-label {
-    /* Fluid size: min 13px, preferred 1.8vh, max 16px */
-    font-size: clamp(13px, 1.8vh, 16px);
+    /* Slightly larger labels: min 14px, preferred 2vh, max 17px */
+    font-size: clamp(14px, 2vh, 17px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.88);
     letter-spacing: 0.01em;

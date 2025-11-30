@@ -22,17 +22,14 @@ export interface Section {
 }
 
 // Module-based navigation types
+// Should match MODULE_DEFINITIONS in navigation-state.svelte.ts
 export type ModuleId =
   | "create"
   | "discover"
   | "community"
   | "learn"
-  | "collect"
   | "animate"
   | "train"
-  | "edit"
-  | "write"
-  | "word_card"
   | "account"
   | "admin";
 

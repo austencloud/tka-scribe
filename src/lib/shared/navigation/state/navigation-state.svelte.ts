@@ -167,6 +167,31 @@ export const ANIMATE_TABS: Section[] = [
   },
 ];
 
+// Train tabs configuration
+export const TRAIN_TABS: Section[] = [
+  {
+    id: "practice",
+    label: "Practice",
+    icon: '<i class="fas fa-dumbbell"></i>',
+    description: "Free practice with adaptive, step, and timed modes",
+    color: "#3b82f6",
+  },
+  {
+    id: "challenges",
+    label: "Challenges",
+    icon: '<i class="fas fa-trophy"></i>',
+    description: "Structured challenges with XP rewards",
+    color: "#f59e0b",
+  },
+  {
+    id: "progress",
+    label: "Progress",
+    icon: '<i class="fas fa-chart-line"></i>',
+    description: "View stats and performance history",
+    color: "#8b5cf6",
+  },
+];
+
 // About - single page module (no sub-tabs)
 export const ABOUT_TABS: Section[] = [];
 
@@ -224,6 +249,14 @@ export const ADMIN_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #fbbf24 0%, #ffd700 100%)",
   },
   {
+    id: "train-challenges",
+    label: "Train",
+    icon: '<i class="fas fa-dumbbell"></i>',
+    description: "Manage training challenges",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+  {
     id: "analytics",
     label: "Analytics",
     icon: '<i class="fas fa-chart-line"></i>',
@@ -246,14 +279,6 @@ export const ADMIN_TABS: Section[] = [
     description: "Manage feature flags and access control",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
-  },
-  {
-    id: "tools",
-    label: "Tools",
-    icon: '<i class="fas fa-toolbox"></i>',
-    description: "Data migration and maintenance tools",
-    color: "#f97316",
-    gradient: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
   },
 ];
 
@@ -311,7 +336,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     color: "#ef4444", // Red - action/training
     description: "Practice with real-time scoring",
     isMain: true,
-    sections: [], // No sub-tabs for MVP
+    sections: TRAIN_TABS,
   },
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)

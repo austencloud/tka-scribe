@@ -14,7 +14,7 @@
   import AccountModule from "../../modules/account/AccountModule.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
   import AnimateTab from "../../modules/animate/AnimateTab.svelte";
-  import TrainModePanel from "../../modules/train/components/TrainModePanel.svelte";
+  import TrainModule from "../../modules/train/components/TrainModule.svelte";
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
   import EditModule from "../../modules/edit/EditModule.svelte";
   import LearnTab from "../../modules/learn/LearnTab.svelte";
@@ -62,7 +62,7 @@
         {:else if isModuleActive("animate")}
           <AnimateTab />
         {:else if isModuleActive("train")}
-          <TrainModePanel />
+          <TrainModule />
         {:else if isModuleActive("edit")}
           <EditModule />
         {:else if isModuleActive("word_card")}
