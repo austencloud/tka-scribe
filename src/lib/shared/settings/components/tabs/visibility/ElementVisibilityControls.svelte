@@ -136,7 +136,8 @@
     margin: 0;
     padding: 0 4px;
     flex-shrink: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   /* Two-column grid for chips */
@@ -150,7 +151,7 @@
   }
 
   /* Compact mode when height is very limited */
-  @container settings-content (max-height: 550px) {
+  @container visibility-tab (max-height: 550px) {
     .element-controls {
       gap: 8px;
     }
@@ -166,7 +167,7 @@
   }
 
   /* Ultra-compact mode */
-  @container settings-content (max-height: 480px) {
+  @container visibility-tab (max-height: 480px) {
     .element-controls {
       gap: 6px;
     }
@@ -180,8 +181,17 @@
     }
   }
 
-  /* On wider containers, allow 3 columns */
-  @container settings-content (min-width: 500px) {
+  /* On wider containers in side-by-side mode, keep 2 columns for controls */
+  /* 3 columns only when we have more horizontal space in the controls area */
+  @container visibility-tab (min-width: 700px) and (min-height: 400px) {
+    .chips-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  }
+
+  /* Very wide: can afford 3 columns in controls */
+  @container visibility-tab (min-width: 900px) and (min-height: 450px) {
     .chips-grid {
       grid-template-columns: repeat(3, 1fr);
     }

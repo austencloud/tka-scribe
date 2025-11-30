@@ -95,7 +95,7 @@ export function useDrawer(props: any) {
 
   // Swipe-to-dismiss handler
   let drawerElement = $state<HTMLElement | null>(null);
-  let swipeToDismiss = new SwipeToDismiss({
+  const swipeToDismiss = new SwipeToDismiss({
     placement,
     dismissible,
     onDismiss: () => {
@@ -106,7 +106,7 @@ export function useDrawer(props: any) {
   });
 
   // Focus trap handler for accessibility
-  let focusTrap = new FocusTrap({
+  const focusTrap = new FocusTrap({
     initialFocus: initialFocusElement,
     returnFocusOnDeactivate: returnFocusOnClose,
     setInertOnSiblings: setInertOnSiblings,
@@ -118,7 +118,7 @@ export function useDrawer(props: any) {
   let currentSnapIndex = $state<number | null>(null);
 
   // Drawer effects
-  let drawerEffects = new DrawerEffects({
+  const drawerEffects = new DrawerEffects({
     scaleBackground,
     preventScroll,
     isAnimatedOpen,
@@ -344,7 +344,8 @@ export function useDrawer(props: any) {
   });
   
   return {
-      drawerElement,
+      get drawerElement() { return drawerElement; },
+      set drawerElement(el: HTMLElement | null) { drawerElement = el; },
       handleKeydown,
       mounted,
       shouldRender,
@@ -364,5 +365,6 @@ export function useDrawer(props: any) {
       springAnimation,
       showHandle,
       children,
+      placement,
   }
 }

@@ -16,73 +16,21 @@
 -->
 <script lang="ts">
   import "./drawer/Drawer.css";
-  import { useDrawer } from "./drawer/useDrawer.ts";
+  import { onMount, onDestroy, untrack, type Snippet } from "svelte";
+  import { tryResolve, TYPES } from "../../inversify";
+  import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
+  import { SwipeToDismiss } from "./drawer/SwipeToDismiss";
+  import { FocusTrap } from "./drawer/FocusTrap";
+  import { SnapPoints, type SnapPointValue } from "./drawer/SnapPoints";
+  import { DrawerEffects } from "./drawer/DrawerEffects";
+  import {
+    generateDrawerId,
+    registerDrawer,
+    unregisterDrawer,
+    isTopDrawer,
+  } from "./drawer/DrawerStack";
 
-  const props = $props();
-  const {
-    drawerElement,
-    handleKeydown,
-    mounted,
-    shouldRender,
-    overlayClasses,
-    dataState,
-    handleBackdropClick,
-    stackZIndex,
-    contentClasses,
-    isDragging,
-    snapPoints,
-    currentSnapIndex,
-    drawerId,
-    role,
-    labelledBy,
-    ariaLabel,
-    computedTransform,
-    springAnimation,
-    showHandle,
-    children,
-    placement
-  } = useDrawer(props);
-</script>
-
-<svelte:window onkeydown={handleKeydown} />
-
-{#if mounted && shouldRender}
-  <!-- Backdrop -->
-  <div
-    class={overlayClasses}
-    data-state={dataState}
-    onclick={handleBackdropClick}
-    aria-hidden="true"
-    style:z-index={stackZIndex - 1}
-  ></div>
-
-  <!-- Drawer content -->
-  <div
-    bind:this={drawerElement}
-    class={contentClasses}
-    class:dragging={isDragging}
-    class:has-snap-points={snapPoints && snapPoints.length > 0}
-    class:spring-animation={springAnimation}
-    data-placement={placement}
-    data-state={dataState}
-    data-snap-index={currentSnapIndex}
-    data-drawer-id={drawerId}
-    {role}
-    aria-modal="true"
-    aria-labelledby={labelledBy}
-    aria-label={ariaLabel}
-    style:z-index={stackZIndex}
-    style:transform={computedTransform || undefined}
-    style:transition={isDragging ? "none" : ""}
-  >
-    {#if showHandle}
-      <div class="drawer-handle" aria-hidden="true"></div>
-    {/if}
-    <div class="drawer-inner">
-      {@render children?.()}
-    </div>
-  </div>
-{/if}
+  type CloseReason = "backdrop" | "escape" | "programmatic";
 
   let {
     isOpen = $bindable(false),
@@ -116,7 +64,7 @@
     onDragChange,
     onSnapPointChange,
     children,
-  } = $props<{
+  }: {
     isOpen?: boolean;
     closeOnBackdrop?: boolean;
     closeOnEscape?: boolean;
@@ -152,11 +100,15 @@
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
     onOpenChange?: (open: boolean) => void;
     onbackdropclick?: (event: MouseEvent) => boolean;
-    onDragChange?: (offset: number, progress: number, isDragging: boolean) => void;
+    onDragChange?: (
+      offset: number,
+      progress: number,
+      isDragging: boolean
+    ) => void;
     /** Called when snap point changes */
     onSnapPointChange?: (index: number, valuePx: number) => void;
-    children?: () => unknown;
-  }>();
+    children?: Snippet;
+  } = $props();
 
   let layoutService: IResponsiveLayoutService | null = null;
   let isSideBySideLayout = $state(false);
@@ -175,7 +127,11 @@
   let dragOffsetY = $state(0);
 
   // Internal drag change handler that updates local state AND calls parent callback
-  function handleInternalDragChange(offset: number, progress: number, dragging: boolean) {
+  function handleInternalDragChange(
+    offset: number,
+    progress: number,
+    dragging: boolean
+  ) {
     isDragging = dragging;
     if (placement === "right" || placement === "left") {
       dragOffsetX = offset;
@@ -189,13 +145,21 @@
   }
 
   // Handle drag end for snap points - returns true if handled
-  function handleDragEnd(offset: number, velocity: number, duration: number): boolean {
+  function handleDragEnd(
+    offset: number,
+    velocity: number,
+    duration: number
+  ): boolean {
     if (!snapPointsInstance || !snapPoints || snapPoints.length === 0) {
       return false; // Let default dismiss logic handle it
     }
 
     // Calculate target snap point based on gesture
-    const targetIndex = snapPointsInstance.snapToClosest(offset, velocity, duration);
+    const targetIndex = snapPointsInstance.snapToClosest(
+      offset,
+      velocity,
+      duration
+    );
     snapPointOffset = snapPointsInstance.getTransformOffset();
 
     // If snapping to index 0 with closeOnSnapToZero, let dismiss handle it
@@ -234,7 +198,7 @@
   let drawerEffects = new DrawerEffects({
     scaleBackground,
     preventScroll,
-    isAnimatedOpen,
+    isAnimatedOpen: false,
   });
 
   // Initialize snap handler when snapPoints are provided
@@ -365,7 +329,12 @@
 
   // Handle escape key - only close if this is the topmost drawer
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" && closeOnEscape && isOpen && isTopDrawer(drawerId)) {
+    if (
+      event.key === "Escape" &&
+      closeOnEscape &&
+      isOpen &&
+      isTopDrawer(drawerId)
+    ) {
       event.preventDefault();
       emitClose("escape");
       isOpen = false;
@@ -446,7 +415,6 @@
     });
   });
 
-
   // Clean up on component destroy
   onDestroy(() => {
     swipeToDismiss.detach();
@@ -456,3 +424,43 @@
     unregisterDrawer(drawerId);
   });
 </script>
+
+<svelte:window onkeydown={handleKeydown} />
+
+{#if mounted && shouldRender}
+  <!-- Backdrop -->
+  <div
+    class={overlayClasses}
+    data-state={dataState}
+    onclick={handleBackdropClick}
+    aria-hidden="true"
+    style:z-index={stackZIndex - 1}
+  ></div>
+
+  <!-- Drawer content -->
+  <div
+    bind:this={drawerElement}
+    class={contentClasses}
+    class:dragging={isDragging}
+    class:has-snap-points={snapPoints && snapPoints.length > 0}
+    class:spring-animation={springAnimation}
+    data-placement={placement}
+    data-state={dataState}
+    data-snap-index={currentSnapIndex}
+    data-drawer-id={drawerId}
+    {role}
+    aria-modal="true"
+    aria-labelledby={labelledBy}
+    aria-label={ariaLabel}
+    style:z-index={stackZIndex}
+    style:transform={computedTransform || undefined}
+    style:transition={isDragging ? "none" : ""}
+  >
+    {#if showHandle}
+      <div class="drawer-handle" aria-hidden="true"></div>
+    {/if}
+    <div class="drawer-inner">
+      {@render children?.()}
+    </div>
+  </div>
+{/if}

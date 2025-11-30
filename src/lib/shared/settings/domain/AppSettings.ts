@@ -10,6 +10,9 @@ import type { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import type { BackgroundType } from "../../background/shared/domain/enums/background-enums";
 
 export interface AppSettings {
+  // Metadata for sync tracking (not persisted to Firebase)
+  _localTimestamp?: number;
+  
   gridMode: GridMode;
   userName?: string;
   propType?: PropType; // Legacy - kept for backward compatibility

@@ -16,6 +16,7 @@ import type { ISettingsService } from "../../index";
 import { injectable } from "inversify";
 import { BackgroundType, updateBodyBackground } from "../../background";
 import { GridMode } from "../../pictograph";
+import { PropType } from "../../pictograph/prop/domain/enums/PropType";
 import { ThemeService } from "../../theme";
 import type { AppSettings } from "../domain";
 import { tryResolve } from "../../inversify";
@@ -25,6 +26,7 @@ import type { ISettingsPersistenceService } from "../services/contracts/ISetting
 import { authStore } from "../../auth/stores/authStore.svelte";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
+const OFFLINE_QUEUE_KEY = "tka-settings-offline-queue";
 
 const DEFAULT_SETTINGS: AppSettings = {
   gridMode: GridMode.DIAMOND,
@@ -34,6 +36,8 @@ const DEFAULT_SETTINGS: AppSettings = {
   hapticFeedback: true,
   reducedMotion: false,
   catDogMode: false, // Default: both hands use the same prop
+  bluePropType: PropType.STAFF, // Default prop type for blue
+  redPropType: PropType.STAFF, // Default prop type for red
 } as AppSettings;
 
 // Initialize with loaded settings immediately (non-reactive)
@@ -57,10 +61,24 @@ class SettingsState implements ISettingsService {
   private firebasePersistence: ISettingsPersistenceService | null = null;
   private unsubscribeFirebaseSync: (() => void) | null = null;
   private syncInitialized = false;
+  private isSavingToFirebase = false; // Prevent re-entrant saves
+  private pendingFirebaseSave: Promise<void> | null = null;
+  private onlineHandler: (() => void) | null = null;
 
   constructor() {
     // Settings are already loaded from localStorage in the reactive state
     // Firebase sync will be initialized when user authenticates
+    // Process any offline queue on startup
+    if (browser) {
+      this.processOfflineQueue();
+      
+      // Listen for online events to process queued changes
+      this.onlineHandler = () => {
+        console.log("🌐 [SettingsState] Back online, processing offline queue...");
+        this.processOfflineQueue();
+      };
+      window.addEventListener("online", this.onlineHandler);
+    }
   }
 
   /**
@@ -83,6 +101,9 @@ class SettingsState implements ISettingsService {
       return;
     }
 
+    // Process any queued offline changes first
+    await this.processOfflineQueue();
+
     // If user is authenticated, sync settings from Firebase
     if (authStore.isAuthenticated && this.firebasePersistence) {
       await this.syncFromFirebase();
@@ -91,8 +112,11 @@ class SettingsState implements ISettingsService {
       if (this.firebasePersistence.onSettingsChange) {
         this.unsubscribeFirebaseSync = this.firebasePersistence.onSettingsChange(
           (remoteSettings) => {
-            // Apply remote settings (merge with local)
-            this.applyRemoteSettings(remoteSettings);
+            // Only apply remote settings if we're not in the middle of saving
+            // This prevents our own saves from being re-applied
+            if (!this.isSavingToFirebase) {
+              this.applyRemoteSettings(remoteSettings);
+            }
           }
         );
       }
@@ -101,19 +125,30 @@ class SettingsState implements ISettingsService {
 
   /**
    * Sync settings from Firebase (called on login)
+   * Uses timestamp-based conflict resolution: local wins if newer
    */
   async syncFromFirebase(): Promise<void> {
     if (!this.firebasePersistence || !authStore.isAuthenticated) return;
 
     try {
       const firebaseSettings = await this.firebasePersistence.loadSettings();
+      const localTimestamp = settingsState._localTimestamp || 0;
+      
       if (firebaseSettings) {
-        // Merge Firebase settings with local (Firebase wins for conflicts)
-        this.applyRemoteSettings(firebaseSettings);
-        console.log("✅ [SettingsState] Synced settings from Firebase");
+        // Check if we have pending local changes that are newer
+        if (localTimestamp > 0) {
+          // We have local changes with a timestamp - push them to Firebase
+          // This ensures local changes made while offline are not lost
+          console.log("✅ [SettingsState] Local settings are newer, pushing to Firebase");
+          await this.firebasePersistence.saveSettings(this.getSettingsForPersistence());
+        } else {
+          // No local timestamp means fresh load - accept Firebase settings
+          this.applyRemoteSettings(firebaseSettings);
+          console.log("✅ [SettingsState] Applied settings from Firebase");
+        }
       } else {
         // No Firebase settings - push local settings to Firebase
-        await this.firebasePersistence.saveSettings(settingsState);
+        await this.firebasePersistence.saveSettings(this.getSettingsForPersistence());
         console.log("✅ [SettingsState] Pushed local settings to Firebase");
       }
     } catch (error) {
@@ -122,20 +157,35 @@ class SettingsState implements ISettingsService {
   }
 
   /**
+   * Get settings without internal metadata fields for persistence
+   */
+  private getSettingsForPersistence(): AppSettings {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _localTimestamp, ...settings } = settingsState;
+    return settings as AppSettings;
+  }
+
+  /**
    * Apply remote settings without triggering a save back to Firebase
+   * Only applies settings that weren't modified locally more recently
    */
   private applyRemoteSettings(remoteSettings: AppSettings): void {
-    // Merge with defaults and current local settings
-    const merged = { ...DEFAULT_SETTINGS, ...settingsState, ...remoteSettings };
+    // Merge with defaults first, then layer remote settings
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { _localTimestamp: _remoteTs, ...remoteWithoutMeta } = remoteSettings;
+    const merged = { ...DEFAULT_SETTINGS, ...remoteWithoutMeta };
 
-    // Apply to state
+    // Apply to state (preserve local timestamp)
+    const currentTimestamp = settingsState._localTimestamp;
     for (const key in merged) {
-      if (Object.prototype.hasOwnProperty.call(merged, key)) {
+      if (Object.prototype.hasOwnProperty.call(merged, key) && key !== '_localTimestamp') {
         settingsState[key as keyof AppSettings] = merged[
           key as keyof AppSettings
         ] as never;
       }
     }
+    // Clear local timestamp since we just synced from remote
+    settingsState._localTimestamp = undefined;
 
     // Update background if changed
     if (remoteSettings.backgroundType) {
@@ -148,12 +198,18 @@ class SettingsState implements ISettingsService {
   }
 
   /**
-   * Clean up Firebase sync subscription
+   * Clean up Firebase sync subscription and event listeners
    */
   cleanup(): void {
     if (this.unsubscribeFirebaseSync) {
       this.unsubscribeFirebaseSync();
       this.unsubscribeFirebaseSync = null;
+    }
+    
+    // Remove online event listener
+    if (browser && this.onlineHandler) {
+      window.removeEventListener("online", this.onlineHandler);
+      this.onlineHandler = null;
     }
   }
 
@@ -181,6 +237,9 @@ class SettingsState implements ISettingsService {
 
     // CRITICAL: Direct assignment for Svelte 5 reactivity
     settingsState[key] = value;
+    
+    // Track when this change was made locally
+    settingsState._localTimestamp = Date.now();
 
     // Update body background immediately if background type changed
     if (key === "backgroundType") {
@@ -211,6 +270,9 @@ class SettingsState implements ISettingsService {
         ] as never;
       }
     }
+    
+    // Track when these changes were made locally
+    settingsState._localTimestamp = Date.now();
 
     // Update body background immediately if background type changed
     if (newSettings.backgroundType) {
@@ -230,11 +292,96 @@ class SettingsState implements ISettingsService {
     // Always save to localStorage first (offline support)
     this.saveSettingsToStorage(settingsState);
 
-    // If authenticated, also save to Firebase (non-blocking)
+    // If authenticated, also save to Firebase with offline queue support
     if (authStore.isAuthenticated && this.firebasePersistence) {
-      void this.firebasePersistence.saveSettings(settingsState).catch((error) => {
+      this.saveToFirebaseWithRetry();
+    }
+  }
+
+  /**
+   * Save to Firebase with retry and offline queue support
+   */
+  private saveToFirebaseWithRetry(): void {
+    if (!this.firebasePersistence) return;
+
+    // Mark that we're saving to prevent real-time listener from re-applying our own changes
+    this.isSavingToFirebase = true;
+
+    const settingsToSave = this.getSettingsForPersistence();
+    
+    this.pendingFirebaseSave = this.firebasePersistence.saveSettings(settingsToSave)
+      .then(() => {
+        // Successfully saved - clear local timestamp since Firebase is now in sync
+        settingsState._localTimestamp = undefined;
+        this.saveSettingsToStorage(settingsState);
+        // Clear offline queue since save succeeded
+        this.clearOfflineQueue();
+        console.log("✅ [SettingsState] Settings saved to Firebase");
+      })
+      .catch((error) => {
         console.error("❌ [SettingsState] Failed to save to Firebase:", error);
+        // Queue for later if offline
+        this.queueOfflineChange(settingsToSave);
+      })
+      .finally(() => {
+        this.isSavingToFirebase = false;
+        this.pendingFirebaseSave = null;
       });
+  }
+
+  /**
+   * Queue settings for later sync when back online
+   */
+  private queueOfflineChange(settings: AppSettings): void {
+    if (!browser) return;
+    
+    try {
+      const queueEntry = {
+        settings,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queueEntry));
+      console.log("📦 [SettingsState] Queued settings for offline sync");
+    } catch (error) {
+      console.error("Failed to queue offline change:", error);
+    }
+  }
+
+  /**
+   * Process any queued offline changes
+   */
+  private async processOfflineQueue(): Promise<void> {
+    if (!browser) return;
+    
+    try {
+      const queuedData = localStorage.getItem(OFFLINE_QUEUE_KEY);
+      if (!queuedData) return;
+
+      const queueEntry = JSON.parse(queuedData);
+      if (!queueEntry?.settings) return;
+
+      // If we have Firebase persistence and are online, sync the queued changes
+      if (this.firebasePersistence && authStore.isAuthenticated) {
+        console.log("📤 [SettingsState] Processing offline queue...");
+        await this.firebasePersistence.saveSettings(queueEntry.settings);
+        this.clearOfflineQueue();
+        console.log("✅ [SettingsState] Offline queue processed");
+      }
+    } catch (error) {
+      console.error("Failed to process offline queue:", error);
+    }
+  }
+
+  /**
+   * Clear the offline queue
+   */
+  private clearOfflineQueue(): void {
+    if (!browser) return;
+    
+    try {
+      localStorage.removeItem(OFFLINE_QUEUE_KEY);
+    } catch (error) {
+      console.error("Failed to clear offline queue:", error);
     }
   }
 

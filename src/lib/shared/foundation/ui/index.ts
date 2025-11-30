@@ -11,9 +11,9 @@ export { default as SkeletonLoader } from "./SkeletonLoader.svelte";
 export { default as SimpleGlassScroll } from "./SimpleGlassScroll.svelte";
 
 // Export utility handlers
-export { SwipeToDismissHandler } from "./SwipeToDismissHandler";
-export { FocusTrapHandler } from "./FocusTrapHandler";
-export { SnapPointsHandler } from "./SnapPointsHandler";
+export { SwipeToDismiss } from "./drawer/SwipeToDismiss.ts";
+export { FocusTrap } from "./drawer/FocusTrap.ts";
+export { SnapPoints } from "./drawer/SnapPoints.ts";
 export {
   generateDrawerId,
   registerDrawer,
@@ -22,10 +22,10 @@ export {
   getStackDepth,
   getDrawerZIndex,
   hasOpenDrawers,
-} from "./DrawerStack";
-export type { SwipePlacement, SwipeToDismissOptions } from "./SwipeToDismissHandler";
-export type { FocusTrapOptions } from "./FocusTrapHandler";
-export type { SnapPointValue, SnapPointsOptions } from "./SnapPointsHandler";
+} from "./drawer/DrawerStack.ts";
+export type { SwipePlacement, SwipeToDismissOptions } from "./drawer/SwipeToDismiss.ts";
+export type { FocusTrapOptions } from "./drawer/FocusTrap.ts";
+export type { SnapPointValue, SnapPointsOptions } from "./drawer/SnapPoints.ts";
 
 // Export types
 export type { ScrollbarVariant, UISize, UIVariant } from "./types";

@@ -15,10 +15,19 @@
 
   import { onMount } from "svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { ElementVisibilityControls, PreviewSection } from "./visibility";
-  import { createMotionData, MotionType, RotationDirection, Orientation, MotionColor } from "../../../pictograph";
+  import {
+    createMotionData,
+    MotionType,
+    RotationDirection,
+    Orientation,
+    MotionColor,
+  } from "../../../pictograph";
 
   interface Props {
     currentSettings: unknown;
@@ -56,8 +65,8 @@
     startPosition: GridPosition.ALPHA1,
     endPosition: GridPosition.ALPHA3,
     gridMode: GridMode.DIAMOND,
-    blueReversal: true,  // Show blue reversal indicator
-    redReversal: true,   // Show red reversal indicator
+    blueReversal: true, // Show blue reversal indicator
+    redReversal: true, // Show red reversal indicator
     motions: {
       blue: createMotionData({
         motionType: MotionType.PRO,
@@ -242,10 +251,12 @@
     min-height: 0; /* Critical for flex containment */
     overflow: hidden; /* Ensure nothing escapes */
     padding: 8px 12px;
+    container-type: size; /* Enable both width AND height queries */
+    container-name: visibility-tab;
   }
 
   /* Compact layout when parent container height is limited */
-  @container settings-content (max-height: 550px) {
+  @container visibility-tab (max-height: 550px) {
     .visibility-tab {
       gap: 8px;
       padding: 4px 8px;
@@ -268,7 +279,8 @@
     line-height: 1.2;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .description {
@@ -278,10 +290,11 @@
     line-height: 1.3;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  @container settings-content (max-height: 550px) {
+  @container visibility-tab (max-height: 550px) {
     .title {
       font-size: 16px;
     }
@@ -290,7 +303,7 @@
     }
   }
 
-  /* Main Content Area */
+  /* Main Content Area - Default: Vertical Stack */
   .visibility-content {
     display: flex;
     flex-direction: column;
@@ -301,12 +314,14 @@
     border: 0.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     padding: 12px;
+    gap: 12px;
   }
 
-  @container settings-content (max-height: 550px) {
+  @container visibility-tab (max-height: 550px) {
     .visibility-content {
       padding: 8px;
       border-radius: 10px;
+      gap: 8px;
     }
   }
 
@@ -314,7 +329,7 @@
   .controls-section {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex-shrink: 0; /* Don't shrink controls in vertical mode */
     min-height: 0;
     overflow: hidden;
   }
@@ -323,7 +338,7 @@
     display: none;
   }
 
-  /* Preview Toggle Button */
+  /* Preview Toggle Button - shown in vertical layout by default */
   .preview-toggle-btn {
     display: flex;
     align-items: center;
@@ -342,10 +357,11 @@
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 40px;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  @container settings-content (max-height: 550px) {
+  @container visibility-tab (max-height: 550px) {
     .preview-toggle-btn {
       padding: 8px 12px;
       min-height: 36px;
@@ -376,7 +392,7 @@
     transform: rotate(180deg);
   }
 
-  /* Preview Wrapper */
+  /* Preview Wrapper - hidden by default in vertical mode */
   .preview-wrapper {
     display: none;
     flex: 1;
@@ -388,11 +404,19 @@
     flex-direction: column;
   }
 
-  /* Desktop: Show both sections side by side */
-  @media (min-width: 768px) {
+  /* ===== CONTENT-AWARE LAYOUT USING CONTAINER QUERIES ===== */
+
+  /* 
+   * Side-by-side layout when:
+   * - Container is wide enough (min-width: 500px) AND
+   * - Container has enough height to show both sections comfortably (min-height: 350px)
+   * 
+   * This ensures the preview has enough vertical space to be useful
+   */
+  @container visibility-tab (min-width: 500px) and (min-height: 350px) {
     .visibility-content {
       display: grid;
-      grid-template-columns: 1fr 1.5fr;
+      grid-template-columns: minmax(180px, 1fr) minmax(200px, 1.5fr);
       gap: 16px;
     }
 
@@ -403,12 +427,96 @@
     .controls-section,
     .controls-section.hidden-mobile {
       display: flex;
+      flex: 1;
     }
 
     .preview-wrapper,
     .preview-wrapper.visible-mobile {
       display: flex;
       flex-direction: column;
+      flex: 1;
+    }
+  }
+
+  /* 
+   * Wide but short container: Stack vertically with preview below
+   * This handles wide-but-short scenarios (like landscape mobile)
+   */
+  @container visibility-tab (min-width: 500px) and (max-height: 349px) {
+    .visibility-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .controls-section {
+      flex-shrink: 0;
+    }
+
+    /* In short+wide mode, show preview below controls (no toggle needed) */
+    .preview-toggle-btn {
+      display: none;
+    }
+
+    .preview-wrapper,
+    .preview-wrapper.visible-mobile {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 150px;
+    }
+
+    .controls-section.hidden-mobile {
+      display: flex;
+    }
+  }
+
+  /* 
+   * Narrow container (< 500px): Always stack vertically with toggle
+   * This handles narrow sidebars, mobile portrait, etc.
+   */
+  @container visibility-tab (max-width: 499px) {
+    .visibility-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-toggle-btn {
+      display: flex;
+    }
+
+    .controls-section.hidden-mobile {
+      display: none;
+    }
+
+    .preview-wrapper {
+      display: none;
+    }
+
+    .preview-wrapper.visible-mobile {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+  }
+
+  /* 
+   * Extra-wide container: Better proportions for large screens
+   */
+  @container visibility-tab (min-width: 700px) and (min-height: 400px) {
+    .visibility-content {
+      grid-template-columns: minmax(220px, 1fr) minmax(280px, 2fr);
+      gap: 20px;
+    }
+  }
+
+  /* 
+   * Very wide container: Cap proportions to keep controls readable
+   */
+  @container visibility-tab (min-width: 900px) and (min-height: 450px) {
+    .visibility-content {
+      grid-template-columns: minmax(250px, 350px) minmax(350px, 1fr);
+      gap: 24px;
     }
   }
 
