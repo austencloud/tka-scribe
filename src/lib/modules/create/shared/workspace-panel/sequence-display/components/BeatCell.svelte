@@ -1,12 +1,11 @@
 <script lang="ts">
-import type { BeatData } from "../../../domain/models/BeatData";
-import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { BeatData } from "../../../domain/models/BeatData";
+  import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
-  import EmptyStartPositionPlaceholder from "./EmptyStartPositionPlaceholder.svelte";
 
   let {
     beat,
@@ -249,17 +248,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   tabindex="0"
   aria-label={ariaLabel}
 >
-  {#if index === -1 && beat.isBlank}
-    <!-- Empty start position placeholder -->
-    <EmptyStartPositionPlaceholder {activeMode} />
-  {:else}
-    <!-- Normal pictograph -->
-    <Pictograph
-      pictographData={beatDataWithSelection}
-      disableContentTransitions={!enableTransitionsForNewData}
-      {shouldOrbitAroundCenter}
-    />
-  {/if}
+  <!-- Normal pictograph (will show empty grid when beat.isBlank) -->
+  <Pictograph
+    pictographData={beatDataWithSelection}
+    disableContentTransitions={!enableTransitionsForNewData}
+    {shouldOrbitAroundCenter}
+  />
 </div>
 
 <style>

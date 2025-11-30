@@ -196,6 +196,32 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     currentSequence = [];
   }
 
+  /**
+   * Get debug info for troubleshooting empty options
+   */
+  function getDebugInfo() {
+    return {
+      timestamp: new Date().toISOString(),
+      state,
+      optionsCount: options.length,
+      filteredOptionsCount: filteredOptions().length,
+      lastSequenceId,
+      currentSequenceLength: currentSequence.length,
+      currentSequence: currentSequence.map((p, i) => ({
+        index: i,
+        id: p.id,
+        letter: p.letter,
+        startPosition: p.startPosition,
+        endPosition: p.endPosition,
+        gridMode: p.gridMode,
+      })),
+      isContinuousOnly,
+      sortMethod,
+      error,
+      preloadedOptionsCount: preloadedOptions?.length ?? null,
+    };
+  }
+
   // Return the state interface
   return {
     // State getters
@@ -216,6 +242,12 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     },
     get layout() {
       return layout;
+    },
+    get currentSequence() {
+      return currentSequence;
+    },
+    get lastSequenceId() {
+      return lastSequenceId;
     },
 
     // Computed getters
@@ -241,5 +273,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     selectOption,
     clearError,
     reset,
+    getDebugInfo,
   };
 }

@@ -75,6 +75,7 @@ Orchestrates specialized components and services:
   let currentSectionTitle = $state<string>("Type 1");
   let isFadingOut = $state(false);
   let isTransitioning = $state(false);
+  let debugCopied = $state(false);
 
   const containerDimensions = createContainerDimensionTracker();
   let containerElement: HTMLElement;
@@ -401,6 +402,88 @@ Orchestrates specialized components and services:
     }
   }
 
+  /**
+   * Copy debug info to clipboard for troubleshooting empty options state
+   */
+  async function copyDebugInfo() {
+    if (!optionPickerState) return;
+
+    const debugInfo = {
+      ...optionPickerState.getDebugInfo(),
+      // Additional context from component
+      componentContext: {
+        currentSequenceProp: currentSequence.map((p, i) => ({
+          index: i,
+          id: p.id,
+          letter: p.letter,
+          startPosition: p.startPosition,
+          endPosition: p.endPosition,
+        })),
+        currentSequencePropLength: currentSequence.length,
+        currentGridMode,
+        isUndoingOption,
+        isTransitioning,
+        isFadingOut,
+        servicesReady,
+        containerDimensions: {
+          width: containerDimensions.width,
+          height: containerDimensions.height,
+          isReady: containerDimensions.isReady,
+        },
+        organizedPictographsCount: organizedPictographs().length,
+      },
+    };
+
+    const debugText = `=== OPTION VIEWER DEBUG INFO ===
+Timestamp: ${debugInfo.timestamp}
+Issue: "No options available" shown when sequence should have options
+
+--- State ---
+State: ${debugInfo.state}
+Options loaded: ${debugInfo.optionsCount}
+Filtered options: ${debugInfo.filteredOptionsCount}
+Last sequence ID: ${debugInfo.lastSequenceId}
+Error: ${debugInfo.error || "none"}
+
+--- Sequence Info ---
+Current sequence length (state): ${debugInfo.currentSequenceLength}
+Current sequence length (prop): ${debugInfo.componentContext.currentSequencePropLength}
+Grid mode: ${debugInfo.componentContext.currentGridMode}
+
+--- Sequence Details (state) ---
+${JSON.stringify(debugInfo.currentSequence, null, 2)}
+
+--- Sequence Details (prop) ---
+${JSON.stringify(debugInfo.componentContext.currentSequenceProp, null, 2)}
+
+--- Filter Settings ---
+Continuous only: ${debugInfo.isContinuousOnly}
+Sort method: ${debugInfo.sortMethod}
+
+--- Component Context ---
+Services ready: ${debugInfo.componentContext.servicesReady}
+Is undoing: ${debugInfo.componentContext.isUndoingOption}
+Is transitioning: ${debugInfo.componentContext.isTransitioning}
+Is fading out: ${debugInfo.componentContext.isFadingOut}
+Container dimensions: ${debugInfo.componentContext.containerDimensions.width}x${debugInfo.componentContext.containerDimensions.height}
+Container ready: ${debugInfo.componentContext.containerDimensions.isReady}
+Organized sections: ${debugInfo.componentContext.organizedPictographsCount}
+
+--- Full JSON ---
+${JSON.stringify(debugInfo, null, 2)}
+`;
+
+    try {
+      await navigator.clipboard.writeText(debugText);
+      debugCopied = true;
+      setTimeout(() => {
+        debugCopied = false;
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy debug info:", err);
+    }
+  }
+
   // ===== LIFECYCLE =====
   onMount(() => {
     try {
@@ -485,6 +568,14 @@ Orchestrates specialized components and services:
       {:else if optionPickerState.filteredOptions.length === 0 && !isTransitioning}
         <div class="empty-state">
           <p>No options available for the current sequence.</p>
+          <button class="debug-copy-btn" onclick={copyDebugInfo}>
+            📋 Copy Debug Info
+          </button>
+          {#if debugCopied}
+            <span class="copy-feedback" transition:fade={{ duration: 200 }}
+              >Copied!</span
+            >
+          {/if}
         </div>
       {:else if optionPickerState.filteredOptions.length > 0}
         {#if shouldUseSwipeLayout()}
@@ -561,5 +652,29 @@ Orchestrates specialized components and services:
 
   .error-state button:hover {
     background: var(--primary-color-hover);
+  }
+
+  .debug-copy-btn {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+
+  .debug-copy-btn:hover {
+    background: rgba(255, 193, 7, 0.3);
+    border-color: rgba(255, 193, 7, 0.6);
+  }
+
+  .copy-feedback {
+    display: block;
+    margin-top: var(--spacing-sm);
+    color: #4caf50;
+    font-size: 0.8rem;
   }
 </style>

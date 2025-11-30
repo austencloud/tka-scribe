@@ -291,11 +291,19 @@
               <div class="prop-controls blue">
                 <span class="prop-label">Blue</span>
                 <div class="turns-row">
-                  <button class="ctrl-btn" onclick={() => handleTurnsChange(MotionColor.BLUE, -0.5)}>
+                  <button
+                    class="ctrl-btn"
+                    aria-label="Decrease blue turns"
+                    onclick={() => handleTurnsChange(MotionColor.BLUE, -0.5)}
+                  >
                     <i class="fas fa-minus"></i>
                   </button>
                   <span class="turns-value">{displayBlueTurns}</span>
-                  <button class="ctrl-btn" onclick={() => handleTurnsChange(MotionColor.BLUE, 0.5)}>
+                  <button
+                    class="ctrl-btn"
+                    aria-label="Increase blue turns"
+                    onclick={() => handleTurnsChange(MotionColor.BLUE, 0.5)}
+                  >
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
@@ -303,6 +311,7 @@
                   <button
                     class="rot-btn"
                     class:active={showBlueRotation && currentBlueRotation === RotationDirection.CLOCKWISE}
+                    aria-label="Rotate blue clockwise"
                     onclick={() => handleRotationChange(MotionColor.BLUE, RotationDirection.CLOCKWISE)}
                     disabled={!showBlueRotation}
                   >
@@ -311,6 +320,7 @@
                   <button
                     class="rot-btn"
                     class:active={showBlueRotation && currentBlueRotation === RotationDirection.COUNTER_CLOCKWISE}
+                    aria-label="Rotate blue counter clockwise"
                     onclick={() => handleRotationChange(MotionColor.BLUE, RotationDirection.COUNTER_CLOCKWISE)}
                     disabled={!showBlueRotation}
                   >
@@ -323,11 +333,19 @@
               <div class="prop-controls red">
                 <span class="prop-label">Red</span>
                 <div class="turns-row">
-                  <button class="ctrl-btn" onclick={() => handleTurnsChange(MotionColor.RED, -0.5)}>
+                  <button
+                    class="ctrl-btn"
+                    aria-label="Decrease red turns"
+                    onclick={() => handleTurnsChange(MotionColor.RED, -0.5)}
+                  >
                     <i class="fas fa-minus"></i>
                   </button>
                   <span class="turns-value">{displayRedTurns}</span>
-                  <button class="ctrl-btn" onclick={() => handleTurnsChange(MotionColor.RED, 0.5)}>
+                  <button
+                    class="ctrl-btn"
+                    aria-label="Increase red turns"
+                    onclick={() => handleTurnsChange(MotionColor.RED, 0.5)}
+                  >
                     <i class="fas fa-plus"></i>
                   </button>
                 </div>
@@ -335,6 +353,7 @@
                   <button
                     class="rot-btn"
                     class:active={showRedRotation && currentRedRotation === RotationDirection.CLOCKWISE}
+                    aria-label="Rotate red clockwise"
                     onclick={() => handleRotationChange(MotionColor.RED, RotationDirection.CLOCKWISE)}
                     disabled={!showRedRotation}
                   >
@@ -343,6 +362,7 @@
                   <button
                     class="rot-btn"
                     class:active={showRedRotation && currentRedRotation === RotationDirection.COUNTER_CLOCKWISE}
+                    aria-label="Rotate red counter clockwise"
                     onclick={() => handleRotationChange(MotionColor.RED, RotationDirection.COUNTER_CLOCKWISE)}
                     disabled={!showRedRotation}
                   >

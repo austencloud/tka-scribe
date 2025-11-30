@@ -3,7 +3,7 @@ GenerationModeCard.svelte - Card for toggling generation mode
 Shows BOTH Freeform and Circular options vertically with clear active/inactive states
 -->
 <script lang="ts">
-  import { GenerationMode } from "$shared";
+  import { GenerationMode } from "$lib/modules/create/generate/shared/domain/models/generate-models";
   import ToggleCard from "./ToggleCard.svelte";
 
   let {

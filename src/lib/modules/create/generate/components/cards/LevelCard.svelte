@@ -3,7 +3,7 @@ LevelCard.svelte - Card for selecting difficulty level
 Uses stepper pattern for space-efficient level selection
 -->
 <script lang="ts">
-  import { DifficultyLevel } from "$shared";
+  import { DifficultyLevel } from "$lib/modules/create/generate/shared/domain/models/generate-models";
   import StepperCard from "./StepperCard/StepperCard.svelte";
 
   let {

@@ -154,13 +154,25 @@
       !isSectionLoading
   );
 
+  // Get the appropriate sequence data based on active section
+  // Construct tab uses its own sequence state, other tabs use the shared state
   const currentSequenceData = $derived.by(() => {
-    if (isPersistenceFullyInitialized) {
-      return createModuleState.sequenceState.getCurrentSequenceData();
+    if (!isPersistenceFullyInitialized) return [];
+
+    // When on Construct tab, use Construct tab's own sequence state
+    if (
+      createModuleState.activeSection === "construct" &&
+      constructTabState.isInitialized &&
+      constructTabState.sequenceState
+    ) {
+      return constructTabState.sequenceState.getCurrentSequenceData();
     }
-    return [];
+
+    // For other tabs, use the shared sequence state
+    return createModuleState.sequenceState.getCurrentSequenceData();
   });
 
+  // Determine if we should show start position picker based on Construct tab's own state
   const shouldShowStartPositionPicker = $derived.by(() => {
     if (!isPersistenceFullyInitialized) return null;
     if (createModuleState.activeSection !== "construct") return null;
@@ -181,6 +193,33 @@
   // ============================================================================
   // EFFECTS
   // ============================================================================
+
+  // Keep picker state in sync with Construct tab's own sequence state
+  // This ensures the StartPositionPicker shows when sequence is empty
+  // and OptionViewer shows when sequence has a start position
+  $effect(() => {
+    // Only sync when construct tab is active and initialized
+    if (
+      createModuleState.activeSection === "construct" &&
+      constructTabState.isInitialized &&
+      constructTabState.sequenceState
+    ) {
+      // Access construct tab's own sequence state to track changes
+      const sequenceLength =
+        constructTabState.sequenceState.getCurrentSequenceData().length;
+      const hasStart = constructTabState.sequenceState.hasStartPosition;
+
+      // Sync picker state to match construct tab's sequence state
+      constructTabState.syncPickerStateWithSequence();
+
+      // Debug logging for troubleshooting
+      if (sequenceLength === 0 && !hasStart) {
+        console.log(
+          "🔄 ToolPanel: Construct sequence is empty, ensuring StartPositionPicker is shown"
+        );
+      }
+    }
+  });
 
   // ============================================================================
   // PUBLIC API (Exposed to parent)

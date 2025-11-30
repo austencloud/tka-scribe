@@ -256,8 +256,9 @@ export function createConstructTabState(
       startPositionStateService.clearSelectedPosition();
     }
 
-    // Sync picker state with sequence state's hasStartPosition (replaces $effect)
+    // Sync picker state with construct tab's own sequence state's hasStartPosition
     // This logic was moved from $effect to avoid effect_orphan error
+    // IMPORTANT: Uses construct tab's own sequence state, not the shared state
     if (sequenceState) {
       if (sequenceState.hasStartPosition && showStartPositionPicker === true) {
         setShowStartPositionPicker(false);
@@ -271,7 +272,7 @@ export function createConstructTabState(
 
     // Mark as initialized after all setup is complete
     isInitialized = true;
-  }
+  } 
 
   // ============================================================================
   // STATE MUTATIONS (Construct-specific state updates)
@@ -359,9 +360,15 @@ export function createConstructTabState(
    * Sync picker state with sequence state's hasStartPosition
    * This replaces the $effect that was causing effect_orphan error
    * Call this method whenever sequence state changes that might affect picker visibility
+   * 
+   * IMPORTANT: Uses the construct tab's OWN sequence state, not the shared createModuleState
    */
   function syncPickerStateWithSequence() {
-    if (!isInitialized || !sequenceState) return;
+    if (!isInitialized) return;
+
+    // Use construct tab's own sequence state as the source of truth
+    // This is critical - construct tab manages its own sequence independently
+    if (!sequenceState) return;
 
     // When sequence state has a start position, hide the start position picker
     if (sequenceState.hasStartPosition && showStartPositionPicker === true) {
