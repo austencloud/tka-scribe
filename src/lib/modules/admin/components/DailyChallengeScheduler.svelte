@@ -10,7 +10,6 @@
     ChallengeScheduleEntry,
     ChallengeFormData,
   } from "../domain/models";
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import {
     SchedulerStatsGrid,
     SchedulerCalendarView,
@@ -27,7 +26,6 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   // State
   let isLoading = $state(true);
   let scheduleEntries = $state<ChallengeScheduleEntry[]>([]);
-  let userSequences = $state<SequenceData[]>([]);
   let selectedDate = $state<string | null>(null);
   let showCreationPanel = $state(false);
   let currentMonth = $state(new Date());
@@ -139,12 +137,11 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
       endDate.setMonth(endDate.getMonth() + 2);
       endDate.setDate(0);
 
-      const [entries, sequences] = await Promise.all([
-        adminChallengeService.getScheduledChallenges(startDate, endDate),
-        adminChallengeService.getUserSequences(),
-      ]);
+      const entries = await adminChallengeService.getScheduledChallenges(
+        startDate,
+        endDate
+      );
       scheduleEntries = entries;
-      userSequences = sequences;
     } catch (error) {
       console.error("Failed to load scheduler data:", error);
     } finally {
@@ -174,6 +171,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 
   async function handleScheduleChallenge(data: {
     sequenceId: string;
+    sequenceName: string;
     title: string;
     description: string;
     difficulty: "beginner" | "intermediate" | "advanced";
@@ -182,9 +180,6 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     if (!selectedDate) return;
 
     try {
-      const sequence = userSequences.find((s) => s.id === data.sequenceId);
-      if (!sequence) return;
-
       const formData: ChallengeFormData = {
         date: selectedDate,
         sequenceId: data.sequenceId,
@@ -196,7 +191,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
         target: 1,
         metadata: {
           sequenceId: data.sequenceId,
-          sequenceName: sequence.name,
+          sequenceName: data.sequenceName,
         },
       };
 
@@ -275,7 +270,6 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
       <ChallengeFormPanel
         {selectedDate}
         showPanel={showCreationPanel}
-        sequences={userSequences}
         onClose={handleClosePanel}
         onSchedule={handleScheduleChallenge}
       />

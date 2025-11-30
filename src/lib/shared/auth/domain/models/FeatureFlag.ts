@@ -13,67 +13,15 @@ import type { ModuleId } from "../../../navigation/domain/types";
 
 /**
  * Feature identifiers for modules
+ * Dynamically generated from MODULE_DEFINITIONS at runtime
  */
-export type ModuleFeatureId =
-  | "module:create"
-  | "module:community"
-  | "module:discover"
-  | "module:learn"
-  | "module:collect"
-  | "module:library"
-  | "module:animate"
-  | "module:train"
-  | "module:edit"
-  | "module:about"
-  | "module:account"
-  | "module:admin";
+export type ModuleFeatureId = `module:${ModuleId}`;
 
 /**
  * Feature identifiers for tabs within modules
+ * Dynamically generated from MODULE_DEFINITIONS sections at runtime
  */
-export type TabFeatureId =
-  // Create module tabs
-  | "tab:create:assembler"
-  | "tab:create:constructor"
-  | "tab:create:generator"
-  // Discover module tabs
-  | "tab:discover:gallery"
-  | "tab:discover:community"
-  | "tab:discover:collections"
-  | "tab:discover:search"
-  // Community module tabs
-  | "tab:community:explore"
-  | "tab:community:gallery"
-  | "tab:community:creators"
-  | "tab:community:challenges"
-  // Learn module tabs
-  | "tab:learn:concepts"
-  | "tab:learn:drills"
-  // Animate module tabs
-  | "tab:animate:single"
-  | "tab:animate:tunnel"
-  | "tab:animate:mirror"
-  | "tab:animate:grid"
-  // Edit module tabs
-  | "tab:edit:sequence"
-  | "tab:edit:beat"
-  // Collect module tabs
-  | "tab:collect:gallery"
-  | "tab:collect:achievements"
-  | "tab:collect:challenges"
-  // About module tabs
-  | "tab:about:overview"
-  | "tab:about:support"
-  // Account module tabs
-  | "tab:account:overview"
-  | "tab:account:library"
-  | "tab:account:preferences"
-  | "tab:account:security"
-  // Admin module tabs
-  | "tab:admin:challenges"
-  | "tab:admin:analytics"
-  | "tab:admin:users"
-  | "tab:admin:flags";
+export type TabFeatureId = `tab:${string}:${string}`;
 
 /**
  * Feature identifiers for specific capabilities
@@ -120,434 +68,54 @@ export interface UserFeatureOverrides {
 }
 
 /**
- * Default feature flag configuration
- * This defines the baseline access for each feature
+ * Role overrides for specific modules and tabs
+ * If not specified here, defaults to "user" for modules, inherits parent module role for tabs
  */
-export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
-  // ===== MODULES =====
-  {
-    id: "module:create",
-    name: "Create Module",
-    description: "Access to sequence creation tools",
-    minimumRole: "user",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:community",
-    name: "Community Module",
-    description: "Access to community features",
-    minimumRole: "user",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:discover",
-    name: "Discover Module",
-    description: "Browse and discover sequences",
-    minimumRole: "user", // Available to all users
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:learn",
-    name: "Learn Module",
-    description: "Educational content and tutorials",
-    minimumRole: "tester",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:collect",
-    name: "Collect Module",
-    description: "Save and organize favorite sequences",
-    minimumRole: "tester",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:library",
-    name: "Library Module",
-    description: "Personal sequence library with Firestore storage",
-    minimumRole: "user",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:animate",
-    name: "Animate Module",
-    description: "Animation playback and export",
-    minimumRole: "tester",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:train",
-    name: "Train Module",
-    description: "Practice sequences with real-time scoring using computer vision",
-    minimumRole: "user",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:edit",
-    name: "Edit Module",
-    description: "Advanced sequence editing tools",
-    minimumRole: "tester",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:about",
-    name: "About Module",
-    description: "Information about the application",
-    minimumRole: "user",
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:account",
-    name: "Account Module",
-    description: "User account management, library, preferences, and security",
-    minimumRole: "user", // Available to everyone (no auth required for basic access)
-    enabled: true,
-    category: "module",
-  },
-  {
-    id: "module:admin",
-    name: "Admin Module",
-    description: "Administrative tools and settings",
-    minimumRole: "admin",
-    enabled: true,
-    category: "module",
-  },
+const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
+  // Modules
+  "module:learn": "tester",
+  "module:animate": "tester",
+  "module:admin": "admin",
 
-  // ===== CREATE MODULE TABS =====
-  {
-    id: "tab:create:assembler",
-    name: "Assembler Tab",
-    description: "Simplified 6-choice sequence builder",
-    minimumRole: "admin", // Admin-only advanced feature
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:create:constructor",
-    name: "Constructor Tab",
-    description: "Step-by-step sequence construction",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:create:generator",
-    name: "Generator Tab",
-    description: "Automatic sequence generation",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
+  // Create tabs
+  "tab:create:assembler": "admin", // Advanced feature - admin only
 
-  // ===== DISCOVER MODULE TABS =====
-  {
-    id: "tab:discover:gallery",
-    name: "Gallery Tab",
-    description: "Browse all sequences in the gallery",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:discover:community",
-    name: "Community Tab",
-    description: "Discover community-shared sequences",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:discover:collections",
-    name: "Collections Tab",
-    description: "Browse curated sequence collections",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:discover:search",
-    name: "Search Tab",
-    description: "Search for specific sequences",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
+  // Learn tabs
+  "tab:learn:concepts": "tester",
+  "tab:learn:play": "tester",
+  "tab:learn:codex": "tester",
 
-  // ===== COMMUNITY MODULE TABS =====
-  {
-    id: "tab:community:explore",
-    name: "Explore Tab",
-    description: "Browse community content",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:community:gallery",
-    name: "Gallery Tab",
-    description: "User's personal gallery",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:community:creators",
-    name: "Creators Tab",
-    description: "View other creators",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:community:challenges",
-    name: "Challenges Tab",
-    description: "Daily and weekly challenges",
-    minimumRole: "tester", // Coming soon - tester preview
-    enabled: true,
-    category: "tab",
-  },
+  // Admin tabs - all inherit admin role from parent module
+};
 
-  // ===== LEARN MODULE TABS =====
-  {
-    id: "tab:learn:concepts",
-    name: "Concepts Tab",
-    description: "Progressive concept mastery path",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:learn:drills",
-    name: "Drills Tab",
-    description: "Quick pictograph flash card quizzes",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
+/**
+ * Get the default role for a feature
+ * Used by FeatureFlagService to determine minimum role requirements
+ */
+export function getDefaultFeatureRole(
+  featureId: FeatureId,
+  parentModuleRole?: UserRole
+): UserRole {
+  // Check for explicit override
+  if (FEATURE_ROLE_OVERRIDES[featureId]) {
+    return FEATURE_ROLE_OVERRIDES[featureId]!;
+  }
 
-  // ===== ANIMATE MODULE TABS =====
-  {
-    id: "tab:animate:single",
-    name: "Single Mode Tab",
-    description: "Single sequence animation playback",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:animate:tunnel",
-    name: "Tunnel Mode Tab",
-    description: "Tunnel animation visualization",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:animate:mirror",
-    name: "Mirror Mode Tab",
-    description: "Mirrored animation display",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:animate:grid",
-    name: "Grid Mode Tab",
-    description: "Grid-based animation layout",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
+  // Tabs inherit parent module role if available
+  if (featureId.startsWith("tab:") && parentModuleRole) {
+    return parentModuleRole;
+  }
 
-  // ===== EDIT MODULE TABS =====
-  {
-    id: "tab:edit:sequence",
-    name: "Sequence Editor Tab",
-    description: "Edit entire sequence properties and structure",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:edit:beat",
-    name: "Beat Editor Tab",
-    description: "Edit individual beat properties",
-    minimumRole: "tester",
-    enabled: true,
-    category: "tab",
-  },
+  // Default to user
+  return "user";
+}
 
-  // ===== COLLECT MODULE TABS =====
-  {
-    id: "tab:collect:gallery",
-    name: "Gallery Tab",
-    description: "User's saved sequences gallery",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:collect:achievements",
-    name: "Achievements Tab",
-    description: "View earned achievements and badges",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:collect:challenges",
-    name: "Challenges Tab",
-    description: "View and participate in challenges",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-
-  // ===== ABOUT MODULE TABS =====
-  {
-    id: "tab:about:overview",
-    name: "Overview Tab",
-    description: "Application overview and information",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:about:support",
-    name: "Support Tab",
-    description: "Support information and contact options",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-
-  // ===== ACCOUNT MODULE TABS =====
-  {
-    id: "tab:account:overview",
-    name: "Account Overview Tab",
-    description: "User profile, stats, and achievements",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:account:library",
-    name: "Account Library Tab",
-    description: "Personal sequence library",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:account:preferences",
-    name: "Account Preferences Tab",
-    description: "App settings and customization",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:account:security",
-    name: "Account Security Tab",
-    description: "Authentication and account security",
-    minimumRole: "user",
-    enabled: true,
-    category: "tab",
-  },
-
-  // ===== ADMIN MODULE TABS =====
-  {
-    id: "tab:admin:challenges",
-    name: "Admin Challenges Tab",
-    description: "Manage daily and weekly challenges",
-    minimumRole: "admin",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:admin:analytics",
-    name: "Admin Analytics Tab",
-    description: "View system analytics and metrics",
-    minimumRole: "admin",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:admin:users",
-    name: "Admin Users Tab",
-    description: "Manage user accounts and roles",
-    minimumRole: "admin",
-    enabled: true,
-    category: "tab",
-  },
-  {
-    id: "tab:admin:flags",
-    name: "Admin Flags Tab",
-    description: "Manage feature flags and access control",
-    minimumRole: "admin",
-    enabled: true,
-    category: "tab",
-  },
-
-  // ===== CAPABILITIES =====
-  {
-    id: "capability:export:video",
-    name: "Video Export",
-    description: "Export sequences as MP4 video",
-    minimumRole: "tester",
-    enabled: true,
-    category: "capability",
-  },
-  {
-    id: "capability:export:gif",
-    name: "GIF Export",
-    description: "Export sequences as animated GIF",
-    minimumRole: "tester",
-    enabled: true,
-    category: "capability",
-  },
-  {
-    id: "capability:export:png",
-    name: "PNG Export",
-    description: "Export sequences as PNG images",
-    minimumRole: "user",
-    enabled: true,
-    category: "capability",
-  },
-  {
-    id: "capability:share:social",
-    name: "Social Sharing",
-    description: "Share to social media platforms",
-    minimumRole: "user",
-    enabled: true,
-    category: "capability",
-  },
-  {
-    id: "capability:advanced:filters",
-    name: "Advanced Filters",
-    description: "Advanced sequence filtering options",
-    minimumRole: "premium",
-    enabled: true,
-    category: "capability",
-  },
-  {
-    id: "capability:sequence:import",
-    name: "Sequence Import",
-    description: "Import sequences from file",
-    minimumRole: "tester",
-    enabled: true,
-    category: "capability",
-  },
-];
+/**
+ * Default feature flags - populated dynamically at runtime from MODULE_DEFINITIONS
+ * This is a placeholder that will be replaced by the service.
+ * @deprecated Access feature flags via featureFlagService.featureConfigs instead
+ */
+export const DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [];
 
 /**
  * Helper to convert module ID to feature ID

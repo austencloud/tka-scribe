@@ -11,10 +11,10 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { loadFeatureModule } from "$lib/shared/inversify/container";
   import type { IAdminChallengeService } from "../services/contracts";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
+  import TrainChallengeManager from "./TrainChallengeManager.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
-  import DataMigration from "./DataMigration.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Services
@@ -60,6 +60,14 @@ import { loadFeatureModule } from "$lib/shared/inversify/container";
         >
           <DailyChallengeScheduler {adminChallengeService} />
         </div>
+      {:else if activeSection === "train-challenges"}
+        <div
+          id="train-challenges-panel"
+          role="tabpanel"
+          aria-labelledby="train-challenges-tab"
+        >
+          <TrainChallengeManager />
+        </div>
       {:else if activeSection === "analytics"}
         <div
           id="analytics-panel"
@@ -75,10 +83,6 @@ import { loadFeatureModule } from "$lib/shared/inversify/container";
       {:else if activeSection === "flags"}
         <div id="flags-panel" role="tabpanel" aria-labelledby="flags-tab">
           <FeatureFlagManagement />
-        </div>
-      {:else if activeSection === "tools"}
-        <div id="tools-panel" role="tabpanel" aria-labelledby="tools-tab">
-          <DataMigration />
         </div>
       {/if}
     </main>

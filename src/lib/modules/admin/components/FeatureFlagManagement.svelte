@@ -70,12 +70,20 @@
   .error-banner {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 24px;
+    gap: 10px;
+    padding: 10px 16px;
     background: rgba(239, 68, 68, 0.1);
     border-bottom: 1px solid rgba(239, 68, 68, 0.3);
     color: #fca5a5;
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  @media (min-width: 480px) {
+    .error-banner {
+      gap: 12px;
+      padding: 12px 24px;
+      font-size: 14px;
+    }
   }
 
   .error-banner button {
@@ -84,13 +92,26 @@
     border: none;
     color: inherit;
     cursor: pointer;
-    padding: 4px;
+    padding: 8px;
     opacity: 0.7;
     transition: opacity 0.2s;
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
   }
 
-  .error-banner button:hover {
-    opacity: 1;
+  @media (hover: hover) {
+    .error-banner button:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .error-banner button:active {
+    transform: scale(0.95);
   }
 
   .content-area {

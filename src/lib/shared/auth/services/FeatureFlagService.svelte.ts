@@ -17,12 +17,13 @@ import {
   type FeatureId,
   type FeatureFlagConfig,
   type UserFeatureOverrides,
-  DEFAULT_FEATURE_FLAGS,
   hasRolePrivilege,
   moduleIdToFeatureId,
   tabIdToFeatureId,
+  getDefaultFeatureRole,
 } from "../domain";
 import type { ModuleId } from "../../navigation/domain/types";
+import { MODULE_DEFINITIONS } from "../../navigation/state/navigation-state.svelte";
 
 /**
  * Global feature flags stored in Firestore
@@ -69,6 +70,114 @@ let unsubscribeGlobalFlags: (() => void) | null = null;
 let unsubscribeUserOverrides: (() => void) | null = null;
 
 // ============================================================================
+// FEATURE FLAG GENERATION
+// ============================================================================
+
+/**
+ * Generate feature flags dynamically from MODULE_DEFINITIONS
+ * This ensures feature flags always match the actual navigation modules
+ */
+function generateFeatureFlagsFromModules(): FeatureFlagConfig[] {
+  const flags: FeatureFlagConfig[] = [];
+
+  // Generate module and tab flags from MODULE_DEFINITIONS
+  for (const module of MODULE_DEFINITIONS) {
+    const moduleFeatureId = moduleIdToFeatureId(module.id);
+    const moduleRole = getDefaultFeatureRole(moduleFeatureId);
+
+    // Add module flag
+    flags.push({
+      id: moduleFeatureId,
+      name: `${module.label} Module`,
+      description: module.description || `Access to ${module.label.toLowerCase()} features`,
+      minimumRole: moduleRole,
+      enabled: true,
+      category: "module",
+    });
+
+    // Add tab flags for this module
+    for (const section of module.sections) {
+      const tabFeatureId = tabIdToFeatureId(module.id, section.id);
+      const tabRole = getDefaultFeatureRole(tabFeatureId, moduleRole);
+
+      flags.push({
+        id: tabFeatureId,
+        name: `${section.label} Tab`,
+        description: section.description || `${section.label} in ${module.label}`,
+        minimumRole: tabRole,
+        enabled: true,
+        category: "tab",
+      });
+    }
+  }
+
+  return flags;
+}
+
+/**
+ * Generate capability flags (static - not from navigation)
+ */
+function generateCapabilityFlags(): FeatureFlagConfig[] {
+  return [
+    {
+      id: "capability:export:video",
+      name: "Video Export",
+      description: "Export sequences as MP4 video",
+      minimumRole: "tester",
+      enabled: true,
+      category: "capability",
+    },
+    {
+      id: "capability:export:gif",
+      name: "GIF Export",
+      description: "Export sequences as animated GIF",
+      minimumRole: "tester",
+      enabled: true,
+      category: "capability",
+    },
+    {
+      id: "capability:export:png",
+      name: "PNG Export",
+      description: "Export sequences as PNG images",
+      minimumRole: "user",
+      enabled: true,
+      category: "capability",
+    },
+    {
+      id: "capability:share:social",
+      name: "Social Sharing",
+      description: "Share to social media platforms",
+      minimumRole: "user",
+      enabled: true,
+      category: "capability",
+    },
+    {
+      id: "capability:advanced:filters",
+      name: "Advanced Filters",
+      description: "Advanced sequence filtering options",
+      minimumRole: "premium",
+      enabled: true,
+      category: "capability",
+    },
+    {
+      id: "capability:sequence:import",
+      name: "Sequence Import",
+      description: "Import sequences from file",
+      minimumRole: "tester",
+      enabled: true,
+      category: "capability",
+    },
+  ];
+}
+
+// Generate default feature flags from navigation + capabilities
+// This is the source of truth for all feature flags
+const _DEFAULT_FEATURE_FLAGS: FeatureFlagConfig[] = [
+  ...generateFeatureFlagsFromModules(),
+  ...generateCapabilityFlags(),
+];
+
+// ============================================================================
 // PRIVATE HELPERS
 // ============================================================================
 
@@ -78,7 +187,7 @@ let unsubscribeUserOverrides: (() => void) | null = null;
 function getEffectiveFeatureConfig(
   featureId: FeatureId
 ): FeatureFlagConfig | null {
-  const defaultConfig = DEFAULT_FEATURE_FLAGS.find((f) => f.id === featureId);
+  const defaultConfig = _DEFAULT_FEATURE_FLAGS.find((f) => f.id === featureId);
   if (!defaultConfig) return null;
 
   const globalOverride = _state.globalOverrides[featureId];
@@ -143,7 +252,7 @@ export const featureFlagService = {
 
   /** Get all feature configs (with global overrides applied) */
   get featureConfigs(): FeatureFlagConfig[] {
-    return DEFAULT_FEATURE_FLAGS.map((defaultConfig) => {
+    return _DEFAULT_FEATURE_FLAGS.map((defaultConfig) => {
       const override = _state.globalOverrides[defaultConfig.id];
       return override ? { ...defaultConfig, ...override } : defaultConfig;
     });

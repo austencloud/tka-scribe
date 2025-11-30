@@ -1,530 +1,596 @@
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import SequenceBrowserPanel from "$lib/modules/animate/shared/components/SequenceBrowserPanel.svelte";
+  import type { IDiscoverThumbnailService } from "$lib/modules/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
 
-	interface Props {
-		selectedDate: string | null;
-		showPanel: boolean;
-		sequences: SequenceData[];
-		onClose: () => void;
-		onSchedule: (data: {
-			sequenceId: string;
-			title: string;
-			description: string;
-			difficulty: 'beginner' | 'intermediate' | 'advanced';
-			xpReward: number;
-		}) => void;
-	}
+  interface Props {
+    selectedDate: string | null;
+    showPanel: boolean;
+    onClose: () => void;
+    onSchedule: (data: {
+      sequenceId: string;
+      sequenceName: string;
+      title: string;
+      description: string;
+      difficulty: "beginner" | "intermediate" | "advanced";
+      xpReward: number;
+    }) => void;
+  }
 
-	let { selectedDate, showPanel, sequences, onClose, onSchedule }: Props = $props();
+  let { selectedDate, showPanel, onClose, onSchedule }: Props = $props();
 
-	// Local form state
-	let searchQuery = $state('');
-	let selectedSequence = $state<SequenceData | null>(null);
-	let customTitle = $state('');
-	let customDescription = $state('');
-	let customDifficulty = $state<'beginner' | 'intermediate' | 'advanced'>('intermediate');
-	let customXP = $state(50);
+  // Services
+  let thumbnailService = resolve(
+    TYPES.IDiscoverThumbnailService
+  ) as IDiscoverThumbnailService;
 
-	const filteredSequences = $derived.by(() => {
-		if (!searchQuery) return sequences;
-		const query = searchQuery.toLowerCase();
-		return sequences.filter(
-			(seq) => seq.name.toLowerCase().includes(query) || seq.word.toLowerCase().includes(query)
-		);
-	});
+  // Local form state
+  let showSequenceBrowser = $state(false);
+  let selectedSequence = $state<SequenceData | null>(null);
+  let customTitle = $state("");
+  let customDescription = $state("");
+  let customDifficulty = $state<"beginner" | "intermediate" | "advanced">(
+    "intermediate"
+  );
+  let customXP = $state(50);
 
-	function handleSequenceSelect(sequence: SequenceData) {
-		selectedSequence = sequence;
-		if (!customTitle) {
-			customTitle = `Daily Challenge: ${sequence.name}`;
-		}
-		if (!customDescription) {
-			customDescription = `Complete this sequence to earn XP!`;
-		}
-	}
+  // Get cover URL for selected sequence
+  function getCoverUrl(sequence: SequenceData): string | undefined {
+    const firstThumbnail = sequence.thumbnails?.[0];
+    if (!firstThumbnail) return undefined;
+    try {
+      return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
+    } catch {
+      return undefined;
+    }
+  }
 
-	function handleSchedule() {
-		if (!selectedSequence) return;
-		onSchedule({
-			sequenceId: selectedSequence.id,
-			title: customTitle || `Daily Challenge: ${selectedSequence.name}`,
-			description: customDescription || `Complete this sequence to earn XP!`,
-			difficulty: customDifficulty,
-			xpReward: customXP,
-		});
-	}
+  function handleSequenceSelect(sequence: SequenceData) {
+    selectedSequence = sequence;
+    showSequenceBrowser = false;
+    if (!customTitle) {
+      customTitle = `Daily Challenge: ${sequence.name}`;
+    }
+    if (!customDescription) {
+      customDescription = `Complete this sequence to earn XP!`;
+    }
+  }
 
-	function handleClose() {
-		// Reset local state
-		searchQuery = '';
-		selectedSequence = null;
-		customTitle = '';
-		customDescription = '';
-		customDifficulty = 'intermediate';
-		customXP = 50;
-		onClose();
-	}
+  function handleSchedule() {
+    if (!selectedSequence) return;
+    onSchedule({
+      sequenceId: selectedSequence.id,
+      sequenceName: selectedSequence.name,
+      title: customTitle || `Daily Challenge: ${selectedSequence.name}`,
+      description: customDescription || `Complete this sequence to earn XP!`,
+      difficulty: customDifficulty,
+      xpReward: customXP,
+    });
+  }
 
-	const formattedDate = $derived(
-		selectedDate
-			? new Date(selectedDate).toLocaleDateString('en-US', {
-					weekday: 'short',
-					month: 'short',
-					day: 'numeric',
-				})
-			: ''
-	);
+  function handleClose() {
+    // Reset local state
+    showSequenceBrowser = false;
+    selectedSequence = null;
+    customTitle = "";
+    customDescription = "";
+    customDifficulty = "intermediate";
+    customXP = 50;
+    onClose();
+  }
+
+  const formattedDate = $derived(
+    selectedDate
+      ? new Date(selectedDate).toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        })
+      : ""
+  );
 </script>
 
 <div class="detail-panel" class:active={showPanel}>
-	{#if showPanel && selectedDate}
-		<div class="creation-form">
-			<div class="form-header">
-				<h3>
-					<i class="fas fa-plus-circle"></i>
-					Schedule Challenge
-				</h3>
-				<button class="close-btn" onclick={handleClose} aria-label="Close panel">
-					<i class="fas fa-times"></i>
-				</button>
-			</div>
+  {#if showPanel && selectedDate}
+    <div class="creation-form">
+      <div class="form-header">
+        <h3>
+          <i class="fas fa-plus-circle"></i>
+          Schedule Challenge
+        </h3>
+        <button
+          class="close-btn"
+          onclick={handleClose}
+          aria-label="Close panel"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
-			<div class="date-display">
-				<i class="fas fa-calendar"></i>
-				{formattedDate}
-			</div>
+      <div class="date-display">
+        <i class="fas fa-calendar"></i>
+        {formattedDate}
+      </div>
 
-			<!-- Sequence Selection -->
-			<div class="form-section">
-				<span class="section-label">Select Sequence</span>
-				<div class="search-box">
-					<i class="fas fa-search"></i>
-					<input type="text" placeholder="Search sequences..." bind:value={searchQuery} />
-				</div>
-				<div class="sequence-grid">
-					{#each filteredSequences.slice(0, 8) as sequence (sequence.id)}
-						<button
-							class="sequence-card"
-							class:selected={selectedSequence?.id === sequence.id}
-							onclick={() => handleSequenceSelect(sequence)}
-						>
-							<div class="sequence-icon">
-								<i class="fas fa-layer-group"></i>
-							</div>
-							<div class="sequence-info">
-								<span class="sequence-name">{sequence.name}</span>
-								<span class="sequence-beats">{sequence.beats?.length ?? 0} beats</span>
-							</div>
-							{#if selectedSequence?.id === sequence.id}
-								<i class="fas fa-check-circle selected-check"></i>
-							{/if}
-						</button>
-					{/each}
-				</div>
-				{#if filteredSequences.length > 8}
-					<p class="more-sequences">+{filteredSequences.length - 8} more sequences</p>
-				{/if}
-			</div>
+      <!-- Sequence Selection -->
+      <div class="form-section">
+        <span class="section-label">Select Sequence</span>
+        {#if selectedSequence}
+          {@const coverUrl = getCoverUrl(selectedSequence)}
+          <button
+            class="selected-sequence-card"
+            onclick={() => (showSequenceBrowser = true)}
+          >
+            {#if coverUrl}
+              <img
+                class="sequence-thumbnail"
+                src={coverUrl}
+                alt={selectedSequence.name}
+              />
+            {:else}
+              <div class="sequence-icon-large">
+                <i class="fas fa-layer-group"></i>
+              </div>
+            {/if}
+            <div class="sequence-info-large">
+              <span class="sequence-name">{selectedSequence.name}</span>
+              <span class="sequence-details">
+                {selectedSequence.beats?.length ?? 0} beats • {selectedSequence.word ||
+                  "Unknown"}
+              </span>
+            </div>
+            <div class="change-sequence">
+              <i class="fas fa-exchange-alt"></i>
+              <span>Change</span>
+            </div>
+          </button>
+        {:else}
+          <button
+            class="select-sequence-btn"
+            onclick={() => (showSequenceBrowser = true)}
+          >
+            <div class="btn-icon">
+              <i class="fas fa-plus-circle"></i>
+            </div>
+            <span>Browse Sequences</span>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        {/if}
+      </div>
 
-			{#if selectedSequence}
-				<!-- Challenge Details Form -->
-				<div class="form-section">
-					<span class="section-label">Challenge Details</span>
+      {#if selectedSequence}
+        <!-- Challenge Details Form -->
+        <div class="form-section">
+          <span class="section-label">Challenge Details</span>
 
-					<div class="form-group">
-						<label for="title">Title</label>
-						<input
-							id="title"
-							type="text"
-							bind:value={customTitle}
-							placeholder="Daily Challenge: Sequence Name"
-						/>
-					</div>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input
+              id="title"
+              type="text"
+              bind:value={customTitle}
+              placeholder="Daily Challenge: Sequence Name"
+            />
+          </div>
 
-					<div class="form-group">
-						<label for="description">Description</label>
-						<textarea
-							id="description"
-							bind:value={customDescription}
-							placeholder="Complete this sequence to earn XP!"
-							rows="2"
-						></textarea>
-					</div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              bind:value={customDescription}
+              placeholder="Complete this sequence to earn XP!"
+              rows="2"
+            ></textarea>
+          </div>
 
-					<div class="form-row">
-						<div class="form-group">
-							<label for="difficulty">Difficulty</label>
-							<select id="difficulty" bind:value={customDifficulty}>
-								<option value="beginner">Beginner</option>
-								<option value="intermediate">Intermediate</option>
-								<option value="advanced">Advanced</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="xp">XP Reward</label>
-							<input id="xp" type="number" bind:value={customXP} min="10" max="500" step="10" />
-						</div>
-					</div>
-				</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="difficulty">Difficulty</label>
+              <select id="difficulty" bind:value={customDifficulty}>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="xp">XP Reward</label>
+              <input
+                id="xp"
+                type="number"
+                bind:value={customXP}
+                min="10"
+                max="500"
+                step="10"
+              />
+            </div>
+          </div>
+        </div>
 
-				<!-- Actions -->
-				<div class="form-actions">
-					<button class="cancel-btn" onclick={handleClose}> Cancel </button>
-					<button class="schedule-btn" onclick={handleSchedule}>
-						<i class="fas fa-check"></i>
-						Schedule Challenge
-					</button>
-				</div>
-			{/if}
-		</div>
-	{:else}
-		<div class="empty-detail">
-			<div class="empty-icon">
-				<i class="fas fa-mouse-pointer"></i>
-			</div>
-			<h3>Select a Date</h3>
-			<p>Click on a date in the calendar to schedule a new challenge</p>
-		</div>
-	{/if}
+        <!-- Actions -->
+        <div class="form-actions">
+          <button class="cancel-btn" onclick={handleClose}> Cancel </button>
+          <button class="schedule-btn" onclick={handleSchedule}>
+            <i class="fas fa-check"></i>
+            Schedule Challenge
+          </button>
+        </div>
+      {/if}
+    </div>
+  {:else}
+    <div class="empty-detail">
+      <div class="empty-icon">
+        <i class="fas fa-mouse-pointer"></i>
+      </div>
+      <h3>Select a Date</h3>
+      <p>Click on a date in the calendar to schedule a new challenge</p>
+    </div>
+  {/if}
 </div>
 
+<!-- Sequence Browser Drawer -->
+<SequenceBrowserPanel
+  mode="primary"
+  show={showSequenceBrowser}
+  onSelect={handleSequenceSelect}
+  onClose={() => (showSequenceBrowser = false)}
+  placement="right"
+/>
+
 <style>
-	.detail-panel {
-		background: rgba(0, 0, 0, 0.2);
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 12px;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-	}
+  .detail-panel {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-	.empty-detail {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		padding: 2rem;
-		text-align: center;
-		opacity: 0.5;
-	}
+  .empty-detail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    opacity: 0.5;
+  }
 
-	.empty-icon {
-		width: 80px;
-		height: 80px;
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 2rem;
-		margin-bottom: 1rem;
-	}
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
 
-	.empty-detail h3 {
-		margin: 0 0 0.5rem 0;
-		font-size: 1.2rem;
-	}
+  .empty-detail h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+  }
 
-	.empty-detail p {
-		margin: 0;
-		font-size: 0.9rem;
-		max-width: 200px;
-	}
+  .empty-detail p {
+    margin: 0;
+    font-size: 0.9rem;
+    max-width: 200px;
+  }
 
-	.creation-form {
-		flex: 1;
-		padding: 1.25rem;
-		overflow-y: auto;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
+  .creation-form {
+    flex: 1;
+    padding: 1.25rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-	.form-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-	.form-header h3 {
-		margin: 0;
-		font-size: 1.1rem;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
+  .form-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
-	.close-btn {
-		width: 32px;
-		height: 32px;
-		border: none;
-		background: rgba(255, 255, 255, 0.1);
-		color: #fff;
-		border-radius: 6px;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: all 0.2s ease;
-	}
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
 
-	.close-btn:hover {
-		background: rgba(255, 255, 255, 0.2);
-	}
+  .close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
 
-	.date-display {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 0.75rem 1rem;
-		background: rgba(102, 126, 234, 0.15);
-		border: 1px solid rgba(102, 126, 234, 0.3);
-		border-radius: 8px;
-		font-weight: 500;
-	}
+  .date-display {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(102, 126, 234, 0.15);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 8px;
+    font-weight: 500;
+  }
 
-	.form-section {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 
-	.section-label {
-		font-size: 0.9rem;
-		font-weight: 600;
-		opacity: 0.8;
-	}
+  .section-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.8;
+  }
 
-	.search-box {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		padding: 0.6rem 0.85rem;
-	}
+  /* Browse Sequences Button */
+  .select-sequence-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem;
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px dashed rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
 
-	.search-box i {
-		opacity: 0.5;
-	}
+  .select-sequence-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
+  }
 
-	.search-box input {
-		flex: 1;
-		background: transparent;
-		border: none;
-		outline: none;
-		color: #fff;
-		font-size: 0.9rem;
-	}
+  .select-sequence-btn .btn-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(102, 126, 234, 0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #667eea;
+  }
 
-	.search-box input::placeholder {
-		color: rgba(255, 255, 255, 0.4);
-	}
+  .select-sequence-btn span {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+  }
 
-	.sequence-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0.5rem;
-		max-height: 200px;
-		overflow-y: auto;
-	}
+  .select-sequence-btn .fa-chevron-right {
+    opacity: 0.5;
+  }
 
-	.sequence-card {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.6rem;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 8px;
-		cursor: pointer;
-		text-align: left;
-		color: #fff;
-		transition: all 0.15s ease;
-	}
+  /* Selected Sequence Card */
+  .selected-sequence-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(102, 126, 234, 0.15);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
 
-	.sequence-card:hover {
-		background: rgba(255, 255, 255, 0.08);
-		border-color: rgba(255, 255, 255, 0.15);
-	}
+  .selected-sequence-card:hover {
+    background: rgba(102, 126, 234, 0.25);
+    border-color: rgba(102, 126, 234, 0.5);
+  }
 
-	.sequence-card.selected {
-		background: rgba(102, 126, 234, 0.2);
-		border-color: rgba(102, 126, 234, 0.5);
-	}
+  .sequence-thumbnail {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.2);
+  }
 
-	.sequence-icon {
-		width: 32px;
-		height: 32px;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 6px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 0.85rem;
-		flex-shrink: 0;
-	}
+  .sequence-icon-large {
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
 
-	.sequence-info {
-		flex: 1;
-		min-width: 0;
-		display: flex;
-		flex-direction: column;
-	}
+  .sequence-info-large {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 
-	.sequence-name {
-		font-size: 0.85rem;
-		font-weight: 500;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+  .sequence-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-	.sequence-beats {
-		font-size: 0.7rem;
-		opacity: 0.5;
-	}
+  .sequence-details {
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
 
-	.selected-check {
-		color: #4ade80;
-		flex-shrink: 0;
-	}
+  .change-sequence {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-size: 0.7rem;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+  }
 
-	.more-sequences {
-		margin: 0;
-		font-size: 0.8rem;
-		opacity: 0.5;
-		text-align: center;
-	}
+  .selected-sequence-card:hover .change-sequence {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+  }
 
-	.form-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.4rem;
-	}
+  .change-sequence i {
+    font-size: 0.9rem;
+  }
 
-	.form-group label {
-		font-size: 0.85rem;
-		opacity: 0.7;
-	}
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
 
-	.form-group input,
-	.form-group textarea,
-	.form-group select {
-		padding: 0.6rem 0.85rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 6px;
-		color: #fff;
-		font-size: 0.9rem;
-		transition: all 0.2s ease;
-	}
+  .form-group label {
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
 
-	.form-group input:focus,
-	.form-group textarea:focus,
-	.form-group select:focus {
-		outline: none;
-		border-color: rgba(102, 126, 234, 0.5);
-		background: rgba(255, 255, 255, 0.08);
-	}
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 0.6rem 0.85rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
 
-	.form-group textarea {
-		resize: vertical;
-		min-height: 60px;
-		font-family: inherit;
-	}
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: rgba(102, 126, 234, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+  }
 
-	.form-row {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0.75rem;
-	}
+  .form-group textarea {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+  }
 
-	.form-actions {
-		display: flex;
-		gap: 0.75rem;
-		margin-top: auto;
-		padding-top: 1rem;
-	}
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
 
-	.cancel-btn,
-	.schedule-btn {
-		flex: 1;
-		padding: 0.75rem;
-		border: none;
-		border-radius: 8px;
-		cursor: pointer;
-		font-size: 0.95rem;
-		transition: all 0.2s ease;
-	}
+  .form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 1rem;
+  }
 
-	.cancel-btn {
-		background: rgba(255, 255, 255, 0.1);
-		color: #fff;
-	}
+  .cancel-btn,
+  .schedule-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
 
-	.cancel-btn:hover {
-		background: rgba(255, 255, 255, 0.15);
-	}
+  .cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
 
-	.schedule-btn {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: #fff;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-	}
+  .cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
 
-	.schedule-btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-	}
+  .schedule-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
 
-	.sequence-grid::-webkit-scrollbar,
-	.creation-form::-webkit-scrollbar {
-		width: 6px;
-	}
+  .schedule-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
 
-	.sequence-grid::-webkit-scrollbar-track,
-	.creation-form::-webkit-scrollbar-track {
-		background: transparent;
-	}
+  .creation-form::-webkit-scrollbar {
+    width: 6px;
+  }
 
-	.sequence-grid::-webkit-scrollbar-thumb,
-	.creation-form::-webkit-scrollbar-thumb {
-		background: rgba(255, 255, 255, 0.15);
-		border-radius: 3px;
-	}
+  .creation-form::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-	@media (max-width: 1024px) {
-		.detail-panel {
-			position: fixed;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			width: 100%;
-			max-width: 400px;
-			transform: translateX(100%);
-			transition: transform 0.3s ease;
-			z-index: 100;
-			border-radius: 0;
-		}
+  .creation-form::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
 
-		.detail-panel.active {
-			transform: translateX(0);
-		}
-	}
+  @media (max-width: 1024px) {
+    .detail-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 400px;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 100;
+      border-radius: 0;
+    }
 
-	@media (max-width: 768px) {
-		.sequence-grid {
-			grid-template-columns: 1fr;
-		}
+    .detail-panel.active {
+      transform: translateX(0);
+    }
+  }
 
-		.form-row {
-			grid-template-columns: 1fr;
-		}
-	}
+  @media (max-width: 768px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

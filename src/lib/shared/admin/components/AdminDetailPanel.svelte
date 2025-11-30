@@ -1,213 +1,263 @@
 <script lang="ts">
-	/**
-	 * AdminDetailPanel
-	 *
-	 * Right-side detail panel with header, close button, and optional action footer.
-	 * Used within AdminTwoPanelLayout to display details of a selected item.
-	 *
-	 * @example
-	 * <AdminDetailPanel
-	 *   title="User Details"
-	 *   subtitle="john@example.com"
-	 *   icon="fa-user"
-	 *   onClose={() => selectedUser = null}
-	 * >
-	 *   <div>Detail content</div>
-	 *
-	 *   {#snippet actions()}
-	 *     <button>Save</button>
-	 *   {/snippet}
-	 * </AdminDetailPanel>
-	 */
+  /**
+   * AdminDetailPanel
+   *
+   * Right-side detail panel with header, close button, and optional action footer.
+   * Used within AdminTwoPanelLayout to display details of a selected item.
+   *
+   * @example
+   * <AdminDetailPanel
+   *   title="User Details"
+   *   subtitle="john@example.com"
+   *   icon="fa-user"
+   *   onClose={() => selectedUser = null}
+   * >
+   *   <div>Detail content</div>
+   *
+   *   {#snippet actions()}
+   *     <button>Save</button>
+   *   {/snippet}
+   * </AdminDetailPanel>
+   */
 
-	import { ADMIN_COLORS, ADMIN_SPACING, ADMIN_RADIUS } from '../styles/admin-theme';
+  import {
+    ADMIN_COLORS,
+    ADMIN_SPACING,
+    ADMIN_RADIUS,
+  } from "../styles/admin-theme";
 
-	interface AdminDetailPanelProps {
-		title: string;
-		subtitle?: string;
-		icon?: string;
-		onClose: () => void;
-		variant?: 'default' | 'form' | 'readonly';
-		class?: string;
-		children: any;
-		header?: any;
-		actions?: any;
-	}
+  interface AdminDetailPanelProps {
+    title: string;
+    subtitle?: string;
+    icon?: string;
+    onClose: () => void;
+    variant?: "default" | "form" | "readonly";
+    class?: string;
+    children: any;
+    header?: any;
+    actions?: any;
+  }
 
-	let {
-		title,
-		subtitle,
-		icon,
-		onClose,
-		variant = 'default',
-		class: className = '',
-		children,
-		header,
-		actions,
-	}: AdminDetailPanelProps = $props();
+  let {
+    title,
+    subtitle,
+    icon,
+    onClose,
+    variant = "default",
+    class: className = "",
+    children,
+    header,
+    actions,
+  }: AdminDetailPanelProps = $props();
 </script>
 
 <div class="admin-detail-panel {className} variant-{variant}">
-	{#if header}
-		{@render header()}
-	{:else}
-		<header class="detail-header">
-			<button class="close-btn" onclick={onClose} aria-label="Close detail panel">
-				<i class="fas fa-times"></i>
-			</button>
+  {#if header}
+    {@render header()}
+  {:else}
+    <header class="detail-header">
+      <button
+        class="close-btn"
+        onclick={onClose}
+        aria-label="Close detail panel"
+      >
+        <i class="fas fa-times"></i>
+      </button>
 
-			{#if icon}
-				<div class="header-icon">
-					<i class="fas {icon}"></i>
-				</div>
-			{/if}
+      {#if icon}
+        <div class="header-icon">
+          <i class="fas {icon}"></i>
+        </div>
+      {/if}
 
-			<h3 class="header-title">{title}</h3>
+      <h3 class="header-title">{title}</h3>
 
-			{#if subtitle}
-				<p class="header-subtitle">{subtitle}</p>
-			{/if}
-		</header>
-	{/if}
+      {#if subtitle}
+        <p class="header-subtitle">{subtitle}</p>
+      {/if}
+    </header>
+  {/if}
 
-	<div class="detail-content">
-		{@render children()}
-	</div>
+  <div class="detail-content">
+    {@render children()}
+  </div>
 
-	{#if actions}
-		<footer class="detail-footer">
-			{@render actions()}
-		</footer>
-	{/if}
+  {#if actions}
+    <footer class="detail-footer">
+      {@render actions()}
+    </footer>
+  {/if}
 </div>
 
 <style>
-	.admin-detail-panel {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.2);
-	}
+  .admin-detail-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+  }
 
-	/* Header */
-	.detail-header {
-		position: relative;
-		padding: 32px 24px;
-		text-align: center;
-		background: linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	}
+  /* Header */
+  .detail-header {
+    position: relative;
+    padding: 32px 24px;
+    text-align: center;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.05) 0%,
+      transparent 100%
+    );
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-	.close-btn {
-		position: absolute;
-		top: 16px;
-		right: 16px;
-		width: 32px;
-		height: 32px;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.1);
-		border: none;
-		color: rgba(255, 255, 255, 0.6);
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: all 0.2s;
-	}
+  .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
 
-	/* Expand touch target while maintaining visual size */
-	.close-btn::before {
-		content: '';
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		min-width: 48px;
-		min-height: 48px;
-	}
+  /* Expand touch target while maintaining visual size */
+  .close-btn::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
+  }
 
-	.close-btn:hover {
-		background: rgba(255, 255, 255, 0.2);
-		color: white;
-	}
+  .close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
 
-	.header-icon {
-		width: 64px;
-		height: 64px;
-		margin: 0 auto 16px;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.05);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 24px;
-		color: rgba(255, 255, 255, 0.7);
-	}
+  .header-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+  }
 
-	.header-title {
-		margin: 0 0 4px 0;
-		font-size: 20px;
-		font-weight: 600;
-		color: rgba(255, 255, 255, 0.95);
-	}
+  .header-title {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
 
-	.header-subtitle {
-		margin: 0;
-		font-size: 14px;
-		color: rgba(255, 255, 255, 0.6);
-	}
+  .header-subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+  }
 
-	/* Content */
-	.detail-content {
-		flex: 1;
-		overflow-y: auto;
-		padding: 24px;
-	}
+  /* Content */
+  .detail-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+  }
 
-	.detail-content::-webkit-scrollbar {
-		width: 6px;
-	}
+  .detail-content::-webkit-scrollbar {
+    width: 6px;
+  }
 
-	.detail-content::-webkit-scrollbar-track {
-		background: rgba(255, 255, 255, 0.05);
-	}
+  .detail-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
 
-	.detail-content::-webkit-scrollbar-thumb {
-		background: rgba(255, 255, 255, 0.2);
-		border-radius: 3px;
-	}
+  .detail-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
 
-	.detail-content::-webkit-scrollbar-thumb:hover {
-		background: rgba(255, 255, 255, 0.3);
-	}
+  .detail-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
 
-	/* Footer */
-	.detail-footer {
-		padding: 16px 24px;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		background: rgba(0, 0, 0, 0.3);
-		display: flex;
-		gap: 12px;
-		justify-content: flex-end;
-	}
+  /* Footer */
+  .detail-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
 
-	/* Variant: readonly (remove edit actions styling) */
-	.variant-readonly .detail-footer {
-		justify-content: center;
-	}
+  /* Safe area padding for notched devices */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .detail-footer {
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+  }
 
-	/* Mobile adjustments */
-	@media (max-width: 767px) {
-		.detail-header {
-			padding: 24px 16px;
-		}
+  /* Variant: readonly (remove edit actions styling) */
+  .variant-readonly .detail-footer {
+    justify-content: center;
+  }
 
-		.detail-content {
-			padding: 16px;
-		}
+  /* Mobile adjustments */
+  @media (max-width: 767px) {
+    .detail-header {
+      padding: 20px 16px 24px;
+    }
 
-		.detail-footer {
-			padding: 12px 16px;
-		}
-	}
+    .header-icon {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 12px;
+      font-size: 22px;
+    }
+
+    .header-title {
+      font-size: 18px;
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .close-btn {
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+    }
+
+    .detail-content {
+      padding: 16px;
+    }
+
+    .detail-footer {
+      padding: 12px 16px;
+      gap: 10px;
+    }
+
+    /* Stack buttons on very small screens */
+    .detail-footer > :global(*) {
+      flex: 1;
+      min-width: 120px;
+    }
+  }
 </style>
