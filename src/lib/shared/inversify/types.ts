@@ -466,6 +466,13 @@ export const TYPES = {
   IHandStateAnalyzer: Symbol.for("IHandStateAnalyzer"),
   IHandTrackingStabilizer: Symbol.for("IHandTrackingStabilizer"),
   IHandAssignmentService: Symbol.for("IHandAssignmentService"),
+
+  // === TRAIN MODULE - PRACTICE SERVICES ===
+  IVoiceCommandService: Symbol.for("IVoiceCommandService"),
+
+  // === TRAIN MODULE - CHALLENGES & PROGRESS ===
+  ITrainChallengeService: Symbol.for("ITrainChallengeService"),
+  IPerformanceHistoryService: Symbol.for("IPerformanceHistoryService"),
 } as const;
 
 // Type helper for getting service types

@@ -1,9 +1,24 @@
 <!--
   ResultsScreen.svelte - Post-performance results display
 
-  Shows performance statistics, accuracy, combo stats, and final score.
+  Shows performance statistics, accuracy, combo stats, final score, XP earned, and challenge progress.
 -->
 <script lang="ts">
+	import type { TrainChallenge } from "../domain/models/TrainChallengeModels";
+
+	interface XPBreakdown {
+		baseXP: number;
+		accuracyBonus: number;
+		comboBonus: number;
+		totalXP: number;
+	}
+
+	interface ChallengeProgress {
+		challenge: TrainChallenge;
+		currentProgress: number;
+		isComplete: boolean;
+	}
+
 	interface Props {
 		totalBeats: number;
 		hits: number;
@@ -11,6 +26,8 @@
 		maxCombo: number;
 		finalScore: number;
 		sequenceName?: string;
+		xpBreakdown?: XPBreakdown;
+		challengeProgress?: ChallengeProgress;
 		onPlayAgain?: () => void;
 		onExit?: () => void;
 	}
@@ -22,6 +39,8 @@
 		maxCombo = 0,
 		finalScore = 0,
 		sequenceName = "Sequence",
+		xpBreakdown,
+		challengeProgress,
 		onPlayAgain,
 		onExit,
 	}: Props = $props();
@@ -122,6 +141,77 @@
 				<span class="detail-value">{maxCombo === totalBeats ? "Yes! 🎉" : "No"}</span>
 			</div>
 		</div>
+
+		<!-- XP Breakdown -->
+		{#if xpBreakdown}
+			<div class="xp-section">
+				<div class="xp-header">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+					</svg>
+					<h3>XP Earned</h3>
+				</div>
+				<div class="xp-breakdown">
+					<div class="xp-row">
+						<span class="xp-label">Base XP</span>
+						<span class="xp-value">+{xpBreakdown.baseXP}</span>
+					</div>
+					{#if xpBreakdown.accuracyBonus > 0}
+						<div class="xp-row bonus">
+							<span class="xp-label">Accuracy Bonus</span>
+							<span class="xp-value">+{xpBreakdown.accuracyBonus}</span>
+						</div>
+					{/if}
+					{#if xpBreakdown.comboBonus > 0}
+						<div class="xp-row bonus">
+							<span class="xp-label">Combo Bonus</span>
+							<span class="xp-value">+{xpBreakdown.comboBonus}</span>
+						</div>
+					{/if}
+					<div class="xp-total">
+						<span class="xp-total-label">Total XP</span>
+						<span class="xp-total-value">+{xpBreakdown.totalXP}</span>
+					</div>
+				</div>
+			</div>
+		{/if}
+
+		<!-- Challenge Progress -->
+		{#if challengeProgress}
+			<div class="challenge-section" class:complete={challengeProgress.isComplete}>
+				<div class="challenge-header">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+						<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+						<path d="M4 22h16"/>
+						<path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+						<path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+						<path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+					</svg>
+					<h3>{challengeProgress.isComplete ? "Challenge Completed!" : "Challenge Progress"}</h3>
+				</div>
+				<div class="challenge-info">
+					<div class="challenge-title">{challengeProgress.challenge.title}</div>
+					<div class="challenge-progress-bar">
+						<div class="progress-track">
+							<div
+								class="progress-fill"
+								style="width: {Math.min((challengeProgress.currentProgress / challengeProgress.challenge.requirement.target) * 100, 100)}%"
+							></div>
+						</div>
+						<div class="progress-text">
+							{challengeProgress.currentProgress} / {challengeProgress.challenge.requirement.target}
+						</div>
+					</div>
+					{#if challengeProgress.isComplete}
+						<div class="challenge-reward">
+							<span class="reward-label">Reward:</span>
+							<span class="reward-value">+{challengeProgress.challenge.xpReward} XP</span>
+						</div>
+					{/if}
+				</div>
+			</div>
+		{/if}
 
 		<!-- Action buttons -->
 		<div class="action-buttons">
@@ -453,5 +543,191 @@
 
 	.secondary-button:hover {
 		background: rgba(255, 255, 255, 0.1);
+	}
+
+	/* XP Section */
+	.xp-section {
+		padding: 1.5rem;
+		background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.05));
+		border: 1px solid rgba(234, 179, 8, 0.3);
+		border-radius: 12px;
+	}
+
+	.xp-header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.xp-header svg {
+		width: 24px;
+		height: 24px;
+		color: #eab308;
+	}
+
+	.xp-header h3 {
+		margin: 0;
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: #eab308;
+	}
+
+	.xp-breakdown {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.xp-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5rem 0;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	.xp-row.bonus {
+		color: rgba(234, 179, 8, 0.9);
+	}
+
+	.xp-label {
+		font-size: 0.9rem;
+	}
+
+	.xp-value {
+		font-size: 1rem;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.xp-total {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem 0;
+		margin-top: 0.5rem;
+		border-top: 2px solid rgba(234, 179, 8, 0.3);
+	}
+
+	.xp-total-label {
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: white;
+	}
+
+	.xp-total-value {
+		font-size: 1.5rem;
+		font-weight: 800;
+		color: #eab308;
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* Challenge Section */
+	.challenge-section {
+		padding: 1.5rem;
+		background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
+		border: 1px solid rgba(59, 130, 246, 0.3);
+		border-radius: 12px;
+	}
+
+	.challenge-section.complete {
+		background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+		border-color: rgba(34, 197, 94, 0.3);
+	}
+
+	.challenge-header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.challenge-header svg {
+		width: 24px;
+		height: 24px;
+		color: #3b82f6;
+	}
+
+	.challenge-section.complete .challenge-header svg {
+		color: #22c55e;
+	}
+
+	.challenge-header h3 {
+		margin: 0;
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: #3b82f6;
+	}
+
+	.challenge-section.complete .challenge-header h3 {
+		color: #22c55e;
+	}
+
+	.challenge-info {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.challenge-title {
+		font-size: 1rem;
+		font-weight: 600;
+		color: white;
+	}
+
+	.challenge-progress-bar {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.progress-track {
+		width: 100%;
+		height: 8px;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+		border-radius: 4px;
+		transition: width 0.5s ease-out;
+	}
+
+	.challenge-section.complete .progress-fill {
+		background: linear-gradient(90deg, #22c55e, #10b981);
+	}
+
+	.progress-text {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.7);
+		text-align: center;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.challenge-reward {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.75rem;
+		background: rgba(34, 197, 94, 0.2);
+		border-radius: 8px;
+	}
+
+	.reward-label {
+		font-size: 0.875rem;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	.reward-value {
+		font-size: 1.125rem;
+		font-weight: 700;
+		color: #22c55e;
+		font-variant-numeric: tabular-nums;
 	}
 </style>

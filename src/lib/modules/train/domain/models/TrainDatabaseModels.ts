@@ -32,6 +32,11 @@ export interface StoredPerformance {
 		xpEarned: number;
 	};
 
+	// Optional metadata
+	metadata?: {
+		sessionDuration?: number; // Duration in milliseconds
+	};
+
 	// Optional video reference (stored in separate blob storage)
 	videoStorageKey?: string;
 }

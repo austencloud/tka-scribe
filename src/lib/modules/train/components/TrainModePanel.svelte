@@ -7,7 +7,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
 	import { createTrainState } from "../state/train-state.svelte";
-	import { TrainMode } from "../domain/enums/TrainEnums";
+	import { TrainMode, PracticeMode } from "../domain/enums/TrainEnums";
+	import type { AdaptiveConfig, StepConfig, TimedConfig } from "../state/train-practice-state.svelte";
 	import CameraPreview from "./CameraPreview.svelte";
 	import GridOverlay from "./GridOverlay.svelte";
 	import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
@@ -17,20 +18,65 @@
 	import { MediaPipeDetectionService } from "../services/implementations/MediaPipeDetectionService";
 	import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+	import { container } from "$lib/shared/inversify/container";
+	import { TYPES } from "$lib/shared/inversify/types";
+	import type { ITrainChallengeService } from "../services/contracts/ITrainChallengeService";
+	import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
+	import { activeChallengeState } from "../state/active-challenge-state.svelte";
+	import {
+		sessionResultToScore,
+		checkChallengeRequirement,
+		calculateSessionXP,
+		type SessionResult,
+	} from "../utils/challenge-completion-detector";
+	import { addNotification } from "$lib/shared/gamification/state/notification-state.svelte";
 
 	interface Props {
 		sequence?: SequenceData | null;
+		practiceMode?: PracticeMode;
+		modeConfig?: AdaptiveConfig | StepConfig | TimedConfig;
+		challengeId?: string;
 		onBack?: () => void;
 	}
 
-	let { sequence = null, onBack }: Props = $props();
+	let {
+		sequence = null,
+		practiceMode = PracticeMode.TIMED,
+		modeConfig,
+		challengeId,
+		onBack
+	}: Props = $props();
 
 	// Initialize train state
 	const trainState = createTrainState();
 
-	// Detection service
+	// Services
 	let detectionService: IPositionDetectionService | null = $state(null);
 	let isDetectionReady = $state(false);
+	const challengeService = container.get<ITrainChallengeService>(
+		TYPES.ITrainChallengeService
+	);
+	const achievementService = container.get<IAchievementService>(
+		TYPES.IAchievementService
+	);
+
+	// Session tracking
+	let sessionStartTime = 0;
+	let hasProcessedSession = false;
+
+	// Results data for display
+	let sessionXPBreakdown = $state<{
+		baseXP: number;
+		accuracyBonus: number;
+		comboBonus: number;
+		totalXP: number;
+	} | undefined>(undefined);
+
+	let sessionChallengeProgress = $state<{
+		challenge: any;
+		currentProgress: number;
+		isComplete: boolean;
+	} | undefined>(undefined);
 
 	// Timing system
 	let beatInterval: number | null = null;
@@ -121,10 +167,173 @@
 	$effect(() => {
 		if (trainState.isPerforming && !beatInterval) {
 			startBeatTimer();
+			// Record session start time
+			sessionStartTime = Date.now();
+			hasProcessedSession = false;
 		} else if (!trainState.isPerforming && beatInterval) {
 			stopBeatTimer();
 		}
 	});
+
+	// Process session completion when entering REVIEW mode
+	$effect(() => {
+		if (trainState.mode === TrainMode.REVIEW && !hasProcessedSession) {
+			hasProcessedSession = true;
+			processSessionCompletion();
+		}
+	});
+
+	async function processSessionCompletion() {
+		const duration = Date.now() - sessionStartTime;
+		const accuracy =
+			trainState.totalBeats > 0
+				? (trainState.totalHits / trainState.totalBeats) * 100
+				: 0;
+
+		const sessionResult: SessionResult = {
+			totalBeats: trainState.totalBeats,
+			hits: trainState.totalHits,
+			misses: trainState.totalMisses,
+			maxCombo: trainState.maxCombo,
+			finalScore: trainState.currentScore,
+			accuracy,
+			mode: practiceMode,
+			sequenceId: sequence?.id,
+			bpm: (modeConfig as any)?.bpm, // For timed mode
+			duration,
+		};
+
+		// Award base session XP
+		const xpBreakdown = calculateSessionXP(sessionResult);
+		sessionXPBreakdown = xpBreakdown; // Store for ResultsScreen
+		console.log(`Training session XP: ${xpBreakdown.totalXP}`, xpBreakdown);
+
+		try {
+			await achievementService.trackAction("training_session_completed", {
+				accuracy: sessionResult.accuracy,
+				combo: sessionResult.maxCombo,
+				mode: practiceMode,
+			});
+
+			// Track specific achievements
+			if (accuracy === 100) {
+				await achievementService.trackAction("perfect_training_run", {});
+			}
+			if (sessionResult.maxCombo >= 20) {
+				await achievementService.trackAction("training_combo_20", {});
+			}
+			if (
+				practiceMode === PracticeMode.TIMED &&
+				sessionResult.bpm &&
+				sessionResult.bpm >= 150
+			) {
+				await achievementService.trackAction("timed_150bpm", {});
+			}
+		} catch (error) {
+			console.error("Failed to award session XP:", error);
+		}
+
+		// Process active challenge if exists
+		const activeChallenge = activeChallengeState.activeChallenge;
+		if (activeChallenge) {
+			try {
+				const increment = checkChallengeRequirement(
+					activeChallenge,
+					sessionResult
+				);
+
+				if (increment > 0) {
+					const score = sessionResultToScore(sessionResult);
+					await challengeService.recordProgress(
+						activeChallenge.id,
+						increment,
+						score
+					);
+
+					// Check if challenge is now complete
+					const progress = await challengeService.getUserProgressForChallenge(
+						activeChallenge.id
+					);
+
+					if (
+						progress &&
+						progress.progress >= activeChallenge.requirement.target &&
+						!progress.isCompleted
+					) {
+						// Complete the challenge
+						const challengeXP = await challengeService.completeChallenge(
+							activeChallenge.id,
+							score
+						);
+						console.log(
+							`🏆 Challenge completed! +${challengeXP} XP: ${activeChallenge.title}`
+						);
+
+						// Store challenge completion for ResultsScreen
+						sessionChallengeProgress = {
+							challenge: activeChallenge,
+							currentProgress: progress.progress,
+							isComplete: true,
+						};
+
+						// Show completion notification
+						addNotification({
+							id: `challenge-${activeChallenge.id}-${Date.now()}`,
+							type: "challenge_complete",
+							title: "Challenge Completed!",
+							message: `${activeChallenge.title} - +${challengeXP} XP`,
+							icon: "fa-trophy",
+							timestamp: new Date(),
+							isRead: false,
+							data: {
+								xpGained: challengeXP,
+								challengeTitle: activeChallenge.title,
+							},
+						});
+
+						// Track challenge completion achievement
+						await achievementService.trackAction("train_challenge_completed", {
+							challengeId: activeChallenge.id,
+							difficulty: activeChallenge.difficulty,
+							challengeType: "train",
+						});
+
+						// Clear active challenge
+						activeChallengeState.clearActiveChallenge();
+					} else {
+						console.log(
+							`Challenge progress: ${progress?.progress || 0}/${activeChallenge.requirement.target}`
+						);
+
+						// Store challenge progress for ResultsScreen
+						if (progress) {
+							sessionChallengeProgress = {
+								challenge: activeChallenge,
+								currentProgress: progress.progress,
+								isComplete: false,
+							};
+						}
+
+						// Show progress notification
+						if (progress) {
+							addNotification({
+								id: `progress-${activeChallenge.id}-${Date.now()}`,
+								type: "challenge_complete",
+								title: "Challenge Progress",
+								message: `${activeChallenge.title}: ${progress.progress}/${activeChallenge.requirement.target}`,
+								icon: "fa-dumbbell",
+								timestamp: new Date(),
+								isRead: false,
+								data: { challengeTitle: activeChallenge.title },
+							});
+						}
+					}
+				}
+			} catch (error) {
+				console.error("Failed to process challenge progress:", error);
+			}
+		}
+	}
 
 	function startBeatTimer() {
 		const beatDuration = (60 / trainState.bpm) * 1000;
@@ -335,6 +544,8 @@
 				maxCombo={trainState.maxCombo}
 				finalScore={trainState.currentScore}
 				sequenceName={trainState.sequence?.name || trainState.sequence?.word}
+				xpBreakdown={sessionXPBreakdown}
+				challengeProgress={sessionChallengeProgress}
 				onPlayAgain={handleBackToSetup}
 				onExit={onBack}
 			/>

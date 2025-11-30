@@ -14,6 +14,9 @@ import { HandednessAnalyzer } from "../../../modules/train/services/implementati
 import { HandStateAnalyzer } from "../../../modules/train/services/implementations/HandStateAnalyzer";
 import { HandTrackingStabilizer } from "../../../modules/train/services/implementations/HandTrackingStabilizer";
 import { HandAssignmentService } from "../../../modules/train/services/implementations/HandAssignmentService";
+import { VoiceCommandService } from "../../../modules/train/services/implementations/VoiceCommandService";
+import { PerformanceHistoryService } from "../../../modules/train/services/implementations/PerformanceHistoryService";
+import { TrainChallengeService } from "../../../modules/train/services/implementations/TrainChallengeService";
 
 export const trainModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -28,5 +31,14 @@ export const trainModule = new ContainerModule(
     // Tracking and assignment
     options.bind(TYPES.IHandTrackingStabilizer).to(HandTrackingStabilizer).inSingletonScope();
     options.bind(TYPES.IHandAssignmentService).to(HandAssignmentService).inSingletonScope();
+
+    // === PRACTICE SERVICES ===
+    options.bind(TYPES.IVoiceCommandService).to(VoiceCommandService).inSingletonScope();
+
+    // === CHALLENGES SERVICES ===
+    options.bind(TYPES.ITrainChallengeService).to(TrainChallengeService).inSingletonScope();
+
+    // === PROGRESS SERVICES ===
+    options.bind(TYPES.IPerformanceHistoryService).to(PerformanceHistoryService).inSingletonScope();
   }
 );

@@ -15,3 +15,9 @@ export enum VisualizationMode {
   TIMELINE = "timeline",
   MIRROR = "mirror"
 }
+
+export enum PracticeMode {
+  ADAPTIVE = "adaptive",
+  STEP_BY_STEP = "step_by_step",
+  TIMED = "timed"
+}

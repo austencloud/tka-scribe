@@ -366,6 +366,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       admin: [
         { module: modules.adminModule, name: "admin" },
         { module: modules.libraryModule, name: "library" },
+        { module: modules.trainModule, name: "train" },
       ],
       share: [{ module: modules.shareModule, name: "share" }],
     };

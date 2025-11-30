@@ -1,0 +1,446 @@
+/**
+ * TrainChallengeService - Train Challenge Service Implementation
+ *
+ * Manages train challenges with Firestore integration.
+ * Handles challenge retrieval, progress tracking, and completion rewards.
+ */
+
+import { inject, injectable } from "inversify";
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	query,
+	setDoc,
+	updateDoc,
+	where,
+	orderBy,
+	serverTimestamp,
+	Timestamp,
+} from "firebase/firestore";
+import { auth, firestore } from "$lib/shared/auth/firebase";
+import {
+	getTrainChallengesPath,
+	getUserTrainProgressPath,
+} from "$lib/shared/gamification/data/firestore-collections";
+import type {
+	TrainChallenge,
+	UserTrainChallengeProgress,
+	TrainChallengeFilters,
+	TrainChallengeScore,
+} from "../../domain/models/TrainChallengeModels";
+import {
+	isChallengeAvailable,
+	isChallengeExpired,
+} from "../../domain/models/TrainChallengeModels";
+import type { ITrainChallengeService } from "../contracts/ITrainChallengeService";
+import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
+import { TYPES } from "$lib/shared/inversify/types";
+
+@injectable()
+export class TrainChallengeService implements ITrainChallengeService {
+	private _achievementService: IAchievementService | null = null;
+
+	constructor(
+		@inject(TYPES.IAchievementService) achievementService: IAchievementService
+	) {
+		this._achievementService = achievementService;
+	}
+
+	// ============================================================================
+	// CHALLENGE RETRIEVAL
+	// ============================================================================
+
+	async getActiveChallenges(): Promise<TrainChallenge[]> {
+		try {
+			const challengesPath = getTrainChallengesPath();
+			const challengesQuery = query(
+				collection(firestore, challengesPath),
+				where("isActive", "==", true),
+				orderBy("order", "asc")
+			);
+
+			const snapshot = await getDocs(challengesQuery);
+			const challenges: TrainChallenge[] = [];
+
+			snapshot.docs.forEach((docSnapshot) => {
+				const data = docSnapshot.data();
+				const challenge = this._convertFirestoreChallenge(data, docSnapshot.id);
+
+				// Only include challenges that are currently available
+				if (isChallengeAvailable(challenge)) {
+					challenges.push(challenge);
+				}
+			});
+
+			return challenges;
+		} catch (error) {
+			console.error("❌ Failed to fetch active train challenges:", error);
+			return [];
+		}
+	}
+
+		async getChallengeById(challengeId: string): Promise<TrainChallenge | null> {
+		try {
+			const challengesPath = getTrainChallengesPath();
+			const challengeDocRef = doc(firestore, `${challengesPath}/${challengeId}`);
+			const challengeDoc = await getDoc(challengeDocRef);
+
+			if (challengeDoc.exists()) {
+				return this._convertFirestoreChallenge(challengeDoc.data(), challengeDoc.id);
+			}			console.warn(`⚠️ Train challenge not found: ${challengeId}`);
+			return null;
+		} catch (error) {
+			console.error("❌ Failed to fetch train challenge:", error);
+			return null;
+		}
+	}
+
+	async getChallenges(filters: TrainChallengeFilters): Promise<TrainChallenge[]> {
+		const allChallenges = await this.getActiveChallenges();
+		let filtered = allChallenges;
+
+		// Apply filter
+		if (filters.filter === "completed") {
+			const progress = await this.getUserChallengeProgress();
+			const completedIds = new Set(
+				progress.filter((p) => p.isCompleted).map((p) => p.challengeId)
+			);
+			filtered = filtered.filter((c) => completedIds.has(c.id));
+		} else if (filters.filter === "available") {
+			const progress = await this.getUserChallengeProgress();
+			const completedIds = new Set(
+				progress.filter((p) => p.isCompleted).map((p) => p.challengeId)
+			);
+			filtered = filtered.filter((c) => !completedIds.has(c.id));
+		}
+
+		// Apply difficulty filter
+		if (filters.difficulty) {
+			filtered = filtered.filter((c) => c.difficulty === filters.difficulty);
+		}
+
+		// Apply mode filter
+		if (filters.mode) {
+			filtered = filtered.filter(
+				(c) => c.requirement.metadata?.mode === filters.mode
+			);
+		}
+
+		// Apply sorting
+		switch (filters.sortBy) {
+			case "difficulty":
+				const difficultyOrder = ["easy", "beginner", "medium", "intermediate", "hard", "advanced"];
+				filtered.sort(
+					(a, b) =>
+						difficultyOrder.indexOf(a.difficulty) -
+						difficultyOrder.indexOf(b.difficulty)
+				);
+				break;
+			case "xp":
+				filtered.sort((a, b) => b.xpReward - a.xpReward);
+				break;
+			case "newest":
+				filtered.sort(
+					(a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+				);
+				break;
+			case "expiring":
+				filtered = filtered
+					.filter((c) => c.endDate)
+					.sort((a, b) => {
+						if (!a.endDate || !b.endDate) return 0;
+						return a.endDate.getTime() - b.endDate.getTime();
+					});
+				break;
+		}
+
+		return filtered;
+	}
+
+	// ============================================================================
+	// PROGRESS TRACKING
+	// ============================================================================
+
+	async getUserChallengeProgress(): Promise<UserTrainChallengeProgress[]> {
+		const user = auth.currentUser;
+		if (!user) return [];
+
+		try {
+			const progressPath = getUserTrainProgressPath(user.uid);
+			const progressSnapshot = await getDocs(collection(firestore, progressPath));
+
+			const progress: UserTrainChallengeProgress[] = [];
+			progressSnapshot.docs.forEach((doc) => {
+				const data = doc.data();
+				progress.push(this._convertFirestoreProgress(data));
+			});
+
+			return progress;
+		} catch (error) {
+			console.error("❌ Failed to fetch train challenge progress:", error);
+			return [];
+		}
+	}
+
+	async getUserProgressForChallenge(
+		challengeId: string
+	): Promise<UserTrainChallengeProgress | null> {
+		const user = auth.currentUser;
+		if (!user) return null;
+
+		try {
+			const progressPath = getUserTrainProgressPath(user.uid);
+			const progressDocRef = doc(firestore, `${progressPath}/${challengeId}`);
+			const progressDoc = await getDoc(progressDocRef);
+
+			if (progressDoc.exists()) {
+				return this._convertFirestoreProgress(progressDoc.data());
+			}
+
+			return null;
+		} catch (error) {
+			console.error("❌ Failed to fetch challenge progress:", error);
+			return null;
+		}
+	}
+
+	async startChallenge(challengeId: string): Promise<void> {
+		const user = auth.currentUser;
+		if (!user) {
+			throw new Error("No user logged in");
+		}
+
+		const existingProgress = await this.getUserProgressForChallenge(challengeId);
+		if (existingProgress) {
+			return; // Already started
+		}
+
+		const initialProgress: Partial<UserTrainChallengeProgress> = {
+			id: challengeId,
+			challengeId,
+			userId: user.uid,
+			progress: 0,
+			isCompleted: false,
+			startedAt: new Date(),
+			lastProgressAt: new Date(),
+			attempts: 0,
+			bonusEarned: false,
+		};
+
+		const progressPath = getUserTrainProgressPath(user.uid);
+		const progressDocRef = doc(firestore, `${progressPath}/${challengeId}`);
+
+		await setDoc(progressDocRef, {
+			...initialProgress,
+			startedAt: serverTimestamp(),
+			lastProgressAt: serverTimestamp(),
+		});
+
+		console.log(`✅ Started train challenge: ${challengeId}`);
+	}
+
+	async recordProgress(
+		challengeId: string,
+		increment: number,
+		score?: TrainChallengeScore
+	): Promise<void> {
+		const user = auth.currentUser;
+		if (!user) {
+			throw new Error("No user logged in");
+		}
+
+		// Ensure challenge is started
+		let progress = await this.getUserProgressForChallenge(challengeId);
+		if (!progress) {
+			await this.startChallenge(challengeId);
+			progress = await this.getUserProgressForChallenge(challengeId);
+			if (!progress) {
+				throw new Error("Failed to initialize challenge progress");
+			}
+		}
+
+		// Already completed
+		if (progress.isCompleted) {
+			return;
+		}
+
+		const newProgress = progress.progress + increment;
+		const updatedAttempts = progress.attempts + 1;
+
+		// Update best score if provided and better than previous
+		let bestScore = progress.bestScore;
+		if (score) {
+			if (
+				!bestScore ||
+				score.accuracy > bestScore.accuracy ||
+				(score.accuracy === bestScore.accuracy && score.combo > bestScore.combo)
+			) {
+				bestScore = score;
+			}
+		}
+
+		const progressPath = getUserTrainProgressPath(user.uid);
+		const progressDocRef = doc(firestore, `${progressPath}/${challengeId}`);
+
+		await updateDoc(progressDocRef, {
+			progress: newProgress,
+			lastProgressAt: serverTimestamp(),
+			attempts: updatedAttempts,
+			...(bestScore && { bestScore }),
+		});
+
+		console.log(
+			`📊 Train challenge progress updated: ${challengeId} (${newProgress})`
+		);
+	}
+
+	async completeChallenge(
+		challengeId: string,
+		finalScore: TrainChallengeScore
+	): Promise<number> {
+		const user = auth.currentUser;
+		if (!user) {
+			throw new Error("No user logged in");
+		}
+
+		const challenge = await this.getChallengeById(challengeId);
+		if (!challenge) {
+			throw new Error("Challenge not found");
+		}
+
+		const progress = await this.getUserProgressForChallenge(challengeId);
+		if (!progress) {
+			throw new Error("Challenge not started");
+		}
+
+		if (progress.isCompleted) {
+			console.warn("⚠️ Challenge already completed");
+			return 0;
+		}
+
+		// Check if bonus condition is met (if applicable)
+		const bonusEarned = this._checkBonusCondition(challenge, finalScore);
+
+		const progressPath = getUserTrainProgressPath(user.uid);
+		const progressDocRef = doc(firestore, `${progressPath}/${challengeId}`);
+
+		await updateDoc(progressDocRef, {
+			progress: challenge.requirement.target,
+			isCompleted: true,
+			completedAt: serverTimestamp(),
+			bestScore: finalScore,
+			bonusEarned,
+		});
+
+		// Award XP via AchievementService
+		let totalXP = challenge.xpReward;
+		if (bonusEarned && challenge.bonusXP) {
+			totalXP += challenge.bonusXP;
+		}
+
+		if (this._achievementService) {
+			await this._achievementService.trackAction("drill_completed", {
+				challengeId: challenge.id,
+				difficulty: challenge.difficulty,
+				bonusEarned,
+				xpAwarded: totalXP,
+			});
+		}
+
+		console.log(
+			`🎉 Train challenge completed: ${challenge.title} (+${totalXP} XP${bonusEarned ? " with bonus!" : ""})`
+		);
+
+		return totalXP;
+	}
+
+	async isChallengeCompleted(challengeId: string): Promise<boolean> {
+		const progress = await this.getUserProgressForChallenge(challengeId);
+		return progress?.isCompleted ?? false;
+	}
+
+	async getCompletionStats(): Promise<{
+		totalChallenges: number;
+		completedChallenges: number;
+		totalXPEarned: number;
+		bonusXPEarned: number;
+	}> {
+		const allChallenges = await this.getActiveChallenges();
+		const progress = await this.getUserChallengeProgress();
+
+		const completed = progress.filter((p) => p.isCompleted);
+
+		let totalXPEarned = 0;
+		let bonusXPEarned = 0;
+
+		for (const prog of completed) {
+			const challenge = await this.getChallengeById(prog.challengeId);
+			if (challenge) {
+				totalXPEarned += challenge.xpReward;
+				if (prog.bonusEarned && challenge.bonusXP) {
+					bonusXPEarned += challenge.bonusXP;
+					totalXPEarned += challenge.bonusXP;
+				}
+			}
+		}
+
+		return {
+			totalChallenges: allChallenges.length,
+			completedChallenges: completed.length,
+			totalXPEarned,
+			bonusXPEarned,
+		};
+	}
+
+	// ============================================================================
+	// PRIVATE HELPERS
+	// ============================================================================
+
+	private _convertFirestoreChallenge(data: any, docId: string): TrainChallenge {
+		return {
+			...data,
+			id: docId, // Use Firestore document ID as the challenge ID
+			createdAt: data.createdAt?.toDate?.() || new Date(),
+			startDate: data.startDate?.toDate?.(),
+			endDate: data.endDate?.toDate?.(),
+		} as TrainChallenge;
+	}
+
+	private _convertFirestoreProgress(data: any): UserTrainChallengeProgress {
+		return {
+			...data,
+			startedAt: data.startedAt?.toDate?.() || new Date(),
+			lastProgressAt: data.lastProgressAt?.toDate?.() || new Date(),
+			completedAt: data.completedAt?.toDate?.(),
+			bestScore: data.bestScore
+				? {
+						...data.bestScore,
+						achievedAt:
+							data.bestScore.achievedAt?.toDate?.() || new Date(),
+				  }
+				: undefined,
+		} as UserTrainChallengeProgress;
+	}
+
+	private _checkBonusCondition(
+		challenge: TrainChallenge,
+		score: TrainChallengeScore
+	): boolean {
+		if (!challenge.bonusCondition) return false;
+
+		// Example bonus conditions:
+		// - "perfect_run": 100% accuracy
+		// - "high_combo": Combo >= 50
+		// - "fast_completion": Time <= threshold
+		// This can be expanded based on your bonus logic
+
+		if (challenge.bonusCondition === "perfect_run") {
+			return score.accuracy === 100;
+		}
+
+		// Default: no bonus earned
+		return false;
+	}
+}

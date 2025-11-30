@@ -1,0 +1,928 @@
+<!--
+  ChallengesPanel.svelte - Train Challenges Panel
+
+  Displays available train challenges with filtering and sorting.
+  Modern mobile-first design with slide-up filter panel and 48px touch targets.
+-->
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { container } from "$lib/shared/inversify/container";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ITrainChallengeService } from "../../services/contracts/ITrainChallengeService";
+  import type {
+    TrainChallenge,
+    UserTrainChallengeProgress,
+    TrainChallengeFilter,
+    TrainChallengeSortBy,
+  } from "../../domain/models/TrainChallengeModels";
+  import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
+  import { ChallengeCard } from ".";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { activeChallengeState } from "../../state/active-challenge-state.svelte";
+  import { Drawer } from "$lib/shared/foundation/ui";
+
+  // Service
+  const challengeService = container.get<ITrainChallengeService>(
+    TYPES.ITrainChallengeService
+  );
+
+  // State
+  let challenges = $state<TrainChallenge[]>([]);
+  let progressMap = $state<Map<string, UserTrainChallengeProgress>>(new Map());
+  let loading = $state(true);
+  let filter = $state<TrainChallengeFilter>("all");
+  let sortBy = $state<TrainChallengeSortBy>("difficulty");
+  let difficultyFilter = $state<ChallengeDifficulty | null>(null);
+
+  // Filter panel state
+  let isFilterPanelOpen = $state(false);
+
+  // Stats
+  const stats = $derived.by(() => {
+    const total = challenges.length;
+    const completed = challenges.filter(
+      (c) => progressMap.get(c.id)?.isCompleted
+    ).length;
+    const available = total - completed;
+
+    return { total, completed, available };
+  });
+
+  // Active filter count for badge
+  const activeFilterCount = $derived.by(() => {
+    let count = 0;
+    if (filter !== "all") count++;
+    if (difficultyFilter !== null) count++;
+    if (sortBy !== "difficulty") count++;
+    return count;
+  });
+
+  // Filtered challenges
+  const filteredChallenges = $derived.by(() => {
+    let filtered = [...challenges];
+
+    // Apply filter
+    if (filter === "completed") {
+      filtered = filtered.filter((c) => progressMap.get(c.id)?.isCompleted);
+    } else if (filter === "available") {
+      filtered = filtered.filter((c) => !progressMap.get(c.id)?.isCompleted);
+    }
+
+    // Apply difficulty filter
+    if (difficultyFilter) {
+      filtered = filtered.filter((c) => c.difficulty === difficultyFilter);
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case "difficulty":
+        const difficultyOrder = ["easy", "medium", "hard", "expert"];
+        filtered.sort(
+          (a, b) =>
+            difficultyOrder.indexOf(a.difficulty) -
+            difficultyOrder.indexOf(b.difficulty)
+        );
+        break;
+      case "xp":
+        filtered.sort((a, b) => b.xpReward - a.xpReward);
+        break;
+      case "newest":
+        filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        break;
+      case "expiring":
+        filtered = filtered
+          .filter((c) => c.endDate)
+          .sort((a, b) => {
+            if (!a.endDate || !b.endDate) return 0;
+            return a.endDate.getTime() - b.endDate.getTime();
+          });
+        break;
+    }
+
+    return filtered;
+  });
+
+  // Load challenges
+  onMount(async () => {
+    await loadChallenges();
+  });
+
+  async function loadChallenges() {
+    loading = true;
+
+    try {
+      // Load challenges and progress in parallel
+      const [challengesData, progressData] = await Promise.all([
+        challengeService.getActiveChallenges(),
+        challengeService.getUserChallengeProgress(),
+      ]);
+
+      challenges = challengesData;
+
+      // Build progress map
+      const newProgressMap = new Map<string, UserTrainChallengeProgress>();
+      progressData.forEach((p) => {
+        newProgressMap.set(p.challengeId, p);
+      });
+      progressMap = newProgressMap;
+    } catch (error) {
+      console.error("Failed to load train challenges:", error);
+    } finally {
+      loading = false;
+    }
+  }
+
+  function handleChallengeStart(challengeId: string) {
+    // Find the challenge
+    const challenge = challenges.find((c) => c.id === challengeId);
+    if (!challenge) {
+      console.error(`Challenge not found: ${challengeId}`);
+      return;
+    }
+
+    // Set as active challenge
+    activeChallengeState.setActiveChallenge(challenge);
+
+    // Navigate to practice tab
+    navigationState.setActiveTab("practice");
+  }
+
+  function clearAllFilters() {
+    filter = "all";
+    sortBy = "difficulty";
+    difficultyFilter = null;
+  }
+</script>
+
+<div class="challenges-panel">
+  <!-- Compact Single-Row Header -->
+  <header class="header">
+    <h1>Challenges</h1>
+
+    <!-- Quick Filter Chips - Inline -->
+    {#if !loading}
+      <div class="quick-filters">
+        <button
+          class="chip"
+          class:active={filter === "all"}
+          onclick={() => (filter = "all")}
+        >
+          All
+        </button>
+        <button
+          class="chip"
+          class:active={filter === "available"}
+          onclick={() => (filter = "available")}
+        >
+          Available
+        </button>
+        <button
+          class="chip"
+          class:active={filter === "completed"}
+          onclick={() => (filter = "completed")}
+        >
+          Done
+        </button>
+      </div>
+
+      <button
+        class="filter-button"
+        class:has-filters={activeFilterCount > 0}
+        onclick={() => (isFilterPanelOpen = true)}
+        aria-label="Open filters"
+      >
+        <i class="fas fa-sliders-h"></i>
+        {#if activeFilterCount > 0}
+          <span class="filter-badge">{activeFilterCount}</span>
+        {/if}
+      </button>
+    {/if}
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+    {#if loading}
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading challenges...</p>
+      </div>
+    {:else if filteredChallenges.length === 0}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <h3>No Challenges Found</h3>
+        <p>
+          {#if filter === "completed"}
+            You haven't completed any challenges yet.
+          {:else if filter === "available"}
+            All challenges completed! Check back soon.
+          {:else}
+            No challenges available right now.
+          {/if}
+        </p>
+        {#if activeFilterCount > 0}
+          <button class="clear-filters-btn" onclick={clearAllFilters}>
+            Clear Filters
+          </button>
+        {/if}
+      </div>
+    {:else}
+      <div class="challenges-container">
+        <div class="challenges-grid">
+          {#each filteredChallenges as challenge (challenge.id)}
+            <ChallengeCard
+              {challenge}
+              progress={progressMap.get(challenge.id) ?? null}
+              onStart={handleChallengeStart}
+            />
+          {/each}
+        </div>
+      </div>
+    {/if}
+  </div>
+</div>
+
+<!-- Slide-Up Filter Panel -->
+<Drawer
+  bind:isOpen={isFilterPanelOpen}
+  placement="bottom"
+  class="filter-drawer"
+>
+  <div class="filter-panel">
+    <div class="filter-panel-header">
+      <h2>Filters & Sort</h2>
+      <button
+        class="close-btn"
+        onclick={() => (isFilterPanelOpen = false)}
+        aria-label="Close filters"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="filter-panel-content">
+      <!-- Sort Options -->
+      <section class="filter-section">
+        <h3>Sort By</h3>
+        <div class="option-grid">
+          <button
+            class="option-btn"
+            class:active={sortBy === "difficulty"}
+            onclick={() => (sortBy = "difficulty")}
+          >
+            <i class="fas fa-layer-group"></i>
+            <span>Difficulty</span>
+          </button>
+          <button
+            class="option-btn"
+            class:active={sortBy === "xp"}
+            onclick={() => (sortBy = "xp")}
+          >
+            <i class="fas fa-star"></i>
+            <span>XP Reward</span>
+          </button>
+          <button
+            class="option-btn"
+            class:active={sortBy === "newest"}
+            onclick={() => (sortBy = "newest")}
+          >
+            <i class="fas fa-clock"></i>
+            <span>Newest</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Difficulty Filter -->
+      <section class="filter-section">
+        <h3>Difficulty</h3>
+        <div class="option-grid">
+          <button
+            class="option-btn"
+            class:active={difficultyFilter === null}
+            onclick={() => (difficultyFilter = null)}
+          >
+            <span>All</span>
+          </button>
+          <button
+            class="option-btn difficulty-easy"
+            class:active={difficultyFilter === "easy"}
+            onclick={() => (difficultyFilter = "easy")}
+          >
+            <span>Easy</span>
+          </button>
+          <button
+            class="option-btn difficulty-medium"
+            class:active={difficultyFilter === "medium"}
+            onclick={() => (difficultyFilter = "medium")}
+          >
+            <span>Medium</span>
+          </button>
+          <button
+            class="option-btn difficulty-hard"
+            class:active={difficultyFilter === "hard"}
+            onclick={() => (difficultyFilter = "hard")}
+          >
+            <span>Hard</span>
+          </button>
+          <button
+            class="option-btn difficulty-expert"
+            class:active={difficultyFilter === "expert"}
+            onclick={() => (difficultyFilter = "expert")}
+          >
+            <span>Expert</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <div class="filter-panel-footer">
+      <button class="reset-btn" onclick={clearAllFilters}> Reset All </button>
+      <button class="apply-btn" onclick={() => (isFilterPanelOpen = false)}>
+        Show {filteredChallenges.length} Results
+      </button>
+    </div>
+  </div>
+</Drawer>
+
+<style>
+  /* ============================================================================
+     BASE STYLES - Modern Mobile-First with 48px Touch Targets
+     ============================================================================ */
+  .challenges-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(
+      180deg,
+      rgba(15, 15, 25, 0.98) 0%,
+      rgba(8, 8, 15, 1) 100%
+    );
+  }
+
+  /* Compact Single-Row Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  /* Filter Button - 48px touch target */
+  .filter-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .filter-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .filter-button:active {
+    transform: scale(0.95);
+  }
+
+  .filter-button.has-filters {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(99, 102, 241, 0.15)
+    );
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #60a5fa;
+  }
+
+  .filter-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f43f5e, #ec4899);
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    padding: 0 5px;
+  }
+
+  /* Quick Filter Chips - Inline with header */
+  .quick-filters {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .quick-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .chip:active {
+    transform: scale(0.97);
+  }
+
+  .chip.active {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25),
+      rgba(99, 102, 241, 0.2)
+    );
+    border-color: rgba(99, 102, 241, 0.4);
+    color: white;
+  }
+
+  /* Content Area */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .challenges-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .challenges-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Loading State */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(139, 92, 246, 0.2);
+    border-top-color: #a78bfa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-state p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Empty State */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+    border-radius: 24px;
+    font-size: 32px;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .empty-state h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    max-width: 280px;
+    line-height: 1.5;
+  }
+
+  .clear-filters-btn {
+    height: 48px;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .clear-filters-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  /* ============================================================================
+     SLIDE-UP FILTER PANEL STYLES
+     ============================================================================ */
+  .filter-panel {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(
+      180deg,
+      rgba(25, 25, 40, 0.98),
+      rgba(15, 15, 25, 1)
+    );
+    border-radius: 24px 24px 0 0;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+
+  .filter-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .filter-panel-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .close-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .filter-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .filter-section {
+    margin-bottom: 28px;
+  }
+
+  .filter-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .filter-section h3 {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  /* Option Buttons - 48px touch targets */
+  .option-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 72px;
+    padding: 12px 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .option-btn i {
+    font-size: 20px;
+    opacity: 0.7;
+  }
+
+  .option-btn span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .option-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+  }
+
+  .option-btn:active {
+    transform: scale(0.97);
+  }
+
+  .option-btn.active {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25),
+      rgba(99, 102, 241, 0.2)
+    );
+    border-color: rgba(99, 102, 241, 0.5);
+    color: white;
+  }
+
+  .option-btn.active i {
+    opacity: 1;
+  }
+
+  /* Difficulty-specific colors */
+  .option-btn.difficulty-easy.active {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.2),
+      rgba(22, 163, 74, 0.15)
+    );
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .option-btn.difficulty-medium.active {
+    background: linear-gradient(
+      135deg,
+      rgba(234, 179, 8, 0.2),
+      rgba(202, 138, 4, 0.15)
+    );
+    border-color: rgba(234, 179, 8, 0.5);
+  }
+
+  .option-btn.difficulty-hard.active {
+    background: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.2),
+      rgba(234, 88, 12, 0.15)
+    );
+    border-color: rgba(249, 115, 22, 0.5);
+  }
+
+  .option-btn.difficulty-expert.active {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.2),
+      rgba(220, 38, 38, 0.15)
+    );
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
+  /* Filter Panel Footer */
+  .filter-panel-footer {
+    display: flex;
+    gap: 12px;
+    padding: 16px 20px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .reset-btn {
+    flex: 0 0 auto;
+    height: 52px;
+    padding: 0 24px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .reset-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+
+  .apply-btn {
+    flex: 1;
+    height: 52px;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .apply-btn:hover {
+    filter: brightness(1.1);
+  }
+
+  .apply-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* ============================================================================
+     LANDSCAPE MOBILE - Compact layout
+     ============================================================================ */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .header {
+      padding: 6px 12px;
+      gap: 8px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+    }
+
+    .filter-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .chip {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 12px;
+      border-radius: 16px;
+    }
+
+    .content {
+      padding: 10px 12px;
+    }
+
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  }
+
+  /* ============================================================================
+     TABLET (641px+)
+     ============================================================================ */
+  @media (min-width: 641px) {
+    .header {
+      padding: 16px 24px;
+      gap: 16px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+    }
+
+    .chip {
+      height: 40px;
+      padding: 0 18px;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 20px 24px;
+    }
+
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .option-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* ============================================================================
+     DESKTOP (1025px+)
+     ============================================================================ */
+  @media (min-width: 1025px) {
+    .header {
+      padding: 18px 32px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .content {
+      padding: 24px 32px;
+    }
+
+    .challenges-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .option-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .chip,
+    .filter-button,
+    .option-btn,
+    .apply-btn,
+    .reset-btn,
+    .close-btn {
+      transition: none;
+    }
+
+    .spinner {
+      animation: none;
+    }
+  }
+</style>
