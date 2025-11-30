@@ -9,7 +9,8 @@
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IAnimationPlaybackController } from "../../../services/contracts";
+  import type { IAnimationPlaybackController, IPixiAnimationRenderer } from "../../../services/contracts";
+  import type { ISettingsService } from "$lib/shared";
   import { createAnimationPanelState } from "../../../state/animation-panel-state.svelte";
   import { onMount } from "svelte";
   import {
@@ -50,6 +51,8 @@
   // Services
   let primaryPlaybackController: IAnimationPlaybackController | null = null;
   let secondaryPlaybackController: IAnimationPlaybackController | null = null;
+  let pixiRenderer: IPixiAnimationRenderer | null = null;
+  let settingsService: ISettingsService | null = null;
 
   // Animation states (one for each sequence)
   const primaryAnimationState = createAnimationPanelState();
@@ -57,6 +60,7 @@
 
   let loading = $state(false);
   let error = $state<string | null>(null);
+  let secondaryTexturesLoaded = $state(false);
 
   // Initialize services
   onMount(() => {
@@ -68,9 +72,57 @@
       secondaryPlaybackController = resolve(
         TYPES.IAnimationPlaybackController
       ) as IAnimationPlaybackController;
+      pixiRenderer = resolve(
+        TYPES.IPixiAnimationRenderer
+      ) as IPixiAnimationRenderer;
+      settingsService = resolve(
+        TYPES.ISettingsService
+      ) as ISettingsService;
+
+      // Load secondary prop textures for tunnel mode
+      loadSecondaryPropTextures();
     } catch (err) {
       console.error("❌ Failed to initialize tunnel animation services:", err);
       error = "Failed to initialize animation services";
+    }
+  });
+
+  // Load secondary prop textures with tunnel colors
+  async function loadSecondaryPropTextures() {
+    if (!pixiRenderer || !settingsService) return;
+
+    try {
+      const propType = settingsService.currentSettings.propType || "staff";
+
+      console.log(
+        "🎨 Loading secondary prop textures for tunnel mode:",
+        {
+          propType,
+          blueColor: _tunnelColors.secondary.blue,
+          redColor: _tunnelColors.secondary.red,
+        }
+      );
+
+      await pixiRenderer.loadSecondaryPropTextures(
+        propType,
+        _tunnelColors.secondary.blue,
+        _tunnelColors.secondary.red
+      );
+
+      secondaryTexturesLoaded = true;
+      console.log("✅ Secondary prop textures loaded successfully");
+    } catch (err) {
+      console.error("❌ Failed to load secondary prop textures:", err);
+    }
+  }
+
+  // Reload secondary textures when tunnel colors change
+  $effect(() => {
+    if (secondaryTexturesLoaded) {
+      // Trigger reload when tunnel colors change
+      _tunnelColors.secondary.blue;
+      _tunnelColors.secondary.red;
+      loadSecondaryPropTextures();
     }
   });
 

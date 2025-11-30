@@ -152,8 +152,8 @@
   }
 
   .action-btn {
-    width: 28px;
-    height: 28px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,7 +161,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-sm);
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -206,8 +206,8 @@
   }
 
   .toggle-btn {
-    width: 28px;
-    height: 28px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -215,7 +215,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-sm);
     color: rgba(255, 255, 255, 0.5);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -233,6 +233,6 @@
   }
 
   .toggle-btn i {
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 </style>

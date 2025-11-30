@@ -101,8 +101,8 @@
 	}
 
 	.bpm-btn {
-		width: 36px;
-		height: 36px;
+		width: 48px;
+		height: 48px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -110,7 +110,7 @@
 		border: 1.5px solid rgba(255, 255, 255, 0.15);
 		background: rgba(255, 255, 255, 0.06);
 		color: rgba(255, 255, 255, 0.8);
-		font-size: 0.75rem;
+		font-size: 0.875rem;
 		cursor: pointer;
 		transition: all 0.15s ease;
 		-webkit-tap-highlight-color: transparent;
@@ -164,9 +164,9 @@
 		}
 
 		.bpm-btn {
-			width: 32px;
-			height: 32px;
-			font-size: 0.7rem;
+			width: 44px;
+			height: 44px;
+			font-size: 0.8rem;
 		}
 
 		.bpm-display {
@@ -190,9 +190,9 @@
 		}
 
 		.bpm-btn {
-			width: 28px;
-			height: 28px;
-			font-size: 0.65rem;
+			width: 40px;
+			height: 40px;
+			font-size: 0.75rem;
 		}
 
 		.bpm-display {

@@ -18,6 +18,7 @@
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "../../../discover";
   import type { IDiscoverThumbnailService } from "../../../discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import type { ISequenceNormalizationService } from "../../services/contracts";
   import SequenceCard from "../../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props
@@ -42,6 +43,9 @@
   let thumbnailService = resolve(
     TYPES.IDiscoverThumbnailService
   ) as IDiscoverThumbnailService;
+  let normalizationService = resolve(
+    TYPES.ISequenceNormalizationService
+  ) as ISequenceNormalizationService;
 
   // Auto-detect placement based on screen size if not provided
   let drawerPlacement = $state<"bottom" | "right" | "left" | "top">("right");
@@ -59,8 +63,8 @@
           drawerPlacement = window.innerWidth < 768 ? "bottom" : "right";
         }
       };
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   });
 
@@ -74,11 +78,13 @@
   const filteredSequences = $derived.by(() => {
     let filtered = sequences;
 
-    // Filter by beat count if required
+    // Filter by beat count if required (use normalized beats, excluding start position)
     if (requiredBeatCount !== undefined) {
-      filtered = filtered.filter(
-        (seq) => seq.beats.length === requiredBeatCount
-      );
+      filtered = filtered.filter((seq) => {
+        const normalized =
+          normalizationService.separateBeatsFromStartPosition(seq);
+        return normalized.beats.length === requiredBeatCount;
+      });
     }
 
     // Filter by search query
@@ -123,10 +129,37 @@
     }
   }
 
-  // Handle sequence selection
-  function handleSelect(sequence: SequenceData) {
-    onSelect(sequence);
-    onClose();
+  // State for loading selection
+  let isSelectingSequence = $state(false);
+
+  // Handle sequence selection - load full data before passing to parent
+  async function handleSelect(sequence: SequenceData) {
+    try {
+      isSelectingSequence = true;
+
+      // Load full sequence data including beats
+      const fullSequence = await loaderService.loadFullSequenceData(
+        sequence.word || sequence.name || sequence.id
+      );
+
+      if (fullSequence) {
+        onSelect(fullSequence);
+      } else {
+        // Fallback to basic sequence if full load fails
+        console.warn(
+          `⚠️ Could not load full data for ${sequence.word}, using metadata`
+        );
+        onSelect(sequence);
+      }
+      onClose();
+    } catch (err) {
+      console.error("❌ Failed to load full sequence data:", err);
+      // Fallback to basic sequence
+      onSelect(sequence);
+      onClose();
+    } finally {
+      isSelectingSequence = false;
+    }
   }
 
   // Load on mount
@@ -206,8 +239,16 @@
       </div>
     {/if}
 
+    <!-- Loading overlay when selecting sequence -->
+    {#if isSelectingSequence}
+      <div class="selecting-overlay">
+        <div class="spinner"></div>
+        <p>Loading sequence...</p>
+      </div>
+    {/if}
+
     <!-- Sequence Grid -->
-    <div class="sequence-grid-container">
+    <div class="sequence-grid-container" class:disabled={isSelectingSequence}>
       {#if isLoading}
         <div class="loading-state">
           <div class="spinner"></div>
@@ -363,12 +404,39 @@
     font-size: 0.875rem;
   }
 
+  /* Selecting Overlay */
+  .selecting-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 100;
+    backdrop-filter: blur(4px);
+  }
+
+  .selecting-overlay p {
+    color: white;
+    font-size: 0.9rem;
+  }
+
   /* Grid Container */
   .sequence-grid-container {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: var(--spacing-lg);
+  }
+
+  .sequence-grid-container.disabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 
   .sequence-grid {

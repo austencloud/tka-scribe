@@ -50,13 +50,13 @@
   }
 
   .change-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.7rem;
+    font-size: 0.875rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -84,9 +84,9 @@
     }
 
     .change-btn {
-      width: 24px;
-      height: 24px;
-      font-size: 0.65rem;
+      width: 40px;
+      height: 40px;
+      font-size: 0.75rem;
     }
   }
 

@@ -6,6 +6,14 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ISequenceNormalizationService } from "../../../services/contracts";
+
+  // Services
+  const normalizationService = resolve(
+    TYPES.ISequenceNormalizationService
+  ) as ISequenceNormalizationService;
 
   // Props
   let {
@@ -19,6 +27,19 @@
     onSelectPrimary: () => void;
     onSelectSecondary: () => void;
   } = $props();
+
+  // Get normalized beat counts (excluding start position)
+  const primaryBeatCount = $derived.by(() => {
+    if (!primarySequence) return 0;
+    const normalized = normalizationService.separateBeatsFromStartPosition(primarySequence);
+    return normalized.beats.length;
+  });
+
+  const secondaryBeatCount = $derived.by(() => {
+    if (!secondarySequence) return 0;
+    const normalized = normalizationService.separateBeatsFromStartPosition(secondarySequence);
+    return normalized.beats.length;
+  });
 </script>
 
 <div class="selection-area">
@@ -83,7 +104,7 @@
         <h3>Primary Performer</h3>
         {#if primarySequence}
           <span class="sequence-name">{primarySequence.word}</span>
-          <span class="sequence-beats">{primarySequence.beats.length} beats</span>
+          <span class="sequence-beats">{primaryBeatCount} beats</span>
         {:else}
           <span class="placeholder">Tap to select sequence</span>
         {/if}
@@ -121,7 +142,7 @@
         <h3>Secondary Performer</h3>
         {#if secondarySequence}
           <span class="sequence-name">{secondarySequence.word}</span>
-          <span class="sequence-beats">{secondarySequence.beats.length} beats</span>
+          <span class="sequence-beats">{secondaryBeatCount} beats</span>
         {:else}
           <span class="placeholder">Tap to select sequence</span>
         {/if}

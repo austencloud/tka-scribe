@@ -109,21 +109,21 @@
   .speed-control {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
+    gap: 12px;
+    padding: 8px 12px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .speed-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.08);
     border: none;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.15s ease;
     display: flex;

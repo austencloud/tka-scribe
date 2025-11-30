@@ -5,9 +5,12 @@ PixiJS-powered canvas component for rendering animated prop positions.
 Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
-	import { type BeatData } from "../../create/shared/domain/models/BeatData";;
-import { GridMode, resolve, TYPES, type ISettingsService, type SequenceData,  } from "$shared";;;
-	import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData";;
+	import { type BeatData } from "../../create/shared/domain/models/BeatData";
+	import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+	import { resolve, TYPES } from "$lib/shared/inversify";
+	import type { ISettingsService } from "$lib/shared/settings/services/contracts";
+	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+	import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData";
 	import type { PropState } from "../domain/types/PropState";
 	import type { IPixiAnimationRenderer } from "../services/contracts/IPixiAnimationRenderer";
 	import type { ISVGGenerator } from "../services/contracts/ISVGGenerator";

@@ -1,6 +1,7 @@
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
+import { applyColorToSvg } from "$lib/shared/utils/svg-color-utils";
 
 /**
  * SVG Generator for creating prop staff images and grid
@@ -170,58 +171,10 @@ export class SVGGenerator implements ISVGGenerator {
 
   /**
    * Apply color to prop SVG while preserving transparent sections and accent colors
+   * Delegates to shared svg-color-utils for consistency across the app
    */
   private applyColorToPropSvg(svgText: string, color: string): string {
-    let coloredSvg = svgText;
-
-    // Colors to preserve (like minihoop's gold/tan grip)
-    const ACCENT_COLORS_TO_PRESERVE = [
-      "#c9ac68", // Gold/tan color used for minihoop grip
-    ];
-
-    // Replace fill colors ONLY if they have an actual color value (not "none" or transparent)
-    coloredSvg = coloredSvg.replace(
-      /fill="(#[0-9A-Fa-f]{3,6}|rgb[a]?\([^)]+\)|[a-z]+)"/gi,
-      (match, capturedColor) => {
-        const colorLower = capturedColor.toLowerCase();
-        if (
-          colorLower === "none" ||
-          colorLower === "transparent" ||
-          ACCENT_COLORS_TO_PRESERVE.some(
-            (accent) => accent.toLowerCase() === colorLower
-          )
-        ) {
-          return match;
-        }
-        return `fill="${color}"`;
-      }
-    );
-
-    // Also handle style attributes
-    coloredSvg = coloredSvg.replace(
-      /fill:\s*(#[0-9A-Fa-f]{3,6}|rgb[a]?\([^)]+\)|[a-z]+)/gi,
-      (match, capturedColor) => {
-        const colorLower = capturedColor.toLowerCase();
-        if (
-          colorLower === "none" ||
-          colorLower === "transparent" ||
-          ACCENT_COLORS_TO_PRESERVE.some(
-            (accent) => accent.toLowerCase() === colorLower
-          )
-        ) {
-          return match;
-        }
-        return `fill:${color}`;
-      }
-    );
-
-    // Remove centerPoint circle
-    coloredSvg = coloredSvg.replace(
-      /<circle[^>]*id="centerPoint"[^>]*\/?>/g,
-      ""
-    );
-
-    return coloredSvg;
+    return applyColorToSvg(svgText, color);
   }
 
   /**

@@ -14,7 +14,6 @@
     TunnelSelectionArea,
     TunnelSelectionAreaMobile,
     TunnelAnimationHeader,
-    TunnelStatsBar,
     TunnelControlsFooter,
     TunnelThreePanelLayout,
   } from "./components";
@@ -72,8 +71,8 @@
     );
   });
 
-  // Computed stats
-  const totalBeats = $derived(loadedPrimarySequence?.beats.length ?? 0);
+  // Computed stats (use normalized beats, excluding start position)
+  const totalBeats = $derived(primaryNormalized.beats.length);
 
   // Visibility toggles
   let primaryVisible = $state(true);
@@ -109,12 +108,22 @@
     speed = animateState.speed;
   });
 
-  // Required beat count for filtering
+  // Required beat count for filtering (use normalized beats, excluding start position)
   const requiredBeatCount = $derived.by(() => {
     if (animateState.browserMode === "primary") {
-      return animateState.secondarySequence?.beats.length;
+      // Need secondary's beat count (excluding start position)
+      if (!animateState.secondarySequence || !normalizationService) return undefined;
+      const normalized = normalizationService.separateBeatsFromStartPosition(
+        animateState.secondarySequence
+      );
+      return normalized.beats.length;
     } else if (animateState.browserMode === "secondary") {
-      return animateState.primarySequence?.beats.length;
+      // Need primary's beat count (excluding start position)
+      if (!animateState.primarySequence || !normalizationService) return undefined;
+      const normalized = normalizationService.separateBeatsFromStartPosition(
+        animateState.primarySequence
+      );
+      return normalized.beats.length;
     }
     return undefined;
   });
@@ -223,15 +232,15 @@
   {#if !bothSequencesSelected}
     {#if isMobile}
       <TunnelSelectionAreaMobile
-        primarySequence={animateState.primarySequence}
-        secondarySequence={animateState.secondarySequence}
+        primarySequence={loadedPrimarySequence}
+        secondarySequence={loadedSecondarySequence}
         onSelectPrimary={() => animateState.openSequenceBrowser("primary")}
         onSelectSecondary={() => animateState.openSequenceBrowser("secondary")}
       />
     {:else}
       <TunnelSelectionArea
-        primarySequence={animateState.primarySequence}
-        secondarySequence={animateState.secondarySequence}
+        primarySequence={loadedPrimarySequence}
+        secondarySequence={loadedSecondarySequence}
         onSelectPrimary={() => animateState.openSequenceBrowser("primary")}
         onSelectSecondary={() => animateState.openSequenceBrowser("secondary")}
       />
@@ -244,13 +253,6 @@
         onChangeSequences={handleChangeSequences}
       />
 
-      <TunnelStatsBar
-        {totalBeats}
-        {speed}
-        {primaryVisible}
-        {secondaryVisible}
-        {isPlaying}
-      />
 
       <TunnelThreePanelLayout
         primarySequence={animateState.primarySequence}

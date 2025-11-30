@@ -2,7 +2,8 @@
   DesktopAnimationView.svelte
 
   Desktop layout for single animation mode when a sequence is loaded.
-  Shows: Header → StatsBar → BeatGrid → Canvas → Controls
+  Shows: Header → StatsBar → [BeatGrid (left) | Canvas (right)] → Controls
+  BeatGrid and Canvas are side-by-side for optimal desktop viewing.
 -->
 <script lang="ts">
   import { AnimationControlsV2 } from "../../../components/v2";
@@ -50,44 +51,37 @@
 </script>
 
 <div class="animation-view">
-  <AnimationHeader
-    {sequenceName}
-    {author}
-    {onChangeSequence}
-  />
+  <AnimationHeader {sequenceName} {author} {onChangeSequence} />
 
-  <StatsBar
-    beats={sequenceStats?.beats ?? 0}
-    duration={sequenceStats?.duration ?? "0"}
-    bpm={Math.round(speed * 60)}
-    difficulty={sequenceStats?.difficulty ?? "intermediate"}
-  />
-
-  <!-- Beat Grid -->
-  <div class="beat-grid-wrapper">
-    <BeatGrid
-      {beats}
-      {startPosition}
-      selectedBeatNumber={currentBeatNumber}
-    />
-  </div>
-
-  <!-- Canvas Container -->
-  <div class="canvas-container">
-    <SingleModeCanvas
-      {sequence}
-      bind:isPlaying
-      bind:animatingBeatNumber
-      {speed}
-    />
-  </div>
-
-  <!-- Beat Indicator - Below Canvas -->
-  {#if animatingBeatNumber !== null && isPlaying}
-    <div class="beat-indicator">
-      Beat {Math.floor(animatingBeatNumber) + 1} / {sequenceStats?.beats}
+  <!-- Main Content Area: Beat Grid (left) + Canvas (right) side-by-side -->
+  <div class="main-content">
+    <!-- Beat Grid -->
+    <div class="beat-grid-wrapper">
+      <BeatGrid
+        {beats}
+        {startPosition}
+        selectedBeatNumber={currentBeatNumber}
+        isSideBySideLayout={true}
+      />
     </div>
-  {/if}
+
+    <!-- Canvas Container -->
+    <div class="canvas-container">
+      <SingleModeCanvas
+        {sequence}
+        bind:isPlaying
+        bind:animatingBeatNumber
+        {speed}
+      />
+
+      <!-- Beat Indicator - Inside Canvas Container -->
+      {#if animatingBeatNumber !== null && isPlaying}
+        <div class="beat-indicator">
+          Beat {Math.floor(animatingBeatNumber) + 1} / {sequenceStats?.beats}
+        </div>
+      {/if}
+    </div>
+  </div>
 
   <div class="controls-area">
     <AnimationControlsV2
@@ -113,20 +107,35 @@
     overflow: hidden;
   }
 
-  /* Beat Grid Wrapper */
-  .beat-grid-wrapper {
-    flex-shrink: 0;
-    height: 140px;
-    min-height: 140px;
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  /* Main Content Area - Side by Side Layout */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
     padding: 8px;
+    min-height: 0;
+    overflow: hidden;
   }
 
-  /* Canvas Container */
+  /* Beat Grid Wrapper - Left Side (50%) */
+  .beat-grid-wrapper {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Canvas Container - Right Side (50%) */
   .canvas-container {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
@@ -136,6 +145,9 @@
       rgba(15, 20, 30, 0.5) 0%,
       rgba(10, 15, 25, 0.5) 100%
     );
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    min-width: 0;
   }
 
   .beat-indicator {
@@ -147,6 +159,10 @@
     font-size: 0.85rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 
   /* Controls Area */
