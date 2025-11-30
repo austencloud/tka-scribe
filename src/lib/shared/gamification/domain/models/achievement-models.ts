@@ -109,6 +109,9 @@ export interface XPEventMetadata {
   skillId?: string;
   skillLevel?: number;
   skillCategory?: string;
+  // For training_session_completed / training_combo_20
+  accuracy?: number;
+  combo?: number;
   // Generic timestamp
   timestamp?: number;
   // Generic reason

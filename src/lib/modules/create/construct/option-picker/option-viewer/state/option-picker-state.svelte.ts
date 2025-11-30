@@ -213,7 +213,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
         letter: p.letter,
         startPosition: p.startPosition,
         endPosition: p.endPosition,
-        gridMode: p.gridMode,
       })),
       isContinuousOnly,
       sortMethod,

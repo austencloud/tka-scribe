@@ -481,8 +481,9 @@ export class SequenceEncoderService implements ISequenceEncoderService {
   }
 
   private encodeBeat(beat: BeatData | StartPositionData): string {
-    const blueMotion = this.encodeMotion(beat.motions.blue);
-    const redMotion = this.encodeMotion(beat.motions.red);
+    const motions = beat.motions ?? { blue: undefined, red: undefined };
+    const blueMotion = this.encodeMotion(motions.blue);
+    const redMotion = this.encodeMotion(motions.red);
     return `${blueMotion}:${redMotion}`;
   }
 
