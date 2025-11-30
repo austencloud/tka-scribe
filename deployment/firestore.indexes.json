@@ -7,6 +7,14 @@
         { "fieldPath": "isCompleted", "order": "ASCENDING" },
         { "fieldPath": "unlockedAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "trainChallenges",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive", "order": "ASCENDING" },
+        { "fieldPath": "order", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": [

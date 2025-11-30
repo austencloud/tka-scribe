@@ -220,9 +220,6 @@ export default defineConfig({
             return "vendor";
           }
         },
-        // 2025: Better cache busting
-        chunkFileNames: "chunks/[name]-[hash].js",
-        assetFileNames: "assets/[name]-[hash][extname]",
       },
     },
     chunkSizeWarningLimit: 1000, // Warn for 1MB+ chunks

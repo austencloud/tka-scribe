@@ -142,7 +142,22 @@
       "Bash(\"src/lib/modules/discover/\" )",
       "Bash(\"src/lib/modules/library/\")",
       "Bash(timeout 60 npm run build:*)",
-      "Bash(timeout 90 npm run build)"
+      "Bash(timeout 90 npm run build)",
+      "Bash(src/lib/modules/create/shared/services/implementations/KeyboardArrowAdjustmentService.ts )",
+      "Bash(src/lib/modules/create/shared/services/implementations/SequenceDomainService.ts )",
+      "Bash(src/lib/modules/create/shared/services/implementations/SequenceImportService.ts )",
+      "Bash(src/lib/modules/create/shared/state/SequenceStateOrchestrator.svelte.ts )",
+      "Bash(src/lib/modules/create/shared/state/construct-tab-state.svelte.ts )",
+      "Bash(src/lib/modules/create/shared/state/create-module-state.svelte.ts )",
+      "Bash(src/lib/modules/create/shared/state/create-module/persistence-controller.svelte.ts )",
+      "Bash(src/lib/modules/create/shared/state/hand-path-coordinator.svelte.ts)",
+      "Bash(npm run type-check:*)",
+      "Bash(tree:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(timeout 120 npm run build:*)",
+      "Bash(if exist \"node_modules\\.vite\" rmdir /s /q \"node_modules\\.vite\")",
+      "Bash(if exist \".svelte-kit\" rmdir /s /q \".svelte-kit\")",
+      "Bash(timeout 60 npm run:*)"
     ],
     "deny": [],
     "ask": []
