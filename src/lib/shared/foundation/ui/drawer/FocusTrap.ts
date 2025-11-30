@@ -39,7 +39,7 @@ const FOCUSABLE_SELECTOR = [
   '[tabindex]:not([tabindex="-1"])',
 ].join(',');
 
-export class FocusTrapHandler {
+export class FocusTrap {
   private container: HTMLElement | null = null;
   private previouslyFocused: HTMLElement | null = null;
   private inertElements: HTMLElement[] = [];

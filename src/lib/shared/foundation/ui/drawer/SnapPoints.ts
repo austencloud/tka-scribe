@@ -24,7 +24,7 @@ export interface SnapPointsOptions {
   onSnapPointChange?: (index: number, value: number) => void;
 }
 
-export class SnapPointsHandler {
+export class SnapPoints {
   private snapPointsPx: number[] = [];
   private currentIndex = 0;
   private containerSize = 0;

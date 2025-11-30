@@ -19,7 +19,7 @@ export interface SwipeToDismissOptions {
   onDragEnd?: (offset: number, velocity: number, duration: number) => boolean;
 }
 
-export class SwipeToDismissHandler {
+export class SwipeToDismiss {
   private element: HTMLElement | null = null;
   private isDragging = false;
   private startY = 0;
