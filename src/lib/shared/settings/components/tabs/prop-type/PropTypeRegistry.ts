@@ -13,8 +13,10 @@ export {
   VARIANT_PROP_TYPES,
   hasVariations,
   getBasePropType,
+  getAllVariations,
   getNextVariation,
   getVariationLabel,
+  getVariationIndex,
   getTriquetraVariation,
   type PropTypeDisplayInfo,
 } from "../../../../pictograph/prop/domain";

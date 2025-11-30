@@ -1,101 +1,16 @@
 /**
  * PropSvgUtils - Utilities for loading and coloring prop SVGs
+ * 
+ * Uses the centralized svg-color-utils for color transformation.
  */
 
 import { MotionColor } from "../../../../pictograph/shared/domain/enums/pictograph-enums";
 import { getPropTypeDisplayInfo } from "./PropTypeRegistry";
 import type { PropType } from "../../../../pictograph/prop/domain/enums/PropType";
+import { applyMotionColorToSvg } from "../../../../utils/svg-color-utils";
 
-const ACCENT_COLORS_TO_PRESERVE = ["#c9ac68"];
-
-const COLOR_MAP: Record<MotionColor, string> = {
-  [MotionColor.BLUE]: "#2E3192",
-  [MotionColor.RED]: "#ED1C24",
-};
-
-/**
- * Apply color to an SVG string based on motion color
- */
-export function applyColorToSvg(
-  svgText: string,
-  motionColor: MotionColor
-): string {
-  const targetColor = COLOR_MAP[motionColor];
-
-  let coloredSvg = svgText.replace(
-    /fill="(#[0-9A-Fa-f]{3,6})"/gi,
-    (match: string, capturedColor: string) => {
-      const colorLower = capturedColor.toLowerCase();
-      if (
-        ACCENT_COLORS_TO_PRESERVE.some(
-          (accent) => accent.toLowerCase() === colorLower
-        )
-      ) {
-        return match;
-      }
-      return `fill="${targetColor}"`;
-    }
-  );
-
-  coloredSvg = coloredSvg.replace(
-    /fill:\s*(#[0-9A-Fa-f]{3,6})/gi,
-    (match: string, capturedColor: string) => {
-      const colorLower = capturedColor.toLowerCase();
-      if (
-        ACCENT_COLORS_TO_PRESERVE.some(
-          (accent) => accent.toLowerCase() === colorLower
-        )
-      ) {
-        return match;
-      }
-      return `fill:${targetColor}`;
-    }
-  );
-
-  coloredSvg = coloredSvg.replace(
-    /stroke="(#[0-9A-Fa-f]{3,6})"/gi,
-    (match: string, capturedColor: string) => {
-      const colorLower = capturedColor.toLowerCase();
-      if (
-        ACCENT_COLORS_TO_PRESERVE.some(
-          (accent) => accent.toLowerCase() === colorLower
-        )
-      ) {
-        return match;
-      }
-      return `stroke="${targetColor}"`;
-    }
-  );
-
-  coloredSvg = coloredSvg.replace(
-    /stroke:\s*(#[0-9A-Fa-f]{3,6})/gi,
-    (match: string, capturedColor: string) => {
-      const colorLower = capturedColor.toLowerCase();
-      if (
-        ACCENT_COLORS_TO_PRESERVE.some(
-          (accent) => accent.toLowerCase() === colorLower
-        )
-      ) {
-        return match;
-      }
-      return `stroke:${targetColor}`;
-    }
-  );
-
-  const colorSuffix = motionColor.toLowerCase();
-  coloredSvg = coloredSvg.replace(/\.st(\d+)/g, `.st$1-${colorSuffix}`);
-  coloredSvg = coloredSvg.replace(
-    /class="st(\d+)"/g,
-    `class="st$1-${colorSuffix}"`
-  );
-
-  coloredSvg = coloredSvg.replace(
-    /<circle[^>]*id="centerPoint"[^>]*\/?>/,
-    ""
-  );
-
-  return coloredSvg;
-}
+// Re-export for backward compatibility
+export { applyMotionColorToSvg as applyColorToSvg } from "../../../../utils/svg-color-utils";
 
 export interface ParsedSvgContent {
   content: string;
@@ -115,7 +30,10 @@ export async function loadPropSvg(
     if (!response.ok) return null;
 
     let svgText = await response.text();
-    svgText = applyColorToSvg(svgText, color);
+    svgText = applyMotionColorToSvg(svgText, color, {
+      transformStroke: true,
+      makeClassNamesUnique: true,
+    });
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(svgText, "image/svg+xml");

@@ -16,6 +16,7 @@ import { injectable } from "inversify";
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 import type { IPropSvgLoader } from "../contracts/IPropSvgLoader";
 import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
+import { applyMotionColorToSvg } from "../../../../utils/svg-color-utils";
 
 @injectable()
 export class PropSvgLoader implements IPropSvgLoader {
@@ -214,76 +215,13 @@ export class PropSvgLoader implements IPropSvgLoader {
   }
 
   /**
-   * Apply color transformation to SVG - sophisticated approach matching arrows
-   * Simple and correct: props are blue by default, change to red when needed
-   * Also makes CSS class names unique to prevent conflicts between different colored props
-   * Preserves accent colors like tan/gold for special prop features (e.g., minihoop grip)
+   * Apply color transformation to SVG
+   * Delegates to shared svg-color-utils for consistency across the app
    */
   private applyColorToSvg(svgText: string, color: MotionColor): string {
-    const colorMap: Record<MotionColor, string> = {
-      [MotionColor.BLUE]: "#2E3192",
-      [MotionColor.RED]: "#ED1C24",
-    };
-
-    const targetColor = colorMap[color] || colorMap[MotionColor.BLUE];
-
-    // Accent colors to preserve (like minihoop's gold/tan grip)
-    const ACCENT_COLORS_TO_PRESERVE = [
-      "#c9ac68", // Gold/tan color used for minihoop grip
-    ];
-
-    // Replace fill colors in both attribute and CSS style formats
-    // BUT preserve accent colors and transparent fills
-    let coloredSvg = svgText.replace(
-      /fill="(#[0-9A-Fa-f]{3,6})"/gi,
-      (match, capturedColor) => {
-        const colorLower = capturedColor.toLowerCase();
-        // Preserve accent colors
-        if (
-          ACCENT_COLORS_TO_PRESERVE.some(
-            (accent) => accent.toLowerCase() === colorLower
-          )
-        ) {
-          return match;
-        }
-        return `fill="${targetColor}"`;
-      }
-    );
-
-    coloredSvg = coloredSvg.replace(
-      /fill:\s*(#[0-9A-Fa-f]{3,6})/gi,
-      (match, capturedColor) => {
-        const colorLower = capturedColor.toLowerCase();
-        // Preserve accent colors
-        if (
-          ACCENT_COLORS_TO_PRESERVE.some(
-            (accent) => accent.toLowerCase() === colorLower
-          )
-        ) {
-          return match;
-        }
-        return `fill:${targetColor}`;
-      }
-    );
-
-    // Make CSS class names unique for each color to prevent conflicts
-    // Replace .st0, .st1, etc. with .st0-blue, .st1-blue, etc.
-    const colorSuffix = color.toLowerCase();
-    coloredSvg = coloredSvg.replace(/\.st(\d+)/g, `.st$1-${colorSuffix}`);
-
-    // Also update class references in elements
-    coloredSvg = coloredSvg.replace(
-      /class="st(\d+)"/g,
-      `class="st$1-${colorSuffix}"`
-    );
-
-    // Remove the centerPoint circle entirely to prevent unwanted visual elements
-    coloredSvg = coloredSvg.replace(
-      /<circle[^>]*id="centerPoint"[^>]*\/?>/,
-      ""
-    );
-
-    return coloredSvg;
+    return applyMotionColorToSvg(svgText, color, {
+      makeClassNamesUnique: true,
+    });
   }
 
   /**

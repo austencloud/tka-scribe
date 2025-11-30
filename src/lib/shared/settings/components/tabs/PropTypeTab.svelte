@@ -38,7 +38,7 @@
     (pt) => !VARIANT_PROP_TYPES.includes(pt)
   );
 
-  // Current selections
+  // Current selections - use $derived to stay in sync with settings
   let selectedBluePropType = $state(
     settings.bluePropType || settings.propType || PropType.STAFF
   );
@@ -55,9 +55,21 @@
   // Full-screen picker state
   let showPicker = $state(false);
 
-  // Watch for settings changes
+  // Watch for settings changes from external sources (Firebase sync, etc.)
   $effect(() => {
+    const newBlueProp =
+      settings.bluePropType || settings.propType || PropType.STAFF;
+    const newRedProp =
+      settings.redPropType || settings.propType || PropType.STAFF;
     const newCatDogMode = settings.catDogMode ?? false;
+
+    // Update local state if settings changed externally
+    if (newBlueProp !== selectedBluePropType) {
+      selectedBluePropType = newBlueProp;
+    }
+    if (newRedProp !== selectedRedPropType) {
+      selectedRedPropType = newRedProp;
+    }
     if (newCatDogMode !== catDogMode) {
       catDogMode = newCatDogMode;
     }

@@ -6,6 +6,8 @@
     hasVariations,
     getVariationLabel,
     getBasePropType,
+    getAllVariations,
+    getVariationIndex,
   } from "./PropTypeRegistry";
 
   type HandColor = "blue" | "red";
@@ -38,6 +40,9 @@
   const showVariations = $derived(hasVariations(propType));
   const variationText = $derived(getVariationLabel(propType));
   const showDualPreview = $derived(isSingleMode && svgContent && svgContentRed);
+  const allVariations = $derived(getAllVariations(propType));
+  const currentVariationIndex = $derived(getVariationIndex(propType));
+  const totalVariations = $derived(allVariations.length);
 
   function handleVariationClick(e: MouseEvent) {
     e.stopPropagation();
@@ -61,75 +66,92 @@
   }
 </script>
 
-<button
-  class="selection-card"
-  class:blue={hand === "blue"}
-  class:red={hand === "red"}
-  onclick={onSelect}
->
-  <div
-    class="prop-preview-container"
-    class:single={!isSingleMode && hand}
-    class:dual={showDualPreview}
+<div class="selection-card-wrapper">
+  <button
+    class="selection-card"
+    class:blue={hand === "blue"}
+    class:red={hand === "red"}
+    class:has-variations={showVariations}
+    onclick={onSelect}
   >
-    {#if showDualPreview}
-      <!-- Dual preview for single mode (shows both blue and red) -->
-      <svg
-        class="prop-preview blue"
-        viewBox={viewBox}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        {@html svgContent}
-      </svg>
-      <svg
-        class="prop-preview red"
-        viewBox={viewBoxRed || viewBox}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        {@html svgContentRed}
-      </svg>
-    {:else if svgContent}
-      <svg
-        class="prop-preview {hand || 'blue'}"
-        {viewBox}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        {@html svgContent}
-      </svg>
-    {/if}
-  </div>
-
-  <div class="card-content">
-    {#if hand}
-      <div class="card-header">
-        <span class="color-dot {hand}"></span>
-        <span class="card-label"
-          >{hand === "blue" ? "Blue (Left)" : "Red (Right)"}</span
+    <div
+      class="prop-preview-container"
+      class:single={!isSingleMode && hand}
+      class:dual={showDualPreview}
+    >
+      {#if showDualPreview}
+        <!-- Dual preview for single mode (shows both blue and red) -->
+        <svg
+          class="prop-preview blue"
+          {viewBox}
+          preserveAspectRatio="xMidYMid meet"
         >
-      </div>
-    {:else}
-      <span class="card-label">Current Prop</span>
-    {/if}
-    <span class="card-value">{displayLabel}</span>
+          {@html svgContent}
+        </svg>
+        <svg
+          class="prop-preview red"
+          viewBox={viewBoxRed || viewBox}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          {@html svgContentRed}
+        </svg>
+      {:else if svgContent}
+        <svg
+          class="prop-preview {hand || 'blue'}"
+          {viewBox}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          {@html svgContent}
+        </svg>
+      {/if}
+    </div>
 
-    {#if showVariations}
-      <span
-        class="variation-toggle"
-        role="button"
-        tabindex="0"
-        onclick={handleVariationClick}
-        onkeydown={handleVariationKeydown}
-      >
-        {variationText}
-        <i class="fas fa-exchange-alt"></i>
+    <div class="card-content">
+      {#if hand}
+        <div class="card-header">
+          <span class="color-dot {hand}"></span>
+          <span class="card-label"
+            >{hand === "blue" ? "Blue (Left)" : "Red (Right)"}</span
+          >
+        </div>
+      {:else}
+        <span class="card-label">Current Prop</span>
+      {/if}
+      <span class="card-value">{displayLabel}</span>
+    </div>
+
+    <i class="fas fa-chevron-right card-chevron"></i>
+  </button>
+
+  {#if showVariations}
+    <button
+      class="variation-toggle"
+      type="button"
+      onclick={handleVariationClick}
+      onkeydown={handleVariationKeydown}
+      aria-label="Toggle prop variation ({currentVariationIndex +
+        1} of {totalVariations})"
+    >
+      <span class="variation-indicator">
+        {#each Array(totalVariations) as _, i}
+          <span class="variation-dot" class:active={i === currentVariationIndex}
+          ></span>
+        {/each}
       </span>
-    {/if}
-  </div>
-
-  <i class="fas fa-chevron-right"></i>
-</button>
+      <span class="variation-text">{variationText}</span>
+      <i class="fas fa-sync-alt"></i>
+    </button>
+  {/if}
+</div>
 
 <style>
+  /* Wrapper to contain both the card and variation toggle */
+  .selection-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1cqh, 12px);
+  }
+
   /* Material design card with generous spacing */
   .selection-card {
     display: flex;
@@ -145,6 +167,7 @@
     color: white;
     position: relative;
     min-height: clamp(108px, 16cqh, 148px);
+    width: 100%;
   }
 
   .selection-card:active {
@@ -246,46 +269,75 @@
     text-overflow: ellipsis;
   }
 
+  .card-chevron {
+    flex-shrink: 0;
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: clamp(14px, 2cqw, 16px);
+  }
+
+  /* Variation toggle button - 48px minimum touch target */
   .variation-toggle {
-    margin-top: clamp(6px, 0.8cqh, 8px);
-    padding: clamp(8px, 1.2cqh, 11px) clamp(14px, 2cqw, 18px);
-    background: rgba(255, 255, 255, 0.08);
-    border: 0.33px solid rgba(255, 255, 255, 0.16);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.88);
-    font-size: clamp(12px, 1.75cqw, 14px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 1cqw, 12px);
+    min-height: 48px;
+    min-width: 48px;
+    padding: clamp(10px, 1.5cqh, 14px) clamp(16px, 2.5cqw, 24px);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(13px, 1.8cqw, 15px);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(6px, 0.8cqw, 8px);
-    min-height: clamp(34px, 5cqh, 44px);
-    white-space: nowrap;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .variation-toggle:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .variation-toggle:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .variation-toggle:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.5);
+    outline-offset: 2px;
+  }
+
+  .variation-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .variation-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    transition: all 0.2s ease;
+  }
+
+  .variation-dot.active {
+    background: rgba(99, 102, 241, 0.9);
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
+  }
+
+  .variation-text {
+    white-space: nowrap;
   }
 
   .variation-toggle i {
-    font-size: clamp(10px, 1.4cqw, 12px);
-    opacity: 0.85;
-  }
-
-  .selection-card > i {
-    flex-shrink: 0;
-    margin-left: auto;
-    color: rgba(255, 255, 255, 0.35);
-    font-size: clamp(14px, 2cqw, 16px);
+    font-size: clamp(11px, 1.5cqw, 13px);
+    opacity: 0.7;
   }
 
   @media (prefers-reduced-motion: reduce) {
