@@ -13,7 +13,8 @@ export type AchievementCategory =
   | "scholar" // Learning concepts
   | "practitioner" // Daily streaks & practice
   | "explorer" // Browsing gallery
-  | "performer"; // Video submissions (Phase 3)
+  | "performer" // Video submissions (Phase 3)
+  | "trainer"; // Training challenges
 
 export type AchievementTier = "bronze" | "silver" | "gold" | "platinum";
 
@@ -51,6 +52,7 @@ export interface AchievementRequirement {
     | "letter_usage" // Create sequence with specific letters
     | "sequence_length" // Create sequence of X beats
     | "generation_count" // Generate X sequences
+    | "challenge_count" // Complete training challenges
     | "specific_action"; // Complete specific action once
   target: number; // How many to complete (1 for one-time achievements)
   metadata?: AchievementMetadata; // Additional data (e.g., required letters, specific concept ID)
@@ -94,7 +96,7 @@ export interface XPEventMetadata {
   score?: number;
   // For daily_challenge_completed
   challengeId?: string;
-  challengeType?: ChallengeType;
+  challengeType?: ChallengeType | "train";
   // For concept_learned
   conceptId?: string;
   // For daily_login
@@ -136,6 +138,12 @@ export type XPActionType =
   // Weekly challenges
   | "weekly_challenge_completed"
   | "weekly_challenge_bonus"
+  // Training
+  | "training_session_completed"
+  | "perfect_training_run"
+  | "training_combo_20"
+  | "timed_150bpm"
+  | "train_challenge_completed"
   // Skill progressions
   | "skill_level_completed"
   | "skill_mastery_achieved";
@@ -152,7 +160,14 @@ export type ChallengeType =
   | "explore_gallery" // Discover X sequences
   | "generation_challenge"; // Generate sequences with criteria
 
-export type ChallengeDifficulty = "beginner" | "intermediate" | "advanced" | "easy" | "medium" | "hard";
+export type ChallengeDifficulty =
+  | "beginner"
+  | "intermediate"
+  | "advanced"
+  | "easy"
+  | "medium"
+  | "hard"
+  | "expert";
 
 export interface DailyChallenge {
   id: string; // Date-based: e.g., "challenge_2025-11-01"

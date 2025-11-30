@@ -665,6 +665,11 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
       daily_login: "daily_practice",
       skill_level_completed: "challenge_completed",
       skill_mastery_achieved: "challenge_completed",
+      training_session_completed: "daily_practice",
+      perfect_training_run: "daily_practice",
+      training_combo_20: "daily_practice",
+      timed_150bpm: "daily_practice",
+      train_challenge_completed: "challenge_completed",
     };
 
     return mappings[action] || "sequence_created";

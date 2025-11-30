@@ -38,6 +38,14 @@ export const XP_REWARDS = {
   // Skill progressions
   SKILL_LEVEL_COMPLETED: 75,
   SKILL_MASTERY_ACHIEVED: 250, // Completing all levels of a skill
+
+  // Train module
+  TRAINING_SESSION_COMPLETED: 10, // Base XP for completing any training session
+  TRAINING_PERFECT_RUN: 25, // Bonus for 100% accuracy
+  TRAINING_HIGH_ACCURACY: 15, // Bonus for 85%+ accuracy
+  TRAINING_GOOD_ACCURACY: 5, // Bonus for 70%+ accuracy
+  TRAINING_COMBO_BONUS: 2, // XP per combo point achieved
+  TRAIN_CHALLENGE_COMPLETED: 0, // Challenges have their own XP rewards
 } as const;
 
 // ============================================================================

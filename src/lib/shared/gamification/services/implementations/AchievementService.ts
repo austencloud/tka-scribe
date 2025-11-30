@@ -280,11 +280,43 @@ export class AchievementService implements IAchievementService {
         return XP_REWARDS.WEEKLY_CHALLENGE_COMPLETED ?? 150;
       case "weekly_challenge_bonus":
         return XP_REWARDS.WEEKLY_CHALLENGE_BONUS ?? 50;
+      // Training actions
+      case "training_session_completed": {
+        const accuracy = metadata?.accuracy ?? 0;
+        const combo = metadata?.combo ?? 0;
+        let xp = XP_REWARDS.TRAINING_SESSION_COMPLETED;
+
+        if (accuracy === 100) {
+          xp += XP_REWARDS.TRAINING_PERFECT_RUN;
+        } else if (accuracy >= 85) {
+          xp += XP_REWARDS.TRAINING_HIGH_ACCURACY;
+        } else if (accuracy >= 70) {
+          xp += XP_REWARDS.TRAINING_GOOD_ACCURACY;
+        }
+
+        if (combo > 0) {
+          xp += combo * XP_REWARDS.TRAINING_COMBO_BONUS;
+        }
+
+        return xp;
+      }
+      case "perfect_training_run":
+        return XP_REWARDS.TRAINING_PERFECT_RUN;
+      case "training_combo_20": {
+        const combo = metadata?.combo ?? 20;
+        return combo * XP_REWARDS.TRAINING_COMBO_BONUS;
+      }
+      case "timed_150bpm":
+        return XP_REWARDS.TRAINING_SESSION_COMPLETED;
+      case "train_challenge_completed":
+        return XP_REWARDS.TRAIN_CHALLENGE_COMPLETED ?? 0;
       // Skill progressions
       case "skill_level_completed":
         return XP_REWARDS.SKILL_LEVEL_COMPLETED ?? 100;
       case "skill_mastery_achieved":
         return XP_REWARDS.SKILL_MASTERY_ACHIEVED ?? 250;
+      default:
+        return 0;
     }
   }
 
@@ -470,6 +502,11 @@ export class AchievementService implements IAchievementService {
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
+      training_session_completed: ["specific_action"],
+      perfect_training_run: ["specific_action"],
+      training_combo_20: ["specific_action"],
+      timed_150bpm: ["specific_action"],
+      train_challenge_completed: ["challenge_count", "specific_action"],
       // Weekly challenges and skill progressions
       weekly_challenge_completed: ["specific_action"],
       weekly_challenge_bonus: ["specific_action"],
@@ -617,8 +654,16 @@ export class AchievementService implements IAchievementService {
         return 0;
 
       case "specific_action":
-        // One-time achievements, triggered by specific metadata
-        return metadata?.achievementId === achievement.id ? 1 : 0;
+        // One-time achievements, triggered by specific metadata or matching action
+        if (metadata?.achievementId === achievement.id) return 1;
+        if (req.metadata?.action && action === req.metadata.action) return 1;
+        return 0;
+
+      case "challenge_count":
+        if (action !== "train_challenge_completed") return 0;
+        const requiredType = req.metadata?.challengeType;
+        if (!requiredType) return 1;
+        return metadata?.challengeType === requiredType ? 1 : 0;
 
       default:
         return 0;

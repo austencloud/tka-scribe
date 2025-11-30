@@ -41,6 +41,11 @@ export class AchievementProgressManager {
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
+      training_session_completed: ["specific_action"],
+      perfect_training_run: ["specific_action"],
+      training_combo_20: ["specific_action"],
+      timed_150bpm: ["specific_action"],
+      train_challenge_completed: ["challenge_count", "specific_action"],
       // Weekly challenges and skill progressions
       weekly_challenge_completed: ["specific_action"],
       weekly_challenge_bonus: ["specific_action"],
@@ -98,8 +103,16 @@ export class AchievementProgressManager {
         return 0;
 
       case "specific_action":
-        // One-time achievements, triggered by specific metadata
-        return metadata?.achievementId === achievement.id ? 1 : 0;
+        // One-time achievements, triggered by specific metadata or action
+        if (metadata?.achievementId === achievement.id) return 1;
+        if (req.metadata?.action && action === req.metadata.action) return 1;
+        return 0;
+
+      case "challenge_count":
+        if (action !== "train_challenge_completed") return 0;
+        const requiredType = req.metadata?.challengeType;
+        if (!requiredType) return 1;
+        return metadata?.challengeType === requiredType ? 1 : 0;
 
       default:
         return 0;

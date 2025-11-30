@@ -163,6 +163,7 @@
     practitioner: "fa-dumbbell",
     explorer: "fa-magnifying-glass",
     performer: "fa-video",
+    trainer: "fa-stopwatch",
   };
 
   // Category names
@@ -172,6 +173,7 @@
     practitioner: "Practitioner",
     explorer: "Explorer",
     performer: "Performer",
+    trainer: "Trainer",
   };
 </script>
 

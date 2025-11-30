@@ -55,6 +55,32 @@ export class XPTracker {
         return XP_REWARDS.WEEKLY_CHALLENGE_COMPLETED || 100;
       case "weekly_challenge_bonus":
         return XP_REWARDS.WEEKLY_CHALLENGE_BONUS || 50;
+      case "training_session_completed": {
+        const accuracy = metadata?.accuracy ?? 0;
+        const combo = metadata?.combo ?? 0;
+        let xp = XP_REWARDS.TRAINING_SESSION_COMPLETED;
+        if (accuracy === 100) {
+          xp += XP_REWARDS.TRAINING_PERFECT_RUN;
+        } else if (accuracy >= 85) {
+          xp += XP_REWARDS.TRAINING_HIGH_ACCURACY;
+        } else if (accuracy >= 70) {
+          xp += XP_REWARDS.TRAINING_GOOD_ACCURACY;
+        }
+        if (combo > 0) {
+          xp += combo * XP_REWARDS.TRAINING_COMBO_BONUS;
+        }
+        return xp;
+      }
+      case "perfect_training_run":
+        return XP_REWARDS.TRAINING_PERFECT_RUN;
+      case "training_combo_20": {
+        const combo = metadata?.combo ?? 20;
+        return combo * XP_REWARDS.TRAINING_COMBO_BONUS;
+      }
+      case "timed_150bpm":
+        return XP_REWARDS.TRAINING_SESSION_COMPLETED;
+      case "train_challenge_completed":
+        return XP_REWARDS.TRAIN_CHALLENGE_COMPLETED ?? 0;
       case "skill_level_completed":
         return XP_REWARDS.SKILL_LEVEL_COMPLETED || 75;
       case "skill_mastery_achieved":
@@ -70,6 +96,8 @@ export class XPTracker {
       }
       case "sequence_published":
         return XP_REWARDS.SEQUENCE_PUBLISHED;
+      default:
+        return 0;
     }
   }
 
