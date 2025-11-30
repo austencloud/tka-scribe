@@ -1,162 +1,49 @@
-<!--
-  Drawer.svelte - Minimal, reliable drawer with pure CSS animations
 
-  NO MORE VAUL-SVELTE. Just clean, predictable CSS transforms.
+import { onMount, onDestroy, untrack } from "svelte";
+import { tryResolve, TYPES } from "../../../inversify";
+import type { IResponsiveLayoutService } from "$lib/modules/create/shared/services/contracts/IResponsiveLayoutService";
+import { SwipeToDismiss } from "./SwipeToDismiss";
+import { FocusTrap } from "./FocusTrap";
+import { SnapPoints, type SnapPointValue } from "./SnapPoints";
+import { DrawerEffects } from "./DrawerEffects";
+import {
+  generateDrawerId,
+  registerDrawer,
+  unregisterDrawer,
+  isTopDrawer,
+} from "./DrawerStack";
 
-  Features:
-  - Slides from right, left, top, or bottom based on placement
-  - Smooth CSS transitions that actually work
-  - Backdrop support
-  - Escape key to close
-  - Focus trapping for accessibility (WAI-ARIA compliant)
-  - Inert attribute on background content
-  - Focus restoration on close
-  - Snap points for multi-height drawers
-  - Same API as before so nothing breaks
--->
-<script lang="ts">
-  import "./drawer/Drawer.css";
-  import { useDrawer } from "./drawer/useDrawer.ts";
-
-  const props = $props();
-  const {
-    drawerElement,
-    handleKeydown,
-    mounted,
-    shouldRender,
-    overlayClasses,
-    dataState,
-    handleBackdropClick,
-    stackZIndex,
-    contentClasses,
-    isDragging,
-    snapPoints,
-    currentSnapIndex,
-    drawerId,
-    role,
-    labelledBy,
-    ariaLabel,
-    computedTransform,
-    springAnimation,
-    showHandle,
-    children,
-    placement
-  } = useDrawer(props);
-</script>
-
-<svelte:window onkeydown={handleKeydown} />
-
-{#if mounted && shouldRender}
-  <!-- Backdrop -->
-  <div
-    class={overlayClasses}
-    data-state={dataState}
-    onclick={handleBackdropClick}
-    aria-hidden="true"
-    style:z-index={stackZIndex - 1}
-  ></div>
-
-  <!-- Drawer content -->
-  <div
-    bind:this={drawerElement}
-    class={contentClasses}
-    class:dragging={isDragging}
-    class:has-snap-points={snapPoints && snapPoints.length > 0}
-    class:spring-animation={springAnimation}
-    data-placement={placement}
-    data-state={dataState}
-    data-snap-index={currentSnapIndex}
-    data-drawer-id={drawerId}
-    {role}
-    aria-modal="true"
-    aria-labelledby={labelledBy}
-    aria-label={ariaLabel}
-    style:z-index={stackZIndex}
-    style:transform={computedTransform || undefined}
-    style:transition={isDragging ? "none" : ""}
-  >
-    {#if showHandle}
-      <div class="drawer-handle" aria-hidden="true"></div>
-    {/if}
-    <div class="drawer-inner">
-      {@render children?.()}
-    </div>
-  </div>
-{/if}
-
+export function useDrawer(props: any) {
   let {
-    isOpen = $bindable(false),
-    closeOnBackdrop = true,
-    closeOnEscape = true,
-    dismissible = true,
+    isOpen,
+    closeOnBackdrop,
+    closeOnEscape,
+    dismissible,
     labelledBy,
     ariaLabel,
-    role = "dialog",
-    showHandle = true,
-    class: drawerClass = "",
-    backdropClass = "",
-    placement = "bottom",
-    respectLayoutMode = false,
-    // Focus trap options
-    trapFocus = true,
-    initialFocusElement = null,
-    returnFocusOnClose = true,
-    setInertOnSiblings = true,
-    // Snap points options
-    snapPoints = null,
-    activeSnapPoint = $bindable<number | null>(null),
-    closeOnSnapToZero = true,
-    // Animation options
-    springAnimation = false,
-    scaleBackground = false,
-    preventScroll = true,
+    role,
+    showHandle,
+    drawerClass,
+    backdropClass,
+    placement,
+    respectLayoutMode,
+    trapFocus,
+    initialFocusElement,
+    returnFocusOnClose,
+    setInertOnSiblings,
+    snapPoints,
+    activeSnapPoint,
+    closeOnSnapToZero,
+    springAnimation,
+    scaleBackground,
+    preventScroll,
     onclose,
     onOpenChange,
     onbackdropclick,
     onDragChange,
     onSnapPointChange,
     children,
-  } = $props<{
-    isOpen?: boolean;
-    closeOnBackdrop?: boolean;
-    closeOnEscape?: boolean;
-    dismissible?: boolean;
-    labelledBy?: string;
-    ariaLabel?: string;
-    role?: "dialog" | "menu" | "listbox" | "alertdialog";
-    showHandle?: boolean;
-    class?: string;
-    backdropClass?: string;
-    placement?: "bottom" | "top" | "right" | "left";
-    respectLayoutMode?: boolean;
-    /** Enable focus trapping inside the drawer. Default: true */
-    trapFocus?: boolean;
-    /** Element to focus when drawer opens. Default: first focusable element */
-    initialFocusElement?: HTMLElement | null;
-    /** Return focus to trigger element when drawer closes. Default: true */
-    returnFocusOnClose?: boolean;
-    /** Set inert attribute on sibling elements when open. Default: true */
-    setInertOnSiblings?: boolean;
-    /** Snap points for multi-height drawer (e.g., ["25%", "50%", "90%"] or [200, 400]) */
-    snapPoints?: SnapPointValue[] | null;
-    /** Current active snap point index (bindable) */
-    activeSnapPoint?: number | null;
-    /** Close drawer when snapping to index 0. Default: true */
-    closeOnSnapToZero?: boolean;
-    /** Use spring physics animation (slight bounce). Default: false */
-    springAnimation?: boolean;
-    /** Scale background content when drawer opens (iOS-like depth effect). Default: false */
-    scaleBackground?: boolean;
-    /** Prevent body scrolling when drawer is open. Default: true */
-    preventScroll?: boolean;
-    onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
-    onOpenChange?: (open: boolean) => void;
-    onbackdropclick?: (event: MouseEvent) => boolean;
-    onDragChange?: (offset: number, progress: number, isDragging: boolean) => void;
-    /** Called when snap point changes */
-    onSnapPointChange?: (index: number, valuePx: number) => void;
-    children?: () => unknown;
-  }>();
+  } = props;
 
   let layoutService: IResponsiveLayoutService | null = null;
   let isSideBySideLayout = $state(false);
@@ -339,7 +226,7 @@
     }
   });
 
-  function emitClose(reason: CloseReason) {
+  function emitClose(reason: any) {
     if (onclose) {
       onclose(new CustomEvent("close", { detail: { reason } }));
     }
@@ -455,4 +342,27 @@
     // Unregister from drawer stack
     unregisterDrawer(drawerId);
   });
-</script>
+  
+  return {
+      drawerElement,
+      handleKeydown,
+      mounted,
+      shouldRender,
+      overlayClasses,
+      dataState,
+      handleBackdropClick,
+      stackZIndex,
+      contentClasses,
+      isDragging,
+      snapPoints,
+      currentSnapIndex,
+      drawerId,
+      role,
+      labelledBy,
+      ariaLabel,
+      computedTransform,
+      springAnimation,
+      showHandle,
+      children,
+  }
+}
