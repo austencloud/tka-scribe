@@ -29,6 +29,8 @@ export class SequenceAnimationOrchestrator
 {
   private beats: readonly BeatData[] = [];
   private totalBeats = 0;
+  private hasMotionData = false;
+  private missingMotionLogged = new Set<number>();
   private metadata: SequenceMetadata = { word: "", author: "", totalBeats: 0 };
   private initialized = false;
   private currentBeatIndex = 0;
@@ -48,14 +50,28 @@ export class SequenceAnimationOrchestrator
    */
   initializeWithDomainData(sequenceData: SequenceData): boolean {
     try {
-      if (!sequenceData.beats || sequenceData.beats.length === 0) {
+      const beats = (sequenceData.beats ?? [])
+        .filter((beat): beat is BeatData => !!beat)
+        .map((beat, index) => ({
+          ...beat,
+          beatNumber:
+            typeof beat.beatNumber === "number" ? beat.beatNumber : index + 1,
+          motions: beat.motions ?? { blue: undefined, red: undefined },
+        }));
+
+      if (beats.length === 0) {
         throw new Error("No beats found in sequence data");
       }
 
       // Validate beats using focused service
-      if (!this.beatCalculationService.validateBeats(sequenceData.beats)) {
+      if (!this.beatCalculationService.validateBeats(beats)) {
         throw new Error("Invalid beat data structure");
       }
+
+      this.missingMotionLogged.clear();
+      this.hasMotionData = beats.some(
+        (beat) => beat?.motions?.blue && beat?.motions?.red
+      );
 
       // Extract metadata from domain data
       // Get per-color prop types from settings
@@ -64,7 +80,7 @@ export class SequenceAnimationOrchestrator
       this.metadata = {
         word: sequenceData.word || sequenceData.name || "",
         author: (sequenceData.metadata["author"] as string) || "",
-        totalBeats: sequenceData.beats.length,
+        totalBeats: beats.length,
         propType: sequenceData.propType, // Legacy fallback
         bluePropType: settings.bluePropType || settings.propType || sequenceData.propType,
         redPropType: settings.redPropType || settings.propType || sequenceData.propType,
@@ -72,7 +88,7 @@ export class SequenceAnimationOrchestrator
       };
 
       // Store domain beats directly - NO CONVERSION!
-      this.beats = sequenceData.beats;
+      this.beats = beats;
       this.totalBeats = this.metadata.totalBeats;
 
       this.initializePropStates();
@@ -113,6 +129,24 @@ export class SequenceAnimationOrchestrator
     this.currentBeatIndex = beatState.currentBeatIndex;
     this.currentBeatProgress = beatState.beatProgress;
 
+    // Skip beats without motion data (common in legacy/shared URLs) and log once
+    const beatMotions = beatState.currentBeatData?.motions;
+    const hasBeatMotions = beatMotions?.blue && beatMotions?.red;
+    if (!hasBeatMotions) {
+      const key = beatState.currentBeatData?.beatNumber ?? beatState.currentBeatIndex;
+      if (!this.missingMotionLogged.has(key)) {
+        this.missingMotionLogged.add(key);
+        console.warn(
+          "SequenceAnimationOrchestrator: Skipping beat without motion data",
+          {
+            beatNumber: beatState.currentBeatData?.beatNumber,
+            beatIndex: beatState.currentBeatIndex,
+          }
+        );
+      }
+      return;
+    }
+
     // Use focused service for interpolation
     const interpolationResult =
       this.propInterpolationService.interpolatePropAngles(
@@ -121,8 +155,12 @@ export class SequenceAnimationOrchestrator
       );
 
     if (!interpolationResult.isValid) {
-      console.error(
-        "SequenceAnimationOrchestrator: Invalid interpolation result"
+      console.warn(
+        "SequenceAnimationOrchestrator: Skipping beat without motion data",
+        {
+          beatNumber: beatState.currentBeatData?.beatNumber,
+          beatIndex: beatState.currentBeatIndex,
+        }
       );
       return;
     }
@@ -166,6 +204,14 @@ export class SequenceAnimationOrchestrator
     return { ...this.metadata };
   }
 
+  private findFirstBeatWithMotion(): BeatData | null {
+    return (
+      this.beats.find(
+        (beat) => beat?.motions?.blue && beat?.motions?.red
+      ) ?? null
+    );
+  }
+
   /**
    * Initialize prop states using focused services
    */
@@ -178,10 +224,21 @@ export class SequenceAnimationOrchestrator
       return;
     }
 
-    // Use first beat for initial state
-    const firstBeat = this.beats[0]!;
+    // Use first beat that has motion data for initial state
+    const firstBeatWithMotion = this.findFirstBeatWithMotion();
+
+    if (!firstBeatWithMotion) {
+      console.warn(
+        "SequenceAnimationOrchestrator: No beats with motion data, resetting prop states"
+      );
+      this.animationStateService.resetPropStates();
+      return;
+    }
+
     const initialAngles =
-      this.propInterpolationService.calculateInitialAngles(firstBeat);
+      this.propInterpolationService.calculateInitialAngles(
+        firstBeatWithMotion
+      );
 
     if (initialAngles.isValid) {
       this.animationStateService.setPropStates(

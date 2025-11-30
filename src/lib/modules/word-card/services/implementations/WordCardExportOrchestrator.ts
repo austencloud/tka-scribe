@@ -9,11 +9,11 @@
 import type {
   BatchExportProgress,
   BatchOperationConfig,
-  SequenceData,
   WordCardDimensions,
   WordCardExportResult,
   WordCardMetadata,
-} from "$lib/shared/index";
+} from "../../domain/models/word-card-export";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 // Behavioral contracts
 import { TYPES } from "$lib/shared/inversify/types";

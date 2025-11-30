@@ -11,9 +11,9 @@ import type {
   PageLayoutConfig,
   PageOrientation,
   PrintConfig,
-  SequenceData,
   WordCardPaperSize,
-} from "$lib/shared/index";
+} from "../domain/models/PageLayout";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,

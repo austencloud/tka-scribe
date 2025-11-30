@@ -1,4 +1,4 @@
-import type { GridPosition } from "$lib/shared/index";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { CAPType, SliceSize } from "../../domain/models/circular-models";
 
 /**

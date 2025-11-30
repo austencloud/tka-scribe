@@ -65,11 +65,12 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       MotionColor,
       Orientation,
       RotationDirection,
-      PropType,
-      Letter,
-      GridPosition,
-    } = await import("$shared");
-    const { createMotionData, createPictographData } = await import("$shared");
+    } = await import("$lib/shared/pictograph/shared/domain/enums/pictograph-enums");
+    const { PropType } = await import("$lib/shared/pictograph/prop/domain/enums/PropType");
+    const { Letter } = await import("$lib/shared/foundation/domain/models/Letter");
+    const { GridPosition } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
+    const { createMotionData } = await import("$lib/shared/pictograph/shared/domain/models/MotionData");
+    const { createPictographData } = await import("$lib/shared/pictograph/shared/domain/factories/createPictographData");
     const { SliceSize } = await import("../../domain/models/circular-models");
 
     // Get hand locations for this start position

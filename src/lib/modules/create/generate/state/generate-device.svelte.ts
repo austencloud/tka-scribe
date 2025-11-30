@@ -4,7 +4,7 @@
  * Just extracts the device detection logic without over-engineering
  */
 
-import type { DeviceCapabilities, ResponsiveSettings } from "$lib/shared/index";
+import type { DeviceCapabilities, ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
 
 /**
  * Creates simple reactive state for device integration

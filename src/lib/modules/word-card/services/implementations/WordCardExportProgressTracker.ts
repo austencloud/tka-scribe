@@ -5,7 +5,7 @@
  * Single responsibility: Progress tracking and event emission.
  */
 
-import type { BatchExportProgress } from "$lib/shared/index";
+import type { BatchExportProgress } from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
 import type { IWordCardExportProgressTracker } from "../contracts";
 

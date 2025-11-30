@@ -5,13 +5,12 @@ PixiJS-powered canvas component for rendering animated prop positions.
 Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
-import {
-    GridMode,
-    resolve,
-    TYPES,
-    type ISettingsService,
-    type SequenceData,
-  } from "$lib/shared";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ISettingsService } from "$lib/shared/settings/services/contracts";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { StartPositionData } from "../../../modules/create/shared/domain/models/StartPositionData";
   import type { BeatData } from "../../../modules/create/shared/domain/models/BeatData";
   import type { PropState } from "../domain";
@@ -80,7 +79,7 @@ import {
     gridVisible?: boolean;
     gridMode?: GridMode | null;
     backgroundAlpha?: number;
-    letter?: import("$shared").Letter | null;
+    letter?: Letter | null;
     beatData?: StartPositionData | BeatData | null;
     sequenceData?: SequenceData | null;
     currentBeat?: number;
@@ -216,9 +215,14 @@ import {
       const computeTime = performance.now() - startTime;
 
       pathCacheData = cacheData;
-      console.log(`✅ [${instanceId}] Cache precomputation complete in ${computeTime.toFixed(1)}ms, isValid=${pathCache?.isValid()}`);
+      console.log(
+        `✅ [${instanceId}] Cache precomputation complete in ${computeTime.toFixed(1)}ms, isValid=${pathCache?.isValid()}`
+      );
     } catch (error) {
-      console.error(`❌ [${instanceId}] Failed to pre-compute animation paths:`, error);
+      console.error(
+        `❌ [${instanceId}] Failed to pre-compute animation paths:`,
+        error
+      );
       pathCacheData = null;
     } finally {
       isCachePrecomputing = false;
@@ -229,9 +233,7 @@ import {
    * Pre-render entire sequence to frames for perfect smooth playback
    * Runs in background after initial preview starts
    */
-  async function preRenderSequenceFrames(
-    seqData: SequenceData
-  ): Promise<void> {
+  async function preRenderSequenceFrames(seqData: SequenceData): Promise<void> {
     try {
       isPreRendering = true;
       preRenderedFramesReady = false;
@@ -241,12 +243,14 @@ import {
       // The canvas must exist before we can capture frames!
       const maxWaitTime = 5000; // 5 seconds max
       const startWait = performance.now();
-      while (!isInitialized && (performance.now() - startWait) < maxWaitTime) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      while (!isInitialized && performance.now() - startWait < maxWaitTime) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       if (!isInitialized) {
-        console.error("⚠️ Renderer not initialized after 5s, skipping pre-render");
+        console.error(
+          "⚠️ Renderer not initialized after 5s, skipping pre-render"
+        );
         return;
       }
 
@@ -264,12 +268,16 @@ import {
         },
         (progress) => {
           preRenderProgress = progress;
-          console.log(`📊 Pre-render progress: ${progress.percent.toFixed(1)}%`);
+          console.log(
+            `📊 Pre-render progress: ${progress.percent.toFixed(1)}%`
+          );
         }
       );
 
       preRenderedFramesReady = true;
-      console.log("✅ Frame pre-render complete! Switching to perfect playback.");
+      console.log(
+        "✅ Frame pre-render complete! Switching to perfect playback."
+      );
     } catch (error) {
       console.error("❌ Failed to pre-render frames:", error);
       preRenderedFramesReady = false;
@@ -363,10 +371,14 @@ import {
 
   $effect(() => {
     const settings = settingsService.currentSettings;
-    const newBluePropType = settings.bluePropType || settings.propType || "staff";
+    const newBluePropType =
+      settings.bluePropType || settings.propType || "staff";
     const newRedPropType = settings.redPropType || settings.propType || "staff";
 
-    if (newBluePropType !== currentBluePropType || newRedPropType !== currentRedPropType) {
+    if (
+      newBluePropType !== currentBluePropType ||
+      newRedPropType !== currentRedPropType
+    ) {
       currentBluePropType = newBluePropType;
       currentRedPropType = newRedPropType;
       currentPropType = newBluePropType; // Legacy compatibility
@@ -453,7 +465,10 @@ import {
   async function loadPropTextures() {
     try {
       // Use per-color prop types
-      await pixiRenderer.loadPerColorPropTextures(currentBluePropType, currentRedPropType);
+      await pixiRenderer.loadPerColorPropTextures(
+        currentBluePropType,
+        currentRedPropType
+      );
 
       // Get prop dimensions for each color (may be different types!)
       const [bluePropData, redPropData] = await Promise.all([
@@ -649,7 +664,7 @@ import {
 
       // Helper function to transform trail points from cache space to canvas space
       const transformTrailPoints = (points: TrailPoint[]): TrailPoint[] => {
-        return points.map(p => ({
+        return points.map((p) => ({
           ...p,
           x: p.x * scaleFactor,
           y: p.y * scaleFactor,
@@ -657,13 +672,21 @@ import {
       };
 
       // Blue prop trails (both left and right endpoints)
-      const blueLeft = transformTrailPoints(pathCache.getTrailPoints(0, 0, 0, currentBeat));
-      const blueRight = transformTrailPoints(pathCache.getTrailPoints(0, 1, 0, currentBeat));
+      const blueLeft = transformTrailPoints(
+        pathCache.getTrailPoints(0, 0, 0, currentBeat)
+      );
+      const blueRight = transformTrailPoints(
+        pathCache.getTrailPoints(0, 1, 0, currentBeat)
+      );
       blueTrailPoints = [...blueLeft, ...blueRight];
 
       // Red prop trails (both left and right endpoints)
-      const redLeft = transformTrailPoints(pathCache.getTrailPoints(1, 0, 0, currentBeat));
-      const redRight = transformTrailPoints(pathCache.getTrailPoints(1, 1, 0, currentBeat));
+      const redLeft = transformTrailPoints(
+        pathCache.getTrailPoints(1, 0, 0, currentBeat)
+      );
+      const redRight = transformTrailPoints(
+        pathCache.getTrailPoints(1, 1, 0, currentBeat)
+      );
       redTrailPoints = [...redLeft, ...redRight];
 
       // Debug: Log first cache retrieval only (subsequent frames are too noisy)
@@ -680,7 +703,6 @@ import {
       secondaryBlueTrailPoints = allTrails.secondaryBlue;
       secondaryRedTrailPoints = allTrails.secondaryRed;
     }
-
 
     // Render scene using PixiJS
     pixiRenderer.renderScene({
@@ -728,9 +750,7 @@ import {
 
   <!-- Perfect playback indicator (brief flash when ready) -->
   {#if preRenderedFramesReady}
-    <div class="perfect-mode-badge">
-      ✨ Perfect Playback
-    </div>
+    <div class="perfect-mode-badge">✨ Perfect Playback</div>
   {/if}
 </div>
 

@@ -13,7 +13,7 @@ import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { updateSequenceData, createSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IMotionQueryHandler } from "$lib/shared/index";
+import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { StartPositionData } from "../../domain/models/StartPositionData";
 // isStartPosition not used but isBeat is exported from same module

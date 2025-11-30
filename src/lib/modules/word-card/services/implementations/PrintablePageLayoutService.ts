@@ -22,7 +22,7 @@ import type {
   Rectangle,
   WordCardGridConfig,
   WordCardPaperSize,
-} from "$lib/shared/index";
+} from "../../domain/models/PageLayout";
 import { injectable } from "inversify";
 import type { IPrintablePageLayoutService } from "../contracts";
 

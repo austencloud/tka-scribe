@@ -33,15 +33,20 @@ export class PropInterpolator implements IPropInterpolator {
     beatProgress: number
   ): InterpolationResult {
     // Get motion data directly from domain beat (PURE DOMAIN!)
-    const blueMotion = currentBeatData.motions.blue;
-    const redMotion = currentBeatData.motions.red;
+    const blueMotion = currentBeatData.motions?.blue;
+    const redMotion = currentBeatData.motions?.red;
 
-    if (!blueMotion) {
-      throw new Error("Blue motion data is missing for current beat.");
-    }
-
-    if (!redMotion) {
-      throw new Error("Red motion data is missing for current beat.");
+    if (!blueMotion || !redMotion) {
+      console.warn("PropInterpolator: Missing motion data", {
+        beatNumber: currentBeatData?.beatNumber,
+        hasBlue: !!blueMotion,
+        hasRed: !!redMotion,
+      });
+      return {
+        blueAngles: { centerPathAngle: 0, staffRotationAngle: 0 },
+        redAngles: { centerPathAngle: 0, staffRotationAngle: 0 },
+        isValid: false,
+      };
     }
 
     // Calculate endpoints using native MotionData
@@ -139,15 +144,20 @@ export class PropInterpolator implements IPropInterpolator {
    */
   calculateInitialAngles(firstBeat: BeatData): InterpolationResult {
     // Get motion data directly from domain beat (PURE DOMAIN!)
-    const blueStartMotion = firstBeat.motions.blue;
-    const redStartMotion = firstBeat.motions.red;
+    const blueStartMotion = firstBeat.motions?.blue;
+    const redStartMotion = firstBeat.motions?.red;
 
-    if (!blueStartMotion) {
-      throw new Error("Blue motion data is missing for the first beat.");
-    }
-
-    if (!redStartMotion) {
-      throw new Error("Red motion data is missing for the first beat.");
+    if (!blueStartMotion || !redStartMotion) {
+      console.warn("PropInterpolator: Missing motion data on first beat", {
+        beatNumber: firstBeat?.beatNumber,
+        hasBlue: !!blueStartMotion,
+        hasRed: !!redStartMotion,
+      });
+      return {
+        blueAngles: { centerPathAngle: 0, staffRotationAngle: 0 },
+        redAngles: { centerPathAngle: 0, staffRotationAngle: 0 },
+        isValid: false,
+      };
     }
 
     const blueStartEndpoints =

@@ -9,7 +9,8 @@ Shows all pictographs for a selected letter with:
 -->
 <script lang="ts">
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { SimpleGlassScroll, Pictograph } from "../../../../shared";
+  import SimpleGlassScroll from "../../../../shared/foundation/ui/SimpleGlassScroll.svelte";
+  import Pictograph from "../../../../shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props
   let {

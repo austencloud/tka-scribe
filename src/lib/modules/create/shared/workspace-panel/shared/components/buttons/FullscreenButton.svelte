@@ -5,12 +5,10 @@
   Handles cross-browser fullscreen API with proper state management.
 -->
 <script lang="ts">
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$lib/shared/index";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IMobileFullscreenService } from "$lib/shared/mobile/services/contracts/IMobileFullscreenService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Services

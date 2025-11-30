@@ -4,10 +4,8 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import type {
-    IHapticFeedbackService,
-    PictographData,
-  } from "$lib/shared/index";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";

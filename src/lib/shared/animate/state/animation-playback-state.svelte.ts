@@ -14,7 +14,7 @@
  * - Sequence metadata
  */
 
-import type { SequenceData } from '../../index';
+import type { SequenceData } from '../../foundation/domain/models/SequenceData';
 import type { PropState } from '../domain';
 
 /**

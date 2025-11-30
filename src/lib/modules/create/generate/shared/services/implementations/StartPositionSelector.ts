@@ -6,11 +6,9 @@
  *
  * MIGRATION NOTE: Now returns StartPositionData instead of BeatData with beatNumber===0
  */
-import type {
-  ILetterQueryHandler,
-  IArrowPositioningOrchestrator,
-  GridMode,
-} from "$lib/shared/index";
+import type { IArrowPositioningOrchestrator } from "$lib/shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";

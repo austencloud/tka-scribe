@@ -125,7 +125,7 @@ export class GenerationOrchestrationService
     });
 
     // Import shared utilities dynamically to avoid circular dependencies
-    const { createSequenceData } = await import("$shared");
+    const { createSequenceData } = await import("$lib/shared/foundation/domain/models/SequenceData");
 
     const sequenceData = createSequenceData({
       name: word || `Sequence ${Date.now()}`,
@@ -170,7 +170,7 @@ export class GenerationOrchestrationService
     const sliceSize = options.sliceSize || SliceSize.HALVED;
 
     // Determine start and required end positions
-    const { GridPosition } = await import("$shared");
+    const { GridPosition } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
     const basicStartPositions =
       options.gridMode === "diamond"
         ? [GridPosition.ALPHA1, GridPosition.BETA5, GridPosition.GAMMA11]
@@ -216,7 +216,7 @@ export class GenerationOrchestrationService
       level: this.metadataService.mapDifficultyToLevel(options.difficulty),
     });
 
-    const { createSequenceData } = await import("$shared");
+    const { createSequenceData } = await import("$lib/shared/foundation/domain/models/SequenceData");
     const sequence = createSequenceData({
       name: `Circular ${word}`,
       word,

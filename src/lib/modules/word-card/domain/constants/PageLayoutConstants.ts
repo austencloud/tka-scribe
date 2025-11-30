@@ -10,7 +10,7 @@ import type {
   PageMargins,
   PaperSpecification,
   WordCardPaperSize,
-} from "$lib/shared/index";
+} from "../models/PageLayout";
 
 // ============================================================================
 // CONSTANTS

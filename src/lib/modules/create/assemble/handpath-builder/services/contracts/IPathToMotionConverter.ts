@@ -6,13 +6,11 @@
  * hand path direction and user-selected rotation direction.
  */
 
-import type {
-  MotionData,
-  MotionType,
-  PropType,
-  RotationDirection,
-} from "$lib/shared/index";
-import type { HandPath, HandPathSegment } from "../../domain";
+import type { PropType } from "../../../../../../shared/pictograph/prop/domain/enums/PropType";
+import type { HandPath, MotionType, RotationDirection } from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
+import type { HandPathSegment } from "../../domain/path-models";
+
 
 export interface IPathToMotionConverter {
   /**

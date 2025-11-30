@@ -9,20 +9,14 @@
  * - SHIFT to adjacent position 2 (PRO and ANTI)
  */
 
-import type {
-  MotionColor} from "$lib/shared/index";
-import {
-  GridLocation,
-  GridMode,
-  MotionType,
-  Orientation,
-  PropType,
-  RotationDirection,
-  type PictographData,
-  createMotionData,
-  createPictographData,
-} from "$lib/shared/index";
 import { injectable } from "inversify";
+import { GridLocation, GridMode } from "../../../../shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionType, Orientation, RotationDirection, type MotionColor } from "../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "../../../../shared/pictograph/prop/domain/enums/PropType";
+import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
+import { createMotionData } from "../../../../shared/pictograph/shared/domain/models/MotionData";
+import { createPictographData } from "../../../../shared/pictograph/shared/domain/factories/createPictographData";
+
 
 export interface IGuidedOptionGenerator {
   /**

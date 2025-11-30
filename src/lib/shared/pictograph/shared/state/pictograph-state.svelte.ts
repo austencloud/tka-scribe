@@ -221,8 +221,8 @@ export function createPictographState(
 
       // Explicitly track motion data properties that affect positioning
       // This ensures recalculation when turns/orientations change (e.g., via edit panel)
-      const redMotion = currentData.motions.red;
-      const blueMotion = currentData.motions.blue;
+      const redMotion = currentData.motions?.red;
+      const blueMotion = currentData.motions?.blue;
 
       // Track key properties that affect beta offset calculations:
       // - endOrientation (radial vs non-radial determines if offset is applied)

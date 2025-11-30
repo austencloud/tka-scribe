@@ -8,11 +8,11 @@
 import type {
   BatchExportProgress,
   BatchOperationConfig,
-  Page,
-  SequenceData,
   WordCardExportOptions,
   WordCardExportResult,
-} from "$lib/shared/index";
+} from "../../domain/models/word-card-export";
+import type { Page } from "../../domain/models/PageLayout";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   GridCalculationOptions,
   GridLayout,

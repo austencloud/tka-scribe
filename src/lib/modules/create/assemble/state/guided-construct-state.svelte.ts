@@ -12,11 +12,13 @@
 import {
   GridLocation,
   GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
   MotionColor,
-  PropType,
-  type PictographData,
-  createPictographData,
-} from "$lib/shared/index";
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { PropType } from "../../../../shared/pictograph/prop/domain/enums/PropType";
+import { createPictographData } from "../../../../shared/pictograph/shared/domain/factories/createPictographData";
 
 type BuildPhase = "blue" | "red" | "complete";
 

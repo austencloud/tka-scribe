@@ -5,12 +5,15 @@
   Overlays two sequences with different colors on the same canvas.
 -->
 <script lang="ts">
-  import { AnimatorCanvas } from '$lib/shared/animate/components';
+  import { AnimatorCanvas } from "$lib/shared/animate/components";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IAnimationPlaybackController, IPixiAnimationRenderer } from "../../../services/contracts";
-  import type { ISettingsService } from "$lib/shared";
+  import type {
+    IAnimationPlaybackController,
+    IPixiAnimationRenderer,
+  } from "../../../services/contracts";
+  import type { ISettingsService } from "$lib/shared/settings/services/contracts";
   import { createAnimationPanelState } from "../../../state/animation-panel-state.svelte";
   import { onMount } from "svelte";
   import {
@@ -75,9 +78,7 @@
       pixiRenderer = resolve(
         TYPES.IPixiAnimationRenderer
       ) as IPixiAnimationRenderer;
-      settingsService = resolve(
-        TYPES.ISettingsService
-      ) as ISettingsService;
+      settingsService = resolve(TYPES.ISettingsService) as ISettingsService;
 
       // Load secondary prop textures for tunnel mode
       loadSecondaryPropTextures();
@@ -94,14 +95,11 @@
     try {
       const propType = settingsService.currentSettings.propType || "staff";
 
-      console.log(
-        "🎨 Loading secondary prop textures for tunnel mode:",
-        {
-          propType,
-          blueColor: _tunnelColors.secondary.blue,
-          redColor: _tunnelColors.secondary.red,
-        }
-      );
+      console.log("🎨 Loading secondary prop textures for tunnel mode:", {
+        propType,
+        blueColor: _tunnelColors.secondary.blue,
+        redColor: _tunnelColors.secondary.red,
+      });
 
       await pixiRenderer.loadSecondaryPropTextures(
         propType,

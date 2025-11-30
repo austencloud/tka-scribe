@@ -33,6 +33,16 @@ export async function loadSequenceForAnimation(
     };
   }
 
+  const hasMotionData = (seq: SequenceData) =>
+    Array.isArray(seq.beats) &&
+    seq.beats.length > 0 &&
+    seq.beats.some((beat) => beat?.motions?.blue && beat?.motions?.red);
+
+  const fetchByIdOrWord = async (seq: SequenceData) => {
+    const sequenceIdentifier = seq.word || seq.id.toUpperCase();
+    return sequenceService.getSequence(sequenceIdentifier);
+  };
+
   try {
     let fullSequence = sequence;
 
@@ -56,6 +66,24 @@ export async function loadSequenceForAnimation(
       }
 
       fullSequence = loadedSequence;
+    }
+
+    // If beats are present but missing motion data (common in shallow objects from browser),
+    // try to hydrate a full copy from the service.
+    if (fullSequence && !hasMotionData(fullSequence) && sequence.id) {
+      const hydrated = await fetchByIdOrWord(fullSequence);
+      if (hydrated && hasMotionData(hydrated)) {
+        fullSequence = hydrated;
+      } else {
+        console.warn(
+          "[sequence-loader] Loaded sequence is missing motion data",
+          {
+            id: fullSequence.id,
+            word: fullSequence.word,
+            beatCount: fullSequence.beats?.length ?? 0,
+          }
+        );
+      }
     }
 
     // Normalize sequence data to ensure startPosition is separate from beats

@@ -6,7 +6,7 @@
  */
 
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import type { ILetterQueryHandler } from "$lib/shared/index";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";

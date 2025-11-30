@@ -52,7 +52,32 @@ export class BeatCalculator implements IBeatCalculator {
    * Validate beat data array
    */
   validateBeats(beats: readonly BeatData[]): boolean {
-    return beats.length > 0 && beats.every((beat) => beat.beatNumber >= 0);
+    if (!Array.isArray(beats)) {
+      console.error("BeatCalculator: beats is not an array");
+      return false;
+    }
+
+    if (beats.length === 0) {
+      console.error("BeatCalculator: beats array is empty");
+      return false;
+    }
+
+    const isValid = beats.every(
+      (beat, index) => {
+        const valid = beat && typeof beat.beatNumber === "number" && beat.beatNumber >= 0;
+        if (!valid) {
+          console.error(`BeatCalculator: Invalid beat at index ${index}:`, {
+            beat,
+            hasBeat: !!beat,
+            beatNumber: beat?.beatNumber,
+            beatNumberType: typeof beat?.beatNumber,
+          });
+        }
+        return valid;
+      }
+    );
+
+    return isValid;
   }
 
   /**

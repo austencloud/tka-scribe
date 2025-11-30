@@ -4,10 +4,8 @@
  * Orchestrates the core beat-by-beat generation loop.
  * Extracted from SequenceGenerationService for single responsibility.
  */
-import type {
-  ILetterQueryHandler,
-  IArrowPositioningOrchestrator,
-} from "$lib/shared/index";
+
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -19,12 +17,12 @@ import type {
   IPictographFilterService,
   ITurnManagementService,
 } from "../contracts";
-import {} from "../contracts";
-import {} from "../contracts";
+
 import type {
   BeatGenerationOptions,
   IBeatGenerationOrchestrator,
 } from "../contracts/IBeatGenerationOrchestrator";
+import type { IArrowPositioningOrchestrator } from "../../../../../../shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
 
 @injectable()
 export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {

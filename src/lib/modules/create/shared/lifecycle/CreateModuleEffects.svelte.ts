@@ -3,7 +3,7 @@
  * All reactive effects in one manageable place
  */
 
-import { navigationState } from "$lib/shared/index";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { LayoutConfiguration } from "../orchestration/types";
 import type { ICreateModuleState, IConstructTabState } from "../types/create-module-types";
 import type { IResponsiveLayoutService } from "../services/contracts/IResponsiveLayoutService";

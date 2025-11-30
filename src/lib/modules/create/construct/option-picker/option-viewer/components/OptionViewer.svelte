@@ -7,11 +7,9 @@ Orchestrates specialized components and services:
 - This component coordinates them with reactive Svelte 5 runes
 -->
 <script lang="ts">
-  import type {
-    GridMode,
-    IHapticFeedbackService,
-    PictographData,
-  } from "$lib/shared/index";
+  import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";

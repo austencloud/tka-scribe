@@ -5,8 +5,10 @@
  * following the microservices architecture pattern.
  */
 
-import { safeSessionStorageGet, safeSessionStorageSet } from "$lib/shared";
 import { injectable } from "inversify";
+import { StorageService } from "$lib/shared/foundation/services/implementations/StorageService";
+
+const storageService = new StorageService();
 import type { IFavoritesService } from "../contracts/IFavoritesService";
 
 @injectable()
@@ -112,7 +114,7 @@ export class FavoritesService implements IFavoritesService {
 
   private loadFavoritesFromStorage(): void {
     try {
-      const favorites = safeSessionStorageGet<string[]>(this.STORAGE_KEY, []);
+      const favorites = storageService.safeSessionStorageGet<string[]>(this.STORAGE_KEY, []);
       this.favoritesCache = new Set(favorites || []);
     } catch (error) {
       console.warn("Failed to load favorites from storage:", error);
@@ -126,7 +128,7 @@ export class FavoritesService implements IFavoritesService {
         throw new Error("Favorites cache not initialized");
       }
       const favorites = Array.from(this.favoritesCache);
-      safeSessionStorageSet(this.STORAGE_KEY, favorites);
+      storageService.safeSessionStorageSet(this.STORAGE_KEY, favorites);
     } catch (error) {
       console.error("Failed to save favorites to storage:", error);
     }

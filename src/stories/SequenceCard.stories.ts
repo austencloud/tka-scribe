@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
 import type { ComponentProps } from "svelte";
 import SequenceCard from "../lib/modules/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
-import { createSequenceData } from "$lib/shared/index";
+import { createSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 type SequenceCardProps = ComponentProps<typeof SequenceCard>;
 

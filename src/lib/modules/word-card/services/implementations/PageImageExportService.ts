@@ -8,7 +8,7 @@
 import type {
   ExportResult,
   Html2CanvasFunction,
-} from "$lib/shared/index";
+} from "$lib/shared/foundation/ui/UITypes";
 import { injectable } from "inversify";
 
 import type {

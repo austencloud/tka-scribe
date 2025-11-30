@@ -8,8 +8,8 @@
 import type {
   DeleteConfirmationData,
   DeleteResult,
-  SequenceData,
-} from "$lib/shared/index";
+} from "$lib/modules/create/shared/domain/models/sequence-models";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import type { IDiscoverDeleteService } from "../contracts/IDiscoverDeleteService";
 

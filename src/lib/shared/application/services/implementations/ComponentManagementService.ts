@@ -21,14 +21,16 @@ export class ComponentManagementService implements IComponentManagementService {
   getRequiredComponents(data: PictographData | null): string[] {
     const components = ["grid"];
 
-    if (!data) return components;
+    if (!data || !data.motions) return components;
+
+    const motions = data.motions;
 
     // Check motion data for visible components
     // Note: Arrows have their own loading system and don't use component coordination
-    if (data.motions[MotionColorEnum.BLUE]?.isVisible) {
+    if (motions[MotionColorEnum.BLUE]?.isVisible) {
       components.push("prop-blue");
     }
-    if (data.motions[MotionColorEnum.RED]?.isVisible) {
+    if (motions[MotionColorEnum.RED]?.isVisible) {
       components.push("prop-red");
     }
 

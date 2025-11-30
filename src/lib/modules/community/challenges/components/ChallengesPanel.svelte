@@ -15,7 +15,7 @@
     PanelContent,
     PanelState,
     PanelTabs,
-  } from "$lib/shared";
+  } from "$lib/shared/components/panel";
   import DailyChallengeCard from "./DailyChallengeCard.svelte";
   import WeeklyChallengeCard from "./WeeklyChallengeCard.svelte";
   import SkillProgressionList from "./SkillProgressionList.svelte";

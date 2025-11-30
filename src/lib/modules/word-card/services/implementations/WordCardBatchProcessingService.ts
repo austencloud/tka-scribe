@@ -9,7 +9,7 @@ import type {
   BatchExportProgress,
   BatchOperationConfig,
   WordCardExportResult,
-} from "$lib/shared/index";
+} from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
 import type { IWordCardBatchProcessingService } from "../contracts";
 

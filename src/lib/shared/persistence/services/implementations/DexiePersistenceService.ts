@@ -10,9 +10,9 @@ import type {
   AppSettings,
   CompleteExploreState,
   PictographData,
-  SequenceData,
   TabId,
 } from "../../../index";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { db } from "../../database/TKADatabase";
 import { UserWorkType } from "../../domain/enums";

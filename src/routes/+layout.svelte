@@ -63,20 +63,20 @@
       if (isHistoryLocked) return;
 
       // Push a dummy state to prevent going back
-      window.history.pushState({ preventBack: true }, '', window.location.href);
+      window.history.pushState({ preventBack: true }, "", window.location.href);
       isHistoryLocked = true;
     };
 
     const handlePopState = (e: PopStateEvent) => {
       // Always push forward to prevent back navigation
-      window.history.pushState({ preventBack: true }, '', window.location.href);
+      window.history.pushState({ preventBack: true }, "", window.location.href);
     };
 
     // Lock history on page load
     lockHistory();
 
     // Listen for popstate (back/forward navigation attempts)
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
 
     // 2. SMART GESTURE PREVENTION - Block browser navigation, allow drawer/carousel gestures
     let gestureStartX = 0;
@@ -86,16 +86,20 @@
     const isInsideAllowedSwipeZone = (element: HTMLElement | null): boolean => {
       if (!element) return false;
       // Check if element or any parent is a drawer OR an Embla carousel (horizontal swipe container)
-      return element.closest('.drawer-content') !== null ||
-             element.closest('.embla') !== null;
+      return (
+        element.closest(".drawer-content") !== null ||
+        element.closest(".embla") !== null
+      );
     };
 
     const handleGestureStart = (e: TouchEvent | MouseEvent): void => {
       const target = e.target as HTMLElement;
       gestureStartedInAllowedZone = isInsideAllowedSwipeZone(target);
 
-      gestureStartX = e instanceof TouchEvent ? e.touches[0]?.clientX || 0 : e.clientX;
-      gestureStartY = e instanceof TouchEvent ? e.touches[0]?.clientY || 0 : e.clientY;
+      gestureStartX =
+        e instanceof TouchEvent ? e.touches[0]?.clientX || 0 : e.clientX;
+      gestureStartY =
+        e instanceof TouchEvent ? e.touches[0]?.clientY || 0 : e.clientY;
 
       // Allow drawer/carousel gestures to pass through
       if (gestureStartedInAllowedZone) {
@@ -117,8 +121,10 @@
         return; // Let drawer or carousel handle its own gestures
       }
 
-      const clientX = e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
-      const clientY = e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
+      const clientX =
+        e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
+      const clientY =
+        e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
 
       if (!clientX || !clientY) return;
 
@@ -158,11 +164,11 @@
     // Attach ALL event listeners with {passive: false} at capture phase
     const options = { passive: false, capture: true };
 
-    document.addEventListener('touchstart', handleGestureStart, options);
-    document.addEventListener('touchmove', handleGestureMove, options);
-    document.addEventListener('mousedown', handleGestureStart, options);
-    document.addEventListener('mousemove', handleGestureMove, options);
-    document.addEventListener('wheel', handleWheel, options);
+    document.addEventListener("touchstart", handleGestureStart, options);
+    document.addEventListener("touchmove", handleGestureMove, options);
+    document.addEventListener("mousedown", handleGestureStart, options);
+    document.addEventListener("mousemove", handleGestureMove, options);
+    document.addEventListener("wheel", handleWheel, options);
 
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
@@ -174,7 +180,7 @@
     // This allows Vite HMR WebSocket to connect immediately
     (async () => {
       try {
-        const { getContainer } = await import("$shared");
+        const { getContainer } = await import("$lib/shared/inversify");
         container = await getContainer();
 
         // ⚡ PERFORMANCE: Glyph cache now uses lazy loading
@@ -206,13 +212,13 @@
       window.removeEventListener("resize", updateViewportHeight);
 
       // Clean up back navigation prevention
-      window.removeEventListener('popstate', handlePopState);
-      document.removeEventListener('touchstart', handleGestureStart, options);
-      document.removeEventListener('touchmove', handleGestureMove, options);
-      document.removeEventListener('mousedown', handleGestureStart, options);
-      document.removeEventListener('mousemove', handleGestureMove, options);
-      document.removeEventListener('wheel', handleWheel, options);
-      console.log('🗑️ PWA: Navigation prevention removed');
+      window.removeEventListener("popstate", handlePopState);
+      document.removeEventListener("touchstart", handleGestureStart, options);
+      document.removeEventListener("touchmove", handleGestureMove, options);
+      document.removeEventListener("mousedown", handleGestureStart, options);
+      document.removeEventListener("mousemove", handleGestureMove, options);
+      document.removeEventListener("wheel", handleWheel, options);
+      console.log("🗑️ PWA: Navigation prevention removed");
     };
   });
 </script>

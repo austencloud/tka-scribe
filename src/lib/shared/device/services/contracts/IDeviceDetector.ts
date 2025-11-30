@@ -4,7 +4,7 @@
  * Detects device capabilities and characteristics.
  */
 
-import type { DeviceType } from "../../../index";
+import type { DeviceType } from "../../domain/enums/device-enums";
 import type {
   DeviceCapabilities,
   ResponsiveSettings,

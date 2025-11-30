@@ -7,7 +7,8 @@
 
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type * as SharedTypes from "$lib/shared/index";
+import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type * as ContractTypes from "../contracts";
@@ -17,9 +18,9 @@ import type { IOptionLoader } from "../../../services/contracts/IOptionLoader";
 export class OptionLoader implements IOptionLoader {
   constructor(
     @inject(TYPES.IGridPositionDeriver)
-    private positionMapper: SharedTypes.IGridPositionDeriver,
+    private positionMapper: IGridPositionDeriver,
     @inject(TYPES.IMotionQueryHandler)
-    private motionQueryHandler: SharedTypes.IMotionQueryHandler,
+    private motionQueryHandler: IMotionQueryHandler,
     @inject(TYPES.IPositionAnalyzer)
     private positionAnalyzer: ContractTypes.IPositionAnalyzer
   ) {}

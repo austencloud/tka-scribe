@@ -5,15 +5,13 @@
  * and desktop.modern.domain.models for actual validation and business rules.
  */
 
+import type { BeatData } from "../../domain/models/BeatData";
 import type {
-  BeatData,
-  SequenceData,
   ValidationErrorInfo,
   ValidationResult,
-} from "$lib/shared/index";
+} from "$lib/shared/validation/ValidationResult";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-// Domain types
-// import type { SequenceCreateRequest } from "$lib/shared/index";
 
 // Behavioral contracts
 import { injectable } from "inversify";

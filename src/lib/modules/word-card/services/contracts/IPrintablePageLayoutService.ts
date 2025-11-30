@@ -17,7 +17,7 @@ import type {
   Rectangle,
   WordCardGridConfig,
   WordCardPaperSize,
-} from "$lib/shared/index";
+} from "../../domain/models/PageLayout";
 
 export interface IPrintablePageLayoutService {
   /**

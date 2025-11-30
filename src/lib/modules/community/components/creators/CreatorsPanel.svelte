@@ -15,7 +15,13 @@
   import { communityViewState } from "../../state/community-view-state.svelte";
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
   import type { IUserService } from "../../services/contracts/IUserService";
-  import { PanelHeader, PanelSearch, PanelContent, PanelState, PanelGrid } from "../../../../shared";
+  import {
+    PanelState,
+    PanelContent,
+    PanelSearch,
+    PanelHeader,
+    PanelGrid,
+  } from "../../../../shared/components/panel";
 
   let users = $state<UserProfile[]>([]);
   let isLoading = $state(true);

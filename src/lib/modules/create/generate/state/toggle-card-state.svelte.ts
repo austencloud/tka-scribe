@@ -6,11 +6,9 @@
  * Follows TKA architecture: services handle business logic, runes handle reactivity.
  */
 
-import type {
-  IDeviceDetector,
-  IHapticFeedbackService,
-  IRippleEffectService,
-} from "$lib/shared/index";
+import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
 import { resolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 

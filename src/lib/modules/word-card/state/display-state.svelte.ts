@@ -5,7 +5,7 @@
  * Delegates data loading to ExploreService and page layout to PageLayoutService.
  */
 
-import type { DeviceCapabilities } from "$lib/shared/index";
+import type { DeviceCapabilities } from "$lib/shared/device/domain/models/device-models";
 
 // ============================================================================
 // DISPLAY SETTINGS STATE

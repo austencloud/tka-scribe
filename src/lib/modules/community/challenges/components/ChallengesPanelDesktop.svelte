@@ -11,7 +11,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IChallengeCoordinator } from "$lib/shared/gamification/services/contracts";
   import type { ChallengeDashboard } from "$lib/shared/gamification/domain/models/challenge-models";
-  import { PanelState } from "$lib/shared";
+  import { PanelState } from "$lib/shared/components/panel";
 
   // State
   let isLoading = $state(true);

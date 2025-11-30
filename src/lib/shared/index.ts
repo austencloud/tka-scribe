@@ -6,35 +6,6 @@
  */
 
 // === SHARED INFRASTRUCTURE ===
-export * from "./animation";
-export * from "./application";
-export * from "./background";
-export * from "./coordinators";
-// Export device module explicitly to avoid any re-export ambiguities
-export * from "./device/domain";
-export * from "./device/services";
-export * from "./foundation";
-// Modern Swipe Components (Embla-based) + Drawer + Dialog Components
-export {
-  ConfirmDialog,
-  Drawer,
-  FontAwesomeIcon,
-  HorizontalSwipeContainer,
-} from "./foundation/ui";
-
-// Panel Components - Shared building blocks for panel UIs
-export {
-  PanelAvatar,
-  PanelButton,
-  PanelCard,
-  PanelContent,
-  PanelGrid,
-  PanelHeader,
-  PanelSearch,
-  PanelSpinner,
-  PanelState,
-  PanelTabs,
-} from "./components/panel";
 export * from "./inversify";
 export * from "./navigation";
 export * from "./persistence";
