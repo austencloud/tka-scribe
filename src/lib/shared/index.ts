@@ -29,20 +29,8 @@ export {
 // === UI TYPES ===
 export type { TabId } from "./foundation/ui/UITypes";
 
-// === MODULE EXPORTS ===
-export * from "../modules/animate/shared/domain";
-export * from "../modules/create/generate/circular/domain";
-export * from "../modules/create/generate/shared/domain";
-export * from "../modules/create/shared/domain/factories";
-export * from "../modules/create/shared/domain/models";
-export * from "../modules/discover/shared/domain";
-export * from "../modules/learn/codex/domain";
-export * from "../modules/learn/quiz/domain";
-export * from "../modules/word-card/domain";
-
-// === SPECIFIC EXPORTS FOR CROSS-MODULE DEPENDENCIES ===
-
-// Storage utility functions (needed by modules)
+// === STORAGE UTILITIES ===
+// (Keep these as they're pure utilities that don't create circular deps)
 import { StorageService } from "./foundation/services/implementations/StorageService";
 
 export const safeSessionStorageGet = <T>(
@@ -63,16 +51,5 @@ export const safeSessionStorageRemove = (key: string): void => {
   storageService.removeSessionStorageItem(key);
 };
 
-// CSV parser interface (needed by modules)
+// === FOUNDATION CONTRACTS ===
 export type { ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParser";
-
-// CAP Type service (needed by CAPCard component)
-export type { ICAPTypeService } from "../modules/create/generate/shared/services/contracts/ICAPTypeService";
-
-// Generation orchestration service (needed by generate-actions state)
-export type { IGenerationOrchestrationService } from "../modules/create/generate/shared/services/contracts/IGenerationOrchestrationService";
-
-// Sequence export service (needed by button components)
-export type { ISequenceExportService } from "../modules/create/shared/services/contracts/ISequenceExportService";
-
-// Mobile services (needed by components)

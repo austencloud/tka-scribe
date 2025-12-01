@@ -575,3 +575,4 @@
     border-color: rgba(239, 68, 68, 0.3);
   }
 </style>
+So glad to 3D is not something I'm planning on working on soon because it's a pretty significant change I also love playing with the generator and just getting fresh variety There's a bunch of stuff I want to do before opening that door

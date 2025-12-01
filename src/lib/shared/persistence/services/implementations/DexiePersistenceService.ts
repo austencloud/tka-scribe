@@ -6,10 +6,8 @@
  * service handles all the IndexedDB complexity behind the scenes.
  */
 
-import type {
-  AppSettings,
-  CompleteExploreState,
-} from "../../../index";
+import type { AppSettings } from "../../../settings/domain/AppSettings";
+import type { CompleteExploreState } from "../../../../modules/discover/shared/domain/models/discover-models";
 import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
 import type { TabId } from "../../../foundation/ui/UITypes";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";

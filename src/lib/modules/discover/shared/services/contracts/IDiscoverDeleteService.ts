@@ -1,7 +1,7 @@
 import type {
   DeleteConfirmationData,
   DeleteResult,
-} from "../../../../../shared";
+} from "../../../../create/shared/domain/models/sequence-models";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export interface IDiscoverDeleteService {
