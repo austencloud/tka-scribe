@@ -11,7 +11,7 @@ import { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type { MotionData } from "../../domain/models/MotionData";
 import { createMotionData } from "../../domain/models/MotionData";
 import type { PictographData } from "../../domain/models/PictographData";
-import type { ICSVPictographParserService as ICSVPictographParser, CSVRow } from "../../../../foundation/services/contracts/data";
+import type { ICSVPictographParser as ICSVPictographParser, CSVRow } from "../../../../foundation/services/contracts/data";
 import { inject, injectable } from "inversify";
 import type { ParsedCsvRow } from "$lib/modules/create/generate/shared/domain";
 import type { ICSVLoader } from "../../../../foundation";
@@ -36,7 +36,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     private csvLoader: ICSVLoader,
     @inject(TYPES.ICSVParser)
     private CSVParser: ICSVParser,
-    @inject(TYPES.ICSVPictographParserService)
+    @inject(TYPES.ICSVPictographParser)
     private csvPictographParser: ICSVPictographParser,
     @inject(TYPES.IOrientationCalculator)
     private orientationCalculationService: IOrientationCalculator

@@ -168,6 +168,6 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.ILetterQueryHandler).to(LetterQueryHandler);
 
     // === DATA PARSERS ===
-    options.bind(TYPES.ICSVPictographParserService).to(CSVPictographParser);
+    options.bind(TYPES.ICSVPictographParser).to(CSVPictographParser);
   }
 );

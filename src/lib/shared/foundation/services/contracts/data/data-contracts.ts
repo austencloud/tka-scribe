@@ -91,7 +91,7 @@ export interface IMotionQueryHandler {
   ): Promise<string | null>;
 }
 
-// ICSVPictographParserService moved to dedicated contract file
+// ICSVPictographParser moved to dedicated contract file
 
 // Re-export from data interfaces for backward compatibility
 export type { ICSVLoader } from "./ICSVLoader";

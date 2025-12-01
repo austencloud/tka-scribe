@@ -9,9 +9,9 @@
 import type {
   AppSettings,
   CompleteExploreState,
-  PictographData,
-  TabId,
 } from "../../../index";
+import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
+import type { TabId } from "../../../foundation/ui/UITypes";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { db } from "../../database/TKADatabase";

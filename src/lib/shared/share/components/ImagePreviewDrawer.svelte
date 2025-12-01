@@ -76,7 +76,7 @@
                 checked={shareState.options.addWord}
                 onchange={() => handleToggle("addWord")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Word Label</span>
             </label>
 
@@ -86,7 +86,7 @@
                 checked={shareState.options.addBeatNumbers}
                 onchange={() => handleToggle("addBeatNumbers")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Beat Numbers</span>
             </label>
 
@@ -96,7 +96,7 @@
                 checked={shareState.options.addDifficultyLevel}
                 onchange={() => handleToggle("addDifficultyLevel")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Difficulty Level</span>
             </label>
 
@@ -106,7 +106,7 @@
                 checked={shareState.options.includeStartPosition}
                 onchange={() => handleToggle("includeStartPosition")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Start Position</span>
             </label>
 
@@ -116,7 +116,7 @@
                 checked={shareState.options.addUserInfo}
                 onchange={() => handleToggle("addUserInfo")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">User Info</span>
             </label>
           </div>
@@ -353,7 +353,7 @@
   }
 
   /* iOS-style Toggle Switch */
-  .toggle-switch {
+  .export-option-toggle {
     position: relative;
     width: 48px;
     height: 28px;
@@ -364,7 +364,7 @@
     flex-shrink: 0;
   }
 
-  .toggle-switch::before {
+  .export-option-toggle::before {
     content: "";
     position: absolute;
     top: 2px;
@@ -379,13 +379,13 @@
       0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .toggle-option input[type="checkbox"]:checked + .toggle-switch {
+  .toggle-option input[type="checkbox"]:checked + .export-option-toggle {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     border-color: #3b82f6;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
 
-  .toggle-option input[type="checkbox"]:checked + .toggle-switch::before {
+  .toggle-option input[type="checkbox"]:checked + .export-option-toggle::before {
     transform: translateX(20px);
   }
 

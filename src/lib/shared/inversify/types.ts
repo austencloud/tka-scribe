@@ -363,7 +363,7 @@ export const TYPES = {
     "IMotionLetterIdentificationService"
   ),
   ICSVPictographLoader: Symbol.for("ICSVPictographLoader"),
-  ICSVPictographParserService: Symbol.for("ICSVPictographParserService"),
+  ICSVPictographParser: Symbol.for("ICSVPictographParser"),
   IArrowLocationService: Symbol.for("IArrowLocationService"),
   IArrowPlacementKeyService: Symbol.for("IArrowPlacementKeyService"),
   IPropPlacementService: Symbol.for("IPropPlacementService"),

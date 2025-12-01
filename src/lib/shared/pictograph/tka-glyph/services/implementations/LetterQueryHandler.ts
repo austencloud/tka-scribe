@@ -48,7 +48,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     private csvLoader: ICSVLoader,
     @inject(TYPES.ICSVParser)
     private CSVParser: ICSVParser,
-    @inject(TYPES.ICSVPictographParserService)
+    @inject(TYPES.ICSVPictographParser)
     private csvPictographParser: ICSVPictographParser,
     // OPTIONAL: Only needed for Codex-specific methods (getPictographByLetter, getAllCodexPictographs)
     // NOT needed for getAllPictographVariations (used by Generate)

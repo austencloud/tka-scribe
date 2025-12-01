@@ -64,7 +64,7 @@ export const safeSessionStorageRemove = (key: string): void => {
 };
 
 // CSV parser interface (needed by modules)
-export type { ICSVPictographParserService as ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParserService";
+export type { ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParser";
 
 // CAP Type service (needed by CAPCard component)
 export type { ICAPTypeService } from "../modules/create/generate/shared/services/contracts/ICAPTypeService";
@@ -76,13 +76,3 @@ export type { IGenerationOrchestrationService } from "../modules/create/generate
 export type { ISequenceExportService } from "../modules/create/shared/services/contracts/ISequenceExportService";
 
 // Mobile services (needed by components)
-export type { IGestureService } from "./mobile/services/contracts/IGestureService";
-export type { IMobileFullscreenService } from "./mobile/services/contracts/IMobileFullscreenService";
-export type { IPlatformDetectionService } from "./mobile/services/contracts/IPlatformDetectionService";
-
-// Beat grid models (needed by workbench)
-export type {
-  BeatGridConfig,
-  ContainerDimensions,
-  LayoutInfo,
-} from "../modules/create/shared/workspace-panel/sequence-display/domain/models/beat-grid-models";

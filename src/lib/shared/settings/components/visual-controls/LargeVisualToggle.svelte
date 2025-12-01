@@ -76,7 +76,7 @@
 
 		<button
 			id="toggle-{label}"
-			class="toggle-switch"
+			class="visual-setting-toggle"
 			class:on={enabled}
 			class:large={size === 'large'}
 			class:standard={size === 'standard'}
@@ -176,7 +176,7 @@
 	}
 
 	/* Toggle switch - container query aware with 48px minimum */
-	.toggle-switch {
+	.visual-setting-toggle {
 		flex-shrink: 0;
 		position: relative;
 		border: none;
@@ -192,25 +192,25 @@
 		justify-content: center;
 	}
 
-	.toggle-switch:disabled,
-	.toggle-switch.disabled {
+	.visual-setting-toggle:disabled,
+	.visual-setting-toggle.disabled {
 		opacity: 0.4;
 		cursor: not-allowed;
 	}
 
-	.toggle-switch:disabled .toggle-track,
-	.toggle-switch.disabled .toggle-track {
+	.visual-setting-toggle:disabled .toggle-track,
+	.visual-setting-toggle.disabled .toggle-track {
 		background: rgba(120, 120, 128, 0.2);
 	}
 
 	/* Large size - responsive with container queries */
-	.toggle-switch.large .toggle-track {
+	.visual-setting-toggle.large .toggle-track {
 		width: clamp(48px, 10cqi, var(--settings-toggle-width, 68px));
 		height: clamp(28px, 6cqi, var(--settings-toggle-height, 40px));
 	}
 
 	/* Standard size - responsive with container queries */
-	.toggle-switch.standard .toggle-track {
+	.visual-setting-toggle.standard .toggle-track {
 		width: clamp(48px, 8cqi, var(--settings-toggle-width-standard, 51px));
 		height: clamp(28px, 5cqi, var(--settings-toggle-height-standard, 31px));
 	}
@@ -224,7 +224,7 @@
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 	}
 
-	.toggle-switch.on .toggle-track {
+	.visual-setting-toggle.on .toggle-track {
 		background: linear-gradient(135deg, var(--settings-primary-indigo), var(--settings-primary-purple));
 		box-shadow:
 			0 4px 20px rgba(99, 102, 241, 0.4),
@@ -243,39 +243,39 @@
 	}
 
 	/* Large thumb - responsive */
-	.toggle-switch.large .toggle-thumb {
+	.visual-setting-toggle.large .toggle-thumb {
 		width: clamp(24px, 5cqi, var(--settings-toggle-thumb-size, 36px));
 		height: clamp(24px, 5cqi, var(--settings-toggle-thumb-size, 36px));
 	}
 
 	/* Standard thumb - responsive */
-	.toggle-switch.standard .toggle-thumb {
+	.visual-setting-toggle.standard .toggle-thumb {
 		width: clamp(24px, 4cqi, var(--settings-toggle-thumb-size-standard, 27px));
 		height: clamp(24px, 4cqi, var(--settings-toggle-thumb-size-standard, 27px));
 	}
 
-	.toggle-switch.on .toggle-thumb {
+	.visual-setting-toggle.on .toggle-thumb {
 		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 	}
 
 	/* Hover effects */
-	.toggle-switch:hover .toggle-track {
+	.visual-setting-toggle:hover .toggle-track {
 		background: rgba(120, 120, 128, 0.4);
 	}
 
-	.toggle-switch.on:hover .toggle-track {
+	.visual-setting-toggle.on:hover .toggle-track {
 		background: linear-gradient(135deg, #7c7ff3, #9d6cf8);
 	}
 
 	/* Focus state */
-	.toggle-switch:focus-visible {
+	.visual-setting-toggle:focus-visible {
 		outline: 2px solid var(--settings-primary-indigo);
 		outline-offset: 4px;
 		border-radius: var(--settings-radius-full);
 	}
 
 	/* Active (pressed) state */
-	.toggle-switch:active .toggle-thumb {
+	.visual-setting-toggle:active .toggle-thumb {
 		transform: translateX(calc(var(--thumb-translate, 0px))) scale(0.95);
 	}
 
@@ -287,20 +287,20 @@
 			gap: var(--settings-space-sm);
 		}
 
-		.toggle-switch {
+		.visual-setting-toggle {
 			align-self: flex-end;
 		}
 	}
 
 	@container visual-toggle (max-width: 200px) {
-		.toggle-switch.large .toggle-track,
-		.toggle-switch.standard .toggle-track {
+		.visual-setting-toggle.large .toggle-track,
+		.visual-setting-toggle.standard .toggle-track {
 			width: 48px;
 			height: 28px;
 		}
 
-		.toggle-switch.large .toggle-thumb,
-		.toggle-switch.standard .toggle-thumb {
+		.visual-setting-toggle.large .toggle-thumb,
+		.visual-setting-toggle.standard .toggle-thumb {
 			width: 24px;
 			height: 24px;
 		}
@@ -330,7 +330,7 @@
 
 	/* Reduced motion */
 	@media (prefers-reduced-motion: reduce) {
-		.toggle-switch,
+		.visual-setting-toggle,
 		.toggle-track,
 		.toggle-thumb {
 			transition: none;

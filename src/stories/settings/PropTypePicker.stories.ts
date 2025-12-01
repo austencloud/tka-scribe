@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
+import type { ComponentProps } from "svelte";
 import PropTypePicker from "../../lib/shared/settings/components/tabs/prop-type/PropTypePicker.svelte";
 import { PropType } from "../../lib/shared/pictograph/prop/domain/enums/PropType";
+
+type PropTypePickerProps = ComponentProps<typeof PropTypePicker>;
 
 const allPropTypes = [
   PropType.STAFF,
@@ -22,7 +25,7 @@ const allPropTypes = [
 
 const meta = {
   title: "Settings/PropTypePicker",
-  component: PropTypePicker as any,
+  component: PropTypePicker,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -39,7 +42,7 @@ const meta = {
     onClose: { action: "close" },
     onImageLoad: { action: "imageLoad" },
   },
-} satisfies Meta<PropTypePicker>;
+} satisfies Meta<PropTypePickerProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
+import type { ComponentProps } from "svelte";
 import ContentTypeSelector from "$lib/shared/share/components/ContentTypeSelector.svelte";
 
-type ContentType = "video" | "animation" | "image";
+type ContentTypeSelectorProps = ComponentProps<typeof ContentTypeSelector>;
 
 const meta = {
   title: "Create/Share/ContentTypeSelector",
-  component: ContentTypeSelector as any,
+  component: ContentTypeSelector,
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
@@ -21,10 +22,7 @@ const meta = {
       ],
     },
   },
-  argTypes: {
-    onSelectionChange: { action: "selectionChange" },
-  },
-} satisfies Meta<ContentTypeSelector>;
+} satisfies Meta<ContentTypeSelectorProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -32,31 +30,23 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     selectedTypes: ["image"],
-    onSelectionChange: (types: ContentType[]) =>
-      console.log("Selected:", types),
   },
 };
 
 export const MultipleSelected: Story = {
   args: {
     selectedTypes: ["animation", "image"],
-    onSelectionChange: (types: ContentType[]) =>
-      console.log("Selected:", types),
   },
 };
 
 export const NoneSelected: Story = {
   args: {
     selectedTypes: [],
-    onSelectionChange: (types: ContentType[]) =>
-      console.log("Selected:", types),
   },
 };
 
 export const AllSelected: Story = {
   args: {
     selectedTypes: ["video", "animation", "image"],
-    onSelectionChange: (types: ContentType[]) =>
-      console.log("Selected:", types),
   },
 };

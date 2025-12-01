@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
+import type { ComponentProps } from "svelte";
 import PWAInstallGuide from "$lib/shared/mobile/components/PWAInstallGuide.svelte";
+
+type PWAInstallGuideProps = ComponentProps<typeof PWAInstallGuide>;
 
 const meta = {
   title: "PWA/PWAInstallGuide",
-  component: PWAInstallGuide as any,
+  component: PWAInstallGuide,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -27,7 +30,7 @@ const meta = {
       description: "Whether to show the installation guide",
     },
   },
-} satisfies Meta<PWAInstallGuide>;
+} satisfies Meta<PWAInstallGuideProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

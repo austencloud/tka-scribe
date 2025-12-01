@@ -32,7 +32,7 @@
 </script>
 
 <button
-  class="toggle-switch"
+  class="animate-control-toggle"
   class:checked
   class:disabled
   onclick={handleToggle}
@@ -59,7 +59,7 @@
      iOS/Material Design 3 inspired
      =========================== */
 
-  .toggle-switch {
+  .animate-control-toggle {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -77,7 +77,7 @@
     overflow: hidden;
   }
 
-  .toggle-switch::before {
+  .animate-control-toggle::before {
     content: "";
     position: absolute;
     top: 0;
@@ -95,22 +95,22 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .toggle-switch:not(.disabled):hover {
+    .animate-control-toggle:not(.disabled):hover {
       background: rgba(255, 255, 255, 0.08);
       border-color: rgba(255, 255, 255, 0.15);
       transform: translateX(2px);
     }
 
-    .toggle-switch:not(.disabled):hover::before {
+    .animate-control-toggle:not(.disabled):hover::before {
       opacity: 1;
     }
   }
 
-  .toggle-switch:not(.disabled):active {
+  .animate-control-toggle:not(.disabled):active {
     transform: scale(0.98);
   }
 
-  .toggle-switch.disabled {
+  .animate-control-toggle.disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -124,7 +124,7 @@
     transition: color 0.3s ease;
   }
 
-  .toggle-switch.checked .toggle-label {
+  .animate-control-toggle.checked .toggle-label {
     color: rgba(255, 255, 255, 0.95);
   }
 
@@ -143,7 +143,7 @@
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  .toggle-switch.checked .toggle-track {
+  .animate-control-toggle.checked .toggle-track {
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.8) 0%,
@@ -180,7 +180,7 @@
     overflow: hidden;
   }
 
-  .toggle-switch.checked .toggle-thumb {
+  .animate-control-toggle.checked .toggle-thumb {
     transform: translateX(clamp(18px, 3.6vw, 24px));
     background: linear-gradient(
       135deg,
@@ -216,7 +216,7 @@
      =========================== */
 
   @container (min-aspect-ratio: 5/4) {
-    .toggle-switch {
+    .animate-control-toggle {
       min-height: max(48px, 4cqh);
       padding: max(8px, 0.4cqh) max(10px, 0.5cqw);
       gap: max(8px, 0.5cqw);
@@ -239,7 +239,7 @@
       height: max(20px, 1.6cqh);
     }
 
-    .toggle-switch.checked .toggle-thumb {
+    .animate-control-toggle.checked .toggle-thumb {
       transform: translateX(max(18px, 1.6cqh));
     }
   }
@@ -250,23 +250,23 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .toggle-switch,
-    .toggle-switch::before,
+    .animate-control-toggle,
+    .animate-control-toggle::before,
     .toggle-track,
     .toggle-thumb,
     .toggle-label {
       transition: none;
     }
 
-    .toggle-switch:hover,
-    .toggle-switch:active {
+    .animate-control-toggle:hover,
+    .animate-control-toggle:active {
       transform: none;
     }
   }
 
   /* High contrast */
   @media (prefers-contrast: high) {
-    .toggle-switch {
+    .animate-control-toggle {
       border-width: 2px;
       border-color: rgba(255, 255, 255, 0.4);
     }
@@ -279,13 +279,13 @@
       background: rgba(255, 255, 255, 0.3);
     }
 
-    .toggle-switch.checked .toggle-track {
+    .animate-control-toggle.checked .toggle-track {
       background: rgba(59, 130, 246, 1);
     }
   }
 
   /* Focus visible for keyboard navigation */
-  .toggle-switch:focus-visible {
+  .animate-control-toggle:focus-visible {
     outline: 2px solid rgba(59, 130, 246, 0.8);
     outline-offset: 2px;
   }

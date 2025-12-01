@@ -14,13 +14,13 @@ import type { PictographData } from "../../domain/models/PictographData";
 import { createPictographData } from "../../domain/factories/createPictographData";
 import type { IEnumMapper } from "../../../../foundation/services/contracts/data/IEnumMapper";
 import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
-import type { CSVRow, ICSVPictographParserService } from "../../../../foundation/services/contracts/data/ICSVPictographParserService";
+import type { CSVRow, ICSVPictographParser } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
 import { Orientation } from "../../domain/enums/pictograph-enums";
 import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";
 
 @injectable()
-export class CSVPictographParser implements ICSVPictographParserService {
+export class CSVPictographParser implements ICSVPictographParser {
   constructor(
     @inject(TYPES.IEnumMapper)
     private readonly enumMapper: IEnumMapper,

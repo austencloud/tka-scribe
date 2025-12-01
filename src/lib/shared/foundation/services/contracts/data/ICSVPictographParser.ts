@@ -24,7 +24,7 @@ export interface CSVRow {
   redEndLocation: string;
 }
 
-export interface ICSVPictographParserService {
+export interface ICSVPictographParser {
   /**
    * Convert a CSV row to PictographData object
    * @param row - CSV row data

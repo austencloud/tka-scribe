@@ -14,7 +14,7 @@ import type {
   ICreateModuleEventService,
   IBuildConstructSectionCoordinator,
 } from "../contracts";
-import type { PictographData } from "../../../../../shared";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { IOrientationCalculator } from "../../../generate";
 import type { BeatData } from "../../domain";
 import { createBeatData } from "../../domain";

@@ -910,29 +910,29 @@
     }
 
     /* Small devices: Ultra-compact toggles */
-    .ultra-compact :global(.toggle-switch) {
+    .ultra-compact :global(.animate-control-toggle) {
       min-height: 48px !important;
       padding: 4px 6px !important;
       gap: 6px !important;
     }
 
-    .ultra-compact :global(.toggle-switch-label) {
+    .ultra-compact :global(.animate-control-toggle-label) {
       font-size: 11px !important;
     }
 
-    .ultra-compact :global(.toggle-switch-track) {
+    .ultra-compact :global(.animate-control-toggle-track) {
       width: 36px !important;
       height: 20px !important;
     }
 
-    .ultra-compact :global(.toggle-switch-thumb) {
+    .ultra-compact :global(.animate-control-toggle-thumb) {
       width: 16px !important;
       height: 16px !important;
     }
 
     .ultra-compact
       :global(
-        .toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb
+        .animate-control-toggle input:checked + .animate-control-toggle-track .animate-control-toggle-thumb
       ) {
       transform: translateX(16px) !important;
     }
@@ -958,29 +958,29 @@
     }
 
     /* Larger devices: Standard compact toggles */
-    .ultra-compact :global(.toggle-switch) {
+    .ultra-compact :global(.animate-control-toggle) {
       min-height: 48px !important;
       padding: 6px 8px !important;
       gap: 8px !important;
     }
 
-    .ultra-compact :global(.toggle-switch-label) {
+    .ultra-compact :global(.animate-control-toggle-label) {
       font-size: 12px !important;
     }
 
-    .ultra-compact :global(.toggle-switch-track) {
+    .ultra-compact :global(.animate-control-toggle-track) {
       width: 40px !important;
       height: 22px !important;
     }
 
-    .ultra-compact :global(.toggle-switch-thumb) {
+    .ultra-compact :global(.animate-control-toggle-thumb) {
       width: 18px !important;
       height: 18px !important;
     }
 
     .ultra-compact
       :global(
-        .toggle-switch input:checked + .toggle-switch-track .toggle-switch-thumb
+        .animate-control-toggle input:checked + .animate-control-toggle-track .animate-control-toggle-thumb
       ) {
       transform: translateX(18px) !important;
     }
