@@ -6,7 +6,7 @@ Shows optimization progress during pre-rendering, then briefly shows
 success badge when complete.
 -->
 <script lang="ts">
-	import type { PreRenderProgress } from "../services/implementations/SequenceFramePreRenderer";
+	  import type { PreRenderProgress } from './../../services/implementations/SequenceFramePreRenderer.ts';
 
 	let {
 		isPreRendering = false,

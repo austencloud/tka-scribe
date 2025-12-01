@@ -7,9 +7,9 @@
  */
 
 import type { PropType } from "../../../../../../shared/pictograph/prop/domain/enums/PropType";
-import type { HandPath, MotionType, RotationDirection } from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionType, RotationDirection } from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
-import type { HandPathSegment } from "../../domain/path-models";
+import type { DrawnHandPath, HandPathSegment } from "../../domain/path-models";
 
 
 export interface IPathToMotionConverter {
@@ -36,7 +36,7 @@ export interface IPathToMotionConverter {
    * @returns Array of MotionData
    */
   convertHandPathToMotions(
-    handPath: HandPath,
+    handPath: DrawnHandPath,
     rotationDirection: RotationDirection,
     propType: PropType
   ): MotionData[];

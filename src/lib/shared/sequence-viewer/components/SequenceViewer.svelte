@@ -602,23 +602,8 @@
   }
 
   /* Beats Section */
-  .beats-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
 
-  .section-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
-  }
 
-  .section-title .hint {
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 14px;
-  }
 
   /* Side-by-side layout (desktop) */
   .sequence-viewer.side-by-side .viewer-content {
@@ -634,10 +619,7 @@
     min-width: 300px;
   }
 
-  .sequence-viewer.side-by-side .beats-section {
-    flex: 1;
-    min-width: 300px;
-  }
+
 
   .sequence-viewer.side-by-side .metadata-section {
     width: 100%;

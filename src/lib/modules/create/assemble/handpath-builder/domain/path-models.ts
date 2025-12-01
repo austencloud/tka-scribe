@@ -31,8 +31,9 @@ export interface HandPathSegment {
 
 /**
  * Complete hand path for one hand (blue or red)
+ * Named DrawnHandPath to avoid conflict with HandPath enum in pictograph-enums
  */
-export interface HandPath {
+export interface DrawnHandPath {
   readonly handColor: MotionColor; // BLUE or RED
   readonly segments: readonly HandPathSegment[];
   readonly gridMode: GridMode;
@@ -97,8 +98,8 @@ export interface GridPositionPoint {
  */
 export interface GesturalSessionState {
   readonly config: PathBuilderConfig;
-  readonly blueHandPath: HandPath | null;
-  readonly redHandPath: HandPath | null;
+  readonly blueHandPath: DrawnHandPath | null;
+  readonly redHandPath: DrawnHandPath | null;
   readonly currentHand: MotionColor; // Which hand is being drawn
   readonly selectedRotationDirection: RotationDirection | null; // User's rotation choice
   readonly isSessionComplete: boolean; // Both hands drawn

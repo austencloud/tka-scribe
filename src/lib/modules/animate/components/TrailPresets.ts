@@ -6,7 +6,7 @@
  * requiring manual slider adjustments.
  */
 
-import { TrailMode, type TrailSettings } from '../domain/types/TrailTypes';
+import { TrailMode, type TrailSettings } from '../shared/domain/types/TrailTypes';
 
 /**
  * Trail preset identifier

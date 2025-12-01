@@ -13,6 +13,22 @@ export * from "./utils";
 export { createComponentLogger, debugLogger } from "./utils/debug-logger";
 export * from "./validation";
 
+// === PICTOGRAPH CORE TYPES ===
+export type { PictographData } from "./pictograph/shared/domain/models/PictographData";
+export type { MotionData } from "./pictograph/shared/domain/models/MotionData";
+export {
+  GridLocation,
+  GridMode,
+} from "./pictograph/grid/domain/enums/grid-enums";
+export {
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "./pictograph/shared/domain/enums/pictograph-enums";
+
+// === UI TYPES ===
+export type { TabId } from "./foundation/ui/UITypes";
+
 // === MODULE EXPORTS ===
 export * from "../modules/animate/shared/domain";
 export * from "../modules/create/generate/circular/domain";

@@ -13,7 +13,7 @@
     detectActivePreset,
     type TrailPresetId,
   } from "./TrailPresets";
-  import type { TrailSettings } from "../domain/types/TrailTypes";
+  import type { TrailSettings } from "../../../shared/animate/state/animation-settings-state.svelte";
 
   let {
     isOpen = $bindable(false),

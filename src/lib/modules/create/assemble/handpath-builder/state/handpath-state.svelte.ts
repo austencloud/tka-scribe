@@ -12,7 +12,7 @@ import { HandMotionType, MotionColor as MC } from "$lib/shared/pictograph/shared
 import { PathBuilderMode } from "../domain";
 import type {
   AdvanceButtonState,
-  HandPath,
+  DrawnHandPath,
   HandPathSegment,
   PathBuilderConfig,
   PathBuildingState,
@@ -36,10 +36,10 @@ export function createGesturalPathState() {
   let currentHand = $state<MotionColor>(MC.BLUE);
 
   /** Blue hand path */
-  let blueHandPath = $state<HandPath | null>(null);
+  let blueHandPath = $state<DrawnHandPath | null>(null);
 
   /** Red hand path */
-  let redHandPath = $state<HandPath | null>(null);
+  let redHandPath = $state<DrawnHandPath | null>(null);
 
   /** User-selected rotation direction */
   let selectedRotationDirection = $state<RotationDirection | null>(null);
@@ -156,7 +156,7 @@ export function createGesturalPathState() {
   function completeCurrentHand(): void {
     if (!config || !currentLocation) return;
 
-    const handPath: HandPath = {
+    const handPath: DrawnHandPath = {
       handColor: currentHand,
       segments: completedSegments as readonly HandPathSegment[],
       gridMode: config.gridMode,

@@ -6,8 +6,9 @@
  */
 
 // Re-export everything from all layers
-export * from "./components";
-export * from "./domain";
 export * from "./services";
 export * from "./state";
-export * from "./utils";
+export * from "./shared/domain";
+
+// Re-export components via shared
+export * from "./shared/components";

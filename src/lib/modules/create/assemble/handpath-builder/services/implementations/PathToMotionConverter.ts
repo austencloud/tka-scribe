@@ -12,7 +12,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { HandMotionType, MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { HandPath, HandPathSegment } from "../../domain";
+import type { DrawnHandPath, HandPathSegment } from "../../domain";
 import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 import type { IPathToMotionConverter } from "../contracts/IPathToMotionConverter";
 
@@ -51,7 +51,7 @@ export class PathToMotionConverter implements IPathToMotionConverter {
   }
 
   convertHandPathToMotions(
-    handPath: HandPath,
+    handPath: DrawnHandPath,
     rotationDirection: RotationDirection,
     propType: PropType
   ): MotionData[] {
