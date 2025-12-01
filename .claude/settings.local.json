@@ -160,7 +160,8 @@
       "Bash(timeout 60 npm run:*)",
       "Bash(mkdir:*)",
       "Bash(git branch:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(move animate animation-engine)"
     ],
     "deny": [],
     "ask": []

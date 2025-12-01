@@ -12,8 +12,9 @@
 -->
 <script lang="ts">
   import AnimationControls from "./AnimationControls.svelte";
-  import { TrailSettingsPanel, MotionVisibilityButtons } from "../trail";
-  import { ExpandToggleButton } from "../inputs";
+  import TrailSettingsPanel from "../trail/TrailSettingsPanel.svelte";
+  import MotionVisibilityButtons from "../trail/MotionVisibilityButtons.svelte";
+  import ExpandToggleButton from "../inputs/ExpandToggleButton.svelte";
 
   let {
     speed = 1,

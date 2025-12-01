@@ -6,7 +6,7 @@
   BeatGrid and Canvas are side-by-side for optimal desktop viewing.
 -->
 <script lang="ts">
-  import { AnimationControlsModern } from "../../../shared/components";
+  import AnimationControlsModern from "../../../components/canvas/AnimationControlsModern.svelte";
   import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import { SingleModeCanvas } from "../shared";
   import { AnimationHeader, StatsBar } from "../desktop";

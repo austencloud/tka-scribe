@@ -4,7 +4,7 @@
   Header bar for mirror mode showing sequence info and change button.
 -->
 <script lang="ts">
-  import { ChangeButton } from "../../../shared/components";
+  import ChangeButton from "../../../components/controls/ChangeButton.svelte";
 
   let {
     sequenceName,

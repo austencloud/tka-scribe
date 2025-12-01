@@ -6,8 +6,9 @@
 -->
 <script lang="ts">
   import { Drawer } from "$lib/shared/foundation/ui";
-  import { ModernSlider, ToggleSwitch } from "../inputs";
-  import type { TrailSettings } from "../../domain/types/TrailTypes";
+  import ModernSlider from "../inputs/ModernSlider.svelte";
+  import ToggleSwitch from "../inputs/ToggleSwitch.svelte";
+  import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
 
   let {
     isOpen = $bindable(false),

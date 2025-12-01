@@ -4,7 +4,8 @@
   Playback controls footer with play/pause, BPM control, and beat indicator.
 -->
 <script lang="ts">
-  import { BpmControl, PlayPauseButton } from "../../../shared/components";
+  import BpmControl from "../../../components/controls/BpmControl.svelte";
+  import PlayPauseButton from "../../../components/controls/PlayPauseButton.svelte";
 
   // Props
   let {

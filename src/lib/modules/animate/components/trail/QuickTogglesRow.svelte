@@ -5,8 +5,9 @@
   Compact horizontal layout for secondary controls.
 -->
 <script lang="ts">
-  import { VisibilityChip, TrailPresetPicker } from "../shared/components";
-  import type { TrailSettings } from "../shared/domain";
+  import VisibilityChip from "./VisibilityChip.svelte";
+  import TrailPresetPicker from "./TrailPresetPicker.svelte";
+  import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
 
   let {
     blueVisible = $bindable(true),
@@ -150,6 +151,8 @@
       margin-left: auto;
       width: 48px;
       height: 48px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 0.85rem;
     }
   }

@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import { SequencePanelHeader } from "../../shared/components";
+  import SequencePanelHeader from "../../shared/components/SequencePanelHeader.svelte";
   import type { BeatData } from "$create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$create/shared/domain/models/StartPositionData";
   import type { NormalizedSequenceData } from "../../../services/contracts";

@@ -4,13 +4,11 @@
   Playback controls for grid mode with BPM control.
 -->
 <script lang="ts">
-  import {
-    BpmControl,
-    ExportButton,
-    LoopButton,
-    PlayPauseButton,
-    StopButton,
-  } from "../../../shared/components";
+  import BpmControl from "../../../components/controls/BpmControl.svelte";
+  import ExportButton from "../../../components/controls/ExportButton.svelte";
+  import LoopButton from "../../../components/controls/LoopButton.svelte";
+  import PlayPauseButton from "../../../components/controls/PlayPauseButton.svelte";
+  import StopButton from "../../../components/controls/StopButton.svelte";
 
   let {
     isPlaying = $bindable(false),

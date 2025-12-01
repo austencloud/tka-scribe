@@ -11,8 +11,8 @@
   to ensure proper overlay behavior. Use onOpenAdvancedSettings callback.
 -->
 <script lang="ts">
-  import { FloatingControlBar } from "../controls";
-  import { QuickTogglesRow } from "../trail";
+  import FloatingControlBar from "../controls/FloatingControlBar.svelte";
+  import QuickTogglesRow from "../trail/QuickTogglesRow.svelte";
   import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
 
   type ControlsMode = "fullscreen" | "inline" | "compact";

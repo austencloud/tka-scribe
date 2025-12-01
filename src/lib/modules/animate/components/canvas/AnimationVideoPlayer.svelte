@@ -18,15 +18,13 @@
   import type {
     VideoRenderProgress,
     VideoRenderResult,
-  } from "../../../services/contracts/IVideoPreRenderService";
-  import { getVideoPlaybackService } from "../../../services/implementations/VideoPlaybackService";
-  import { getVideoGenerationCoordinator } from "../../../services/implementations/VideoGenerationCoordinator";
-  import {
-    VideoGenerationStatus,
-    VideoReadyNotification,
-    GenerateVideoButton,
-    PlaybackModeToggle,
-  } from "../video-player";
+  } from "../../services/contracts/IVideoPreRenderService";
+  import { getVideoPlaybackService } from "../../services/implementations/VideoPlaybackService";
+  import { getVideoGenerationCoordinator } from "../../services/implementations/VideoGenerationCoordinator";
+  import VideoGenerationStatus from "../video-player/VideoGenerationStatus.svelte";
+  import VideoReadyNotification from "../video-player/VideoReadyNotification.svelte";
+  import GenerateVideoButton from "../video-player/GenerateVideoButton.svelte";
+  import PlaybackModeToggle from "../video-player/PlaybackModeToggle.svelte";
 
   // Props
   let {

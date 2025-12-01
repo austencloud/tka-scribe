@@ -12,11 +12,11 @@
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { PropState } from "../../domain/types/PropState";
-  import type { TrailSettings } from "../../domain/types/TrailTypes";
-  import type { VideoRenderResult } from "../../../services/contracts/IVideoPreRenderService";
-  import type { StartPositionData } from "../../../../create/shared/domain/models/StartPositionData";
-  import type { BeatData } from "../../../../create/shared/domain/models/BeatData";
+  import type { PropState } from "../../shared/domain/types/PropState";
+  import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
+  import type { VideoRenderResult } from "../../services/contracts/IVideoPreRenderService";
+  import type { StartPositionData } from "../../../create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "../../../create/shared/domain/models/BeatData";
 
   let {
     blueProp = null,

@@ -13,7 +13,7 @@
     detectActivePreset,
     type TrailPresetId,
   } from "./TrailPresets";
-  import type { TrailSettings } from "../../../shared/animate/state/animation-settings-state.svelte";
+  import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
 
   let {
     isOpen = $bindable(false),
@@ -161,10 +161,8 @@
   }
 
   .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;

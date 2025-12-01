@@ -10,13 +10,11 @@
   Layout uses golden ratio (φ = 1.618) for harmonious proportions
 -->
 <script lang="ts">
-  import {
-    AnimationControlsPanel,
-    ExportButton,
-    LoopButton,
-    PlayPauseButton,
-    StopButton,
-  } from "../../../shared/components";
+  import AnimationControlsPanel from "../../../components/canvas/AnimationControlsPanel.svelte";
+  import ExportButton from "../../../components/controls/ExportButton.svelte";
+  import LoopButton from "../../../components/controls/LoopButton.svelte";
+  import PlayPauseButton from "../../../components/controls/PlayPauseButton.svelte";
+  import StopButton from "../../../components/controls/StopButton.svelte";
 
   // Props
   let {

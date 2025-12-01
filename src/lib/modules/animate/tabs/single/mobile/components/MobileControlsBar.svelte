@@ -5,7 +5,8 @@
   Contains BPM control, play/pause, visibility toggles, and settings button.
 -->
 <script lang="ts">
-  import { BpmControl, PlayPauseButton } from "../../../../shared/components";
+  import BpmControl from "../../../../components/controls/BpmControl.svelte";
+  import PlayPauseButton from "../../../../components/controls/PlayPauseButton.svelte";
   import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
 
   let {

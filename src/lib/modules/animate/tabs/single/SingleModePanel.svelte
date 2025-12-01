@@ -12,12 +12,9 @@
   import { MobileAnimationView, MobileSelectionArea } from "./mobile";
   import { DesktopAnimationView, DesktopSelectionArea } from "./desktop";
   // Shared imports
-  import {
-    TrailPresetPanel,
-    AdvancedSettingsDrawer,
-    applyPreset,
-    type TrailPresetId,
-  } from "../../shared/components";
+  import TrailPresetPanel from "../../components/trail/TrailPresetPanel.svelte";
+  import AdvancedSettingsDrawer from "../../components/trail/AdvancedSettingsDrawer.svelte";
+  import { applyPreset, type TrailPresetId } from "../../components/trail/TrailPresets";
   import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
   import { SequenceBrowserPanel } from "$lib/shared/animate/components";
 
