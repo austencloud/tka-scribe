@@ -6,8 +6,8 @@
 -->
 <script lang="ts">
   import { Drawer } from "$lib/shared/foundation/ui";
-  import { ModernSlider, ToggleSwitch } from "../shared/components";
-  import type { TrailSettings } from "../shared/domain/types/TrailTypes";
+  import { ModernSlider, ToggleSwitch } from "../inputs";
+  import type { TrailSettings } from "../../domain/types/TrailTypes";
 
   let {
     isOpen = $bindable(false),
@@ -180,10 +180,8 @@
   }
 
   .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;

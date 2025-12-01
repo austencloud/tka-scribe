@@ -88,7 +88,10 @@
 
   // Local playback state that syncs with tab state
   let isPlaying = $state(false);
-  let speed = $state(1.0);
+  let bpm = $state(120); // BPM-based control (120 BPM = 1.0 speed)
+
+  // Derived speed multiplier for animation components
+  const speed = $derived(bpm / 120);
 
   // Sync local playback state with tab state
   $effect(() => {
@@ -97,9 +100,11 @@
     }
   });
 
+  // Convert BPM to speed multiplier and sync with tab state
   $effect(() => {
-    if (speed !== tabState.speed) {
-      tabState.setSpeed(speed);
+    const speedFromBpm = bpm / 120;
+    if (speedFromBpm !== tabState.speed) {
+      tabState.setSpeed(speedFromBpm);
     }
   });
 
@@ -108,8 +113,9 @@
     isPlaying = tabState.isPlaying;
   });
 
+  // Convert speed from tab state to BPM
   $effect(() => {
-    speed = tabState.speed;
+    bpm = tabState.speed * 120;
   });
 
   // Required beat count for filtering (use normalized beats, excluding start position)
@@ -299,7 +305,7 @@
 
       <TunnelControlsFooter
         bind:isPlaying
-        bind:speed
+        bind:bpm
         {animatingBeatNumber}
         {totalBeats}
       />

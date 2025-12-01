@@ -10,7 +10,13 @@
   Layout uses golden ratio (φ = 1.618) for harmonious proportions
 -->
 <script lang="ts">
-  import AnimationControlsPanel from "../../../shared/components/AnimationControlsPanel.svelte";
+  import {
+    AnimationControlsPanel,
+    ExportButton,
+    LoopButton,
+    PlayPauseButton,
+    StopButton,
+  } from "../../../shared/components";
 
   // Props
   let {
@@ -115,34 +121,13 @@
   <div class="primary-controls">
     <!-- Playback Controls -->
     <div class="playback-group">
-      <button
-        class="control-btn play-btn"
-        class:playing={isPlaying}
-        aria-label={isPlaying ? "Pause" : "Play"}
-        onclick={handlePlaybackToggle}
-      >
-        <i class="fas fa-{isPlaying ? 'pause' : 'play'}"></i>
-      </button>
-
-      <button class="control-btn" aria-label="Stop" onclick={onStop}>
-        <i class="fas fa-stop"></i>
-      </button>
-
-      <button
-        class="control-btn"
-        class:active={shouldLoop}
-        aria-label="Loop"
-        onclick={() => (shouldLoop = !shouldLoop)}
-      >
-        <i class="fas fa-repeat"></i>
-      </button>
+      <PlayPauseButton bind:isPlaying onToggle={handlePlaybackToggle} />
+      <StopButton onclick={onStop} />
+      <LoopButton bind:isLooping={shouldLoop} activeColor="purple" />
     </div>
 
     <!-- Export Button -->
-    <button class="export-btn">
-      <i class="fas fa-download"></i>
-      <span>Export</span>
-    </button>
+    <ExportButton label="Export" />
   </div>
 
   <!-- Animation Controls Panel (Speed + Trail Settings) -->
@@ -206,131 +191,6 @@
     gap: 8px; /* Fibonacci spacing */
   }
 
-  .control-btn {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .control-btn:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  .control-btn:active {
-    transform: scale(0.95);
-  }
-
-  .control-btn.active {
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.3) 0%,
-      rgba(124, 58, 237, 0.3) 100%
-    );
-    border-color: rgba(139, 92, 246, 0.6);
-    color: #c4b5fd;
-    box-shadow: 0 2px 12px rgba(139, 92, 246, 0.3);
-  }
-
-  /* Play Button - Larger and with gradient (Golden ratio: 48px → 78px ≈ 48 × φ) */
-  .control-btn.play-btn {
-    width: 56px;
-    height: 56px;
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.35) 0%,
-      rgba(22, 163, 74, 0.35) 100%
-    );
-    border-color: rgba(34, 197, 94, 0.5);
-    font-size: 1.1rem;
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .control-btn.play-btn:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(34, 197, 94, 0.45) 0%,
-        rgba(22, 163, 74, 0.45) 100%
-      );
-      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
-      border-color: rgba(34, 197, 94, 0.7);
-    }
-  }
-
-  .control-btn.play-btn.playing {
-    background: linear-gradient(
-      135deg,
-      rgba(251, 191, 36, 0.35) 0%,
-      rgba(245, 158, 11, 0.35) 100%
-    );
-    border-color: rgba(251, 191, 36, 0.5);
-    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.2);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .control-btn.play-btn.playing:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(251, 191, 36, 0.45) 0%,
-        rgba(245, 158, 11, 0.45) 100%
-      );
-      box-shadow: 0 4px 16px rgba(251, 191, 36, 0.4);
-    }
-  }
-
-  /* Export Button */
-  .export-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Fibonacci spacing */
-    padding: 13px 21px; /* Fibonacci spacing */
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.9) 0%,
-      rgba(5, 150, 105, 0.9) 100%
-    );
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .export-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
-      background: linear-gradient(
-        135deg,
-        rgba(16, 185, 129, 1) 0%,
-        rgba(5, 150, 105, 1) 100%
-      );
-    }
-  }
-
-  .export-btn:active {
-    transform: translateY(0) scale(0.98);
-  }
-
   /* ===========================
      ANIMATION CONTROLS CONTAINER
      Contains speed controls + trail settings panel
@@ -361,14 +221,6 @@
       flex: 1;
       justify-content: center;
     }
-
-    .export-btn {
-      padding: 13px;
-    }
-
-    .export-btn span {
-      display: none; /* Icon only on mobile */
-    }
   }
 
   /* Desktop: Side-by-side layout optimization */
@@ -382,23 +234,7 @@
      ACCESSIBILITY
      =========================== */
 
-  @media (prefers-reduced-motion: reduce) {
-    .control-btn,
-    .export-btn {
-      transition: none;
-    }
-
-    .control-btn:hover,
-    .export-btn:hover {
-      transform: none;
-    }
-  }
-
   @media (prefers-contrast: high) {
-    .control-btn {
-      border-width: 2px;
-    }
-
     .unified-controls-panel {
       border-top-width: 2px;
     }

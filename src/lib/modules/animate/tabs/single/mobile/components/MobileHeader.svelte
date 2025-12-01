@@ -5,6 +5,8 @@
   Displays sequence name and change button.
 -->
 <script lang="ts">
+  import { ChangeButton } from "../../../../shared/components";
+
   let {
     sequenceName = "",
     onChangeSequence,
@@ -16,13 +18,7 @@
 
 <div class="mobile-header-compact">
   <span class="sequence-name">{sequenceName}</span>
-  <button
-    class="change-btn"
-    onclick={onChangeSequence}
-    aria-label="Change sequence"
-  >
-    <i class="fas fa-exchange-alt"></i>
-  </button>
+  <ChangeButton onclick={onChangeSequence} variant="mobile" />
 </div>
 
 <style>
@@ -49,28 +45,6 @@
     margin-right: 8px;
   }
 
-  .change-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    -webkit-tap-highlight-color: transparent;
-    transition: all 0.2s ease;
-  }
-
-  .change-btn:active {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(0.9);
-  }
-
   /* Container query responsive styles */
   @container mobile-layout (max-width: 360px) {
     .mobile-header-compact {
@@ -81,15 +55,6 @@
     .sequence-name {
       font-size: 0.75rem;
       max-width: 180px;
-    }
-
-    /* Keep 48px minimum for accessibility */
-    .change-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
-      font-size: 0.75rem;
     }
   }
 

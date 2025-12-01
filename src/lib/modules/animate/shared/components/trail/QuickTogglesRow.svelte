@@ -7,7 +7,7 @@
 <script lang="ts">
   import VisibilityChip from "./VisibilityChip.svelte";
   import TrailPresetPicker from "./TrailPresetPicker.svelte";
-  import type { TrailSettings } from "../domain/types/TrailTypes";
+  import type { TrailSettings } from "../../domain/types/TrailTypes";
 
   let {
     blueVisible = $bindable(true),

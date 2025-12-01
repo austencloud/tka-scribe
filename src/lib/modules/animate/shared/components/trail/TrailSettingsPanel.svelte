@@ -13,9 +13,7 @@
     TrackingMode,
     type TrailSettings,
   } from "$lib/shared/animate/state/animation-settings-state.svelte";
-  import ToggleSwitch from "./ToggleSwitch.svelte";
-  import ModernStepper from "./ModernStepper.svelte";
-  import SwipeAdjuster from "./SwipeAdjuster.svelte";
+  import { ToggleSwitch, ModernStepper, SwipeAdjuster } from "../inputs";
 
   // Props
   let {
@@ -932,7 +930,10 @@
 
     .ultra-compact
       :global(
-        .animate-control-toggle input:checked + .animate-control-toggle-track .animate-control-toggle-thumb
+        .animate-control-toggle
+          input:checked
+          + .animate-control-toggle-track
+          .animate-control-toggle-thumb
       ) {
       transform: translateX(16px) !important;
     }
@@ -980,7 +981,10 @@
 
     .ultra-compact
       :global(
-        .animate-control-toggle input:checked + .animate-control-toggle-track .animate-control-toggle-thumb
+        .animate-control-toggle
+          input:checked
+          + .animate-control-toggle-track
+          .animate-control-toggle-thumb
       ) {
       transform: translateX(18px) !important;
     }

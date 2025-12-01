@@ -12,9 +12,8 @@
 -->
 <script lang="ts">
   import AnimationControls from "./AnimationControls.svelte";
-  import TrailSettingsPanel from "./TrailSettingsPanel.svelte";
-  import MotionVisibilityButtons from "./MotionVisibilityButtons.svelte";
-  import ExpandToggleButton from "./ExpandToggleButton.svelte";
+  import { TrailSettingsPanel, MotionVisibilityButtons } from "../trail";
+  import { ExpandToggleButton } from "../inputs";
 
   let {
     speed = 1,
@@ -46,7 +45,10 @@
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
     onToggleExpanded?: () => void;
-    preventBackNavAction?: (node: HTMLElement, isSideBySideLayout: boolean) => any;
+    preventBackNavAction?: (
+      node: HTMLElement,
+      isSideBySideLayout: boolean
+    ) => any;
     onScroll?: (e: Event) => void;
   } = $props();
 </script>

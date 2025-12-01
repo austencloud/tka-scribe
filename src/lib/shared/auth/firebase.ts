@@ -17,6 +17,7 @@ import {
   initializeFirestore,
   type Firestore,
   persistentLocalCache,
+  persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
@@ -56,11 +57,13 @@ export const auth: Auth = getAuth(app);
 /**
  * Firestore instance
  * Use this for all database operations (gamification, user data, etc.)
- * Configured with persistent local cache for offline support (single-tab mode)
- * Single-tab mode reduces Firebase network traffic since most users don't need multi-tab sync
+ * Configured with persistent local cache for offline support with multi-tab sync
+ * Multi-tab mode avoids IndexedDB ownership errors when multiple tabs are open
  */
 export const firestore: Firestore = initializeFirestore(app, {
-  localCache: persistentLocalCache({}),
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager(),
+  }),
 });
 
 /**

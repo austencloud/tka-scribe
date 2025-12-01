@@ -4,6 +4,8 @@
   Desktop header bar for single mode showing sequence title, author, and change button.
 -->
 <script lang="ts">
+  import { ChangeButton } from "../../../shared/components";
+
   // Props
   let {
     sequenceName,
@@ -27,10 +29,7 @@
   </div>
 
   <div class="header-actions">
-    <button class="change-btn" onclick={onChangeSequence}>
-      <i class="fas fa-exchange-alt"></i>
-      Change
-    </button>
+    <ChangeButton onclick={onChangeSequence} />
   </div>
 </div>
 
@@ -76,25 +75,6 @@
     gap: 0.5rem;
   }
 
-  .change-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    color: white;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .change-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
   @media (max-width: 480px) {
     .animation-header {
       flex-direction: column;
@@ -104,11 +84,6 @@
 
     .header-actions {
       width: 100%;
-    }
-
-    .change-btn {
-      flex: 1;
-      justify-content: center;
     }
   }
 </style>

@@ -158,7 +158,8 @@
       "Bash(if exist \"node_modules\\.vite\" rmdir /s /q \"node_modules\\.vite\")",
       "Bash(if exist \".svelte-kit\" rmdir /s /q \".svelte-kit\")",
       "Bash(timeout 60 npm run:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(git branch:*)"
     ],
     "deny": [],
     "ask": []

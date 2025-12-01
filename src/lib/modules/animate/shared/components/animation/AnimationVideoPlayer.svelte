@@ -14,19 +14,19 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import type { SequenceData } from "../../../../shared/foundation";
+  import type { SequenceData } from "$lib/shared/foundation";
   import type {
     VideoRenderProgress,
     VideoRenderResult,
-  } from "../../services/contracts/IVideoPreRenderService";
-  import { getVideoPlaybackService } from "../../services/implementations/VideoPlaybackService";
-  import { getVideoGenerationCoordinator } from "../../services/implementations/VideoGenerationCoordinator";
+  } from "../../../services/contracts/IVideoPreRenderService";
+  import { getVideoPlaybackService } from "../../../services/implementations/VideoPlaybackService";
+  import { getVideoGenerationCoordinator } from "../../../services/implementations/VideoGenerationCoordinator";
   import {
     VideoGenerationStatus,
     VideoReadyNotification,
     GenerateVideoButton,
     PlaybackModeToggle,
-  } from "./video-player";
+  } from "../video-player";
 
   // Props
   let {

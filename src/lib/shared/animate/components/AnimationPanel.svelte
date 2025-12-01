@@ -15,9 +15,7 @@
   import { browser } from "$app/environment";
 
   // Extracted components (from animate module)
-  import AnimationPanelHeader from "$lib/modules/animate/shared/components/AnimationPanelHeader.svelte";
-  import AnimationCanvas from "$lib/modules/animate/shared/components/AnimationCanvas.svelte";
-  import AnimationControlsPanel from "$lib/modules/animate/shared/components/AnimationControlsPanel.svelte";
+  import { AnimationPanelHeader, AnimationCanvas, AnimationControlsPanel } from "$lib/modules/animate/shared/components";
   import { CreatePanelDrawer } from "$lib/modules/create/shared/components";
 
   // Types

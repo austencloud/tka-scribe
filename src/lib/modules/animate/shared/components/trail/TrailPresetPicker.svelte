@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
   import { detectActivePreset } from "./TrailPresets";
-  import type { TrailSettings } from "../domain/types/TrailTypes";
+  import type { TrailSettings } from "../../domain/types/TrailTypes";
 
   let {
     currentSettings,

@@ -34,8 +34,8 @@
 
 <style>
   .play-pause-button {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,8 +110,8 @@
     }
 
     .play-pause-button.large {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       font-size: 1.1rem;
     }
 
@@ -132,10 +132,10 @@
     }
 
     .play-pause-button.large {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 1rem;
     }
 
