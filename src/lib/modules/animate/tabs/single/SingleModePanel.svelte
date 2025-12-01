@@ -14,9 +14,12 @@
   // Shared imports
   import TrailPresetPanel from "../../components/trail/TrailPresetPanel.svelte";
   import AdvancedSettingsDrawer from "../../components/trail/AdvancedSettingsDrawer.svelte";
-  import { applyPreset, type TrailPresetId } from "../../components/trail/TrailPresets";
-  import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
-  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+  import {
+    applyPreset,
+    type TrailPresetId,
+  } from "../../components/trail/TrailPresets";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
 
   // Tab-specific state
   const tabState = getSingleTabState();

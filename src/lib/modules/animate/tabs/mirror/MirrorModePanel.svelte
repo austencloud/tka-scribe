@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
   import { getMirrorTabState, type MirrorAxis } from "./state";
-  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
   import {
     MirrorSelectionArea,
     MirrorSelectionAreaMobile,

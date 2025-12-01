@@ -44,12 +44,22 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
       constructTabState?.isPersistenceInitialized !== false
   );
 
-  const shouldShowStartPositionPicker = $derived(
-    constructTabState?.shouldShowStartPositionPicker() ?? false
-  );
+  // Properly handle null state - don't convert to false, let it stay null for loading detection
+  const shouldShowStartPositionPicker = $derived.by(() => {
+    if (!isPersistenceFullyInitialized) return null;
+    if (!constructTabState?.isInitialized) return null;
 
+    const pickerState = constructTabState.shouldShowStartPositionPicker();
+    // Return null if state is not yet determined (still initializing)
+    if (pickerState === null) return null;
+
+    return pickerState;
+  });
+
+  // Loading when either persistence isn't ready OR picker state is null (still determining)
   const isPickerStateLoading = $derived(
-    !constructTabState?.isPersistenceInitialized
+    !constructTabState?.isPersistenceInitialized ||
+    shouldShowStartPositionPicker === null
   );
 
   // Convert SequenceData to PictographData[] for OptionViewer

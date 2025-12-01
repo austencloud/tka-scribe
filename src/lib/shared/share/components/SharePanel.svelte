@@ -17,7 +17,7 @@
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
   import { getInstagramLink } from "../domain";
   import type { InstagramLink } from "../domain";
-  import { ShareAnimationViewer } from "$lib/shared/animate/components";
+  import { ShareAnimationViewer } from "$lib/shared/animation-engine/components";
   import { createServiceResolver } from "../../utils/service-resolver.svelte";
 
   // Services

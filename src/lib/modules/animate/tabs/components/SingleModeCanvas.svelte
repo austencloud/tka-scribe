@@ -5,7 +5,7 @@
   Renders animation inline (not in a modal/drawer).
 -->
 <script lang="ts">
-  import { AnimatorCanvas } from "$lib/shared/animate/components";
+  import { AnimatorCanvas } from "$lib/shared/animation-engine/components";
   import type { ISequenceService } from "$create/shared";
   import { resolve, TYPES } from "$lib/shared/inversify";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";

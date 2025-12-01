@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-	import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+	import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
 	import { resolve } from "$lib/shared/inversify";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import type { IDiscoverLoader } from "$lib/modules/discover";

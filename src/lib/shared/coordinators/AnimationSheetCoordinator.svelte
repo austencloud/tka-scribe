@@ -19,7 +19,7 @@
     />
 -->
 <script lang="ts">
-  import { AnimationPanel } from "$lib/shared/animate/components";
+  import { AnimationPanel } from "$lib/shared/animation-engine/components";
   import type {
     AnimationExportFormat,
     GifExportProgress,

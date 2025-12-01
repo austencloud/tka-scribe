@@ -9,7 +9,7 @@
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
   import { getGridTabState } from "./state";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
   import {
     GridSelectionArea,
     GridSelectionAreaMobile,

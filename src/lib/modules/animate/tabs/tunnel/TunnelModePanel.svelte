@@ -10,7 +10,7 @@
 <script lang="ts">
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
   import { getTunnelTabState, type TunnelColors } from "./state";
-  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
   import {
     TunnelSelectionArea,
     TunnelSelectionAreaMobile,

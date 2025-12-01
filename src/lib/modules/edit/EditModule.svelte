@@ -28,7 +28,7 @@
   import SequenceEditPanel from "./components/SequenceEditPanel.svelte";
   import EditWorkspace from "./components/EditWorkspace.svelte";
   import EmptyEditState from "./components/EmptyEditState.svelte";
-  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
 
   // Create module state
   const editState = createEditModuleState();

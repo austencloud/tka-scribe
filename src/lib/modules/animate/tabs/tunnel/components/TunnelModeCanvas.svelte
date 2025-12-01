@@ -5,7 +5,7 @@
   Overlays two sequences with different colors on the same canvas.
 -->
 <script lang="ts">
-  import { AnimatorCanvas } from "$lib/shared/animate/components";
+  import { AnimatorCanvas } from "$lib/shared/animation-engine/components";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";

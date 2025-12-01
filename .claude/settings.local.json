@@ -161,7 +161,8 @@
       "Bash(mkdir:*)",
       "Bash(git branch:*)",
       "Bash(git mv:*)",
-      "Bash(move animate animation-engine)"
+      "Bash(move animate animation-engine)",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []

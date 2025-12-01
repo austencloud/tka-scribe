@@ -12,7 +12,7 @@
     TrailMode,
     TrackingMode,
     type TrailSettings,
-  } from "$lib/shared/animate/state/animation-settings-state.svelte";
+  } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import ToggleSwitch from "../inputs/ToggleSwitch.svelte";
   import ModernStepper from "../inputs/ModernStepper.svelte";
   import SwipeAdjuster from "../inputs/SwipeAdjuster.svelte";

@@ -8,7 +8,7 @@
    * Domain: Create module - Animation Panel Coordination
    */
 
-  import { AnimationPanel } from "$lib/shared/animate/components";
+  import { AnimationPanel } from "$lib/shared/animation-engine/components";
   import type { IAnimationPlaybackController } from "$lib/modules/animate/services/contracts";
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$create/shared";

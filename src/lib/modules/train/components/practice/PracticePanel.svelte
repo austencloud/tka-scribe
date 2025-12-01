@@ -13,7 +13,7 @@
   import StepModeConfig from "./StepModeConfig.svelte";
   import TimedModeConfig from "./TimedModeConfig.svelte";
   import TrainModePanel from "../TrainModePanel.svelte";
-  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
+  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { activeChallengeState } from "../../state/active-challenge-state.svelte";
   import { formatChallengeRequirement } from "../../domain/models/TrainChallengeModels";

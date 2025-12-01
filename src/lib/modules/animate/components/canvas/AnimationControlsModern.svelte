@@ -13,7 +13,7 @@
 <script lang="ts">
   import FloatingControlBar from "../controls/FloatingControlBar.svelte";
   import QuickTogglesRow from "../trail/QuickTogglesRow.svelte";
-  import { animationSettings } from "$lib/shared/animate/state/animation-settings-state.svelte";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   type ControlsMode = "fullscreen" | "inline" | "compact";
 

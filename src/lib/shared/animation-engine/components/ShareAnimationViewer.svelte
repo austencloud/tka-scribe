@@ -10,7 +10,7 @@
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { animationSettings } from "$lib/shared/animate";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { IAnimationPlaybackController } from "$lib/modules/animate/services/contracts";
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
   import { onMount, untrack } from "svelte";
