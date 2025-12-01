@@ -14,7 +14,6 @@ import type {
   SequenceType,
   TransformOperation,
 } from "../contracts/ITunnelModeSequenceManager";
-import { loadSequenceForAnimation } from "../../utils/sequence-loader";
 
 @injectable()
 export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
@@ -35,20 +34,16 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
     try {
       console.log(`🎬 TunnelModeSequenceManager: Loading ${type} sequence:`, sequence.id);
 
-      const result = await loadSequenceForAnimation(
-        sequence,
-        this.sequenceService
-      );
+      const result = await this.loadSequenceData(sequence);
 
-      if (result.success && result.sequence) {
+      if (result) {
         console.log(
-          `✅ TunnelModeSequenceManager: ${type} sequence loaded with ${result.sequence.beats.length} beats`
+          `✅ TunnelModeSequenceManager: ${type} sequence loaded with ${result.beats.length} beats`
         );
-        return result.sequence;
+        return result;
       } else {
         console.error(
-          `❌ TunnelModeSequenceManager: Failed to load ${type} sequence:`,
-          result.error
+          `❌ TunnelModeSequenceManager: Failed to load ${type} sequence`
         );
         return null;
       }
@@ -59,6 +54,74 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
       );
       return null;
     }
+  }
+
+  /**
+   * Load and hydrate sequence data for animation
+   */
+  private async loadSequenceData(
+    sequence: SequenceData | null
+  ): Promise<SequenceData | null> {
+    if (!sequence) return null;
+
+    const hasMotionData = (s: SequenceData) =>
+      Array.isArray(s.beats) &&
+      s.beats.length > 0 &&
+      s.beats.some((beat) => beat?.motions?.blue && beat?.motions?.red);
+
+    // Check if identifier looks like a UUID (user-created sequence)
+    // UUIDs: 8-4-4-4-12 hex pattern, gallery words are letters like "DKIIEJII"
+    const isUUID = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    
+    // Get a valid gallery-compatible identifier (word preferred, or non-UUID id)
+    const getGalleryIdentifier = (s: SequenceData): string | null => {
+      if (s.word && s.word.trim()) return s.word;
+      if (s.name && s.name.trim() && !isUUID(s.name)) return s.name;
+      if (s.id && !isUUID(s.id)) return s.id;
+      return null; // No gallery-compatible identifier available
+    };
+
+    let fullSequence = sequence;
+
+    // If sequence already has motion data, use it directly
+    if (hasMotionData(sequence)) {
+      fullSequence = sequence;
+    }
+    // Load from database/gallery if needed (empty beats)
+    else if (sequence.id && (!sequence.beats || sequence.beats.length === 0)) {
+      const galleryId = getGalleryIdentifier(sequence);
+      if (galleryId) {
+        const loaded = await this.sequenceService.getSequence(galleryId);
+        if (loaded) {
+          fullSequence = loaded;
+        } else {
+          console.warn(`⚠️ Could not load sequence from gallery: ${galleryId}`);
+        }
+      } else {
+        console.log(`ℹ️ User-created sequence ${sequence.id} has no gallery entry`);
+      }
+    }
+    // Hydrate if missing motion data (try gallery lookup)
+    else if (fullSequence && !hasMotionData(fullSequence)) {
+      const galleryId = getGalleryIdentifier(fullSequence);
+      if (galleryId) {
+        const hydrated = await this.sequenceService.getSequence(galleryId);
+        if (hydrated && hasMotionData(hydrated)) {
+          fullSequence = hydrated;
+        }
+      }
+    }
+
+    // Normalize startPosition
+    const withStarting = fullSequence as unknown as { startingPositionBeat?: unknown };
+    if (!fullSequence.startPosition && withStarting.startingPositionBeat) {
+      fullSequence = {
+        ...fullSequence,
+        startPosition: withStarting.startingPositionBeat as SequenceData["startPosition"],
+      };
+    }
+
+    return fullSequence;
   }
 
   /**

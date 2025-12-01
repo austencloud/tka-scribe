@@ -338,14 +338,14 @@
 
   .section.compact .button {
     padding: 10px 18px;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 13px;
     gap: 8px;
   }
 
   .section.very-compact .button {
     padding: 8px 16px;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 13px;
     gap: 6px;
   }

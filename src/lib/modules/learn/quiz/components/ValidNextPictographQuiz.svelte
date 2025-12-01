@@ -9,7 +9,7 @@
   import { Pictograph } from "$lib/shared/pictograph/shared/components";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { resolve, TYPES } from "$lib/shared/inversify";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
   import { QuizType, type QuizQuestionData } from "../domain";
@@ -39,8 +39,8 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
   );
   let isCorrectAnswer = $derived(
     selectedAnswerId
-      ? questionData?.answerOptions.find((o) => o.id === selectedAnswerId)
-          ?.isCorrect ?? false
+      ? (questionData?.answerOptions.find((o) => o.id === selectedAnswerId)
+          ?.isCorrect ?? false)
       : false
   );
 
@@ -115,9 +115,22 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
 {#if isLoading}
   <div class="quiz-container">
     {#if onBack}
-      <button class="back-button" onclick={onBack} aria-label="Back to quiz selector">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
+      <button
+        class="back-button"
+        onclick={onBack}
+        aria-label="Back to quiz selector"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
       </button>
     {/if}
@@ -129,9 +142,22 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
 {:else if error}
   <div class="quiz-container">
     {#if onBack}
-      <button class="back-button" onclick={onBack} aria-label="Back to quiz selector">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
+      <button
+        class="back-button"
+        onclick={onBack}
+        aria-label="Back to quiz selector"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
       </button>
     {/if}
@@ -143,9 +169,22 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
 {:else if questionData && currentPictograph}
   <div class="quiz-container">
     {#if onBack}
-      <button class="back-button" onclick={onBack} aria-label="Back to quiz selector">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
+      <button
+        class="back-button"
+        onclick={onBack}
+        aria-label="Back to quiz selector"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
       </button>
     {/if}
@@ -160,8 +199,17 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
             <Pictograph pictographData={currentPictograph} />
           </div>
           <div class="arrow-indicator">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </div>
         </div>
@@ -238,8 +286,8 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -293,8 +341,8 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-left-color: #667eea;
     border-radius: 50%;
@@ -323,7 +371,9 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
     font-weight: 600;
     font-size: 0.9375rem;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .retry-btn:hover {
@@ -385,7 +435,8 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
   }
 
   @keyframes arrowPulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.4;
       transform: translateY(0);
     }
@@ -484,9 +535,18 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
   }
 
   @keyframes incorrectShake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-5px); }
-    40%, 80% { transform: translateX(5px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20%,
+    60% {
+      transform: translateX(-5px);
+    }
+    40%,
+    80% {
+      transform: translateX(5px);
+    }
   }
 
   .answer-btn.dimmed {
@@ -705,7 +765,9 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
     }
 
     .answer-btn {
-      transition: background 0.15s ease, border-color 0.15s ease;
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
     }
   }
 </style>

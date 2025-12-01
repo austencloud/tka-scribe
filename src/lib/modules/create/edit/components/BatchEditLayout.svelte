@@ -5,10 +5,10 @@ Replaces the normal edit panel when multiple beats are selected.
 Uses simplified stepper controls matching the single-beat edit pattern.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -334,7 +334,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
-    min-height: 44px;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -493,7 +493,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .value-btn {
       padding: 6px 2px;
       font-size: 12px;
-      min-height: 36px;
+      min-height: 48px;
       border-width: 1.5px;
     }
 
@@ -510,7 +510,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .action-button {
       padding: 10px 16px;
       font-size: 14px;
-      min-height: 40px;
+      min-height: 48px;
     }
   }
 
@@ -542,7 +542,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .value-btn {
       padding: 4px 1px;
       font-size: 11px;
-      min-height: 32px;
+      min-height: 48px;
       border-width: 1px;
     }
 
@@ -559,7 +559,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .action-button {
       padding: 8px 12px;
       font-size: 13px;
-      min-height: 36px;
+      min-height: 48px;
     }
   }
 
@@ -592,7 +592,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .value-btn {
       padding: 3px 1px;
       font-size: 10px;
-      min-height: 28px;
+      min-height: 48px;
       border-width: 1px;
       border-radius: 6px;
     }
@@ -612,7 +612,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .action-button {
       padding: 6px 10px;
       font-size: 12px;
-      min-height: 32px;
+      min-height: 48px;
       border-radius: 6px;
     }
   }

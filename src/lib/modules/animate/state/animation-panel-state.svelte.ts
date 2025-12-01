@@ -6,7 +6,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { PropState } from "../domain";
+import type { PropState } from "../shared/domain";
 
 // ============================================================================
 // PERSISTENCE CONSTANTS

@@ -5,7 +5,7 @@
  * Follows the TKA state factory pattern with Svelte 5 runes.
  */
 
-import type { TrailSettings } from "../domain/types/TrailTypes";
+import type { TrailSettings } from "../shared/domain/types/TrailTypes";
 import type { PreRenderProgress } from "../services/implementations/SequenceFramePreRenderer";
 import type { AnimationPathCacheData } from "../services/implementations/AnimationPathCache";
 import { loadTrailSettings, saveTrailSettings } from "../utils/animation-panel-persistence";

@@ -13,7 +13,7 @@
   import { fade } from "svelte/transition";
   import AccountModule from "../../modules/account/AccountModule.svelte";
   import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
-  import AnimateTab from "../../modules/animate/AnimateTab.svelte";
+  import AnimateModule from "../../modules/animate/AnimateModule.svelte";
   import TrainModule from "../../modules/train/components/TrainModule.svelte";
   import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
   import EditModule from "../../modules/edit/EditModule.svelte";
@@ -60,7 +60,7 @@
         {:else if isModuleActive("learn")}
           <LearnTab onHeaderChange={onLearnHeaderChange} />
         {:else if isModuleActive("animate")}
-          <AnimateTab />
+          <AnimateModule />
         {:else if isModuleActive("train")}
           <TrainModule />
         {:else if isModuleActive("edit")}
@@ -114,8 +114,8 @@
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid var(--border-color, #e0e0e0);
     border-top: 3px solid var(--primary-color, #007bff);
     border-radius: 50%;

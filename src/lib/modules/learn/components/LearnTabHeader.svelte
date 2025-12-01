@@ -10,13 +10,13 @@ Features:
 - Syncs with navigationState for persistence
 - Haptic feedback on tab switches
 - Active tab indicator with slide animation
-- 44px minimum touch targets
+- 48px minimum touch targets
 -->
 <script lang="ts">
-import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
   interface Props {
     /** Currently active sub-tab */
@@ -25,10 +25,7 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
     onTabChange?: (tab: "concepts" | "drills") => void;
   }
 
-  let {
-    activeTab = $bindable("concepts"),
-    onTabChange,
-  }: Props = $props();
+  let { activeTab = $bindable("concepts"), onTabChange }: Props = $props();
 
   const hapticService = resolve<IHapticFeedbackService>(
     TYPES.IHapticFeedbackService
@@ -111,8 +108,8 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 48px;
+    min-width: 48px;
     padding: 0.5rem 1rem;
     background: transparent;
     border: none;

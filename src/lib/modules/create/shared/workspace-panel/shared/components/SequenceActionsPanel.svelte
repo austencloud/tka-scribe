@@ -543,8 +543,8 @@
   /* Note: Container queries handle button sizing, these are viewport-level adjustments */
   @media (max-width: 380px) {
     .close-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
       font-size: 16px;
       top: 12px;
       right: 12px;

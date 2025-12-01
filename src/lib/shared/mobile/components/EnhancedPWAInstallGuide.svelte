@@ -19,8 +19,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-import { resolve } from "../../inversify";
-import { TYPES } from "../../inversify/types";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import type { IPlatformDetectionService } from "../services/contracts";
   import type { Platform, Browser } from "../config/pwa-install-instructions";
   import { getInstallInstructions } from "../config/pwa-install-instructions";
@@ -210,8 +210,10 @@ import { TYPES } from "../../inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;

@@ -283,27 +283,27 @@
     border-color: rgba(255, 255, 255, 0.3);
   }
 
-  /* Mobile responsive - 44px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .panel-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .panel-button {
-      width: 44px; /* Maintain 44px minimum */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum */
+      height: 48px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .panel-button {
-      width: 44px; /* NEVER below 44px for accessibility */
-      height: 44px;
+      width: 48px; /* NEVER below 48px for accessibility */
+      height: 48px;
       font-size: 14px;
     }
   }
@@ -311,8 +311,8 @@
   /* 🎯 LANDSCAPE MOBILE: Compact buttons for Z Fold 5 horizontal (882x344) */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
       font-size: 14px;
     }
   }

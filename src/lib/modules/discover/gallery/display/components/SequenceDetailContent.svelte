@@ -10,10 +10,10 @@ Displays:
 Used by both desktop side panel and mobile slide-up overlay.
 -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
 
@@ -321,8 +321,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -526,7 +526,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .action-btn:hover {

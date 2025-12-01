@@ -156,8 +156,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .tool-btn {
-      width: 44px; /* Minimum touch target size */
-      height: 44px;
+      width: 48px; /* Minimum touch target size */
+      height: 48px;
       font-size: 16px;
     }
   }

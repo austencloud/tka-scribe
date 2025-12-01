@@ -345,7 +345,7 @@
 
   .email-change-section.compact .button {
     padding: 11px 20px;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -353,7 +353,7 @@
 
   .email-change-section.very-compact .button {
     padding: 11px 18px;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;

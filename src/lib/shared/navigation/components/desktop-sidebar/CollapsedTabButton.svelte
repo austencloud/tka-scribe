@@ -32,8 +32,8 @@
      COLLAPSED TAB BUTTON - VS CODE STYLE
      ============================================================================ */
   .collapsed-tab-button {
-    width: 44px; /* Slightly smaller to emphasize nesting */
-    height: 44px;
+    width: 48px; /* Slightly smaller to emphasize nesting */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

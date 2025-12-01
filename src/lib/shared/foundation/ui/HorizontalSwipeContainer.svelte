@@ -426,7 +426,7 @@
     height: 40%;
   }
 
-  /* Mobile responsive - 44px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .embla__button {
       width: 40px;

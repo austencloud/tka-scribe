@@ -99,7 +99,7 @@ Shows "Select Items" banner and makes escape prominent.
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    min-height: 40px;
+    min-height: 48px;
   }
 
   .cancel-button:hover {
@@ -149,7 +149,7 @@ Shows "Select Items" banner and makes escape prominent.
     .cancel-button {
       padding: var(--spacing-xs) var(--spacing-md);
       font-size: var(--font-size-sm);
-      min-height: 36px;
+      min-height: 48px;
     }
   }
 </style>

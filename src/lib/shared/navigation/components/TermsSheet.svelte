@@ -198,10 +198,10 @@
   }
 
   .terms-sheet__close {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.08);

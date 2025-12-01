@@ -1,8 +1,8 @@
 <!-- WriteToolbar.svelte - Top toolbar with file operations -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -201,7 +201,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .write-toolbar {
       padding: var(--spacing-xs) var(--spacing-sm);
       gap: var(--spacing-sm);
-      min-height: 40px;
+      min-height: 48px;
     }
 
     .toolbar-section {

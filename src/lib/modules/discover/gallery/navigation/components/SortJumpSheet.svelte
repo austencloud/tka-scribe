@@ -171,8 +171,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     font-size: 18px;

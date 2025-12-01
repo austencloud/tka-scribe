@@ -69,36 +69,36 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-size: 18px;
   }
 
-  /* Mobile responsive - 44px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .sequence-actions-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .sequence-actions-button {
-      width: 44px; /* Maintain 44px minimum */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum */
+      height: 48px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .sequence-actions-button {
-      width: 44px; /* NEVER below 44px for accessibility */
-      height: 44px;
+      width: 48px; /* NEVER below 48px for accessibility */
+      height: 48px;
       font-size: 14px;
     }
   }
 
-  /* Landscape mobile: Maintain 44px minimum */
+  /* Landscape mobile: Maintain 48px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .sequence-actions-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
     }
 
     .sequence-actions-button i {

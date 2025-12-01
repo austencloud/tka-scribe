@@ -142,8 +142,8 @@ Contains:
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .adjust-arrows-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
 
@@ -160,8 +160,8 @@ Contains:
 
   @media (max-width: 480px) {
     .adjust-arrows-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
       font-size: 14px;
     }
   }
@@ -242,8 +242,8 @@ Contains:
     }
 
     .close-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
     }
   }
 </style>

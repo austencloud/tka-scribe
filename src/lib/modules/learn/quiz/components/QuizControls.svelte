@@ -5,9 +5,9 @@
 	pause/resume and restart functionality with desktop-matching styling.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -111,7 +111,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
+    min-height: 48px;
     padding: clamp(0.5rem, 1.5cqi, 0.75rem) clamp(1rem, 3cqi, 1.5rem);
     font-size: clamp(0.875rem, 2cqi, 1rem);
     min-width: clamp(80px, 15cqi, 120px);

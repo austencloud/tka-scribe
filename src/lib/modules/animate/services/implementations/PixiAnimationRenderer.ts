@@ -23,8 +23,8 @@
 import { Container, Graphics } from "pixi.js";
 import { injectable } from "inversify";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
-import type { PropState } from "../../domain/types/PropState";
-import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import type { PropState } from "../../shared/domain/types/PropState";
+import type { TrailPoint, TrailSettings } from "../../shared/domain/types/TrailTypes";
 import { PixiApplicationManager } from "./pixi/PixiApplicationManager";
 import { PixiTextureLoader } from "./pixi/PixiTextureLoader";
 import { PixiSpriteManager } from "./pixi/PixiSpriteManager";

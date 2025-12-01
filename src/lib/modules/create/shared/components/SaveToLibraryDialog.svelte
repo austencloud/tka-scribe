@@ -419,8 +419,8 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .add-tag-button {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
     background: rgba(139, 92, 246, 0.2);
     border: 1px solid rgba(139, 92, 246, 0.3);

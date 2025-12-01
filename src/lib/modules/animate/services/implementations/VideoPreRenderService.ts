@@ -29,7 +29,7 @@ import type {
 import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import { PixiAnimationRenderer } from "./PixiAnimationRenderer";
-import { DEFAULT_TRAIL_SETTINGS, type TrailSettings } from "../../domain/types/TrailTypes";
+import { DEFAULT_TRAIL_SETTINGS, type TrailSettings } from "../../shared/domain/types/TrailTypes";
 
 // IndexedDB database name and store for video caching
 const DB_NAME = "tka-video-cache";

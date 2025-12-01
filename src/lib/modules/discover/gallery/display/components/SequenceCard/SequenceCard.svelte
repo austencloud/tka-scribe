@@ -193,7 +193,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     /* Subtle scale instead of lift - more modern, less aggressive */
     transform: scale(1.02);
     /* Slightly enhanced shadow - much more subtle */
-    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.38);
+    box-shadow: 0 14px 48px rgba(0, 0, 0, 0.38);
     border-color: rgba(255, 255, 255, 0.12);
   }
 

@@ -7,7 +7,7 @@
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import type { PropState, PropStates } from "../../domain/types/PropState";
+import type { PropState, PropStates } from "../../shared/domain/types/PropState";
 import type { SequenceData, SequenceMetadata } from "$lib/shared/foundation/domain/models/SequenceData";
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 import { TYPES } from "$lib/shared/inversify/types";

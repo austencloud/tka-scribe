@@ -103,7 +103,7 @@
   /* 🎯 LANDSCAPE MOBILE */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .workspace-header {
-      min-height: 36px;
+      min-height: 48px;
     }
   }
 </style>

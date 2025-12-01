@@ -634,7 +634,7 @@ Allows natural language queries to find sequences, users, and collections.
 
     .search-input {
       font-size: 14px;
-      padding: 12px 12px 12px 44px;
+      padding: 12px 12px 12px 48px;
     }
 
     .search-button {

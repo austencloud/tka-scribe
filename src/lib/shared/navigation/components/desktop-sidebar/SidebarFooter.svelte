@@ -3,12 +3,13 @@
 <script lang="ts">
   import AccountSettingsButton from "../AccountSettingsButton.svelte";
 
-  let { isCollapsed, isSettingsActive, onSettingsClick, onDebugClick } = $props<{
-    isCollapsed: boolean;
-    isSettingsActive: boolean;
-    onSettingsClick?: () => void;
-    onDebugClick?: () => void;
-  }>();
+  let { isCollapsed, isSettingsActive, onSettingsClick, onDebugClick } =
+    $props<{
+      isCollapsed: boolean;
+      isSettingsActive: boolean;
+      onSettingsClick?: () => void;
+      onDebugClick?: () => void;
+    }>();
 </script>
 
 <div class="sidebar-footer">
@@ -111,8 +112,12 @@
   }
 
   @keyframes footer-shimmer {
-    0% { transform: translateX(-100%) translateY(-100%); }
-    100% { transform: translateX(100%) translateY(100%); }
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+    }
   }
 
   .footer-button.collapsed {
@@ -146,10 +151,10 @@
   }
 
   .icon-wrapper {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;

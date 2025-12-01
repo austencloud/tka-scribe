@@ -80,7 +80,7 @@
     align-items: center;
     gap: 12px;
     padding: 11px 16px;
-    min-height: 44px;
+    min-height: 48px;
     background: rgba(255, 255, 255, 0.04);
     border: 0.33px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;

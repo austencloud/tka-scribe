@@ -12,9 +12,9 @@ Modern Filter UX Pattern:
 <script lang="ts">
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount } from "svelte";
   import { FilterChips } from "../../gallery/filtering/components";
@@ -143,9 +143,7 @@ import { TYPES } from "$lib/shared/inversify/types";
             ]}
             value={galleryControls.currentSortMethod}
             onChange={(value) =>
-              galleryControls.onSortMethodChange(
-                value as ExploreSortMethod
-              )}
+              galleryControls.onSortMethodChange(value as ExploreSortMethod)}
             ariaLabel="Sort method"
           />
         {/if}
@@ -162,9 +160,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     width: 100%;
     max-width: 100%;
     padding: 0;
+    min-height: 48px;
   }
 
   .controls-group {
+    min-height: 48px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -174,6 +174,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .control-item {
     flex-shrink: 0;
+    min-height: 48px;
   }
 
   .filter-chips-container {
@@ -202,6 +203,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     white-space: nowrap;
     backdrop-filter: blur(12px);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    min-height: 48px;
+    min-width: 48px;
   }
 
   .filters-button:hover {
@@ -274,6 +277,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     transition: background 0.15s ease-out;
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
+    min-height: 48px;
+    min-width: 48px;
   }
 
   .mobile-control-button:active {

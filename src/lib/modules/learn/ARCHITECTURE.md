@@ -61,7 +61,7 @@ Learn Tab
   - "Letters" button to open Codex panel
   - Haptic feedback on interactions
   - Fully responsive (compact on mobile)
-  - 44px minimum touch targets
+  - 48px minimum touch targets
 
 ### 3. ConceptPathView.svelte
 
@@ -87,7 +87,7 @@ Learn Tab
   - Hover effects and click animations
   - Disabled state for locked concepts
   - Haptic feedback on click
-  - 44px minimum touch target
+  - 48px minimum touch target
 
 ### 5. ConceptDetailView.svelte
 
@@ -235,7 +235,7 @@ Each concept includes:
 
 ### Mobile-First Design
 
-- **Touch Targets**: 44x44px minimum (WCAG 2.2 Level AA)
+- **Touch Targets**: 44x48px minimum (WCAG 2.2 Level AA)
 - **Touch Spacing**: 16px between interactive elements
 - **Breakpoints**:
   - 480px: Small mobile
@@ -425,7 +425,7 @@ CodexPanel embeds the existing CodexComponent which uses ICodexService:
 - [ ] Escape key → Closes Codex panel
 - [ ] Tab navigation syncs with URL/state
 - [ ] Progress persists after page reload
-- [ ] Mobile: All touch targets are 44px+
+- [ ] Mobile: All touch targets are 48px+
 - [ ] Mobile: Tabs are compact
 - [ ] Mobile: Codex panel is full-screen
 - [ ] Keyboard: Tab through all interactive elements

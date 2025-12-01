@@ -12,7 +12,9 @@ Page 5: Quiz
   import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { resolve, TYPES } from "$lib/shared/inversify";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import Type1LetterVisualizer, { type Type1LetterData } from "./Type1LetterVisualizer.svelte";
+  import Type1LetterVisualizer, {
+    type Type1LetterData,
+  } from "./Type1LetterVisualizer.svelte";
   import Type1LetterQuiz from "./Type1LetterQuiz.svelte";
 
   let { onComplete } = $props<{
@@ -209,7 +211,8 @@ Page 5: Quiz
       redMotion: MotionType.ANTI,
       startPositionGroup: GridPositionGroup.GAMMA,
       endPositionGroup: GridPositionGroup.GAMMA,
-      description: "Gamma to Gamma, blue prospin, red antispin (reverse hybrid)",
+      description:
+        "Gamma to Gamma, blue prospin, red antispin (reverse hybrid)",
     },
   ];
 
@@ -281,7 +284,8 @@ Page 5: Quiz
         </div>
         <p class="intro-text">
           Type 1 letters are called <strong>"Dual-Shift"</strong> because
-          <strong>both hands move</strong> from one grid position to an adjacent position.
+          <strong>both hands move</strong> from one grid position to an adjacent
+          position.
         </p>
       </div>
 
@@ -293,7 +297,9 @@ Page 5: Quiz
           <div class="pattern-item pro">
             <span class="pattern-label">Pro-Pro</span>
             <span class="pattern-letters">A, D, G, J, M, P, S</span>
-            <span class="pattern-desc">Both hands spin the same direction as motion</span>
+            <span class="pattern-desc"
+              >Both hands spin the same direction as motion</span
+            >
           </div>
           <div class="pattern-item anti">
             <span class="pattern-label">Anti-Anti</span>
@@ -323,7 +329,6 @@ Page 5: Quiz
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
-
   {:else if currentPage === 2}
     <!-- Page 2: Prospin Letters -->
     <div class="page">
@@ -342,7 +347,9 @@ Page 5: Quiz
       <div class="explanation">
         <h3>What is Prospin?</h3>
         <ul>
-          <li>The prop spins <strong>in the same direction</strong> as the hand's movement</li>
+          <li>
+            The prop spins <strong>in the same direction</strong> as the hand's movement
+          </li>
           <li>Think: spinning <strong>with</strong> the flow of motion</li>
           <li>Creates smooth, continuous visual patterns</li>
         </ul>
@@ -383,7 +390,10 @@ Page 5: Quiz
             <button
               class="letter-chip"
               class:active={i === prospinIndex}
-              onclick={() => { prospinIndex = i; hapticService?.trigger("selection"); }}
+              onclick={() => {
+                prospinIndex = i;
+                hapticService?.trigger("selection");
+              }}
             >
               {letterData.letter}
             </button>
@@ -402,7 +412,6 @@ Page 5: Quiz
         </button>
       </div>
     </div>
-
   {:else if currentPage === 3}
     <!-- Page 3: Antispin Letters -->
     <div class="page">
@@ -421,7 +430,9 @@ Page 5: Quiz
       <div class="explanation">
         <h3>What is Antispin?</h3>
         <ul>
-          <li>The prop spins <strong>opposite</strong> to the hand's movement</li>
+          <li>
+            The prop spins <strong>opposite</strong> to the hand's movement
+          </li>
           <li>Think: spinning <strong>against</strong> the flow of motion</li>
           <li>Creates the distinctive "flower" patterns</li>
         </ul>
@@ -462,7 +473,10 @@ Page 5: Quiz
             <button
               class="letter-chip"
               class:active={i === antispinIndex}
-              onclick={() => { antispinIndex = i; hapticService?.trigger("selection"); }}
+              onclick={() => {
+                antispinIndex = i;
+                hapticService?.trigger("selection");
+              }}
             >
               {letterData.letter}
             </button>
@@ -481,7 +495,6 @@ Page 5: Quiz
         </button>
       </div>
     </div>
-
   {:else if currentPage === 4}
     <!-- Page 4: Hybrid Letters -->
     <div class="page">
@@ -500,10 +513,15 @@ Page 5: Quiz
       <div class="explanation">
         <h3>What Makes Hybrids Special?</h3>
         <ul>
-          <li>One hand does <strong>prospin</strong>, the other does <strong>antispin</strong></li>
+          <li>
+            One hand does <strong>prospin</strong>, the other does
+            <strong>antispin</strong>
+          </li>
           <li>Creates more complex, asymmetrical patterns</li>
           <li>Most hybrids: blue antispin + red prospin</li>
-          <li><strong>V</strong> is special: blue prospin + red antispin (reverse hybrid)</li>
+          <li>
+            <strong>V</strong> is special: blue prospin + red antispin (reverse hybrid)
+          </li>
         </ul>
       </div>
 
@@ -542,7 +560,10 @@ Page 5: Quiz
             <button
               class="letter-chip"
               class:active={i === hybridIndex}
-              onclick={() => { hybridIndex = i; hapticService?.trigger("selection"); }}
+              onclick={() => {
+                hybridIndex = i;
+                hapticService?.trigger("selection");
+              }}
             >
               {letterData.letter}
             </button>
@@ -582,7 +603,6 @@ Page 5: Quiz
         </button>
       </div>
     </div>
-
   {:else if currentPage === 5}
     <!-- Page 5: Quiz -->
     <div class="page quiz-page">
@@ -929,8 +949,8 @@ Page 5: Quiz
   }
 
   .nav-button {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -976,8 +996,8 @@ Page 5: Quiz
   }
 
   .letter-chip {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

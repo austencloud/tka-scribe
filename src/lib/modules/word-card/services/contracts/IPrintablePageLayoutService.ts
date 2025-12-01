@@ -13,11 +13,13 @@ import type {
   PageDimensions,
   PageLayoutConfig,
   PageMargins,
-  PageOrientation,
   Rectangle,
   WordCardGridConfig,
-  WordCardPaperSize,
 } from "../../domain/models/PageLayout";
+import type {
+  PageOrientation,
+  WordCardPaperSize,
+} from "../../domain/types";
 
 export interface IPrintablePageLayoutService {
   /**

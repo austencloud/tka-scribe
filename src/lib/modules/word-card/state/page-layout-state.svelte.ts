@@ -9,10 +9,12 @@ import type {
   LayoutCalculationResult,
   PageCreationOptions,
   PageLayoutConfig,
-  PageOrientation,
   PrintConfig,
-  WordCardPaperSize,
 } from "../domain/models/PageLayout";
+import type {
+  PageOrientation,
+  WordCardPaperSize,
+} from "../domain/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   IPageFactoryService,

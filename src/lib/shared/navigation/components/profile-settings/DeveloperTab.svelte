@@ -151,7 +151,7 @@ ${
             Auto-reload code changes without refreshing the entire page
           </p>
         </div>
-        <label class="toggle-switch">
+        <label class="developer-setting-toggle">
           <input
             type="checkbox"
             bind:checked={hmrEnabled}
@@ -393,7 +393,7 @@ ${
   }
 
   /* Toggle Switch */
-  .toggle-switch {
+  .developer-setting-toggle {
     position: relative;
     display: inline-block;
     width: 52px;
@@ -401,7 +401,7 @@ ${
     flex-shrink: 0;
   }
 
-  .toggle-switch input {
+  .developer-setting-toggle input {
     opacity: 0;
     width: 0;
     height: 0;

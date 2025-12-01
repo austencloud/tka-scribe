@@ -380,7 +380,7 @@ h6 {
   --sheet-close-bg: rgba(255, 255, 255, 0.08);
   --sheet-close-bg-hover: rgba(255, 255, 255, 0.16);
   --sheet-close-size-default: 48px;
-  --sheet-close-size-small: 44px; /* iOS/Android minimum touch target */
+  --sheet-close-size-small: 48px; /* iOS/Android minimum touch target */
 
   /* Unified Drag Handle Styles */
   --sheet-handle-width: 48px;
@@ -650,7 +650,7 @@ body.deep-ocean-flow::before {
 /* ========================================
    TOUCH TARGET ACCESSIBILITY
    Best Practice: 48px minimum (Material Design, iOS guidelines)
-   WCAG 2.1 Level AAA (2.5.5): 44px minimum (exceeded)
+   WCAG 2.1 Level AAA (2.5.5): 48px minimum (exceeded)
    ======================================== */
 
 /* Accessible touch target utility

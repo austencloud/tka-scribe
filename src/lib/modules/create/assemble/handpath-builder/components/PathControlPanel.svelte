@@ -4,7 +4,10 @@ PathControlPanel.svelte - Control panel for path builder configuration
 Displays current state, beat progress, rotation selector, and action buttons.
 -->
 <script lang="ts">
-import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    RotationDirection,
+    HandMotionType,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import type { GesturalPathState } from "../state";
 
   // Props
@@ -250,7 +253,7 @@ import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.75rem;
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .rotation-btn:hover {
@@ -356,7 +359,7 @@ import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .action-btn.primary {
@@ -468,7 +471,7 @@ import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared
 
     .rotation-btn {
       padding: 0.25rem;
-      min-height: 44px; /* Maintain accessibility */
+      min-height: 48px; /* Maintain accessibility */
       gap: 0.125rem;
       font-size: 0.65625rem;
     }
@@ -483,7 +486,7 @@ import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared
 
     .action-btn {
       padding: 0.375rem 0.5rem;
-      min-height: 44px; /* Maintain accessibility */
+      min-height: 48px; /* Maintain accessibility */
       font-size: 0.8125rem;
     }
   }
@@ -497,12 +500,12 @@ import { RotationDirection, HandMotionType } from "$lib/shared/pictograph/shared
 
     .rotation-btn {
       padding: 0.375rem;
-      min-height: 32px;
+      min-height: 48px;
     }
 
     .action-btn {
       padding: 0.5rem;
-      min-height: 36px;
+      min-height: 48px;
     }
 
     .progress-bar {

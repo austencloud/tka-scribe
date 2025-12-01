@@ -18,11 +18,13 @@ import type {
   PageDimensions,
   PageLayoutConfig,
   PageMargins,
-  PageOrientation,
   Rectangle,
   WordCardGridConfig,
-  WordCardPaperSize,
 } from "../../domain/models/PageLayout";
+import type {
+  PageOrientation,
+  WordCardPaperSize,
+} from "../../domain/types";
 import { injectable } from "inversify";
 import type { IPrintablePageLayoutService } from "../contracts";
 

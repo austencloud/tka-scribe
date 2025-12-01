@@ -106,9 +106,9 @@
   bind:this={navElement}
   style="--module-color: {moduleColor()}"
 >
-  <!-- Settings Button (Left) - Matches desktop sidebar position -->
-  {#if showSettings}
-    <SettingsButton active={isSettingsActive} onClick={onSettingsTap} />
+  <!-- Module Switcher Button (Left) -->
+  {#if showModuleSwitcher}
+    <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
   {/if}
 
   <!-- Current Module's Sections -->
@@ -130,9 +130,9 @@
     {/each}
   </div>
 
-  <!-- Module Switcher Button (Right) -->
-  {#if showModuleSwitcher}
-    <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
+  <!-- Settings Button (Right) -->
+  {#if showSettings}
+    <SettingsButton active={isSettingsActive} onClick={onSettingsTap} />
   {/if}
 </nav>
 
@@ -237,8 +237,8 @@
      ============================================================================ */
   .bottom-navigation :global(.nav-button) {
     padding: 6px 8px;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 48px;
+    min-height: 48px;
     flex: 1 1 auto;
     max-width: 80px;
   }

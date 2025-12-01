@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import SequenceBrowserPanel from "$lib/modules/animate/shared/components/SequenceBrowserPanel.svelte";
+  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
   import type { IDiscoverThumbnailService } from "$lib/modules/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -367,8 +367,8 @@
   }
 
   .select-sequence-btn .btn-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     background: rgba(102, 126, 234, 0.2);
     border-radius: 8px;
     display: flex;

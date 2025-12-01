@@ -15,7 +15,7 @@ import { inject, injectable } from "inversify";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";
-import { PI } from "../../domain/math-constants.js";
+import { PI } from "../../shared/domain/math-constants.js";
 
 // ✅ ELIMINATED: StepEndpoints and StepDefinition - pointless reshuffling!
 // Work directly with MotionData and return simple objects

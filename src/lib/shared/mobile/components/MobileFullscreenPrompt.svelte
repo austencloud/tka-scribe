@@ -505,7 +505,7 @@
   }
 
   .prompt-icon {
-    font-size: 44px;
+    font-size: 48px;
     margin-bottom: 16px;
   }
 

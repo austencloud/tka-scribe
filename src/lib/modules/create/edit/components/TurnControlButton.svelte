@@ -204,7 +204,7 @@
 
   /* Compact mode - Desktop, minimal vertical space */
   .turn-control-button.compact {
-    min-height: 40px;
+    min-height: 48px;
     border-width: 2px;
     border-radius: 8px;
   }

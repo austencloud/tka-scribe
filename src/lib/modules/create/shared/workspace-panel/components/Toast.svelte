@@ -83,8 +83,8 @@ Shows at the bottom center of screen, auto-dismisses after 3 seconds
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 24px;
-    min-height: 24px;
+    min-width: 48px;
+    min-height: 48px;
   }
 
   .toast-close:hover {

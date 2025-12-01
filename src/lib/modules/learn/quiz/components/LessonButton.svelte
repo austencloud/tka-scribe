@@ -342,8 +342,8 @@ import { TYPES } from "$shared/inversify/types";
     }
 
     .card-icon {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
     }
 
     .card-icon svg {

@@ -1,8 +1,8 @@
 <!-- Options variant: entire header is clickable button -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { swipeGesture } from "$lib/shared/utils/swipeGesture";
 
   const {
@@ -66,7 +66,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     cursor: pointer;
     padding: 0;
     margin: 0;
-    min-height: 44px;
+    min-height: 48px;
     color: inherit;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
@@ -149,7 +149,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   /* Compact mode: Reduced height for tight spaces */
   .options-header-button.compact {
-    min-height: 36px;
+    min-height: 48px;
   }
 
   .options-header-button.compact .header-title {
@@ -199,7 +199,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
     /* Extra compact on mobile when compact mode is active */
     .options-header-button.compact {
-      min-height: 32px;
+      min-height: 48px;
     }
 
     .options-header-button.compact .header-title {

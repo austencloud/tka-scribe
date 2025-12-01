@@ -12,7 +12,7 @@ import {
   TRAIL_SETTINGS_STORAGE_KEY,
   TrackingMode,
   TrailMode,
-} from "../domain/types/TrailTypes";
+} from "../shared/domain/types/TrailTypes";
 
 const COLLAPSE_STATE_KEY = "tka_animation_collapse_states";
 

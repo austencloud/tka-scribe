@@ -1,9 +1,9 @@
 <!-- OrientationControlButton.svelte - Collapsible button with preview -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -115,7 +115,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   /* Compact mode - Desktop, minimal vertical space */
   .orientation-control-button.compact {
-    min-height: 40px;
+    min-height: 48px;
     border-width: 2px;
     border-radius: 8px;
   }

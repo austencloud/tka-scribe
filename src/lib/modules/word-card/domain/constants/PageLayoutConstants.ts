@@ -9,8 +9,8 @@ import type {
   MeasurementUnit,
   PageMargins,
   PaperSpecification,
-  WordCardPaperSize,
 } from "../models/PageLayout";
+import type { WordCardPaperSize } from "../types";
 
 // ============================================================================
 // CONSTANTS

@@ -106,8 +106,8 @@
   }
 
   .avatar-button {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: 2px solid transparent;
     padding: 0;

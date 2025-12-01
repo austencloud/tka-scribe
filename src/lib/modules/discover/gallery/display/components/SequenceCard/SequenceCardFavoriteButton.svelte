@@ -37,8 +37,8 @@ Handles click events and accessibility.
   }
 
   .favorite {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 48px;
+    min-height: 48px;
     border: none;
     border-radius: 999px;
     background: rgba(17, 17, 23, 0.7);
@@ -72,16 +72,16 @@ Handles click events and accessibility.
   /* Container query responsive sizing */
   @container sequence-card (max-width: 249px) {
     .favorite {
-      min-width: 36px;
-      min-height: 36px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 1rem;
     }
   }
 
   @container sequence-card (min-width: 250px) and (max-width: 299px) {
     .favorite {
-      min-width: 40px;
-      min-height: 40px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 1.15rem;
     }
   }

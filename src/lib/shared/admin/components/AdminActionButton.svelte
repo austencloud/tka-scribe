@@ -56,7 +56,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 44px; /* Touch target */
+    min-height: 48px; /* Touch target */
   }
 
   @media (min-width: 480px) {

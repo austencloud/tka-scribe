@@ -5,7 +5,7 @@
  * for prop positioning on the animation grid.
  */
 
-import type { PropState } from "../../domain/types/PropState";
+import type { PropState } from "../../shared/domain/types/PropState";
 
 export interface ICoordinateUpdater {
   /**

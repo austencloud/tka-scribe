@@ -306,8 +306,8 @@
   }
 
   .action-btn__icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     background: color-mix(in srgb, var(--brand) 18%, transparent);
     border-radius: 10px;
     display: flex;

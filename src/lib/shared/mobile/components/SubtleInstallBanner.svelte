@@ -195,8 +195,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 10px;
     background: linear-gradient(
       135deg,
@@ -273,8 +275,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
@@ -311,9 +315,12 @@
       padding: 12px 16px;
     }
 
+    /* Keep 48px minimum for accessibility */
     .banner-icon {
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 16px;
     }
 
@@ -326,11 +333,14 @@
       padding: 7px 14px;
       font-size: 12px;
       gap: 5px;
+      min-height: 48px;
     }
 
     .dismiss-btn {
-      width: 30px;
-      height: 30px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 13px;
     }
   }
@@ -345,9 +355,12 @@
       gap: 12px;
     }
 
+    /* Keep 48px minimum for accessibility */
     .banner-icon {
-      width: 28px;
-      height: 28px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 14px;
     }
 
@@ -359,6 +372,7 @@
     .learn-btn {
       padding: 6px 12px;
       font-size: 11px;
+      min-height: 48px;
     }
 
     .install-btn span,
@@ -367,8 +381,10 @@
     }
 
     .dismiss-btn {
-      width: 28px;
-      height: 28px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 </style>

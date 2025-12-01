@@ -4,7 +4,7 @@
  * Handles rendering of animation visualization on canvas.
  */
 
-import type { PropState } from "../../domain/types/PropState";
+import type { PropState } from "../../shared/domain/types/PropState";
 
 export interface ICanvasRenderer {
   /**

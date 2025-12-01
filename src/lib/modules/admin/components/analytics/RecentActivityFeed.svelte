@@ -1,6 +1,14 @@
 <script lang="ts">
-  import type { RecentActivityEvent, EventTypeBreakdown } from "../../services/contracts";
-  import { formatTimestamp, formatEventType, getEventIcon, formatModuleLabel } from "./utils";
+  import type {
+    RecentActivityEvent,
+    EventTypeBreakdown,
+  } from "../../services/contracts";
+  import {
+    formatTimestamp,
+    formatEventType,
+    getEventIcon,
+    formatModuleLabel,
+  } from "./utils";
 
   interface Props {
     activities: RecentActivityEvent[];
@@ -10,7 +18,9 @@
   let { activities, eventBreakdown }: Props = $props();
 
   function getEventColor(eventType: string): string {
-    return eventBreakdown.find(e => e.eventType === eventType)?.color ?? '#94a3b8';
+    return (
+      eventBreakdown.find((e) => e.eventType === eventType)?.color ?? "#94a3b8"
+    );
   }
 </script>
 
@@ -22,7 +32,11 @@
         <div class="activity-item">
           <div class="activity-user-avatar">
             {#if activity.user?.photoURL}
-              <img src={activity.user.photoURL} alt={activity.user.displayName} class="user-avatar" />
+              <img
+                src={activity.user.photoURL}
+                alt={activity.user.displayName}
+                class="user-avatar"
+              />
             {:else}
               <div class="user-avatar-placeholder">
                 <i class="fas fa-user"></i>
@@ -32,20 +46,37 @@
 
           <div class="activity-main">
             <div class="activity-header-row">
-              <span class="activity-user-name">{activity.user?.displayName ?? "Unknown User"}</span>
-              <span class="activity-time">{formatTimestamp(activity.timestamp)}</span>
+              <span class="activity-user-name"
+                >{activity.user?.displayName ?? "Unknown User"}</span
+              >
+              <span class="activity-time"
+                >{formatTimestamp(activity.timestamp)}</span
+              >
             </div>
             <div class="activity-action-row">
-              <div class="activity-icon-small" style="color: {getEventColor(activity.eventType)}">
+              <div
+                class="activity-icon-small"
+                style="color: {getEventColor(activity.eventType)}"
+              >
                 <i class="fas {getEventIcon(activity.eventType)}"></i>
               </div>
-              <span class="activity-type">{formatEventType(activity.eventType)}</span>
+              <span class="activity-type"
+                >{formatEventType(activity.eventType)}</span
+              >
               {#if activity.metadata?.["sequenceWord"]}
-                <span class="activity-detail">"{activity.metadata["sequenceWord"]}"</span>
+                <span class="activity-detail"
+                  >"{activity.metadata["sequenceWord"]}"</span
+                >
               {:else if activity.metadata?.["module"]}
-                <span class="activity-detail">{formatModuleLabel(activity.metadata["module"] as string)}</span>
+                <span class="activity-detail"
+                  >{formatModuleLabel(
+                    activity.metadata["module"] as string
+                  )}</span
+                >
               {:else if activity.metadata?.["settingKey"]}
-                <span class="activity-detail">{activity.metadata["settingKey"]}</span>
+                <span class="activity-detail"
+                  >{activity.metadata["settingKey"]}</span
+                >
               {/if}
             </div>
           </div>
@@ -55,7 +86,10 @@
   {:else}
     <div class="no-data-message">
       <i class="fas fa-info-circle"></i>
-      <span>No recent activity recorded yet. Activity will appear as users interact with the app.</span>
+      <span
+        >No recent activity recorded yet. Activity will appear as users interact
+        with the app.</span
+      >
     </div>
   {/if}
 </section>
@@ -110,16 +144,16 @@
   }
 
   .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 255, 255, 0.1);
   }
 
   .user-avatar-placeholder {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     display: flex;

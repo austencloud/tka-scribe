@@ -17,14 +17,14 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { IPixiAnimationRenderer } from "$lib/modules/animate/services/contracts/IPixiAnimationRenderer";
   import type { ISVGGenerator } from "$lib/modules/animate/services/contracts/ISVGGenerator";
   import type { ITrailCaptureService } from "$lib/modules/animate/services/contracts/ITrailCaptureService";
-  import GlyphRenderer from "$lib/modules/animate/components/GlyphRenderer.svelte";
+  import GlyphRenderer from "./GlyphRenderer.svelte";
   import {
     type TrailPoint,
     type TrailSettings,
     TrailMode,
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
-  } from "$lib/modules/animate/domain/types/TrailTypes";
+  } from "$lib/modules/animate/shared/domain/types/TrailTypes";
   import {
     AnimationPathCache,
     type AnimationPathCacheData,

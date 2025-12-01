@@ -14,9 +14,9 @@
 -->
 <script lang="ts">
   import type { ModuleDefinition, ModuleId } from "../domain/types";
-import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-import { resolve } from "../../inversify";
-import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import { preloadFeatureModule } from "../../inversify/container";
 
@@ -340,7 +340,8 @@ import { TYPES } from "../../inversify/types";
       color-mix(in srgb, var(--module-color) 18%, rgba(255, 255, 255, 0.06)) 0%,
       color-mix(in srgb, var(--module-color) 8%, rgba(255, 255, 255, 0.02)) 100%
     );
-    border: 1px solid color-mix(in srgb, var(--module-color) 25%, rgba(255, 255, 255, 0.1));
+    border: 1px solid
+      color-mix(in srgb, var(--module-color) 25%, rgba(255, 255, 255, 0.1));
     border-radius: 16px; /* Match parent border-radius */
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
@@ -381,10 +382,16 @@ import { TYPES } from "../../inversify/types";
     background: linear-gradient(
       145deg,
       color-mix(in srgb, var(--module-color) 20%, rgba(255, 255, 255, 0.08)) 0%,
-      color-mix(in srgb, var(--module-color) 10%, rgba(255, 255, 255, 0.03)) 100%
+      color-mix(in srgb, var(--module-color) 10%, rgba(255, 255, 255, 0.03))
+        100%
     );
-    border-color: color-mix(in srgb, var(--module-color) 35%, rgba(255, 255, 255, 0.12));
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--module-color) 18%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--module-color) 35%,
+      rgba(255, 255, 255, 0.12)
+    );
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--module-color) 18%, transparent);
   }
 
   .module-cell:hover .cell-glow {
@@ -405,7 +412,8 @@ import { TYPES } from "../../inversify/types";
       color-mix(in srgb, var(--module-color) 4%, transparent) 100%
     );
     border-color: color-mix(in srgb, var(--module-color) 35%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--module-color) 10%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--module-color) 10%, transparent);
   }
 
   .module-cell.active .cell-glow {
@@ -416,10 +424,10 @@ import { TYPES } from "../../inversify/types";
      ICON STYLING - Fluid sizing with viewport
      ============================================================================ */
   .cell-icon {
-    /* Larger icons for more prominent display: min 32px, preferred 4.5vh, max 44px */
-    font-size: clamp(32px, 4.5vh, 44px);
-    width: clamp(44px, 6vh, 56px);
-    height: clamp(44px, 6vh, 56px);
+    /* Larger icons for more prominent display: min 32px, preferred 4.5vh, max 48px */
+    font-size: clamp(32px, 4.5vh, 48px);
+    width: clamp(48px, 6vh, 56px);
+    height: clamp(48px, 6vh, 56px);
     display: flex;
     align-items: center;
     justify-content: center;

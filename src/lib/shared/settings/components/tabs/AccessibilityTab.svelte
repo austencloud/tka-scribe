@@ -198,7 +198,7 @@
           <span class="unavailable">(unavailable)</span>
         {/if}
       </div>
-      <label class="toggle-switch">
+      <label class="accessibility-setting-toggle">
         <input
           type="checkbox"
           checked={hapticEnabled && isHapticSupported}
@@ -215,7 +215,7 @@
       <div class="setting-label">
         <span>Reduce Motion</span>
       </div>
-      <label class="toggle-switch">
+      <label class="accessibility-setting-toggle">
         <input
           type="checkbox"
           checked={reducedMotion}
@@ -235,7 +235,7 @@
             <span class="unavailable">(unavailable)</span>
           {/if}
         </div>
-        <label class="toggle-switch">
+        <label class="accessibility-setting-toggle">
           <input
             type="checkbox"
             checked={isFullscreen && isFullscreenSupported}
@@ -372,7 +372,7 @@
   }
 
   /* iOS Toggle Switch - Exact Dimensions */
-  .toggle-switch {
+  .accessibility-setting-toggle {
     flex-shrink: 0;
     position: relative;
     display: inline-block;
@@ -381,7 +381,7 @@
     cursor: pointer;
   }
 
-  .toggle-switch input {
+  .accessibility-setting-toggle input {
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -448,7 +448,7 @@
     cursor: pointer;
     background: #ff3b30; /* iOS system red - exact hex */
     color: white;
-    min-height: 44px; /* iOS minimum touch target */
+    min-height: 48px; /* iOS minimum touch target */
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     box-shadow:
       0 3px 12px rgba(255, 59, 48, 0.3),
@@ -461,7 +461,7 @@
   @container settings-content (max-height: 500px) {
     .clear-cache-btn {
       padding: 1cqh 2cqw;
-      min-height: 36px;
+      min-height: 48px;
     }
   }
 

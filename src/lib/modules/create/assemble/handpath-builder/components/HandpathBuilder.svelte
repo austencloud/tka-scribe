@@ -5,10 +5,13 @@ Coordinates state, services, and UI components for touch-based sequence construc
 Provides setup wizard, drawing interface, and conversion to MotionData.
 -->
 <script lang="ts">
-import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type {
@@ -270,8 +273,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .restart-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     padding: 0;
     background: linear-gradient(
       135deg,
@@ -439,7 +442,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 0.9rem;
   }
 

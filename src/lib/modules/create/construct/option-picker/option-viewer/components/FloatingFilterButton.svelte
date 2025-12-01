@@ -9,7 +9,7 @@ that triggers the filter panel dropdown.
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { container } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { swipeGesture } from "$lib/shared/utils/swipeGesture";
 
   const {
@@ -124,10 +124,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     z-index: 100;
 
     /* Size - optimized for touch targets */
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
 
     display: flex;
     align-items: center;
@@ -225,10 +225,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   @media (max-width: 375px) {
     .floating-filter-button {
       /* Note: padding already set to 0 via buttonPadding logic */
-      width: 40px;
-      height: 40px;
-      min-width: 40px;
-      min-height: 40px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
       font-size: 1rem;
     }
 

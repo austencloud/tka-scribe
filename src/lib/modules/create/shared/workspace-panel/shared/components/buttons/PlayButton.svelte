@@ -43,7 +43,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Desktop: 48px, Mobile: 44px minimum (iOS/Android touch target guidelines) */
+    /* Desktop: 48px, Mobile: 48px minimum (iOS/Android touch target guidelines) */
     width: 48px;
     height: 48px;
     border: none;
@@ -90,20 +90,20 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-size: 18px;
   }
 
-  /* Mobile responsive adjustments - ALWAYS 44px minimum per iOS/Android guidelines */
+  /* Mobile responsive adjustments - ALWAYS 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .play-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
   }
 
-  /* Keep 44px on all smaller screens - reduce gaps instead of buttons */
+  /* Keep 48px on all smaller screens - reduce gaps instead of buttons */
   @media (max-width: 480px) {
     .play-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
 
@@ -114,8 +114,8 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   @media (max-width: 320px) {
     .play-button {
-      width: 44px; /* NEVER below 44px for accessibility */
-      height: 44px;
+      width: 48px; /* NEVER below 48px for accessibility */
+      height: 48px;
       font-size: 16px;
     }
 
@@ -124,11 +124,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
   }
 
-  /* Landscape mobile: Maintain 44px minimum */
+  /* Landscape mobile: Maintain 48px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .play-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
     }
 
     .play-button i {

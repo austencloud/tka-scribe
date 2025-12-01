@@ -96,7 +96,7 @@
     opacity: 0.7;
     transition: opacity 0.2s;
     min-width: 36px;
-    min-height: 36px;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

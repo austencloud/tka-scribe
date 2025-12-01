@@ -4,7 +4,7 @@
   Shows user profile info and provides access to sign in/out:
   - When signed in: Shows profile picture + user name, opens profile popover
   - When signed out: Shows user icon + "Sign In", triggers sign-in flow
-  - 44px minimum touch target (WCAG AAA)
+  - 48px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
   import { authStore } from "../../auth";
@@ -195,10 +195,10 @@
      ICON WRAPPER
      ============================================================================ */
   .icon-wrapper {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     overflow: visible; /* Changed from hidden to allow badge to overflow */
     display: flex;

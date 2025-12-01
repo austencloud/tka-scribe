@@ -184,7 +184,7 @@
     justify-content: center;
     gap: 10px;
     padding: 12px 20px;
-    min-height: 44px;
+    min-height: 48px;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;

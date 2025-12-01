@@ -3,9 +3,7 @@ GridModeToggle.svelte - Single-button toggle showing opposite grid mode
 Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 -->
 <script lang="ts">
-  import {
-    GridMode,
-  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -61,7 +59,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     gap: 8px;
 
     /* Bigger touch target */
-    min-height: 44px;
+    min-height: 48px;
     padding: 0 20px;
 
     /* Glass morphism styling */
@@ -138,7 +136,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   /* Mobile responsive */
   @media (max-width: 600px) {
     .grid-mode-toggle {
-      min-height: 40px;
+      min-height: 48px;
       padding: 0 16px;
     }
 

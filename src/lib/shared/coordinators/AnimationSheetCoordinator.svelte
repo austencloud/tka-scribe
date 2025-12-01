@@ -19,7 +19,7 @@
     />
 -->
 <script lang="ts">
-  import AnimationPanel from "$lib/modules/animate/components/AnimationPanel.svelte";
+  import { AnimationPanel } from "$lib/shared/animate/components";
   import type {
     AnimationExportFormat,
     GifExportProgress,
@@ -27,18 +27,17 @@
     IGifExportOrchestrator,
   } from "$lib/modules/animate/services/contracts";
   import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
-  import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
   import type { ISequenceService } from "$create/shared";
-import { resolve } from "../inversify";
-import { TYPES } from "../inversify/types";
-import type { SequenceData } from "../foundation/domain/models/SequenceData";
+  import { resolve } from "../inversify";
+  import { TYPES } from "../inversify/types";
+  import type { SequenceData } from "../foundation/domain/models/SequenceData";
   import type { IHapticFeedbackService } from "../application/services/contracts";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
     GIF_EXPORT_SUCCESS_DELAY_MS,
-  } from "$lib/modules/animate/constants/timing";
+  } from "$lib/modules/animate/shared/domain/constants/timing";
   import type {
     ISheetRouterService,
     AnimationPanelState,
@@ -255,17 +254,17 @@ import type { SequenceData } from "../foundation/domain/models/SequenceData";
     animationPanelState.setError(null);
 
     try {
-      // Load sequence
-      const result = await loadSequenceForAnimation(seq, sequenceService);
+      // Inline sequence loading
+      const loadedSequence = await loadSequenceData(seq, sequenceService);
 
-      if (!result.success || !result.sequence) {
-        throw new Error(result.error || "Failed to load sequence");
+      if (!loadedSequence) {
+        throw new Error("Failed to load sequence");
       }
 
       // Initialize playback controller
       animationPanelState.setShouldLoop(true);
       const success = playbackController.initialize(
-        result.sequence,
+        loadedSequence,
         animationPanelState
       );
 
@@ -273,7 +272,7 @@ import type { SequenceData } from "../foundation/domain/models/SequenceData";
         throw new Error("Failed to initialize animation playback");
       }
 
-      animationPanelState.setSequenceData(result.sequence);
+      animationPanelState.setSequenceData(loadedSequence);
 
       // Auto-start animation
       setTimeout(() => {
@@ -287,6 +286,83 @@ import type { SequenceData } from "../foundation/domain/models/SequenceData";
     } finally {
       animationPanelState.setLoading(false);
     }
+  }
+
+  /**
+   * Load and hydrate sequence data for animation
+   */
+  async function loadSequenceData(
+    sequence: SequenceData | null,
+    service: ISequenceService
+  ): Promise<SequenceData | null> {
+    if (!sequence) return null;
+
+    const hasMotionData = (s: SequenceData) =>
+      Array.isArray(s.beats) &&
+      s.beats.length > 0 &&
+      s.beats.some((beat) => beat?.motions?.blue && beat?.motions?.red);
+
+    // Check if identifier looks like a UUID (user-created sequence)
+    // UUIDs: 8-4-4-4-12 hex pattern, gallery words are letters like "DKIIEJII"
+    const isUUID = (id: string) =>
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        id
+      );
+
+    // Get a valid gallery-compatible identifier (word preferred, or non-UUID id)
+    const getGalleryIdentifier = (s: SequenceData): string | null => {
+      if (s.word && s.word.trim()) return s.word;
+      if (s.name && s.name.trim() && !isUUID(s.name)) return s.name;
+      if (s.id && !isUUID(s.id)) return s.id;
+      return null; // No gallery-compatible identifier available
+    };
+
+    let fullSequence = sequence;
+
+    // If sequence already has motion data, use it directly
+    if (hasMotionData(sequence)) {
+      fullSequence = sequence;
+    }
+    // Load from database/gallery if needed (empty beats)
+    else if (sequence.id && (!sequence.beats || sequence.beats.length === 0)) {
+      const galleryId = getGalleryIdentifier(sequence);
+      if (galleryId) {
+        const loaded = await service.getSequence(galleryId);
+        if (loaded) {
+          fullSequence = loaded;
+        } else {
+          console.warn(`⚠️ Could not load sequence from gallery: ${galleryId}`);
+        }
+      } else {
+        console.log(
+          `ℹ️ User-created sequence ${sequence.id} has no gallery entry`
+        );
+      }
+    }
+    // Hydrate if missing motion data (try gallery lookup)
+    else if (fullSequence && !hasMotionData(fullSequence)) {
+      const galleryId = getGalleryIdentifier(fullSequence);
+      if (galleryId) {
+        const hydrated = await service.getSequence(galleryId);
+        if (hydrated && hasMotionData(hydrated)) {
+          fullSequence = hydrated;
+        }
+      }
+    }
+
+    // Normalize startPosition
+    const withStarting = fullSequence as unknown as {
+      startingPositionBeat?: unknown;
+    };
+    if (!fullSequence.startPosition && withStarting.startingPositionBeat) {
+      fullSequence = {
+        ...fullSequence,
+        startPosition:
+          withStarting.startingPositionBeat as SequenceData["startPosition"],
+      };
+    }
+
+    return fullSequence;
   }
 
   /**
@@ -367,7 +443,8 @@ import type { SequenceData } from "../foundation/domain/models/SequenceData";
       ) {
         // Double-check that the current route is actually showing animation sheet
         // This prevents "Cannot update animation panel state when animation sheet is not open" errors
-        const currentState = sheetRouterService?.getCurrentAnimationPanelState();
+        const currentState =
+          sheetRouterService?.getCurrentAnimationPanelState();
         if (currentState !== null) {
           sheetRouterService?.updateAnimationPanelState({
             speed: currentSpeed,

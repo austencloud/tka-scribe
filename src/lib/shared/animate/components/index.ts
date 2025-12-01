@@ -2,13 +2,19 @@
  * Shared Animation Components
  *
  * Reusable animation components for use across the app.
+ * These components are used by multiple modules (animate, create, edit, share, train, etc.)
  */
 
-export { default as TrailSettingsChips } from './TrailSettingsChips.svelte';
+// Core canvas infrastructure
 export { default as AnimatorCanvas } from './AnimatorCanvas.svelte';
+export { default as GlyphRenderer } from './GlyphRenderer.svelte';
 
-// Note: The following components will be moved here from modules/animate/components:
-// - AnimationPlayer (self-contained player with controls)
-// - TrailSettingsPanel (full trail configuration)
-//
-// For now, import those from the animate module directly.
+// High-level animation viewers/panels
+export { default as AnimationPanel } from './AnimationPanel.svelte';
+export { default as ShareAnimationViewer } from './ShareAnimationViewer.svelte';
+
+// Sequence browsing (used across many modules)
+export { default as SequenceBrowserPanel } from './SequenceBrowserPanel.svelte';
+
+// Trail settings UI
+export { default as TrailSettingsChips } from './TrailSettingsChips.svelte';

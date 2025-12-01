@@ -5,11 +5,11 @@
 	Matches desktop CodexPictographGrid functionality with proper row organization.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { Pictograph } from "$lib/shared/pictograph/shared/components";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { Pictograph } from "$lib/shared/pictograph/shared/components";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -188,7 +188,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     --grid-gap: 8px;
     --max-columns: 8;
     /* Calculate cell size: (container - gaps) / max columns */
-    --cell-size: calc((var(--grid-container-width) - (var(--max-columns) - 1) * var(--grid-gap) - 32px) / var(--max-columns));
+    --cell-size: calc(
+      (
+          var(--grid-container-width) - (var(--max-columns) - 1) *
+            var(--grid-gap) - 32px
+        ) /
+        var(--max-columns)
+    );
   }
 
   .section-header {
@@ -263,7 +269,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       width: var(--cell-size);
       height: var(--cell-size);
       min-width: 36px;
-      min-height: 36px;
+      min-height: 48px;
     }
   }
 
@@ -276,8 +282,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .pictograph-row > * {
-      min-width: 32px;
-      min-height: 32px;
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 

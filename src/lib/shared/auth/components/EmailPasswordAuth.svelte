@@ -530,7 +530,7 @@
     }
 
     .submit-button {
-      min-height: 44px;
+      min-height: 48px;
       padding: 0.625rem 1.125rem;
       font-size: 0.8125rem;
       gap: 0.5rem;

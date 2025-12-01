@@ -1,7 +1,10 @@
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import { getInfoBackground, setInfoBackground } from "$lib/shared/application/state/app-mode-state.svelte";
+  import {
+    getInfoBackground,
+    setInfoBackground,
+  } from "$lib/shared/application/state/app-mode-state.svelte";
   import { resolve, TYPES } from "$lib/shared/inversify";
   import SettingsModal from "./SettingsModal.svelte";
 
@@ -245,8 +248,8 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
   }
 
   .settings-toggle:hover {

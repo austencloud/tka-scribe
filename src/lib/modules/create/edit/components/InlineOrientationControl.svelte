@@ -1,9 +1,9 @@
 <!-- InlineOrientationControl.svelte - Full orientation controls shown inline when space permits -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -206,13 +206,13 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   /* Compact (desktop) - smaller buttons */
   .inline-orientation-control.compact .orientation-btn {
-    min-height: 36px;
+    min-height: 48px;
     border-width: 2px;
   }
 
   /* Balanced/Comfortable - larger buttons */
   .inline-orientation-control.balanced .orientation-btn {
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .inline-orientation-control.comfortable .orientation-btn {

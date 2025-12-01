@@ -31,7 +31,7 @@
       <span class="disabled-badge">{badgeText}</span>
     {/if}
   </span>
-  <label class="toggle-switch">
+  <label class="visibility-row-toggle">
     <input
       type="checkbox"
       {checked}
@@ -93,7 +93,7 @@
   }
 
   /* Toggle Switch - iOS Exact Dimensions */
-  .toggle-switch {
+  .visibility-row-toggle {
     flex-shrink: 0;
     position: relative;
     display: inline-block;
@@ -102,7 +102,7 @@
     cursor: pointer;
   }
 
-  .toggle-switch input {
+  .visibility-row-toggle input {
     position: absolute;
     opacity: 0;
     width: 100%;

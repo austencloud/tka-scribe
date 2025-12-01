@@ -157,7 +157,8 @@
       "Bash(timeout 120 npm run build:*)",
       "Bash(if exist \"node_modules\\.vite\" rmdir /s /q \"node_modules\\.vite\")",
       "Bash(if exist \".svelte-kit\" rmdir /s /q \".svelte-kit\")",
-      "Bash(timeout 60 npm run:*)"
+      "Bash(timeout 60 npm run:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []

@@ -10,9 +10,9 @@ Provides a dedicated UI for filtering option viewer content:
 -->
 
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { fly, fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
 
@@ -271,9 +271,9 @@ import { TYPES } from "$lib/shared/inversify/types";
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
-    /* 44px minimum for touch targets on mobile */
-    width: 44px;
-    height: 44px;
+    /* 48px minimum for touch targets on mobile */
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -283,8 +283,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .filter-panel.compact .close-button {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
   }
 
   .filter-panel.extra-compact .close-button {
@@ -426,15 +426,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .filter-panel.compact .toggle-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 11px;
     font-size: 1.15rem;
   }
 
   .filter-panel.extra-compact .toggle-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 10px;
     font-size: 1.05rem;
   }

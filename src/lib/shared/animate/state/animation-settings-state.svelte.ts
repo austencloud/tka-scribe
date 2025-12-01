@@ -23,7 +23,7 @@ import {
 	type TrailSettings,
 	type TrailPoint,
 	DEFAULT_TRAIL_SETTINGS as MODULE_DEFAULT_TRAIL_SETTINGS
-} from '$lib/modules/animate/domain/types/TrailTypes';
+} from '$lib/modules/animate/shared/domain/types/TrailTypes';
 
 // Re-export for convenience
 export { TrailMode, TrackingMode, TrailStyle };

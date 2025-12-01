@@ -11,7 +11,7 @@
  * - Better TypeScript organization
  */
 
-import type { MotionTypeType } from "$lib/modules/animate/utils/motion-utils";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
 import type { IArrowAdjustmentCalculator } from "../../services/contracts/IArrowAdjustmentCalculator";
 import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import type { ArrowPlacementKeyService } from "../../../key-generation/services/implementations/ArrowPlacementKeyService";
@@ -293,7 +293,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       // });
 
       const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
-        motionData.motionType as MotionTypeType,
+        motionData.motionType as MotionType,
         gridMode as GridMode
       );
       const defaultPlacements: Record<string, unknown> = Object.fromEntries(
@@ -314,7 +314,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
         await this.defaultPlacementService.getDefaultAdjustment(
           placementKey,
           motionData.turns || 0,
-          motionData.motionType as MotionTypeType,
+          motionData.motionType as MotionType,
           gridMode as GridMode
         );
 

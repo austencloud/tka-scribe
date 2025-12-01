@@ -14,7 +14,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
-import type { TrailSettings } from "../../domain/types/TrailTypes";
+import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
 /**
  * Pre-rendered frame data
  */

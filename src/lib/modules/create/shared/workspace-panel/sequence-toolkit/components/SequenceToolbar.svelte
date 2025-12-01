@@ -162,7 +162,7 @@ Transform tools moved to edit tab.
     .sequence-toolbar {
       gap: 2px;
       padding: 4px;
-      min-height: 44px; /* Minimum touch target size */
+      min-height: 48px; /* Minimum touch target size */
     }
 
     .separator {

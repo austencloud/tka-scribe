@@ -477,7 +477,7 @@
 
     .action-hint,
     .status-badge {
-      height: 44px;
+      height: 48px;
       font-size: 13px;
     }
   }

@@ -1,6 +1,6 @@
 <!-- Shared header used by construct pickers (start positions & options) -->
 <script lang="ts">
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridMode as GridModeEnum } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import SimpleAdvancedToggle from "../../start-position-picker/components/SimpleAdvancedToggle.svelte";
   import GridModeToggle from "./GridModeToggle.svelte";
@@ -127,7 +127,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .header-right {
@@ -141,7 +141,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     text-align: center;
     min-width: 0;
     overflow: visible;
-    min-height: 44px;
+    min-height: 48px;
   }
 
   /* Compact mode: Reduced height for tight spaces */
@@ -152,7 +152,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   .construct-picker-header.compact .header-left,
   .construct-picker-header.compact .header-right,
   .construct-picker-header.compact .header-center {
-    min-height: 36px;
+    min-height: 48px;
   }
 
   /* Mobile optimizations */
@@ -170,7 +170,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     .construct-picker-header.compact .header-left,
     .construct-picker-header.compact .header-right,
     .construct-picker-header.compact .header-center {
-      min-height: 32px;
+      min-height: 48px;
     }
   }
 </style>

@@ -8,7 +8,7 @@
 import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
-import { PI } from "../../domain/math-constants.js";
+import { PI } from "../../shared/domain/math-constants.js";
 import type { IMotionCalculator } from "../contracts/IMotionCalculator";
 import {
   mapOrientationToAngle,

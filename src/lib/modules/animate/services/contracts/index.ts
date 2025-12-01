@@ -31,6 +31,10 @@ export * from "./IAnimatedImageTranscoder";
 export * from "./ISequenceFramePreRenderer";
 export * from "./IVideoPreRenderService";
 
+// Video Playback Services
+export * from "./IVideoPlaybackService";
+export * from "./IVideoGenerationCoordinator";
+
 // Trail Services
 export * from "./ITrailCaptureService";
 

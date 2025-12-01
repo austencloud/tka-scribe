@@ -10,7 +10,7 @@
  * Single Responsibility: Prop positioning logic
  */
 
-import type { PropState } from "../../../domain/types/PropState";
+import type { PropState } from "../../../shared/domain/types/PropState";
 import type { Texture, Sprite } from "pixi.js";
 
 // Constants matching AnimatorCanvas EXACTLY (strict hand points for animation mode)

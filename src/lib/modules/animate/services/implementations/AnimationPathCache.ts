@@ -10,8 +10,8 @@
  * - Performance: One-time computation, reused for entire playback
  */
 
-import type { PropState } from "../../domain/types/PropState";
-import type { TrailPoint } from "../../domain/types/TrailTypes";
+import type { PropState } from "../../shared/domain/types/PropState";
+import type { TrailPoint } from "../../shared/domain/types/TrailTypes";
 
 /**
  * Pre-computed position data for a single prop at a specific time

@@ -13,19 +13,22 @@
   - Deep link (editing a shared sequence)
 -->
 <script lang="ts">
-import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
-  import { createEditModuleState, type EditMode } from "./state/edit-module-state.svelte";
+  import {
+    createEditModuleState,
+    type EditMode,
+  } from "./state/edit-module-state.svelte";
   import type { ISequenceTransformationService } from "$create/shared/services/contracts";
   import type { IDiscoverLoader } from "../discover";
   import BeatEditPanel from "./components/BeatEditPanel.svelte";
   import SequenceEditPanel from "./components/SequenceEditPanel.svelte";
   import EditWorkspace from "./components/EditWorkspace.svelte";
   import EmptyEditState from "./components/EmptyEditState.svelte";
-  import SequenceBrowserPanel from "../animate/shared/components/SequenceBrowserPanel.svelte";
+  import { SequenceBrowserPanel } from "$lib/shared/animate/components";
 
   // Create module state
   const editState = createEditModuleState();
@@ -59,15 +62,22 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 
     try {
       const sequenceName = sequenceMetadata.name || sequenceMetadata.id;
-      console.log(`EditModule: Loading full sequence data for "${sequenceName}"...`);
+      console.log(
+        `EditModule: Loading full sequence data for "${sequenceName}"...`
+      );
 
-      const fullSequence = await exploreLoader.loadFullSequenceData(sequenceName);
+      const fullSequence =
+        await exploreLoader.loadFullSequenceData(sequenceName);
 
       if (fullSequence) {
-        console.log(`EditModule: Loaded full sequence with ${fullSequence.beats?.length ?? 0} beats`);
+        console.log(
+          `EditModule: Loaded full sequence with ${fullSequence.beats?.length ?? 0} beats`
+        );
         editState.loadSequence(fullSequence, { module: "browser" });
       } else {
-        console.error(`EditModule: Could not load full sequence for "${sequenceName}"`);
+        console.error(
+          `EditModule: Could not load full sequence for "${sequenceName}"`
+        );
       }
     } catch (error) {
       console.error("EditModule: Failed to load full sequence:", error);
@@ -81,7 +91,9 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     console.log("EditModule: Mounted");
 
     try {
-      transformService = resolve<ISequenceTransformationService>(TYPES.ISequenceTransformationService);
+      transformService = resolve<ISequenceTransformationService>(
+        TYPES.ISequenceTransformationService
+      );
       console.log("EditModule: Resolved transformation service");
     } catch (error) {
       console.warn("Failed to resolve ISequenceTransformationService:", error);
@@ -154,8 +166,10 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
           sequence={editState.editingSequence}
           selectedBeatNumber={editState.selectedBeatNumber}
           selectedBeatNumbers={editState.selectedBeatNumbers}
-          onBeatSelect={(beatNumber, beatData) => editState.selectBeat(beatNumber, beatData)}
-          onBeatMultiSelect={(beatNumber) => editState.toggleBeatInMultiSelect(beatNumber)}
+          onBeatSelect={(beatNumber, beatData) =>
+            editState.selectBeat(beatNumber, beatData)}
+          onBeatMultiSelect={(beatNumber) =>
+            editState.toggleBeatInMultiSelect(beatNumber)}
           onChangeSequence={openSequenceBrowser}
         />
       </div>
@@ -192,13 +206,16 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
               selectedBeatData={editState.selectedBeatData}
               selectedBeatNumbers={editState.selectedBeatNumbers}
               sequence={editState.editingSequence}
-              onBeatUpdate={(index, updates) => editState.updateBeat(index, updates)}
-              onStartPositionUpdate={(updates) => editState.updateStartPosition(updates)}
+              onBeatUpdate={(index, updates) =>
+                editState.updateBeat(index, updates)}
+              onStartPositionUpdate={(updates) =>
+                editState.updateStartPosition(updates)}
             />
           {:else if currentMode === "sequence"}
             <SequenceEditPanel
               sequence={editState.editingSequence}
-              onTransform={(newSequence) => editState.transformSequence(newSequence)}
+              onTransform={(newSequence) =>
+                editState.transformSequence(newSequence)}
               {handleMirror}
               {handleRotate}
               {handleSwapColors}
@@ -328,8 +345,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   }
 
   .spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #06b6d4;
     border-radius: 50%;

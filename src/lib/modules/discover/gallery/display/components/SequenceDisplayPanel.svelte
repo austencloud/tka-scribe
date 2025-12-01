@@ -115,7 +115,6 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 12px 16px;
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);

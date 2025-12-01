@@ -339,7 +339,7 @@
 
   .section.compact .sign-out-button {
     padding: 11px 20px;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -347,7 +347,7 @@
 
   .section.very-compact .sign-out-button {
     padding: 11px 18px;
-    min-height: 44px;
+    min-height: 48px;
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;
@@ -424,7 +424,7 @@
 
   .section.compact :global(.button) {
     padding: 11px 20px;
-    min-height: 44px; /* WCAG 2.1 AA minimum touch target size */
+    min-height: 48px; /* WCAG 2.1 AA minimum touch target size */
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -433,7 +433,7 @@
 
   .section.very-compact :global(.button) {
     padding: 11px 18px;
-    min-height: 44px; /* WCAG 2.1 AA minimum touch target size */
+    min-height: 48px; /* WCAG 2.1 AA minimum touch target size */
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;

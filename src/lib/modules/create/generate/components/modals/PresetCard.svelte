@@ -329,8 +329,8 @@ Displays a single preset with icon, name, summary, and action buttons
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 48px;
+    min-height: 48px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -366,8 +366,8 @@ Displays a single preset with icon, name, summary, and action buttons
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 48px;
+    min-height: 48px;
     flex-shrink: 0;
     display: flex;
     align-items: center;

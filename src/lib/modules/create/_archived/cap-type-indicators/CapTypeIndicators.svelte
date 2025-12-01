@@ -221,8 +221,8 @@
 
     .cap-icon {
       padding: 8px;
-      min-width: 40px;
-      min-height: 40px;
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 
@@ -235,7 +235,7 @@
     .cap-icon {
       padding: 6px;
       min-width: 36px;
-      min-height: 36px;
+      min-height: 48px;
     }
 
     .icon {

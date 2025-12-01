@@ -101,7 +101,7 @@
 
   /* Header circular buttons (current style) */
   --btn-header-size: 48px;
-  --btn-header-size-mobile: 44px;
+  --btn-header-size-mobile: 48px;
   --btn-header-bg-neutral: linear-gradient(
     135deg,
     rgba(100, 100, 120, 0.85),

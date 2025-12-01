@@ -1,9 +1,9 @@
 <!-- ExpandedTurnPanel - REFACTORED with Design Tokens -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ITurnControlService } from "../services/TurnControlService";
 
@@ -357,20 +357,26 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .turn-panel.compact .close-btn {
-    width: 28px;
-    height: 28px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     font-size: 14px;
   }
 
   .turn-panel.balanced .close-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     font-size: 16px;
   }
 
   .turn-panel.comfortable .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     font-size: 18px;
   }
 
@@ -406,15 +412,17 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .turn-panel.compact .turn-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     font-size: 16px;
     border-width: 2px;
   }
 
   .turn-panel.balanced .turn-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     font-size: 18px;
     border-width: 3px;
   }

@@ -83,7 +83,8 @@ Features frame processing loop for pose estimation and overlay support.
       onCameraReady?.();
     } catch (error) {
       isInitializing = false;
-      const message = error instanceof Error ? error.message : "Failed to access camera";
+      const message =
+        error instanceof Error ? error.message : "Failed to access camera";
       errorMessage = message;
       onCameraError?.(message);
     }
@@ -134,24 +135,40 @@ Features frame processing loop for pose estimation and overlay support.
 
     {#if errorMessage}
       <div class="error-state">
-        <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg
+          class="error-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
         <p>{errorMessage}</p>
-        <button class="retry-button" onclick={initCamera}>
-          Try Again
-        </button>
+        <button class="retry-button" onclick={initCamera}> Try Again </button>
       </div>
     {/if}
   </div>
 
   {#if showControls && isActive && !errorMessage}
     <div class="controls">
-      <button class="control-button" onclick={switchCamera} title="Switch Camera" aria-label="Switch Camera">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+      <button
+        class="control-button"
+        onclick={switchCamera}
+        title="Switch Camera"
+        aria-label="Switch Camera"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+          />
           <circle cx="12" cy="13" r="4" />
         </svg>
       </button>
@@ -203,8 +220,8 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid var(--surface-light, rgba(255, 255, 255, 0.2));
     border-top-color: var(--primary, #3b82f6);
     border-radius: 50%;
@@ -259,8 +276,8 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .control-button {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     padding: 8px;
     background: var(--surface-glass, rgba(0, 0, 0, 0.6));
     backdrop-filter: blur(10px);

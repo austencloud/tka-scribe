@@ -356,7 +356,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 40px;
+    min-height: 48px;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
@@ -364,7 +364,7 @@
   @container visibility-tab (max-height: 550px) {
     .preview-toggle-btn {
       padding: 8px 12px;
-      min-height: 36px;
+      min-height: 48px;
       font-size: 13px;
     }
   }

@@ -9,7 +9,7 @@ import {
   GIF_EXPORT_QUALITY,
   GIF_FRAMES_PER_BEAT,
   GIF_INITIAL_CAPTURE_DELAY_MS,
-} from "../../constants/timing";
+} from "../../shared/domain/constants/timing";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { ISvgImageService } from "$lib/shared/foundation/services/contracts/ISvgImageService";

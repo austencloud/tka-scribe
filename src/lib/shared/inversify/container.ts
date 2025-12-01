@@ -346,6 +346,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       ],
       community: [
         { module: modules.exploreModule, name: "discover" },
+        { module: modules.libraryModule, name: "library" },
         { module: modules.communityModule, name: "community" },
       ],
       learn: [{ module: modules.learnModule, name: "learn" }],

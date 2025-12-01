@@ -5,7 +5,7 @@
   - Profile picture display or initial fallback
   - Opens profile settings sheet directly via route-based navigation
   - Haptic feedback on interaction
-  - 44px minimum touch target (WCAG AAA)
+  - 48px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
   import { authStore } from "../../auth";
@@ -122,13 +122,13 @@
 
 <style>
   /* ============================================================================
-     PROFILE BUTTON - 44px minimum (WCAG AAA)
+     PROFILE BUTTON - 48px minimum (WCAG AAA)
      ============================================================================ */
   .profile-button {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);
@@ -153,7 +153,7 @@
   }
 
   .profile-button.with-label.sidebar-collapsed {
-    width: 44px;
+    width: 48px;
     justify-content: center;
     padding: 0;
   }
@@ -174,10 +174,10 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -297,7 +297,7 @@
 
   /* Collapsed sidebar - center icon only */
   .profile-button.variant-sidebar.sidebar-collapsed {
-    width: 44px;
+    width: 48px;
     justify-content: center;
     padding: 0;
   }
@@ -305,7 +305,7 @@
   /* ============================================================================
      RESPONSIVE DESIGN
      ============================================================================ */
-  /* Note: Button size stays 44px on all devices for accessibility (WCAG AAA) */
+  /* Note: Button size stays 48px on all devices for accessibility (WCAG AAA) */
 
   /* ============================================================================
      ACCESSIBILITY

@@ -334,8 +334,8 @@
   }
 
   .module-content .flag-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     font-size: 18px;
     background: rgba(255, 255, 255, 0.08);
   }
@@ -348,8 +348,8 @@
     }
 
     .module-content .flag-icon {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 20px;
     }
   }
@@ -485,8 +485,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    min-height: 44px; /* Touch target */
+    width: 48px;
+    min-height: 48px; /* Touch target */
     border: none;
     background: transparent;
     color: rgba(255, 255, 255, 0.4);

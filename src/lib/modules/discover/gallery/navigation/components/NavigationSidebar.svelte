@@ -15,8 +15,8 @@ Follows Svelte 5 runes + microservices architecture.
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type {
     ExploreNavigationConfig,
     ExploreNavigationItem,
@@ -324,7 +324,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-size: var(--font-size-xs);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 40px;
+    min-height: 48px;
     aspect-ratio: 1;
   }
 

@@ -410,7 +410,7 @@
 
     .action-btn {
       padding: 10px 12px;
-      min-height: 44px;
+      min-height: 48px;
     }
   }
 </style>

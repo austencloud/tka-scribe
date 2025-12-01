@@ -7,9 +7,9 @@ Page 4: Word variations (thumb orientation, direction)
 Page 5: Interactive quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import WordVisualizer from "./WordVisualizer.svelte";
   import WordBuildingQuiz from "./WordBuildingQuiz.svelte";
 
@@ -249,8 +249,8 @@ import { TYPES } from "$lib/shared/inversify/types";
           <i class="fa-solid fa-spell-check"></i>
         </div>
         <p class="intro-text">
-          In TKA, a <strong>word</strong> is a sequence of letters that connect
-          smoothly together, beat by beat.
+          In TKA, a <strong>word</strong> is a sequence of letters that connect smoothly
+          together, beat by beat.
         </p>
       </div>
 
@@ -261,7 +261,10 @@ import { TYPES } from "$lib/shared/inversify/types";
           </div>
           <div class="point-content">
             <h4>Letters Connect</h4>
-            <p>Each letter's <em>end position</em> becomes the next letter's <em>start position</em></p>
+            <p>
+              Each letter's <em>end position</em> becomes the next letter's
+              <em>start position</em>
+            </p>
           </div>
         </div>
 
@@ -304,14 +307,14 @@ import { TYPES } from "$lib/shared/inversify/types";
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
-
   {:else if currentPage === 2}
     <!-- Page 2: Alpha/Beta Words -->
     <div class="page">
       <h2>Alpha & Beta Words</h2>
 
       <p class="page-intro">
-        The simplest words use letters that stay within Alpha (α→α) or Beta (β→β) positions.
+        The simplest words use letters that stay within Alpha (α→α) or Beta
+        (β→β) positions.
       </p>
 
       <div class="comparison-section">
@@ -323,7 +326,9 @@ import { TYPES } from "$lib/shared/inversify/types";
             showBeatNumber={false}
             compact={true}
           />
-          <p class="letter-info">Both hands curve in the <em>same direction</em> as movement</p>
+          <p class="letter-info">
+            Both hands curve in the <em>same direction</em> as movement
+          </p>
         </div>
 
         <div class="letter-card beta">
@@ -334,7 +339,9 @@ import { TYPES } from "$lib/shared/inversify/types";
             showBeatNumber={false}
             compact={true}
           />
-          <p class="letter-info">Both hands curve <em>opposite</em> to movement direction</p>
+          <p class="letter-info">
+            Both hands curve <em>opposite</em> to movement direction
+          </p>
         </div>
       </div>
 
@@ -355,8 +362,8 @@ import { TYPES } from "$lib/shared/inversify/types";
           </div>
         </div>
         <p class="pattern-note">
-          This pattern repeats throughout the alphabet. Memorize one letter in each group,
-          and you know them all!
+          This pattern repeats throughout the alphabet. Memorize one letter in
+          each group, and you know them all!
         </p>
       </div>
 
@@ -371,15 +378,14 @@ import { TYPES } from "$lib/shared/inversify/types";
         </button>
       </div>
     </div>
-
   {:else if currentPage === 3}
     <!-- Page 3: Words in Motion (AABB demo) -->
     <div class="page">
       <h2>Words in Motion: AABB</h2>
 
       <p class="page-intro">
-        Watch how the word <strong>AABB</strong> flows through 4 beats,
-        returning to its starting position!
+        Watch how the word <strong>AABB</strong> flows through 4 beats, returning
+        to its starting position!
       </p>
 
       <div class="word-demo">
@@ -390,7 +396,7 @@ import { TYPES } from "$lib/shared/inversify/types";
           animationSpeed={1200}
           showLetterLabel={true}
           showBeatNumber={true}
-          onBeatChange={(i) => aabbBeatIndex = i}
+          onBeatChange={(i) => (aabbBeatIndex = i)}
         />
 
         <div class="demo-controls">
@@ -447,14 +453,14 @@ import { TYPES } from "$lib/shared/inversify/types";
         </button>
       </div>
     </div>
-
   {:else if currentPage === 4}
     <!-- Page 4: More Word Examples -->
     <div class="page">
       <h2>More Word Patterns</h2>
 
       <p class="page-intro">
-        Different letters create different visual patterns. Here are two more examples:
+        Different letters create different visual patterns. Here are two more
+        examples:
       </p>
 
       <div class="word-examples-grid">
@@ -466,11 +472,11 @@ import { TYPES } from "$lib/shared/inversify/types";
             showLetterLabel={true}
             showBeatNumber={true}
             compact={true}
-            onBeatChange={(i) => ggggBeatIndex = i}
+            onBeatChange={(i) => (ggggBeatIndex = i)}
           />
           <p class="example-note">
-            G uses <strong>Tog-Same</strong> (β→β) motion.
-            Both hands stay together as they circle the grid!
+            G uses <strong>Tog-Same</strong> (β→β) motion. Both hands stay together
+            as they circle the grid!
           </p>
         </div>
 
@@ -482,11 +488,11 @@ import { TYPES } from "$lib/shared/inversify/types";
             showLetterLabel={true}
             showBeatNumber={true}
             compact={true}
-            onBeatChange={(i) => ccccBeatIndex = i}
+            onBeatChange={(i) => (ccccBeatIndex = i)}
           />
           <p class="example-note">
-            C is a <strong>hybrid</strong> - one hand pro, one anti.
-            Creates a unique asymmetric look!
+            C is a <strong>hybrid</strong> - one hand pro, one anti. Creates a unique
+            asymmetric look!
           </p>
         </div>
       </div>
@@ -497,7 +503,10 @@ import { TYPES } from "$lib/shared/inversify/types";
           <li>Words are sequences of letters connected beat-by-beat</li>
           <li>End position of one letter = start position of the next</li>
           <li>Many words return to their starting position (CAPs)</li>
-          <li>Same word can look different based on rotation direction and thumb orientation</li>
+          <li>
+            Same word can look different based on rotation direction and thumb
+            orientation
+          </li>
         </ul>
       </div>
 
@@ -512,7 +521,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         </button>
       </div>
     </div>
-
   {:else if currentPage === 5}
     <!-- Page 5: Quiz -->
     <div class="page quiz-page">
@@ -558,8 +566,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   h2 {
@@ -568,7 +582,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, #50C878 0%, #3CB371 100%);
+    background: linear-gradient(135deg, #50c878 0%, #3cb371 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -607,7 +621,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 1rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(80, 200, 120, 0.1) 0%, rgba(80, 200, 120, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(80, 200, 120, 0.1) 0%,
+      rgba(80, 200, 120, 0.02) 100%
+    );
     border: 1px solid rgba(80, 200, 120, 0.2);
     border-radius: 16px;
   }
@@ -621,7 +639,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     background: rgba(80, 200, 120, 0.2);
     border-radius: 50%;
     font-size: 1.75rem;
-    color: #50C878;
+    color: #50c878;
   }
 
   .intro-text {
@@ -646,14 +664,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .point-icon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(34, 211, 238, 0.15);
     border-radius: 10px;
-    color: #22D3EE;
+    color: #22d3ee;
     flex-shrink: 0;
   }
 
@@ -696,7 +714,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     border: 2px solid rgba(80, 200, 120, 0.4);
     border-radius: 10px;
     font-weight: 700;
-    color: #50C878;
+    color: #50c878;
   }
 
   .seq-arrow {
@@ -720,12 +738,20 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .letter-card.alpha {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.1) 0%,
+      rgba(255, 107, 107, 0.02) 100%
+    );
     border: 1px solid rgba(255, 107, 107, 0.2);
   }
 
   .letter-card.beta {
-    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(78, 205, 196, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(78, 205, 196, 0.1) 0%,
+      rgba(78, 205, 196, 0.02) 100%
+    );
     border: 1px solid rgba(78, 205, 196, 0.2);
   }
 
@@ -778,17 +804,17 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .pattern-type.pro {
     background: rgba(74, 158, 255, 0.2);
-    color: #4A9EFF;
+    color: #4a9eff;
   }
 
   .pattern-type.anti {
     background: rgba(255, 74, 158, 0.2);
-    color: #FF4A9E;
+    color: #ff4a9e;
   }
 
   .pattern-type.hybrid {
     background: rgba(255, 230, 109, 0.2);
-    color: #FFE66D;
+    color: #ffe66d;
   }
 
   .pattern-note {
@@ -833,7 +859,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .control-btn.playing {
     background: rgba(34, 211, 238, 0.2);
     border-color: rgba(34, 211, 238, 0.4);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   /* Beat breakdown */
@@ -912,7 +938,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   /* Summary box */
   .summary-box {
     padding: 1.25rem;
-    background: linear-gradient(135deg, rgba(80, 200, 120, 0.08) 0%, rgba(80, 200, 120, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(80, 200, 120, 0.08) 0%,
+      rgba(80, 200, 120, 0.02) 100%
+    );
     border: 1px solid rgba(80, 200, 120, 0.2);
     border-radius: 12px;
   }
@@ -963,7 +993,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 2rem;
-    background: linear-gradient(135deg, rgba(80, 200, 120, 0.3) 0%, rgba(60, 179, 113, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(80, 200, 120, 0.3) 0%,
+      rgba(60, 179, 113, 0.3) 100%
+    );
     backdrop-filter: blur(20px);
     border: 2px solid rgba(80, 200, 120, 0.5);
     border-radius: 12px;
@@ -977,7 +1011,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(80, 200, 120, 0.4) 0%, rgba(60, 179, 113, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(80, 200, 120, 0.4) 0%,
+      rgba(60, 179, 113, 0.4) 100%
+    );
     border-color: rgba(80, 200, 120, 0.8);
     transform: translateY(-2px);
   }
@@ -1006,7 +1044,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .progress-dot.active {
-    background: #50C878;
+    background: #50c878;
     transform: scale(1.25);
   }
 

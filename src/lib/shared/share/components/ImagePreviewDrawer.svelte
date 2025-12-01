@@ -242,8 +242,8 @@
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;
@@ -262,6 +262,8 @@
   .retry-button {
     margin-top: 8px;
     padding: 10px 20px;
+    min-height: 48px;
+    min-width: 48px;
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     border: none;

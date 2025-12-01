@@ -10,9 +10,9 @@
   } from "../domain";
   import QuizTimer from "./QuizTimer.svelte";
 
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   // Import quiz services
   import { QuizType } from "../domain";
   import {
@@ -315,8 +315,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-left: 4px solid #667eea;
     border-radius: 50%;

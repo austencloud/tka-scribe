@@ -15,16 +15,100 @@ import { Graphics } from "pixi.js";
 import type {
   TrailPoint,
   TrailSettings,
-} from "../../../domain/types/TrailTypes";
+} from "../../../shared/domain/types/TrailTypes";
 import {
   TrailMode,
   TrailStyle,
   TrackingMode,
-} from "../../../domain/types/TrailTypes";
-import {
-  createSmoothCurve,
-  type Point2D,
-} from "../../../utils/CatmullRomSpline";
+} from "../../../shared/domain/types/TrailTypes";
+
+// ============================================================================
+// CATMULL-ROM SPLINE (inlined for smooth trail curves)
+// ============================================================================
+
+interface Point2D {
+  x: number;
+  y: number;
+}
+
+interface SplineConfig {
+  alpha: number;
+  subdivisionsPerSegment: number;
+}
+
+/**
+ * Create smooth curve through control points using centripetal Catmull-Rom splines
+ */
+function createSmoothCurve(
+  controlPoints: readonly Point2D[],
+  config: Partial<SplineConfig> = {}
+): Point2D[] {
+  const alpha = config.alpha ?? 0.5;
+  const subdivisions = config.subdivisionsPerSegment ?? 10;
+
+  if (controlPoints.length < 2) return [...controlPoints];
+
+  if (controlPoints.length === 2) {
+    // Linear interpolation for 2 points
+    const points: Point2D[] = [];
+    const [p0, p1] = controlPoints;
+    for (let i = 0; i <= subdivisions; i++) {
+      const t = i / subdivisions;
+      points.push({
+        x: p0!.x + (p1!.x - p0!.x) * t,
+        y: p0!.y + (p1!.y - p0!.y) * t,
+      });
+    }
+    return points;
+  }
+
+  const result: Point2D[] = [{ ...controlPoints[0]! }];
+
+  for (let i = 0; i < controlPoints.length - 1; i++) {
+    const p0 = i > 0 ? controlPoints[i - 1]! : controlPoints[i]!;
+    const p1 = controlPoints[i]!;
+    const p2 = controlPoints[i + 1]!;
+    const p3 = i < controlPoints.length - 2 ? controlPoints[i + 2]! : controlPoints[i + 1]!;
+
+    // Calculate t values for centripetal parameterization
+    const getT = (t: number, pa: Point2D, pb: Point2D) => {
+      const dx = pb.x - pa.x;
+      const dy = pb.y - pa.y;
+      return t + Math.pow(Math.sqrt(dx * dx + dy * dy), alpha);
+    };
+
+    const t0 = 0;
+    const t1 = getT(t0, p0, p1);
+    const t2 = getT(t1, p1, p2);
+    const t3 = getT(t2, p2, p3);
+
+    // Linear interpolation helper
+    const lerp = (pa: Point2D, pb: Point2D, t: number): Point2D => {
+      const ct = Math.max(0, Math.min(1, t));
+      return { x: pa.x + (pb.x - pa.x) * ct, y: pa.y + (pb.y - pa.y) * ct };
+    };
+
+    // Generate segment points
+    for (let j = 1; j <= subdivisions; j++) {
+      const t = t1 + (j / subdivisions) * (t2 - t1);
+
+      const a1 = lerp(p0, p1, (t - t0) / (t1 - t0));
+      const a2 = lerp(p1, p2, (t - t1) / (t2 - t1));
+      const a3 = lerp(p2, p3, (t - t2) / (t3 - t2));
+
+      const b1 = lerp(a1, a2, (t - t0) / (t2 - t0));
+      const b2 = lerp(a2, a3, (t - t1) / (t3 - t1));
+
+      result.push(lerp(b1, b2, (t - t1) / (t2 - t1)));
+    }
+  }
+
+  return result;
+}
+
+// ============================================================================
+// PIXI TRAIL RENDERER
+// ============================================================================
 
 export class PixiTrailRenderer {
   private trailContainer: Container;

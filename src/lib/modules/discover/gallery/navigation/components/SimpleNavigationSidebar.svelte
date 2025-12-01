@@ -12,9 +12,9 @@ Matches the desktop Python app navigation pattern exactly.
 -->
 <script lang="ts">
   import { ExploreSortMethod } from "./../../../shared/domain/enums/discover-enums.ts";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   let hapticService: IHapticFeedbackService;
@@ -263,7 +263,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     padding: 8px 16px;
     font-size: 1rem;
     font-weight: 600;
-    min-height: 40px;
+    min-height: 48px;
     min-width: 48px;
     flex-shrink: 0;
     white-space: nowrap;
@@ -327,7 +327,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .nav-button {
       padding: 0.75rem 0.5rem;
       font-size: 1rem;
-      min-height: 44px;
+      min-height: 48px;
       border-radius: 8px;
     }
 
@@ -360,7 +360,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .nav-button {
       padding: 0.6875rem 0.5rem;
       font-size: 1.0625rem;
-      min-height: 40px;
+      min-height: 48px;
     }
   }
 </style>

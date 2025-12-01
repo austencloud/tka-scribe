@@ -5,9 +5,9 @@
  * for prop positioning on the animation grid.
  */
 
-import type { PropState } from "../../domain/types/PropState";
+import type { PropState } from "../../shared/domain/types/PropState";
 import { injectable } from "inversify";
-import { ANIMATION_CONSTANTS } from "../../domain/constants";
+import { ANIMATION_CONSTANTS } from "../../shared/domain/constants";
 import type { ICoordinateUpdater } from "../contracts/ICoordinateUpdater";
 
 // Grid constants from domain constants

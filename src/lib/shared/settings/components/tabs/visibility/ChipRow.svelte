@@ -52,10 +52,11 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.7);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-    min-height: 44px; /* iOS touch target */
+    min-height: 48px; /* iOS touch target */
     text-align: center;
   }
 
@@ -113,7 +114,7 @@
   @container settings-content (max-height: 550px) {
     .chip {
       padding: 8px 6px;
-      min-height: 40px;
+      min-height: 48px;
       border-radius: 10px;
     }
 
@@ -130,7 +131,7 @@
   @container settings-content (max-height: 480px) {
     .chip {
       padding: 6px 4px;
-      min-height: 36px;
+      min-height: 48px;
       border-radius: 8px;
       gap: 1px;
     }

@@ -76,7 +76,9 @@
       );
       deviceDetector = await resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       try {
-        sheetRouterService = await resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+        sheetRouterService = await resolve<ISheetRouterService>(
+          TYPES.ISheetRouterService
+        );
       } catch {
         // Service not available
       }
@@ -119,9 +121,9 @@
   // Check if settings are loaded AND services are initialized
   const isSettingsLoaded = $derived(
     settings &&
-    typeof settings === "object" &&
-    Object.keys(settings).length > 0 &&
-    areServicesInitialized()
+      typeof settings === "object" &&
+      Object.keys(settings).length > 0 &&
+      areServicesInitialized()
   );
 
   // Tab configuration - icons match galaxy view for consistency
@@ -207,7 +209,9 @@
   }
 
   // Handle close (no unsaved changes warning needed with instant save)
-  function handleClose(event?: CustomEvent<{ reason: "backdrop" | "escape" | "programmatic" }>) {
+  function handleClose(
+    event?: CustomEvent<{ reason: "backdrop" | "escape" | "programmatic" }>
+  ) {
     // iOS uses light impact for button taps (using "selection" pattern)
     hapticService?.trigger("selection");
 
@@ -275,7 +279,9 @@
               <i class="fas fa-arrow-left"></i>
             </button>
             <div class="detail-header__title">
-              <h2>{tabs.find((t) => t.id === activeTab)?.label || "Settings"}</h2>
+              <h2>
+                {tabs.find((t) => t.id === activeTab)?.label || "Settings"}
+              </h2>
             </div>
             <div class="detail-header__spacer"></div>
           </header>
@@ -297,7 +303,6 @@
         </main>
       {/if}
     </div>
-
   </div>
 
   <!-- Toast Notification -->
@@ -308,7 +313,6 @@
   /* Drawer positioning for settings panel */
   :global(.settings-drawer[data-placement="left"]) {
     /* Cover navigation from the left edge */
-    width: 90vw;
     min-width: 40vw;
     max-width: none;
   }
@@ -379,8 +383,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     padding: 0;
     background: rgba(255, 255, 255, 0.1);
     border: 1.5px solid rgba(255, 255, 255, 0.2);
@@ -428,7 +432,7 @@
   }
 
   .detail-header__spacer {
-    width: 40px; /* Match back button width for centered title */
+    width: 48px; /* Match back button width for centered title */
     flex-shrink: 0;
   }
 
@@ -544,12 +548,14 @@
     }
 
     .detail-header__back {
-      width: 38px;
-      height: 38px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
     }
 
     .detail-header__spacer {
-      width: 38px;
+      width: 48px;
     }
 
     .detail-header__title h2 {
@@ -573,8 +579,10 @@
     }
 
     .detail-header__back {
-      width: 36px;
-      height: 36px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
     }
 
     .detail-header__back i {
@@ -582,7 +590,7 @@
     }
 
     .detail-header__spacer {
-      width: 36px;
+      width: 48px;
     }
 
     .detail-header__title h2 {

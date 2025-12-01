@@ -15,7 +15,7 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
-import type { PropState } from "../../domain/types/PropState";
+import type { PropState } from "../../shared/domain/types/PropState";
 
 // Constants matching PixiPropRenderer exactly
 const VIEWBOX_SIZE = 950;

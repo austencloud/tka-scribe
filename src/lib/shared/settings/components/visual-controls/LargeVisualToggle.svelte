@@ -99,6 +99,8 @@
 
 <style>
 	.visual-toggle {
+		container-type: inline-size;
+		container-name: visual-toggle;
 		display: flex;
 		gap: var(--settings-space-lg);
 		align-items: center;
@@ -173,7 +175,7 @@
 		cursor: not-allowed;
 	}
 
-	/* Toggle switch */
+	/* Toggle switch - container query aware with 48px minimum */
 	.toggle-switch {
 		flex-shrink: 0;
 		position: relative;
@@ -182,6 +184,12 @@
 		padding: 0;
 		transition: all var(--settings-transition-base) var(--settings-ease-out);
 		background: transparent;
+		/* Container query aware sizing with 48px min touch target */
+		min-width: 48px;
+		min-height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.toggle-switch:disabled,
@@ -195,22 +203,20 @@
 		background: rgba(120, 120, 128, 0.2);
 	}
 
-	/* Large size (68x40) */
-	.toggle-switch.large {
-		width: var(--settings-toggle-width);
-		height: var(--settings-toggle-height);
+	/* Large size - responsive with container queries */
+	.toggle-switch.large .toggle-track {
+		width: clamp(48px, 10cqi, var(--settings-toggle-width, 68px));
+		height: clamp(28px, 6cqi, var(--settings-toggle-height, 40px));
 	}
 
-	/* Standard size (51x31 - iOS compatible) */
-	.toggle-switch.standard {
-		width: var(--settings-toggle-width-standard);
-		height: var(--settings-toggle-height-standard);
+	/* Standard size - responsive with container queries */
+	.toggle-switch.standard .toggle-track {
+		width: clamp(48px, 8cqi, var(--settings-toggle-width-standard, 51px));
+		height: clamp(28px, 5cqi, var(--settings-toggle-height-standard, 31px));
 	}
 
 	.toggle-track {
 		display: block;
-		width: 100%;
-		height: 100%;
 		border-radius: var(--settings-radius-full);
 		background: rgba(120, 120, 128, 0.32);
 		position: relative;
@@ -227,8 +233,8 @@
 
 	.toggle-thumb {
 		position: absolute;
-		top: var(--settings-toggle-padding);
-		left: var(--settings-toggle-padding);
+		top: var(--settings-toggle-padding, 2px);
+		left: var(--settings-toggle-padding, 2px);
 		border-radius: 50%;
 		background: white;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -236,16 +242,16 @@
 		will-change: transform;
 	}
 
-	/* Large thumb */
+	/* Large thumb - responsive */
 	.toggle-switch.large .toggle-thumb {
-		width: var(--settings-toggle-thumb-size);
-		height: var(--settings-toggle-thumb-size);
+		width: clamp(24px, 5cqi, var(--settings-toggle-thumb-size, 36px));
+		height: clamp(24px, 5cqi, var(--settings-toggle-thumb-size, 36px));
 	}
 
-	/* Standard thumb */
+	/* Standard thumb - responsive */
 	.toggle-switch.standard .toggle-thumb {
-		width: var(--settings-toggle-thumb-size-standard);
-		height: var(--settings-toggle-thumb-size-standard);
+		width: clamp(24px, 4cqi, var(--settings-toggle-thumb-size-standard, 27px));
+		height: clamp(24px, 4cqi, var(--settings-toggle-thumb-size-standard, 27px));
 	}
 
 	.toggle-switch.on .toggle-thumb {
@@ -271,6 +277,33 @@
 	/* Active (pressed) state */
 	.toggle-switch:active .toggle-thumb {
 		transform: translateX(calc(var(--thumb-translate, 0px))) scale(0.95);
+	}
+
+	/* Container query based adjustments */
+	@container visual-toggle (max-width: 300px) {
+		.toggle-control {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--settings-space-sm);
+		}
+
+		.toggle-switch {
+			align-self: flex-end;
+		}
+	}
+
+	@container visual-toggle (max-width: 200px) {
+		.toggle-switch.large .toggle-track,
+		.toggle-switch.standard .toggle-track {
+			width: 48px;
+			height: 28px;
+		}
+
+		.toggle-switch.large .toggle-thumb,
+		.toggle-switch.standard .toggle-thumb {
+			width: 24px;
+			height: 24px;
+		}
 	}
 
 	/* Mobile adjustments */

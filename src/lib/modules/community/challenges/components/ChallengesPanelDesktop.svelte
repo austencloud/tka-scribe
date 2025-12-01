@@ -463,8 +463,8 @@
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #8b5cf6;
     border-radius: 50%;
@@ -886,8 +886,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     background: color-mix(in srgb, var(--skill-color) 15%, transparent);
     border-radius: 12px;
     color: var(--skill-color);
@@ -1001,8 +1001,8 @@
     }
 
     .stat-icon-wrap {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 18px;
     }
 

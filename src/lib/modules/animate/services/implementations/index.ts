@@ -32,6 +32,10 @@ export { VideoPreRenderService, getVideoPreRenderService } from "./VideoPreRende
 // VideoFrameRenderer removed - now using real PixiJS renderer instead of fake Canvas 2D shapes
 export { TrailPathGenerator, getTrailPathGenerator } from "./TrailPathGenerator";
 
+// Video playback services
+export { VideoPlaybackService, getVideoPlaybackService } from "./VideoPlaybackService";
+export { VideoGenerationCoordinator, getVideoGenerationCoordinator } from "./VideoGenerationCoordinator";
+
 // Trail services
 export { TrailCaptureService } from "./TrailCaptureService";
 

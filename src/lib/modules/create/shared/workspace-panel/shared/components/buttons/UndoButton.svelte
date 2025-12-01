@@ -163,36 +163,36 @@ import { TYPES } from "$lib/shared/inversify/types";
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
-  /* Mobile responsive - 44px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .undo-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .undo-button {
-      width: 44px; /* Maintain 44px minimum */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum */
+      height: 48px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .undo-button {
-      width: 44px; /* NEVER below 44px for accessibility */
-      height: 44px;
+      width: 48px; /* NEVER below 48px for accessibility */
+      height: 48px;
       font-size: 14px;
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 44px minimum for accessibility */
+  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .undo-button {
-      width: 44px; /* Maintain 44px minimum for accessibility */
-      height: 44px;
+      width: 48px; /* Maintain 48px minimum for accessibility */
+      height: 48px;
       font-size: 14px;
     }
   }

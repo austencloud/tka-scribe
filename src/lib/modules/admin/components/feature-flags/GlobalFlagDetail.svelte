@@ -88,7 +88,7 @@
             <span id="enabled-label" class="field-label">Enabled</span>
             <button
               aria-labelledby="enabled-label"
-              class="toggle-switch"
+              class="flag-enabled-toggle"
               class:enabled={editedEnabled}
               onclick={() => onEnabledChange(!editedEnabled)}
               type="button"
@@ -285,7 +285,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 40px; /* Touch target */
+    min-height: 48px; /* Touch target */
   }
 
   @media (min-width: 480px) {
@@ -329,7 +329,7 @@
     }
   }
 
-  .toggle-switch {
+  .flag-enabled-toggle {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -343,13 +343,13 @@
   .toggle-track {
     position: relative;
     width: 52px;
-    height: 28px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 14px;
     transition: background 0.2s ease;
   }
 
-  .toggle-switch.enabled .toggle-track {
+  .flag-enabled-toggle.enabled .toggle-track {
     background: rgba(16, 185, 129, 0.3);
   }
 
@@ -357,15 +357,15 @@
     position: absolute;
     top: 3px;
     left: 3px;
-    width: 22px;
-    height: 22px;
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 50%;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  .toggle-switch.enabled .toggle-thumb {
+  .flag-enabled-toggle.enabled .toggle-thumb {
     left: 27px;
     background: #10b981;
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
@@ -377,7 +377,7 @@
     transition: color 0.2s;
   }
 
-  .toggle-switch.enabled .toggle-label {
+  .flag-enabled-toggle.enabled .toggle-label {
     color: #34d399;
   }
 

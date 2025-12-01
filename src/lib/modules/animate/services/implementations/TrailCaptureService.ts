@@ -16,14 +16,13 @@
  * - Coordinates with AnimationCacheService for backfill during stutters
  */
 
-import type { PropState } from "../../domain/types/PropState";
-import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import type { PropState } from "../../shared/domain/types/PropState";
+import type { TrailPoint, TrailSettings } from "../../shared/domain/types/TrailTypes";
 import {
   TrackingMode,
   TrailMode,
   TrailStyle,
-} from "../../domain/types/TrailTypes";
-import { CircularBuffer } from "../../utils/CircularBuffer";
+} from "../../shared/domain/types/TrailTypes";
 import type {
   ITrailCaptureService,
   TrailCapturePropStates,
@@ -33,6 +32,87 @@ import type {
   IPerformanceMonitorService,
 } from "../contracts/ITrailCaptureService";
 
+// ============================================================================
+// CIRCULAR BUFFER (inlined for O(1) trail point management)
+// ============================================================================
+
+/**
+ * High-performance ring buffer for managing trail points.
+ * Provides O(1) push and automatic old point removal.
+ */
+class CircularBuffer<T> {
+  private buffer: (T | undefined)[];
+  private head: number = 0;
+  private tail: number = 0;
+  private size: number = 0;
+  private readonly capacity: number;
+
+  constructor(capacity: number) {
+    this.capacity = capacity;
+    this.buffer = new Array(capacity);
+  }
+
+  push(item: T): void {
+    this.buffer[this.head] = item;
+    this.head = (this.head + 1) % this.capacity;
+    if (this.size < this.capacity) {
+      this.size++;
+    } else {
+      this.tail = (this.tail + 1) % this.capacity;
+    }
+  }
+
+  get length(): number {
+    return this.size;
+  }
+
+  get(index: number): T | undefined {
+    if (index < 0 || index >= this.size) return undefined;
+    return this.buffer[(this.tail + index) % this.capacity];
+  }
+
+  clear(): void {
+    this.head = 0;
+    this.tail = 0;
+    this.size = 0;
+  }
+
+  *[Symbol.iterator](): Iterator<T> {
+    for (let i = 0; i < this.size; i++) {
+      const item = this.buffer[(this.tail + i) % this.capacity];
+      if (item !== undefined) yield item;
+    }
+  }
+
+  filterInPlace(predicate: (item: T) => boolean): void {
+    const kept: T[] = [];
+    for (const item of this) {
+      if (predicate(item)) kept.push(item);
+    }
+    this.clear();
+    for (const item of kept) this.push(item);
+  }
+
+  toArray(): T[] {
+    return Array.from(this);
+  }
+
+  getLast(n: number): T[] {
+    const result: T[] = [];
+    const count = Math.min(n, this.size);
+    const startIndex = this.size - count;
+    for (let i = startIndex; i < this.size; i++) {
+      const item = this.buffer[(this.tail + i) % this.capacity];
+      if (item !== undefined) result.push(item);
+    }
+    return result;
+  }
+}
+
+// ============================================================================
+// TRAIL CAPTURE SERVICE
+// ============================================================================
+
 /**
  * Last captured point tracking for distance-based sampling
  */
@@ -40,7 +120,7 @@ interface LastCapturedPoint {
   x: number;
   y: number;
   beat: number;
-  timestamp: number; // Animation-relative timestamp (0ms to totalDurationMs)
+  timestamp: number;
 }
 
 export class TrailCaptureService implements ITrailCaptureService {

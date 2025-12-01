@@ -1,18 +1,18 @@
 <!--
 SimplifiedTurnControl.svelte - Always-visible stepper control for narrow screens
 
-Research-backed design for 344px portrait (Z Fold):
+Research-backed design for 348px portrait (Z Fold):
 - Zero interaction cost - all controls visible
-- 44x44px touch targets
+- 44x48px touch targets
 - Essential controls prioritized
 - Motion type as badge (secondary info)
 - Full width utilization
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -227,12 +227,12 @@ import { TYPES } from "$lib/shared/inversify/types";
     min-width: 0;
   }
 
-  /* Stepper buttons - Reduced from 44x44px for better fit */
+  /* Stepper buttons - Reduced from 44x48px for better fit */
   .stepper-btn {
-    width: 40px; /* Reduced from 44px */
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 8px;
     border: 2px solid;
     background: white;
@@ -282,7 +282,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-size: 18px; /* Reduced from 20px */
     font-weight: 700;
     color: #1a1a2e;
-    min-width: 40px; /* Reduced from 60px */
+    min-width: 48px; /* Reduced from 60px */
     text-align: center;
     /* Allow shrinking if needed */
     flex-shrink: 1;
@@ -313,7 +313,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
     .color-label {
       font-size: 14px;
-      min-width: 40px;
+      min-width: 48px;
     }
 
     .value-display {

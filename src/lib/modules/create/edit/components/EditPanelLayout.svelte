@@ -41,7 +41,7 @@ Layout Modes (determined by container size):
   let resizeObserver: ResizeObserver | null = null;
 
   // Determine if we should use simplified layout based on container width
-  // Narrow portrait (Z Fold 344px): <= 500px uses simplified always-visible controls
+  // Narrow portrait (Z Fold 348px): <= 500px uses simplified always-visible controls
   const useSimplifiedLayout = $derived(
     containerWidth > 0 && containerWidth <= 500
   );

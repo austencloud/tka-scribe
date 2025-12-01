@@ -177,7 +177,7 @@
     justify-content: center;
     flex-grow: 1; /* Take up available space */
     position: relative;
-    min-height: 44px; /* Prevent collapse */
+    min-height: 48px; /* Prevent collapse */
   }
 
   /* CENTER ZONE: Contextual buttons centered in available space */
@@ -215,7 +215,7 @@
     user-select: none;
   }
 
-  /* Container-based responsive adjustments - Progressive gap reduction to fit 44px buttons */
+  /* Container-based responsive adjustments - Progressive gap reduction to fit 48px buttons */
   @container button-panel (max-width: 768px) {
     .button-panel {
       padding: clamp(6px, 1.2vh, 12px) clamp(10px, 1.8vw, 18px);
@@ -224,11 +224,11 @@
     .left-zone,
     .center-zone,
     .right-zone {
-      gap: 10px; /* Balanced spacing for 44px buttons */
+      gap: 10px; /* Balanced spacing for 48px buttons */
     }
   }
 
-  /* Tighter spacing on smaller containers to accommodate 44px buttons */
+  /* Tighter spacing on smaller containers to accommodate 48px buttons */
   @container button-panel (max-width: 480px) {
     .button-panel {
       padding: clamp(4px, 1vh, 10px) clamp(8px, 1.5vw, 12px);

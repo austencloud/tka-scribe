@@ -9,7 +9,6 @@
 </script>
 
 <div class="sidebar-header">
-
   <!-- Collapse Toggle Button -->
   <button
     class="collapse-toggle"
@@ -61,7 +60,7 @@
      ============================================================================ */
   .collapse-toggle {
     width: 100%;
-    min-height: 44px;
+    min-height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,8 +97,12 @@
   }
 
   @keyframes header-shimmer {
-    0% { transform: translateX(-100%) translateY(-100%); }
-    100% { transform: translateX(100%) translateY(100%); }
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+    }
   }
 
   .collapse-toggle:hover {

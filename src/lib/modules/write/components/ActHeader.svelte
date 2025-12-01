@@ -1,8 +1,8 @@
 <!-- ActHeader.svelte - Act name, description, and music controls -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { ActData } from "$wordcard/domain";
   import { onMount } from "svelte";
 
@@ -238,7 +238,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 24px;
+    min-height: 48px;
     display: flex;
     align-items: center;
   }

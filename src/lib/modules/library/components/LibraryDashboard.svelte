@@ -10,7 +10,10 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { libraryState, type LibraryViewSection } from "../state/library-state.svelte";
+  import {
+    libraryState,
+    type LibraryViewSection,
+  } from "../state/library-state.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
   import SequenceCard from "../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
   import type { LibrarySequence } from "../domain/models/LibrarySequence";
@@ -42,14 +45,14 @@
 
   // Favorites (last 4)
   const favoriteSequences = $derived(() => {
-    return libraryState.sequences
-      .filter((s) => s.isFavorite)
-      .slice(0, 4);
+    return libraryState.sequences.filter((s) => s.isFavorite).slice(0, 4);
   });
 
   // Stats
   const totalSequences = $derived(libraryState.sequences.length);
-  const totalFavorites = $derived(libraryState.sequences.filter((s) => s.isFavorite).length);
+  const totalFavorites = $derived(
+    libraryState.sequences.filter((s) => s.isFavorite).length
+  );
 
   // Navigation handlers
   function handleSeeAllSequences() {
@@ -224,8 +227,8 @@
   }
 
   .spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: rgba(16, 185, 129, 0.8);
     border-radius: 50%;

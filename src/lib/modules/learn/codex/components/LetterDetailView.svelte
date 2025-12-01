@@ -8,7 +8,7 @@ Shows all pictographs for a selected letter with:
 - Back button to return to codex grid
 -->
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import SimpleGlassScroll from "../../../../shared/foundation/ui/SimpleGlassScroll.svelte";
   import Pictograph from "../../../../shared/pictograph/shared/components/Pictograph.svelte";
 
@@ -26,7 +26,10 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   } = $props();
 
   // Letter explanations - placeholder for now, you'll provide the real content
-  const letterExplanations: Record<string, { title: string; description: string }> = {
+  const letterExplanations: Record<
+    string,
+    { title: string; description: string }
+  > = {
     A: {
       title: "Letter A - The Foundation",
       description:
@@ -103,7 +106,10 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
           <h3 class="section-heading">
             All {letter} Pictographs ({pictographs.length} variations)
           </h3>
-          <div class="pictograph-grid" class:has-eight={pictographs.length === 8}>
+          <div
+            class="pictograph-grid"
+            class:has-eight={pictographs.length === 8}
+          >
             {#each pictographs as pictograph (pictograph.id)}
               <!-- svelte-ignore a11y_click_events_have_key_events -->
               <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -149,8 +155,8 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   }
 
   .back-button {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

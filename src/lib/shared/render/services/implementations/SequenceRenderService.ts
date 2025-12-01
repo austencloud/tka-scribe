@@ -201,7 +201,7 @@ export class SequenceRenderService implements ISequenceRenderService {
 
       // Scaling and sizing
       beatScale: 1.0,
-      beatSize: LayoutCalculationService.getBaseBeatSize(), // Use desktop-compatible BASE_BEAT_SIZE (144px)
+      beatSize: LayoutCalculationService.getBaseBeatSize(), // Use desktop-compatible BASE_BEAT_SIZE (148px)
       margin: 0, // No margin - beats are directly adjacent like BeatGrid
 
       // Visibility settings

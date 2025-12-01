@@ -258,7 +258,7 @@
       0 10px 26px rgba(236, 72, 153, 0.4);
   }
 
-  /* Mobile adjustments - maintain accessible touch targets (44px minimum) */
+  /* Mobile adjustments - maintain accessible touch targets (48px minimum) */
   .panel-header.mobile {
     min-height: 56px;
     padding: 10px 12px;
@@ -272,14 +272,14 @@
     font-size: 12px;
   }
 
-  /* Mobile buttons: 44px per iOS/Android accessibility guidelines */
+  /* Mobile buttons: 48px per iOS/Android accessibility guidelines */
   @media (max-width: 768px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: 44px;
-      min-height: 44px;
-      width: 44px;
-      height: 44px;
+      min-width: 48px;
+      min-height: 48px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
 
@@ -292,10 +292,10 @@
   @media (max-width: 480px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: 44px;
-      min-height: 44px;
-      width: 44px;
-      height: 44px;
+      min-width: 48px;
+      min-height: 48px;
+      width: 48px;
+      height: 48px;
       font-size: 16px;
     }
 
@@ -308,10 +308,10 @@
   @media (max-width: 320px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: 44px; /* NEVER below 44px for accessibility */
-      min-height: 44px;
-      width: 44px;
-      height: 44px;
+      min-width: 48px; /* NEVER below 48px for accessibility */
+      min-height: 48px;
+      width: 48px;
+      height: 48px;
     }
 
     :global(.panel-header .action-button i),

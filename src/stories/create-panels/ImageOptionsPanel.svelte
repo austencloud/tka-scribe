@@ -47,7 +47,7 @@
                 checked={options[option.key]}
                 onchange={() => dispatch("toggleOption", option.key)}
               />
-              <span class="toggle-switch"></span>
+              <span class="image-option-toggle"></span>
               <span class="toggle-label">{option.label}</span>
             </label>
           {/each}
@@ -223,7 +223,7 @@
     pointer-events: none;
   }
 
-  .toggle-switch {
+  .image-option-toggle {
     position: relative;
     width: 48px;
     height: 28px;
@@ -234,7 +234,7 @@
     flex-shrink: 0;
   }
 
-  .toggle-switch::before {
+  .image-option-toggle::before {
     content: "";
     position: absolute;
     top: 2px;
@@ -249,13 +249,13 @@
       0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .toggle-option input[type="checkbox"]:checked + .toggle-switch {
+  .toggle-option input[type="checkbox"]:checked + .image-option-toggle {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     border-color: #3b82f6;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
 
-  .toggle-option input[type="checkbox"]:checked + .toggle-switch::before {
+  .toggle-option input[type="checkbox"]:checked + .image-option-toggle::before {
     transform: translateX(20px);
   }
 

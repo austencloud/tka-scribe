@@ -15,7 +15,9 @@
 
   // Check if fullscreen is supported and if running as PWA
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     fullscreenService = resolve<IMobileFullscreenService>(
       TYPES.IMobileFullscreenService
     );
@@ -207,8 +209,8 @@
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .fullscreen-button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
     }
   }
 
@@ -216,8 +218,10 @@
     .fullscreen-button {
       top: 12px;
       right: 12px;
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 
@@ -226,8 +230,10 @@
     .fullscreen-button {
       top: 8px;
       right: 8px;
-      width: 36px;
-      height: 36px;
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 </style>

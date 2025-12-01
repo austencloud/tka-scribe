@@ -14,7 +14,7 @@ import {
   LOCATION_ANGLES,
   PI,
   TWO_PI,
-} from "../../domain/math-constants.js";
+} from "../../shared/domain/math-constants.js";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 
 // ============================================================================

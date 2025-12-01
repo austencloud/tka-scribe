@@ -7,7 +7,7 @@ Provides access to the complete TKA letter codex with drill-down detail view:
 - Smooth slide animation between grid and detail views
 -->
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import CodexComponent from "./CodexComponent.svelte";
@@ -69,10 +69,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     <!-- Flex container that adjusts widths -->
     <div class="panel-container">
       <!-- Grid View - compresses when detail opens -->
-      <div
-        class="grid-panel"
-        class:compressed={viewMode === "detail"}
-      >
+      <div class="grid-panel" class:compressed={viewMode === "detail"}>
         <CodexComponent
           isVisible={true}
           onLetterSelected={handleLetterSelected}
@@ -81,10 +78,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
       </div>
 
       <!-- Detail View - expands from 0 width when letter selected -->
-      <div
-        class="detail-panel"
-        class:expanded={viewMode === "detail"}
-      >
+      <div class="detail-panel" class:expanded={viewMode === "detail"}>
         {#if selectedLetter}
           <LetterDetailView
             letter={selectedLetter}
@@ -202,8 +196,8 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-left: 3px solid rgba(167, 139, 250, 0.9);
     border-radius: 50%;

@@ -4,7 +4,7 @@
  */
 
 import { injectable } from "inversify";
-import type { PropState } from "../../domain/types/PropState";
+import type { PropState } from "../../shared/domain/types/PropState";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 
 // Constants from standalone_animator.html

@@ -119,7 +119,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 >
   <div class="orientation-controls-container">
     {#if controlMode() === "simplified"}
-      <!-- Simplified always-visible controls for narrow portrait (344px Z Fold) -->
+      <!-- Simplified always-visible controls for narrow portrait (348px Z Fold) -->
       <SimplifiedOrientationControl
         color="blue"
         {currentBeatData}

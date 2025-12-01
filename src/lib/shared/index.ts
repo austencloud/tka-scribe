@@ -7,9 +7,6 @@
 
 // === SHARED INFRASTRUCTURE ===
 export * from "./inversify";
-export * from "./navigation";
-export * from "./persistence";
-export * from "./pictograph";
 export * from "./settings";
 export * from "./theme";
 export * from "./utils";
@@ -17,7 +14,7 @@ export { createComponentLogger, debugLogger } from "./utils/debug-logger";
 export * from "./validation";
 
 // === MODULE EXPORTS ===
-export * from "../modules/animate/domain";
+export * from "../modules/animate/shared/domain";
 export * from "../modules/create/generate/circular/domain";
 export * from "../modules/create/generate/shared/domain";
 export * from "../modules/create/shared/domain/factories";
@@ -50,9 +47,6 @@ export const safeSessionStorageRemove = (key: string): void => {
   storageService.removeSessionStorageItem(key);
 };
 
-// PNG metadata extractor (needed by modules)
-export { PngMetadataExtractor } from "./pictograph/shared/utils/png-metadata-extractor";
-
 // CSV parser interface (needed by modules)
 export type { ICSVPictographParserService as ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParserService";
 
@@ -64,9 +58,6 @@ export type { IGenerationOrchestrationService } from "../modules/create/generate
 
 // Sequence export service (needed by button components)
 export type { ISequenceExportService } from "../modules/create/shared/services/contracts/ISequenceExportService";
-
-// Turns tuple generator service (needed by Pictograph component for TKA glyph)
-export type { ITurnsTupleGeneratorService } from "./pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
 
 // Mobile services (needed by components)
 export type { IGestureService } from "./mobile/services/contracts/IGestureService";

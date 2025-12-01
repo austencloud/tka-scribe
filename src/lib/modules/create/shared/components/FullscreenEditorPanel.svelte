@@ -13,7 +13,10 @@
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { BeatData } from "../domain/models/BeatData";
-  import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    MotionColor,
+    RotationDirection,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { CreatePanelDrawer } from "$create/shared/components";
   import PanelHeader from "$create/shared/components/PanelHeader.svelte";
   import { getCreateModuleContext } from "../context";
@@ -44,13 +47,17 @@
   const { CreateModuleState, panelState } = ctx;
 
   // Get active sequence state
-  const activeSequenceState = $derived(CreateModuleState.getActiveTabSequenceState());
+  const activeSequenceState = $derived(
+    CreateModuleState.getActiveTabSequenceState()
+  );
   const sequence = $derived(activeSequenceState.currentSequence);
   const hasSequence = $derived(activeSequenceState.hasSequence());
 
   // Calculate panel height: nav bar + tool area only (NOT button panel)
   // This leaves the beat display (button panel) fully visible above the drawer
-  const panelHeight = $derived(panelState.navigationBarHeight + panelState.toolPanelHeight);
+  const panelHeight = $derived(
+    panelState.navigationBarHeight + panelState.toolPanelHeight
+  );
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
@@ -65,9 +72,14 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
     } catch (error) {
-      console.warn("FullscreenEditorPanel: Failed to resolve IHapticFeedbackService:", error);
+      console.warn(
+        "FullscreenEditorPanel: Failed to resolve IHapticFeedbackService:",
+        error
+      );
     }
   });
 
@@ -100,15 +112,26 @@
   const rawRedTurns = $derived(redMotion?.turns);
   const currentBlueTurns = $derived(normalizeTurns(rawBlueTurns));
   const currentRedTurns = $derived(normalizeTurns(rawRedTurns));
-  const displayBlueTurns = $derived(rawBlueTurns === "fl" ? "fl" : currentBlueTurns);
-  const displayRedTurns = $derived(rawRedTurns === "fl" ? "fl" : currentRedTurns);
+  const displayBlueTurns = $derived(
+    rawBlueTurns === "fl" ? "fl" : currentBlueTurns
+  );
+  const displayRedTurns = $derived(
+    rawRedTurns === "fl" ? "fl" : currentRedTurns
+  );
   const showBlueRotation = $derived(currentBlueTurns >= 0);
   const showRedRotation = $derived(currentRedTurns >= 0);
-  const currentBlueRotation = $derived(blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION);
-  const currentRedRotation = $derived(redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION);
+  const currentBlueRotation = $derived(
+    blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
+  );
+  const currentRedRotation = $derived(
+    redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
+  );
 
   // Beat editing handlers
-  function handleTurnsChange(color: typeof MotionColor.BLUE | typeof MotionColor.RED, delta: number) {
+  function handleTurnsChange(
+    color: typeof MotionColor.BLUE | typeof MotionColor.RED,
+    delta: number
+  ) {
     if (selectedBeatNumber === null || !selectedBeatData?.motions) return;
 
     hapticService?.trigger("selection");
@@ -116,9 +139,11 @@
     const motionData = selectedBeatData.motions[color];
     if (!motionData) return;
 
-    const currentTurns = color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
+    const currentTurns =
+      color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
     const newNumericTurns = Math.max(-0.5, currentTurns + delta);
-    const newTurns: number | "fl" = newNumericTurns === -0.5 ? "fl" : newNumericTurns;
+    const newTurns: number | "fl" =
+      newNumericTurns === -0.5 ? "fl" : newNumericTurns;
 
     const updatedMotions = {
       ...selectedBeatData.motions,
@@ -134,11 +159,16 @@
         motions: updatedMotions,
       } as BeatData);
     } else {
-      activeSequenceState.updateBeat(selectedBeatNumber - 1, { motions: updatedMotions });
+      activeSequenceState.updateBeat(selectedBeatNumber - 1, {
+        motions: updatedMotions,
+      });
     }
   }
 
-  function handleRotationChange(color: typeof MotionColor.BLUE | typeof MotionColor.RED, direction: RotationDirection) {
+  function handleRotationChange(
+    color: typeof MotionColor.BLUE | typeof MotionColor.RED,
+    direction: RotationDirection
+  ) {
     if (selectedBeatNumber === null || !selectedBeatData?.motions) return;
 
     hapticService?.trigger("selection");
@@ -160,7 +190,9 @@
         motions: updatedMotions,
       } as BeatData);
     } else {
-      activeSequenceState.updateBeat(selectedBeatNumber - 1, { motions: updatedMotions });
+      activeSequenceState.updateBeat(selectedBeatNumber - 1, {
+        motions: updatedMotions,
+      });
     }
   }
 
@@ -181,7 +213,8 @@
     isTransforming = true;
     hapticService?.trigger("selection");
     try {
-      const rotationDirection = direction === "cw" ? "clockwise" : "counterclockwise";
+      const rotationDirection =
+        direction === "cw" ? "clockwise" : "counterclockwise";
       await activeSequenceState.rotateSequence(rotationDirection);
     } finally {
       isTransforming = false;
@@ -215,8 +248,12 @@
     hapticService?.trigger("selection");
     handleClose();
     try {
-      const encoderService = container.get<ISequenceEncoderService>(TYPES.ISequenceEncoderService);
-      const { url } = encoderService.generateViewerURL(sequence, { compress: true });
+      const encoderService = container.get<ISequenceEncoderService>(
+        TYPES.ISequenceEncoderService
+      );
+      const { url } = encoderService.generateViewerURL(sequence, {
+        compress: true,
+      });
       const urlObj = new URL(url);
       goto(urlObj.pathname);
     } catch (err) {
@@ -250,7 +287,9 @@
 >
   <div class="editor-panel">
     <PanelHeader
-      title={currentMode === "turns" && hasSelection ? beatLabel : "Sequence Actions"}
+      title={currentMode === "turns" && hasSelection
+        ? beatLabel
+        : "Sequence Actions"}
       isMobile={true}
       onClose={handleClose}
     />
@@ -310,18 +349,29 @@
                 <div class="rotation-row">
                   <button
                     class="rot-btn"
-                    class:active={showBlueRotation && currentBlueRotation === RotationDirection.CLOCKWISE}
+                    class:active={showBlueRotation &&
+                      currentBlueRotation === RotationDirection.CLOCKWISE}
                     aria-label="Rotate blue clockwise"
-                    onclick={() => handleRotationChange(MotionColor.BLUE, RotationDirection.CLOCKWISE)}
+                    onclick={() =>
+                      handleRotationChange(
+                        MotionColor.BLUE,
+                        RotationDirection.CLOCKWISE
+                      )}
                     disabled={!showBlueRotation}
                   >
                     <i class="fas fa-rotate-right"></i>
                   </button>
                   <button
                     class="rot-btn"
-                    class:active={showBlueRotation && currentBlueRotation === RotationDirection.COUNTER_CLOCKWISE}
+                    class:active={showBlueRotation &&
+                      currentBlueRotation ===
+                        RotationDirection.COUNTER_CLOCKWISE}
                     aria-label="Rotate blue counter clockwise"
-                    onclick={() => handleRotationChange(MotionColor.BLUE, RotationDirection.COUNTER_CLOCKWISE)}
+                    onclick={() =>
+                      handleRotationChange(
+                        MotionColor.BLUE,
+                        RotationDirection.COUNTER_CLOCKWISE
+                      )}
                     disabled={!showBlueRotation}
                   >
                     <i class="fas fa-rotate-left"></i>
@@ -352,18 +402,29 @@
                 <div class="rotation-row">
                   <button
                     class="rot-btn"
-                    class:active={showRedRotation && currentRedRotation === RotationDirection.CLOCKWISE}
+                    class:active={showRedRotation &&
+                      currentRedRotation === RotationDirection.CLOCKWISE}
                     aria-label="Rotate red clockwise"
-                    onclick={() => handleRotationChange(MotionColor.RED, RotationDirection.CLOCKWISE)}
+                    onclick={() =>
+                      handleRotationChange(
+                        MotionColor.RED,
+                        RotationDirection.CLOCKWISE
+                      )}
                     disabled={!showRedRotation}
                   >
                     <i class="fas fa-rotate-right"></i>
                   </button>
                   <button
                     class="rot-btn"
-                    class:active={showRedRotation && currentRedRotation === RotationDirection.COUNTER_CLOCKWISE}
+                    class:active={showRedRotation &&
+                      currentRedRotation ===
+                        RotationDirection.COUNTER_CLOCKWISE}
                     aria-label="Rotate red counter clockwise"
-                    onclick={() => handleRotationChange(MotionColor.RED, RotationDirection.COUNTER_CLOCKWISE)}
+                    onclick={() =>
+                      handleRotationChange(
+                        MotionColor.RED,
+                        RotationDirection.COUNTER_CLOCKWISE
+                      )}
                     disabled={!showRedRotation}
                   >
                     <i class="fas fa-rotate-left"></i>
@@ -376,27 +437,51 @@
       {:else}
         <!-- Transforms Mode - Sequence Transform Controls -->
         <div class="transform-grid">
-          <button class="action-btn" onclick={handleMirror} disabled={isTransforming || !hasSequence}>
+          <button
+            class="action-btn"
+            onclick={handleMirror}
+            disabled={isTransforming || !hasSequence}
+          >
             <i class="fas fa-left-right"></i>
             <span>Mirror</span>
           </button>
-          <button class="action-btn" onclick={() => handleRotate("cw")} disabled={isTransforming || !hasSequence}>
+          <button
+            class="action-btn"
+            onclick={() => handleRotate("cw")}
+            disabled={isTransforming || !hasSequence}
+          >
             <i class="fas fa-rotate-right"></i>
             <span>Rotate CW</span>
           </button>
-          <button class="action-btn" onclick={() => handleRotate("ccw")} disabled={isTransforming || !hasSequence}>
+          <button
+            class="action-btn"
+            onclick={() => handleRotate("ccw")}
+            disabled={isTransforming || !hasSequence}
+          >
             <i class="fas fa-rotate-left"></i>
             <span>Rotate CCW</span>
           </button>
-          <button class="action-btn" onclick={handleSwapColors} disabled={isTransforming || !hasSequence}>
+          <button
+            class="action-btn"
+            onclick={handleSwapColors}
+            disabled={isTransforming || !hasSequence}
+          >
             <i class="fas fa-palette"></i>
             <span>Swap Colors</span>
           </button>
-          <button class="action-btn" onclick={handleReverse} disabled={isTransforming || !hasSequence}>
+          <button
+            class="action-btn"
+            onclick={handleReverse}
+            disabled={isTransforming || !hasSequence}
+          >
             <i class="fas fa-backward"></i>
             <span>Reverse</span>
           </button>
-          <button class="action-btn" onclick={handlePreview} disabled={!hasSequence}>
+          <button
+            class="action-btn"
+            onclick={handlePreview}
+            disabled={!hasSequence}
+          >
             <i class="fas fa-eye"></i>
             <span>Preview</span>
           </button>
@@ -439,6 +524,8 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.15s ease;
+    min-height: 48px;
+    min-width: 48px;
   }
 
   .mode-btn:hover {
@@ -532,8 +619,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: none;
@@ -555,7 +642,7 @@
     font-size: 1.75rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    min-width: 44px;
+    min-width: 48px;
     text-align: center;
   }
 
