@@ -14,8 +14,8 @@ import type { IGridModeDeriver } from "../../grid/services/contracts/IGridModeDe
 import type { PictographData } from "../domain/models/PictographData";
 import { Point } from "fabric";
 // TODO: These services have been archived - need to refactor this file
-// import type { IOverlayRenderer } from "../../../../modules/animator/services/contracts/IOverlayRenderer";
-// import type { ISvgUtilityService } from "../../../../modules/animator/services/implementations/SvgUtilityService";
+// import type { IOverlayRenderer } from "../../../../features/animator/services/contracts/IOverlayRenderer";
+// import type { ISvgUtilityService } from "../../../../features/animator/services/implementations/SvgUtilityService";
 import type { ArrowPosition } from "../../arrow/orchestration/domain/arrow-models";
 import type { IArrowRenderer } from "../../arrow/rendering/services/contracts";
 import type { IGridRenderingService } from "../../grid";

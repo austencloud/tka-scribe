@@ -11,7 +11,7 @@
  */
 
 import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
-import type { BeatData } from "../../../modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
 import Pictograph from "../../pictograph/shared/components/Pictograph.svelte";
 import { mount, tick, unmount } from "svelte";
 import { resolve as resolveService } from "../../inversify";

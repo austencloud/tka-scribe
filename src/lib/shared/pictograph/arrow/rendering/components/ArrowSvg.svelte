@@ -11,7 +11,7 @@ Now with intelligent rotation animation matching prop behavior!
   import type { PictographData } from "../../../shared/domain/models/PictographData";
   import { Orientation, RotationDirection } from "../../../shared/domain/enums/pictograph-enums";
   import type { ArrowAssets, ArrowPosition } from "../../orchestration/domain/arrow-models";
-  import { selectedArrowState } from "../../../../../modules/create/shared/state/selected-arrow-state.svelte";
+  import { selectedArrowState } from "../../../../../features/create/shared/state/selected-arrow-state.svelte";
 
   let {
     motionData,

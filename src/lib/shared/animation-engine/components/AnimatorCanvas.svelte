@@ -11,12 +11,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { ISettingsService } from "$lib/shared/settings/services/contracts";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import type { StartPositionData } from "../../../modules/create/shared/domain/models/StartPositionData";
-  import type { BeatData } from "../../../modules/create/shared/domain/models/BeatData";
+  import type { StartPositionData } from "../../../features/create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
   import type { PropState } from "../domain";
-  import type { IPixiAnimationRenderer } from "$lib/modules/animate/services/contracts/IPixiAnimationRenderer";
-  import type { ISVGGenerator } from "$lib/modules/animate/services/contracts/ISVGGenerator";
-  import type { ITrailCaptureService } from "$lib/modules/animate/services/contracts/ITrailCaptureService";
+  import type { IPixiAnimationRenderer } from "$lib/features/animate/services/contracts/IPixiAnimationRenderer";
+  import type { ISVGGenerator } from "$lib/features/animate/services/contracts/ISVGGenerator";
+  import type { ITrailCaptureService } from "$lib/features/animate/services/contracts/ITrailCaptureService";
   import GlyphRenderer from "./GlyphRenderer.svelte";
   import {
     type TrailPoint,
@@ -24,16 +24,16 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     TrailMode,
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
-  } from "$lib/modules/animate/shared/domain/types/TrailTypes";
+  } from "$lib/features/animate/shared/domain/types/TrailTypes";
   import {
     AnimationPathCache,
     type AnimationPathCacheData,
-  } from "$lib/modules/animate/services/implementations/AnimationPathCache";
-  import type { ISequenceAnimationOrchestrator } from "$lib/modules/animate/services/contracts/ISequenceAnimationOrchestrator";
+  } from "$lib/features/animate/services/implementations/AnimationPathCache";
+  import type { ISequenceAnimationOrchestrator } from "$lib/features/animate/services/contracts/ISequenceAnimationOrchestrator";
   import {
     SequenceFramePreRenderer,
     type PreRenderProgress,
-  } from "$lib/modules/animate/services/implementations/SequenceFramePreRenderer";
+  } from "$lib/features/animate/services/implementations/SequenceFramePreRenderer";
 
   // Resolve services from DI container
   const pixiRenderer = resolve(

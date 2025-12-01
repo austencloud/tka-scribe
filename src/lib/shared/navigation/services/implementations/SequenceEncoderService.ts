@@ -20,8 +20,8 @@ import { injectable } from "inversify";
 import LZString from "lz-string";
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { StartPositionData } from "../../../../modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {

@@ -10,8 +10,8 @@
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { StartPositionData } from "../../../../modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { IPositionDeriverService } from "../contracts/IPositionDeriverService";

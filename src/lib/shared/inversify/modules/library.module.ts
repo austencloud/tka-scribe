@@ -8,18 +8,18 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
 
 // Contracts
-import type { ILibraryService } from "../../../modules/library/services/contracts/ILibraryService";
-// import type { ICollectionService } from "../../../modules/library/services/contracts/ICollectionService";
-// import type { ILibraryActService } from "../../../modules/library/services/contracts/ILibraryActService";
-// import type { IForkService } from "../../../modules/library/services/contracts/IForkService";
-// import type { ILibraryMigrationService } from "../../../modules/library/services/contracts/ILibraryMigrationService";
+import type { ILibraryService } from "../../../features/library/services/contracts/ILibraryService";
+// import type { ICollectionService } from "../../../features/library/services/contracts/ICollectionService";
+// import type { ILibraryActService } from "../../../features/library/services/contracts/ILibraryActService";
+// import type { IForkService } from "../../../features/library/services/contracts/IForkService";
+// import type { ILibraryMigrationService } from "../../../features/library/services/contracts/ILibraryMigrationService";
 
 // Implementations
-import { LibraryService } from "../../../modules/library/services/implementations/LibraryService";
-// import { CollectionService } from "../../../modules/library/services/implementations/CollectionService";
-// import { LibraryActService } from "../../../modules/library/services/implementations/LibraryActService";
-// import { ForkService } from "../../../modules/library/services/implementations/ForkService";
-// import { LibraryMigrationService } from "../../../modules/library/services/implementations/LibraryMigrationService";
+import { LibraryService } from "../../../features/library/services/implementations/LibraryService";
+// import { CollectionService } from "../../../features/library/services/implementations/CollectionService";
+// import { LibraryActService } from "../../../features/library/services/implementations/LibraryActService";
+// import { ForkService } from "../../../features/library/services/implementations/ForkService";
+// import { LibraryMigrationService } from "../../../features/library/services/implementations/LibraryMigrationService";
 
 /**
  * Library Module

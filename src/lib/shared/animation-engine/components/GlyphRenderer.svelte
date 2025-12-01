@@ -14,8 +14,8 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
 <script lang="ts">
   import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
-  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { resolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";

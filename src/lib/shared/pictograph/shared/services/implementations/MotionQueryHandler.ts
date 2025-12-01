@@ -13,7 +13,7 @@ import { createMotionData } from "../../domain/models/MotionData";
 import type { PictographData } from "../../domain/models/PictographData";
 import type { ICSVPictographParser as ICSVPictographParser, CSVRow } from "../../../../foundation/services/contracts/data";
 import { inject, injectable } from "inversify";
-import type { ParsedCsvRow } from "$lib/modules/create/generate/shared/domain";
+import type { ParsedCsvRow } from "$lib/features/create/generate/shared/domain";
 import type { ICSVLoader } from "../../../../foundation";
 import type { IMotionQueryHandler } from "../../../../foundation";
 import { TYPES } from "../../../../inversify";

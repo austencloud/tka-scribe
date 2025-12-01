@@ -1,5 +1,5 @@
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { MotionColor, Orientation } from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 

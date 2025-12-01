@@ -1,6 +1,6 @@
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { TabId } from "../../../navigation/domain/types";
-import type { IDiscoverThumbnailService } from "../../../../modules/discover/gallery/display";
+import type { IDiscoverThumbnailService } from "../../../../features/discover/gallery/display";
 
 // Centralized UI state leveraging Svelte 5 runes.
 // Uses TabId (which includes both ModuleId and LegacyTabId) for backwards compatibility

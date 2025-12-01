@@ -10,7 +10,7 @@ import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enu
  */
 
 import type { BeatData } from "$create/shared/workspace-panel";
-import type { StartPositionData } from "../../../../modules/create/shared/domain/models/StartPositionData";
+import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { GridPositionGroup } from "../../../pictograph/grid/domain/enums/grid-enums";
 import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
 

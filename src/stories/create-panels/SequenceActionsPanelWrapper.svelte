@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import SequenceActionsPanel from "../../lib/modules/create/shared/workspace-panel/shared/components/SequenceActionsPanel.svelte";
+  import SequenceActionsPanel from "../../lib/features/create/shared/workspace-panel/shared/components/SequenceActionsPanel.svelte";
 
   let show = $state(true);
 

@@ -6,9 +6,9 @@
  */
 
 import { describe, expect, it, beforeEach } from "vitest";
-import { ReversalDetectionService } from "../../../src/lib/modules/create/shared/services/implementations/ReversalDetectionService";
+import { ReversalDetectionService } from "../../../src/lib/features/create/shared/services/implementations/ReversalDetectionService";
 import { MotionColor } from "../../../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 describe("ReversalDetectionService", () => {

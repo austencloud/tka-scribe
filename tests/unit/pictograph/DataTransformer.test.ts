@@ -9,7 +9,7 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest";
-import type { BeatData } from "../../../src/lib/modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "../../../src/lib/features/create/shared/domain/models/BeatData";
 import { Letter } from "../../../src/lib/shared/foundation/domain/models/Letter";
 import {
   GridLocation,

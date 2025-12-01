@@ -11,7 +11,7 @@ import type { MotionType } from "../../../shared/domain/enums/pictograph-enums";
 import type { PictographData } from "../../../shared/domain/models/PictographData";
 import { TYPES } from "../../../../inversify/types";
 import { inject, injectable, optional } from "inversify";
-import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
+import type { ParsedCsvRow } from "../../../../../features/create/generate/shared/domain";
 import type { CSVRow, ICSVLoader } from "../../../../foundation/services/contracts/data";
 import type { ILetterQueryHandler } from "../../../../foundation/services/contracts/data";
 import type { Letter } from "../../../../foundation/domain/models/Letter";

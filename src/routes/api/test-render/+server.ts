@@ -1,4 +1,4 @@
-import type { ISequencePersistenceService } from "$lib/modules/create/shared/services/contracts";
+import type { ISequencePersistenceService } from "$lib/features/create/shared/services/contracts";
 import { resolve } from "$lib/shared/inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ISequenceRenderService } from "$lib/shared/render/services/contracts";

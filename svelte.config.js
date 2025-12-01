@@ -33,27 +33,27 @@ const config = {
       $shared: "./src/lib/shared",
       "$shared/*": "./src/lib/shared/*",
 
-      // Module aliases (for cross-domain barrel imports)
-      $create: "./src/lib/modules/create",
-      "$create/*": "./src/lib/modules/create/*",
+      // Feature aliases (for cross-domain barrel imports)
+      $create: "./src/lib/features/create",
+      "$create/*": "./src/lib/features/create/*",
 
-      $learn: "./src/lib/modules/learn",
-      "$learn/*": "./src/lib/modules/learn/*",
+      $learn: "./src/lib/features/learn",
+      "$learn/*": "./src/lib/features/learn/*",
 
-      $discover: "./src/lib/modules/discover",
-      "$discover/*": "./src/lib/modules/discover/*",
+      $discover: "./src/lib/features/discover",
+      "$discover/*": "./src/lib/features/discover/*",
 
-      $animator: "./src/lib/modules/create/animate",
-      "$animator/*": "./src/lib/modules/create/animate/*",
+      $animate: "./src/lib/features/animate",
+      "$animate/*": "./src/lib/features/animate/*",
 
-      $wordcard: "./src/lib/modules/word-card",
-      "$wordcard/*": "./src/lib/modules/word-card/*",
+      $wordcard: "./src/lib/features/word-card",
+      "$wordcard/*": "./src/lib/features/word-card/*",
 
-      $collect: "./src/lib/modules/collect",
-      "$collect/*": "./src/lib/modules/collect/*",
+      $collect: "./src/lib/features/collect",
+      "$collect/*": "./src/lib/features/collect/*",
 
-      $write: "./src/lib/modules/write",
-      "$write/*": "./src/lib/modules/write/*",
+      $write: "./src/lib/features/write",
+      "$write/*": "./src/lib/features/write/*",
 
       $render: "./src/lib/shared/render",
       "$render/*": "./src/lib/shared/render/*",

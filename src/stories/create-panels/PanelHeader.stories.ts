@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
 import type { ComponentProps } from "svelte";
-import PanelHeader from "../../lib/modules/create/shared/components/PanelHeader.svelte";
+import PanelHeader from "../../lib/features/create/shared/components/PanelHeader.svelte";
 
 type PanelHeaderProps = ComponentProps<typeof PanelHeader>;
 

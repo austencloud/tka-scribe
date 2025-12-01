@@ -5,7 +5,7 @@
  * Handles parsing, validation, and structure analysis of CSV data.
  */
 
-import type { CSVParseResult, ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain/csv-handling/CsvModels";
+import type { CSVParseResult, ParsedCsvRow } from "../../../../../features/create/generate/shared/domain/csv-handling/CsvModels";
 
 export interface ICSVParser {
   parseCSV(csvText: string): CSVParseResult;

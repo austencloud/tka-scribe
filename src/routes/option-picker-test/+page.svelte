@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { OptionViewer } from "$lib/modules/create/construct/option-picker";
-  import type { IStartPositionService } from "$lib/modules/create/construct/start-position-picker/services/contracts";
+  import { OptionViewer } from "$lib/features/create/construct/option-picker";
+  import type { IStartPositionService } from "$lib/features/create/construct/start-position-picker/services/contracts";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";

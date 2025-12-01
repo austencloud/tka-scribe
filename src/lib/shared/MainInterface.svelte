@@ -50,7 +50,7 @@
 
   import type { IDeepLinkService } from "./navigation/services/contracts";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
-  import { discoverScrollState } from "../modules/discover/shared/state/DiscoverScrollState.svelte";
+  import { discoverScrollState } from "../features/discover/shared/state/DiscoverScrollState.svelte";
   import type { IViewportService } from './device/services/contracts/IViewportService';
   import { resolve } from "./inversify";
   import { TYPES } from "./inversify/types";

@@ -1,4 +1,4 @@
-import type { BeatData } from "../../../../modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 
 /**

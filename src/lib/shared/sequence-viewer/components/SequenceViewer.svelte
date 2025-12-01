@@ -12,7 +12,7 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { tryResolve } from "$lib/shared/inversify";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -21,10 +21,10 @@
   import { createSequenceViewerState } from "$lib/shared/sequence-viewer/state/sequence-viewer-state.svelte";
   import type { ISequenceViewerService } from "$lib/shared/sequence-viewer/services/contracts/ISequenceViewerService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ILibraryService } from "$lib/modules/library/services/contracts";
+  import type { ILibraryService } from "$lib/features/library/services/contracts";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
-  import EditSlidePanel from "$lib/modules/create/edit/components/EditSlidePanel.svelte";
-  import BeatGrid from "$lib/modules/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import EditSlidePanel from "$lib/features/create/edit/components/EditSlidePanel.svelte";
+  import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import SequenceViewerActions from "./SequenceViewerActions.svelte";
   import VariationNav from "./VariationNav.svelte";
 

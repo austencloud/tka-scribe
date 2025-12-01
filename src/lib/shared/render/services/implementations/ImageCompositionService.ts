@@ -5,7 +5,7 @@
  * No intermediate canvases, no complex calculations, just straightforward rendering.
  */
 
-import type { BeatData } from "../../../../modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
 import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { TYPES } from "../../../inversify/types";
@@ -20,7 +20,7 @@ import type {
 } from "../contracts";
 import {} from "../contracts";
 import type { IImageCompositionService } from "../contracts";
-import { SequenceDifficultyCalculator } from "$lib/modules/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
+import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 
 @injectable()
 export class ImageCompositionService implements IImageCompositionService {

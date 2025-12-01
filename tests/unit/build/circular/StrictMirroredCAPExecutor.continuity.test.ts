@@ -9,7 +9,7 @@
  * final beat selection wasn't applying continuity filters.
  */
 
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import { describe, expect, it } from "vitest";
 
 describe("StrictMirroredCAPExecutor - Continuity Regression Test", () => {

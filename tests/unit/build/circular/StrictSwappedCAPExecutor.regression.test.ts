@@ -13,7 +13,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 
 describe("StrictSwappedCAPExecutor - Comprehensive Regression Test", () => {
   /**

@@ -8,8 +8,8 @@
  */
 
 import { describe, it, expect, beforeEach } from "vitest";
-import { createPanelCoordinationState } from "$lib/modules/create/shared/state/panel-coordination-state.svelte";
-import type { PanelCoordinationState } from "$lib/modules/create/shared/state/panel-coordination-state.svelte";
+import { createPanelCoordinationState } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
+import type { PanelCoordinationState } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
 
 describe("Panel Coordination State - Mutual Exclusivity", () => {
   let panelState: PanelCoordinationState;

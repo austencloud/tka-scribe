@@ -25,8 +25,8 @@
     GifExportProgress,
     IAnimationPlaybackController,
     IGifExportOrchestrator,
-  } from "$lib/modules/animate/services/contracts";
-  import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
+  } from "$lib/features/animate/services/contracts";
+  import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$create/shared";
   import { resolve } from "../inversify";
   import { TYPES } from "../inversify/types";
@@ -37,7 +37,7 @@
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
     GIF_EXPORT_SUCCESS_DELAY_MS,
-  } from "$lib/modules/animate/shared/domain/constants/timing";
+  } from "$lib/features/animate/shared/domain/constants/timing";
   import type {
     ISheetRouterService,
     AnimationPanelState,

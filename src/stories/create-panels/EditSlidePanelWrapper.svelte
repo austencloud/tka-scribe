@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext } from "svelte";
-  import EditSlidePanel from "../../lib/modules/create/edit/components/EditSlidePanel.svelte";
+  import EditSlidePanel from "../../lib/features/create/edit/components/EditSlidePanel.svelte";
 
   // Mock beat data
   let mockBeatData = {

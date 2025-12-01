@@ -9,11 +9,11 @@ import { TYPES } from "../types";
 import type {
   IAdminChallengeService,
   IAnalyticsDataService,
-} from "../../../modules/admin/services/contracts";
+} from "../../../features/admin/services/contracts";
 import {
   AdminChallengeService,
   AnalyticsDataService,
-} from "../../../modules/admin/services/implementations";
+} from "../../../features/admin/services/implementations";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

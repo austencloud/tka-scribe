@@ -6,8 +6,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { SequenceLoopabilityChecker } from "$lib/modules/animate/services/implementations/SequenceLoopabilityChecker";
-import { createBeatData } from "$lib/modules/create/shared/domain/factories/createBeatData";
+import { SequenceLoopabilityChecker } from "$lib/features/animate/services/implementations/SequenceLoopabilityChecker";
+import { createBeatData } from "$lib/features/create/shared/domain/factories/createBeatData";
 import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   Orientation,

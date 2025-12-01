@@ -9,8 +9,8 @@
 
 import { resolve } from "../inversify/index";
 import { TYPES } from "../inversify/types";
-import type { IDiscoverCacheService } from "../../modules/discover/gallery/display/services/contracts/IDiscoverCacheService";
-import type { IOptimizedDiscoverService } from "../../modules/discover/shared/services/contracts/IOptimizedDiscoverService";
+import type { IDiscoverCacheService } from "../../features/discover/gallery/display/services/contracts/IDiscoverCacheService";
+import type { IOptimizedDiscoverService } from "../../features/discover/shared/services/contracts/IOptimizedDiscoverService";
 
 export async function clearAllGalleryCaches(): Promise<void> {
   console.log("🧹 Clearing ALL gallery caches...");

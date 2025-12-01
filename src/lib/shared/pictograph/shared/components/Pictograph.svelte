@@ -16,7 +16,7 @@
   import BeatNumber from "./BeatNumber.svelte";
   import ReversalIndicators from "./ReversalIndicators.svelte";
   import EmptyStateIndicator from "./EmptyStateIndicator.svelte";
-  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { IAnimationService } from "../../../application/services/contracts/IAnimationService";
   import type { ITurnsTupleGeneratorService } from "../../arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
   import { GridMode } from "../../grid/domain/enums/grid-enums";

@@ -28,7 +28,7 @@ import type {
 import type {
   StoredPerformance,
   StoredCalibrationProfile,
-} from "$lib/modules/train/domain/models";
+} from "$lib/features/train/domain/models";
 import {
   DATABASE_NAME,
   DATABASE_VERSION,

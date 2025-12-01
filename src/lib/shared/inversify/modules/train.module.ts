@@ -9,14 +9,14 @@ import { ContainerModule } from "inversify";
 import { TYPES } from "../types";
 
 // Service implementations
-import { HandLandmarkerService } from "../../../modules/train/services/implementations/HandLandmarkerService";
-import { HandednessAnalyzer } from "../../../modules/train/services/implementations/HandednessAnalyzer";
-import { HandStateAnalyzer } from "../../../modules/train/services/implementations/HandStateAnalyzer";
-import { HandTrackingStabilizer } from "../../../modules/train/services/implementations/HandTrackingStabilizer";
-import { HandAssignmentService } from "../../../modules/train/services/implementations/HandAssignmentService";
-import { VoiceCommandService } from "../../../modules/train/services/implementations/VoiceCommandService";
-import { PerformanceHistoryService } from "../../../modules/train/services/implementations/PerformanceHistoryService";
-import { TrainChallengeService } from "../../../modules/train/services/implementations/TrainChallengeService";
+import { HandLandmarkerService } from "../../../features/train/services/implementations/HandLandmarkerService";
+import { HandednessAnalyzer } from "../../../features/train/services/implementations/HandednessAnalyzer";
+import { HandStateAnalyzer } from "../../../features/train/services/implementations/HandStateAnalyzer";
+import { HandTrackingStabilizer } from "../../../features/train/services/implementations/HandTrackingStabilizer";
+import { HandAssignmentService } from "../../../features/train/services/implementations/HandAssignmentService";
+import { VoiceCommandService } from "../../../features/train/services/implementations/VoiceCommandService";
+import { PerformanceHistoryService } from "../../../features/train/services/implementations/PerformanceHistoryService";
+import { TrainChallengeService } from "../../../features/train/services/implementations/TrainChallengeService";
 
 export const trainModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

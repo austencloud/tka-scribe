@@ -21,10 +21,10 @@ import {
   LightRayCalculator,
 } from "../../background/deep-ocean";
 // Core Sequence Services (moved from createModule to Tier 1)
-import { SequenceService } from "../../../modules/create/shared/services/implementations/SequenceService";
-import { SequenceDomainService } from "../../../modules/create/shared/services/implementations/SequenceDomainService";
-import { ReversalDetectionService } from "../../../modules/create/shared/services/implementations/ReversalDetectionService";
-import { SequenceImportService } from "../../../modules/create/shared/services/implementations/SequenceImportService";
+import { SequenceService } from "../../../features/create/shared/services/implementations/SequenceService";
+import { SequenceDomainService } from "../../../features/create/shared/services/implementations/SequenceDomainService";
+import { ReversalDetectionService } from "../../../features/create/shared/services/implementations/ReversalDetectionService";
+import { SequenceImportService } from "../../../features/create/shared/services/implementations/SequenceImportService";
 
 export const dataModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

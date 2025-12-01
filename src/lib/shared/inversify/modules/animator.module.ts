@@ -21,7 +21,7 @@ import {
   SVGGenerator,
   TrailCaptureService,
   TunnelModeSequenceManager,
-} from "../../../modules/animate/services";
+} from "../../../features/animate/services";
 import { AnimationService } from "../../application/services/implementations";
 import { TYPES } from "../types";
 

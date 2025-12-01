@@ -6,7 +6,7 @@ matching the legacy desktop app's behavior.
 -->
 <script lang="ts">
   import type { PictographData } from "../domain/models/PictographData";
-  import type { BeatData } from "../../../../modules/create/shared/domain/models/BeatData";
+  import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
   import { onMount } from "svelte";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import Pictograph from "./Pictograph.svelte";

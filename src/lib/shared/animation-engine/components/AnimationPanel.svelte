@@ -15,27 +15,27 @@
   import { browser } from "$app/environment";
 
   // Extracted components (from animate module)
-  import AnimationPanelHeader from "$lib/modules/animate/components/canvas/AnimationPanelHeader.svelte";
-  import AnimationCanvas from "$lib/modules/animate/components/canvas/AnimationCanvas.svelte";
-  import AnimationControlsPanel from "$lib/modules/animate/components/canvas/AnimationControlsPanel.svelte";
-  import { CreatePanelDrawer } from "$lib/modules/create/shared/components";
+  import AnimationPanelHeader from "$lib/features/animate/components/canvas/AnimationPanelHeader.svelte";
+  import AnimationCanvas from "$lib/features/animate/components/canvas/AnimationCanvas.svelte";
+  import AnimationControlsPanel from "$lib/features/animate/components/canvas/AnimationControlsPanel.svelte";
+  import { CreatePanelDrawer } from "$lib/features/create/shared/components";
 
   // Types
-  import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
-  import type { PropState } from "$lib/modules/animate/shared/domain/types/PropState";
-  import type { TrailSettings as TrailSettingsType } from "$lib/modules/animate/shared/domain/types/TrailTypes";
+  import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
+  import type { PropState } from "$lib/features/animate/shared/domain/types/PropState";
+  import type { TrailSettings as TrailSettingsType } from "$lib/features/animate/shared/domain/types/TrailTypes";
   import {
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
     TrackingMode,
     TrailMode,
-  } from "$lib/modules/animate/shared/domain/types/TrailTypes";
+  } from "$lib/features/animate/shared/domain/types/TrailTypes";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 
   // ============================================================================
   // TRAIL SETTINGS PERSISTENCE (inlined)
@@ -575,4 +575,3 @@
     border-color: rgba(239, 68, 68, 0.3);
   }
 </style>
-So glad to 3D is not something I'm planning on working on soon because it's a pretty significant change I also love playing with the generator and just getting fresh variety There's a bunch of stuff I want to do before opening that door

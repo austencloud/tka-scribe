@@ -4,12 +4,12 @@ import {
   CodexService,
   CodexLetterMappingRepo,
   CodexPictographUpdater,
-} from "../../../modules/learn/codex/services/implementations";
+} from "../../../features/learn/codex/services/implementations";
 import {
   QuizRepoManager,
   QuizSessionService,
-} from "../../../modules/learn/quiz/services/implementations";
-import { QuizResultsAnalyzer } from "../../../modules/learn/quiz/QuizResultsAnalyzer";
+} from "../../../features/learn/quiz/services/implementations";
+import { QuizResultsAnalyzer } from "../../../features/learn/quiz/QuizResultsAnalyzer";
 import { TYPES } from "../types";
 
 export const learnModule = new ContainerModule(

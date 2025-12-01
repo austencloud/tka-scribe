@@ -11,17 +11,17 @@
    */
   import { isModuleActive } from "../application/state/app-state.svelte";
   import { fade } from "svelte/transition";
-  import AccountModule from "../../modules/account/AccountModule.svelte";
-  import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
-  import AnimateModule from "../../modules/animate/AnimateModule.svelte";
-  import TrainModule from "../../modules/train/components/TrainModule.svelte";
-  import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
-  import EditModule from "../../modules/edit/EditModule.svelte";
-  import LearnTab from "../../modules/learn/LearnTab.svelte";
-  import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
-  import WriteTab from "../../modules/write/components/WriteTab.svelte";
-  import DiscoverModule from "../../modules/discover/shared/components/DiscoverModule.svelte";
-  import CommunityModule from "../../modules/community/CommunityModule.svelte";
+  import AccountModule from "../../features/account/AccountModule.svelte";
+  import AdminDashboard from "../../features/admin/components/AdminDashboard.svelte";
+  import AnimateModule from "../../features/animate/AnimateModule.svelte";
+  import TrainModule from "../../features/train/components/TrainModule.svelte";
+  import CreateModule from "../../features/create/shared/components/CreateModule.svelte";
+  import EditModule from "../../features/edit/EditModule.svelte";
+  import LearnTab from "../../features/learn/LearnTab.svelte";
+  import WordCardTab from "../../features/word-card/components/WordCardTab.svelte";
+  import WriteTab from "../../features/write/components/WriteTab.svelte";
+  import DiscoverModule from "../../features/discover/shared/components/DiscoverModule.svelte";
+  import CommunityModule from "../../features/community/CommunityModule.svelte";
 
   interface Props {
     activeModule: string | null;

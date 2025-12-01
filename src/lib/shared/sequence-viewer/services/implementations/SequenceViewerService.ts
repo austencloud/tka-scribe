@@ -8,8 +8,8 @@
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../../inversify";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { BeatData } from "$lib/modules/create/shared/domain/models/BeatData";
-import type { StartPositionData } from "$lib/modules/create/shared/domain/models/StartPositionData";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { ISequenceViewerService } from "../contracts/ISequenceViewerService";
 import type { IPersistenceService } from "../../../persistence/services/contracts/IPersistenceService";
 import type { ISequenceEncoderService } from "../../../navigation/services/contracts/ISequenceEncoderService";
