@@ -235,7 +235,10 @@
 
 <!-- Video generation status indicator -->
 {#if isGeneratingVideo && videoProgress}
-  <VideoGenerationStatus progress={videoProgress} onCancel={cancelVideoGeneration} />
+  <VideoGenerationStatus
+    progress={videoProgress}
+    onCancel={cancelVideoGeneration}
+  />
 {/if}
 
 <!-- Video ready notification -->
@@ -250,7 +253,10 @@
 
 <!-- Mode toggle (when video exists) -->
 {#if videoResult?.success}
-  <PlaybackModeToggle bind:currentMode={playbackMode} onModeChange={handleModeChange} />
+  <PlaybackModeToggle
+    bind:currentMode={playbackMode}
+    onModeChange={handleModeChange}
+  />
 {/if}
 
 <!-- Video element (hidden when in live mode) -->

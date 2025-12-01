@@ -159,7 +159,8 @@
       "Bash(if exist \".svelte-kit\" rmdir /s /q \".svelte-kit\")",
       "Bash(timeout 60 npm run:*)",
       "Bash(mkdir:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "Bash(git mv:*)"
     ],
     "deny": [],
     "ask": []
