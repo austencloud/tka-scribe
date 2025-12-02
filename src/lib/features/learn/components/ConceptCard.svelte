@@ -10,7 +10,7 @@ Displays:
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve, TYPES } from "../../../shared/inversify/container";
+  import { resolve, TYPES } from "../../../shared/inversify/di";
   import { CONCEPT_CATEGORIES } from "../domain/concepts";
   import type { LearnConcept, ConceptStatus } from "../domain/types";
 

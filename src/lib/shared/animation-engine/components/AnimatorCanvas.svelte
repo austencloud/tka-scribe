@@ -6,7 +6,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadPixiModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
@@ -35,10 +35,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import type { PropState } from "../domain/PropState";
 
-  // Resolve services from DI container
-  const pixiRenderer = resolve(
-    TYPES.IPixiAnimationRenderer
-  ) as IPixiAnimationRenderer;
+  // Services - resolved synchronously (lightweight)
   const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
   const settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
   const orchestrator = resolve(
@@ -48,11 +45,13 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     TYPES.ITrailCaptureService
   ) as ITrailCaptureService;
 
-  // Create frame pre-renderer for perfect smooth playback
-  const framePreRenderer = new SequenceFramePreRenderer(
-    orchestrator,
-    pixiRenderer
-  );
+  // Heavy services - loaded on-demand (pixi.js ~500KB)
+  let pixiRenderer = $state<IPixiAnimationRenderer | null>(null);
+  let pixiLoading = $state(false);
+  let pixiError = $state<string | null>(null);
+
+  // Frame pre-renderer - created after pixi loads
+  let framePreRenderer = $state<SequenceFramePreRenderer | null>(null);
 
   // Modern Svelte 5 props
   let {
@@ -320,7 +319,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let previousGridMode = $state<string | null>(gridMode?.toString() ?? null);
   $effect(() => {
     const currentGridMode = gridMode?.toString() ?? null;
-    if (isInitialized && currentGridMode !== previousGridMode) {
+    if (isInitialized && pixiRenderer && currentGridMode !== previousGridMode) {
       previousGridMode = currentGridMode;
       // Reload grid texture with new mode
       pixiRenderer.loadGridTexture(currentGridMode ?? "diamond").then(() => {
@@ -410,7 +409,23 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     const initialize = async () => {
       try {
-        // Initialize motion primitives in PARALLEL (non-blocking!)
+        // Load Pixi module on-demand (pixi.js ~500KB - only loaded when animation is used)
+        if (!pixiRenderer) {
+          pixiLoading = true;
+          pixiError = null;
+          try {
+            await loadPixiModule();
+            pixiRenderer = resolve(TYPES.IPixiAnimationRenderer) as IPixiAnimationRenderer;
+            // Create frame pre-renderer now that pixi is available
+            framePreRenderer = new SequenceFramePreRenderer(orchestrator, pixiRenderer);
+          } catch (err) {
+            pixiError = "Failed to load animation renderer";
+            console.error("Failed to load Pixi module:", err);
+            return;
+          } finally {
+            pixiLoading = false;
+          }
+        }
 
         // Check container is still valid
         if (!containerElement) {
@@ -456,13 +471,14 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
         rafId = null;
       }
       teardownResizeObserver();
-      pixiRenderer.destroy();
+      pixiRenderer?.destroy();
       onCanvasReady?.(null);
       isInitialized = false;
     };
   });
 
   async function loadPropTextures() {
+    if (!pixiRenderer) return;
     try {
       // Use per-color prop types
       await pixiRenderer.loadPerColorPropTextures(
@@ -522,7 +538,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   }
 
   function resizeCanvas() {
-    if (!containerElement) return;
+    if (!containerElement || !pixiRenderer) return;
 
     const rect = containerElement.getBoundingClientRect();
     const newSize =
@@ -559,6 +575,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     width: number,
     height: number
   ) {
+    if (!pixiRenderer) return;
     try {
       await pixiRenderer.loadGlyphTexture(svgString, width, height);
       needsRender = true;
@@ -617,7 +634,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let hasLoggedFirstRender = $state(false);
 
   function render(currentTime: number): void {
-    if (!isInitialized) return;
+    if (!isInitialized || !pixiRenderer) return;
 
     // ============================================================================
     // DUAL-MODE RENDERING: Preview vs Perfect Playback

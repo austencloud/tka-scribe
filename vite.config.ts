@@ -160,7 +160,7 @@ const webpStaticCopyPlugin = () => {
     targets: [
       {
         src: webpEncoderWasmRelative,
-        dest: "assets",
+        dest: ".", // Copy to root - webp-encoder expects /a.out.wasm
       },
     ],
   });
@@ -217,6 +217,8 @@ export default defineConfig({
             if (id.includes("pdfjs-dist")) return "vendor-pdf";
             if (id.includes("firebase")) return "vendor-firebase";
             if (id.includes("dexie")) return "vendor-dexie";
+            // pixi.js is heavy (~500KB) - keep it in its own chunk
+            if (id.includes("pixi.js") || id.includes("pixi")) return "vendor-pixi";
             return "vendor";
           }
         },

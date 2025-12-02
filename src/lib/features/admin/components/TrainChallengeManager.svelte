@@ -5,8 +5,7 @@
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { container } from "$lib/shared/inversify/container";
-	import { TYPES } from "$lib/shared/inversify/types";
+	import { resolve, TYPES } from "$lib/shared/inversify/di";
 	import type { ITrainChallengeService } from "$lib/features/train/services/contracts/ITrainChallengeService";
 	import type { TrainChallenge } from "$lib/features/train/domain/models/TrainChallengeModels";
 	import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
@@ -17,7 +16,7 @@
 	import { SEED_CHALLENGES } from "$lib/features/train/data/seed-challenges";
 
 	const challengeService =
-		container.get<ITrainChallengeService>(TYPES.ITrainChallengeService);
+		resolve<ITrainChallengeService>(TYPES.ITrainChallengeService);
 
 	// State
 	let challenges = $state<TrainChallenge[]>([]);

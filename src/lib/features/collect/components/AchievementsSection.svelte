@@ -13,8 +13,8 @@
   import { getLevelProgress } from "$lib/shared/gamification/domain/constants/xp-constants";
   import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
   import type { IStreakService } from "$lib/shared/gamification/services/contracts/IStreakService";
-  import type { ILeaderboardService } from "$lib/features/community/services/contracts/ILeaderboardService";
-  import type { LeaderboardCategory } from "$lib/features/community/domain/models/leaderboard-models";
+  import type { ILeaderboardService } from "$lib/shared/community/services/contracts/ILeaderboardService";
+  import type { LeaderboardCategory } from "$lib/shared/community/domain/models/leaderboard-models";
   import AchievementsBrowser from "$lib/shared/gamification/components/AchievementsBrowser.svelte";
 
   // Services

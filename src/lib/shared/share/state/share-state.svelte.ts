@@ -8,8 +8,7 @@ import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import type { ShareOptions } from '../domain/models/ShareOptions';
 import { SHARE_PRESETS } from '../domain/models/ShareOptions';
 import type { IShareService } from '../services/contracts/IShareService';
-import { tryResolve } from '../../inversify/container';
-import { TYPES } from "../../inversify/types";
+import { tryResolve, TYPES } from '../../inversify/di';
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 export interface ShareState {

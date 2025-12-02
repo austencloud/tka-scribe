@@ -10,8 +10,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve } from "$lib/shared/inversify/di";
-  import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { BeatData } from "../domain/models/BeatData";
   import {
     MotionColor,
@@ -21,7 +20,6 @@
   import PanelHeader from "$lib/features/create/shared/components/PanelHeader.svelte";
   import { getCreateModuleContext } from "../context/create-module-context";
   import { goto } from "$app/navigation";
-  import { container } from "$lib/shared/inversify/di";
   import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
@@ -248,7 +246,7 @@
     hapticService?.trigger("selection");
     handleClose();
     try {
-      const encoderService = container.get<ISequenceEncoderService>(
+      const encoderService = resolve<ISequenceEncoderService>(
         TYPES.ISequenceEncoderService
       );
       const { url } = encoderService.generateViewerURL(sequence, {

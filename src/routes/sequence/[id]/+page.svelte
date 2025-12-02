@@ -9,8 +9,7 @@
 	import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 	import SequenceViewer from "$lib/shared/sequence-viewer/components/SequenceViewer.svelte";
-	import { container } from "$lib/shared/inversify/container";
-	import { TYPES } from "$lib/shared/inversify/types";
+	import { resolve, TYPES } from "$lib/shared/inversify/di";
 	import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
@@ -22,7 +21,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 		if (!encodedId) return null;
 
 		try {
-			const encoderService = container.get<ISequenceEncoderService>(
+			const encoderService = resolve<ISequenceEncoderService>(
 				TYPES.ISequenceEncoderService
 			);
 			return encoderService.decodeWithCompression(decodeURIComponent(encodedId));

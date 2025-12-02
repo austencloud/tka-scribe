@@ -6,8 +6,7 @@
    * Uses Firebase Firestore data via AnalyticsDataService
    */
   import { onMount } from "svelte";
-  import { TYPES } from "$lib/shared/inversify/types";
-  import { container, loadFeatureModule } from "$lib/shared/inversify/container";
+  import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import type {
     IAnalyticsDataService,
     AnalyticsTimeRange,
@@ -185,7 +184,7 @@
   onMount(async () => {
     try {
       await loadFeatureModule("admin");
-      analyticsService = container.get<IAnalyticsDataService>(TYPES.IAnalyticsDataService);
+      analyticsService = resolve<IAnalyticsDataService>(TYPES.IAnalyticsDataService);
       loadAnalyticsData();
     } catch (error) {
       console.error("AnalyticsDashboard: Failed to get service", error);

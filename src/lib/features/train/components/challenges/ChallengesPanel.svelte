@@ -6,8 +6,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { container } from "$lib/shared/inversify/container";
-  import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { ITrainChallengeService } from "../../services/contracts/ITrainChallengeService";
   import type {
     TrainChallenge,
@@ -22,7 +21,7 @@
   import ChallengeCard from "./ChallengeCard.svelte";
 
   // Service
-  const challengeService = container.get<ITrainChallengeService>(
+  const challengeService = resolve<ITrainChallengeService>(
     TYPES.ITrainChallengeService
   );
 

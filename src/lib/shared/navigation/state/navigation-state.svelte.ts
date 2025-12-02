@@ -85,8 +85,8 @@ export const DISCOVER_TABS: Section[] = [
     label: "Collections",
     icon: '<i class="fas fa-folder"></i>',
     description: "Browse curated playlists",
-    color: "#f59e0b",
-    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+    color: "#c084fc",
+    gradient: "linear-gradient(135deg, #d8b4fe 0%, #c084fc 100%)",
   },
   {
     id: "creators",
@@ -101,8 +101,8 @@ export const DISCOVER_TABS: Section[] = [
     label: "Library",
     icon: '<i class="fas fa-book"></i>',
     description: "Your saved sequences and favorites",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+    color: "#0891b2",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #0891b2 100%)",
   },
 ];
 
@@ -226,16 +226,16 @@ export const ACCOUNT_TABS: Section[] = [
     label: "Library",
     icon: '<i class="fas fa-book"></i>',
     description: "Your sequences, favorites, and collections",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+    color: "#0891b2",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #0891b2 100%)",
   },
   {
     id: "preferences",
     label: "Preferences",
     icon: '<i class="fas fa-sliders-h"></i>',
     description: "App settings and customization",
-    color: "#f59e0b",
-    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+    color: "#64748b",
+    gradient: "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)",
   },
   {
     id: "security",
@@ -277,8 +277,8 @@ export const ADMIN_TABS: Section[] = [
     label: "Analytics",
     icon: '<i class="fas fa-chart-line"></i>',
     description: "View app usage and metrics",
-    color: "#3b82f6",
-    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+    color: "#64748b",
+    gradient: "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)",
   },
   {
     id: "users",
@@ -305,8 +305,8 @@ export const FEEDBACK_TABS: Section[] = [
     label: "Submit",
     icon: '<i class="fas fa-paper-plane"></i>',
     description: "Submit feedback, bug reports, or feature requests",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+    color: "#14b8a6",
+    gradient: "linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%)",
   },
   {
     id: "manage",
@@ -383,8 +383,8 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "feedback",
     label: "Feedback",
-    icon: '<i class="fas fa-comment-dots" style="color: #10b981;"></i>',
-    color: "#10b981", // Emerald - feedback/communication
+    icon: '<i class="fas fa-comment-dots" style="color: #14b8a6;"></i>',
+    color: "#14b8a6", // Teal - feedback/communication
     description: "Submit and manage feedback",
     isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
     sections: FEEDBACK_TABS,

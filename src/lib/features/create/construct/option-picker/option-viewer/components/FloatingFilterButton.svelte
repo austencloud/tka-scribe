@@ -8,8 +8,7 @@ that triggers the filter panel dropdown.
 
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { container } from "$lib/shared/inversify/di";
-  import { TYPES } from "$lib/shared/inversify/types";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import { swipeGesture } from "$lib/shared/utils/swipeGesture";
 
   const {
@@ -30,14 +29,10 @@ that triggers the filter panel dropdown.
     gridGap?: number;
   }>();
 
-  let hapticService: IHapticFeedbackService | undefined = undefined;
-
-  // Resolve service safely
-  if (container.isBound(TYPES.IHapticFeedbackService)) {
-    hapticService = container.get<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-  }
+  // Resolve service safely (tryResolve returns null if not available)
+  const hapticService = tryResolve<IHapticFeedbackService>(
+    TYPES.IHapticFeedbackService
+  );
 
   /**
    * Calculate safe padding for floating button that won't overlap the grid.

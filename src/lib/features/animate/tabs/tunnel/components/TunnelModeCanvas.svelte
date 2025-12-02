@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import AnimatorCanvas from "../../../../../shared/animation-engine/components/AnimatorCanvas.svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadPixiModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
@@ -76,25 +76,31 @@
 
   // Initialize services
   onMount(() => {
-    try {
-      // Create separate playback controllers for each sequence
-      primaryPlaybackController = resolve(
-        TYPES.IAnimationPlaybackController
-      ) as IAnimationPlaybackController;
-      secondaryPlaybackController = resolve(
-        TYPES.IAnimationPlaybackController
-      ) as IAnimationPlaybackController;
-      pixiRenderer = resolve(
-        TYPES.IPixiAnimationRenderer
-      ) as IPixiAnimationRenderer;
-      settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
+    const initialize = async () => {
+      try {
+        // Create separate playback controllers for each sequence
+        primaryPlaybackController = resolve(
+          TYPES.IAnimationPlaybackController
+        ) as IAnimationPlaybackController;
+        secondaryPlaybackController = resolve(
+          TYPES.IAnimationPlaybackController
+        ) as IAnimationPlaybackController;
+        settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
 
-      // Load secondary prop textures for tunnel mode
-      loadSecondaryPropTextures();
-    } catch (err) {
-      console.error("❌ Failed to initialize tunnel animation services:", err);
-      error = "Failed to initialize animation services";
-    }
+        // Load Pixi module on-demand (pixi.js ~500KB)
+        await loadPixiModule();
+        pixiRenderer = resolve(
+          TYPES.IPixiAnimationRenderer
+        ) as IPixiAnimationRenderer;
+
+        // Load secondary prop textures for tunnel mode
+        loadSecondaryPropTextures();
+      } catch (err) {
+        console.error("❌ Failed to initialize tunnel animation services:", err);
+        error = "Failed to initialize animation services";
+      }
+    };
+    initialize();
   });
 
   // Load secondary prop textures with tunnel colors

@@ -18,8 +18,7 @@
 	import { MediaPipeDetectionService } from "../services/implementations/MediaPipeDetectionService";
 	import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-	import { container } from "$lib/shared/inversify/container";
-	import { TYPES } from "$lib/shared/inversify/types";
+	import { resolve, TYPES } from "$lib/shared/inversify/di";
 	import type { ITrainChallengeService } from "../services/contracts/ITrainChallengeService";
 	import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
 	import { activeChallengeState } from "../state/active-challenge-state.svelte";
@@ -53,10 +52,10 @@
 	// Services
 	let detectionService: IPositionDetectionService | null = $state(null);
 	let isDetectionReady = $state(false);
-	const challengeService = container.get<ITrainChallengeService>(
+	const challengeService = resolve<ITrainChallengeService>(
 		TYPES.ITrainChallengeService
 	);
-	const achievementService = container.get<IAchievementService>(
+	const achievementService = resolve<IAchievementService>(
 		TYPES.IAchievementService
 	);
 

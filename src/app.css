@@ -389,6 +389,69 @@ h6 {
   --sheet-handle-bg-hover: rgba(255, 255, 255, 0.5);
   --sheet-handle-radius: 999px;
   --sheet-handle-spacing: 12px;
+
+  /* ========================================
+     2026 REFINED MINIMALISM DESIGN TOKENS
+     Cleaner surfaces, subtle interactions, platform-optimized
+     ======================================== */
+
+  /* Surface Colors - Lighter, less glassy */
+  --surface-2026: rgba(255, 255, 255, 0.03);
+  --surface-2026-hover: rgba(255, 255, 255, 0.06);
+  --surface-2026-active: rgba(255, 255, 255, 0.08);
+
+  /* Border Colors - More subtle */
+  --border-2026: rgba(255, 255, 255, 0.06);
+  --border-2026-hover: rgba(255, 255, 255, 0.12);
+  --border-2026-active: rgba(255, 255, 255, 0.18);
+
+  /* Simplified Shadows - Single layer, not stacked */
+  --shadow-2026-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-2026-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-2026-lg: 0 4px 16px rgba(0, 0, 0, 0.10);
+
+  /* Refined Border Radius - Slightly less rounded */
+  --radius-2026-xs: 6px;
+  --radius-2026-sm: 10px;
+  --radius-2026-md: 14px;
+  --radius-2026-lg: 18px;
+  --radius-2026-full: 100px;
+
+  /* Spacing Scale - More generous */
+  --space-2026-xs: 6px;
+  --space-2026-sm: 12px;
+  --space-2026-md: 20px;
+  --space-2026-lg: 28px;
+  --space-2026-xl: 40px;
+  --space-2026-2xl: 56px;
+
+  /* Transition Timing - Faster, more direct */
+  --duration-2026-instant: 100ms;
+  --duration-2026-fast: 150ms;
+  --duration-2026-normal: 250ms;
+  --duration-2026-slow: 400ms;
+  --ease-2026: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-2026-out: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* Typography Scale - Clearer hierarchy */
+  --text-2026-display: 2rem;
+  --text-2026-headline: 1.5rem;
+  --text-2026-title: 1.125rem;
+  --text-2026-body: 1rem;
+  --text-2026-caption: 0.875rem;
+  --text-2026-micro: 0.75rem;
+
+  /* Accent Colors - Refined versions of existing palette */
+  --accent-2026-indigo: #6366f1;
+  --accent-2026-indigo-soft: rgba(99, 102, 241, 0.12);
+  --accent-2026-pink: #ec4899;
+  --accent-2026-pink-soft: rgba(236, 72, 153, 0.12);
+  --accent-2026-cyan: #06b6d4;
+  --accent-2026-cyan-soft: rgba(6, 182, 212, 0.12);
+  --accent-2026-emerald: #10b981;
+  --accent-2026-emerald-soft: rgba(16, 185, 129, 0.12);
+  --accent-2026-amber: #f59e0b;
+  --accent-2026-amber-soft: rgba(245, 158, 11, 0.12);
 }
 
 /* Light theme support */

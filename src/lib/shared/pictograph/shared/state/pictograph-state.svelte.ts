@@ -12,9 +12,8 @@ import type { MotionColor } from "../domain/enums/pictograph-enums";
 import type { MotionData } from "../domain/models/MotionData";
 import type { PictographData } from "../domain/models/PictographData";
 import type { PropType } from "../../prop/domain/enums/PropType";
-import { resolve } from '../../../inversify/bootstrap';
+import { resolve, TYPES, loadSharedModules } from '../../../inversify/di';
 import { untrack } from "svelte";
-import { TYPES } from "../../../inversify/types";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
@@ -22,7 +21,6 @@ import type { PropAssets } from '../../prop/domain/models/PropAssets';
 import type { PropPosition } from '../../prop/domain/models/PropPosition';
 import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
 import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
-import { loadSharedModules } from "../../../inversify/container";
 
 export interface PictographState {
   // Data state

@@ -11,6 +11,7 @@
     FeedbackStatus,
     FeedbackPriority,
   } from "../../domain/models/feedback-models";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
   // Using 'manageState' to avoid conflict with $state rune
   const { manageState } = $props<{
@@ -21,6 +22,35 @@
   let isSheetOpen = $state(false);
   let isSheetAnimating = $state(false);
   let activeSection = $state<'type' | 'status' | 'priority' | null>(null);
+
+  // Desktop drawer state (replacing dropdowns with side panels)
+  let openDrawer = $state<'status' | 'priority' | null>(null);
+
+  function openStatusDrawer() {
+    openDrawer = 'status';
+  }
+
+  function openPriorityDrawer() {
+    openDrawer = 'priority';
+  }
+
+  function closeDrawer() {
+    openDrawer = null;
+  }
+
+  // Get current status label for button display
+  const currentStatusLabel = $derived(
+    manageState.filters.status === 'all'
+      ? 'All Status'
+      : STATUS_CONFIG[manageState.filters.status]?.label ?? 'All Status'
+  );
+
+  // Get current priority label for button display
+  const currentPriorityLabel = $derived(
+    manageState.filters.priority === 'all'
+      ? 'All Priority'
+      : PRIORITY_CONFIG[manageState.filters.priority]?.label ?? 'All Priority'
+  );
 
   // Count active filters
   const activeFilterCount = $derived(
@@ -136,39 +166,37 @@
       {/each}
     </div>
 
-    <!-- Status dropdown -->
-    <div class="dropdown-wrapper">
-      <select
-        class="filter-select"
-        value={manageState.filters.status}
-        onchange={(e) =>
-          manageState.setFilter("status", e.currentTarget.value as FeedbackStatus | "all")
-        }
-        aria-label="Filter by status"
-      >
-        <option value="all">All Status</option>
-        {#each Object.entries(STATUS_CONFIG) as [status, config]}
-          <option value={status}>{config.label}</option>
-        {/each}
-      </select>
-    </div>
+    <!-- Status panel trigger -->
+    <button
+      type="button"
+      class="filter-panel-btn"
+      class:active={manageState.filters.status !== 'all'}
+      onclick={openStatusDrawer}
+      aria-label="Filter by status"
+      aria-haspopup="dialog"
+    >
+      {#if manageState.filters.status !== 'all'}
+        <i class="fas {STATUS_CONFIG[manageState.filters.status]?.icon ?? 'fa-circle'}"></i>
+      {/if}
+      <span>{currentStatusLabel}</span>
+      <i class="fas fa-chevron-right panel-arrow"></i>
+    </button>
 
-    <!-- Priority dropdown -->
-    <div class="dropdown-wrapper">
-      <select
-        class="filter-select"
-        value={manageState.filters.priority}
-        onchange={(e) =>
-          manageState.setFilter("priority", e.currentTarget.value as FeedbackPriority | "all")
-        }
-        aria-label="Filter by priority"
-      >
-        <option value="all">All Priority</option>
-        {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
-          <option value={priority}>{config.label}</option>
-        {/each}
-      </select>
-    </div>
+    <!-- Priority panel trigger -->
+    <button
+      type="button"
+      class="filter-panel-btn"
+      class:active={manageState.filters.priority !== 'all'}
+      onclick={openPriorityDrawer}
+      aria-label="Filter by priority"
+      aria-haspopup="dialog"
+    >
+      {#if manageState.filters.priority !== 'all'}
+        <i class="fas {PRIORITY_CONFIG[manageState.filters.priority]?.icon ?? 'fa-circle'}"></i>
+      {/if}
+      <span>{currentPriorityLabel}</span>
+      <i class="fas fa-chevron-right panel-arrow"></i>
+    </button>
 
     {#if activeFilterCount > 0}
       <button
@@ -366,6 +394,108 @@
     </div>
   </div>
 {/if}
+
+<!-- Desktop: Status Filter Drawer (Right Side Panel) -->
+<Drawer
+  bind:isOpen={openDrawer === 'status' ? true : false}
+  placement="right"
+  showHandle={false}
+  ariaLabel="Status filter"
+  class="filter-drawer"
+  onOpenChange={(open) => { if (!open && openDrawer === 'status') openDrawer = null; }}
+>
+  <div class="drawer-panel">
+    <header class="drawer-header">
+      <h2 class="drawer-title">
+        <i class="fas fa-tasks"></i>
+        Filter by Status
+      </h2>
+      <button
+        type="button"
+        class="drawer-close"
+        onclick={closeDrawer}
+        aria-label="Close panel"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+    <div class="drawer-content">
+      <button
+        type="button"
+        class="drawer-option"
+        class:selected={manageState.filters.status === 'all'}
+        onclick={() => { manageState.setFilter('status', 'all'); closeDrawer(); }}
+      >
+        <span class="option-radio"></span>
+        <span class="option-label">All Status</span>
+      </button>
+      {#each Object.entries(STATUS_CONFIG) as [status, config]}
+        <button
+          type="button"
+          class="drawer-option"
+          class:selected={manageState.filters.status === status}
+          style="--option-color: {config.color}"
+          onclick={() => { manageState.setFilter('status', status as FeedbackStatus); closeDrawer(); }}
+        >
+          <span class="option-radio"></span>
+          <i class="fas {config.icon}"></i>
+          <span class="option-label">{config.label}</span>
+        </button>
+      {/each}
+    </div>
+  </div>
+</Drawer>
+
+<!-- Desktop: Priority Filter Drawer (Right Side Panel) -->
+<Drawer
+  bind:isOpen={openDrawer === 'priority' ? true : false}
+  placement="right"
+  showHandle={false}
+  ariaLabel="Priority filter"
+  class="filter-drawer"
+  onOpenChange={(open) => { if (!open && openDrawer === 'priority') openDrawer = null; }}
+>
+  <div class="drawer-panel">
+    <header class="drawer-header">
+      <h2 class="drawer-title">
+        <i class="fas fa-flag"></i>
+        Filter by Priority
+      </h2>
+      <button
+        type="button"
+        class="drawer-close"
+        onclick={closeDrawer}
+        aria-label="Close panel"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+    <div class="drawer-content">
+      <button
+        type="button"
+        class="drawer-option"
+        class:selected={manageState.filters.priority === 'all'}
+        onclick={() => { manageState.setFilter('priority', 'all'); closeDrawer(); }}
+      >
+        <span class="option-radio"></span>
+        <span class="option-label">All Priority</span>
+      </button>
+      {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
+        <button
+          type="button"
+          class="drawer-option"
+          class:selected={manageState.filters.priority === priority}
+          style="--option-color: {config.color}"
+          onclick={() => { manageState.setFilter('priority', priority as FeedbackPriority); closeDrawer(); }}
+        >
+          <span class="option-radio"></span>
+          <i class="fas {config.icon}"></i>
+          <span class="option-label">{config.label}</span>
+        </button>
+      {/each}
+    </div>
+  </div>
+</Drawer>
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════

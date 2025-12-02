@@ -9,7 +9,7 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../inversify/container";
+  import { resolve, TYPES } from "../../inversify/di";
 
   import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
   import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";

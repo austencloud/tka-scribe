@@ -1,8 +1,7 @@
 <script lang="ts">
   import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "../../../inversify/container";
-  import { TYPES } from "../../../inversify/types";
+  import { resolve, TYPES } from "../../../inversify/di";
   import { onMount } from "svelte";
   import { spring } from "svelte/motion";
   import type { BackgroundMetadata } from "../tabs/background/background-config";

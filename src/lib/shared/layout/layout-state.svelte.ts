@@ -49,19 +49,16 @@ export function setLearnHeader(header: string) {
 }
 
 // Helper to check if module needs primary navigation
+// Only modules with sections/tabs defined in MODULE_DEFINITIONS should be listed
 export function moduleHasPrimaryNav(moduleId: string): boolean {
   return (
-    moduleId === "create" ||
-    moduleId === "learn" ||
-    moduleId === "discover" ||
-    moduleId === "community" ||
-    moduleId === "collect" ||
-    moduleId === "collection" || // Legacy support
-    moduleId === "animate" ||
-    moduleId === "train" ||
-    moduleId === "edit" ||
-    moduleId === "about" ||
-    moduleId === "admin" ||
-    moduleId === "account"
+    moduleId === "create" ||    // Assembler, Constructor, Generator tabs
+    moduleId === "discover" ||  // Gallery, Collections, Creators, Library tabs
+    moduleId === "learn" ||     // Concepts, Play, Codex tabs
+    moduleId === "animate" ||   // 2D, 3D tabs
+    moduleId === "train" ||     // Challenges, Sessions tabs
+    moduleId === "feedback" ||  // Submit, Manage tabs
+    moduleId === "admin"        // Various admin tabs
   );
+  // Note: "dashboard" has no sections (empty array), so no primary nav needed
 }
