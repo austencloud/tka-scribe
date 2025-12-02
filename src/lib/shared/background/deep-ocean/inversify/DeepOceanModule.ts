@@ -21,30 +21,42 @@ import { LightRayCalculator } from '../services/implementations/LightRayCalculat
  */
 export const deepOceanBackgroundModule = new ContainerModule(
   async (options: ContainerModuleLoadOptions) => {
-    const { bind } = options;
+    const { bind, isBound } = options;
 
-    // Physics & Animation Services
-    bind<IBubblePhysics>(TYPES.IBubblePhysics)
-      .to(BubblePhysics)
-      .inSingletonScope();
-    bind<IMarineLifeAnimator>(TYPES.IMarineLifeAnimator)
-      .to(MarineLifeAnimator)
-      .inSingletonScope();
-    bind<IParticleSystem>(TYPES.IParticleSystem)
-      .to(ParticleSystem)
-      .inSingletonScope();
-    bind<ILightRayCalculator>(TYPES.ILightRayCalculator)
-      .to(LightRayCalculator)
-      .inSingletonScope();
+    // Physics & Animation Services - guard against duplicate bindings
+    if (!isBound(TYPES.IBubblePhysics)) {
+      bind<IBubblePhysics>(TYPES.IBubblePhysics)
+        .to(BubblePhysics)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IMarineLifeAnimator)) {
+      bind<IMarineLifeAnimator>(TYPES.IMarineLifeAnimator)
+        .to(MarineLifeAnimator)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IParticleSystem)) {
+      bind<IParticleSystem>(TYPES.IParticleSystem)
+        .to(ParticleSystem)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.ILightRayCalculator)) {
+      bind<ILightRayCalculator>(TYPES.ILightRayCalculator)
+        .to(LightRayCalculator)
+        .inSingletonScope();
+    }
 
     // Resource Management Services
-    bind<IFishSpriteManager>(TYPES.IFishSpriteManager)
-      .to(FishSpriteManager)
-      .inSingletonScope();
+    if (!isBound(TYPES.IFishSpriteManager)) {
+      bind<IFishSpriteManager>(TYPES.IFishSpriteManager)
+        .to(FishSpriteManager)
+        .inSingletonScope();
+    }
 
     // Rendering Services
-    bind<IOceanRenderer>(TYPES.IOceanRenderer)
-      .to(OceanRenderer)
-      .inSingletonScope();
+    if (!isBound(TYPES.IOceanRenderer)) {
+      bind<IOceanRenderer>(TYPES.IOceanRenderer)
+        .to(OceanRenderer)
+        .inSingletonScope();
+    }
   }
 );
