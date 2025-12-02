@@ -1,0 +1,582 @@
+<!-- FeedbackCard - Premium card with spring animations and swipe actions -->
+<script lang="ts">
+  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
+  import { TYPE_CONFIG, STATUS_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
+
+  const { item, isSelected, onClick, onStatusChange, onDelete } = $props<{
+    item: FeedbackItem;
+    isSelected: boolean;
+    onClick: () => void;
+    onStatusChange?: (status: FeedbackStatus) => void;
+    onDelete?: () => void;
+  }>();
+
+  const typeConfig = TYPE_CONFIG[item.type];
+  const statusConfig = STATUS_CONFIG[item.status];
+  const priorityConfig = item.priority ? PRIORITY_CONFIG[item.priority] : null;
+
+  // Swipe state
+  let swipeOffset = $state(0);
+  let isSwiping = $state(false);
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
+  let hasSwipeIntent = false;
+
+  // Selection animation state
+  let justSelected = $state(false);
+
+  // Track selection changes for animation
+  $effect(() => {
+    if (isSelected) {
+      justSelected = true;
+      const timer = setTimeout(() => { justSelected = false; }, 400);
+      return () => clearTimeout(timer);
+    }
+  });
+
+  // Thresholds
+  const SWIPE_THRESHOLD = 80;
+  const DELETE_THRESHOLD = 120;
+  const VELOCITY_THRESHOLD = 0.5;
+
+  function formatDate(date: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (days === 0) {
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      if (hours === 0) {
+        const minutes = Math.floor(diff / (1000 * 60));
+        return minutes <= 1 ? "Just now" : `${minutes}m ago`;
+      }
+      return `${hours}h ago`;
+    }
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days}d ago`;
+    return date.toLocaleDateString();
+  }
+
+  // Touch handlers for swipe
+  function handleTouchStart(e: TouchEvent) {
+    if (!onStatusChange && !onDelete) return;
+
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+    hasSwipeIntent = false;
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    if (!onStatusChange && !onDelete) return;
+
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+    const deltaX = touchX - touchStartX;
+    const deltaY = touchY - touchStartY;
+
+    // Determine swipe intent on first significant movement
+    if (!hasSwipeIntent && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
+      hasSwipeIntent = Math.abs(deltaX) > Math.abs(deltaY);
+      if (!hasSwipeIntent) return;
+    }
+
+    if (!hasSwipeIntent) return;
+
+    // Prevent vertical scrolling when swiping horizontally
+    e.preventDefault();
+    isSwiping = true;
+
+    // Apply rubber-band effect at extremes
+    const maxOffset = 160;
+    if (Math.abs(deltaX) > maxOffset) {
+      const overflow = Math.abs(deltaX) - maxOffset;
+      const dampened = maxOffset + Math.sqrt(overflow) * 8;
+      swipeOffset = deltaX > 0 ? dampened : -dampened;
+    } else {
+      swipeOffset = deltaX;
+    }
+  }
+
+  function handleTouchEnd() {
+    if (!isSwiping) return;
+
+    const velocity = swipeOffset / (Date.now() - touchStartTime);
+    const absOffset = Math.abs(swipeOffset);
+    const isLeftSwipe = swipeOffset < 0;
+    const isRightSwipe = swipeOffset > 0;
+
+    // Check for delete action (swipe left past delete threshold)
+    if (isLeftSwipe && (absOffset > DELETE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)) {
+      if (onDelete) {
+        // Animate out then delete
+        swipeOffset = -300;
+        setTimeout(() => {
+          onDelete();
+          swipeOffset = 0;
+        }, 200);
+        isSwiping = false;
+        return;
+      }
+    }
+
+    // Check for status action (swipe right past threshold)
+    if (isRightSwipe && (absOffset > SWIPE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)) {
+      if (onStatusChange) {
+        // Cycle through quick status changes
+        const nextStatus: FeedbackStatus = item.status === "new" ? "in_progress" :
+                                           item.status === "in_progress" ? "resolved" : "new";
+        onStatusChange(nextStatus);
+      }
+    }
+
+    // Spring back
+    swipeOffset = 0;
+    isSwiping = false;
+  }
+
+  // Computed styles
+  const cardStyle = $derived(
+    swipeOffset !== 0
+      ? `transform: translateX(${swipeOffset}px); transition: ${isSwiping ? 'none' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'}`
+      : ''
+  );
+
+  const leftActionOpacity = $derived(Math.min(1, Math.abs(Math.min(0, swipeOffset)) / SWIPE_THRESHOLD));
+  const rightActionOpacity = $derived(Math.min(1, Math.max(0, swipeOffset) / SWIPE_THRESHOLD));
+  const leftActionScale = $derived(0.8 + (leftActionOpacity * 0.2));
+  const rightActionScale = $derived(0.8 + (rightActionOpacity * 0.2));
+</script>
+
+<div class="card-wrapper">
+  <!-- Swipe action backgrounds -->
+  {#if onDelete}
+    <div
+      class="swipe-action delete-action"
+      style="opacity: {leftActionOpacity}"
+    >
+      <div class="action-content" style="transform: scale({leftActionScale})">
+        <i class="fas fa-trash-alt"></i>
+        <span>Delete</span>
+      </div>
+    </div>
+  {/if}
+
+  {#if onStatusChange}
+    <div
+      class="swipe-action status-action"
+      style="opacity: {rightActionOpacity}"
+    >
+      <div class="action-content" style="transform: scale({rightActionScale})">
+        <i class="fas fa-check-circle"></i>
+        <span>{item.status === "new" ? "Start" : item.status === "in_progress" ? "Resolve" : "Reopen"}</span>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Main card -->
+  <button
+    class="feedback-card"
+    class:selected={isSelected}
+    class:just-selected={justSelected}
+    class:swiping={isSwiping}
+    onclick={onClick}
+    ontouchstart={handleTouchStart}
+    ontouchmove={handleTouchMove}
+    ontouchend={handleTouchEnd}
+    ontouchcancel={handleTouchEnd}
+    type="button"
+    style={cardStyle}
+  >
+    <!-- Left column: Type icon -->
+    <div class="card-type" style="--type-color: {typeConfig.color}">
+      <i class="fas {typeConfig.icon}"></i>
+    </div>
+
+    <!-- Main content -->
+    <div class="card-content">
+      <!-- Title row -->
+      <div class="card-header">
+        <h3 class="card-title">{item.title}</h3>
+        <span class="status-badge" style="--badge-color: {statusConfig.color}">
+          {statusConfig.label}
+        </span>
+      </div>
+
+      <!-- Description -->
+      <p class="card-description">{item.description}</p>
+
+      <!-- Footer row -->
+      <div class="card-footer">
+        <span class="user-info">
+          <i class="fas fa-user-circle"></i>
+          {item.userDisplayName}
+        </span>
+        <span class="separator">·</span>
+        <span class="date-info">{formatDate(item.createdAt)}</span>
+        {#if priorityConfig}
+          <span class="priority-badge" style="--badge-color: {priorityConfig.color}">
+            <i class="fas {priorityConfig.icon}"></i>
+            <span class="priority-label">{priorityConfig.label}</span>
+          </span>
+        {/if}
+      </div>
+    </div>
+
+    <!-- Selection indicator -->
+    {#if isSelected}
+      <div class="selection-indicator"></div>
+    {/if}
+  </button>
+</div>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     DESIGN TOKENS
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .card-wrapper {
+    --fb-space-3xs: 4px;
+    --fb-space-2xs: 6px;
+    --fb-space-xs: 8px;
+    --fb-space-sm: 13px;
+    --fb-space-md: 21px;
+
+    --fb-text-xs: 0.75rem;
+    --fb-text-sm: 0.875rem;
+    --fb-text-base: 1rem;
+
+    --fb-radius-sm: 8px;
+    --fb-radius-md: 12px;
+
+    --fb-primary: #10b981;
+    --fb-error: #ef4444;
+    --fb-surface: rgba(255, 255, 255, 0.04);
+    --fb-surface-hover: rgba(255, 255, 255, 0.07);
+    --fb-border: rgba(255, 255, 255, 0.08);
+    --fb-border-hover: rgba(255, 255, 255, 0.12);
+    --fb-text: rgba(255, 255, 255, 0.95);
+    --fb-text-muted: rgba(255, 255, 255, 0.6);
+    --fb-text-subtle: rgba(255, 255, 255, 0.4);
+
+    /* Spring animation */
+    --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+    position: relative;
+    touch-action: pan-y;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SWIPE ACTION BACKGROUNDS
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .swipe-action {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--fb-space-md);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .action-content {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs);
+    font-size: var(--fb-text-sm);
+    font-weight: 600;
+    color: white;
+    transition: transform 0.1s ease;
+  }
+
+  .action-content i {
+    font-size: 1.2em;
+  }
+
+  .delete-action {
+    right: 0;
+    justify-content: flex-end;
+    background: linear-gradient(90deg, transparent 0%, var(--fb-error) 40%);
+    border-radius: 0 var(--fb-radius-md) var(--fb-radius-md) 0;
+    width: 50%;
+  }
+
+  .status-action {
+    left: 0;
+    justify-content: flex-start;
+    background: linear-gradient(270deg, transparent 0%, var(--fb-primary) 40%);
+    border-radius: var(--fb-radius-md) 0 0 var(--fb-radius-md);
+    width: 50%;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     MAIN CARD
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .feedback-card {
+    position: relative;
+    display: flex;
+    gap: var(--fb-space-sm);
+    width: 100%;
+    padding: var(--fb-space-md);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.35s var(--spring-bounce);
+    will-change: transform;
+  }
+
+  .feedback-card:hover:not(.swiping) {
+    background: var(--fb-surface-hover);
+    border-color: var(--fb-border-hover);
+  }
+
+  /* Desktop hover lift effect */
+  @media (hover: hover) and (pointer: fine) {
+    .feedback-card:hover:not(.swiping) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .feedback-card:active:not(.swiping) {
+      transform: translateY(0) scale(0.99);
+    }
+  }
+
+  .feedback-card.selected {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .feedback-card.just-selected {
+    animation: selectPop 0.4s var(--spring-bounce);
+  }
+
+  @keyframes selectPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.01); }
+    100% { transform: scale(1); }
+  }
+
+  .feedback-card.swiping {
+    transition: none;
+  }
+
+  /* Selection indicator */
+  .selection-indicator {
+    position: absolute;
+    left: 0;
+    top: var(--fb-space-sm);
+    bottom: var(--fb-space-sm);
+    width: 3px;
+    background: var(--fb-primary);
+    border-radius: 0 2px 2px 0;
+    animation: indicatorSlide 0.3s var(--spring-bounce);
+  }
+
+  @keyframes indicatorSlide {
+    from { transform: scaleY(0); opacity: 0; }
+    to { transform: scaleY(1); opacity: 1; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TYPE COLUMN - 48px touch target
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .card-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+    border-radius: var(--fb-radius-sm);
+    color: var(--type-color);
+    font-size: 18px;
+    transition: all 0.2s var(--spring-bounce);
+  }
+
+  .feedback-card:hover:not(.swiping) .card-type {
+    background: color-mix(in srgb, var(--type-color) 20%, transparent);
+    transform: scale(1.05);
+  }
+
+  .feedback-card.selected .card-type {
+    background: color-mix(in srgb, var(--type-color) 25%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--type-color) 30%, transparent);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CONTENT AREA
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .card-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--fb-space-xs);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--fb-space-sm);
+  }
+
+  .card-title {
+    flex: 1;
+    margin: 0;
+    font-size: var(--fb-text-base);
+    font-weight: 600;
+    color: var(--fb-text);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+
+    /* Truncate */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .status-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: var(--fb-space-3xs) var(--fb-space-xs);
+    background: color-mix(in srgb, var(--badge-color) 15%, transparent);
+    border-radius: 999px;
+    font-size: var(--fb-text-xs);
+    font-weight: 500;
+    color: var(--badge-color);
+    white-space: nowrap;
+  }
+
+  .card-description {
+    margin: 0;
+    font-size: var(--fb-text-sm);
+    color: var(--fb-text-muted);
+    line-height: 1.5;
+
+    /* 2-line clamp */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs);
+    margin-top: var(--fb-space-2xs);
+    font-size: var(--fb-text-xs);
+    color: var(--fb-text-subtle);
+  }
+
+  .user-info,
+  .date-info {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-3xs);
+  }
+
+  .user-info i {
+    font-size: 1.1em;
+    opacity: 0.7;
+  }
+
+  .separator {
+    opacity: 0.5;
+  }
+
+  .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--fb-space-3xs);
+    margin-left: auto;
+    padding: var(--fb-space-3xs) var(--fb-space-xs);
+    background: color-mix(in srgb, var(--badge-color) 12%, transparent);
+    border-radius: 999px;
+    font-size: var(--fb-text-xs);
+    font-weight: 500;
+    color: var(--badge-color);
+  }
+
+  .priority-badge i {
+    font-size: 0.85em;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RESPONSIVE
+     ═══════════════════════════════════════════════════════════════════════════ */
+
+  /* Mobile optimizations */
+  @media (max-width: 479px) {
+    .feedback-card {
+      padding: var(--fb-space-sm);
+    }
+
+    .card-type {
+      width: 44px;
+      height: 44px;
+      font-size: 16px;
+    }
+
+    .card-title {
+      font-size: var(--fb-text-sm);
+    }
+
+    .card-description {
+      font-size: var(--fb-text-xs);
+    }
+
+    .priority-label {
+      display: none;
+    }
+  }
+
+  /* Tablet+ */
+  @media (min-width: 768px) {
+    .card-type {
+      width: 52px;
+      height: 52px;
+      font-size: 20px;
+    }
+
+    .card-title {
+      white-space: normal;
+      -webkit-line-clamp: 2;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Disable swipe on desktop */
+    .card-wrapper {
+      touch-action: auto;
+    }
+
+    .swipe-action {
+      display: none;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .feedback-card,
+    .card-type,
+    .selection-indicator {
+      animation: none;
+      transition: none;
+    }
+  }
+</style>
