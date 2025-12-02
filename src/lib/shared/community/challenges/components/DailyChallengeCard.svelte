@@ -1,0 +1,445 @@
+<script lang="ts">
+  /**
+   * DailyChallengeCard
+   * Displays a daily challenge with progress bar and completion status.
+   */
+
+  import type { DailyChallenge, UserChallengeProgress } from "$lib/shared/gamification/domain/models/achievement-models";
+
+  interface Props {
+    challenge: DailyChallenge;
+    progress: UserChallengeProgress | null;
+    compact?: boolean;
+    onComplete?: () => void;
+  }
+
+  let { challenge, progress, compact = false, onComplete }: Props = $props();
+
+  // Calculated values
+  const currentProgress = $derived(progress?.progress ?? 0);
+  const targetProgress = $derived(challenge.requirement.target);
+  const progressPercent = $derived(
+    Math.min(100, Math.round((currentProgress / targetProgress) * 100))
+  );
+  const isComplete = $derived(progress?.isCompleted ?? false);
+  const xpReward = $derived(challenge.xpReward);
+
+  // Time remaining until midnight
+  const timeRemaining = $derived.by(() => {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0);
+    const ms = midnight.getTime() - now.getTime();
+    const hours = Math.floor(ms / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    return { hours, minutes };
+  });
+
+  // Difficulty colors
+  const difficultyColors: Record<string, string> = {
+    easy: "#22c55e",
+    medium: "#f59e0b",
+    hard: "#ef4444",
+  };
+
+  const difficultyColor = $derived(
+    difficultyColors[challenge.difficulty] ?? "#6b7280"
+  );
+</script>
+
+<div class="daily-challenge-card" class:compact class:complete={isComplete}>
+  <!-- Header -->
+  <div class="card-header">
+    <div class="challenge-icon">
+      <i class="fas fa-sun"></i>
+    </div>
+    <div class="challenge-title">
+      <h3>{challenge.title}</h3>
+      {#if !compact}
+        <span
+          class="difficulty-badge"
+          style="--badge-color: {difficultyColor}"
+        >
+          {challenge.difficulty}
+        </span>
+      {/if}
+    </div>
+    <div class="xp-reward">
+      <i class="fas fa-star"></i>
+      <span>{xpReward} XP</span>
+    </div>
+  </div>
+
+  <!-- Description -->
+  {#if !compact}
+    <p class="challenge-description">{challenge.description}</p>
+  {/if}
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="progress-bar">
+      <div
+        class="progress-fill"
+        style="width: {progressPercent}%"
+        class:complete={isComplete}
+      ></div>
+    </div>
+    <div class="progress-text">
+      {#if isComplete}
+        <i class="fas fa-check-circle"></i>
+        <span>Completed!</span>
+      {:else}
+        <span>{currentProgress} / {targetProgress}</span>
+        <span class="time-remaining">
+          <i class="fas fa-clock"></i>
+          {timeRemaining.hours}h {timeRemaining.minutes}m left
+        </span>
+      {/if}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ============================================================================
+     BASE STYLES - iPhone SE (320px) Mobile-First
+     ============================================================================ */
+  .daily-challenge-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .daily-challenge-card.compact {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .daily-challenge-card.complete {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.08);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .challenge-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .compact .challenge-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .challenge-title {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .challenge-title h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .compact .challenge-title h3 {
+    font-size: 12px;
+  }
+
+  .difficulty-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--badge-color) 20%, transparent);
+    color: var(--badge-color);
+    width: fit-content;
+  }
+
+  .xp-reward {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: rgba(245, 158, 11, 0.15);
+    border-radius: 16px;
+    color: #f59e0b;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .compact .xp-reward {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+
+  .challenge-description {
+    margin: 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .progress-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f59e0b, #f97316);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-fill.complete {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+  }
+
+  .progress-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    gap: 8px;
+  }
+
+  .progress-text .fa-check-circle {
+    color: #22c55e;
+    margin-right: 4px;
+  }
+
+  .time-remaining {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+  }
+
+  .time-remaining i {
+    font-size: 10px;
+  }
+
+  /* ============================================================================
+     LARGE MOBILE (481px+)
+     ============================================================================ */
+  @media (min-width: 481px) {
+    .daily-challenge-card {
+      gap: 14px;
+      padding: 16px;
+      border-radius: 14px;
+    }
+
+    .daily-challenge-card.compact {
+      padding: 14px;
+      gap: 10px;
+    }
+
+    .card-header {
+      gap: 12px;
+    }
+
+    .challenge-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+      border-radius: 11px;
+    }
+
+    .compact .challenge-icon {
+      width: 34px;
+      height: 34px;
+      font-size: 13px;
+    }
+
+    .challenge-title {
+      gap: 4px;
+    }
+
+    .challenge-title h3 {
+      font-size: 15px;
+    }
+
+    .compact .challenge-title h3 {
+      font-size: 13px;
+    }
+
+    .difficulty-badge {
+      padding: 2px 7px;
+      font-size: 10px;
+    }
+
+    .xp-reward {
+      gap: 5px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    .compact .xp-reward {
+      padding: 4px 8px;
+      font-size: 11px;
+    }
+
+    .challenge-description {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .progress-section {
+      gap: 8px;
+    }
+
+    .progress-bar {
+      height: 7px;
+    }
+
+    .progress-text {
+      font-size: 12px;
+    }
+
+    .time-remaining i {
+      font-size: 11px;
+    }
+  }
+
+  /* ============================================================================
+     TABLET (641px+)
+     ============================================================================ */
+  @media (min-width: 641px) {
+    .daily-challenge-card {
+      gap: 16px;
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    .daily-challenge-card.compact {
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .challenge-icon {
+      width: 48px;
+      height: 48px;
+      font-size: 18px;
+      border-radius: 12px;
+    }
+
+    .compact .challenge-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
+
+    .challenge-title h3 {
+      font-size: 16px;
+      white-space: normal;
+    }
+
+    .compact .challenge-title h3 {
+      font-size: 14px;
+    }
+
+    .difficulty-badge {
+      padding: 2px 8px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+    }
+
+    .xp-reward {
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 20px;
+    }
+
+    .compact .xp-reward {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    .challenge-description {
+      font-size: 14px;
+      line-clamp: 3;
+      -webkit-line-clamp: 3;
+    }
+
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    .progress-fill {
+      border-radius: 4px;
+    }
+
+    .progress-text {
+      font-size: 13px;
+    }
+
+    .time-remaining {
+      gap: 6px;
+    }
+
+    .time-remaining i {
+      font-size: 12px;
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .daily-challenge-card,
+    .progress-fill {
+      transition: none;
+    }
+  }
+</style>
