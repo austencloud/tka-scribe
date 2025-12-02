@@ -219,11 +219,12 @@
 
 <!-- Mobile bottom sheet -->
 {#if isSheetOpen}
+  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
   <div
     class="sheet-backdrop"
     class:closing={isSheetAnimating && !isSheetOpen}
     onclick={handleBackdropClick}
-    role="presentation"
+    aria-hidden="true"
   >
     <div
       class="sheet-container"
@@ -402,12 +403,11 @@
 
 <!-- Desktop: Status Filter Drawer (Right Side Panel) -->
 <Drawer
-  bind:isOpen={openDrawer === 'status' ? true : false}
+  bind:isOpen={isStatusDrawerOpen}
   placement="right"
   showHandle={false}
   ariaLabel="Status filter"
   class="filter-drawer"
-  onOpenChange={(open) => { if (!open && openDrawer === 'status') openDrawer = null; }}
 >
   <div class="drawer-panel">
     <header class="drawer-header">
@@ -418,7 +418,7 @@
       <button
         type="button"
         class="drawer-close"
-        onclick={closeDrawer}
+        onclick={closeStatusDrawer}
         aria-label="Close panel"
       >
         <i class="fas fa-times"></i>
@@ -429,7 +429,7 @@
         type="button"
         class="drawer-option"
         class:selected={manageState.filters.status === 'all'}
-        onclick={() => { manageState.setFilter('status', 'all'); closeDrawer(); }}
+        onclick={() => { manageState.setFilter('status', 'all'); closeStatusDrawer(); }}
       >
         <span class="option-radio"></span>
         <span class="option-label">All Status</span>
@@ -440,7 +440,7 @@
           class="drawer-option"
           class:selected={manageState.filters.status === status}
           style="--option-color: {config.color}"
-          onclick={() => { manageState.setFilter('status', status as FeedbackStatus); closeDrawer(); }}
+          onclick={() => { manageState.setFilter('status', status as FeedbackStatus); closeStatusDrawer(); }}
         >
           <span class="option-radio"></span>
           <i class="fas {config.icon}"></i>
@@ -453,12 +453,11 @@
 
 <!-- Desktop: Priority Filter Drawer (Right Side Panel) -->
 <Drawer
-  bind:isOpen={openDrawer === 'priority' ? true : false}
+  bind:isOpen={isPriorityDrawerOpen}
   placement="right"
   showHandle={false}
   ariaLabel="Priority filter"
   class="filter-drawer"
-  onOpenChange={(open) => { if (!open && openDrawer === 'priority') openDrawer = null; }}
 >
   <div class="drawer-panel">
     <header class="drawer-header">
@@ -469,7 +468,7 @@
       <button
         type="button"
         class="drawer-close"
-        onclick={closeDrawer}
+        onclick={closePriorityDrawer}
         aria-label="Close panel"
       >
         <i class="fas fa-times"></i>
@@ -480,7 +479,7 @@
         type="button"
         class="drawer-option"
         class:selected={manageState.filters.priority === 'all'}
-        onclick={() => { manageState.setFilter('priority', 'all'); closeDrawer(); }}
+        onclick={() => { manageState.setFilter('priority', 'all'); closePriorityDrawer(); }}
       >
         <span class="option-radio"></span>
         <span class="option-label">All Priority</span>
@@ -491,7 +490,7 @@
           class="drawer-option"
           class:selected={manageState.filters.priority === priority}
           style="--option-color: {config.color}"
-          onclick={() => { manageState.setFilter('priority', priority as FeedbackPriority); closeDrawer(); }}
+          onclick={() => { manageState.setFilter('priority', priority as FeedbackPriority); closePriorityDrawer(); }}
         >
           <span class="option-radio"></span>
           <i class="fas {config.icon}"></i>
