@@ -2,7 +2,7 @@
   import type { SequenceSection } from "./../../../shared/domain/models/discover-models.ts";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
+import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
@@ -10,7 +10,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   import DiscoverThumbnailSkeleton from "./DiscoverThumbnailSkeleton.svelte";
   import GalleryTopBarControls from "../../../shared/components/GalleryTopBarControls.svelte";
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -31,10 +31,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     onScroll?: (event: CustomEvent<{ scrollTop: number }>) => void;
   }>();
 
-  // ✅ RESOLVE SERVICES: Get services from DI container
-  const thumbnailService = resolve<IDiscoverThumbnailService>(
-    TYPES.IDiscoverThumbnailService
-  );
+  // ✅ RESOLVE SERVICES: Get services from DI container (lazy resolution)
+  let thumbnailService: IDiscoverThumbnailService | null = $state(null);
 
   // ✅ DERIVED RUNES: UI state
   const isEmpty = $derived(!isLoading && !error && sequences.length === 0);
@@ -46,9 +44,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
   });
 
   function handleRetry() {

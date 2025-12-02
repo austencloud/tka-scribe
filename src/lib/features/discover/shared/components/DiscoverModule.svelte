@@ -11,6 +11,9 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   import type { IDiscoverEventHandlerService } from "../services/contracts/IDiscoverEventHandlerService";
   import CollectionsDiscoverPanel from "../../collections/components/CollectionsDiscoverPanel.svelte";
+  import CreatorsPanel from "../../creators/components/CreatorsPanel.svelte";
+  import UserProfilePanel from "../../creators/components/UserProfilePanel.svelte";
+  import { creatorsViewState } from "../../creators/state/creators-view-state.svelte";
   import { createExploreState } from "../state/discover-state-factory.svelte";
   import DiscoverDeleteDialog from "./DiscoverDeleteDialog.svelte";
   import DiscoverSequencesTab from "./DiscoverSequencesTab.svelte";
@@ -19,17 +22,20 @@ import { TYPES } from "$lib/shared/inversify/types";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
+  import LibraryDashboard from "../../../library/components/LibraryDashboard.svelte";
+  import { libraryState, type LibraryViewSection } from "../../../library/state/library-state.svelte";
+  import SequencesView from "../../../library/components/SequencesView.svelte";
 
-  type DiscoverModuleType = "sequences" | "collections";
+  type DiscoverModuleType = "sequences" | "collections" | "creators" | "library";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
   // ============================================================================
 
   const galleryState = createExploreState();
-  const eventHandlerService = resolve<IDiscoverEventHandlerService>(
-    TYPES.IDiscoverEventHandlerService
-  );
+  
+  // Service resolved lazily in onMount to ensure feature module is loaded
+  let eventHandlerService: IDiscoverEventHandlerService | null = null;
 
   // ✅ PURE RUNES: Local state
   let _selectedSequence = $state<SequenceData | null>(null);
@@ -37,6 +43,19 @@ import { TYPES } from "$lib/shared/inversify/types";
   let error = $state<string | null>(null);
   let activeTab = $state<DiscoverModuleType>("sequences");
   let showAnimator = $state<boolean>(false);
+
+  // Library tab navigation state
+  let libraryView = $state<"dashboard" | LibraryViewSection>("dashboard");
+
+  // Library navigation handlers
+  function handleLibraryNavigate(section: LibraryViewSection) {
+    libraryView = section;
+    libraryState.setActiveSection(section);
+  }
+
+  function handleLibraryBack() {
+    libraryView = "dashboard";
+  }
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
@@ -79,6 +98,24 @@ import { TYPES } from "$lib/shared/inversify/types";
       activeTab = "sequences";
     } else if (navTab === "collections") {
       activeTab = "collections";
+    } else if (navTab === "creators") {
+      activeTab = "creators";
+    } else if (navTab === "library") {
+      activeTab = "library";
+    }
+  });
+
+  // Reset creators view state when leaving the creators tab
+  $effect(() => {
+    if (activeTab !== "creators") {
+      creatorsViewState.reset();
+    }
+  });
+
+  // Reset library view state when leaving the library tab
+  $effect(() => {
+    if (activeTab !== "library") {
+      libraryView = "dashboard";
     }
   });
 
@@ -156,14 +193,24 @@ import { TYPES } from "$lib/shared/inversify/types";
   // ============================================================================
 
   onMount(() => {
-    // Initialize event handler service with required parameters
-    eventHandlerService.initialize({
-      galleryState,
-      setSelectedSequence: (seq: SequenceData | null) =>
-        (_selectedSequence = seq),
-      setDeleteConfirmationData: (data: any) => (deleteConfirmationData = data),
-      setError: (err: string | null) => (error = err),
-    });
+    // Resolve event handler service (feature module should be loaded by now)
+    try {
+      eventHandlerService = resolve<IDiscoverEventHandlerService>(
+        TYPES.IDiscoverEventHandlerService
+      );
+      
+      // Initialize event handler service with required parameters
+      eventHandlerService.initialize({
+        galleryState,
+        setSelectedSequence: (seq: SequenceData | null) =>
+          (_selectedSequence = seq),
+        setDeleteConfirmationData: (data: any) => (deleteConfirmationData = data),
+        setError: (err: string | null) => (error = err),
+      });
+    } catch (err) {
+      console.error("DiscoverModule: Failed to resolve IDiscoverEventHandlerService", err);
+      error = "Failed to initialize discover module services";
+    }
 
     // Initialize DeviceDetector service
     let cleanup: (() => void) | undefined;
@@ -175,8 +222,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       cleanup = deviceDetector.onCapabilitiesChanged(() => {
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
-    } catch (error) {
-      console.warn("DiscoverModule: Failed to resolve DeviceDetector", error);
+    } catch (err) {
+      console.warn("DiscoverModule: Failed to resolve DeviceDetector", err);
     }
 
     // Load initial data through gallery state (non-blocking)
@@ -206,8 +253,8 @@ import { TYPES } from "$lib/shared/inversify/types";
 {#if error}
   <ErrorBanner
     message={error}
-    onDismiss={() => eventHandlerService.handleErrorDismiss()}
-    onRetry={() => eventHandlerService.handleRetry()}
+    onDismiss={() => eventHandlerService?.handleErrorDismiss()}
+    onRetry={() => eventHandlerService?.handleRetry()}
   />
 {/if}
 
@@ -217,8 +264,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     show={true}
     confirmationData={deleteConfirmationData}
     onConfirm={() =>
-      eventHandlerService.handleDeleteConfirm(deleteConfirmationData)}
-    onCancel={() => eventHandlerService.handleDeleteCancel()}
+      eventHandlerService?.handleDeleteConfirm(deleteConfirmationData)}
+    onCancel={() => eventHandlerService?.handleDeleteCancel()}
   />
 {/if}
 
@@ -243,15 +290,41 @@ import { TYPES } from "$lib/shared/inversify/types";
             {galleryState}
             {error}
             onSequenceAction={(action, sequence) =>
-              eventHandlerService.handleSequenceAction(action, sequence)}
+              eventHandlerService?.handleSequenceAction(action, sequence) ?? Promise.resolve()}
             onDetailPanelAction={(action, sequence) =>
-              eventHandlerService.handleDetailPanelAction(action, sequence)}
+              eventHandlerService?.handleDetailPanelAction(action, sequence) ?? Promise.resolve()}
             onCloseDetailPanel={() =>
-              eventHandlerService.handleCloseDetailPanel()}
+              eventHandlerService?.handleCloseDetailPanel()}
             onContainerScroll={handleContainerScroll}
           />
         {:else if activeTab === "collections"}
           <CollectionsDiscoverPanel />
+        {:else if activeTab === "creators"}
+          {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
+            <UserProfilePanel userId={creatorsViewState.viewingUserId} />
+          {:else}
+            <CreatorsPanel />
+          {/if}
+        {:else if activeTab === "library"}
+          <div class="library-tab-content">
+            {#if libraryView !== "dashboard"}
+              <div class="library-header">
+                <button class="back-btn" onclick={handleLibraryBack} aria-label="Go back">
+                  <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2 class="library-title">
+                  {libraryView === "sequences" ? "All Sequences" :
+                   libraryView === "favorites" ? "Favorites" :
+                   libraryView === "collections" ? "Collections" : "Library"}
+                </h2>
+              </div>
+            {/if}
+            {#if libraryView === "dashboard"}
+              <LibraryDashboard onNavigate={handleLibraryNavigate} />
+            {:else}
+              <SequencesView />
+            {/if}
+          </div>
         {/if}
       </div>
     {/key}
@@ -284,5 +357,49 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  /* Library Tab Styles */
+  .library-tab-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .library-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .library-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
   }
 </style>

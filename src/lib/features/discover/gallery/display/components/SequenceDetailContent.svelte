@@ -12,12 +12,12 @@ Used by both desktop side panel and mobile slide-up overlay.
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
 
   const {
     sequence,
@@ -29,10 +29,13 @@ Used by both desktop side panel and mobile slide-up overlay.
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
 
-  // Services
-  const thumbnailService = resolve<IDiscoverThumbnailService>(
-    TYPES.IDiscoverThumbnailService
-  );
+  // Services - resolved lazily to ensure feature module is loaded
+  let thumbnailService: IDiscoverThumbnailService | null = $state(null);
+
+  onMount(() => {
+    thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
 
   // State
   let currentVariationIndex = $state(0);
@@ -45,7 +48,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   // Derived
   const coverUrl = $derived.by(() => {
     const thumbnail = sequence?.thumbnails?.[currentVariationIndex];
-    if (!thumbnail) return undefined;
+    if (!thumbnail || !thumbnailService) return undefined;
     try {
       return thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
     } catch (error) {
@@ -111,12 +114,6 @@ Used by both desktop side panel and mobile slide-up overlay.
     hapticService?.trigger("selection");
     onAction("fullscreen", sequence);
   }
-
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-  });
 </script>
 
 <div class="detail-content">

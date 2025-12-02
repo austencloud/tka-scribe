@@ -5,9 +5,10 @@
 
 export type DiscoverModuleType =
   | "gallery"
-  | "community"
+  | "creators"
   | "collections"
-  | "search";
+  | "search"
+  | "library";
 
 export interface DiscoverTabConfig {
   id: DiscoverModuleType;

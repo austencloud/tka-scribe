@@ -19,7 +19,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     sequences?: SequenceData[];
     sections?: SequenceData[];
     viewMode?: "grid" | "list";
-    thumbnailService: IDiscoverThumbnailService;
+    thumbnailService: IDiscoverThumbnailService | null;
     showSections?: boolean;
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
