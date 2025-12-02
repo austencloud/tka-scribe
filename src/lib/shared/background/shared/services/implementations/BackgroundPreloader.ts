@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { BACKGROUND_GRADIENTS } from "../../domain";
+import { BACKGROUND_GRADIENTS } from "../../domain/constants/BackgroundGradients";
 import { BackgroundType } from "../../domain/enums/background-enums";
 import type { IBackgroundPreloader } from "../contracts/IBackgroundPreloader";
 

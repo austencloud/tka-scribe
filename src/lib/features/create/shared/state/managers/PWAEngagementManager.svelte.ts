@@ -7,7 +7,7 @@
  * Domain: Create module - PWA Engagement Tracking
  */
 
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IPWAEngagementService } from "$lib/shared/mobile/services/contracts/IPWAEngagementService";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";

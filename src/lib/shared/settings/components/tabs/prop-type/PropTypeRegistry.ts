@@ -19,4 +19,4 @@ export {
   getVariationIndex,
   getTriquetraVariation,
   type PropTypeDisplayInfo,
-} from "../../../../pictograph/prop/domain";
+} from "../../../../pictograph/prop/domain/PropTypeDisplayRegistry";

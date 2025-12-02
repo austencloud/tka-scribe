@@ -5,7 +5,7 @@
  * Uses CSS ::before pseudo-element with opacity transition for smooth gradient changes.
  */
 
-import { BACKGROUND_GRADIENTS } from "./domain";
+import { BACKGROUND_GRADIENTS } from "./domain/constants/BackgroundGradients";
 import { BackgroundType } from "./domain/enums/background-enums";
 
 let isTransitioning = false;

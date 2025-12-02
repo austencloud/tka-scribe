@@ -19,13 +19,15 @@ import type {
   PageLayoutConfig,
   Rectangle,
   WordCardGridConfig,
-} from "$wordcard/domain";
+} from "../../domain/models/PageLayout";
 
 // Import the correct interfaces from word-card-models
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IPrintablePageLayoutService } from "../contracts";
-import type { IPageFactoryService } from "../contracts";
+import type {
+  IPrintablePageLayoutService,
+  IPageFactoryService
+} from "../contracts/word-card-contracts";
 
 @injectable()
 export class PageFactoryService implements IPageFactoryService {

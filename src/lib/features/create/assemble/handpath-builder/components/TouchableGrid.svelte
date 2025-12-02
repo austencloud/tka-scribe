@@ -7,8 +7,8 @@ Provides visual feedback for current position and drawn path.
 <script lang="ts">
 import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { onMount } from "svelte";
-  import type { GridPositionPoint } from "../domain";
-  import type { GesturalPathState } from "../state";
+  import type { GridPositionPoint } from "../domain/path-models";
+  import type { GesturalPathState } from "../state/handpath-state.svelte";
 
   // Props
   let {

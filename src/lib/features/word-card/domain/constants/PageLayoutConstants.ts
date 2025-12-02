@@ -10,7 +10,7 @@ import type {
   PageMargins,
   PaperSpecification,
 } from "../models/PageLayout";
-import type { WordCardPaperSize } from "../types";
+import type { WordCardPaperSize } from "../types/PageLayoutTypes";
 
 // ============================================================================
 // CONSTANTS

@@ -23,7 +23,7 @@ export const TYPES = {
   IPersistenceInitializationService: Symbol.for(
     "IPersistenceInitializationService"
   ),
-  ISettingsService: Symbol.for("ISettingsService"),
+  ISettingsState: Symbol.for("ISettingsState"),
   ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
   IDeviceDetector: Symbol.for("IDeviceDetector"),
   IResourceTracker: Symbol.for("IResourceTracker"),
@@ -486,7 +486,7 @@ export const CoreTypes = {
   ISequenceStatisticsService: TYPES.ISequenceStatisticsService,
   ISequenceTransformationService: TYPES.ISequenceTransformationService,
   IPersistenceService: TYPES.IPersistenceService,
-  ISettingsService: TYPES.ISettingsService,
+  ISettingsState: TYPES.ISettingsState,
 } as const;
 
 export const RenderingTypes = {

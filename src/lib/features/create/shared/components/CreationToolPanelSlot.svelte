@@ -13,11 +13,11 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { createBeatData } from "../domain/factories/createBeatData";
   import type { IToolPanelMethods } from "../types/create-module-types";
-  import { getCreateModuleContext } from "../context";
+  import { getCreateModuleContext } from "../context/create-module-context";
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "./ConstructTabContent.svelte";
-  import { AssemblerTab } from "../../assemble";
+  import AssemblerTab from "../../assemble/components/AssemblerTab.svelte";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
 
   // Get context

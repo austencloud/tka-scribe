@@ -10,7 +10,7 @@
 import { inject, injectable } from "inversify";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { PropState } from "../../shared/domain";
+import type { PropState } from "../../shared/domain/types/PropState";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
 import type { IAnimationLoopService } from "../contracts/IAnimationLoopService";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";

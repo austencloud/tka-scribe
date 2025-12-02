@@ -16,12 +16,12 @@
     getShowSpotlight,
     getSpotlightSequence,
     getSpotlightThumbnailService,
-  } from "../application/state/app-state.svelte";
+  } from "../application/state/ui/ui-state.svelte";
   import type {
     ISheetRouterService,
     RouteState,
   } from "../navigation/services/contracts/ISheetRouterService";
-  import { resolve, TYPES } from "../inversify";
+  import { resolve, TYPES } from "../inversify/di";
 
   // Legacy spotlight state (from global app state)
   let showSpotlight = $derived(getShowSpotlight());

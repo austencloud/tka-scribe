@@ -9,8 +9,8 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserStreakPath } from "../../data/firestore-collections";
-import type { UserStreak } from "../../domain/models";
-import type { IStreakService } from "../contracts";
+import type { UserStreak } from '../../domain/models/achievement-models';
+import type { IStreakService } from "../contracts/IStreakService";
 
 @injectable()
 export class StreakService implements IStreakService {

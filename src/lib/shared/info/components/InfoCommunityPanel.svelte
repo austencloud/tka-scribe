@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import type { InfoPanelContent, SocialLink, SupportOption } from "../domain";
+  import type { InfoPanelContent, SocialLink, SupportOption } from "../domain/types";
 
   let {
     panelId,

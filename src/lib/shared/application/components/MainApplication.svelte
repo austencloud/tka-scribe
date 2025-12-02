@@ -1,22 +1,9 @@
 <!-- Main Application Layout -->
 <script lang="ts">
-  import {
-    BackgroundCanvas,
-    BackgroundType,
-    updateBodyBackground,
-  } from "../../background";
-  import type { IDeviceDetector } from "../../device";
-  import { ErrorScreen } from "../../foundation";
   import AchievementNotificationToast from "../../gamification/components/AchievementNotificationToast.svelte";
-  import {
-    ensureContainerInitialized,
-    isContainerReady,
-    resolve,
-  } from "../../inversify";
-  import { TYPES } from "../../inversify/types";
-  import { ThemeService } from "../../theme";
 
-  import type { ISettingsService } from "../../index";
+  import { TYPES } from "../../inversify/types";
+
   import type { Container } from "inversify";
   import { getContext, onMount } from "svelte";
   import MainInterface from "../../MainInterface.svelte";
@@ -28,32 +15,38 @@
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
   import SettingsPanel from "../../settings/components/SettingsPanel.svelte";
-  import { authStore } from "../../auth";
-  import type { IApplicationInitializer } from "../services";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { updateBodyBackground } from "../../background/shared/background-preloader";
+  import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
+  import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
+  import { ThemeService } from "../../theme/services/ThemeService";
+  import type { IApplicationInitializer } from "../services/contracts/IApplicationInitializer";
   import {
-    getInitializationError,
-    getIsInitialized,
     getSettings,
-    getShowSettings,
-    getShowDebugPanel,
-    toggleDebugPanel,
-    closeDebugPanel,
-    hideSettingsDialog,
-    initializeAppState,
     restoreApplicationState,
+    updateSettings,
+  } from "../state/app-state.svelte";
+  import {
+    getIsInitialized,
+    getInitializationError,
     setInitializationError,
     setInitializationState,
-    showSettingsDialog,
-    switchTab,
-    updateSettings,
-  } from "../state";
+    initializeAppState,
+  } from "../state/initialization-state.svelte";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import BackgroundCanvas from "../../background/shared/components/BackgroundCanvas.svelte";
+  import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
+  import { getShowDebugPanel, getShowSettings, showSettingsDialog, hideSettingsDialog, toggleDebugPanel } from "../state/ui/ui-state.svelte";
+  import { switchTab } from "../state/ui/module-state";
+  import { ensureContainerInitialized, resolve } from "../../inversify/container";
+  import { isContainerReady } from "../../inversify/di";
 
   // Get DI container from context
   const getContainer = getContext<() => Container | null>("di-container");
 
   // Services - resolved lazily
   let initService: IApplicationInitializer | null = $state(null);
-  let settingsService: ISettingsService | null = $state(null);
+  let settingsService: ISettingsState | null = $state(null);
   let deviceService: IDeviceDetector | null = $state(null);
   let sheetRouterService: ISheetRouterService | null = $state(null);
   let servicesResolved = $state(false);
@@ -89,7 +82,7 @@
 
           if (!servicesResolved) {
             initService = resolve(TYPES.IApplicationInitializer);
-            settingsService = resolve(TYPES.ISettingsService);
+            settingsService = resolve(TYPES.ISettingsState);
             deviceService = resolve(TYPES.IDeviceDetector);
             sheetRouterService = resolve(TYPES.ISheetRouterService);
             servicesResolved = true;
@@ -136,7 +129,12 @@
           return;
         }
 
-        if (!initService || !settingsService || !deviceService || !sheetRouterService) {
+        if (
+          !initService ||
+          !settingsService ||
+          !deviceService ||
+          !sheetRouterService
+        ) {
           console.error("Services not properly resolved");
           setInitializationError("Services not properly resolved");
           return;
@@ -299,18 +297,25 @@
     <SettingsPanel isOpen={getShowSettings() || showRouteBasedSettings} />
 
     <!-- Auth sheet (route-based) -->
-    <AuthSheet isOpen={showAuthSheet} onClose={() => sheetRouterService?.closeSheet()} />
+    <AuthSheet
+      isOpen={showAuthSheet}
+      onClose={() => sheetRouterService?.closeSheet()}
+    />
 
     <!-- Terms sheet (route-based) -->
-    <TermsSheet isOpen={showTermsSheet} onClose={() => sheetRouterService?.closeSheet()} />
+    <TermsSheet
+      isOpen={showTermsSheet}
+      onClose={() => sheetRouterService?.closeSheet()}
+    />
 
     <!-- Privacy sheet (route-based) -->
-    <PrivacySheet isOpen={showPrivacySheet} onClose={() => sheetRouterService?.closeSheet()} />
+    <PrivacySheet
+      isOpen={showPrivacySheet}
+      onClose={() => sheetRouterService?.closeSheet()}
+    />
 
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />
-
-
   {/if}
 </div>
 

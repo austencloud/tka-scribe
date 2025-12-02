@@ -7,7 +7,7 @@
  */
 
 import { GridMode } from "../domain/enums/grid-enums";
-import type { GridPointData } from "../domain";
+import type { GridPointData } from "../domain/models/grid-models";
 import { gridCoordinates } from "../domain/constants/gridCoordinates";
 
 /**

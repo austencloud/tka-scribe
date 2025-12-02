@@ -19,7 +19,7 @@ import type {
 import type {
   PageOrientation,
   WordCardPaperSize,
-} from "../../domain/types";
+} from "../../domain/types/PageLayoutTypes";
 
 export interface IPrintablePageLayoutService {
   /**

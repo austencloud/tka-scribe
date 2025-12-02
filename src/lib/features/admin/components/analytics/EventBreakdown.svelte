@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { EventTypeBreakdown } from "../../services/contracts";
+  import type { EventTypeBreakdown } from "../../services/contracts/IAnalyticsDataService";
   import { getEventIcon } from "./utils";
 
   interface Props {

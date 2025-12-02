@@ -9,9 +9,9 @@
   import { fade } from "svelte/transition";
   import type { Section } from "$lib/shared/navigation/domain/types";
 
-  import { PracticePanel } from "./practice";
-  import { ProgressPanel } from "./progress";
-  import { ChallengesPanel } from "./challenges";
+  import PracticePanel from "./practice/PracticePanel.svelte";
+  import ProgressPanel from "./progress/ProgressPanel.svelte";
+  import ChallengesPanel from "./challenges/ChallengesPanel.svelte";
 
   type TrainSection = "practice" | "challenges" | "progress";
   let activeSection = $state<TrainSection>("practice");

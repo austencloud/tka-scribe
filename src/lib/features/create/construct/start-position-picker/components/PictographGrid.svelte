@@ -3,8 +3,8 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
-  import { Pictograph } from "$lib/shared/pictograph/shared/components";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
 
   const {

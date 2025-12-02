@@ -9,14 +9,11 @@ import { SequenceDeletionService } from "../../../features/create/shared/workspa
 import { SequenceTransformService } from "../../../features/create/shared/workspace-panel/sequence-toolkit/services/implementations/SequenceTransformService";
 import { SequenceAnalysisService } from "../../../features/create/shared/services/implementations/SequenceAnalysisService";
 import { CreateModuleHandlers } from "../../../features/create/shared/services/implementations/CreateModuleHandlers";
-import { OptionSizer } from "../../../features/create/construct/option-picker/services/implementations";
-import { StartPositionService } from "../../../features/create/construct/start-position-picker/services/implementations";
 import { CreateModuleLayoutService } from "../../../features/create/shared/layout/services/CreateModuleLayoutService";
 import { SequenceStatisticsService } from "../../../features/create/shared/services/implementations/SequenceStatisticsService";
 import { SequenceTransformationService } from "../../../features/create/shared/services/implementations/SequenceTransformationService";
 import { SequenceValidationService } from "../../../features/create/shared/services/implementations/SequenceValidationService";
 import { UndoService } from "../../../features/create/shared/services/implementations/UndoService";
-// NEW: CreateModule Refactoring Services (2025-10-28)
 import { BeatOperationsService } from "../../../features/create/shared/services/implementations/BeatOperationsService";
 import { KeyboardArrowAdjustmentService } from "../../../features/create/shared/services/implementations/KeyboardArrowAdjustmentService";
 import { CreateModuleInitializationService } from "../../../features/create/shared/services/implementations/CreateModuleInitializationService";
@@ -25,65 +22,54 @@ import { ResponsiveLayoutService } from "../../../features/create/shared/service
 import { CreationMethodPersistenceService } from "../../../features/create/shared/services/implementations/CreationMethodPersistenceService";
 import { CreateModuleEffectCoordinator } from "../../../features/create/shared/services/implementations/CreateModuleEffectCoordinator";
 import { DeepLinkSequenceService } from "../../../features/create/shared/services/implementations/DeepLinkSequenceService";
-// Refactored Generation Services
-import {
-  OptionFilter,
-  OptionLoader,
-  OptionOrganizer,
-  OptionSorter,
-  OptionTransitionCoordinator,
-  PositionAnalyzer,
-  ReversalChecker,
-  SectionTitleFormatter,
-} from "../../../features/create/construct/option-picker/services/implementations";
+
 import { FilterPersistenceService } from "../../../features/create/construct/option-picker/services/FilterPersistenceService";
 import { LayoutDetectionService } from "../../../features/create/construct/option-picker/services/implementations/LayoutDetectionService";
 import { TurnControlService } from "../../../features/create/edit/services/TurnControlService";
-// Shared Generation Services - ACTIVE ONLY (deprecated moved to _deprecated/)
-import {
-  BeatConverterService,
-  BeatGenerationOrchestrator,
-  CAPParameterProvider, // NEW: Consolidated CAP parameter service
-  GenerationOrchestrationService,
-  PictographFilterService,
-  SequenceMetadataService,
-  StartPositionSelector,
-  TurnAllocationCalculator,
-  TurnManagementService,
-} from "../../../features/create/generate/shared/services/implementations";
-// Circular Generation Services
-import {
-  CAPEndPositionSelector,
-  CAPExecutorSelector,
-  MirroredInvertedCAPExecutor,
-  MirroredRotatedCAPExecutor,
-  MirroredRotatedInvertedCAPExecutor,
-  MirroredRotatedInvertedSwappedCAPExecutor,
-  MirroredSwappedCAPExecutor,
-  MirroredSwappedInvertedCAPExecutor,
-  PartialSequenceGenerator,
-  RotatedInvertedCAPExecutor,
-  RotatedEndPositionSelector,
-  RotatedSwappedCAPExecutor,
-  StrictInvertedCAPExecutor,
-  StrictMirroredCAPExecutor,
-  StrictRotatedCAPExecutor,
-  StrictSwappedCAPExecutor,
-  SwappedInvertedCAPExecutor,
-} from "../../../features/create/generate/circular/services/implementations";
-// Generation UI Services (SRP Refactoring - Dec 2024) - ACTIVE ONLY
-import {
-  CAPTypeService,
-  CardConfigurationService,
-  ResponsiveTypographyService,
-} from "../../../features/create/generate/shared/services/implementations";
-// Gestural Path Builder Services (January 2025)
-import {
-  HandPathDirectionDetector,
-  PathToMotionConverter,
-  SwipeDetectionService,
-} from "../../../features/create/assemble/handpath-builder/services/implementations";
+
 import { TYPES } from "../types";
+import { HandPathDirectionDetector } from "../../../features/create/assemble/handpath-builder/services/implementations/HandPathDirectionDetector";
+import { PathToMotionConverter } from "../../../features/create/assemble/handpath-builder/services/implementations/PathToMotionConverter";
+import { SwipeDetectionService } from "../../../features/create/assemble/handpath-builder/services/implementations/SwipeDetectionService";
+import { ReversalChecker } from "../../../features/create/construct/option-picker/services/implementations/ReversalChecker";
+import { StartPositionService } from "../../../features/create/construct/start-position-picker/services/implementations/StartPositionService";
+import { CAPEndPositionSelector } from "../../../features/create/generate/circular/services/implementations/CAPEndPositionSelector";
+import { CAPExecutorSelector } from "../../../features/create/generate/circular/services/implementations/CAPExecutorSelector";
+import { MirroredInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredInvertedCAPExecutor";
+import { MirroredRotatedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedCAPExecutor";
+import { MirroredRotatedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedComplementaryCAPExecutor";
+import { MirroredRotatedInvertedSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedComplementarySwappedCAPExecutor";
+import { MirroredSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredSwappedCAPExecutor";
+import { MirroredSwappedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredSwappedInvertedCAPExecutor";
+import { PartialSequenceGenerator } from "../../../features/create/generate/circular/services/implementations/PartialSequenceGenerator";
+import { RotatedEndPositionSelector } from "../../../features/create/generate/circular/services/implementations/RotatedEndPositionSelector";
+import { RotatedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/RotatedInvertedCAPExecutor";
+import { RotatedSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/RotatedSwappedCAPExecutor";
+import { StrictInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictInvertedCAPExecutor";
+import { StrictMirroredCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictMirroredCAPExecutor";
+import { StrictRotatedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictRotatedCAPExecutor";
+import { StrictSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictSwappedCAPExecutor";
+import { SwappedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/SwappedComplementaryCAPExecutor";
+import { BeatConverterService } from "../../../features/create/generate/shared/services/implementations/BeatConverterService";
+import { BeatGenerationOrchestrator } from "../../../features/create/generate/shared/services/implementations/BeatGenerationOrchestrator";
+import { CAPParameterProvider } from "../../../features/create/generate/shared/services/implementations/CAPParameterProvider";
+import { CAPTypeService } from "../../../features/create/generate/shared/services/implementations/CAPTypeService";
+import { CardConfigurationService } from "../../../features/create/generate/shared/services/implementations/CardConfigurationService";
+import { GenerationOrchestrationService } from "../../../features/create/generate/shared/services/implementations/GenerationOrchestrationService";
+import { PictographFilterService } from "../../../features/create/generate/shared/services/implementations/PictographFilterService";
+import { ResponsiveTypographyService } from "../../../features/create/generate/shared/services/implementations/ResponsiveTypographyService";
+import { SequenceMetadataService } from "../../../features/create/generate/shared/services/implementations/SequenceMetadataService";
+import { StartPositionSelector } from "../../../features/create/generate/shared/services/implementations/StartPositionSelector";
+import { TurnManagementService } from "../../../features/create/generate/shared/services/implementations/TurnManagementService";
+import { TurnAllocator } from "../../../features/create/generate/shared/services/implementations/TurnAllocator";
+import { OptionFilter } from "../../../features/create/construct/option-picker/services/implementations/OptionFilter";
+import { PositionAnalyzer } from "../../../features/create/construct/option-picker/services/implementations/PositionAnalyzer";
+import { OptionSorter } from "../../../features/create/construct/option-picker/services/implementations/OptionSorter";
+import { OptionSizer } from "../../../features/create/construct/option-picker/services/implementations/OptionSizer";
+import { OptionOrganizer } from "../../../features/create/construct/option-picker/services/implementations/OptionOrganizer";
+import { OptionLoader } from "../../../features/create/construct/option-picker/services/implementations/OptionLoader";
+import { OptionTransitionCoordinator } from "../../../features/create/construct/option-picker/services/implementations/OptionTransitionCoordinator";
+import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
 
 export const createModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -158,7 +144,7 @@ export const createModule = new ContainerModule(
 
     // New Focused Generation Services (composable, single-responsibility)
     options.bind(TYPES.IStartPositionSelector).to(StartPositionSelector);
-    options.bind(TYPES.ITurnAllocationCalculator).to(TurnAllocationCalculator);
+    options.bind(TYPES.ITurnAllocationCalculator).to(TurnAllocator);
     options
       .bind(TYPES.IBeatGenerationOrchestrator)
       .to(BeatGenerationOrchestrator);

@@ -13,15 +13,13 @@
 -->
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { PresenceAnimation } from "$lib/shared/ui-animation";
-  import { getCreateModuleContext } from "$create/shared/context";
-  import {
-    ClearSequencePanelButton,
-    PlayButton,
-    SequenceActionsButton,
-    ShareButton,
-    UndoButton,
-  } from "./buttons/index.js";
+  import { PresenceAnimation } from "../../../../../../shared/ui-animation/animations.svelte";
+  import { getCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
+  import ClearSequencePanelButton from "./buttons/ClearSequenceButton.svelte";
+  import PlayButton from "./buttons/PlayButton.svelte";
+  import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
+  import ShareButton from "./buttons/ShareButton.svelte";
+  import UndoButton from "./buttons/UndoButton.svelte";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
   const { CreateModuleState, panelState } = getCreateModuleContext();

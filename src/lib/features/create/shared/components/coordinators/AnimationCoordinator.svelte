@@ -8,20 +8,20 @@
    * Domain: Create module - Animation Panel Coordination
    */
 
-  import { AnimationPanel } from "$lib/shared/animation-engine/components";
-  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts";
+  import AnimationPanel from "../../../../../shared/animation-engine/components/AnimationPanel.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
   import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
-  import type { ISequenceService } from "$create/shared";
-  import { resolve } from "$lib/shared/inversify";
+  import type { ISequenceService } from "../../services/contracts/ISequenceService";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
   } from "$lib/features/animate/shared/domain/constants/timing";
-  import { getCreateModuleContext } from "../../context";
+  import { getCreateModuleContext } from "../../context/create-module-context";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   // Get context

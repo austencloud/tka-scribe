@@ -11,14 +11,14 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { Drawer } from "$lib/shared/foundation/ui";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
   import { onMount } from "svelte";
-  import type { IDiscoverLoader } from "$lib/features/discover";
+  import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
-  import type { ISequenceNormalizationService } from "$lib/features/animate/services/contracts";
+  import type { ISequenceNormalizationService } from "$lib/features/animate/services/contracts/ISequenceNormalizationService";
   import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props

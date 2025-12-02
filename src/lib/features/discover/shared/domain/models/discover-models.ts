@@ -1,5 +1,5 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ExploreSortMethod } from "../enums";
+import type { ExploreSortMethod } from "../enums/discover-enums";
 
 /**
  * Essential Browse Models - Keep It Simple!

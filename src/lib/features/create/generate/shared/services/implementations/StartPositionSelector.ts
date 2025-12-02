@@ -12,10 +12,8 @@ import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contra
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type {
-  IBeatConverterService,
-  IPictographFilterService,
-} from "../contracts";
+import type { IBeatConverterService } from '../contracts/IBeatConverterService';
+import type { IPictographFilterService } from '../contracts/IPictographFilterService';
 import type { IStartPositionSelector } from "../contracts/IStartPositionSelector";
 
 @injectable()

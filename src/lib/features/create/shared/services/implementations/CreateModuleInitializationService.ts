@@ -9,33 +9,29 @@
  */
 
 import { TYPES } from "$lib/shared/inversify/types";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import {
-  createCreateModuleState,
-  createConstructTabState,
-  createAssemblerTabState,
-  createGeneratorTabState,
-} from "../../state";
-import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-import type {
-  IBeatOperationsService,
-  ICreateModuleEffectCoordinator,
-  ICreateModuleHandlers,
-  ICreateModuleService,
-  ICreationMethodPersistenceService,
-  IDeepLinkSequenceService,
-  INavigationSyncService,
-  IResponsiveLayoutService,
-  ISequencePersistenceService,
-  ISequenceService,
-  ISequenceStatisticsService,
-  ISequenceTransformationService,
-  ISequenceValidationService,
-} from "../contracts";
+import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts/IStartPositionService";
+import { createCreateModuleState } from "$lib/features/create/shared/state/create-module-state.svelte";
+import { createConstructTabState } from "$lib/features/create/shared/state/construct-tab-state.svelte";
+import { createAssemblerTabState } from "$lib/features/create/shared/state/assembler-tab-state.svelte";
+import { createGeneratorTabState } from "$lib/features/create/shared/state/generator-tab-state.svelte";
+import type { PanelCoordinationState } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
+import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
+import type { ICreateModuleEffectCoordinator } from "../contracts/ICreateModuleEffectCoordinator";
+import type { ICreateModuleHandlers } from "../contracts/ICreateModuleHandlers";
+import type { ICreateModuleService } from "../contracts/ICreateModuleService";
+import type { ICreationMethodPersistenceService } from "../contracts/ICreationMethodPersistenceService";
+import type { IDeepLinkSequenceService } from "../contracts/IDeepLinkSequenceService";
+import type { INavigationSyncService } from "../contracts/INavigationSyncService";
+import type { IResponsiveLayoutService } from "../contracts/IResponsiveLayoutService";
+import type { ISequencePersistenceService } from "../contracts/ISequencePersistenceService";
+import type { ISequenceService } from "../contracts/ISequenceService";
+import type { ISequenceStatisticsService } from "../contracts/ISequenceStatisticsService";
+import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
+import type { ISequenceValidationService } from "../contracts/ISequenceValidationService";
 import type {
   CreateModuleInitializationResult,
   ICreateModuleInitializationService,
@@ -44,7 +40,7 @@ import type {
 import { getCreateModuleEventService } from "./CreateModuleEventService";
 import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 import type { ICreateModuleState } from "../../types/create-module-types";
-import type { IShareService } from "$lib/shared/share/services/contracts";
+import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
 import type { BeatData } from "../../domain/models/BeatData";
 
 @injectable()

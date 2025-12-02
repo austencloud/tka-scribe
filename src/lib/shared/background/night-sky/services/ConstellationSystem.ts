@@ -3,7 +3,7 @@ import type { AccessibilitySettings } from "$lib/shared/background/shared/domain
 import type { QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
 import type { Star } from "../domain/models/night-sky-models";
 // Removed resolve import - calculation service now injected via constructor
-import type { INightSkyCalculationService } from "../services";
+import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
 export interface ConstellationConfig {
   maxLines: number;

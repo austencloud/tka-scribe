@@ -12,7 +12,7 @@
  * No UI dependencies, completely testable in isolation.
  */
 
-import type { IArrowLocationCalculator } from "../contracts";
+import type { IArrowLocationCalculator } from '../contracts/IArrowLocationCalculator';
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";

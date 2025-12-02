@@ -6,12 +6,13 @@
  */
 
 import { injectable, inject } from "inversify";
-import type { IShareService } from "../contracts";
-import type { IMediaBundlerService } from "../contracts";
+import type { IShareService } from '../contracts/IShareService';
+import type { IMediaBundlerService } from '../contracts/IMediaBundlerService';
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { InstagramMediaItem, ShareOptions } from "../../domain";
-import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from "../../domain";
-import { TYPES } from "../../../inversify";
+import type { InstagramMediaItem } from '../../domain/models/InstagramMedia';
+import type { ShareOptions } from '../../domain/models/ShareOptions';
+import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from '../../domain/models/InstagramMedia';
+import { TYPES } from '../../../inversify/bootstrap';
 
 @injectable()
 export class MediaBundlerService implements IMediaBundlerService {

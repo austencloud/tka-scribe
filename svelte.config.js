@@ -29,34 +29,6 @@ const config = {
       $lib: "./src/lib",
       "$lib/*": "./src/lib/*",
 
-      // Shared resources (cross-domain access)
-      $shared: "./src/lib/shared",
-      "$shared/*": "./src/lib/shared/*",
-
-      // Feature aliases (for cross-domain barrel imports)
-      $create: "./src/lib/features/create",
-      "$create/*": "./src/lib/features/create/*",
-
-      $learn: "./src/lib/features/learn",
-      "$learn/*": "./src/lib/features/learn/*",
-
-      $discover: "./src/lib/features/discover",
-      "$discover/*": "./src/lib/features/discover/*",
-
-      $animate: "./src/lib/features/animate",
-      "$animate/*": "./src/lib/features/animate/*",
-
-      $wordcard: "./src/lib/features/word-card",
-      "$wordcard/*": "./src/lib/features/word-card/*",
-
-      $collect: "./src/lib/features/collect",
-      "$collect/*": "./src/lib/features/collect/*",
-
-      $write: "./src/lib/features/write",
-      "$write/*": "./src/lib/features/write/*",
-
-      $render: "./src/lib/shared/render",
-      "$render/*": "./src/lib/shared/render/*",
     },
 
     // ============================================================================

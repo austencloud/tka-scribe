@@ -29,7 +29,7 @@
 
 import { inject, injectable } from "inversify";
 
-import type { BeatData } from "$create/shared/workspace-panel";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import { TYPES } from "$lib/shared/inversify/types";
 
 import { SliceSize } from "../../domain/models/circular-models";

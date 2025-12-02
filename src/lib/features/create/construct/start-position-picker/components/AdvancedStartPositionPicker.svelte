@@ -2,7 +2,7 @@
 <script lang="ts">
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { SimpleGlassScroll } from "$lib/shared/foundation/ui";
+  import SimpleGlassScroll from "$lib/shared/foundation/ui/SimpleGlassScroll.svelte";
   import { onMount } from "svelte";
   import { createAdvancedPickerState } from "../state/advanced-picker-state.svelte";
   import PositionGroupGrid from "./PositionGroupGrid.svelte";

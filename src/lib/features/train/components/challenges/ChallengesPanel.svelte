@@ -16,10 +16,10 @@
     TrainChallengeSortBy,
   } from "../../domain/models/TrainChallengeModels";
   import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
-  import { ChallengeCard } from ".";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { activeChallengeState } from "../../state/active-challenge-state.svelte";
-  import { Drawer } from "$lib/shared/foundation/ui";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import ChallengeCard from "./ChallengeCard.svelte";
 
   // Service
   const challengeService = container.get<ITrainChallengeService>(

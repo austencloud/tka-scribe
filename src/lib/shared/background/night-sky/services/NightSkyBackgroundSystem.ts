@@ -1,18 +1,18 @@
-import { resolve, TYPES } from "../../../inversify";
+import { resolve } from "../../../inversify/di";
+import { TYPES } from "../../../inversify/types";
+import type { AccessibilitySettings, QualitySettings } from "../../shared/domain/models/background-models";
 import type {
-  AccessibilitySettings,
   Dimensions,
   QualityLevel,
-  QualitySettings,
-} from "../../shared";
-import type { IBackgroundConfigurationService } from "$lib/shared/background/shared/services/contracts/IBackgroundConfigurationService";
-import type { IBackgroundRenderingService } from "$lib/shared/background/shared/services/contracts/IBackgroundRenderingService";
-import type { IBackgroundSystem } from "$lib/shared/background/shared/services/contracts/IBackgroundSystem";
-import { createShootingStarSystem } from "$lib/shared/background/shared/services/implementations/ShootingStarSystem";
+} from "../../shared/domain/types/background-types";
+import type { IBackgroundConfigurationService } from "../../shared/services/contracts/IBackgroundConfigurationService";
+import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
+import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
+import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
 import type { NightSkyConfig } from "../domain/constants/night-sky-constants";
 import { CometSystem } from "./CometSystem";
 import { ConstellationSystem } from "./ConstellationSystem";
-import type { INightSkyCalculationService } from "./contracts";
+import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 import { MoonSystem } from "./MoonSystem";
 import { NebulaSystem } from "./NebulaSystem";
 import { ParallaxStarSystem } from "./ParallaxStarSystem";

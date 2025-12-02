@@ -5,13 +5,11 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type {
-  IArrowPathResolver,
-} from "../contracts";
+import type { IArrowPathResolver } from '../contracts/IArrowPathResolver';
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import { MotionType, Orientation } from "../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
-import type { ArrowPlacementData } from "../../../positioning";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 
 @injectable()
 export class ArrowPathResolver implements IArrowPathResolver {

@@ -6,16 +6,14 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, tryResolve } from "$lib/shared/inversify";
+  import { resolve, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IChallengeCoordinator } from "$lib/shared/gamification/services/contracts";
+  import type { IChallengeCoordinator } from "$lib/shared/gamification/services/contracts/IChallengeCoordinator";
   import type { ChallengeDashboard } from "$lib/shared/gamification/domain/models/challenge-models";
-  import {
-    PanelHeader,
-    PanelContent,
-    PanelState,
-    PanelTabs,
-  } from "$lib/shared/components/panel";
+  import PanelHeader from "$lib/shared/components/panel/PanelHeader.svelte";
+  import PanelContent from "$lib/shared/components/panel/PanelContent.svelte";
+  import PanelState from "$lib/shared/components/panel/PanelState.svelte";
+  import PanelTabs from "$lib/shared/components/panel/PanelTabs.svelte";
   import DailyChallengeCard from "./DailyChallengeCard.svelte";
   import WeeklyChallengeCard from "./WeeklyChallengeCard.svelte";
   import SkillProgressionList from "./SkillProgressionList.svelte";
@@ -77,7 +75,7 @@
   <PanelTabs
     {tabs}
     {activeTab}
-    onchange={(value) => activeTab = value as typeof activeTab}
+    onchange={(value: string) => activeTab = value as typeof activeTab}
   />
 
   <PanelContent>

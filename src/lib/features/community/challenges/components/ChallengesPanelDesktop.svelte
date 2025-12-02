@@ -7,11 +7,11 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, tryResolve } from "$lib/shared/inversify";
+  import { resolve, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IChallengeCoordinator } from "$lib/shared/gamification/services/contracts";
+  import type { IChallengeCoordinator } from "$lib/shared/gamification/services/contracts/IChallengeCoordinator";
   import type { ChallengeDashboard } from "$lib/shared/gamification/domain/models/challenge-models";
-  import { PanelState } from "$lib/shared/components/panel";
+  import PanelState from "$lib/shared/components/panel/PanelState.svelte";
 
   // State
   let isLoading = $state(true);

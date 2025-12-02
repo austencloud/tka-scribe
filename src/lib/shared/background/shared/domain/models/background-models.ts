@@ -7,8 +7,9 @@ import type {
 } from "../types/background-types";
 import type { AccessibilitySettings } from "../../../../settings/domain/AppSettings";
 
-// Re-export AccessibilitySettings for convenience
+// Re-export types for convenience
 export type { AccessibilitySettings };
+export type { PerformanceMetrics };
 
 export interface GradientStop {
   position: number;

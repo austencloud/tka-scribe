@@ -3,9 +3,9 @@ PresetCard.svelte - Individual preset card display
 Displays a single preset with icon, name, summary, and action buttons
 -->
 <script lang="ts">
-  import { CAP_TYPE_LABELS, type CAPType } from "$create/generate/circular";
+  import { CAP_TYPE_LABELS, type CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
   import type { GenerationPreset } from "../../state/preset.svelte";
 

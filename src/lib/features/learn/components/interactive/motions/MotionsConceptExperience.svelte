@@ -5,7 +5,7 @@ Page 7: Interactive quiz
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import MotionVisualizer from "./MotionVisualizer.svelte";
   import MotionIdentificationQuiz from "./MotionIdentificationQuiz.svelte";

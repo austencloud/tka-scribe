@@ -14,13 +14,13 @@ Follows Svelte 5 runes + microservices architecture.
 <script lang="ts">
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
     ExploreNavigationConfig,
     ExploreNavigationItem,
-  } from "../domain";
+  } from "../domain/models/navigation-models";
+  import type { IHapticFeedbackService } from "../../../../../shared/application/services/contracts/IHapticFeedbackService";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

@@ -5,13 +5,9 @@
  * operation progress, and results. Uses Svelte 5 runes for reactivity.
  */
 
-import type {
-  ToolConfig,
-  ToolOperationResult,
-  ToolOperationType,
-  ToolState,
-} from "../domain";
-import { TOOL_OPERATIONS } from "../domain";
+import type { ToolConfig, ToolOperationResult, ToolState } from '../domain/toolkit-models';
+import type { ToolOperationType } from '../domain/toolkit-enums';
+import { TOOL_OPERATIONS } from '../domain/toolkit-constants';
 
 /**
  * Factory function to create toolkit state

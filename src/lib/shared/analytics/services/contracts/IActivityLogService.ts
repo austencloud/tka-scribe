@@ -10,7 +10,7 @@ import type {
   ActivityCategory,
   ActivityMetadata,
   ActivitySummary,
-} from "../../domain";
+} from "../../domain/models/ActivityEvent";
 
 /**
  * Options for querying activity events

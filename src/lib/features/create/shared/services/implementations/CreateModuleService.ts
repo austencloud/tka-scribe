@@ -11,7 +11,7 @@
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { injectable } from "inversify";
 // import type { IStartPositionService } from "../../tool-panel/construct/start-position-picker/services/contracts";
-import type { ICreateModuleService } from "../contracts";
+import type { ICreateModuleService } from "../contracts/ICreateModuleService";
 // IStartPositionSelectionService removed - using unified service
 import { constructTabEventService } from "./CreateModuleEventService";
 

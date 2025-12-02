@@ -5,7 +5,7 @@
  * Handles form state, UI state, and viewport adaptivity.
  */
 
-import { authStore } from "../../auth";
+import { authStore } from "../../auth/stores/authStore.svelte";
 
 // ============================================================================
 // FORM STATE

@@ -3,7 +3,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ExploreFilterType } from "$lib/shared/persistence/domain";
+import type { ExploreFilterType } from "$lib/shared/persistence/domain/enums/FilteringEnums";
 import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 
 export interface IDiscoverFilterService {

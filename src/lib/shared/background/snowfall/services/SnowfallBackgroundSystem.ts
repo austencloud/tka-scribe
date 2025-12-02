@@ -1,4 +1,5 @@
-import { resolve, TYPES } from "../../../inversify";
+import { resolve } from "../../../inversify/di";
+import { TYPES } from "../../../inversify/types";
 import type {
   Dimensions,
   QualityLevel,

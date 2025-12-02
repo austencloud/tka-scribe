@@ -3,9 +3,9 @@
   import { browser } from "$app/environment";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import type { IMobileFullscreenService } from "../../../mobile/services/contracts/IMobileFullscreenService";
-  import { resolve } from "../../../inversify";
+  import { resolve } from "../../../inversify/di";
   import { TYPES } from "../../../inversify/types";
-  import { nuclearCacheClear } from "../../../auth";
+  import { nuclearCacheClear } from "../../../auth/utils/nuclearCacheClear";
   import { onMount } from "svelte";
   import EnhancedPWAInstallGuide from "$lib/shared/mobile/components/EnhancedPWAInstallGuide.svelte";
 

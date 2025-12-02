@@ -10,7 +10,7 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { onMount } from "svelte";

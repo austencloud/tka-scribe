@@ -11,7 +11,7 @@ import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 // Simplified transition service without complex fade orchestrator
 
 import { injectable } from "inversify";
-import type { ICreateModuleTransitionService } from "../contracts";
+import type { ICreateModuleTransitionService } from "../contracts/ICreateModuleTransitionService";
 
 @injectable()
 export class CreateModuleTransitionService

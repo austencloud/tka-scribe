@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import type { FishSprite } from "../../domain/models/DeepOceanModels";
-import type { IFishSpriteManager } from "../contracts";
+import type { IFishSpriteManager } from '../contracts/IFishSpriteManager';
 
 @injectable()
 export class FishSpriteManager implements IFishSpriteManager {

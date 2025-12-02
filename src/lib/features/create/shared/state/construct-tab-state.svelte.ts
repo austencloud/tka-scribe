@@ -12,13 +12,11 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { createHMRState } from "$lib/shared/utils/hmr-state-backup";
-import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state";
+import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";
-import type {
-  ICreateModuleService,
-  ISequencePersistenceService,
-  ISequenceService,
-} from "../services/contracts";
+import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
+import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
+import type { ISequenceService } from "../services/contracts/ISequenceService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";

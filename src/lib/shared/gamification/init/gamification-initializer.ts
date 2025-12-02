@@ -4,13 +4,11 @@
  * Call this once on app startup to initialize all gamification services.
  */
 
-import { resolve, TYPES } from "../../inversify";
-import type {
-  IAchievementService,
-  IDailyChallengeService,
-  IStreakService,
-} from "../services/contracts";
-import type { XPEventMetadata } from "../domain/models";
+import { resolve, TYPES } from '../../inversify/bootstrap';
+import type { IAchievementService } from '../services/contracts/IAchievementService';
+import type { IDailyChallengeService } from '../services/contracts/IDailyChallengeService';
+import type { IStreakService } from '../services/contracts/IStreakService';
+import type { XPEventMetadata } from '../domain/models/achievement-models';
 
 export async function initializeGamification(): Promise<void> {
   try {

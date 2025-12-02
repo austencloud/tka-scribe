@@ -1,4 +1,5 @@
-import type { Dimensions, GradientStop } from "../../domain";
+import type { Dimensions } from "../../domain/types/background-types";
+import type { GradientStop } from "../../domain/models/background-models";
 
 /**
  * Service for rendering background elements and calculating particle properties

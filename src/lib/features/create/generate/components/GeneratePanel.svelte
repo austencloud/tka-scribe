@@ -10,17 +10,15 @@ Card-based architecture with integrated Generate button:
 - Responsive padding: Modern CSS container queries with cqi/cqb units (automatic scaling)
 -->
 <script lang="ts">
-  import type { SequenceState } from "$create/shared/state";
-import { resolve } from "$lib/shared/inversify";
+  import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-  import type { IDeviceDetector } from "$lib/shared/device/services/contracts";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import { onMount } from "svelte";
-  import {
-    createDeviceState,
-    createGenerationActionsState,
-    createGenerationConfigState,
-  } from "../state";
-  import { GeneratorPadder } from "../shared/services/implementations";
+  import { createDeviceState } from "../state/generate-device.svelte";
+  import { createGenerationActionsState } from "../state/generate-actions.svelte";
+  import { createGenerationConfigState } from "../state/generate-config.svelte";
+  import { GeneratorPadder } from "$lib/features/create/generate/shared/services/implementations/GeneratorPadder";
   import CardBasedSettingsContainer from "./CardBasedSettingsContainer.svelte";
 
   // Props

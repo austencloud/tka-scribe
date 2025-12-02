@@ -11,13 +11,13 @@ import type {
   SpotlightImageState,
   SpotlightNavigationState,
   SpotlightViewState,
-} from "../../domain/models";
+} from "../../domain/models/spotlight-models";
 import {
   createDefaultImageState,
   createDefaultNavigationState,
   createDefaultSpotlightDisplayState,
-} from "../../domain/models";
-import type { ISpotlightService } from "../contracts";
+} from "../../domain/models/spotlight-models";
+import type { ISpotlightService } from "../contracts/ISpotlightService";
 
 @injectable()
 export class SpotlightService implements ISpotlightService {

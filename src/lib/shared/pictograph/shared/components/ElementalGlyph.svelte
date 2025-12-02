@@ -7,7 +7,7 @@ of pictographs based on VTG mode classification. Only displays for Type1 letters
 Based on legacy elemental_glyph.py implementation.
 -->
 <script lang="ts">
-  import type { ElementalType } from "../domain/enums";
+  import type { ElementalType } from "../domain/enums/pictograph-enums";
   import { LetterType } from "../../../foundation/domain/models/LetterType";
   import {
     type Letter,

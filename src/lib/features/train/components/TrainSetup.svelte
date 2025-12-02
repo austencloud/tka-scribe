@@ -5,10 +5,10 @@
 -->
 <script lang="ts">
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-	import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
-	import { resolve } from "$lib/shared/inversify";
+	import SequenceBrowserPanel from "../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
+	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
-	import type { IDiscoverLoader } from "$lib/features/discover";
+	import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
 
 	interface Props {
 		onSequenceSelected: (sequence: SequenceData) => void;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { CallToAction } from ".";
+  import CallToAction from "./CallToAction.svelte";
 
   let isVisible = $state(false);
 

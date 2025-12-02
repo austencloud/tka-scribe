@@ -7,11 +7,9 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
-import type {
-  IPageFactoryService,
-  IPrintablePageLayoutService,
-  IWordCardBrowseService,
-} from "../services/contracts";
+import type { IPageFactoryService } from "../services/contracts/word-card-contracts";
+import type { IPrintablePageLayoutService } from "../services/contracts/word-card-contracts";
+import type { IWordCardBrowseService } from "../services/contracts/word-card-contracts";
 import {
   displayState,
   exportSettings,

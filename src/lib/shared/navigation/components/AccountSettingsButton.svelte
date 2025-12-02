@@ -7,8 +7,8 @@
   - 48px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "../../auth";
-  import { resolve } from "../../inversify";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";

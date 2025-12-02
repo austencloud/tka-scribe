@@ -1,8 +1,8 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
+  import SequenceBrowserPanel from "../../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
   interface Props {

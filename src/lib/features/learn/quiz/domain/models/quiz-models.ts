@@ -4,15 +4,8 @@
  * TypeScript interfaces for the learn module data structures.
  */
 
-import type { LetterCategory } from "../../../codex";
-import type {
-  QuizAnswerFeedback,
-  QuizAnswerFormat,
-  QuizMode,
-  QuizQuestionFormat,
-  QuizType,
-  QuizView,
-} from "../enums";
+import type { QuizAnswerFeedback, QuizAnswerFormat, QuizMode, QuizQuestionFormat, QuizType, QuizView } from '../enums/quiz-enums';
+import type { LetterCategory } from '../../../codex/domain/types/codex-types';
 
 /**
  * Config data for a lesson type.

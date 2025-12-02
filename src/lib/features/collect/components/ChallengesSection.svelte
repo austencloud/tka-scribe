@@ -8,13 +8,13 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify";
-  import { authStore } from "$lib/shared/auth";
-  import type { IDailyChallengeService } from "$lib/shared/gamification/services/contracts";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import type { IDailyChallengeService } from "$lib/shared/gamification/services/contracts/IDailyChallengeService";
   import type {
     DailyChallenge,
     UserChallengeProgress,
-  } from "$lib/shared/gamification/domain/models";
+  } from "$lib/shared/gamification/domain/models/achievement-models";
 
   // Services
   let challengeService: IDailyChallengeService | null = $state(null);

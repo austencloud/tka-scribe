@@ -23,15 +23,13 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts";
-import { tryResolve } from "$lib/shared/inversify";
+import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
-import type {
-  ISequencePersistenceService,
-  ISequenceService,
-  IReversalDetectionService,
-} from "../services/contracts";
+import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
+import type { ISequenceService } from "../services/contracts/ISequenceService";
+import type { IReversalDetectionService } from "../services/contracts/IReversalDetectionService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
@@ -42,7 +40,7 @@ import { createSequenceBeatOperations } from "./operations/SequenceBeatOperation
 import { createSequenceTransformOperations } from "./operations/SequenceTransformOperations";
 import { createSequencePersistenceCoordinator } from "./persistence/SequencePersistenceCoordinator.svelte";
 import { createSequenceSelectionState } from "./selection/SequenceSelectionState.svelte";
-import { isBeat } from "$create/shared/domain/type-guards/pictograph-type-guards";
+import { isBeat } from "$lib/features/create/shared/domain/type-guards/pictograph-type-guards";
 
 /**
  * Clean service configuration - no more type gymnastics!
@@ -108,7 +106,7 @@ export function createSequenceState(services: SequenceStateServices) {
     // This prevents overwriting deep link sequences with old saved state
     let hasDeepLink = false;
     try {
-      const { resolve } = await import("$lib/shared/inversify");
+      const { resolve } = await import("$lib/shared/inversify/di");
       const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;

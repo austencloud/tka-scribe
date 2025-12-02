@@ -6,14 +6,14 @@
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
   import type { StartPositionData } from "../../../domain/models/StartPositionData";
   import { createBeatData } from "../../../domain/factories/createBeatData";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
   import {
     createBeatGridDisplayState,
-    createScrollState,
     isPendingGenerationAnimation,
     setPendingGenerationAnimation,
-  } from "../state";
+  } from "$lib/features/create/shared/workspace-panel/sequence-display/state/beat-grid-display-state.svelte";
+  import { createScrollState } from "$lib/features/create/shared/workspace-panel/sequence-display/state/scroll-state.svelte";
   import {
     calculateBeatPosition,
     calculateGridLayout,

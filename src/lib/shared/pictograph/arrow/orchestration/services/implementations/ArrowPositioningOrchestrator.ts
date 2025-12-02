@@ -13,11 +13,9 @@ import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
 import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { IArrowRotationCalculator } from "../../../positioning/calculation/services/contracts";
-import type {
-  IArrowDataProcessor,
-  IArrowGridCoordinateService,
-} from "../contracts";
+import type { IArrowRotationCalculator } from '../../../positioning/calculation/services/contracts/IArrowRotationCalculator';
+import type { IArrowDataProcessor } from '../contracts/IArrowDataProcessor';
+import type { IArrowGridCoordinateService } from '../contracts/IArrowGridCoordinateService';
 
 @injectable()
 export class ArrowPositioningOrchestrator

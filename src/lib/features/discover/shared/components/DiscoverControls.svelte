@@ -1,7 +1,8 @@
 <script lang="ts">
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-  import { ExploreSortMethod } from "../domain";
-  import { ViewPresetsDropdown, NavigationDropdown } from "../../gallery";
+  import { ExploreSortMethod } from "../domain/enums/discover-enums";
+  import ViewPresetsDropdown from "../../gallery/filtering/components/ViewPresetsDropdown.svelte";
+  import NavigationDropdown from "../../gallery/navigation/components/NavigationDropdown.svelte";
 
   interface Props {
     isMobile: boolean;

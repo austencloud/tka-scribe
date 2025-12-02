@@ -14,14 +14,11 @@ import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceCreateRequest } from "../../domain/models/sequence-models";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type {
-  IPersistenceService,
-  ISequenceDomainService,
-  ISequenceImportService,
-  IReversalDetectionService,
-} from "../contracts";
-import {} from "../contracts";
-import type { ISequenceService } from "../contracts";
+import type { IPersistenceService } from "../contracts/IPersistenceService";
+import type { ISequenceDomainService } from "../contracts/ISequenceDomainService";
+import type { ISequenceImportService } from "../contracts/ISequenceImportService";
+import type { IReversalDetectionService } from "../contracts/IReversalDetectionService";
+import type { ISequenceService } from "../contracts/ISequenceService";
 
 @injectable()
 export class SequenceService implements ISequenceService {

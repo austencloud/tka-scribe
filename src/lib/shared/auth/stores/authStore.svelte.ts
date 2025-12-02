@@ -19,9 +19,9 @@ import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, firestore } from "../firebase";
 import { featureFlagService } from "../services/FeatureFlagService.svelte";
 import type { UserRole } from "../domain/models/UserRole";
-import { tryResolve } from "../../inversify";
+import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { IActivityLogService } from "../../analytics";
+import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 /**
  * Update Facebook profile picture to high resolution

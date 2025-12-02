@@ -6,8 +6,8 @@ about the sequence being deleted and potential consequences.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
-import { resolve } from "$lib/shared/inversify";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceDeleteConfirmationData } from "../domain/models/discover-models";
 

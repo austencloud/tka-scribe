@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { NormalizedSequenceData } from "../../../services/contracts";
+  import type { NormalizedSequenceData } from "../../../services/contracts/ISequenceNormalizationService";
   import TunnelSequencePanel from "./TunnelSequencePanel.svelte";
   import TunnelResultPanel from "./TunnelResultPanel.svelte";
   import TunnelModeCanvas from "./TunnelModeCanvas.svelte";

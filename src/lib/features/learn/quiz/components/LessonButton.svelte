@@ -6,11 +6,11 @@ selecting different game types. Features glass morphism styling
 and smooth hover animations.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$shared/inversify";
-import { TYPES } from "$shared/inversify/types";
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { QuizType } from "../domain";
+  import { QuizType } from "../domain/enums/quiz-enums";
 
   // Props
   let {

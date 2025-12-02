@@ -12,15 +12,13 @@ import { createCreateModulePersistenceController } from "./create-module/persist
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
 import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
 import { createUndoController } from "./create-module/undo-controller.svelte";
-import type {
-  ISequenceService,
-  ISequencePersistenceService,
-} from "../services/contracts";
+import type { ISequenceService } from "../services/contracts/ISequenceService";
+import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
 import type { IUndoService } from "../services/contracts/IUndoService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";

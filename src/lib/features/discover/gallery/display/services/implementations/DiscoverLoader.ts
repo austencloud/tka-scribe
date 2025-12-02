@@ -7,7 +7,7 @@
 
 import type { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { createSequenceData } from "$lib/shared/foundation/domain/models";
+import { createSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";

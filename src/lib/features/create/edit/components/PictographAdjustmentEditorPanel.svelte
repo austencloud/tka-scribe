@@ -10,11 +10,11 @@ Features:
 - Hotkey legend
 -->
 <script lang="ts">
-  import type { IKeyboardArrowAdjustmentService } from "$create/shared/services/contracts/IKeyboardArrowAdjustmentService";
-  import { selectedArrowState } from "$create/shared/state/selected-arrow-state.svelte";
-  import type { BeatData } from "$create/shared/workspace-panel";
+  import type { IKeyboardArrowAdjustmentService } from "$lib/features/create/shared/services/contracts/IKeyboardArrowAdjustmentService";
+  import { selectedArrowState } from "$lib/features/create/shared/state/selected-arrow-state.svelte";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import RotationOverrideButton from "./RotationOverrideButton.svelte";

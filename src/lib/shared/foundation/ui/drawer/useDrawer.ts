@@ -1,6 +1,6 @@
 
 import { onMount, onDestroy, untrack } from "svelte";
-import { tryResolve, TYPES } from "../../../inversify";
+import { tryResolve, TYPES } from "../../../inversify/di";
 import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
 import { SwipeToDismiss } from "./SwipeToDismiss";
 import { FocusTrap } from "./FocusTrap";

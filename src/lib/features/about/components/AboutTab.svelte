@@ -1,9 +1,9 @@
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-  import { SUPPORT_OPTIONS, SOCIAL_LINKS } from "$lib/shared/info/domain";
   import { onMount } from "svelte";
+  import { SUPPORT_OPTIONS, SOCIAL_LINKS } from "../../../shared/info/domain/content";
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);

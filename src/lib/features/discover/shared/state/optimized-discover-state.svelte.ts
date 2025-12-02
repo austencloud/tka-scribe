@@ -9,7 +9,7 @@
  * - Connection-aware image request throttling
  */
 
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
   ExploreLoadingState,

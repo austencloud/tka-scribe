@@ -5,8 +5,8 @@
   Displays beats in a compact grid format.
 -->
 <script lang="ts">
-  import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import type { BeatData } from "$create/shared/domain/models/BeatData";
+  import BeatGrid from "../../../../../create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
 
   let {
     beats,

@@ -1,10 +1,10 @@
 <!-- ContentOptionsSection.svelte - Content selection controls at the top -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
-  import type { ShareState } from "../state";
+  import type { ShareState } from "../state/share-state.svelte";
 
   let {
     shareState,

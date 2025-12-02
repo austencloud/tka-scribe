@@ -6,14 +6,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ISettingsService } from "$lib/shared/settings/services/contracts";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { StartPositionData } from "../../../features/create/shared/domain/models/StartPositionData";
   import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
-  import type { PropState } from "../domain";
   import type { IPixiAnimationRenderer } from "$lib/features/animate/services/contracts/IPixiAnimationRenderer";
   import type { ISVGGenerator } from "$lib/features/animate/services/contracts/ISVGGenerator";
   import type { ITrailCaptureService } from "$lib/features/animate/services/contracts/ITrailCaptureService";
@@ -34,13 +32,15 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     SequenceFramePreRenderer,
     type PreRenderProgress,
   } from "$lib/features/animate/services/implementations/SequenceFramePreRenderer";
+  import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
+  import type { PropState } from "../domain/PropState";
 
   // Resolve services from DI container
   const pixiRenderer = resolve(
     TYPES.IPixiAnimationRenderer
   ) as IPixiAnimationRenderer;
   const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
-  const settingsService = resolve(TYPES.ISettingsService) as ISettingsService;
+  const settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
   const orchestrator = resolve(
     TYPES.ISequenceAnimationOrchestrator
   ) as ISequenceAnimationOrchestrator;

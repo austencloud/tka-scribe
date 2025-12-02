@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
-  import { resolve } from "$lib/shared/inversify";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { ExploreSortMethod } from "../../../shared";
+  import { ExploreSortMethod } from "../../../shared/domain/enums/discover-enums";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {

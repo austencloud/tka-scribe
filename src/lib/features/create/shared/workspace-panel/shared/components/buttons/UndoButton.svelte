@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { UndoOperationType } from "$create/shared/services/contracts/IUndoService";
-  import type { createCreateModuleState } from "$create/shared/state/create-module-state.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
-import { resolve } from "$lib/shared/inversify";
+  import { UndoOperationType } from "$lib/features/create/shared/services/contracts/IUndoService";
+  import type { createCreateModuleState } from "$lib/features/create/shared/state/create-module-state.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 
   type CreateModuleState = ReturnType<typeof createCreateModuleState>;

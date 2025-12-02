@@ -8,7 +8,7 @@
 import type { CsvDataSet } from "$lib/features/create/generate/shared/domain/csv-handling/CsvModels";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import type { ICSVLoader } from "../../contracts";
+import type { ICSVLoader } from "../../contracts/data/ICSVLoader";
 
 // Module-level cache shared across all instances (defense against non-singleton usage)
 let sharedCsvCache: CsvDataSet | null = null;

@@ -1,4 +1,4 @@
-import { ExploreSortMethod } from "../enums";
+import { ExploreSortMethod } from "../enums/discover-enums";
 import type { SortConfig } from "../models/sort-models";
 
 // Predefined sort configurations

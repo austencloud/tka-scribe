@@ -11,12 +11,10 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
-import type {
-  IBeatConverterService,
-  IOrientationCalculator,
-  IPictographFilterService,
-  ITurnManagementService,
-} from "../contracts";
+import type { IBeatConverterService } from "../contracts/IBeatConverterService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IPictographFilterService } from "../contracts/IPictographFilterService";
+import type { ITurnManagementService } from "../contracts/ITurnManagementService";
 
 import type {
   BeatGenerationOptions,

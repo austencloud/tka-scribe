@@ -8,18 +8,17 @@
  * Domain: Create module - Service Management
  */
 
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
-import type { IShareService } from "$lib/shared/share/services/contracts";
-import type {
-  IBeatOperationsService,
-  ICreateModuleService,
-  INavigationSyncService,
-  IResponsiveLayoutService,
-  ISequencePersistenceService,
-  ISequenceService,
-} from "./contracts";
+import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
+import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts/IStartPositionService";
+import type { IBeatOperationsService } from "./contracts/IBeatOperationsService";
+import type { ICreateModuleService } from "./contracts/ICreateModuleService";
+import type { INavigationSyncService } from "./contracts/INavigationSyncService";
+import type { IResponsiveLayoutService } from "./contracts/IResponsiveLayoutService";
+import type { ISequencePersistenceService } from "./contracts/ISequencePersistenceService";
+import type { ISequenceService } from "./contracts/ISequenceService";
+
 
 /**
  * Container for all CreateModule services

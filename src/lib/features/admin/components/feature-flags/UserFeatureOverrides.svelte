@@ -5,10 +5,12 @@
 	 */
 
 	import { collection, query, getDocs, limit } from 'firebase/firestore';
-	import { firestore } from '$lib/shared/auth/firebase';
-	import { featureFlagService } from '$lib/shared/auth/services';
-	import type { FeatureFlagConfig, FeatureId, UserRole } from "$lib/shared/auth/domain";
-	import { AdminTwoPanelLayout, AdminModal } from "$lib/shared/admin";
+	import { firestore } from '../../../../shared/auth/firebase';
+	import { featureFlagService } from '../../../../shared/auth/services/FeatureFlagService.svelte';
+	import type { FeatureFlagConfig, FeatureId } from "$lib/shared/auth/domain/models/FeatureFlag";
+	import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+	import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
+	import AdminModal from "$lib/shared/admin/components/AdminModal.svelte";
 	import UserOverridesList from './UserOverridesList.svelte';
 	import UserOverridesDetail from './UserOverridesDetail.svelte';
 	import type { UserData } from './utils';

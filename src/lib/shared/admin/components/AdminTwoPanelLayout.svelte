@@ -24,8 +24,8 @@
 
 	import { onMount } from 'svelte';
 	import type { Snippet } from 'svelte';
-	import { resolve, TYPES } from '../../inversify';
-	import type { IDeviceDetector } from '../../device/services/contracts';
+	import { resolve, TYPES } from '../../inversify/di';
+	import type { IDeviceDetector } from '../../device/services/contracts/IDeviceDetector';
 	import type { ResponsiveSettings } from '../../device/domain/models/device-models';
 	import { desktopSidebarState } from '../../layout/desktop-sidebar-state.svelte';
 	import { ADMIN_SPACING } from '../styles/admin-theme';

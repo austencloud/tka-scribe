@@ -7,10 +7,10 @@ Shows different states: no link, has link, opening link.
 <script lang="ts">
   import { onMount } from "svelte";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IInstagramLinkService } from "../services/contracts";
-  import type { InstagramLink } from "../domain";
+  import type { IInstagramLinkService } from "../services/contracts/IInstagramLinkService";
+  import type { InstagramLink } from "../domain/models/InstagramLink";
 
   let {
     instagramLink = null,

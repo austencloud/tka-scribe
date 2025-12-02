@@ -10,25 +10,21 @@ Orchestrates specialized components and services:
   import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
   import ConstructPickerHeader from "$lib/features/create/construct/shared/components/ConstructPickerHeader.svelte";
   import type { ILayoutDetectionService } from "../../services/contracts/ILayoutDetectionService";
-  import type {
-    IOptionFilter,
-    IOptionLoader,
-    IOptionOrganizer,
-    IOptionSizer,
-    IOptionSorter,
-    ISectionTitleFormatter,
-  } from "../services/contracts";
-  import {
-    createContainerDimensionTracker,
-    createOptionPickerState,
-  } from "../state";
+  import type { IOptionFilter } from "../services/contracts/IOptionFilter";
+  import type { IOptionLoader } from "../services/contracts/IOptionLoader";
+  import type { IOptionOrganizer } from "../services/contracts/IOptionOrganizer";
+  import type { IOptionSizer } from "../services/contracts/IOptionSizer";
+  import type { IOptionSorter } from "../services/contracts/IOptionSorter";
+  import type { ISectionTitleFormatter } from "../services/contracts/ISectionTitleFormatter";
+  import { createContainerDimensionTracker } from "../state/container-dimension-tracker.svelte";
+  import { createOptionPickerState } from "../state/option-picker-state.svelte";
   import OptionFilterPanel from "./OptionFilterPanel.svelte";
   import OptionViewerGridLayout from "./OptionViewerGridLayout.svelte";
   import OptionViewerSwipeLayout from "./OptionViewerSwipeLayout.svelte";

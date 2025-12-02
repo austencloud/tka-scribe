@@ -5,13 +5,13 @@
  * Manages reactive state and workbench animation updates.
  */
 
-import type { SequenceState } from "$create/shared/state";
-import { setPendingGenerationAnimation } from "$create/shared/workspace-panel/sequence-display/state/beat-grid-display-state.svelte";
+import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
+import { setPendingGenerationAnimation } from "$lib/features/create/shared/workspace-panel/sequence-display/state/beat-grid-display-state.svelte";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { GenerationOptions } from "../shared/domain";
-import type { IGenerationOrchestrationService } from "../shared/services/contracts";
+import type { GenerationOptions } from "../shared/domain/models/generate-models";
+import type { IGenerationOrchestrationService } from "../shared/services/contracts/IGenerationOrchestrationService";
 
 export function createGenerationActionsState(
   sequenceState?: SequenceState,

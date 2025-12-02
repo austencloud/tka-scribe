@@ -7,7 +7,7 @@
  * Domain: Create module - Responsive Layout Management
  */
 
-import type { IResponsiveLayoutService } from "../../services/contracts";
+import type { IResponsiveLayoutService } from "../../services/contracts/IResponsiveLayoutService";
 
 export interface LayoutManagerConfig {
   layoutService: IResponsiveLayoutService;

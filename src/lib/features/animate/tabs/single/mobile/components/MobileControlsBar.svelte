@@ -7,7 +7,7 @@
 <script lang="ts">
   import BpmControl from "../../../../components/controls/BpmControl.svelte";
   import PlayPauseButton from "../../../../components/controls/PlayPauseButton.svelte";
-  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+  import { animationSettings } from "../../../../../../shared/animation-engine/state/animation-settings-state.svelte";
 
   let {
     isPlaying = $bindable(false),

@@ -1,10 +1,8 @@
 <script lang="ts">
-  import {
-    AdminSearchBox,
-    AdminActionButton,
-    AdminListItem,
-    AdminEmptyState,
-  } from "$lib/shared/admin";
+  import AdminSearchBox from "$lib/shared/admin/components/AdminSearchBox.svelte";
+  import AdminActionButton from "$lib/shared/admin/components/AdminActionButton.svelte";
+  import AdminListItem from "$lib/shared/admin/components/AdminListItem.svelte";
+  import AdminEmptyState from "$lib/shared/admin/components/AdminEmptyState.svelte";
   import { getRoleColor, getRoleIcon, type UserData } from "./utils";
 
   interface Props {

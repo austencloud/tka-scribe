@@ -10,7 +10,7 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import StartPositionSelectionPanel from "../../../generate/components/modals/StartPositionSelectionPanel.svelte";
-  import { getCreateModuleContext } from "../../context";
+  import { getCreateModuleContext } from "../../context/create-module-context";
 
   // Get context
   const ctx = getCreateModuleContext();

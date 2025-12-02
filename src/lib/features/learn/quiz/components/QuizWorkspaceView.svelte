@@ -1,27 +1,22 @@
 <!-- LessonWorkspaceView.svelte - Enhanced lesson workspace with full functionality -->
 <script lang="ts">
+	import QuizTimer from './QuizTimer.svelte';
   import { onDestroy, onMount } from "svelte";
-  import {
-    QuizMode as QuizModeEnum,
-    type QuizLayoutMode,
-    type QuizMode,
-    type QuizProgress,
-    type QuizResults,
-  } from "../domain";
-  import QuizTimer from "./QuizTimer.svelte";
+
 
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   // Import quiz services
-  import { QuizType } from "../domain";
-  import {
-    QuizConfigurator,
-    QuizSessionService,
-  } from "../services/implementations";
+
   import LetterToPictographQuiz from "./LetterToPictographQuiz.svelte";
   import PictographToLetterQuiz from "./PictographToLetterQuiz.svelte";
   import ValidNextPictographQuiz from "./ValidNextPictographQuiz.svelte";
+  import { QuizMode, QuizType } from "../domain/enums/quiz-enums";
+  import type { QuizLayoutMode } from "../domain/enums/quiz-enums";
+  import type { QuizResults, QuizProgress } from "../domain/models/quiz-models";
+  import { QuizConfigurator } from "../services/implementations/QuizConfigurator";
+  import { QuizSessionService } from "../services/implementations/QuizSessionService";
 
   // Props
   let {
@@ -67,10 +62,8 @@
   });
 
   // Derived state
-  const isCountdownMode = $derived(quizMode === QuizModeEnum.COUNTDOWN);
-  const isFixedQuestionMode = $derived(
-    quizMode === QuizModeEnum.FIXED_QUESTION
-  );
+  const isCountdownMode = $derived(quizMode === QuizMode.COUNTDOWN);
+  const isFixedQuestionMode = $derived(quizMode === QuizMode.FIXED_QUESTION);
 
   // Lifecycle
   onMount(() => {

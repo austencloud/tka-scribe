@@ -6,7 +6,7 @@
  */
 
 import { injectable, inject } from "inversify";
-import { TYPES } from "../../../inversify";
+import { TYPES } from "../../../inversify/di";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";

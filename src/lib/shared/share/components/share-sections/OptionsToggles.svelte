@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
-  import type { createShareState } from "../../state";
+  import type { createShareState } from "../../state/share-state.svelte";
 
   let {
     shareState,

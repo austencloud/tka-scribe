@@ -17,17 +17,17 @@ import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contra
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { StartPositionData } from "../../domain/models/StartPositionData";
 // isStartPosition not used but isBeat is exported from same module
-import { isBeat } from "$create/shared";
+import { isBeat } from "../../domain/type-guards/pictograph-type-guards";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { inject, injectable } from "inversify";
 import { createBeatData } from "../../domain/factories/createBeatData";
 import { createStartPositionData } from "../../domain/factories/createStartPositionData";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
-import { LOCATION_MAP_EIGHTH_CW } from "$create/generate/circular/domain/constants/circular-position-maps";
-import { VERTICAL_MIRROR_POSITION_MAP, VERTICAL_MIRROR_LOCATION_MAP, SWAPPED_POSITION_MAP } from "$create/generate/circular/domain/constants/strict-cap-position-maps";
+import { LOCATION_MAP_EIGHTH_CW } from "../../../generate/circular/domain/constants/circular-position-maps";
+import { VERTICAL_MIRROR_POSITION_MAP, VERTICAL_MIRROR_LOCATION_MAP, SWAPPED_POSITION_MAP } from "../../../generate/circular/domain/constants/strict-cap-position-maps";
 
 @injectable()
 export class SequenceTransformationService

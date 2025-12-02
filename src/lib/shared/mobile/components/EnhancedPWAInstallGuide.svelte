@@ -19,9 +19,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IPlatformDetectionService } from "../services/contracts";
+  import type { IPlatformDetectionService } from "../services/contracts/IPlatformDetectionService";
   import type { Platform, Browser } from "../config/pwa-install-instructions";
   import { getInstallInstructions } from "../config/pwa-install-instructions";
   import { createViewportMeasurement } from "../utils/viewport-measurement.svelte";

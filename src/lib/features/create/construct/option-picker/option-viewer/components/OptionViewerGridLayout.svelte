@@ -12,7 +12,7 @@ Features:
 
 <script lang="ts">
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import type { OrganizedSection } from "../domain";
+  import type { OrganizedSection } from "../domain/option-picker-types";
   import OptionPicker456Group from "./OptionViewer456Group.svelte";
   import OptionViewerSection from "./OptionViewerSection.svelte";
 

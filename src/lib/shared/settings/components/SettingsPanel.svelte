@@ -9,15 +9,15 @@
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
   import Drawer from "../../foundation/ui/Drawer.svelte";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
   import { onMount } from "svelte";
   import {
     getSettings,
-    hideSettingsDialog,
     updateSettings,
   } from "../../application/state/app-state.svelte";
+  import { hideSettingsDialog } from "../../application/state/ui/ui-state.svelte";
   import SettingsSidebar from "./SettingsSidebar.svelte";
   import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
   import SettingsTabContent from "./SettingsTabContent.svelte";

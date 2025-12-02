@@ -5,7 +5,8 @@ A fun, engaging layout for selecting game type and mode.
 Features a welcoming header, mode toggle, and game cards.
 -->
 <script lang="ts">
-  import { LESSON_INFO, QuizMode, QuizType } from "../domain";
+  import { LESSON_INFO } from "../domain/constants/quiz-constants";
+  import { QuizMode, QuizType } from "../domain/enums/quiz-enums";
   import LessonButton from "./LessonButton.svelte";
   import LessonModeToggle from "./QuizModeToggle.svelte";
 

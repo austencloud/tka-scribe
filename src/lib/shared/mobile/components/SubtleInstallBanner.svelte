@@ -11,7 +11,7 @@
   - Respects dismissal timing (7/30/90 days)
 -->
 <script lang="ts">
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";

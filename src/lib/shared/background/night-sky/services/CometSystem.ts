@@ -3,7 +3,7 @@
 import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
 import type { Dimensions, QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
 import type { EasterEggState, Star, StarConfig } from "../domain/models/night-sky-models";
-import type { INightSkyCalculationService } from "../services";
+import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 // Removed resolve import - calculation service now injected via constructor
 
 export interface CometConfig {

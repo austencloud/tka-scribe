@@ -5,7 +5,7 @@
   Handles sequence completion and integration with the build system.
 -->
 <script lang="ts">
-  import { HandpathBuilder } from "../../assemble";
+  import HandpathBuilder from "../../assemble/handpath-builder/components/HandpathBuilder.svelte";
 
   let { onPathBuilderSequenceComplete } = $props<{
     onPathBuilderSequenceComplete?: (motions: {

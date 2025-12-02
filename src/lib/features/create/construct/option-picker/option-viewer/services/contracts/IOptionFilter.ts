@@ -10,7 +10,7 @@ import type {
   EndPositionFilter,
   ReversalFilter,
   TypeFilter,
-} from "../../domain";
+} from "../../domain/option-picker-types";
 
 export interface IOptionFilter {
   /**

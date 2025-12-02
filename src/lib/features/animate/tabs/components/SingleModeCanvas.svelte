@@ -5,17 +5,17 @@
   Renders animation inline (not in a modal/drawer).
 -->
 <script lang="ts">
-  import { AnimatorCanvas } from "$lib/shared/animation-engine/components";
-  import type { ISequenceService } from "$create/shared";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import AnimatorCanvas from "../../../../shared/animation-engine/components/AnimatorCanvas.svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IAnimationPlaybackController } from "../../services/contracts";
+  import type { IAnimationPlaybackController } from "../../services/contracts/IAnimationPlaybackController";
   import { createAnimationPanelState } from "../../state/animation-panel-state.svelte";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
   } from "../../shared/domain/constants/timing";
+  import type { ISequenceService } from "../../../create/shared/services/contracts/ISequenceService";
 
   // Props
   let {

@@ -7,9 +7,9 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../inversify";
-  import type { IAchievementService } from "../services/contracts";
-  import type { UserXP } from "../domain/models";
+  import { resolve, TYPES } from "../../inversify/di";
+  import type { IAchievementService } from "../services/contracts/IAchievementService";
+  import type { UserXP } from "../domain/models/achievement-models";
   import { getLevelProgress } from "../domain/constants/xp-constants";
   import { auth } from "../../auth/firebase";
 

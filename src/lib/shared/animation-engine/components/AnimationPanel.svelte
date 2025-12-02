@@ -18,7 +18,7 @@
   import AnimationPanelHeader from "$lib/features/animate/components/canvas/AnimationPanelHeader.svelte";
   import AnimationCanvas from "$lib/features/animate/components/canvas/AnimationCanvas.svelte";
   import AnimationControlsPanel from "$lib/features/animate/components/canvas/AnimationControlsPanel.svelte";
-  import { CreatePanelDrawer } from "$lib/features/create/shared/components";
+  import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
 
   // Types
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";

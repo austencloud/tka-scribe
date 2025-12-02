@@ -6,12 +6,13 @@
  * Eliminates code duplication by using a single organization method.
  */
 
-import type { Letter} from "$lib/shared/foundation/domain/models";
-import { getLetterType, LetterType } from "$lib/shared/foundation/domain/models";
+
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { injectable } from "inversify";
-import type { OrganizedSection, SortMethod } from "../../domain";
+import type { OrganizedSection, SortMethod } from "../../domain/option-picker-types";
 import type { IOptionOrganizer } from "../contracts/IOptionOrganizer";
+import { Letter, getLetterType } from "../../../../../../../shared/foundation/domain/models/Letter";
+import { LetterType } from "../../../../../../../shared/foundation/domain/models/LetterType";
 
 @injectable()
 export class OptionOrganizer implements IOptionOrganizer {

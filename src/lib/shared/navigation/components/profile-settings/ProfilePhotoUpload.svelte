@@ -5,7 +5,7 @@
   Features horizontal layout with photo preview and upload button.
 -->
 <script lang="ts">
-  import { authStore } from "../../../auth";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     isCompactMode,

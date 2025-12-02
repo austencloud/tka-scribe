@@ -5,7 +5,7 @@
  * This provides a centralized, reactive notification queue for the UI.
  */
 
-import type { AchievementNotification } from "../domain/models";
+import type { AchievementNotification } from '../domain/models/achievement-models';
 
 // Reactive notification queue - export directly for reactive access
 export const notificationQueue = $state<AchievementNotification[]>([]);

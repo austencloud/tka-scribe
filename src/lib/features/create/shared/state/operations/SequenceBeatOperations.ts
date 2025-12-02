@@ -15,7 +15,7 @@ import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceAnimationState } from "../animation/SequenceAnimationState.svelte";
 import type { SequenceCoreState } from "../core/SequenceCoreState.svelte";
 import type { SequenceSelectionState } from "../selection/SequenceSelectionState.svelte";
-import type { IReversalDetectionService } from "../../services/contracts";
+import type { IReversalDetectionService } from "../../services/contracts/IReversalDetectionService";
 
 export interface BeatOperationsConfig {
   coreState: SequenceCoreState;

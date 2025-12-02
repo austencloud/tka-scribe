@@ -9,7 +9,7 @@ import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enu
  * The beats array should only contain actual beats (beatNumber >= 1), never start position.
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
+import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { GridPositionGroup } from "../../../pictograph/grid/domain/enums/grid-enums";
 import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";

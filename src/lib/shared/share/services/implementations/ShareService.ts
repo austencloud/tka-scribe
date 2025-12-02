@@ -5,12 +5,12 @@
  * Uses the render module for image generation.
  */
 
-import type { ISequenceRenderService } from "$render";
+import type { ISequenceRenderService } from "../../../render/services/contracts/ISequenceRenderService";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { ShareOptions } from "../../domain";
-import type { IShareService } from "../contracts";
+import type { ShareOptions } from "../../domain/models/ShareOptions";
+import type { IShareService } from "../contracts/IShareService";
 import { PreviewCacheService } from "./PreviewCacheService";
 
 @injectable()

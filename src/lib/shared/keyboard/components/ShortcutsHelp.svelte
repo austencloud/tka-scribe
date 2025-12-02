@@ -8,10 +8,10 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../inversify";
-  import type { IKeyboardShortcutService } from "../services/contracts";
-  import { keyboardShortcutState } from "../state";
-  import type { ShortcutRegistrationOptions, ShortcutScope } from "../domain";
+  import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+  import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
+  import type { ShortcutRegistrationOptions, ShortcutScope } from "../domain/types/keyboard-types";
+  import { resolve, TYPES } from "../../inversify/container";
 
   // Service
   let shortcutService: IKeyboardShortcutService | null = null;

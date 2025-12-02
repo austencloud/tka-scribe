@@ -4,8 +4,10 @@ ConceptContext - Subtle prev/next indicators
 Simple inline display showing journey position
 -->
 <script lang="ts">
-  import type { LearnConcept } from "../domain";
-  import { CONCEPT_CATEGORIES } from "../domain";
+  import { CONCEPT_CATEGORIES } from "../domain/concepts";
+  import type { LearnConcept } from "../domain/types";
+
+
 
   let {
     previousConcept,

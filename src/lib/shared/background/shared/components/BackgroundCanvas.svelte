@@ -9,11 +9,11 @@ without the complex BackgroundContext system.
   import { onDestroy, onMount } from "svelte";
   import type {
     BackgroundSystem,
-    BackgroundType,
     PerformanceMetrics,
-    QualityLevel,
-  } from "../domain";
-  import { BackgroundFactory } from "../services/implementations";
+  } from "../domain/models/background-models";
+  import type { BackgroundType } from "../domain/enums/background-enums";
+  import type { QualityLevel } from "../domain/types/background-types";
+  import { BackgroundFactory } from "../services/implementations/BackgroundFactory";
 
   // Props
   const {

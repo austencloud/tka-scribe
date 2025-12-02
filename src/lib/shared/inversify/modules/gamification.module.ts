@@ -6,24 +6,20 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type {
-  IAchievementService,
-  IDailyChallengeService,
-  IWeeklyChallengeService,
-  ISkillProgressionService,
-  IChallengeCoordinator,
-  INotificationService,
-  IStreakService,
-} from "../../gamification/services/contracts";
-import {
-  AchievementService,
-  DailyChallengeService,
-  WeeklyChallengeService,
-  SkillProgressionService,
-  ChallengeCoordinator,
-  NotificationService,
-  StreakService,
-} from "../../gamification/services/implementations";
+import type { IAchievementService } from '../../gamification/services/contracts/IAchievementService';
+import type { IDailyChallengeService } from '../../gamification/services/contracts/IDailyChallengeService';
+import type { IWeeklyChallengeService } from '../../gamification/services/contracts/IWeeklyChallengeService';
+import type { ISkillProgressionService } from '../../gamification/services/contracts/ISkillProgressionService';
+import type { IChallengeCoordinator } from '../../gamification/services/contracts/IChallengeCoordinator';
+import type { INotificationService } from '../../gamification/services/contracts/INotificationService';
+import type { IStreakService } from '../../gamification/services/contracts/IStreakService';
+import { AchievementService } from '../../gamification/services/implementations/AchievementService';
+import { DailyChallengeService } from '../../gamification/services/implementations/DailyChallengeService';
+import { WeeklyChallengeService } from '../../gamification/services/implementations/WeeklyChallengeService';
+import { SkillProgressionService } from '../../gamification/services/implementations/SkillProgressionService';
+import { ChallengeCoordinator } from '../../gamification/services/implementations/ChallengeCoordinator';
+import { NotificationService } from '../../gamification/services/implementations/NotificationService';
+import { StreakService } from '../../gamification/services/implementations/StreakService';
 
 export const gamificationModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

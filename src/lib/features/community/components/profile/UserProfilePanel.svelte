@@ -8,10 +8,10 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { PanelButton } from "$lib/shared/components/panel";
+  import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
   import type { IUserService } from "../../services/contracts/IUserService";
   import type { ILeaderboardService } from "../../services/contracts/ILeaderboardService";

@@ -7,7 +7,7 @@ of pictographs. Only displays for Type1 letters.
 Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
 -->
 <script lang="ts">
-  import type { VTGMode } from "../domain/enums";
+  import type { VTGMode } from "../domain/enums/pictograph-enums";
   import { LetterType } from "../../../foundation/domain/models/LetterType";
   import {
     type Letter,

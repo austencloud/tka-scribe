@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount, setContext } from "svelte";
@@ -9,7 +9,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
 
-  import type { IDiscoverEventHandlerService } from "../services/contracts";
+  import type { IDiscoverEventHandlerService } from "../services/contracts/IDiscoverEventHandlerService";
   import CollectionsDiscoverPanel from "../../collections/components/CollectionsDiscoverPanel.svelte";
   import { createExploreState } from "../state/discover-state-factory.svelte";
   import DiscoverDeleteDialog from "./DiscoverDeleteDialog.svelte";

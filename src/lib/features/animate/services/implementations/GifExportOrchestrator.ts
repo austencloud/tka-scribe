@@ -14,8 +14,8 @@ import type { AnimationPanelState } from "../../state/animation-panel-state.svel
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { ISvgImageService } from "$lib/shared/foundation/services/contracts/ISvgImageService";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IFileDownloadService } from "$lib/shared/foundation/services/contracts";
-import { getLetterImagePath } from "$lib/shared/pictograph/tka-glyph/utils";
+import type { IFileDownloadService } from "$lib/shared/foundation/services/contracts/IFileDownloadService";
+import { getLetterImagePath } from "$lib/shared/pictograph/tka-glyph/utils/letter-image-getter";
 import { inject, injectable } from "inversify";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
 import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";

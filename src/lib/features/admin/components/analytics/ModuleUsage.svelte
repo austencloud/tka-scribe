@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ModuleUsageData } from "../../services/contracts";
+  import type { ModuleUsageData } from "../../services/contracts/IAnalyticsDataService";
 
   interface Props {
     modules: ModuleUsageData[];

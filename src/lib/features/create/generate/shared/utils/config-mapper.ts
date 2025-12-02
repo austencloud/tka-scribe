@@ -12,8 +12,8 @@
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { PropType} from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { PropType as PropTypeEnum } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import type { DifficultyLevel, GenerationOptions } from "../domain";
-import { DifficultyLevel as DifficultyEnum } from "../domain";
+import type { DifficultyLevel, GenerationOptions } from "../domain/models/generate-models";
+import { DifficultyLevel as DifficultyEnum } from "../domain/models/generate-models";
 
 /**
  * Map difficulty level number to DifficultyLevel enum

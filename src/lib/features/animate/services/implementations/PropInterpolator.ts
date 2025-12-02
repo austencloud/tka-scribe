@@ -11,7 +11,8 @@ import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/Mot
 import type { MotionEndpoints } from "$lib/shared/pictograph/shared/domain/models/MotionEndpoints";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IPropInterpolator, InterpolationResult } from "../contracts";
+import type { IPropInterpolator } from "../contracts/IPropInterpolator";
+import type { InterpolationResult } from "../contracts/IAnimationStateManager";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";
 import type { IEndpointCalculator } from "../contracts/IEndpointCalculator";
 

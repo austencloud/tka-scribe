@@ -8,10 +8,11 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../inversify";
-  import type { ICommandPaletteService } from "../services/contracts";
-  import { commandPaletteState, keyboardShortcutState } from "../state";
-  import type { CommandPaletteItem } from "../domain";
+  import { resolve, TYPES } from "../../inversify/di";
+  import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
+  import { commandPaletteState } from "../state/command-palette-state.svelte";
+  import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
+  import type { CommandPaletteItem } from "../domain/types/keyboard-types";
 
   // Service
   let paletteService: ICommandPaletteService | null = null;

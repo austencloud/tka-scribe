@@ -5,7 +5,7 @@ import type {
   QualityLevel,
 } from "$lib/shared/background/shared/domain/types/background-types";
 import type { IBackgroundSystem } from "$lib/shared/background/shared/services/contracts/IBackgroundSystem";
-import type { LensFlare, Sparkle } from "../domain";
+import type { LensFlare, Sparkle } from "../domain/models/aurora-models";
 
 export class AuroraBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";

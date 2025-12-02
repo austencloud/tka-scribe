@@ -12,11 +12,12 @@ import { MotionColor } from "../domain/enums/pictograph-enums";
 import type { MotionData } from "../domain/models/MotionData";
 import type { PictographData } from "../domain/models/PictographData";
 import { PropType } from "../../prop/domain/enums/PropType";
-import { resolve } from "../../../inversify";
+import { resolve } from '../../../inversify/bootstrap';
 import { TYPES } from "../../../inversify/types";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
-import type { PropAssets, PropPosition } from "../../prop/domain/models";
+import type { PropAssets } from '../../prop/domain/models/PropAssets';
+import type { PropPosition } from '../../prop/domain/models/PropPosition';
 
 export interface PictographState {
   // Data state

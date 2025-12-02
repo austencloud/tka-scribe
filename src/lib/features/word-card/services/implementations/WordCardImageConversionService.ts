@@ -10,7 +10,7 @@ import { injectable } from "inversify";
 import type { WordCardDimensions } from "../../domain/models/word-card-export";
 
 // Behavioral contracts
-import type { IWordCardImageConversionService } from "../contracts";
+import type { IWordCardImageConversionService } from "../contracts/word-card-contracts";
 
 @injectable()
 export class WordCardImageConversionService

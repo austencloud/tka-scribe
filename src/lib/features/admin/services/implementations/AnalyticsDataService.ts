@@ -18,7 +18,7 @@ import {
 } from "firebase/firestore";
 import { firestore, auth } from "$lib/shared/auth/firebase";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IActivityLogService } from "$lib/shared/analytics";
+import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
 import type {
   IAnalyticsDataService,
   SummaryMetrics,

@@ -11,7 +11,7 @@ import type {
   WordCardExportResult,
 } from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
-import type { IWordCardBatchProcessingService } from "../contracts";
+import type { IWordCardBatchProcessingService } from "../contracts/word-card-contracts";
 
 @injectable()
 export class WordCardBatchProcessingService

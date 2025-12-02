@@ -10,7 +10,7 @@ Features:
 - Auto-hides after duration or when fullscreen is activated
 -->
 <script lang="ts">
-import { resolve } from "../../inversify";
+import { resolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";

@@ -5,7 +5,7 @@
   Wraps existing settings tab components.
 -->
 <script lang="ts">
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import {
@@ -14,10 +14,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   } from "$lib/shared/application/state/app-state.svelte";
   import PropTypeTab from "$lib/shared/settings/components/tabs/PropTypeTab.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { BackgroundTab } from "../../../shared";
   import AccessibilityTab from "../../../shared/settings/components/tabs/AccessibilityTab.svelte";
   import VisibilityTab from "../../../shared/settings/components/tabs/VisibilityTab.svelte";
   import Toast from "../../create/shared/workspace-panel/components/Toast.svelte";
+  import BackgroundTab from "../../../shared/settings/components/tabs/background/BackgroundTab.svelte";
 
   // Settings subsections
   type PreferencesSection = "propType" | "background" | "visibility" | "misc";

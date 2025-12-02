@@ -5,7 +5,7 @@
   Shows provider icons, names, and associated emails.
 -->
 <script lang="ts">
-  import { authStore } from "../../../auth";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
 </script>
 
 <div class="connected-accounts">

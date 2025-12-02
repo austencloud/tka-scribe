@@ -7,17 +7,17 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts";
-  import { resolve } from "../../inversify";
+  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import type { IShareService } from "../services/contracts";
-  import { createShareState } from "../state";
+  import type { IShareService } from "../services/contracts/IShareService";
+  import { createShareState } from "../state/share-state.svelte";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
-  import { getInstagramLink } from "../domain";
-  import type { InstagramLink } from "../domain";
-  import { ShareAnimationViewer } from "$lib/shared/animation-engine/components";
+  import { getInstagramLink } from "../domain/models/InstagramLink";
+  import type { InstagramLink } from "../domain/models/InstagramLink";
+  import ShareAnimationViewer from "../../animation-engine/components/ShareAnimationViewer.svelte";
   import { createServiceResolver } from "../../utils/service-resolver.svelte";
 
   // Services

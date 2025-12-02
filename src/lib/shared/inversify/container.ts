@@ -222,14 +222,19 @@ export async function loadCriticalModules(): Promise<void> {
   if (tier1Loaded) return;
 
   try {
-    const modules = await import("./modules");
-
-    if (!modules) {
-      throw new Error("Failed to import modules - modules is undefined");
-    }
-
-    const { coreModule, navigationModule, dataModule, keyboardModule, analyticsModule } =
-      modules;
+    const [
+      { coreModule },
+      { navigationModule },
+      { dataModule },
+      { keyboardModule },
+      { analyticsModule }
+    ] = await Promise.all([
+      import("./modules/core.module"),
+      import("./modules/navigation.module"),
+      import("./modules/data.module"),
+      import("./modules/keyboard.module"),
+      import("./modules/analytics.module")
+    ]);
 
     if (!coreModule) {
       throw new Error("coreModule is undefined");
@@ -284,15 +289,21 @@ export async function loadSharedModules(): Promise<void> {
   // Start loading and cache the promise
   tier2Promise = (async () => {
     try {
-      const modules = await import("./modules");
-      const {
-        renderModule,
-        pictographModule,
-        createModule, // Animator depends on sequence transformation services from create
-        shareModule, // CreateModule depends on IShareService
-        animatorModule, // Animation panels appear across all modules
-        gamificationModule,
-      } = modules;
+      const [
+        { renderModule },
+        { pictographModule },
+        { createModule }, // Animator depends on sequence transformation services from create
+        { shareModule }, // CreateModule depends on IShareService
+        { animatorModule }, // Animation panels appear across all modules
+        { gamificationModule }
+      ] = await Promise.all([
+        import("./modules/render.module"),
+        import("./modules/pictograph.module"),
+        import("./modules/build.module"),
+        import("./modules/share.module"),
+        import("./modules/animator.module"),
+        import("./modules/gamification.module")
+      ]);
 
       await container.load(
         renderModule,
@@ -334,7 +345,27 @@ export async function loadFeatureModule(feature: string): Promise<void> {
   }
 
   try {
-    const modules = await import("./modules");
+    const [
+      { exploreModule },
+      { learnModule },
+      { trainModule },
+      { libraryModule },
+      { communityModule },
+      { wordCardModule },
+      { writeModule },
+      { adminModule },
+      { shareModule }
+    ] = await Promise.all([
+      import("./modules/discover.module"),
+      import("./modules/learn.module"),
+      import("./modules/train.module"),
+      import("./modules/library.module"),
+      import("./modules/community.module"),
+      import("./modules/word-card.module"),
+      import("./modules/write.module"),
+      import("./modules/admin.module"),
+      import("./modules/share.module")
+    ]);
 
     // Map feature names to their DI modules with dependency tracking
     const moduleMap: Record<string, Array<{ module: ContainerModule; name: string }>> = {
@@ -342,34 +373,34 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         // createModule and shareModule are now loaded in Tier 2
       ],
       discover: [
-        { module: modules.exploreModule, name: "discover" },
+        { module: exploreModule, name: "discover" },
       ],
       community: [
-        { module: modules.exploreModule, name: "discover" },
-        { module: modules.libraryModule, name: "library" },
-        { module: modules.communityModule, name: "community" },
+        { module: exploreModule, name: "discover" },
+        { module: libraryModule, name: "library" },
+        { module: communityModule, name: "community" },
       ],
-      learn: [{ module: modules.learnModule, name: "learn" }],
+      learn: [{ module: learnModule, name: "learn" }],
       train: [
-        { module: modules.exploreModule, name: "discover" },
-        { module: modules.trainModule, name: "train" },
+        { module: exploreModule, name: "discover" },
+        { module: trainModule, name: "train" },
       ],
-      animate: [{ module: modules.exploreModule, name: "discover" }],
-      edit: [{ module: modules.exploreModule, name: "discover" }], // Edit uses explore services for sequence browser
-      collect: [{ module: modules.libraryModule, name: "library" }],
-      account: [{ module: modules.libraryModule, name: "library" }], // Account uses library services for user stats
+      animate: [{ module: exploreModule, name: "discover" }],
+      edit: [{ module: exploreModule, name: "discover" }], // Edit uses explore services for sequence browser
+      collect: [{ module: libraryModule, name: "library" }],
+      account: [{ module: libraryModule, name: "library" }], // Account uses library services for user stats
       about: [], // About module uses no additional DI services
       word_card: [
-        { module: modules.wordCardModule, name: "word_card" },
-        { module: modules.exploreModule, name: "discover" },
+        { module: wordCardModule, name: "word_card" },
+        { module: exploreModule, name: "discover" },
       ],
-      write: [{ module: modules.writeModule, name: "write" }],
+      write: [{ module: writeModule, name: "write" }],
       admin: [
-        { module: modules.adminModule, name: "admin" },
-        { module: modules.libraryModule, name: "library" },
-        { module: modules.trainModule, name: "train" },
+        { module: adminModule, name: "admin" },
+        { module: libraryModule, name: "library" },
+        { module: trainModule, name: "train" },
       ],
-      share: [{ module: modules.shareModule, name: "share" }],
+      share: [{ module: shareModule, name: "share" }],
     };
 
     const moduleList = moduleMap[feature];

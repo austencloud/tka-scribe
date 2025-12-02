@@ -29,10 +29,10 @@ import {
   getUserXPEventsPath,
 } from "../../data/firestore-collections";
 import {
-  ALL_ACHIEVEMENTS,
   calculateLevelFromXP,
   XP_REWARDS,
-} from "../../domain/constants";
+} from "../../domain/constants/xp-constants";
+import { ALL_ACHIEVEMENTS } from "../../domain/constants/achievement-definitions";
 import type {
   Achievement,
   UserAchievement,
@@ -40,8 +40,8 @@ import type {
   XPActionType,
   XPGainEvent,
   XPEventMetadata,
-} from "../../domain/models";
-import type { IAchievementService } from "../contracts";
+} from "../../domain/models/achievement-models";
+import type { IAchievementService } from "../contracts/IAchievementService";
 import type { INotificationService } from "../contracts/INotificationService";
 import { TYPES } from "../../../inversify/types";
 

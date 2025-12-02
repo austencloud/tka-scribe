@@ -3,7 +3,8 @@
    * TransferConfirmDialog - Confirmation dialog for sequence transfer
    * Renders as bottom sheet on mobile, modal dialog on desktop
    */
-  import { Drawer, ConfirmDialog } from "$lib/shared/foundation/ui";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
 
   let {
     isOpen = $bindable(false),

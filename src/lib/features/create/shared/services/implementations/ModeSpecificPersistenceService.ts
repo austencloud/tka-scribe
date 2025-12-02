@@ -11,7 +11,7 @@
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
-import type { ISequencePersistenceService } from "../contracts";
+import type { ISequencePersistenceService } from "../contracts/ISequencePersistenceService";
 
 /**
  * Creates a mode-specific persistence service that always uses the specified mode

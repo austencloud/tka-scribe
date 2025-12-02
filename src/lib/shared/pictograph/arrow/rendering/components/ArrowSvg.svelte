@@ -4,7 +4,7 @@ Now with click interaction and selection visual feedback
 Now with intelligent rotation animation matching prop behavior!
 -->
 <script lang="ts">
-  import { resolve } from "../../../../inversify";
+  import { resolve } from "../../../../inversify/di";
   import { TYPES } from "../../../../inversify/types";
   import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
   import type { MotionData } from "../../../shared/domain/models/MotionData";

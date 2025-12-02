@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import type { SortMethod, TypeFilter } from "../option-viewer";
+import type { SortMethod, TypeFilter } from "../option-viewer/domain/option-picker-types";
 
 export interface IFilterPersistenceService {
   saveFilters(

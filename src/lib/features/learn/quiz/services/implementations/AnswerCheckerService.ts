@@ -5,13 +5,8 @@
  * Handles different answer types and lesson-specific validation logic.
  */
 
-import {
-  QuizAnswerFeedback,
-  QuizType,
-  type QuizAnswerOption,
-  type QuizAnswerResult,
-  type QuizQuestionData,
-} from "../../domain";
+import type { QuizQuestionData, QuizAnswerOption, QuizAnswerResult } from '../../domain/models/quiz-models';
+import { QuizAnswerFeedback, QuizType } from '../../domain/enums/quiz-enums';
 
 export class AnswerCheckerService {
   /**

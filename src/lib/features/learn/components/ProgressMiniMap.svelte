@@ -7,8 +7,8 @@ Shows:
 - Clean, minimal design
 -->
 <script lang="ts">
-  import { TKA_CONCEPTS, CONCEPT_CATEGORIES, getConceptsByCategory } from "../domain";
-  import type { LearningProgress, ConceptCategory } from "../domain";
+  import { TKA_CONCEPTS, CONCEPT_CATEGORIES, getConceptsByCategory } from "../domain/concepts";
+  import type { LearningProgress, ConceptCategory } from "../domain/types";
 
   let { progress }: {
     progress: LearningProgress;

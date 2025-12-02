@@ -10,8 +10,8 @@ import type {
   DeviceConfig,
   SizingCalculationParams,
   SizingResult,
-} from "../../domain";
-import type { IOptionSizer } from "../contracts";
+} from "../../domain/option-viewer-models";
+import type { IOptionSizer } from "../contracts/IOptionSizer";
 
 @injectable()
 export class OptionSizer implements IOptionSizer {

@@ -5,17 +5,15 @@
    */
 
   import { onMount } from "svelte";
-  import type { IAdminChallengeService } from "../services/contracts";
+  import type { IAdminChallengeService } from "../services/contracts/IAdminChallengeService";
   import type {
     ChallengeScheduleEntry,
     ChallengeFormData,
-  } from "../domain/models";
-  import {
-    SchedulerStatsGrid,
-    SchedulerCalendarView,
-    SchedulerTimelineView,
-    ChallengeFormPanel,
-  } from "./challenge-scheduler";
+  } from "../domain/models/AdminModels";
+  import SchedulerStatsGrid from "./challenge-scheduler/SchedulerStatsGrid.svelte";
+  import SchedulerCalendarView from "./challenge-scheduler/SchedulerCalendarView.svelte";
+  import SchedulerTimelineView from "./challenge-scheduler/SchedulerTimelineView.svelte";
+  import ChallengeFormPanel from "./challenge-scheduler/ChallengeFormPanel.svelte";
 
   interface Props {
     adminChallengeService: IAdminChallengeService;

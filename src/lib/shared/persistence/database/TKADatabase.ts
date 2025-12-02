@@ -10,15 +10,7 @@ import type { AppSettings } from "../../settings/domain/AppSettings";
 import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import Dexie, { type EntityTable } from "dexie";
-import type {
-  AchievementNotification,
-  DailyChallenge,
-  UserAchievement,
-  UserChallengeProgress,
-  UserStreak,
-  UserXP,
-  XPGainEvent,
-} from "../../gamification/domain/models";
+import type { AchievementNotification, DailyChallenge, UserAchievement, UserChallengeProgress, UserStreak, UserXP, XPGainEvent } from '../../gamification/domain/models/achievement-models';
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,
@@ -28,14 +20,15 @@ import type {
 import type {
   StoredPerformance,
   StoredCalibrationProfile,
-} from "$lib/features/train/domain/models";
+} from "$lib/features/train/domain/models/TrainDatabaseModels";
 import {
   DATABASE_NAME,
   DATABASE_VERSION,
   DEFAULT_USER_WORK_VERSION,
   TABLE_INDEXES,
-} from "../domain/constants";
-import type { UserProject, UserWorkData } from "../domain/models";
+} from "../domain/constants/DATABASE_CONSTANTS";
+import type { UserProject } from "../domain/models/UserProject";
+import type { UserWorkData } from "../domain/models/UserWorkData";
 
 // ============================================================================
 // DATABASE CLASS

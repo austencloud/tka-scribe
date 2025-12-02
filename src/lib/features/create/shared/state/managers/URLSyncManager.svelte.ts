@@ -9,7 +9,7 @@
 
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { navigationState as NavigationStateType } from "$lib/shared/navigation/state/navigation-state.svelte";
-import type { IURLSyncService } from "$lib/shared/navigation/services/contracts";
+import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type NavigationState = typeof NavigationStateType;

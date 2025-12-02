@@ -7,12 +7,11 @@
    */
 
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import { ensureContainerInitialized, resolve, TYPES } from "$lib/shared/inversify";
+  import { ensureContainerInitialized, resolve, TYPES } from "$lib/shared/inversify/di";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { setAnyPanelOpen, setSideBySideLayout } from "$lib/shared/application/state/animation-visibility-state.svelte";
-  import { AnimationSheetCoordinator } from "$lib/shared/coordinators";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
   import { onMount, setContext, tick } from "svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
@@ -23,20 +22,19 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
-  import { setCreateModuleContext } from "../context";
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import { setCreateModuleStateRef } from "../state/create-module-state-ref.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
-  import {
-    CAPCoordinator,
-    EditCoordinator,
-    SequenceActionsCoordinator,
-    ShareCoordinator,
-  } from "./coordinators";
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import TransferConfirmDialog from "./TransferConfirmDialog.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
+  import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
+  import { setCreateModuleContext } from "../context/create-module-context";
+  import CAPCoordinator from "./coordinators/CAPCoordinator.svelte";
+  import EditCoordinator from "./coordinators/EditCoordinator.svelte";
+  import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
+  import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
 
   const logger = createComponentLogger("CreateModule");
 

@@ -9,8 +9,8 @@ import type { MotionType } from "../../../../../shared/domain/enums/pictograph-e
 import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import { jsonCache } from "$lib/shared/pictograph/shared/services/implementations/SimpleJsonCache";
-import type { AllPlacementData, JsonPlacementData } from "../../domain";
-import type { IArrowPlacementService } from "../contracts";
+import type { AllPlacementData, JsonPlacementData } from "../../domain/models/PlacementDataTypes";
+import type { IArrowPlacementService } from "../contracts/IArrowPlacementService";
 
 @injectable()
 export class ArrowPlacementService implements IArrowPlacementService {

@@ -13,8 +13,9 @@ import {
   MODULE_DEFINITIONS,
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
-import { switchModule } from "../application/state/ui/module-state";
-import { authStore, featureFlagService } from "../auth";
+import { switchTab } from "../application/state/ui/module-state";
+import { authStore } from "../auth/stores/authStore.svelte";
+import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
 
 // Reactive state object using Svelte 5 $state rune
 export const navigationCoordinator = $state({
@@ -82,7 +83,7 @@ export function moduleSections() {
 export async function handleModuleChange(moduleId: ModuleId, targetTab?: string) {
   navigationState.setCurrentModule(moduleId, targetTab);
   // Switch module with proper persistence (saves to localStorage + Firestore)
-  await switchModule(moduleId);
+  await switchTab(moduleId);
 }
 
 // Section change handler

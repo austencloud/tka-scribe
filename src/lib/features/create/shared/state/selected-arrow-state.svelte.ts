@@ -8,7 +8,7 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData"
-import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";;
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 
 interface SelectedArrow {
   motionData: MotionData;

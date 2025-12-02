@@ -2,10 +2,10 @@
 <script lang="ts">
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts";
-import { resolve } from "$lib/shared/inversify";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-  import { SPOTLIGHT_CONSTANTS } from "../domain/constants";
+  import { SPOTLIGHT_CONSTANTS } from "../domain/constants/spotlight-constants";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const { sequence, onAction = () => {} } = $props<{

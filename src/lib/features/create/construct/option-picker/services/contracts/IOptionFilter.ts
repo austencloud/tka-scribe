@@ -6,11 +6,7 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type {
-  EndPositionFilter,
-  ReversalFilter,
-  TypeFilter,
-} from "../../domain";
+import type { EndPositionFilter, ReversalFilter, TypeFilter } from '../../domain/option-picker-types';
 
 export interface IOptionFilter {
   /**

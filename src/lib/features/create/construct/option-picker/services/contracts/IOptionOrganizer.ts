@@ -6,7 +6,7 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { OrganizedSection, SortMethod } from "../../domain";
+import type { OrganizedSection, SortMethod } from '../../domain/option-picker-types';
 
 export interface IOptionOrganizer {
   /**

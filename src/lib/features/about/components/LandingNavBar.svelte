@@ -5,7 +5,7 @@
     getInfoBackground,
     setInfoBackground,
   } from "$lib/shared/application/state/app-mode-state.svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import SettingsModal from "./SettingsModal.svelte";
 
   let { onBackgroundChange } = $props<{

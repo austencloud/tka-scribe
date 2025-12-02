@@ -2,7 +2,7 @@ import type { AccessibilitySettings, QualitySettings } from "$lib/shared/backgro
 import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import type { ParallaxConfig, ParallaxLayer, Star, StarConfig } from "../domain/models/night-sky-models";
 // Removed resolve import - calculation service now injected via constructor
-import type { INightSkyCalculationService } from "../services";
+import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
 export class ParallaxStarSystem {
   private layers: Record<"far" | "mid" | "near", ParallaxLayer> = {

@@ -14,7 +14,7 @@ import type {
   IWordCardMetadataOverlayService,
   IWordCardSVGCompositionService,
   IWordCardImageGenerationService,
-} from "../contracts";
+} from "../contracts/word-card-contracts";
 
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";

@@ -8,7 +8,7 @@
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { BeatData } from "../domain/models/BeatData";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state";
+import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 import type {
   UndoHistoryEntry,
   UndoMetadata,

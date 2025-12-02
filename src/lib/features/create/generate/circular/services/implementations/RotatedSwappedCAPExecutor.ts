@@ -16,7 +16,6 @@
  * IMPORTANT: End position is calculated from rotated locations
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
@@ -34,6 +33,7 @@ import {
   QUARTERED_CAPS,
 } from "../../domain/constants/circular-position-maps";
 import { SliceSize } from "../../domain/models/circular-models";
+import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
 export class RotatedSwappedCAPExecutor {

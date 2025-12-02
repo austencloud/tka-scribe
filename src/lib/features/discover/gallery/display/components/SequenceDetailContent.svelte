@@ -12,7 +12,7 @@ Used by both desktop side panel and mobile slide-up overlay.
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";

@@ -2,9 +2,9 @@
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IRotationOverrideManager } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations";
+  import type { IRotationOverrideManager } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/RotationOverrideManager";
   import { onMount, onDestroy } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";

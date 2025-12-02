@@ -6,9 +6,9 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ISequenceNormalizationService } from "../../../services/contracts";
+  import type { ISequenceNormalizationService } from "../../../services/contracts/ISequenceNormalizationService";
 
   // Services
   const normalizationService = resolve(

@@ -11,12 +11,12 @@
 
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
-import { isStartPosition } from "$create/shared/domain/type-guards/pictograph-type-guards";
 import type { IArrowRotationCalculator } from "$lib/shared/pictograph/arrow/positioning/calculation/services/implementations/ArrowRotationCalculator";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
+import { isStartPosition } from "../../shared/domain/type-guards/pictograph-type-guards";
 
 /**
  * Debug data for a start position pictograph

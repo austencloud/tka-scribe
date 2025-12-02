@@ -7,11 +7,11 @@
 -->
 <script lang="ts">
   import AnimatorCanvas from "./AnimatorCanvas.svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
-  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts";
+  import { animationSettings } from "../state/animation-settings-state.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
   import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
   import { onMount, untrack } from "svelte";
 

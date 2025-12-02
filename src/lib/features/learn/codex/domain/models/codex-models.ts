@@ -5,7 +5,7 @@
  */
 
 import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { LetterCategory } from "../types";
+import type { LetterCategory } from "../types/codex-types";
 
 export interface CodexLetterMapping {
   startPosition: string;

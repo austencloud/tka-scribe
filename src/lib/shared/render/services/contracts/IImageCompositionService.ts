@@ -1,5 +1,5 @@
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { CompositionOptions, LayoutData } from "../../domain";
+import type { CompositionOptions, LayoutData } from "../../domain/models/SequenceExportOptions";
 import type { ImageRenderOptions } from "./IDimensionCalculationService";
 
 /**

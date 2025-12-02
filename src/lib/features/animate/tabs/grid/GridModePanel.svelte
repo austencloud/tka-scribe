@@ -7,16 +7,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
-  import { getGridTabState } from "./state";
+  import { getGridTabState } from "./state/grid-tab-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
-  import {
-    GridSelectionArea,
-    GridSelectionAreaMobile,
-    GridAnimationHeader,
-    GridCanvas,
-    GridControlsPanel,
-  } from "./components";
+  import SequenceBrowserPanel from "../../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
+  import GridSelectionArea from "./components/GridSelectionArea.svelte";
+  import GridSelectionAreaMobile from "./components/GridSelectionAreaMobile.svelte";
+  import GridAnimationHeader from "./components/GridAnimationHeader.svelte";
+  import GridCanvas from "./components/GridCanvas.svelte";
+  import GridControlsPanel from "./components/GridControlsPanel.svelte";
 
   type GridIndex = 0 | 1 | 2 | 3;
 

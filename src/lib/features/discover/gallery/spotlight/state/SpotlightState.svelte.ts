@@ -5,18 +5,18 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IDiscoverThumbnailService } from "../../display";
+import type { IDiscoverThumbnailService } from "../../display/services/contracts/IDiscoverThumbnailService";
 import type {
   SpotlightDisplayState,
   SpotlightImageState,
   SpotlightNavigationState,
   SpotlightViewState,
-} from "../domain/models";
+} from "../domain/models/spotlight-models";
 import {
   createDefaultImageState,
   createDefaultNavigationState,
   createDefaultSpotlightDisplayState,
-} from "../domain/models";
+} from "../domain/models/spotlight-models";
 
 /**
  * Factory function to create spotlight state

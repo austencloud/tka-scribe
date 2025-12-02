@@ -10,7 +10,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { slide } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import TouchableGrid from "../../../assemble/handpath-builder/components/TouchableGrid.svelte";
-  import type { GesturalPathState } from "../../../assemble/handpath-builder/state";
+  import type { GesturalPathState } from "../../../assemble/handpath-builder/state/handpath-state.svelte";
 
   // Props
   let {

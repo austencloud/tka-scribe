@@ -7,7 +7,7 @@
 
 // Import directly from source files to avoid circular dependency issues with $shared barrel exports
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { DeviceType } from "../../../src/lib/shared/device/domain";
+import { DeviceType } from "../../../src/lib/shared/device/domain/enums/device-enums";
 import { DeviceDetector } from "../../../src/lib/shared/device/services/implementations/DeviceDetector";
 
 // Mock ViewportService

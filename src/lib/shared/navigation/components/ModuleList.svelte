@@ -15,7 +15,7 @@
 <script lang="ts">
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import { preloadFeatureModule } from "../../inversify/container";

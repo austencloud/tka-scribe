@@ -10,7 +10,7 @@ import type {
   IPageFactoryService,
   IPrintablePageLayoutService,
   IWordCardBrowseService,
-} from "../services/contracts";
+} from "../services/contracts/word-card-contracts";
 import {
   displayState,
   exportSettings,

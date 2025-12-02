@@ -1,4 +1,5 @@
-import type { ViewportMode, ViewportState } from "../../domain";
+import type { ViewportMode } from "../../domain/enums/ViewportMode";
+import type { ViewportState } from "../../domain/models/ViewportState";
 
 /**
  * Service for managing viewport state and responsive behavior

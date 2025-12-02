@@ -7,7 +7,7 @@
   For full trail controls, use TrailSettingsPanel from the animate module.
 -->
 <script lang="ts">
-	import { animationSettings, TrailMode } from '../state';
+	import { animationSettings, TrailMode } from '../state/animation-settings-state.svelte';
 
 	// Props
 	let {

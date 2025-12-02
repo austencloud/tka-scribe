@@ -11,10 +11,8 @@
  * ✅ Each tab maintains its own independent sequence state
  */
 
-import type {
-  ISequenceService,
-  ISequencePersistenceService,
-} from "../services/contracts";
+import type { ISequenceService } from "../services/contracts/ISequenceService";
+import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";

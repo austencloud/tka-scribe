@@ -4,10 +4,10 @@
   Footer with Terms of Service and Privacy Policy links
 -->
 <script lang="ts">
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
   import { onMount } from "svelte";
 
   // Services

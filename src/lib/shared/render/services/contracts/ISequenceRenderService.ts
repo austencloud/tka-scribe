@@ -6,7 +6,7 @@
  */
 
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { SequenceExportOptions } from "../../domain/models";
+import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
 
 export interface ISequenceRenderService {
   /**

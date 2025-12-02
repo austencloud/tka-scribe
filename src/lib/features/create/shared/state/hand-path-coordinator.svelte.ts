@@ -7,16 +7,14 @@
 
 import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type {
-  IHandPathDirectionDetector,
-  IPathToMotionConverter,
-} from "../../assemble/handpath-builder/services/contracts";
+import type { IHandPathDirectionDetector } from "../../assemble/handpath-builder/services/contracts/IHandPathDirectionDetector";
+import type { IPathToMotionConverter } from "../../assemble/handpath-builder/services/contracts/IPathToMotionConverter";
 import {
   createGesturalPathState,
   type GesturalPathState,
-} from "../../assemble/handpath-builder/state";
+} from "../../assemble/handpath-builder/state/handpath-state.svelte";
 
 export function createHandPathCoordinator() {
   // Services

@@ -12,12 +12,10 @@ import type { SequenceData, SequenceMetadata } from "$lib/shared/foundation/doma
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type {
-  IAnimationStateManager,
-  IBeatCalculator,
-  IPropInterpolator,
-} from "../contracts";
-import type { ISequenceAnimationOrchestrator } from "../contracts";
+import type { IAnimationStateManager } from "../contracts/IAnimationStateManager";
+import type { IBeatCalculator } from "../contracts/IBeatCalculator";
+import type { IPropInterpolator } from "../contracts/IPropInterpolator";
+import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 
 /**
  * Lightweight Animation Orchestrator

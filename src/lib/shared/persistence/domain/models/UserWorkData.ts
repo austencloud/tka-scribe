@@ -5,7 +5,7 @@
  * tab states, preferences, and other temporary user data.
  */
 
-import type { UserWorkType } from "../enums";
+import type { UserWorkType } from "../enums/UserWorkType";
 
 /**
  * User's work-in-progress data

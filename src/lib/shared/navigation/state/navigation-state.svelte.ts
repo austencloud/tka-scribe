@@ -6,9 +6,9 @@
  */
 
 import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
-import { tryResolve } from "../../inversify";
+import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { IActivityLogService } from "../../analytics";
+import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 // Create tabs configuration - mutable to allow dynamic tab accessibility updates
 // Note: Edit functionality is now handled via a slide-out panel, not a tab

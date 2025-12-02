@@ -15,9 +15,8 @@ Shows:
     getConceptsByCategory,
     getNextConcept,
     getPreviousConcept,
-    type LearnConcept,
-    type ConceptCategory,
-  } from "../domain";
+  } from "../domain/concepts";
+  import type { LearnConcept, ConceptCategory } from "../domain/types";
   import { conceptProgressService } from "../services/ConceptProgressService";
   import ProgressMiniMap from "./ProgressMiniMap.svelte";
   import HeroConceptCard from "./HeroConceptCard.svelte";

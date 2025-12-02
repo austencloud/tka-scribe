@@ -6,7 +6,7 @@
  */
 
 // Re-export filtering types for compatibility
-export type { ExploreFilterValue } from "$lib/shared/persistence/domain";
+export type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 
 // Explore-specific type aliases
 export type SortDirection = "asc" | "desc";

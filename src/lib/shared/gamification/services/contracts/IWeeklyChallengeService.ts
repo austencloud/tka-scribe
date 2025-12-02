@@ -5,7 +5,7 @@
  * Weekly challenges span Monday-Sunday and offer larger rewards than daily challenges.
  */
 
-import type { XPEventMetadata } from "../../domain/models";
+import type { XPEventMetadata } from "../../domain/models/achievement-models";
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,

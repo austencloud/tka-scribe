@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-  import type { createShareState } from "../../state";
+  import type { createShareState } from "../../state/share-state.svelte";
   import PreviewArea from "./PreviewArea.svelte";
   import OptionsToggles from "./OptionsToggles.svelte";
 

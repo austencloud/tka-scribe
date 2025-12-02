@@ -180,7 +180,7 @@
     // This allows Vite HMR WebSocket to connect immediately
     (async () => {
       try {
-        const { getContainer } = await import("$lib/shared/inversify");
+        const { getContainer } = await import("$lib/shared/inversify/di");
         container = await getContainer();
 
         // ⚡ PERFORMANCE: Glyph cache now uses lazy loading

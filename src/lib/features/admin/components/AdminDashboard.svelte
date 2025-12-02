@@ -6,10 +6,10 @@
    */
 
   import { onMount } from "svelte";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { loadFeatureModule } from "$lib/shared/inversify/container";
-  import type { IAdminChallengeService } from "../services/contracts";
+  import type { IAdminChallengeService } from "../services/contracts/IAdminChallengeService";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import TrainChallengeManager from "./TrainChallengeManager.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";

@@ -9,7 +9,7 @@ import type { GridMode} from "$lib/shared/pictograph/grid/domain/enums/grid-enum
 import { type GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { GridPositionPoint, SwipeGesture } from "../../domain";
+import type { GridPositionPoint, SwipeGesture } from "../../domain/path-models";
 import type { IHandPathDirectionDetector } from "../contracts/IHandPathDirectionDetector";
 import type { ISwipeDetectionService } from "../contracts/ISwipeDetectionService";
 

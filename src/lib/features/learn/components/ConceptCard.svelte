@@ -9,11 +9,12 @@ Displays:
 - Checkmark for completed
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
-import { TYPES } from "$lib/shared/inversify/types";
-  import type { ConceptStatus, LearnConcept } from "../domain";
-  import { CONCEPT_CATEGORIES } from "../domain";
+  import type { IHapticFeedbackService } from "../../../shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve, TYPES } from "../../../shared/inversify/container";
+  import { CONCEPT_CATEGORIES } from "../domain/concepts";
+  import type { LearnConcept, ConceptStatus } from "../domain/types";
+
+
 
   let {
     concept,

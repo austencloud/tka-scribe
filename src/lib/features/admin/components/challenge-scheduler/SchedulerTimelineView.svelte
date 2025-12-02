@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ChallengeScheduleEntry } from '../../domain/models';
+	import type { ChallengeScheduleEntry } from '../../domain/models/AdminModels';
 
 	interface Props {
 		upcomingChallenges: ChallengeScheduleEntry[];

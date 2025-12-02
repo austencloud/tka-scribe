@@ -12,7 +12,7 @@ import type {
   UserChallengeProgress,
   XPActionType,
   XPEventMetadata,
-} from "../../domain/models";
+} from "../../domain/models/achievement-models";
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,

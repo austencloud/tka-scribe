@@ -2,7 +2,7 @@
   import type { BeatData } from "../../../domain/models/BeatData";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";

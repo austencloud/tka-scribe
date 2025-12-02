@@ -6,10 +6,10 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
-  import { resolve } from "../../inversify";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import { authStore } from "../../auth";
+  import { authStore } from "../../auth/stores/authStore.svelte";
   import { onMount } from "svelte";
 
   let { navigationLayout = "top" } = $props<{

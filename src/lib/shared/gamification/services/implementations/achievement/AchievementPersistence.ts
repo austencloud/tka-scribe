@@ -24,12 +24,8 @@ import {
   getUserAchievementsPath,
   getUserXPPath,
 } from "../../../data/firestore-collections";
-import { ALL_ACHIEVEMENTS } from "../../../domain/constants";
-import type {
-  Achievement,
-  UserAchievement,
-  UserXP,
-} from "../../../domain/models";
+import { ALL_ACHIEVEMENTS } from '../../../domain/constants/achievement-definitions';
+import type { Achievement, UserAchievement, UserXP } from '../../../domain/models/achievement-models';
 
 export class AchievementPersistence {
   /**

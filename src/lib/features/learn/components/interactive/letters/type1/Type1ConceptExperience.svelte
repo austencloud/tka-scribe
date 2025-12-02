@@ -10,11 +10,10 @@ Page 5: Quiz
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import Type1LetterVisualizer, {
-    type Type1LetterData,
-  } from "./Type1LetterVisualizer.svelte";
+  import Type1LetterVisualizer from "./Type1LetterVisualizer.svelte";
+  import type { Type1LetterData } from "./Type1LetterData";
   import Type1LetterQuiz from "./Type1LetterQuiz.svelte";
 
   let { onComplete } = $props<{

@@ -15,7 +15,7 @@
 
 import type { BeatData } from "../domain/models/BeatData";
 import type { CAPType } from "../../generate/circular/domain/models/circular-models";
-import type { CAPComponent } from "../../generate/shared/domain/models";
+import type { CAPComponent } from "../../generate/shared/domain/models/generate-models";
 import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
 
 export interface PanelCoordinationState {

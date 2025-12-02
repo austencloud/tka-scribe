@@ -2,7 +2,7 @@
 <script lang="ts">
   import Drawer from "../../foundation/ui/Drawer.svelte";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-  import type { createShareState } from "../state";
+  import type { createShareState } from "../state/share-state.svelte";
 
   let {
     isOpen = $bindable(false),

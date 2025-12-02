@@ -14,25 +14,24 @@
     EventTypeBreakdown,
     ModuleUsageData,
     RecentActivityEvent,
-  } from "../services/contracts";
+  } from "../services/contracts/IAnalyticsDataService";
 
-  import {
-    MetricCard,
-    UserActivityChart,
-    EventBreakdown,
-    ModuleUsage,
-    RecentActivityFeed,
-    ContentStatistics,
-    EngagementMetrics,
-    calculateChange,
-    formatNumber,
-    type MetricCardData,
-    type TimeSeriesPoint,
-    type ContentStat,
-    type TopSequence,
-    type EngagementStat,
-    type TimeRangeOption,
-  } from "./analytics";
+  import MetricCard from "./analytics/MetricCard.svelte";
+  import UserActivityChart from "./analytics/UserActivityChart.svelte";
+  import EventBreakdown from "./analytics/EventBreakdown.svelte";
+  import ModuleUsage from "./analytics/ModuleUsage.svelte";
+  import RecentActivityFeed from "./analytics/RecentActivityFeed.svelte";
+  import ContentStatistics from "./analytics/ContentStatistics.svelte";
+  import EngagementMetrics from "./analytics/EngagementMetrics.svelte";
+  import { calculateChange, formatNumber } from "./analytics/utils";
+  import type {
+    MetricCardData,
+    TimeSeriesPoint,
+    ContentStat,
+    TopSequence,
+    EngagementStat,
+    TimeRangeOption,
+  } from "./analytics/types";
 
   // State
   let isLoading = $state(true);

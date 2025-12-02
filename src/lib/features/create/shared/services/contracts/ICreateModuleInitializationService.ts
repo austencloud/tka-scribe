@@ -22,13 +22,11 @@ import type { ICreationMethodPersistenceService } from "./ICreationMethodPersist
 import type { IDeepLinkSequenceService } from "./IDeepLinkSequenceService";
 import type { INavigationSyncService } from "./INavigationSyncService";
 import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
-import type {
-  ISequenceService,
-  ISequencePersistenceService,
-  ICreateModuleService,
-} from "./index";
-import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts";
-import type { IShareService } from "$lib/shared/share/services/contracts";
+import type { ISequenceService } from "./ISequenceService";
+import type { ISequencePersistenceService } from "./ISequencePersistenceService";
+import type { ICreateModuleService } from "./ICreateModuleService";
+import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts/IStartPositionService";
+import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
 import type { ICreateModuleState, IConstructTabState } from "../../types/create-module-types";
 import type { AssemblerTabState } from "../../state/assembler-tab-state.svelte";
 import type { GeneratorTabState } from "../../state/generator-tab-state.svelte";

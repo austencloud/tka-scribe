@@ -5,11 +5,11 @@ Reuses the existing StartPositionPicker component in a clean drawer interface
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { tryGetCreateModuleContext } from "$create/shared/context";
+  import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
   import { onMount } from "svelte";
   import { createSimplifiedStartPositionState } from "../../../construct/start-position-picker/state/start-position-state.svelte";
   import StartPositionPicker from "../../../construct/start-position-picker/components/StartPositionPicker.svelte";

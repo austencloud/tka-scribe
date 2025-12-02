@@ -15,13 +15,8 @@ import {
 import { firestore } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import { getUserAchievementsPath } from "../../../data/firestore-collections";
-import { ALL_ACHIEVEMENTS } from "../../../domain/constants";
-import type {
-  Achievement,
-  UserAchievement,
-  XPActionType,
-  XPEventMetadata,
-} from "../../../domain/models";
+import { ALL_ACHIEVEMENTS } from '../../../domain/constants/achievement-definitions';
+import type { Achievement, UserAchievement, XPActionType, XPEventMetadata } from '../../../domain/models/achievement-models';
 
 export class AchievementProgressManager {
   /**

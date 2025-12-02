@@ -9,7 +9,7 @@ import type {
   DeviceConfig,
   SizingCalculationParams,
   SizingResult,
-} from "../../domain";
+} from "../../domain/option-viewer-models";
 
 export interface IOptionSizer {
   /**

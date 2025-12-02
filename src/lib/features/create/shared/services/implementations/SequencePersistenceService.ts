@@ -14,7 +14,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { ISequencePersistenceService } from "../contracts";
+import type { ISequencePersistenceService } from "../contracts/ISequencePersistenceService";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
 @injectable()

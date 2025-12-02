@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
 
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";

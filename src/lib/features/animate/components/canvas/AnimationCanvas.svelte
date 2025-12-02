@@ -7,7 +7,7 @@
   Now includes AnimationVideoPlayer for video generation/playback.
 -->
 <script lang="ts">
-  import { AnimatorCanvas } from "$lib/shared/animation-engine/components";
+  import AnimatorCanvas from "../../../../shared/animation-engine/components/AnimatorCanvas.svelte";
   import AnimationVideoPlayer from "./AnimationVideoPlayer.svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";

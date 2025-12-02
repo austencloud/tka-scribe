@@ -16,8 +16,8 @@ import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictogra
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { ISequenceImportService } from "../contracts";
-import { parseStrict } from "$lib/shared/validation/validation-utils";
+import type { ISequenceImportService } from "../contracts/ISequenceImportService";
+import { parseStrict } from "../../../../../shared/validation/validation-utils";
 import { PngMetadataArraySchema } from "$lib/shared/foundation/domain/schemas";
 import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";

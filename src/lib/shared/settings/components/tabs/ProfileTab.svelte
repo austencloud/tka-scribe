@@ -1,8 +1,8 @@
 <!-- ProfileTab.svelte - User Profile & Account Settings -->
 <script lang="ts">
-  import { authStore } from "../../../auth";
-  import { resolve, TYPES } from "../../../inversify";
-  import type { IAuthService } from "../../../auth";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import { resolve, TYPES } from "../../../inversify/di";
+  import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
@@ -12,11 +12,10 @@
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
-  import {
-    SocialAuthCompact,
-    EmailPasswordAuth,
-  } from "../../../auth/components";
+
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
+  import EmailPasswordAuth from "../../../auth/components/EmailPasswordAuth.svelte";
 
   interface Props {
     currentSettings?: unknown;

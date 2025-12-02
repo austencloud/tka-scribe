@@ -16,7 +16,6 @@
  * IMPORTANT: End position must be vertical mirror of start position
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { RotationDirection, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -32,6 +31,7 @@ import {
   MIRRORED_SWAPPED_VALIDATION_SET,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
+import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
 export class MirroredSwappedCAPExecutor {

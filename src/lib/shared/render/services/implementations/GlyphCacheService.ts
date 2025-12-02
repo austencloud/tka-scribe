@@ -7,8 +7,8 @@
  */
 
 import { injectable } from "inversify";
-import { getLetterImagePath } from "../../../pictograph/tka-glyph/utils";
-import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { getLetterImagePath } from "../../../pictograph/tka-glyph/utils/letter-image-getter";
+import { Letter } from "../../../foundation/domain/models/Letter";
 
 // Turn number values that need to be cached
 type TurnNumberValue = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | "float";

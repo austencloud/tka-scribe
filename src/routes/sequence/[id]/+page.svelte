@@ -8,11 +8,11 @@
 
 	import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
-	import { SequenceViewer } from "$lib/shared/sequence-viewer";
+	import SequenceViewer from "$lib/shared/sequence-viewer/components/SequenceViewer.svelte";
 	import { container } from "$lib/shared/inversify/container";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
-import type { SequenceData } from "$shared/foundation/domain/models/SequenceData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 	// Get encoded sequence from URL param
 	const encodedId = $derived($page.params["id"]);

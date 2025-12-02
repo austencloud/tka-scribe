@@ -12,19 +12,19 @@
    */
   import { onMount } from "svelte";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
-  import { AdminTwoPanelLayout } from "$lib/shared/admin/index";
-  import { userManagementService } from "../services/implementations";
-  import {
-    UserCard,
-    UserDetailPanel,
-    ConfirmActionModal,
-    UserSearchBar,
-    UserFilterButtons,
-    type UserData,
-    type UserFilterType,
-    type ConfirmActionData,
-    type UserActionType,
-  } from "./user-management";
+  import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
+  import { userManagementService } from "../services/implementations/UserManagementService";
+  import UserCard from "./user-management/UserCard.svelte";
+  import UserDetailPanel from "./user-management/UserDetailPanel.svelte";
+  import ConfirmActionModal from "./user-management/ConfirmActionModal.svelte";
+  import UserSearchBar from "./user-management/UserSearchBar.svelte";
+  import UserFilterButtons from "./user-management/UserFilterButtons.svelte";
+  import type {
+    UserData,
+    UserFilterType,
+    ConfirmActionData,
+    UserActionType,
+  } from "./user-management/types";
 
   // State
   let users = $state<UserData[]>([]);

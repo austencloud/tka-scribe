@@ -10,8 +10,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,
-} from "../../domain";
-import type { INavigationService } from "../contracts";
+} from "../../domain/models/navigation-models";
+import type { INavigationService } from "../contracts/INavigationService";
 
 // Local type alias for NavigationSection
 type NavigationSection = ExploreNavigationConfig;

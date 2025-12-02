@@ -7,7 +7,7 @@
 
 import type { BatchExportProgress } from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
-import type { IWordCardExportProgressTracker } from "../contracts";
+import type { IWordCardExportProgressTracker } from "../contracts/word-card-contracts";
 
 interface ProgressOperation {
   id: string;

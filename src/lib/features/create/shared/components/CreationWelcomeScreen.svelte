@@ -14,7 +14,7 @@
 
   import { fade } from "svelte/transition";
   import CreationWelcomeCue from "./CreationWelcomeCue.svelte";
-  import { getCreateModuleContext } from "../context";
+  import { getCreateModuleContext } from "../context/create-module-context";
 
   // Get context
   const ctx = getCreateModuleContext();

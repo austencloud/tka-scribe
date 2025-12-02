@@ -1,4 +1,3 @@
-import type { IReversalDetectionService } from "$create/shared/services/contracts";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
@@ -9,14 +8,15 @@ import type { ICAPEndPositionSelector } from "../../../circular/services/contrac
 import type { ICAPExecutorSelector } from "../../../circular/services/contracts/ICAPExecutorSelector";
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";
 import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
-import type { GenerationOptions } from "../../domain";
-import { GenerationMode, PropContinuity } from "../../domain";
+import type { GenerationOptions } from "../../domain/models/generate-models";
+import { GenerationMode, PropContinuity } from "../../domain/models/generate-models";
 import type { IBeatGenerationOrchestrator } from "../contracts/IBeatGenerationOrchestrator";
 import type { BeatGenerationOptions } from "../contracts/IBeatGenerationOrchestrator";
 import type { IGenerationOrchestrationService } from "../contracts/IGenerationOrchestrationService";
 import type { ISequenceMetadataService } from "../contracts/ISequenceMetadataService";
 import type { IStartPositionSelector } from "../contracts/IStartPositionSelector";
 import type { ITurnAllocator } from "../contracts/ITurnAllocator";
+import type { IReversalDetectionService } from "../../../../shared/services/contracts/IReversalDetectionService";
 /**
  * Service orchestrating the complete sequence generation pipeline
  *

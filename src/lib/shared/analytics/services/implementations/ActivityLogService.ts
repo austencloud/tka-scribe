@@ -29,7 +29,7 @@ import type {
   ActivityCategory,
   ActivityMetadata,
   ActivitySummary,
-} from "../../domain";
+} from "../../domain/models/ActivityEvent";
 
 // Batch writes to reduce Firestore calls
 const WRITE_BUFFER_MS = 1000;

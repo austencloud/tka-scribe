@@ -9,7 +9,7 @@
    * - Coordinate with child module components via callbacks
    * - Provide loading states
    */
-  import { isModuleActive } from "../application/state/app-state.svelte";
+  import { isModuleActive } from "../application/state/ui/ui-state.svelte";
   import { fade } from "svelte/transition";
   import AccountModule from "../../features/account/AccountModule.svelte";
   import AdminDashboard from "../../features/admin/components/AdminDashboard.svelte";

@@ -7,10 +7,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
-  import { getSingleTabState } from "./state";
+  import { getSingleTabState } from "./state/single-tab-state.svelte";
   // Platform-specific imports
-  import { MobileAnimationView, MobileSelectionArea } from "./mobile";
-  import { DesktopAnimationView, DesktopSelectionArea } from "./desktop";
+  import MobileAnimationView from "./mobile/MobileAnimationView.svelte";
+  import MobileSelectionArea from "./mobile/MobileSelectionArea.svelte";
+  import DesktopAnimationView from "./desktop/DesktopAnimationView.svelte";
+  import DesktopSelectionArea from "./desktop/DesktopSelectionArea.svelte";
   // Shared imports
   import TrailPresetPanel from "../../components/trail/TrailPresetPanel.svelte";
   import AdvancedSettingsDrawer from "../../components/trail/AdvancedSettingsDrawer.svelte";
@@ -18,8 +20,8 @@
     applyPreset,
     type TrailPresetId,
   } from "../../components/trail/TrailPresets";
-  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
-  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
+  import { animationSettings } from "../../../../shared/animation-engine/state/animation-settings-state.svelte";
+  import SequenceBrowserPanel from "../../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
 
   // Tab-specific state
   const tabState = getSingleTabState();

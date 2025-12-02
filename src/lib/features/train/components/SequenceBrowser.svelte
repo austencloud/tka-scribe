@@ -5,10 +5,10 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { tryResolve, TYPES } from "$lib/shared/inversify";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
   import { onMount } from "svelte";
-  import { Drawer } from "$lib/shared/foundation/ui";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
   interface Props {
     show?: boolean;

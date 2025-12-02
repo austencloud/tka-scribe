@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class FileBasedSettingsService(ISettingsCoordinator):
     """
-    File-based implementation of ISettingsService.
+    File-based implementation of ISettingsState.
 
     Stores settings as JSON files in a data directory.
     Suitable for production and headless modes.

@@ -9,14 +9,14 @@ import type { RotationDirection, MotionColor } from "$lib/shared/pictograph/shar
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { HandMotionType, MotionColor as MC } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import { PathBuilderMode } from "../domain";
+import { PathBuilderMode } from "../domain/path-models";
 import type {
   AdvanceButtonState,
   DrawnHandPath,
   HandPathSegment,
   PathBuilderConfig,
   PathBuildingState,
-} from "../domain";
+} from "../domain/path-models";
 
 /**
  * Create a new gestural path builder state instance

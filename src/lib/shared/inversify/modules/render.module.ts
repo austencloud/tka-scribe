@@ -1,17 +1,15 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import {
-  CanvasManagementService,
-  DimensionCalculationService,
-  FilenameGeneratorService,
-  GlyphCacheService,
-  ImageCompositionService,
-  ImageFormatConverterService,
-  LayoutCalculationService,
-  SequenceRenderService,
-  SVGToCanvasConverterService,
-  TextRenderingService,
-} from "../../render/services/implementations";
+import { CanvasManagementService } from "../../render/services/implementations/CanvasManagementService";
+import { DimensionCalculationService } from "../../render/services/implementations/DimensionCalculationService";
+import { FilenameGeneratorService } from "../../render/services/implementations/FilenameGeneratorService";
+import { GlyphCacheService } from "../../render/services/implementations/GlyphCacheService";
+import { ImageCompositionService } from "../../render/services/implementations/ImageCompositionService";
+import { ImageFormatConverterService } from "../../render/services/implementations/ImageFormatConverterService";
+import { LayoutCalculationService } from "../../render/services/implementations/LayoutCalculationService";
+import { SequenceRenderService } from "../../render/services/implementations/SequenceRenderService";
+import { SVGToCanvasConverterService } from "../../render/services/implementations/SVGToCanvasConverterService";
+import { TextRenderingService } from "../../render/services/implementations/TextRenderingService";
 import { TYPES } from "../types";
 
 export const renderModule = new ContainerModule(

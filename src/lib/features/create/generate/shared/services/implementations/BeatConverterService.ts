@@ -20,7 +20,8 @@ import {
   RotationDirection,
   Orientation,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import { createBeatData, createStartPositionData } from "$create/shared";
+import { createBeatData } from "$lib/features/create/shared/domain/factories/createBeatData";
+import { createStartPositionData } from "$lib/features/create/shared/domain/factories/createStartPositionData";
 
 export interface IBeatConverterService {
   /**

@@ -6,7 +6,7 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
-import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
+import type { ValidationResult } from "../../../../../shared/validation/ValidationResult";
 
 export interface ISequenceValidationService {
   /**

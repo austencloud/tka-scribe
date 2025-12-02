@@ -10,14 +10,8 @@ import type {
   CircularType,
   StrictCapType,
 } from "../contracts/ISequenceAnalysisService";
-import {
-  QUARTERED_CAPS,
-  HALVED_CAPS,
-} from "$create/generate/circular/domain/constants/circular-position-maps";
-import {
-  VERTICAL_MIRROR_POSITION_MAP,
-  SWAPPED_POSITION_MAP,
-} from "$create/generate/circular/domain/constants/strict-cap-position-maps";
+import { HALVED_CAPS, QUARTERED_CAPS } from "../../../generate/circular/domain/constants/circular-position-maps";
+import { SWAPPED_POSITION_MAP, VERTICAL_MIRROR_POSITION_MAP } from "../../../generate/circular/domain/constants/strict-cap-position-maps";
 
 /**
  * Sequence Analysis Service Implementation

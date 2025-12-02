@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import type { IDiscoverThumbnailService } from "../contracts";
+import type { IDiscoverThumbnailService } from "../contracts/IDiscoverThumbnailService";
 
 @injectable()
 export class DiscoverThumbnailService implements IDiscoverThumbnailService {

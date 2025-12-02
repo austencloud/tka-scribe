@@ -1,7 +1,7 @@
 <!-- PropTypeTab.svelte - Prop type selection with responsive full-screen picker -->
 <script lang="ts">
   import type { AppSettings } from "../../domain/AppSettings";
-  import { resolve } from "../../../inversify";
+  import { resolve } from "../../../inversify/di";
   import { TYPES } from "../../../inversify/types";
   import { PropType } from "../../../pictograph/prop/domain/enums/PropType";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
@@ -12,11 +12,11 @@
     hasVariations,
     getNextVariation,
     getBasePropType,
-    CatDogToggle,
-    PropSelectionCard,
-    PropTypePicker,
-    loadPropSvg,
-  } from "./prop-type";
+  } from "./prop-type/PropTypeRegistry";
+  import CatDogToggle from "./prop-type/CatDogToggle.svelte";
+  import PropSelectionCard from "./prop-type/PropSelectionCard.svelte";
+  import PropTypePicker from "./prop-type/PropTypePicker.svelte";
+  import { loadPropSvg } from "./prop-type/PropSvgUtils";
   import { MotionColor } from "../../../pictograph/shared/domain/enums/pictograph-enums";
 
   let { settings, onUpdate } = $props<{

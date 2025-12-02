@@ -6,8 +6,8 @@
  */
 
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { PropState } from "../../domain";
-import type { AnimationPlaybackState } from "../../state";
+import type { PropState } from "../../domain/PropState";
+import type { AnimationPlaybackState } from "../../state/animation-playback-state.svelte";
 
 export interface IAnimationPlaybackController {
   /**

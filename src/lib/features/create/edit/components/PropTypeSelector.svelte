@@ -5,7 +5,7 @@ Allows changing the prop type for each individual motion (red and blue).
 This enables mixed prop types in a single pictograph (e.g., red hand + blue staff).
 -->
 <script lang="ts">
-  import type { BeatData } from "$create/shared/workspace-panel";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
   // Props

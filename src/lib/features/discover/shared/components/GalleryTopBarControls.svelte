@@ -13,11 +13,11 @@ Modern Filter UX Pattern:
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount } from "svelte";
-  import { FilterChips } from "../../gallery/filtering/components";
+  import FilterChips from "../../gallery/filtering/components/FilterChips.svelte";
   import SegmentedControl from "./SegmentedControl.svelte";
   import { ExploreSortMethod } from "../domain/enums/discover-enums";
 

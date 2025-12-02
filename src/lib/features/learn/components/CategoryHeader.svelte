@@ -8,8 +8,8 @@ Displays:
 - Extending line
 -->
 <script lang="ts">
-  import type { ConceptCategory } from "../domain";
-  import { CONCEPT_CATEGORIES } from "../domain";
+  import type { ConceptCategory } from "../domain/types";
+  import { CONCEPT_CATEGORIES } from "../domain/concepts";
 
   let {
     category,

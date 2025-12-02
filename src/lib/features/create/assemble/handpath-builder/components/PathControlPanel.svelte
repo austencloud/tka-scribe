@@ -8,7 +8,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
     RotationDirection,
     HandMotionType,
   } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import type { GesturalPathState } from "../state";
+  import type { GesturalPathState } from "../state/handpath-state.svelte";
 
   // Props
   let {

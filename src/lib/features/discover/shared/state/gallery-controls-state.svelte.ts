@@ -6,7 +6,7 @@
  * Using Svelte 5 runes pattern - module-level reactive state
  */
 
-import type { ExploreSortMethod } from "../domain";
+import type { ExploreSortMethod } from "../domain/enums/discover-enums";
 import type { ExploreFilterValue } from "../domain/types/discover-types";
 
 type GalleryFilter = { type: string; value: ExploreFilterValue };

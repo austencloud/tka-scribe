@@ -27,7 +27,7 @@ import {
 import { firestore } from "$lib/shared/auth/firebase";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IAchievementService } from "$lib/shared/gamification/services/contracts";
+import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
 	ILibraryService,

@@ -3,12 +3,12 @@
   import { onMount } from "svelte";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import InstagramButton from "./InstagramButton.svelte";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
-  import { getInstagramLink } from "../domain";
-  import type { InstagramLink } from "../domain";
+  import { getInstagramLink } from "../domain/models/InstagramLink";
+  import type { InstagramLink } from "../domain/models/InstagramLink";
 
   let {
     currentSequence,

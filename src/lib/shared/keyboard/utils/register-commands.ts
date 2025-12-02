@@ -6,14 +6,14 @@
  * Domain: Keyboard Shortcuts - Command Registration
  */
 
-import type { ICommandPaletteService } from "../services/contracts";
+import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import { showSettingsDialog } from "../../application/state/ui/ui-state.svelte";
 import {
   handleModuleChange,
   getModuleDefinitions,
 } from "../../navigation-coordinator/navigation-coordinator.svelte";
-import { authStore } from "../../auth";
+import { authStore } from "../../auth/stores/authStore.svelte";
 
 export function registerCommandPaletteCommands(
   service: ICommandPaletteService,

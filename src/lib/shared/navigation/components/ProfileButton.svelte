@@ -8,11 +8,11 @@
   - 48px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "../../auth";
-  import { resolve } from "../../inversify";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
   import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
   import { onMount } from "svelte";
 

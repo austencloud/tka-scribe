@@ -6,7 +6,7 @@
  * Domain: Keyboard Shortcuts - CREATE Module
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts";
+import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import { getCreateModuleRef } from "$lib/features/create/shared/state/create-module-state-ref.svelte";
 import { executeClearSequenceWorkflow } from "$lib/features/create/shared/utils/clearSequenceWorkflow";

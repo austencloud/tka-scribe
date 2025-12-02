@@ -1,6 +1,6 @@
 import { CAPType } from "../../../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
-import { DifficultyLevel } from "../../domain/models";
+import { DifficultyLevel } from '../../domain/models/generate-models';
 import type {
   CardDescriptor,
   CardHandlers,

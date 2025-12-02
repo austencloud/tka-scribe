@@ -3,7 +3,7 @@ SliceSizeCard.svelte - Card for selecting slice size (circular mode)
 Shows BOTH slice size options vertically with clear active/inactive states
 -->
 <script lang="ts">
-  import { SliceSize } from "../../circular/domain";
+  import { SliceSize } from "../../circular/domain/models/circular-models";
   import ToggleCard from "./ToggleCard.svelte";
 
   let {

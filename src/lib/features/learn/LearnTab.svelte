@@ -10,7 +10,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount, untrack } from "svelte";
   import { fade } from "svelte/transition";
@@ -18,7 +18,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
   import ConceptDetailView from "./components/ConceptDetailView.svelte";
   import CodexTab from "./codex/components/CodexTab.svelte";
   import QuizTab from "./quiz/components/QuizTab.svelte";
-  import type { LearnConcept } from "./domain";
+  import type { LearnConcept } from "./domain/types";
 
   type LearnMode = "concepts" | "play" | "codex";
 

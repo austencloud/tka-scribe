@@ -1,7 +1,9 @@
 <script lang="ts">
-  import type { FeatureFlagConfig, UserRole } from "$lib/shared/auth/domain";
-  import { ROLE_HIERARCHY, ROLE_DISPLAY } from "$lib/shared/auth/domain";
-  import { AdminDetailPanel, AdminActionButton } from "$lib/shared/admin";
+  import type { FeatureFlagConfig } from "$lib/shared/auth/domain/models/FeatureFlag";
+  import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import { ROLE_HIERARCHY, ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
+  import AdminDetailPanel from "$lib/shared/admin/components/AdminDetailPanel.svelte";
+  import AdminActionButton from "$lib/shared/admin/components/AdminActionButton.svelte";
   import { getFeatureIconAndColor, getRoleColor, getRoleIcon } from "./utils";
 
   interface Props {

@@ -16,9 +16,10 @@ import type {
   EndPositionFilter,
   ReversalFilter,
   TypeFilter,
-} from "../../domain";
-import type { IPositionAnalyzer, IReversalChecker } from "../contracts";
-import type { IOptionFilter } from "../contracts";
+} from "../../domain/option-picker-types";
+import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
+import type { IReversalChecker } from "../../../services/contracts/IReversalChecker";
+import type { IOptionFilter } from "../contracts/IOptionFilter";
 
 @injectable()
 export class OptionFilter implements IOptionFilter {

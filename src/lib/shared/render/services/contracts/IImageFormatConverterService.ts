@@ -10,7 +10,7 @@
 import type {
   ImageFormatOptions,
   OptimizationSettings,
-} from "../../domain/models";
+} from "../../domain/models/ImageFormat";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

@@ -8,7 +8,7 @@ import type {
   DailyChallenge,
   ChallengeType,
   ChallengeDifficulty,
-} from "$lib/shared/gamification/domain/models";
+} from "$lib/shared/gamification/domain/models/achievement-models";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /**

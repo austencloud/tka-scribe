@@ -4,8 +4,8 @@ Displays a selectable button for a single CAP transformation type
 Container-aware and aspect-ratio responsive
 -->
 <script lang="ts">
-  import { FontAwesomeIcon } from "$lib/shared/foundation/ui";
-  import type { CAPComponentInfo } from "$create/generate/shared/domain/constants/cap-components";
+  import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
+  import type { CAPComponentInfo } from "$lib/features/create/generate/shared/domain/constants/cap-components";
 
   let {
     componentInfo,

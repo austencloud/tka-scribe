@@ -17,7 +17,7 @@ Integrates with workspace for real-time updates
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { GuidedOptionGenerator } from "../services/GuidedOptionGenerator";

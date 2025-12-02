@@ -5,8 +5,7 @@
 	Main area for viewing and interacting with the sequence.
 -->
 <script lang="ts">
-  import type { IBeatOperationsService } from "$create/shared/services/contracts";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
@@ -15,6 +14,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
   import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
+  import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
 
   // Services
   let beatOperationsService: IBeatOperationsService | null = null;

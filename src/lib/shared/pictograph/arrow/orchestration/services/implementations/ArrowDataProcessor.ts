@@ -8,11 +8,11 @@
 import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../../../../inversify";
+import { TYPES } from '../../../../../inversify/bootstrap';
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
-import type { IArrowGridCoordinateService } from "../contracts";
-import type { IArrowDataProcessor } from "../contracts";
+import type { IArrowGridCoordinateService } from '../contracts/IArrowGridCoordinateService';
+import type { IArrowDataProcessor } from '../contracts/IArrowDataProcessor';
 
 @injectable()
 export class ArrowDataProcessor implements IArrowDataProcessor {

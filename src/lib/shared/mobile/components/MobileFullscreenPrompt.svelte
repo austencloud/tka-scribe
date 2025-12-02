@@ -8,7 +8,7 @@
   gently remind the user again after dismissal.
 -->
 <script lang="ts">
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";

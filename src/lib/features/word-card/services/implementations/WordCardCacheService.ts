@@ -8,7 +8,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { WordCardExportOptions } from "../../domain/models/word-card-export";
 import { injectable } from "inversify";
-import type { IWordCardCacheService } from "../contracts";
+import type { IWordCardCacheService } from "../contracts/word-card-contracts";
 
 interface CacheEntry {
   data: Blob | SequenceData;

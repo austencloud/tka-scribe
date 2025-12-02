@@ -5,7 +5,7 @@ import {
 } from "../../../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
-import type { ISpecialPlacementService } from "../../../placement/services/contracts";
+import type { ISpecialPlacementService } from '../../../placement/services/contracts/IArrowPlacementService';
 import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "../../../../../../inversify/types";

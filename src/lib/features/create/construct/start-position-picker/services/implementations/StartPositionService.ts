@@ -7,7 +7,7 @@ import { MotionType, MotionColor, Orientation, RotationDirection } from "$lib/sh
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IStartPositionService } from "../contracts";
+import type { IStartPositionService } from "../contracts/IStartPositionService";
 import { createPictographData } from "../../../../../../shared/pictograph/shared/domain/factories/createPictographData";
 import { createMotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
 import type { IGridPositionDeriver } from "../../../../../../shared/pictograph/grid/services/contracts/IGridPositionDeriver";

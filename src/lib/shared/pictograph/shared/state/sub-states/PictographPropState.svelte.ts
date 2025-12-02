@@ -6,9 +6,10 @@
  */
 
 import type { PictographData } from "../../domain/models/PictographData"
-import type { MotionData } from "../../domain/models/MotionData";;
+import type { MotionData } from "../../domain/models/MotionData";
 import type { PropType } from "../../../prop/domain/enums/PropType";
-import type { PropAssets, PropPosition } from "../../../prop/domain/models";
+import type { PropAssets } from '../../../prop/domain/models/PropAssets';
+import type { PropPosition } from '../../../prop/domain/models/PropPosition';
 import type { IPropPlacementService } from "../../../prop/services/contracts/IPropPlacementService";
 import type { IPropSvgLoader } from "../../../prop/services/contracts/IPropSvgLoader";
 import type { IPropTypeConfigurationService } from "../../../prop/services/contracts/IPropTypeConfigurationService";

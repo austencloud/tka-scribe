@@ -2,7 +2,7 @@
   import type {
     RecentActivityEvent,
     EventTypeBreakdown,
-  } from "../../services/contracts";
+  } from "../../services/contracts/IAnalyticsDataService";
   import {
     formatTimestamp,
     formatEventType,

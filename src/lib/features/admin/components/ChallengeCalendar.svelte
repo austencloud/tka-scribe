@@ -5,7 +5,7 @@
    * Calendar view showing scheduled challenges
    */
 
-  import type { ChallengeScheduleEntry } from "../domain/models";
+  import type { ChallengeScheduleEntry } from "../domain/models/AdminModels";
 
   // Props
   let {

@@ -6,19 +6,15 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { ExploreFilterType } from "$lib/shared/persistence/domain";
-import type {
-  IDiscoverFilterService,
-  IDiscoverLoader,
-  IDiscoverSortService,
-} from "../../gallery/display";
-import type {
-  ExploreNavigationConfig,
-  ExploreNavigationItem,
-  INavigationService,
-} from "../../gallery/navigation";
+import type { ExploreFilterType } from "$lib/shared/persistence/domain/enums/FilteringEnums";
+import type { IDiscoverFilterService } from "../../gallery/display/services/contracts/IDiscoverFilterService";
+import type { IDiscoverLoader } from "../../gallery/display/services/contracts/IDiscoverLoader";
+import type { IDiscoverSortService } from "../../gallery/display/services/contracts/IDiscoverSortService";
+import type { ExploreNavigationConfig } from "../../gallery/navigation/domain/models/navigation-models";
+import type { ExploreNavigationItem } from "../../gallery/navigation/domain/models/navigation-models";
+import type { INavigationService } from "../../gallery/navigation/services/contracts/INavigationService";
 import { ExploreSortMethod } from "../domain/enums/discover-enums";
 import type {
   SectionConfig,

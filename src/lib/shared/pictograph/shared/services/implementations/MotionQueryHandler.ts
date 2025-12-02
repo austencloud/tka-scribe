@@ -11,12 +11,13 @@ import { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type { MotionData } from "../../domain/models/MotionData";
 import { createMotionData } from "../../domain/models/MotionData";
 import type { PictographData } from "../../domain/models/PictographData";
-import type { ICSVPictographParser as ICSVPictographParser, CSVRow } from "../../../../foundation/services/contracts/data";
+import type { ICSVPictographParser as ICSVPictographParser } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
+import type { CSVRow } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
 import { inject, injectable } from "inversify";
-import type { ParsedCsvRow } from "$lib/features/create/generate/shared/domain";
-import type { ICSVLoader } from "../../../../foundation";
-import type { IMotionQueryHandler } from "../../../../foundation";
-import { TYPES } from "../../../../inversify";
+import type { ParsedCsvRow } from "$lib/features/create/generate/shared/domain/csv-handling/CsvModels";
+import type { ICSVLoader } from "../../../../foundation/services/contracts/data/ICSVLoader";
+import type { IMotionQueryHandler } from "../../../../foundation/services/contracts/data/data-contracts";
+import { TYPES } from "../../../../inversify/types";
 import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
 // Temporary interface definition
 interface ICSVParser {

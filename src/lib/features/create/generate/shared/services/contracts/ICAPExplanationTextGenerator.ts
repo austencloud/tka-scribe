@@ -2,7 +2,7 @@
  * Service contract for generating CAP transformation explanation text
  */
 
-import type { CAPComponent } from "../../domain";
+import type { CAPComponent } from "../../domain/models/generate-models";
 
 /**
  * Generates user-friendly explanation text for CAP transformations

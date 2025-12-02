@@ -1,4 +1,4 @@
-import type { BeatData } from "$create/shared/workspace-panel";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { SliceSize } from "../../domain/models/circular-models";
 
 /**

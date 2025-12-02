@@ -7,19 +7,17 @@ import { BackgroundRenderingService } from "../../background/shared/services/imp
 import { CsvLoader } from "../../foundation/services/implementations/data/CsvLoader";
 import { CSVParser } from "../../foundation/services/implementations/data/CsvParser";
 import { EnumMapper } from "../../foundation/services/implementations/data/EnumMapper";
-import { DexiePersistenceService } from "../../persistence";
+import { DexiePersistenceService } from "../../persistence/services/implementations/DexiePersistenceService";
 import { PersistenceInitializationService } from "../../persistence/services/implementations/PersistenceInitializationService";
-import { DataTransformer } from "../../pictograph";
+import { DataTransformer } from "../../pictograph/shared/services/implementations/DataTransformer";
 import { TYPES } from "../types";
 // Deep Ocean Background Services
-import {
-  BubblePhysics,
-  MarineLifeAnimator,
-  ParticleSystem,
-  FishSpriteManager,
-  OceanRenderer,
-  LightRayCalculator,
-} from "../../background/deep-ocean";
+import { BubblePhysics } from "../../background/deep-ocean/services/implementations/BubblePhysics";
+import { MarineLifeAnimator } from "../../background/deep-ocean/services/implementations/MarineLifeAnimator";
+import { ParticleSystem } from "../../background/deep-ocean/services/implementations/ParticleSystem";
+import { FishSpriteManager } from "../../background/deep-ocean/services/implementations/FishSpriteManager";
+import { OceanRenderer } from "../../background/deep-ocean/services/implementations/OceanRenderer";
+import { LightRayCalculator } from "../../background/deep-ocean/services/implementations/LightRayCalculator";
 // Core Sequence Services (moved from createModule to Tier 1)
 import { SequenceService } from "../../../features/create/shared/services/implementations/SequenceService";
 import { SequenceDomainService } from "../../../features/create/shared/services/implementations/SequenceDomainService";
@@ -36,10 +34,12 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.IEnumMapper).to(EnumMapper);
 
     // === PERSISTENCE SERVICES ===
-    options.bind(TYPES.IPersistenceService).to(DexiePersistenceService);
+    // DexiePersistenceService MUST be singleton - database connection and state must persist
+    options.bind(TYPES.IPersistenceService).to(DexiePersistenceService).inSingletonScope();
     options
       .bind(TYPES.IPersistenceInitializationService)
-      .to(PersistenceInitializationService);
+      .to(PersistenceInitializationService)
+      .inSingletonScope();
 
     // === CORE SEQUENCE SERVICES ===
     // ISequenceService and its dependencies are used across multiple modules

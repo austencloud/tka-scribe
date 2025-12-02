@@ -6,7 +6,7 @@
  */
 
 import { browser } from "$app/environment";
-import { resolve } from "../../inversify";
+import { resolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { IStorageService } from "../../foundation/services/contracts/IStorageService";
 

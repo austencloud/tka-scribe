@@ -7,13 +7,14 @@
 import { inject, injectable } from "inversify";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { ISequenceService } from "$create/shared";
-import type { ISequenceTransformationService } from "$create/shared";
+
 import type {
   ITunnelModeSequenceManager,
   SequenceType,
   TransformOperation,
 } from "../contracts/ITunnelModeSequenceManager";
+import type { ISequenceService } from "../../../create/shared/services/contracts/ISequenceService";
+import type { ISequenceTransformationService } from "../../../create/shared/services/contracts/ISequenceTransformationService";
 
 @injectable()
 export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {

@@ -22,12 +22,8 @@ import {
   getDailyChallengesPath,
   getUserChallengeProgressPath,
 } from "../../data/firestore-collections";
-import type {
-  DailyChallenge,
-  UserChallengeProgress,
-  XPEventMetadata,
-} from "../../domain/models";
-import type { IDailyChallengeService } from "../contracts";
+import type { DailyChallenge, UserChallengeProgress, XPEventMetadata } from '../../domain/models/achievement-models';
+import type { IDailyChallengeService } from "../contracts/IDailyChallengeService";
 import type { IAchievementService } from "../contracts/IAchievementService";
 import { TYPES } from "../../../inversify/types";
 

@@ -11,13 +11,11 @@
   - MobileSequencePanel: BeatGrid display
 -->
 <script lang="ts">
-  import {
-    MobileHeader,
-    MobileCanvasArea,
-    MobileControlsBar,
-    MobileSequencePanel,
-  } from "./components";
-  import type { BeatData } from "$create/shared/domain/models/BeatData";
+  import MobileHeader from "./components/MobileHeader.svelte";
+  import MobileCanvasArea from "./components/MobileCanvasArea.svelte";
+  import MobileControlsBar from "./components/MobileControlsBar.svelte";
+  import MobileSequencePanel from "./components/MobileSequencePanel.svelte";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {

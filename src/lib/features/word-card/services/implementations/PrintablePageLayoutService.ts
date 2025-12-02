@@ -24,9 +24,9 @@ import type {
 import type {
   PageOrientation,
   WordCardPaperSize,
-} from "../../domain/types";
+} from "../../domain/types/PageLayoutTypes";
 import { injectable } from "inversify";
-import type { IPrintablePageLayoutService } from "../contracts";
+import type { IPrintablePageLayoutService } from "../contracts/word-card-contracts";
 
 @injectable()
 export class PrintablePageLayoutService implements IPrintablePageLayoutService {

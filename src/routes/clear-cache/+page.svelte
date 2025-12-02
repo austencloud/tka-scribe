@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { clearAllFirebaseCache } from "$lib/shared/auth";
+  import { clearAllFirebaseCache } from "$lib/shared/auth/utils/clearFirebaseCache";
 
   let status = $state("Ready to clear cache...");
   let cleared = $state(false);

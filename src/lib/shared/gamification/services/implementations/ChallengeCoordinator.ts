@@ -6,12 +6,7 @@
  */
 
 import { inject, injectable } from "inversify";
-import type {
-  DailyChallenge,
-  UserChallengeProgress,
-  XPActionType,
-  XPEventMetadata,
-} from "../../domain/models";
+import type { DailyChallenge, UserChallengeProgress, XPActionType, XPEventMetadata } from '../../domain/models/achievement-models';
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,

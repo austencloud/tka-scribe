@@ -16,8 +16,8 @@ import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import { TYPES } from "../../../../../../inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import type { IDirectionalTupleCalculator } from "../contracts";
-import type { IDirectionalTupleProcessor } from "../contracts";
+import type { IDirectionalTupleCalculator } from '../contracts/IDirectionalTupleService';
+import type { IDirectionalTupleProcessor } from '../contracts/IDirectionalTupleService';
 
 @injectable()
 export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {

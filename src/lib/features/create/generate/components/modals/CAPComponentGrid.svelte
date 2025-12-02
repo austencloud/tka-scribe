@@ -6,7 +6,7 @@ Displays all available CAP transformations in a responsive 2x2 grid
   import {
     CAP_COMPONENTS,
     CAPComponent,
-  } from "$create/generate/shared/domain/constants/cap-components";
+  } from "$lib/features/create/generate/shared/domain/constants/cap-components";
   import CAPComponentButton from "./CAPComponentButton.svelte";
 
   let {

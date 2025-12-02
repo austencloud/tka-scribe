@@ -7,7 +7,7 @@
    * Delegates all business logic to specialized managers.
    */
   import { onMount } from "svelte";
-  import { getActiveTab } from "./application/state/app-state.svelte";
+  import { getActiveTab } from "./application/state/ui/ui-state.svelte";
   // import { handleHMRInit } from "./hmr-helper"; // No longer needed
   import {
     layoutState,
@@ -42,19 +42,17 @@
   import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
   // Keyboard shortcuts
-  import {
-    KeyboardShortcutCoordinator,
-    CommandPalette,
-    ShortcutsHelp,
-  } from "./keyboard/components";
 
-  import type { IDeepLinkService } from "./navigation/services/contracts";
+  import type { IDeepLinkService } from "./navigation/services/contracts/IDeepLinkService";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
   import { discoverScrollState } from "../features/discover/shared/state/DiscoverScrollState.svelte";
   import type { IViewportService } from './device/services/contracts/IViewportService';
-  import { resolve } from "./inversify";
+  import { resolve } from "./inversify/di";
   import { TYPES } from "./inversify/types";
   import type { IDeviceDetector } from "./device/services/contracts/IDeviceDetector";
+  import CommandPalette from "./keyboard/components/CommandPalette.svelte";
+  import ShortcutsHelp from "./keyboard/components/ShortcutsHelp.svelte";
+  import KeyboardShortcutCoordinator from "./keyboard/coordinators/KeyboardShortcutCoordinator.svelte";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now

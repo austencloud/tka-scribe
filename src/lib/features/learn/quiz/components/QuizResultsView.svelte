@@ -1,10 +1,10 @@
 <!-- QuizResultsView - Refactored with service architecture -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import type { QuizResults } from "../domain";
+  import type { QuizResults } from "../domain/models/quiz-models";
   import type { IQuizResultsAnalyzer } from "../QuizResultsAnalyzer";
   import QuizResultsHeader from "./QuizResultsHeader.svelte";
   import QuizPerformanceGrade from "./QuizPerformanceGrade.svelte";

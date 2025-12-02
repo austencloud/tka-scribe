@@ -20,14 +20,15 @@
     GridMode,
   } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { ElementVisibilityControls, PreviewSection } from "./visibility";
+  import ElementVisibilityControls from "./visibility/ElementVisibilityControls.svelte";
+  import PreviewSection from "./visibility/PreviewSection.svelte";
+  import { createMotionData } from "../../../pictograph/shared/domain/models/MotionData";
   import {
-    createMotionData,
     MotionType,
     RotationDirection,
     Orientation,
     MotionColor,
-  } from "../../../pictograph";
+  } from "../../../pictograph/shared/domain/enums/pictograph-enums";
 
   interface Props {
     currentSettings: unknown;

@@ -2,7 +2,7 @@
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { tryGetCreateModuleContext } from "../../../context";
+  import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
 
   let {
     show = false, // Controlled by panel coordination state

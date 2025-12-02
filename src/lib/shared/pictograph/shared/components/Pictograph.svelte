@@ -4,14 +4,14 @@
   import VTGGlyph from "./VTGGlyph.svelte";
   import { calculateVTGFromPictograph } from "../domain/utils/vtg-calculator";
   import { onMount, onDestroy } from "svelte";
-  import { resolve, tryResolve, TYPES } from "../../../inversify";
+  import { resolve, tryResolve, TYPES } from "../../../inversify/di";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import { getSettings } from "../../../application/state/app-state.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
-  import type { IGridModeDeriver } from "../../grid/services/contracts";
+  import type { IGridModeDeriver } from "../../grid/services/contracts/IGridModeDeriver";
   import PropSvg from "../../prop/components/PropSvg.svelte";
-  import { TKAGlyph } from "../../tka-glyph";
+  import TKAGlyph from "../../tka-glyph/components/TKAGlyph.svelte";
   import { createPictographState } from "../state/pictograph-state.svelte";
   import BeatNumber from "./BeatNumber.svelte";
   import ReversalIndicators from "./ReversalIndicators.svelte";

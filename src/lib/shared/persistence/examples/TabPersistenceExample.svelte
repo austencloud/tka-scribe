@@ -8,7 +8,7 @@
 <script lang="ts">
 import type { IPersistenceService } from "../services/contracts/IPersistenceService";
 import type { TabId } from "../../navigation/domain/types";
-import { resolve } from "../../inversify";
+import { resolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 

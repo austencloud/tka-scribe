@@ -10,7 +10,7 @@
  * 4. Method call remains the same: getInvertedLetter()
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { MotionColor, MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";

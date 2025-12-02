@@ -14,7 +14,7 @@ import type { PictographData } from "../../pictograph/shared/domain/models/Picto
 import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
 import Pictograph from "../../pictograph/shared/components/Pictograph.svelte";
 import { mount, tick, unmount } from "svelte";
-import { resolve as resolveService } from "../../inversify";
+import { resolve as resolveService } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { IGlyphCacheService } from "../services/implementations/GlyphCacheService";
 

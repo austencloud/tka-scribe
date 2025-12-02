@@ -9,13 +9,13 @@
  * - Ocean gradient background
  */
 
+import type { AccessibilitySettings } from "../../shared/domain/models/background-models";
 import type {
-  AccessibilitySettings,
   Dimensions,
-  IBackgroundSystem,
   PerformanceMetrics,
   QualityLevel,
-} from "../../shared";
+} from "../../shared/domain/types/background-types";
+import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import type {
   Bubble,
   DeepOceanState,

@@ -8,12 +8,12 @@
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   // TODO: Fix service import - temporarily commented out
   // import { QuestionGeneratorService } from "../../services/implementations";
-  import type { QuizAnswerOption, QuizQuestionData, QuizType } from "../domain";
-  import { QuizAnswerFormat, QuizQuestionFormat } from "../domain";
+  import type { QuizAnswerOption, QuizQuestionData } from "../domain/models/quiz-models";
+  import { QuizAnswerFormat, QuizQuestionFormat, QuizType } from "../domain/enums/quiz-enums";
   // Events are now handled via callbacks in props
   import AnswerButton from "./AnswerButton.svelte";
   import AnswerPictograph from "./AnswerPictograph.svelte";

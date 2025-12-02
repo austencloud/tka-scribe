@@ -6,13 +6,14 @@
 -->
 
 <script lang="ts">
-  import { Pictograph } from "$lib/shared/pictograph/shared/components";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { resolve, TYPES } from "$lib/shared/inversify";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
-  import { QuizType, type QuizQuestionData } from "../domain";
+  import { QuizType } from "../domain/enums/quiz-enums";
+  import type { QuizQuestionData } from "../domain/models/quiz-models";
 
   // Props
   let { onAnswerSubmit, onNextQuestion, onBack } = $props<{

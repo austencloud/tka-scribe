@@ -12,12 +12,11 @@ import type {
   IDiscoverEventHandlerService,
   ExploreEventHandlerParams,
 } from "../contracts/IDiscoverEventHandlerService";
-import type { IDiscoverThumbnailService } from "../../../gallery/display/services/contracts";
-import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
-import { openSpotlightViewer } from "$lib/shared/application/state/app-state.svelte";
-import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+import { openSpotlightViewer } from "../../../../../shared/application/state/ui/ui-state.svelte";
+import type { IDiscoverThumbnailService } from "../../../gallery/display/services/contracts/IDiscoverThumbnailService";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
-
+import type { ISheetRouterService } from "../../../../../shared/navigation/services/contracts/ISheetRouterService";
+import { navigationState } from "../../../../../shared/navigation/state/navigation-state.svelte";
 @injectable()
 export class DiscoverEventHandlerService implements IDiscoverEventHandlerService {
   private params: ExploreEventHandlerParams | null = null;

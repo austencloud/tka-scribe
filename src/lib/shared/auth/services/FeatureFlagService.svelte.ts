@@ -12,16 +12,15 @@
 
 import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../firebase";
+import { type UserRole, hasRolePrivilege } from '../domain/models/UserRole';
 import {
-  type UserRole,
   type FeatureId,
   type FeatureFlagConfig,
   type UserFeatureOverrides,
-  hasRolePrivilege,
   moduleIdToFeatureId,
   tabIdToFeatureId,
   getDefaultFeatureRole,
-} from "../domain";
+} from '../domain/models/FeatureFlag';
 import type { ModuleId } from "../../navigation/domain/types";
 import { MODULE_DEFINITIONS } from "../../navigation/state/navigation-state.svelte";
 

@@ -1,7 +1,7 @@
 import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
-import type { ISpecialPlacementService } from "../../placement/services/contracts";
+import type { ISpecialPlacementService } from '../../placement/services/contracts/IArrowPlacementService';
 import type { IRotationAngleOverrideKeyGenerator } from "../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { RotationMapSelector } from "./RotationMapSelector";
 import { normalizeRotationDirection } from "./RotationDirectionUtils";

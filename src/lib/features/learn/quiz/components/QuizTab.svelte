@@ -9,20 +9,19 @@ Provides quiz functionality for learning TKA notation:
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onDestroy, onMount } from "svelte";
-  import type { ICodexService } from "../../codex/services/contracts";
-  import type { QuizProgress } from "../domain";
-  import { QuizMode, QuizType } from "../domain";
-  import type {
-    IQuizRepoManager,
-    IQuizSessionService,
-  } from "../services/contracts";
-  import { QuestionGeneratorService } from "../services/implementations";
+  import type { ICodexService } from "../../codex/services/contracts/ICodexService";
+  import { QuizMode, QuizType } from "../domain/enums/quiz-enums";
+  import type { QuizProgress } from "../domain/models/quiz-models";
+  import type { IQuizRepoManager } from "../services/contracts/IQuizRepository";
+  import type { IQuizSessionService } from "../services/contracts/IQuizSessionService";
+  import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
   import QuizResultsView from "./QuizResultsView.svelte";
   import QuizSelectorView from "./QuizSelectorView.svelte";
   import QuizWorkspaceView from "./QuizWorkspaceView.svelte";
+
 
   // Import learn components
 

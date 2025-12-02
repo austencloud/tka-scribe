@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
-  import { PanelTabs } from "$lib/shared/components/panel";
+  import PanelTabs from "$lib/shared/components/panel/PanelTabs.svelte";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import type { LibrarySequence } from "$lib/features/library/domain/models/LibrarySequence";
   import type {
@@ -61,7 +61,7 @@
       },
     ]}
     {activeTab}
-    onchange={(tab) => onTabChange(tab as ProfileTab)}
+    onchange={(tab: string) => onTabChange(tab as ProfileTab)}
   />
 </div>
 

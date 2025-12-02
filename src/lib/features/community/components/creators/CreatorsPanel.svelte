@@ -8,20 +8,18 @@
    */
 
   import { onMount, onDestroy } from "svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
   import { communityViewState } from "../../state/community-view-state.svelte";
   import type { UserProfile } from "../../domain/models/enhanced-user-profile";
   import type { IUserService } from "../../services/contracts/IUserService";
-  import {
-    PanelState,
-    PanelContent,
-    PanelSearch,
-    PanelHeader,
-    PanelGrid,
-  } from "../../../../shared/components/panel";
+  import PanelState from "$lib/shared/components/panel/PanelState.svelte";
+  import PanelContent from "$lib/shared/components/panel/PanelContent.svelte";
+  import PanelSearch from "$lib/shared/components/panel/PanelSearch.svelte";
+  import PanelHeader from "$lib/shared/components/panel/PanelHeader.svelte";
+  import PanelGrid from "$lib/shared/components/panel/PanelGrid.svelte";
 
   let users = $state<UserProfile[]>([]);
   let isLoading = $state(true);

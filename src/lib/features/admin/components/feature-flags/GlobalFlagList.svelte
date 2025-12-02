@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { FeatureFlagConfig, UserRole } from "$lib/shared/auth/domain";
-  import { ROLE_DISPLAY } from "$lib/shared/auth/domain";
-  import {
-    AdminSearchBox,
-    AdminFilterGroup,
-    AdminListItem,
-    AdminEmptyState,
-    type FilterOption,
-  } from "$lib/shared/admin";
+  import type { FeatureFlagConfig } from "$lib/shared/auth/domain/models/FeatureFlag";
+  import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import { ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
+  import type { FilterOption } from "$lib/shared/admin/types/admin-component-types";
+  import AdminSearchBox from "$lib/shared/admin/components/AdminSearchBox.svelte";
+  import AdminFilterGroup from "$lib/shared/admin/components/AdminFilterGroup.svelte";
+  import AdminListItem from "$lib/shared/admin/components/AdminListItem.svelte";
+  import AdminEmptyState from "$lib/shared/admin/components/AdminEmptyState.svelte";
   import { getFeatureIconAndColor, getRoleColor, getRoleIcon } from "./utils";
 
   interface HierarchicalFlags {

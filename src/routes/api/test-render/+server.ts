@@ -1,7 +1,7 @@
-import type { ISequencePersistenceService } from "$lib/features/create/shared/services/contracts";
-import { resolve } from "$lib/shared/inversify";
+import type { ISequencePersistenceService } from "$lib/features/create/shared/services/contracts/ISequencePersistenceService";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { ISequenceRenderService } from "$lib/shared/render/services/contracts";
+import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 

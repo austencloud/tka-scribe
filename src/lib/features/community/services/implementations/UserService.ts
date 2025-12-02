@@ -22,8 +22,8 @@ import {
 import type { Timestamp, DocumentData } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
 import { getUserAchievementsPath } from "$lib/shared/gamification/data/firestore-collections";
-import { ALL_ACHIEVEMENTS } from "$lib/shared/gamification/domain/constants";
-import type { Achievement, UserAchievement } from "$lib/shared/gamification/domain/models";
+import { ALL_ACHIEVEMENTS } from "$lib/shared/gamification/domain/constants/achievement-definitions";
+import type { Achievement, UserAchievement } from "$lib/shared/gamification/domain/models/achievement-models";
 import type { IUserService } from "../contracts/IUserService";
 import type { EnhancedUserProfile, UserProfile, CreatorQueryOptions } from "../../domain/models/enhanced-user-profile";
 

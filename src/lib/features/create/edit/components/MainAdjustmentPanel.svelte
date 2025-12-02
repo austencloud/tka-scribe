@@ -1,6 +1,6 @@
 <!-- MainAdjustmentPanel.svelte - Switches between orientation and turn controls -->
 <script lang="ts">
-  import type { BeatData } from "$create/shared/workspace-panel";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import OrientationControlPanel from "./OrientationControlPanel.svelte";
   import TurnControlPanel from "./TurnControlPanel.svelte";
   import TurnEditModal from "./TurnEditModal.svelte";

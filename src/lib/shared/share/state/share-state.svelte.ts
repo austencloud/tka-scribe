@@ -5,12 +5,12 @@
  */
 
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-import type { ShareOptions } from "../domain";
-import { SHARE_PRESETS } from "../domain";
-import type { IShareService } from "../services/contracts";
-import { tryResolve } from "../../inversify";
+import type { ShareOptions } from '../domain/models/ShareOptions';
+import { SHARE_PRESETS } from '../domain/models/ShareOptions';
+import type { IShareService } from '../services/contracts/IShareService';
+import { tryResolve } from '../../inversify/container';
 import { TYPES } from "../../inversify/types";
-import type { IActivityLogService } from "../../analytics";
+import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 export interface ShareState {
   // Current options

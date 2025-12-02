@@ -1,13 +1,13 @@
 <script lang="ts">
   import SettingsCategoryCard from "./SettingsCategoryCard.svelte";
   import type { AppSettings } from "../../domain/AppSettings";
-  import { authStore } from "../../../auth";
   import {
     getPropTypeDisplayInfo,
     findPropTypeByValue,
   } from "../tabs/prop-type/PropTypeRegistry";
   import { getBackgroundConfig } from "../tabs/background/background-config";
   import { BackgroundType } from "../../../background/shared/domain/enums/background-enums";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
 
   /**
    * Get user-friendly display name for a prop type value

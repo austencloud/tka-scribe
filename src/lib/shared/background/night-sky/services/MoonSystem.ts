@@ -1,12 +1,12 @@
 // src/lib/components/backgrounds/systems/nightSky/MoonSystem.ts
 
 // Removed resolve import - calculation service now injected via constructor
+import type { AccessibilitySettings } from "../../shared/domain/models/background-models";
 import type {
-  AccessibilitySettings,
   Dimensions,
   QualityLevel,
-} from "../../shared";
-import type { Moon } from "../domain";
+} from "../../shared/domain/types/background-types";
+import type { Moon } from "../domain/models/night-sky-models";
 import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
 export interface MoonConfig {

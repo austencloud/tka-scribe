@@ -5,21 +5,19 @@
   Overlays two sequences with different colors on the same canvas.
 -->
 <script lang="ts">
-  import { AnimatorCanvas } from "$lib/shared/animation-engine/components";
-  import { resolve } from "$lib/shared/inversify";
+  import AnimatorCanvas from "../../../../../shared/animation-engine/components/AnimatorCanvas.svelte";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type {
-    IAnimationPlaybackController,
-    IPixiAnimationRenderer,
-  } from "../../../services/contracts";
-  import type { ISettingsService } from "$lib/shared/settings/services/contracts";
-  import { createAnimationPanelState } from "../../../state/animation-panel-state.svelte";
+  import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
+  import type { IPixiAnimationRenderer } from "../../../services/contracts/IPixiAnimationRenderer";
+  import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
   } from "../../../shared/domain/constants/timing";
+  import { createAnimationPanelState } from "../../../state/animation-panel-state.svelte";
 
   // Local type definition for tunnel colors (component-specific format)
   type TunnelColors = {
@@ -66,7 +64,7 @@
   let primaryPlaybackController: IAnimationPlaybackController | null = null;
   let secondaryPlaybackController: IAnimationPlaybackController | null = null;
   let pixiRenderer: IPixiAnimationRenderer | null = null;
-  let settingsService: ISettingsService | null = null;
+  let settingsService: ISettingsState | null = null;
 
   // Animation states (one for each sequence)
   const primaryAnimationState = createAnimationPanelState();
@@ -89,7 +87,7 @@
       pixiRenderer = resolve(
         TYPES.IPixiAnimationRenderer
       ) as IPixiAnimationRenderer;
-      settingsService = resolve(TYPES.ISettingsService) as ISettingsService;
+      settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
 
       // Load secondary prop textures for tunnel mode
       loadSecondaryPropTextures();

@@ -15,9 +15,10 @@ import type {
   EndPositionFilter,
   ReversalFilter,
   TypeFilter,
-} from "../../domain";
-import type { IPositionAnalyzer, IReversalChecker } from "../contracts";
-import type { IOptionFilter } from "../contracts";
+} from "../../domain/option-picker-types";
+import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
+import type { IReversalChecker } from "../contracts/IReversalChecker";
+import type { IOptionFilter } from "../contracts/IOptionFilter";
 import { LetterType } from "../../../../../../shared/foundation/domain/models/LetterType";
 
 @injectable()

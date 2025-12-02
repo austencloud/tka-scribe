@@ -19,19 +19,17 @@
     />
 -->
 <script lang="ts">
-  import { AnimationPanel } from "$lib/shared/animation-engine/components";
-  import type {
-    AnimationExportFormat,
-    GifExportProgress,
-    IAnimationPlaybackController,
-    IGifExportOrchestrator,
-  } from "$lib/features/animate/services/contracts";
+  import AnimationPanel from "../animation-engine/components/AnimationPanel.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
+  import type { IGifExportOrchestrator } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
+  import type { AnimationExportFormat } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
+  import type { GifExportProgress } from "$lib/features/animate/services/contracts/IGifExportService";
   import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
-  import type { ISequenceService } from "$create/shared";
-  import { resolve } from "../inversify";
+  import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
+  import { resolve } from "../inversify/di";
   import { TYPES } from "../inversify/types";
   import type { SequenceData } from "../foundation/domain/models/SequenceData";
-  import type { IHapticFeedbackService } from "../application/services/contracts";
+  import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,

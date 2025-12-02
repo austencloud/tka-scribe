@@ -4,7 +4,7 @@
  * Handles achievement unlock notifications and toast messages.
  */
 
-import type { AchievementNotification } from "../../domain/models";
+import type { AchievementNotification } from "../../domain/models/achievement-models";
 
 export interface INotificationService {
   /**

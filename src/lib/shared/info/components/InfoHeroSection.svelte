@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { InfoHeroContent } from "../domain";
+  import type { InfoHeroContent } from "../domain/types";
 
   let {
     hero,

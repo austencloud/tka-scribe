@@ -5,17 +5,19 @@
  * No over-engineering, just the core functionality needed.
  */
 
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { resolve } from "$lib/shared/inversify/index";
-import type { ISettingsService } from "$lib/shared/settings/services/contracts";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { TYPES } from "$lib/shared/inversify/types";
-import type { IStartPositionService } from "../services/contracts";
+import { resolve } from "../../../../../shared/inversify/di";
+import { TYPES } from "../../../../../shared/inversify/types";
+import { GridMode } from "../../../../../shared/pictograph/grid/domain/enums/grid-enums";
+import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
+import type { ISettingsState } from "../../../../../shared/settings/services/contracts/ISettingsState";
+import type { IStartPositionService } from "../services/contracts/IStartPositionService";
+
+
 
 export function createSimplifiedStartPositionState() {
   // Lazy service resolution to avoid effect_orphan error
   let startPositionService: IStartPositionService | null = null;
-  let settingsService: ISettingsService | null = null;
+  let settingsService: ISettingsState | null = null;
 
   function getService(): IStartPositionService {
     if (!startPositionService) {
@@ -24,9 +26,9 @@ export function createSimplifiedStartPositionState() {
     return startPositionService;
   }
 
-  function getSettingsService(): ISettingsService {
+  function getSettingsService(): ISettingsState {
     if (!settingsService) {
-      settingsService = resolve(TYPES.ISettingsService)!;
+      settingsService = resolve(TYPES.ISettingsState)!;
     }
     return settingsService;
   }

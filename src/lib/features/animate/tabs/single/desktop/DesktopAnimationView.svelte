@@ -7,10 +7,11 @@
 -->
 <script lang="ts">
   import AnimationControlsModern from "../../../components/canvas/AnimationControlsModern.svelte";
-  import BeatGrid from "$create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import { SingleModeCanvas } from "../shared";
-  import { AnimationHeader, StatsBar } from "../desktop";
-  import type { BeatData } from "$create/shared/domain/models/BeatData";
+  import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import SingleModeCanvas from "../shared/SingleModeCanvas.svelte";
+  import AnimationHeader from "./AnimationHeader.svelte";
+  import StatsBar from "./StatsBar.svelte";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {

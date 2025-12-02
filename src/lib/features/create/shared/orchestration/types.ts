@@ -7,12 +7,10 @@ import type { IViewportService } from "$lib/shared/device/services/contracts/IVi
  */
 
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
-import type {
-  ICreateModuleService,
-  ISequencePersistenceService,
-  ISequenceService,
-} from "../services/contracts";
+import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts/IStartPositionService";
+import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
+import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
+import type { ISequenceService } from "../services/contracts/ISequenceService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";

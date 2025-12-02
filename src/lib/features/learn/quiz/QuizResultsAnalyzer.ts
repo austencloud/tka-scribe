@@ -6,8 +6,8 @@
  */
 
 import { injectable } from "inversify";
-import type { QuizResults } from "./domain";
-import { QuizMode, QuizType } from "./domain";
+import type { QuizResults } from './domain/models/quiz-models';
+import { QuizMode, QuizType } from './domain/enums/quiz-enums';
 
 // ============================================================================
 // Types

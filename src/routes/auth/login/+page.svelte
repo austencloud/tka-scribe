@@ -5,15 +5,13 @@
    * Provides social authentication options for users
    */
 
-  import { authStore } from "$lib/shared/auth";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { getRedirectResult } from "firebase/auth";
   import { auth } from "$lib/shared/auth/firebase";
-  import {
-    SocialAuthButton,
-    EmailPasswordAuth,
-  } from "$lib/shared/auth/components";
+  import SocialAuthButton from "$lib/shared/auth/components/SocialAuthButton.svelte";
+  import EmailPasswordAuth from "$lib/shared/auth/components/EmailPasswordAuth.svelte";
   import EmailLinkAuth from "$lib/shared/auth/components/EmailLinkAuth.svelte";
 
   let loadingRedirect = $state(true);

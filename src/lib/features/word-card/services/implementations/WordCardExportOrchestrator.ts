@@ -24,10 +24,10 @@ import type {
   IWordCardExportProgressTracker,
   IWordCardImageConversionService,
   IWordCardImageGenerationService,
-} from "../contracts";
-import {} from "../contracts";
-import {} from "../contracts";
-import type { IWordCardExportOrchestrator } from "../contracts";
+} from "../contracts/word-card-contracts";
+import {} from "../contracts/word-card-contracts";
+import {} from "../contracts/word-card-contracts";
+import type { IWordCardExportOrchestrator } from "../contracts/word-card-contracts";
 
 @injectable()
 export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {

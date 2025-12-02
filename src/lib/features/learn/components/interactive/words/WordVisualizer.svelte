@@ -4,7 +4,7 @@ Displays letters transitioning smoothly on the grid with motion arrows
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { untrack } from "svelte";
 

@@ -6,18 +6,16 @@
  * that was previously scattered throughout the massive ConstructTab component.
  */
 
-import { resolve } from "$lib/shared/inversify";
-import type { SequenceData } from "$lib/shared/foundation/domain/models";
-import { TYPES } from "$lib/shared/inversify/types";
+import { resolve } from "../../../../../shared/inversify/di";
+import type { SequenceData } from "../../../../../shared/foundation/domain/models/SequenceData";
+import { TYPES } from "../../../../../shared/inversify/types";
 import { injectable } from "inversify";
-import type {
-  ICreateModuleEventService,
-  IBuildConstructSectionCoordinator,
-} from "../contracts";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { IOrientationCalculator } from "../../../generate";
-import type { BeatData } from "../../domain";
-import { createBeatData } from "../../domain";
+import type { ICreateModuleEventService } from "../contracts/ICreateModuleEventService";
+import type { IBuildConstructSectionCoordinator } from "../contracts/IConstructCoordinator";
+import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
+import type { IOrientationCalculator } from "../../../../../shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { BeatData } from "../../domain/models/BeatData";
+import { createBeatData } from "../../domain/factories/createBeatData";
 
 @injectable()
 export class CreateModuleEventService implements ICreateModuleEventService {

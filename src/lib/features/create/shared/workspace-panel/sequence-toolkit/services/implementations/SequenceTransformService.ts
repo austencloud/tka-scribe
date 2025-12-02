@@ -9,7 +9,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { createSequenceData, updateSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { createBeatData } from "../../../../domain/factories/createBeatData";
-import type { ISequenceTransformService } from "../contracts";
+import type { ISequenceTransformService } from "../contracts/ISequenceTransformService";
 
 @injectable()
 export class SequenceTransformService implements ISequenceTransformService {

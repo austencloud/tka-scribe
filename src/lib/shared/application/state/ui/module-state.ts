@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
 import type { ModuleId } from "../../../navigation/domain/types";
-import { featureFlagService } from "../../../auth";
+import { featureFlagService } from "../../../auth/services/FeatureFlagService.svelte";
 import { navigationState } from "../../../navigation/state/navigation-state.svelte";
 import { getPersistenceService } from "../services.svelte";
 import {
@@ -186,7 +186,7 @@ export function preloadCachedModuleServices(): void {
   }
 }
 
-export async function switchModule(module: ModuleId): Promise<void> {
+export async function switchTab(module: ModuleId): Promise<void> {
   if (getActiveModule() === module) {
     return;
   }
@@ -194,7 +194,7 @@ export async function switchModule(module: ModuleId): Promise<void> {
   // Check if user has access to the module
   if (!isModuleAccessible(module)) {
     console.warn(
-      `⚠️ switchModule: User does not have access to module "${module}"`
+      `⚠️ switchTab: User does not have access to module "${module}"`
     );
     setIsTransitioning(false);
     return;
@@ -220,7 +220,7 @@ export async function switchModule(module: ModuleId): Promise<void> {
     }
   } catch (_error) {
     console.warn(
-      "⚠️ switchModule: Failed to save module to persistence:",
+      "⚠️ switchTab: Failed to save module to persistence:",
       _error
     );
   }

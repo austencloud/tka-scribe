@@ -10,11 +10,11 @@
 </script>
 
 <script lang="ts">
-  import { CreatePanelDrawer } from "$lib/features/create/shared/components";
+  import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
   import PanelHeader from "$lib/features/create/shared/components/PanelHeader.svelte";
-  import { tryGetCreateModuleContext } from "$lib/features/create/shared/context";
+  import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-  import type { ShareState } from "../state";
+  import type { ShareState } from "../state/share-state.svelte";
   import SharePanel, { type ViewMode } from "./SharePanel.svelte";
 
   let {

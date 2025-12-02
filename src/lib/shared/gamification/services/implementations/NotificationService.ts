@@ -22,9 +22,9 @@ import {
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserNotificationsPath } from "../../data/firestore-collections";
-import type { AchievementNotification } from "../../domain/models";
-import type { INotificationService } from "../contracts";
-import { getMilestoneForLevel } from "../../domain/constants";
+import type { AchievementNotification } from '../../domain/models/achievement-models';
+import type { INotificationService } from "../contracts/INotificationService";
+import { getMilestoneForLevel } from '../../domain/constants/xp-constants';
 import {
   addNotification,
   clearNotifications,

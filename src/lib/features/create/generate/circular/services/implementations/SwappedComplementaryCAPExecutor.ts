@@ -16,7 +16,7 @@
  * IMPORTANT: End position must equal start position (returns to start)
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
+import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums"
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";

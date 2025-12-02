@@ -15,13 +15,13 @@
 
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import { resolve, TYPES } from "../../../../../../inversify";
-import type { IGridModeDeriver } from "../../../../../grid";
-import { GridMode } from "../../../../../grid";
+import { resolve, TYPES } from '../../../../../../inversify/bootstrap';
+import type { IGridModeDeriver } from "../../../../../grid/services/contracts/IGridModeDeriver.ts";
+import { GridMode } from "../../../../../grid/domain/enums/grid-enums.ts";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData"
-import type { MotionData } from "../../../../../shared/domain/models/MotionData";;
-import { SpecialPlacementOriKeyGenerator } from "../../../key-generation";
-import type { ISpecialPlacementService } from "../contracts";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import { SpecialPlacementOriKeyGenerator } from "../../../key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
+import type { ISpecialPlacementService } from '../contracts/IArrowPlacementService';
 import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";

@@ -10,17 +10,15 @@ import type { PictographData } from "../../../pictograph/shared/domain/models/Pi
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
 import { simplifyRepeatedWord } from "../../utils/word-simplifier";
-import type {
-  IDimensionCalculationService,
-  ILayoutCalculationService,
-  ITextRenderingService,
-} from "../contracts";
-import {} from "../contracts";
-import type { IImageCompositionService } from "../contracts";
+
 import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
+import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
+import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
+import type { IImageCompositionService } from "../contracts/IImageCompositionService";
+import type { ILayoutCalculationService } from "../contracts/ILayoutCalculationService";
+import type { ITextRenderingService } from "../contracts/ITextRenderingService";
 
 @injectable()
 export class ImageCompositionService implements IImageCompositionService {

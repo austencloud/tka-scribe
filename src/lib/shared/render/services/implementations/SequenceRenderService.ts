@@ -8,13 +8,12 @@
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { SequenceExportOptions } from "../../domain/models";
-import type {
-  IImageCompositionService,
-  IImageFormatConverterService,
-} from "../contracts";
+
 import type { ISequenceRenderService } from "../contracts/ISequenceRenderService";
 import { LayoutCalculationService } from "./LayoutCalculationService";
+import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
+import type { IImageCompositionService } from "../contracts/IImageCompositionService";
+import type { IImageFormatConverterService } from "../contracts/IImageFormatConverterService";
 
 @injectable()
 export class SequenceRenderService implements ISequenceRenderService {

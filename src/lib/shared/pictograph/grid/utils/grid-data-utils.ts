@@ -6,7 +6,7 @@
  */
 
 import { GridMode } from "../domain/enums/grid-enums";
-import type { GridData } from "../domain";
+import type { GridData } from "../domain/models/grid-models";
 
 export function createGridData(data: Partial<GridData> = {}): GridData {
   return {

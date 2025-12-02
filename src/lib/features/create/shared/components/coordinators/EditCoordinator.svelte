@@ -9,9 +9,9 @@
    */
 
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import { EditSlidePanel } from "../../../edit/components";
+  import EditSlidePanel from "../../../edit/components/EditSlidePanel.svelte";
   import type { BatchEditChanges } from "../../types/create-module-types";
-  import { getCreateModuleContext } from "../../context";
+  import { getCreateModuleContext } from "../../context/create-module-context";
 
   const logger = createComponentLogger("EditCoordinator");
 

@@ -8,7 +8,7 @@
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 // import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
 

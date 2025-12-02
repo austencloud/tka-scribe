@@ -1,7 +1,8 @@
 <!-- PropTypePicker.svelte - Full-screen modal picker for prop types -->
 <script lang="ts">
   import { PropType } from "../../../../pictograph/prop/domain/enums/PropType";
-  import { PropTypeButton, getBasePropType } from "./index";
+  import PropTypeButton from "./PropTypeButton.svelte";
+  import { getBasePropType } from "./PropTypeRegistry";
 
   type HandColor = "blue" | "red";
 

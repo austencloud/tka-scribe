@@ -10,10 +10,10 @@ Renders a section with:
   import type {
     IReversalDetectionService,
     PictographWithReversals,
-  } from "$create/shared/services/contracts/IReversalDetectionService";
+  } from "$lib/features/create/shared/services/contracts/IReversalDetectionService";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { LetterTypeTextPainter } from "../utils/letter-type-text-painter";

@@ -7,7 +7,7 @@
 
 import { browser } from "$app/environment";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ShareOptions } from "../../domain";
+import type { ShareOptions } from '../../domain/models/ShareOptions';
 
 interface CachedPreview {
   sequenceHash: string;

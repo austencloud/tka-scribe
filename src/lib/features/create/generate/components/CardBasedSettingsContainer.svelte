@@ -3,20 +3,18 @@ CardBasedSettingsContainer - Minimal card grid renderer
 Delegates ALL logic to services (SRP compliant)
 -->
 <script lang="ts">
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
-  import type {
-    CardDescriptor,
-    ICAPParameterProvider,
-    ICardConfigurationService,
-    IResponsiveTypographyService,
-  } from "../shared/services/contracts";
+  import type { CardDescriptor } from "../shared/services/contracts/ICardConfigurationService";
+  import type { ICAPParameterProvider } from "../shared/services/contracts/ICAPParameterProvider";
+  import type { ICardConfigurationService } from "../shared/services/contracts/ICardConfigurationService";
+  import type { IResponsiveTypographyService } from "../shared/services/contracts/IResponsiveTypographyService";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
-  import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models";
+  import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models/generate-models";
   import type { CAPType, SliceSize } from "../circular/domain/models/circular-models";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   // Card components

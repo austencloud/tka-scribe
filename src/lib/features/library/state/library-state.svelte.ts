@@ -5,10 +5,10 @@
  * Integrates with ILibraryService for Firestore operations.
  */
 
-import { tryResolve } from "$lib/shared/inversify";
+import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
-import type { ILibraryService, LibraryQueryOptions, LibraryStats } from "../services/contracts";
+import type { ILibraryService, LibraryQueryOptions, LibraryStats } from '../services/contracts/ILibraryService';
 import type { LibrarySequence, SequenceVisibility } from "../domain/models/LibrarySequence";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 

@@ -7,10 +7,7 @@
  * Domain: Keyboard Shortcuts
  */
 
-import type {
-  ShortcutContext,
-  ShortcutRegistrationOptions,
-} from "../../domain";
+import type { ShortcutContext, ShortcutRegistrationOptions } from '../../domain/types/keyboard-types';
 
 export interface IKeyboardShortcutService {
   /**

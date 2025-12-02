@@ -7,7 +7,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import LandscapeLayout from "./StepperLandscapeLayout.svelte";

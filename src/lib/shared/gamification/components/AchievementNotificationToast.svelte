@@ -7,7 +7,7 @@
    */
 
   import { onMount } from "svelte";
-  import type { AchievementNotification } from "../domain/models";
+  import type { AchievementNotification } from "../domain/models/achievement-models";
   import {
     notificationQueue,
     removeNotification,

@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { resolve } from "$lib/shared/inversify";
+	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import type { IPerformanceHistoryService } from "../../services/contracts/IPerformanceHistoryService";
 	import type { StatsOverview, PersonalBest } from "../../services/contracts/IPerformanceHistoryService";

@@ -10,8 +10,8 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IPositionAnalyzer } from "../contracts";
-import type { IOptionLoader } from "../contracts";
+import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
+import type { IOptionLoader } from "../contracts/IOptionLoader";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()

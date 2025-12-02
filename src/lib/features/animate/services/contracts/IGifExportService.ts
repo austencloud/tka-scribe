@@ -24,7 +24,6 @@ export interface GifExportOptions {
 export interface GifExportProgress {
   /** Current progress (0-1) */
   progress: number;
-  /** Current stage of export */
   stage: "capturing" | "encoding" | "transcoding" | "complete" | "error";
   /** Current frame being processed */
   currentFrame?: number;

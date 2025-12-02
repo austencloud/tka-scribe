@@ -1,21 +1,18 @@
 import { inject, injectable } from "inversify";
+import type { AccessibilitySettings } from "../../shared/domain/models/background-models";
 import type {
-  AccessibilitySettings,
   Dimensions,
-  IBackgroundSystem,
   PerformanceMetrics,
   QualityLevel,
-} from "../../shared";
+} from "../../shared/domain/types/background-types";
+import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import { TYPES } from "../../../inversify/types";
 import type { DeepOceanState } from "../domain/models/DeepOceanModels";
-import type {
-  IBubblePhysics,
-  IMarineLifeAnimator,
-  IParticleSystem,
-  IOceanRenderer,
-  ILightRayCalculator,
-} from "./contracts";
-import {} from "./contracts";
+import type { IBubblePhysics } from "./contracts/IBubblePhysics";
+import type { IMarineLifeAnimator } from "./contracts/IMarineLifeAnimator";
+import type { IParticleSystem } from "./contracts/IParticleSystem";
+import type { IOceanRenderer } from "./contracts/IOceanRenderer";
+import type { ILightRayCalculator } from "./contracts/ILightRayCalculator";
 /**
  * Deep Ocean Background Orchestrator
  *

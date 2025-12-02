@@ -13,13 +13,9 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { createBeatData } from "../../../../domain/factories/createBeatData";
 import type { BeatData } from "../../../../domain/models/BeatData";
-import type {
-  IPersistenceService,
-  ISequenceService,
-} from "../../../../services/contracts";
-import {} from "../../../../services/contracts";
-import {} from "../../../../services/contracts";
-import type { IWorkbenchService } from "../contracts";
+import type { IPersistenceService } from "../../../../services/contracts/IPersistenceService";
+import type { ISequenceService } from "../../../../services/contracts/ISequenceService";
+import type { IWorkbenchService } from "../contracts/IWorkbenchService";
 
 @injectable()
 export class WorkbenchService implements IWorkbenchService {

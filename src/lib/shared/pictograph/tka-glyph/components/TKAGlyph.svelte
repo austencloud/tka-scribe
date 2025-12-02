@@ -14,7 +14,7 @@ Uses pure runes instead of stores for reactivity.
 <script lang="ts">
 import type { PictographData } from "../../shared/domain/models/PictographData";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { getLetterImagePath } from "../utils";
+  import { getLetterImagePath } from "../utils/letter-image-getter";
   import TurnsColumn from "./TurnsColumn.svelte";
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { onMount } from "svelte";

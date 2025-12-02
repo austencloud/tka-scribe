@@ -36,7 +36,8 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { DetectionFrame, PerformanceData, PerformanceScore } from "../domain/models";
+import type { DetectionFrame } from '../domain/models/DetectionFrame';
+import type { PerformanceData, PerformanceScore } from '../domain/models/PerformanceData';
 import { TrainMode, VisualizationMode, DetectionMethod } from "../domain/enums/TrainEnums";
 import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 

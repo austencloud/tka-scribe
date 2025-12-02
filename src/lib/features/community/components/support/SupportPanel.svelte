@@ -3,10 +3,10 @@
    * SupportPanel - Support and attribution panel
    */
 
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { SOCIAL_LINKS } from "$lib/shared/info/domain";
+  import { SOCIAL_LINKS } from "$lib/shared/info/domain/content";
   import { onMount } from "svelte";
 
   let hapticService: IHapticFeedbackService | null = $state(null);

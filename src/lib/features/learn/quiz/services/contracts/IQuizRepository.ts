@@ -5,8 +5,8 @@
  * Handles lesson types, configurations, and category management.
  */
 
-import type { LetterCategory } from "../../../codex";
 import type { QuizConfig } from "../../domain/models/quiz-models";
+import type { LetterCategory } from "../../../codex/domain/types/codex-types";
 
 export interface IQuizRepoManager {
   /**

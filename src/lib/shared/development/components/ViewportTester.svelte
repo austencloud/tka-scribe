@@ -5,7 +5,7 @@ Development tool for testing different device viewport sizes.
 Provides quick access to common device dimensions for responsive testing.
 -->
 <script lang="ts">
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";

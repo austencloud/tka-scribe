@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { container } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ISequenceRenderService } from "$render";
+  import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   // Your actual 16-beat sequence from the request

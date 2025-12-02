@@ -14,7 +14,7 @@
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
@@ -22,13 +22,13 @@
     createEditModuleState,
     type EditMode,
   } from "./state/edit-module-state.svelte";
-  import type { ISequenceTransformationService } from "$create/shared/services/contracts";
-  import type { IDiscoverLoader } from "../discover";
+  import type { ISequenceTransformationService } from "../create/shared/services/contracts/ISequenceTransformationService";
+  import type { IDiscoverLoader } from "../discover/gallery/display/services/contracts/IDiscoverLoader";
   import BeatEditPanel from "./components/BeatEditPanel.svelte";
   import SequenceEditPanel from "./components/SequenceEditPanel.svelte";
   import EditWorkspace from "./components/EditWorkspace.svelte";
   import EmptyEditState from "./components/EmptyEditState.svelte";
-  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
+  import SequenceBrowserPanel from "../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
 
   // Create module state
   const editState = createEditModuleState();

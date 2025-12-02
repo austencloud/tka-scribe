@@ -66,7 +66,7 @@ export const coreModule = new ContainerModule(
     options.bind(TYPES.ISvgImageService).to(SvgImageService);
 
     // === SETTINGS SERVICES ===
-    options.bind(TYPES.ISettingsService).to(SettingsState);
+    options.bind(TYPES.ISettingsState).to(SettingsState);
     options
       .bind(TYPES.ISettingsPersistenceService)
       .to(FirebaseSettingsPersistenceService)

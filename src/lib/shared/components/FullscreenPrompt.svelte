@@ -12,7 +12,7 @@ the actual fullscreen state rather than inferring from viewport size.
 <script lang="ts">
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { IMobileFullscreenService } from "$lib/shared/mobile/services/contracts/IMobileFullscreenService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 

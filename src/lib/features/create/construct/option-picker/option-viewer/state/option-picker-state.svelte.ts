@@ -12,11 +12,9 @@ import type {
   SortMethod,
 } from "../domain/option-picker-types";
 import type { OptionPickerLayout } from "../domain/option-viewer-models";
-import type {
-  IOptionFilter,
-  IOptionLoader,
-  IOptionSorter,
-} from "../services/contracts";
+import type { IOptionFilter } from "../services/contracts/IOptionFilter";
+import type { IOptionLoader } from "../../services/contracts/IOptionLoader";
+import type { IOptionSorter } from "../services/contracts/IOptionSorter";
 
 export interface OptionPickerStateConfig {
   optionLoader: IOptionLoader;

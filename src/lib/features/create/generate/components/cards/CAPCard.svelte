@@ -3,14 +3,13 @@ CAPCard.svelte - Card for selecting CAP type
 Always opens selector panel when clicked
 -->
 <script lang="ts">
-  import { CAP_TYPE_LABELS } from "$create/generate/circular";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ICAPTypeService } from "$create/generate/shared/services/contracts/ICAPTypeService";
-  import { CAPType } from "$create/generate/circular/domain/models/circular-models";
-  import { resolve } from "$lib/shared/inversify";
+  import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
+  import { CAP_TYPE_LABELS, CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount, getContext } from "svelte";
-  import type { PanelCoordinationState } from "$create/shared/state/panel-coordination-state.svelte";
+  import type { PanelCoordinationState } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
   import BaseCard from "./BaseCard.svelte";
 
   let {

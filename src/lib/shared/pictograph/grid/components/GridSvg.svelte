@@ -6,7 +6,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 -->
 <script lang="ts">
   import { GridMode } from "../domain/enums/grid-enums";
-  import { resolve, TYPES } from "../../../inversify";
+  import { resolve, TYPES } from "../../../inversify/di";
   import type { ISvgPreloadService } from "../../shared/services/contracts/ISvgPreloadService";
 
   let {

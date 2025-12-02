@@ -1,5 +1,6 @@
-import type { FeatureId, UserRole, UserFeatureOverrides, FeatureFlagConfig } from "$lib/shared/auth/domain";
-import { ROLE_DISPLAY } from "$lib/shared/auth/domain";
+import type { FeatureId, UserFeatureOverrides, FeatureFlagConfig } from "$lib/shared/auth/domain/models/FeatureFlag";
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+import { ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
 import { ABOUT_TABS, ADMIN_TABS, ANIMATE_TABS, COLLECT_TABS, COMMUNITY_TABS, CREATE_TABS, DISCOVER_TABS, EDIT_TABS, LEARN_TABS, MODULE_DEFINITIONS } from "../../../../shared/navigation/state/navigation-state.svelte";
 
 export interface UserData {

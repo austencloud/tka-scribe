@@ -1,7 +1,7 @@
 <!-- Desktop Navigation Sidebar -->
 <!-- Modern 2026-style sidebar navigation for desktop in side-by-side layout -->
 <script lang="ts">
-import { resolve } from "../../inversify";
+import { resolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
@@ -10,7 +10,7 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     getShowSettings,
     toggleSettingsDialog,
     openDebugPanel,
-  } from "../../application/state/app-state.svelte";
+  } from "../../application/state/ui/ui-state.svelte";
   import type { ModuleDefinition, Section, ModuleId } from "../domain/types";
   import {
     desktopSidebarState,
@@ -18,13 +18,11 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     initializeDesktopSidebarCollapsedState,
     saveDesktopSidebarCollapsedState,
   } from "../../layout/desktop-sidebar-state.svelte";
-  import {
-    SidebarHeader,
-    SidebarFooter,
-    ModuleGroup,
-    CollapsedTabButton,
-    CollapsedModuleButton,
-  } from "./desktop-sidebar";
+  import SidebarHeader from "./desktop-sidebar/SidebarHeader.svelte";
+  import SidebarFooter from "./desktop-sidebar/SidebarFooter.svelte";
+  import ModuleGroup from "./desktop-sidebar/ModuleGroup.svelte";
+  import CollapsedTabButton from "./desktop-sidebar/CollapsedTabButton.svelte";
+  import CollapsedModuleButton from "./desktop-sidebar/CollapsedModuleButton.svelte";
   import { navigationState } from "../state/navigation-state.svelte";
 
   let {

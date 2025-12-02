@@ -5,7 +5,7 @@
   Opens from bottom with snap points for fine-tuning trail appearance.
 -->
 <script lang="ts">
-  import { Drawer } from "$lib/shared/foundation/ui";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import ModernSlider from "../inputs/ModernSlider.svelte";
   import ToggleSwitch from "../inputs/ToggleSwitch.svelte";
   import type { TrailSettings } from "../../shared/domain/types/TrailTypes";

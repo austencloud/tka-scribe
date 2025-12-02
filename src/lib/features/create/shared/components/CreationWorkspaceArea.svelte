@@ -14,8 +14,8 @@
 
   import { fade } from "svelte/transition";
   import type { IToolPanelMethods } from "../types/create-module-types";
-  import { WorkspacePanel } from "../workspace-panel";
-  import { getCreateModuleContext } from "../context";
+  import WorkspacePanel from "../workspace-panel/core/WorkspacePanel.svelte";
+  import { getCreateModuleContext } from "../context/create-module-context";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Get context

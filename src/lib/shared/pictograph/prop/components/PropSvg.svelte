@@ -6,7 +6,8 @@ Now with smooth transitions when position or orientation changes!
 import { Orientation, MotionColor, RotationDirection } from "../../shared/domain/enums/pictograph-enums";
 import { PropType } from "../domain/enums/PropType";
 import type { MotionData } from "../../shared/domain/models/MotionData";
-  import type { PropAssets, PropPosition } from "../domain/models";
+  import type { PropAssets } from "../domain/models/PropAssets";
+  import type { PropPosition } from "../domain/models/PropPosition";
 
   let {
     motionData,

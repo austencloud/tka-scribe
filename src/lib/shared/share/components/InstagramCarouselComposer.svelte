@@ -12,11 +12,12 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IMediaBundlerService } from "../services/contracts";
+  import type { IMediaBundlerService } from "../services/contracts/IMediaBundlerService";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-  import type { InstagramMediaItem, ShareOptions } from "../domain";
+  import type { InstagramMediaItem } from "../domain/models/InstagramMedia";
+  import type { ShareOptions } from "../domain/models/ShareOptions";
 
   let {
     currentSequence,

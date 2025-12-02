@@ -11,9 +11,9 @@
 
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
-import type { ISequencePersistenceService } from "../../services/contracts";
+import type { ISequencePersistenceService } from "../../services/contracts/ISequencePersistenceService";
 import type { IUndoService } from "../../services/contracts/IUndoService";
-import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts";
+import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 import type { OptionHistoryManager } from "./option-history-manager.svelte";
 
 type ConstructTabState =
@@ -128,7 +128,7 @@ export function createCreateModulePersistenceController({
     // This prevents overwriting deep link sequences with empty/old persisted state
     let hasDeepLink = false;
     try {
-      const { resolve } = await import("$lib/shared/inversify");
+      const { resolve } = await import("$lib/shared/inversify/di");
       const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;

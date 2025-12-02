@@ -7,8 +7,8 @@ Shows:
 - Total concepts completed
 -->
 <script lang="ts">
-  import type { LearningProgress } from "../domain";
-  import { CONCEPT_CATEGORIES, getConceptsByCategory } from "../domain";
+  import type { LearningProgress } from "../domain/types";
+  import { CONCEPT_CATEGORIES, getConceptsByCategory } from "../domain/concepts";
 
   let { progress }: { progress: LearningProgress } = $props();
 

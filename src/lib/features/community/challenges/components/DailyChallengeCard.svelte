@@ -4,7 +4,7 @@
    * Displays a daily challenge with progress bar and completion status.
    */
 
-  import type { DailyChallenge, UserChallengeProgress } from "$lib/shared/gamification/domain/models";
+  import type { DailyChallenge, UserChallengeProgress } from "$lib/shared/gamification/domain/models/achievement-models";
 
   interface Props {
     challenge: DailyChallenge;

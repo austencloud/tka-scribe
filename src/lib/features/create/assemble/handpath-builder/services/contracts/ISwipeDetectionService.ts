@@ -7,7 +7,7 @@
 
 import type { GridMode} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { type GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { GridPositionPoint, SwipeGesture } from "../../domain";
+import type { GridPositionPoint, SwipeGesture } from "../../domain/path-models";
 
 export interface ISwipeDetectionService {
   /**

@@ -1,5 +1,5 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { GenerationOptions } from "../../domain";
+import type { GenerationOptions } from "../../domain/models/generate-models";
 
 /**
  * Service responsible for orchestrating the entire sequence generation process

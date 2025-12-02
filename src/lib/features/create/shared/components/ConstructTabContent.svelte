@@ -9,7 +9,8 @@
 <script lang="ts">
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { OptionViewer, StartPositionPicker } from "../../construct";
+  import OptionViewer from "$lib/features/create/construct/option-picker/option-viewer/components/OptionViewer.svelte";
+  import StartPositionPicker from "$lib/features/create/construct/start-position-picker/components/StartPositionPicker.svelte";
   import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 
   // Props - simplified with unified service

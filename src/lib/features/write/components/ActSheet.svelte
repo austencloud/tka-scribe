@@ -1,6 +1,6 @@
 <!-- ActSheet.svelte - Main act editing sheet combining header and sequence grid -->
 <script lang="ts">
-  import type { ActData } from "$wordcard/domain";
+  import type { ActData } from "../../word-card/domain/types/write";
   import ActHeader from "./ActHeader.svelte";
   import SequenceGrid from "./SequenceGrid.svelte";
 

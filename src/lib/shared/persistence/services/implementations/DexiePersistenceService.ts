@@ -13,8 +13,9 @@ import type { TabId } from "../../../foundation/ui/UITypes";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { db } from "../../database/TKADatabase";
-import { UserWorkType } from "../../domain/enums";
-import type { UserProject, UserWorkData } from "../../domain/models";
+import { UserWorkType } from "../../domain/enums/UserWorkType";
+import type { UserProject } from "../../domain/models/UserProject";
+import type { UserWorkData } from "../../domain/models/UserWorkData";
 import type { IPersistenceService } from "../contracts/IPersistenceService";
 
 @injectable()

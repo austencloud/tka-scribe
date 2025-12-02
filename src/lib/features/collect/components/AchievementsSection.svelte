@@ -8,13 +8,11 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify";
-  import { authStore } from "$lib/shared/auth";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { getLevelProgress } from "$lib/shared/gamification/domain/constants/xp-constants";
-  import type {
-    IAchievementService,
-    IStreakService,
-  } from "$lib/shared/gamification/services/contracts";
+  import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
+  import type { IStreakService } from "$lib/shared/gamification/services/contracts/IStreakService";
   import type { ILeaderboardService } from "$lib/features/community/services/contracts/ILeaderboardService";
   import type { LeaderboardCategory } from "$lib/features/community/domain/models/leaderboard-models";
   import AchievementsBrowser from "$lib/shared/gamification/components/AchievementsBrowser.svelte";

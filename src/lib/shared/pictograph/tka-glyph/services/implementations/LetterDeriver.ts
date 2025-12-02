@@ -15,8 +15,8 @@ interface LetterDerivationResult {
 }
 
 import { Letter } from "../../../../foundation/domain/models/Letter";
-import { GridMode } from "../../../grid";
-import { MotionType } from "../../../shared";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../shared/domain/models/PictographData";
 import { injectable } from "inversify";

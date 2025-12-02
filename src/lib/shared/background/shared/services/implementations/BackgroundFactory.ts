@@ -1,19 +1,16 @@
 // src/lib/services/implementations/background/BackgroundFactory.ts
 // Background Factory - Creates background animation systems
 
-import type {
-  AccessibilitySettings,
-  BackgroundSystem,
-  QualityLevel,
-} from "../../domain";
+import type { AccessibilitySettings, BackgroundSystem } from "../../domain/models/background-models";
+import type { QualityLevel } from "../../domain/types/background-types";
 import { BackgroundType } from "../../domain/enums/background-enums";
 
 import { AuroraBackgroundSystem } from "../../../aurora/services/AuroraBackgroundSystem";
 import { DeepOceanBackgroundOrchestrator } from "../../../deep-ocean/services/DeepOceanBackgroundOrchestrator";
-import { NightSkyBackgroundSystem } from "../../../night-sky";
+import { NightSkyBackgroundSystem } from "../../../night-sky/services/NightSkyBackgroundSystem";
 import { SimpleBackgroundSystem } from "../../../simple/services/SimpleBackgroundSystem";
 import { SnowfallBackgroundSystem } from "../../../snowfall/services/SnowfallBackgroundSystem";
-import { resolve } from "../../../../inversify";
+import { resolve } from "../../../../inversify/di";
 import { TYPES } from "../../../../inversify/types";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally

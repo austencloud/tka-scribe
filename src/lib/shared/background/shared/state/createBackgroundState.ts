@@ -1,5 +1,7 @@
-import type { BackgroundSystem, PerformanceMetrics, QualityLevel } from "../domain";
-import { BackgroundType } from "../domain";
+import type { BackgroundSystem } from "../domain/models/background-models";
+import type { PerformanceMetrics } from "../domain/types/background-types";
+import type { QualityLevel } from "../domain/types/background-types";
+import { BackgroundType } from "../domain/enums/background-enums";
 import { BackgroundFactory } from "../services/implementations/BackgroundFactory";
 
 export function createBackgroundState() {

@@ -7,9 +7,9 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../../domain/models/BeatData";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IWorkbenchService } from "../services/contracts";
+import type { IWorkbenchService } from "../services/contracts/IWorkbenchService";
 
 /**
  * Creates simplified workbench state

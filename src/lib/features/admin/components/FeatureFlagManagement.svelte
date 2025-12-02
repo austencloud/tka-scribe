@@ -4,13 +4,11 @@
    * Admin interface for managing feature flags and access control
    */
 
-  import { featureFlagService } from "$lib/shared/auth/services/index";
-  import {
-    FeatureFlagHeader,
-    GlobalFlagSettings,
-    UserFeatureOverrides,
-    computeStats,
-  } from "./feature-flags";
+  import { featureFlagService } from "../../../shared/auth/services/FeatureFlagService.svelte";
+  import FeatureFlagHeader from "./feature-flags/FeatureFlagHeader.svelte";
+  import GlobalFlagSettings from "./feature-flags/GlobalFlagSettings.svelte";
+  import UserFeatureOverrides from "./feature-flags/UserFeatureOverrides.svelte";
+  import { computeStats } from "./feature-flags/utils";
 
   let viewMode = $state<"global" | "users">("global");
   let errorMessage = $state<string | null>(null);

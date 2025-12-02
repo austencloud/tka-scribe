@@ -7,8 +7,8 @@ import type {
   FishMarineLife,
   JellyfishMarineLife,
 } from "../../domain/models/DeepOceanModels";
-import type { IFishSpriteManager } from "../contracts";
-import type { IMarineLifeAnimator } from "../contracts";
+import type { IFishSpriteManager } from '../contracts/IFishSpriteManager';
+import type { IMarineLifeAnimator } from '../contracts/IMarineLifeAnimator';
 
 @injectable()
 export class MarineLifeAnimator implements IMarineLifeAnimator {

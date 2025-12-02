@@ -10,18 +10,18 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { BeatData } from "../domain/models/BeatData";
   import {
     MotionColor,
     RotationDirection,
   } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import { CreatePanelDrawer } from "$create/shared/components";
-  import PanelHeader from "$create/shared/components/PanelHeader.svelte";
-  import { getCreateModuleContext } from "../context";
+  import CreatePanelDrawer from "./CreatePanelDrawer.svelte";
+  import PanelHeader from "$lib/features/create/shared/components/PanelHeader.svelte";
+  import { getCreateModuleContext } from "../context/create-module-context";
   import { goto } from "$app/navigation";
-  import { container } from "$lib/shared/inversify";
+  import { container } from "$lib/shared/inversify/di";
   import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 

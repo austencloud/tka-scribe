@@ -6,18 +6,17 @@
 -->
 <script lang="ts">
   import Drawer from "../../foundation/ui/Drawer.svelte";
-  import {
-    SocialAuthCompact,
-    AuthHeader,
-    AuthFooter,
-    EmailPasswordAuth,
-  } from "../../auth/components";
-  import { resolve } from "../../inversify";
+
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IAuthService } from "../../auth";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "../../auth";
   import { onMount } from "svelte";
+  import AuthFooter from "../../auth/components/AuthFooter.svelte";
+  import AuthHeader from "../../auth/components/AuthHeader.svelte";
+  import EmailPasswordAuth from "../../auth/components/EmailPasswordAuth.svelte";
+  import SocialAuthCompact from "../../auth/components/SocialAuthCompact.svelte";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import type { IAuthService } from "../../auth/services/contracts/IAuthService";
 
   // Props
   let { isOpen = false, onClose } = $props<{

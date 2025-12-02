@@ -12,18 +12,19 @@
  */
 
 import { browser } from "$app/environment";
-import type { ISettingsService } from "../../index";
 import { injectable } from "inversify";
-import { BackgroundType, updateBodyBackground } from "../../background";
-import { GridMode } from "../../pictograph";
+import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
+import { updateBodyBackground } from "../../background/shared/background-preloader";
+import { ThemeService } from "../../theme/services/ThemeService";
+import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "../../pictograph/prop/domain/enums/PropType";
-import { ThemeService } from "../../theme";
-import type { AppSettings } from "../domain";
-import { tryResolve } from "../../inversify";
+import type { AppSettings } from "../domain/AppSettings";
+import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { IActivityLogService } from "../../analytics";
 import type { ISettingsPersistenceService } from "../services/contracts/ISettingsPersistenceService";
 import { authStore } from "../../auth/stores/authStore.svelte";
+import type { ISettingsState } from "../services/contracts/ISettingsState";
+import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 const OFFLINE_QUEUE_KEY = "tka-settings-offline-queue";
@@ -57,7 +58,7 @@ const initialSettings = (() => {
 const settingsState = $state<AppSettings>(initialSettings);
 
 @injectable()
-class SettingsState implements ISettingsService {
+class SettingsState implements ISettingsState {
   private firebasePersistence: ISettingsPersistenceService | null = null;
   private unsubscribeFirebaseSync: (() => void) | null = null;
   private syncInitialized = false;

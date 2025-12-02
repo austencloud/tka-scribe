@@ -11,10 +11,10 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ISequencePersistenceService } from "../../services/contracts";
-import { tryResolve } from "$lib/shared/inversify";
+import type { ISequencePersistenceService } from "../../services/contracts/ISequencePersistenceService";
+import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IActivityLogService } from "$lib/shared/analytics";
+import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
 import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 
 export interface PersistenceState {

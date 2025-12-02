@@ -4,7 +4,7 @@ Uses a crossfade technique with two layers to animate between gradients
 -->
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { BACKGROUND_GRADIENTS } from "../domain";
+  import { BACKGROUND_GRADIENTS } from "../domain/constants/BackgroundGradients";
   import type { BackgroundType } from "../domain/enums/background-enums";
 
   let { currentBackground } = $props<{

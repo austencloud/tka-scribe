@@ -13,9 +13,9 @@
   import CreatorsPanel from "./components/creators/CreatorsPanel.svelte";
   import UserProfilePanel from "./components/profile/UserProfilePanel.svelte";
   import SupportPanel from "./components/support/SupportPanel.svelte";
-  import { ChallengesPanel } from "./challenges/components";
+  import ChallengesPanel from "./challenges/components/ChallengesPanel.svelte";
   import ChallengesPanelDesktop from "./challenges/components/ChallengesPanelDesktop.svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 

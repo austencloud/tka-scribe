@@ -6,22 +6,20 @@
   For guests: sign in/sign up options.
 -->
 <script lang="ts">
-  import { authStore } from "$lib/shared/auth";
-  import { resolve } from "$lib/shared/inversify";
-  import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAuthService } from "$lib/shared/auth";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { authStore } from "../../../shared/auth/stores/authStore.svelte";
+  import { resolve } from "../../../shared/inversify/di";
+  import { TYPES } from "../../../shared/inversify/types";
+  import type { IAuthService } from "../../../shared/auth/services/contracts/IAuthService";
+  import type { IHapticFeedbackService } from "../../../shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
     uiState,
-  } from "$lib/shared/navigation/state/profile-settings-state.svelte";
-  import UnifiedHeader from "$lib/shared/settings/components/UnifiedHeader.svelte";
+  } from "../../../shared/navigation/state/profile-settings-state.svelte";
+  import UnifiedHeader from "../../../shared/settings/components/UnifiedHeader.svelte";
 
-  import {
-    SocialAuthCompact,
-    EmailPasswordAuth,
-  } from "$lib/shared/auth/components";
+  import SocialAuthCompact from "../../../shared/auth/components/SocialAuthCompact.svelte";
+  import EmailPasswordAuth from "../../../shared/auth/components/EmailPasswordAuth.svelte";
   import ConnectedAccounts from "../../../shared/navigation/components/profile-settings/ConnectedAccounts.svelte";
   import DangerZone from "../../../shared/navigation/components/profile-settings/DangerZone.svelte";
   import PasswordSection from "../../../shared/navigation/components/profile-settings/PasswordSection.svelte";

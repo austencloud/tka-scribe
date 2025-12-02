@@ -11,7 +11,7 @@ import type { CompleteExploreState } from "../../../../features/discover/shared/
 import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
 import type { TabId } from "../../../foundation/ui/UITypes";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { UserProject } from "../../domain/models";
+import type { UserProject } from "../../domain/models/UserProject";
 
 // ============================================================================
 // MAIN PERSISTENCE SERVICE

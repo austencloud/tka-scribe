@@ -7,10 +7,7 @@
  * Domain: Create module - Navigation State Management
  */
 
-import type {
-  CreateModuleStateForSync,
-  INavigationSyncService,
-} from "../../services/contracts";
+import type { CreateModuleStateForSync, INavigationSyncService } from "../../services/contracts/INavigationSyncService";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 

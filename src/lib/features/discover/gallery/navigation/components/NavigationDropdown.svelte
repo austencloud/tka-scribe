@@ -14,9 +14,9 @@ Responsive behavior:
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { Drawer } from "$lib/shared/foundation/ui";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { onMount } from "svelte";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { ExploreSortMethod } from "$lib/features/discover/shared/domain/enums/discover-enums";

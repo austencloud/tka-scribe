@@ -10,15 +10,13 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     GridMode,
   } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import type {
-    IHandPathDirectionDetector,
-    IPathToMotionConverter,
-  } from "../services/contracts";
-  import { createGesturalPathState, type GesturalPathState } from "../state";
+  import type { IHandPathDirectionDetector } from "../services/contracts/IHandPathDirectionDetector";
+  import type { IPathToMotionConverter } from "../services/contracts/IPathToMotionConverter";
+  import { createGesturalPathState, type GesturalPathState } from "../state/handpath-state.svelte";
   import PathControlPanel from "./PathControlPanel.svelte";
   import SequenceLengthPicker from "./SequenceLengthPicker.svelte";
   import TouchableGrid from "./TouchableGrid.svelte";

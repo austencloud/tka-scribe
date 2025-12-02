@@ -3,7 +3,7 @@
  * Handles letter mapping data access for the codex module
  */
 
-import type { CodexLetterMapping } from "../../domain";
+import type { CodexLetterMapping } from "../../domain/models/codex-models";
 
 export interface ICodexLetterMappingRepo {
   /**

@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import type { SequenceState } from "../../../state";
+  import type { SequenceState } from "../../../state/SequenceStateOrchestrator.svelte";
   import BeatGrid from "./BeatGrid.svelte";
   import WordLabel from "./WordLabel.svelte";
   // import WorkspaceHeader from "./WorkspaceHeader.svelte"; // Moved to TopBar

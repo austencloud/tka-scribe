@@ -5,7 +5,7 @@
   Appears in the top-left corner when undo is available.
 -->
 <script lang="ts">
-  import { getCreateModuleContext } from "../../context";
+  import { getCreateModuleContext } from "../../context/create-module-context";
 
   // Get context for undo functionality
   const ctx = getCreateModuleContext();

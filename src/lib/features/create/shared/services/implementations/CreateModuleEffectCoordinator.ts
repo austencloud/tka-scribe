@@ -9,21 +9,21 @@
 
 import { injectable, inject } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IURLSyncService } from "$lib/shared/navigation/services/contracts";
+import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
 import type {
   ICreateModuleEffectCoordinator,
   CreateModuleEffectConfig,
 } from "../contracts/ICreateModuleEffectCoordinator";
 import {
   createAutoEditPanelEffect,
-  createCurrentWordDisplayEffect,
-  createLayoutEffects,
-  createNavigationSyncEffects,
-  createPanelHeightTracker,
-  createPWAEngagementEffect,
   createSingleBeatEditEffect,
-  createURLSyncEffect,
-} from "../../state/managers";
+} from "../../state/managers/AutoEditPanelManager.svelte";
+import { createCurrentWordDisplayEffect } from "../../state/managers/CurrentWordDisplayManager.svelte";
+import { createLayoutEffects } from "../../state/managers/LayoutManager.svelte";
+import { createNavigationSyncEffects } from "../../state/managers/NavigationSyncManager.svelte";
+import { createPanelHeightTracker } from "../../state/managers/PanelHeightTracker.svelte";
+import { createPWAEngagementEffect } from "../../state/managers/PWAEngagementManager.svelte";
+import { createURLSyncEffect } from "../../state/managers/URLSyncManager.svelte";
 
 @injectable()
 export class CreateModuleEffectCoordinator

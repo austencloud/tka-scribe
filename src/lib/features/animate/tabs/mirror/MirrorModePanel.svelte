@@ -7,16 +7,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
-  import { getMirrorTabState, type MirrorAxis } from "./state";
-  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
-  import {
-    MirrorSelectionArea,
-    MirrorSelectionAreaMobile,
-    MirrorAnimationHeader,
-    MirrorAxisSelector,
-    MirrorSplitCanvas,
-    MirrorControlsPanel,
-  } from "./components";
+  import { getMirrorTabState, type MirrorAxis } from "./state/mirror-tab-state.svelte";
+  import SequenceBrowserPanel from "../../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
+  import MirrorSelectionArea from "./components/MirrorSelectionArea.svelte";
+  import MirrorSelectionAreaMobile from "./components/MirrorSelectionAreaMobile.svelte";
+  import MirrorAnimationHeader from "./components/MirrorAnimationHeader.svelte";
+  import MirrorAxisSelector from "./components/MirrorAxisSelector.svelte";
+  import MirrorSplitCanvas from "./components/MirrorSplitCanvas.svelte";
+  import MirrorControlsPanel from "./components/MirrorControlsPanel.svelte";
 
   // Props - shared module state for browser panel coordination
   let {

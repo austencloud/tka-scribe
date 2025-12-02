@@ -5,11 +5,7 @@
  * across all sections and groups in the option picker.
  */
 
-import type {
-  DeviceConfig,
-  SizingCalculationParams,
-  SizingResult,
-} from "../../domain";
+import type { DeviceConfig, SizingCalculationParams, SizingResult } from '../../domain/option-viewer-models';
 
 export interface IOptionSizer {
   /**

@@ -19,7 +19,7 @@ Allows user to set name, visibility, tags, collections, and notes.
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { authStore } from "$lib/shared/auth";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {

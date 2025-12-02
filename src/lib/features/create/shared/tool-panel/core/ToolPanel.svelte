@@ -19,14 +19,14 @@
 <script lang="ts">
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createBeatData } from "../../domain/factories/createBeatData";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import GeneratePanel from "../../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "../../components/ConstructTabContent.svelte";
-  import { AssemblerTab } from "../../../assemble";
+  import AssemblerTab from "$lib/features/create/assemble/components/AssemblerTab.svelte";
   import type {
     IAnimationStateRef,
     IToolPanelProps,

@@ -15,7 +15,7 @@
 
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import FullscreenEditorPanel from "../FullscreenEditorPanel.svelte";
-  import { getCreateModuleContext } from "../../context";
+  import { getCreateModuleContext } from "../../context/create-module-context";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");
 

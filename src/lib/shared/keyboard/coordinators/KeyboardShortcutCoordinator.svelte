@@ -9,12 +9,11 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../inversify";
-  import type {
-    IKeyboardShortcutService,
-    ICommandPaletteService,
-  } from "../services/contracts";
-  import { keyboardShortcutState } from "../state";
+  import { resolve, TYPES } from "../../inversify/container";
+
+  import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+  import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
+  import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
   import { getActiveModule } from "../../application/state/ui/ui-state.svelte";
   import { registerGlobalShortcuts } from "../utils/register-global-shortcuts";
   import { registerCommandPaletteCommands } from "../utils/register-commands";

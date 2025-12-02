@@ -4,7 +4,7 @@ Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import VTGVisualizer from "./VTGVisualizer.svelte";
   import VTGQuiz from "./VTGQuiz.svelte";

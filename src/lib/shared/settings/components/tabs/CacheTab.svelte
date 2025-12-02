@@ -8,8 +8,8 @@
     diagnoseCacheState,
     nuclearCacheClear,
     type CacheDiagnostics,
-  } from "../../../auth";
-  import { auth } from "../../../auth";
+  } from "../../../auth/utils/nuclearCacheClear";
+  import { auth } from "../../../auth/firebase";
   import { onMount } from "svelte";
 
   let diagnostics = $state<CacheDiagnostics | null>(null);

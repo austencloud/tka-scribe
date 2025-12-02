@@ -18,14 +18,14 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
-import { db } from "$lib/shared/persistence";
-import type { DailyChallenge } from "$lib/shared/gamification/domain/models";
+import { db } from "$lib/shared/persistence/database/TKADatabase";
+import type { DailyChallenge } from "$lib/shared/gamification/domain/models/achievement-models";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   ChallengeScheduleEntry,
   ChallengeFormData,
-} from "../../domain/models";
-import type { IAdminChallengeService } from "../contracts";
+} from "../../domain/models/AdminModels";
+import type { IAdminChallengeService } from "../contracts/IAdminChallengeService";
 
 @injectable()
 export class AdminChallengeService implements IAdminChallengeService {

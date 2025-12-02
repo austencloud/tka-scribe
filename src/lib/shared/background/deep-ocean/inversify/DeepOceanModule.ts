@@ -1,22 +1,18 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import { TYPES } from "../../../inversify/types";
-import type {
-  IBubblePhysics,
-  IMarineLifeAnimator,
-  IParticleSystem,
-  IFishSpriteManager,
-  IOceanRenderer,
-  ILightRayCalculator,
-} from "../services/contracts";
-import {
-  BubblePhysics,
-  MarineLifeAnimator,
-  ParticleSystem,
-  FishSpriteManager,
-  OceanRenderer,
-  LightRayCalculator,
-} from "../services/implementations";
+import type { IBubblePhysics } from '../services/contracts/IBubblePhysics';
+import type { IMarineLifeAnimator } from '../services/contracts/IMarineLifeAnimator';
+import type { IParticleSystem } from '../services/contracts/IParticleSystem';
+import type { IFishSpriteManager } from '../services/contracts/IFishSpriteManager';
+import type { IOceanRenderer } from '../services/contracts/IOceanRenderer';
+import type { ILightRayCalculator } from '../services/contracts/ILightRayCalculator';
+import { BubblePhysics } from '../services/implementations/BubblePhysics';
+import { MarineLifeAnimator } from '../services/implementations/MarineLifeAnimator';
+import { ParticleSystem } from '../services/implementations/ParticleSystem';
+import { FishSpriteManager } from '../services/implementations/FishSpriteManager';
+import { OceanRenderer } from '../services/implementations/OceanRenderer';
+import { LightRayCalculator } from '../services/implementations/LightRayCalculator';
 
 /**
  * Deep Ocean Background Services Module

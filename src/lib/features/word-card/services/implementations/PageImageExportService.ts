@@ -14,14 +14,14 @@ import { injectable } from "inversify";
 import type {
   ExportProgress,
   SequenceExportOptions,
-} from "$lib/shared/render";
+} from "$lib/shared/render/domain/models/SequenceExportOptions";
 import type { Page } from "../../domain/models/PageLayout";
 import type {
   BatchExportResult,
   WordCardExportOptions,
   WordCardExportResultWithMetadata,
 } from "../../domain/models/word-card-export";
-import type { IPageImageExportService } from "../contracts";
+import type { IPageImageExportService } from "../contracts/word-card-contracts";
 
 @injectable()
 export class PageImageExportService implements IPageImageExportService {

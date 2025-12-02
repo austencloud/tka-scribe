@@ -2,7 +2,7 @@
   import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import GridSvg from "$lib/shared/pictograph/grid/components/GridSvg.svelte";
-  import type { DetectedPosition } from "../domain/models";
+  import type { DetectedPosition } from "../domain/models/DetectionFrame";
 
   interface Props {
     bluePosition: DetectedPosition | null;

@@ -14,11 +14,11 @@ import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/Mot
 import { safeParseOrNull } from "$lib/shared/validation/validation-utils";
 import { SequenceDataSchema } from "$lib/shared/foundation/domain/schemas";
 import { injectable } from "inversify";
-import type { IPersistenceService } from "../../../../create/shared/services/contracts";
-
-// TODO: Figure out why this is importing the persistence service meant for the workbench - that doesn'tmake sense. fix this, augment!
+/**
+ * Standalone Discover persistence - no interface inheritance needed.
+ */
 @injectable()
-export class DiscoverPersistenceService implements IPersistenceService {
+export class DiscoverPersistenceService {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly SEQUENCES_KEY = `tka-${this.CACHE_VERSION}-sequences`;
   private readonly SEQUENCE_PREFIX = `tka-${this.CACHE_VERSION}-sequence-`;

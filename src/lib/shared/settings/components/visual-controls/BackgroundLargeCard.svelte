@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BackgroundType } from "$lib/shared/background";
+  import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "../../../inversify/container";
   import { TYPES } from "../../../inversify/types";

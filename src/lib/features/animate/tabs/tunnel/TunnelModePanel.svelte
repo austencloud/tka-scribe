@@ -9,22 +9,18 @@
 -->
 <script lang="ts">
   import type { AnimateModuleState } from "../../shared/state/animate-module-state.svelte";
-  import { getTunnelTabState, type TunnelColors } from "./state";
-  import { SequenceBrowserPanel } from "$lib/shared/animation-engine/components";
-  import {
-    TunnelSelectionArea,
-    TunnelSelectionAreaMobile,
-    TunnelAnimationHeader,
-    TunnelControlsFooter,
-    TunnelThreePanelLayout,
-  } from "./components";
-  import { resolve } from "$lib/shared/inversify";
+  import { getTunnelTabState, type TunnelColors } from "./state/tunnel-tab-state.svelte";
+  import SequenceBrowserPanel from "../../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
+  import TunnelSelectionArea from "./components/TunnelSelectionArea.svelte";
+  import TunnelSelectionAreaMobile from "./components/TunnelSelectionAreaMobile.svelte";
+  import TunnelAnimationHeader from "./components/TunnelAnimationHeader.svelte";
+  import TunnelControlsFooter from "./components/TunnelControlsFooter.svelte";
+  import TunnelThreePanelLayout from "./components/TunnelThreePanelLayout.svelte";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type {
-    ITunnelModeSequenceManager,
-    ISequenceNormalizationService,
-  } from "../../services/contracts";
+  import type { ITunnelModeSequenceManager } from "../../services/contracts/ITunnelModeSequenceManager";
+  import type { ISequenceNormalizationService } from "../../services/contracts/ISequenceNormalizationService";
   import { onMount } from "svelte";
 
   // Props - shared module state for browser panel coordination

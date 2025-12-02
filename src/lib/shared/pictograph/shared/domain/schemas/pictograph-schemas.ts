@@ -11,10 +11,9 @@
  */
 
 import { z } from "zod";
-// Use barrel exports for consistency
 import { Letter } from "../../../../foundation/domain/models/Letter";
-import { GridLocation, GridPosition } from "../../../grid/domain";
-import { PropType } from "../../../prop/domain";
+import { GridLocation, GridPosition } from '../../../grid/domain/enums/grid-enums';
+import { PropType } from '../../../prop/domain/enums/PropType';
 import {
   MotionColor,
   MotionType,

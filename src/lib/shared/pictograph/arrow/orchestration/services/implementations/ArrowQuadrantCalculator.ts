@@ -9,7 +9,7 @@ import { GridLocation, GridMode } from "../../../../grid/domain/enums/grid-enums
 import { MotionType } from "../../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import { injectable } from "inversify";
-import type { IArrowQuadrantCalculator } from "../contracts";
+import type { IArrowQuadrantCalculator } from '../contracts/IArrowQuadrantCalculator';
 
 @injectable()
 export class ArrowQuadrantCalculator implements IArrowQuadrantCalculator {

@@ -1,28 +1,26 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import {
-  AngleCalculator,
-  AnimationLoopService,
-  AnimationPlaybackController,
-  AnimationStateService,
-  AnimatedImageTranscoder,
-  BeatCalculationService,
-  CanvasRenderer,
-  CoordinateUpdater,
-  EndpointCalculator,
-  GifExportService,
-  GifExportOrchestrator,
-  MotionCalculator,
-  PixiAnimationRenderer,
-  PropInterpolationService,
-  SequenceAnimationOrchestrator,
-  SequenceLoopabilityChecker,
-  SequenceNormalizationService,
-  SVGGenerator,
-  TrailCaptureService,
-  TunnelModeSequenceManager,
-} from "../../../features/animate/services";
-import { AnimationService } from "../../application/services/implementations";
+import { AngleCalculator } from "../../../features/animate/services/implementations/AngleCalculator";
+import { AnimationLoopService } from "../../../features/animate/services/implementations/AnimationLoopService";
+import { AnimationPlaybackController } from "../../../features/animate/services/implementations/AnimationPlaybackController";
+import { AnimationStateManager as AnimationStateService } from "../../../features/animate/services/implementations/AnimationStateManager";
+import { AnimatedImageTranscoder } from "../../../features/animate/services/implementations/AnimatedImageTranscoder";
+import { BeatCalculator as BeatCalculationService } from "../../../features/animate/services/implementations/BeatCalculator";
+import { CanvasRenderer } from "../../../features/animate/services/implementations/CanvasRenderer";
+import { CoordinateUpdater } from "../../../features/animate/services/implementations/CoordinateUpdater";
+import { EndpointCalculator } from "../../../features/animate/services/implementations/EndpointCalculator";
+import { GifExportService } from "../../../features/animate/services/implementations/GifExportService";
+import { GifExportOrchestrator } from "../../../features/animate/services/implementations/GifExportOrchestrator";
+import { MotionCalculator } from "../../../features/animate/services/implementations/MotionCalculator";
+import { PixiAnimationRenderer } from "../../../features/animate/services/implementations/PixiAnimationRenderer";
+import { PropInterpolator as PropInterpolationService } from "../../../features/animate/services/implementations/PropInterpolator";
+import { SequenceAnimationOrchestrator } from "../../../features/animate/services/implementations/SequenceAnimationOrchestrator";
+import { SequenceLoopabilityChecker } from "../../../features/animate/services/implementations/SequenceLoopabilityChecker";
+import { SequenceNormalizationService } from "../../../features/animate/services/implementations/SequenceNormalizationService";
+import { SVGGenerator } from "../../../features/animate/services/implementations/SVGGenerator";
+import { TrailCaptureService } from "../../../features/animate/services/implementations/TrailCaptureService";
+import { TunnelModeSequenceManager } from "../../../features/animate/services/implementations/TunnelModeSequenceManager";
+import { AnimationService } from "../../application/services/implementations/AnimationService";
 import { TYPES } from "../types";
 
 export const animatorModule = new ContainerModule(

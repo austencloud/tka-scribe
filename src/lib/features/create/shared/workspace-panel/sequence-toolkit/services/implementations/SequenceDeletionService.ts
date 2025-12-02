@@ -9,14 +9,10 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { ISequenceDeletionService } from "../contracts";
-import type { IActivityLogService } from "$lib/shared/analytics";
-
-// Import from build shared contracts
-import type {
-  IPersistenceService,
-  ISequenceService,
-} from "../../../../services/contracts";
+import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
+import type { ISequenceDeletionService } from "../contracts/ISequenceDeletionService";
+import type { ISequenceService } from "../../../../services/contracts/ISequenceService";
+import type { IPersistenceService } from "../../../../services/contracts/IPersistenceService";
 
 @injectable()
 export class SequenceDeletionService implements ISequenceDeletionService {
@@ -30,7 +26,7 @@ export class SequenceDeletionService implements ISequenceDeletionService {
     // Optional dependency - activity logging is non-critical
     try {
       // Lazy resolve to avoid circular dependency issues
-      import("$lib/shared/inversify").then(({ tryResolve }) => {
+      import("$lib/shared/inversify/di").then(({ tryResolve }) => {
         this.activityLogService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
       });
     } catch {

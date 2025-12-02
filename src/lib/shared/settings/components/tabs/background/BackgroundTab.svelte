@@ -1,7 +1,7 @@
 <!-- BackgroundTab.svelte - Background settings and configuration -->
 <script lang="ts">
   import type { AppSettings } from "../../../domain/AppSettings";
-  import { resolve } from "../../../../inversify";
+  import { resolve } from "../../../../inversify/di";
   import { TYPES } from "../../../../inversify/types";
   import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
   import type { IDeviceDetector } from "../../../../device/services/contracts/IDeviceDetector";

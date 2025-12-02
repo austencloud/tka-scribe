@@ -3,18 +3,18 @@ ConceptDetailView - Direct view of concept content
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import type { ConceptProgress, LearnConcept } from "../domain";
+  import type { LearnConcept, ConceptProgress } from "../domain/types";
   import { conceptProgressService } from "../services/ConceptProgressService";
-  import { GridConceptExperience } from "./interactive";
-  import { PositionsConceptExperience } from "./interactive/positions";
-  import { MotionsConceptExperience } from "./interactive/motions";
-  import { VTGConceptExperience } from "./interactive/vtg";
-  import { WordsConceptExperience } from "./interactive/words";
-  import { StaffConceptExperience } from "./interactive/staff";
-  import { Type1ConceptExperience } from "./interactive/letters/type1";
+  import GridConceptExperience from "./interactive/GridConceptExperience.svelte";
+  import Type1ConceptExperience from "./interactive/letters/type1/Type1ConceptExperience.svelte";
+  import MotionsConceptExperience from "./interactive/motions/MotionsConceptExperience.svelte";
+  import PositionsConceptExperience from "./interactive/positions/PositionsConceptExperience.svelte";
+  import StaffConceptExperience from "./interactive/staff/StaffConceptExperience.svelte";
+  import VTGConceptExperience from "./interactive/vtg/VTGConceptExperience.svelte";
+  import WordsConceptExperience from "./interactive/words/WordsConceptExperience.svelte";
 
   let { concept, onClose } = $props<{
     concept: LearnConcept;

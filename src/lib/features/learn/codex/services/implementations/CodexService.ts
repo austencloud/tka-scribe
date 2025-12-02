@@ -11,8 +11,8 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IQuizRepoManager } from "../../../quiz/services/contracts";
-import type { CodexLetterMapping, CodexLetterRow } from "../../domain";
+import type { IQuizRepoManager } from '../../../quiz/services/contracts/IQuizRepository';
+import type { CodexLetterMapping, CodexLetterRow } from '../../domain/models/codex-models';
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 import type { ICodexService } from "../contracts/ICodexService";
 // import type { ICodexLetterMappingRepo } from "../contracts/ICodexLetterMappingRepo";

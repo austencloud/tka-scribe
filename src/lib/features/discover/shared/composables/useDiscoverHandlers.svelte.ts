@@ -1,10 +1,10 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IDiscoverThumbnailService } from "../../gallery/display/services/contracts";
-import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts";
-import { openSpotlightViewer } from "$lib/shared/application/state/app-state.svelte";
+import type { IDiscoverThumbnailService } from "../../gallery/display/services/contracts/IDiscoverThumbnailService";
+import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 import type { createExploreState } from "../state/discover-state-factory.svelte";
+import { openSpotlightViewer } from "../../../../shared/application/state/ui/ui-state.svelte";
 
 type ExploreState = ReturnType<typeof createExploreState>;
 

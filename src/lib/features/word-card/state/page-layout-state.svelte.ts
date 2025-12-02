@@ -14,12 +14,12 @@ import type {
 import type {
   PageOrientation,
   WordCardPaperSize,
-} from "../domain/types";
+} from "../domain/types/PageLayoutTypes";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
   IPageFactoryService,
   IPrintablePageLayoutService,
-} from "../services/contracts";
+} from "../services/contracts/word-card-contracts";
 
 // Local type definitions for missing types
 interface Page {

@@ -8,7 +8,7 @@ import type {
   DailyChallenge,
   UserChallengeProgress,
   XPEventMetadata,
-} from "../../domain/models";
+} from "../../domain/models/achievement-models";
 
 export interface IDailyChallengeService {
   /**

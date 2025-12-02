@@ -24,11 +24,11 @@
 
 import { inject, injectable } from "inversify";
 
-import type { BeatData } from "$create/shared/workspace-panel";
 import { TYPES } from "$lib/shared/inversify/types";
 
 import { SliceSize } from "../../domain/models/circular-models";
 import type { ICAPExecutor } from "../contracts/ICAPExecutor";
+import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
 export class MirroredRotatedCAPExecutor implements ICAPExecutor {

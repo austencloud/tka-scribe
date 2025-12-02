@@ -4,7 +4,7 @@
  * Handles daily login/activity streak tracking.
  */
 
-import type { UserStreak } from "../../domain/models";
+import type { UserStreak } from "../../domain/models/achievement-models";
 
 export interface IStreakService {
   /**

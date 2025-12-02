@@ -24,12 +24,7 @@ interface QuizInfo {
   description: string;
   lessonType: QuizType;
 }
-import {
-  QuizAnswerFormat,
-  QuizMode,
-  QuizQuestionFormat,
-  QuizType,
-} from "../enums";
+import { QuizAnswerFormat, QuizMode, QuizQuestionFormat, QuizType } from '../enums/quiz-enums';
 
 /**
  * Lesson configurations matching the desktop implementation.

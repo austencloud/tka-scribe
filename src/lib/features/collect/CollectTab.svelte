@@ -10,8 +10,8 @@
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { AnimationSheetCoordinator } from "$lib/shared/coordinators";
-  import type { SequenceData } from "$lib/shared/foundation/domain/models";
+  import AnimationSheetCoordinator from "$lib/shared/coordinators/AnimationSheetCoordinator.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import LibrarySection from "./components/LibrarySection.svelte";

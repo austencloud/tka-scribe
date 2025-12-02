@@ -5,7 +5,7 @@
   Displays upload progress, status messages, and success/error states.
 -->
 <script lang="ts">
-  import type { InstagramPostStatus } from "../domain";
+  import type { InstagramPostStatus } from "../domain/models/InstagramMedia";
 
   let {
     status,

@@ -5,7 +5,7 @@ import type {
   OptimizationGoal,
   PageOrientation,
   WordCardPaperSize,
-} from "../types";
+} from "../types/PageLayoutTypes";
 
 export interface Margins {
   top: number;

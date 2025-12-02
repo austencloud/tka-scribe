@@ -11,7 +11,7 @@ import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contra
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type * as ContractTypes from "../contracts";
+import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
 import type { IOptionLoader } from "../../../services/contracts/IOptionLoader";
 
 @injectable()
@@ -22,7 +22,7 @@ export class OptionLoader implements IOptionLoader {
     @inject(TYPES.IMotionQueryHandler)
     private motionQueryHandler: IMotionQueryHandler,
     @inject(TYPES.IPositionAnalyzer)
-    private positionAnalyzer: ContractTypes.IPositionAnalyzer
+    private positionAnalyzer: IPositionAnalyzer
   ) {}
 
   /**

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { resolve } from "../../inversify";
+  import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
-  import type { InfoSection, InfoTab } from "../domain";
+  import type { InfoSection, InfoTab } from "../domain/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
 
   let {

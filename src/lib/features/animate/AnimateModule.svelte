@@ -11,20 +11,18 @@
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { getAnimateModuleState } from "./shared/state/animate-module-state.svelte.ts";
   import type { AnimateMode } from "./shared/state/animate-module-state.svelte.ts";
   // Import tab states for deep linking
-  import { getSingleTabState } from "./tabs/single/state";
-  import type {
-    IURLSyncService,
-    ILetterDeriverService,
-    IPositionDeriverService,
-    IDeepLinkService,
-  } from "$lib/shared/navigation/services/contracts";
+  import { getSingleTabState } from "./tabs/single/state/single-tab-state.svelte";
+  import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
+  import type { ILetterDeriverService } from "$lib/shared/navigation/services/contracts/ILetterDeriverService";
+  import type { IPositionDeriverService } from "$lib/shared/navigation/services/contracts/IPositionDeriverService";
+  import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 
   // Import tab panels
   import SingleModePanel from "./tabs/single/SingleModePanel.svelte";

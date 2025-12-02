@@ -13,8 +13,8 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "../../inversify";
-  import { authStore } from "../../auth";
+  import { resolve, TYPES } from "../../inversify/di";
+  import { authStore } from "../../auth/stores/authStore.svelte";
   import { getLevelProgress } from "../domain/constants/xp-constants";
   import Drawer from "../../foundation/ui/Drawer.svelte";
   import type {
@@ -22,12 +22,10 @@
     DailyChallenge,
     UserAchievement,
     UserChallengeProgress,
-  } from "../domain/models";
-  import type {
-    IAchievementService,
-    IDailyChallengeService,
-    IStreakService,
-  } from "../services/contracts";
+  } from "../domain/models/achievement-models";
+  import type { IAchievementService } from "../services/contracts/IAchievementService";
+  import type { IDailyChallengeService } from "../services/contracts/IDailyChallengeService";
+  import type { IStreakService } from "../services/contracts/IStreakService";
 
   // Props
   let {

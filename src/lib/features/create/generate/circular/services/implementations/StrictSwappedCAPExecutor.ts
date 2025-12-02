@@ -15,7 +15,6 @@
  * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
@@ -28,6 +27,7 @@ import {
   SWAPPED_CAP_VALIDATION_SET,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
+import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
 export class StrictSwappedCAPExecutor {

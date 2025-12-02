@@ -7,7 +7,7 @@ import type {
   FishMarineLife,
   JellyfishMarineLife,
 } from "../../domain/models/DeepOceanModels";
-import type { IOceanRenderer } from "../contracts";
+import type { IOceanRenderer } from '../contracts/IOceanRenderer';
 
 @injectable()
 export class OceanRenderer implements IOceanRenderer {

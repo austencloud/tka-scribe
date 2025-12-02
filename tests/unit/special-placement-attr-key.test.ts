@@ -8,13 +8,13 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ArrowAdjustmentCalculator } from "$lib/shared/pictograph/arrow/positioning/calculation/services/implementations";
-import { SpecialPlacementService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations";
+import { ArrowAdjustmentCalculator } from "$lib/shared/pictograph/arrow/positioning/calculation/services/implementations/ArrowAdjustmentCalculator";
+import { SpecialPlacementService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementService";
 import { SpecialPlacementDataService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
 import { LetterClassificationService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
 import { TurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
 import { SpecialPlacementLookupService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
-import { AttributeKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations";
+import { AttributeKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/AttributeKeyGenerator";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { GridLocation, MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";

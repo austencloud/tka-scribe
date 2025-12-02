@@ -1,25 +1,24 @@
 import type { IViewportService } from "$lib/shared/device/services/contracts/IViewportService";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import { resolve, ensureContainerInitialized } from "$lib/shared/inversify";
+import { resolve, ensureContainerInitialized } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts";
+import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts/IStartPositionService";
 import type {
   CreateModuleServices,
   CreateModuleStates,
   InitializationResult,
   InitializationStatus,
 } from "../orchestration/types";
-import type {
-  ICreateModuleService,
-  ISequencePersistenceService,
-  ISequenceService,
-} from "../services/contracts";
+import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
+import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
+import type { ISequenceService } from "../services/contracts/ISequenceService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { getCreateModuleEventService } from "../services/implementations/CreateModuleEventService";
-import { createCreateModuleState, createConstructTabState } from "../state";
+import { createCreateModuleState } from "../state/create-module-state.svelte";
+import { createConstructTabState } from "../state/construct-tab-state.svelte";
 import { createAssemblerTabState } from "../state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "../state/generator-tab-state.svelte";
 import { createModeSpecificPersistenceService } from "../services/implementations/ModeSpecificPersistenceService";

@@ -12,10 +12,10 @@ With grid mode toggle to switch between Diamond and Box mode
     GridLocation,
     GridMode as GridModeEnum,
   } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories";
-  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models";
+  import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
+  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";

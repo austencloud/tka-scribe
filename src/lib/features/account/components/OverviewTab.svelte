@@ -5,7 +5,7 @@
   For guests: prompts to sign in or continue as guest.
 -->
 <script lang="ts">
-  import { authStore } from "$lib/shared/auth";
+  import { authStore } from "../../../shared/auth/stores/authStore.svelte";
   import { libraryState } from "../../library/state/library-state.svelte";
   import { onMount } from "svelte";
 

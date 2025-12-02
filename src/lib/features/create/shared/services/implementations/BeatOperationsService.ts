@@ -12,7 +12,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { BeatData } from "../../domain/models/BeatData";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { MotionColor} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";

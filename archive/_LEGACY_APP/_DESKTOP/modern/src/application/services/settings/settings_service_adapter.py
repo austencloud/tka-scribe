@@ -12,7 +12,7 @@ from desktop.modern.src.core.interfaces.core_services import (
 
 
 class SettingsServiceAdapter(ISettingsCoordinator):
-    """Adapter that makes UIStateManager work as ISettingsService."""
+    """Adapter that makes UIStateManager work as ISettingsState."""
 
     def __init__(self, ui_state_service: IUIStateManager):
         self.ui_state_service = ui_state_service

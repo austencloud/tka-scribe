@@ -7,7 +7,7 @@
 
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { SequenceData, SequenceMetadata } from "../../../foundation/domain/models/SequenceData";
-import type { PropState, PropStates } from "../../domain";
+import type { PropState, PropStates } from "../../domain/PropState";
 
 export interface ISequenceAnimationOrchestrator {
   initializeWithDomainData(sequenceData: SequenceData): boolean;

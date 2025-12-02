@@ -7,8 +7,10 @@
 -->
 
 <script lang="ts">
-  import type { QuizMode, QuizProgress } from "../domain";
-  import { QuizMode as QuizModeEnum } from "../domain";
+  import { QuizMode } from "../domain/enums/quiz-enums";
+  import type { QuizProgress } from "../domain/models/quiz-models";
+
+
 
   // Props using Svelte 5 runes
   let {
@@ -30,7 +32,7 @@
       : 0
   );
   let progressPercentage = $derived(
-    quizMode === QuizModeEnum.FIXED_QUESTION && progress.totalQuestions > 0
+    quizMode === QuizMode.FIXED_QUESTION && progress.totalQuestions > 0
       ? Math.round((progress.questionsAnswered / progress.totalQuestions) * 100)
       : 0
   );
@@ -55,7 +57,7 @@
   {#if compact}
     <!-- Compact View -->
     <div class="compact-stats">
-      {#if quizMode === QuizModeEnum.FIXED_QUESTION}
+      {#if quizMode === QuizMode.FIXED_QUESTION}
         <div class="stat-item">
           <span class="stat-value">{progress.currentQuestion}</span>
           <span class="stat-separator">/</span>
@@ -79,7 +81,7 @@
     <!-- Detailed View -->
     <div class="detailed-stats">
       <!-- Progress Bar (for fixed question mode) -->
-      {#if quizMode === QuizModeEnum.FIXED_QUESTION}
+      {#if quizMode === QuizMode.FIXED_QUESTION}
         <div class="progress-section">
           <div class="progress-header">
             <span class="progress-label">Question Progress</span>

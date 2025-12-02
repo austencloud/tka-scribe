@@ -6,9 +6,9 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { StartPositionData } from "$create/shared/domain/models/StartPositionData";
-  import type { BeatData } from "$create/shared/domain/models/BeatData";
-  import { isBeat } from "$create/shared";
+  import type { StartPositionData } from "../../../../create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "../../../../create/shared/domain/models/BeatData";
+  import { isBeat } from "../../../../create/shared/domain/type-guards/pictograph-type-guards";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
 
   // Props

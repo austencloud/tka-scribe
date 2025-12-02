@@ -13,7 +13,6 @@
  * - Creating new beats that fit the rotated positions
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
 import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
@@ -29,6 +28,7 @@ import {
   getLocationMapForHandRotation,
 } from "../../domain/constants/circular-position-maps";
 import { SliceSize } from "../../domain/models/circular-models";
+import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
 export class StrictRotatedCAPExecutor {

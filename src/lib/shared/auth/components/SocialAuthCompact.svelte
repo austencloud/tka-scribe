@@ -6,9 +6,10 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { GoogleIcon, FacebookIcon } from "./icons";
-  import { GoogleIdentityService } from "..";
+  import { GoogleIdentityService } from "../services/implementations/GoogleIdentityService";
   import { env } from "$env/dynamic/public";
+  import FacebookIcon from "./icons/FacebookIcon.svelte";
+  import GoogleIcon from "./icons/GoogleIcon.svelte";
 
   // Get Google OAuth Client ID from environment (runtime)
   const PUBLIC_GOOGLE_OAUTH_CLIENT_ID = env.PUBLIC_GOOGLE_OAUTH_CLIENT_ID;

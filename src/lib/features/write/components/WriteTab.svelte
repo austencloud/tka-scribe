@@ -1,7 +1,7 @@
 <!-- Write Tab - Act creation and editing with pixel-perfect desktop replica -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify";
+import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import ActBrowser from "./ActBrowser.svelte";
@@ -15,7 +15,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     type ActData,
     type ActThumbnailInfo,
     type MusicPlayerState,
-  } from "$wordcard/domain";
+  } from "../../word-card/domain/types/write";
 
   // State management using runes
 

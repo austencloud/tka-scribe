@@ -8,9 +8,9 @@
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { resolve } from "$lib/shared/inversify";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { SimpleGlassScroll } from "$lib/shared/foundation/ui";
+  import SimpleGlassScroll from "$lib/shared/foundation/ui/SimpleGlassScroll.svelte";
   import { onMount } from "svelte";
   import { createCodexState } from "../state/codex-state.svelte";
   import CodexControlPanel from "./CodexControlPanel.svelte";

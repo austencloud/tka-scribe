@@ -1,5 +1,5 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { SpotlightViewState } from "../../domain";
+import type { SpotlightViewState } from "../../domain/models/spotlight-models";
 
 export interface ISpotlightService {
   initializeSpotlight(sequence: SequenceData): void;

@@ -5,7 +5,7 @@
   Contains the animation canvas and beat indicator overlay.
 -->
 <script lang="ts">
-  import { SingleModeCanvas } from "../../shared";
+  import SingleModeCanvas from "../../shared/SingleModeCanvas.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {

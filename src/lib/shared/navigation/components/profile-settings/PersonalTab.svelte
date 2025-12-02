@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "../../../auth";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
   import {
     personalInfoState,
     originalPersonalInfoState,

@@ -3,7 +3,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   import DiscoverLayout from "./DiscoverLayout.svelte";
   import SequenceDrawers from "./SequenceDrawers.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-  import { SequenceDisplayPanel } from "../../gallery";
+  import SequenceDisplayPanel from "../../gallery/display/components/SequenceDisplayPanel.svelte";
 
   interface Props {
     isMobile: boolean;

@@ -2,7 +2,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,
-} from "../../domain";
+} from "../../domain/models/navigation-models";
 
 export interface INavigationService {
   buildNavigationStructure(

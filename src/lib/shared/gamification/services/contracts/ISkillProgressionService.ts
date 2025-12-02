@@ -11,7 +11,7 @@ import type {
   SkillCategory,
   SkillLevel,
 } from "../../domain/models/challenge-models";
-import type { XPEventMetadata } from "../../domain/models";
+import type { XPEventMetadata } from "../../domain/models/achievement-models";
 
 export interface ISkillProgressionService {
   /**

@@ -33,7 +33,7 @@ export class PixiTextureLoader {
     try {
       // Import SVGGenerator to generate prop SVGs
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const { resolve } = await import("$lib/shared/inversify");
+      const { resolve } = await import("$lib/shared/inversify/di");
       const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
 
       // Generate blue and red prop SVGs
@@ -78,7 +78,7 @@ export class PixiTextureLoader {
     try {
       // Import SVGGenerator to generate prop SVGs
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const { resolve } = await import("$lib/shared/inversify");
+      const { resolve } = await import("$lib/shared/inversify/di");
       const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
 
       // Generate blue and red prop SVGs with different types
@@ -120,7 +120,7 @@ export class PixiTextureLoader {
     try {
       // Import SVGGenerator to generate prop SVGs
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const { resolve } = await import("$lib/shared/inversify");
+      const { resolve } = await import("$lib/shared/inversify/di");
       const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
 
       // Generate secondary prop SVGs with custom colors
@@ -164,7 +164,7 @@ export class PixiTextureLoader {
   ): Promise<Texture> {
     try {
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const { resolve } = await import("$lib/shared/inversify");
+      const { resolve } = await import("$lib/shared/inversify/di");
       const { GridMode } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
       const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
 

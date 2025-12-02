@@ -9,7 +9,7 @@ import type { BeatData } from "../../domain/models/BeatData";
 import type {
   ValidationErrorInfo,
   ValidationResult,
-} from "$lib/shared/validation/ValidationResult";
+} from "../../../../../shared/validation/ValidationResult";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
