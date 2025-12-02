@@ -12,7 +12,8 @@
  * while internally using decomposed, single-responsibility services.
  */
 
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
+import { TYPES } from "$lib/shared/inversify/types";
 import type {
   IPositionDetectionService,
   DetectionCapabilities,
@@ -21,26 +22,23 @@ import type {
   DetectionFrame,
   DetectedPosition,
 } from "../../domain/models/DetectionFrame";
-import type { HandLandmark } from "../contracts/IHandLandmarkerService";
+import type { IHandLandmarkerService, HandLandmark } from "../contracts/IHandLandmarkerService";
+import type { IHandednessAnalyzer } from "../contracts/IHandednessAnalyzer";
+import type { IHandStateAnalyzer } from "../contracts/IHandStateAnalyzer";
+import type { IHandTrackingStabilizer } from "../contracts/IHandTrackingStabilizer";
 import type { DetectedHandData } from "../contracts/IHandAssignmentService";
 import { QuadrantMapper } from "./QuadrantMapper";
-
-// Sub-services (using direct instantiation for now, can migrate to DI later)
-import { HandLandmarkerService } from "./HandLandmarkerService";
-import { HandednessAnalyzer } from "./HandednessAnalyzer";
-import { HandStateAnalyzer } from "./HandStateAnalyzer";
-import { HandTrackingStabilizer } from "./HandTrackingStabilizer";
 
 // How many frames to persist a hand after it disappears (for stability)
 const HAND_PERSISTENCE_FRAMES = 5;
 
 @injectable()
 export class MediaPipeDetectionService implements IPositionDetectionService {
-  // Sub-services
-  private _landmarker: HandLandmarkerService;
-  private _handednessAnalyzer: HandednessAnalyzer;
-  private _stateAnalyzer: HandStateAnalyzer;
-  private _stabilizer: HandTrackingStabilizer;
+  // Sub-services (injected via DI)
+  private _landmarker: IHandLandmarkerService;
+  private _handednessAnalyzer: IHandednessAnalyzer;
+  private _stateAnalyzer: IHandStateAnalyzer;
+  private _stabilizer: IHandTrackingStabilizer;
 
   // State
   private _isDetecting = false;
@@ -56,13 +54,16 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
   private _blueFramesMissing = 0;
   private _redFramesMissing = 0;
 
-  constructor() {
-    // Initialize sub-services (direct instantiation for backward compatibility)
-    // In the future, these can be injected via DI
-    this._landmarker = new HandLandmarkerService();
-    this._handednessAnalyzer = new HandednessAnalyzer();
-    this._stateAnalyzer = new HandStateAnalyzer();
-    this._stabilizer = new HandTrackingStabilizer();
+  constructor(
+    @inject(TYPES.IHandLandmarkerService) landmarker: IHandLandmarkerService,
+    @inject(TYPES.IHandednessAnalyzer) handednessAnalyzer: IHandednessAnalyzer,
+    @inject(TYPES.IHandStateAnalyzer) stateAnalyzer: IHandStateAnalyzer,
+    @inject(TYPES.IHandTrackingStabilizer) stabilizer: IHandTrackingStabilizer
+  ) {
+    this._landmarker = landmarker;
+    this._handednessAnalyzer = handednessAnalyzer;
+    this._stateAnalyzer = stateAnalyzer;
+    this._stabilizer = stabilizer;
   }
 
   get isInitialized(): boolean {

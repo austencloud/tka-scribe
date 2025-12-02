@@ -5,11 +5,12 @@
  */
 
 import type { StoredPerformance } from "../../domain/models/TrainDatabaseModels";
+import type { PerformanceScore } from "../../domain/models/PerformanceData";
 
 export interface PersonalBest {
 	sequenceId: string;
 	sequenceName: string;
-	bestScore: any; // PerformanceScore
+	bestScore: PerformanceScore;
 	bestAccuracy: number;
 	bestGrade: string;
 	bestCombo: number;

@@ -14,7 +14,7 @@
     TrainChallengeFilter,
     TrainChallengeSortBy,
   } from "../../domain/models/TrainChallengeModels";
-  import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
+  import { getDifficultySortIndex, type ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { activeChallengeState } from "../../state/active-challenge-state.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
@@ -75,11 +75,10 @@
     // Apply sorting
     switch (sortBy) {
       case "difficulty":
-        const difficultyOrder = ["easy", "medium", "hard", "expert"];
         filtered.sort(
           (a, b) =>
-            difficultyOrder.indexOf(a.difficulty) -
-            difficultyOrder.indexOf(b.difficulty)
+            getDifficultySortIndex(a.difficulty) -
+            getDifficultySortIndex(b.difficulty)
         );
         break;
       case "xp":
@@ -346,7 +345,7 @@
 
 <style>
   /* ============================================================================
-     BASE STYLES - Modern Mobile-First with 48px Touch Targets
+     BASE STYLES - 2026 Bento Grid with Vibrant Cards
      ============================================================================ */
   .challenges-panel {
     display: flex;
@@ -354,11 +353,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: linear-gradient(
-      180deg,
-      rgba(15, 15, 25, 0.98) 0%,
-      rgba(8, 8, 15, 1) 100%
-    );
+    background: transparent;
   }
 
   /* Compact Single-Row Header */
@@ -366,16 +361,16 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.02);
+    padding: 16px 20px;
+    background: transparent;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .header h1 {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    color: white;
+    color: rgba(255, 255, 255, 0.95);
     letter-spacing: -0.02em;
     flex-shrink: 0;
   }
@@ -410,11 +405,11 @@
   .filter-button.has-filters {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(99, 102, 241, 0.15)
+      rgba(239, 68, 68, 0.2),
+      rgba(220, 38, 38, 0.15)
     );
-    border-color: rgba(99, 102, 241, 0.4);
-    color: #60a5fa;
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
   }
 
   .filter-badge {
@@ -479,10 +474,10 @@
   .chip.active {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.25),
-      rgba(99, 102, 241, 0.2)
+      rgba(239, 68, 68, 0.25),
+      rgba(220, 38, 38, 0.2)
     );
-    border-color: rgba(99, 102, 241, 0.4);
+    border-color: rgba(239, 68, 68, 0.4);
     color: white;
   }
 
@@ -490,18 +485,18 @@
   .content {
     flex: 1;
     overflow-y: auto;
-    padding: 16px;
+    padding: 20px;
   }
 
   .challenges-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 
   .challenges-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
 
   /* Loading State */
@@ -517,8 +512,8 @@
   .spinner {
     width: 48px;
     height: 48px;
-    border: 3px solid rgba(139, 92, 246, 0.2);
-    border-top-color: #a78bfa;
+    border: 3px solid rgba(239, 68, 68, 0.2);
+    border-top-color: #ef4444;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -791,7 +786,7 @@
   .apply-btn {
     flex: 1;
     height: 52px;
-    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
     border: none;
     border-radius: 14px;
     font-size: 15px;
@@ -852,7 +847,7 @@
      ============================================================================ */
   @media (min-width: 641px) {
     .header {
-      padding: 16px 24px;
+      padding: 18px 28px;
       gap: 16px;
     }
 
@@ -867,13 +862,13 @@
     }
 
     .content {
-      padding: 20px 24px;
+      padding: 24px 28px;
     }
 
     .challenges-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      gap: 20px;
     }
 
     .option-grid {
@@ -886,7 +881,7 @@
      ============================================================================ */
   @media (min-width: 1025px) {
     .header {
-      padding: 18px 32px;
+      padding: 20px 36px;
     }
 
     .header h1 {
@@ -894,12 +889,12 @@
     }
 
     .content {
-      padding: 24px 32px;
+      padding: 28px 36px;
     }
 
     .challenges-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      gap: 24px;
     }
 
     .option-grid {

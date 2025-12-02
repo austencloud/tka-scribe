@@ -24,6 +24,7 @@ import {
 	getTrainChallengesPath,
 	getUserTrainProgressPath,
 } from "$lib/shared/gamification/data/firestore-collections";
+import { getDifficultySortIndex } from "$lib/shared/gamification/domain/models/achievement-models";
 import type {
 	TrainChallenge,
 	UserTrainChallengeProgress,
@@ -131,11 +132,10 @@ export class TrainChallengeService implements ITrainChallengeService {
 		// Apply sorting
 		switch (filters.sortBy) {
 			case "difficulty":
-				const difficultyOrder = ["easy", "beginner", "medium", "intermediate", "hard", "advanced"];
 				filtered.sort(
 					(a, b) =>
-						difficultyOrder.indexOf(a.difficulty) -
-						difficultyOrder.indexOf(b.difficulty)
+						getDifficultySortIndex(a.difficulty) -
+						getDifficultySortIndex(b.difficulty)
 				);
 				break;
 			case "xp":
@@ -237,8 +237,6 @@ export class TrainChallengeService implements ITrainChallengeService {
 			startedAt: serverTimestamp(),
 			lastProgressAt: serverTimestamp(),
 		});
-
-		console.log(`✅ Started train challenge: ${challengeId}`);
 	}
 
 	async recordProgress(
@@ -290,10 +288,6 @@ export class TrainChallengeService implements ITrainChallengeService {
 			attempts: updatedAttempts,
 			...(bestScore && { bestScore }),
 		});
-
-		console.log(
-			`📊 Train challenge progress updated: ${challengeId} (${newProgress})`
-		);
 	}
 
 	async completeChallenge(
@@ -348,10 +342,6 @@ export class TrainChallengeService implements ITrainChallengeService {
 				xpAwarded: totalXP,
 			});
 		}
-
-		console.log(
-			`🎉 Train challenge completed: ${challenge.title} (+${totalXP} XP${bonusEarned ? " with bonus!" : ""})`
-		);
 
 		return totalXP;
 	}

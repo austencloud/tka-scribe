@@ -15,12 +15,13 @@
 	import HitFeedback from "./HitFeedback.svelte";
 	import ResultsScreen from "./ResultsScreen.svelte";
 	import TrainSetup from "./TrainSetup.svelte";
-	import { MediaPipeDetectionService } from "../services/implementations/MediaPipeDetectionService";
 	import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 	import { resolve, TYPES } from "$lib/shared/inversify/di";
 	import type { ITrainChallengeService } from "../services/contracts/ITrainChallengeService";
+	import type { IPerformanceHistoryService } from "../services/contracts/IPerformanceHistoryService";
 	import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
+	import type { StoredPerformance } from "../domain/models/TrainDatabaseModels";
 	import { activeChallengeState } from "../state/active-challenge-state.svelte";
 	import {
 		sessionResultToScore,
@@ -58,6 +59,9 @@
 	const achievementService = resolve<IAchievementService>(
 		TYPES.IAchievementService
 	);
+	const historyService = resolve<IPerformanceHistoryService>(
+		TYPES.IPerformanceHistoryService
+	);
 
 	// Session tracking
 	let sessionStartTime = 0;
@@ -77,9 +81,10 @@
 		isComplete: boolean;
 	} | undefined>(undefined);
 
-	// Timing system
-	let beatInterval: number | null = null;
+	// Timing system (using requestAnimationFrame for better performance)
+	let beatAnimationFrameId: number | null = null;
 	let lastBeatTime = 0;
+	let beatDuration = 0;
 
 	// Hit detection tracking
 	let hasCheckedCurrentBeat = false;
@@ -98,7 +103,7 @@
 
 	async function initDetection() {
 		try {
-			detectionService = new MediaPipeDetectionService();
+			detectionService = resolve<IPositionDetectionService>(TYPES.IPositionDetectionService);
 			await detectionService.initialize();
 			isDetectionReady = true;
 		} catch (error) {
@@ -164,12 +169,12 @@
 
 	// Timing system - start beat timer when performance begins
 	$effect(() => {
-		if (trainState.isPerforming && !beatInterval) {
+		if (trainState.isPerforming && !beatAnimationFrameId) {
 			startBeatTimer();
 			// Record session start time
 			sessionStartTime = Date.now();
 			hasProcessedSession = false;
-		} else if (!trainState.isPerforming && beatInterval) {
+		} else if (!trainState.isPerforming && beatAnimationFrameId) {
 			stopBeatTimer();
 		}
 	});
@@ -205,7 +210,38 @@
 		// Award base session XP
 		const xpBreakdown = calculateSessionXP(sessionResult);
 		sessionXPBreakdown = xpBreakdown; // Store for ResultsScreen
-		console.log(`Training session XP: ${xpBreakdown.totalXP}`, xpBreakdown);
+
+		// Determine grade based on accuracy
+		const grade = accuracy >= 95 ? "S" : accuracy >= 85 ? "A" : accuracy >= 70 ? "B" : accuracy >= 55 ? "C" : accuracy >= 40 ? "D" : "F";
+
+		// Save session to history
+		try {
+			const storedPerformance: StoredPerformance = {
+				id: crypto.randomUUID(),
+				sequenceId: sequence?.id ?? "unknown",
+				sequenceName: sequence?.word ?? sequence?.name ?? "Unknown Sequence",
+				performedAt: new Date(),
+				detectionMethod: "mediapipe",
+				bpm: trainState.bpm,
+				beatResultsJson: "[]", // TODO: Store actual beat results if needed
+				score: {
+					percentage: Math.round(accuracy * 10) / 10,
+					grade: grade as "S" | "A" | "B" | "C" | "D" | "F",
+					perfectHits: trainState.totalHits,
+					goodHits: 0,
+					misses: trainState.totalMisses,
+					maxCombo: trainState.maxCombo,
+					xpEarned: xpBreakdown.totalXP,
+				},
+				metadata: {
+					sessionDuration: duration,
+				},
+			};
+
+			await historyService.savePerformance(storedPerformance);
+		} catch (error) {
+			console.error("Failed to save session to history:", error);
+		}
 
 		try {
 			await achievementService.trackAction("training_session_completed", {
@@ -264,9 +300,6 @@
 							activeChallenge.id,
 							score
 						);
-						console.log(
-							`🏆 Challenge completed! +${challengeXP} XP: ${activeChallenge.title}`
-						);
 
 						// Store challenge completion for ResultsScreen
 						sessionChallengeProgress = {
@@ -300,10 +333,6 @@
 						// Clear active challenge
 						activeChallengeState.clearActiveChallenge();
 					} else {
-						console.log(
-							`Challenge progress: ${progress?.progress || 0}/${activeChallenge.requirement.target}`
-						);
-
 						// Store challenge progress for ResultsScreen
 						if (progress) {
 							sessionChallengeProgress = {
@@ -335,11 +364,15 @@
 	}
 
 	function startBeatTimer() {
-		const beatDuration = (60 / trainState.bpm) * 1000;
+		beatDuration = (60 / trainState.bpm) * 1000;
 		lastBeatTime = performance.now();
 		hasCheckedCurrentBeat = false;
 
-		beatInterval = window.setInterval(() => {
+		// Use requestAnimationFrame for better performance:
+		// - Automatically pauses when tab is hidden
+		// - Syncs with display refresh rate
+		// - More efficient than setInterval
+		function tick() {
 			const now = performance.now();
 			const elapsed = now - lastBeatTime;
 
@@ -348,7 +381,14 @@
 				hasCheckedCurrentBeat = false;
 				trainState.advanceBeat();
 			}
-		}, 16);
+
+			// Continue the loop if still performing
+			if (trainState.isPerforming) {
+				beatAnimationFrameId = requestAnimationFrame(tick);
+			}
+		}
+
+		beatAnimationFrameId = requestAnimationFrame(tick);
 	}
 
 	// Hit detection
@@ -380,9 +420,9 @@
 	});
 
 	function stopBeatTimer() {
-		if (beatInterval) {
-			clearInterval(beatInterval);
-			beatInterval = null;
+		if (beatAnimationFrameId) {
+			cancelAnimationFrame(beatAnimationFrameId);
+			beatAnimationFrameId = null;
 		}
 	}
 

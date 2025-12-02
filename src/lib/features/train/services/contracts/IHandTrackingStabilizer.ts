@@ -86,8 +86,19 @@ export interface IHandTrackingStabilizer {
 
   /**
    * Get the history length for a hand
-   * 
+   *
    * @param handId - "blue" or "red"
    */
   getHistoryLength(handId: "blue" | "red"): number;
+
+  /**
+   * Calculate Euclidean distance between two points
+   *
+   * @param x1 - First X coordinate
+   * @param y1 - First Y coordinate
+   * @param x2 - Second X coordinate
+   * @param y2 - Second Y coordinate
+   * @returns Distance between the points
+   */
+  calculateDistance(x1: number, y1: number, x2: number, y2: number): number;
 }

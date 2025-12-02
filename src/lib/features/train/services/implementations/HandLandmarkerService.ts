@@ -51,9 +51,7 @@ export class HandLandmarkerService implements IHandLandmarkerService {
       );
 
       this._isInitialized = true;
-      console.log("✅ HandLandmarkerService initialized");
     } catch (error) {
-      console.error("Failed to initialize MediaPipe HandLandmarker:", error);
       throw new Error(`MediaPipe initialization failed: ${error}`);
     }
   }
@@ -80,6 +78,5 @@ export class HandLandmarkerService implements IHandLandmarkerService {
       this._handLandmarker = null;
     }
     this._isInitialized = false;
-    console.log("🧹 HandLandmarkerService disposed");
   }
 }

@@ -172,6 +172,30 @@ export type ChallengeDifficulty =
   | "hard"
   | "expert";
 
+/**
+ * Canonical difficulty ordering from easiest to hardest.
+ * Use this array for consistent sorting across the application.
+ * Maps both naming conventions (easy/medium/hard and beginner/intermediate/advanced)
+ */
+export const DIFFICULTY_ORDER: ChallengeDifficulty[] = [
+  "easy",
+  "beginner",
+  "medium",
+  "intermediate",
+  "hard",
+  "advanced",
+  "expert",
+];
+
+/**
+ * Get the sort index for a difficulty level.
+ * Lower index = easier difficulty.
+ */
+export function getDifficultySortIndex(difficulty: ChallengeDifficulty): number {
+  const index = DIFFICULTY_ORDER.indexOf(difficulty);
+  return index >= 0 ? index : DIFFICULTY_ORDER.length;
+}
+
 export interface DailyChallenge {
   id: string; // Date-based: e.g., "challenge_2025-11-01"
   date: string; // ISO date string (YYYY-MM-DD)

@@ -317,7 +317,6 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
       layoutService: services.layoutService,
       navigationSyncService: services.navigationSyncService,
       hasSelectedCreationMethod: () => hasSelectedCreationMethod,
-      isDeepLinkProcessed: () => deepLinkProcessed,
       onLayoutChange: (layout) => {
         shouldUseSideBySideLayout = layout;
         setSideBySideLayout(layout);

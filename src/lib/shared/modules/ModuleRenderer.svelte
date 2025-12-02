@@ -13,7 +13,6 @@
    */
   import { isModuleActive } from "../application/state/ui/ui-state.svelte";
   import { loadFeatureModule } from "../inversify/di";
-  import { fade } from "svelte/transition";
   import type { Component } from "svelte";
 
   interface Props {
@@ -99,7 +98,9 @@
   <!-- Transition container for overlaying content -->
   <div class="transition-container">
     {#key activeModule}
-      <div class="module-content" transition:fade={{ duration: 200 }}>
+      <div
+        class="module-content"
+      >
         {#await modulePromise}
           <!-- Loading state while module chunk is being fetched -->
           <div class="module-loading">

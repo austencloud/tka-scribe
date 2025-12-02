@@ -7,9 +7,7 @@
  * Domain: Create module - Effect Orchestration
  */
 
-import { injectable, inject } from "inversify";
-import { TYPES } from "$lib/shared/inversify/types";
-import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
+import { injectable } from "inversify";
 import type {
   ICreateModuleEffectCoordinator,
   CreateModuleEffectConfig,
@@ -23,16 +21,11 @@ import { createLayoutEffects } from "../../state/managers/LayoutManager.svelte";
 import { createNavigationSyncEffects } from "../../state/managers/NavigationSyncManager.svelte";
 import { createPanelHeightTracker } from "../../state/managers/PanelHeightTracker.svelte";
 import { createPWAEngagementEffect } from "../../state/managers/PWAEngagementManager.svelte";
-import { createURLSyncEffect } from "../../state/managers/URLSyncManager.svelte";
 
 @injectable()
 export class CreateModuleEffectCoordinator
   implements ICreateModuleEffectCoordinator
 {
-  constructor(
-    @inject(TYPES.IURLSyncService)
-    private urlSyncService: IURLSyncService
-  ) {}
   /**
    * Set up all reactive effects for CreateModule
    * Coordinates:
@@ -57,7 +50,6 @@ export class CreateModuleEffectCoordinator
       onCurrentWordChange,
       toolPanelElement,
       buttonPanelElement,
-      isDeepLinkProcessed,
     } = config;
 
     const cleanups: (() => void)[] = [];
@@ -70,14 +62,8 @@ export class CreateModuleEffectCoordinator
     });
     cleanups.push(navigationCleanup);
 
-    // URL sync effect - keeps browser URL in sync with current sequence
-    const urlSyncCleanup = createURLSyncEffect({
-      CreateModuleState,
-      navigationState,
-      urlSyncService: this.urlSyncService,
-      isDeepLinkProcessed,
-    });
-    cleanups.push(urlSyncCleanup);
+    // URL sync removed - share panel now generates viewer URLs on-demand
+    // Deep links still work for incoming shared links via DeepLinkService
 
     // Layout effects
     const layoutCleanup = createLayoutEffects({

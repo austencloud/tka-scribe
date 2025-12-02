@@ -1,11 +1,11 @@
-<!-- FeedbackManageTab - Admin view for managing feedback -->
+<!-- FeedbackManageTab - Admin Kanban board for managing feedback -->
 <script lang="ts">
   import { onMount } from "svelte";
   import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
   import { createFeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import FeedbackFilterBar from "./FeedbackFilterBar.svelte";
-  import FeedbackList from "./FeedbackList.svelte";
+  import FeedbackKanbanFilterBar from "./FeedbackKanbanFilterBar.svelte";
+  import FeedbackKanbanBoard from "./FeedbackKanbanBoard.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
 
   // Create manage state
@@ -14,9 +14,11 @@
   // Check if user is admin
   const isAdmin = $derived(featureFlagService.isAdmin);
 
-  // Load feedback on mount
+  // Load feedback on mount (load all statuses for Kanban view)
   onMount(() => {
     if (isAdmin) {
+      // For Kanban, we want all items regardless of status filter
+      manageState.setFilter("status", "all");
       manageState.loadFeedback(true);
     }
   });
@@ -35,9 +37,9 @@
       onClose={() => manageState.selectItem(null)}
     >
       {#snippet list()}
-        <div class="list-container">
-          <FeedbackFilterBar manageState={manageState} />
-          <FeedbackList manageState={manageState} />
+        <div class="kanban-container">
+          <FeedbackKanbanFilterBar {manageState} />
+          <FeedbackKanbanBoard {manageState} />
         </div>
       {/snippet}
 
@@ -45,7 +47,7 @@
         {#if manageState.selectedItem}
           <FeedbackDetailPanel
             item={manageState.selectedItem}
-            manageState={manageState}
+            {manageState}
             onClose={() => manageState.selectItem(null)}
           />
         {/if}
@@ -62,10 +64,11 @@
     width: 100%;
   }
 
-  .list-container {
+  .kanban-container {
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
   }
 
   .access-denied {

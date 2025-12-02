@@ -45,15 +45,11 @@
 		// Load full sequence data including beats
 		try {
 			isLoadingFullSequence = true;
-			console.log('[TrainSetup] Loading full sequence data for:', sequence.name);
 			const fullSequence = await loaderService.loadFullSequenceData(sequence.name);
 
 			if (fullSequence) {
-				console.log('[TrainSetup] Loaded full sequence with beats:', fullSequence.beats?.length);
 				closeBrowser();
 				onSequenceSelected(fullSequence);
-			} else {
-				console.error('[TrainSetup] Failed to load full sequence data');
 			}
 		} catch (error) {
 			console.error('[TrainSetup] Error loading full sequence:', error);

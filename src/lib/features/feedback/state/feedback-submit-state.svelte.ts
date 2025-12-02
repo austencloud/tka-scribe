@@ -41,12 +41,10 @@ export function createFeedbackSubmitState() {
   // Derived state
   const isSubmitting = $derived(submitStatus === "submitting");
 
-  const isFormValid = $derived(() => {
-    return (
-      formData.title.trim().length >= 3 &&
-      formData.description.trim().length >= 10
-    );
-  });
+  const isFormValid = $derived(
+    formData.title.trim().length >= 3 &&
+    formData.description.trim().length >= 10
+  );
 
   // Actions
   function updateField<K extends keyof FeedbackFormData>(
@@ -140,7 +138,7 @@ export function createFeedbackSubmitState() {
       return isSubmitting;
     },
     get isFormValid() {
-      return isFormValid();
+      return isFormValid;
     },
     // Captured context (frozen at state creation time)
     get capturedModule() {

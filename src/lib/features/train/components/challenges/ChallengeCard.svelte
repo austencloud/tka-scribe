@@ -1,7 +1,8 @@
 <!--
-  ChallengeCard.svelte - Train Challenge Card (Modern Bento Style)
+  ChallengeCard.svelte - Train Challenge Card (Refined 2026 Style)
 
-  Clean, minimalist challenge card with 48px touch targets and modern interactions.
+  Sophisticated cards with colored accents rather than overwhelming gradients.
+  Neutral bodies with colored top bars signal difficulty at a glance.
 -->
 <script lang="ts">
   import type {
@@ -10,8 +11,8 @@
   } from "../../domain/models/TrainChallengeModels";
   import {
     calculateChallengeProgress,
-    getDifficultyColor,
   } from "../../domain/models/TrainChallengeModels";
+  import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
 
   interface Props {
     challenge: TrainChallenge;
@@ -31,7 +32,60 @@
   const isStarted = $derived(progress !== null);
   const xpReward = $derived(challenge.xpReward);
   const bonusXP = $derived(challenge.bonusXP ?? 0);
-  const difficultyColor = $derived(getDifficultyColor(challenge.difficulty));
+
+  // Refined color theme - accent colors for top bar and subtle tints
+  const difficultyTheme = $derived.by(() => {
+    const themes: Record<ChallengeDifficulty, {
+      color: string;
+      gradient: string;
+      tint: string;
+      glow: string;
+    }> = {
+      easy: {
+        color: "#10b981",
+        gradient: "linear-gradient(90deg, #10b981 0%, #34d399 100%)",
+        tint: "rgba(16, 185, 129, 0.06)",
+        glow: "rgba(16, 185, 129, 0.3)"
+      },
+      beginner: {
+        color: "#22c55e",
+        gradient: "linear-gradient(90deg, #22c55e 0%, #4ade80 100%)",
+        tint: "rgba(34, 197, 94, 0.06)",
+        glow: "rgba(34, 197, 94, 0.3)"
+      },
+      medium: {
+        color: "#f59e0b",
+        gradient: "linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)",
+        tint: "rgba(245, 158, 11, 0.06)",
+        glow: "rgba(245, 158, 11, 0.3)"
+      },
+      intermediate: {
+        color: "#eab308",
+        gradient: "linear-gradient(90deg, #eab308 0%, #facc15 100%)",
+        tint: "rgba(234, 179, 8, 0.06)",
+        glow: "rgba(234, 179, 8, 0.3)"
+      },
+      hard: {
+        color: "#f97316",
+        gradient: "linear-gradient(90deg, #f97316 0%, #fb923c 100%)",
+        tint: "rgba(249, 115, 22, 0.06)",
+        glow: "rgba(249, 115, 22, 0.3)"
+      },
+      advanced: {
+        color: "#ef4444",
+        gradient: "linear-gradient(90deg, #ef4444 0%, #f87171 100%)",
+        tint: "rgba(239, 68, 68, 0.06)",
+        glow: "rgba(239, 68, 68, 0.3)"
+      },
+      expert: {
+        color: "#dc2626",
+        gradient: "linear-gradient(90deg, #dc2626 0%, #ef4444 100%)",
+        tint: "rgba(220, 38, 38, 0.08)",
+        glow: "rgba(220, 38, 38, 0.35)"
+      }
+    };
+    return themes[challenge.difficulty] ?? themes.medium;
+  });
 
   // Mode badge text
   const modeBadge = $derived.by(() => {
@@ -55,29 +109,33 @@
   class="challenge-card"
   class:complete={isComplete}
   class:clickable={!isComplete && onStart}
-  style="--difficulty-color: {difficultyColor}"
+  style="--accent-color: {difficultyTheme.color}; --accent-gradient: {difficultyTheme.gradient}; --accent-tint: {difficultyTheme.tint}; --accent-glow: {difficultyTheme.glow}"
   onclick={handleClick}
   disabled={isComplete}
 >
-  <!-- Header: Title + XP Badge -->
-  <div class="card-header">
-    <div class="header-content">
-      <h3 class="card-title">{challenge.title}</h3>
-      <p class="card-description">{challenge.description}</p>
-    </div>
-    <div class="xp-badge">
-      <i class="fas fa-star"></i>
-      <span class="xp-value">{xpReward}</span>
-      {#if bonusXP > 0 && !isComplete}
-        <span class="bonus">+{bonusXP}</span>
-      {/if}
-    </div>
-  </div>
+  <!-- Colored top accent bar -->
+  <div class="accent-bar"></div>
 
-  <!-- Tags + Progress -->
-  <div class="card-body">
+  <!-- Card Content -->
+  <div class="card-content">
+    <!-- Header: Title + XP Badge -->
+    <div class="card-header">
+      <div class="header-content">
+        <h3 class="card-title">{challenge.title}</h3>
+        <p class="card-description">{challenge.description}</p>
+      </div>
+      <div class="xp-badge">
+        <i class="fas fa-star"></i>
+        <span class="xp-value">{xpReward}</span>
+        {#if bonusXP > 0 && !isComplete}
+          <span class="bonus">+{bonusXP}</span>
+        {/if}
+      </div>
+    </div>
+
+    <!-- Tags -->
     <div class="tags-row">
-      <span class="tag difficulty" style="--tag-color: {difficultyColor}">
+      <span class="tag difficulty">
         {challenge.difficulty}
       </span>
       {#if modeBadge}
@@ -85,13 +143,14 @@
       {/if}
     </div>
 
+    <!-- Progress (if started) -->
     {#if isStarted}
       <div class="progress-section">
         <div class="progress-track">
           <div
             class="progress-fill"
             class:complete={isComplete}
-            style="width: {progressPercent}%"
+            style="width: {progressPercent}%; background: var(--accent-gradient)"
           ></div>
         </div>
         <span class="progress-text">
@@ -103,63 +162,42 @@
         </span>
       </div>
     {/if}
-  </div>
 
-  <!-- Action Footer -->
-  <div class="card-footer">
-    {#if isComplete}
-      <div class="status-badge complete">
-        <i class="fas fa-check-circle"></i>
-        <span>Completed</span>
-      </div>
-    {:else}
-      <div class="action-hint">
-        <span>{isStarted ? "Continue" : "Start"}</span>
-        <i class="fas fa-arrow-right"></i>
-      </div>
-    {/if}
+    <!-- Action Footer -->
+    <div class="card-footer">
+      {#if isComplete}
+        <div class="status-badge complete">
+          <i class="fas fa-check-circle"></i>
+          <span>Completed</span>
+        </div>
+      {:else}
+        <div class="action-hint">
+          <span>{isStarted ? "Continue" : "Start"}</span>
+          <i class="fas fa-arrow-right"></i>
+        </div>
+      {/if}
+    </div>
   </div>
 </button>
 
 <style>
   /* ============================================================================
-     MODERN CHALLENGE CARD - 48px Touch Targets, Clean Design
+     REFINED 2026 CHALLENGE CARD
+     Neutral body with colored accent bar - sophisticated, not overwhelming
      ============================================================================ */
   .challenge-card {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-    min-height: 140px;
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.04) 0%,
-      rgba(255, 255, 255, 0.02) 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-left: 4px solid var(--difficulty-color);
-    border-radius: 20px;
+    min-height: 160px;
+    background: var(--accent-tint);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
     text-align: left;
     cursor: default;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     width: 100%;
     position: relative;
     overflow: hidden;
-  }
-
-  /* Subtle gradient overlay */
-  .challenge-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      transparent 0%,
-      rgba(var(--difficulty-color-rgb, 139, 92, 246), 0.03) 100%
-    );
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
   }
 
   .challenge-card.clickable {
@@ -168,20 +206,11 @@
 
   .challenge-card.clickable:hover {
     transform: translateY(-3px);
-    background: linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.06) 0%,
-      rgba(255, 255, 255, 0.03) 100%
-    );
-    border-color: rgba(255, 255, 255, 0.12);
-    border-left-color: var(--difficulty-color);
+    border-color: rgba(255, 255, 255, 0.15);
     box-shadow:
-      0 12px 32px rgba(0, 0, 0, 0.25),
-      0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .challenge-card.clickable:hover::before {
-    opacity: 1;
+      0 12px 32px rgba(0, 0, 0, 0.2),
+      0 0 0 1px var(--accent-color),
+      0 0 40px var(--accent-glow);
   }
 
   .challenge-card.clickable:active {
@@ -189,21 +218,38 @@
     transition: all 0.1s ease;
   }
 
+  /* Completed state */
   .challenge-card.complete {
-    background: linear-gradient(
-      145deg,
-      rgba(34, 197, 94, 0.08) 0%,
-      rgba(34, 197, 94, 0.03) 100%
-    );
+    background: rgba(34, 197, 94, 0.08);
     border-color: rgba(34, 197, 94, 0.2);
-    border-left-color: #22c55e;
+    opacity: 0.9;
+  }
+
+  .challenge-card.complete .accent-bar {
+    background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%);
+  }
+
+  /* Colored top accent bar */
+  .accent-bar {
+    height: 4px;
+    background: var(--accent-gradient);
+    flex-shrink: 0;
+  }
+
+  /* Card content wrapper */
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px 20px;
+    flex: 1;
   }
 
   /* Header */
   .card-header {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 14px;
     align-items: flex-start;
   }
 
@@ -216,8 +262,8 @@
     margin: 0 0 6px;
     font-size: 16px;
     font-weight: 600;
-    color: white;
-    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.35;
     letter-spacing: -0.01em;
   }
 
@@ -225,7 +271,7 @@
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.55);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -233,19 +279,19 @@
     overflow: hidden;
   }
 
-  /* XP Badge */
+  /* XP Badge - Premium golden look */
   .xp-badge {
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
+    padding: 8px 12px;
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.25) 0%,
-      rgba(167, 139, 250, 0.15) 100%
+      rgba(251, 191, 36, 0.15) 0%,
+      rgba(245, 158, 11, 0.1) 100%
     );
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    border-radius: 16px;
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    border-radius: 12px;
     flex-shrink: 0;
   }
 
@@ -257,20 +303,13 @@
   .xp-value {
     font-size: 14px;
     font-weight: 700;
-    color: #c4b5fd;
+    color: #fcd34d;
   }
 
   .xp-badge .bonus {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #fbbf24;
-  }
-
-  /* Card Body */
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    color: #f59e0b;
   }
 
   /* Tags */
@@ -281,22 +320,24 @@
   }
 
   .tag {
-    padding: 6px 12px;
-    font-size: 11px;
+    padding: 5px 10px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-radius: 8px;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
   }
 
   .tag.difficulty {
-    background: color-mix(in srgb, var(--tag-color) 18%, transparent);
-    color: var(--tag-color);
+    background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+    color: var(--accent-color);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 30%, transparent);
   }
 
   .tag.mode {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
+    background: rgba(99, 102, 241, 0.12);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.2);
   }
 
   /* Progress Section */
@@ -304,102 +345,96 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 10px 12px;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .progress-track {
     flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
-    border-radius: 4px;
+    border-radius: 3px;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .progress-fill.complete {
-    background: linear-gradient(90deg, #22c55e, #4ade80);
+    background: linear-gradient(90deg, #22c55e, #4ade80) !important;
   }
 
   .progress-text {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 12px;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.6);
-    min-width: 48px;
+    min-width: 44px;
     text-align: right;
   }
 
   .progress-text i {
-    color: #22c55e;
+    color: #4ade80;
   }
 
-  /* Footer - 48px touch target */
+  /* Footer */
   .card-footer {
     display: flex;
     justify-content: flex-end;
-    min-height: 48px;
+    min-height: 40px;
     align-items: center;
+    margin-top: auto;
   }
 
   .action-hint {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 48px;
-    padding: 0 20px;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(99, 102, 241, 0.12)
-    );
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 14px;
-    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+    background: color-mix(in srgb, var(--accent-color) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent-color) 25%, transparent);
+    border-radius: 10px;
+    font-size: 13px;
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--accent-color);
     transition: all 0.2s ease;
   }
 
   .challenge-card.clickable:hover .action-hint {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.3),
-      rgba(99, 102, 241, 0.2)
-    );
-    border-color: rgba(59, 130, 246, 0.4);
+    background: color-mix(in srgb, var(--accent-color) 18%, transparent);
+    border-color: color-mix(in srgb, var(--accent-color) 35%, transparent);
     gap: 10px;
   }
 
   .action-hint i {
-    font-size: 12px;
+    font-size: 11px;
     transition: transform 0.2s ease;
   }
 
   .challenge-card.clickable:hover .action-hint i {
-    transform: translateX(2px);
+    transform: translateX(3px);
   }
 
   .status-badge {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 48px;
-    padding: 0 16px;
-    border-radius: 14px;
-    font-size: 14px;
-    font-weight: 500;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
   }
 
   .status-badge.complete {
     background: rgba(34, 197, 94, 0.12);
     color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.2);
   }
 
   .status-badge i {
@@ -410,9 +445,9 @@
      RESPONSIVE ADJUSTMENTS
      ============================================================================ */
   @media (min-width: 481px) {
-    .challenge-card {
-      padding: 22px;
-      gap: 18px;
+    .card-content {
+      padding: 20px 22px 22px;
+      gap: 16px;
     }
 
     .card-title {
@@ -424,27 +459,34 @@
     }
 
     .xp-badge {
-      padding: 8px 16px;
+      padding: 8px 14px;
     }
 
     .xp-value {
       font-size: 15px;
     }
+
+    .tag {
+      padding: 6px 12px;
+      font-size: 11px;
+    }
   }
 
   @media (min-width: 641px) {
     .challenge-card {
-      padding: 24px;
-      min-height: 160px;
+      min-height: 170px;
+    }
+
+    .accent-bar {
+      height: 5px;
+    }
+
+    .card-content {
+      padding: 22px 24px 24px;
     }
 
     .card-title {
       font-size: 18px;
-    }
-
-    .tag {
-      padding: 6px 14px;
-      font-size: 11px;
     }
   }
 
@@ -454,8 +496,11 @@
   @media (max-height: 500px) and (orientation: landscape) {
     .challenge-card {
       min-height: auto;
-      padding: 16px;
-      gap: 12px;
+    }
+
+    .card-content {
+      padding: 14px 16px 16px;
+      gap: 10px;
     }
 
     .card-title {
@@ -468,7 +513,7 @@
     }
 
     .xp-badge {
-      padding: 6px 12px;
+      padding: 6px 10px;
     }
 
     .xp-value {
@@ -477,8 +522,8 @@
 
     .action-hint,
     .status-badge {
-      height: 48px;
-      font-size: 13px;
+      height: 36px;
+      font-size: 12px;
     }
   }
 
@@ -487,7 +532,6 @@
      ============================================================================ */
   @media (prefers-reduced-motion: reduce) {
     .challenge-card,
-    .challenge-card::before,
     .progress-fill,
     .action-hint,
     .action-hint i {

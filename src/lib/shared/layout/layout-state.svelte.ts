@@ -49,7 +49,8 @@ export function setLearnHeader(header: string) {
 }
 
 // Helper to check if module needs primary navigation
-// Only modules with sections/tabs defined in MODULE_DEFINITIONS should be listed
+// Dashboard is the meta/launcher layer - no nav bar needed
+// Modules are the app layer - they have nav bar with Home button to return
 export function moduleHasPrimaryNav(moduleId: string): boolean {
   return (
     moduleId === "create" ||    // Assembler, Constructor, Generator tabs
@@ -60,5 +61,4 @@ export function moduleHasPrimaryNav(moduleId: string): boolean {
     moduleId === "feedback" ||  // Submit, Manage tabs
     moduleId === "admin"        // Various admin tabs
   );
-  // Note: "dashboard" has no sections (empty array), so no primary nav needed
 }

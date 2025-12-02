@@ -1,328 +1,155 @@
-<!-- FeedbackSubmitTab - Premium responsive container for feedback submission -->
+<!-- FeedbackSubmitTab - Fluid container-query based layout -->
 <script lang="ts">
   import FeedbackForm from "./FeedbackForm.svelte";
   import { createFeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
 
-  // Create form state
   const submitState = createFeedbackSubmitState();
 </script>
 
 <div class="submit-tab">
   <div class="submit-container">
-    <!-- Header -->
+    <!-- Centered header -->
     <header class="submit-header">
       <div class="header-icon">
         <i class="fas fa-paper-plane"></i>
       </div>
       <h1 class="header-title">Submit Feedback</h1>
-      <p class="header-subtitle">
-        Help us improve TKA Studio by sharing bugs, feature requests, or general feedback.
-      </p>
-      <div class="header-divider"></div>
+      <p class="header-subtitle">Help us improve TKA Studio with your input</p>
     </header>
 
     <!-- Form Content -->
-    <div class="submit-content">
-      <FeedbackForm formState={submitState} />
-    </div>
-
-    <!-- Footer hint (visible on desktop) -->
-    <footer class="submit-footer">
-      <p class="footer-note">
-        <i class="fas fa-shield-alt"></i>
-        Your feedback helps shape the future of TKA Studio
-      </p>
-    </footer>
+    <FeedbackForm formState={submitState} />
   </div>
 </div>
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
-     DESIGN TOKENS (Golden Ratio × 8-point grid)
+     CONTAINER-QUERY BASED FLUID LAYOUT
      ═══════════════════════════════════════════════════════════════════════════ */
   .submit-tab {
-    /* Spacing (φ = 1.618) */
-    --fb-space-3xs: 4px;
-    --fb-space-2xs: 6px;
-    --fb-space-xs: 8px;
-    --fb-space-sm: 13px;
-    --fb-space-md: 21px;
-    --fb-space-lg: 34px;
-    --fb-space-xl: 55px;
-    --fb-space-2xl: 89px;
+    /* Establish as container for queries */
+    container-type: size;
+    container-name: submit-tab;
 
-    /* Typography */
-    --fb-text-xs: 0.75rem;
-    --fb-text-sm: 0.875rem;
-    --fb-text-base: 1rem;
-    --fb-text-lg: 1.25rem;
-    --fb-text-xl: 1.5625rem;
-    --fb-text-2xl: 1.9375rem;
-
-    /* Radii */
-    --fb-radius-sm: 8px;
-    --fb-radius-md: 12px;
-    --fb-radius-lg: 16px;
-    --fb-radius-xl: 20px;
-
-    /* Colors */
-    --fb-primary: #10b981;
-    --fb-primary-glow: rgba(16, 185, 129, 0.15);
-    --fb-surface: rgba(255, 255, 255, 0.03);
-    --fb-border: rgba(255, 255, 255, 0.08);
-    --fb-text: rgba(255, 255, 255, 0.95);
-    --fb-text-muted: rgba(255, 255, 255, 0.6);
-    --fb-text-subtle: rgba(255, 255, 255, 0.35);
-
-    /* Layout */
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: var(--background, #0a0a0f);
+    overflow: hidden; /* No scrollbars - we fit the content */
 
-    /* Mobile padding - compact */
-    padding: var(--fb-space-md);
-    padding-bottom: calc(var(--fb-space-xl) + env(safe-area-inset-bottom, 0px));
+    /* Fluid padding that scales with container */
+    padding: clamp(12px, 3cqi, 32px);
+    padding-bottom: calc(clamp(12px, 3cqi, 32px) + env(safe-area-inset-bottom, 0px));
   }
 
-  /* ═══════════════════════════════════════════════════════════════════════════
-     CONTAINER - Centered with max-width
-     ═══════════════════════════════════════════════════════════════════════════ */
   .submit-container {
-    width: 100%;
-    max-width: 600px;
+    /* Take up available space intelligently */
+    width: min(100%, clamp(400px, 85cqi, 600px));
+    max-height: 100%;
+
     display: flex;
     flex-direction: column;
-    gap: var(--fb-space-lg);
+    /* Fluid gap that responds to container height */
+    gap: clamp(8px, 2cqh, 20px);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     HEADER
+     HEADER - Centered, fluid sizing
      ═══════════════════════════════════════════════════════════════════════════ */
   .submit-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-bottom: var(--fb-space-md);
+    /* Fluid gap based on container */
+    gap: clamp(4px, 1cqh, 12px);
+    /* Reduce header space when container is tight */
+    padding-bottom: clamp(4px, 1.5cqh, 16px);
   }
 
   .header-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
-    margin-bottom: var(--fb-space-md);
-    background: var(--fb-primary-glow);
+    /* Fluid icon size */
+    width: clamp(36px, 6cqi, 56px);
+    height: clamp(36px, 6cqi, 56px);
+    background: rgba(16, 185, 129, 0.12);
     border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: var(--fb-radius-lg);
-    color: var(--fb-primary);
-    font-size: 24px;
+    border-radius: clamp(8px, 1.5cqi, 14px);
+    color: #10b981;
+    font-size: clamp(14px, 2.5cqi, 24px);
   }
 
   .header-title {
-    margin: 0 0 var(--fb-space-xs) 0;
-    font-size: var(--fb-text-xl);
+    margin: 0;
+    /* Fluid typography */
+    font-size: clamp(1rem, 3cqi, 1.5rem);
     font-weight: 700;
-    color: var(--fb-text);
+    color: rgba(255, 255, 255, 0.95);
     letter-spacing: -0.02em;
   }
 
   .header-subtitle {
     margin: 0;
-    max-width: 360px;
-    font-size: var(--fb-text-sm);
-    color: var(--fb-text-muted);
-    line-height: 1.6;
-  }
-
-  .header-divider {
-    width: 64px;
-    height: 3px;
-    margin-top: var(--fb-space-lg);
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--fb-primary) 50%,
-      transparent 100%
-    );
-    border-radius: 2px;
-    opacity: 0.5;
+    font-size: clamp(0.75rem, 1.8cqi, 0.9375rem);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.4;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     CONTENT
-     ═══════════════════════════════════════════════════════════════════════════ */
-  .submit-content {
-    width: 100%;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════════════
-     FOOTER
-     ═══════════════════════════════════════════════════════════════════════════ */
-  .submit-footer {
-    display: none; /* Hidden on mobile */
-    padding-top: var(--fb-space-lg);
-    border-top: 1px solid var(--fb-border);
-  }
-
-  .footer-note {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--fb-space-xs);
-    margin: 0;
-    font-size: var(--fb-text-xs);
-    color: var(--fb-text-subtle);
-    letter-spacing: 0.02em;
-  }
-
-  .footer-note i {
-    color: var(--fb-primary);
-    opacity: 0.6;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════════════
-     RESPONSIVE BREAKPOINTS
+     CONTAINER QUERIES - Adapt to actual available space
      ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* Tablet (768px+) */
-  @media (min-width: 768px) {
-    .submit-tab {
-      padding: var(--fb-space-xl);
-      padding-bottom: var(--fb-space-xl);
-    }
-
-    .submit-container {
-      gap: var(--fb-space-xl);
-    }
-
-    .header-icon {
-      width: 64px;
-      height: 64px;
-      font-size: 28px;
-    }
-
-    .header-title {
-      font-size: var(--fb-text-2xl);
-    }
-
-    .header-subtitle {
-      font-size: var(--fb-text-base);
-    }
-  }
-
-  /* Desktop (1024px+) */
-  @media (min-width: 1024px) {
-    .submit-tab {
-      /* Center vertically with extra padding */
-      padding: var(--fb-space-2xl) var(--fb-space-xl);
-      justify-content: flex-start;
-    }
-
-    .submit-header {
-      padding-bottom: var(--fb-space-lg);
-    }
-
-    .header-divider {
-      width: 80px;
-    }
-
-    .submit-footer {
-      display: block;
-      margin-top: auto;
-    }
-  }
-
-  /* Wide screens (1440px+) */
-  @media (min-width: 1440px) {
-    .submit-tab {
-      padding-top: var(--fb-space-2xl);
-      padding-bottom: var(--fb-space-2xl);
-    }
-
-    .submit-container {
-      /* Slight increase for very wide screens */
-      max-width: 640px;
-    }
-  }
-
-  /* Small mobile tweaks */
-  @media (max-width: 479px) {
-    .submit-tab {
-      padding: var(--fb-space-sm);
-      padding-bottom: calc(var(--fb-space-lg) + env(safe-area-inset-bottom, 0px));
-    }
-
-    .header-icon {
-      width: 48px;
-      height: 48px;
-      font-size: 20px;
-      margin-bottom: var(--fb-space-sm);
-    }
-
-    .header-title {
-      font-size: var(--fb-text-lg);
-    }
-
-    .header-subtitle {
-      font-size: var(--fb-text-xs);
-    }
-
-    .header-divider {
-      width: 48px;
-      margin-top: var(--fb-space-md);
-    }
-
-    .submit-container {
-      gap: var(--fb-space-md);
-    }
-  }
-
-  /* Landscape mobile */
-  @media (max-height: 500px) and (orientation: landscape) {
+  /* When container is very short - minimize header */
+  @container submit-tab (max-height: 500px) {
     .submit-header {
       flex-direction: row;
       text-align: left;
-      gap: var(--fb-space-md);
-      padding-bottom: var(--fb-space-sm);
+      padding-bottom: 0;
     }
 
     .header-icon {
-      width: 44px;
-      height: 44px;
-      font-size: 18px;
-      margin-bottom: 0;
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
     }
 
     .header-title {
-      margin-bottom: var(--fb-space-3xs);
+      font-size: 1rem;
     }
 
-    .header-divider {
+    .header-subtitle {
       display: none;
     }
   }
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+  /* When container is comfortably tall - breathe */
+  @container submit-tab (min-height: 700px) {
+    .submit-header {
+      padding-bottom: clamp(12px, 3cqh, 24px);
     }
   }
 
-  /* Scrollbar styling */
+  /* When container is narrow - tighten horizontal */
+  @container submit-tab (max-width: 400px) {
+    .submit-container {
+      width: 100%;
+    }
+  }
+
+  /* When container is wide - add intentional space */
+  @container submit-tab (min-width: 800px) {
+    .submit-container {
+      width: min(85%, 580px);
+    }
+  }
+
+  /* Hide scrollbar but allow if absolutely needed */
   .submit-tab::-webkit-scrollbar {
-    width: 8px;
+    width: 4px;
   }
 
   .submit-tab::-webkit-scrollbar-track {
@@ -330,11 +157,7 @@
   }
 
   .submit-tab::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-  }
-
-  .submit-tab::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
   }
 </style>

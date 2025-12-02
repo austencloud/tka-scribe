@@ -87,15 +87,6 @@ export class HandednessAnalyzer implements IHandednessAnalyzer {
     // Cross product (z-component)
     const crossProduct = pinkyToIndexX * pinkyToThumbY - pinkyToIndexY * pinkyToThumbX;
 
-    // DEBUG logging
-    console.log("🖐️ Anatomical Detection:", {
-      palmOrientation,
-      crossProduct: crossProduct > 0 ? "positive (thumb right)" : "negative (thumb left)",
-      thumbX: thumbTip.x.toFixed(3),
-      indexX: indexBase.x.toFixed(3),
-      pinkyX: pinkyBase.x.toFixed(3),
-    });
-
     // Interpret based on palm orientation
     let isLeftHand: boolean;
 
@@ -114,8 +105,6 @@ export class HandednessAnalyzer implements IHandednessAnalyzer {
       return null;
     }
 
-    const result = isLeftHand ? "left" : "right";
-    console.log("🖐️ Anatomical result:", result);
-    return result;
+    return isLeftHand ? "left" : "right";
   }
 }

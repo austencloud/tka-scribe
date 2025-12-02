@@ -34,7 +34,6 @@
 
   // Layout components
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
-  import ModuleSwitcher from "./navigation/components/ModuleSwitcher.svelte";
   import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
@@ -122,14 +121,6 @@
   class:has-desktop-sidebar={showDesktopSidebar}
   style="--primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
 >
-  <!-- Module Switcher -->
-  <ModuleSwitcher
-    currentModule={currentModule()}
-    currentModuleName={currentModuleName()}
-    modules={moduleDefinitions}
-    onModuleChange={handleModuleChange}
-  />
-
   <!-- Desktop Navigation Sidebar (only on desktop in side-by-side layout) -->
   {#if showDesktopSidebar}
     <DesktopNavigationSidebar
@@ -165,7 +156,8 @@
         currentSection={currentSection()}
         onSectionChange={handleSectionChange}
         onModuleSwitcherTap={() => {
-          window.dispatchEvent(new CustomEvent("module-switcher-toggle"));
+          // Navigate to Dashboard (home) instead of opening popup
+          handleModuleChange("dashboard");
         }}
         onLayoutChange={setPrimaryNavLandscape}
         onHeightChange={setPrimaryNavHeight}

@@ -114,13 +114,6 @@ export function createTrainState(config: Partial<TrainStateConfig> = {}) {
 
   // Actions
   function setSequence(seq: SequenceData) {
-    console.log('[TrainState] Setting sequence:', {
-      id: seq.id,
-      name: seq.name,
-      word: seq.word,
-      beatsCount: seq.beats?.length ?? 0,
-      beats: seq.beats
-    });
     sequence = seq;
     resetPerformanceState();
   }

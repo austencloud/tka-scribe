@@ -50,11 +50,23 @@ const DEFAULT_STATE: PracticeState = {
 };
 
 export function createTrainPracticeState() {
-	// Load from localStorage if available
-	const saved = localStorage.getItem("train-practice-state");
-	const state = $state<PracticeState>(
-		saved ? { ...DEFAULT_STATE, ...JSON.parse(saved) } : { ...DEFAULT_STATE }
-	);
+	// Load from localStorage if available (with SSR guard)
+	let savedState: Partial<PracticeState> = {};
+	if (typeof window !== "undefined") {
+		try {
+			const saved = localStorage.getItem("train-practice-state");
+			if (saved) {
+				savedState = JSON.parse(saved);
+			}
+		} catch (error) {
+			console.warn("[train-practice-state] Failed to load from localStorage:", error);
+		}
+	}
+
+	const state = $state<PracticeState>({
+		...DEFAULT_STATE,
+		...savedState
+	});
 
 	function setMode(mode: PracticeMode) {
 		state.currentMode = mode;
@@ -96,7 +108,13 @@ export function createTrainPracticeState() {
 	}
 
 	function persistSettings() {
-		localStorage.setItem("train-practice-state", JSON.stringify(state));
+		if (typeof window !== "undefined") {
+			try {
+				localStorage.setItem("train-practice-state", JSON.stringify(state));
+			} catch (error) {
+				console.warn("[train-practice-state] Failed to persist settings:", error);
+			}
+		}
 	}
 
 	return {

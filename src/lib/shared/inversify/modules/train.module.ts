@@ -14,6 +14,8 @@ import { HandednessAnalyzer } from "../../../features/train/services/implementat
 import { HandStateAnalyzer } from "../../../features/train/services/implementations/HandStateAnalyzer";
 import { HandTrackingStabilizer } from "../../../features/train/services/implementations/HandTrackingStabilizer";
 import { HandAssignmentService } from "../../../features/train/services/implementations/HandAssignmentService";
+import { MediaPipeDetectionService } from "../../../features/train/services/implementations/MediaPipeDetectionService";
+import { CameraService } from "../../../features/train/services/implementations/CameraService";
 import { VoiceCommandService } from "../../../features/train/services/implementations/VoiceCommandService";
 import { PerformanceHistoryService } from "../../../features/train/services/implementations/PerformanceHistoryService";
 import { TrainChallengeService } from "../../../features/train/services/implementations/TrainChallengeService";
@@ -31,6 +33,12 @@ export const trainModule = new ContainerModule(
     // Tracking and assignment
     options.bind(TYPES.IHandTrackingStabilizer).to(HandTrackingStabilizer).inSingletonScope();
     options.bind(TYPES.IHandAssignmentService).to(HandAssignmentService).inSingletonScope();
+
+    // Position detection orchestrator
+    options.bind(TYPES.IPositionDetectionService).to(MediaPipeDetectionService).inSingletonScope();
+
+    // Camera service
+    options.bind(TYPES.ICameraService).to(CameraService).inSingletonScope();
 
     // === PRACTICE SERVICES ===
     options.bind(TYPES.IVoiceCommandService).to(VoiceCommandService).inSingletonScope();

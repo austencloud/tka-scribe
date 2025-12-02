@@ -75,6 +75,9 @@
     selectedModuleId = '';
   }
 
+  // Derived: current type configuration for dynamic theming
+  const currentTypeConfig = $derived(TYPE_CONFIG[formState.formData.type]);
+
   // Derived: has context been selected?
   const hasContextSelected = $derived(!!formState.formData.reportedModule);
   const contextDisplayText = $derived(() => {
@@ -102,9 +105,27 @@
   }
 </script>
 
-<form class="feedback-form" onsubmit={handleSubmit}>
-  <!-- Type Selector - Segmented Control -->
-  <fieldset class="type-selector">
+{#if formState.submitStatus === "success"}
+  <!-- Success State - Replaces entire form -->
+  <div class="success-state">
+    <div class="success-icon">
+      <i class="fas fa-check"></i>
+    </div>
+    <h2 class="success-title">Feedback Submitted!</h2>
+    <p class="success-message">Thank you for helping improve TKA Studio. Your feedback has been received and will be reviewed.</p>
+    <button type="button" class="success-action" onclick={handleReset}>
+      <i class="fas fa-plus"></i>
+      Submit Another
+    </button>
+  </div>
+{:else}
+  <form
+    class="feedback-form"
+    onsubmit={handleSubmit}
+    style="--active-type-color: {currentTypeConfig.color}"
+  >
+    <!-- Type Selector - Segmented Control -->
+    <fieldset class="type-selector">
     <legend class="visually-hidden">Feedback Type</legend>
     <div class="segment-control">
       {#each Object.entries(TYPE_CONFIG) as [type, config]}
@@ -139,9 +160,14 @@
       placeholder="Brief summary of your feedback"
       autocomplete="off"
     />
-    {#if formState.formErrors.title}
-      <p class="field-error" role="alert">{formState.formErrors.title}</p>
-    {/if}
+    <div class="field-hint">
+      <span class="char-count" class:met={formState.formData.title.trim().length >= 3}>
+        {formState.formData.title.trim().length}/3 characters
+      </span>
+      {#if formState.formErrors.title}
+        <span class="field-error" role="alert">{formState.formErrors.title}</span>
+      {/if}
+    </div>
   </div>
 
   <!-- Description Field -->
@@ -157,11 +183,16 @@
       value={formState.formData.description}
       oninput={(e) => formState.updateField("description", e.currentTarget.value)}
       placeholder="Describe the issue, suggestion, or feedback in detail..."
-      rows="5"
+      rows="4"
     ></textarea>
-    {#if formState.formErrors.description}
-      <p class="field-error" role="alert">{formState.formErrors.description}</p>
-    {/if}
+    <div class="field-hint">
+      <span class="char-count" class:met={formState.formData.description.trim().length >= 10}>
+        {formState.formData.description.trim().length}/10 characters
+      </span>
+      {#if formState.formErrors.description}
+        <span class="field-error" role="alert">{formState.formErrors.description}</span>
+      {/if}
+    </div>
   </div>
 
   <!-- Priority & Context Row -->
@@ -276,21 +307,8 @@
     </button>
   </div>
 
-  <!-- Success/Error States -->
-  {#if formState.submitStatus === "success"}
-    <div class="toast success" role="status">
-      <div class="toast-icon">
-        <i class="fas fa-check"></i>
-      </div>
-      <div class="toast-content">
-        <p class="toast-title">Feedback submitted!</p>
-        <p class="toast-message">Thank you for helping improve TKA Studio.</p>
-      </div>
-      <button type="button" class="toast-action" onclick={handleReset}>
-        Submit Another
-      </button>
-    </div>
-  {:else if formState.submitStatus === "error"}
+  <!-- Error State (shown inline in form) -->
+  {#if formState.submitStatus === "error"}
     <div class="toast error" role="alert">
       <div class="toast-icon">
         <i class="fas fa-exclamation"></i>
@@ -302,54 +320,135 @@
     </div>
   {/if}
 </form>
+{/if}
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
-     DESIGN TOKENS (Golden Ratio × 8-point grid)
+     CONTAINER-QUERY BASED FLUID FORM
      ═══════════════════════════════════════════════════════════════════════════ */
   .feedback-form {
-    /* Spacing (φ = 1.618) */
-    --fb-space-3xs: 4px;
-    --fb-space-2xs: 6px;
-    --fb-space-xs: 8px;
-    --fb-space-sm: 13px;
-    --fb-space-md: 21px;
-    --fb-space-lg: 34px;
-    --fb-space-xl: 55px;
+    /* Establish as container */
+    container-type: inline-size;
+    container-name: feedback-form;
 
-    /* Typography */
-    --fb-text-xs: 0.75rem;
-    --fb-text-sm: 0.875rem;
-    --fb-text-base: 1rem;
-    --fb-text-lg: 1.25rem;
-
-    /* Radii */
-    --fb-radius-sm: 8px;
-    --fb-radius-md: 12px;
-    --fb-radius-lg: 16px;
-
-    /* Colors */
-    --fb-primary: #10b981;
-    --fb-primary-glow: rgba(16, 185, 129, 0.25);
+    /* Colors - Type-reactive */
+    --fb-primary: var(--active-type-color, #3b82f6);
     --fb-error: #ef4444;
-    --fb-surface: rgba(255, 255, 255, 0.05);
-    --fb-surface-hover: rgba(255, 255, 255, 0.08);
-    --fb-border: rgba(255, 255, 255, 0.1);
-    --fb-border-focus: rgba(255, 255, 255, 0.25);
+    --fb-border: color-mix(in srgb, var(--active-type-color, #3b82f6) 25%, rgba(255, 255, 255, 0.1));
     --fb-text: rgba(255, 255, 255, 0.95);
-    --fb-text-muted: rgba(255, 255, 255, 0.6);
-    --fb-text-subtle: rgba(255, 255, 255, 0.4);
+    --fb-text-muted: rgba(255, 255, 255, 0.7);
+    --fb-text-subtle: rgba(255, 255, 255, 0.5);
 
-    /* Transitions */
-    --fb-transition-fast: 150ms ease;
-    --fb-transition-base: 200ms ease;
-    --fb-transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-
-    /* Layout */
+    /* Layout - Fluid */
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--fb-space-lg);
+    /* Fluid gap based on container width */
+    gap: clamp(10px, 3cqi, 20px);
     width: 100%;
+    /* Fluid padding */
+    padding: clamp(14px, 4cqi, 28px);
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--active-type-color, #3b82f6) 6%, rgba(22, 22, 32, 0.95)) 0%,
+      color-mix(in srgb, var(--active-type-color, #3b82f6) 3%, rgba(18, 18, 28, 0.98)) 100%
+    );
+    border: 1.5px solid var(--fb-border);
+    border-radius: clamp(10px, 2cqi, 14px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: border-color 200ms ease;
+  }
+
+  .feedback-form:hover {
+    border-color: color-mix(in srgb, var(--active-type-color) 45%, rgba(255, 255, 255, 0.12));
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SUCCESS STATE - Compact, colorful, no pulsing glow
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .success-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    min-height: 300px;
+    animation: successEnter 0.3s ease-out;
+  }
+
+  @keyframes successEnter {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    border-radius: 50%;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+  }
+
+  .success-icon i {
+    font-size: 28px;
+    color: white;
+  }
+
+  .success-title {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.02em;
+  }
+
+  .success-message {
+    margin: 0 0 24px 0;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+    max-width: 320px;
+  }
+
+  .success-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px; /* Fixed 48px touch target */
+    padding: 0 20px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 10px;
+    color: #34d399;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .success-action:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: rgba(16, 185, 129, 0.5);
+  }
+
+  .success-action:active {
+    transform: scale(0.98);
+  }
+
+  .success-action i {
+    font-size: 0.875rem;
   }
 
   /* Accessibility helper */
@@ -366,7 +465,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     TYPE SELECTOR (Segmented Control)
+     TYPE SELECTOR - Fluid, colorful
      ═══════════════════════════════════════════════════════════════════════════ */
   .type-selector {
     border: none;
@@ -376,11 +475,11 @@
 
   .segment-control {
     display: flex;
-    gap: var(--fb-space-xs);
-    padding: var(--fb-space-3xs);
-    background: var(--fb-surface);
-    border-radius: var(--fb-radius-md);
-    border: 1px solid var(--fb-border);
+    gap: clamp(4px, 1cqi, 8px);
+    padding: clamp(3px, 0.8cqi, 5px);
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: clamp(8px, 2cqi, 12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .segment {
@@ -388,75 +487,117 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--fb-space-xs);
-    min-height: 48px;
-    padding: var(--fb-space-sm) var(--fb-space-md);
+    gap: clamp(4px, 1cqi, 8px);
+    min-height: 48px; /* Fixed 48px touch target */
+    padding: clamp(6px, 1.5cqi, 10px) clamp(8px, 2cqi, 14px);
     background: transparent;
-    border: none;
-    border-radius: var(--fb-radius-sm);
-    color: var(--fb-text-muted);
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
+    border: 1.5px solid transparent;
+    border-radius: clamp(6px, 1.5cqi, 10px);
+    color: var(--fb-text-subtle);
+    font-size: clamp(0.8rem, 2.5cqi, 0.9375rem);
+    font-weight: 600;
     cursor: pointer;
-    transition: all var(--fb-transition-base);
+    transition: all 200ms ease;
     position: relative;
+    overflow: hidden;
+  }
+
+  .segment::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--type-color) 20%, transparent) 0%,
+      color-mix(in srgb, var(--type-color) 8%, transparent) 100%
+    );
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
 
   .segment i {
-    font-size: 1.1em;
-    transition: transform var(--fb-transition-fast);
+    position: relative;
+    z-index: 1;
+    font-size: clamp(0.9em, 2cqi, 1.15em);
+    transition: color 200ms ease;
+  }
+
+  .segment-label {
+    position: relative;
+    z-index: 1;
   }
 
   .segment:hover:not(.selected) {
-    background: var(--fb-surface-hover);
-    color: var(--fb-text);
+    color: var(--fb-text-muted);
+    border-color: color-mix(in srgb, var(--type-color) 35%, transparent);
+  }
+
+  .segment:hover:not(.selected)::before {
+    opacity: 0.4;
+  }
+
+  .segment:hover:not(.selected) i {
+    color: var(--type-color);
   }
 
   .segment.selected {
-    background: color-mix(in srgb, var(--type-color) 20%, transparent);
     color: var(--fb-text);
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--type-color) 40%, transparent),
-      0 2px 8px color-mix(in srgb, var(--type-color) 15%, transparent);
+    border-color: var(--type-color);
+    background: color-mix(in srgb, var(--type-color) 12%, transparent);
+  }
+
+  .segment.selected::before {
+    opacity: 1;
   }
 
   .segment.selected i {
     color: var(--type-color);
-    transform: scale(1.1);
+  }
+
+  /* Hide label on narrow containers */
+  @container feedback-form (max-width: 380px) {
+    .segment-label {
+      display: none;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     FORM FIELDS
+     FORM FIELDS - Fluid sizing
      ═══════════════════════════════════════════════════════════════════════════ */
   .field {
     display: flex;
     flex-direction: column;
-    gap: var(--fb-space-xs);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .field-label {
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
+    font-size: clamp(0.8rem, 2.2cqi, 0.9375rem);
+    font-weight: 600;
     color: var(--fb-text-muted);
     letter-spacing: -0.01em;
+    transition: color 150ms ease;
+  }
+
+  .field:focus-within .field-label {
+    color: var(--fb-primary);
   }
 
   .required {
-    color: var(--fb-error);
+    color: var(--fb-primary);
     margin-left: 2px;
   }
 
   .field-input,
   .field-textarea {
     width: 100%;
-    padding: var(--fb-space-sm) var(--fb-space-md);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
+    padding: clamp(8px, 2cqi, 12px) clamp(10px, 2.5cqi, 16px);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 20%, rgba(255, 255, 255, 0.1));
+    border-radius: clamp(8px, 1.8cqi, 12px);
     color: var(--fb-text);
-    font-size: var(--fb-text-base); /* 16px prevents iOS zoom */
+    font-size: 1rem; /* Keep 16px to prevent iOS zoom */
     font-family: inherit;
-    transition: all var(--fb-transition-base);
+    transition: border-color 200ms ease, background 200ms ease;
   }
 
   .field-input::placeholder,
@@ -466,15 +607,14 @@
 
   .field-input:hover,
   .field-textarea:hover {
-    border-color: var(--fb-border-focus);
+    border-color: color-mix(in srgb, var(--active-type-color) 45%, rgba(255, 255, 255, 0.15));
   }
 
   .field-input:focus,
   .field-textarea:focus {
     outline: none;
     border-color: var(--fb-primary);
-    background: var(--fb-surface-hover);
-    box-shadow: 0 0 0 3px var(--fb-primary-glow);
+    background: color-mix(in srgb, var(--active-type-color) 5%, rgba(0, 0, 0, 0.25));
   }
 
   .field-input.has-error,
@@ -482,58 +622,74 @@
     border-color: var(--fb-error);
   }
 
-  .field-input.has-error:focus,
-  .field-textarea.has-error:focus {
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  .field-textarea {
+    /* Fluid height based on container */
+    min-height: clamp(80px, 18cqi, 120px);
+    resize: none; /* Prevent manual resize to maintain layout */
+    line-height: 1.5;
   }
 
-  .field-textarea {
-    min-height: 140px;
-    resize: vertical;
-    line-height: 1.6;
+  .field-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: clamp(14px, 3cqi, 18px);
+  }
+
+  .char-count {
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 500;
+    color: var(--fb-text-subtle);
+    transition: color 150ms ease;
+  }
+
+  .char-count.met {
+    color: #10b981;
   }
 
   .field-error {
     margin: 0;
-    font-size: var(--fb-text-xs);
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 500;
     color: var(--fb-error);
-    animation: shake 0.3s ease;
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     OPTIONS ROW (Priority + Context)
+     OPTIONS ROW - Fluid layout
      ═══════════════════════════════════════════════════════════════════════════ */
   .options-row {
     display: flex;
-    flex-direction: column;
-    gap: var(--fb-space-md);
+    flex-direction: row;
+    gap: clamp(12px, 3cqi, 20px);
   }
 
   .section-label {
     display: block;
-    margin-bottom: var(--fb-space-xs);
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
+    margin-bottom: clamp(4px, 1cqi, 8px);
+    font-size: clamp(0.8rem, 2.2cqi, 0.9375rem);
+    font-weight: 600;
     color: var(--fb-text-muted);
   }
 
+  /* Stack on narrow containers */
+  @container feedback-form (max-width: 420px) {
+    .options-row {
+      flex-direction: column;
+    }
+  }
+
   /* ═══════════════════════════════════════════════════════════════════════════
-     PRIORITY SELECTOR - Single row, 48px touch targets
+     PRIORITY SELECTOR - Fluid
      ═══════════════════════════════════════════════════════════════════════════ */
   .priority-section {
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
   }
 
   .priority-row {
     display: flex;
-    gap: var(--fb-space-2xs);
-    /* Never wrap - compress equally */
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .priority-btn {
@@ -541,33 +697,37 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--fb-space-2xs);
-    min-height: 48px;
+    gap: clamp(3px, 0.8cqi, 6px);
+    min-height: 48px; /* Fixed 48px touch target */
     min-width: 48px;
-    padding: 0 var(--fb-space-sm);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-text-muted);
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
+    padding: 0 clamp(6px, 1.5cqi, 12px);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: clamp(6px, 1.5cqi, 10px);
+    color: var(--fb-text-subtle);
+    font-size: clamp(0.75rem, 2cqi, 0.875rem);
+    font-weight: 600;
     cursor: pointer;
-    transition: all var(--fb-transition-base);
+    transition: all 200ms ease;
   }
 
   .priority-btn i {
-    font-size: 1em;
+    font-size: 0.95em;
     flex-shrink: 0;
   }
 
   .priority-btn:hover {
-    background: var(--fb-surface-hover);
-    border-color: var(--fb-border-focus);
-    color: var(--fb-text);
+    background: color-mix(in srgb, var(--priority-color) 12%, rgba(0, 0, 0, 0.25));
+    border-color: color-mix(in srgb, var(--priority-color) 50%, transparent);
+    color: var(--fb-text-muted);
+  }
+
+  .priority-btn:hover i {
+    color: var(--priority-color);
   }
 
   .priority-btn.selected {
-    background: color-mix(in srgb, var(--priority-color) 15%, transparent);
+    background: color-mix(in srgb, var(--priority-color) 18%, rgba(0, 0, 0, 0.25));
     border-color: var(--priority-color);
     color: var(--fb-text);
   }
@@ -576,63 +736,56 @@
     color: var(--priority-color);
   }
 
-  /* On small screens, hide label but keep 48px touch target */
-  @media (max-width: 400px) {
+  /* Hide priority labels on narrow containers */
+  @container feedback-form (max-width: 500px) {
     .priority-label {
       display: none;
-    }
-    .priority-btn {
-      padding: 0;
     }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     CONTEXT PICKER - Click flow with micro-interactions
+     CONTEXT PICKER - Fluid
      ═══════════════════════════════════════════════════════════════════════════ */
   .context-section {
     position: relative;
+    flex: 0 0 auto;
   }
 
   .context-display {
     display: flex;
     align-items: center;
-    gap: var(--fb-space-xs);
+    gap: clamp(6px, 1.5cqi, 10px);
   }
 
   .context-chip {
     display: flex;
     align-items: center;
-    gap: var(--fb-space-xs);
-    height: 48px;
-    padding: 0 var(--fb-space-md);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
+    gap: clamp(6px, 1.5cqi, 10px);
+    min-height: 48px; /* Fixed 48px touch target */
+    padding: 0 clamp(10px, 2.5cqi, 16px);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 25%, rgba(255, 255, 255, 0.1));
+    border-radius: clamp(6px, 1.5cqi, 10px);
     color: var(--fb-text-muted);
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
+    font-size: clamp(0.75rem, 2cqi, 0.875rem);
+    font-weight: 600;
     cursor: pointer;
-    transition: all var(--fb-transition-base);
+    transition: all 200ms ease;
   }
 
   .context-chip i {
     color: var(--fb-primary);
-    transition: transform var(--fb-transition-spring);
   }
 
   .context-chip:hover {
-    background: var(--fb-surface-hover);
-    border-color: var(--fb-border-focus);
+    background: color-mix(in srgb, var(--active-type-color) 10%, rgba(0, 0, 0, 0.25));
+    border-color: color-mix(in srgb, var(--active-type-color) 55%, transparent);
     color: var(--fb-text);
   }
 
-  .context-chip:hover i {
-    transform: scale(1.15);
-  }
-
   .context-chip.selected {
-    background: color-mix(in srgb, var(--fb-primary) 12%, transparent);
-    border-color: color-mix(in srgb, var(--fb-primary) 40%, transparent);
+    background: color-mix(in srgb, var(--fb-primary) 12%, rgba(0, 0, 0, 0.25));
+    border-color: var(--fb-primary);
     color: var(--fb-text);
   }
 
@@ -640,14 +793,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* Fixed 48px touch target */
+    height: 48px;
     background: none;
     border: none;
     border-radius: 50%;
     color: var(--fb-text-subtle);
     cursor: pointer;
-    transition: all var(--fb-transition-fast);
+    transition: all 150ms ease;
   }
 
   .context-clear:hover {
@@ -657,37 +810,38 @@
 
   /* Context Picker Panel */
   .context-picker {
-    margin-top: var(--fb-space-xs);
-    padding: var(--fb-space-sm);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    animation: pickerEnter 0.25s var(--fb-transition-spring);
+    margin-top: clamp(6px, 1.5cqi, 10px);
+    padding: clamp(10px, 2.5cqi, 14px);
+    background: rgba(20, 20, 30, 0.95);
+    border: 1px solid color-mix(in srgb, var(--active-type-color) 30%, rgba(255, 255, 255, 0.12));
+    border-radius: clamp(8px, 2cqi, 12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    animation: pickerEnter 0.2s ease-out;
   }
 
   @keyframes pickerEnter {
     from {
       opacity: 0;
-      transform: translateY(-8px) scale(0.98);
+      transform: translateY(-6px);
     }
     to {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
   }
 
   .picker-header {
     display: flex;
     align-items: center;
-    gap: var(--fb-space-xs);
-    margin-bottom: var(--fb-space-sm);
-    padding-bottom: var(--fb-space-xs);
-    border-bottom: 1px solid var(--fb-border);
+    gap: clamp(6px, 1.5cqi, 10px);
+    margin-bottom: clamp(8px, 2cqi, 12px);
+    padding-bottom: clamp(6px, 1.5cqi, 10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .picker-title {
     flex: 1;
-    font-size: var(--fb-text-sm);
+    font-size: clamp(0.8rem, 2.2cqi, 0.9375rem);
     font-weight: 600;
     color: var(--fb-text);
     text-align: center;
@@ -698,26 +852,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* Fixed 48px touch target */
+    height: 48px;
+    margin: -10px; /* Negative margin to not affect layout but expand hit area */
     background: none;
     border: none;
     border-radius: 50%;
     color: var(--fb-text-muted);
     cursor: pointer;
-    transition: all var(--fb-transition-fast);
+    transition: all 150ms ease;
   }
 
   .picker-back:hover,
   .picker-close:hover {
-    background: var(--fb-surface-hover);
+    background: rgba(255, 255, 255, 0.08);
     color: var(--fb-text);
   }
 
   .picker-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--fb-space-xs);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .picker-grid.tabs {
@@ -729,75 +884,80 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--fb-space-2xs);
-    min-height: 64px;
-    padding: var(--fb-space-sm);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid transparent;
-    border-radius: var(--fb-radius-sm);
+    gap: clamp(3px, 0.8cqi, 6px);
+    min-height: 48px; /* Fixed 48px touch target */
+    padding: clamp(8px, 2cqi, 12px);
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: clamp(6px, 1.5cqi, 10px);
     color: var(--fb-text-muted);
-    font-size: var(--fb-text-xs);
-    font-weight: 500;
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 600;
     cursor: pointer;
-    transition: all var(--fb-transition-base);
+    transition: all 200ms ease;
   }
 
   .picker-item i {
-    font-size: 1.25rem;
+    font-size: clamp(0.95rem, 2.5cqi, 1.15rem);
     color: var(--fb-text-subtle);
-    transition: all var(--fb-transition-fast);
   }
 
   .picker-item:hover {
-    background: var(--fb-surface-hover);
-    border-color: var(--fb-border);
+    background: color-mix(in srgb, var(--active-type-color) 12%, rgba(0, 0, 0, 0.2));
+    border-color: color-mix(in srgb, var(--active-type-color) 40%, transparent);
     color: var(--fb-text);
   }
 
   .picker-item:hover i {
     color: var(--fb-primary);
-    transform: scale(1.1);
   }
 
   .picker-item:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
   }
 
   .picker-item.tab {
     flex-direction: row;
-    min-height: 48px;
-    font-size: var(--fb-text-sm);
+    min-height: 48px; /* Fixed 48px touch target */
+    font-size: clamp(0.75rem, 2cqi, 0.875rem);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     SUBMIT BUTTON
+     SUBMIT BUTTON - Fluid
      ═══════════════════════════════════════════════════════════════════════════ */
   .form-footer {
-    padding-top: var(--fb-space-sm);
+    padding-top: clamp(4px, 1cqi, 8px);
+    display: flex;
+    justify-content: flex-end;
   }
 
   .submit-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--fb-space-sm);
-    width: 100%;
-    min-height: 52px;
-    padding: var(--fb-space-md) var(--fb-space-lg);
-    background: linear-gradient(135deg, #34d399 0%, var(--fb-primary) 100%);
+    gap: clamp(8px, 2cqi, 12px);
+    min-height: 48px; /* Fixed 48px touch target */
+    padding: clamp(10px, 2.5cqi, 14px) clamp(18px, 4cqi, 28px);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--active-type-color) 100%, white 15%) 0%,
+      var(--active-type-color) 50%,
+      color-mix(in srgb, var(--active-type-color) 100%, black 10%) 100%
+    );
     border: none;
-    border-radius: var(--fb-radius-md);
+    border-radius: clamp(8px, 2cqi, 12px);
     color: white;
-    font-size: var(--fb-text-base);
-    font-weight: 600;
+    font-size: clamp(0.875rem, 2.5cqi, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
     cursor: pointer;
-    transition: all var(--fb-transition-base);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    transition: all 200ms ease;
+    box-shadow: 0 3px 12px color-mix(in srgb, var(--active-type-color) 30%, rgba(0, 0, 0, 0.2));
   }
 
   .submit-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--active-type-color) 35%, rgba(0, 0, 0, 0.25));
   }
 
   .submit-btn:active:not(:disabled) {
@@ -805,13 +965,24 @@
   }
 
   .submit-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
     transform: none;
+    filter: grayscale(20%);
   }
 
   .submit-btn i {
-    font-size: 1.1em;
+    font-size: clamp(0.9em, 2cqi, 1.1em);
+  }
+
+  /* Full width button on narrow containers */
+  @container feedback-form (max-width: 420px) {
+    .form-footer {
+      justify-content: stretch;
+    }
+    .submit-btn {
+      width: 100%;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -905,68 +1076,13 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     RESPONSIVE BREAKPOINTS
+     ADDITIONAL CONTAINER QUERIES
      ═══════════════════════════════════════════════════════════════════════════ */
 
-  /* Tablet+ (768px) */
-  @media (min-width: 768px) {
-    .options-row {
-      flex-direction: row;
-      align-items: flex-start;
-    }
-
-    .priority-section {
-      flex: 1;
-    }
-
-    .context-section {
-      flex: 1;
-    }
-
-    .submit-btn {
-      width: auto;
-      min-width: 200px;
-    }
-
-    .form-footer {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .toast {
-      flex-wrap: nowrap;
-    }
-
+  /* Wide container - more columns in picker grid */
+  @container feedback-form (min-width: 480px) {
     .picker-grid {
       grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  /* Desktop (1024px) */
-  @media (min-width: 1024px) {
-    .segment {
-      min-height: 44px;
-    }
-
-    .submit-btn {
-      min-height: 48px;
-    }
-  }
-
-  /* Mobile-specific adjustments */
-  @media (max-width: 479px) {
-    .segment-label {
-      font-size: var(--fb-text-xs);
-    }
-
-    .toast {
-      flex-wrap: wrap;
-    }
-
-    .toast-action {
-      width: 100%;
-      margin-top: var(--fb-space-sm);
-      text-align: center;
     }
   }
 

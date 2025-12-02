@@ -236,19 +236,19 @@
             break;
           case "3":
             event.preventDefault();
-            switchModule("community");
+            switchModule("learn");
             break;
           case "4":
             event.preventDefault();
-            switchModule("learn");
+            switchModule("animate");
             break;
           case "5":
             event.preventDefault();
-            switchModule("animate");
+            switchModule("train");
             break;
           case "6":
             event.preventDefault();
-            switchModule("train");
+            switchModule("library");
             break;
         }
       }

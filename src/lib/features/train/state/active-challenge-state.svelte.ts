@@ -8,21 +8,57 @@
 
 import type { TrainChallenge } from "../domain/models/TrainChallengeModels";
 
-class ActiveChallengeState {
-	activeChallenge = $state<TrainChallenge | null>(null);
+function createActiveChallengeState() {
+	let activeChallenge = $state<TrainChallenge | null>(null);
 
-	setActiveChallenge(challenge: TrainChallenge | null) {
-		this.activeChallenge = challenge;
-		console.log("Active challenge set:", challenge?.title ?? "none");
+	function setActiveChallenge(challenge: TrainChallenge | null) {
+		activeChallenge = challenge;
 	}
 
-	clearActiveChallenge() {
-		this.activeChallenge = null;
+	function clearActiveChallenge() {
+		activeChallenge = null;
 	}
 
-	get hasActiveChallenge(): boolean {
-		return this.activeChallenge !== null;
-	}
+	return {
+		get activeChallenge() {
+			return activeChallenge;
+		},
+		get hasActiveChallenge(): boolean {
+			return activeChallenge !== null;
+		},
+		setActiveChallenge,
+		clearActiveChallenge,
+	};
 }
 
-export const activeChallengeState = new ActiveChallengeState();
+// Module singleton instance
+let activeChallengeInstance: ReturnType<typeof createActiveChallengeState> | null = null;
+
+/**
+ * Get the active challenge state singleton
+ */
+export function getActiveChallengeState() {
+	if (!activeChallengeInstance) {
+		activeChallengeInstance = createActiveChallengeState();
+	}
+	return activeChallengeInstance;
+}
+
+// For backward compatibility, export a proxy that delegates to the singleton
+// This allows existing code using `activeChallengeState.activeChallenge` to work
+export const activeChallengeState = {
+	get activeChallenge() {
+		return getActiveChallengeState().activeChallenge;
+	},
+	get hasActiveChallenge() {
+		return getActiveChallengeState().hasActiveChallenge;
+	},
+	setActiveChallenge(challenge: TrainChallenge | null) {
+		getActiveChallengeState().setActiveChallenge(challenge);
+	},
+	clearActiveChallenge() {
+		getActiveChallengeState().clearActiveChallenge();
+	},
+};
+
+export type ActiveChallengeState = ReturnType<typeof createActiveChallengeState>;
