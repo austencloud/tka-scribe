@@ -1,5 +1,8 @@
 <!-- FeedbackFilterBar - Premium responsive filters with spring animations -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import {
     TYPE_CONFIG,
@@ -22,24 +25,33 @@
   let isSheetOpen = $state(false);
   let isSheetAnimating = $state(false);
   let activeSection = $state<'type' | 'status' | 'priority' | null>(null);
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
 
   // Desktop drawer state (replacing dropdowns with side panels)
   let isStatusDrawerOpen = $state(false);
   let isPriorityDrawerOpen = $state(false);
 
   function openStatusDrawer() {
+    hapticService?.trigger("selection");
     isStatusDrawerOpen = true;
   }
 
   function openPriorityDrawer() {
+    hapticService?.trigger("selection");
     isPriorityDrawerOpen = true;
   }
 
   function closeStatusDrawer() {
+    hapticService?.trigger("selection");
     isStatusDrawerOpen = false;
   }
 
   function closePriorityDrawer() {
+    hapticService?.trigger("selection");
     isPriorityDrawerOpen = false;
   }
 
@@ -67,6 +79,7 @@
   );
 
   function openSheet() {
+    hapticService?.trigger("selection");
     isSheetOpen = true;
     isSheetAnimating = true;
     document.body.style.overflow = "hidden";
@@ -74,6 +87,7 @@
   }
 
   function closeSheet() {
+    hapticService?.trigger("selection");
     isSheetAnimating = true;
     setTimeout(() => {
       isSheetOpen = false;
@@ -83,9 +97,30 @@
   }
 
   function clearFilters() {
+    hapticService?.trigger("selection");
     manageState.setFilter("type", "all");
     manageState.setFilter("status", "all");
     manageState.setFilter("priority", "all");
+  }
+
+  function handleTypeFilter(type: FeedbackType | "all") {
+    hapticService?.trigger("selection");
+    manageState.setFilter("type", type);
+  }
+
+  function handleStatusFilter(status: FeedbackStatus | "all") {
+    hapticService?.trigger("selection");
+    manageState.setFilter("status", status);
+  }
+
+  function handlePriorityFilter(priority: FeedbackPriority | "all") {
+    hapticService?.trigger("selection");
+    manageState.setFilter("priority", priority);
+  }
+
+  function clearSearch() {
+    hapticService?.trigger("selection");
+    manageState.setSearchQuery("");
   }
 
   function handleBackdropClick(e: MouseEvent) {
@@ -102,6 +137,7 @@
 
   // Section toggle for mobile sheet accordion
   function toggleSection(section: 'type' | 'status' | 'priority') {
+    hapticService?.trigger("selection");
     activeSection = activeSection === section ? null : section;
   }
 </script>

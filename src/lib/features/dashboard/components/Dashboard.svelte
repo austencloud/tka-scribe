@@ -115,30 +115,31 @@
 
   function navigateToModule(moduleId: string, event: MouseEvent) {
     const card = (event.currentTarget as HTMLElement);
-
-    // Check if View Transitions API is available
     const doc = document as any;
 
     if (typeof doc.startViewTransition === 'function') {
-      console.log('🎬 View Transitions API available, starting transition...');
+      // Get card position for custom animation origin
+      const rect = card.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-      // Set view-transition-name on the clicked card
-      card.style.viewTransitionName = 'module-hero';
+      // Set CSS custom properties for animation origin
+      document.documentElement.style.setProperty('--transition-origin-x', `${centerX}px`);
+      document.documentElement.style.setProperty('--transition-origin-y', `${centerY}px`);
+
+      // Add a quick scale-up on the card for visual feedback
+      card.style.transform = 'scale(1.05)';
+      card.style.zIndex = '100';
 
       const transition = doc.startViewTransition(async () => {
-        // Remove the name from card before DOM update
-        card.style.viewTransitionName = '';
-        // Navigate to the module
         await handleModuleChange(moduleId as any);
       });
 
-      transition.finished.then(() => {
-        console.log('✅ View transition completed');
-      }).catch((err: any) => {
-        console.error('❌ View transition failed:', err);
+      transition.finished.finally(() => {
+        document.documentElement.style.removeProperty('--transition-origin-x');
+        document.documentElement.style.removeProperty('--transition-origin-y');
       });
     } else {
-      console.log('⚠️ View Transitions API not available, using fallback');
       handleModuleChange(moduleId as any);
     }
   }
@@ -317,64 +318,80 @@
 
 <style>
   /* ========================================
-     VIEW TRANSITIONS - Native shared element animation
+     VIEW TRANSITIONS - Zoom from card effect
      ======================================== */
 
-  /* The module card that morphs into the module content */
-  @keyframes module-hero-scale-up {
-    from {
-      transform: scale(1);
-      border-radius: 20px;
-    }
-    to {
-      transform: scale(1);
-      border-radius: 0;
-    }
+  /* Old page (dashboard) zooms out and fades */
+  :global(::view-transition-old(root)) {
+    animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-out-fade;
+    transform-origin: var(--transition-origin-x, 50%) var(--transition-origin-y, 50%);
   }
 
-  /* Animate the old state (card) growing */
-  :global(::view-transition-old(module-hero)) {
-    animation: 400ms cubic-bezier(0.4, 0, 0.2, 1) both module-hero-out;
-  }
-
-  /* Animate the new state (module) appearing */
-  :global(::view-transition-new(module-hero)) {
-    animation: 400ms cubic-bezier(0.4, 0, 0.2, 1) both module-hero-in;
-  }
-
-  @keyframes module-hero-out {
-    from {
-      opacity: 1;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(1.1);
-    }
-  }
-
-  @keyframes module-hero-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  /* Make the transition group expand to fill viewport */
-  :global(::view-transition-group(module-hero)) {
-    animation-duration: 400ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Default page transition (everything else) */
-  :global(::view-transition-old(root)),
+  /* New page (module) zooms in from card position */
   :global(::view-transition-new(root)) {
-    animation-duration: 300ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-in-reveal;
+    transform-origin: var(--transition-origin-x, 50%) var(--transition-origin-y, 50%);
+  }
+
+  /* Dashboard zooms IN and fades (we're diving through it) */
+  @keyframes zoom-out-fade {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.3);
+    }
+  }
+
+  /* Module starts slightly small, grows to full (we're arriving) */
+  @keyframes zoom-in-reveal {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* ========================================
+     BACK TRANSITION - Pull out effect (Home button)
+     ======================================== */
+
+  /* When going back to dashboard, reverse the effect */
+  :global(.back-transition)::view-transition-old(root) {
+    animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both pull-out-old;
+  }
+
+  :global(.back-transition)::view-transition-new(root) {
+    animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both pull-out-new;
+  }
+
+  /* Module shrinks as we pull back from it */
+  @keyframes pull-out-old {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+
+  /* Dashboard zooms down from large to normal (we're pulling back to see it) */
+  @keyframes pull-out-new {
+    from {
+      opacity: 0;
+      transform: scale(1.3);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   /* ========================================

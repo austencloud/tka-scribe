@@ -156,8 +156,22 @@
         currentSection={currentSection()}
         onSectionChange={handleSectionChange}
         onModuleSwitcherTap={() => {
-          // Navigate to Dashboard (home) instead of opening popup
-          handleModuleChange("dashboard");
+          // Navigate to Dashboard with "pull out" view transition
+          const doc = document as any;
+          if (typeof doc.startViewTransition === 'function') {
+            // Set direction for CSS to use reverse animation
+            document.documentElement.classList.add('back-transition');
+
+            const transition = doc.startViewTransition(async () => {
+              await handleModuleChange("dashboard");
+            });
+
+            transition.finished.finally(() => {
+              document.documentElement.classList.remove('back-transition');
+            });
+          } else {
+            handleModuleChange("dashboard");
+          }
         }}
         onLayoutChange={setPrimaryNavLandscape}
         onHeightChange={setPrimaryNavHeight}

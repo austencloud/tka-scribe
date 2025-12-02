@@ -1,5 +1,8 @@
 <!-- FeedbackForm - Premium responsive feedback form with golden ratio spacing -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { FeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
   import { TYPE_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
   import type { FeedbackType, FeedbackPriority } from "../../domain/models/feedback-models";
@@ -13,6 +16,11 @@
   // Context picker flow state: 'closed' | 'modules' | 'tabs'
   let contextStep = $state<'closed' | 'modules' | 'tabs'>('closed');
   let selectedModuleId = $state<string>('');
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
 
   // Module/tab options for context picker
   const moduleOptions = MODULE_DEFINITIONS.filter((m) => m.id !== "feedback" && m.id !== "admin");
@@ -41,10 +49,12 @@
 
   // Context picker handlers
   function openContextPicker() {
+    hapticService?.trigger("selection");
     contextStep = 'modules';
   }
 
   function selectModule(moduleId: string) {
+    hapticService?.trigger("selection");
     selectedModuleId = moduleId;
     const tabs = getTabsForModule(moduleId);
     if (tabs.length > 0) {
@@ -58,21 +68,39 @@
   }
 
   function selectTab(tabId: string) {
+    hapticService?.trigger("selection");
     formState.updateField("reportedModule", selectedModuleId);
     formState.updateField("reportedTab", tabId);
     contextStep = 'closed';
   }
 
   function goBackToModules() {
+    hapticService?.trigger("selection");
     contextStep = 'modules';
     selectedModuleId = '';
   }
 
   function clearContext() {
+    hapticService?.trigger("selection");
     formState.updateField("reportedModule", "");
     formState.updateField("reportedTab", "");
     contextStep = 'closed';
     selectedModuleId = '';
+  }
+
+  function handleTypeChange(type: FeedbackType) {
+    hapticService?.trigger("selection");
+    formState.setType(type);
+  }
+
+  function handlePriorityChange(priority: FeedbackPriority | "") {
+    hapticService?.trigger("selection");
+    formState.setPriority(priority);
+  }
+
+  function closeContextPicker() {
+    hapticService?.trigger("selection");
+    contextStep = 'closed';
   }
 
   // Derived: current type configuration for dynamic theming
@@ -95,10 +123,12 @@
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
+    hapticService?.trigger("selection");
     await formState.submit();
   }
 
   function handleReset() {
+    hapticService?.trigger("selection");
     formState.reset();
     contextStep = 'closed';
     selectedModuleId = '';
@@ -133,7 +163,7 @@
           type="button"
           class="segment"
           class:selected={formState.formData.type === type}
-          onclick={() => formState.setType(type as FeedbackType)}
+          onclick={() => handleTypeChange(type as FeedbackType)}
           style="--type-color: {config.color}"
           aria-pressed={formState.formData.type === type}
         >
@@ -206,7 +236,7 @@
             type="button"
             class="priority-btn"
             class:selected={formState.formData.priority === priority}
-            onclick={() => formState.setPriority(formState.formData.priority === priority ? "" : priority as FeedbackPriority)}
+            onclick={() => handlePriorityChange(formState.formData.priority === priority ? "" : priority as FeedbackPriority)}
             style="--priority-color: {config.color}"
             aria-pressed={formState.formData.priority === priority}
             title={config.label}
@@ -245,7 +275,7 @@
         <div class="context-picker" class:entering={true}>
           <div class="picker-header">
             <span class="picker-title">Select Module</span>
-            <button type="button" class="picker-close" onclick={() => contextStep = 'closed'}>
+            <button type="button" class="picker-close" onclick={closeContextPicker}>
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -270,7 +300,7 @@
               <i class="fas fa-arrow-left"></i>
             </button>
             <span class="picker-title">{getModuleLabel(selectedModuleId)}</span>
-            <button type="button" class="picker-close" onclick={() => contextStep = 'closed'}>
+            <button type="button" class="picker-close" onclick={closeContextPicker}>
               <i class="fas fa-times"></i>
             </button>
           </div>

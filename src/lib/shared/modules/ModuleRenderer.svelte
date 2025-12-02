@@ -98,9 +98,7 @@
   <!-- Transition container for overlaying content -->
   <div class="transition-container">
     {#key activeModule}
-      <div
-        class="module-content"
-      >
+      <div class="module-content">
         {#await modulePromise}
           <!-- Loading state while module chunk is being fetched -->
           <div class="module-loading">

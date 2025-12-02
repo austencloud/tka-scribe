@@ -18,6 +18,7 @@
 	import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 	import { resolve, TYPES } from "$lib/shared/inversify/di";
+	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 	import type { ITrainChallengeService } from "../services/contracts/ITrainChallengeService";
 	import type { IPerformanceHistoryService } from "../services/contracts/IPerformanceHistoryService";
 	import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
@@ -52,6 +53,7 @@
 
 	// Services
 	let detectionService: IPositionDetectionService | null = $state(null);
+	let hapticService: IHapticFeedbackService | undefined;
 	let isDetectionReady = $state(false);
 	const challengeService = resolve<ITrainChallengeService>(
 		TYPES.ITrainChallengeService
@@ -142,6 +144,7 @@
 	}
 
 	function handleStartCountdown() {
+		hapticService?.trigger("selection");
 		trainState.startCountdown();
 		runCountdown();
 	}
@@ -159,6 +162,7 @@
 	}
 
 	function handleBackToSetup() {
+		hapticService?.trigger("selection");
 		stopBeatTimer();
 		if (detectionService) {
 			detectionService.stopDetection();
@@ -439,6 +443,7 @@
 	});
 
 	onMount(() => {
+		hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 		initDetection();
 	});
 
@@ -460,7 +465,7 @@
 	<!-- Step 2+: Training Interface -->
 	<!-- Header -->
 	<header class="panel-header">
-		<button class="back-button" onclick={() => trainState.clearSequence()} aria-label="Change sequence">
+		<button class="back-button" onclick={() => { hapticService?.trigger("selection"); trainState.clearSequence(); }} aria-label="Change sequence">
 			<i class="fas fa-arrow-left"></i>
 		</button>
 		<div class="header-info">
@@ -616,7 +621,7 @@
 	{#if trainState.error}
 		<div class="error-toast">
 			<p>{trainState.error}</p>
-			<button onclick={() => trainState.setError(null)}>✕</button>
+			<button onclick={() => { hapticService?.trigger("selection"); trainState.setError(null); }}>✕</button>
 		</div>
 	{/if}
 	{/if}

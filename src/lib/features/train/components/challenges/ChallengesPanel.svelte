@@ -7,6 +7,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ITrainChallengeService } from "../../services/contracts/ITrainChallengeService";
   import type {
     TrainChallenge,
@@ -20,10 +21,11 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import ChallengeCard from "./ChallengeCard.svelte";
 
-  // Service
+  // Services
   const challengeService = resolve<ITrainChallengeService>(
     TYPES.ITrainChallengeService
   );
+  let hapticService: IHapticFeedbackService | undefined;
 
   // State
   let challenges = $state<TrainChallenge[]>([]);
@@ -102,6 +104,7 @@
 
   // Load challenges
   onMount(async () => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
     await loadChallenges();
   });
 
@@ -131,6 +134,7 @@
   }
 
   function handleChallengeStart(challengeId: string) {
+    hapticService?.trigger("selection");
     // Find the challenge
     const challenge = challenges.find((c) => c.id === challengeId);
     if (!challenge) {
@@ -146,9 +150,35 @@
   }
 
   function clearAllFilters() {
+    hapticService?.trigger("selection");
     filter = "all";
     sortBy = "difficulty";
     difficultyFilter = null;
+  }
+
+  function handleFilterChange(newFilter: TrainChallengeFilter) {
+    hapticService?.trigger("selection");
+    filter = newFilter;
+  }
+
+  function handleSortChange(newSort: TrainChallengeSortBy) {
+    hapticService?.trigger("selection");
+    sortBy = newSort;
+  }
+
+  function handleDifficultyChange(newDifficulty: ChallengeDifficulty | null) {
+    hapticService?.trigger("selection");
+    difficultyFilter = newDifficulty;
+  }
+
+  function openFilterPanel() {
+    hapticService?.trigger("selection");
+    isFilterPanelOpen = true;
+  }
+
+  function closeFilterPanel() {
+    hapticService?.trigger("selection");
+    isFilterPanelOpen = false;
   }
 </script>
 
@@ -163,21 +193,21 @@
         <button
           class="chip"
           class:active={filter === "all"}
-          onclick={() => (filter = "all")}
+          onclick={() => handleFilterChange("all")}
         >
           All
         </button>
         <button
           class="chip"
           class:active={filter === "available"}
-          onclick={() => (filter = "available")}
+          onclick={() => handleFilterChange("available")}
         >
           Available
         </button>
         <button
           class="chip"
           class:active={filter === "completed"}
-          onclick={() => (filter = "completed")}
+          onclick={() => handleFilterChange("completed")}
         >
           Done
         </button>
@@ -186,7 +216,7 @@
       <button
         class="filter-button"
         class:has-filters={activeFilterCount > 0}
-        onclick={() => (isFilterPanelOpen = true)}
+        onclick={openFilterPanel}
         aria-label="Open filters"
       >
         <i class="fas fa-sliders-h"></i>
@@ -252,7 +282,7 @@
       <h2>Filters & Sort</h2>
       <button
         class="close-btn"
-        onclick={() => (isFilterPanelOpen = false)}
+        onclick={closeFilterPanel}
         aria-label="Close filters"
       >
         <i class="fas fa-times"></i>
@@ -267,7 +297,7 @@
           <button
             class="option-btn"
             class:active={sortBy === "difficulty"}
-            onclick={() => (sortBy = "difficulty")}
+            onclick={() => handleSortChange("difficulty")}
           >
             <i class="fas fa-layer-group"></i>
             <span>Difficulty</span>
@@ -275,7 +305,7 @@
           <button
             class="option-btn"
             class:active={sortBy === "xp"}
-            onclick={() => (sortBy = "xp")}
+            onclick={() => handleSortChange("xp")}
           >
             <i class="fas fa-star"></i>
             <span>XP Reward</span>
@@ -283,7 +313,7 @@
           <button
             class="option-btn"
             class:active={sortBy === "newest"}
-            onclick={() => (sortBy = "newest")}
+            onclick={() => handleSortChange("newest")}
           >
             <i class="fas fa-clock"></i>
             <span>Newest</span>
@@ -298,35 +328,35 @@
           <button
             class="option-btn"
             class:active={difficultyFilter === null}
-            onclick={() => (difficultyFilter = null)}
+            onclick={() => handleDifficultyChange(null)}
           >
             <span>All</span>
           </button>
           <button
             class="option-btn difficulty-easy"
             class:active={difficultyFilter === "easy"}
-            onclick={() => (difficultyFilter = "easy")}
+            onclick={() => handleDifficultyChange("easy")}
           >
             <span>Easy</span>
           </button>
           <button
             class="option-btn difficulty-medium"
             class:active={difficultyFilter === "medium"}
-            onclick={() => (difficultyFilter = "medium")}
+            onclick={() => handleDifficultyChange("medium")}
           >
             <span>Medium</span>
           </button>
           <button
             class="option-btn difficulty-hard"
             class:active={difficultyFilter === "hard"}
-            onclick={() => (difficultyFilter = "hard")}
+            onclick={() => handleDifficultyChange("hard")}
           >
             <span>Hard</span>
           </button>
           <button
             class="option-btn difficulty-expert"
             class:active={difficultyFilter === "expert"}
-            onclick={() => (difficultyFilter = "expert")}
+            onclick={() => handleDifficultyChange("expert")}
           >
             <span>Expert</span>
           </button>
@@ -336,7 +366,7 @@
 
     <div class="filter-panel-footer">
       <button class="reset-btn" onclick={clearAllFilters}> Reset All </button>
-      <button class="apply-btn" onclick={() => (isFilterPanelOpen = false)}>
+      <button class="apply-btn" onclick={closeFilterPanel}>
         Show {filteredChallenges.length} Results
       </button>
     </div>

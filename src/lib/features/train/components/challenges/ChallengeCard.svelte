@@ -5,6 +5,9 @@
   Neutral bodies with colored top bars signal difficulty at a glance.
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type {
     TrainChallenge,
     UserTrainChallengeProgress,
@@ -21,6 +24,13 @@
   }
 
   let { challenge, progress, onStart }: Props = $props();
+
+  // Haptic feedback service
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
 
   // Calculated values
   const currentProgress = $derived(progress?.progress ?? 0);
@@ -101,6 +111,7 @@
 
   function handleClick() {
     if (isComplete || !onStart) return;
+    hapticService?.trigger("selection");
     onStart(challenge.id);
   }
 </script>
