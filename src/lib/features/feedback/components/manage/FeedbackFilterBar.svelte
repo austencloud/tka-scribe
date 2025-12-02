@@ -24,18 +24,23 @@
   let activeSection = $state<'type' | 'status' | 'priority' | null>(null);
 
   // Desktop drawer state (replacing dropdowns with side panels)
-  let openDrawer = $state<'status' | 'priority' | null>(null);
+  let isStatusDrawerOpen = $state(false);
+  let isPriorityDrawerOpen = $state(false);
 
   function openStatusDrawer() {
-    openDrawer = 'status';
+    isStatusDrawerOpen = true;
   }
 
   function openPriorityDrawer() {
-    openDrawer = 'priority';
+    isPriorityDrawerOpen = true;
   }
 
-  function closeDrawer() {
-    openDrawer = null;
+  function closeStatusDrawer() {
+    isStatusDrawerOpen = false;
+  }
+
+  function closePriorityDrawer() {
+    isPriorityDrawerOpen = false;
   }
 
   // Get current status label for button display
@@ -721,37 +726,59 @@
     color: var(--chip-color, var(--fb-primary));
   }
 
-  .dropdown-wrapper {
-    position: relative;
-  }
-
-  .filter-select {
+  /* ═══════════════════════════════════════════════════════════════════════════
+     FILTER PANEL BUTTONS (replacing dropdowns)
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .filter-panel-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs);
     height: 48px;
-    padding: 0 calc(var(--fb-space-lg) + 8px) 0 var(--fb-space-md);
+    padding: 0 var(--fb-space-md);
     background: transparent;
     border: 1px solid var(--fb-border);
     border-radius: var(--fb-radius-full);
     color: var(--fb-text-muted);
     font-size: var(--fb-text-sm);
     font-weight: 500;
-    font-family: inherit;
     cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='rgba(255,255,255,0.5)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    transition: all 0.2s ease;
+    transition: all 0.2s var(--spring-smooth);
+    white-space: nowrap;
   }
 
-  .filter-select:hover {
+  .filter-panel-btn i:not(.panel-arrow) {
+    font-size: 0.85em;
+  }
+
+  .filter-panel-btn .panel-arrow {
+    font-size: 0.7em;
+    margin-left: var(--fb-space-2xs);
+    color: var(--fb-text-subtle);
+    transition: transform 0.2s var(--spring-bounce);
+  }
+
+  .filter-panel-btn:hover {
+    background: var(--fb-surface-hover);
     border-color: var(--fb-border-focus);
     color: var(--fb-text);
   }
 
-  .filter-select:focus {
-    outline: none;
+  .filter-panel-btn:hover .panel-arrow {
+    transform: translateX(2px);
+  }
+
+  .filter-panel-btn:active {
+    transform: scale(0.98);
+  }
+
+  .filter-panel-btn.active {
+    background: color-mix(in srgb, var(--fb-primary) 15%, transparent);
     border-color: var(--fb-primary);
-    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+    color: var(--fb-text);
+  }
+
+  .filter-panel-btn.active i:not(.panel-arrow) {
+    color: var(--fb-primary);
   }
 
   .clear-filters-btn {
@@ -1209,6 +1236,149 @@
     .search-wrapper {
       width: 380px;
     }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     DRAWER PANEL STYLES (Desktop Side Panels)
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .drawer-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: linear-gradient(180deg, #1e1e24 0%, #16161a 100%);
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-sm, 13px);
+    padding: var(--fb-space-md, 21px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .drawer-title {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs, 8px);
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .drawer-title i {
+    color: #10b981;
+  }
+
+  .drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-left: auto;
+    margin-right: calc(-1 * var(--fb-space-sm, 13px));
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.15s ease;
+  }
+
+  .drawer-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .drawer-close:active {
+    transform: scale(0.95);
+  }
+
+  .drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--fb-space-sm, 13px);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .drawer-option {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-sm, 13px);
+    min-height: 56px;
+    padding: 0 var(--fb-space-md, 21px);
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+  }
+
+  .drawer-option i {
+    font-size: 1em;
+    width: 20px;
+    text-align: center;
+  }
+
+  .drawer-option .option-label {
+    flex: 1;
+  }
+
+  .drawer-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .drawer-option:active {
+    transform: scale(0.99);
+  }
+
+  /* Radio indicator */
+  .drawer-option .option-radio {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .drawer-option .option-radio::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: var(--option-color, #10b981);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .drawer-option.selected {
+    background: color-mix(in srgb, var(--option-color, #10b981) 12%, transparent);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .drawer-option.selected .option-radio {
+    border-color: var(--option-color, #10b981);
+  }
+
+  .drawer-option.selected .option-radio::after {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .drawer-option.selected i {
+    color: var(--option-color, #10b981);
   }
 
   /* Reduced motion */
