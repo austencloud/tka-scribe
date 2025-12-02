@@ -13,7 +13,7 @@ import {
   MODULE_DEFINITIONS,
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
-import { switchTab } from "../application/state/ui/module-state";
+import { switchModule } from "../application/state/ui/module-state";
 import { authStore } from "../auth/stores/authStore.svelte";
 import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
 
@@ -83,7 +83,7 @@ export function moduleSections() {
 export async function handleModuleChange(moduleId: ModuleId, targetTab?: string) {
   navigationState.setCurrentModule(moduleId, targetTab);
   // Switch module with proper persistence (saves to localStorage + Firestore)
-  await switchTab(moduleId);
+  await switchModule(moduleId);
 }
 
 // Section change handler
@@ -119,6 +119,10 @@ export function getModuleDefinitions() {
     // Admin module only visible to admin users (hide until we know they're admin)
     if (module.id === "admin") {
       return featureFlagService.isAdmin;
+    }
+    // Feedback module only visible to testers and admins
+    if (module.id === "feedback") {
+      return featureFlagService.isTester;
     }
     return true;
   }).map((module) => {

@@ -88,10 +88,26 @@ export const DISCOVER_TABS: Section[] = [
     color: "#f59e0b",
     gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
   },
+  {
+    id: "creators",
+    label: "Creators",
+    icon: '<i class="fas fa-users"></i>',
+    description: "Discover community members",
+    color: "#06b6d4",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  },
+  {
+    id: "library",
+    label: "Library",
+    icon: '<i class="fas fa-book"></i>',
+    description: "Your saved sequences and favorites",
+    color: "#10b981",
+    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+  },
 ];
 
-// Library tabs configuration (personal - dashboard-based, no sub-tabs needed)
-// The Library module uses a dashboard layout with drill-down views
+// Library tabs configuration - DEPRECATED: Library is now a tab within Discover
+// Kept for backward compatibility
 export const LIBRARY_TABS: Section[] = [];
 
 // Community tabs configuration
@@ -282,8 +298,37 @@ export const ADMIN_TABS: Section[] = [
   },
 ];
 
+// Feedback tabs configuration (testers/admins only)
+export const FEEDBACK_TABS: Section[] = [
+  {
+    id: "submit",
+    label: "Submit",
+    icon: '<i class="fas fa-paper-plane"></i>',
+    description: "Submit feedback, bug reports, or feature requests",
+    color: "#10b981",
+    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+  },
+  {
+    id: "manage",
+    label: "Manage",
+    icon: '<i class="fas fa-inbox"></i>',
+    description: "Review and manage submitted feedback",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+];
+
 // Module definitions for the new navigation system
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: '<i class="fas fa-home" style="color: #10b981;"></i>',
+    color: "#10b981", // Emerald - home/dashboard
+    description: "Your TKA Studio home",
+    isMain: true,
+    sections: [], // Dashboard has no sub-tabs
+  },
   {
     id: "create",
     label: "Create",
@@ -298,19 +343,11 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     label: "Discover",
     icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>',
     color: "#a855f7", // Purple - discovery/exploration
-    description: "Discover and discover sequences",
+    description: "Discover sequences and creators",
     isMain: true,
     sections: DISCOVER_TABS,
   },
-  {
-    id: "community",
-    label: "Community",
-    icon: '<i class="fas fa-users" style="color: #06b6d4;"></i>',
-    color: "#06b6d4", // Cyan - social/community
-    description: "Discover creators and challenges",
-    isMain: true,
-    sections: COMMUNITY_TABS,
-  },
+  // Community module retired - Creators moved to Discover, Challenges to Dashboard
   {
     id: "learn",
     label: "Learn",
@@ -338,17 +375,19 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true,
     sections: TRAIN_TABS,
   },
+  // Removed: library module (moved to Discover as a tab)
+  // Removed: account module (merged into Dashboard - profile widget handles auth)
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)
-  // Removed: about module (content moved to Community > Support tab)
+  // Removed: about module (content moved to Dashboard > Support widget)
   {
-    id: "account",
-    label: "Account",
-    icon: '<i class="fas fa-user-circle" style="color: #6366f1;"></i>',
-    color: "#6366f1", // Indigo - personal/account
-    description: "Your profile, library, and settings",
-    isMain: true, // Shown in sidebar with expandable tabs like other modules
-    sections: ACCOUNT_TABS,
+    id: "feedback",
+    label: "Feedback",
+    icon: '<i class="fas fa-comment-dots" style="color: #10b981;"></i>',
+    color: "#10b981", // Emerald - feedback/communication
+    description: "Submit and manage feedback",
+    isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
+    sections: FEEDBACK_TABS,
   },
   {
     id: "admin",
@@ -370,8 +409,8 @@ export function createNavigationState() {
   let currentLearnMode = $state<string>("concepts");
 
   // Module-based state
-  let currentModule = $state<ModuleId>("create");
-  let activeTab = $state<string>("constructor"); // Active tab within the current module
+  let currentModule = $state<ModuleId>("dashboard");
+  let activeTab = $state<string>(""); // Active tab within the current module (dashboard has no tabs)
   const MODULE_LAST_TABS_KEY = "tka-module-last-tabs";
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
 
@@ -398,7 +437,17 @@ export function createNavigationState() {
 
     // Load module persistence
     const savedModule = localStorage.getItem("tka-current-module");
-    if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
+    if (savedModule === "community" || savedModule === "account") {
+      // Migration: community and account modules retired, redirect to dashboard
+      currentModule = "dashboard";
+      localStorage.setItem("tka-current-module", "dashboard");
+    } else if (savedModule === "library") {
+      // Migration: library module retired, moved to Discover as a tab
+      currentModule = "discover";
+      activeTab = "library";
+      localStorage.setItem("tka-current-module", "discover");
+      localStorage.setItem("tka-active-tab", "library");
+    } else if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
       currentModule = savedModule as ModuleId;
     }
 

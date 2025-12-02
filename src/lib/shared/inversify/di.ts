@@ -10,10 +10,12 @@
  */
 
 // Export type symbols (these are safe to import statically)
-export { TYPES } from "./types";
+import { TYPES } from "./types";
+export { TYPES };
 
-// Re-export commonly used inversify decorators and types
-export { Container, inject, injectable } from "inversify";
+// NOTE: Do NOT re-export inversify decorators (inject, injectable, Container) here.
+// They require reflect-metadata to be loaded first and break SSR.
+// Import them directly from "inversify" in service implementations.
 import type { Container as InversifyContainer } from "inversify";
 import { debugHMR, debugHMRError } from "../utils/hmr-debug";
 
@@ -262,9 +264,83 @@ export const resolveSyncUnsafe = <T>(serviceIdentifier: symbol): T => {
 // DEPRECATED: Use resolve() instead - kept for backward compatibility
 export const resolveAsync = resolve;
 
-// Re-export feature module loading functions and container from container
-export {
-  loadFeatureModule,
-  preloadFeatureModule,
-  container,
-} from "./container";
+// ============================================================================
+// LAZY FEATURE MODULE LOADING (prevents static import of container.ts)
+// ============================================================================
+
+/**
+ * Load a feature module on-demand. Dynamically imports container.ts to enable code-splitting.
+ * @param feature - The feature module name to load
+ */
+export async function loadFeatureModule(feature: string): Promise<void> {
+  const { loadFeatureModule: load } = await import("./container");
+  return load(feature);
+}
+
+/**
+ * Preload a feature module in the background (non-blocking).
+ * @param feature - The feature module name to preload
+ */
+export function preloadFeatureModule(feature: string): void {
+  import("./container").then(({ preloadFeatureModule: preload }) => {
+    preload(feature);
+  }).catch((error) => {
+    console.warn(`Failed to preload feature module '${feature}':`, error);
+  });
+}
+
+/**
+ * Load shared modules (Tier 2). Dynamically imports container.ts to enable code-splitting.
+ */
+export async function loadSharedModules(): Promise<void> {
+  const { loadSharedModules: load } = await import("./container");
+  return load();
+}
+
+// ============================================================================
+// ON-DEMAND HEAVY LIBRARY MODULES
+// These modules contain heavy dependencies and are loaded only when needed
+// ============================================================================
+
+/**
+ * Load the Pixi module on-demand (pixi.js ~500KB).
+ * Call this before using IPixiAnimationRenderer.
+ *
+ * Uses container.isBound() as the source of truth to prevent duplicate bindings
+ * (module-level flags get duplicated across production chunks)
+ */
+export async function loadPixiModule(): Promise<void> {
+  const container = await getContainerInstance();
+
+  // Use container.isBound() as the source of truth (survives code-splitting)
+  if (container.isBound(TYPES.IPixiAnimationRenderer)) {
+    return; // Already loaded
+  }
+
+  const { pixiModule } = await import(
+    "../../features/animate/inversify/PixiModule"
+  );
+  await container.load(pixiModule);
+}
+
+/**
+ * Get the container instance. Use sparingly - prefer resolve() for service access.
+ * This is provided for cases where direct container access is absolutely necessary.
+ */
+export async function getContainerInstance(): Promise<typeof import("./container")["container"]> {
+  const { container } = await import("./container");
+  return container;
+}
+
+// DEPRECATED: Synchronous container access - only works if container is already loaded
+// Use getContainerInstance() or resolve() instead
+export const container = {
+  get: <T>(serviceIdentifier: symbol): T => {
+    return resolve<T>(serviceIdentifier);
+  },
+  // Proxy other methods through resolve for backward compatibility
+  isBound: (_serviceIdentifier: symbol): boolean => {
+    console.warn("container.isBound() called on lazy proxy - use tryResolve() instead");
+    return _cachedContainer !== null;
+  }
+};

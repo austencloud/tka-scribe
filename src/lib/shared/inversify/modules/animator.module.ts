@@ -12,7 +12,7 @@ import { EndpointCalculator } from "../../../features/animate/services/implement
 import { GifExportService } from "../../../features/animate/services/implementations/GifExportService";
 import { GifExportOrchestrator } from "../../../features/animate/services/implementations/GifExportOrchestrator";
 import { MotionCalculator } from "../../../features/animate/services/implementations/MotionCalculator";
-import { PixiAnimationRenderer } from "../../../features/animate/services/implementations/PixiAnimationRenderer";
+// PixiAnimationRenderer moved to on-demand loading in PixiModule (pixi.js ~500KB)
 import { PropInterpolator as PropInterpolationService } from "../../../features/animate/services/implementations/PropInterpolator";
 import { SequenceAnimationOrchestrator } from "../../../features/animate/services/implementations/SequenceAnimationOrchestrator";
 import { SequenceLoopabilityChecker } from "../../../features/animate/services/implementations/SequenceLoopabilityChecker";
@@ -49,7 +49,7 @@ export const animatorModule = new ContainerModule(
 
     // === RENDERING SERVICES ===
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
-    options.bind(TYPES.IPixiAnimationRenderer).to(PixiAnimationRenderer);
+    // IPixiAnimationRenderer loaded on-demand via PixiModule when animation canvas is used
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IGifExportService).to(GifExportService);
     options.bind(TYPES.IAnimatedImageTranscoder).to(AnimatedImageTranscoder);

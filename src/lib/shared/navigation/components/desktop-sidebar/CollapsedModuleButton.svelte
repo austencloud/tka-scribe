@@ -2,6 +2,7 @@
 <!-- Icon-only module button for collapsed sidebar activity bar (VS Code style) -->
 <script lang="ts">
   import type { ModuleDefinition } from "../../domain/types";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
   let {
     module,
@@ -18,6 +19,13 @@
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);
+
+  // Show user's profile picture for dashboard module when signed in
+  const showProfilePicture = $derived(
+    module.id === "dashboard" && authStore.isAuthenticated && authStore.user?.photoURL
+  );
+  const profilePictureUrl = $derived(authStore.user?.photoURL || "");
+  const profileDisplayName = $derived(authStore.user?.displayName || "User");
 </script>
 
 <button
@@ -31,7 +39,17 @@
   aria-current={isActive ? "page" : undefined}
   style="--module-color: {moduleColor || '#a855f7'};"
 >
-  <span class="module-icon">{@html module.icon}</span>
+  {#if showProfilePicture}
+    <img
+      src={profilePictureUrl}
+      alt={profileDisplayName}
+      class="profile-avatar"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  {:else}
+    <span class="module-icon">{@html module.icon}</span>
+  {/if}
   <!-- Hover Label -->
   <span class="hover-label">{module.label}</span>
 </button>
@@ -92,6 +110,26 @@
     justify-content: center;
     flex-shrink: 0;
     transition: transform 0.2s ease;
+  }
+
+  /* Profile Avatar for Dashboard */
+  .profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(16, 185, 129, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .collapsed-module-button:hover:not(.disabled) .profile-avatar {
+    transform: scale(1.08);
+    border-color: rgba(16, 185, 129, 0.7);
+  }
+
+  .collapsed-module-button.active .profile-avatar {
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
   }
 
   .collapsed-module-button:hover:not(.disabled) .module-icon {

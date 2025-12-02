@@ -1,7 +1,6 @@
 <!-- Sidebar Footer Component -->
 <!-- Contains settings button and profile button -->
 <script lang="ts">
-  import AccountSettingsButton from "../AccountSettingsButton.svelte";
 
   let { isCollapsed, isSettingsActive, onSettingsClick, onDebugClick } =
     $props<{
@@ -29,8 +28,6 @@
     {/if}
   </button>
 
-  <!-- Profile/Account Button -->
-  <AccountSettingsButton {isCollapsed} />
 </div>
 
 <style>

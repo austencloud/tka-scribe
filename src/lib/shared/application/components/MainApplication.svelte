@@ -36,10 +36,19 @@
   import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
   import BackgroundCanvas from "../../background/shared/components/BackgroundCanvas.svelte";
   import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
-  import { getShowDebugPanel, getShowSettings, showSettingsDialog, hideSettingsDialog, toggleDebugPanel } from "../state/ui/ui-state.svelte";
-  import { switchTab } from "../state/ui/module-state";
-  import { ensureContainerInitialized, resolve } from "../../inversify/container";
-  import { isContainerReady } from "../../inversify/di";
+  import {
+    getShowDebugPanel,
+    getShowSettings,
+    showSettingsDialog,
+    hideSettingsDialog,
+    toggleDebugPanel,
+  } from "../state/ui/ui-state.svelte";
+  import { switchModule } from "../state/ui/module-state";
+  import {
+    ensureContainerInitialized,
+    resolve,
+    isContainerReady,
+  } from "../../inversify/di";
 
   // Get DI container from context
   const getContainer = getContext<() => Container | null>("di-container");
@@ -219,27 +228,27 @@
         switch (event.key) {
           case "1":
             event.preventDefault();
-            switchTab("create");
+            switchModule("create");
             break;
           case "2":
             event.preventDefault();
-            switchTab("discover");
+            switchModule("discover");
             break;
           case "3":
             event.preventDefault();
-            switchTab("community");
+            switchModule("community");
             break;
           case "4":
             event.preventDefault();
-            switchTab("learn");
+            switchModule("learn");
             break;
           case "5":
             event.preventDefault();
-            switchTab("animate");
+            switchModule("animate");
             break;
           case "6":
             event.preventDefault();
-            switchTab("train");
+            switchModule("train");
             break;
         }
       }

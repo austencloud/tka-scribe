@@ -6,10 +6,10 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { ILeaderboardService } from "../../../features/community/services/contracts/ILeaderboardService";
-import type { IUserService } from "../../../features/community/services/contracts/IUserService";
-import { LeaderboardService } from "../../../features/community/services/implementations/LeaderboardService";
-import { UserService } from "../../../features/community/services/implementations/UserService";
+import type { ILeaderboardService } from "../../community/services/contracts/ILeaderboardService";
+import type { IUserService } from "../../community/services/contracts/IUserService";
+import { LeaderboardService } from "../../community/services/implementations/LeaderboardService";
+import { UserService } from "../../community/services/implementations/UserService";
 
 export const communityModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

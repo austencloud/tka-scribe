@@ -4,24 +4,17 @@
    * Domain: Module Content Rendering
    *
    * Responsibilities:
-   * - Render active module content
+   * - Render active module content with LAZY LOADING
    * - Handle module transitions with simple, clean fade
    * - Coordinate with child module components via callbacks
    * - Provide loading states
+   * - Code-split modules to reduce initial bundle size
+   * - Ensure DI modules are loaded before components
    */
   import { isModuleActive } from "../application/state/ui/ui-state.svelte";
+  import { loadFeatureModule } from "../inversify/di";
   import { fade } from "svelte/transition";
-  import AccountModule from "../../features/account/AccountModule.svelte";
-  import AdminDashboard from "../../features/admin/components/AdminDashboard.svelte";
-  import AnimateModule from "../../features/animate/AnimateModule.svelte";
-  import TrainModule from "../../features/train/components/TrainModule.svelte";
-  import CreateModule from "../../features/create/shared/components/CreateModule.svelte";
-  import EditModule from "../../features/edit/EditModule.svelte";
-  import LearnTab from "../../features/learn/LearnTab.svelte";
-  import WordCardTab from "../../features/word-card/components/WordCardTab.svelte";
-  import WriteTab from "../../features/write/components/WriteTab.svelte";
-  import DiscoverModule from "../../features/discover/shared/components/DiscoverModule.svelte";
-  import CommunityModule from "../../features/community/CommunityModule.svelte";
+  import type { Component } from "svelte";
 
   interface Props {
     activeModule: string | null;
@@ -38,6 +31,62 @@
     onCurrentWordChange,
     onLearnHeaderChange,
   }: Props = $props();
+
+  // Cache for loaded modules to avoid re-importing
+  const moduleCache = new Map<string, Component<any>>();
+
+  // Dynamic import functions for each module (enables code-splitting)
+  const moduleLoaders: Record<
+    string,
+    () => Promise<{ default: Component<any> }>
+  > = {
+    dashboard: () =>
+      import("../../features/dashboard/components/Dashboard.svelte"),
+    create: () =>
+      import("../../features/create/shared/components/CreateModule.svelte"),
+    discover: () =>
+      import("../../features/discover/shared/components/DiscoverModule.svelte"),
+    // community module retired - creators moved to discover, challenges to dashboard
+    learn: () => import("../../features/learn/LearnTab.svelte"),
+    animate: () => import("../../features/animate/AnimateModule.svelte"),
+    train: () => import("../../features/train/components/TrainModule.svelte"),
+    // library module retired - moved to Discover as a tab
+    edit: () => import("../../features/edit/EditModule.svelte"),
+    word_card: () =>
+      import("../../features/word-card/components/WordCardTab.svelte"),
+    write: () => import("../../features/write/components/WriteTab.svelte"),
+    // account module retired - merged into dashboard (profile widget handles auth, library is a Discover tab)
+    feedback: () =>
+      import("../../features/feedback/components/FeedbackModule.svelte"),
+    admin: () =>
+      import("../../features/admin/components/AdminDashboard.svelte"),
+  };
+
+  // Load module with caching
+  async function loadModule(
+    moduleName: string
+  ): Promise<Component<any> | null> {
+    if (!moduleName || !moduleLoaders[moduleName]) return null;
+
+    // Return cached module if available
+    if (moduleCache.has(moduleName)) {
+      return moduleCache.get(moduleName)!;
+    }
+
+    // Load the DI module FIRST to ensure services are available
+    // This is critical - the component will resolve services during import
+    await loadFeatureModule(moduleName);
+
+    // Load and cache the component
+    const { default: ModuleComponent } = await moduleLoaders[moduleName]();
+    moduleCache.set(moduleName, ModuleComponent);
+    return ModuleComponent;
+  }
+
+  // Reactive module loading based on activeModule
+  let modulePromise = $derived(
+    activeModule ? loadModule(activeModule) : Promise.resolve(null)
+  );
 </script>
 
 {#if isModuleLoading}
@@ -51,29 +100,28 @@
   <div class="transition-container">
     {#key activeModule}
       <div class="module-content" transition:fade={{ duration: 200 }}>
-        {#if isModuleActive("create")}
-          <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
-        {:else if isModuleActive("discover")}
-          <DiscoverModule />
-        {:else if isModuleActive("community")}
-          <CommunityModule />
-        {:else if isModuleActive("learn")}
-          <LearnTab onHeaderChange={onLearnHeaderChange} />
-        {:else if isModuleActive("animate")}
-          <AnimateModule />
-        {:else if isModuleActive("train")}
-          <TrainModule />
-        {:else if isModuleActive("edit")}
-          <EditModule />
-        {:else if isModuleActive("word_card")}
-          <WordCardTab />
-        {:else if isModuleActive("write")}
-          <WriteTab />
-        {:else if isModuleActive("account")}
-          <AccountModule />
-        {:else if isModuleActive("admin")}
-          <AdminDashboard />
-        {/if}
+        {#await modulePromise}
+          <!-- Loading state while module chunk is being fetched -->
+          <div class="module-loading">
+            <div class="loading-spinner"></div>
+            <p>Loading module...</p>
+          </div>
+        {:then LoadedModule}
+          {#if LoadedModule}
+            {#if isModuleActive("create")}
+              <LoadedModule {onTabAccessibilityChange} {onCurrentWordChange} />
+            {:else if isModuleActive("learn")}
+              <LoadedModule onHeaderChange={onLearnHeaderChange} />
+            {:else}
+              <LoadedModule />
+            {/if}
+          {/if}
+        {:catch error}
+          <div class="module-error">
+            <p>Failed to load module</p>
+            <p class="error-details">{error?.message || "Unknown error"}</p>
+          </div>
+        {/await}
       </div>
     {/key}
   </div>
@@ -135,6 +183,26 @@
   .module-loading p {
     margin: 0;
     font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .module-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: var(--error-color, #dc3545);
+  }
+
+  .module-error p {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+  }
+
+  .module-error .error-details {
+    font-size: 12px;
     opacity: 0.7;
   }
 

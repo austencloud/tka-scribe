@@ -29,4 +29,5 @@ export function initializeInversifyContainer(): void {
 }
 
 // Export container and types for convenience
-export { container, resolve, TYPES } from "./container";
+// NOTE: These re-exports are through di.ts to enable lazy loading
+export { container, resolve, TYPES } from "./di";

@@ -1,5 +1,5 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import { NightSkyCalculationService } from "../../background/night-sky/services/implementations/NightSkyCalculationService";
+// NightSkyCalculationService moved to on-demand loading in BackgroundFactory
 import { BackgroundConfigurationService } from "../../background/shared/services/implementations/BackgroundConfigurationService";
 import { BackgroundManager } from "../../background/shared/services/implementations/BackgroundManager";
 import { BackgroundPreLoader } from "../../background/shared/services/implementations/BackgroundPreloader";
@@ -11,13 +11,7 @@ import { DexiePersistenceService } from "../../persistence/services/implementati
 import { PersistenceInitializationService } from "../../persistence/services/implementations/PersistenceInitializationService";
 import { DataTransformer } from "../../pictograph/shared/services/implementations/DataTransformer";
 import { TYPES } from "../types";
-// Deep Ocean Background Services
-import { BubblePhysics } from "../../background/deep-ocean/services/implementations/BubblePhysics";
-import { MarineLifeAnimator } from "../../background/deep-ocean/services/implementations/MarineLifeAnimator";
-import { ParticleSystem } from "../../background/deep-ocean/services/implementations/ParticleSystem";
-import { FishSpriteManager } from "../../background/deep-ocean/services/implementations/FishSpriteManager";
-import { OceanRenderer } from "../../background/deep-ocean/services/implementations/OceanRenderer";
-import { LightRayCalculator } from "../../background/deep-ocean/services/implementations/LightRayCalculator";
+// Deep Ocean services moved to on-demand loading in BackgroundFactory
 // Core Sequence Services (moved from createModule to Tier 1)
 import { SequenceService } from "../../../features/create/shared/services/implementations/SequenceService";
 import { SequenceDomainService } from "../../../features/create/shared/services/implementations/SequenceDomainService";
@@ -58,23 +52,8 @@ export const dataModule = new ContainerModule(
     options
       .bind(TYPES.IBackgroundConfigurationService)
       .to(BackgroundConfigurationService);
-    options
-      .bind(TYPES.INightSkyCalculationService)
-      .to(NightSkyCalculationService);
 
-    // === DEEP OCEAN BACKGROUND SERVICES ===
-    options.bind(TYPES.IBubblePhysics).to(BubblePhysics);
-    options.bind(TYPES.IMarineLifeAnimator).to(MarineLifeAnimator);
-    options.bind(TYPES.IParticleSystem).to(ParticleSystem);
-    // FishSpriteManager MUST be singleton - sprite cache needs to persist across all usages
-    options
-      .bind(TYPES.IFishSpriteManager)
-      .to(FishSpriteManager)
-      .inSingletonScope();
-    options.bind(TYPES.IOceanRenderer).to(OceanRenderer);
-    options.bind(TYPES.ILightRayCalculator).to(LightRayCalculator);
-
-    // Bind the orchestrator as the main IBackgroundSystem implementation for deep ocean
-    // TODO: Update background system selection logic to use this for deep ocean themes
+    // Night Sky and Deep Ocean services are loaded on-demand in BackgroundFactory
+    // when their respective background types are selected
   }
 );

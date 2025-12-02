@@ -2,6 +2,7 @@
 <!-- Button for a module that can expand/collapse to show sections -->
 <script lang="ts">
   import type { ModuleDefinition } from "../../domain/types";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
   let {
     module,
@@ -20,6 +21,13 @@
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);
+
+  // Show user's profile picture for dashboard module when signed in
+  const showProfilePicture = $derived(
+    module.id === "dashboard" && authStore.isAuthenticated && authStore.user?.photoURL
+  );
+  const profilePictureUrl = $derived(authStore.user?.photoURL || "");
+  const profileDisplayName = $derived(authStore.user?.displayName || "User");
 </script>
 
 <button
@@ -36,7 +44,17 @@
   aria-disabled={isDisabled}
   disabled={isDisabled}
 >
-  <span class="module-icon">{@html module.icon}</span>
+  {#if showProfilePicture}
+    <img
+      src={profilePictureUrl}
+      alt={profileDisplayName}
+      class="profile-avatar"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  {:else}
+    <span class="module-icon">{@html module.icon}</span>
+  {/if}
   {#if !isCollapsed}
     <span class="module-label">{module.label}</span>
     {#if isDisabled && module.disabledMessage}
@@ -155,6 +173,27 @@
     width: 22px;
     height: 22px;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Profile Avatar for Dashboard */
+  .profile-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(16, 185, 129, 0.4);
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .module-button:hover .profile-avatar {
+    transform: scale(1.08);
+    border-color: rgba(16, 185, 129, 0.7);
+  }
+
+  .module-button.active .profile-avatar {
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
   }
 
   .module-button:hover .module-icon {

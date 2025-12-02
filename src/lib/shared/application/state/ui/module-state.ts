@@ -8,7 +8,7 @@ import {
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
-import { loadFeatureModule } from "../../../inversify/container";
+import { loadFeatureModule } from "../../../inversify/di";
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;
@@ -186,7 +186,7 @@ export function preloadCachedModuleServices(): void {
   }
 }
 
-export async function switchTab(module: ModuleId): Promise<void> {
+export async function switchModule(module: ModuleId): Promise<void> {
   if (getActiveModule() === module) {
     return;
   }
