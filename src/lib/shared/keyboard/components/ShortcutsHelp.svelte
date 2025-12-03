@@ -279,17 +279,18 @@
   }
 
   .shortcuts-help__close {
-    width: 2rem;
-    height: 2rem;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-secondary, #888);
     cursor: pointer;
     transition: all 0.2s;
+    margin: -8px -8px 0 0; /* Compensate for larger touch target */
   }
 
   .shortcuts-help__close:hover {

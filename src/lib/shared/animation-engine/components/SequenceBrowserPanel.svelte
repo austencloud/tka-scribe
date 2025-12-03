@@ -11,7 +11,7 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { tryResolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
@@ -38,14 +38,11 @@
     placement?: "bottom" | "right" | "left" | "top" | undefined;
   } = $props();
 
-  // Services
-  let loaderService = resolve(TYPES.IDiscoverLoader) as IDiscoverLoader;
-  let thumbnailService = resolve(
-    TYPES.IDiscoverThumbnailService
-  ) as IDiscoverThumbnailService;
-  let normalizationService = resolve(
-    TYPES.ISequenceNormalizationService
-  ) as ISequenceNormalizationService;
+  // Services - resolved lazily after module is loaded
+  let loaderService = $state<IDiscoverLoader | null>(null);
+  let thumbnailService = $state<IDiscoverThumbnailService | null>(null);
+  let normalizationService = $state<ISequenceNormalizationService | null>(null);
+  let servicesReady = $state(false);
 
   // Auto-detect placement based on screen size if not provided
   let drawerPlacement = $state<"bottom" | "right" | "left" | "top">("right");
@@ -79,7 +76,7 @@
     let filtered = sequences;
 
     // Filter by beat count if required (use normalized beats, excluding start position)
-    if (requiredBeatCount !== undefined) {
+    if (requiredBeatCount !== undefined && normalizationService) {
       filtered = filtered.filter((seq) => {
         const normalized =
           normalizationService.separateBeatsFromStartPosition(seq);
@@ -101,8 +98,35 @@
     return filtered;
   });
 
+  // Initialize services (load discover module first)
+  async function initializeServices() {
+    try {
+      // Ensure discover module is loaded before resolving services
+      await loadFeatureModule("discover");
+
+      loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
+      thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+      normalizationService = tryResolve<ISequenceNormalizationService>(TYPES.ISequenceNormalizationService);
+
+      servicesReady = !!(loaderService && thumbnailService);
+
+      if (!servicesReady) {
+        console.warn("⚠️ SequenceBrowserPanel: Some services failed to resolve");
+      }
+    } catch (err) {
+      console.error("❌ SequenceBrowserPanel: Failed to initialize services:", err);
+      error = "Failed to initialize services";
+    }
+  }
+
   // Load sequences
   async function loadSequences() {
+    if (!loaderService) {
+      error = "Loader service not available";
+      isLoading = false;
+      return;
+    }
+
     try {
       isLoading = true;
       error = null;
@@ -119,6 +143,8 @@
 
   // Get cover URL for a sequence
   function getCoverUrl(sequence: SequenceData): string | undefined {
+    if (!thumbnailService) return undefined;
+
     // Get the first thumbnail from the sequence's thumbnails array
     const firstThumbnail = sequence.thumbnails?.[0];
     if (!firstThumbnail) return undefined;
@@ -134,6 +160,12 @@
 
   // Handle sequence selection - load full data before passing to parent
   async function handleSelect(sequence: SequenceData) {
+    if (!loaderService) {
+      onSelect(sequence);
+      onClose();
+      return;
+    }
+
     try {
       isSelectingSequence = true;
 
@@ -162,9 +194,12 @@
     }
   }
 
-  // Load on mount
-  onMount(() => {
-    loadSequences();
+  // Load on mount - initialize services first, then load sequences
+  onMount(async () => {
+    await initializeServices();
+    if (servicesReady) {
+      loadSequences();
+    }
   });
 
   // Mode label

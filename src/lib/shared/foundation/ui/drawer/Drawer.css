@@ -8,7 +8,7 @@
     /* Semi-transparent dark backdrop */
     background: var(--sheet-backdrop-bg, rgba(0, 0, 0, 0.5));
     pointer-events: var(--sheet-backdrop-pointer-events, auto);
-    transition: opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
+    transition: opacity var(--duration-dramatic, 350ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     opacity: 0;
   }
 
@@ -69,10 +69,10 @@
       var(--sheet-border-subtle, 1px solid rgba(255, 255, 255, 0.1))
     );
 
-    /* Smooth CSS transitions */
+    /* Smooth CSS transitions - using 2026 system tokens */
     transition:
-      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
-      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
+      transform var(--duration-dramatic, 350ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      opacity var(--duration-dramatic, 350ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     will-change: transform;
 
     /* Prevent pull-to-refresh ONLY on this drawer, not globally */
@@ -349,20 +349,20 @@
       opacity 350ms cubic-bezier(0.32, 0.72, 0, 1);
   }
 
-  /* Spring animation for bottom placement */
+  /* Spring animation for bottom placement - refined 2026 spring physics */
   .drawer-content.spring-animation[data-placement="bottom"][data-state="open"] {
-    animation: spring-slide-up 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: spring-slide-up 400ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
   }
 
   @keyframes spring-slide-up {
     0% {
       transform: translate3d(0, 100%, 0);
     }
-    60% {
-      transform: translate3d(0, -3%, 0);
+    65% {
+      transform: translate3d(0, -2%, 0);
     }
-    80% {
-      transform: translate3d(0, 1%, 0);
+    85% {
+      transform: translate3d(0, 0.5%, 0);
     }
     100% {
       transform: translate3d(0, 0, 0);
@@ -371,18 +371,18 @@
 
   /* Spring animation for top placement */
   .drawer-content.spring-animation[data-placement="top"][data-state="open"] {
-    animation: spring-slide-down 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: spring-slide-down 400ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
   }
 
   @keyframes spring-slide-down {
     0% {
       transform: translate3d(0, -100%, 0);
     }
-    60% {
-      transform: translate3d(0, 3%, 0);
+    65% {
+      transform: translate3d(0, 2%, 0);
     }
-    80% {
-      transform: translate3d(0, -1%, 0);
+    85% {
+      transform: translate3d(0, -0.5%, 0);
     }
     100% {
       transform: translate3d(0, 0, 0);
@@ -391,18 +391,18 @@
 
   /* Spring animation for right placement */
   .drawer-content.spring-animation[data-placement="right"][data-state="open"] {
-    animation: spring-slide-left 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: spring-slide-left 400ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
   }
 
   @keyframes spring-slide-left {
     0% {
       transform: translate3d(100%, 0, 0);
     }
-    60% {
-      transform: translate3d(-3%, 0, 0);
+    65% {
+      transform: translate3d(-2%, 0, 0);
     }
-    80% {
-      transform: translate3d(1%, 0, 0);
+    85% {
+      transform: translate3d(0.5%, 0, 0);
     }
     100% {
       transform: translate3d(0, 0, 0);
@@ -411,18 +411,18 @@
 
   /* Spring animation for left placement */
   .drawer-content.spring-animation[data-placement="left"][data-state="open"] {
-    animation: spring-slide-right 500ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: spring-slide-right 400ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
   }
 
   @keyframes spring-slide-right {
     0% {
       transform: translate3d(-100%, 0, 0);
     }
-    60% {
-      transform: translate3d(3%, 0, 0);
+    65% {
+      transform: translate3d(2%, 0, 0);
     }
-    80% {
-      transform: translate3d(-1%, 0, 0);
+    85% {
+      transform: translate3d(-0.5%, 0, 0);
     }
     100% {
       transform: translate3d(0, 0, 0);

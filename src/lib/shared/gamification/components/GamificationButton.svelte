@@ -8,6 +8,7 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "../../inversify/di";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import type { IAchievementService } from "../services/contracts/IAchievementService";
   import type { UserXP } from "../domain/models/achievement-models";
   import { getLevelProgress } from "../domain/constants/xp-constants";
@@ -22,6 +23,7 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let isLoggedIn = $state(false);
+  let hapticService: IHapticFeedbackService | undefined;
 
   // Derived state for level progress
   let levelProgress = $derived.by(() => {
@@ -31,6 +33,7 @@
 
   // Initialize
   onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
     let interval: ReturnType<typeof setInterval> | null = null;
     let unsubscribe: (() => void) | null = null;
 
@@ -82,6 +85,7 @@
   }
 
   function handleClick() {
+    hapticService?.trigger("selection");
     onclick();
   }
 </script>

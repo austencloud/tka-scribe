@@ -399,6 +399,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         { module: adminModule, name: "admin" },
         { module: libraryModule, name: "library" },
         { module: trainModule, name: "train" },
+        { module: exploreModule, name: "discover" }, // Required for IDiscoverThumbnailService
       ],
       share: [{ module: shareModule, name: "share" }],
     };
