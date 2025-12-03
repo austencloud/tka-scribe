@@ -1,5 +1,8 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import PanelTabs from "$lib/shared/components/panel/PanelTabs.svelte";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import type { LibrarySequence } from "$lib/features/library/domain/models/LibrarySequence";
@@ -34,6 +37,22 @@
     onSequenceClick: (sequence: LibrarySequence) => void;
     onUserClick: (user: UserProfile) => void;
   } = $props();
+
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleSequenceClick(sequence: LibrarySequence) {
+    hapticService?.trigger("selection");
+    onSequenceClick(sequence);
+  }
+
+  function handleUserClick(user: UserProfile) {
+    hapticService?.trigger("selection");
+    onUserClick(user);
+  }
 </script>
 
 <div class="tabs-wrapper" transition:fly={{ y: 20, duration: 300, delay: 200 }}>
@@ -79,7 +98,7 @@
         {#each userSequences as sequence (sequence.id)}
           <button
             class="sequence-card"
-            onclick={() => onSequenceClick(sequence)}
+            onclick={() => handleSequenceClick(sequence)}
             transition:fade={{ duration: 200 }}
           >
             {#if sequence.thumbnails && sequence.thumbnails.length > 0}
@@ -129,7 +148,7 @@
         {#each followerUsers as user (user.id)}
           <button
             class="user-list-card"
-            onclick={() => onUserClick(user)}
+            onclick={() => handleUserClick(user)}
             transition:fade={{ duration: 200 }}
           >
             <div class="user-list-avatar">
@@ -169,7 +188,7 @@
         {#each followingUsers as user (user.id)}
           <button
             class="user-list-card"
-            onclick={() => onUserClick(user)}
+            onclick={() => handleUserClick(user)}
             transition:fade={{ duration: 200 }}
           >
             <div class="user-list-avatar">

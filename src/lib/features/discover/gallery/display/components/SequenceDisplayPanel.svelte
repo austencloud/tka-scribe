@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { SequenceSection } from "./../../../shared/domain/models/discover-models.ts";
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { tryResolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { tryResolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
   import DiscoverGrid from "./DiscoverGrid.svelte";
@@ -44,8 +44,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   onMount(async () => {
-    thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    thumbnailService = tryResolve<IDiscoverThumbnailService>(
+      TYPES.IDiscoverThumbnailService
+    );
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleRetry() {

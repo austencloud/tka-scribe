@@ -1,11 +1,10 @@
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount, setContext } from "svelte";
-  import { fade } from "svelte/transition";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
 
@@ -23,17 +22,24 @@ import { TYPES } from "$lib/shared/inversify/types";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
   import LibraryDashboard from "../../../library/components/LibraryDashboard.svelte";
-  import { libraryState, type LibraryViewSection } from "../../../library/state/library-state.svelte";
+  import {
+    libraryState,
+    type LibraryViewSection,
+  } from "../../../library/state/library-state.svelte";
   import SequencesView from "../../../library/components/SequencesView.svelte";
 
-  type DiscoverModuleType = "sequences" | "collections" | "creators" | "library";
+  type DiscoverModuleType =
+    | "sequences"
+    | "collections"
+    | "creators"
+    | "library";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
   // ============================================================================
 
   const galleryState = createExploreState();
-  
+
   // Service resolved lazily in onMount to ensure feature module is loaded
   let eventHandlerService: IDiscoverEventHandlerService | null = null;
 
@@ -82,7 +88,6 @@ import { TYPES } from "$lib/shared/inversify/types";
       ? `calc((100vw - ${sidebarWidth}px) * 0.4)` // Detail panel takes 40% of remaining space
       : "min(600px, 90vw)"
   );
-
 
   // ✅ SYNC WITH BOTTOM NAVIGATION STATE
   // This effect syncs the local tab state with the global navigation state
@@ -148,7 +153,6 @@ import { TYPES } from "$lib/shared/inversify/types";
   // Reactive UI visibility state
   const isUIVisible = $derived(discoverScrollState.isUIVisible);
 
-
   // Provide scroll visibility context for child components
   setContext("explorerScrollVisibility", {
     getVisible: () => discoverScrollState.isUIVisible,
@@ -198,17 +202,21 @@ import { TYPES } from "$lib/shared/inversify/types";
       eventHandlerService = resolve<IDiscoverEventHandlerService>(
         TYPES.IDiscoverEventHandlerService
       );
-      
+
       // Initialize event handler service with required parameters
       eventHandlerService.initialize({
         galleryState,
         setSelectedSequence: (seq: SequenceData | null) =>
           (_selectedSequence = seq),
-        setDeleteConfirmationData: (data: any) => (deleteConfirmationData = data),
+        setDeleteConfirmationData: (data: any) =>
+          (deleteConfirmationData = data),
         setError: (err: string | null) => (error = err),
       });
     } catch (err) {
-      console.error("DiscoverModule: Failed to resolve IDiscoverEventHandlerService", err);
+      console.error(
+        "DiscoverModule: Failed to resolve IDiscoverEventHandlerService",
+        err
+      );
       error = "Failed to initialize discover module services";
     }
 
@@ -280,7 +288,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   <!-- Tab Content - Bottom navigation controls the active tab -->
   <div class="explore-tab-content">
     {#key activeTab}
-      <div class="tab-panel" transition:fade={{ duration: 200 }}>
+      <div class="tab-panel">
         {#if activeTab === "sequences"}
           <DiscoverSequencesTab
             {isMobile}
@@ -290,9 +298,11 @@ import { TYPES } from "$lib/shared/inversify/types";
             {galleryState}
             {error}
             onSequenceAction={(action, sequence) =>
-              eventHandlerService?.handleSequenceAction(action, sequence) ?? Promise.resolve()}
+              eventHandlerService?.handleSequenceAction(action, sequence) ??
+              Promise.resolve()}
             onDetailPanelAction={(action, sequence) =>
-              eventHandlerService?.handleDetailPanelAction(action, sequence) ?? Promise.resolve()}
+              eventHandlerService?.handleDetailPanelAction(action, sequence) ??
+              Promise.resolve()}
             onCloseDetailPanel={() =>
               eventHandlerService?.handleCloseDetailPanel()}
             onContainerScroll={handleContainerScroll}
@@ -309,13 +319,21 @@ import { TYPES } from "$lib/shared/inversify/types";
           <div class="library-tab-content">
             {#if libraryView !== "dashboard"}
               <div class="library-header">
-                <button class="back-btn" onclick={handleLibraryBack} aria-label="Go back">
+                <button
+                  class="back-btn"
+                  onclick={handleLibraryBack}
+                  aria-label="Go back"
+                >
                   <i class="fas fa-arrow-left"></i>
                 </button>
                 <h2 class="library-title">
-                  {libraryView === "sequences" ? "All Sequences" :
-                   libraryView === "favorites" ? "Favorites" :
-                   libraryView === "collections" ? "Collections" : "Library"}
+                  {libraryView === "sequences"
+                    ? "All Sequences"
+                    : libraryView === "favorites"
+                      ? "Favorites"
+                      : libraryView === "collections"
+                        ? "Collections"
+                        : "Library"}
                 </h2>
               </div>
             {/if}
@@ -381,8 +399,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;

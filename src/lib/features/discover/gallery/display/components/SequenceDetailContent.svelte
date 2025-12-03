@@ -33,8 +33,12 @@ Used by both desktop side panel and mobile slide-up overlay.
   let thumbnailService: IDiscoverThumbnailService | null = $state(null);
 
   onMount(() => {
-    thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    thumbnailService = tryResolve<IDiscoverThumbnailService>(
+      TYPES.IDiscoverThumbnailService
+    );
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // State
@@ -442,8 +446,8 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .nav-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

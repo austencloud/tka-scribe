@@ -4,12 +4,26 @@ View Presets Sheet - Mobile Bottom Sheet Version
 Modern, touch-friendly interface for selecting view presets
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { FilterPreset } from "$lib/features/discover/shared/domain/types/discover-types";
 
   let { currentFilter, onFilterChange } = $props<{
     currentFilter: FilterPreset;
     onFilterChange: (preset: FilterPreset) => void;
   }>();
+
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handlePresetChange(preset: FilterPreset) {
+    hapticService?.trigger("selection");
+    onFilterChange(preset);
+  }
 
   const presets: Array<{
     id: FilterPreset;
@@ -62,7 +76,7 @@ Modern, touch-friendly interface for selecting view presets
       <button
         class="preset-option"
         class:active={currentFilter === preset.id}
-        onclick={() => onFilterChange(preset.id)}
+        onclick={() => handlePresetChange(preset.id)}
         type="button"
       >
         <div class="preset-icon">

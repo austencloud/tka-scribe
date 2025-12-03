@@ -4,6 +4,9 @@ Sort & Jump Sheet - Mobile Bottom Sheet Version
 Touch-friendly interface for changing sort method and jumping to sections
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { NavigationSection } from "$lib/features/discover/shared/domain/types/discover-types";
   import { ExploreSortMethod } from "$lib/features/discover/shared/domain/enums/discover-enums";
 
@@ -18,6 +21,22 @@ Touch-friendly interface for changing sort method and jumping to sections
     onSortMethodChange: (method: ExploreSortMethod) => void;
     onSectionClick: (sectionId: string) => void;
   }>();
+
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleSortChange(method: string) {
+    hapticService?.trigger("selection");
+    onSortMethodChange(method);
+  }
+
+  function handleSectionClick(sectionId: string) {
+    hapticService?.trigger("selection");
+    onSectionClick(sectionId);
+  }
 
   const sortOptions = [
     {
@@ -59,7 +78,7 @@ Touch-friendly interface for changing sort method and jumping to sections
         <button
           class="option-button"
           class:active={currentSortMethod === option.id}
-          onclick={() => onSortMethodChange(option.id)}
+          onclick={() => handleSortChange(option.id)}
           type="button"
         >
           <div class="option-icon">
@@ -90,9 +109,7 @@ Touch-friendly interface for changing sort method and jumping to sections
         {#each availableSections as section}
           <button
             class="jump-button"
-            onclick={() => {
-              onSectionClick(section.id);
-            }}
+            onclick={() => handleSectionClick(section.id)}
             type="button"
           >
             <span class="jump-label">{section.label}</span>

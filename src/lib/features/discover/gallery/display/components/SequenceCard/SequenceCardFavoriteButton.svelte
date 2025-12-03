@@ -5,13 +5,24 @@ Displays a star button that toggles favorite status.
 Handles click events and accessibility.
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+
   const { isFavorite = false, onToggle = () => {} } = $props<{
     isFavorite?: boolean;
     onToggle?: () => void;
   }>();
 
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
   function handleClick(e: MouseEvent) {
     e.stopPropagation();
+    hapticService?.trigger("selection");
     onToggle();
   }
 </script>

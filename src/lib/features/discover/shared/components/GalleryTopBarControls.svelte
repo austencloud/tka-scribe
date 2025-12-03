@@ -13,6 +13,7 @@ Modern Filter UX Pattern:
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
@@ -26,6 +27,7 @@ Modern Filter UX Pattern:
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
+  let hapticService: IHapticFeedbackService | undefined;
 
   // Reactive responsive settings from DeviceDetector
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
@@ -44,7 +46,8 @@ Modern Filter UX Pattern:
   const filterCount = $derived(hasActiveFilter ? 1 : 0);
 
   onMount(() => {
-    // Resolve DeviceDetector service
+    // Resolve services
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
@@ -69,9 +72,20 @@ Modern Filter UX Pattern:
 
   // Handle removing filter (clear to "all")
   function handleRemoveFilter() {
+    hapticService?.trigger("selection");
     if (galleryControls) {
       galleryControls.onFilterChange({ type: "all", value: null });
     }
+  }
+
+  function handleOpenFilters() {
+    hapticService?.trigger("selection");
+    galleryPanelManager.openFilters();
+  }
+
+  function handleOpenSortJump() {
+    hapticService?.trigger("selection");
+    galleryPanelManager.openSortJump();
   }
 </script>
 
@@ -93,7 +107,7 @@ Modern Filter UX Pattern:
         <button
           class="filters-button"
           class:has-active={hasActiveFilter}
-          onclick={() => galleryPanelManager.openFilters()}
+          onclick={handleOpenFilters}
           type="button"
           aria-label="Filters{filterCount > 0
             ? ` (${filterCount} active)`
@@ -114,7 +128,7 @@ Modern Filter UX Pattern:
           <!-- Mobile: Button to trigger bottom sheet -->
           <button
             class="mobile-control-button"
-            onclick={() => galleryPanelManager.openSortJump()}
+            onclick={handleOpenSortJump}
             type="button"
             aria-label="Sort and navigate"
           >
