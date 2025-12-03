@@ -2,17 +2,23 @@
  * Animate Module State (Shared)
  *
  * Manages shared state for the Animate module:
- * - Current animation mode/tab (single, tunnel, mirror, grid)
+ * - Current tab (setup, playback, browse)
+ * - Current animation mode for playback (single, tunnel, mirror, grid, side-by-side)
  * - Sequence browser panel visibility and mode
  *
- * Tab-specific state (sequences, playback, settings) has been moved to:
- * - tabs/single/state/single-tab-state.svelte.ts
- * - tabs/tunnel/state/tunnel-tab-state.svelte.ts
- * - tabs/mirror/state/mirror-tab-state.svelte.ts
- * - tabs/grid/state/grid-tab-state.svelte.ts
+ * New tab structure:
+ * - tabs/setup/ - Bento mode selection and sequence configuration
+ * - tabs/playback/ - Unified animation playback with per-canvas controls
+ * - tabs/browse/ - Saved animations gallery
  */
 
-export type AnimateMode = "single" | "tunnel" | "mirror" | "grid";
+import type { AnimationMode } from "../domain/AnimationMode";
+
+// Tab types for the new 3-tab structure
+export type AnimateTab = "setup" | "playback" | "browse";
+
+// Re-export AnimationMode for backwards compatibility
+export type AnimateMode = AnimationMode;
 
 export type BrowserTargetMode =
   | "primary"
@@ -24,23 +30,34 @@ export type BrowserTargetMode =
 
 // LocalStorage keys
 const STORAGE_KEYS = {
+  CURRENT_TAB: "animate-current-tab",
   CURRENT_MODE: "animate-current-mode",
 } as const;
 
 export type AnimateModuleState = {
-  // Current tab/mode
+  // Current tab (setup, playback, browse)
+  readonly currentTab: AnimateTab;
+
+  // Current animation mode (for playback) - single, tunnel, mirror, grid, side-by-side
   readonly currentMode: AnimateMode;
 
   // Sequence browser panel
   readonly isSequenceBrowserOpen: boolean;
   readonly browserMode: BrowserTargetMode;
 
-  // State mutators
+  // Tab switching
+  setCurrentTab: (tab: AnimateTab) => void;
+
+  // Mode switching (for playback configuration)
   setCurrentMode: (mode: AnimateMode) => void;
 
   // Browser panel
   openSequenceBrowser: (mode: BrowserTargetMode) => void;
   closeSequenceBrowser: () => void;
+
+  // Navigation helpers
+  goToPlayback: () => void;
+  goToSetup: () => void;
 
   // Reset
   reset: () => void;
@@ -76,7 +93,12 @@ function saveToStorage<T>(key: string, value: T): void {
 }
 
 export function createAnimateModuleState(): AnimateModuleState {
-  // Current mode (persisted)
+  // Current tab (persisted)
+  let currentTab = $state<AnimateTab>(
+    loadFromStorage(STORAGE_KEYS.CURRENT_TAB, "setup")
+  );
+
+  // Current animation mode (persisted) - used for playback configuration
   let currentMode = $state<AnimateMode>(
     loadFromStorage(STORAGE_KEYS.CURRENT_MODE, "single")
   );
@@ -87,6 +109,9 @@ export function createAnimateModuleState(): AnimateModuleState {
 
   return {
     // Getters
+    get currentTab() {
+      return currentTab;
+    },
     get currentMode() {
       return currentMode;
     },
@@ -97,7 +122,14 @@ export function createAnimateModuleState(): AnimateModuleState {
       return browserMode;
     },
 
-    // Mode switching
+    // Tab switching
+    setCurrentTab(tab: AnimateTab) {
+      currentTab = tab;
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, tab);
+      console.log("🎬 AnimateModuleState: Tab changed to", tab);
+    },
+
+    // Mode switching (for playback configuration)
     setCurrentMode(mode: AnimateMode) {
       currentMode = mode;
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, mode);
@@ -121,12 +153,27 @@ export function createAnimateModuleState(): AnimateModuleState {
       console.log("🎬 AnimateModuleState: Browser closed");
     },
 
+    // Navigation helpers
+    goToPlayback() {
+      currentTab = "playback";
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "playback");
+      console.log("🎬 AnimateModuleState: Navigating to Playback");
+    },
+
+    goToSetup() {
+      currentTab = "setup";
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "setup");
+      console.log("🎬 AnimateModuleState: Navigating to Setup");
+    },
+
     // Reset
     reset() {
+      currentTab = "setup";
       currentMode = "single";
       isSequenceBrowserOpen = false;
       browserMode = "primary";
 
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "setup");
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, "single");
       console.log("🎬 AnimateModuleState: Reset");
     },

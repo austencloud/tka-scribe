@@ -1,0 +1,81 @@
+<!--
+  CanvasControls.svelte
+
+  Per-canvas control button positioned in the top-right corner.
+  Opens trail settings sheet for the specific canvas.
+-->
+<script lang="ts">
+  let {
+    canvasId,
+    onOpenSettings,
+  }: {
+    canvasId: string;
+    onOpenSettings: (canvasId: string) => void;
+  } = $props();
+
+  function handleClick() {
+    onOpenSettings(canvasId);
+  }
+</script>
+
+<div class="canvas-controls">
+  <button
+    class="settings-btn"
+    onclick={handleClick}
+    aria-label="Canvas settings"
+    title="Trail & display settings"
+  >
+    <i class="fas fa-cog"></i>
+  </button>
+</div>
+
+<style>
+  .canvas-controls {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+  }
+
+  .settings-btn {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+  }
+
+  .settings-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.05);
+  }
+
+  .settings-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Mobile - larger touch target */
+  @media (max-width: 768px) {
+    .canvas-controls {
+      top: 0.75rem;
+      right: 0.75rem;
+    }
+
+    .settings-btn {
+      width: 52px;
+      height: 52px;
+      font-size: 1.1rem;
+    }
+  }
+</style>
