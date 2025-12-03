@@ -235,8 +235,10 @@
               <span class="profile-name">{user.displayName || "Flow Artist"}</span>
               <span class="profile-email">{user.email}</span>
             {:else}
-              <span class="profile-name">Guest</span>
-              <span class="profile-email">Sign in to sync</span>
+              <button class="guest-sign-in" onclick={openSettings}>
+                <span class="profile-name">Guest</span>
+                <span class="profile-email">Sign in to sync</span>
+              </button>
             {/if}
           </div>
         </div>
@@ -675,6 +677,32 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .guest-sign-in {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: none;
+    border: none;
+    padding: 8px 12px;
+    margin: -8px -12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background var(--duration-fast, 150ms) var(--ease-out);
+  }
+
+  .guest-sign-in:hover {
+    background: rgba(99, 102, 241, 0.15);
+  }
+
+  .guest-sign-in:hover .profile-email {
+    color: rgba(99, 102, 241, 0.9);
+  }
+
+  .guest-sign-in:focus {
+    outline: 2px solid rgba(99, 102, 241, 0.5);
+    outline-offset: 2px;
   }
 
   .profile-stats {

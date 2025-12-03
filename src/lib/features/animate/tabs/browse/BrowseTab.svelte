@@ -36,13 +36,13 @@ Features:
   // Drawer width (desktop)
   const drawerWidth = "min(600px, 90vw)";
 
-  onMount(async () => {
+  onMount(() => {
     hapticService = tryResolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
 
     // Load animations
-    await browseState.loadAnimations();
+    browseState.loadAnimations();
 
     // Detect mobile
     const checkMobile = () => {

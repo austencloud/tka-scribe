@@ -11,14 +11,15 @@
   }>();
 
   // Intersection observer for infinite scroll
-  let loadMoreTrigger: HTMLDivElement | null = null;
+  let loadMoreTrigger = $state<HTMLDivElement | null>(null);
   let observer: IntersectionObserver | null = null;
 
   onMount(() => {
     // Set up intersection observer for infinite scroll
     observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && manageState.hasMore && !manageState.isLoading) {
+        const entry = entries[0];
+        if (entry?.isIntersecting && manageState.hasMore && !manageState.isLoading) {
           manageState.loadMore();
         }
       },
@@ -40,6 +41,7 @@
         }
       };
     }
+    return undefined;
   });
 
   // Handlers for swipe actions

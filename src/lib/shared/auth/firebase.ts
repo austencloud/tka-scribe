@@ -20,7 +20,8 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
-import { getStorage, type FirebaseStorage } from "firebase/storage";
+// Firebase Storage is lazily loaded - only imported where actually needed
+// See: src/routes/api/instagram/upload-media/+server.ts
 
 /**
  * Firebase configuration object
@@ -67,10 +68,14 @@ export const firestore: Firestore = initializeFirestore(app, {
 });
 
 /**
- * Firebase Storage instance
+ * Get Firebase Storage instance (lazy loaded)
  * Use this for file uploads (profile photos, sequence thumbnails, etc.)
+ * Storage is loaded on-demand to reduce initial bundle size (~84KB saved)
  */
-export const storage: FirebaseStorage = getStorage(app);
+export async function getStorageInstance(): Promise<import("firebase/storage").FirebaseStorage> {
+  const { getStorage } = await import("firebase/storage");
+  return getStorage(app);
+}
 
 /**
  * Firebase Analytics instance

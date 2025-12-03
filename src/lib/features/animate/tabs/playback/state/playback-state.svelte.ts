@@ -187,8 +187,14 @@ export function createPlaybackState(): PlaybackState {
     },
 
     updateSequenceSlot(index: number, slot: Partial<AnimationSequenceSlot>) {
-      if (index >= 0 && index < sequences.length) {
-        sequences[index] = { ...sequences[index], ...slot };
+      const existing = sequences[index];
+      if (index >= 0 && index < sequences.length && existing) {
+        sequences[index] = {
+          sequence: slot.sequence !== undefined ? slot.sequence : existing.sequence,
+          visible: slot.visible !== undefined ? slot.visible : existing.visible,
+          blueVisible: slot.blueVisible !== undefined ? slot.blueVisible : existing.blueVisible,
+          redVisible: slot.redVisible !== undefined ? slot.redVisible : existing.redVisible,
+        };
         console.log(`🎬 Playback: Sequence slot ${index} updated`, slot);
       }
     },
@@ -196,8 +202,13 @@ export function createPlaybackState(): PlaybackState {
     // Canvas Settings
     updateCanvasSettings(canvasId: string, settings: Partial<CanvasSettings>) {
       const index = canvasSettings.findIndex((cs) => cs.id === canvasId);
-      if (index !== -1) {
-        canvasSettings[index] = { ...canvasSettings[index], ...settings };
+      const existing = canvasSettings[index];
+      if (index !== -1 && existing) {
+        canvasSettings[index] = {
+          id: settings.id !== undefined ? settings.id : existing.id,
+          trailSettings: settings.trailSettings !== undefined ? settings.trailSettings : existing.trailSettings,
+          rotationOffset: settings.rotationOffset !== undefined ? settings.rotationOffset : existing.rotationOffset,
+        };
         console.log(`🎨 Playback: Canvas settings updated for ${canvasId}`, settings);
       } else {
         // Create new canvas settings if not found
@@ -211,10 +222,14 @@ export function createPlaybackState(): PlaybackState {
 
     updateTrailSettings(canvasId: string, trailSettings: Partial<TrailSettings>) {
       const index = canvasSettings.findIndex((cs) => cs.id === canvasId);
-      if (index !== -1) {
-        canvasSettings[index].trailSettings = {
-          ...canvasSettings[index].trailSettings,
-          ...trailSettings,
+      const existing = canvasSettings[index];
+      if (index !== -1 && existing) {
+        canvasSettings[index] = {
+          ...existing,
+          trailSettings: {
+            ...existing.trailSettings,
+            ...trailSettings,
+          },
         };
         console.log(`🎨 Playback: Trail settings updated for ${canvasId}`, trailSettings);
       }

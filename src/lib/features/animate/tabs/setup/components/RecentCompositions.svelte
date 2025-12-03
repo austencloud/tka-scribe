@@ -32,7 +32,8 @@
     single: "#3b82f6",
     mirror: "#8b5cf6",
     tunnel: "#ec4899",
-    grid: "#f59e0b"
+    grid: "#f59e0b",
+    "side-by-side": "#10b981"
   };
 
   // Mode icons
@@ -40,7 +41,8 @@
     single: "fa-play",
     mirror: "fa-clone",
     tunnel: "fa-circle-notch",
-    grid: "fa-th-large"
+    grid: "fa-th-large",
+    "side-by-side": "fa-columns"
   };
 
   onMount(async () => {

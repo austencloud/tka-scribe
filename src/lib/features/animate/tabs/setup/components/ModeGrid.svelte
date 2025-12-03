@@ -29,7 +29,6 @@
   const modes = [
     {
       id: "single" as AnimateMode,
-      icon: "fa-play",
       title: "Single",
       description: "Full-screen single sequence",
       slotCount: 1,
@@ -37,7 +36,6 @@
     },
     {
       id: "mirror" as AnimateMode,
-      icon: "fa-arrows-left-right",
       title: "Mirror",
       description: "Side-by-side mirrored copy",
       slotCount: 1,
@@ -45,7 +43,6 @@
     },
     {
       id: "tunnel" as AnimateMode,
-      icon: "fa-layer-group",
       title: "Tunnel",
       description: "Two sequences overlaid",
       slotCount: 2,
@@ -53,7 +50,6 @@
     },
     {
       id: "grid" as AnimateMode,
-      icon: "fa-grip",
       title: "Grid",
       description: "Multiple in grid layout",
       slotCount: 4,
@@ -79,7 +75,6 @@
         <div transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: i * STAGGER.normal, easing: cubicOut }}>
           <ModeCard
             mode={mode.id}
-            icon={mode.icon}
             title={mode.title}
             description={mode.description}
             slotCount={mode.slotCount}

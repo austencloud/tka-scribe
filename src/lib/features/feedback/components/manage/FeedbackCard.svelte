@@ -11,9 +11,19 @@
     onDelete?: () => void;
   }>();
 
-  const typeConfig = TYPE_CONFIG[item.type];
-  const statusConfig = STATUS_CONFIG[item.status];
-  const priorityConfig = item.priority ? PRIORITY_CONFIG[item.priority] : null;
+  // Default configs for fallback
+  const DEFAULT_TYPE_CONFIG = { color: "#6b7280", icon: "fa-question-circle", label: "Unknown" };
+  const DEFAULT_STATUS_CONFIG = { color: "#6b7280", icon: "fa-circle", label: "Unknown" };
+
+  const typeConfig = item.type && item.type in TYPE_CONFIG
+    ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
+    : DEFAULT_TYPE_CONFIG;
+  const statusConfig = item.status && item.status in STATUS_CONFIG
+    ? STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]
+    : DEFAULT_STATUS_CONFIG;
+  const priorityConfig = item.priority && item.priority in PRIORITY_CONFIG
+    ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
+    : null;
 
   // Swipe state
   let swipeOffset = $state(0);
@@ -33,6 +43,7 @@
       const timer = setTimeout(() => { justSelected = false; }, 400);
       return () => clearTimeout(timer);
     }
+    return undefined;
   });
 
   // Thresholds
@@ -61,18 +72,22 @@
   // Touch handlers for swipe
   function handleTouchStart(e: TouchEvent) {
     if (!onStatusChange && !onDelete) return;
+    const touch = e.touches[0];
+    if (!touch) return;
 
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
     touchStartTime = Date.now();
     hasSwipeIntent = false;
   }
 
   function handleTouchMove(e: TouchEvent) {
     if (!onStatusChange && !onDelete) return;
+    const touch = e.touches[0];
+    if (!touch) return;
 
-    const touchX = e.touches[0].clientX;
-    const touchY = e.touches[0].clientY;
+    const touchX = touch.clientX;
+    const touchY = touch.clientY;
     const deltaX = touchX - touchStartX;
     const deltaY = touchY - touchStartY;
 
@@ -125,8 +140,8 @@
     if (isRightSwipe && (absOffset > SWIPE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)) {
       if (onStatusChange) {
         // Cycle through quick status changes
-        const nextStatus: FeedbackStatus = item.status === "new" ? "in_progress" :
-                                           item.status === "in_progress" ? "resolved" : "new";
+        const nextStatus: FeedbackStatus = item.status === "new" ? "in-progress" :
+                                           item.status === "in-progress" ? "completed" : "new";
         onStatusChange(nextStatus);
       }
     }
@@ -467,6 +482,7 @@
     /* 2-line clamp */
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -556,6 +572,7 @@
     .card-title {
       white-space: normal;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       display: -webkit-box;
       -webkit-box-orient: vertical;
     }

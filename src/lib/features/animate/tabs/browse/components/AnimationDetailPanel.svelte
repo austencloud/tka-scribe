@@ -38,18 +38,20 @@ Features:
   });
 
   // Mode display
-  const modeIcons = {
+  const modeIcons: Record<string, string> = {
     single: "fa-play",
     mirror: "fa-clone",
     tunnel: "fa-layer-group",
     grid: "fa-th",
+    "side-by-side": "fa-columns",
   };
 
-  const modeNames = {
+  const modeNames: Record<string, string> = {
     single: "Single Mode",
     mirror: "Mirror Mode",
     tunnel: "Tunnel Mode",
     grid: "Grid Mode",
+    "side-by-side": "Side by Side Mode",
   };
 
   // Format date
@@ -186,17 +188,18 @@ Features:
       ></i>
     </button>
 
-    <button class="action-btn" onclick={() => handleAction("duplicate")}>
+    <button class="action-btn" onclick={() => handleAction("duplicate")} aria-label="Duplicate animation">
       <i class="fas fa-copy"></i>
     </button>
 
-    <button class="action-btn" onclick={() => handleAction("share")}>
+    <button class="action-btn" onclick={() => handleAction("share")} aria-label="Share animation">
       <i class="fas fa-share-alt"></i>
     </button>
 
     <button
       class="action-btn action-btn-danger"
       onclick={() => handleAction("delete")}
+      aria-label="Delete animation"
     >
       <i class="fas fa-trash"></i>
     </button>

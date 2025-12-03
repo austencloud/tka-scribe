@@ -11,8 +11,15 @@
     onClose: () => void;
   }>();
 
-  const typeConfig = TYPE_CONFIG[item.type];
-  const priorityConfig = item.priority ? PRIORITY_CONFIG[item.priority] : null;
+  // Default config for fallback
+  const DEFAULT_TYPE_CONFIG = { color: "#6b7280", icon: "fa-question-circle", label: "Unknown" };
+
+  const typeConfig = item.type && item.type in TYPE_CONFIG
+    ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
+    : DEFAULT_TYPE_CONFIG;
+  const priorityConfig = item.priority && item.priority in PRIORITY_CONFIG
+    ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
+    : null;
 
   // Local reactive state
   let adminNotes = $state(item.adminNotes || "");

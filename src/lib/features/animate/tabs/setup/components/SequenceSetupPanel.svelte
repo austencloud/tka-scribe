@@ -88,6 +88,7 @@
       return cleanup;
     } catch (error) {
       console.warn("SequenceSetupPanel: Failed to resolve services", error);
+      return undefined;
     }
   });
 
@@ -146,8 +147,8 @@
 
         <div class="slot-card" style="--delay: {i * STAGGER.normal}ms">
           <div class="slot-header">
-            <i class="fas {meta.icon}"></i>
-            <span class="slot-label">{meta.label}</span>
+            <i class="fas {meta?.icon ?? 'fa-square'}"></i>
+            <span class="slot-label">{meta?.label ?? slotId}</span>
           </div>
 
           {#if sequence}
@@ -167,7 +168,7 @@
                 <button
                   class="change-btn"
                   onclick={() => handleSelectSequence(slotId)}
-                  aria-label="Change sequence for {meta.label}"
+                  aria-label="Change sequence for {meta?.label ?? slotId}"
                 >
                   <i class="fas fa-sync"></i>
                   Change
@@ -175,7 +176,7 @@
                 <button
                   class="clear-btn"
                   onclick={() => handleClearSlot(slotId)}
-                  aria-label="Clear {meta.label}"
+                  aria-label="Clear {meta?.label ?? slotId}"
                 >
                   <i class="fas fa-times"></i>
                 </button>
@@ -186,7 +187,7 @@
             <button
               class="slot-empty"
               onclick={() => handleSelectSequence(slotId)}
-              aria-label="Select sequence for {meta.label}"
+              aria-label="Select sequence for {meta?.label ?? slotId}"
             >
               <i class="fas fa-plus"></i>
               <span>Select Sequence</span>

@@ -77,9 +77,9 @@
 
     // Filter by beat count if required (use normalized beats, excluding start position)
     if (requiredBeatCount !== undefined && normalizationService) {
+      const service = normalizationService; // capture for closure
       filtered = filtered.filter((seq) => {
-        const normalized =
-          normalizationService.separateBeatsFromStartPosition(seq);
+        const normalized = service.separateBeatsFromStartPosition(seq);
         return normalized.beats.length === requiredBeatCount;
       });
     }

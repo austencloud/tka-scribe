@@ -1,0 +1,314 @@
+<!--
+  SequencePromptCard.svelte - Entry card for Practice tab when no sequence is saved
+
+  Shows recent sequences for quick selection and a button to browse all sequences.
+  Displayed when user has no last-used sequence saved.
+-->
+<script lang="ts">
+  import { fade, fly } from "svelte/transition";
+  import { getTrainPracticeState, type RecentSequence } from "../../state/train-practice-state.svelte";
+  import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { tryResolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { onMount } from "svelte";
+
+  interface Props {
+    onSequenceSelect: (sequence: SequenceData) => void;
+  }
+
+  let { onSequenceSelect }: Props = $props();
+
+  const practiceState = getTrainPracticeState();
+  let showBrowser = $state(false);
+  let hapticService: IHapticFeedbackService | null = null;
+
+  // Get recent sequences from state
+  const recentSequences = $derived(practiceState.recentSequences);
+
+  onMount(() => {
+    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleBrowseClick() {
+    hapticService?.trigger("selection");
+    showBrowser = true;
+  }
+
+  function handleCloseBrowser() {
+    showBrowser = false;
+  }
+
+  function handleSequenceSelect(sequence: SequenceData) {
+    hapticService?.trigger("success");
+    showBrowser = false;
+    onSequenceSelect(sequence);
+  }
+
+  function handleRecentSelect(recent: RecentSequence) {
+    hapticService?.trigger("selection");
+    // For recent sequences, we need to fetch the full sequence data
+    // For now, we'll open the browser with the sequence pre-selected
+    // TODO: Implement direct load from recent sequence cache
+    showBrowser = true;
+  }
+
+  function formatTimeAgo(timestamp: number): string {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days === 1) return "Yesterday";
+    if (days < 7) return `${days}d ago`;
+
+    return new Date(timestamp).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric"
+    });
+  }
+</script>
+
+<div class="prompt-container" in:fade={{ duration: 200 }}>
+  <div class="prompt-card">
+    <!-- Icon -->
+    <div class="prompt-icon">
+      <i class="fas fa-dumbbell"></i>
+    </div>
+
+    <!-- Title -->
+    <h2 class="prompt-title">Select a Sequence to Practice</h2>
+    <p class="prompt-subtitle">Choose a sequence to start your training session</p>
+
+    <!-- Recent Sequences (if any) -->
+    {#if recentSequences.length > 0}
+      <div class="recent-section" in:fly={{ y: 10, duration: 200, delay: 100 }}>
+        <div class="recent-header">
+          <i class="fas fa-history"></i>
+          <span>Recent</span>
+        </div>
+        <div class="recent-grid">
+          {#each recentSequences as recent, index (recent.id)}
+            <button
+              class="recent-card"
+              onclick={() => handleRecentSelect(recent)}
+              in:fly={{ y: 10, duration: 200, delay: 150 + index * 50 }}
+            >
+              <div class="recent-name">{recent.word ?? recent.name}</div>
+              <div class="recent-meta">
+                <span class="beat-count">{recent.beatCount} beats</span>
+                <span class="time-ago">{formatTimeAgo(recent.lastPracticedAt)}</span>
+              </div>
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    <!-- Browse Button -->
+    <button
+      class="browse-button"
+      onclick={handleBrowseClick}
+      in:fly={{ y: 10, duration: 200, delay: recentSequences.length > 0 ? 300 : 100 }}
+    >
+      <i class="fas fa-folder-open"></i>
+      <span>Browse All Sequences</span>
+    </button>
+  </div>
+
+  <!-- Sequence Browser Panel -->
+  <SequenceBrowserPanel
+    mode="primary"
+    show={showBrowser}
+    onSelect={handleSequenceSelect}
+    onClose={handleCloseBrowser}
+  />
+</div>
+
+<style>
+  .prompt-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: clamp(1rem, 4vw, 2rem);
+    overflow-y: auto;
+  }
+
+  .prompt-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: min(440px, 100%);
+    width: 100%;
+    gap: clamp(0.75rem, 3vw, 1.25rem);
+  }
+
+  .prompt-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(56px, 14vw, 80px);
+    height: clamp(56px, 14vw, 80px);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: clamp(14px, 4vw, 20px);
+    color: #60a5fa;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .prompt-title {
+    margin: 0;
+    font-size: clamp(1.25rem, 4.5vw, 1.75rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .prompt-subtitle {
+    margin: 0;
+    font-size: clamp(0.875rem, 3vw, 1rem);
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.5;
+  }
+
+  /* Recent Sequences Section */
+  .recent-section {
+    width: 100%;
+    margin-top: clamp(0.5rem, 2vw, 1rem);
+  }
+
+  .recent-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .recent-header i {
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
+  .recent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+    gap: clamp(0.5rem, 2vw, 0.75rem);
+  }
+
+  .recent-card {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.25rem, 1vw, 0.375rem);
+    padding: clamp(0.75rem, 3vw, 1rem);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(0.5rem, 2vw, 0.75rem);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .recent-card:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(139, 92, 246, 0.1) 100%
+    );
+    transform: translateY(-2px);
+  }
+
+  .recent-card:active {
+    transform: scale(0.98);
+    transition-duration: 50ms;
+  }
+
+  .recent-name {
+    font-size: clamp(0.875rem, 3vw, 0.9375rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .recent-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .beat-count {
+    color: rgba(59, 130, 246, 0.9);
+    font-weight: 500;
+  }
+
+  .time-ago::before {
+    content: "•";
+    margin-right: 0.5rem;
+    opacity: 0.4;
+  }
+
+  /* Browse Button */
+  .browse-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 2vw, 0.75rem);
+    width: 100%;
+    padding: clamp(0.875rem, 3.5vw, 1.125rem) clamp(1rem, 4vw, 1.5rem);
+    margin-top: clamp(0.5rem, 2vw, 0.75rem);
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border: none;
+    border-radius: clamp(0.625rem, 2.5vw, 0.875rem);
+    color: white;
+    font-size: clamp(0.9rem, 3vw, 1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .browse-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+  }
+
+  .browse-button:active {
+    transform: translateY(0);
+    transition-duration: 50ms;
+  }
+
+  .browse-button i {
+    font-size: 1.1em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .recent-card,
+    .browse-button {
+      transition: none;
+    }
+
+    .recent-card:hover,
+    .browse-button:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -25,6 +25,7 @@
       tunnel: "Tunnel",
       mirror: "Mirror",
       grid: "Grid",
+      "side-by-side": "Side by Side",
     };
     return labels[currentMode] || "Single";
   });

@@ -61,6 +61,7 @@
         style="--chip-color: {config.color}"
         onclick={() => manageState.setFilter("type", manageState.filters.type === type ? "all" : type as FeedbackType)}
         title="{config.label}"
+        aria-label="Filter by {config.label}"
       >
         <i class="fas {config.icon}"></i>
       </button>
@@ -76,6 +77,7 @@
         style="--chip-color: {config.color}"
         onclick={() => manageState.setFilter("priority", manageState.filters.priority === priority ? "all" : priority as FeedbackPriority)}
         title="{config.label} priority"
+        aria-label="Filter by {config.label} priority"
       >
         <i class="fas {config.icon}"></i>
       </button>

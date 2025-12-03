@@ -9,7 +9,6 @@
 	import type { FeatureFlagConfig } from "$lib/shared/auth/domain/models/FeatureFlag";
 	import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 	import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
-	import AdminModal from "$lib/shared/admin/components/AdminModal.svelte";
 	import GlobalFlagList from './GlobalFlagList.svelte';
 	import GlobalFlagDetail from './GlobalFlagDetail.svelte';
 	import { buildHierarchicalFlags } from './utils';
@@ -34,13 +33,6 @@
 	let editedMinimumRole = $state<UserRole>('user');
 	let editedEnabled = $state(true);
 
-	// Modal state
-	let confirmModal = $state<{
-		show: boolean;
-		title: string;
-		message: string;
-		onConfirm: () => Promise<void>;
-	} | null>(null);
 
 	// Derived
 	const hierarchicalFlags = $derived(
@@ -96,40 +88,27 @@
 
 		if (!hasChanges) return;
 
-		confirmModal = {
-			show: true,
-			title: 'Update Feature Flag',
-			message: `Are you sure you want to update "${selectedFlag.name}"? This will affect all users.`,
-			onConfirm: async () => {
-				isSaving = true;
+		isSaving = true;
 
-				try {
-					const flagToUpdate = selectedFlag;
-					if (!flagToUpdate) return;
+		try {
+			await featureFlagService.updateGlobalFeatureFlag(selectedFlag.id, {
+				minimumRole: editedMinimumRole,
+				enabled: editedEnabled,
+			});
 
-					await featureFlagService.updateGlobalFeatureFlag(flagToUpdate.id, {
-						minimumRole: editedMinimumRole,
-						enabled: editedEnabled,
-					});
+			featureFlags = featureFlags.map((f) =>
+				f.id === selectedFlag!.id
+					? { ...f, minimumRole: editedMinimumRole, enabled: editedEnabled }
+					: f
+			);
 
-					featureFlags = featureFlags.map((f) =>
-						f.id === flagToUpdate.id
-							? { ...f, minimumRole: editedMinimumRole, enabled: editedEnabled }
-							: f
-					);
-
-					if (selectedFlag) {
-						selectedFlag = { ...selectedFlag, minimumRole: editedMinimumRole, enabled: editedEnabled };
-					}
-				} catch (error) {
-					console.error('Failed to update feature flag:', error);
-					onError('Failed to update feature flag. Please try again.');
-				} finally {
-					isSaving = false;
-					confirmModal = null;
-				}
-			},
-		};
+			selectedFlag = null;
+		} catch (error) {
+			console.error('Failed to update feature flag:', error);
+			onError('Failed to update feature flag. Please try again.');
+		} finally {
+			isSaving = false;
+		}
 	}
 
 	onMount(() => {
@@ -173,15 +152,3 @@
 	{/snippet}
 </AdminTwoPanelLayout>
 
-{#if confirmModal?.show}
-	<AdminModal
-		title={confirmModal.title}
-		message={confirmModal.message}
-		variant="warning"
-		confirmLabel="Update"
-		cancelLabel="Cancel"
-		onConfirm={confirmModal.onConfirm}
-		onCancel={() => (confirmModal = null)}
-		loading={isSaving}
-	/>
-{/if}

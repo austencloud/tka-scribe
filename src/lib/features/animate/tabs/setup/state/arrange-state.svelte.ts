@@ -39,6 +39,7 @@ const MODE_SLOT_REQUIREMENTS: Record<AnimateMode, string[]> = {
   mirror: ["primary"],
   tunnel: ["primary", "secondary"],
   grid: ["grid-0", "grid-1", "grid-2", "grid-3"],
+  "side-by-side": ["left", "right"],
 };
 
 // Helper functions for localStorage

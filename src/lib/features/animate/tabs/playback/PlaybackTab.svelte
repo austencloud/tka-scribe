@@ -177,12 +177,15 @@
 
   <!-- Trail Settings Sheet -->
   {#if currentCanvasSettings()}
-    <TrailSettingsSheet
-      bind:isOpen={isTrailSettingsOpen}
-      canvasId={currentSettingsCanvasId}
-      trailSettings={currentCanvasSettings()}
-      onSettingsChange={handleTrailSettingsChange}
-    />
+    {@const canvasSettings = currentCanvasSettings()}
+    {#if canvasSettings}
+      <TrailSettingsSheet
+        bind:isOpen={isTrailSettingsOpen}
+        canvasId={currentSettingsCanvasId}
+        trailSettings={canvasSettings}
+        onSettingsChange={handleTrailSettingsChange}
+      />
+    {/if}
   {/if}
 </div>
 

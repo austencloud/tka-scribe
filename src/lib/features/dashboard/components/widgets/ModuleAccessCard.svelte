@@ -5,7 +5,7 @@
    * Desktop uses chips (inline in Dashboard.svelte)
    */
 
-  import type { ModuleDefinition } from "$lib/shared/navigation/domain/types/navigation-types";
+  import type { ModuleDefinition } from "$lib/shared/navigation/domain/types";
 
   interface Props {
     module: ModuleDefinition;

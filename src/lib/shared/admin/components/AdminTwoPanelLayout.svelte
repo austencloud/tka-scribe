@@ -90,11 +90,8 @@
 	});
 
 	// Sync drawer open state with hasSelection prop
-	// When hasSelection becomes true, open the drawer
 	$effect(() => {
-		if (hasSelection) {
-			drawerOpen = true;
-		}
+		drawerOpen = hasSelection;
 	});
 
 	// Handle drawer close from user interaction (backdrop, escape, swipe)

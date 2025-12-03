@@ -31,6 +31,9 @@
 		type SessionResult,
 	} from "../utils/challenge-completion-detector";
 	import { addNotification } from "$lib/shared/gamification/state/notification-state.svelte";
+	import { getTrainPracticeState } from "../state/train-practice-state.svelte";
+	import PracticeModeToggle from "./practice/PracticeModeToggle.svelte";
+	import ModeSettingsSheet from "./practice/ModeSettingsSheet.svelte";
 
 	interface Props {
 		sequence?: SequenceData | null;
@@ -38,6 +41,7 @@
 		modeConfig?: AdaptiveConfig | StepConfig | TimedConfig;
 		challengeId?: string;
 		onBack?: () => void;
+		onSessionComplete?: () => void;
 	}
 
 	let {
@@ -45,8 +49,15 @@
 		practiceMode = PracticeMode.TIMED,
 		modeConfig,
 		challengeId,
-		onBack
+		onBack,
+		onSessionComplete
 	}: Props = $props();
+
+	// Practice state for mode switching and settings
+	const practiceState = getTrainPracticeState();
+
+	// Settings sheet state
+	let showSettingsSheet = $state(false);
 
 	// Initialize train state
 	const trainState = createTrainState();
@@ -465,12 +476,27 @@
 	<!-- Step 2+: Training Interface -->
 	<!-- Header -->
 	<header class="panel-header">
-		<button class="back-button" onclick={() => { hapticService?.trigger("selection"); trainState.clearSequence(); }} aria-label="Change sequence">
+		<button class="back-button" onclick={() => { hapticService?.trigger("selection"); onBack?.(); }} aria-label="Back to sequence selection">
 			<i class="fas fa-arrow-left"></i>
 		</button>
 		<div class="header-info">
 			<h1>{trainState.sequence?.word || trainState.sequence?.name || "Sequence"}</h1>
 			<span class="beat-count">{trainState.totalBeats} beats</span>
+		</div>
+		<!-- Mode Toggle (compact) -->
+		<div class="header-controls">
+			<PracticeModeToggle
+				activeMode={practiceState.currentMode}
+				onModeChange={(mode) => practiceState.setMode(mode)}
+				compact={true}
+			/>
+			<button
+				class="settings-button"
+				onclick={() => { hapticService?.trigger("selection"); showSettingsSheet = true; }}
+				aria-label="Mode settings"
+			>
+				<i class="fas fa-cog"></i>
+			</button>
 		</div>
 	</header>
 
@@ -624,6 +650,19 @@
 			<button onclick={() => { hapticService?.trigger("selection"); trainState.setError(null); }}>✕</button>
 		</div>
 	{/if}
+
+	<!-- Mode Settings Sheet -->
+	<ModeSettingsSheet
+		bind:isOpen={showSettingsSheet}
+		onClose={() => showSettingsSheet = false}
+		currentMode={practiceState.currentMode}
+		adaptiveConfig={practiceState.adaptiveConfig}
+		stepConfig={practiceState.stepConfig}
+		timedConfig={practiceState.timedConfig}
+		onAdaptiveConfigUpdate={(config) => practiceState.updateAdaptiveConfig(config)}
+		onStepConfigUpdate={(config) => practiceState.updateStepConfig(config)}
+		onTimedConfigUpdate={(config) => practiceState.updateTimedConfig(config)}
+	/>
 	{/if}
 </div>
 

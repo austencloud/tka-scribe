@@ -630,10 +630,6 @@
       font-size: 11px;
     }
 
-    .connected-badge span {
-      display: none;
-    }
-
     /* Visual size compact but touch target maintained */
     .unlink-btn {
       width: 36px;

@@ -7,7 +7,8 @@
  */
 
 import type { AnimationMode } from './AnimationMode';
-import type { TrailSettings, TrailMode } from '../types/TrailTypes';
+import type { TrailSettings } from './types/TrailTypes';
+import { TrailMode } from './types/TrailTypes';
 
 /**
  * Animation Entity
@@ -156,7 +157,7 @@ export function createAnimationSequenceSlot(
  */
 export function createCanvasSettings(
   canvasId?: string,
-  trailMode: TrailMode = 'fade'
+  trailMode: TrailMode = TrailMode.FADE
 ): CanvasSettings {
   return {
     canvasId: canvasId ?? crypto.randomUUID(),

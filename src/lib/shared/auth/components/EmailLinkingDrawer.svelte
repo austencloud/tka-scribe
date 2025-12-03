@@ -690,14 +690,6 @@
     gap: 4px;
   }
 
-  .field-hint.error {
-    color: #ef4444;
-  }
-
-  .field-hint.success {
-    color: #22c55e;
-  }
-
   .field-hint.neutral {
     color: rgba(255, 255, 255, 0.5);
   }

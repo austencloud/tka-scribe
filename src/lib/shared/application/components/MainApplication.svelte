@@ -159,7 +159,7 @@
         cleanupSheetListener = sheetRouterService.onRouteChange(async (state) => {
           // Redirect legacy ?sheet=settings to settings module
           if (state.sheet === "settings") {
-            sheetRouterService.closeSheet();
+            sheetRouterService?.closeSheet();
             await handleModuleChange("settings" as ModuleId);
             return;
           }

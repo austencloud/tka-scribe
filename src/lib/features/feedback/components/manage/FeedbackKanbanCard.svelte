@@ -13,8 +13,8 @@
     onClick: () => void;
   }>();
 
-  const typeConfig = $derived(TYPE_CONFIG[item.type]);
-  const priorityConfig = $derived(item.priority ? PRIORITY_CONFIG[item.priority] : null);
+  const typeConfig = $derived(item.type && item.type in TYPE_CONFIG ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG] : null);
+  const priorityConfig = $derived(item.priority && item.priority in PRIORITY_CONFIG ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG] : null);
 
   // Format relative time
   function formatRelativeTime(date: Date): string {
@@ -104,7 +104,7 @@
       pointer-events: none;
       opacity: 0.9;
       transform: scale(1.05) rotate(2deg);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${typeConfig.color};
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${typeConfig?.color ?? '#6366f1'};
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     `;
     document.body.appendChild(dragGhost);
@@ -126,14 +126,17 @@
 
   function handleTouchStart(e: TouchEvent) {
     const touch = e.touches[0];
+    if (!touch) return;
     touchStartPos = { x: touch.clientX, y: touch.clientY };
     touchStartTime = Date.now();
+    const startX = touch.clientX;
+    const startY = touch.clientY;
 
     // Start long press timer (150ms - faster pickup)
     longPressTimer = setTimeout(() => {
       isTouchDragging = true;
       isDragging = true;
-      createDragGhost(touch.clientX, touch.clientY);
+      createDragGhost(startX, startY);
       onDragStart(item);
       // Haptic feedback if available
       if (navigator.vibrate) {
@@ -144,6 +147,7 @@
 
   function handleTouchMove(e: TouchEvent) {
     const touch = e.touches[0];
+    if (!touch) return;
     const deltaX = Math.abs(touch.clientX - touchStartPos.x);
     const deltaY = Math.abs(touch.clientY - touchStartPos.y);
 
@@ -225,7 +229,7 @@
   class:priority-high={item.priority === "high"}
   class:priority-medium={item.priority === "medium"}
   class:priority-low={item.priority === "low" || !item.priority}
-  style="--type-color: {typeConfig.color}; --priority-color: {priorityConfig?.color || '#6b7280'}"
+  style="--type-color: {typeConfig?.color ?? '#6366f1'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
   draggable="true"
   ondragstart={handleDragStart}
   ondragend={handleDragEnd}
@@ -238,8 +242,8 @@
   <div class="card-content">
     <!-- Header: Type icon + Title + Priority badge -->
     <div class="card-header">
-      <div class="type-icon" title={typeConfig.label}>
-        <i class="fas {typeConfig.icon}"></i>
+      <div class="type-icon" title={typeConfig?.label ?? 'Feedback'}>
+        <i class="fas {typeConfig?.icon ?? 'fa-comment'}"></i>
       </div>
       <h4 class="card-title">{item.title}</h4>
       {#if priorityConfig}
@@ -430,6 +434,7 @@
     line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -442,6 +447,7 @@
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
@@ -472,8 +478,7 @@
     gap: clamp(2px, 0.5cqi, 4px);
   }
 
-  .meta-user i,
-  .meta-time i {
+  .meta-user i {
     font-size: 0.9em;
   }
 

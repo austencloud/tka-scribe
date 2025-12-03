@@ -32,6 +32,7 @@ Features:
     mirror: "fa-clone",
     tunnel: "fa-circle-notch",
     grid: "fa-th-large",
+    "side-by-side": "fa-columns",
   };
 
   // Mode display names
@@ -40,6 +41,7 @@ Features:
     mirror: "Mirror",
     tunnel: "Tunnel",
     grid: "Grid",
+    "side-by-side": "Side by Side",
   };
 
   // Mode color gradients
@@ -48,6 +50,7 @@ Features:
     mirror: "linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(109, 40, 217, 0.1) 100%)",
     tunnel: "linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(219, 39, 119, 0.1) 100%)",
     grid: "linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.1) 100%)",
+    "side-by-side": "linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%)",
   };
 
   // Mode accent colors
@@ -56,6 +59,7 @@ Features:
     mirror: "#8b5cf6",
     tunnel: "#ec4899",
     grid: "#f59e0b",
+    "side-by-side": "#10b981",
   };
 
   // Truncate title to 24 characters

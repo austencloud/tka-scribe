@@ -13,7 +13,6 @@
 
   interface Props {
     mode: AnimateMode;
-    icon: string;
     title: string;
     description: string;
     slotCount: number;
@@ -21,7 +20,7 @@
     onclick: () => void;
   }
 
-  let { mode, icon, title, description, slotCount, gradient, onclick }: Props = $props();
+  let { mode, title, description, slotCount, gradient, onclick }: Props = $props();
 
   // Visual preview configurations for each mode
   const modePreviewConfig: Record<AnimateMode, { type: string; elements: any[] }> = {
@@ -50,6 +49,13 @@
         { x: 75, y: 25, size: 35 },
         { x: 25, y: 75, size: 35 },
         { x: 75, y: 75, size: 35 }
+      ]
+    },
+    "side-by-side": {
+      type: "side-by-side",
+      elements: [
+        { x: 25, y: 50, width: 40, height: 70 },
+        { x: 75, y: 50, width: 40, height: 70 }
       ]
     }
   };
@@ -133,10 +139,6 @@
         <line x1="8" y1="50" x2="92" y2="50" class="grid-line" />
       {/if}
     </svg>
-  </div>
-
-  <div class="mode-icon">
-    <i class="fas {icon}"></i>
   </div>
 
   <div class="mode-content">
@@ -252,19 +254,6 @@
   .mode-card:focus {
     outline: 3px solid white;
     outline-offset: 2px;
-  }
-
-  .mode-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: clamp(2.5rem, 18cqi, 3.75rem);
-    height: clamp(2.5rem, 18cqi, 3.75rem);
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: clamp(0.625rem, 4cqi, 1rem);
-    font-size: clamp(1.125rem, 8cqi, 1.75rem);
-    color: white;
-    flex-shrink: 0;
   }
 
   .mode-content {

@@ -31,6 +31,9 @@
   }: Props = $props();
 
   const flagStyle = $derived(getFeatureIconAndColor(selectedFlag.id));
+  const hasChanges = $derived(
+    editedMinimumRole !== selectedFlag.minimumRole || editedEnabled !== selectedFlag.enabled
+  );
 </script>
 
 <AdminDetailPanel
@@ -133,16 +136,18 @@
   {/snippet}
 
   {#snippet actions()}
-    <AdminActionButton variant="secondary" onclick={onReset}
-      >Reset</AdminActionButton
-    >
+    {#if hasChanges}
+      <AdminActionButton variant="secondary" onclick={onReset}
+        >Reset</AdminActionButton
+      >
+    {/if}
     <AdminActionButton
       variant="primary"
-      icon="fa-save"
+      icon={hasChanges ? "fa-save" : "fa-check"}
       loading={isSaving}
-      onclick={onSave}
+      onclick={hasChanges ? onSave : onClose}
     >
-      Save Changes
+      {hasChanges ? "Save Changes" : "Done"}
     </AdminActionButton>
   {/snippet}
 </AdminDetailPanel>

@@ -32,19 +32,19 @@ if (import.meta.hot) {
     isHMRRecovering = true;
 
     // Save the list of loaded feature modules BEFORE clearing
+    // Tier 1 + Tier 2 modules are automatically reloaded, only save Tier 3 feature modules
     const featureModulesToRestore = Array.from(loadedModules).filter(
       (module) =>
         ![
+          // Tier 1: Core infrastructure
           "core",
           "navigation",
           "data",
           "keyboard",
+          "analytics",
+          // Tier 2: Shared services
           "render",
           "pictograph",
-          "create",
-          "share",
-          "animator",
-          "gamification",
         ].includes(module)
     );
 
@@ -273,9 +273,9 @@ export async function loadCriticalModules(): Promise<void> {
 }
 
 /**
- * TIER 2: Load shared service modules (rendering, animation, pictographs)
+ * TIER 2: Load shared service modules (rendering, pictographs)
  * ⏱️ Non-blocking - Loads in background while user reads content
- * These modules are used across ALL features (panels, rendering, etc.)
+ * Only truly shared modules that are needed across ALL features
  */
 export async function loadSharedModules(): Promise<void> {
   if (tier2Loaded) return;
@@ -289,37 +289,22 @@ export async function loadSharedModules(): Promise<void> {
   // Start loading and cache the promise
   tier2Promise = (async () => {
     try {
+      // Only load modules that are truly needed everywhere
       const [
         { renderModule },
-        { pictographModule },
-        { createModule }, // Animator depends on sequence transformation services from create
-        { shareModule }, // CreateModule depends on IShareService
-        { animatorModule }, // Animation panels appear across all modules
-        { gamificationModule }
+        { pictographModule }
       ] = await Promise.all([
         import("./modules/render.module"),
-        import("./modules/pictograph.module"),
-        import("./modules/build.module"),
-        import("./modules/share.module"),
-        import("./modules/animator.module"),
-        import("./modules/gamification.module")
+        import("./modules/pictograph.module")
       ]);
 
       await container.load(
         renderModule,
-        pictographModule,
-        createModule,
-        shareModule,
-        animatorModule,
-        gamificationModule
+        pictographModule
       );
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
-      loadedModules.add("create");
-      loadedModules.add("share");
-      loadedModules.add("animator");
-      loadedModules.add("gamification");
       tier2Loaded = true;
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
@@ -336,7 +321,7 @@ export async function loadSharedModules(): Promise<void> {
  * TIER 3: Load feature modules on-demand (user tabs)
  * ⏱️ Load when tab is clicked OR when user hovers >50ms (preloading)
  *
- * @param feature - Tab name: 'create', 'discover', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share'
+ * @param feature - Tab name: 'create', 'discover', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share', 'compose'
  */
 export async function loadFeatureModule(feature: string): Promise<void> {
   // Check if already loaded
@@ -345,83 +330,118 @@ export async function loadFeatureModule(feature: string): Promise<void> {
   }
 
   try {
-    const [
-      { exploreModule },
-      { learnModule },
-      { trainModule },
-      { libraryModule },
-      { communityModule },
-      { wordCardModule },
-      { writeModule },
-      { adminModule },
-      { shareModule }
-    ] = await Promise.all([
-      import("./modules/discover.module"),
-      import("./modules/learn.module"),
-      import("./modules/train.module"),
-      import("./modules/library.module"),
-      import("./modules/community.module"),
-      import("./modules/word-card.module"),
-      import("./modules/write.module"),
-      import("./modules/admin.module"),
-      import("./modules/share.module")
-    ]);
-
-    // Map feature names to their DI modules with dependency tracking
-    const moduleMap: Record<string, Array<{ module: ContainerModule; name: string }>> = {
-      create: [
-        // createModule and shareModule are now loaded in Tier 2
-      ],
-      discover: [
-        { module: exploreModule, name: "discover" },
-      ],
-      community: [
-        { module: exploreModule, name: "discover" },
-        { module: libraryModule, name: "library" },
-        { module: communityModule, name: "community" },
-      ],
-      learn: [{ module: learnModule, name: "learn" }],
-      train: [
-        { module: exploreModule, name: "discover" },
-        { module: trainModule, name: "train" },
-      ],
-      animate: [{ module: exploreModule, name: "discover" }],
-      edit: [{ module: exploreModule, name: "discover" }], // Edit uses explore services for sequence browser
-      collect: [{ module: libraryModule, name: "library" }],
-      account: [{ module: libraryModule, name: "library" }], // Account uses library services for user stats
-      about: [], // About module uses no additional DI services
-      word_card: [
-        { module: wordCardModule, name: "word_card" },
-        { module: exploreModule, name: "discover" },
-      ],
-      write: [{ module: writeModule, name: "write" }],
-      admin: [
-        { module: adminModule, name: "admin" },
-        { module: libraryModule, name: "library" },
-        { module: trainModule, name: "train" },
-        { module: exploreModule, name: "discover" }, // Required for IDiscoverThumbnailService
-      ],
-      share: [{ module: shareModule, name: "share" }],
+    // Helper to load a module only if not already loaded
+    const loadIfNeeded = async (
+      name: string,
+      importFn: () => Promise<{ [key: string]: ContainerModule }>
+    ): Promise<void> => {
+      if (loadedModules.has(name)) return;
+      const moduleExports = await importFn();
+      const module = Object.values(moduleExports)[0] as ContainerModule;
+      if (!module) {
+        throw new Error(`Module ${name} export is undefined`);
+      }
+      await container.load(module);
+      loadedModules.add(name);
     };
 
-    const moduleList = moduleMap[feature];
-    if (!moduleList) {
-      // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
-      return;
-    }
+    // Load only the modules needed for each feature
+    switch (feature) {
+      case "create":
+        // Create needs build (create), share, animator, and gamification
+        await Promise.all([
+          loadIfNeeded("create", () => import("./modules/build.module")),
+          loadIfNeeded("share", () => import("./modules/share.module")),
+          loadIfNeeded("animator", () => import("./modules/animator.module")),
+          loadIfNeeded("gamification", () => import("./modules/gamification.module"))
+        ]);
+        break;
 
-    // Filter out already-loaded modules to prevent duplicate bindings
-    const modulesToLoad = moduleList.filter(
-      ({ name }) => !loadedModules.has(name)
-    );
+      case "discover":
+        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        break;
 
-    if (modulesToLoad.length > 0) {
-      await container.load(...modulesToLoad.map(({ module }) => module));
+      case "community":
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("library", () => import("./modules/library.module")),
+          loadIfNeeded("community", () => import("./modules/community.module"))
+        ]);
+        break;
 
-      // Mark all newly loaded modules
-      modulesToLoad.forEach(({ name }) => {
-        loadedModules.add(name);
-      });
+      case "learn":
+        await loadIfNeeded("learn", () => import("./modules/learn.module"));
+        break;
+
+      case "train":
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("train", () => import("./modules/train.module"))
+        ]);
+        break;
+
+      case "compose":
+      case "animate":
+        // Compose/Animate needs discover (for sequence browser) and animator
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("animator", () => import("./modules/animator.module"))
+        ]);
+        break;
+
+      case "edit":
+        // Edit uses discover services for sequence browser
+        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        break;
+
+      case "collect":
+      case "library":
+        await loadIfNeeded("library", () => import("./modules/library.module"));
+        break;
+
+      case "account":
+      case "settings":
+        // Account/Settings uses library services for user stats
+        await loadIfNeeded("library", () => import("./modules/library.module"));
+        break;
+
+      case "about":
+      case "dashboard":
+        // These modules use no additional DI services
+        break;
+
+      case "word_card":
+        await Promise.all([
+          loadIfNeeded("word_card", () => import("./modules/word-card.module")),
+          loadIfNeeded("discover", () => import("./modules/discover.module"))
+        ]);
+        break;
+
+      case "write":
+        await loadIfNeeded("write", () => import("./modules/write.module"));
+        break;
+
+      case "admin":
+        await Promise.all([
+          loadIfNeeded("admin", () => import("./modules/admin.module")),
+          loadIfNeeded("library", () => import("./modules/library.module")),
+          loadIfNeeded("train", () => import("./modules/train.module")),
+          loadIfNeeded("discover", () => import("./modules/discover.module"))
+        ]);
+        break;
+
+      case "share":
+        await loadIfNeeded("share", () => import("./modules/share.module"));
+        break;
+
+      case "gamification":
+        await loadIfNeeded("gamification", () => import("./modules/gamification.module"));
+        break;
+
+      default:
+        // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
+        console.warn(`Unknown feature module: ${feature}`);
+        return;
     }
 
     // Always mark the feature itself as loaded

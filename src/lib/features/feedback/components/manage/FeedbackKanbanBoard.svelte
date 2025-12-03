@@ -33,11 +33,11 @@
     for (const item of manageState.items) {
       // Map old statuses to new simplified ones
       if (item.status === "new" || item.status === "acknowledged" || item.status === "planned") {
-        grouped["new"].push(item);
+        grouped["new"]?.push(item);
       } else if (item.status === "in-progress") {
-        grouped["in-progress"].push(item);
+        grouped["in-progress"]?.push(item);
       } else if (item.status === "completed" || item.status === "wont-fix") {
-        grouped["completed"].push(item);
+        grouped["completed"]?.push(item);
       }
     }
 
@@ -136,10 +136,10 @@
 
 <div class="kanban-board" style="--active-color: {activeStatusColor}">
   <!-- Mobile: Colorful Status Tabs -->
-  <nav class="status-tabs" role="tablist" aria-label="Feedback status">
+  <div class="status-tabs" role="tablist" aria-label="Feedback status">
     {#each ALL_STATUSES as status}
       {@const config = STATUS_CONFIG[status]}
-      {@const count = itemsByStatus()[status].length}
+      {@const count = itemsByStatus()[status]?.length ?? 0}
       <button
         type="button"
         role="tab"
@@ -159,14 +159,14 @@
         {/if}
       </button>
     {/each}
-  </nav>
+  </div>
 
   <div class="columns-container">
     {#each ALL_STATUSES as status}
       <FeedbackKanbanColumn
         {status}
         config={STATUS_CONFIG[status]}
-        items={itemsByStatus()[status]}
+        items={itemsByStatus()[status] ?? []}
         isDropTarget={dragOverColumn === status}
         isDragActive={draggedItem !== null}
         isActiveTab={activeStatus === status}

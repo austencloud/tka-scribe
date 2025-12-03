@@ -32,9 +32,10 @@
   // Derived: summary of selected options for the trigger button
   const optionsSummary = $derived(() => {
     const parts: string[] = [];
-    if (formState.formData.priority) {
-      const priorityConfig = PRIORITY_CONFIG[formState.formData.priority];
-      parts.push(priorityConfig?.label || formState.formData.priority);
+    const priority = formState.formData.priority;
+    if (priority && priority in PRIORITY_CONFIG) {
+      const priorityConfig = PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG];
+      parts.push(priorityConfig?.label || priority);
     }
     if (formState.formData.reportedModule) {
       parts.push(contextDisplayText());
@@ -65,6 +66,7 @@
       observer.observe(formElement);
       return () => observer.disconnect();
     }
+    return undefined;
   });
 
   // Module/tab options for context picker
@@ -149,7 +151,8 @@
   }
 
   // Derived: current type configuration for dynamic theming
-  const currentTypeConfig = $derived(TYPE_CONFIG[formState.formData.type]);
+  const feedbackType = $derived(formState.formData.type);
+  const currentTypeConfig = $derived(feedbackType && feedbackType in TYPE_CONFIG ? TYPE_CONFIG[feedbackType as keyof typeof TYPE_CONFIG] : undefined);
 
   // Derived: has context been selected?
   const hasContextSelected = $derived(!!formState.formData.reportedModule);
@@ -198,7 +201,7 @@
     bind:this={formElement}
     class="feedback-form"
     onsubmit={handleSubmit}
-    style="--active-type-color: {currentTypeConfig.color}"
+    style="--active-type-color: {currentTypeConfig?.color ?? '#6366f1'}"
   >
     <!-- Type Selector - Segmented Control -->
     <fieldset class="type-selector">
@@ -331,11 +334,11 @@
     ariaLabel="Select context"
     class="context-drawer"
   >
-    <div class="drawer-picker-content" style="--active-type-color: {currentTypeConfig.color}">
+    <div class="drawer-picker-content" style="--active-type-color: {currentTypeConfig?.color ?? '#6366f1'}">
       {#if contextStep === 'modules'}
         <div class="picker-header">
           <span class="picker-title">Select Module</span>
-          <button type="button" class="picker-close" onclick={closeContextPicker}>
+          <button type="button" class="picker-close" onclick={closeContextPicker} aria-label="Close picker">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -353,11 +356,11 @@
         </div>
       {:else if contextStep === 'tabs'}
         <div class="picker-header">
-          <button type="button" class="picker-back" onclick={goBackToModules}>
+          <button type="button" class="picker-back" onclick={goBackToModules} aria-label="Back to modules">
             <i class="fas fa-arrow-left"></i>
           </button>
           <span class="picker-title">{getModuleLabel(selectedModuleId)}</span>
-          <button type="button" class="picker-close" onclick={closeContextPicker}>
+          <button type="button" class="picker-close" onclick={closeContextPicker} aria-label="Close picker">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -384,10 +387,10 @@
   onclose={closeOptionsDrawer}
   ariaLabel="More options"
 >
-  <div class="options-drawer-content" style="--active-type-color: {currentTypeConfig.color}">
+  <div class="options-drawer-content" style="--active-type-color: {currentTypeConfig?.color ?? '#6366f1'}">
     <div class="drawer-header">
       <span class="drawer-title">More Options</span>
-      <button type="button" class="drawer-close" onclick={closeOptionsDrawer}>
+      <button type="button" class="drawer-close" onclick={closeOptionsDrawer} aria-label="Close options">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -424,7 +427,7 @@
               <span>{contextDisplayText()}</span>
             </div>
             <button type="button" class="context-change" onclick={openContextPicker}>Change</button>
-            <button type="button" class="context-remove" onclick={clearContext}>
+            <button type="button" class="context-remove" onclick={clearContext} aria-label="Remove context">
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -1115,10 +1118,6 @@
     color: var(--fb-text);
   }
 
-  .priority-btn.selected i {
-    color: var(--priority-color);
-  }
-
   /* Hide priority labels on narrow containers */
   @container feedback-form (max-width: 500px) {
     .priority-label {
@@ -1154,10 +1153,6 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 200ms ease;
-  }
-
-  .context-chip i {
-    color: var(--fb-primary);
   }
 
   .context-chip:hover {
@@ -1531,11 +1526,6 @@
     height: 36px;
     border-radius: 50%;
     flex-shrink: 0;
-  }
-
-  .toast.success .toast-icon {
-    background: var(--fb-primary);
-    color: white;
   }
 
   .toast.error .toast-icon {

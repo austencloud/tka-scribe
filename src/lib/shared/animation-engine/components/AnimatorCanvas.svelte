@@ -255,6 +255,11 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
       console.log("🎬 Starting frame pre-render for perfect playback...");
 
+      if (!framePreRenderer) {
+        console.error("⚠️ Frame pre-renderer not available");
+        return;
+      }
+
       // Pre-render with progress updates
       await framePreRenderer.preRenderSequence(
         seqData,
@@ -641,8 +646,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     // ============================================================================
 
     // MODE 1: Perfect Pre-rendered Frames (when ready)
-    if (preRenderedFramesReady && framePreRenderer.isReady()) {
-      const frame = framePreRenderer.getFrameAtBeat(currentBeat);
+    if (preRenderedFramesReady && framePreRenderer?.isReady()) {
+      const frame = framePreRenderer?.getFrameAtBeat(currentBeat);
       if (frame) {
         // Get the PixiJS canvas and draw pre-rendered frame directly
         const canvas = pixiRenderer.getCanvas();

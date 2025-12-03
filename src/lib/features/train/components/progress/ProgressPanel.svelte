@@ -51,7 +51,7 @@
 
 	function navigateToPractice() {
 		hapticService?.trigger("selection");
-		navigationState.setActiveTab("train", "practice");
+		navigationState.setActiveTab("practice");
 	}
 </script>
 
@@ -168,7 +168,7 @@
 				</button>
 			</div>
 		</div>
-	{:else}
+	{:else if stats}
 		<!-- HAS DATA - Real content -->
 		<div>
 			<StatsOverviewComponent {stats} />

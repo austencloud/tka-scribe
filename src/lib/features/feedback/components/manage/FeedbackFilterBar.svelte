@@ -56,18 +56,18 @@
   }
 
   // Get current status label for button display
-  const currentStatusLabel = $derived(
-    manageState.filters.status === 'all'
-      ? 'All Status'
-      : STATUS_CONFIG[manageState.filters.status]?.label ?? 'All Status'
-  );
+  const currentStatusLabel = $derived(() => {
+    const status = manageState.filters.status;
+    if (status === 'all') return 'All Status';
+    return status in STATUS_CONFIG ? STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label ?? 'All Status' : 'All Status';
+  });
 
   // Get current priority label for button display
-  const currentPriorityLabel = $derived(
-    manageState.filters.priority === 'all'
-      ? 'All Priority'
-      : PRIORITY_CONFIG[manageState.filters.priority]?.label ?? 'All Priority'
-  );
+  const currentPriorityLabel = $derived(() => {
+    const priority = manageState.filters.priority;
+    if (priority === 'all') return 'All Priority';
+    return priority in PRIORITY_CONFIG ? PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG]?.label ?? 'All Priority' : 'All Priority';
+  });
 
   // Count active filters
   const activeFilterCount = $derived(
@@ -217,9 +217,10 @@
       aria-haspopup="dialog"
     >
       {#if manageState.filters.status !== 'all'}
-        <i class="fas {STATUS_CONFIG[manageState.filters.status]?.icon ?? 'fa-circle'}"></i>
+        {@const status = manageState.filters.status}
+        <i class="fas {status in STATUS_CONFIG ? (STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon ?? 'fa-circle') : 'fa-circle'}"></i>
       {/if}
-      <span>{currentStatusLabel}</span>
+      <span>{currentStatusLabel()}</span>
       <i class="fas fa-chevron-right panel-arrow"></i>
     </button>
 
@@ -233,9 +234,10 @@
       aria-haspopup="dialog"
     >
       {#if manageState.filters.priority !== 'all'}
-        <i class="fas {PRIORITY_CONFIG[manageState.filters.priority]?.icon ?? 'fa-circle'}"></i>
+        {@const priority = manageState.filters.priority}
+        <i class="fas {priority in PRIORITY_CONFIG ? (PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG]?.icon ?? 'fa-circle') : 'fa-circle'}"></i>
       {/if}
-      <span>{currentPriorityLabel}</span>
+      <span>{currentPriorityLabel()}</span>
       <i class="fas fa-chevron-right panel-arrow"></i>
     </button>
 

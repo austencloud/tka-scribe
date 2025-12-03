@@ -254,7 +254,8 @@
       "Bash(src/app.css )",
       "Bash(powershell -Command \"Rename-Item -Path ''F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\features\\animate\\tabs\\setup'' -NewName ''compose''\")",
       "Bash(powershell -Command \"Rename-Item -Path ''F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\features\\animate\\tabs\\setup'' -NewName ''arrange''\")",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

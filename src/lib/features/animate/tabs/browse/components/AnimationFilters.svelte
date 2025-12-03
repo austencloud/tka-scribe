@@ -92,8 +92,8 @@ Features:
 <div class="filters-container">
   <!-- Mode Filters -->
   <div class="filter-section">
-    <label class="filter-label">Mode</label>
-    <div class="mode-chips">
+    <span class="filter-label" id="mode-filter-label">Mode</span>
+    <div class="mode-chips" role="group" aria-labelledby="mode-filter-label">
       {#each modeOptions as option}
         <button
           class="mode-chip"

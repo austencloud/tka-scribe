@@ -2,17 +2,14 @@
   ComposeModule.svelte - Choreography & Arrangement Module
 
   Tabs:
-  - Arrange: Bento-style mode selection and sequence configuration
+  - Arrange (Compose): Unified composition builder with inline playback
   - Browse: Saved compositions gallery
 
-  Playback is a fullscreen overlay, triggered from Arrange or Browse
-
-  Modes (selected in Arrange, rendered in Playback overlay):
-  - Single: Animate one sequence (full-screen canvas)
-  - Tunnel: Overlay two sequences with different colors
-  - Mirror: Side-by-side view with one mirrored
-  - Grid: 2×2 grid with rotation offsets
-  - Side-by-Side: Compare two sequences
+  Architecture:
+  - CompositionBuilder replaces old ArrangeTab with layout-first approach
+  - Each cell in the grid can be single or tunnel (multiple overlaid sequences)
+  - Playback happens inline - no separate overlay needed for new compositions
+  - PlaybackOverlay still used for Browse tab (legacy saved compositions)
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -25,11 +22,11 @@
   import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 
   // Import tab components
-  // Note: folder is still named "setup" (dev server locking), file renamed to ArrangeTab.svelte
-  import ArrangeTab from "./tabs/setup/ArrangeTab.svelte";
+  // CompositionBuilder replaces old ArrangeTab with unified layout-first composition builder
+  import CompositionBuilder from "./compose/CompositionBuilder.svelte";
   import BrowseTab from "./tabs/browse/BrowseTab.svelte";
 
-  // Import playback overlay (renders when animateState.isPlaybackOpen is true)
+  // Import playback overlay (for Browse tab - legacy saved compositions)
   import PlaybackOverlay from "./tabs/playback/PlaybackTab.svelte";
 
   // Get module state (singleton)
@@ -106,7 +103,7 @@
     {#key animateState.currentTab}
       <div class="tab-panel">
         {#if isTabActive("arrange")}
-          <ArrangeTab />
+          <CompositionBuilder />
         {:else if isTabActive("browse")}
           <BrowseTab />
         {/if}

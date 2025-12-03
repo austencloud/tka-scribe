@@ -209,9 +209,8 @@
   }
 
   // Handle close (no unsaved changes warning needed with instant save)
-  function handleClose(
-    event?: CustomEvent<{ reason: "backdrop" | "escape" | "programmatic" }>
-  ) {
+  // Accept any event type (CustomEvent from Drawer, MouseEvent from button)
+  function handleClose() {
     // iOS uses light impact for button taps (using "selection" pattern)
     hapticService?.trigger("selection");
 

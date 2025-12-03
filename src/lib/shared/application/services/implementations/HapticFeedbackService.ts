@@ -196,8 +196,8 @@ export class HapticFeedbackService implements IHapticFeedbackService {
       const iosVersionMatch = ua.match(/OS (\d+)_(\d+)/);
       if (!iosVersionMatch) return false;
 
-      const majorVersion = parseInt(iosVersionMatch[1], 10);
-      const minorVersion = parseInt(iosVersionMatch[2], 10);
+      const majorVersion = parseInt(iosVersionMatch[1] ?? "0", 10);
+      const minorVersion = parseInt(iosVersionMatch[2] ?? "0", 10);
 
       // Need iOS 17.4 or higher
       if (majorVersion < 17) return false;
