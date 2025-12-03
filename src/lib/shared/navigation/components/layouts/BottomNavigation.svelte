@@ -259,7 +259,7 @@
     border-radius: 12px;
   }
 
-  /* Special buttons (Settings) - clean 48px round with subtle ring */
+  /* Special buttons (Settings) - solid module-colored */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto;
     width: 48px;
@@ -268,15 +268,16 @@
     min-height: 48px;
     padding: 0;
     background: transparent;
-    border: 2px solid hsl(0 0% 100% / 0.2);
+    border: 1px solid var(--module-color, #667eea);
     border-radius: 50%;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.15s ease, transform 0.1s ease;
   }
 
   .bottom-navigation :global(.nav-button.special:hover) {
-    background: hsl(0 0% 100% / 0.1);
+    opacity: 0.85;
   }
 
   .bottom-navigation :global(.nav-button.special:active) {
@@ -284,7 +285,7 @@
   }
 
   .bottom-navigation :global(.nav-button.special.active) {
-    background: hsl(0 0% 100% / 0.08);
+    background: color-mix(in srgb, var(--module-color, #667eea) 15%, transparent);
   }
 
   /* No labels on special buttons - icon only */
@@ -293,8 +294,14 @@
     display: none;
   }
 
+  /* Solid module-colored gear icon */
   .bottom-navigation :global(.nav-button.special .nav-icon) {
-    font-size: 24px;
+    font-size: 22px;
+  }
+
+  .bottom-navigation :global(.nav-button.special .nav-icon i) {
+    color: var(--module-color, #667eea);
+    -webkit-text-fill-color: var(--module-color, #667eea);
   }
 
   /* ============================================================================

@@ -139,8 +139,19 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
   }
 }
 
-// Section change handler - instant switch (View Transitions disabled for tabs
-// due to conflicts with Svelte #key blocks causing jank)
+// Tab order for determining slide direction (per module)
+const TAB_ORDERS: Record<string, string[]> = {
+  create: ['assembler', 'constructor', 'generator', 'editor', 'export'],
+  discover: ['sequences', 'collections', 'creators', 'library'],
+  learn: ['concepts', 'play', 'codex'],
+  animate: ['setup', 'playback', 'browse'],
+  train: ['drills', 'challenges', 'progress'],
+  collect: ['achievements', 'badges', 'stats'],
+  feedback: ['submit', 'manage'],
+};
+
+// Section change handler with View Transitions
+// Now that Svelte transitions are removed from #key blocks, View Transitions work smoothly
 export function handleSectionChange(sectionId: string) {
   const module = currentModule();
   const currentSectionId = currentSection();
@@ -158,12 +169,37 @@ export function handleSectionChange(sectionId: string) {
   // Don't switch if same section
   if (sectionId === currentSectionId) return;
 
-  // Instant tab switch - no View Transitions
-  // (View Transitions conflict with Svelte #key blocks causing double-animation jank)
-  if (module === "learn") {
-    navigationState.setLearnMode(sectionId);
+  const doc = document as any;
+  const tabOrder = TAB_ORDERS[module] || [];
+  const currentIndex = tabOrder.indexOf(currentSectionId);
+  const newIndex = tabOrder.indexOf(sectionId);
+  const goingRight = newIndex > currentIndex;
+
+  // Helper to update the navigation state
+  const updateState = () => {
+    if (module === "learn") {
+      navigationState.setLearnMode(sectionId);
+    } else {
+      navigationState.setActiveTab(sectionId);
+    }
+  };
+
+  // Use View Transitions if available
+  if (typeof doc.startViewTransition === 'function') {
+    // Add direction class for CSS to target
+    document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
+    document.documentElement.classList.add(goingRight ? 'tab-slide-left' : 'tab-slide-right');
+
+    const transition = doc.startViewTransition(() => {
+      updateState();
+    });
+
+    transition.finished.finally(() => {
+      document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
+    });
   } else {
-    navigationState.setActiveTab(sectionId);
+    // Fallback: instant switch for browsers without View Transitions
+    updateState();
   }
 }
 

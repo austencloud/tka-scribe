@@ -897,3 +897,72 @@ body.deep-ocean-flow::before {
     animation: none !important;
   }
 }
+
+/* ========================================
+   TAB VIEW TRANSITIONS (within modules)
+   ======================================== */
+
+/* Tab content gets a transition name for View Transitions API to target */
+.tab-panel,
+.mode-panel,
+.view-container,
+.section-panel {
+  view-transition-name: tab-content;
+}
+
+/* Disable root animation during tab transitions (prevents page-level zoom) */
+.tab-slide-left::view-transition-old(root),
+.tab-slide-left::view-transition-new(root),
+.tab-slide-right::view-transition-old(root),
+.tab-slide-right::view-transition-new(root) {
+  animation: none;
+}
+
+/* Slide LEFT - Going to a tab on the right */
+.tab-slide-left::view-transition-old(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-out-left;
+}
+
+.tab-slide-left::view-transition-new(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-in-left;
+}
+
+/* Slide RIGHT - Going to a tab on the left */
+.tab-slide-right::view-transition-old(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-out-right;
+}
+
+.tab-slide-right::view-transition-new(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-in-right;
+}
+
+/* Tab slide keyframes - gentle fade with subtle directional hint */
+@keyframes tab-slide-out-left {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-20px); }
+}
+
+@keyframes tab-slide-in-left {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes tab-slide-out-right {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+@keyframes tab-slide-in-right {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Reduced motion - instant switch for tabs */
+@media (prefers-reduced-motion: reduce) {
+  .tab-slide-left::view-transition-old(tab-content),
+  .tab-slide-left::view-transition-new(tab-content),
+  .tab-slide-right::view-transition-old(tab-content),
+  .tab-slide-right::view-transition-new(tab-content) {
+    animation: none !important;
+  }
+}

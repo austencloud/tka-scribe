@@ -148,38 +148,31 @@ export const BUILD_TABS = CREATE_TABS; // Legacy name
 export const COLLECTION_TABS = LIBRARY_TABS; // Legacy name
 
 // Animate tabs configuration
+// New Bento-style tabs: Setup (mode selection) | Playback (animation) | Browse (saved animations)
 export const ANIMATE_TABS: Section[] = [
   {
-    id: "single",
-    label: "Single",
-    icon: '<i class="fas fa-user"></i>',
-    description: "Animate one sequence",
+    id: "setup",
+    label: "Setup",
+    icon: '<i class="fas fa-sliders-h"></i>',
+    description: "Configure animation mode and sequences",
     color: "#3b82f6",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
   },
   {
-    id: "tunnel",
-    label: "Tunnel",
-    icon: '<i class="fas fa-users"></i>',
-    description: "Overlay two sequences",
+    id: "playback",
+    label: "Playback",
+    icon: '<i class="fas fa-play-circle"></i>',
+    description: "Watch and control your animation",
     color: "#ec4899",
     gradient: "linear-gradient(135deg, #ec4899 0%, #f472b6 100%)",
   },
   {
-    id: "mirror",
-    label: "Mirror",
-    icon: '<i class="fas fa-left-right"></i>',
-    description: "Side-by-side mirrored view",
+    id: "browse",
+    label: "Browse",
+    icon: '<i class="fas fa-film"></i>',
+    description: "Explore saved animations",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)",
-  },
-  {
-    id: "grid",
-    label: "Grid",
-    icon: '<i class="fas fa-th"></i>',
-    description: "2×2 rotated grid",
-    color: "#f59e0b",
-    gradient: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)",
   },
 ];
 

@@ -20,6 +20,7 @@ import { SequenceNormalizationService } from "../../../features/animate/services
 import { SVGGenerator } from "../../../features/animate/services/implementations/SVGGenerator";
 import { TrailCaptureService } from "../../../features/animate/services/implementations/TrailCaptureService";
 import { TunnelModeSequenceManager } from "../../../features/animate/services/implementations/TunnelModeSequenceManager";
+import { AnimationStorageService } from "../../../features/animate/services/implementations/AnimationStorageService";
 import { AnimationService } from "../../application/services/implementations/AnimationService";
 import { TYPES } from "../types";
 
@@ -65,6 +66,11 @@ export const animatorModule = new ContainerModule(
     options
       .bind(TYPES.ITunnelModeSequenceManager)
       .to(TunnelModeSequenceManager);
+
+    // === ANIMATION STORAGE ===
+    options
+      .bind(TYPES.IAnimationStorageService)
+      .to(AnimationStorageService);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

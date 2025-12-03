@@ -12,6 +12,7 @@
   import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
+  import EmailLinkingDrawer from "../../../auth/components/EmailLinkingDrawer.svelte";
 
   // Provider configuration
   const PROVIDERS = {
@@ -49,13 +50,8 @@
   let unlinkingProvider = $state<ProviderId | null>(null);
   let errorMessage = $state<string | null>(null);
 
-  // Email linking form state
-  let showEmailForm = $state(false);
-  let emailInput = $state("");
-  let passwordInput = $state("");
-  let confirmPasswordInput = $state("");
-  let showPassword = $state(false);
-  let emailFormError = $state<string | null>(null);
+  // Email linking drawer state
+  let showEmailLinkingDrawer = $state(false);
 
   onMount(() => {
     authService = resolve<IAuthService>(TYPES.IAuthService);
@@ -157,59 +153,20 @@
     errorMessage = null;
   }
 
-  // Email linking functions
-  function openEmailForm() {
-    showEmailForm = true;
-    emailFormError = null;
-    // Pre-fill email if user has one from social auth
-    emailInput = authStore.user?.email ?? "";
+  // Email linking drawer functions
+  function openEmailLinkingDrawer() {
+    showEmailLinkingDrawer = true;
     hapticService?.trigger("selection");
   }
 
-  function closeEmailForm() {
-    showEmailForm = false;
-    emailInput = "";
-    passwordInput = "";
-    confirmPasswordInput = "";
-    emailFormError = null;
+  function handleEmailLinkingSuccess() {
+    // The drawer handles closing itself
+    // We just need to show feedback if needed
+    hapticService?.trigger("success");
   }
 
-  async function submitEmailForm() {
-    if (!authService || linkingProvider) return;
-
-    // Validation
-    if (!emailInput.trim()) {
-      emailFormError = "Email is required";
-      return;
-    }
-
-    if (passwordInput.length < 6) {
-      emailFormError = "Password must be at least 6 characters";
-      return;
-    }
-
-    if (passwordInput !== confirmPasswordInput) {
-      emailFormError = "Passwords do not match";
-      return;
-    }
-
-    linkingProvider = "password";
-    emailFormError = null;
-    hapticService?.trigger("selection");
-
-    try {
-      await authService.linkEmailPassword(emailInput, passwordInput);
-      hapticService?.trigger("success");
-      closeEmailForm();
-    } catch (error: unknown) {
-      console.error("Failed to link email/password:", error);
-      const message = error instanceof Error ? error.message : "Unknown error";
-      emailFormError = message;
-      hapticService?.trigger("error");
-    } finally {
-      linkingProvider = null;
-    }
-  }
+  // Check if email is verified
+  const isEmailVerified = $derived(authStore.user?.emailVerified ?? false);
 </script>
 
 <div class="connected-accounts">
@@ -251,10 +208,17 @@
                 {/if}
               </div>
               <div class="provider-status">
-                <span class="connected-badge">
-                  <i class="fas fa-check-circle"></i>
-                  Connected
-                </span>
+                {#if providerId === "password" && !isEmailVerified}
+                  <span class="verification-badge pending">
+                    <i class="fas fa-clock"></i>
+                    Unverified
+                  </span>
+                {:else}
+                  <span class="connected-badge">
+                    <i class="fas fa-check-circle"></i>
+                    Connected
+                  </span>
+                {/if}
               </div>
               {#if canUnlink}
                 <button
@@ -295,115 +259,26 @@
           {@const config = PROVIDERS[providerId]}
           {@const isLinking = linkingProvider === providerId}
           {#if providerId === "password"}
-            <!-- Email/Password linking -->
-            {#if showEmailForm}
-              <div class="email-form-card" style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};">
-                <div class="email-form-header">
-                  <div class="provider-icon">
-                    <i class={config.icon}></i>
-                  </div>
-                  <span class="form-title">Add Email & Password</span>
-                  <button class="close-form-btn" onclick={closeEmailForm} aria-label="Cancel">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-
-                <form class="email-form" onsubmit={(e) => { e.preventDefault(); submitEmailForm(); }}>
-                  <div class="form-group">
-                    <label for="link-email">Email</label>
-                    <input
-                      id="link-email"
-                      type="email"
-                      bind:value={emailInput}
-                      placeholder="you@example.com"
-                      required
-                      disabled={isLinking}
-                      autocomplete="email"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label for="link-password">Password</label>
-                    <div class="password-wrapper">
-                      <input
-                        id="link-password"
-                        type={showPassword ? "text" : "password"}
-                        bind:value={passwordInput}
-                        placeholder="At least 6 characters"
-                        required
-                        minlength="6"
-                        disabled={isLinking}
-                        autocomplete="new-password"
-                      />
-                      <button
-                        type="button"
-                        class="toggle-password"
-                        onclick={() => showPassword = !showPassword}
-                        aria-label={showPassword ? "Hide password" : "Show password"}
-                      >
-                        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="link-confirm-password">Confirm Password</label>
-                    <input
-                      id="link-confirm-password"
-                      type={showPassword ? "text" : "password"}
-                      bind:value={confirmPasswordInput}
-                      placeholder="Confirm your password"
-                      required
-                      minlength="6"
-                      disabled={isLinking}
-                      autocomplete="new-password"
-                    />
-                  </div>
-
-                  {#if emailFormError}
-                    <div class="form-error">
-                      <i class="fas fa-exclamation-circle"></i>
-                      {emailFormError}
-                    </div>
-                  {/if}
-
-                  <div class="form-actions">
-                    <button type="button" class="cancel-btn" onclick={closeEmailForm} disabled={isLinking}>
-                      Cancel
-                    </button>
-                    <button type="submit" class="submit-btn" disabled={isLinking}>
-                      {#if isLinking}
-                        <i class="fas fa-spinner fa-spin"></i>
-                        Linking...
-                      {:else}
-                        <i class="fas fa-link"></i>
-                        Link Email
-                      {/if}
-                    </button>
-                  </div>
-                </form>
+            <!-- Email/Password linking - Opens drawer -->
+            <button
+              class="provider-card available"
+              style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
+              onclick={openEmailLinkingDrawer}
+              disabled={linkingProvider !== null}
+            >
+              <div class="provider-icon">
+                <i class={config.icon}></i>
               </div>
-            {:else}
-              <button
-                class="provider-card available"
-                style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
-                onclick={openEmailForm}
-                disabled={linkingProvider !== null}
-              >
-                <div class="provider-icon">
-                  <i class={config.icon}></i>
-                </div>
-                <div class="provider-info">
-                  <span class="provider-name">Add Email & Password</span>
-                  <span class="provider-description">
-                    Sign in with email and password
-                  </span>
-                </div>
-                <div class="link-icon">
-                  <i class="fas fa-plus-circle"></i>
-                </div>
-              </button>
-            {/if}
+              <div class="provider-info">
+                <span class="provider-name">Add Email & Password</span>
+                <span class="provider-description">
+                  Sign in with email and password
+                </span>
+              </div>
+              <div class="link-icon">
+                <i class="fas fa-plus-circle"></i>
+              </div>
+            </button>
           {:else}
             <button
               class="provider-card available"
@@ -444,6 +319,12 @@
     </div>
   {/if}
 </div>
+
+<!-- Email Linking Drawer -->
+<EmailLinkingDrawer
+  bind:isOpen={showEmailLinkingDrawer}
+  onSuccess={handleEmailLinkingSuccess}
+/>
 
 <style>
   .connected-accounts {
@@ -622,6 +503,26 @@
     font-size: 12px;
   }
 
+  /* Verification Badge (for unverified email) */
+  .verification-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .verification-badge.pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+  }
+
+  .verification-badge i {
+    font-size: 12px;
+  }
+
   /* Unlink Button */
   .unlink-btn {
     width: 48px;
@@ -785,226 +686,5 @@
   .dismiss-btn:focus-visible {
     outline: 2px solid rgba(99, 102, 241, 0.8);
     outline-offset: 2px;
-  }
-
-  /* ============================================================================
-     EMAIL FORM STYLES
-     ============================================================================ */
-  .email-form-card {
-    background: var(--provider-bg);
-    border: 1px solid var(--provider-border);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .email-form-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .form-title {
-    flex: 1;
-    font-size: 15px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-  }
-
-  .close-form-btn {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .close-form-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .email-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .form-group label {
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
-  }
-
-  .form-group input {
-    padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 14px;
-    transition: all 0.2s ease;
-  }
-
-  .form-group input::placeholder {
-    color: rgba(255, 255, 255, 0.35);
-  }
-
-  .form-group input:focus {
-    outline: none;
-    border-color: var(--provider-color);
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-  }
-
-  .form-group input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .password-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .password-wrapper input {
-    width: 100%;
-    padding-right: 40px;
-  }
-
-  .toggle-password {
-    position: absolute;
-    right: 8px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-  }
-
-  .toggle-password:hover {
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .form-error {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 8px;
-    color: #fca5a5;
-    font-size: 13px;
-  }
-
-  .form-error i {
-    color: #ef4444;
-    flex-shrink: 0;
-  }
-
-  .form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 4px;
-  }
-
-  .cancel-btn {
-    flex: 1;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .cancel-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .cancel-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .submit-btn {
-    flex: 1.5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: linear-gradient(135deg, var(--provider-color) 0%, color-mix(in srgb, var(--provider-color) 80%, black) 100%);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .submit-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-  }
-
-  .submit-btn:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .submit-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  /* Responsive adjustments for email form */
-  @container settings-content (max-width: 400px) {
-    .email-form-card {
-      padding: 14px;
-      gap: 12px;
-    }
-
-    .form-group input {
-      padding: 9px 10px;
-      font-size: 13px;
-    }
-
-    .form-actions {
-      flex-direction: column;
-    }
-
-    .cancel-btn,
-    .submit-btn {
-      flex: none;
-      width: 100%;
-    }
   }
 </style>

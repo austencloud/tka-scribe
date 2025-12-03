@@ -87,7 +87,7 @@
     height: 100%;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid hsl(0 0% 100% / 0.2);
+    border: 1px solid var(--module-color, #667eea);
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
   }
 
