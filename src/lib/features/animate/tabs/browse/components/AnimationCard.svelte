@@ -14,6 +14,7 @@ Features:
 -->
 <script lang="ts">
   import type { SavedAnimation } from "../state/browse-state.svelte";
+  import type { AnimateMode } from "$lib/features/animate/shared/state/animate-module-state.svelte";
 
   const {
     animation,
@@ -26,19 +27,35 @@ Features:
   } = $props();
 
   // Mode icon mapping
-  const modeIcons = {
+  const modeIcons: Record<AnimateMode, string> = {
     single: "fa-play",
     mirror: "fa-clone",
-    tunnel: "fa-layer-group",
-    grid: "fa-th",
+    tunnel: "fa-circle-notch",
+    grid: "fa-th-large",
   };
 
   // Mode display names
-  const modeNames = {
+  const modeNames: Record<AnimateMode, string> = {
     single: "Single",
     mirror: "Mirror",
     tunnel: "Tunnel",
     grid: "Grid",
+  };
+
+  // Mode color gradients
+  const modeGradients: Record<AnimateMode, string> = {
+    single: "linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%)",
+    mirror: "linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(109, 40, 217, 0.1) 100%)",
+    tunnel: "linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(219, 39, 119, 0.1) 100%)",
+    grid: "linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.1) 100%)",
+  };
+
+  // Mode accent colors
+  const modeAccents: Record<AnimateMode, string> = {
+    single: "#3b82f6",
+    mirror: "#8b5cf6",
+    tunnel: "#ec4899",
+    grid: "#f59e0b",
   };
 
   // Truncate title to 24 characters
@@ -65,8 +82,32 @@ Features:
         class="thumbnail"
       />
     {:else}
-      <div class="placeholder">
-        <i class="fas {modeIcons[animation.mode]} placeholder-icon"></i>
+      <div class="placeholder" style="background: {modeGradients[animation.mode]}">
+        <!-- Visual mode preview SVG -->
+        <svg viewBox="0 0 100 100" class="mode-preview-svg" aria-hidden="true">
+          {#if animation.mode === "single"}
+            <!-- Single: One centered rectangle -->
+            <rect x="20" y="15" width="60" height="70" rx="4" class="preview-shape" style="--accent: {modeAccents.single}" />
+          {:else if animation.mode === "mirror"}
+            <!-- Mirror: Two side-by-side rectangles -->
+            <rect x="8" y="20" width="35" height="60" rx="3" class="preview-shape" style="--accent: {modeAccents.mirror}" />
+            <rect x="57" y="20" width="35" height="60" rx="3" class="preview-shape mirrored" style="--accent: {modeAccents.mirror}" />
+            <line x1="50" y1="15" x2="50" y2="85" class="mirror-line" style="--accent: {modeAccents.mirror}" />
+          {:else if animation.mode === "tunnel"}
+            <!-- Tunnel: Concentric circles -->
+            <circle cx="50" cy="50" r="38" class="preview-circle outer" style="--accent: {modeAccents.tunnel}" />
+            <circle cx="50" cy="50" r="26" class="preview-circle inner" style="--accent: {modeAccents.tunnel}" />
+          {:else if animation.mode === "grid"}
+            <!-- Grid: 2x2 grid of squares -->
+            <rect x="8" y="8" width="38" height="38" rx="3" class="preview-shape" style="--accent: {modeAccents.grid}" />
+            <rect x="54" y="8" width="38" height="38" rx="3" class="preview-shape" style="--accent: {modeAccents.grid}" />
+            <rect x="8" y="54" width="38" height="38" rx="3" class="preview-shape" style="--accent: {modeAccents.grid}" />
+            <rect x="54" y="54" width="38" height="38" rx="3" class="preview-shape" style="--accent: {modeAccents.grid}" />
+            <line x1="50" y1="5" x2="50" y2="95" class="grid-line" style="--accent: {modeAccents.grid}" />
+            <line x1="5" y1="50" x2="95" y2="50" class="grid-line" style="--accent: {modeAccents.grid}" />
+          {/if}
+        </svg>
+        <span class="mode-label" style="color: {modeAccents[animation.mode]}">{modeNames[animation.mode]}</span>
       </div>
     {/if}
 
@@ -164,18 +205,66 @@ Features:
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.1) 0%,
-      rgba(37, 99, 235, 0.05) 100%
-    );
+    gap: 8px;
   }
 
-  .placeholder-icon {
-    font-size: 48px;
-    color: rgba(255, 255, 255, 0.2);
+  .mode-preview-svg {
+    width: 60%;
+    height: 60%;
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .preview-shape {
+    fill: var(--accent, rgba(255, 255, 255, 0.3));
+    fill-opacity: 0.25;
+    stroke: var(--accent, rgba(255, 255, 255, 0.5));
+    stroke-width: 2;
+  }
+
+  .preview-shape.mirrored {
+    fill-opacity: 0.15;
+  }
+
+  .preview-circle {
+    fill: none;
+    stroke: var(--accent, rgba(255, 255, 255, 0.5));
+    stroke-width: 2;
+  }
+
+  .preview-circle.outer {
+    stroke-opacity: 0.5;
+  }
+
+  .preview-circle.inner {
+    stroke-opacity: 0.8;
+    fill: var(--accent, rgba(255, 255, 255, 0.3));
+    fill-opacity: 0.1;
+  }
+
+  .mirror-line {
+    stroke: var(--accent, rgba(255, 255, 255, 0.3));
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+    stroke-opacity: 0.6;
+  }
+
+  .grid-line {
+    stroke: var(--accent, rgba(255, 255, 255, 0.3));
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    stroke-opacity: 0.4;
+  }
+
+  .mode-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
   }
 
   /* Mode badge */

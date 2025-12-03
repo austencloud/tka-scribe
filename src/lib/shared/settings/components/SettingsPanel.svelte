@@ -232,6 +232,7 @@
   ariaLabel="Settings"
   role="dialog"
   class="settings-drawer"
+  backdropClass="settings-backdrop"
   onOpenChange={(open: boolean) => {
     if (!open) {
       handleClose();
@@ -243,6 +244,15 @@
   }}
 >
   <div class="settings-panel__container">
+    <!-- Close button - always visible -->
+    <button
+      class="settings-panel__close"
+      onclick={handleClose}
+      aria-label="Close settings"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+
     <!-- Main content area -->
     <div class="settings-panel__body">
       {#if showGalaxy}
@@ -310,25 +320,59 @@
 </Drawer>
 
 <style>
-  /* Drawer positioning for settings panel */
+  /* Close button - positioned top right */
+  .settings-panel__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .settings-panel__close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 1);
+    transform: scale(1.05);
+  }
+
+  .settings-panel__close:active {
+    transform: scale(0.95);
+    transition-duration: 50ms;
+  }
+
+  .settings-panel__close:focus-visible {
+    outline: 2px solid var(--settings-primary-indigo, #6366f1);
+    outline-offset: 2px;
+  }
+
+  /* Drawer positioning for settings panel - responsive */
   :global(.settings-drawer[data-placement="left"]) {
-    /* Cover navigation from the left edge */
-    min-width: 40vw;
-    max-width: none;
+    width: clamp(280px, 25vw, 400px);
+    container-type: inline-size;
+    container-name: settings-panel;
   }
 
-  /* On smaller desktops, adjust drawer width */
-  @media (max-width: 1200px) {
-    :global(.settings-drawer[data-placement="left"]) {
-      width: 60vw;
-      min-width: 400px;
-    }
-  }
-
-  /* Mobile bottom drawer - full viewport height */
+  /* Mobile bottom drawer - fit content */
   :global(.settings-drawer[data-placement="bottom"]) {
-    height: 100vh;
-    max-height: 100vh;
+    height: auto;
+    max-height: 85vh;
+    container-type: size;
+    container-name: settings-panel;
   }
 
   /* Container */

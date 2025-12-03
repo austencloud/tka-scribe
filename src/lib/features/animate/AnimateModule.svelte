@@ -1,12 +1,13 @@
 <!--
-  AnimateModule.svelte - Advanced Animation Visualization Module
+  ComposeModule.svelte - Choreography & Arrangement Module
 
   Tabs:
-  - Setup: Bento-style mode selection and sequence configuration
-  - Playback: Unified animation view with per-canvas controls
-  - Browse: Saved animations gallery
+  - Arrange: Bento-style mode selection and sequence configuration
+  - Browse: Saved compositions gallery
 
-  Modes (selected in Setup, rendered in Playback):
+  Playback is a fullscreen overlay, triggered from Arrange or Browse
+
+  Modes (selected in Arrange, rendered in Playback overlay):
   - Single: Animate one sequence (full-screen canvas)
   - Tunnel: Overlay two sequences with different colors
   - Mirror: Side-by-side view with one mirrored
@@ -23,10 +24,13 @@
   import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
   import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 
-  // Import new tab components
-  import SetupTab from "./tabs/setup/SetupTab.svelte";
-  import PlaybackTab from "./tabs/playback/PlaybackTab.svelte";
+  // Import tab components
+  // Note: folder is still named "setup" (dev server locking), file renamed to ArrangeTab.svelte
+  import ArrangeTab from "./tabs/setup/ArrangeTab.svelte";
   import BrowseTab from "./tabs/browse/BrowseTab.svelte";
+
+  // Import playback overlay (renders when animateState.isPlaybackOpen is true)
+  import PlaybackOverlay from "./tabs/playback/PlaybackTab.svelte";
 
   // Get module state (singleton)
   const animateState = getAnimateModuleState();
@@ -41,7 +45,7 @@
   // Sync current tab with navigation state
   $effect(() => {
     const section = navigationState.activeTab;
-    if (section === "setup" || section === "playback" || section === "browse") {
+    if (section === "arrange" || section === "browse") {
       animateState.setCurrentTab(section as AnimateTab);
     }
   });
@@ -50,9 +54,9 @@
   $effect(() => {
     if (!urlSyncService) return;
     const currentModule = navigationState.currentModule;
-    if (currentModule !== "animate") return;
+    if (currentModule !== "compose") return;
 
-    // TODO: Sync animation ID to URL when viewing saved animations
+    // TODO: Sync composition ID to URL when viewing saved compositions
   });
 
   // Initialize on mount
@@ -65,28 +69,25 @@
       console.warn("Failed to resolve navigation services:", error);
     }
 
-    // Set default tab if none persisted
+    // Set default tab if none persisted or invalid
     const section = navigationState.activeTab;
-    if (
-      !section ||
-      (section !== "setup" && section !== "playback" && section !== "browse")
-    ) {
-      navigationState.setActiveTab("setup");
+    if (!section || (section !== "arrange" && section !== "browse")) {
+      navigationState.setActiveTab("arrange");
     }
 
-    // Check for deep link (e.g., shared animation URL)
-    const deepLinkData = deepLinkService?.consumeData("animate");
+    // Check for deep link (e.g., shared composition URL)
+    const deepLinkData = deepLinkService?.consumeData("compose");
     if (deepLinkData) {
       try {
-        console.log("🔗 Loading animation from deep link");
-        // TODO: Load animation by ID and navigate to playback
+        console.log("🔗 Loading composition from deep link");
+        // TODO: Load composition by ID and open playback overlay
         // For now, just navigate to the specified tab
-        if (deepLinkData.tabId) {
+        if (deepLinkData.tabId && (deepLinkData.tabId === "arrange" || deepLinkData.tabId === "browse")) {
           navigationState.setActiveTab(deepLinkData.tabId);
           animateState.setCurrentTab(deepLinkData.tabId as AnimateTab);
         }
       } catch (err) {
-        console.error("❌ Failed to load deep link animation:", err);
+        console.error("❌ Failed to load deep link composition:", err);
       }
     }
 
@@ -100,24 +101,29 @@
   }
 </script>
 
-<div class="animate-module">
+<div class="compose-module">
   <div class="content-container">
     {#key animateState.currentTab}
       <div class="tab-panel">
-        {#if isTabActive("setup")}
-          <SetupTab />
-        {:else if isTabActive("playback")}
-          <PlaybackTab />
+        {#if isTabActive("arrange")}
+          <ArrangeTab />
         {:else if isTabActive("browse")}
           <BrowseTab />
         {/if}
       </div>
     {/key}
   </div>
+
+  <!-- Playback Overlay - renders fullscreen over tabs when open -->
+  {#if animateState.isPlaybackOpen}
+    <div class="playback-overlay">
+      <PlaybackOverlay />
+    </div>
+  {/if}
 </div>
 
 <style>
-  .animate-module {
+  .compose-module {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -148,5 +154,13 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+  }
+
+  /* Playback overlay - fullscreen over tabs */
+  .playback-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: rgba(10, 15, 25, 0.98);
   }
 </style>

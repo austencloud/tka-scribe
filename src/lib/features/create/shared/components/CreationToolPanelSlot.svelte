@@ -14,7 +14,6 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { createBeatData } from "../domain/factories/createBeatData";
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { getCreateModuleContext } from "../context/create-module-context";
-  import { fade } from "svelte/transition";
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "./ConstructTabContent.svelte";
   import AssemblerTab from "../../assemble/components/AssemblerTab.svelte";
@@ -95,11 +94,6 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     onCloseFilters: () => void;
   } = $props();
 
-  // Transition configuration
-  const OUT_DURATION = 200;
-  const IN_DURATION = 200;
-  const fadeOutParams = { duration: OUT_DURATION };
-  const fadeInParams = { duration: IN_DURATION, delay: 0 };
 </script>
 
 <div class="tool-panel-wrapper">
@@ -113,11 +107,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     <!-- Render the appropriate tool panel based on active tab -->
     <div class="creation-tool-content">
       {#key `${activeToolPanel}-${assemblyTabKey}`}
-        <div
-          class="sub-tab-content"
-          in:fade={fadeInParams}
-          out:fade={fadeOutParams}
-        >
+        <div class="sub-tab-content">
           {#if activeToolPanel === "assembler"}
             <!-- Assembler Mode - Simplified tap-based hand path builder -->
             <AssemblerTab
@@ -327,6 +317,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     height: 100%;
     overflow: hidden;
   }
+
 
   /* Loading states */
   .persistence-loading,

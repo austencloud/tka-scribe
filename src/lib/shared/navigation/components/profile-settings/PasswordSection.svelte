@@ -2,7 +2,7 @@
   PasswordSection Component
 
   Allows users with password authentication to change their password.
-  Expandable section with current/new/confirm password fields.
+  Modern design with show/hide toggles instead of confirm field.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
@@ -17,10 +17,16 @@
     hapticService: IHapticFeedbackService | null;
   }>();
 
+  // Password visibility toggles
+  let showCurrentPassword = $state(false);
+  let showNewPassword = $state(false);
+
   function handleCancel() {
     hapticService?.trigger("selection");
     uiState.showPasswordSection = false;
     resetPasswordForm();
+    showCurrentPassword = false;
+    showNewPassword = false;
   }
 
   function handleExpand() {
@@ -28,17 +34,25 @@
     uiState.showPasswordSection = true;
   }
 
+  function toggleCurrentPassword() {
+    hapticService?.trigger("selection");
+    showCurrentPassword = !showCurrentPassword;
+  }
+
+  function toggleNewPassword() {
+    hapticService?.trigger("selection");
+    showNewPassword = !showNewPassword;
+  }
+
   const isFormValid = $derived(
     passwordState.current &&
       passwordState.new &&
-      passwordState.confirm &&
+      passwordState.new.length >= 8 &&
       !uiState.saving
   );
 
-  const passwordMismatch = $derived(
-    passwordState.new &&
-      passwordState.confirm &&
-      passwordState.new !== passwordState.confirm
+  const isPasswordWeak = $derived(
+    passwordState.new && passwordState.new.length < 8
   );
 </script>
 
@@ -52,42 +66,52 @@
     <div class="password-form">
       <div class="field">
         <label class="label" for="current-password"> Current Password </label>
-        <input
-          id="current-password"
-          type="password"
-          class="input"
-          bind:value={passwordState.current}
-          placeholder="Enter current password"
-        />
+        <div class="input-wrapper">
+          <input
+            id="current-password"
+            type={showCurrentPassword ? "text" : "password"}
+            class="input input-with-toggle"
+            bind:value={passwordState.current}
+            placeholder="Enter current password"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="toggle-visibility"
+            onclick={toggleCurrentPassword}
+            aria-label={showCurrentPassword ? "Hide password" : "Show password"}
+          >
+            <i class="fas {showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
 
       <div class="field">
         <label class="label" for="new-password"> New Password </label>
-        <input
-          id="new-password"
-          type="password"
-          class="input"
-          bind:value={passwordState.new}
-          placeholder="Enter new password"
-          aria-required="true"
-        />
-      </div>
-
-      <div class="field">
-        <label class="label" for="confirm-password"> Confirm Password </label>
-        <input
-          id="confirm-password"
-          type="password"
-          class="input"
-          bind:value={passwordState.confirm}
-          placeholder="Confirm new password"
-          aria-required="true"
-          aria-invalid={passwordMismatch ? "true" : "false"}
-          aria-describedby={passwordMismatch ? "password-error" : undefined}
-        />
-        {#if passwordMismatch}
-          <p id="password-error" class="error-message" role="alert">
-            Passwords do not match
+        <div class="input-wrapper">
+          <input
+            id="new-password"
+            type={showNewPassword ? "text" : "password"}
+            class="input input-with-toggle"
+            bind:value={passwordState.new}
+            placeholder="Enter new password"
+            aria-required="true"
+            aria-invalid={isPasswordWeak ? "true" : "false"}
+            aria-describedby={isPasswordWeak ? "password-hint" : undefined}
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="toggle-visibility"
+            onclick={toggleNewPassword}
+            aria-label={showNewPassword ? "Hide password" : "Show password"}
+          >
+            <i class="fas {showNewPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+          </button>
+        </div>
+        {#if isPasswordWeak}
+          <p id="password-hint" class="hint-message" role="status">
+            Password must be at least 8 characters
           </p>
         {/if}
       </div>
@@ -136,6 +160,12 @@
     transition: all 0.2s ease;
   }
 
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
   .input {
     width: 100%;
     padding: 12px 16px;
@@ -147,6 +177,39 @@
     transition: all 0.2s ease;
   }
 
+  .input-with-toggle {
+    padding-right: 48px;
+  }
+
+  .toggle-visibility {
+    position: absolute;
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .toggle-visibility:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .toggle-visibility:active {
+    transform: scale(0.95);
+  }
+
+  .toggle-visibility i {
+    font-size: 16px;
+  }
+
   .input:focus {
     outline: none;
     border-color: rgba(99, 102, 241, 0.6);
@@ -154,16 +217,16 @@
   }
 
   .input[aria-invalid="true"] {
-    border-color: rgba(239, 68, 68, 0.6);
+    border-color: rgba(251, 191, 36, 0.6);
   }
 
   .input[aria-invalid="true"]:focus {
-    border-color: rgba(239, 68, 68, 0.8);
+    border-color: rgba(251, 191, 36, 0.8);
   }
 
-  .error-message {
+  .hint-message {
     font-size: 13px;
-    color: #ef4444;
+    color: rgba(251, 191, 36, 0.9);
     margin: 6px 0 0 0;
     font-weight: 500;
   }
@@ -240,19 +303,22 @@
     outline-offset: 2px;
   }
 
-  .button:focus-visible {
+  .button:focus-visible,
+  .toggle-visibility:focus-visible {
     outline: 3px solid rgba(99, 102, 241, 0.9);
     outline-offset: 2px;
   }
 
   /* Accessibility - Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
-    .button {
+    .button,
+    .toggle-visibility {
       transition: none;
     }
 
     .button:hover,
-    .button:active {
+    .button:active,
+    .toggle-visibility:active {
       transform: none;
     }
   }
@@ -263,7 +329,8 @@
       outline: 3px solid white;
     }
 
-    .button:focus-visible {
+    .button:focus-visible,
+    .toggle-visibility:focus-visible {
       outline: 3px solid white;
     }
   }

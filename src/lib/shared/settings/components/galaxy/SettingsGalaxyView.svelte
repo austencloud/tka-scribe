@@ -140,100 +140,48 @@
 
 <style>
   .settings-galaxy {
+    --panel-spacing: clamp(12px, 4cqi, 20px);
+
     width: 100%;
     height: 100%;
-    padding: var(--settings-space-lg);
-    overflow: hidden; /* No scrolling - fit all cards in view */
+    padding: var(--panel-spacing);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
+    container-type: size;
+    container-name: galaxy;
   }
 
-  /* Header - compact to maximize card space */
+  /* Header */
   .galaxy-header {
     text-align: center;
-    margin-bottom: var(--settings-space-md);
-    padding-top: 0;
+    margin-bottom: var(--panel-spacing);
     flex-shrink: 0;
   }
 
   .galaxy-title {
-    font-size: var(--settings-font-size-h1);
-    font-weight: var(--settings-font-weight-bold);
-    color: var(--settings-text-primary);
-    margin: 0 0 var(--settings-space-xs) 0;
-    letter-spacing: var(--settings-letter-spacing-tight);
-    background: var(--settings-gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: clamp(1.125rem, 5cqi, 1.5rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
   }
 
   .galaxy-subtitle {
-    font-size: var(--settings-font-size-caption);
-    font-weight: var(--settings-font-weight-medium);
-    color: var(--settings-text-secondary);
+    font-size: clamp(0.6875rem, 3cqi, 0.8125rem);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
     margin: 0;
-    letter-spacing: var(--settings-letter-spacing-wide);
   }
 
-  /*
-	 * Vertical stack layout - cards fill available height evenly
-	 * Using flexbox with flex: 1 on cards to distribute space intentionally
-	 */
+  /* Grid - cards at natural height, centered in available space */
   .galaxy-grid {
     display: flex;
     flex-direction: column;
-    flex: 1; /* Take remaining vertical space */
-    gap: 14px;
+    justify-content: center;
+    gap: var(--panel-spacing);
     width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-    min-height: 0; /* Allow flex shrinking */
-    justify-content: center; /* Center cards if they can't fill all space */
-  }
-
-  /* Cards should flex to fill available space evenly with sensible limits */
-  .galaxy-grid > :global(.category-card) {
-    flex: 1 1 auto;
-    min-height: 64px;
-    max-height: 120px; /* Allow cards to grow larger to fill space */
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
-    .settings-galaxy {
-      padding: var(--settings-space-md);
-    }
-
-    .galaxy-header {
-      margin-bottom: var(--settings-space-sm);
-    }
-
-    .galaxy-title {
-      font-size: var(--settings-font-size-h2);
-    }
-
-    .galaxy-grid {
-      gap: 12px;
-    }
-
-    .galaxy-grid > :global(.category-card) {
-      min-height: 60px;
-      max-height: 110px;
-    }
-  }
-
-  /* Tall screens - allow cards to fill more space */
-  @media (min-height: 700px) {
-    .galaxy-grid > :global(.category-card) {
-      max-height: 140px;
-    }
-  }
-
-  /* Very tall screens */
-  @media (min-height: 900px) {
-    .galaxy-grid > :global(.category-card) {
-      max-height: 160px;
-    }
+    flex: 1;
+    min-height: 0;
   }
 </style>

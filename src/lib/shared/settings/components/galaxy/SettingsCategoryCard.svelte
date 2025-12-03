@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { fly, scale } from "svelte/transition";
+  /**
+   * SettingsCategoryCard - Bento-style settings category card
+   *
+   * Modern solid gradient cards with bold visual identity
+   * Replaces the 2021-era glass morphism approach
+   */
+  import { scale } from "svelte/transition";
   import { quintOut } from "svelte/easing";
 
   interface Props {
@@ -28,260 +34,158 @@
 
   // Track avatar load errors to fallback to icon
   let avatarError = $state(false);
-
-  // 3D tilt effect state
-  let tiltX = $state(0);
-  let tiltY = $state(0);
-
-  function handleMouseMove(event: MouseEvent) {
-    const card = event.currentTarget as HTMLElement;
-    const rect = card.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    // Calculate tilt based on mouse position (max 10 degrees)
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    tiltY = ((x - centerX) / centerX) * 5; // Horizontal tilt
-    tiltX = ((centerY - y) / centerY) * 5; // Vertical tilt (inverted)
-  }
-
-  function handleMouseLeave() {
-    tiltX = 0;
-    tiltY = 0;
-  }
 </script>
 
 <button
-  class="category-card settings-glass-card settings-shimmer"
+  class="category-card"
   data-category-id={id}
-  in:scale={{ delay: index * 50, duration: 400, easing: quintOut }}
-  style="--tilt-x: {tiltX}deg; --tilt-y: {tiltY}deg; --stagger-index: {index}; --category-color: {color}; --category-gradient: {gradient}"
-  onmousemove={handleMouseMove}
-  onmouseleave={handleMouseLeave}
+  in:scale={{ delay: index * 60, duration: 350, easing: quintOut }}
+  style="--category-gradient: {gradient}"
   {onclick}
 >
-  <!-- Color accent overlay -->
-  <div class="color-accent"></div>
-
-  <!-- Unified card content -->
-  <div class="category-card-body">
-    <div class="card-icon-large">
-      {#if avatarUrl && !avatarError}
-        <img
-          src={avatarUrl}
-          alt="Profile"
-          class="card-avatar"
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer"
-          onerror={() => (avatarError = true)}
-        />
-      {:else}
-        {@html icon}
-      {/if}
-    </div>
-    <div class="card-text">
-      <h3 class="card-title">{title}</h3>
-      <p class="card-status">{statusText}</p>
-    </div>
-  </div>
-
-  <!-- Hover shine effect -->
+  <!-- Gradient shine overlay -->
   <div class="card-shine"></div>
 
-  <!-- Selection indicator (shows when active detail view) -->
-  <div class="selection-ring"></div>
+  <!-- Icon -->
+  <div class="card-icon">
+    {#if avatarUrl && !avatarError}
+      <img
+        src={avatarUrl}
+        alt="Profile"
+        class="card-avatar"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+        onerror={() => (avatarError = true)}
+      />
+    {:else}
+      {@html icon}
+    {/if}
+  </div>
+
+  <!-- Content -->
+  <div class="card-content">
+    <h3 class="card-title">{title}</h3>
+    <p class="card-status">{statusText}</p>
+  </div>
 </button>
 
 <style>
+  /* Bento card - natural height, horizontal layout */
   .category-card {
     position: relative;
-    width: 100%;
-    cursor: pointer;
-    overflow: hidden;
-    transition: all var(--settings-transition-base) var(--settings-ease-out);
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0;
+    gap: clamp(10px, 4cqi, 16px);
+    width: 100%;
+    padding: clamp(12px, 4cqi, 18px);
+    background: var(--category-gradient);
     border: none;
+    border-radius: clamp(12px, 4cqi, 16px);
+    cursor: pointer;
+    text-align: left;
+    overflow: hidden;
+    container-type: inline-size;
+    container-name: card;
+    transition:
+      transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 150ms ease;
   }
 
-  /* Hover effects - subtle horizontal shift */
   .category-card:hover {
-    transform: translateX(6px);
-    box-shadow:
-      var(--settings-shadow-lg),
-      0 8px 24px -8px color-mix(in srgb, var(--category-color) 30%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    border-color: color-mix(
-      in srgb,
-      var(--category-color) 25%,
-      var(--settings-glass-border-active)
-    );
+    transform: translateY(-2px) scale(1.015);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
 
   .category-card:active {
-    transform: translateX(3px) scale(0.99);
-    transition-duration: var(--settings-transition-fast);
+    transform: scale(0.98);
+    transition-duration: 50ms;
   }
 
-  /* Focus state for keyboard navigation */
   .category-card:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo);
+    outline: 2px solid white;
     outline-offset: 2px;
-    border-color: var(--settings-glass-border-active);
   }
 
-  /* Color accent overlay */
-  .color-accent {
-    position: absolute;
-    inset: 0;
-    background: var(--category-gradient);
-    opacity: 0.05;
-    pointer-events: none;
-    transition: opacity var(--settings-transition-base);
-  }
-
-  .category-card:hover .color-accent {
-    opacity: 0.1;
-  }
-
-  /* Horizontal card content layout - fills height naturally */
-  .category-card-body {
-    width: 100%;
-    height: 100%;
-    padding: 18px 24px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    text-align: left;
-    gap: 20px;
-    position: relative;
-  }
-
-  .card-icon-large {
-    font-size: 32px;
-    line-height: 1;
-    color: var(--category-color);
-    filter: drop-shadow(
-      0 2px 6px color-mix(in srgb, var(--category-color) 35%, transparent)
-    );
-    transition:
-      transform var(--settings-transition-base) var(--settings-ease-spring),
-      filter var(--settings-transition-base);
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--category-color);
-    box-shadow: 0 2px 6px
-      color-mix(in srgb, var(--category-color) 35%, transparent);
-  }
-
-  .category-card:hover .card-icon-large {
-    transform: scale(1.12);
-    filter: drop-shadow(
-      0 4px 10px color-mix(in srgb, var(--category-color) 50%, transparent)
-    );
-  }
-
-  .card-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3px;
-    flex: 1;
-    min-width: 0; /* Allow text truncation */
-  }
-
-  .card-title {
-    font-size: 18px;
-    font-weight: var(--settings-font-weight-semibold);
-    color: var(--settings-text-primary);
-    margin: 0;
-    letter-spacing: var(--settings-letter-spacing-tight);
-    transition: color var(--settings-transition-base);
-  }
-
-  .category-card:hover .card-title {
-    color: color-mix(
-      in srgb,
-      var(--category-color) 70%,
-      var(--settings-text-primary)
-    );
-  }
-
-  .card-status {
-    font-size: 15px;
-    font-weight: var(--settings-font-weight-normal);
-    color: var(--settings-text-secondary);
-    margin: 0;
-    letter-spacing: var(--settings-letter-spacing-wide);
-    opacity: 0.7;
-    transition: opacity var(--settings-transition-base);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  .category-card:hover .card-status {
-    opacity: 0.9;
-  }
-
-  /* Shine effect (animated on hover) */
+  /* Subtle shine overlay */
   .card-shine {
     position: absolute;
     inset: 0;
-    background: var(--settings-shimmer-gradient);
-    opacity: 0;
-    transition: opacity var(--settings-transition-fast);
+    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
     pointer-events: none;
   }
 
-  .category-card:hover .card-shine {
-    opacity: 1;
-    animation: shimmer 1.2s ease-in-out;
+  /* Icon */
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(36px, 14cqi, 48px);
+    height: clamp(36px, 14cqi, 48px);
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: clamp(10px, 3cqi, 14px);
+    font-size: clamp(16px, 6cqi, 22px);
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
-  @keyframes shimmer {
-    0% {
-      transform: translateX(-100%) translateY(-100%);
-    }
-    100% {
-      transform: translateX(100%) translateY(100%);
-    }
+  .card-avatar {
+    width: clamp(36px, 14cqi, 48px);
+    height: clamp(36px, 14cqi, 48px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
-  /* Selection ring (reserved for future active state functionality) */
-  .selection-ring {
-    position: absolute;
-    inset: -2px;
-    border: 2px solid transparent;
-    border-radius: var(--settings-radius-lg);
-    pointer-events: none;
-    transition: border-color var(--settings-transition-base);
+  /* Content - tight grouping */
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
   }
 
-  /* Reduced motion */
+  .card-title {
+    margin: 0;
+    font-size: clamp(0.875rem, 5cqi, 1.0625rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.2;
+  }
+
+  .card-status {
+    margin: 0;
+    font-size: clamp(0.8125rem, 4.5cqi, 1rem);
+    font-weight: 600;
+    color: white;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Chevron - tap affordance */
+  .category-card::after {
+    content: "›";
+    font-size: clamp(1.25rem, 6cqi, 1.75rem);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: auto;
+    padding-left: 8px;
+    transition: transform 150ms ease;
+  }
+
+  .category-card:hover::after {
+    transform: translateX(3px);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .category-card,
-    .card-icon-large,
-    .card-shine {
-      animation: none !important;
-      transition-duration: 0ms !important;
+    .category-card {
+      transition: none;
     }
 
     .category-card:hover {

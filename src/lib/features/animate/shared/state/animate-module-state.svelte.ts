@@ -1,21 +1,23 @@
 /**
- * Animate Module State (Shared)
+ * Compose Module State (Shared)
  *
- * Manages shared state for the Animate module:
- * - Current tab (setup, playback, browse)
+ * Manages shared state for the Compose module:
+ * - Current tab (arrange, browse)
  * - Current animation mode for playback (single, tunnel, mirror, grid, side-by-side)
  * - Sequence browser panel visibility and mode
+ * - Playback overlay state
  *
- * New tab structure:
- * - tabs/setup/ - Bento mode selection and sequence configuration
- * - tabs/playback/ - Unified animation playback with per-canvas controls
- * - tabs/browse/ - Saved animations gallery
+ * Tab structure:
+ * - tabs/arrange/ (folder: setup/) - Bento mode selection and sequence configuration
+ * - tabs/browse/ - Saved compositions gallery
+ *
+ * Playback is an overlay, not a tab - triggered from Arrange or Browse
  */
 
 import type { AnimationMode } from "../domain/AnimationMode";
 
-// Tab types for the new 3-tab structure
-export type AnimateTab = "setup" | "playback" | "browse";
+// Tab types - Playback is an overlay, not a tab
+export type AnimateTab = "arrange" | "browse";
 
 // Re-export AnimationMode for backwards compatibility
 export type AnimateMode = AnimationMode;
@@ -34,8 +36,11 @@ const STORAGE_KEYS = {
   CURRENT_MODE: "animate-current-mode",
 } as const;
 
+// Source tab for playback overlay (where to return when closed)
+export type PlaybackSource = "arrange" | "browse";
+
 export type AnimateModuleState = {
-  // Current tab (setup, playback, browse)
+  // Current tab (arrange, browse)
   readonly currentTab: AnimateTab;
 
   // Current animation mode (for playback) - single, tunnel, mirror, grid, side-by-side
@@ -44,6 +49,10 @@ export type AnimateModuleState = {
   // Sequence browser panel
   readonly isSequenceBrowserOpen: boolean;
   readonly browserMode: BrowserTargetMode;
+
+  // Playback overlay state
+  readonly isPlaybackOpen: boolean;
+  readonly playbackSource: PlaybackSource;
 
   // Tab switching
   setCurrentTab: (tab: AnimateTab) => void;
@@ -55,9 +64,13 @@ export type AnimateModuleState = {
   openSequenceBrowser: (mode: BrowserTargetMode) => void;
   closeSequenceBrowser: () => void;
 
+  // Playback overlay
+  openPlayback: (source: PlaybackSource) => void;
+  closePlayback: () => void;
+
   // Navigation helpers
-  goToPlayback: () => void;
-  goToSetup: () => void;
+  goToArrange: () => void;
+  goToBrowse: () => void;
 
   // Reset
   reset: () => void;
@@ -93,10 +106,12 @@ function saveToStorage<T>(key: string, value: T): void {
 }
 
 export function createAnimateModuleState(): AnimateModuleState {
+  // Migrate old "compose" tab value to "arrange"
+  const storedTab = loadFromStorage<string>(STORAGE_KEYS.CURRENT_TAB, "arrange");
+  const migratedTab: AnimateTab = storedTab === "compose" || storedTab === "playback" ? "arrange" : (storedTab as AnimateTab);
+
   // Current tab (persisted)
-  let currentTab = $state<AnimateTab>(
-    loadFromStorage(STORAGE_KEYS.CURRENT_TAB, "setup")
-  );
+  let currentTab = $state<AnimateTab>(migratedTab);
 
   // Current animation mode (persisted) - used for playback configuration
   let currentMode = $state<AnimateMode>(
@@ -106,6 +121,10 @@ export function createAnimateModuleState(): AnimateModuleState {
   // Sequence browser panel (not persisted - always starts closed)
   let isSequenceBrowserOpen = $state<boolean>(false);
   let browserMode = $state<BrowserTargetMode>("primary");
+
+  // Playback overlay state (not persisted - always starts closed)
+  let isPlaybackOpen = $state<boolean>(false);
+  let playbackSource = $state<PlaybackSource>("arrange");
 
   return {
     // Getters
@@ -121,61 +140,81 @@ export function createAnimateModuleState(): AnimateModuleState {
     get browserMode() {
       return browserMode;
     },
+    get isPlaybackOpen() {
+      return isPlaybackOpen;
+    },
+    get playbackSource() {
+      return playbackSource;
+    },
 
     // Tab switching
     setCurrentTab(tab: AnimateTab) {
       currentTab = tab;
       saveToStorage(STORAGE_KEYS.CURRENT_TAB, tab);
-      console.log("🎬 AnimateModuleState: Tab changed to", tab);
+      console.log("🎬 ComposeModuleState: Tab changed to", tab);
     },
 
     // Mode switching (for playback configuration)
     setCurrentMode(mode: AnimateMode) {
       currentMode = mode;
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, mode);
-      console.log("🎬 AnimateModuleState: Mode changed to", mode);
+      console.log("🎬 ComposeModuleState: Mode changed to", mode);
     },
 
     // Browser panel
     openSequenceBrowser(mode: BrowserTargetMode) {
-      console.log("🎬 AnimateModuleState: Opening browser for", mode, {
+      console.log("🎬 ComposeModuleState: Opening browser for", mode, {
         currentlyOpen: isSequenceBrowserOpen,
         currentMode: browserMode,
       });
 
       browserMode = mode;
       isSequenceBrowserOpen = true;
-      console.log("🎬 AnimateModuleState: Browser opened for", mode);
+      console.log("🎬 ComposeModuleState: Browser opened for", mode);
     },
 
     closeSequenceBrowser() {
       isSequenceBrowserOpen = false;
-      console.log("🎬 AnimateModuleState: Browser closed");
+      console.log("🎬 ComposeModuleState: Browser closed");
+    },
+
+    // Playback overlay
+    openPlayback(source: PlaybackSource) {
+      playbackSource = source;
+      isPlaybackOpen = true;
+      console.log("🎬 ComposeModuleState: Opening playback from", source);
+    },
+
+    closePlayback() {
+      isPlaybackOpen = false;
+      console.log("🎬 ComposeModuleState: Closing playback, returning to", playbackSource);
     },
 
     // Navigation helpers
-    goToPlayback() {
-      currentTab = "playback";
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "playback");
-      console.log("🎬 AnimateModuleState: Navigating to Playback");
+    goToArrange() {
+      currentTab = "arrange";
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "arrange");
+      console.log("🎬 ComposeModuleState: Navigating to Arrange");
     },
 
-    goToSetup() {
-      currentTab = "setup";
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "setup");
-      console.log("🎬 AnimateModuleState: Navigating to Setup");
+    goToBrowse() {
+      currentTab = "browse";
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "browse");
+      console.log("🎬 ComposeModuleState: Navigating to Browse");
     },
 
     // Reset
     reset() {
-      currentTab = "setup";
+      currentTab = "arrange";
       currentMode = "single";
       isSequenceBrowserOpen = false;
       browserMode = "primary";
+      isPlaybackOpen = false;
+      playbackSource = "arrange";
 
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "setup");
+      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "arrange");
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, "single");
-      console.log("🎬 AnimateModuleState: Reset");
+      console.log("🎬 ComposeModuleState: Reset");
     },
   };
 }

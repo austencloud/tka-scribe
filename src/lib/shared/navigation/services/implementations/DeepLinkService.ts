@@ -43,11 +43,16 @@ const MODULE_MAPPINGS: Record<string, ModuleMapping> = {
   generate: { moduleId: "create", tabId: "generator" },
   generator: { moduleId: "create", tabId: "generator" },
   share: { moduleId: "share", navigateToModule: "create" },
-  animate: { moduleId: "animate", tabId: "single" },
-  single: { moduleId: "animate", tabId: "single" },
-  tunnel: { moduleId: "animate", tabId: "tunnel" },
-  mirror: { moduleId: "animate", tabId: "mirror" },
-  grid: { moduleId: "animate", tabId: "grid" },
+  // Compose module - arrange is the main tab
+  compose: { moduleId: "compose", tabId: "arrange" },
+  arrange: { moduleId: "compose", tabId: "arrange" },
+  browse: { moduleId: "compose", tabId: "browse" },
+  // Legacy animation mode deep links - redirect to compose module arrange tab
+  animate: { moduleId: "compose", tabId: "arrange" },
+  single: { moduleId: "compose", tabId: "arrange" },
+  tunnel: { moduleId: "compose", tabId: "arrange" },
+  mirror: { moduleId: "compose", tabId: "arrange" },
+  grid: { moduleId: "compose", tabId: "arrange" },
   explore: { moduleId: "discover", tabId: "gallery" },
   gallery: { moduleId: "discover", tabId: "gallery" },
   // View module uses standalone route

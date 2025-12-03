@@ -79,7 +79,8 @@ export function moduleSections() {
 }
 
 // Module order for determining slide direction
-const MODULE_ORDER = ['dashboard', 'create', 'discover', 'learn', 'animate', 'train', 'feedback', 'admin'];
+// Settings is included for transition support but accessed via footer gear icon
+const MODULE_ORDER = ['dashboard', 'create', 'discover', 'learn', 'compose', 'train', 'feedback', 'admin', 'settings'];
 
 // Module change handler with View Transitions
 // targetTab: Optional tab to navigate to (used when clicking a section in a different module)
@@ -140,11 +141,12 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
 }
 
 // Tab order for determining slide direction (per module)
+// Note: Compose module playback is an overlay, not a tab
 const TAB_ORDERS: Record<string, string[]> = {
   create: ['assembler', 'constructor', 'generator', 'editor', 'export'],
   discover: ['sequences', 'collections', 'creators', 'library'],
   learn: ['concepts', 'play', 'codex'],
-  animate: ['setup', 'playback', 'browse'],
+  compose: ['arrange', 'browse'],
   train: ['drills', 'challenges', 'progress'],
   collect: ['achievements', 'badges', 'stats'],
   feedback: ['submit', 'manage'],
@@ -211,6 +213,10 @@ export function getModuleDefinitions() {
   const isFeatureFlagsInitialized = featureFlagService.isInitialized;
 
   return MODULE_DEFINITIONS.filter((module) => {
+    // Settings module is accessed via sidebar footer gear icon, not main module list
+    if (module.id === "settings") {
+      return false;
+    }
     // Admin module only visible to admin users (hide until we know they're admin)
     if (module.id === "admin") {
       return featureFlagService.isAdmin;

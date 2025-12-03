@@ -21,7 +21,7 @@ export type ShortcutContext =
   | "discover" // Active in EXPLORE module
   | "learn" // Active in LEARN module
   | "collect" // Active in COLLECT module
-  | "animate" // Active in ANIMATE module
+  | "compose" // Active in COMPOSE module
   | "admin" // Active in ADMIN module
   | "edit-panel" // Active when Edit panel is open
   | "animation-panel" // Active when Animation panel is open

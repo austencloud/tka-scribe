@@ -225,17 +225,13 @@ interface ImpersonatedUser {
 // REACTIVE STATE (Svelte 5 Runes - Module Pattern)
 // ============================================================================
 
-// 🚧 TEMPORARY DEBUG FLAG - Remove before production!
-// Set this to true to bypass Firebase admin check for testing
-const FORCE_ADMIN_MODE = false;
-
 // Internal reactive state
 let _state = $state<AuthState>({
   user: null,
   loading: true,
   initialized: false,
-  isAdmin: FORCE_ADMIN_MODE, // Start with forced admin if debugging
-  role: FORCE_ADMIN_MODE ? "admin" : "user",
+  isAdmin: false,
+  role: "user",
 });
 
 // Impersonation state (admin-only "View As" feature)
@@ -421,33 +417,22 @@ export const authStore = {
 
           // Check user role and admin status
           try {
-            // 🚧 FORCE ADMIN MODE FOR DEBUGGING
-            if (FORCE_ADMIN_MODE) {
-              isAdmin = true;
-              role = "admin";
-            } else {
-              const userDocRef = doc(firestore, `users/${user.uid}`);
-              const userDoc = await getDoc(userDocRef);
-              if (userDoc.exists()) {
-                const userData = userDoc.data();
-                // Check for new role field first
-                if (userData["role"]) {
-                  role = userData["role"] as UserRole;
-                  isAdmin = role === "admin";
-                } else {
-                  // Backwards compatibility: use isAdmin boolean
-                  isAdmin = userData["isAdmin"] === true;
-                  role = isAdmin ? "admin" : "user";
-                }
+            const userDocRef = doc(firestore, `users/${user.uid}`);
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              // Check for new role field first
+              if (userData["role"]) {
+                role = userData["role"] as UserRole;
+                isAdmin = role === "admin";
+              } else {
+                // Backwards compatibility: use isAdmin boolean
+                isAdmin = userData["isAdmin"] === true;
+                role = isAdmin ? "admin" : "user";
               }
             }
           } catch (_error) {
             console.warn("⚠️ [authStore] Could not check role status:", _error);
-            // If forced admin mode, still set as admin even on error
-            if (FORCE_ADMIN_MODE) {
-              isAdmin = true;
-              role = "admin";
-            }
           }
 
           // Initialize feature flag service with user context
@@ -457,12 +442,6 @@ export const authStore = {
             console.warn("⚠️ [authStore] Failed to initialize feature flags:", _error);
           }
         } else {
-          // 🚧 Keep admin mode if forced (for debugging without login)
-          if (FORCE_ADMIN_MODE) {
-            isAdmin = true;
-            role = "admin";
-          }
-
           // Initialize feature flag service without user
           try {
             await featureFlagService.initialize(null);
@@ -500,6 +479,7 @@ export const authStore = {
           } catch {
             // Silently fail - settings sync is non-critical
           }
+
         }
 
         // Revalidate current module after auth state changes
@@ -532,9 +512,34 @@ export const authStore = {
 
   /**
    * Sign out the current user
+   * Clears all sensitive data from client-side storage
    */
   async signOut() {
     try {
+      // Clear any auth-related localStorage items
+      const keysToRemove = Object.keys(localStorage).filter(
+        (key) =>
+          key.startsWith("tka_") ||
+          key.includes("auth") ||
+          key.includes("session")
+      );
+      keysToRemove.forEach((key) => localStorage.removeItem(key));
+
+      // Clear sessionStorage entirely
+      sessionStorage.clear();
+
+      // Clear sensitive form state (dynamic import to avoid circular deps)
+      try {
+        const { resetPasswordForm, resetEmailChangeForm, resetUIState } =
+          await import("../../navigation/state/profile-settings-state.svelte");
+        resetPasswordForm();
+        resetEmailChangeForm();
+        resetUIState();
+      } catch {
+        // Profile settings may not be loaded - that's ok
+      }
+
+      // Sign out from Firebase
       await firebaseSignOut(auth);
       // State will be updated automatically by onAuthStateChanged
     } catch (_error) {

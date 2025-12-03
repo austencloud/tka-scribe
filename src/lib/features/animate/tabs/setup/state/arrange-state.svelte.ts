@@ -1,7 +1,7 @@
 /**
- * Setup Tab State
+ * Arrange Tab State
  *
- * State management for the Setup tab in the Animate module.
+ * State management for the Arrange tab in the Compose module.
  * Manages mode selection and sequence slot configuration.
  */
 
@@ -10,11 +10,11 @@ import type { AnimateMode } from "$lib/features/animate/shared/state/animate-mod
 
 // LocalStorage keys
 const STORAGE_KEYS = {
-  SELECTED_MODE: "animate-setup-selected-mode",
-  SEQUENCE_SLOTS: "animate-setup-sequence-slots",
+  SELECTED_MODE: "animate-arrange-selected-mode",
+  SEQUENCE_SLOTS: "animate-arrange-sequence-slots",
 } as const;
 
-export type SetupTabState = {
+export type ArrangeTabState = {
   // Mode selection
   readonly selectedMode: AnimateMode | null;
 
@@ -87,7 +87,7 @@ function objectToMap<T>(obj: Record<string, T>): Map<string, T> {
   return map;
 }
 
-export function createSetupTabState(): SetupTabState {
+export function createArrangeTabState(): ArrangeTabState {
   // Selected mode
   let selectedMode = $state<AnimateMode | null>(
     loadFromStorage<AnimateMode | null>(STORAGE_KEYS.SELECTED_MODE, null)
@@ -143,7 +143,7 @@ export function createSetupTabState(): SetupTabState {
       sequenceSlots = new Map();
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, {});
 
-      console.log("🎨 SetupTabState: Mode selected:", mode);
+      console.log("🎨 ArrangeTabState: Mode selected:", mode);
     },
 
     // Sequence slot management
@@ -153,7 +153,7 @@ export function createSetupTabState(): SetupTabState {
       sequenceSlots = newSlots;
 
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, mapToObject(sequenceSlots));
-      console.log(`🎨 SetupTabState: Sequence set for slot ${slotId}:`, sequence?.name);
+      console.log(`🎨 ArrangeTabState: Sequence set for slot ${slotId}:`, sequence?.name);
     },
 
     clearSlot(slotId: string) {
@@ -162,17 +162,17 @@ export function createSetupTabState(): SetupTabState {
       sequenceSlots = newSlots;
 
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, mapToObject(sequenceSlots));
-      console.log(`🎨 SetupTabState: Cleared slot ${slotId}`);
+      console.log(`🎨 ArrangeTabState: Cleared slot ${slotId}`);
     },
 
     // Start playback (this would transition to the selected mode with configured sequences)
     startPlayback() {
       if (!isConfigurationComplete()) {
-        console.warn("🎨 SetupTabState: Cannot start playback - configuration incomplete");
+        console.warn("🎨 ArrangeTabState: Cannot start playback - configuration incomplete");
         return;
       }
 
-      console.log("🎨 SetupTabState: Starting playback with mode:", selectedMode);
+      console.log("🎨 ArrangeTabState: Starting playback with mode:", selectedMode);
       // The parent component will handle the actual transition
     },
 
@@ -184,17 +184,17 @@ export function createSetupTabState(): SetupTabState {
       saveToStorage(STORAGE_KEYS.SELECTED_MODE, null);
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, {});
 
-      console.log("🎨 SetupTabState: Reset");
+      console.log("🎨 ArrangeTabState: Reset");
     },
   };
 }
 
 // Singleton instance
-let setupTabStateInstance: SetupTabState | null = null;
+let arrangeTabStateInstance: ArrangeTabState | null = null;
 
-export function getSetupTabState(): SetupTabState {
-  if (!setupTabStateInstance) {
-    setupTabStateInstance = createSetupTabState();
+export function getArrangeTabState(): ArrangeTabState {
+  if (!arrangeTabStateInstance) {
+    arrangeTabStateInstance = createArrangeTabState();
   }
-  return setupTabStateInstance;
+  return arrangeTabStateInstance;
 }

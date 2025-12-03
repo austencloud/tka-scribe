@@ -56,7 +56,7 @@ export function moduleHasPrimaryNav(moduleId: string): boolean {
     moduleId === "create" ||    // Assembler, Constructor, Generator tabs
     moduleId === "discover" ||  // Gallery, Collections, Creators, Library tabs
     moduleId === "learn" ||     // Concepts, Play, Codex tabs
-    moduleId === "animate" ||   // 2D, 3D tabs
+    moduleId === "compose" ||   // Compose, Playback, Browse tabs
     moduleId === "train" ||     // Challenges, Sessions tabs
     moduleId === "feedback" ||  // Submit, Manage tabs
     moduleId === "admin"        // Various admin tabs

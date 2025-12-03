@@ -15,27 +15,16 @@
   type TrainSection = "practice" | "challenges" | "progress";
   let activeSection = $state<TrainSection>("practice");
 
-  // Sync with navigation state
+  // Sync with navigation state (View Transitions handled by navigation-coordinator)
   $effect(() => {
     const navTab = navigationState.activeTab;
     if (navTab && ["practice", "challenges", "progress"].includes(navTab)) {
-      const newSection = navTab as TrainSection;
-      if (newSection !== activeSection) {
-        // Use View Transitions API if available
-        if (document.startViewTransition) {
-          document.startViewTransition(() => {
-            activeSection = newSection;
-          });
-        } else {
-          activeSection = newSection;
-        }
-      }
+      activeSection = navTab as TrainSection;
     }
   });
 </script>
 
 <div class="train-module">
-  <!-- View Transitions API handles tab animation at page level -->
   {#key activeSection}
     <div class="section-panel">
       {#if activeSection === "practice"}
@@ -69,7 +58,4 @@
     height: 100%;
     overflow: hidden;
   }
-
-  /* Note: view-transition-name removed to avoid duplicates during {#key} transitions.
-	   The component uses document.startViewTransition() which handles animations internally. */
 </style>

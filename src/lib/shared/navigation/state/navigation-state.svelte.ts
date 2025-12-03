@@ -147,30 +147,23 @@ export const COLLECT_TABS: Section[] = LIBRARY_TABS;
 export const BUILD_TABS = CREATE_TABS; // Legacy name
 export const COLLECTION_TABS = LIBRARY_TABS; // Legacy name
 
-// Animate tabs configuration
-// New Bento-style tabs: Setup (mode selection) | Playback (animation) | Browse (saved animations)
+// Compose module tabs configuration
+// Arrange (mode selection + sequence config) | Browse (saved compositions)
+// Note: Playback is an overlay, not a tab - triggered from Arrange or Browse
 export const ANIMATE_TABS: Section[] = [
   {
-    id: "setup",
-    label: "Setup",
-    icon: '<i class="fas fa-sliders-h"></i>',
-    description: "Configure animation mode and sequences",
+    id: "arrange",
+    label: "Arrange",
+    icon: '<i class="fas fa-layer-group"></i>',
+    description: "Arrange sequences into compositions",
     color: "#3b82f6",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
-  },
-  {
-    id: "playback",
-    label: "Playback",
-    icon: '<i class="fas fa-play-circle"></i>',
-    description: "Watch and control your animation",
-    color: "#ec4899",
-    gradient: "linear-gradient(135deg, #ec4899 0%, #f472b6 100%)",
   },
   {
     id: "browse",
     label: "Browse",
     icon: '<i class="fas fa-film"></i>',
-    description: "Explore saved animations",
+    description: "Explore saved compositions",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)",
   },
@@ -291,6 +284,51 @@ export const ADMIN_TABS: Section[] = [
   },
 ];
 
+// Settings tabs configuration - internal navigation within settings module
+// Not shown in sidebar (settings is accessed via gear icon in footer)
+export const SETTINGS_TABS: Section[] = [
+  {
+    id: "profile",
+    label: "Profile",
+    icon: '<i class="fas fa-user"></i>',
+    description: "Account and profile settings",
+    color: "#6366f1",
+    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
+  {
+    id: "props",
+    label: "Props",
+    icon: '<i class="fas fa-tags"></i>',
+    description: "Prop type preferences",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
+  },
+  {
+    id: "background",
+    label: "Background",
+    icon: '<i class="fas fa-image"></i>',
+    description: "Background and theme settings",
+    color: "#06b6d4",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  },
+  {
+    id: "visibility",
+    label: "Visibility",
+    icon: '<i class="fas fa-eye"></i>',
+    description: "Element visibility controls",
+    color: "#22c55e",
+    gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
+  },
+  {
+    id: "misc",
+    label: "Misc",
+    icon: '<i class="fas fa-sliders-h"></i>',
+    description: "Accessibility and other settings",
+    color: "#f97316",
+    gradient: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+  },
+];
+
 // Feedback tabs configuration (testers/admins only)
 export const FEEDBACK_TABS: Section[] = [
   {
@@ -351,13 +389,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: LEARN_TABS,
   },
   {
-    id: "animate",
-    label: "Animate",
-    icon: '<i class="fas fa-play-circle" style="color: #ec4899;"></i>',
-    color: "#ec4899", // Pink - animation/motion
-    description: "Advanced animation visualization",
+    id: "compose",
+    label: "Compose",
+    icon: '<i class="fas fa-layer-group" style="color: #ec4899;"></i>',
+    color: "#ec4899", // Pink - composition/choreography
+    description: "Compose sequences into animations",
     isMain: true,
-    sections: ANIMATE_TABS,
+    sections: ANIMATE_TABS, // TODO: Rename to COMPOSE_TABS
   },
   {
     id: "train",
@@ -391,6 +429,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true, // Visibility controlled by getModuleDefinitions() based on admin status
     sections: ADMIN_TABS,
   },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',
+    color: "#64748b", // Slate - neutral settings color
+    description: "Configure app preferences",
+    isMain: false, // Hidden from main module list, accessed via gear icon in sidebar footer
+    sections: [], // Settings handles its own internal tab navigation (like Dashboard)
+  },
 ];
 
 /**
@@ -414,6 +461,10 @@ export function createNavigationState() {
 
   // Creation method selector visibility (for hiding tabs when selector is shown)
   let isCreationMethodSelectorVisible = $state<boolean>(false);
+
+  // Track previous module for settings toggle behavior
+  // When entering settings, we remember where we came from to return on toggle
+  let previousModule = $state<ModuleId | null>(null);
 
   // Load persisted state
   if (typeof localStorage !== "undefined") {
@@ -586,7 +637,17 @@ export function createNavigationState() {
   // targetTab: Optional tab to set directly (bypasses remembered/default tab logic)
   function setCurrentModule(moduleId: ModuleId, targetTab?: string) {
     if (MODULE_DEFINITIONS.some((m) => m.id === moduleId)) {
-      const previousModule = currentModule;
+      const previousModuleLocal = currentModule;
+
+      // Track previous module for settings toggle behavior
+      // Only save when entering settings from a non-settings module
+      if (moduleId === "settings" && currentModule !== "settings") {
+        previousModule = currentModule;
+      } else if (currentModule === "settings" && moduleId !== "settings") {
+        // Clear previous module when leaving settings
+        previousModule = null;
+      }
+
       currentModule = moduleId;
 
       // Set default tab for the module
@@ -624,12 +685,12 @@ export function createNavigationState() {
 
       // Log module navigation for analytics (non-blocking)
       // Include the tab for more granular tracking (e.g., "create:generator")
-      if (previousModule !== moduleId) {
+      if (previousModuleLocal !== moduleId) {
         try {
           const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
           if (activityService) {
             const moduleWithTab = nextTab ? `${moduleId}:${nextTab}` : moduleId;
-            void activityService.logModuleView(moduleWithTab, previousModule);
+            void activityService.logModuleView(moduleWithTab, previousModuleLocal);
           }
         } catch {
           // Silently fail - activity logging is non-critical
@@ -744,6 +805,9 @@ export function createNavigationState() {
     get activeTab() {
       return activeTab;
     },
+    get previousModule() {
+      return previousModule;
+    },
 
     // Tab configurations
     get createTabs() {
@@ -766,6 +830,9 @@ export function createNavigationState() {
     },
     get accountTabs() {
       return ACCOUNT_TABS;
+    },
+    get settingsTabs() {
+      return SETTINGS_TABS;
     },
     get moduleDefinitions() {
       return MODULE_DEFINITIONS;

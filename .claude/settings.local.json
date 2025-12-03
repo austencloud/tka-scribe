@@ -251,7 +251,10 @@
       "Bash(src/lib/shared/inversify/modules/animator.module.ts )",
       "Bash(src/lib/shared/navigation-coordinator/navigation-coordinator.svelte.ts )",
       "Bash(src/lib/shared/navigation/state/navigation-state.svelte.ts )",
-      "Bash(src/app.css )"
+      "Bash(src/app.css )",
+      "Bash(powershell -Command \"Rename-Item -Path ''F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\features\\animate\\tabs\\setup'' -NewName ''compose''\")",
+      "Bash(powershell -Command \"Rename-Item -Path ''F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\features\\animate\\tabs\\setup'' -NewName ''arrange''\")",
+      "Bash(powershell -Command:*)"
     ],
     "deny": [],
     "ask": []

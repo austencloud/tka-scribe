@@ -59,6 +59,10 @@
       import("../../features/feedback/components/FeedbackModule.svelte"),
     admin: () =>
       import("../../features/admin/components/AdminDashboard.svelte"),
+    // compose module uses animate folder (legacy naming)
+    compose: () => import("../../features/animate/AnimateModule.svelte"),
+    // settings module - accessed via gear icon in sidebar footer
+    settings: () => import("../../features/settings/SettingsModule.svelte"),
   };
 
   // Load module with caching

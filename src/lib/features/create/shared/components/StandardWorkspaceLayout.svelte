@@ -9,7 +9,6 @@
    */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { fade } from "svelte/transition";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
   import CreationToolPanelSlot from "./CreationToolPanelSlot.svelte";
@@ -147,8 +146,6 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
       <div
         class="button-panel-wrapper"
         bind:this={buttonPanelElement}
-        in:fade={{ duration: 300, delay: 400 }}
-        out:fade={{ duration: 150 }}
       >
         <ButtonPanel
           {onPlayAnimation}
@@ -183,6 +180,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     width: 100%;
     overflow: hidden;
     gap: 0;
+
+    /* View Transitions API target for tab switching */
+    view-transition-name: tab-content;
 
     /* Single smooth transition for ALL layout changes */
     transition:

@@ -25,7 +25,6 @@ export const originalPersonalInfoState = $state({
 export const passwordState = $state({
   current: "",
   new: "",
-  confirm: "",
 });
 
 export const emailChangeState = $state({
@@ -142,7 +141,6 @@ export function resetPersonalInfoForm() {
 export function resetPasswordForm() {
   passwordState.current = "";
   passwordState.new = "";
-  passwordState.confirm = "";
 }
 
 /**

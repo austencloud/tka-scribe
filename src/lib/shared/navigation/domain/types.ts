@@ -28,11 +28,12 @@ export type ModuleId =
   | "create"
   | "discover"
   | "learn"
-  | "animate"
+  | "compose"
   | "train"
   | "library"
   | "feedback"
-  | "admin";
+  | "admin"
+  | "settings";
 
 /**
  * Module Definition

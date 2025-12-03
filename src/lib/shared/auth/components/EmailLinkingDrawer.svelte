@@ -42,7 +42,6 @@
   let currentStep = $state<Step>("form");
   let emailInput = $state("");
   let passwordInput = $state("");
-  let confirmPasswordInput = $state("");
   let showPassword = $state(false);
   let formError = $state<string | null>(null);
   let isSubmitting = $state(false);
@@ -85,7 +84,6 @@
     currentStep = "form";
     emailInput = "";
     passwordInput = "";
-    confirmPasswordInput = "";
     showPassword = false;
     formError = null;
     isSubmitting = false;
@@ -100,20 +98,15 @@
       return false;
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Email validation - requires valid format with proper TLD
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(emailInput)) {
       formError = "Please enter a valid email address";
       return false;
     }
 
-    if (passwordInput.length < 6) {
-      formError = "Password must be at least 6 characters";
-      return false;
-    }
-
-    if (passwordInput !== confirmPasswordInput) {
-      formError = "Passwords do not match";
+    if (passwordInput.length < 8) {
+      formError = "Password must be at least 8 characters";
       return false;
     }
 
@@ -254,13 +247,13 @@
     <DialogPrimitive.Overlay class="email-modal-backdrop" />
     <DialogPrimitive.Content
       class="email-modal-container"
-      oninteractoutside={(e) => {
+      oninteractoutside={(e: Event) => {
         // Prevent closing during verification/success steps
         if (currentStep !== "form") {
           e.preventDefault();
         }
       }}
-      onescapekeydown={(e) => {
+      onescapekeydown={(e: KeyboardEvent) => {
         // Prevent closing during verification/success steps
         if (currentStep !== "form") {
           e.preventDefault();
@@ -335,9 +328,9 @@
                   id="email-link-password"
                   type={showPassword ? "text" : "password"}
                   bind:value={passwordInput}
-                  placeholder="At least 6 characters"
+                  placeholder="At least 8 characters"
                   required
-                  minlength="6"
+                  minlength="8"
                   disabled={isSubmitting}
                   autocomplete="new-password"
                   class:has-value={passwordInput.length > 0}
@@ -348,35 +341,14 @@
                   onclick={() => showPassword = !showPassword}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   disabled={isSubmitting}
+                  tabindex={-1}
                 >
                   <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
                 </button>
               </div>
-            </div>
-
-            <div class="form-group">
-              <label for="email-link-confirm">Confirm Password</label>
-              <div class="input-wrapper">
-                <i class="fas fa-lock input-icon"></i>
-                <input
-                  id="email-link-confirm"
-                  type={showPassword ? "text" : "password"}
-                  bind:value={confirmPasswordInput}
-                  placeholder="Confirm your password"
-                  required
-                  minlength="6"
-                  disabled={isSubmitting}
-                  autocomplete="new-password"
-                  class:has-value={confirmPasswordInput.length > 0}
-                />
-              </div>
-              {#if confirmPasswordInput.length > 0 && passwordInput !== confirmPasswordInput}
-                <span class="field-hint error">Passwords don't match</span>
-              {:else if confirmPasswordInput.length > 0 && passwordInput === confirmPasswordInput}
-                <span class="field-hint success">
-                  <i class="fas fa-check"></i> Passwords match
-                </span>
-              {/if}
+              <span class="field-hint neutral">
+                <i class="fas fa-eye"></i> Use the eye icon to verify your password
+              </span>
             </div>
 
             {#if formError}
@@ -724,6 +696,14 @@
 
   .field-hint.success {
     color: #22c55e;
+  }
+
+  .field-hint.neutral {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .field-hint.neutral i {
+    opacity: 0.7;
   }
 
   .form-error {

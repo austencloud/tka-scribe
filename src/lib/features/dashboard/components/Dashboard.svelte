@@ -15,7 +15,7 @@
   const STAGGER = { normal: 50 };
   const SLIDE = { sm: 8, md: 12 };
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
-  import { showSettingsDialog } from "$lib/shared/application/state/ui/ui-state.svelte";
+  import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -161,9 +161,9 @@
     handleModuleChange("discover", "library");
   }
 
-  function openSettings() {
+  async function openSettings() {
     hapticService?.trigger("selection");
-    showSettingsDialog(isMobile ? "mobile" : "desktop");
+    await handleModuleChange("settings" as ModuleId);
   }
 
   function openChallengeDrawer() {

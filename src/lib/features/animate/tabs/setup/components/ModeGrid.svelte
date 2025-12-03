@@ -94,75 +94,46 @@
 
 <style>
   .mode-grid-container {
+    container-type: inline-size;
+    container-name: mode-grid-container;
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4cqi, 3rem);
   }
 
   .section-title {
-    margin: 0 0 24px;
-    font-size: 1.75rem;
+    margin: 0;
+    margin-bottom: clamp(1.25rem, 5cqi, 2.5rem);
+    font-size: clamp(1.5rem, 4cqi, 2.25rem);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     letter-spacing: -0.02em;
     text-align: center;
   }
 
+  /* 2×2 Grid optimized for 4 mode cards */
   .mode-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: clamp(0.75rem, 3cqi, 1.5rem);
     width: 100%;
+    max-width: min(90cqi, 800px);
   }
 
-  /* Medium screens: 3 columns */
-  @media (min-width: 640px) {
-    .mode-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-    }
+  /* Grid children must fill their cells */
+  .mode-grid > div {
+    display: contents;
   }
 
-  /* Large screens: 4 columns (single row for 4 modes) */
-  @media (min-width: 900px) {
+  /* Ultra-wide: 4 columns for single row */
+  @container mode-grid-container (min-width: 1200px) {
     .mode-grid {
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-  }
-
-  /* Tablet: prefer 2 columns */
-  @media (min-width: 640px) and (max-width: 899px) {
-    .mode-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
-    .mode-grid-container {
-      padding: 16px;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .mode-grid-container {
-      padding: 12px;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      margin-bottom: 16px;
-    }
-
-    .mode-grid {
-      gap: 12px;
+      max-width: min(95cqi, 1200px);
     }
   }
 

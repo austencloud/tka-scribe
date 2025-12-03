@@ -10,14 +10,13 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ITrainChallengeService } from "../../services/contracts/ITrainChallengeService";
   import type {
-    TrainChallenge,
-    UserTrainChallengeProgress,
     TrainChallengeFilter,
     TrainChallengeSortBy,
   } from "../../domain/models/TrainChallengeModels";
   import { getDifficultySortIndex, type ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { activeChallengeState } from "../../state/active-challenge-state.svelte";
+  import { trainChallengesState } from "../../state/train-challenges-state.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import ChallengeCard from "./ChallengeCard.svelte";
 
@@ -27,16 +26,18 @@
   );
   let hapticService: IHapticFeedbackService | undefined;
 
-  // State
-  let challenges = $state<TrainChallenge[]>([]);
-  let progressMap = $state<Map<string, UserTrainChallengeProgress>>(new Map());
-  let loading = $state(true);
+  // Local UI state (filter preferences)
   let filter = $state<TrainChallengeFilter>("all");
   let sortBy = $state<TrainChallengeSortBy>("difficulty");
   let difficultyFilter = $state<ChallengeDifficulty | null>(null);
 
   // Filter panel state
   let isFilterPanelOpen = $state(false);
+
+  // Get cached data from state (reactive getters)
+  const challenges = $derived(trainChallengesState.challenges);
+  const progressMap = $derived(trainChallengesState.progressMap);
+  const loading = $derived(trainChallengesState.isLoading && !trainChallengesState.isLoaded);
 
   // Stats
   const stats = $derived.by(() => {
@@ -102,36 +103,11 @@
     return filtered;
   });
 
-  // Load challenges
+  // Load challenges (will use cache if already loaded)
   onMount(async () => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    await loadChallenges();
+    await trainChallengesState.loadChallenges(challengeService);
   });
-
-  async function loadChallenges() {
-    loading = true;
-
-    try {
-      // Load challenges and progress in parallel
-      const [challengesData, progressData] = await Promise.all([
-        challengeService.getActiveChallenges(),
-        challengeService.getUserChallengeProgress(),
-      ]);
-
-      challenges = challengesData;
-
-      // Build progress map
-      const newProgressMap = new Map<string, UserTrainChallengeProgress>();
-      progressData.forEach((p) => {
-        newProgressMap.set(p.challengeId, p);
-      });
-      progressMap = newProgressMap;
-    } catch (error) {
-      console.error("Failed to load train challenges:", error);
-    } finally {
-      loading = false;
-    }
-  }
 
   function handleChallengeStart(challengeId: string) {
     hapticService?.trigger("selection");

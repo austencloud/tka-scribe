@@ -6,7 +6,6 @@
 -->
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { fly, fade } from "svelte/transition";
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -20,7 +19,6 @@
 	import SessionHistory from "./SessionHistory.svelte";
 
 	let isLoading = $state(true);
-	let isVisible = $state(false);
 	let stats = $state<StatsOverview | null>(null);
 	let personalBests = $state<PersonalBest[]>([]);
 	let recentSessions = $state<StoredPerformance[]>([]);
@@ -48,9 +46,6 @@
 			console.error("[ProgressPanel] Failed to load data:", error);
 		} finally {
 			isLoading = false;
-			setTimeout(() => {
-				isVisible = true;
-			}, 50);
 		}
 	});
 
@@ -60,9 +55,9 @@
 	}
 </script>
 
-<div class="progress-panel" class:visible={isVisible}>
+<div class="progress-panel">
 	{#if isLoading}
-		<div class="loading-state" transition:fade={{ duration: 200 }}>
+		<div class="loading-state">
 			<div class="spinner"></div>
 			<p>Loading your stats...</p>
 		</div>
@@ -70,19 +65,16 @@
 		<!-- EMPTY STATE - Engaging placeholder -->
 		<div class="empty-state">
 			<!-- Header -->
-			{#if isVisible}
-				<header class="empty-header" transition:fly={{ y: -12, duration: 300 }}>
-					<div class="header-icon">
-						<i class="fas fa-chart-line"></i>
-					</div>
-					<h1>Your Training Journey</h1>
-					<p>Track your progress and see how far you've come</p>
-				</header>
-			{/if}
+			<header class="empty-header">
+				<div class="header-icon">
+					<i class="fas fa-chart-line"></i>
+				</div>
+				<h1>Your Training Journey</h1>
+				<p>Track your progress and see how far you've come</p>
+			</header>
 
 			<!-- Preview Stats Grid -->
-			{#if isVisible}
-				<section class="preview-stats" transition:fly={{ y: 12, duration: 300, delay: 100 }}>
+			<section class="preview-stats">
 					<div class="stat-card">
 						<div class="stat-icon sessions">
 							<i class="fas fa-dumbbell"></i>
@@ -123,81 +115,74 @@
 						</div>
 					</div>
 				</section>
-			{/if}
 
 			<!-- Preview Sections -->
-			{#if isVisible}
-				<div class="preview-sections" transition:fly={{ y: 12, duration: 300, delay: 200 }}>
-					<!-- Personal Bests Preview -->
-					<section class="preview-section">
-						<div class="section-header">
-							<i class="fas fa-trophy"></i>
-							<h2>Personal Bests</h2>
+			<div class="preview-sections">
+				<!-- Personal Bests Preview -->
+				<section class="preview-section">
+					<div class="section-header">
+						<i class="fas fa-trophy"></i>
+						<h2>Personal Bests</h2>
+					</div>
+					<div class="empty-rows">
+						<div class="empty-row">
+							<div class="empty-bar" style="width: 75%"></div>
 						</div>
-						<div class="empty-rows">
-							<div class="empty-row">
-								<div class="empty-bar" style="width: 75%"></div>
-							</div>
-							<div class="empty-row">
-								<div class="empty-bar" style="width: 60%"></div>
-							</div>
-							<div class="empty-row">
-								<div class="empty-bar" style="width: 45%"></div>
-							</div>
+						<div class="empty-row">
+							<div class="empty-bar" style="width: 60%"></div>
 						</div>
-						<p class="section-hint">Your top scores for each sequence will appear here</p>
-					</section>
+						<div class="empty-row">
+							<div class="empty-bar" style="width: 45%"></div>
+						</div>
+					</div>
+					<p class="section-hint">Your top scores for each sequence will appear here</p>
+				</section>
 
-					<!-- Recent Sessions Preview -->
-					<section class="preview-section">
-						<div class="section-header">
-							<i class="fas fa-history"></i>
-							<h2>Recent Sessions</h2>
+				<!-- Recent Sessions Preview -->
+				<section class="preview-section">
+					<div class="section-header">
+						<i class="fas fa-history"></i>
+						<h2>Recent Sessions</h2>
+					</div>
+					<div class="empty-rows">
+						<div class="empty-row">
+							<div class="empty-bar" style="width: 85%"></div>
 						</div>
-						<div class="empty-rows">
-							<div class="empty-row">
-								<div class="empty-bar" style="width: 85%"></div>
-							</div>
-							<div class="empty-row">
-								<div class="empty-bar" style="width: 70%"></div>
-							</div>
-							<div class="empty-row">
-								<div class="empty-bar" style="width: 55%"></div>
-							</div>
+						<div class="empty-row">
+							<div class="empty-bar" style="width: 70%"></div>
 						</div>
-						<p class="section-hint">Your training history will be tracked here</p>
-					</section>
-				</div>
-			{/if}
+						<div class="empty-row">
+							<div class="empty-bar" style="width: 55%"></div>
+						</div>
+					</div>
+					<p class="section-hint">Your training history will be tracked here</p>
+				</section>
+			</div>
 
 			<!-- CTA -->
-			{#if isVisible}
-				<div class="cta-section" transition:fly={{ y: 12, duration: 300, delay: 300 }}>
-					<button class="start-btn" onclick={navigateToPractice}>
-						<i class="fas fa-play"></i>
-						<span>Start Your First Session</span>
-						<i class="fas fa-arrow-right"></i>
-					</button>
-				</div>
-			{/if}
+			<div class="cta-section">
+				<button class="start-btn" onclick={navigateToPractice}>
+					<i class="fas fa-play"></i>
+					<span>Start Your First Session</span>
+					<i class="fas fa-arrow-right"></i>
+				</button>
+			</div>
 		</div>
 	{:else}
 		<!-- HAS DATA - Real content -->
-		{#if isVisible}
-			<div transition:fly={{ y: 12, duration: 300 }}>
-				<StatsOverviewComponent {stats} />
-			</div>
-		{/if}
+		<div>
+			<StatsOverviewComponent {stats} />
+		</div>
 
-		{#if personalBests.length > 0 && isVisible}
-			<section class="section" transition:fly={{ y: 12, duration: 300, delay: 100 }}>
+		{#if personalBests.length > 0}
+			<section class="section">
 				<h2>Personal Bests</h2>
 				<PersonalBests bests={personalBests} />
 			</section>
 		{/if}
 
-		{#if recentSessions.length > 0 && isVisible}
-			<section class="section" transition:fly={{ y: 12, duration: 300, delay: 200 }}>
+		{#if recentSessions.length > 0}
+			<section class="section">
 				<h2>Recent Sessions</h2>
 				<SessionHistory sessions={recentSessions} />
 			</section>
@@ -216,12 +201,6 @@
 		padding: 1.5rem;
 		background: transparent;
 		color: var(--foreground, #ffffff);
-		opacity: 0;
-		transition: opacity 300ms ease;
-	}
-
-	.progress-panel.visible {
-		opacity: 1;
 	}
 
 	/* Loading State */

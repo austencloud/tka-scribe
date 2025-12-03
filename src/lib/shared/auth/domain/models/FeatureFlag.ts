@@ -74,7 +74,7 @@ export interface UserFeatureOverrides {
 const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
   // Modules
   "module:learn": "tester",
-  "module:animate": "tester",
+  "module:compose": "user", // Composition/choreography module
   "module:admin": "admin",
 
   // Create tabs

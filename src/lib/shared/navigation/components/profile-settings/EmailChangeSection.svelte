@@ -25,7 +25,8 @@
   let passwordError = $state("");
 
   function validateEmail() {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Email validation - requires valid format with proper TLD
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailChangeState.newEmail) {
       emailError = "Email is required";
       return false;

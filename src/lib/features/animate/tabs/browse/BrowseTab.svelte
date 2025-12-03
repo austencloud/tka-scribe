@@ -14,6 +14,7 @@ Features:
   import { onMount } from "svelte";
   import { getBrowseState } from "./state/browse-state.svelte";
   import type { SavedAnimation } from "./state/browse-state.svelte";
+  import { getAnimateModuleState } from "$lib/features/animate/shared/state/animate-module-state.svelte";
   import AnimationFilters from "./components/AnimationFilters.svelte";
   import AnimationGrid from "./components/AnimationGrid.svelte";
   import AnimationDetailPanel from "./components/AnimationDetailPanel.svelte";
@@ -26,6 +27,7 @@ Features:
 
   // Get singleton state
   const browseState = getBrowseState();
+  const animateModuleState = getAnimateModuleState();
 
   // Local state for drawer
   let isDetailPanelOpen = $state(false);
@@ -80,13 +82,16 @@ Features:
 
     switch (action) {
       case "play":
-        // TODO: Navigate to appropriate tab and load animation
-        console.log("Play animation:", animation);
+        // Set the animation mode and open playback overlay
+        animateModuleState.setCurrentMode(animation.mode);
+        animateModuleState.openPlayback("browse");
+        isDetailPanelOpen = false;
+        console.log("🎬 BrowseTab: Playing composition:", animation.name);
         break;
 
       case "edit":
-        // TODO: Navigate to appropriate tab in edit mode
-        console.log("Edit animation:", animation);
+        // TODO: Navigate to Arrange tab with composition loaded
+        console.log("Edit composition:", animation);
         break;
 
       case "favorite":

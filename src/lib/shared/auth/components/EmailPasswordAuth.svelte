@@ -3,6 +3,7 @@
    * Email/Password Authentication Component
    *
    * Provides email/password sign-in and sign-up functionality
+   * Includes client-side rate limiting for security
    */
 
   import {
@@ -17,6 +18,7 @@
   import { auth } from "../firebase";
   import { goto } from "$app/navigation";
   import { slide } from "svelte/transition";
+  import { onDestroy } from "svelte";
 
   // Props - accept mode as a binding
   let { mode = $bindable("signin" as "signin" | "signup") } = $props();
@@ -29,11 +31,72 @@
   let error = $state<string | null>(null);
   let success = $state<string | null>(null);
 
+  // Rate limiting state
+  const MAX_ATTEMPTS = 5;
+  const LOCKOUT_DURATION = 60; // seconds
+  let failedAttempts = $state(0);
+  let lockoutEndTime = $state<number | null>(null);
+  let lockoutRemaining = $state(0);
+  let lockoutInterval: ReturnType<typeof setInterval> | null = null;
+
+  // Check if currently locked out
+  const isLockedOut = $derived(lockoutEndTime !== null && Date.now() < lockoutEndTime);
+
+  // Start lockout countdown timer
+  function startLockoutTimer() {
+    if (lockoutInterval) clearInterval(lockoutInterval);
+
+    lockoutInterval = setInterval(() => {
+      if (lockoutEndTime) {
+        const remaining = Math.ceil((lockoutEndTime - Date.now()) / 1000);
+        if (remaining <= 0) {
+          lockoutEndTime = null;
+          lockoutRemaining = 0;
+          failedAttempts = 0;
+          if (lockoutInterval) clearInterval(lockoutInterval);
+          lockoutInterval = null;
+        } else {
+          lockoutRemaining = remaining;
+        }
+      }
+    }, 1000);
+  }
+
+  // Record a failed attempt
+  function recordFailedAttempt() {
+    failedAttempts++;
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      lockoutEndTime = Date.now() + LOCKOUT_DURATION * 1000;
+      lockoutRemaining = LOCKOUT_DURATION;
+      startLockoutTimer();
+    }
+  }
+
+  // Reset attempts on successful login
+  function resetAttempts() {
+    failedAttempts = 0;
+    lockoutEndTime = null;
+    lockoutRemaining = 0;
+    if (lockoutInterval) clearInterval(lockoutInterval);
+    lockoutInterval = null;
+  }
+
+  // Cleanup timer on destroy
+  onDestroy(() => {
+    if (lockoutInterval) clearInterval(lockoutInterval);
+  });
+
   function togglePasswordVisibility() {
     showPassword = !showPassword;
   }
 
   async function handleSubmit() {
+    // Check rate limiting before proceeding
+    if (isLockedOut) {
+      error = `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
+      return;
+    }
+
     loading = true;
     error = null;
     success = null;
@@ -75,12 +138,18 @@
         success =
           "Account created! Please check your email to verify your account.";
 
+        // Reset rate limiting on success
+        resetAttempts();
+
         // Wait a bit before redirecting
         await new Promise((resolve) => setTimeout(resolve, 2000));
       } else {
         // Sign in existing user
         const result = await signInWithEmailAndPassword(auth, email, password);
         console.log(`✅ [email] User signed in:`, result.user.uid);
+
+        // Reset rate limiting on success
+        resetAttempts();
       }
 
       // Navigate to home
@@ -90,22 +159,41 @@
       console.error(`❌ [email] Auth error:`, err);
       console.error(`❌ [email] Error code:`, err.code);
 
+      // Record failed attempt for rate limiting (only for sign-in credential errors)
+      if (
+        mode === "signin" &&
+        (err.code === "auth/user-not-found" ||
+          err.code === "auth/wrong-password" ||
+          err.code === "auth/invalid-credential")
+      ) {
+        recordFailedAttempt();
+      }
+
       // Handle specific error codes
+      // SECURITY: Use generic messages for email/password errors to prevent enumeration
       if (err.code === "auth/email-already-in-use") {
-        error = "This email is already registered. Try signing in instead.";
+        // Generic message - don't reveal that email exists
+        error = "Unable to create account. Please try a different email or sign in.";
         mode = "signin";
       } else if (err.code === "auth/weak-password") {
-        error = "Password is too weak. Use at least 6 characters.";
+        error = "Password is too weak. Use at least 8 characters.";
       } else if (err.code === "auth/invalid-email") {
-        error = "Invalid email address.";
-      } else if (err.code === "auth/user-not-found") {
-        error = "No account found with this email. Sign up instead?";
-      } else if (err.code === "auth/wrong-password") {
-        error = "Incorrect password.";
+        error = "Invalid email address format.";
+      } else if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
+        // SECURITY: Generic message to prevent email enumeration
+        const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
+        error = attemptsLeft > 0
+          ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
+          : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
       } else if (err.code === "auth/invalid-credential") {
-        error = "Invalid email or password.";
+        const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
+        error = attemptsLeft > 0
+          ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
+          : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
+      } else if (err.code === "auth/too-many-requests") {
+        error = "Too many failed attempts. Please try again later.";
       } else {
-        error = err.message || "An error occurred during authentication";
+        error = "An error occurred during authentication. Please try again.";
       }
     } finally {
       loading = false;
@@ -165,10 +253,10 @@
         id="password"
         type={showPassword ? "text" : "password"}
         bind:value={password}
-        placeholder="••••••••"
+        placeholder="••••••••••••"
         required
         disabled={loading}
-        minlength="6"
+        minlength="8"
         autocomplete={mode === "signin" ? "current-password" : "new-password"}
       />
       <button
@@ -183,7 +271,7 @@
     </div>
     {#if mode === "signup"}
       <small class="password-hint" transition:slide={{ duration: 200 }}>
-        Must be at least 6 characters
+        Must be at least 8 characters
       </small>
     {/if}
   </div>
@@ -198,7 +286,7 @@
     </p>
   {/if}
 
-  <button type="submit" disabled={loading} class="submit-button">
+  <button type="submit" disabled={loading || isLockedOut} class="submit-button">
     {#if loading}
       <span class="spinner"></span>
     {/if}

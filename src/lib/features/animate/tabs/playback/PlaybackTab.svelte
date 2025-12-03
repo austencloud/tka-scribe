@@ -41,18 +41,18 @@
   const gridRotationOffsets = $state<number[]>([0, 90, 180, 270]);
 
   // Handlers
-  function handleChangeMode() {
-    console.log("🎬 Change mode requested - returning to setup");
-    // TODO: Navigate back to setup/mode selection
+  function handleClose() {
+    console.log("🎬 Closing playback overlay");
+    moduleState.closePlayback();
   }
 
   function handleSave() {
-    console.log("💾 Save animation requested");
+    console.log("💾 Save composition requested");
     // TODO: Implement save functionality
   }
 
   function handleShare() {
-    console.log("🔗 Share animation requested");
+    console.log("🔗 Share composition requested");
     // TODO: Implement share functionality
   }
 
@@ -107,12 +107,12 @@
 </script>
 
 <div class="playback-tab">
-  <!-- Header -->
+  <!-- Header with close button -->
   <PlaybackHeader
     currentMode={playbackState.currentMode}
-    onChangeMode={handleChangeMode}
     onSave={handleSave}
     onShare={handleShare}
+    onClose={handleClose}
   />
 
   <!-- Renderer Area -->

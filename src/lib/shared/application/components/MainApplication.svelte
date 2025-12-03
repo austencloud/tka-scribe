@@ -14,7 +14,6 @@
     ISheetRouterService,
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
-  import SettingsPanel from "../../settings/components/SettingsPanel.svelte";
   import { authStore } from "../../auth/stores/authStore.svelte";
   import { updateBodyBackground } from "../../background/shared/background-preloader";
   import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
@@ -38,12 +37,12 @@
   import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
   import {
     getShowDebugPanel,
-    getShowSettings,
-    showSettingsDialog,
-    hideSettingsDialog,
     toggleDebugPanel,
   } from "../state/ui/ui-state.svelte";
   import { switchModule } from "../state/ui/module-state";
+  import { navigationState } from "../../navigation/state/navigation-state.svelte";
+  import type { ModuleId } from "../../navigation/domain/types";
+  import { handleModuleChange } from "../../navigation-coordinator/navigation-coordinator.svelte";
   import {
     ensureContainerInitialized,
     resolve,
@@ -67,7 +66,6 @@
 
   // Route-based sheet state
   let currentSheetType = $state<SheetType>(null);
-  let showRouteBasedSettings = $derived(currentSheetType === "settings");
   let showAuthSheet = $derived(currentSheetType === "auth");
   let showTermsSheet = $derived(currentSheetType === "terms");
   let showPrivacySheet = $derived(currentSheetType === "privacy");
@@ -151,17 +149,22 @@
 
         // Initialize sheet router state (now that service is resolved)
         currentSheetType = sheetRouterService.getCurrentSheet();
-        cleanupSheetListener = sheetRouterService.onRouteChange((state) => {
-          currentSheetType = state.sheet ?? null;
 
-          // Sync with legacy settings dialog state
+        // Check for legacy ?sheet=settings URL and redirect to settings module
+        if (currentSheetType === "settings") {
+          sheetRouterService.closeSheet();
+          await handleModuleChange("settings" as ModuleId);
+        }
+
+        cleanupSheetListener = sheetRouterService.onRouteChange(async (state) => {
+          // Redirect legacy ?sheet=settings to settings module
           if (state.sheet === "settings") {
-            if (!getShowSettings()) {
-              showSettingsDialog();
-            }
-          } else if (state.sheet === null && getShowSettings()) {
-            hideSettingsDialog();
+            sheetRouterService.closeSheet();
+            await handleModuleChange("settings" as ModuleId);
+            return;
           }
+
+          currentSheetType = state.sheet ?? null;
         });
 
         await restoreApplicationState();
@@ -211,16 +214,17 @@
         return;
       }
 
-      // Settings dialog toggle (Ctrl/Cmd + ,)
+      // Settings module toggle (Ctrl/Cmd + ,)
       if ((event.ctrlKey || event.metaKey) && event.key === ",") {
         event.preventDefault();
-        if (getShowSettings() || currentSheetType === "settings") {
-          sheetRouterService?.closeSheet();
-          hideSettingsDialog();
+        // Toggle behavior: if in settings, go back to previous module
+        if (navigationState.currentModule === "settings") {
+          const previousModule = navigationState.previousModule || "dashboard";
+          switchModule(previousModule as ModuleId);
         } else {
-          sheetRouterService?.openSheet("settings");
-          showSettingsDialog();
+          switchModule("settings" as ModuleId);
         }
+        return;
       }
 
       // Tab navigation (Ctrl/Cmd + 1-6)
@@ -240,7 +244,7 @@
             break;
           case "4":
             event.preventDefault();
-            switchModule("animate");
+            switchModule("compose");
             break;
           case "5":
             event.preventDefault();
@@ -301,9 +305,6 @@
   {:else}
     <!-- Main Interface - Always shown, progressive loading inside -->
     <MainInterface />
-
-    <!-- Settings slide panel (route-aware) -->
-    <SettingsPanel isOpen={getShowSettings() || showRouteBasedSettings} />
 
     <!-- Auth sheet (route-based) -->
     <AuthSheet

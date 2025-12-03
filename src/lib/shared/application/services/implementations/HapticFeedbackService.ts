@@ -176,14 +176,7 @@ export class HapticFeedbackService implements IHapticFeedbackService {
     // Check iOS Safari 17.4+ support
     this.supportsIOSHaptic = this.detectIOSSafariSupport();
 
-    // Log support status in dev
-    if (import.meta.env.DEV) {
-      console.log("[HapticFeedback] Platform support:", {
-        vibrationAPI: this.supportsVibrationAPI,
-        iosHaptic: this.supportsIOSHaptic,
-        userAgent: navigator.userAgent.substring(0, 50) + "...",
-      });
-    }
+
   }
 
   /**

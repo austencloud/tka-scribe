@@ -6,11 +6,7 @@ import { TYPES } from "../../inversify/types";
 import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { slide, fade } from "svelte/transition";
-  import {
-    getShowSettings,
-    toggleSettingsDialog,
-    openDebugPanel,
-  } from "../../application/state/ui/ui-state.svelte";
+  import { openDebugPanel } from "../../application/state/ui/ui-state.svelte";
   import type { ModuleDefinition, Section, ModuleId } from "../domain/types";
   import {
     desktopSidebarState,
@@ -128,10 +124,16 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     }
   }
 
-  function handleSettingsTap() {
+  async function handleSettingsTap() {
     hapticService?.trigger("selection");
-    // Desktop sidebar always uses desktop mode (side panel from left)
-    toggleSettingsDialog("desktop");
+
+    // Toggle behavior: if in settings, go back to previous module
+    if (navigationState.currentModule === "settings") {
+      const previousModule = navigationState.previousModule || "dashboard";
+      await onModuleChange?.(previousModule as ModuleId);
+    } else {
+      await onModuleChange?.("settings" as ModuleId);
+    }
   }
 
   function handleToggleCollapse() {
@@ -293,7 +295,7 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   <!-- Sidebar Footer -->
   <SidebarFooter
     {isCollapsed}
-    isSettingsActive={getShowSettings()}
+    isSettingsActive={navigationState.currentModule === "settings"}
     onSettingsClick={handleSettingsTap}
     onDebugClick={handleDebugTap}
   />

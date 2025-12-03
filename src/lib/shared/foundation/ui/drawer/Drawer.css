@@ -35,6 +35,17 @@
     pointer-events: none !important;
   }
 
+  /* Settings panel backdrop - modern frosted glass with blur */
+  /* Override desktop sidebar constraint since settings drawer covers sidebar */
+  .drawer-overlay.settings-backdrop,
+  :global(.has-desktop-sidebar) .drawer-overlay.settings-backdrop {
+    left: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    pointer-events: auto;
+  }
+
   /* Side-by-side layout: Constrain backdrop to right half of viewport */
   .drawer-overlay.side-by-side-layout {
     left: var(--create-panel-left, 50%);

@@ -8,11 +8,12 @@
 
 import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-import { showSettingsDialog } from "../../application/state/ui/ui-state.svelte";
 import {
   handleModuleChange,
   getModuleDefinitions,
 } from "../../navigation-coordinator/navigation-coordinator.svelte";
+import { navigationState } from "../../navigation/state/navigation-state.svelte";
+import type { ModuleId } from "../../navigation/domain/types";
 import { authStore } from "../../auth/stores/authStore.svelte";
 
 export function registerCommandPaletteCommands(
@@ -64,21 +65,22 @@ export function registerCommandPaletteCommands(
   // ==================== Settings Commands ====================
 
   service.registerCommand({
-    id: "settings.open",
-    label: "Open Settings",
-    description: "Configure application settings",
+    id: "settings.toggle",
+    label: "Toggle Settings",
+    description: "Open settings or return to previous module",
     icon: "fa-cog",
     category: "Settings",
-    shortcut: state.isMac ? "⌘," : "Ctrl+Shift+,",
+    shortcut: state.isMac ? "⌘," : "Ctrl+,",
     keywords: ["settings", "preferences", "config", "options"],
     available: true,
-    action: () => {
-      // Determine mode based on viewport: desktop (769px+) uses side panel, mobile uses bottom sheet
-      const mode =
-        typeof window !== "undefined" && window.innerWidth >= 769
-          ? "desktop"
-          : "mobile";
-      showSettingsDialog(mode);
+    action: async () => {
+      // Toggle behavior: if in settings, go back to previous module
+      if (navigationState.currentModule === "settings") {
+        const previousModule = navigationState.previousModule || "dashboard";
+        await handleModuleChange(previousModule as ModuleId);
+      } else {
+        await handleModuleChange("settings" as ModuleId);
+      }
       state.closeCommandPalette();
     },
   });
