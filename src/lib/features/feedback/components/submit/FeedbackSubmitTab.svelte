@@ -37,7 +37,8 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* No scrollbars - we fit the content */
+    overflow-y: auto; /* Allow scrolling on small viewports */
+    -webkit-overflow-scrolling: touch;
 
     /* Fluid padding that scales with container */
     padding: clamp(12px, 3cqi, 32px);
@@ -51,8 +52,8 @@
 
     display: flex;
     flex-direction: column;
-    /* Fluid gap that responds to container height */
-    gap: clamp(8px, 2cqh, 20px);
+    /* Tighter gap for mobile */
+    gap: clamp(6px, 1.5cqh, 16px);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -105,31 +106,31 @@
 
   /* When container is very short - minimize header */
   @container submit-tab (max-height: 500px) {
+    .submit-tab {
+      justify-content: flex-start;
+      padding-top: clamp(8px, 2cqh, 16px);
+    }
+
     .submit-header {
       flex-direction: row;
       text-align: left;
+      gap: 10px;
       padding-bottom: 0;
     }
 
     .header-icon {
-      width: 32px;
-      height: 32px;
-      font-size: 14px;
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+      border-radius: 8px;
     }
 
     .header-title {
-      font-size: 1rem;
+      font-size: 0.9375rem;
     }
 
     .header-subtitle {
       display: none;
-    }
-  }
-
-  /* When container is comfortably tall - breathe */
-  @container submit-tab (min-height: 700px) {
-    .submit-header {
-      padding-bottom: clamp(12px, 3cqh, 24px);
     }
   }
 

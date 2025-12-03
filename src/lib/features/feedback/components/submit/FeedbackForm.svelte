@@ -7,6 +7,7 @@
   import { TYPE_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
   import type { FeedbackType, FeedbackPriority } from "../../domain/models/feedback-models";
   import { MODULE_DEFINITIONS } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
   // Props
   const { formState } = $props<{
@@ -18,8 +19,52 @@
   let selectedModuleId = $state<string>('');
   let hapticService: IHapticFeedbackService | undefined;
 
+  // Mobile detection for context picker drawer
+  let formElement: HTMLFormElement | undefined = $state();
+  let useMobileDrawer = $state(false);
+
+  // Options drawer state (Priority + Context)
+  let isOptionsDrawerOpen = $state(false);
+
+  // Derived: is context drawer open (for mobile) - but not when options drawer is open
+  const isContextDrawerOpen = $derived(useMobileDrawer && contextStep !== 'closed' && !isOptionsDrawerOpen);
+
+  // Derived: summary of selected options for the trigger button
+  const optionsSummary = $derived(() => {
+    const parts: string[] = [];
+    if (formState.formData.priority) {
+      const priorityConfig = PRIORITY_CONFIG[formState.formData.priority];
+      parts.push(priorityConfig?.label || formState.formData.priority);
+    }
+    if (formState.formData.reportedModule) {
+      parts.push(contextDisplayText());
+    }
+    return parts.length > 0 ? parts.join(' · ') : null;
+  });
+
+  function openOptionsDrawer() {
+    hapticService?.trigger("selection");
+    isOptionsDrawerOpen = true;
+  }
+
+  function closeOptionsDrawer() {
+    hapticService?.trigger("selection");
+    isOptionsDrawerOpen = false;
+  }
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+
+    // Detect mobile via ResizeObserver on form container
+    if (formElement) {
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          useMobileDrawer = entry.contentRect.width < 420;
+        }
+      });
+      observer.observe(formElement);
+      return () => observer.disconnect();
+    }
   });
 
   // Module/tab options for context picker
@@ -150,6 +195,7 @@
   </div>
 {:else}
   <form
+    bind:this={formElement}
     class="feedback-form"
     onsubmit={handleSubmit}
     style="--active-type-color: {currentTypeConfig.color}"
@@ -192,7 +238,11 @@
     />
     <div class="field-hint">
       <span class="char-count" class:met={formState.formData.title.trim().length >= 3}>
-        {formState.formData.title.trim().length}/3 characters
+        {#if formState.formData.title.trim().length < 3}
+          {3 - formState.formData.title.trim().length} more needed
+        {:else}
+          <i class="fas fa-check"></i>
+        {/if}
       </span>
       {#if formState.formErrors.title}
         <span class="field-error" role="alert">{formState.formErrors.title}</span>
@@ -217,7 +267,11 @@
     ></textarea>
     <div class="field-hint">
       <span class="char-count" class:met={formState.formData.description.trim().length >= 10}>
-        {formState.formData.description.trim().length}/10 characters
+        {#if formState.formData.description.trim().length < 10}
+          {10 - formState.formData.description.trim().length} more needed
+        {:else}
+          <i class="fas fa-check"></i>
+        {/if}
       </span>
       {#if formState.formErrors.description}
         <span class="field-error" role="alert">{formState.formErrors.description}</span>
@@ -225,100 +279,16 @@
     </div>
   </div>
 
-  <!-- Priority & Context Row -->
-  <div class="options-row">
-    <!-- Priority Selector - Single row, no wrap -->
-    <div class="priority-section">
-      <span class="section-label">Priority</span>
-      <div class="priority-row">
-        {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
-          <button
-            type="button"
-            class="priority-btn"
-            class:selected={formState.formData.priority === priority}
-            onclick={() => handlePriorityChange(formState.formData.priority === priority ? "" : priority as FeedbackPriority)}
-            style="--priority-color: {config.color}"
-            aria-pressed={formState.formData.priority === priority}
-            title={config.label}
-          >
-            <i class="fas {config.icon}"></i>
-            <span class="priority-label">{config.label}</span>
-          </button>
-        {/each}
-      </div>
-    </div>
-
-    <!-- Context Picker - Click flow -->
-    <div class="context-section">
-      <span class="section-label">Context</span>
-
-      {#if contextStep === 'closed'}
-        <!-- Initial/Selected state -->
-        <div class="context-display">
-          {#if hasContextSelected}
-            <button type="button" class="context-chip selected" onclick={openContextPicker}>
-              <i class="fas fa-map-marker-alt"></i>
-              <span>{contextDisplayText()}</span>
-            </button>
-            <button type="button" class="context-clear" onclick={clearContext} title="Clear context">
-              <i class="fas fa-times"></i>
-            </button>
-          {:else}
-            <button type="button" class="context-chip" onclick={openContextPicker}>
-              <i class="fas fa-crosshairs"></i>
-              <span>Pick Context</span>
-            </button>
-          {/if}
-        </div>
-      {:else if contextStep === 'modules'}
-        <!-- Module selection -->
-        <div class="context-picker" class:entering={true}>
-          <div class="picker-header">
-            <span class="picker-title">Select Module</span>
-            <button type="button" class="picker-close" onclick={closeContextPicker}>
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div class="picker-grid">
-            {#each moduleOptions as module}
-              <button
-                type="button"
-                class="picker-item"
-                onclick={() => selectModule(module.id)}
-              >
-                <i class="fas {getModuleIcon(module.id)}"></i>
-                <span>{module.label}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
-      {:else if contextStep === 'tabs'}
-        <!-- Tab selection -->
-        <div class="context-picker" class:entering={true}>
-          <div class="picker-header">
-            <button type="button" class="picker-back" onclick={goBackToModules}>
-              <i class="fas fa-arrow-left"></i>
-            </button>
-            <span class="picker-title">{getModuleLabel(selectedModuleId)}</span>
-            <button type="button" class="picker-close" onclick={closeContextPicker}>
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div class="picker-grid tabs">
-            {#each getTabsForModule(selectedModuleId) as tab}
-              <button
-                type="button"
-                class="picker-item tab"
-                onclick={() => selectTab(tab.id)}
-              >
-                <span>{tab.label}</span>
-              </button>
-            {/each}
-          </div>
-        </div>
-      {/if}
-    </div>
-  </div>
+  <!-- More Options - Opens bottom sheet -->
+  <button type="button" class="options-trigger" onclick={openOptionsDrawer}>
+    <i class="fas fa-sliders"></i>
+    {#if optionsSummary()}
+      <span class="options-summary">{optionsSummary()}</span>
+    {:else}
+      <span>More options</span>
+    {/if}
+    <i class="fas fa-chevron-right options-chevron"></i>
+  </button>
 
   <!-- Submit Button -->
   <div class="form-footer">
@@ -350,6 +320,161 @@
     </div>
   {/if}
 </form>
+
+<!-- Mobile: Context picker in bottom drawer -->
+{#if useMobileDrawer}
+  <Drawer
+    isOpen={isContextDrawerOpen}
+    placement="bottom"
+    snapPoints={["50%", "75%"]}
+    onclose={closeContextPicker}
+    ariaLabel="Select context"
+    class="context-drawer"
+  >
+    <div class="drawer-picker-content" style="--active-type-color: {currentTypeConfig.color}">
+      {#if contextStep === 'modules'}
+        <div class="picker-header">
+          <span class="picker-title">Select Module</span>
+          <button type="button" class="picker-close" onclick={closeContextPicker}>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="picker-grid">
+          {#each moduleOptions as module}
+            <button
+              type="button"
+              class="picker-item"
+              onclick={() => selectModule(module.id)}
+            >
+              <i class="fas {getModuleIcon(module.id)}"></i>
+              <span>{module.label}</span>
+            </button>
+          {/each}
+        </div>
+      {:else if contextStep === 'tabs'}
+        <div class="picker-header">
+          <button type="button" class="picker-back" onclick={goBackToModules}>
+            <i class="fas fa-arrow-left"></i>
+          </button>
+          <span class="picker-title">{getModuleLabel(selectedModuleId)}</span>
+          <button type="button" class="picker-close" onclick={closeContextPicker}>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="picker-grid tabs">
+          {#each getTabsForModule(selectedModuleId) as tab}
+            <button
+              type="button"
+              class="picker-item tab"
+              onclick={() => selectTab(tab.id)}
+            >
+              <span>{tab.label}</span>
+            </button>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  </Drawer>
+{/if}
+
+<!-- Options Drawer (Priority + Context) -->
+<Drawer
+  bind:isOpen={isOptionsDrawerOpen}
+  placement="bottom"
+  onclose={closeOptionsDrawer}
+  ariaLabel="More options"
+>
+  <div class="options-drawer-content" style="--active-type-color: {currentTypeConfig.color}">
+    <div class="drawer-header">
+      <span class="drawer-title">More Options</span>
+      <button type="button" class="drawer-close" onclick={closeOptionsDrawer}>
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Priority Section -->
+    <div class="drawer-section">
+      <span class="drawer-section-label">Priority</span>
+      <div class="priority-grid">
+        {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
+          <button
+            type="button"
+            class="priority-option"
+            class:selected={formState.formData.priority === priority}
+            onclick={() => handlePriorityChange(formState.formData.priority === priority ? "" : priority as FeedbackPriority)}
+            style="--priority-color: {config.color}"
+          >
+            <i class="fas {config.icon}"></i>
+            <span>{config.label}</span>
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Context Section -->
+    <div class="drawer-section">
+      <span class="drawer-section-label">Context</span>
+      <p class="drawer-section-hint">Where did you encounter this?</p>
+
+      {#if contextStep === 'closed'}
+        {#if hasContextSelected}
+          <div class="context-selected">
+            <div class="context-selected-value">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>{contextDisplayText()}</span>
+            </div>
+            <button type="button" class="context-change" onclick={openContextPicker}>Change</button>
+            <button type="button" class="context-remove" onclick={clearContext}>
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        {:else}
+          <button type="button" class="context-select-btn" onclick={openContextPicker}>
+            <i class="fas fa-crosshairs"></i>
+            <span>Select location</span>
+          </button>
+        {/if}
+      {:else if contextStep === 'modules'}
+        <div class="context-picker-inline">
+          <div class="picker-grid">
+            {#each moduleOptions as module}
+              <button
+                type="button"
+                class="picker-item"
+                onclick={() => selectModule(module.id)}
+              >
+                <i class="fas {getModuleIcon(module.id)}"></i>
+                <span>{module.label}</span>
+              </button>
+            {/each}
+          </div>
+        </div>
+      {:else if contextStep === 'tabs'}
+        <div class="context-picker-inline">
+          <button type="button" class="picker-back-btn" onclick={goBackToModules}>
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to modules</span>
+          </button>
+          <div class="picker-grid tabs">
+            {#each getTabsForModule(selectedModuleId) as tab}
+              <button
+                type="button"
+                class="picker-item tab"
+                onclick={() => selectTab(tab.id)}
+              >
+                <span>{tab.label}</span>
+              </button>
+            {/each}
+          </div>
+        </div>
+      {/if}
+    </div>
+
+    <button type="button" class="drawer-done-btn" onclick={closeOptionsDrawer}>
+      Done
+    </button>
+  </div>
+</Drawer>
 {/if}
 
 <style>
@@ -373,11 +498,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    /* Fluid gap based on container width */
-    gap: clamp(10px, 3cqi, 20px);
+    /* Tighter gaps for mobile */
+    gap: clamp(8px, 2.5cqi, 16px);
     width: 100%;
-    /* Fluid padding */
-    padding: clamp(14px, 4cqi, 28px);
+    /* Tighter padding for mobile */
+    padding: clamp(12px, 3cqi, 24px);
     background: linear-gradient(
       145deg,
       color-mix(in srgb, var(--active-type-color, #3b82f6) 6%, rgba(22, 22, 32, 0.95)) 0%,
@@ -653,8 +778,8 @@
   }
 
   .field-textarea {
-    /* Fluid height based on container */
-    min-height: clamp(80px, 18cqi, 120px);
+    /* Tighter height for mobile - 3 lines minimum */
+    min-height: clamp(72px, 15cqi, 100px);
     resize: none; /* Prevent manual resize to maintain layout */
     line-height: 1.5;
   }
@@ -678,6 +803,12 @@
     color: #10b981;
   }
 
+  /* Modern :has() enhancement for active field styling */
+  .field:has(.field-input:not(:placeholder-shown)) .field-label,
+  .field:has(.field-textarea:not(:placeholder-shown)) .field-label {
+    color: var(--fb-primary);
+  }
+
   .field-error {
     margin: 0;
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
@@ -686,74 +817,294 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     OPTIONS ROW - Fluid layout
+     OPTIONS TRIGGER - Opens bottom sheet
      ═══════════════════════════════════════════════════════════════════════════ */
-  .options-row {
+  .options-trigger {
     display: flex;
-    flex-direction: row;
-    gap: clamp(12px, 3cqi, 20px);
-  }
-
-  .section-label {
-    display: block;
-    margin-bottom: clamp(4px, 1cqi, 8px);
-    font-size: clamp(0.8rem, 2.2cqi, 0.9375rem);
-    font-weight: 600;
+    align-items: center;
+    gap: clamp(8px, 2cqi, 12px);
+    width: 100%;
+    min-height: 48px; /* Required 48px touch target */
+    padding: 0 clamp(12px, 3cqi, 16px);
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: clamp(8px, 2cqi, 10px);
     color: var(--fb-text-muted);
+    font-size: clamp(0.8rem, 2.2cqi, 0.875rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
   }
 
-  /* Stack on narrow containers */
-  @container feedback-form (max-width: 420px) {
-    .options-row {
-      flex-direction: column;
-    }
+  .options-trigger:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--fb-text);
+  }
+
+  .options-trigger i:first-child {
+    color: var(--fb-primary);
+    font-size: 0.9em;
+  }
+
+  .options-summary {
+    flex: 1;
+    text-align: left;
+    color: var(--fb-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .options-chevron {
+    margin-left: auto;
+    font-size: 0.7em;
+    opacity: 0.5;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     PRIORITY SELECTOR - Fluid
+     OPTIONS DRAWER CONTENT
      ═══════════════════════════════════════════════════════════════════════════ */
-  .priority-section {
-    flex: 1;
-    min-width: 0;
-  }
+  .options-drawer-content {
+    --fb-primary: var(--active-type-color, #3b82f6);
+    --fb-text: rgba(255, 255, 255, 0.95);
+    --fb-text-muted: rgba(255, 255, 255, 0.7);
+    --fb-text-subtle: rgba(255, 255, 255, 0.5);
 
-  .priority-row {
+    padding: 20px;
     display: flex;
-    gap: clamp(4px, 1cqi, 8px);
+    flex-direction: column;
+    gap: 20px;
   }
 
-  .priority-btn {
-    flex: 1;
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .drawer-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--fb-text);
+  }
+
+  .drawer-close {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(3px, 0.8cqi, 6px);
-    min-height: 48px; /* Fixed 48px touch target */
-    min-width: 48px;
-    padding: 0 clamp(6px, 1.5cqi, 12px);
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--fb-text-muted);
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .drawer-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--fb-text);
+  }
+
+  .drawer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .drawer-section-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--fb-text);
+  }
+
+  .drawer-section-hint {
+    margin: -6px 0 0 0;
+    font-size: 0.8125rem;
+    color: var(--fb-text-subtle);
+  }
+
+  .priority-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .priority-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 56px;
+    padding: 10px 6px;
     background: rgba(0, 0, 0, 0.2);
     border: 1.5px solid rgba(255, 255, 255, 0.08);
-    border-radius: clamp(6px, 1.5cqi, 10px);
+    border-radius: 10px;
     color: var(--fb-text-subtle);
-    font-size: clamp(0.75rem, 2cqi, 0.875rem);
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 200ms ease;
   }
 
-  .priority-btn i {
-    font-size: 0.95em;
-    flex-shrink: 0;
+  .priority-option i {
+    font-size: 1rem;
   }
 
-  .priority-btn:hover {
-    background: color-mix(in srgb, var(--priority-color) 12%, rgba(0, 0, 0, 0.25));
+  .priority-option:hover {
+    background: color-mix(in srgb, var(--priority-color) 15%, rgba(0, 0, 0, 0.25));
     border-color: color-mix(in srgb, var(--priority-color) 50%, transparent);
     color: var(--fb-text-muted);
   }
 
-  .priority-btn:hover i {
+  .priority-option:hover i {
     color: var(--priority-color);
+  }
+
+  .priority-option.selected {
+    background: color-mix(in srgb, var(--priority-color) 20%, rgba(0, 0, 0, 0.25));
+    border-color: var(--priority-color);
+    color: var(--fb-text);
+  }
+
+  .priority-option.selected i {
+    color: var(--priority-color);
+  }
+
+  .context-selected {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .context-selected-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fb-text);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .context-selected-value i {
+    color: var(--fb-primary);
+  }
+
+  .context-change {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 6px;
+    color: var(--fb-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .context-change:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--fb-text);
+  }
+
+  .context-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--fb-text-subtle);
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .context-remove:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .context-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1.5px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: var(--fb-text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .context-select-btn i {
+    color: var(--fb-primary);
+  }
+
+  .context-select-btn:hover {
+    background: color-mix(in srgb, var(--fb-primary) 10%, rgba(0, 0, 0, 0.25));
+    border-color: color-mix(in srgb, var(--fb-primary) 50%, transparent);
+    border-style: solid;
+    color: var(--fb-text);
+  }
+
+  .context-picker-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .picker-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: var(--fb-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 150ms ease;
+  }
+
+  .picker-back-btn:hover {
+    opacity: 0.8;
+  }
+
+  .drawer-done-btn {
+    min-height: 48px;
+    padding: 14px 24px;
+    background: var(--fb-primary);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .drawer-done-btn:hover {
+    filter: brightness(1.1);
+  }
+
+  .drawer-done-btn:active {
+    transform: scale(0.98);
   }
 
   .priority-btn.selected {
@@ -953,10 +1304,132 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
+     DRAWER PICKER CONTENT - Mobile context picker in bottom drawer
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .drawer-picker-content {
+    --fb-primary: var(--active-type-color, #3b82f6);
+    --fb-text: rgba(255, 255, 255, 0.95);
+    --fb-text-muted: rgba(255, 255, 255, 0.7);
+    --fb-text-subtle: rgba(255, 255, 255, 0.5);
+
+    padding: 16px;
+  }
+
+  .drawer-picker-content .picker-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .drawer-picker-content .picker-title {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--fb-text);
+    text-align: center;
+  }
+
+  .drawer-picker-content .picker-back,
+  .drawer-picker-content .picker-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--fb-text-muted);
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .drawer-picker-content .picker-back:hover,
+  .drawer-picker-content .picker-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--fb-text);
+  }
+
+  .drawer-picker-content .picker-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .drawer-picker-content .picker-grid.tabs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .drawer-picker-content .picker-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 64px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: var(--fb-text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 200ms ease;
+  }
+
+  .drawer-picker-content .picker-item i {
+    font-size: 1.25rem;
+    color: var(--fb-text-subtle);
+  }
+
+  .drawer-picker-content .picker-item:hover {
+    background: color-mix(in srgb, var(--fb-primary) 15%, rgba(0, 0, 0, 0.25));
+    border-color: color-mix(in srgb, var(--fb-primary) 50%, transparent);
+    color: var(--fb-text);
+  }
+
+  .drawer-picker-content .picker-item:hover i {
+    color: var(--fb-primary);
+  }
+
+  .drawer-picker-content .picker-item:active {
+    transform: scale(0.97);
+  }
+
+  .drawer-picker-content .picker-item.tab {
+    flex-direction: row;
+    min-height: 52px;
+    font-size: 0.9375rem;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
      SUBMIT BUTTON - Fluid
      ═══════════════════════════════════════════════════════════════════════════ */
   .form-footer {
-    padding-top: clamp(4px, 1cqi, 8px);
+    /* Sticky footer - always visible on mobile */
+    position: sticky;
+    bottom: calc(-1 * clamp(12px, 3cqi, 24px));
+    z-index: 10;
+
+    /* Extend to edges of form */
+    margin-inline: calc(-1 * clamp(12px, 3cqi, 24px));
+    padding-inline: clamp(12px, 3cqi, 24px);
+    margin-bottom: calc(-1 * clamp(12px, 3cqi, 24px));
+    padding-bottom: calc(clamp(12px, 3cqi, 24px) + env(safe-area-inset-bottom, 0px));
+    padding-top: clamp(10px, 2.5cqi, 14px);
+
+    /* Gradient fade for content scrolling behind */
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--active-type-color, #3b82f6) 4%, rgba(18, 18, 28, 1)) 0%,
+      color-mix(in srgb, var(--active-type-color, #3b82f6) 4%, rgba(18, 18, 28, 1)) 70%,
+      transparent 100%
+    );
+
     display: flex;
     justify-content: flex-end;
   }
