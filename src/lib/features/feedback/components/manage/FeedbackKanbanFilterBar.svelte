@@ -35,7 +35,7 @@
     <input
       type="text"
       class="search-input"
-      placeholder="Search feedback..."
+      placeholder="Search..."
       value={manageState.searchQuery}
       oninput={(e) => manageState.setSearchQuery(e.currentTarget.value)}
     />
@@ -51,49 +51,31 @@
     {/if}
   </div>
 
-  <!-- Type filter chips -->
-  <div class="chip-group">
-    <button
-      type="button"
-      class="filter-chip"
-      class:active={manageState.filters.type === "all"}
-      onclick={() => manageState.setFilter("type", "all")}
-    >
-      All Types
-    </button>
+  <!-- Desktop: Type + Priority filter chips -->
+  <div class="filters-row">
     {#each Object.entries(TYPE_CONFIG) as [type, config]}
       <button
         type="button"
         class="filter-chip"
         class:active={manageState.filters.type === type}
         style="--chip-color: {config.color}"
-        onclick={() => manageState.setFilter("type", type as FeedbackType)}
+        onclick={() => manageState.setFilter("type", manageState.filters.type === type ? "all" : type as FeedbackType)}
+        title="{config.label}"
       >
         <i class="fas {config.icon}"></i>
-        <span class="chip-label">{config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}</span>
       </button>
     {/each}
-  </div>
 
-  <!-- Priority filter chips -->
-  <div class="chip-group priority-group">
-    <button
-      type="button"
-      class="filter-chip small"
-      class:active={manageState.filters.priority === "all"}
-      onclick={() => manageState.setFilter("priority", "all")}
-    >
-      Any Priority
-    </button>
+    <span class="filter-divider"></span>
+
     {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
       <button
         type="button"
-        class="filter-chip small"
+        class="filter-chip"
         class:active={manageState.filters.priority === priority}
         style="--chip-color: {config.color}"
-        onclick={() => manageState.setFilter("priority", priority as FeedbackPriority)}
+        onclick={() => manageState.setFilter("priority", manageState.filters.priority === priority ? "all" : priority as FeedbackPriority)}
         title="{config.label} priority"
-        aria-label="Filter by {config.label} priority"
       >
         <i class="fas {config.icon}"></i>
       </button>
@@ -105,53 +87,41 @@
       type="button"
       class="clear-btn"
       onclick={clearFilters}
-      aria-label="Clear all filters"
+      aria-label="Clear filters"
     >
-      <i class="fas fa-times"></i>
-      Clear
+      <i class="fas fa-filter-circle-xmark"></i>
     </button>
   {/if}
 </div>
 
 <style>
   .filter-bar {
-    --fb-space-2xs: 6px;
-    --fb-space-xs: 8px;
-    --fb-space-sm: 13px;
-    --fb-space-md: 21px;
+    /* ===== FLUID SPACING ===== */
+    --fb-space-xs: clamp(6px, 1.5cqi, 10px);
+    --fb-space-sm: clamp(10px, 2.5cqi, 16px);
+    --fb-space-md: clamp(14px, 3.5cqi, 20px);
 
-    --fb-text-xs: 0.75rem;
-    --fb-text-sm: 0.875rem;
+    /* ===== FLUID TYPOGRAPHY ===== */
+    --fb-text-sm: clamp(0.875rem, 2.5cqi, 1rem);
 
-    --fb-radius-sm: 8px;
-    --fb-radius-md: 12px;
-    --fb-radius-full: 999px;
-
-    --fb-primary: #10b981;
-    --fb-surface: rgba(255, 255, 255, 0.05);
-    --fb-surface-hover: rgba(255, 255, 255, 0.08);
-    --fb-border: rgba(255, 255, 255, 0.1);
-    --fb-border-focus: rgba(255, 255, 255, 0.2);
-    --fb-text: rgba(255, 255, 255, 0.95);
-    --fb-text-muted: rgba(255, 255, 255, 0.6);
-    --fb-text-subtle: rgba(255, 255, 255, 0.4);
-
-    --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    /* ===== FLUID SIZING ===== */
+    --fb-touch-target: clamp(44px, 11cqi, 52px);
+    --fb-icon-btn: clamp(40px, 10cqi, 48px);
 
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
     gap: var(--fb-space-sm);
-    padding: var(--fb-space-sm);
-    background: var(--fb-surface);
-    border-bottom: 1px solid var(--fb-border);
+    padding: var(--fb-space-sm) var(--fb-space-md);
+    background: transparent;
+    container-type: inline-size;
+    container-name: filterbar;
   }
 
-  /* Search */
+  /* ===== SEARCH ===== */
   .search-wrapper {
     position: relative;
-    min-width: 200px;
-    max-width: 280px;
+    flex: 1;
+    max-width: clamp(200px, 50cqi, 300px);
   }
 
   .search-icon {
@@ -159,31 +129,32 @@
     left: var(--fb-space-sm);
     top: 50%;
     transform: translateY(-50%);
-    color: var(--fb-text-subtle);
+    color: rgba(255, 255, 255, 0.4);
     font-size: var(--fb-text-sm);
     pointer-events: none;
   }
 
   .search-input {
     width: 100%;
-    height: 44px;
-    padding: 0 var(--fb-space-md) 0 calc(var(--fb-space-sm) + 24px);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-text);
-    font-size: 14px;
+    height: var(--fb-touch-target);
+    padding: 0 var(--fb-touch-target) 0 clamp(36px, 9cqi, 44px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--fb-touch-target);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: var(--fb-text-sm);
     font-family: inherit;
     transition: all 0.2s ease;
   }
 
   .search-input::placeholder {
-    color: var(--fb-text-subtle);
+    color: rgba(255, 255, 255, 0.4);
   }
 
   .search-input:focus {
     outline: none;
-    border-color: var(--fb-primary);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #10b981;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
   }
 
@@ -195,127 +166,110 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: clamp(32px, 8cqi, 40px);
+    height: clamp(32px, 8cqi, 40px);
     background: none;
     border: none;
-    color: var(--fb-text-subtle);
+    color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.15s ease;
   }
 
   .search-clear:hover {
-    background: var(--fb-surface-hover);
-    color: var(--fb-text-muted);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
   }
 
-  /* Chip groups */
-  .chip-group {
+  /* ===== FILTER ROW ===== */
+  .filters-row {
     display: flex;
     align-items: center;
-    gap: var(--fb-space-2xs);
+    gap: var(--fb-space-xs);
   }
 
-  .priority-group {
-    margin-left: auto;
+  .filter-divider {
+    width: 1px;
+    height: clamp(20px, 5cqi, 28px);
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 var(--fb-space-xs);
   }
 
   .filter-chip {
     display: flex;
     align-items: center;
-    gap: var(--fb-space-2xs);
-    height: 40px;
-    padding: 0 var(--fb-space-sm);
-    background: transparent;
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-full);
-    color: var(--fb-text-muted);
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s var(--spring-smooth);
-    white-space: nowrap;
-  }
-
-  .filter-chip.small {
-    width: 40px;
-    padding: 0;
     justify-content: center;
-  }
-
-  .filter-chip i {
-    font-size: 0.85em;
+    width: var(--fb-icon-btn);
+    height: var(--fb-icon-btn);
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--fb-text-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
   .filter-chip:hover {
-    background: var(--fb-surface-hover);
-    border-color: var(--fb-border-focus);
-    color: var(--fb-text);
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .filter-chip:active {
-    transform: scale(0.97);
+    transform: scale(0.92);
   }
 
   .filter-chip.active {
-    background: color-mix(in srgb, var(--chip-color, var(--fb-primary)) 15%, transparent);
-    border-color: var(--chip-color, var(--fb-primary));
-    color: var(--fb-text);
+    background: color-mix(in srgb, var(--chip-color) 25%, transparent);
+    color: var(--chip-color);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--chip-color) 35%, transparent),
+      0 4px 12px color-mix(in srgb, var(--chip-color) 20%, transparent);
   }
 
-  .filter-chip.active i {
-    color: var(--chip-color, var(--fb-primary));
-  }
-
-  /* Clear button */
+  /* ===== CLEAR BUTTON ===== */
   .clear-btn {
     display: flex;
     align-items: center;
-    gap: var(--fb-space-xs);
-    height: 40px;
-    padding: 0 var(--fb-space-sm);
-    background: none;
+    justify-content: center;
+    width: var(--fb-icon-btn);
+    height: var(--fb-icon-btn);
+    background: rgba(239, 68, 68, 0.12);
     border: none;
-    color: var(--fb-text-subtle);
+    border-radius: 50%;
+    color: #ef4444;
     font-size: var(--fb-text-sm);
-    font-weight: 500;
     cursor: pointer;
-    border-radius: var(--fb-radius-md);
     transition: all 0.15s ease;
+    margin-left: auto;
   }
 
   .clear-btn:hover {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    background: rgba(239, 68, 68, 0.2);
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .filter-bar {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding: var(--fb-space-xs);
-      gap: var(--fb-space-xs);
-    }
-
-    .search-wrapper {
-      min-width: 150px;
-      max-width: 180px;
-    }
-
-    .chip-label {
+  /* ===== CONTAINER QUERY: Hide filters on mobile (tabs serve as filter) ===== */
+  @container filterbar (max-width: 500px) {
+    .filters-row {
       display: none;
     }
 
-    .filter-chip:not(.small) {
-      width: 40px;
-      padding: 0;
-      justify-content: center;
+    .search-wrapper {
+      max-width: none;
     }
 
-    .priority-group {
-      margin-left: 0;
+    .clear-btn {
+      display: none;
+    }
+  }
+
+  /* ===== REDUCED MOTION ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .filter-chip,
+    .search-input,
+    .search-clear,
+    .clear-btn {
+      transition: none;
     }
   }
 </style>

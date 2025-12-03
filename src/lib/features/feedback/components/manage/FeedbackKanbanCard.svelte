@@ -221,29 +221,49 @@
   class="kanban-card"
   class:selected={isSelected}
   class:dragging={isDragging}
-  style="--type-color: {typeConfig.color}"
+  class:priority-critical={item.priority === "critical"}
+  class:priority-high={item.priority === "high"}
+  class:priority-medium={item.priority === "medium"}
+  class:priority-low={item.priority === "low" || !item.priority}
+  style="--type-color: {typeConfig.color}; --priority-color: {priorityConfig?.color || '#6b7280'}"
   draggable="true"
   ondragstart={handleDragStart}
   ondragend={handleDragEnd}
   onclick={handleClick}
   aria-label="View {item.title}"
 >
-  <!-- Type indicator strip -->
-  <div class="type-strip"></div>
+  <!-- Priority indicator strip (left border) -->
+  <div class="priority-strip"></div>
 
   <div class="card-content">
-    <!-- Header: Type icon + Title -->
+    <!-- Header: Type icon + Title + Priority badge -->
     <div class="card-header">
       <div class="type-icon" title={typeConfig.label}>
         <i class="fas {typeConfig.icon}"></i>
       </div>
       <h4 class="card-title">{item.title}</h4>
+      {#if priorityConfig}
+        <span
+          class="priority-badge"
+          title="{priorityConfig.label} priority"
+        >
+          {#if item.priority === "critical"}
+            <i class="fas fa-exclamation-circle"></i>
+          {:else if item.priority === "high"}
+            <i class="fas fa-arrow-up"></i>
+          {:else if item.priority === "medium"}
+            <i class="fas fa-minus"></i>
+          {:else}
+            <i class="fas fa-arrow-down"></i>
+          {/if}
+        </span>
+      {/if}
     </div>
 
     <!-- Description preview -->
     <p class="card-description">{item.description}</p>
 
-    <!-- Footer: User + Time + Priority -->
+    <!-- Footer: User + Time -->
     <div class="card-footer">
       <div class="card-meta">
         <span class="meta-user">
@@ -252,16 +272,6 @@
         </span>
         <span class="meta-time">{formatRelativeTime(item.createdAt)}</span>
       </div>
-
-      {#if priorityConfig}
-        <span
-          class="priority-badge"
-          style="--priority-color: {priorityConfig.color}"
-          title="{priorityConfig.label} priority"
-        >
-          <i class="fas {priorityConfig.icon}"></i>
-        </span>
-      {/if}
     </div>
   </div>
 
@@ -273,20 +283,25 @@
 
 <style>
   .kanban-card {
-    --kb-space-2xs: 6px;
-    --kb-space-xs: 8px;
-    --kb-space-sm: 13px;
+    /* ===== FLUID SPACING ===== */
+    --kc-space-2xs: clamp(4px, 1cqi, 8px);
+    --kc-space-xs: clamp(8px, 2cqi, 12px);
+    --kc-space-sm: clamp(12px, 3cqi, 18px);
 
-    --kb-text-xs: 0.75rem;
-    --kb-text-sm: 0.8125rem;
+    /* ===== FLUID TYPOGRAPHY - Accessible minimums ===== */
+    --kc-text-2xs: clamp(0.75rem, 2cqi, 0.8125rem);    /* min 12px - accessible */
+    --kc-text-xs: clamp(0.8125rem, 2.2cqi, 0.875rem);  /* min 13px */
+    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem);       /* min 14px */
 
-    --kb-radius-sm: 8px;
-    --kb-radius-md: 12px;
+    /* ===== FLUID RADII ===== */
+    --kc-radius-sm: clamp(8px, 2cqi, 12px);
+    --kc-radius-md: clamp(12px, 3cqi, 18px);
 
-    --kb-text: rgba(255, 255, 255, 0.95);
-    --kb-text-muted: rgba(255, 255, 255, 0.7);
-    --kb-text-subtle: rgba(255, 255, 255, 0.5);
+    --kc-text: rgba(255, 255, 255, 0.95);
+    --kc-text-muted: rgba(255, 255, 255, 0.7);
+    --kc-text-subtle: rgba(255, 255, 255, 0.5);
 
+    --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     position: relative;
@@ -300,11 +315,11 @@
       color-mix(in srgb, var(--type-color) 3%, rgba(25, 25, 35, 0.98)) 100%
     );
     border: 1px solid color-mix(in srgb, var(--type-color) 20%, rgba(255, 255, 255, 0.08));
-    border-radius: var(--kb-radius-md);
+    border-radius: var(--kc-radius-md);
     cursor: grab;
     text-align: left;
     overflow: hidden;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s var(--spring-smooth);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -341,24 +356,43 @@
     transform: scale(0.95);
   }
 
-  /* Type indicator strip on left - more prominent */
-  .type-strip {
-    width: 5px;
+  /* Priority indicator strip on left */
+  .priority-strip {
+    width: clamp(4px, 1cqi, 6px);
     flex-shrink: 0;
     background: linear-gradient(
       180deg,
-      var(--type-color) 0%,
-      color-mix(in srgb, var(--type-color) 70%, transparent) 100%
+      var(--priority-color) 0%,
+      color-mix(in srgb, var(--priority-color) 70%, transparent) 100%
     );
-    box-shadow: 2px 0 8px color-mix(in srgb, var(--type-color) 30%, transparent);
+    box-shadow: 2px 0 8px color-mix(in srgb, var(--priority-color) 30%, transparent);
+  }
+
+  /* Priority-specific card styling */
+  .kanban-card.priority-critical {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, #ef4444 12%, rgba(30, 30, 40, 0.95)) 0%,
+      color-mix(in srgb, #ef4444 5%, rgba(25, 25, 35, 0.98)) 100%
+    );
+    border-color: color-mix(in srgb, #ef4444 30%, rgba(255, 255, 255, 0.08));
+  }
+
+  .kanban-card.priority-high {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, #f97316 10%, rgba(30, 30, 40, 0.95)) 0%,
+      color-mix(in srgb, #f97316 4%, rgba(25, 25, 35, 0.98)) 100%
+    );
+    border-color: color-mix(in srgb, #f97316 25%, rgba(255, 255, 255, 0.08));
   }
 
   .card-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--kb-space-xs);
-    padding: var(--kb-space-sm);
+    gap: var(--kc-space-xs);
+    padding: var(--kc-space-sm);
     min-width: 0;
   }
 
@@ -366,33 +400,33 @@
   .card-header {
     display: flex;
     align-items: flex-start;
-    gap: var(--kb-space-xs);
+    gap: var(--kc-space-xs);
   }
 
   .type-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: clamp(24px, 5cqi, 30px);
+    height: clamp(24px, 5cqi, 30px);
     flex-shrink: 0;
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--type-color) 30%, transparent) 0%,
       color-mix(in srgb, var(--type-color) 15%, transparent) 100%
     );
-    border-radius: 8px;
+    border-radius: var(--kc-radius-sm);
     color: var(--type-color);
-    font-size: 12px;
+    font-size: clamp(10px, 2cqi, 13px);
     box-shadow: 0 2px 6px color-mix(in srgb, var(--type-color) 25%, transparent);
   }
 
   .card-title {
     margin: 0;
     flex: 1;
-    font-size: var(--kb-text-sm);
+    font-size: var(--kc-text-sm);
     font-weight: 600;
-    color: var(--kb-text);
+    color: var(--kc-text);
     line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -403,8 +437,8 @@
   /* Description */
   .card-description {
     margin: 0;
-    font-size: var(--kb-text-xs);
-    color: var(--kb-text-muted);
+    font-size: var(--kc-text-xs);
+    color: var(--kc-text-muted);
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -417,58 +451,70 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--kb-space-xs);
-    margin-top: var(--kb-space-xs);
-    padding-top: var(--kb-space-xs);
+    gap: var(--kc-space-xs);
+    margin-top: var(--kc-space-2xs);
+    padding-top: var(--kc-space-xs);
     border-top: 1px solid color-mix(in srgb, var(--type-color) 10%, rgba(255, 255, 255, 0.05));
   }
 
   .card-meta {
     display: flex;
     align-items: center;
-    gap: var(--kb-space-sm);
-    font-size: 11px;
-    color: var(--kb-text-subtle);
+    gap: var(--kc-space-sm);
+    font-size: var(--kc-text-2xs);
+    color: var(--kc-text-subtle);
   }
 
   .meta-user,
   .meta-time {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: clamp(2px, 0.5cqi, 4px);
   }
 
   .meta-user i,
   .meta-time i {
-    font-size: 10px;
+    font-size: 0.9em;
   }
 
-  /* Priority badge */
+  /* Priority badge in header */
   .priority-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
-    background: color-mix(in srgb, var(--priority-color) 15%, transparent);
-    border-radius: 6px;
+    width: clamp(18px, 3.5cqi, 22px);
+    height: clamp(18px, 3.5cqi, 22px);
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--priority-color) 20%, transparent);
+    border-radius: clamp(4px, 0.8cqi, 6px);
     color: var(--priority-color);
-    font-size: 10px;
+    font-size: clamp(8px, 1.6cqi, 10px);
+  }
+
+  .kanban-card.priority-critical .priority-badge {
+    background: color-mix(in srgb, #ef4444 25%, transparent);
+    color: #ef4444;
+    animation: pulse-critical 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-critical {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
 
   /* Drag handle */
   .drag-handle {
     position: absolute;
     top: 50%;
-    right: var(--kb-space-xs);
+    right: var(--kc-space-xs);
     transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 32px;
-    color: var(--kb-text-subtle);
-    font-size: 10px;
+    width: clamp(14px, 3cqi, 18px);
+    height: clamp(28px, 6cqi, 36px);
+    color: var(--kc-text-subtle);
+    font-size: clamp(9px, 1.8cqi, 11px);
     opacity: 0;
     transition: opacity 0.15s ease;
   }
@@ -482,5 +528,43 @@
     outline: none;
     border-color: #10b981;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
+
+  /* ===== Mobile optimizations ===== */
+  @container kanban (max-width: 650px) {
+    .kanban-card {
+      /* Remove hover transform on mobile - feels janky */
+      transform: none !important;
+    }
+
+    .kanban-card:hover {
+      transform: none;
+    }
+
+    .kanban-card:active {
+      transform: scale(0.98);
+      background: linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--type-color) 18%, rgba(35, 35, 45, 0.95)) 0%,
+        color-mix(in srgb, var(--type-color) 10%, rgba(30, 30, 40, 0.98)) 100%
+      );
+    }
+
+    /* Hide drag handle on mobile - use touch drag instead */
+    .drag-handle {
+      display: none;
+    }
+
+    /* Slightly larger touch targets */
+    .card-content {
+      padding: var(--kc-space-sm) var(--kc-space-sm);
+    }
+  }
+
+  /* ===== Reduced Motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .kanban-card {
+      transition: none;
+    }
   }
 </style>

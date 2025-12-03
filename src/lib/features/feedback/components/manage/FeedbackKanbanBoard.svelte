@@ -9,38 +9,40 @@
     manageState: FeedbackManageState;
   }>();
 
-  // Visible columns in order (wont-fix is hidden by default)
-  const VISIBLE_STATUSES: FeedbackStatus[] = [
+  // Simplified to just 3 statuses
+  const ALL_STATUSES: FeedbackStatus[] = [
     "new",
-    "acknowledged",
-    "planned",
     "in-progress",
     "completed",
   ];
 
-  // Track whether wont-fix column is visible
-  let showWontFix = $state(false);
+  // Mobile: track active status tab
+  let activeStatus = $state<FeedbackStatus>("new");
 
-  // Group items by status
+  // Get active status color for background gradient
+  const activeStatusColor = $derived(STATUS_CONFIG[activeStatus].color);
+
+  // Group items by status (only 3 columns now)
   const itemsByStatus = $derived(() => {
-    const grouped: Record<FeedbackStatus, FeedbackItem[]> = {
+    const grouped: Record<string, FeedbackItem[]> = {
       new: [],
-      acknowledged: [],
-      planned: [],
       "in-progress": [],
       completed: [],
-      "wont-fix": [],
     };
 
     for (const item of manageState.items) {
-      grouped[item.status].push(item);
+      // Map old statuses to new simplified ones
+      if (item.status === "new" || item.status === "acknowledged" || item.status === "planned") {
+        grouped["new"].push(item);
+      } else if (item.status === "in-progress") {
+        grouped["in-progress"].push(item);
+      } else if (item.status === "completed" || item.status === "wont-fix") {
+        grouped["completed"].push(item);
+      }
     }
 
     return grouped;
   });
-
-  // Count for wont-fix to show in toggle
-  const wontFixCount = $derived(itemsByStatus()["wont-fix"].length);
 
   // Drag state
   let draggedItem = $state<FeedbackItem | null>(null);
@@ -94,11 +96,8 @@
           const statusLabel = ariaLabel.replace(" column", "").toLowerCase();
           const statusMap: Record<string, FeedbackStatus> = {
             "new": "new",
-            "acknowledged": "acknowledged",
-            "planned": "planned",
             "in progress": "in-progress",
             "completed": "completed",
-            "won't fix": "wont-fix",
           };
           return statusMap[statusLabel] || null;
         }
@@ -135,15 +134,42 @@
   }
 </script>
 
-<div class="kanban-board">
+<div class="kanban-board" style="--active-color: {activeStatusColor}">
+  <!-- Mobile: Colorful Status Tabs -->
+  <nav class="status-tabs" role="tablist" aria-label="Feedback status">
+    {#each ALL_STATUSES as status}
+      {@const config = STATUS_CONFIG[status]}
+      {@const count = itemsByStatus()[status].length}
+      <button
+        type="button"
+        role="tab"
+        class="status-tab"
+        class:active={activeStatus === status}
+        style="--tab-color: {config.color}"
+        onclick={() => {
+          activeStatus = status;
+        }}
+        aria-selected={activeStatus === status}
+        aria-controls="column-{status}"
+      >
+        <i class="fas {config.icon}"></i>
+        <span class="tab-label">{config.label.replace("Won't Fix", "Declined")}</span>
+        {#if count > 0}
+          <span class="tab-count">{count}</span>
+        {/if}
+      </button>
+    {/each}
+  </nav>
+
   <div class="columns-container">
-    {#each VISIBLE_STATUSES as status}
+    {#each ALL_STATUSES as status}
       <FeedbackKanbanColumn
         {status}
         config={STATUS_CONFIG[status]}
         items={itemsByStatus()[status]}
         isDropTarget={dragOverColumn === status}
         isDragActive={draggedItem !== null}
+        isActiveTab={activeStatus === status}
         selectedItemId={manageState.selectedItem?.id ?? null}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
@@ -154,49 +180,24 @@
         onCardClick={handleCardClick}
       />
     {/each}
-
-    <!-- Won't Fix column (collapsible) -->
-    {#if showWontFix}
-      <FeedbackKanbanColumn
-        status="wont-fix"
-        config={STATUS_CONFIG["wont-fix"]}
-        items={itemsByStatus()["wont-fix"]}
-        isDropTarget={dragOverColumn === "wont-fix"}
-        isDragActive={draggedItem !== null}
-        selectedItemId={manageState.selectedItem?.id ?? null}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        onTouchDrag={handleTouchDrag}
-        onDragOver={() => handleDragOver("wont-fix")}
-        onDragLeave={handleDragLeave}
-        onDrop={() => handleDrop("wont-fix")}
-        onCardClick={handleCardClick}
-      />
-    {:else}
-      <!-- Collapsed won't-fix indicator -->
-      <button
-        type="button"
-        class="wontfix-toggle"
-        onclick={() => (showWontFix = true)}
-        aria-label="Show Won't Fix column"
-      >
-        <div class="toggle-icon">
-          <i class="fas fa-ban"></i>
-        </div>
-        <span class="toggle-label">Won't Fix</span>
-        {#if wontFixCount > 0}
-          <span class="toggle-count">{wontFixCount}</span>
-        {/if}
-        <i class="fas fa-chevron-right toggle-arrow"></i>
-      </button>
-    {/if}
   </div>
 
   {#if manageState.isLoading && manageState.items.length === 0}
     <div class="loading-overlay">
-      <div class="loading-spinner">
-        <i class="fas fa-circle-notch fa-spin"></i>
-        <span>Loading feedback...</span>
+      <div class="loading-skeletons">
+        {#each Array(3) as _}
+          <div class="skeleton-card">
+            <div class="skeleton-header">
+              <div class="skeleton-icon"></div>
+              <div class="skeleton-title"></div>
+            </div>
+            <div class="skeleton-body"></div>
+            <div class="skeleton-footer">
+              <div class="skeleton-meta"></div>
+              <div class="skeleton-badge"></div>
+            </div>
+          </div>
+        {/each}
       </div>
     </div>
   {/if}
@@ -204,40 +205,183 @@
 
 <style>
   .kanban-board {
-    --kb-space-xs: 8px;
-    --kb-space-sm: 13px;
-    --kb-space-md: 21px;
+    /* ===== FLUID SPACING - All clamp() based ===== */
+    --kb-space-2xs: clamp(4px, 1cqi, 8px);
+    --kb-space-xs: clamp(6px, 1.5cqi, 12px);
+    --kb-space-sm: clamp(10px, 2.5cqi, 16px);
+    --kb-space-md: clamp(14px, 3.5cqi, 24px);
+    --kb-space-lg: clamp(20px, 5cqi, 32px);
+    --kb-space-xl: clamp(28px, 7cqi, 48px);
 
-    --kb-text-xs: 0.75rem;
-    --kb-text-sm: 0.875rem;
+    /* ===== FLUID TYPOGRAPHY - Accessible minimum sizes ===== */
+    --kb-text-xs: clamp(0.8125rem, 2cqi, 0.875rem);   /* min 13px */
+    --kb-text-sm: clamp(0.875rem, 2.5cqi, 1rem);      /* min 14px */
+    --kb-text-base: clamp(1rem, 3cqi, 1.125rem);      /* min 16px */
+    --kb-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem);   /* min 18px */
 
-    --kb-radius-md: 12px;
+    /* ===== FLUID RADII ===== */
+    --kb-radius-sm: clamp(6px, 1.5cqi, 10px);
+    --kb-radius-md: clamp(10px, 2.5cqi, 16px);
+    --kb-radius-lg: clamp(14px, 3.5cqi, 20px);
+    --kb-radius-full: 999px;
 
-    --kb-surface: rgba(255, 255, 255, 0.03);
-    --kb-border: rgba(255, 255, 255, 0.08);
+    /* ===== COLORS ===== */
     --kb-text: rgba(255, 255, 255, 0.95);
-    --kb-text-muted: rgba(255, 255, 255, 0.6);
-    --kb-text-subtle: rgba(255, 255, 255, 0.4);
+    --kb-text-muted: rgba(255, 255, 255, 0.7);
+    --kb-text-subtle: rgba(255, 255, 255, 0.5);
+
+    /* ===== TRANSITIONS ===== */
+    --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    container-type: inline-size;
+    container-name: kanban;
+
+    /* Dynamic gradient background based on active status */
+    background:
+      radial-gradient(
+        ellipse 80% 50% at 50% 0%,
+        color-mix(in srgb, var(--active-color) 12%, transparent) 0%,
+        transparent 70%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--active-color) 5%, rgba(15, 15, 20, 1)) 0%,
+        rgba(12, 12, 16, 1) 100%
+      );
+    transition: background 0.5s ease;
   }
 
+  /* ===== STATUS TABS - Fills available space, pure fluid sizing ===== */
+  .status-tabs {
+    display: none; /* Shown via container query on mobile */
+    gap: var(--kb-space-xs);
+    padding: var(--kb-space-sm) var(--kb-space-md);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .status-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Each tab fills available space equally */
+  .status-tab {
+    display: flex;
+    flex: 1;
+    /* Stack vertically: icon on top, label below */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(2px, 0.5cqi, 6px);
+    /* Fluid height with 44px minimum for accessibility */
+    min-height: clamp(52px, 14cqi, 64px);
+    /* Tighter padding */
+    padding: clamp(8px, 2cqi, 12px) clamp(6px, 1.5cqi, 12px);
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: clamp(12px, 3cqi, 18px);
+    color: var(--kb-text-muted);
+    /* Fluid font with accessible minimum */
+    font-size: var(--kb-text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s var(--spring-smooth);
+  }
+
+  .status-tab i {
+    /* Fluid icon size */
+    font-size: clamp(1rem, 3cqi, 1.25rem);
+    color: var(--tab-color);
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+
+  .status-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--kb-text);
+  }
+
+  .status-tab:active {
+    transform: scale(0.96);
+  }
+
+  /* Active tab - COLORFUL and prominent */
+  .status-tab.active {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--tab-color) 85%, #fff) 0%,
+      var(--tab-color) 100%
+    );
+    color: rgba(0, 0, 0, 0.9);
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--tab-color) 40%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--tab-color) 50%, transparent);
+  }
+
+  .status-tab.active i {
+    color: rgba(0, 0, 0, 0.8);
+    opacity: 1;
+  }
+
+  /* Label shown below icon - always visible, fluid font size */
+  .tab-label {
+    font-size: clamp(0.6875rem, 2cqi, 0.8125rem);
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    /* Truncate only if truly no space */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* Count badge with fluid sizing */
+  .tab-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Fluid badge size */
+    min-width: clamp(20px, 5cqi, 26px);
+    height: clamp(20px, 5cqi, 26px);
+    padding: 0 var(--kb-space-2xs);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--kb-radius-full);
+    font-size: var(--kb-text-xs);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .status-tab.active .tab-count {
+    background: rgba(0, 0, 0, 0.25);
+    color: rgba(0, 0, 0, 0.9);
+  }
+
+  /* ===== COLUMNS CONTAINER ===== */
   .columns-container {
     display: flex;
-    gap: var(--kb-space-sm);
-    height: 100%;
-    padding: var(--kb-space-sm);
+    gap: clamp(12px, 2cqi, 24px);
+    flex: 1;
+    /* Center with max-width for wide screens */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Generous padding that scales */
+    padding: clamp(16px, 3cqi, 32px);
     overflow-x: auto;
     overflow-y: hidden;
   }
 
-  /* Scrollbar styling */
   .columns-container::-webkit-scrollbar {
-    height: 6px;
+    height: clamp(4px, 1cqi, 8px);
   }
 
   .columns-container::-webkit-scrollbar-track {
@@ -245,100 +389,117 @@
   }
 
   .columns-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--kb-radius-sm);
   }
 
   .columns-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
   }
 
-  /* Won't Fix toggle button */
-  .wontfix-toggle {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--kb-space-xs);
-    min-width: 48px;
-    padding: var(--kb-space-md) var(--kb-space-xs);
-    background: var(--kb-surface);
-    border: 1px dashed var(--kb-border);
-    border-radius: var(--kb-radius-md);
-    color: var(--kb-text-subtle);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .wontfix-toggle:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: var(--kb-text-muted);
-  }
-
-  .toggle-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(107, 114, 128, 0.15);
-    border-radius: 8px;
-    font-size: 14px;
-  }
-
-  .toggle-label {
-    font-size: var(--kb-text-xs);
-    font-weight: 500;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    white-space: nowrap;
-  }
-
-  .toggle-count {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    background: rgba(107, 114, 128, 0.2);
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-
-  .toggle-arrow {
-    font-size: 10px;
-    transition: transform 0.2s ease;
-  }
-
-  .wontfix-toggle:hover .toggle-arrow {
-    transform: translateX(2px);
-  }
-
-  /* Loading overlay */
+  /* ===== LOADING SKELETON ===== */
   .loading-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
+    padding: var(--kb-space-xl);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
   }
 
-  .loading-spinner {
+  .loading-skeletons {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--kb-space-sm);
-    color: var(--kb-text-muted);
-    font-size: var(--kb-text-sm);
+    gap: var(--kb-space-md);
+    width: 100%;
+    max-width: clamp(280px, 70cqi, 400px);
   }
 
-  .loading-spinner i {
-    font-size: 24px;
-    color: #10b981;
+  .skeleton-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--kb-space-sm);
+    padding: var(--kb-space-md);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--kb-radius-lg);
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: var(--kb-space-sm);
+  }
+
+  .skeleton-icon {
+    width: clamp(28px, 7cqi, 36px);
+    height: clamp(28px, 7cqi, 36px);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--kb-radius-sm);
+  }
+
+  .skeleton-title {
+    flex: 1;
+    height: clamp(16px, 4cqi, 20px);
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: var(--kb-radius-sm);
+  }
+
+  .skeleton-body {
+    height: clamp(36px, 9cqi, 48px);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--kb-radius-sm);
+  }
+
+  .skeleton-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--kb-space-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .skeleton-meta {
+    width: clamp(80px, 20cqi, 120px);
+    height: clamp(12px, 3cqi, 16px);
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--kb-radius-sm);
+  }
+
+  .skeleton-badge {
+    width: clamp(24px, 6cqi, 32px);
+    height: clamp(24px, 6cqi, 32px);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--kb-radius-sm);
+  }
+
+  @keyframes skeleton-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ===== CONTAINER QUERY: Mobile layout (shows tabs) ===== */
+  @container kanban (max-width: 650px) {
+    .status-tabs {
+      display: flex;
+    }
+
+    .columns-container {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+
+  /* ===== REDUCED MOTION ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .kanban-board,
+    .status-tab,
+    .skeleton-card {
+      transition: none;
+      animation: none;
+    }
   }
 </style>

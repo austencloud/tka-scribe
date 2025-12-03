@@ -4,7 +4,6 @@
   import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
   import { createFeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import FeedbackKanbanFilterBar from "./FeedbackKanbanFilterBar.svelte";
   import FeedbackKanbanBoard from "./FeedbackKanbanBoard.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
 
@@ -38,7 +37,6 @@
     >
       {#snippet list()}
         <div class="kanban-container">
-          <FeedbackKanbanFilterBar {manageState} />
           <FeedbackKanbanBoard {manageState} />
         </div>
       {/snippet}

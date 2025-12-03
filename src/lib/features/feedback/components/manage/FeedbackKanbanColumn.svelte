@@ -9,6 +9,7 @@
     items,
     isDropTarget,
     isDragActive,
+    isActiveTab = false,
     selectedItemId,
     onDragStart,
     onDragEnd,
@@ -23,6 +24,7 @@
     items: FeedbackItem[];
     isDropTarget: boolean;
     isDragActive: boolean;
+    isActiveTab?: boolean;
     selectedItemId: string | null;
     onDragStart: (item: FeedbackItem) => void;
     onDragEnd: () => void;
@@ -48,11 +50,13 @@
   class="kanban-column"
   class:drop-target={isDropTarget}
   class:drag-active={isDragActive}
+  class:active-tab={isActiveTab}
   style="--column-color: {config.color}"
   ondragover={handleDragOver}
   ondragleave={onDragLeave}
   ondrop={handleDrop}
   role="region"
+  id="column-{status}"
   aria-label="{config.label} column"
 >
   <!-- Column Header -->
@@ -68,8 +72,27 @@
   <div class="cards-container">
     {#if items.length === 0}
       <div class="empty-state">
-        <i class="fas fa-inbox"></i>
-        <span>No items</span>
+        <div class="empty-icon">
+          <i class="fas {status === 'completed' ? 'fa-check-circle' : status === 'wont-fix' ? 'fa-ban' : 'fa-inbox'}"></i>
+        </div>
+        <span class="empty-title">
+          {#if status === 'new'}
+            No new feedback
+          {:else if status === 'completed'}
+            Nothing completed yet
+          {:else if status === 'wont-fix'}
+            No declined items
+          {:else}
+            No items here
+          {/if}
+        </span>
+        <span class="empty-hint">
+          {#if status === 'new'}
+            Feedback will appear here when submitted
+          {:else}
+            Drag items here to update their status
+          {/if}
+        </span>
       </div>
     {:else}
       {#each items as item (item.id)}
@@ -96,25 +119,37 @@
 
 <style>
   .kanban-column {
-    --kb-space-xs: 8px;
-    --kb-space-sm: 13px;
-    --kb-space-md: 21px;
+    /* ===== FLUID SPACING ===== */
+    --kc-space-2xs: clamp(4px, 1cqi, 8px);
+    --kc-space-xs: clamp(8px, 2cqi, 12px);
+    --kc-space-sm: clamp(12px, 3cqi, 18px);
+    --kc-space-md: clamp(16px, 4cqi, 28px);
 
-    --kb-text-xs: 0.75rem;
-    --kb-text-sm: 0.875rem;
+    /* ===== FLUID TYPOGRAPHY - Accessible minimums ===== */
+    --kc-text-xs: clamp(0.8125rem, 2cqi, 0.875rem);   /* min 13px */
+    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem);      /* min 14px */
+    --kc-text-base: clamp(1rem, 3cqi, 1.125rem);      /* min 16px */
+    --kc-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem);   /* min 18px */
 
-    --kb-radius-sm: 8px;
-    --kb-radius-md: 16px;
+    /* ===== FLUID RADII ===== */
+    --kc-radius-sm: clamp(8px, 2cqi, 12px);
+    --kc-radius-md: clamp(12px, 3cqi, 18px);
+    --kc-radius-lg: clamp(16px, 4cqi, 24px);
 
-    --kb-text: rgba(255, 255, 255, 0.95);
-    --kb-text-muted: rgba(255, 255, 255, 0.7);
-    --kb-text-subtle: rgba(255, 255, 255, 0.5);
+    /* ===== COLORS ===== */
+    --kc-text: rgba(255, 255, 255, 0.95);
+    --kc-text-muted: rgba(255, 255, 255, 0.7);
+    --kc-text-subtle: rgba(255, 255, 255, 0.5);
+
+    /* ===== TRANSITIONS ===== */
+    --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
     position: relative;
     display: flex;
     flex-direction: column;
-    min-width: 280px;
-    max-width: 320px;
+    /* Fluid column width - grows to fill but with reasonable max */
+    min-width: clamp(260px, 25cqi, 300px);
+    max-width: 400px;
     flex: 1;
     /* Colorful gradient background based on column color */
     background: linear-gradient(
@@ -125,9 +160,9 @@
     /* Vibrant top border accent */
     border: 1px solid color-mix(in srgb, var(--column-color) 25%, transparent);
     border-top: 3px solid var(--column-color);
-    border-radius: var(--kb-radius-md);
+    border-radius: var(--kc-radius-md);
     overflow: hidden;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s var(--spring-smooth);
     /* Subtle glow */
     box-shadow:
       0 4px 20px color-mix(in srgb, var(--column-color) 15%, transparent),
@@ -165,8 +200,8 @@
   .column-header {
     display: flex;
     align-items: center;
-    gap: var(--kb-space-xs);
-    padding: var(--kb-space-md) var(--kb-space-md);
+    gap: var(--kc-space-xs);
+    padding: var(--kc-space-sm) var(--kc-space-md);
     background: linear-gradient(
       90deg,
       color-mix(in srgb, var(--column-color) 15%, transparent) 0%,
@@ -179,25 +214,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: clamp(26px, 5cqi, 34px);
+    height: clamp(26px, 5cqi, 34px);
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--column-color) 40%, transparent) 0%,
       color-mix(in srgb, var(--column-color) 20%, transparent) 100%
     );
-    border-radius: var(--kb-radius-sm);
+    border-radius: var(--kc-radius-sm);
     color: var(--column-color);
-    font-size: 14px;
+    font-size: clamp(12px, 2.5cqi, 15px);
     box-shadow: 0 2px 8px color-mix(in srgb, var(--column-color) 30%, transparent);
   }
 
   .header-title {
     margin: 0;
     flex: 1;
-    font-size: var(--kb-text-sm);
+    font-size: var(--kc-text-sm);
     font-weight: 700;
-    color: var(--kb-text);
+    color: var(--kc-text);
     letter-spacing: 0.02em;
   }
 
@@ -205,13 +240,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 28px;
-    height: 28px;
-    padding: 0 10px;
+    min-width: clamp(24px, 5cqi, 30px);
+    height: clamp(24px, 5cqi, 30px);
+    padding: 0 clamp(6px, 1.5cqi, 10px);
     background: color-mix(in srgb, var(--column-color) 25%, transparent);
     border: 1px solid color-mix(in srgb, var(--column-color) 30%, transparent);
-    border-radius: 14px;
-    font-size: var(--kb-text-xs);
+    border-radius: 999px;
+    font-size: var(--kc-text-xs);
     font-weight: 700;
     color: var(--column-color);
   }
@@ -221,14 +256,14 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--kb-space-sm);
-    padding: var(--kb-space-sm);
+    gap: var(--kc-space-sm);
+    padding: var(--kc-space-sm);
     overflow-y: auto;
-    min-height: 100px;
+    min-height: clamp(80px, 15cqi, 120px);
   }
 
   .cards-container::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
 
   .cards-container::-webkit-scrollbar-track {
@@ -245,26 +280,58 @@
     background: color-mix(in srgb, var(--column-color) 60%, transparent);
   }
 
-  /* Empty State */
+  /* ===== EMPTY STATE ===== */
   .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--kb-space-sm);
-    padding: var(--kb-space-md) var(--kb-space-md);
-    margin: var(--kb-space-sm);
-    border-radius: var(--kb-radius-sm);
-    background: color-mix(in srgb, var(--column-color) 5%, transparent);
-    border: 1px dashed color-mix(in srgb, var(--column-color) 20%, transparent);
-    color: var(--kb-text-subtle);
-    font-size: var(--kb-text-xs);
+    gap: var(--kc-space-sm);
+    padding: clamp(24px, 6cqi, 40px) clamp(16px, 4cqi, 28px);
+    margin: var(--kc-space-xs);
+    border-radius: var(--kc-radius-lg);
+    background:
+      radial-gradient(
+        ellipse 100% 80% at 50% 0%,
+        color-mix(in srgb, var(--column-color) 8%, transparent) 0%,
+        transparent 70%
+      ),
+      color-mix(in srgb, var(--column-color) 4%, rgba(255, 255, 255, 0.02));
+    border: 1px dashed color-mix(in srgb, var(--column-color) 25%, transparent);
     text-align: center;
   }
 
-  .empty-state i {
-    font-size: 24px;
-    color: color-mix(in srgb, var(--column-color) 50%, var(--kb-text-subtle));
+  .empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(48px, 12cqi, 64px);
+    height: clamp(48px, 12cqi, 64px);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--column-color) 20%, transparent) 0%,
+      color-mix(in srgb, var(--column-color) 10%, transparent) 100%
+    );
+    border-radius: 50%;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--column-color) 15%, transparent);
+  }
+
+  .empty-icon i {
+    font-size: clamp(1.25rem, 3cqi, 1.75rem);
+    color: var(--column-color);
+  }
+
+  .empty-title {
+    font-size: var(--kc-text-base);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .empty-hint {
+    font-size: var(--kc-text-sm);
+    color: rgba(255, 255, 255, 0.5);
+    max-width: clamp(180px, 45cqi, 280px);
+    line-height: 1.5;
   }
 
   /* Drop Indicator */
@@ -275,19 +342,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--kb-space-xs);
+    gap: var(--kc-space-xs);
     background: color-mix(in srgb, var(--column-color) 10%, transparent);
+    backdrop-filter: blur(4px);
     pointer-events: none;
     animation: pulseIn 0.2s ease;
   }
 
   .drop-indicator i {
-    font-size: 28px;
+    font-size: clamp(24px, 5cqi, 32px);
     color: var(--column-color);
   }
 
   .drop-indicator span {
-    font-size: var(--kb-text-sm);
+    font-size: var(--kc-text-sm);
     font-weight: 600;
     color: var(--column-color);
   }
@@ -303,10 +371,59 @@
     }
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
+  /* ===== CONTAINER QUERY: Mobile tab-based layout ===== */
+  /* When inside the kanban board's mobile layout, columns hide unless active */
+  @container kanban (max-width: 650px) {
     .kanban-column {
-      min-width: 260px;
+      display: none;
+      min-width: 100%;
+      max-width: 100%;
+      border-top: none;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    .kanban-column.active-tab {
+      display: flex;
+    }
+
+    .kanban-column:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Hide header on mobile since we have tabs */
+    .column-header {
+      display: none;
+    }
+
+    .cards-container {
+      padding: var(--kc-space-xs);
+      gap: var(--kc-space-sm);
+    }
+
+    /* Mobile empty state uses same fluid values - no overrides needed */
+    .empty-state {
+      margin: 0;
+      background:
+        radial-gradient(
+          ellipse 100% 60% at 50% 0%,
+          color-mix(in srgb, var(--column-color) 10%, transparent) 0%,
+          transparent 70%
+        ),
+        rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  /* ===== Reduced Motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .kanban-column,
+    .drop-indicator {
+      transition: none;
+      animation: none;
     }
   }
 </style>

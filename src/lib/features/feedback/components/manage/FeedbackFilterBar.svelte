@@ -159,7 +159,7 @@
       <button
         type="button"
         class="search-clear"
-        onclick={() => manageState.setSearchQuery("")}
+        onclick={clearSearch}
         aria-label="Clear search"
       >
         <i class="fas fa-times"></i>
@@ -189,7 +189,7 @@
         type="button"
         class="filter-chip"
         class:active={manageState.filters.type === "all"}
-        onclick={() => manageState.setFilter("type", "all")}
+        onclick={() => handleTypeFilter("all")}
       >
         All Types
       </button>
@@ -199,7 +199,7 @@
           class="filter-chip"
           class:active={manageState.filters.type === type}
           style="--chip-color: {config.color}"
-          onclick={() => manageState.setFilter("type", type as FeedbackType)}
+          onclick={() => handleTypeFilter(type as FeedbackType)}
         >
           <i class="fas {config.icon}"></i>
           <span class="chip-label">{config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}</span>
@@ -313,7 +313,7 @@
               type="button"
               class="filter-option"
               class:selected={manageState.filters.type === "all"}
-              onclick={() => manageState.setFilter("type", "all")}
+              onclick={() => handleTypeFilter("all")}
             >
               <span class="option-radio"></span>
               All Types
@@ -324,7 +324,7 @@
                 class="filter-option"
                 class:selected={manageState.filters.type === type}
                 style="--option-color: {config.color}"
-                onclick={() => manageState.setFilter("type", type as FeedbackType)}
+                onclick={() => handleTypeFilter(type as FeedbackType)}
               >
                 <span class="option-radio"></span>
                 <i class="fas {config.icon}"></i>
@@ -352,7 +352,7 @@
               type="button"
               class="filter-option"
               class:selected={manageState.filters.status === "all"}
-              onclick={() => manageState.setFilter("status", "all")}
+              onclick={() => handleStatusFilter("all")}
             >
               <span class="option-radio"></span>
               All Status
@@ -363,7 +363,7 @@
                 class="filter-option"
                 class:selected={manageState.filters.status === status}
                 style="--option-color: {config.color}"
-                onclick={() => manageState.setFilter("status", status as FeedbackStatus)}
+                onclick={() => handleStatusFilter(status as FeedbackStatus)}
               >
                 <span class="option-radio"></span>
                 <i class="fas {config.icon}"></i>
@@ -391,7 +391,7 @@
               type="button"
               class="filter-option"
               class:selected={manageState.filters.priority === "all"}
-              onclick={() => manageState.setFilter("priority", "all")}
+              onclick={() => handlePriorityFilter("all")}
             >
               <span class="option-radio"></span>
               All Priority
@@ -402,7 +402,7 @@
                 class="filter-option"
                 class:selected={manageState.filters.priority === priority}
                 style="--option-color: {config.color}"
-                onclick={() => manageState.setFilter("priority", priority as FeedbackPriority)}
+                onclick={() => handlePriorityFilter(priority as FeedbackPriority)}
               >
                 <span class="option-radio"></span>
                 <i class="fas {config.icon}"></i>
@@ -465,7 +465,7 @@
         type="button"
         class="drawer-option"
         class:selected={manageState.filters.status === 'all'}
-        onclick={() => { manageState.setFilter('status', 'all'); closeStatusDrawer(); }}
+        onclick={() => { handleStatusFilter('all'); closeStatusDrawer(); }}
       >
         <span class="option-radio"></span>
         <span class="option-label">All Status</span>
@@ -476,7 +476,7 @@
           class="drawer-option"
           class:selected={manageState.filters.status === status}
           style="--option-color: {config.color}"
-          onclick={() => { manageState.setFilter('status', status as FeedbackStatus); closeStatusDrawer(); }}
+          onclick={() => { handleStatusFilter(status as FeedbackStatus); closeStatusDrawer(); }}
         >
           <span class="option-radio"></span>
           <i class="fas {config.icon}"></i>
@@ -515,7 +515,7 @@
         type="button"
         class="drawer-option"
         class:selected={manageState.filters.priority === 'all'}
-        onclick={() => { manageState.setFilter('priority', 'all'); closePriorityDrawer(); }}
+        onclick={() => { handlePriorityFilter('all'); closePriorityDrawer(); }}
       >
         <span class="option-radio"></span>
         <span class="option-label">All Priority</span>
@@ -526,7 +526,7 @@
           class="drawer-option"
           class:selected={manageState.filters.priority === priority}
           style="--option-color: {config.color}"
-          onclick={() => { manageState.setFilter('priority', priority as FeedbackPriority); closePriorityDrawer(); }}
+          onclick={() => { handlePriorityFilter(priority as FeedbackPriority); closePriorityDrawer(); }}
         >
           <span class="option-radio"></span>
           <i class="fas {config.icon}"></i>
@@ -643,6 +643,17 @@
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.15s ease;
+  }
+
+  /* Expand touch target for search clear button */
+  .search-clear::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
   }
 
   .search-clear:hover {
