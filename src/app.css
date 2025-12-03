@@ -134,11 +134,68 @@ h6 {
     0 20px 40px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
-  /* Transition System */
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  /* ============================================================================
+     2026 UNIFIED TRANSITION SYSTEM
+     Modern, physics-based transitions with consistent timing
+     ============================================================================ */
+
+  /* Duration Tiers - Progressively longer for different contexts */
+  --duration-instant: 100ms;    /* Micro-feedback (hover states, toggles) */
+  --duration-fast: 150ms;       /* Quick UI responses (buttons, inputs) */
+  --duration-normal: 200ms;     /* Standard transitions (panels, tabs) */
+  --duration-emphasis: 280ms;   /* Emphasized changes (module switches) */
+  --duration-dramatic: 350ms;   /* Major transitions (drawers, modals) */
+
+  /* Easing Curves - Physics-based for natural motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);           /* Decelerate (entering) */
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);            /* Accelerate (exiting) */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);         /* Symmetric (standard) */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);    /* Overshoot (playful) */
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);     /* Subtle (refined) */
+
+  /* Composite Transitions - Ready-to-use presets */
+  --transition-micro: var(--duration-instant) var(--ease-out);
+  --transition-fast: var(--duration-fast) var(--ease-out);
+  --transition-normal: var(--duration-normal) var(--ease-out);
+  --transition-emphasis: var(--duration-emphasis) var(--ease-in-out);
+  --transition-spring: var(--duration-normal) var(--ease-spring);
+  --transition-dramatic: var(--duration-dramatic) var(--ease-out);
+
+  /* Stagger Timing - Consistent delays for sequences */
+  --stagger-micro: 30ms;        /* Tight sequences (list items) */
+  --stagger-normal: 50ms;       /* Standard sequences (cards) */
+  --stagger-relaxed: 80ms;      /* Spread out (major sections) */
+
+  /* Transform Values - Consistent motion distances */
+  --slide-distance-sm: 8px;     /* Subtle slides (tabs) */
+  --slide-distance-md: 12px;    /* Standard slides (cards, panels) */
+  --slide-distance-lg: 20px;    /* Prominent slides (modals) */
+  --scale-subtle: 0.98;         /* Barely noticeable */
+  --scale-normal: 0.95;         /* Standard pop effect */
+  --scale-dramatic: 0.85;       /* Major zoom transitions */
+
+  /* Legacy aliases for backwards compatibility */
+  --transition-slow: var(--duration-dramatic) var(--ease-in-out);
+  --transition-bounce: var(--duration-emphasis) var(--ease-spring);
+
+  /* ============================================================================
+     MICRO-INTERACTION VALUES
+     Subtle, refined hover/active states for 2026 design
+     ============================================================================ */
+
+  /* Hover lifts - subtle, not dramatic */
+  --hover-lift-sm: -1px;        /* Cards, buttons - barely perceptible */
+  --hover-lift-md: -2px;        /* Interactive cards - slightly more */
+  --hover-lift-none: 0px;       /* Prefer border/color changes instead */
+
+  /* Hover scales - very subtle */
+  --hover-scale-sm: 1.01;       /* Buttons - barely perceptible */
+  --hover-scale-md: 1.02;       /* Cards - subtle grow */
+  --hover-scale-lg: 1.03;       /* Featured items only */
+
+  /* Active states - press feedback */
+  --active-scale: 0.98;         /* Slight press-in feel */
+  --active-scale-sm: 0.99;      /* Very subtle press */
 
   /* Typography */
   --font-size-xs: 0.75rem;
@@ -748,4 +805,95 @@ body.deep-ocean-flow::before {
 /* Also constrain drawer content on desktop to not overlap sidebar */
 .has-desktop-sidebar .drawer-content[data-placement="left"] {
   left: var(--desktop-sidebar-width, 220px);
+}
+
+/* ========================================
+   VIEW TRANSITIONS - Persistent Elements (don't animate)
+   ======================================== */
+
+/* Sidebar stays completely static during all transitions */
+::view-transition-old(sidebar),
+::view-transition-new(sidebar) {
+  animation: none;
+}
+
+::view-transition-group(sidebar) {
+  animation: none;
+}
+
+/* ========================================
+   VIEW TRANSITIONS - Module-to-Module Navigation
+   Emphasized horizontal slide with depth for major navigation
+   ======================================== */
+
+/* Slide LEFT - Going to a module on the right */
+.module-slide-left::view-transition-old(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-out-left;
+}
+
+.module-slide-left::view-transition-new(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-in-left;
+}
+
+@keyframes module-slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-10%) scale(0.96);
+  }
+}
+
+@keyframes module-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(10%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Slide RIGHT - Going to a module on the left */
+.module-slide-right::view-transition-old(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-out-right;
+}
+
+.module-slide-right::view-transition-new(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-in-right;
+}
+
+@keyframes module-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(10%) scale(0.96);
+  }
+}
+
+@keyframes module-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-10%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .module-slide-left::view-transition-old(root),
+  .module-slide-left::view-transition-new(root),
+  .module-slide-right::view-transition-old(root),
+  .module-slide-right::view-transition-new(root) {
+    animation: none !important;
+  }
 }
