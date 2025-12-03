@@ -11,8 +11,7 @@
 	import type { AdaptiveConfig, StepConfig, TimedConfig } from "../state/train-practice-state.svelte";
 	import CameraPreview from "./CameraPreview.svelte";
 	import GridOverlay from "./GridOverlay.svelte";
-	import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
-	import HitFeedback from "./HitFeedback.svelte";
+	import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 	import ResultsScreen from "./ResultsScreen.svelte";
 	import TrainSetup from "./TrainSetup.svelte";
 	import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
@@ -103,9 +102,6 @@
 	let hasCheckedCurrentBeat = false;
 	let lastHitResult: boolean | null = $state(null);
 	let lastHitPoints = $state(0);
-
-	// UI state
-	let showBeatGrid = $state(true); // Default to beat grid view
 
 	// Set sequence if provided
 	$effect(() => {
@@ -445,14 +441,6 @@
 		trainState.setSequence(selectedSequence);
 	}
 
-	// Get beats to display in grid (current + next 3, max 4 columns)
-	const beatsToDisplay = $derived.by(() => {
-		if (!trainState.sequence?.beats) return [];
-		const beats = trainState.sequence.beats;
-		const startIndex = trainState.currentBeatIndex;
-		return beats.slice(startIndex, startIndex + 4);
-	});
-
 	onMount(() => {
 		hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 		initDetection();
@@ -575,34 +563,14 @@
 				</div>
 			</div>
 
-			<!-- Beat Grid (up to 4 columns) -->
-			<div class="beat-grid">
-				{#if trainState.sequence?.startPosition}
-					<div class="beat-column start-position">
-						<div class="beat-header">Start</div>
-						<div class="pictograph-wrapper">
-							<Pictograph pictographData={trainState.sequence.startPosition} />
-						</div>
-					</div>
-				{/if}
-
-				{#each beatsToDisplay as beat, index (beat.beatNumber || index)}
-					{@const beatNum = trainState.currentBeatIndex + index + 1}
-					{@const isCurrent = index === 0}
-					<div class="beat-column" class:current={isCurrent}>
-						<div class="beat-header">Beat {beatNum}</div>
-						<div class="pictograph-wrapper">
-							{#if beat.isBlank}
-								<div class="blank-beat">
-									<span>?</span>
-								</div>
-							{:else}
-								<Pictograph pictographData={beat} />
-							{/if}
-						</div>
-					</div>
-				{/each}
-			</div>
+			<!-- Beat Grid - reusing shared component -->
+			{#if trainState.sequence}
+				<BeatGrid
+					beats={trainState.sequence.beats}
+					startPosition={trainState.sequence.startPosition}
+					practiceBeatNumber={trainState.currentBeatIndex + 1}
+				/>
+			{/if}
 		</div>
 
 		<!-- Results Screen Overlay -->
@@ -727,6 +695,39 @@
 		color: rgba(255, 255, 255, 0.6);
 	}
 
+	.header-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-shrink: 0;
+	}
+
+	.settings-button {
+		width: 48px;
+		height: 48px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(255, 255, 255, 0.05);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: 10px;
+		color: rgba(255, 255, 255, 0.7);
+		cursor: pointer;
+		transition: all 0.2s;
+		font-size: 1rem;
+	}
+
+	.settings-button:hover {
+		background: rgba(255, 255, 255, 0.1);
+		border-color: rgba(255, 255, 255, 0.25);
+		color: rgba(255, 255, 255, 0.95);
+	}
+
+	.settings-button:focus-visible {
+		outline: 2px solid rgba(59, 130, 246, 0.8);
+		outline-offset: 2px;
+	}
+
 	.panel-content {
 		flex: 1;
 		display: flex;
@@ -750,16 +751,11 @@
 		overflow: hidden;
 		background: #000;
 		flex: 0 0 auto;
-		height: 40vh;
-		min-height: 200px;
-		max-height: 300px;
-	}
-
-	@media (min-width: 768px) {
-		.camera-section {
-			height: 50vh;
-			max-height: 400px;
-		}
+		/* Square aspect ratio - grid is always square */
+		aspect-ratio: 1;
+		width: min(100%, 50vh);
+		max-width: 400px;
+		align-self: center;
 	}
 
 	.status-indicators-overlay {
@@ -973,90 +969,6 @@
 		height: 100%;
 		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
 		transition: width 0.3s ease;
-	}
-
-	.beat-grid {
-		flex: 1;
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-		gap: 0.5rem;
-		overflow-x: auto;
-		overflow-y: hidden;
-		padding: 0.5rem;
-		min-height: 0;
-	}
-
-	@media (min-width: 768px) {
-		.beat-grid {
-			grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-			gap: 1rem;
-			padding: 1rem;
-		}
-	}
-
-	.beat-column {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px solid rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		padding: 0.5rem;
-		transition: all 0.3s;
-		min-width: 0;
-	}
-
-	.beat-column.current {
-		border-color: #3b82f6;
-		background: rgba(59, 130, 246, 0.1);
-		box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
-	}
-
-	.beat-column.start-position {
-		border-color: #8b5cf6;
-		background: rgba(139, 92, 246, 0.05);
-	}
-
-	.beat-header {
-		font-size: 0.7rem;
-		font-weight: 600;
-		text-align: center;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: rgba(255, 255, 255, 0.8);
-	}
-
-	@media (min-width: 768px) {
-		.beat-header {
-			font-size: 0.8rem;
-		}
-	}
-
-	.pictograph-wrapper {
-		flex: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: rgba(0, 0, 0, 0.3);
-		border-radius: 6px;
-		overflow: hidden;
-		min-height: 80px;
-	}
-
-	@media (min-width: 768px) {
-		.pictograph-wrapper {
-			min-height: 120px;
-		}
-	}
-
-	.blank-beat {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-		color: rgba(255, 255, 255, 0.3);
-		font-size: 2rem;
 	}
 
 	.panel-footer {

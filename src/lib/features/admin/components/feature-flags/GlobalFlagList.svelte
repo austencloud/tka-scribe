@@ -84,108 +84,171 @@
           : "No feature flags available"}
       />
     {:else}
-      {#each hierarchicalFlags.modules as module}
-        {@const moduleId = module.id.split(":")[1] ?? ""}
-        {@const tabs = hierarchicalFlags.tabsByModule.get(moduleId) || []}
-        {@const moduleStyle = getFeatureIconAndColor(module.id)}
-        {@const expanded = isModuleExpanded(moduleId)}
+      <!-- Tabs-only view: show tabs grouped by module section headers -->
+      {#if categoryFilter === "tab"}
+        {#each hierarchicalFlags.modules as module}
+          {@const moduleId = module.id.split(":")[1] ?? ""}
+          {@const tabs = hierarchicalFlags.tabsByModule.get(moduleId) || []}
+          {@const moduleStyle = getFeatureIconAndColor(module.id)}
 
-        <div class="module-group">
-          <div
-            class="module-header"
-            class:expanded
-            class:selected={selectedFlag?.id === module.id}
-          >
-            <button
-              class="expand-icon"
-              onclick={(e) => {
-                e.stopPropagation();
-                onToggleModule(moduleId);
-              }}
-              aria-label={expanded
-                ? `Collapse ${module.name} tabs`
-                : `Expand ${module.name} tabs`}
-              aria-expanded={expanded}
-            >
-              <i class="fas fa-chevron-{expanded ? 'down' : 'right'}"></i>
-            </button>
-            <button
-              class="module-content"
-              onclick={() => onSelectFlag(module)}
-              aria-label={`Edit ${module.name} settings`}
-            >
-              <div class="flag-icon" style="color: {moduleStyle.color}">
-                <i class="fas {moduleStyle.icon}"></i>
+          {#if tabs.length > 0}
+            <div class="tabs-section">
+              <div class="tabs-section-header">
+                <div class="flag-icon" style="color: {moduleStyle.color}">
+                  <i class="fas {moduleStyle.icon}"></i>
+                </div>
+                <span>{module.name}</span>
               </div>
-              <div class="flag-info">
-                <h4>{module.name}</h4>
-              </div>
-              <div class="flag-badges">
-                <span
-                  class="role-badge"
-                  style="background: {getRoleColor(
-                    module.minimumRole
-                  )}20; color: {getRoleColor(module.minimumRole)}"
-                >
-                  <i class="fas {getRoleIcon(module.minimumRole)}"></i>
-                  {module.minimumRole}
-                </span>
-                {#if !module.enabled}
-                  <span class="disabled-badge">
-                    <i class="fas fa-ban"></i>
-                    Disabled
-                  </span>
-                {/if}
-              </div>
-            </button>
-          </div>
+              <div class="tabs-section-list">
+                {#each tabs as tab}
+                  {@const tabStyle = getFeatureIconAndColor(tab.id)}
+                  <AdminListItem
+                    selected={selectedFlag?.id === tab.id}
+                    onClick={() => onSelectFlag(tab)}
+                    class="tab-section-item"
+                  >
+                    {#snippet icon()}
+                      <div class="flag-icon" style="color: {tabStyle.color}">
+                        <i class="fas {tabStyle.icon}"></i>
+                      </div>
+                    {/snippet}
 
-          {#if expanded}
-            <div class="tabs-list">
-              {#each tabs as tab}
-                {@const tabStyle = getFeatureIconAndColor(tab.id)}
-                <AdminListItem
-                  selected={selectedFlag?.id === tab.id}
-                  onClick={() => onSelectFlag(tab)}
-                  class="tab-item"
-                >
-                  {#snippet icon()}
-                    <div class="flag-icon" style="color: {tabStyle.color}">
-                      <i class="fas {tabStyle.icon}"></i>
-                    </div>
-                  {/snippet}
+                    {#snippet children()}
+                      <div class="flag-info">
+                        <h4>{tab.name}</h4>
+                      </div>
+                    {/snippet}
 
-                  {#snippet children()}
-                    <div class="flag-info">
-                      <h4>{tab.name}</h4>
-                    </div>
-                  {/snippet}
-
-                  {#snippet meta()}
-                    <div class="flag-badges">
-                      <span
-                        class="role-badge"
-                        style="background: {getRoleColor(
-                          tab.minimumRole
-                        )}20; color: {getRoleColor(tab.minimumRole)}"
-                      >
-                        <i class="fas {getRoleIcon(tab.minimumRole)}"></i>
-                        {tab.minimumRole}
-                      </span>
-                      {#if !tab.enabled}
-                        <span class="disabled-badge">
-                          <i class="fas fa-ban"></i>
-                          Disabled
+                    {#snippet meta()}
+                      <div class="flag-badges">
+                        <span
+                          class="role-badge"
+                          style="background: {getRoleColor(
+                            tab.minimumRole
+                          )}20; color: {getRoleColor(tab.minimumRole)}"
+                        >
+                          <i class="fas {getRoleIcon(tab.minimumRole)}"></i>
+                          {tab.minimumRole}
                         </span>
-                      {/if}
-                    </div>
-                  {/snippet}
-                </AdminListItem>
-              {/each}
+                        {#if !tab.enabled}
+                          <span class="disabled-badge">
+                            <i class="fas fa-ban"></i>
+                            Disabled
+                          </span>
+                        {/if}
+                      </div>
+                    {/snippet}
+                  </AdminListItem>
+                {/each}
+              </div>
             </div>
           {/if}
-        </div>
-      {/each}
+        {/each}
+      {:else}
+        <!-- Default view: expandable modules with nested tabs -->
+        {#each hierarchicalFlags.modules as module}
+          {@const moduleId = module.id.split(":")[1] ?? ""}
+          {@const tabs = hierarchicalFlags.tabsByModule.get(moduleId) || []}
+          {@const moduleStyle = getFeatureIconAndColor(module.id)}
+          {@const expanded = isModuleExpanded(moduleId)}
+
+          <div class="module-group">
+            <div
+              class="module-header"
+              class:expanded
+              class:selected={selectedFlag?.id === module.id}
+            >
+              <button
+                class="expand-icon"
+                onclick={(e) => {
+                  e.stopPropagation();
+                  onToggleModule(moduleId);
+                }}
+                aria-label={expanded
+                  ? `Collapse ${module.name} tabs`
+                  : `Expand ${module.name} tabs`}
+                aria-expanded={expanded}
+              >
+                <i class="fas fa-chevron-{expanded ? 'down' : 'right'}"></i>
+              </button>
+              <button
+                class="module-content"
+                onclick={() => onSelectFlag(module)}
+                aria-label={`Edit ${module.name} settings`}
+              >
+                <div class="flag-icon" style="color: {moduleStyle.color}">
+                  <i class="fas {moduleStyle.icon}"></i>
+                </div>
+                <div class="flag-info">
+                  <h4>{module.name}</h4>
+                </div>
+                <div class="flag-badges">
+                  <span
+                    class="role-badge"
+                    style="background: {getRoleColor(
+                      module.minimumRole
+                    )}20; color: {getRoleColor(module.minimumRole)}"
+                  >
+                    <i class="fas {getRoleIcon(module.minimumRole)}"></i>
+                    {module.minimumRole}
+                  </span>
+                  {#if !module.enabled}
+                    <span class="disabled-badge">
+                      <i class="fas fa-ban"></i>
+                      Disabled
+                    </span>
+                  {/if}
+                </div>
+              </button>
+            </div>
+
+            {#if expanded}
+              <div class="tabs-list">
+                {#each tabs as tab}
+                  {@const tabStyle = getFeatureIconAndColor(tab.id)}
+                  <AdminListItem
+                    selected={selectedFlag?.id === tab.id}
+                    onClick={() => onSelectFlag(tab)}
+                    class="tab-item"
+                  >
+                    {#snippet icon()}
+                      <div class="flag-icon" style="color: {tabStyle.color}">
+                        <i class="fas {tabStyle.icon}"></i>
+                      </div>
+                    {/snippet}
+
+                    {#snippet children()}
+                      <div class="flag-info">
+                        <h4>{tab.name}</h4>
+                      </div>
+                    {/snippet}
+
+                    {#snippet meta()}
+                      <div class="flag-badges">
+                        <span
+                          class="role-badge"
+                          style="background: {getRoleColor(
+                            tab.minimumRole
+                          )}20; color: {getRoleColor(tab.minimumRole)}"
+                        >
+                          <i class="fas {getRoleIcon(tab.minimumRole)}"></i>
+                          {tab.minimumRole}
+                        </span>
+                        {#if !tab.enabled}
+                          <span class="disabled-badge">
+                            <i class="fas fa-ban"></i>
+                            Disabled
+                          </span>
+                        {/if}
+                      </div>
+                    {/snippet}
+                  </AdminListItem>
+                {/each}
+              </div>
+            {/if}
+          </div>
+        {/each}
+      {/if}
 
       {#if hierarchicalFlags.capabilities.length > 0}
         <div class="capabilities-section">
@@ -625,5 +688,49 @@
   .section-header i {
     font-size: 14px;
     color: #f59e0b;
+  }
+
+  /* Tabs-only view styles */
+  .tabs-section {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  .tabs-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  @media (min-width: 600px) {
+    .tabs-section-header {
+      padding: 14px 20px;
+      font-size: 14px;
+    }
+  }
+
+  .tabs-section-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tabs-section-list :global(.tab-section-item) {
+    border-left: 3px solid transparent;
+    border-radius: 0;
+  }
+
+  .tabs-section-list :global(.tab-section-item.selected) {
+    border-left-color: #60a5fa;
+    background: rgba(59, 130, 246, 0.08);
   }
 </style>

@@ -17,6 +17,7 @@
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -41,6 +42,11 @@
   // Mobile drawer states
   let challengeDrawerOpen = $state(false);
   let supportDrawerOpen = $state(false);
+
+  // Sign-in required toast state
+  let signInToastMessage = $state("");
+  let showSignInToast = $state(false);
+  let signInToastTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Haptic feedback
   let hapticService: IHapticFeedbackService | undefined;
@@ -69,7 +75,7 @@
     return "Welcome to TKA Studio";
   });
 
-  // Module cards with rich colors
+  // Module cards with rich colors and access status
   const moduleCards = $derived(
     navigationState.moduleDefinitions
       .filter(
@@ -78,10 +84,17 @@
           m.id !== "dashboard" &&
           m.id !== "admin"
       )
-      .map((m) => ({
-        ...m,
-        gradient: getModuleGradient(m.id),
-      }))
+      .map((m) => {
+        const canAccess = featureFlagService.canAccessModule(m.id);
+        // Module is locked if user can't access AND they're not authenticated
+        // (If authenticated but still can't access, it's a role issue, not sign-in)
+        const isLocked = !canAccess && !isAuthenticated;
+        return {
+          ...m,
+          gradient: getModuleGradient(m.id),
+          isLocked,
+        };
+      })
   );
 
   function getModuleGradient(id: string): string {
@@ -121,11 +134,36 @@
 
     return () => {
       cleanup?.();
+      if (signInToastTimeout) {
+        clearTimeout(signInToastTimeout);
+      }
     };
   });
 
-  function navigateToModule(moduleId: string, event: MouseEvent) {
+  function showSignInRequiredToast(moduleName: string) {
+    // Clear any existing timeout
+    if (signInToastTimeout) {
+      clearTimeout(signInToastTimeout);
+    }
+
+    signInToastMessage = `Sign in to access ${moduleName}`;
+    showSignInToast = true;
+
+    signInToastTimeout = setTimeout(() => {
+      showSignInToast = false;
+    }, 3000);
+  }
+
+  function navigateToModule(moduleId: string, event: MouseEvent, isLocked: boolean = false, moduleLabel: string = "") {
     hapticService?.trigger("selection");
+
+    // If module is locked, show toast and redirect to settings
+    if (isLocked) {
+      showSignInRequiredToast(moduleLabel);
+      openSettings();
+      return;
+    }
+
     const card = (event.currentTarget as HTMLElement);
     const doc = document as any;
 
@@ -193,10 +231,16 @@
         {#each moduleCards as module, i (module.id)}
           <button
             class="module-card"
+            class:locked={module.isLocked}
             style="--module-gradient: {module.gradient}; --module-color: {module.color}"
-            onclick={(e) => navigateToModule(module.id, e)}
+            onclick={(e) => navigateToModule(module.id, e, module.isLocked, module.label)}
             transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 100 + i * STAGGER.normal, easing: cubicOut }}
           >
+            {#if module.isLocked}
+              <div class="lock-badge" aria-label="Sign in required">
+                <i class="fas fa-lock"></i>
+              </div>
+            {/if}
             <div class="module-icon">
               {@html module.icon}
             </div>
@@ -339,6 +383,14 @@
       <SupportWidget />
     </div>
   </Drawer>
+
+  <!-- Sign-in Required Toast -->
+  {#if showSignInToast}
+    <div class="sign-in-toast" role="alert" aria-live="assertive">
+      <i class="fas fa-lock"></i>
+      <span>{signInToastMessage}</span>
+    </div>
+  {/if}
 </div>
 
 
@@ -593,6 +645,97 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* ========================================
+     LOCKED MODULE CARD STATE
+     ======================================== */
+
+  .module-card.locked {
+    opacity: 0.7;
+  }
+
+  .module-card.locked::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .lock-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 8px;
+    z-index: 2;
+  }
+
+  .lock-badge i {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* ========================================
+     SIGN-IN REQUIRED TOAST
+     ======================================== */
+
+  .sign-in-toast {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: rgba(99, 102, 241, 0.95);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 14px;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: -0.24px;
+    box-shadow:
+      0 8px 24px rgba(99, 102, 241, 0.35),
+      0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    animation: toast-enter 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
+  }
+
+  .sign-in-toast i {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  @keyframes toast-enter {
+    0% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(20px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+  }
+
+  /* Desktop positioning for toast */
+  @media (min-width: 769px) {
+    .sign-in-toast {
+      bottom: 32px;
+    }
   }
 
   /* ========================================
@@ -1051,6 +1194,10 @@
 
     .module-card:hover {
       transform: none;
+    }
+
+    .sign-in-toast {
+      animation: none;
     }
 
     /* Disable view transition animations for reduced motion */

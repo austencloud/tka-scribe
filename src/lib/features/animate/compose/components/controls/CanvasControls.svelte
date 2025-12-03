@@ -218,18 +218,19 @@
     gap: var(--spacing-xs, 4px);
   }
 
-  /* Control buttons */
+  /* Control buttons - 48px minimum touch target */
   .control-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: clamp(8px, 2vmin, 12px) clamp(12px, 2.5vmin, 16px);
+    min-height: 48px;
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: clamp(6px, 1.5vmin, 10px);
     color: rgba(255, 255, 255, 0.85);
-    font-size: clamp(0.75rem, 2vmin, 0.9rem);
+    font-size: clamp(0.8rem, 2vmin, 0.95rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -254,11 +255,11 @@
     font-size: 1em;
   }
 
-  /* Play button */
+  /* Play button - 48px minimum */
   .play-btn {
     background: rgba(16, 185, 129, 0.3);
     border-color: rgba(16, 185, 129, 0.5);
-    min-width: clamp(40px, 10vmin, 56px);
+    min-width: 48px;
   }
 
   .play-btn:hover:not(:disabled) {
@@ -332,17 +333,19 @@
     gap: 2px;
   }
 
+  /* Dropdown items - 48px minimum touch target */
   .dropdown-item {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: clamp(6px, 1.5vmin, 10px);
+    min-height: 48px;
+    padding: 12px;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: clamp(0.7rem, 1.8vmin, 0.85rem);
+    font-size: clamp(0.8rem, 2vmin, 0.9rem);
     cursor: pointer;
     transition: all 0.15s ease;
   }

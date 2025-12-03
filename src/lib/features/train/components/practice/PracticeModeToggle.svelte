@@ -3,6 +3,9 @@
 
   Segmented control for switching between Adaptive, Step-by-Step, and Timed modes.
   Follows the design pattern of PanelTabs.svelte.
+
+  Props:
+  - compact: When true, shows icon-only on all screen sizes (for use in headers)
 -->
 <script lang="ts">
 	import { PracticeMode } from "../../domain/enums/TrainEnums";
@@ -10,9 +13,10 @@
 	interface Props {
 		activeMode: PracticeMode;
 		onModeChange: (mode: PracticeMode) => void;
+		compact?: boolean;
 	}
 
-	let { activeMode, onModeChange }: Props = $props();
+	let { activeMode, onModeChange, compact = false }: Props = $props();
 
 	const modes = [
 		{
@@ -36,16 +40,19 @@
 	];
 </script>
 
-<div class="mode-toggle">
+<div class="mode-toggle" class:compact>
 	{#each modes as mode}
 		<button
 			class="mode-button"
 			class:active={activeMode === mode.value}
 			onclick={() => onModeChange(mode.value)}
 			title={mode.description}
+			aria-label={mode.label}
 		>
 			<i class="fas {mode.icon}"></i>
-			<span class="mode-label">{mode.label}</span>
+			{#if !compact}
+				<span class="mode-label">{mode.label}</span>
+			{/if}
 		</button>
 	{/each}
 </div>
@@ -94,6 +101,20 @@
 
 	.mode-label {
 		font-size: 0.875rem;
+	}
+
+	/* Compact mode - icon-only on all screen sizes */
+	.mode-toggle.compact {
+		gap: 0.25rem;
+		padding: 0.2rem;
+	}
+
+	.mode-toggle.compact .mode-button {
+		padding: 0.5rem 0.625rem;
+	}
+
+	.mode-toggle.compact .mode-button i {
+		font-size: 1rem;
 	}
 
 	/* Mobile responsive */

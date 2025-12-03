@@ -112,11 +112,14 @@
 </button>
 
 <style>
+  /* CompositionCell - 48px minimum touch target */
   .composition-cell {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
     background: rgba(30, 30, 45, 0.8);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: clamp(6px, 1.5vmin, 12px);

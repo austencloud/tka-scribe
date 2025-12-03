@@ -263,11 +263,13 @@
     gap: var(--spacing-xs, 4px);
   }
 
+  /* Type option - 48px minimum touch target */
   .type-option {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm, 8px);
-    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    min-height: 48px;
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
@@ -333,13 +335,15 @@
     font-size: 0.9rem;
   }
 
+  /* Add sequence buttons - 48px minimum touch target */
   .add-sequence-btn,
   .add-more-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    min-height: 48px;
+    padding: 12px 16px;
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: 6px;
@@ -387,13 +391,19 @@
     color: rgba(255, 255, 255, 0.5);
   }
 
+  /* Remove button - 48px minimum touch target */
   .remove-btn {
-    padding: 6px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 12px;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.4);
     cursor: pointer;
     transition: color 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .remove-btn:hover {
@@ -407,12 +417,16 @@
     gap: var(--spacing-xs, 4px);
   }
 
+  /* Rotation button - 48px minimum touch target */
   .rotation-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 4px;
-    padding: var(--spacing-sm, 8px);
+    min-width: 48px;
+    min-height: 48px;
+    padding: 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
@@ -471,13 +485,15 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Action buttons - 48px minimum touch target */
   .action-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    min-height: 48px;
+    padding: 12px 16px;
     border-radius: 8px;
     font-weight: 500;
     cursor: pointer;

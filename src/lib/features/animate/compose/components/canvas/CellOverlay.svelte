@@ -121,18 +121,20 @@
     gap: 4px;
   }
 
-  /* Overlay buttons */
+  /* Overlay buttons - 48px minimum touch target */
   .overlay-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: clamp(6px, 1.5vmin, 10px);
+    min-width: 48px;
+    min-height: 48px;
+    padding: clamp(12px, 2vmin, 16px);
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: clamp(4px, 1vmin, 8px);
+    border-radius: clamp(6px, 1.5vmin, 10px);
     color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(0.75rem, 2vmin, 1rem);
+    font-size: clamp(0.875rem, 2.5vmin, 1.125rem);
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -168,7 +170,8 @@
   }
 
   .overlay-btn.add {
-    padding: clamp(8px, 2vmin, 12px) clamp(12px, 3vmin, 20px);
+    min-height: 48px;
+    padding: clamp(12px, 2vmin, 16px) clamp(16px, 3vmin, 24px);
   }
 
   .overlay-btn.add:hover {

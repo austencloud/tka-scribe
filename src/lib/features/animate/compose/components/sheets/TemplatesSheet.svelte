@@ -186,12 +186,14 @@
     letter-spacing: 0.5px;
   }
 
+  /* Section toggle - 48px minimum touch target */
   .section-toggle {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: var(--spacing-sm, 8px) 0;
+    min-height: 48px;
+    padding: 12px 0;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.7);
