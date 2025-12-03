@@ -292,6 +292,7 @@ export const TYPES = {
   IBeatCalculationService: Symbol.for("IBeatCalculationService"),
   IPropInterpolationService: Symbol.for("IPropInterpolationService"),
   ISequenceLoopabilityChecker: Symbol.for("ISequenceLoopabilityChecker"),
+  IAnimationStorageService: Symbol.for("IAnimationStorageService"),
 
   // Animator Calculation Services
   IAngleCalculator: Symbol.for("IAngleCalculator"),

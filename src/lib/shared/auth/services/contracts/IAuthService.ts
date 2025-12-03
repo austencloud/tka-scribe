@@ -88,4 +88,27 @@ export interface IAuthService {
    * @throws Error if user is not signed in, email already in use, or linking fails
    */
   linkEmailPassword(email: string, password: string): Promise<void>;
+
+  // ============================================================================
+  // EMAIL VERIFICATION
+  // ============================================================================
+
+  /**
+   * Resend email verification to the current user
+   * @throws Error if user is not signed in or sending fails
+   */
+  resendVerificationEmail(): Promise<void>;
+
+  /**
+   * Reload the current user to get fresh data (including emailVerified status)
+   * @returns true if email is verified, false otherwise
+   * @throws Error if user is not signed in
+   */
+  reloadUser(): Promise<boolean>;
+
+  /**
+   * Check if the current user's email is verified
+   * @returns true if verified, false otherwise
+   */
+  isEmailVerified(): boolean;
 }

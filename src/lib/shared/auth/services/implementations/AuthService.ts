@@ -331,4 +331,63 @@ export class AuthService implements IAuthService {
       }
     }
   }
+
+  // ============================================================================
+  // EMAIL VERIFICATION
+  // ============================================================================
+
+  async resendVerificationEmail(): Promise<void> {
+    console.log("📧 [email] Resending verification email...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    if (currentUser.emailVerified) {
+      console.log("✅ [email] Email already verified");
+      return;
+    }
+
+    try {
+      await sendEmailVerification(currentUser);
+      console.log("✅ [email] Verification email resent successfully");
+    } catch (error: unknown) {
+      console.error("❌ [email] Failed to resend verification email:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      // Handle rate limiting
+      if (message.includes("too-many-requests")) {
+        throw new Error(
+          "Too many requests. Please wait a few minutes before trying again."
+        );
+      }
+
+      throw new Error(`Failed to resend verification email: ${message}`);
+    }
+  }
+
+  async reloadUser(): Promise<boolean> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    try {
+      await currentUser.reload();
+      return currentUser.emailVerified;
+    } catch (error: unknown) {
+      console.error("❌ [email] Failed to reload user:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to reload user: ${message}`);
+    }
+  }
+
+  isEmailVerified(): boolean {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return false;
+    }
+    return currentUser.emailVerified;
+  }
 }
