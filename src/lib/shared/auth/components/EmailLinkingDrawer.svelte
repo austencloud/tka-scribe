@@ -1,7 +1,8 @@
 <!--
-  EmailLinkingDrawer Component
+  EmailLinkingModal Component
 
-  A multi-step drawer for linking email/password to an existing account.
+  A multi-step modal for linking email/password to an existing account.
+  Uses Bits UI Dialog for accessibility and proper focus management.
 
   Steps:
   1. Form - Enter email and password
@@ -9,13 +10,14 @@
   3. Success - Confirmation that email is linked and verified
 
   Features:
+  - Centered modal with glassmorphism styling
   - Email verification with polling
   - Resend verification email
   - Haptic feedback integration
-  - Accessible form with proper ARIA attributes
+  - Accessible with proper ARIA attributes
 -->
 <script lang="ts">
-  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import { Dialog as DialogPrimitive } from "bits-ui";
   import { authStore } from "../stores/authStore.svelte";
   import { resolve, TYPES } from "../../inversify/di";
   import type { IAuthService } from "../services/contracts/IAuthService";
@@ -65,16 +67,19 @@
     stopResendCooldown();
   });
 
-  // Reset form when drawer closes
-  $effect(() => {
-    if (!isOpen) {
+  // Handle open change from Bits UI
+  function handleOpenChange(open: boolean) {
+    if (!open && isOpen && currentStep === "form") {
+      // User closed via escape or backdrop - only allow on form step
       resetForm();
-    } else {
+    }
+    if (open) {
       // Pre-fill email if user has one from social auth
       emailInput = authStore.user?.email ?? "";
       hapticService?.trigger("selection");
     }
-  });
+    isOpen = open;
+  }
 
   function resetForm() {
     currentStep = "form";
@@ -217,12 +222,23 @@
 
   function handleSuccess() {
     hapticService?.trigger("success");
+    resetForm();
     isOpen = false;
     onSuccess?.();
   }
 
   function handleClose() {
+    if (currentStep === "form") {
+      resetForm();
+      isOpen = false;
+    }
+  }
+
+  function handleSkipVerification() {
+    hapticService?.trigger("selection");
+    resetForm();
     isOpen = false;
+    onSuccess?.();
   }
 
   // Computed
@@ -230,269 +246,323 @@
   const progressPercent = $derived(
     Math.min((verificationCheckCount / MAX_VERIFICATION_CHECKS) * 100, 100)
   );
+  const canCloseModal = $derived(currentStep === "form");
 </script>
 
-<Drawer
-  bind:isOpen
-  placement="bottom"
-  ariaLabel="Link Email and Password"
-  showHandle={true}
-  closeOnBackdrop={currentStep === "form"}
-  closeOnEscape={currentStep === "form"}
->
-  <div class="email-linking-drawer">
-    <!-- Header -->
-    <div class="drawer-header">
-      <div class="header-icon" class:success={currentStep === "success"} class:verifying={currentStep === "verifying"}>
-        {#if currentStep === "success"}
-          <i class="fas fa-check-circle"></i>
-        {:else if currentStep === "verifying"}
-          <i class="fas fa-envelope-open-text"></i>
-        {:else}
-          <i class="fas fa-envelope"></i>
+<DialogPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
+  <DialogPrimitive.Portal>
+    <DialogPrimitive.Overlay class="email-modal-backdrop" />
+    <DialogPrimitive.Content
+      class="email-modal-container"
+      oninteractoutside={(e) => {
+        // Prevent closing during verification/success steps
+        if (currentStep !== "form") {
+          e.preventDefault();
+        }
+      }}
+      onescapekeydown={(e) => {
+        // Prevent closing during verification/success steps
+        if (currentStep !== "form") {
+          e.preventDefault();
+        }
+      }}
+    >
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="header-icon" class:success={currentStep === "success"} class:verifying={currentStep === "verifying"}>
+          {#if currentStep === "success"}
+            <i class="fas fa-check-circle"></i>
+          {:else if currentStep === "verifying"}
+            <i class="fas fa-envelope-open-text"></i>
+          {:else}
+            <i class="fas fa-envelope"></i>
+          {/if}
+        </div>
+        <div class="header-content">
+          <DialogPrimitive.Title class="modal-title">
+            {#if currentStep === "success"}
+              Email Linked Successfully
+            {:else if currentStep === "verifying"}
+              Verify Your Email
+            {:else}
+              Add Email & Password
+            {/if}
+          </DialogPrimitive.Title>
+          <DialogPrimitive.Description class="modal-subtitle">
+            {#if currentStep === "success"}
+              Your email has been verified and linked to your account
+            {:else if currentStep === "verifying"}
+              We sent a verification link to <strong>{emailInput}</strong>
+            {:else}
+              Create a password to sign in with your email
+            {/if}
+          </DialogPrimitive.Description>
+        </div>
+        {#if canCloseModal}
+          <button class="close-btn" onclick={handleClose} aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
         {/if}
       </div>
-      <div class="header-content">
-        <h2 class="drawer-title">
-          {#if currentStep === "success"}
-            Email Linked Successfully
-          {:else if currentStep === "verifying"}
-            Verify Your Email
-          {:else}
-            Add Email & Password
-          {/if}
-        </h2>
-        <p class="drawer-subtitle">
-          {#if currentStep === "success"}
-            Your email has been verified and linked to your account
-          {:else if currentStep === "verifying"}
-            We sent a verification link to <strong>{emailInput}</strong>
-          {:else}
-            Create a password to sign in with your email
-          {/if}
-        </p>
-      </div>
-      {#if currentStep === "form"}
-        <button class="close-btn" onclick={handleClose} aria-label="Close">
-          <i class="fas fa-times"></i>
-        </button>
-      {/if}
-    </div>
 
-    <!-- Step Content -->
-    <div class="drawer-content">
-      {#if currentStep === "form"}
-        <!-- Form Step -->
-        <form class="email-form" onsubmit={(e) => { e.preventDefault(); submitForm(); }}>
-          <div class="form-group">
-            <label for="email-link-email">Email Address</label>
-            <div class="input-wrapper">
-              <i class="fas fa-envelope input-icon"></i>
-              <input
-                id="email-link-email"
-                type="email"
-                bind:value={emailInput}
-                placeholder="you@example.com"
-                required
-                disabled={isSubmitting}
-                autocomplete="email"
-                class:has-value={emailInput.length > 0}
-              />
+      <!-- Step Content -->
+      <div class="modal-content">
+        {#if currentStep === "form"}
+          <!-- Form Step -->
+          <form class="email-form" onsubmit={(e) => { e.preventDefault(); submitForm(); }}>
+            <div class="form-group">
+              <label for="email-link-email">Email Address</label>
+              <div class="input-wrapper">
+                <i class="fas fa-envelope input-icon"></i>
+                <input
+                  id="email-link-email"
+                  type="email"
+                  bind:value={emailInput}
+                  placeholder="you@example.com"
+                  required
+                  disabled={isSubmitting}
+                  autocomplete="email"
+                  class:has-value={emailInput.length > 0}
+                />
+              </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label for="email-link-password">Password</label>
-            <div class="input-wrapper">
-              <i class="fas fa-lock input-icon"></i>
-              <input
-                id="email-link-password"
-                type={showPassword ? "text" : "password"}
-                bind:value={passwordInput}
-                placeholder="At least 6 characters"
-                required
-                minlength="6"
-                disabled={isSubmitting}
-                autocomplete="new-password"
-                class:has-value={passwordInput.length > 0}
-              />
-              <button
-                type="button"
-                class="toggle-password"
-                onclick={() => showPassword = !showPassword}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                disabled={isSubmitting}
-              >
-                <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
+            <div class="form-group">
+              <label for="email-link-password">Password</label>
+              <div class="input-wrapper">
+                <i class="fas fa-lock input-icon"></i>
+                <input
+                  id="email-link-password"
+                  type={showPassword ? "text" : "password"}
+                  bind:value={passwordInput}
+                  placeholder="At least 6 characters"
+                  required
+                  minlength="6"
+                  disabled={isSubmitting}
+                  autocomplete="new-password"
+                  class:has-value={passwordInput.length > 0}
+                />
+                <button
+                  type="button"
+                  class="toggle-password"
+                  onclick={() => showPassword = !showPassword}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  disabled={isSubmitting}
+                >
+                  <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email-link-confirm">Confirm Password</label>
+              <div class="input-wrapper">
+                <i class="fas fa-lock input-icon"></i>
+                <input
+                  id="email-link-confirm"
+                  type={showPassword ? "text" : "password"}
+                  bind:value={confirmPasswordInput}
+                  placeholder="Confirm your password"
+                  required
+                  minlength="6"
+                  disabled={isSubmitting}
+                  autocomplete="new-password"
+                  class:has-value={confirmPasswordInput.length > 0}
+                />
+              </div>
+              {#if confirmPasswordInput.length > 0 && passwordInput !== confirmPasswordInput}
+                <span class="field-hint error">Passwords don't match</span>
+              {:else if confirmPasswordInput.length > 0 && passwordInput === confirmPasswordInput}
+                <span class="field-hint success">
+                  <i class="fas fa-check"></i> Passwords match
+                </span>
+              {/if}
+            </div>
+
+            {#if formError}
+              <div class="form-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{formError}</span>
+              </div>
+            {/if}
+
+            <div class="form-actions">
+              <button type="button" class="cancel-btn" onclick={handleClose} disabled={isSubmitting}>
+                Cancel
+              </button>
+              <button type="submit" class="submit-btn" disabled={isSubmitting} aria-busy={isSubmitting}>
+                {#if isSubmitting}
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Linking...</span>
+                {:else}
+                  <i class="fas fa-link"></i>
+                  <span>Link Email</span>
+                {/if}
               </button>
             </div>
-          </div>
+          </form>
 
-          <div class="form-group">
-            <label for="email-link-confirm">Confirm Password</label>
-            <div class="input-wrapper">
-              <i class="fas fa-lock input-icon"></i>
-              <input
-                id="email-link-confirm"
-                type={showPassword ? "text" : "password"}
-                bind:value={confirmPasswordInput}
-                placeholder="Confirm your password"
-                required
-                minlength="6"
-                disabled={isSubmitting}
-                autocomplete="new-password"
-                class:has-value={confirmPasswordInput.length > 0}
-              />
+        {:else if currentStep === "verifying"}
+          <!-- Verification Step -->
+          <div class="verification-content">
+            <div class="verification-animation">
+              <div class="email-icon-container">
+                <i class="fas fa-envelope"></i>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring delay"></div>
+              </div>
             </div>
-            {#if confirmPasswordInput.length > 0 && passwordInput !== confirmPasswordInput}
-              <span class="field-hint error">Passwords don't match</span>
-            {:else if confirmPasswordInput.length > 0 && passwordInput === confirmPasswordInput}
-              <span class="field-hint success">
-                <i class="fas fa-check"></i> Passwords match
-              </span>
-            {/if}
-          </div>
 
-          {#if formError}
-            <div class="form-error" role="alert">
-              <i class="fas fa-exclamation-circle"></i>
-              <span>{formError}</span>
+            <div class="verification-instructions">
+              <p>Click the link in the email we sent to verify your address.</p>
+              <p class="hint">Check your spam folder if you don't see it.</p>
             </div>
-          {/if}
 
-          <div class="form-actions">
-            <button type="button" class="cancel-btn" onclick={handleClose} disabled={isSubmitting}>
-              Cancel
-            </button>
-            <button type="submit" class="submit-btn" disabled={isSubmitting} aria-busy={isSubmitting}>
-              {#if isSubmitting}
+            <div class="verification-status">
+              <div class="status-indicator">
                 <i class="fas fa-spinner fa-spin"></i>
-                <span>Linking...</span>
-              {:else}
-                <i class="fas fa-link"></i>
-                <span>Link Email</span>
-              {/if}
-            </button>
-          </div>
-        </form>
-
-      {:else if currentStep === "verifying"}
-        <!-- Verification Step -->
-        <div class="verification-content">
-          <div class="verification-animation">
-            <div class="email-icon-container">
-              <i class="fas fa-envelope"></i>
-              <div class="pulse-ring"></div>
-              <div class="pulse-ring delay"></div>
+                <span>Waiting for verification...</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style:width="{progressPercent}%"></div>
+              </div>
             </div>
-          </div>
 
-          <div class="verification-instructions">
-            <p>Click the link in the email we sent to verify your address.</p>
-            <p class="hint">Check your spam folder if you don't see it.</p>
-          </div>
-
-          <div class="verification-status">
-            <div class="status-indicator">
-              <i class="fas fa-spinner fa-spin"></i>
-              <span>Waiting for verification...</span>
+            <div class="resend-section">
+              <p>Didn't receive the email?</p>
+              <button
+                class="resend-btn"
+                onclick={resendVerificationEmail}
+                disabled={!canResend}
+              >
+                {#if resendCooldown > 0}
+                  <i class="fas fa-clock"></i>
+                  <span>Resend in {resendCooldown}s</span>
+                {:else}
+                  <i class="fas fa-paper-plane"></i>
+                  <span>Resend Verification Email</span>
+                {/if}
+              </button>
             </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style:width="{progressPercent}%"></div>
-            </div>
-          </div>
 
-          <div class="resend-section">
-            <p>Didn't receive the email?</p>
-            <button
-              class="resend-btn"
-              onclick={resendVerificationEmail}
-              disabled={!canResend}
-            >
-              {#if resendCooldown > 0}
-                <i class="fas fa-clock"></i>
-                <span>Resend in {resendCooldown}s</span>
-              {:else}
-                <i class="fas fa-paper-plane"></i>
-                <span>Resend Verification Email</span>
-              {/if}
+            {#if formError}
+              <div class="form-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{formError}</span>
+              </div>
+            {/if}
+
+            <button class="skip-btn" onclick={handleSkipVerification}>
+              I'll verify later
             </button>
           </div>
 
-          {#if formError}
-            <div class="form-error" role="alert">
-              <i class="fas fa-exclamation-circle"></i>
-              <span>{formError}</span>
+        {:else if currentStep === "success"}
+          <!-- Success Step -->
+          <div class="success-content">
+            <div class="success-animation">
+              <div class="success-checkmark">
+                <i class="fas fa-check"></i>
+              </div>
             </div>
-          {/if}
 
-          <button class="skip-btn" onclick={handleSuccess}>
-            I'll verify later
-          </button>
-        </div>
+            <div class="success-message">
+              <p>You can now sign in using:</p>
+              <div class="credential-display">
+                <i class="fas fa-envelope"></i>
+                <span>{emailInput}</span>
+              </div>
+            </div>
 
-      {:else if currentStep === "success"}
-        <!-- Success Step -->
-        <div class="success-content">
-          <div class="success-animation">
-            <div class="success-checkmark">
+            <button class="done-btn" onclick={handleSuccess}>
               <i class="fas fa-check"></i>
-            </div>
+              <span>Done</span>
+            </button>
           </div>
-
-          <div class="success-message">
-            <p>You can now sign in using:</p>
-            <div class="credential-display">
-              <i class="fas fa-envelope"></i>
-              <span>{emailInput}</span>
-            </div>
-          </div>
-
-          <button class="done-btn" onclick={handleSuccess}>
-            <i class="fas fa-check"></i>
-            <span>Done</span>
-          </button>
-        </div>
-      {/if}
-    </div>
-  </div>
-</Drawer>
+        {/if}
+      </div>
+    </DialogPrimitive.Content>
+  </DialogPrimitive.Portal>
+</DialogPrimitive.Root>
 
 <style>
-  .email-linking-drawer {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 24px;
-    max-height: 85vh;
+  /* Modal Backdrop */
+  :global(.email-modal-backdrop) {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  /* Modal Container */
+  :global(.email-modal-container) {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(25, 25, 30, 0.98);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 480px;
+    width: calc(100% - 40px);
+    max-height: calc(100vh - 40px);
     overflow-y: auto;
+    box-shadow:
+      0 0 0 1px rgba(139, 92, 246, 0.1),
+      0 20px 60px rgba(0, 0, 0, 0.6),
+      0 0 100px rgba(139, 92, 246, 0.1);
+    z-index: 1001;
+    animation: modalSlideIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
   }
 
   /* Header */
-  .drawer-header {
+  .modal-header {
     display: flex;
     align-items: flex-start;
     gap: 16px;
+    margin-bottom: 24px;
   }
 
   .header-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(139, 92, 246, 0.15);
-    border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 14px;
     flex-shrink: 0;
   }
 
   .header-icon i {
-    font-size: 20px;
+    font-size: 22px;
     color: #8b5cf6;
   }
 
   .header-icon.verifying {
     background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
   }
 
   .header-icon.verifying i {
@@ -501,6 +571,7 @@
 
   .header-icon.success {
     background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.3);
   }
 
   .header-icon.success i {
@@ -512,21 +583,21 @@
     min-width: 0;
   }
 
-  .drawer-title {
+  :global(.modal-title) {
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
-  .drawer-subtitle {
-    margin: 4px 0 0 0;
+  :global(.modal-subtitle) {
+    margin: 6px 0 0 0;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
-  .drawer-subtitle strong {
+  :global(.modal-subtitle) strong {
     color: rgba(255, 255, 255, 0.9);
   }
 
@@ -554,13 +625,13 @@
   .email-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   .form-group label {
@@ -577,7 +648,7 @@
 
   .input-icon {
     position: absolute;
-    left: 12px;
+    left: 14px;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.4);
     transition: color 0.2s ease;
@@ -588,17 +659,12 @@
     color: #8b5cf6;
   }
 
-  .input-wrapper input.has-value + .input-icon,
-  .input-wrapper .input-icon:has(~ input.has-value) {
-    color: rgba(255, 255, 255, 0.6);
-  }
-
   .form-group input {
     width: 100%;
-    padding: 12px 12px 12px 40px;
-    background: rgba(0, 0, 0, 0.2);
+    padding: 14px 14px 14px 44px;
+    background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    border-radius: 12px;
     color: rgba(255, 255, 255, 0.95);
     font-size: 15px;
     transition: all 0.2s ease;
@@ -621,9 +687,9 @@
 
   .toggle-password {
     position: absolute;
-    right: 8px;
-    width: 32px;
-    height: 32px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -690,7 +756,7 @@
     padding: 14px 20px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    border-radius: 12px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 15px;
     font-weight: 500;
@@ -717,7 +783,7 @@
     padding: 14px 20px;
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     color: white;
     font-size: 15px;
     font-weight: 600;
@@ -727,7 +793,7 @@
 
   .submit-btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
   }
 
   .submit-btn:active:not(:disabled) {
@@ -747,7 +813,7 @@
     align-items: center;
     gap: 24px;
     text-align: center;
-    padding: 16px 0;
+    padding: 8px 0;
   }
 
   .verification-animation {
@@ -756,8 +822,8 @@
 
   .email-icon-container {
     position: relative;
-    width: 80px;
-    height: 80px;
+    width: 88px;
+    height: 88px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -766,7 +832,7 @@
   }
 
   .email-icon-container i {
-    font-size: 32px;
+    font-size: 36px;
     color: #3b82f6;
   }
 
@@ -788,7 +854,7 @@
       opacity: 1;
     }
     100% {
-      transform: scale(1.5);
+      transform: scale(1.6);
       opacity: 0;
     }
   }
@@ -814,7 +880,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .status-indicator {
@@ -862,10 +928,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 12px 20px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.8);
     font-size: 14px;
     cursor: pointer;
@@ -883,14 +949,14 @@
   }
 
   .skip-btn {
-    padding: 8px 16px;
+    padding: 10px 20px;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.5);
     font-size: 14px;
     cursor: pointer;
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
     transition: color 0.2s ease;
   }
 
@@ -905,7 +971,7 @@
     align-items: center;
     gap: 24px;
     text-align: center;
-    padding: 16px 0;
+    padding: 8px 0;
   }
 
   .success-animation {
@@ -913,8 +979,8 @@
   }
 
   .success-checkmark {
-    width: 80px;
-    height: 80px;
+    width: 88px;
+    height: 88px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -924,7 +990,7 @@
   }
 
   .success-checkmark i {
-    font-size: 36px;
+    font-size: 40px;
     color: #22c55e;
   }
 
@@ -945,7 +1011,7 @@
   .success-message {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
 
   .success-message p {
@@ -959,10 +1025,10 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 12px 20px;
+    padding: 14px 24px;
     background: rgba(139, 92, 246, 0.15);
     border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 10px;
+    border-radius: 12px;
   }
 
   .credential-display i {
@@ -982,11 +1048,11 @@
     justify-content: center;
     gap: 8px;
     width: 100%;
-    max-width: 200px;
-    padding: 14px 24px;
+    max-width: 220px;
+    padding: 14px 28px;
     background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     color: white;
     font-size: 15px;
     font-weight: 600;
@@ -996,7 +1062,7 @@
 
   .done-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
   }
 
   .done-btn:active {
@@ -1005,12 +1071,26 @@
 
   /* Responsive */
   @media (max-width: 480px) {
-    .email-linking-drawer {
-      padding: 20px 16px;
+    :global(.email-modal-container) {
+      padding: 24px 20px;
+      border-radius: 16px;
     }
 
-    .drawer-header {
-      flex-wrap: wrap;
+    .modal-header {
+      gap: 12px;
+    }
+
+    .header-icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    .header-icon i {
+      font-size: 18px;
+    }
+
+    :global(.modal-title) {
+      font-size: 18px;
     }
 
     .form-actions {
@@ -1026,6 +1106,8 @@
 
   /* Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
+    :global(.email-modal-backdrop),
+    :global(.email-modal-container),
     .pulse-ring,
     .success-checkmark,
     .progress-fill {
