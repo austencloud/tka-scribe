@@ -78,17 +78,72 @@ export function moduleSections() {
   return baseSections;
 }
 
-// Module change handler
+// Module order for determining slide direction
+const MODULE_ORDER = ['dashboard', 'create', 'discover', 'learn', 'animate', 'train', 'feedback', 'admin'];
+
+// Module change handler with View Transitions
 // targetTab: Optional tab to navigate to (used when clicking a section in a different module)
 export async function handleModuleChange(moduleId: ModuleId, targetTab?: string) {
-  navigationState.setCurrentModule(moduleId, targetTab);
-  // Switch module with proper persistence (saves to localStorage + Firestore)
-  await switchModule(moduleId);
+  const currentMod = currentModule();
+
+  // Skip transition logic if same module
+  if (moduleId === currentMod) {
+    navigationState.setCurrentModule(moduleId, targetTab);
+    return;
+  }
+
+  // Determine direction based on module order
+  const currentIndex = MODULE_ORDER.indexOf(currentMod);
+  const newIndex = MODULE_ORDER.indexOf(moduleId);
+  const goingRight = newIndex > currentIndex;
+
+  const doc = document as any;
+
+  // Coming FROM dashboard - skip (Dashboard.svelte handles dive-in animation)
+  const isLeavingDashboard = currentMod === 'dashboard';
+
+  // Going TO dashboard - use pull-out animation
+  const isGoingToDashboard = moduleId === 'dashboard';
+
+  if (typeof doc.startViewTransition === 'function' && !isLeavingDashboard) {
+    if (isGoingToDashboard) {
+      // Pull-out effect when going back to dashboard
+      document.documentElement.classList.add('back-transition');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('back-transition');
+      });
+    } else {
+      // Module-to-module: horizontal slide
+      document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
+      document.documentElement.classList.add(goingRight ? 'module-slide-left' : 'module-slide-right');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
+      });
+    }
+  } else {
+    // Fallback or leaving dashboard (Dashboard handles its own animation)
+    navigationState.setCurrentModule(moduleId, targetTab);
+    await switchModule(moduleId);
+  }
 }
 
-// Section change handler
+// Section change handler - instant switch (View Transitions disabled for tabs
+// due to conflicts with Svelte #key blocks causing jank)
 export function handleSectionChange(sectionId: string) {
   const module = currentModule();
+  const currentSectionId = currentSection();
 
   // Validate section accessibility via feature flags
   if (!featureFlagService.canAccessTab(module, sectionId)) {
@@ -100,10 +155,14 @@ export function handleSectionChange(sectionId: string) {
     return;
   }
 
+  // Don't switch if same section
+  if (sectionId === currentSectionId) return;
+
+  // Instant tab switch - no View Transitions
+  // (View Transitions conflict with Svelte #key blocks causing double-animation jank)
   if (module === "learn") {
     navigationState.setLearnMode(sectionId);
   } else {
-    // All other modules use the new navigation system
     navigationState.setActiveTab(sectionId);
   }
 }
