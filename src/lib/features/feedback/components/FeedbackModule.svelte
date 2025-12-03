@@ -19,17 +19,21 @@
 </script>
 
 <div class="feedback-module">
-  {#if activeTab === "submit"}
-    <FeedbackSubmitTab />
-  {:else if activeTab === "manage"}
-    <FeedbackManageTab />
-  {:else}
-    <div class="placeholder">
-      <i class="fas fa-comment-dots"></i>
-      <h2>Feedback</h2>
-      <p>Select a tab to get started</p>
+  {#key activeTab}
+    <div class="tab-panel">
+      {#if activeTab === "submit"}
+        <FeedbackSubmitTab />
+      {:else if activeTab === "manage"}
+        <FeedbackManageTab />
+      {:else}
+        <div class="placeholder">
+          <i class="fas fa-comment-dots"></i>
+          <h2>Feedback</h2>
+          <p>Select a tab to get started</p>
+        </div>
+      {/if}
     </div>
-  {/if}
+  {/key}
 </div>
 
 <style>
@@ -40,6 +44,16 @@
     width: 100%;
     background: var(--background, #0a0a0f);
     color: var(--text-color, rgba(255, 255, 255, 0.9));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tab-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .placeholder {
