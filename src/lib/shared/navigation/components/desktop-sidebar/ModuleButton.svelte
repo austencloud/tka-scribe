@@ -1,6 +1,9 @@
 <!-- Module Button Component -->
 <!-- Button for a module that can expand/collapse to show sections -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ModuleDefinition } from "../../domain/types";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
@@ -20,6 +23,17 @@
     hasSections?: boolean;
   }>();
 
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleClick() {
+    hapticService?.trigger("selection");
+    onClick();
+  }
+
   const isDisabled = $derived(module.disabled ?? false);
 
   // Show user's profile picture for dashboard module when signed in
@@ -37,7 +51,7 @@
   class:disabled={isDisabled}
   class:sidebar-collapsed={isCollapsed}
   class:has-sections={hasSections}
-  onclick={onClick}
+  onclick={handleClick}
   aria-label={module.label}
   aria-expanded={isExpanded}
   aria-current={isActive ? "page" : undefined}

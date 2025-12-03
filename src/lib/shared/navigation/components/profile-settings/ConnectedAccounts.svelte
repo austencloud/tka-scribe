@@ -624,14 +624,14 @@
 
   /* Unlink Button */
   .unlink-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -733,9 +733,21 @@
       display: none;
     }
 
+    /* Visual size compact but touch target maintained */
     .unlink-btn {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
+      position: relative;
+    }
+
+    .unlink-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 
@@ -802,14 +814,14 @@
   }
 
   .close-form-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     transition: all 0.2s ease;

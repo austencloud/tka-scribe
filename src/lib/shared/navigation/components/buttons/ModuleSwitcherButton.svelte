@@ -1,10 +1,24 @@
 <!-- ModuleSwitcherButton - Home Button with Profile Picture -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
   let { onClick = () => {} } = $props<{
     onClick?: () => void;
   }>();
+
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleClick() {
+    hapticService?.trigger("selection");
+    onClick();
+  }
 
   // Get user photo reactively
   const userPhoto = $derived(authStore.user?.photoURL);
@@ -13,7 +27,7 @@
 
 <button
   class="home-button"
-  onclick={onClick}
+  onclick={handleClick}
   aria-label="Go to Dashboard"
 >
   <div class="avatar-container">
@@ -37,42 +51,44 @@
 <style>
   .home-button {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
-    padding: 6px 4px;
-    width: 60px;
-    height: 52px;
-    min-width: 60px;
-    min-height: 52px;
-    max-width: 60px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
+    /* Clean 48px round target - no container */
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: transform 0.1s ease, opacity 0.15s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
   .home-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
+    opacity: 0.9;
   }
 
   .home-button:active {
     transform: scale(0.95);
   }
 
+  /* Focus state for keyboard navigation */
+  .home-button:focus-visible {
+    outline: 2px solid hsl(210 100% 60%);
+    outline-offset: 4px;
+  }
+
   .avatar-container {
-    width: 28px;
-    height: 28px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    flex-shrink: 0;
+    border: 2px solid hsl(0 0% 100% / 0.2);
+    box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
   }
 
   .avatar-image {
@@ -87,16 +103,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(263 70% 65%) 100%);
     color: white;
-    font-size: 12px;
+    font-size: 20px;
   }
 
   .home-label {
-    font-size: 9px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.1;
+    /* Hidden - avatar speaks for itself */
+    display: none;
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .home-button:focus-visible {
+      outline: 3px solid white;
+    }
+
+    .avatar-container {
+      border: 3px solid white;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -104,7 +129,6 @@
       transition: none;
     }
 
-    .home-button:hover,
     .home-button:active {
       transform: none;
     }

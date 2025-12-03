@@ -74,11 +74,10 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     gap: 2px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: hsl(0 0% 100% / 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    /* Ensure proper touch handling */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -91,7 +90,7 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
 
   /* Special buttons (Menu/Settings) - rounded rectangle */
   .nav-button.special {
-    border-radius: 14px;
+    border-radius: 12px;
     flex: 0 0 auto;
   }
 
@@ -102,20 +101,26 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
   }
 
   .nav-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(1.05);
+    background: hsl(0 0% 100% / 0.12);
   }
 
-  .nav-button:active {
-    transform: scale(0.95);
+  .nav-button:active:not(.disabled) {
+    transform: scale(0.97);
+    background: hsl(0 0% 100% / 0.08);
+  }
+
+  /* Focus state for keyboard navigation */
+  .nav-button:focus-visible {
+    outline: 2px solid hsl(210 100% 60%);
+    outline-offset: 2px;
   }
 
   .nav-button.active {
-    color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.1);
+    color: hsl(0 0% 100%);
+    background: hsl(0 0% 100% / 0.1);
     /* Colored top border indicator */
-    border-top: 3px solid var(--section-color, rgba(255, 255, 255, 0.5));
-    padding-top: calc(var(--spacing-xs, 8px) - 3px); /* Compensate for border */
+    border-top: 3px solid var(--section-color, hsl(0 0% 100% / 0.5));
+    padding-top: calc(var(--spacing-xs, 8px) - 3px);
   }
 
   .nav-button.disabled {
@@ -128,14 +133,12 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
   }
 
   .nav-icon {
-    /* Container-aware icon sizing */
-    font-size: clamp(18px, 4cqi, 22px);
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all var(--transition-fast);
-    /* Ensure clicks pass through to the button */
+    transition: opacity 0.15s ease, filter 0.15s ease;
     pointer-events: none;
   }
 
@@ -145,7 +148,7 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 0 6px hsl(0 0% 0% / 0.15));
   }
 
   /* Fallback for browsers that don't support background-clip */
@@ -162,15 +165,15 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     opacity: 0.6;
   }
 
-  .nav-button:hover .nav-icon :global(i) {
+  .nav-button:hover:not(.disabled) .nav-icon :global(i) {
     opacity: 1;
-    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 0 8px hsl(0 0% 0% / 0.2));
   }
 
-  /* Active button has full color and glow */
+  /* Active button has full color and subtle glow */
   .nav-button.active .nav-icon :global(i) {
     opacity: 1;
-    filter: drop-shadow(0 0 16px var(--section-color)) brightness(1.1);
+    filter: drop-shadow(0 0 10px var(--section-color)) brightness(1.05);
   }
 
   /* Disabled buttons remain grayed out */
@@ -184,13 +187,11 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
   }
 
   .nav-label {
-    /* Container-aware label sizing */
-    font-size: clamp(9px, 2cqi, 11px);
+    font-size: 10px;
     font-weight: 500;
     text-align: center;
     white-space: nowrap;
     line-height: 1.2;
-    /* Ensure clicks pass through to the button */
     pointer-events: none;
   }
 
@@ -198,6 +199,19 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
   .nav-label-full,
   .nav-label-compact {
     display: none;
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .nav-button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 2px;
+    }
+
+    .nav-button.active {
+      background: hsl(0 0% 100% / 0.2);
+      border-top-width: 4px;
+    }
   }
 
   /* Reduced motion */
@@ -208,6 +222,10 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
 
     .nav-button:active {
       transform: none;
+    }
+
+    .nav-icon {
+      transition: none;
     }
   }
 </style>

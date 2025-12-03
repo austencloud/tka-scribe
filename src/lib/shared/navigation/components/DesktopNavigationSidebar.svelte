@@ -51,11 +51,12 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   let expandedModules = $state<Set<string>>(new Set([currentModule]));
 
   // Keep expandedModules in sync with currentModule when it changes
-  // This ensures the correct module is expanded after page restoration
+  // This ensures the correct module is expanded after page restoration or external navigation
   $effect(() => {
-    // Always ensure the current module is expanded
+    // When module changes from external source (Dashboard, deep link, etc.),
+    // collapse others and expand only the current module
     if (currentModule && !expandedModules.has(currentModule)) {
-      expandedModules = new Set([...expandedModules, currentModule]);
+      expandedModules = new Set([currentModule]);
     }
   });
 
@@ -206,6 +207,7 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   class="desktop-navigation-sidebar"
   class:collapsed={isCollapsed}
   bind:this={sidebarElement}
+  style="view-transition-name: sidebar"
 >
   <!-- Sidebar Header/Branding -->
   <SidebarHeader
@@ -245,15 +247,15 @@ import type { IHapticFeedbackService } from "../../application/services/contract
             {#if hasTabs}
               <div
                 class="nested-tabs"
-                in:slide={{ duration: 220, axis: "y" }}
-                out:slide={{ duration: 180, axis: "y" }}
+                in:slide={{ duration: 200, axis: "y" }}
+                out:slide={{ duration: 150, axis: "y" }}
               >
                 {#each module.sections as section, index}
                   {@const isSectionActive = currentSection === section.id}
 
                   <div
-                    in:fade={{ duration: 200, delay: index * 40 }}
-                    out:fade={{ duration: 150 }}
+                    in:fade={{ duration: 150, delay: index * 30 }}
+                    out:fade={{ duration: 100 }}
                   >
                     <CollapsedTabButton
                       {section}
@@ -315,7 +317,7 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     z-index: 150;
     overflow: hidden;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width var(--duration-emphasis, 280ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 
     /* Completely exclude from view transitions */
     view-transition-name: none;
@@ -371,7 +373,7 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     padding: 4px;
     border-radius: 12px;
     position: relative;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
   }
 
   /* Active module with tabs gets subtle unified background */

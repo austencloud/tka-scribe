@@ -11,7 +11,7 @@
     }>();
 </script>
 
-<div class="sidebar-footer">
+<div class="sidebar-footer" class:collapsed={isCollapsed}>
   <!-- Settings Button (Gear Icon) -->
   <button
     class="footer-button settings-button"
@@ -47,6 +47,19 @@
       transparent 100%
     );
     position: relative;
+  }
+
+  /* Collapsed state - minimal container */
+  .sidebar-footer.collapsed {
+    padding: 12px 8px;
+    background: transparent;
+    border-top: none;
+    display: flex;
+    justify-content: center;
+  }
+
+  .sidebar-footer.collapsed::before {
+    display: none;
   }
 
   /* Subtle glow line at top */
@@ -120,7 +133,18 @@
   .footer-button.collapsed {
     justify-content: center;
     padding: 10px;
-    width: auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .footer-button.collapsed .icon-wrapper {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
   }
 
   .footer-button:hover {
