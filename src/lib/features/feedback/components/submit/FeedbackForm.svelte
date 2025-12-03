@@ -893,8 +893,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     background: none;
     border: none;
     border-radius: 50%;
@@ -999,7 +999,8 @@
   }
 
   .context-change {
-    padding: 6px 12px;
+    min-height: 48px;
+    padding: 0 12px;
     background: rgba(255, 255, 255, 0.08);
     border: none;
     border-radius: 6px;
@@ -1019,8 +1020,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     background: none;
     border: none;
     border-radius: 50%;
@@ -1072,7 +1073,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 12px;
+    min-height: 48px;
+    padding: 0 12px;
     background: none;
     border: none;
     color: var(--fb-primary);
@@ -1337,8 +1339,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     background: none;
     border: none;
     border-radius: 50%;
