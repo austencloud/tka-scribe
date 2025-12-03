@@ -13,7 +13,6 @@
   import AnimationSheetCoordinator from "$lib/shared/coordinators/AnimationSheetCoordinator.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
   import LibrarySection from "./components/LibrarySection.svelte";
   import AchievementsSection from "./components/AchievementsSection.svelte";
   import ChallengesSection from "./components/ChallengesSection.svelte";
@@ -60,10 +59,10 @@
 </script>
 
 <div class="collect-tab">
-  <!-- Content area with smooth transitions -->
+  <!-- Content area - View Transitions API handles tab animation at page level -->
   <div class="content-container">
     {#key activeMode}
-      <div class="mode-panel" transition:fade={{ duration: 200 }}>
+      <div class="mode-panel">
         {#if isModeActive("library")}
           <LibrarySection />
         {:else if isModeActive("achievements")}

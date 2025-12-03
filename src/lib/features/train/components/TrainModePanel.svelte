@@ -648,14 +648,14 @@
 	}
 
 	.back-button {
-		width: 36px;
-		height: 36px;
+		width: 48px;
+		height: 48px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		background: transparent;
 		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 8px;
+		border-radius: 10px;
 		color: white;
 		cursor: pointer;
 		transition: background 0.2s;

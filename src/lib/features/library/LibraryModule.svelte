@@ -9,14 +9,20 @@
   Uses a stack-based navigation for drill-down views with back button.
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { libraryState, type LibraryViewSection } from "./state/library-state.svelte";
   import LibraryDashboard from "./components/LibraryDashboard.svelte";
   import SequencesView from "./components/SequencesView.svelte";
-  import { fade, fly } from "svelte/transition";
-
   // Navigation state
   let currentView = $state<"dashboard" | LibraryViewSection>("dashboard");
   let viewStack = $state<string[]>([]);
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
 
   // Navigation functions
   function navigateTo(section: LibraryViewSection) {
@@ -28,6 +34,7 @@
   }
 
   function navigateBack() {
+    hapticService?.trigger("selection");
     if (viewStack.length > 0) {
       const previous = viewStack.pop();
       currentView = (previous as "dashboard" | LibraryViewSection) ?? "dashboard";
@@ -71,7 +78,7 @@
 <div class="library-module">
   <!-- Header with back navigation -->
   {#if currentView !== "dashboard"}
-    <div class="view-header" transition:fade={{ duration: 150 }}>
+    <div class="view-header">
       <button class="back-btn" onclick={navigateBack} aria-label="Go back">
         <i class="fas fa-arrow-left"></i>
       </button>
@@ -83,14 +90,10 @@
     </div>
   {/if}
 
-  <!-- Content Area -->
+  <!-- Content Area - instant view switching -->
   <div class="content-area">
     {#key currentView}
-      <div
-        class="view-container"
-        in:fly={{ x: currentView === "dashboard" ? -50 : 50, duration: 200 }}
-        out:fly={{ x: currentView === "dashboard" ? 50 : -50, duration: 150 }}
-      >
+      <div class="view-container">
         {#if currentView === "dashboard"}
           <LibraryDashboard onNavigate={navigateTo} />
         {:else if currentView === "sequences" || currentView === "favorites" || currentView === "collections" || currentView === "acts"}
@@ -132,8 +135,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md, 8px);
@@ -167,7 +170,7 @@
   }
 
   .header-spacer {
-    width: 36px; /* Match back button width for centering */
+    width: 48px; /* Match back button width for centering */
   }
 
   /* Content Area */

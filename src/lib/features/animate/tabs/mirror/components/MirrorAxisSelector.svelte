@@ -71,10 +71,11 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    min-height: 48px;
+    padding: 0.5rem 1.25rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.85rem;
     cursor: pointer;

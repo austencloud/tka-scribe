@@ -162,17 +162,28 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
   }
 
-  /* Z Fold 6 cover screen optimization */
+  /* Z Fold 6 cover screen optimization - compact visual with 48px touch target */
   @media (max-width: 320px) {
     .delete-tools {
       gap: 2px;
     }
 
     .tool-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       font-size: 14px;
       border-radius: 8px;
+      position: relative;
+    }
+
+    .tool-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 48px;
+      min-height: 48px;
     }
   }
 </style>

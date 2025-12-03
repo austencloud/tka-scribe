@@ -396,7 +396,7 @@
   .card-footer {
     display: flex;
     justify-content: flex-end;
-    min-height: 40px;
+    min-height: 48px;
     align-items: center;
     margin-top: auto;
   }
@@ -405,11 +405,11 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 40px;
-    padding: 0 16px;
+    height: 48px;
+    padding: 0 18px;
     background: color-mix(in srgb, var(--accent-color) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent-color) 25%, transparent);
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
     color: var(--accent-color);
@@ -435,9 +435,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 40px;
-    padding: 0 14px;
-    border-radius: 10px;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 12px;
     font-size: 13px;
     font-weight: 600;
   }
@@ -502,7 +502,7 @@
   }
 
   /* ============================================================================
-     LANDSCAPE MOBILE - Compact
+     LANDSCAPE MOBILE - Compact with accessible touch targets
      ============================================================================ */
   @media (max-height: 500px) and (orientation: landscape) {
     .challenge-card {
@@ -531,10 +531,23 @@
       font-size: 13px;
     }
 
+    /* Visual size compact but touch target maintained at 48px */
     .action-hint,
     .status-badge {
-      height: 36px;
+      height: 40px;
       font-size: 12px;
+      position: relative;
+    }
+
+    .action-hint::before,
+    .status-badge::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 48px;
     }
   }
 

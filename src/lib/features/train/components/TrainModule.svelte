@@ -6,7 +6,6 @@
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { fade } from "svelte/transition";
   import type { Section } from "$lib/shared/navigation/domain/types";
 
   import PracticePanel from "./practice/PracticePanel.svelte";
@@ -36,8 +35,9 @@
 </script>
 
 <div class="train-module">
+  <!-- View Transitions API handles tab animation at page level -->
   {#key activeSection}
-    <div class="section-panel" transition:fade={{ duration: 200 }}>
+    <div class="section-panel">
       {#if activeSection === "practice"}
         <PracticePanel />
       {:else if activeSection === "challenges"}

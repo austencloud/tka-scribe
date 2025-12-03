@@ -328,8 +328,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     font-weight: bold;
     font-size: var(--font-size-sm);
-    width: 32px;
-    height: 28px;
+    width: 48px;
+    height: 48px;
     cursor: pointer;
     transition: all var(--transition-normal);
     display: flex;
@@ -387,8 +387,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .control-button {
-      width: 28px;
-      height: 24px;
+      width: 48px;
+      height: 48px;
       font-size: var(--font-size-xs);
     }
   }

@@ -478,11 +478,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 36px;
-    padding: 0 14px;
+    height: 48px;
+    padding: 0 18px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 18px;
+    border-radius: 24px;
     font-size: 13px;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.6);
@@ -835,7 +835,7 @@
   }
 
   /* ============================================================================
-     LANDSCAPE MOBILE - Compact layout
+     LANDSCAPE MOBILE - Compact layout with accessible touch targets
      ============================================================================ */
   @media (max-height: 500px) and (orientation: landscape) {
     .header {
@@ -847,18 +847,42 @@
       font-size: 16px;
     }
 
+    /* Visual size reduced but touch target maintained via pseudo-element */
     .filter-button {
       width: 40px;
       height: 40px;
       border-radius: 10px;
       font-size: 14px;
+      position: relative;
     }
 
+    .filter-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 48px;
+      min-height: 48px;
+    }
+
+    /* Visual size reduced but touch target maintained via pseudo-element */
     .chip {
-      height: 32px;
+      height: 36px;
       padding: 0 12px;
       font-size: 12px;
-      border-radius: 16px;
+      border-radius: 18px;
+      position: relative;
+    }
+
+    .chip::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 48px;
     }
 
     .content {
@@ -886,8 +910,8 @@
     }
 
     .chip {
-      height: 40px;
-      padding: 0 18px;
+      height: 48px;
+      padding: 0 20px;
       font-size: 14px;
     }
 

@@ -53,8 +53,8 @@
   }
 
   .control-btn.small {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     font-size: 0.9rem;
   }
 

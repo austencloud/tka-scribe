@@ -9,6 +9,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { getLevelProgress } from "$lib/shared/gamification/domain/constants/xp-constants";
   import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
@@ -21,6 +22,7 @@
   let achievementService: IAchievementService | null = $state(null);
   let streakService: IStreakService | null = $state(null);
   let leaderboardService: ILeaderboardService | null = $state(null);
+  let hapticService: IHapticFeedbackService | undefined;
 
   // State
   let stats = $state<any>(null);
@@ -67,6 +69,7 @@
 
   // Initialize services
   onMount(async () => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
     try {
       achievementService = await resolve<IAchievementService>(
         TYPES.IAchievementService
@@ -118,10 +121,12 @@
   }
 
   function openBrowser() {
+    hapticService?.trigger("selection");
     isBrowserOpen = true;
   }
 
   function closeBrowser() {
+    hapticService?.trigger("selection");
     isBrowserOpen = false;
   }
 

@@ -359,8 +359,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(30px, 6cqw, 36px);
-    height: clamp(30px, 6cqw, 36px);
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: clamp(6px, 1.8cqw, 10px);

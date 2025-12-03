@@ -2,8 +2,9 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceBrowserPanel from "../../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { tryResolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { onMount } from "svelte";
 
   interface Props {
     selectedDate: string | null;
@@ -21,10 +22,14 @@
 
   let { selectedDate, showPanel, onClose, onSchedule }: Props = $props();
 
-  // Services
-  let thumbnailService = resolve(
-    TYPES.IDiscoverThumbnailService
-  ) as IDiscoverThumbnailService;
+  // Services - resolved lazily after module is loaded
+  let thumbnailService = $state<IDiscoverThumbnailService | null>(null);
+
+  // Initialize services on mount
+  onMount(async () => {
+    await loadFeatureModule("discover");
+    thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+  });
 
   // Local form state
   let showSequenceBrowser = $state(false);
@@ -38,6 +43,7 @@
 
   // Get cover URL for selected sequence
   function getCoverUrl(sequence: SequenceData): string | undefined {
+    if (!thumbnailService) return undefined;
     const firstThumbnail = sequence.thumbnails?.[0];
     if (!firstThumbnail) return undefined;
     try {

@@ -107,13 +107,13 @@
     transform: translateX(-2px);
   }
 
-  /* Mobile responsive */
+  /* Mobile responsive - maintain 48px touch target */
   @media (max-width: 768px) {
     .back-button {
       top: 0.5rem;
       left: 0.5rem;
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
     }
 
     .back-button svg {

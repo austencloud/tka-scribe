@@ -7,12 +7,19 @@
 
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+
+  // 2026 Unified Transition Constants (align with app.css tokens)
+  const DURATION = { normal: 200, emphasis: 280 };
+  const STAGGER = { normal: 50 };
+  const SLIDE = { sm: 8, md: 12 };
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { showSettingsDialog } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { libraryState } from "$lib/features/library/state/library-state.svelte";
@@ -34,6 +41,9 @@
   // Mobile drawer states
   let challengeDrawerOpen = $state(false);
   let supportDrawerOpen = $state(false);
+
+  // Haptic feedback
+  let hapticService: IHapticFeedbackService | undefined;
 
   // Auth state
   const isAuthenticated = $derived(authStore.isAuthenticated);
@@ -90,6 +100,7 @@
     let cleanup: (() => void) | undefined;
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
       cleanup = deviceDetector.onCapabilitiesChanged(() => {
@@ -114,6 +125,7 @@
   });
 
   function navigateToModule(moduleId: string, event: MouseEvent) {
+    hapticService?.trigger("selection");
     const card = (event.currentTarget as HTMLElement);
     const doc = document as any;
 
@@ -145,18 +157,30 @@
   }
 
   function navigateToLibrary() {
+    hapticService?.trigger("selection");
     handleModuleChange("discover", "library");
   }
 
   function openSettings() {
+    hapticService?.trigger("selection");
     showSettingsDialog(isMobile ? "mobile" : "desktop");
+  }
+
+  function openChallengeDrawer() {
+    hapticService?.trigger("selection");
+    challengeDrawerOpen = true;
+  }
+
+  function openSupportDrawer() {
+    hapticService?.trigger("selection");
+    supportDrawerOpen = true;
   }
 </script>
 
 <div class="dashboard" class:visible={isVisible}>
   <!-- Welcome Header (compact) -->
   {#if isVisible}
-    <header class="welcome-header" transition:fly={{ y: -12, duration: 300 }}>
+    <header class="welcome-header" transition:fly={{ y: -SLIDE.sm, duration: DURATION.normal, easing: cubicOut }}>
       <h1>{welcomeMessage()}</h1>
       <p>Where would you like to go?</p>
     </header>
@@ -164,14 +188,14 @@
 
   <!-- MODULE GRID - THE MAIN ATTRACTION -->
   {#if isVisible}
-    <section class="modules-section" transition:fly={{ y: 12, duration: 300, delay: 50 }}>
+    <section class="modules-section" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: STAGGER.normal, easing: cubicOut }}>
       <div class="modules-grid">
         {#each moduleCards as module, i (module.id)}
           <button
             class="module-card"
             style="--module-gradient: {module.gradient}; --module-color: {module.color}"
             onclick={(e) => navigateToModule(module.id, e)}
-            transition:fly={{ y: 12, duration: 300, delay: 100 + i * 40 }}
+            transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 100 + i * STAGGER.normal, easing: cubicOut }}
           >
             <div class="module-icon">
               {@html module.icon}
@@ -190,7 +214,7 @@
   <div class="secondary-grid" class:mobile={isMobile}>
     <!-- Profile Card -->
     {#if isVisible}
-      <section class="bento-profile" transition:fly={{ y: 12, duration: 300, delay: 300 }}>
+      <section class="bento-profile" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 250, easing: cubicOut }}>
         <div class="profile-header">
           <div class="profile-avatar">
             {#if isAuthenticated && user?.photoURL}
@@ -238,9 +262,9 @@
 
     <!-- Challenge Card -->
     {#if isVisible}
-      <section class="bento-challenge" transition:fly={{ y: 12, duration: 300, delay: 350 }}>
+      <section class="bento-challenge" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 300, easing: cubicOut }}>
         {#if isMobile}
-          <button class="teaser-card" onclick={() => (challengeDrawerOpen = true)}>
+          <button class="teaser-card" onclick={openChallengeDrawer}>
             <div class="teaser-icon challenge">
               <i class="fas fa-bolt"></i>
             </div>
@@ -258,9 +282,9 @@
 
     <!-- Support Card -->
     {#if isVisible}
-      <section class="bento-support" transition:fly={{ y: 12, duration: 300, delay: 400 }}>
+      <section class="bento-support" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 350, easing: cubicOut }}>
         {#if isMobile}
-          <button class="teaser-card" onclick={() => (supportDrawerOpen = true)}>
+          <button class="teaser-card" onclick={openSupportDrawer}>
             <div class="teaser-icon support">
               <i class="fas fa-heart"></i>
             </div>
@@ -278,7 +302,7 @@
 
     <!-- Settings Card -->
     {#if isVisible}
-      <section class="bento-settings" transition:fly={{ y: 12, duration: 300, delay: 450 }}>
+      <section class="bento-settings" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 400, easing: cubicOut }}>
         <button class="settings-card" onclick={openSettings}>
           <div class="settings-icon">
             <i class="fas fa-cog"></i>
@@ -497,7 +521,8 @@
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    transition: all 200ms ease;
+    transition: transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+                box-shadow var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     text-align: left;
     position: relative;
     overflow: hidden;
@@ -511,13 +536,16 @@
     pointer-events: none;
   }
 
+  /* 2026 refined hover - subtle lift with scale */
   .module-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    transform: translateY(var(--hover-lift-md, -2px)) scale(var(--hover-scale-sm, 1.01));
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
   }
 
+  /* Active press - subtle feedback */
   .module-card:active {
-    transform: scale(0.98);
+    transform: scale(var(--active-scale, 0.98));
+    transition-duration: 50ms;
   }
 
   .module-card:focus {
@@ -666,7 +694,8 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     cursor: pointer;
-    transition: all 150ms ease;
+    transition: background var(--duration-fast, 150ms) var(--ease-out),
+                border-color var(--duration-fast, 150ms) var(--ease-out);
   }
 
   .stat-card:hover {
@@ -705,13 +734,14 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 150ms ease;
+    transition: filter var(--duration-fast, 150ms) var(--ease-out),
+                transform var(--duration-fast, 150ms) var(--ease-out);
     margin-top: auto;
   }
 
   .library-btn:hover {
     filter: brightness(1.1);
-    transform: translateY(-1px);
+    transform: translateY(var(--hover-lift-sm, -1px));
   }
 
   .library-btn i:last-child {
@@ -740,7 +770,7 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 18px;
     cursor: pointer;
-    transition: all 150ms ease;
+    transition: background var(--duration-fast, 150ms) var(--ease-out);
     text-align: left;
   }
 
@@ -812,7 +842,8 @@
     border: 1px solid rgba(107, 114, 128, 0.2);
     border-radius: 18px;
     cursor: pointer;
-    transition: all 150ms ease;
+    transition: background var(--duration-fast, 150ms) var(--ease-out),
+                border-color var(--duration-fast, 150ms) var(--ease-out);
     text-align: left;
   }
 
@@ -832,7 +863,7 @@
     font-size: 20px;
     color: #9ca3af;
     flex-shrink: 0;
-    transition: transform 300ms ease;
+    transition: transform var(--duration-normal, 200ms) var(--ease-spring);
   }
 
   .settings-card:hover .settings-icon {

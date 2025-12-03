@@ -14,7 +14,6 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
   import { getAnimateModuleState } from "./shared/state/animate-module-state.svelte.ts";
   import type { AnimateMode } from "./shared/state/animate-module-state.svelte.ts";
   // Import tab states for deep linking
@@ -195,10 +194,10 @@
 </script>
 
 <div class="animate-tab">
-  <!-- Mode-specific panels with smooth transitions -->
+  <!-- Mode-specific panels - View Transitions API handles animation at page level -->
   <div class="content-container">
     {#key animateState.currentMode}
-      <div class="mode-panel" transition:fade={{ duration: 200 }}>
+      <div class="mode-panel">
         {#if isModeActive("single")}
           <SingleModePanel {animateState} />
         {:else if isModeActive("tunnel")}

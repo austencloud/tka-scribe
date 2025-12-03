@@ -288,9 +288,21 @@ Provides a dedicated UI for filtering option viewer content:
   }
 
   .filter-panel.extra-compact .close-button {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     font-size: 0.9rem;
+    position: relative;
+  }
+
+  /* Ensure 48px touch target even in extra-compact mode */
+  .filter-panel.extra-compact .close-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 48px;
+    min-height: 48px;
   }
 
   .close-button:hover {

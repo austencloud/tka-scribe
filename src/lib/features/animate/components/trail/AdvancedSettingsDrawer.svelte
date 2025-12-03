@@ -181,8 +181,8 @@
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -222,15 +222,15 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .bpm-adjust-button {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--surface-light, #333);
     color: var(--foreground, #ffffff);
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-    border-radius: var(--border-radius-sm, 6px);
+    border-radius: var(--border-radius-md, 8px);
     font-size: var(--font-size-lg, 20px);
     cursor: pointer;
     transition: all 0.2s ease;

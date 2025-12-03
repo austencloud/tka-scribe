@@ -13,7 +13,6 @@ Navigation via bottom tabs (mobile-first UX pattern)
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount, untrack } from "svelte";
-  import { fade } from "svelte/transition";
   import ConceptPathView from "./components/ConceptPathView.svelte";
   import ConceptDetailView from "./components/ConceptDetailView.svelte";
   import CodexTab from "./codex/components/CodexTab.svelte";
@@ -115,10 +114,10 @@ Navigation via bottom tabs (mobile-first UX pattern)
 </script>
 
 <div class="learn-tab">
-  <!-- Content area with smooth transitions -->
+  <!-- Content area - instant tab switching -->
   <div class="content-container">
     {#key activeMode}
-      <div class="mode-panel" transition:fade={{ duration: 200 }}>
+      <div class="mode-panel">
         {#if isModeActive("concepts")}
           {#if selectedConcept}
             <!-- Key by openCount to force remount on each open -->
