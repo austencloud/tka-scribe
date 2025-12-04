@@ -71,6 +71,7 @@ export const LEARN_TABS: Section[] = [
 ];
 
 // Discover tabs configuration (public discovery)
+// Note: Library functionality is now integrated into Gallery via scope toggle (Community / My Library)
 export const DISCOVER_TABS: Section[] = [
   {
     id: "gallery",
@@ -96,17 +97,9 @@ export const DISCOVER_TABS: Section[] = [
     color: "#06b6d4",
     gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
   },
-  {
-    id: "library",
-    label: "Library",
-    icon: '<i class="fas fa-book"></i>',
-    description: "Your saved sequences and favorites",
-    color: "#0891b2",
-    gradient: "linear-gradient(135deg, #22d3ee 0%, #0891b2 100%)",
-  },
 ];
 
-// Library tabs configuration - DEPRECATED: Library is now a tab within Discover
+// Library tabs configuration - DEPRECATED: Library is now a scope toggle within Gallery
 // Kept for backward compatibility
 export const LIBRARY_TABS: Section[] = [];
 
@@ -486,11 +479,11 @@ export function createNavigationState() {
       currentModule = "dashboard";
       localStorage.setItem("tka-current-module", "dashboard");
     } else if (savedModule === "library") {
-      // Migration: library module retired, moved to Discover as a tab
+      // Migration: library module retired, now a scope toggle in Gallery
       currentModule = "discover";
-      activeTab = "library";
+      activeTab = "gallery";
       localStorage.setItem("tka-current-module", "discover");
-      localStorage.setItem("tka-active-tab", "library");
+      localStorage.setItem("tka-active-tab", "gallery");
     } else if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
       currentModule = savedModule as ModuleId;
     }

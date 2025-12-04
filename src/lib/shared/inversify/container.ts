@@ -18,6 +18,8 @@ let isHMRRecovering = false; // Track HMR recovery state
 
 // Track loaded modules to prevent duplicate loading
 const loadedModules = new Set<string>();
+// Track modules currently being loaded to prevent race conditions
+const pendingModules = new Map<string, Promise<void>>();
 let tier1Loaded = false;
 let tier2Loaded = false;
 let tier2Promise: Promise<void> | null = null;
@@ -61,6 +63,7 @@ if (import.meta.hot) {
       tier2Loaded = false;
       tier2Promise = null;
       loadedModules.clear();
+      pendingModules.clear();
 
       // Rebuild the container
       initializeContainer()
@@ -108,6 +111,7 @@ if (import.meta.hot) {
     tier2Loaded = false;
     tier2Promise = null;
     loadedModules.clear();
+    pendingModules.clear();
   });
 }
 
@@ -331,18 +335,35 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
   try {
     // Helper to load a module only if not already loaded
+    // Uses pendingModules map to prevent race conditions during parallel loads
     const loadIfNeeded = async (
       name: string,
       importFn: () => Promise<{ [key: string]: ContainerModule }>
     ): Promise<void> => {
+      // Already loaded - return immediately
       if (loadedModules.has(name)) return;
-      const moduleExports = await importFn();
-      const module = Object.values(moduleExports)[0] as ContainerModule;
-      if (!module) {
-        throw new Error(`Module ${name} export is undefined`);
-      }
-      await container.load(module);
-      loadedModules.add(name);
+
+      // Currently loading - wait for the existing promise
+      const pending = pendingModules.get(name);
+      if (pending) return pending;
+
+      // Start loading and track the promise
+      const loadPromise = (async () => {
+        try {
+          const moduleExports = await importFn();
+          const module = Object.values(moduleExports)[0] as ContainerModule;
+          if (!module) {
+            throw new Error(`Module ${name} export is undefined`);
+          }
+          await container.load(module);
+          loadedModules.add(name);
+        } finally {
+          pendingModules.delete(name);
+        }
+      })();
+
+      pendingModules.set(name, loadPromise);
+      return loadPromise;
     };
 
     // Load only the modules needed for each feature
@@ -358,7 +379,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "discover":
-        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        // Discover needs community module for CreatorsPanel (IUserService)
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("community", () => import("./modules/community.module"))
+        ]);
         break;
 
       case "community":
@@ -402,7 +427,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       case "account":
       case "settings":
         // Account/Settings uses library services for user stats
-        await loadIfNeeded("library", () => import("./modules/library.module"));
+        // Also load feedback-ai for admin AI settings
+        await Promise.all([
+          loadIfNeeded("library", () => import("./modules/library.module")),
+          loadIfNeeded("feedback-ai", () => import("./modules/feedback-ai.module"))
+        ]);
         break;
 
       case "about":
@@ -426,7 +455,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
           loadIfNeeded("admin", () => import("./modules/admin.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
           loadIfNeeded("train", () => import("./modules/train.module")),
-          loadIfNeeded("discover", () => import("./modules/discover.module"))
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("feedback-ai", () => import("./modules/feedback-ai.module"))
         ]);
         break;
 
@@ -505,6 +535,7 @@ function initializeContainer() {
       tier1Loaded = false;
       tier2Loaded = false;
       loadedModules.clear();
+      pendingModules.clear();
       throw error;
     }
   })();

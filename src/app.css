@@ -214,6 +214,12 @@ h6 {
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
 
+  /* Interactive Element Sizing */
+  --touch-target-min: 48px; /* WCAG 2.5.5 AAA compliant minimum touch target */
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
+
   /* Device Detection Service Variables */
   --element-spacing: 16px;
 

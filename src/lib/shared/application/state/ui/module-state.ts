@@ -8,7 +8,7 @@ import {
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
-import { loadFeatureModule } from "../../../inversify/di";
+import { loadFeatureModule, ensureContainerInitialized } from "../../../inversify/di";
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;
@@ -39,6 +39,9 @@ function isModuleAccessible(moduleId: ModuleId): boolean {
  * Also validates that current section is accessible (e.g., guided mode requires admin)
  */
 export async function revalidateCurrentModule(): Promise<void> {
+  // Ensure container is initialized before resolving any services
+  await ensureContainerInitialized();
+
   const currentModule = getActiveModule();
 
   // Try to restore any cached module that user now has access to

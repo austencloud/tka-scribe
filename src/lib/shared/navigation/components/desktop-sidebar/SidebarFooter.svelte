@@ -1,7 +1,6 @@
 <!-- Sidebar Footer Component -->
 <!-- Contains settings button and profile button -->
 <script lang="ts">
-
   let { isCollapsed, isSettingsActive, onSettingsClick, onDebugClick } =
     $props<{
       isCollapsed: boolean;
@@ -27,7 +26,6 @@
       <span class="button-label">Settings</span>
     {/if}
   </button>
-
 </div>
 
 <style>

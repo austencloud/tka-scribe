@@ -474,6 +474,13 @@ export const TYPES = {
   // === TRAIN MODULE - CHALLENGES & PROGRESS ===
   ITrainChallengeService: Symbol.for("ITrainChallengeService"),
   IPerformanceHistoryService: Symbol.for("IPerformanceHistoryService"),
+
+  // === FEEDBACK AI SERVICES ===
+  IFeedbackAnalysisService: Symbol.for("IFeedbackAnalysisService"),
+  IAISettingsService: Symbol.for("IAISettingsService"),
+  IOllamaProvider: Symbol.for("IOllamaProvider"),
+  IClaudeProvider: Symbol.for("IClaudeProvider"),
+  IOpenAIProvider: Symbol.for("IOpenAIProvider"),
 } as const;
 
 // Type helper for getting service types

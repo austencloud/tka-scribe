@@ -255,7 +255,14 @@
       "Bash(powershell -Command \"Rename-Item -Path ''F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\features\\animate\\tabs\\setup'' -NewName ''compose''\")",
       "Bash(powershell -Command \"Rename-Item -Path ''F:\\_THE KINETIC ALPHABET\\_TKA-STUDIO\\src\\lib\\features\\animate\\tabs\\setup'' -NewName ''arrange''\")",
       "Bash(powershell -Command:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(ollama pull:*)",
+      "Bash(ollama list:*)",
+      "Bash(systeminfo:*)",
+      "Bash(wmic path win32_VideoController get name,AdapterRAM,DriverVersion)",
+      "Bash(nvidia-smi:*)"
     ],
     "deny": [],
     "ask": []
