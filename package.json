@@ -1,6 +1,6 @@
 {
   "name": "@tka/studio",
-  "version": "2.0.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "TKA Studio - Browser-based sequence editor for flow arts",
@@ -184,6 +184,7 @@
     "gif.js": "^0.2.0",
     "html2canvas": "^1.4.1",
     "inversify": "^7.10.4",
+    "jszip": "^3.10.1",
     "lz-string": "^1.5.0",
     "page-flip": "^2.0.7",
     "pixi.js": "^8.14.2",
