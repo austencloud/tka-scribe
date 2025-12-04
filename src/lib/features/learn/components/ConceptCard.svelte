@@ -14,8 +14,6 @@ Displays:
   import { CONCEPT_CATEGORIES } from "../domain/concepts";
   import type { LearnConcept, ConceptStatus } from "../domain/types";
 
-
-
   let {
     concept,
     status,
@@ -43,7 +41,9 @@ Displays:
   const statusColor = $derived(statusColors[status as ConceptStatus]);
 
   // Category color for icon styling
-  const categoryColor = $derived(CONCEPT_CATEGORIES[concept.category]?.color ?? "#4A90E2");
+  const categoryColor = $derived(
+    CONCEPT_CATEGORIES[concept.category]?.color ?? "#4A90E2"
+  );
 
   function handleClick() {
     if (!isClickable) return;
@@ -83,15 +83,15 @@ Displays:
   .concept-card {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    min-height: 48px;
-    background: rgba(255, 255, 255, 0.05);
+    gap: 12px;
+    padding: 14px 16px;
+    min-height: 56px;
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: all 0.2s ease;
     width: 100%;
     text-align: left;
     cursor: pointer;
@@ -102,63 +102,77 @@ Displays:
     left: 0;
     top: 0;
     bottom: 0;
-    width: 3px;
+    width: 4px;
     background: var(--status-color);
+    border-radius: 0 4px 4px 0;
   }
 
   .concept-card:hover:not(.locked) {
     background: rgba(255, 255, 255, 0.07);
     border-color: var(--status-color);
+    transform: translateX(4px);
   }
 
   .concept-card.locked {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
+  .concept-card.completed {
+    background: rgba(80, 200, 120, 0.06);
+    border-color: rgba(80, 200, 120, 0.15);
+  }
+
   .icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
-    background: color-mix(in srgb, var(--category-color) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--category-color) 25%, transparent);
-    border-radius: 8px;
+    font-size: 1.1rem;
+    background: color-mix(in srgb, var(--category-color) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--category-color) 20%, transparent);
+    border-radius: 10px;
     flex-shrink: 0;
     color: var(--category-color);
-    text-shadow: 0 0 10px color-mix(in srgb, var(--category-color) 35%, transparent);
+    text-shadow: 0 0 12px
+      color-mix(in srgb, var(--category-color) 30%, transparent);
   }
 
   .name {
     flex: 1;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     font-weight: 600;
-    color: white;
+    color: rgba(255, 255, 255, 0.95);
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    letter-spacing: -0.01em;
   }
 
   .time {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.35);
     flex-shrink: 0;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
   }
 
   .check {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     background: var(--status-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.625rem;
+    font-size: 0.7rem;
     color: white;
     flex-shrink: 0;
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--status-color) 50%, transparent);
   }
 
   /* Focus state */
@@ -175,6 +189,9 @@ Displays:
   @media (prefers-reduced-motion: reduce) {
     .concept-card {
       transition: none;
+    }
+    .concept-card:hover:not(.locked) {
+      transform: none;
     }
   }
 </style>

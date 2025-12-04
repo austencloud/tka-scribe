@@ -6,7 +6,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { resolve, loadPixiModule } from "$lib/shared/inversify/di";
+  import { resolve, loadPixiModule, loadFeatureModule, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
@@ -35,20 +35,36 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import type { PropState } from "../domain/PropState";
 
-  // Services - resolved synchronously (lightweight)
-  const svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
-  const settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
-  const orchestrator = resolve(
-    TYPES.ISequenceAnimationOrchestrator
-  ) as ISequenceAnimationOrchestrator;
-  const trailCaptureService = resolve(
-    TYPES.ITrailCaptureService
-  ) as ITrailCaptureService;
+  // Services - resolved lazily after animator module is loaded
+  let svgGenerator = $state<ISVGGenerator | null>(null);
+  let settingsService = $state<ISettingsState | null>(null);
+  let orchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
+  let trailCaptureService = $state<ITrailCaptureService | null>(null);
+  let servicesReady = $state(false);
 
   // Heavy services - loaded on-demand (pixi.js ~500KB)
   let pixiRenderer = $state<IPixiAnimationRenderer | null>(null);
   let pixiLoading = $state(false);
   let pixiError = $state<string | null>(null);
+
+  // Load animator services on-demand
+  async function loadAnimatorServices(): Promise<boolean> {
+    try {
+      // First ensure the animator module is loaded
+      await loadFeatureModule("animate");
+
+      // Now resolve services
+      svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
+      settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
+      orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
+      trailCaptureService = resolve(TYPES.ITrailCaptureService) as ITrailCaptureService;
+      servicesReady = true;
+      return true;
+    } catch (err) {
+      console.error("Failed to load animator services:", err);
+      return false;
+    }
+  }
 
   // Frame pre-renderer - created after pixi loads
   let framePreRenderer = $state<SequenceFramePreRenderer | null>(null);
@@ -104,6 +120,13 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let rafId: number | null = null;
   let needsRender = $state(true);
   let currentPropType = $state<string>("staff");
+
+  // Pending glyph texture to load after initialization
+  let pendingGlyph = $state<{
+    svgString: string;
+    width: number;
+    height: number;
+  } | null>(null);
 
   // Trail settings (managed by TrailCaptureService)
   let trailSettings = $state<TrailSettings>(
@@ -162,7 +185,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     totalBeats: number,
     beatDurationMs: number
   ): Promise<void> {
-    if (!trailSettings.usePathCache) {
+    if (!trailSettings.usePathCache || !orchestrator || !trailCaptureService) {
       pathCacheData = null;
       return;
     }
@@ -195,10 +218,10 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
       // Create function to calculate prop states at any beat
       const calculateStateFunc = (beat: number) => {
-        orchestrator.calculateState(beat);
+        orchestrator!.calculateState(beat);
         return {
-          blueProp: orchestrator.getBluePropState(),
-          redProp: orchestrator.getRedPropState(),
+          blueProp: orchestrator!.getBluePropState(),
+          redProp: orchestrator!.getRedPropState(),
         };
       };
 
@@ -295,8 +318,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // TRAIL SERVICE INITIALIZATION
   // ============================================================================
 
-  // Initialize trail capture service reactively
+  // Initialize trail capture service reactively (only when services are ready)
   $effect(() => {
+    if (!trailCaptureService) return;
     trailCaptureService.initialize({
       canvasSize,
       bluePropDimensions,
@@ -334,16 +358,18 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
   });
 
-  // Watch for trail settings changes
+  // Watch for trail settings changes (only when services are ready)
   $effect(() => {
     const currentMode = trailSettings.mode;
     const currentEnabled = trailSettings.enabled;
 
-    // Update service with new settings
-    trailCaptureService.updateSettings(trailSettings);
+    // Update service with new settings (if available)
+    if (trailCaptureService) {
+      trailCaptureService.updateSettings(trailSettings);
 
-    if (!currentEnabled || currentMode === TrailMode.OFF) {
-      trailCaptureService.clearTrails();
+      if (!currentEnabled || currentMode === TrailMode.OFF) {
+        trailCaptureService.clearTrails();
+      }
     }
 
     saveTrailSettings(trailSettings);
@@ -364,7 +390,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // Clear trails when props are hidden
   $effect(() => {
     if (!blueProp || !redProp) {
-      trailCaptureService.clearTrails();
+      trailCaptureService?.clearTrails();
       needsRender = true;
     }
   });
@@ -374,6 +400,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let currentRedPropType = $state("staff");
 
   $effect(() => {
+    if (!settingsService) return;
     const settings = settingsService.currentSettings;
     const newBluePropType =
       settings.bluePropType || settings.propType || "staff";
@@ -414,6 +441,15 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     const initialize = async () => {
       try {
+        // Load animator services first (ensures animator module is loaded)
+        if (!servicesReady) {
+          const loaded = await loadAnimatorServices();
+          if (!loaded) {
+            console.error("Failed to load animator services");
+            return;
+          }
+        }
+
         // Load Pixi module on-demand (pixi.js ~500KB - only loaded when animation is used)
         if (!pixiRenderer) {
           pixiLoading = true;
@@ -422,7 +458,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
             await loadPixiModule();
             pixiRenderer = resolve(TYPES.IPixiAnimationRenderer) as IPixiAnimationRenderer;
             // Create frame pre-renderer now that pixi is available
-            framePreRenderer = new SequenceFramePreRenderer(orchestrator, pixiRenderer);
+            if (orchestrator) {
+              framePreRenderer = new SequenceFramePreRenderer(orchestrator, pixiRenderer);
+            }
           } catch (err) {
             pixiError = "Failed to load animation renderer";
             console.error("Failed to load Pixi module:", err);
@@ -483,7 +521,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   });
 
   async function loadPropTextures() {
-    if (!pixiRenderer) return;
+    if (!pixiRenderer || !svgGenerator) return;
     try {
       // Use per-color prop types
       await pixiRenderer.loadPerColorPropTextures(
@@ -507,7 +545,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       };
 
       // Update trail capture service with new prop dimensions
-      trailCaptureService.updateConfig({
+      trailCaptureService?.updateConfig({
         bluePropDimensions,
         redPropDimensions,
       });
@@ -557,7 +595,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       pixiRenderer.resize(newSize);
 
       // Update trail capture service with new canvas size
-      trailCaptureService.updateConfig({ canvasSize: newSize });
+      trailCaptureService?.updateConfig({ canvasSize: newSize });
 
       needsRender = true;
       startRenderLoop();
@@ -580,15 +618,29 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     width: number,
     height: number
   ) {
-    if (!pixiRenderer) return;
+    // Guard: must be initialized before loading textures
+    if (!pixiRenderer || !isInitialized) {
+      // Queue for later if not initialized yet
+      pendingGlyph = { svgString, width, height };
+      return;
+    }
     try {
       await pixiRenderer.loadGlyphTexture(svgString, width, height);
+      pendingGlyph = null; // Clear any pending
       needsRender = true;
       startRenderLoop();
     } catch (err) {
       console.error("[AnimatorCanvas] Failed to load glyph texture:", err);
     }
   }
+
+  // Load pending glyph once initialized
+  $effect(() => {
+    if (isInitialized && pendingGlyph && pixiRenderer) {
+      const { svgString, width, height } = pendingGlyph;
+      loadGlyphTexture(svgString, width, height);
+    }
+  });
 
   let lastFrameTime = performance.now();
 
@@ -716,7 +768,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       //   console.log(`🎨 [${instanceId}] Cache trails @ beat ${currentBeat.toFixed(2)} (scaleFactor=${scaleFactor.toFixed(3)}):`);
       //   console.log(`   Blue: ${blueTrailPoints.length} points, Red: ${redTrailPoints.length} points`);
       // }
-    } else {
+    } else if (trailCaptureService) {
       // Fallback to real-time capture
       // Cache approach disabled - too many coordinate transformation issues
       const allTrails = trailCaptureService.getAllTrailPoints();

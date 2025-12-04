@@ -146,7 +146,7 @@
       clearTimeout(signInToastTimeout);
     }
 
-    signInToastMessage = `Sign in to access ${moduleName}`;
+    signInToastMessage = `Sign in to unlock ${moduleName}`;
     showSignInToast = true;
 
     signInToastTimeout = setTimeout(() => {

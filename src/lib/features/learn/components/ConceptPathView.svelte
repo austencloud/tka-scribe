@@ -29,7 +29,7 @@ Shows:
 
   // Progress state
   let progress = $state(conceptProgressService.getProgress());
-  let showAllConcepts = $state(false);
+  let showAllConcepts = $state(true); // Auto-expanded by default
 
   // Subscribe to progress updates
   onMount(() => {
@@ -124,7 +124,7 @@ Shows:
         </div>
         <h2>Level 1 Complete!</h2>
         <p>You've mastered all 28 concepts of The Kinetic Alphabet.</p>
-        <button class="review-button" onclick={() => showAllConcepts = true}>
+        <button class="review-button" onclick={() => (showAllConcepts = true)}>
           <i class="fa-solid fa-rotate"></i>
           Review Concepts
         </button>
@@ -147,14 +147,15 @@ Shows:
 
   <!-- View All Toggle -->
   <button class="view-all-toggle" onclick={toggleShowAll}>
-    <span>{showAllConcepts ? "Hide all concepts" : "View all concepts"}</span>
-    <i class="fa-solid {showAllConcepts ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
+    <span>{showAllConcepts ? "Hide learning path" : "View learning path"}</span>
+    <i class="fa-solid {showAllConcepts ? 'fa-chevron-up' : 'fa-chevron-down'}"
+    ></i>
   </button>
 
-  <!-- Expandable All Concepts Grid -->
+  <!-- Expandable All Concepts Path -->
   {#if showAllConcepts}
     <div class="all-concepts" transition:slide={{ duration: 300 }}>
-      {#each categories as category}
+      {#each categories as category, categoryIndex}
         {@const categoryProgress = getCategoryProgress(category)}
         {@const concepts = getConceptsByCategory(category)}
 
@@ -165,12 +166,30 @@ Shows:
             totalCount={categoryProgress.total}
           />
           <div class="concept-list">
-            {#each concepts as concept (concept.id)}
-              {@const status = conceptProgressService.getConceptStatus(concept.id)}
-              <ConceptCard {concept} {status} onClick={onConceptClick} />
+            {#each concepts as concept, i (concept.id)}
+              {@const status = conceptProgressService.getConceptStatus(
+                concept.id
+              )}
+              <div class="concept-item">
+                {#if i > 0}
+                  <div
+                    class="connector-line"
+                    class:completed={status === "completed"}
+                  ></div>
+                {/if}
+                <ConceptCard {concept} {status} onClick={onConceptClick} />
+              </div>
             {/each}
           </div>
         </section>
+
+        {#if categoryIndex < categories.length - 1}
+          <div class="category-connector">
+            <div class="connector-arrow">
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+        {/if}
       {/each}
     </div>
   {/if}
@@ -181,11 +200,14 @@ Shows:
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem;
+    padding: 1.5rem;
     padding-bottom: 5rem;
     background: rgb(20, 20, 28);
     min-height: 100%;
     overflow-y: auto;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .main-content {
@@ -223,14 +245,14 @@ Shows:
 
   .celebration-icon i {
     font-size: 2.5rem;
-    color: #FFD700;
+    color: #ffd700;
     text-shadow: 0 0 24px rgba(255, 215, 0, 0.5);
   }
 
   .completion-celebration h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #FFD700;
+    color: #ffd700;
     margin: 0 0 0.5rem;
   }
 
@@ -249,7 +271,7 @@ Shows:
     background: rgba(255, 215, 0, 0.15);
     border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 10px;
-    color: #FFD700;
+    color: #ffd700;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -288,46 +310,65 @@ Shows:
     transition: transform 0.2s ease;
   }
 
-  /* All concepts grid */
+  /* All concepts path */
   .all-concepts {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    padding-top: 0.5rem;
+    gap: 1.5rem;
+    padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .category-section {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
   }
 
   .concept-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    container-type: inline-size;
-    container-name: concept-list;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-left: 1rem;
   }
 
-  /* Responsive grid using container queries */
-  @container concept-list (min-width: 500px) {
-    .concept-list {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .concept-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
-  @container concept-list (min-width: 750px) {
-    .concept-list {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  .connector-line {
+    position: relative;
+    width: 2px;
+    height: 12px;
+    margin-left: 17px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 1px;
   }
 
-  @container concept-list (min-width: 1000px) {
-    .concept-list {
-      grid-template-columns: repeat(4, 1fr);
-    }
+  .connector-line.completed {
+    background: rgba(80, 200, 120, 0.4);
+  }
+
+  /* Connector between categories */
+  .category-connector {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  .connector-arrow {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -243,7 +243,7 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: var(--bg-primary, #1a1a2e);
+    background: transparent;
   }
 
   .edit-layout {

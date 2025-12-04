@@ -13,12 +13,18 @@
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { onMount } from "svelte";
 
   // Extracted components (from animate module)
   import AnimationPanelHeader from "$lib/features/animate/components/canvas/AnimationPanelHeader.svelte";
   import AnimationCanvas from "$lib/features/animate/components/canvas/AnimationCanvas.svelte";
   import AnimationControlsPanel from "$lib/features/animate/components/canvas/AnimationControlsPanel.svelte";
   import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
+
+  // Services
+  import { tryResolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
 
   // Types
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
@@ -211,7 +217,7 @@
   let {
     show = false,
     combinedPanelHeight = 0,
-    isSideBySideLayout = false,
+    isSideBySideLayout: isSideBySideLayoutProp,
     loading = false,
     error = null,
     speed = 1,
@@ -251,6 +257,44 @@
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
   } = $props();
+
+  // ============================================================================
+  // LAYOUT DETECTION
+  // ============================================================================
+
+  // Detect side-by-side layout internally if not provided via prop
+  let layoutService: IResponsiveLayoutService | null = null;
+  let detectedSideBySide = $state(false);
+
+  onMount(() => {
+    layoutService = tryResolve<IResponsiveLayoutService>(
+      TYPES.IResponsiveLayoutService
+    );
+    if (layoutService) {
+      detectedSideBySide = layoutService.shouldUseSideBySideLayout();
+    }
+  });
+
+  // Update on resize
+  $effect(() => {
+    if (!browser || !layoutService) return;
+
+    const handleResize = () => {
+      if (layoutService) {
+        detectedSideBySide = layoutService.shouldUseSideBySideLayout();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  });
+
+  // Use prop if explicitly provided, otherwise use detected value
+  const isSideBySideLayout = $derived(
+    isSideBySideLayoutProp !== undefined
+      ? isSideBySideLayoutProp
+      : detectedSideBySide
+  );
 
   // ============================================================================
   // STATE MANAGEMENT
