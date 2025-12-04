@@ -17,3 +17,4 @@ export { default as LengthCard } from "./LengthCard.svelte";
 
 // Filter-specific cards (used by Discover only)
 export { default as FavoritesCard } from "./FavoritesCard.svelte";
+export { default as OptionsCard } from "./OptionsCard.svelte";

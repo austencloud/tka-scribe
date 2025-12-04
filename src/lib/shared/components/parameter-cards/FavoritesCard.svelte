@@ -90,33 +90,34 @@ Filter-specific card (not used in Generate)
     align-items: center;
     justify-content: space-between;
 
-    aspect-ratio: 4 / 3;
+    /* Fill grid cell like Generate does */
+    height: 100%;
     min-height: 80px;
-    max-height: 140px;
-    width: 100%;
     min-width: 0;
 
-    padding: clamp(8px, 2cqh, 14px) clamp(6px, 2cqw, 10px);
+    padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: linear-gradient(135deg, #374151, #1f2937);
+    background: radial-gradient(ellipse at top left, #4b5563 0%, #374151 40%, #1f2937 100%);
     border: none;
     cursor: pointer;
     color: white;
     text-align: center;
 
+    /* Layered shadows matching Generate */
     box-shadow:
       0 1px 2px hsl(220deg 13% 20% / 0.15),
       0 2px 4px hsl(220deg 13% 20% / 0.12),
       0 4px 8px hsl(220deg 13% 20% / 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible;
 
     animation: cardEnter 0.4s ease-out;
-    animation-delay: calc(var(--card-index) * 50ms);
-    animation-fill-mode: backwards;
   }
 
   .favorites-card.disabled {
@@ -125,7 +126,7 @@ Filter-specific card (not used in Generate)
   }
 
   .favorites-card.active {
-    background: linear-gradient(135deg, #ec4899, #be185d);
+    background: radial-gradient(ellipse at top left, #f472b6 0%, #ec4899 40%, #be185d 100%);
     box-shadow:
       0 1px 2px hsl(330deg 81% 45% / 0.15),
       0 2px 4px hsl(330deg 81% 45% / 0.12),
@@ -144,9 +145,9 @@ Filter-specific card (not used in Generate)
     height: 60%;
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.2) 0%,
-      rgba(255, 255, 255, 0.1) 40%,
-      rgba(255, 255, 255, 0.03) 70%,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.15) 40%,
+      rgba(255, 255, 255, 0.05) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;
@@ -156,13 +157,30 @@ Filter-specific card (not used in Generate)
 
   @media (hover: hover) {
     .favorites-card:not(.disabled):hover {
-      transform: translateY(-2px);
-      filter: brightness(1.1);
+      transform: scale(1.02);
+      filter: brightness(1.05);
+      box-shadow:
+        0 2px 4px hsl(220deg 13% 20% / 0.12),
+        0 4px 8px hsl(220deg 13% 20% / 0.1),
+        0 8px 16px hsl(220deg 13% 20% / 0.08),
+        0 16px 24px hsl(220deg 13% 20% / 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .favorites-card.active:not(.disabled):hover {
+      box-shadow:
+        0 2px 4px hsl(330deg 81% 45% / 0.12),
+        0 4px 8px hsl(330deg 81% 45% / 0.1),
+        0 8px 16px hsl(330deg 81% 45% / 0.08),
+        0 16px 24px hsl(330deg 81% 45% / 0.06),
+        0 0 30px hsl(330deg 81% 60% / 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
   }
 
   .favorites-card:not(.disabled):active {
     transform: scale(0.97);
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .favorites-card:focus-visible {
@@ -173,11 +191,9 @@ Filter-specific card (not used in Generate)
   @keyframes cardEnter {
     from {
       opacity: 0;
-      transform: translateY(8px);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
     }
   }
 
@@ -185,14 +201,15 @@ Filter-specific card (not used in Generate)
     position: relative;
     z-index: 2;
     width: 100%;
+    padding: clamp(3px, 0.8cqh, 6px) clamp(6px, 1.5cqw, 10px);
   }
 
   .card-title {
-    font-size: clamp(8px, 2.5cqw, 11px);
+    font-size: clamp(8px, 2.5cqi, 11px);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.2px;
+    opacity: 0.9;
   }
 
   .heart-container {

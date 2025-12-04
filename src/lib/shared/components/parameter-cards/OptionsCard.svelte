@@ -1,7 +1,6 @@
 <!--
-LengthCard.svelte - Unified sequence length selection card
-Uses shared StepperCard for consistent styling with Generate module
-Can operate as stepper (inline) or panel opener (click to select)
+OptionsCard.svelte - Card that opens a sheet for advanced filter options
+Shows count of active options, click to open configuration sheet
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -9,34 +8,19 @@ Can operate as stepper (inline) or panel opener (click to select)
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { StepperCard } from "$lib/shared/components/stepper-card";
-
-  type LengthCardMode = "stepper" | "panel-opener";
 
   let {
-    value = null,
-    mode = "stepper",
-    min = 4,
-    max = 64,
-    step = 4,
-    allowNull = true,
+    activeCount = 0,
     disabled = false,
     gridColumnSpan = 2,
     cardIndex = 0,
-    onChange,
     onOpenSheet,
   }: {
-    value?: number | null;
-    mode?: LengthCardMode;
-    min?: number;
-    max?: number;
-    step?: number;
-    allowNull?: boolean;
+    activeCount?: number;
     disabled?: boolean;
     gridColumnSpan?: number;
     cardIndex?: number;
-    onChange?: (length: number | null) => void;
-    onOpenSheet?: () => void;
+    onOpenSheet: () => void;
   } = $props();
 
   let hapticService: IHapticFeedbackService | null = null;
@@ -47,7 +31,7 @@ Can operate as stepper (inline) or panel opener (click to select)
     hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
     rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
 
-    if (mode === "panel-opener" && cardElement && rippleService) {
+    if (cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
         color: "rgba(255, 255, 255, 0.4)",
         duration: 600,
@@ -57,100 +41,59 @@ Can operate as stepper (inline) or panel opener (click to select)
     return undefined;
   });
 
-  // For stepper mode - use 0 to represent "any"
-  const currentValue = $derived(value ?? 0);
-  const minValue = $derived(allowNull ? 0 : min);
-
-  function handleIncrement() {
-    if (disabled || mode !== "stepper" || !onChange) return;
-    if (value === null) {
-      onChange(min);
-    } else if (value < max) {
-      onChange(value + step);
-    } else if (allowNull) {
-      onChange(null);
-    }
-  }
-
-  function handleDecrement() {
-    if (disabled || mode !== "stepper" || !onChange) return;
-    if (value === null) {
-      onChange(max);
-    } else if (value > min) {
-      onChange(value - step);
-    } else if (allowNull) {
-      onChange(null);
-    }
-  }
-
-  function formatValue(val: number): string {
-    if (val === 0) return "Any";
-    return val.toString();
-  }
-
   function handleCardClick() {
-    if (disabled || mode !== "panel-opener" || !onOpenSheet) return;
+    if (disabled) return;
     hapticService?.trigger("selection");
     onOpenSheet();
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (mode === "panel-opener" && !disabled && (event.key === "Enter" || event.key === " ")) {
+    if (!disabled && (event.key === "Enter" || event.key === " ")) {
       event.preventDefault();
       handleCardClick();
     }
   }
 
-  const displayValue = $derived(value ? `${value} beats` : "Any");
+  const displayValue = $derived(activeCount > 0 ? `${activeCount} active` : "Configure");
 </script>
 
-{#if mode === "stepper"}
-  <StepperCard
-    title="Length"
-    currentValue={currentValue}
-    {minValue}
-    maxValue={max}
-    onIncrement={handleIncrement}
-    onDecrement={handleDecrement}
-    {formatValue}
-    color="radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)"
-    shadowColor="220deg 80% 55%"
-    {gridColumnSpan}
-    {cardIndex}
-  />
-{:else}
-  <!-- Panel opener mode -->
-  <div
-    bind:this={cardElement}
-    class="length-card panel-opener"
-    class:disabled
-    role="button"
-    tabindex={disabled ? -1 : 0}
-    onclick={handleCardClick}
-    onkeydown={handleKeydown}
-    aria-label="Sequence length: {displayValue}. Click to change."
-    style="--card-index: {cardIndex}; grid-column: span {gridColumnSpan};"
-  >
-    <div class="card-header">
-      <span class="card-title">Length</span>
-    </div>
-
-    <div class="length-display">
-      <span class="length-value">{displayValue}</span>
-    </div>
-
-    <div class="click-indicator" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M9 18l6-6-6-6" />
-      </svg>
-    </div>
+<div
+  bind:this={cardElement}
+  class="options-card"
+  class:disabled
+  class:has-active={activeCount > 0}
+  role="button"
+  tabindex={disabled ? -1 : 0}
+  onclick={handleCardClick}
+  onkeydown={handleKeydown}
+  aria-label="Position options: {displayValue}. Click to change."
+  style="--card-index: {cardIndex}; grid-column: span {gridColumnSpan};"
+>
+  <div class="card-header">
+    <span class="card-title">Options</span>
   </div>
-{/if}
+
+  <div class="options-display">
+    <span class="options-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    </span>
+    <span class="options-value">{displayValue}</span>
+  </div>
+
+  <div class="click-indicator" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  </div>
+</div>
 
 <style>
-  .length-card {
+  .options-card {
     container-type: size;
-    container-name: length-card;
+    container-name: options-card;
 
     position: relative;
     display: flex;
@@ -164,15 +107,15 @@ Can operate as stepper (inline) or panel opener (click to select)
     padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: radial-gradient(ellipse at top left, #fbbf24 0%, #f59e0b 40%, #d97706 100%);
+    background: radial-gradient(ellipse at top left, #a78bfa 0%, #8b5cf6 40%, #7c3aed 100%);
     border: none;
     color: white;
     text-align: center;
 
     box-shadow:
-      0 1px 2px hsl(38deg 92% 50% / 0.15),
-      0 2px 4px hsl(38deg 92% 50% / 0.12),
-      0 4px 8px hsl(38deg 92% 50% / 0.1),
+      0 1px 2px hsl(270deg 70% 55% / 0.15),
+      0 2px 4px hsl(270deg 70% 55% / 0.12),
+      0 4px 8px hsl(270deg 70% 55% / 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     transition:
@@ -182,14 +125,25 @@ Can operate as stepper (inline) or panel opener (click to select)
     cursor: pointer;
 
     animation: cardEnter 0.4s ease-out;
+    animation-delay: calc(var(--card-index) * 50ms);
+    animation-fill-mode: backwards;
   }
 
-  .length-card.disabled {
+  .options-card.has-active {
+    background: radial-gradient(ellipse at top left, #34d399 0%, #10b981 40%, #059669 100%);
+    box-shadow:
+      0 1px 2px hsl(160deg 70% 45% / 0.15),
+      0 2px 4px hsl(160deg 70% 45% / 0.12),
+      0 4px 8px hsl(160deg 70% 45% / 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .options-card.disabled {
     opacity: 0.5;
     pointer-events: none;
   }
 
-  .length-card::after {
+  .options-card::after {
     content: "";
     position: absolute;
     top: 0;
@@ -209,24 +163,33 @@ Can operate as stepper (inline) or panel opener (click to select)
   }
 
   @media (hover: hover) {
-    .length-card:hover {
+    .options-card:hover {
       transform: scale(1.02);
       filter: brightness(1.05);
       box-shadow:
-        0 2px 4px hsl(38deg 92% 50% / 0.12),
-        0 4px 8px hsl(38deg 92% 50% / 0.1),
-        0 8px 16px hsl(38deg 92% 50% / 0.08),
-        0 16px 24px hsl(38deg 92% 50% / 0.06),
+        0 2px 4px hsl(270deg 70% 55% / 0.12),
+        0 4px 8px hsl(270deg 70% 55% / 0.1),
+        0 8px 16px hsl(270deg 70% 55% / 0.08),
+        0 16px 24px hsl(270deg 70% 55% / 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    .options-card.has-active:hover {
+      box-shadow:
+        0 2px 4px hsl(160deg 70% 45% / 0.12),
+        0 4px 8px hsl(160deg 70% 45% / 0.1),
+        0 8px 16px hsl(160deg 70% 45% / 0.08),
+        0 16px 24px hsl(160deg 70% 45% / 0.06),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
   }
 
-  .length-card:active {
+  .options-card:active {
     transform: scale(0.97);
     transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .length-card:focus-visible {
+  .options-card:focus-visible {
     outline: 2px solid rgba(255, 255, 255, 0.6);
     outline-offset: 3px;
   }
@@ -251,18 +214,31 @@ Can operate as stepper (inline) or panel opener (click to select)
     opacity: 0.9;
   }
 
-  .length-display {
+  .options-display {
     position: relative;
     z-index: 2;
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 4px;
   }
 
-  .length-value {
-    font-size: clamp(16px, 5cqw, 28px);
-    font-weight: 700;
+  .options-icon {
+    width: clamp(20px, 4cqw, 28px);
+    height: clamp(20px, 4cqw, 28px);
+    opacity: 0.9;
+  }
+
+  .options-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .options-value {
+    font-size: clamp(12px, 3cqw, 16px);
+    font-weight: 600;
     letter-spacing: 0.3px;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     white-space: nowrap;
@@ -281,7 +257,7 @@ Can operate as stepper (inline) or panel opener (click to select)
   }
 
   @media (hover: hover) {
-    .length-card:hover .click-indicator {
+    .options-card:hover .click-indicator {
       opacity: 1;
     }
   }
@@ -292,7 +268,7 @@ Can operate as stepper (inline) or panel opener (click to select)
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .length-card {
+    .options-card {
       animation: none;
       transition: none;
     }
