@@ -1,7 +1,10 @@
 <!-- FeedbackKanbanBoard - Kanban board layout for feedback management -->
 <script lang="ts">
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
-  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
   import { STATUS_CONFIG } from "../../domain/models/feedback-models";
   import FeedbackKanbanColumn from "./FeedbackKanbanColumn.svelte";
 
@@ -9,11 +12,12 @@
     manageState: FeedbackManageState;
   }>();
 
-  // Simplified to just 3 statuses
+  // 4 status columns
   const ALL_STATUSES: FeedbackStatus[] = [
     "new",
     "in-progress",
-    "completed",
+    "in-review",
+    "archived",
   ];
 
   // Mobile: track active status tab
@@ -22,22 +26,25 @@
   // Get active status color for background gradient
   const activeStatusColor = $derived(STATUS_CONFIG[activeStatus].color);
 
-  // Group items by status (only 3 columns now)
-  const itemsByStatus = $derived(() => {
+  // Group items by status (4 columns)
+  const itemsByStatus = $derived.by(() => {
     const grouped: Record<string, FeedbackItem[]> = {
       new: [],
       "in-progress": [],
-      completed: [],
+      "in-review": [],
+      archived: [],
     };
 
     for (const item of manageState.items) {
-      // Map old statuses to new simplified ones
-      if (item.status === "new" || item.status === "acknowledged" || item.status === "planned") {
+      // Filter out soft-deleted items
+      if (item.isDeleted) continue;
+
+      // Map to the 4 statuses
+      if (grouped[item.status]) {
+        grouped[item.status]?.push(item);
+      } else {
+        // Fallback for any legacy statuses
         grouped["new"]?.push(item);
-      } else if (item.status === "in-progress") {
-        grouped["in-progress"]?.push(item);
-      } else if (item.status === "completed" || item.status === "wont-fix") {
-        grouped["completed"]?.push(item);
       }
     }
 
@@ -58,7 +65,10 @@
   function handleDragEnd() {
     // If this was a touch drag, check which column we're over
     if (touchDragPosition && draggedItem) {
-      const targetColumn = getColumnAtPosition(touchDragPosition.x, touchDragPosition.y);
+      const targetColumn = getColumnAtPosition(
+        touchDragPosition.x,
+        touchDragPosition.y
+      );
       if (targetColumn && targetColumn !== draggedItem.status) {
         handleDrop(targetColumn);
         return;
@@ -95,9 +105,10 @@
           // Extract status from aria-label like "New column"
           const statusLabel = ariaLabel.replace(" column", "").toLowerCase();
           const statusMap: Record<string, FeedbackStatus> = {
-            "new": "new",
+            new: "new",
             "in progress": "in-progress",
-            "completed": "completed",
+            "in review": "in-review",
+            archived: "archived",
           };
           return statusMap[statusLabel] || null;
         }
@@ -139,7 +150,7 @@
   <div class="status-tabs" role="tablist" aria-label="Feedback status">
     {#each ALL_STATUSES as status}
       {@const config = STATUS_CONFIG[status]}
-      {@const count = itemsByStatus()[status]?.length ?? 0}
+      {@const count = itemsByStatus[status]?.length ?? 0}
       <button
         type="button"
         role="tab"
@@ -153,7 +164,9 @@
         aria-controls="column-{status}"
       >
         <i class="fas {config.icon}"></i>
-        <span class="tab-label">{config.label.replace("Won't Fix", "Declined")}</span>
+        <span class="tab-label"
+          >{config.label.replace("Won't Fix", "Declined")}</span
+        >
         {#if count > 0}
           <span class="tab-count">{count}</span>
         {/if}
@@ -166,7 +179,7 @@
       <FeedbackKanbanColumn
         {status}
         config={STATUS_CONFIG[status]}
-        items={itemsByStatus()[status] ?? []}
+        items={itemsByStatus[status] ?? []}
         isDropTarget={dragOverColumn === status}
         isDragActive={draggedItem !== null}
         isActiveTab={activeStatus === status}
@@ -214,10 +227,10 @@
     --kb-space-xl: clamp(28px, 7cqi, 48px);
 
     /* ===== FLUID TYPOGRAPHY - Accessible minimum sizes ===== */
-    --kb-text-xs: clamp(0.8125rem, 2cqi, 0.875rem);   /* min 13px */
-    --kb-text-sm: clamp(0.875rem, 2.5cqi, 1rem);      /* min 14px */
-    --kb-text-base: clamp(1rem, 3cqi, 1.125rem);      /* min 16px */
-    --kb-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem);   /* min 18px */
+    --kb-text-xs: clamp(0.8125rem, 2cqi, 0.875rem); /* min 13px */
+    --kb-text-sm: clamp(0.875rem, 2.5cqi, 1rem); /* min 14px */
+    --kb-text-base: clamp(1rem, 3cqi, 1.125rem); /* min 16px */
+    --kb-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem); /* min 18px */
 
     /* ===== FLUID RADII ===== */
     --kb-radius-sm: clamp(6px, 1.5cqi, 10px);
@@ -372,7 +385,6 @@
     flex: 1;
     /* Center with max-width for wide screens */
     width: 100%;
-    max-width: 1200px;
     margin: 0 auto;
     /* Generous padding that scales */
     padding: clamp(16px, 3cqi, 32px);
@@ -477,8 +489,13 @@
   }
 
   @keyframes skeleton-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   /* ===== CONTAINER QUERY: Mobile layout (shows tabs) ===== */

@@ -139,9 +139,11 @@
     // Check for status action (swipe right past threshold)
     if (isRightSwipe && (absOffset > SWIPE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)) {
       if (onStatusChange) {
-        // Cycle through quick status changes
-        const nextStatus: FeedbackStatus = item.status === "new" ? "in-progress" :
-                                           item.status === "in-progress" ? "completed" : "new";
+        // Cycle through quick status changes: new → in-progress → in-review → archived → new
+        const nextStatus: FeedbackStatus = 
+          item.status === "new" ? "in-progress" :
+          item.status === "in-progress" ? "in-review" :
+          item.status === "in-review" ? "archived" : "new";
         onStatusChange(nextStatus);
       }
     }

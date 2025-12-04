@@ -11,12 +11,16 @@
 
   let { status }: Props = $props();
 
-  const displayInfo = $derived(STATUS_DISPLAY[status] || STATUS_DISPLAY.pending);
+  const displayInfo = $derived(
+    STATUS_DISPLAY[status] || STATUS_DISPLAY.pending
+  );
+  // Compute background color from the main color (20% opacity)
+  const bgColor = $derived(displayInfo.color + "20");
 </script>
 
 <span
   class="status-badge"
-  style="--badge-color: {displayInfo.color}; --badge-bg: {displayInfo.bgColor}"
+  style="--badge-color: {displayInfo.color}; --badge-bg: {bgColor}"
 >
   <i class="fas {displayInfo.icon}"></i>
   <span>{displayInfo.label}</span>
@@ -46,8 +50,12 @@
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

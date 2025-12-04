@@ -62,10 +62,10 @@ export interface DeepAnalysisConfig {
 
 export const DEFAULT_ANALYSIS_CONFIG: DeepAnalysisConfig = {
   projectRoot: process.cwd(),
-  maxIterations: 20,
-  confidenceThreshold: 0.85,
-  maxFilesRead: 50,
-  maxTotalContent: 500000, // ~500KB of context
+  maxIterations: 50, // More iterations for thorough exploration
+  confidenceThreshold: 0.75, // Slightly lower threshold - faster completion
+  maxFilesRead: 100, // Allow exploring more files
+  maxTotalContent: 800000, // ~800KB of context
 };
 
 /**
@@ -602,7 +602,11 @@ export async function runDeepAnalysis(
       // Handle tool calls
       if (assistantMessage.tool_calls && assistantMessage.tool_calls.length > 0) {
         for (const toolCall of assistantMessage.tool_calls) {
-          const args = JSON.parse(toolCall.function.arguments || "{}");
+          // Handle both string and object arguments (Ollama may return either)
+          const rawArgs = toolCall.function.arguments;
+          const args = typeof rawArgs === 'string' 
+            ? JSON.parse(rawArgs || "{}") 
+            : (rawArgs || {});
           
           emit("tool_call", `Calling ${toolCall.function.name}`, {
             tool: toolCall.function.name,

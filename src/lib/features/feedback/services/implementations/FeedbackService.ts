@@ -28,11 +28,41 @@ import type {
   FeedbackFormData,
   FeedbackFilterOptions,
   FeedbackStatus,
+  TesterConfirmationStatus,
+  AdminResponse,
+  TesterConfirmation,
 } from "../../domain/models/feedback-models";
+import type { TesterNotification, NotificationType } from "../../domain/models/notification-models";
 
 const COLLECTION_NAME = "feedback";
+const NOTIFICATIONS_SUBCOLLECTION = "notifications";
 
 export class FeedbackService implements IFeedbackService {
+  /**
+   * Generate a title from description if none provided
+   */
+  private generateTitleFromDescription(description: string): string {
+    const trimmed = description.trim();
+
+    // Try to get first sentence (up to . ! or ?)
+    const sentenceMatch = trimmed.match(/^[^.!?]+[.!?]?/);
+    if (sentenceMatch && sentenceMatch[0].length >= 10 && sentenceMatch[0].length <= 80) {
+      return sentenceMatch[0].trim();
+    }
+
+    // Otherwise take first ~60 chars at word boundary
+    if (trimmed.length <= 60) {
+      return trimmed;
+    }
+
+    const truncated = trimmed.substring(0, 60);
+    const lastSpace = truncated.lastIndexOf(" ");
+    if (lastSpace > 30) {
+      return truncated.substring(0, lastSpace) + "...";
+    }
+    return truncated + "...";
+  }
+
   async submitFeedback(
     formData: FeedbackFormData,
     capturedModule: string,
@@ -43,6 +73,9 @@ export class FeedbackService implements IFeedbackService {
       throw new Error("User must be authenticated to submit feedback");
     }
 
+    // Generate title from description if not provided
+    const title = formData.title?.trim() || this.generateTitleFromDescription(formData.description);
+
     const feedbackData = {
       // User info
       userId: user.uid,
@@ -51,7 +84,7 @@ export class FeedbackService implements IFeedbackService {
 
       // Feedback content
       type: formData.type,
-      title: formData.title,
+      title,
       description: formData.description,
       priority: formData.priority || null,
 
@@ -187,15 +220,242 @@ export class FeedbackService implements IFeedbackService {
     await updateDoc(docRef, updateData);
   }
 
+  async loadUserFeedback(
+    userId: string,
+    pageSize: number,
+    lastDocId?: string
+  ): Promise<{
+    items: FeedbackItem[];
+    lastDocId: string | null;
+    hasMore: boolean;
+  }> {
+    const constraints: Parameters<typeof query>[1][] = [];
+
+    // Filter by user
+    constraints.push(where("userId", "==", userId));
+
+    // Order by createdAt descending
+    constraints.push(orderBy("createdAt", "desc"));
+    constraints.push(limit(pageSize));
+
+    // Handle pagination
+    if (lastDocId) {
+      const lastDocRef = doc(firestore, COLLECTION_NAME, lastDocId);
+      const lastDocSnap = await getDoc(lastDocRef);
+      if (lastDocSnap.exists()) {
+        constraints.push(startAfter(lastDocSnap));
+      }
+    }
+
+    const q = query(collection(firestore, COLLECTION_NAME), ...constraints);
+    const snapshot = await getDocs(q);
+
+    const items: FeedbackItem[] = snapshot.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return this.mapDocToFeedbackItem(docSnap.id, data);
+    });
+
+    const lastDoc = snapshot.docs[snapshot.docs.length - 1];
+
+    return {
+      items,
+      lastDocId: lastDoc?.id || null,
+      hasMore: snapshot.docs.length === pageSize,
+    };
+  }
+
+  async sendAdminResponse(
+    feedbackId: string,
+    message: string,
+    notifyTester: boolean = true
+  ): Promise<void> {
+    const user = authStore.user;
+    if (!user) {
+      throw new Error("User must be authenticated");
+    }
+
+    // Get the feedback item to get tester info
+    const feedback = await this.getFeedback(feedbackId);
+    if (!feedback) {
+      throw new Error("Feedback not found");
+    }
+
+    const adminResponse: AdminResponse = {
+      message,
+      respondedAt: new Date(),
+      respondedBy: user.uid,
+    };
+
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+    await updateDoc(docRef, {
+      adminResponse,
+      updatedAt: serverTimestamp(),
+    });
+
+    // Create notification for tester
+    if (notifyTester) {
+      await this.createNotification(
+        feedback.userId,
+        feedbackId,
+        feedback.title,
+        "feedback-response",
+        message
+      );
+    }
+  }
+
+  async submitTesterConfirmation(
+    feedbackId: string,
+    status: TesterConfirmationStatus,
+    comment?: string
+  ): Promise<void> {
+    const testerConfirmation: TesterConfirmation = {
+      status,
+      comment: comment || undefined,
+      respondedAt: new Date(),
+    };
+
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+
+    // If tester confirms, move to archived. If needs work, back to in-progress
+    const newStatus: FeedbackStatus =
+      status === "confirmed" ? "archived" :
+      status === "needs-work" ? "in-progress" :
+      "resolved"; // Keep as resolved if no-response
+
+    await updateDoc(docRef, {
+      testerConfirmation,
+      status: newStatus,
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  async countPendingConfirmations(userId: string): Promise<number> {
+    const q = query(
+      collection(firestore, COLLECTION_NAME),
+      where("userId", "==", userId),
+      where("status", "==", "resolved"),
+      where("testerConfirmation.status", "==", "pending")
+    );
+
+    // Firestore doesn't support querying nested fields well,
+    // so we'll do a simpler approach: get resolved items and filter client-side
+    const resolvedQuery = query(
+      collection(firestore, COLLECTION_NAME),
+      where("userId", "==", userId),
+      where("status", "==", "resolved")
+    );
+
+    const snapshot = await getDocs(resolvedQuery);
+
+    // Count items where testerConfirmation is pending or doesn't exist yet
+    let count = 0;
+    snapshot.docs.forEach((docSnap) => {
+      const data = docSnap.data();
+      const confirmation = data["testerConfirmation"] as TesterConfirmation | undefined;
+      if (!confirmation || confirmation.status === "pending") {
+        count++;
+      }
+    });
+
+    return count;
+  }
+
+  /**
+   * Create a notification for a tester
+   */
+  private async createNotification(
+    userId: string,
+    feedbackId: string,
+    feedbackTitle: string,
+    type: NotificationType,
+    message: string
+  ): Promise<void> {
+    const admin = authStore.user;
+    if (!admin) return;
+
+    const notification: Omit<TesterNotification, "id"> = {
+      userId,
+      feedbackId,
+      feedbackTitle,
+      type,
+      message,
+      createdAt: new Date(),
+      read: false,
+      fromUserId: admin.uid,
+      fromUserName: admin.displayName || admin.email || "Admin",
+    };
+
+    // Store in user's notifications subcollection
+    const userNotificationsRef = collection(
+      firestore,
+      "users",
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION
+    );
+
+    await addDoc(userNotificationsRef, {
+      ...notification,
+      createdAt: serverTimestamp(),
+    });
+  }
+
+  /**
+   * Notify tester when status changes to resolved
+   */
+  async notifyTesterResolved(
+    feedbackId: string,
+    message?: string
+  ): Promise<void> {
+    const feedback = await this.getFeedback(feedbackId);
+    if (!feedback) return;
+
+    await this.createNotification(
+      feedback.userId,
+      feedbackId,
+      feedback.title,
+      "feedback-resolved",
+      message || "Your feedback has been addressed! Please confirm if it works for you."
+    );
+
+    // Initialize tester confirmation as pending
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+    await updateDoc(docRef, {
+      "testerConfirmation.status": "pending",
+      updatedAt: serverTimestamp(),
+    });
+  }
+
   private mapDocToFeedbackItem(
     id: string,
     data: Record<string, unknown>
   ): FeedbackItem {
+    // Map admin response if present
+    const adminResponseData = data["adminResponse"] as Record<string, unknown> | undefined;
+    const adminResponse: AdminResponse | undefined = adminResponseData
+      ? {
+          message: adminResponseData["message"] as string,
+          respondedAt: (adminResponseData["respondedAt"] as Timestamp)?.toDate() || new Date(),
+          respondedBy: adminResponseData["respondedBy"] as string,
+        }
+      : undefined;
+
+    // Map tester confirmation if present
+    const confirmationData = data["testerConfirmation"] as Record<string, unknown> | undefined;
+    const testerConfirmation: TesterConfirmation | undefined = confirmationData
+      ? {
+          status: confirmationData["status"] as TesterConfirmationStatus,
+          comment: confirmationData["comment"] as string | undefined,
+          respondedAt: (confirmationData["respondedAt"] as Timestamp)?.toDate(),
+        }
+      : undefined;
+
     return {
       id,
       userId: data["userId"] as string,
       userEmail: data["userEmail"] as string,
       userDisplayName: data["userDisplayName"] as string,
+      userPhotoURL: data["userPhotoURL"] as string | undefined,
       type: data["type"] as FeedbackItem["type"],
       title: data["title"] as string,
       description: data["description"] as string,
@@ -206,6 +466,8 @@ export class FeedbackService implements IFeedbackService {
       reportedTab: data["reportedTab"] as string | undefined,
       status: (data["status"] as FeedbackStatus) || "new",
       adminNotes: data["adminNotes"] as string | undefined,
+      adminResponse,
+      testerConfirmation,
       createdAt: (data["createdAt"] as Timestamp)?.toDate() || new Date(),
       updatedAt: (data["updatedAt"] as Timestamp)?.toDate() || undefined,
     };

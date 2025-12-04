@@ -4,6 +4,7 @@
   import { updateFeedbackContext } from "../state/feedback-context-tracker.svelte";
   import FeedbackSubmitTab from "./submit/FeedbackSubmitTab.svelte";
   import FeedbackManageTab from "./manage/FeedbackManageTab.svelte";
+  import MyFeedbackTab from "./my-feedback/MyFeedbackTab.svelte";
 
   // Track active tab for this module
   const activeTab = $derived(navigationState.activeTab);
@@ -23,6 +24,8 @@
     <div class="tab-panel">
       {#if activeTab === "submit"}
         <FeedbackSubmitTab />
+      {:else if activeTab === "my-feedback"}
+        <MyFeedbackTab />
       {:else if activeTab === "manage"}
         <FeedbackManageTab />
       {:else}

@@ -14,7 +14,7 @@ export interface OllamaConfig {
 
 export const DEFAULT_OLLAMA_CONFIG: OllamaConfig = {
   baseUrl: "http://localhost:11434",
-  model: "qwen2.5:32b",
+  model: "qwen2.5:32b", // Larger model - better at tool calling and reasoning
   contextLength: 32768, // qwen2.5:32b supports large context
   timeout: 300000, // 5 minutes for deep analysis
 };

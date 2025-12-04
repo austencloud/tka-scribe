@@ -4,7 +4,10 @@
  * Configuration types for AI-powered feedback analysis.
  */
 
-import type { AIProviderType } from "./analysis-models";
+import type { AIProviderType as _AIProviderType } from "./analysis-models";
+
+// Re-export for backwards compatibility
+export type AIProviderType = _AIProviderType;
 
 /**
  * Ollama-specific configuration

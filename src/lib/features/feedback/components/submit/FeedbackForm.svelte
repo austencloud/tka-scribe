@@ -223,41 +223,10 @@
     </div>
   </fieldset>
 
-  <!-- Title Field -->
-  <div class="field">
-    <label for="fb-title" class="field-label">
-      Title
-      <span class="required">*</span>
-    </label>
-    <input
-      type="text"
-      id="fb-title"
-      class="field-input"
-      class:has-error={formState.formErrors.title}
-      value={formState.formData.title}
-      oninput={(e) => formState.updateField("title", e.currentTarget.value)}
-      placeholder="Brief summary of your feedback"
-      autocomplete="off"
-    />
-    <div class="field-hint">
-      <span class="char-count" class:met={formState.formData.title.trim().length >= 3}>
-        {#if formState.formData.title.trim().length < 3}
-          {3 - formState.formData.title.trim().length} more needed
-        {:else}
-          <i class="fas fa-check"></i>
-        {/if}
-      </span>
-      {#if formState.formErrors.title}
-        <span class="field-error" role="alert">{formState.formErrors.title}</span>
-      {/if}
-    </div>
-  </div>
-
   <!-- Description Field -->
   <div class="field">
     <label for="fb-description" class="field-label">
-      Description
-      <span class="required">*</span>
+      What's on your mind?
     </label>
     <textarea
       id="fb-description"
@@ -265,8 +234,8 @@
       class:has-error={formState.formErrors.description}
       value={formState.formData.description}
       oninput={(e) => formState.updateField("description", e.currentTarget.value)}
-      placeholder="Describe the issue, suggestion, or feedback in detail..."
-      rows="4"
+      placeholder="Describe the issue, suggestion, or idea..."
+      rows="5"
     ></textarea>
     <div class="field-hint">
       <span class="char-count" class:met={formState.formData.description.trim().length >= 10}>
@@ -743,6 +712,13 @@
   .required {
     color: var(--fb-primary);
     margin-left: 2px;
+  }
+
+  .optional {
+    color: var(--fb-text-subtle);
+    font-weight: 400;
+    font-size: 0.85em;
+    margin-left: 4px;
   }
 
   .field-input,

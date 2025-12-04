@@ -16,14 +16,23 @@ export type FeedbackPriority = "low" | "medium" | "high" | "critical";
 
 /**
  * Feedback status for admin management
+ * Simplified to 4 states that map to Kanban columns
  */
 export type FeedbackStatus =
   | "new"
-  | "acknowledged"
-  | "planned"
   | "in-progress"
-  | "completed"
-  | "wont-fix";
+  | "in-review"
+  | "resolved"
+  | "archived";
+
+/**
+ * Tester confirmation status after admin resolves feedback
+ */
+export type TesterConfirmationStatus =
+  | "pending"      // Waiting for tester to confirm
+  | "confirmed"    // Tester confirms fix works
+  | "needs-work"   // Tester says it needs more work
+  | "no-response"; // Tester hasn't responded after timeout
 
 /**
  * Core feedback item stored in Firestore
@@ -34,6 +43,7 @@ export interface FeedbackItem {
   userId: string;
   userEmail: string;
   userDisplayName: string;
+  userPhotoURL?: string; // Profile avatar
 
   // Feedback content
   type: FeedbackType;
@@ -53,6 +63,35 @@ export interface FeedbackItem {
   status: FeedbackStatus;
   adminNotes?: string;
   updatedAt?: Date;
+
+  // Admin response to tester (visible to tester)
+  adminResponse?: AdminResponse;
+
+  // Tester confirmation (after admin marks as resolved)
+  testerConfirmation?: TesterConfirmation;
+
+  // Soft delete
+  isDeleted?: boolean;
+  deletedAt?: Date;
+  deletedBy?: string;
+}
+
+/**
+ * Admin response to tester - visible in tester's "My Feedback" view
+ */
+export interface AdminResponse {
+  message: string;
+  respondedAt: Date;
+  respondedBy: string; // admin userId
+}
+
+/**
+ * Tester's confirmation after fix is implemented
+ */
+export interface TesterConfirmation {
+  status: TesterConfirmationStatus;
+  comment?: string;
+  respondedAt?: Date;
 }
 
 /**
@@ -91,18 +130,30 @@ export interface FeedbackFilterOptions {
 }
 
 /**
- * Status display configuration
+ * Status display configuration - 5 columns for Kanban
  */
 export const STATUS_CONFIG: Record<
   FeedbackStatus,
   { label: string; color: string; icon: string }
 > = {
-  new: { label: "New", color: "#3b82f6", icon: "fa-circle" },
-  acknowledged: { label: "Acknowledged", color: "#8b5cf6", icon: "fa-eye" },
-  planned: { label: "Planned", color: "#f59e0b", icon: "fa-calendar" },
-  "in-progress": { label: "In Progress", color: "#06b6d4", icon: "fa-spinner" },
-  completed: { label: "Completed", color: "#10b981", icon: "fa-check" },
-  "wont-fix": { label: "Won't Fix", color: "#6b7280", icon: "fa-ban" },
+  new: { label: "New", color: "#3b82f6", icon: "fa-inbox" },
+  "in-progress": { label: "In Progress", color: "#f59e0b", icon: "fa-spinner" },
+  "in-review": { label: "In Review", color: "#8b5cf6", icon: "fa-eye" },
+  resolved: { label: "Resolved", color: "#10b981", icon: "fa-check-circle" },
+  archived: { label: "Archived", color: "#6b7280", icon: "fa-archive" },
+};
+
+/**
+ * Tester confirmation status display configuration
+ */
+export const CONFIRMATION_STATUS_CONFIG: Record<
+  TesterConfirmationStatus,
+  { label: string; color: string; icon: string }
+> = {
+  pending: { label: "Awaiting Confirmation", color: "#f59e0b", icon: "fa-clock" },
+  confirmed: { label: "Confirmed Working", color: "#10b981", icon: "fa-check" },
+  "needs-work": { label: "Needs More Work", color: "#ef4444", icon: "fa-redo" },
+  "no-response": { label: "No Response", color: "#6b7280", icon: "fa-question" },
 };
 
 /**

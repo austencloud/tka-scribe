@@ -1,6 +1,5 @@
 <!-- FeedbackManageTab - Admin Kanban board for managing feedback -->
 <script lang="ts">
-  import { onMount } from "svelte";
   import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
   import { createFeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
@@ -13,9 +12,13 @@
   // Check if user is admin
   const isAdmin = $derived(featureFlagService.isAdmin);
 
-  // Load feedback on mount (load all statuses for Kanban view)
-  onMount(() => {
-    if (isAdmin) {
+  // Track if we've loaded feedback
+  let hasLoadedFeedback = $state(false);
+
+  // Load feedback when admin status is confirmed
+  $effect(() => {
+    if (isAdmin && !hasLoadedFeedback) {
+      hasLoadedFeedback = true;
       // For Kanban, we want all items regardless of status filter
       manageState.setFilter("status", "all");
       manageState.loadFeedback(true);

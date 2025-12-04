@@ -14,7 +14,7 @@
         <i class="fas fa-paper-plane"></i>
       </div>
       <h1 class="header-title">Submit Feedback</h1>
-      <p class="header-subtitle">Help us improve TKA Studio with your input</p>
+      <p class="header-subtitle">Help improve TKA Studio with your input</p>
     </header>
 
     <!-- Form Content -->
@@ -42,7 +42,9 @@
 
     /* Fluid padding that scales with container */
     padding: clamp(12px, 3cqi, 32px);
-    padding-bottom: calc(clamp(12px, 3cqi, 32px) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(
+      clamp(12px, 3cqi, 32px) + env(safe-area-inset-bottom, 0px)
+    );
   }
 
   .submit-container {

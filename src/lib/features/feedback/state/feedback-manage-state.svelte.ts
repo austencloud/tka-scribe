@@ -17,6 +17,7 @@ import type {
 } from "../domain/models/analysis-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
 import { getFeedbackAnalysisService } from "../services/implementations/FeedbackAnalysisService";
+import { getAISettingsService } from "../services/implementations/AISettingsService";
 
 const PAGE_SIZE = 20;
 
@@ -49,6 +50,9 @@ export function createFeedbackManageState() {
   let isAnalyzing = $state(false);
   let analysisError = $state<string | null>(null);
   let analysisUnsubscribe: (() => void) | null = null;
+
+  // Title generation state
+  let isGeneratingTitle = $state(false);
 
   // Filtered items based on search query
   const filteredItems = $derived(
@@ -193,6 +197,25 @@ export function createFeedbackManageState() {
     }
   }
 
+  /**
+   * Refresh a single item (reload from server)
+   */
+  async function refreshItem(feedbackId: string) {
+    try {
+      const updated = await feedbackService.getFeedback(feedbackId);
+      if (updated) {
+        items = items.map((item) =>
+          item.id === feedbackId ? updated : item
+        );
+        if (selectedItem?.id === feedbackId) {
+          selectedItem = updated;
+        }
+      }
+    } catch (err) {
+      console.error("Failed to refresh item:", err);
+    }
+  }
+
   function setSearchQuery(query: string) {
     searchQuery = query;
   }
@@ -320,6 +343,73 @@ export function createFeedbackManageState() {
     isAnalyzing = false;
   }
 
+  async function generateTitle(feedbackId: string, description: string): Promise<string | null> {
+    if (isGeneratingTitle) return null;
+
+    isGeneratingTitle = true;
+
+    try {
+      const settingsService = getAISettingsService();
+      const settings = await settingsService.getSettings();
+
+      if (!settings.enabled) {
+        throw new Error("AI is not enabled in settings");
+      }
+
+      // Use Ollama for quick local title generation
+      const response = await fetch(`${settings.ollama.baseUrl}/api/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: settings.ollama.modelId,
+          prompt: `Generate a concise title (max 60 characters) for this feedback. Return ONLY the title text, nothing else.\n\nFeedback:\n${description}`,
+          stream: false,
+          options: {
+            temperature: 0.3,
+            num_ctx: 1024,
+          },
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ollama error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let title = data.response?.trim() || "";
+
+      // Clean up the title - remove quotes, extra whitespace
+      title = title.replace(/^["']|["']$/g, "").trim();
+
+      // Truncate if too long
+      if (title.length > 80) {
+        const lastSpace = title.substring(0, 77).lastIndexOf(" ");
+        title = title.substring(0, lastSpace > 40 ? lastSpace : 77) + "...";
+      }
+
+      if (title) {
+        // Save the generated title
+        await feedbackService.updateFeedback(feedbackId, { title });
+
+        // Update local state
+        items = items.map((item) =>
+          item.id === feedbackId ? { ...item, title, updatedAt: new Date() } : item
+        );
+        if (selectedItem?.id === feedbackId) {
+          selectedItem = { ...selectedItem, title, updatedAt: new Date() };
+        }
+      }
+
+      return title;
+    } catch (err) {
+      console.error("Failed to generate title:", err);
+      throw err;
+    } finally {
+      isGeneratingTitle = false;
+    }
+  }
+
   return {
     // State
     get items() {
@@ -354,6 +444,9 @@ export function createFeedbackManageState() {
     get analysisError() {
       return analysisError;
     },
+    get isGeneratingTitle() {
+      return isGeneratingTitle;
+    },
 
     // Actions
     loadFeedback,
@@ -365,6 +458,7 @@ export function createFeedbackManageState() {
     updateFeedback,
     deleteFeedback,
     loadMore,
+    refreshItem,
 
     // Analysis actions
     loadAnalysis,
@@ -375,6 +469,9 @@ export function createFeedbackManageState() {
     generateClaudeCodePrompt,
     markPromptCopied,
     clearAnalysis,
+
+    // Title generation
+    generateTitle,
   };
 }
 

@@ -3,6 +3,7 @@
 
   Main container for AI analysis UI in the feedback detail panel.
   Displays analysis status, results, clarifying questions, and Claude Code prompts.
+  Includes deep codebase analysis with local Ollama for thorough pre-analysis.
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
@@ -12,7 +13,7 @@
   import AnalysisStatusBadge from "./AnalysisStatusBadge.svelte";
   import AnalysisResultCard from "./AnalysisResultCard.svelte";
   import ClarifyingQuestionsPanel from "./ClarifyingQuestionsPanel.svelte";
-  import ClaudeCodePromptCard from "./ClaudeCodePromptCard.svelte";
+  import DeepAnalysisPanel from "./DeepAnalysisPanel.svelte";
 
   interface Props {
     feedback: FeedbackItem;
@@ -43,6 +44,9 @@
   // Check if AI analysis is enabled
   let aiEnabled = $state(false);
   let checkingSettings = $state(true);
+  let showDeepAnalysis = $state(false);
+  let deepAnalysisResult = $state<{ claudeCodePrompt?: string } | null>(null);
+  let promptCopied = $state(false);
 
   onMount(async () => {
     try {
@@ -56,9 +60,28 @@
     }
   });
 
+  function handleDeepAnalysisComplete(result: { claudeCodePrompt?: string }) {
+    deepAnalysisResult = result;
+  }
+
+  async function handleCopyPrompt() {
+    if (!latestPrompt) return;
+    try {
+      await navigator.clipboard.writeText(latestPrompt.prompt);
+      promptCopied = true;
+      onMarkPromptCopied(latestPrompt.id);
+      setTimeout(() => {
+        promptCopied = false;
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy prompt:", err);
+    }
+  }
+
   // Derived states
   const hasUnansweredQuestions = $derived(
-    analysis?.clarifyingQuestions.some((q) => q.isRequired && !q.answer) ?? false
+    analysis?.clarifyingQuestions.some((q) => q.isRequired && !q.answer) ??
+      false
   );
 
   const latestPrompt = $derived(
@@ -72,12 +95,29 @@
       <i class="fas fa-robot"></i>
       <h3>AI Analysis</h3>
     </div>
-    {#if analysis}
-      <AnalysisStatusBadge status={analysis.status} />
-    {/if}
+    <div class="header-actions">
+      <button
+        class="deep-analysis-toggle"
+        class:active={showDeepAnalysis}
+        onclick={() => (showDeepAnalysis = !showDeepAnalysis)}
+        title="Deep Codebase Analysis with local Ollama"
+      >
+        <i class="fas fa-microscope"></i>
+        <span>Deep</span>
+      </button>
+      {#if analysis}
+        <AnalysisStatusBadge status={analysis.status} />
+      {/if}
+    </div>
   </header>
 
   <div class="section-content">
+    <!-- Deep Analysis Panel (collapsible) -->
+    {#if showDeepAnalysis && aiEnabled}
+      <DeepAnalysisPanel {feedback} onComplete={handleDeepAnalysisComplete} />
+      <div class="section-divider"></div>
+    {/if}
+
     {#if checkingSettings}
       <div class="loading-state">
         <i class="fas fa-spinner fa-spin"></i>
@@ -102,7 +142,11 @@
       <!-- No analysis yet - show analyze button -->
       <div class="empty-state">
         <p>No analysis yet for this feedback item.</p>
-        <button class="analyze-button" onclick={onAnalyze} disabled={isAnalyzing}>
+        <button
+          class="analyze-button"
+          onclick={onAnalyze}
+          disabled={isAnalyzing}
+        >
           {#if isAnalyzing}
             <i class="fas fa-spinner fa-spin"></i>
             Analyzing...
@@ -118,7 +162,13 @@
         <!-- Status info bar -->
         <div class="status-info">
           <span class="provider-badge">
-            <i class="fas {analysis.provider === 'ollama' ? 'fa-cube' : analysis.provider === 'claude' ? 'fa-comment-alt' : 'fa-brain'}"></i>
+            <i
+              class="fas {analysis.provider === 'ollama'
+                ? 'fa-cube'
+                : analysis.provider === 'claude'
+                  ? 'fa-comment-alt'
+                  : 'fa-brain'}"
+            ></i>
             {analysis.provider}
           </span>
           <span class="model-name">{analysis.modelId}</span>
@@ -144,7 +194,11 @@
                 {/if}
               </div>
             </div>
-            <button class="retry-button" onclick={onAnalyze} disabled={isAnalyzing}>
+            <button
+              class="retry-button"
+              onclick={onAnalyze}
+              disabled={isAnalyzing}
+            >
               {#if isAnalyzing}
                 <i class="fas fa-spinner fa-spin"></i>
                 Retrying...
@@ -176,23 +230,33 @@
           {/if}
         {/if}
 
-        <!-- Claude Code Prompt -->
+        <!-- Claude Code Prompt Action -->
         {#if analysis.status === "completed" && analysis.result}
-          <div class="prompt-section">
+          <div class="prompt-action">
             {#if latestPrompt}
-              <ClaudeCodePromptCard
-                prompt={latestPrompt}
-                onCopy={() => onMarkPromptCopied(latestPrompt.id)}
-              />
+              <button
+                class="copy-prompt-button"
+                class:copied={promptCopied}
+                onclick={handleCopyPrompt}
+              >
+                {#if promptCopied}
+                  <i class="fas fa-check"></i>
+                  Copied!
+                {:else}
+                  <i class="fas fa-clipboard"></i>
+                  Copy Claude Code Prompt
+                {/if}
+              </button>
+            {:else}
+              <button
+                class="generate-prompt-button"
+                onclick={onGeneratePrompt}
+                disabled={isAnalyzing}
+              >
+                <i class="fas fa-terminal"></i>
+                Generate Claude Code Prompt
+              </button>
             {/if}
-            <button
-              class="generate-prompt-button"
-              onclick={onGeneratePrompt}
-              disabled={isAnalyzing}
-            >
-              <i class="fas fa-terminal"></i>
-              Generate Claude Code Prompt
-            </button>
           </div>
         {/if}
       </div>
@@ -233,6 +297,53 @@
     font-size: 14px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .deep-analysis-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 6px;
+    color: rgba(139, 92, 246, 0.7);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .deep-analysis-toggle:hover {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: rgba(139, 92, 246, 0.9);
+  }
+
+  .deep-analysis-toggle.active {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: rgba(139, 92, 246, 0.5);
+    color: #a78bfa;
+  }
+
+  .deep-analysis-toggle i {
+    font-size: 11px;
+  }
+
+  .section-divider {
+    height: 1px;
+    margin: 16px 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(139, 92, 246, 0.3),
+      transparent
+    );
   }
 
   .section-content {
@@ -405,20 +516,19 @@
     opacity: 0.7;
   }
 
-  /* Prompt Section */
-  .prompt-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  /* Prompt Action */
+  .prompt-action {
     padding-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  .copy-prompt-button,
   .generate-prompt-button {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    width: 100%;
     padding: 10px 16px;
     background: rgba(34, 197, 94, 0.15);
     border: 1px solid rgba(34, 197, 94, 0.3);
@@ -430,9 +540,16 @@
     transition: all 0.2s ease;
   }
 
+  .copy-prompt-button:hover,
   .generate-prompt-button:hover:not(:disabled) {
     background: rgba(34, 197, 94, 0.25);
     border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .copy-prompt-button.copied {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: white;
   }
 
   .generate-prompt-button:disabled {
@@ -444,7 +561,8 @@
   @media (prefers-reduced-motion: reduce) {
     .analyze-button,
     .retry-button,
-    .generate-prompt-button {
+    .generate-prompt-button,
+    .copy-prompt-button {
       transition: none;
     }
   }

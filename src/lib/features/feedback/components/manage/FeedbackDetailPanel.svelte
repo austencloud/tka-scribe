@@ -1,8 +1,19 @@
 <!-- FeedbackDetailPanel - Premium detail view with spring animations -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import type { FeedbackItem, FeedbackStatus, FeedbackType, FeedbackPriority } from "../../domain/models/feedback-models";
-  import { TYPE_CONFIG, STATUS_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+    FeedbackType,
+    FeedbackPriority,
+  } from "../../domain/models/feedback-models";
+  import {
+    TYPE_CONFIG,
+    STATUS_CONFIG,
+    PRIORITY_CONFIG,
+    CONFIRMATION_STATUS_CONFIG,
+  } from "../../domain/models/feedback-models";
+  import { feedbackService } from "../../services/implementations/FeedbackService";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { MODULE_DEFINITIONS } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
@@ -16,7 +27,11 @@
   }>();
 
   // Default config for fallback
-  const DEFAULT_TYPE_CONFIG = { color: "#6b7280", icon: "fa-question-circle", label: "Unknown" };
+  const DEFAULT_TYPE_CONFIG = {
+    color: "#6b7280",
+    icon: "fa-question-circle",
+    label: "Unknown",
+  };
 
   // Derive configs from current item state (will update when item changes)
   const typeConfig = $derived(
@@ -30,11 +45,17 @@
       : null
   );
 
-  // Edit mode state
-  let isEditMode = $state(false);
-  let isSaving = $state(false);
+  // Store original values for restore functionality
+  let originalSnapshot = $state({
+    type: item.type,
+    priority: item.priority || "",
+    title: item.title,
+    description: item.description,
+    reportedModule: item.reportedModule || "",
+    reportedTab: item.reportedTab || "",
+  });
 
-  // Editable fields
+  // Inline editable fields (always editable, no edit mode needed)
   let editType = $state<FeedbackType>(item.type);
   let editPriority = $state<FeedbackPriority | "">(item.priority || "");
   let editTitle = $state(item.title);
@@ -42,38 +63,57 @@
   let editReportedModule = $state(item.reportedModule || "");
   let editReportedTab = $state(item.reportedTab || "");
 
-  // Reset edit fields when entering edit mode
-  function enterEditMode() {
+  let isSaving = $state(false);
+
+  // Update snapshot when item changes from external source
+  $effect(() => {
+    originalSnapshot = {
+      type: item.type,
+      priority: item.priority || "",
+      title: item.title,
+      description: item.description,
+      reportedModule: item.reportedModule || "",
+      reportedTab: item.reportedTab || "",
+    };
+    // Also sync edit fields
     editType = item.type;
     editPriority = item.priority || "";
     editTitle = item.title;
     editDescription = item.description;
     editReportedModule = item.reportedModule || "";
     editReportedTab = item.reportedTab || "";
-    isEditMode = true;
-  }
+  });
 
-  function cancelEdit() {
-    isEditMode = false;
-  }
-
-  // Check if anything has changed
+  // Check if anything has changed from the original
   const hasChanges = $derived(
-    editType !== item.type ||
-    (editPriority || undefined) !== item.priority ||
-    editTitle !== item.title ||
-    editDescription !== item.description ||
-    editReportedModule !== (item.reportedModule || "") ||
-    editReportedTab !== (item.reportedTab || "")
+    editType !== originalSnapshot.type ||
+      editPriority !== originalSnapshot.priority ||
+      editTitle !== originalSnapshot.title ||
+      editDescription !== originalSnapshot.description ||
+      editReportedModule !== originalSnapshot.reportedModule ||
+      editReportedTab !== originalSnapshot.reportedTab
   );
 
   // Get tabs for selected module
   const availableTabs = $derived(() => {
     if (!editReportedModule) return [];
-    const moduleDef = MODULE_DEFINITIONS.find(m => m.id === editReportedModule);
+    const moduleDef = MODULE_DEFINITIONS.find(
+      (m) => m.id === editReportedModule
+    );
     return moduleDef?.sections || [];
   });
 
+  // Restore to original values
+  function restoreOriginal() {
+    editType = originalSnapshot.type as FeedbackType;
+    editPriority = originalSnapshot.priority as FeedbackPriority | "";
+    editTitle = originalSnapshot.title;
+    editDescription = originalSnapshot.description;
+    editReportedModule = originalSnapshot.reportedModule;
+    editReportedTab = originalSnapshot.reportedTab;
+  }
+
+  // Save changes (called on blur or explicitly)
   async function saveChanges() {
     if (isSaving || !hasChanges) return;
     isSaving = true;
@@ -87,13 +127,45 @@
         reportedModule: editReportedModule,
         reportedTab: editReportedTab,
       });
-      isEditMode = false;
+      // Update snapshot after successful save
+      originalSnapshot = {
+        type: editType,
+        priority: editPriority,
+        title: editTitle,
+        description: editDescription,
+        reportedModule: editReportedModule,
+        reportedTab: editReportedTab,
+      };
     } catch (err) {
       console.error("Failed to save changes:", err);
     } finally {
       isSaving = false;
     }
   }
+
+  // Auto-save on field blur
+  function handleFieldBlur() {
+    if (hasChanges) {
+      void saveChanges();
+    }
+  }
+
+  // Auto-resize textarea to fit content
+  let descriptionTextarea: HTMLTextAreaElement;
+
+  function autoResizeTextarea(textarea: HTMLTextAreaElement) {
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  }
+
+  $effect(() => {
+    // Re-run when description changes
+    editDescription;
+    if (descriptionTextarea) {
+      autoResizeTextarea(descriptionTextarea);
+    }
+  });
 
   // Local reactive state
   let adminNotes = $state(item.adminNotes || "");
@@ -102,6 +174,11 @@
   let lastUpdatedStatus = $state<string | null>(null);
   let showDeleteConfirm = $state(false);
   let isDeleting = $state(false);
+
+  // Admin response state
+  let adminResponseMessage = $state(item.adminResponse?.message || "");
+  let isSendingResponse = $state(false);
+  let showResponseForm = $state(false);
 
   // Check if notes have changed
   const notesChanged = $derived(adminNotes !== (item.adminNotes || ""));
@@ -141,7 +218,9 @@
     } finally {
       isUpdatingStatus = false;
       // Clear animation trigger after delay
-      setTimeout(() => { lastUpdatedStatus = null; }, 600);
+      setTimeout(() => {
+        lastUpdatedStatus = null;
+      }, 600);
     }
   }
 
@@ -164,6 +243,35 @@
     } finally {
       isDeleting = false;
       showDeleteConfirm = false;
+    }
+  }
+
+  // Send admin response to tester
+  async function handleSendResponse() {
+    if (isSendingResponse || !adminResponseMessage.trim()) return;
+    isSendingResponse = true;
+    try {
+      await feedbackService.sendAdminResponse(item.id, adminResponseMessage.trim(), true);
+      showResponseForm = false;
+      // Reload to get updated item
+      await manageState.refreshItem(item.id);
+    } catch (err) {
+      console.error("Failed to send response:", err);
+    } finally {
+      isSendingResponse = false;
+    }
+  }
+
+  // Mark as resolved and notify tester
+  async function handleMarkResolved() {
+    if (isUpdatingStatus) return;
+    isUpdatingStatus = true;
+    try {
+      await manageState.updateStatus(item.id, "resolved");
+      // Send notification to tester
+      await feedbackService.notifyTesterResolved(item.id, adminResponseMessage.trim() || undefined);
+    } finally {
+      isUpdatingStatus = false;
     }
   }
 
@@ -203,47 +311,48 @@
   function handleClarify(clarification: string) {
     void manageState.clarifyAnalysis(item.id, clarification);
   }
+
+  async function handleGenerateTitle() {
+    try {
+      await manageState.generateTitle(item.id, item.description);
+    } catch (err) {
+      console.error("Failed to generate title:", err);
+    }
+  }
 </script>
 
 <div class="detail-panel">
-  <!-- Header with edit/close buttons -->
+  <!-- Header with restore/save/close buttons -->
   <header class="panel-header">
     <div class="header-badge" style="--badge-color: {typeConfig.color}">
       <i class="fas {typeConfig.icon}"></i>
       <span>{typeConfig.label}</span>
     </div>
     <div class="header-actions">
-      {#if isEditMode}
+      {#if hasChanges || isSaving}
         <button
           type="button"
-          class="header-btn cancel-edit-btn"
-          onclick={cancelEdit}
+          class="header-btn restore-btn"
+          onclick={restoreOriginal}
           disabled={isSaving}
-          aria-label="Cancel editing"
+          aria-label="Restore original"
+          title="Restore original"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-undo"></i>
         </button>
         <button
           type="button"
-          class="header-btn save-edit-btn"
+          class="header-btn save-btn"
           onclick={saveChanges}
-          disabled={isSaving || !hasChanges}
+          disabled={isSaving}
           aria-label="Save changes"
+          title="Save changes"
         >
           {#if isSaving}
             <i class="fas fa-circle-notch fa-spin"></i>
           {:else}
             <i class="fas fa-check"></i>
           {/if}
-        </button>
-      {:else}
-        <button
-          type="button"
-          class="header-btn edit-btn"
-          onclick={enterEditMode}
-          aria-label="Edit feedback"
-        >
-          <i class="fas fa-pen"></i>
         </button>
       {/if}
       <button
@@ -259,189 +368,199 @@
 
   <!-- Scrollable content -->
   <div class="panel-content">
-    <!-- Title Section -->
-    <section class="section title-section">
-      {#if isEditMode}
-        <input
-          type="text"
-          class="edit-title-input"
-          bind:value={editTitle}
-          placeholder="Feedback title..."
-        />
-      {:else}
-        <h2 class="feedback-title">{item.title}</h2>
-      {/if}
-      {#if priorityConfig && !isEditMode}
-        <span class="priority-badge" style="--badge-color: {priorityConfig.color}">
-          <i class="fas {priorityConfig.icon}"></i>
-          {priorityConfig.label} Priority
-        </span>
-      {/if}
+    <!-- Description Section - Primary content, shown first (inline editable) -->
+    <section class="section">
+      <h3 class="section-title">Description</h3>
+      <textarea
+        class="inline-edit-textarea auto-resize"
+        bind:this={descriptionTextarea}
+        bind:value={editDescription}
+        onblur={handleFieldBlur}
+        oninput={(e) => autoResizeTextarea(e.currentTarget)}
+        placeholder="Describe the feedback..."
+      ></textarea>
     </section>
 
-    <!-- Type & Priority Section (edit mode only) -->
-    {#if isEditMode}
+    <!-- AI Analysis Section (Admin Only) - Shown prominently after description -->
+    {#if authStore.isAdmin}
       <section class="section">
-        <h3 class="section-title">
-          <i class="fas fa-tag"></i>
-          Type
-        </h3>
-        <div class="type-grid">
-          {#each Object.entries(TYPE_CONFIG) as [type, config]}
-            <button
-              type="button"
-              class="type-btn"
-              class:active={editType === type}
-              style="--type-color: {config.color}"
-              onclick={() => editType = type as FeedbackType}
-            >
-              <i class="fas {config.icon}"></i>
-              <span>{config.label}</span>
-            </button>
-          {/each}
-        </div>
-      </section>
-
-      <section class="section">
-        <h3 class="section-title">
-          <i class="fas fa-exclamation-circle"></i>
-          Priority
-        </h3>
-        <div class="priority-grid">
-          <button
-            type="button"
-            class="priority-btn"
-            class:active={editPriority === ""}
-            onclick={() => editPriority = ""}
-          >
-            <i class="fas fa-minus"></i>
-            <span>None</span>
-          </button>
-          {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
-            <button
-              type="button"
-              class="priority-btn"
-              class:active={editPriority === priority}
-              style="--priority-color: {config.color}"
-              onclick={() => editPriority = priority as FeedbackPriority}
-            >
-              <i class="fas {config.icon}"></i>
-              <span>{config.label}</span>
-            </button>
-          {/each}
-        </div>
+        <FeedbackAnalysisSection
+          feedback={item}
+          analysis={manageState.currentAnalysis}
+          isAnalyzing={manageState.isAnalyzing}
+          error={manageState.analysisError}
+          onAnalyze={handleAnalyze}
+          onSubmitAnswer={handleSubmitAnswer}
+          onPassToUser={handlePassToUser}
+          onGeneratePrompt={handleGeneratePrompt}
+          onMarkPromptCopied={handleMarkPromptCopied}
+          onClarify={handleClarify}
+        />
       </section>
     {/if}
 
-    <!-- Description Section -->
-    <section class="section">
-      <h3 class="section-title">Description</h3>
-      {#if isEditMode}
-        <textarea
-          class="edit-description-input"
-          bind:value={editDescription}
-          placeholder="Describe the feedback..."
-          rows="6"
-        ></textarea>
-      {:else}
-        <div class="description-content">
-          <p class="description-text">{item.description}</p>
+    <!-- Title Section (inline editable) -->
+    <section class="section title-section">
+      <div class="title-row">
+        <div class="title-content">
+          <h3 class="section-title">Title</h3>
+          <input
+            type="text"
+            class="inline-edit-input"
+            bind:value={editTitle}
+            onblur={handleFieldBlur}
+            placeholder="Add a title..."
+          />
         </div>
-      {/if}
+        <button
+          type="button"
+          class="generate-title-btn"
+          onclick={handleGenerateTitle}
+          disabled={manageState.isGeneratingTitle}
+          title="Generate title with AI"
+        >
+          {#if manageState.isGeneratingTitle}
+            <i class="fas fa-spinner fa-spin"></i>
+          {:else}
+            <i class="fas fa-magic"></i>
+          {/if}
+        </button>
+      </div>
     </section>
 
-    <!-- Context Section -->
+    <!-- Type & Priority Section (always visible for quick changes) -->
+    <section class="section">
+      <h3 class="section-title">
+        <i class="fas fa-tag"></i>
+        Type
+      </h3>
+      <div class="type-grid">
+        {#each Object.entries(TYPE_CONFIG) as [type, config]}
+          <button
+            type="button"
+            class="type-btn"
+            class:active={editType === type}
+            style="--type-color: {config.color}"
+            onclick={() => {
+              editType = type as FeedbackType;
+              void saveChanges();
+            }}
+          >
+            <i class="fas {config.icon}"></i>
+            <span>{config.label}</span>
+          </button>
+        {/each}
+      </div>
+    </section>
+
+    <section class="section">
+      <h3 class="section-title">
+        <i class="fas fa-exclamation-circle"></i>
+        Priority
+      </h3>
+      <div class="priority-grid">
+        <button
+          type="button"
+          class="priority-btn"
+          class:active={editPriority === ""}
+          onclick={() => {
+            editPriority = "";
+            void saveChanges();
+          }}
+        >
+          <i class="fas fa-minus"></i>
+          <span>None</span>
+        </button>
+        {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
+          <button
+            type="button"
+            class="priority-btn"
+            class:active={editPriority === priority}
+            style="--priority-color: {config.color}"
+            onclick={() => {
+              editPriority = priority as FeedbackPriority;
+              void saveChanges();
+            }}
+          >
+            <i class="fas {config.icon}"></i>
+            <span>{config.label}</span>
+          </button>
+        {/each}
+      </div>
+    </section>
+
+    <!-- Context Section (inline editable) -->
     <section class="section">
       <h3 class="section-title">Context</h3>
-      {#if isEditMode}
-        <div class="context-edit-card">
-          <div class="context-edit-row">
-            <span class="context-edit-label">
-              <i class="fas fa-crosshairs"></i>
-              Captured
-            </span>
-            <span class="context-edit-value">
-              {item.capturedModule} › {item.capturedTab || "—"}
-            </span>
-          </div>
-          <div class="context-edit-row">
-            <span class="context-edit-label">
-              <i class="fas fa-edit"></i>
-              Set Context
-            </span>
-            <div class="context-selects">
-              <select
-                class="context-select"
-                bind:value={editReportedModule}
-                onchange={() => editReportedTab = ""}
-              >
-                <option value="">Select module...</option>
-                {#each MODULE_DEFINITIONS.filter(m => m.isMain) as mod}
-                  <option value={mod.id}>{mod.label}</option>
-                {/each}
-              </select>
-              <select
-                class="context-select"
-                bind:value={editReportedTab}
-                disabled={!editReportedModule || availableTabs().length === 0}
-              >
-                <option value="">
-                  {availableTabs().length === 0 ? "No tabs" : "Select tab..."}
-                </option>
-                {#each availableTabs() as tab}
-                  <option value={tab.id}>{tab.label}</option>
-                {/each}
-              </select>
-            </div>
+      <div class="context-edit-card">
+        <div class="context-edit-row">
+          <span class="context-edit-label">
+            <i class="fas fa-crosshairs"></i>
+            Captured
+          </span>
+          <span class="context-edit-value">
+            {item.capturedModule} › {item.capturedTab || "—"}
+          </span>
+        </div>
+        <div class="context-edit-row">
+          <span class="context-edit-label">
+            <i class="fas fa-edit"></i>
+            Reported
+          </span>
+          <div class="context-selects">
+            <select
+              class="context-select"
+              bind:value={editReportedModule}
+              onchange={() => {
+                editReportedTab = "";
+                void saveChanges();
+              }}
+            >
+              <option value="">Select module...</option>
+              {#each MODULE_DEFINITIONS.filter((m) => m.isMain) as mod}
+                <option value={mod.id}>{mod.label}</option>
+              {/each}
+            </select>
+            <select
+              class="context-select"
+              bind:value={editReportedTab}
+              disabled={!editReportedModule || availableTabs().length === 0}
+              onchange={() => void saveChanges()}
+            >
+              <option value="">
+                {availableTabs().length === 0 ? "No tabs" : "Select tab..."}
+              </option>
+              {#each availableTabs() as tab}
+                <option value={tab.id}>{tab.label}</option>
+              {/each}
+            </select>
           </div>
         </div>
-      {:else}
-        <div class="context-card">
-          <div class="context-row">
-            <div class="context-item">
-              <span class="context-label">
-                <i class="fas fa-crosshairs"></i>
-                Captured
-              </span>
-              <span class="context-value">
-                {item.capturedModule}
-                <span class="context-separator">›</span>
-                {item.capturedTab || "—"}
-              </span>
-            </div>
-          </div>
-          {#if item.reportedModule}
-            <div class="context-row">
-              <div class="context-item">
-                <span class="context-label">
-                  <i class="fas fa-edit"></i>
-                  Reported
-                </span>
-                <span class="context-value">
-                  {item.reportedModule}
-                  <span class="context-separator">›</span>
-                  {item.reportedTab || "—"}
-                </span>
-              </div>
-            </div>
-          {/if}
-        </div>
-      {/if}
+      </div>
     </section>
 
     <!-- User & Time Section -->
     <section class="section">
       <h3 class="section-title">Submitted By</h3>
       <div class="user-card">
-        <div class="user-avatar">
-          <i class="fas fa-user"></i>
-        </div>
+        {#if item.userPhotoURL}
+          <img
+            src={item.userPhotoURL}
+            alt="{item.userDisplayName}'s avatar"
+            class="user-avatar-img"
+          />
+        {:else}
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+        {/if}
         <div class="user-info">
           <span class="user-name">{item.userDisplayName}</span>
           <span class="user-email">{item.userEmail}</span>
         </div>
         <div class="user-time">
-          <span class="time-relative">{formatRelativeTime(item.createdAt)}</span>
+          <span class="time-relative">{formatRelativeTime(item.createdAt)}</span
+          >
           <span class="time-absolute">{formatDate(item.createdAt)}</span>
         </div>
       </div>
@@ -478,90 +597,113 @@
       </div>
     </section>
 
-    <!-- Admin Notes Section -->
-    <section class="section">
+    <!-- Admin Response to Tester Section -->
+    <section class="section response-section">
       <h3 class="section-title">
-        <i class="fas fa-sticky-note"></i>
-        Admin Notes
+        <i class="fas fa-reply"></i>
+        Response to Tester
       </h3>
-      <div class="notes-container">
-        <textarea
-          class="notes-input"
-          bind:value={adminNotes}
-          placeholder="Add internal notes for this feedback..."
-          rows="4"
-        ></textarea>
-        <div class="notes-actions">
-          {#if notesChanged}
-            <span class="notes-hint">
-              <i class="fas fa-circle"></i>
-              Unsaved
+
+      {#if item.adminResponse}
+        <!-- Existing response display -->
+        <div class="existing-response">
+          <p class="response-message">{item.adminResponse.message}</p>
+          <span class="response-meta">
+            Sent {formatRelativeTime(item.adminResponse.respondedAt)}
+          </span>
+        </div>
+      {/if}
+
+      {#if showResponseForm || !item.adminResponse}
+        <div class="response-form">
+          <textarea
+            class="response-textarea"
+            bind:value={adminResponseMessage}
+            placeholder="Write a message to notify the tester about this feedback..."
+            rows="3"
+          ></textarea>
+
+          <div class="response-actions">
+            <button
+              type="button"
+              class="send-response-btn"
+              onclick={handleSendResponse}
+              disabled={isSendingResponse || !adminResponseMessage.trim()}
+            >
+              {#if isSendingResponse}
+                <i class="fas fa-spinner fa-spin"></i>
+              {:else}
+                <i class="fas fa-paper-plane"></i>
+              {/if}
+              Send Response
+            </button>
+
+            {#if item.status !== "resolved"}
+              <button
+                type="button"
+                class="resolve-notify-btn"
+                onclick={handleMarkResolved}
+                disabled={isUpdatingStatus}
+              >
+                {#if isUpdatingStatus}
+                  <i class="fas fa-spinner fa-spin"></i>
+                {:else}
+                  <i class="fas fa-check-circle"></i>
+                {/if}
+                Mark Resolved & Notify
+              </button>
+            {/if}
+          </div>
+        </div>
+      {:else}
+        <button
+          type="button"
+          class="update-response-btn"
+          onclick={() => showResponseForm = true}
+        >
+          <i class="fas fa-edit"></i>
+          Update Response
+        </button>
+      {/if}
+
+      <!-- Tester confirmation status -->
+      {#if item.testerConfirmation}
+        {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status]}
+        <div class="tester-confirmation" style="--conf-color: {confConfig.color}">
+          <div class="confirmation-header">
+            <i class="fas {confConfig.icon}"></i>
+            <span class="confirmation-label">{confConfig.label}</span>
+          </div>
+          {#if item.testerConfirmation.comment}
+            <p class="confirmation-comment">"{item.testerConfirmation.comment}"</p>
+          {/if}
+          {#if item.testerConfirmation.respondedAt}
+            <span class="confirmation-date">
+              {formatRelativeTime(item.testerConfirmation.respondedAt)}
             </span>
           {/if}
-          <button
-            type="button"
-            class="save-btn"
-            onclick={handleSaveNotes}
-            disabled={isSavingNotes || !notesChanged}
-          >
-            {#if isSavingNotes}
-              <i class="fas fa-circle-notch fa-spin"></i>
-              Saving...
-            {:else}
-              <i class="fas fa-save"></i>
-              Save Notes
-            {/if}
-          </button>
         </div>
-      </div>
+      {/if}
     </section>
 
-    <!-- AI Analysis Section (Admin Only) -->
-    {#if authStore.isAdmin}
-      <section class="section">
-        <FeedbackAnalysisSection
-          feedback={item}
-          analysis={manageState.currentAnalysis}
-          isAnalyzing={manageState.isAnalyzing}
-          error={manageState.analysisError}
-          onAnalyze={handleAnalyze}
-          onSubmitAnswer={handleSubmitAnswer}
-          onPassToUser={handlePassToUser}
-          onGeneratePrompt={handleGeneratePrompt}
-          onMarkPromptCopied={handleMarkPromptCopied}
-          onClarify={handleClarify}
-        />
-      </section>
-    {/if}
-
-    <!-- Danger Zone -->
-    <section class="section danger-section">
-      <h3 class="section-title danger">
-        <i class="fas fa-exclamation-triangle"></i>
-        Danger Zone
-      </h3>
+    <!-- Delete Section (simplified) -->
+    <section class="section delete-section">
       {#if showDeleteConfirm}
-        <div class="delete-confirm">
-          <div class="delete-confirm-content">
-            <div class="delete-icon-wrapper">
-              <i class="fas fa-trash-alt"></i>
-            </div>
-            <div class="delete-confirm-text">
-              <p class="delete-confirm-title">Delete this feedback?</p>
-              <p class="delete-confirm-subtitle">This action cannot be undone.</p>
-            </div>
-          </div>
+        <div class="delete-confirm-simple">
+          <span class="delete-confirm-text"
+            >Are you sure you want to delete this feedback?</span
+          >
           <div class="delete-confirm-actions">
             <button
               type="button"
-              class="cancel-btn"
+              class="cancel-btn-simple"
               onclick={() => (showDeleteConfirm = false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              class="confirm-btn"
+              class="confirm-btn-simple"
               onclick={handleDelete}
               disabled={isDeleting}
             >
@@ -577,7 +719,7 @@
       {:else}
         <button
           type="button"
-          class="delete-btn"
+          class="delete-btn-simple"
           onclick={() => (showDeleteConfirm = true)}
         >
           <i class="fas fa-trash-alt"></i>
@@ -715,25 +857,20 @@
     cursor: not-allowed;
   }
 
-  .edit-btn:hover {
-    border-color: var(--fb-purple);
-    color: var(--fb-purple);
+  .restore-btn:hover {
+    border-color: var(--fb-warning);
+    color: var(--fb-warning);
   }
 
-  .save-edit-btn {
+  .save-btn {
     background: var(--fb-primary);
     border-color: var(--fb-primary);
     color: white;
   }
 
-  .save-edit-btn:hover:not(:disabled) {
+  .save-btn:hover:not(:disabled) {
     background: #059669;
     border-color: #059669;
-  }
-
-  .cancel-edit-btn:hover {
-    border-color: var(--fb-error);
-    color: var(--fb-error);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -880,38 +1017,60 @@
   }
 
   .priority-btn.active {
-    background: color-mix(in srgb, var(--priority-color, #6b7280) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--priority-color, #6b7280) 15%,
+      transparent
+    );
     border-color: var(--priority-color, #6b7280);
     color: var(--priority-color, var(--fb-text));
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     EDIT DESCRIPTION
+     INLINE EDIT FIELDS
      ═══════════════════════════════════════════════════════════════════════════ */
-  .edit-description-input {
+  .inline-edit-textarea,
+  .inline-edit-input {
     width: 100%;
     padding: var(--fb-space-sm);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: var(--fb-radius-md);
     color: var(--fb-text);
-    font-size: 16px;
+    font-size: var(--fb-text-sm);
     font-family: inherit;
     line-height: 1.6;
-    resize: vertical;
-    min-height: 120px;
     transition: all 0.2s ease;
   }
 
-  .edit-description-input:focus {
+  .inline-edit-textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+
+  .inline-edit-textarea.auto-resize {
+    resize: none;
+    overflow: hidden;
+  }
+
+  .inline-edit-textarea:hover,
+  .inline-edit-input:hover {
+    background: var(--fb-surface);
+    border-color: var(--fb-border);
+  }
+
+  .inline-edit-textarea:focus,
+  .inline-edit-input:focus {
     outline: none;
+    background: var(--fb-surface);
     border-color: var(--fb-purple);
-    background: var(--fb-surface-hover);
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
   }
 
-  .edit-description-input::placeholder {
+  .inline-edit-textarea::placeholder,
+  .inline-edit-input::placeholder {
     color: var(--fb-text-subtle);
+    font-style: italic;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -1001,6 +1160,55 @@
     color: var(--fb-text);
     line-height: 1.3;
     letter-spacing: -0.02em;
+  }
+
+  .feedback-title-text {
+    margin: 0;
+    font-size: var(--fb-text-sm);
+    color: var(--fb-text-muted);
+    line-height: 1.5;
+  }
+
+  .feedback-title-text.muted {
+    color: var(--fb-text-subtle);
+    font-style: italic;
+  }
+
+  .title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--fb-space-sm);
+  }
+
+  .title-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .generate-title-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: var(--fb-radius-sm);
+    color: #a78bfa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .generate-title-btn:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
+    color: #c4b5fd;
+  }
+
+  .generate-title-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   .priority-badge {
@@ -1108,12 +1316,25 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.2) 0%,
+      rgba(16, 185, 129, 0.1) 100%
+    );
     border: 1px solid rgba(16, 185, 129, 0.2);
     border-radius: 50%;
     color: var(--fb-primary);
     font-size: 18px;
     flex-shrink: 0;
+  }
+
+  .user-avatar-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(16, 185, 129, 0.3);
   }
 
   .user-info {
@@ -1231,9 +1452,15 @@
   }
 
   @keyframes statusPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .status-btn:disabled {
@@ -1255,8 +1482,14 @@
   }
 
   @keyframes checkPop {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -1310,16 +1543,6 @@
     font-weight: 500;
   }
 
-  .notes-hint i {
-    font-size: 6px;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
   .save-btn {
     display: flex;
     align-items: center;
@@ -1353,146 +1576,90 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     DANGER ZONE
+     DELETE SECTION (Simplified)
      ═══════════════════════════════════════════════════════════════════════════ */
-  .danger-section {
+  .delete-section {
     margin-top: var(--fb-space-md);
-    padding-top: var(--fb-space-lg);
+    padding-top: var(--fb-space-md);
     border-top: 1px solid var(--fb-border);
   }
 
-  .delete-btn {
+  .delete-btn-simple {
     display: flex;
     align-items: center;
-    align-self: flex-start;
     gap: var(--fb-space-xs);
-    min-height: 48px;
-    padding: 0 var(--fb-space-md);
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-error);
-    font-size: var(--fb-text-sm);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .delete-btn:hover {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.3);
-    transform: translateY(-1px);
-  }
-
-  .delete-btn:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  .delete-confirm {
-    display: flex;
-    flex-direction: column;
-    gap: var(--fb-space-md);
-    padding: var(--fb-space-md);
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.15);
-    border-radius: var(--fb-radius-md);
-    animation: shake 0.4s ease;
-  }
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
-  }
-
-  .delete-confirm-content {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--fb-space-sm);
-  }
-
-  .delete-icon-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(239, 68, 68, 0.15);
+    padding: var(--fb-space-xs) var(--fb-space-sm);
+    background: transparent;
+    border: 1px solid var(--fb-border);
     border-radius: var(--fb-radius-sm);
-    color: var(--fb-error);
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .delete-confirm-text {
-    flex: 1;
-  }
-
-  .delete-confirm-title {
-    margin: 0 0 var(--fb-space-3xs) 0;
-    font-size: var(--fb-text-sm);
-    font-weight: 600;
-    color: var(--fb-text);
-  }
-
-  .delete-confirm-subtitle {
-    margin: 0;
-    font-size: var(--fb-text-xs);
     color: var(--fb-text-muted);
-  }
-
-  .delete-confirm-actions {
-    display: flex;
-    gap: var(--fb-space-xs);
-    justify-content: flex-end;
-  }
-
-  .cancel-btn,
-  .confirm-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--fb-space-xs);
-    min-height: 48px;
-    padding: 0 var(--fb-space-md);
-    border-radius: var(--fb-radius-md);
-    font-size: var(--fb-text-sm);
-    font-weight: 600;
+    font-size: var(--fb-text-xs);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
-  .cancel-btn {
+  .delete-btn-simple:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--fb-error);
+  }
+
+  .delete-confirm-simple {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--fb-space-sm);
+    padding: var(--fb-space-sm);
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+  }
+
+  .delete-confirm-simple .delete-confirm-text {
+    font-size: var(--fb-text-sm);
     color: var(--fb-text-muted);
   }
 
-  .cancel-btn:hover {
+  .delete-confirm-simple .delete-confirm-actions {
+    display: flex;
+    gap: var(--fb-space-xs);
+  }
+
+  .cancel-btn-simple {
+    padding: var(--fb-space-xs) var(--fb-space-sm);
+    background: transparent;
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-sm);
+    color: var(--fb-text-muted);
+    font-size: var(--fb-text-xs);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-btn-simple:hover {
     background: var(--fb-surface-hover);
     color: var(--fb-text);
   }
 
-  .cancel-btn:active {
-    transform: scale(0.98);
-  }
-
-  .confirm-btn {
+  .confirm-btn-simple {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-2xs);
+    padding: var(--fb-space-xs) var(--fb-space-sm);
     background: var(--fb-error);
     border: none;
+    border-radius: var(--fb-radius-sm);
     color: white;
+    font-size: var(--fb-text-xs);
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
-  .confirm-btn:hover:not(:disabled) {
+  .confirm-btn-simple:hover:not(:disabled) {
     background: #dc2626;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   }
 
-  .confirm-btn:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-
-  .confirm-btn:disabled {
+  .confirm-btn-simple:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
@@ -1544,12 +1711,12 @@
       border-top: 1px solid var(--fb-border);
     }
 
-    .delete-confirm-actions {
+    .delete-confirm-simple .delete-confirm-actions {
       flex-direction: column;
     }
 
-    .cancel-btn,
-    .confirm-btn {
+    .cancel-btn-simple,
+    .confirm-btn-simple {
       flex: 1;
     }
 
@@ -1566,6 +1733,164 @@
     .context-select {
       width: 100%;
     }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ADMIN RESPONSE SECTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .response-section {
+    background: rgba(59, 130, 246, 0.05);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: var(--fb-radius-md);
+    padding: var(--fb-space-md);
+    margin: 0 calc(var(--fb-space-md) * -1);
+  }
+
+  .response-section .section-title {
+    color: #3b82f6;
+  }
+
+  .existing-response {
+    padding: var(--fb-space-sm);
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: var(--fb-radius-sm);
+    margin-bottom: var(--fb-space-sm);
+  }
+
+  .existing-response .response-message {
+    margin: 0 0 var(--fb-space-xs) 0;
+    font-size: var(--fb-text-sm);
+    color: var(--fb-text);
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  .existing-response .response-meta {
+    font-size: var(--fb-text-xs);
+    color: var(--fb-text-subtle);
+  }
+
+  .response-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fb-space-sm);
+  }
+
+  .response-textarea {
+    width: 100%;
+    padding: var(--fb-space-sm);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    color: var(--fb-text);
+    font-size: var(--fb-text-sm);
+    font-family: inherit;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+    transition: all 0.2s ease;
+  }
+
+  .response-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .response-textarea::placeholder {
+    color: var(--fb-text-subtle);
+  }
+
+  .response-actions {
+    display: flex;
+    gap: var(--fb-space-xs);
+    flex-wrap: wrap;
+  }
+
+  .send-response-btn,
+  .resolve-notify-btn,
+  .update-response-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--fb-space-xs);
+    padding: var(--fb-space-sm) var(--fb-space-md);
+    border-radius: var(--fb-radius-md);
+    font-size: var(--fb-text-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .send-response-btn {
+    background: #3b82f6;
+    border: none;
+    color: white;
+  }
+
+  .send-response-btn:hover:not(:disabled) {
+    background: #2563eb;
+  }
+
+  .send-response-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .resolve-notify-btn {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #10b981;
+  }
+
+  .resolve-notify-btn:hover:not(:disabled) {
+    background: rgba(16, 185, 129, 0.25);
+  }
+
+  .resolve-notify-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .update-response-btn {
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    color: var(--fb-text-muted);
+  }
+
+  .update-response-btn:hover {
+    background: var(--fb-surface-hover);
+    color: var(--fb-text);
+  }
+
+  /* Tester confirmation display */
+  .tester-confirmation {
+    margin-top: var(--fb-space-md);
+    padding: var(--fb-space-sm);
+    background: color-mix(in srgb, var(--conf-color) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--conf-color) 30%, transparent);
+    border-radius: var(--fb-radius-sm);
+  }
+
+  .tester-confirmation .confirmation-header {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs);
+    color: var(--conf-color);
+    font-weight: 600;
+    font-size: var(--fb-text-sm);
+  }
+
+  .tester-confirmation .confirmation-comment {
+    margin: var(--fb-space-xs) 0;
+    font-size: var(--fb-text-sm);
+    color: var(--fb-text-muted);
+    font-style: italic;
+  }
+
+  .tester-confirmation .confirmation-date {
+    font-size: var(--fb-text-xs);
+    color: var(--fb-text-subtle);
   }
 
   /* Scrollbar styling */
@@ -1589,17 +1914,15 @@
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .status-btn,
-    .status-check,
-    .delete-confirm,
-    .notes-hint i {
+    .status-check {
       animation: none;
     }
 
     .status-btn,
     .save-btn,
-    .delete-btn,
-    .cancel-btn,
-    .confirm-btn {
+    .delete-btn-simple,
+    .cancel-btn-simple,
+    .confirm-btn-simple {
       transition: none;
     }
   }

@@ -148,7 +148,6 @@
     display: flex;
     flex-direction: column;
     /* Fluid column width - grows to fill but with reasonable max */
-    min-width: clamp(260px, 25cqi, 300px);
     max-width: 400px;
     flex: 1;
     /* Colorful gradient background based on column color */

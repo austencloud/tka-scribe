@@ -41,8 +41,8 @@ export function createFeedbackSubmitState() {
   // Derived state
   const isSubmitting = $derived(submitStatus === "submitting");
 
+  // Only description is required - AI will generate title if needed
   const isFormValid = $derived(
-    formData.title.trim().length >= 3 &&
     formData.description.trim().length >= 10
   );
 
@@ -70,18 +70,12 @@ export function createFeedbackSubmitState() {
   function validate(): boolean {
     const errors: FeedbackFormErrors = {};
 
-    // Type is always set to a valid value (defaults to "general"), no validation needed
-
-    if (!formData.title.trim()) {
-      errors.title = "Title is required";
-    } else if (formData.title.trim().length < 3) {
-      errors.title = "Title must be at least 3 characters";
-    }
+    // Only description is required - title is optional (AI will generate if needed)
 
     if (!formData.description.trim()) {
       errors.description = "Description is required";
     } else if (formData.description.trim().length < 10) {
-      errors.description = "Description must be at least 10 characters";
+      errors.description = "Please provide a bit more detail (at least 10 characters)";
     }
 
     formErrors = errors;

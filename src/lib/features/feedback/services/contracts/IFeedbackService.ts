@@ -9,6 +9,7 @@ import type {
   FeedbackFormData,
   FeedbackFilterOptions,
   FeedbackStatus,
+  TesterConfirmationStatus,
 } from "../../domain/models/feedback-models";
 
 export interface IFeedbackService {
@@ -69,4 +70,40 @@ export interface IFeedbackService {
       | "reportedTab"
     >>
   ): Promise<void>;
+
+  /**
+   * Load feedback for a specific user (tester's own submissions)
+   */
+  loadUserFeedback(
+    userId: string,
+    pageSize: number,
+    lastDocId?: string
+  ): Promise<{
+    items: FeedbackItem[];
+    lastDocId: string | null;
+    hasMore: boolean;
+  }>;
+
+  /**
+   * Send admin response to tester (visible to tester, triggers notification)
+   */
+  sendAdminResponse(
+    feedbackId: string,
+    message: string,
+    notifyTester?: boolean
+  ): Promise<void>;
+
+  /**
+   * Submit tester confirmation after fix is implemented
+   */
+  submitTesterConfirmation(
+    feedbackId: string,
+    status: TesterConfirmationStatus,
+    comment?: string
+  ): Promise<void>;
+
+  /**
+   * Count feedback items needing tester confirmation
+   */
+  countPendingConfirmations(userId: string): Promise<number>;
 }
