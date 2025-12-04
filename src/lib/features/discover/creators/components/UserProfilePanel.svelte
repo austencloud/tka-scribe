@@ -6,7 +6,7 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
@@ -86,6 +86,10 @@
   onMount(async () => {
     try {
       console.log(`[UserProfilePanel] Loading profile for user: ${userId}`);
+
+      // Ensure required feature modules are loaded
+      // Note: "community" feature already loads "library" module as a dependency
+      await loadFeatureModule("community");
 
       // Resolve services
       userService = resolve<IUserService>(TYPES.IUserService);

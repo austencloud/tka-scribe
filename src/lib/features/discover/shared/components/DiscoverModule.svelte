@@ -21,18 +21,12 @@
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
-  import LibraryDashboard from "../../../library/components/LibraryDashboard.svelte";
-  import {
-    libraryState,
-    type LibraryViewSection,
-  } from "../../../library/state/library-state.svelte";
-  import SequencesView from "../../../library/components/SequencesView.svelte";
 
+  // Note: Library tab removed - now integrated into Gallery via scope toggle (Community / My Library)
   type DiscoverModuleType =
     | "sequences"
     | "collections"
-    | "creators"
-    | "library";
+    | "creators";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
@@ -49,19 +43,6 @@
   let error = $state<string | null>(null);
   let activeTab = $state<DiscoverModuleType>("sequences");
   let showAnimator = $state<boolean>(false);
-
-  // Library tab navigation state
-  let libraryView = $state<"dashboard" | LibraryViewSection>("dashboard");
-
-  // Library navigation handlers
-  function handleLibraryNavigate(section: LibraryViewSection) {
-    libraryView = section;
-    libraryState.setActiveSection(section);
-  }
-
-  function handleLibraryBack() {
-    libraryView = "dashboard";
-  }
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
@@ -95,18 +76,18 @@
     const navTab = navigationState.activeTab;
 
     // Map navigation state to local explore tab
+    // Note: "library" now redirects to "sequences" (Gallery) with scope toggle
     if (
       navTab === "sequences" ||
       navTab === "discover" ||
-      navTab === "gallery"
+      navTab === "gallery" ||
+      navTab === "library"
     ) {
       activeTab = "sequences";
     } else if (navTab === "collections") {
       activeTab = "collections";
     } else if (navTab === "creators") {
       activeTab = "creators";
-    } else if (navTab === "library") {
-      activeTab = "library";
     }
   });
 
@@ -114,13 +95,6 @@
   $effect(() => {
     if (activeTab !== "creators") {
       creatorsViewState.reset();
-    }
-  });
-
-  // Reset library view state when leaving the library tab
-  $effect(() => {
-    if (activeTab !== "library") {
-      libraryView = "dashboard";
     }
   });
 
@@ -315,34 +289,6 @@
           {:else}
             <CreatorsPanel />
           {/if}
-        {:else if activeTab === "library"}
-          <div class="library-tab-content">
-            {#if libraryView !== "dashboard"}
-              <div class="library-header">
-                <button
-                  class="back-btn"
-                  onclick={handleLibraryBack}
-                  aria-label="Go back"
-                >
-                  <i class="fas fa-arrow-left"></i>
-                </button>
-                <h2 class="library-title">
-                  {libraryView === "sequences"
-                    ? "All Sequences"
-                    : libraryView === "favorites"
-                      ? "Favorites"
-                      : libraryView === "collections"
-                        ? "Collections"
-                        : "Library"}
-                </h2>
-              </div>
-            {/if}
-            {#if libraryView === "dashboard"}
-              <LibraryDashboard onNavigate={handleLibraryNavigate} />
-            {:else}
-              <SequencesView />
-            {/if}
-          </div>
         {/if}
       </div>
     {/key}
@@ -375,49 +321,5 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-  }
-
-  /* Library Tab Styles */
-  .library-tab-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .library-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    flex-shrink: 0;
-  }
-
-  .back-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .back-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .library-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
   }
 </style>

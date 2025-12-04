@@ -15,6 +15,15 @@ import { inject, injectable } from "inversify";
 import type { IDiscoverLoader } from "../contracts/IDiscoverLoader";
 import type { IDiscoverMetadataExtractor } from "../contracts/IDiscoverMetadataExtractor";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+
+import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { createMotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
+import {
+  MotionColor,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
 // Constants for validation
 const MAX_WORD_LENGTH = 200;
 const SEQUENCE_INDEX_URL = "/sequence-index.json";
@@ -169,10 +178,24 @@ export class DiscoverLoader implements IDiscoverLoader {
       const beats = this.parseBundledBeats(sequence);
 
       const word = rawSeq.word ?? rawSeq.id ?? "";
-      const gridMode = this.parseGridMode(rawSeq.gridMode) ?? GridMode.BOX;
+
+      // Extract grid_mode from the metadata object inside the sequence array
+      // This is the authoritative source (fullMetadata.sequence[0].grid_mode)
+      const metadataEntry = sequence.find(
+        (item): item is Record<string, unknown> =>
+          typeof item === "object" && item !== null && "word" in item
+      );
+      const gridModeFromMeta = metadataEntry?.grid_mode as string | undefined;
+      const gridMode =
+        this.parseGridMode(gridModeFromMeta) ??
+        this.parseGridMode(rawSeq.gridMode) ??
+        GridMode.BOX;
       const dateAdded = this.parseDate(rawSeq.dateAdded) ?? new Date();
       const difficultyLevel = this.parseDifficulty(rawSeq.difficultyLevel);
       const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
+
+      // Extract start position (beat 0) from bundled metadata
+      const startPosition = this.parseStartPosition(sequence, gridMode) ?? undefined;
 
       return createSequenceData({
         id: word,
@@ -193,6 +216,7 @@ export class DiscoverLoader implements IDiscoverLoader {
         propType: (rawSeq.propType || "Staff") as PropType,
         startingPositionGroup: (rawSeq.startingPosition ||
           "alpha") as GridPositionGroup,
+        startPosition,
       });
     } catch (error) {
       console.error(`❌ Failed to parse bundled metadata:`, error);
@@ -201,40 +225,194 @@ export class DiscoverLoader implements IDiscoverLoader {
   }
 
   /**
-   * Parse beats from bundled metadata (simplified version)
-   * Full parsing is handled by DiscoverMetadataExtractor when needed
+   * Parse beats from bundled metadata with full motion data transformation
+   * Mirrors the parsing logic from DiscoverMetadataExtractor
    */
   private parseBundledBeats(sequence: unknown[]): BeatData[] {
-    // Handle two different metadata formats:
-    // Format 1: Has explicit 'beat' field (newer format)
-    // Format 2: No 'beat' field, just 'letter' field (older format)
-
     const beatObjects = sequence.filter(
       (item): item is Record<string, unknown> =>
         typeof item === "object" && item !== null
     );
 
-    const beatNumberItems = beatObjects.filter(
-      (item): item is Record<string, number> & { beat: number } =>
-        typeof item.beat === "number"
+    // Filter out metadata entry and start position - only keep actual beats
+    const beatItems = beatObjects.filter((item) => {
+      // Skip sequence metadata (has 'word' field)
+      if ("word" in item) return false;
+      // Skip start position (has 'sequence_start_position' or beat === 0)
+      if ("sequence_start_position" in item) return false;
+      if (item.beat === 0) return false;
+      // Must have a letter to be a valid beat
+      return Boolean(item.letter);
+    });
+
+    return beatItems.map((stepData, index) => {
+      const blueAttrs = stepData["blue_attributes"] as Record<string, unknown> | undefined;
+      const redAttrs = stepData["red_attributes"] as Record<string, unknown> | undefined;
+
+      return {
+        id: `beat-${index + 1}`,
+        letter: String(stepData["letter"] || ""),
+        startPosition: null,
+        endPosition: null,
+        motions: {
+          [MotionColor.BLUE]: blueAttrs
+            ? createMotionData({
+                color: MotionColor.BLUE,
+                motionType: this.parseMotionType(blueAttrs["motion_type"]),
+                startLocation: this.parseLocation(blueAttrs["start_loc"]),
+                endLocation: this.parseLocation(blueAttrs["end_loc"]),
+                startOrientation: this.parseOrientation(blueAttrs["start_ori"]),
+                endOrientation: this.parseOrientation(blueAttrs["end_ori"]),
+                rotationDirection: this.parseRotationDirection(blueAttrs["prop_rot_dir"]),
+                turns: this.parseTurns(blueAttrs["turns"]),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation: this.parseLocation(blueAttrs["start_loc"]) || GridLocation.NORTH,
+                gridMode: GridMode.DIAMOND,
+              })
+            : undefined,
+          [MotionColor.RED]: redAttrs
+            ? createMotionData({
+                color: MotionColor.RED,
+                motionType: this.parseMotionType(redAttrs["motion_type"]),
+                startLocation: this.parseLocation(redAttrs["start_loc"]),
+                endLocation: this.parseLocation(redAttrs["end_loc"]),
+                startOrientation: this.parseOrientation(redAttrs["start_ori"]),
+                endOrientation: this.parseOrientation(redAttrs["end_ori"]),
+                rotationDirection: this.parseRotationDirection(redAttrs["prop_rot_dir"]),
+                turns: this.parseTurns(redAttrs["turns"]),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation: this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
+                gridMode: GridMode.DIAMOND,
+              })
+            : undefined,
+        },
+        beatNumber: Number(stepData["beat"] || index + 1),
+        duration: 1.0,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+      } as BeatData;
+    });
+  }
+
+  /**
+   * Parse start position (beat 0) from bundled metadata
+   * Returns a BeatData-like structure representing the initial prop positions
+   */
+  private parseStartPosition(sequence: unknown[], gridMode: GridMode): BeatData | null {
+    const beatObjects = sequence.filter(
+      (item): item is Record<string, unknown> =>
+        typeof item === "object" && item !== null
     );
 
-    if (beatNumberItems.length > 0) {
-      // Format 1: Filter out the start position (beat 0) - only return beats >= 1
-      return beatNumberItems
-        .filter((item) => item.beat >= 1)
-        .map((item) => item as unknown as BeatData);
-    } else {
-      // Format 2: Count items with 'letter' field
-      // Exclude: sequence metadata (has 'word' field) and start position (has 'sequence_start_position')
-      const letterItems = beatObjects.filter(
-        (item) =>
-          Boolean(item.letter) &&
-          !("word" in item) &&
-          !("sequence_start_position" in item)
-      );
-      return letterItems as unknown as BeatData[];
-    }
+    // Find start position entry (has 'sequence_start_position' or beat === 0)
+    const startPosEntry = beatObjects.find(
+      (item) => "sequence_start_position" in item || item.beat === 0
+    );
+
+    if (!startPosEntry) return null;
+
+    const blueAttrs = startPosEntry["blue_attributes"] as Record<string, unknown> | undefined;
+    const redAttrs = startPosEntry["red_attributes"] as Record<string, unknown> | undefined;
+
+    return {
+      id: "start-position",
+      letter: String(startPosEntry["letter"] || "α"),
+      startPosition: null,
+      endPosition: null,
+      motions: {
+        [MotionColor.BLUE]: blueAttrs
+          ? createMotionData({
+              color: MotionColor.BLUE,
+              motionType: this.parseMotionType(blueAttrs["motion_type"]),
+              startLocation: this.parseLocation(blueAttrs["start_loc"]),
+              endLocation: this.parseLocation(blueAttrs["end_loc"]),
+              startOrientation: this.parseOrientation(blueAttrs["start_ori"]),
+              endOrientation: this.parseOrientation(blueAttrs["end_ori"]),
+              rotationDirection: this.parseRotationDirection(blueAttrs["prop_rot_dir"]),
+              turns: this.parseTurns(blueAttrs["turns"]),
+              isVisible: true,
+              propType: PropType.STAFF,
+              arrowLocation: this.parseLocation(blueAttrs["start_loc"]) || GridLocation.NORTH,
+              gridMode,
+            })
+          : undefined,
+        [MotionColor.RED]: redAttrs
+          ? createMotionData({
+              color: MotionColor.RED,
+              motionType: this.parseMotionType(redAttrs["motion_type"]),
+              startLocation: this.parseLocation(redAttrs["start_loc"]),
+              endLocation: this.parseLocation(redAttrs["end_loc"]),
+              startOrientation: this.parseOrientation(redAttrs["start_ori"]),
+              endOrientation: this.parseOrientation(redAttrs["end_ori"]),
+              rotationDirection: this.parseRotationDirection(redAttrs["prop_rot_dir"]),
+              turns: this.parseTurns(redAttrs["turns"]),
+              isVisible: true,
+              propType: PropType.STAFF,
+              arrowLocation: this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
+              gridMode,
+            })
+          : undefined,
+      },
+      beatNumber: 0,
+      duration: 0,
+      blueReversal: false,
+      redReversal: false,
+      isBlank: false,
+    } as BeatData;
+  }
+
+  // Helper methods for parsing motion attributes
+  private parseMotionType(value: unknown): MotionType {
+    const typeMap: Record<string, MotionType> = {
+      pro: MotionType.PRO,
+      anti: MotionType.ANTI,
+      static: MotionType.STATIC,
+      dash: MotionType.DASH,
+      float: MotionType.FLOAT,
+    };
+    return typeMap[String(value).toLowerCase()] ?? MotionType.STATIC;
+  }
+
+  private parseLocation(value: unknown): GridLocation | undefined {
+    if (!value) return undefined;
+    const locMap: Record<string, GridLocation> = {
+      n: GridLocation.NORTH,
+      s: GridLocation.SOUTH,
+      e: GridLocation.EAST,
+      w: GridLocation.WEST,
+      ne: GridLocation.NORTHEAST,
+      nw: GridLocation.NORTHWEST,
+      se: GridLocation.SOUTHEAST,
+      sw: GridLocation.SOUTHWEST,
+    };
+    return locMap[String(value).toLowerCase()];
+  }
+
+  private parseOrientation(value: unknown): Orientation {
+    const oriMap: Record<string, Orientation> = {
+      in: Orientation.IN,
+      out: Orientation.OUT,
+      clock: Orientation.CLOCK,
+      counter: Orientation.COUNTER,
+    };
+    return oriMap[String(value || "in").toLowerCase()] ?? Orientation.IN;
+  }
+
+  private parseRotationDirection(value: unknown): RotationDirection {
+    const dirMap: Record<string, RotationDirection> = {
+      cw: RotationDirection.CLOCKWISE,
+      ccw: RotationDirection.COUNTER_CLOCKWISE,
+      no_rot: RotationDirection.NO_ROTATION,
+    };
+    return dirMap[String(value).toLowerCase()] ?? RotationDirection.NO_ROTATION;
+  }
+
+  private parseTurns(value: unknown): number {
+    const num = Number(value);
+    return isNaN(num) ? 0 : num;
   }
 
   // ============================================================================

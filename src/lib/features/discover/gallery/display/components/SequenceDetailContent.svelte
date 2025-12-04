@@ -121,23 +121,21 @@ Used by both desktop side panel and mobile slide-up overlay.
 </script>
 
 <div class="detail-content">
-  <!-- Close button -->
-  <button class="close-button" onclick={onClose} aria-label="Close">
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-    >
-      <line x1="18" y1="6" x2="6" y2="18"></line>
-      <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
-  </button>
-
-  <!-- Spacer for close button -->
-  <div class="close-button-spacer"></div>
+  <!-- Header with close button -->
+  <header class="detail-header">
+    <span class="header-title">Sequence Details</span>
+    <button class="close-button" onclick={onClose} aria-label="Close">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </header>
 
   <!-- Sequence Preview -->
   <div class="preview-container">
@@ -311,56 +309,69 @@ Used by both desktop side panel and mobile slide-up overlay.
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: clamp(16px, 4vw, 24px);
-    gap: clamp(16px, 3vw, 20px);
-    position: relative;
+    padding: clamp(12px, 4cqi, 24px);
+    gap: clamp(12px, 3cqi, 20px);
     overflow-y: auto;
+    container-type: inline-size;
+    container-name: detail-panel;
   }
 
-  /* Close button */
+  /* Header row with title and close button */
+  .detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: clamp(8px, 2cqi, 12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-size: clamp(14px, 4cqi, 18px);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Close button - uses global touch target token */
   .close-button {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 48px;
-    height: 48px;
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
-    color: white;
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     transition: all 0.2s ease;
-    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .close-button svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
   }
 
-  /* Spacer to reserve space for the absolutely positioned close button */
-  .close-button-spacer {
-    height: 48px;
-    flex-shrink: 0;
+  .close-button:active {
+    transform: scale(0.95);
   }
 
   /* Preview - Space Maximization Algorithm (from legacy Sequence Viewer) */
   .preview-container {
-    /*
-     * Legacy algorithm: available_height = height() * 0.65
-     * Legacy algorithm: available_width = width() * 1/3 * 0.95 (for 1/3 panel width)
-     * Adapted for flexible panel: Use full panel width with 95% utilization
-     */
-    flex: 1; /* Grow to fill available vertical space */
-    min-height: 200px; /* Minimum usable size */
-    max-height: 65%; /* 65% height utilization (legacy Sequence Viewer constant) */
-    width: 95%; /* 95% width utilization (legacy algorithm) */
+    flex: 1;
+    min-height: clamp(150px, 40cqi, 250px);
+    max-height: 65%;
+    width: 95%;
     max-width: 100%;
-    margin: 0 auto; /* Center horizontally */
-    border-radius: 12px;
+    margin: 0 auto;
+    border-radius: clamp(8px, 2cqi, 12px);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -379,19 +390,13 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .preview-image {
-    /*
-     * Maximize within container while preserving aspect ratio
-     * CSS equivalent of legacy's iterative width/height fitting algorithm
-     * object-fit: contain automatically preserves aspect ratio and fits within bounds
-     */
     max-width: 100%;
     max-height: 100%;
     width: auto;
     height: auto;
-    object-fit: contain; /* Preserves aspect ratio (Qt.AspectRatioMode.KeepAspectRatio) */
+    object-fit: contain;
   }
 
-  /* Previous image fades out */
   .preview-image.previous-image {
     position: absolute;
     top: 50%;
@@ -402,7 +407,6 @@ Used by both desktop side panel and mobile slide-up overlay.
     z-index: 1;
   }
 
-  /* Current image fades in */
   .preview-image.current-image {
     position: relative;
     opacity: 1;
@@ -414,26 +418,18 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
+    from { opacity: 1; }
+    to { opacity: 0; }
   }
 
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   .preview-placeholder {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 14px;
+    font-size: clamp(12px, 3cqi, 14px);
   }
 
   /* Variation Navigation */
@@ -441,13 +437,14 @@ Used by both desktop side panel and mobile slide-up overlay.
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    padding: 8px;
+    gap: clamp(12px, 4cqi, 20px);
+    padding: clamp(6px, 2cqi, 10px);
   }
 
+  /* Nav buttons - uses global touch target token */
   .nav-btn {
-    width: 48px;
-    height: 48px;
+    width: var(--touch-target-min);
+    height: var(--touch-target-min);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -459,6 +456,11 @@ Used by both desktop side panel and mobile slide-up overlay.
     transition: all 0.2s ease;
   }
 
+  .nav-btn svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+  }
+
   .nav-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
@@ -466,14 +468,17 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   .nav-btn:not(:disabled):hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
+  }
+
+  .nav-btn:not(:disabled):active {
+    transform: scale(0.95);
   }
 
   .variation-counter {
-    font-size: 14px;
+    font-size: clamp(12px, 3.5cqi, 15px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
-    min-width: 60px;
+    min-width: clamp(50px, 15cqi, 70px);
     text-align: center;
   }
 
@@ -481,11 +486,11 @@ Used by both desktop side panel and mobile slide-up overlay.
   .metadata {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: clamp(6px, 2cqi, 10px);
   }
 
   .viewer-word-label {
-    font-size: clamp(20px, 5vw, 28px);
+    font-size: clamp(18px, 6cqi, 28px);
     font-weight: 700;
     color: white;
     margin: 0;
@@ -494,52 +499,64 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   .metadata-row {
     display: flex;
-    gap: 16px;
+    gap: clamp(10px, 3cqi, 16px);
     justify-content: center;
     flex-wrap: wrap;
   }
 
   .metadata-item {
-    font-size: 14px;
+    font-size: clamp(12px, 3cqi, 14px);
     color: rgba(255, 255, 255, 0.7);
   }
 
   /* Action Buttons */
   .action-buttons {
     display: flex;
-    gap: 12px;
+    gap: clamp(8px, 2cqi, 12px);
     flex-wrap: wrap;
     justify-content: center;
     margin-top: auto;
+    padding-top: clamp(8px, 2cqi, 12px);
   }
 
+  /* Action buttons - uses global touch target token */
   .action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 16px;
+    gap: clamp(6px, 2cqi, 10px);
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    border-radius: clamp(6px, 2cqi, 10px);
     color: white;
-    font-size: 14px;
+    font-size: clamp(12px, 3cqi, 14px);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px;
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+  }
+
+  .action-btn svg {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    flex-shrink: 0;
   }
 
   .action-btn:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+  }
+
+  .action-btn:active {
+    transform: scale(0.97);
   }
 
   .action-btn-primary {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     border-color: transparent;
     flex: 1;
-    min-width: 120px;
+    min-width: clamp(100px, 30cqi, 140px);
   }
 
   .action-btn-primary:hover {
@@ -548,7 +565,7 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   .action-btn-maximize {
     flex: 1;
-    min-width: 120px;
+    min-width: clamp(100px, 30cqi, 140px);
   }
 
   .action-btn.favorited {
@@ -556,20 +573,16 @@ Used by both desktop side panel and mobile slide-up overlay.
     border-color: #f87171;
   }
 
-  /* Mobile adjustments */
-  @media (max-width: 768px) {
-    .detail-content {
-      padding: 16px;
-      gap: 16px;
+  /* Compact layout for smaller containers */
+  @container detail-panel (max-width: 320px) {
+    .action-btn span {
+      display: none;
     }
 
-    .action-buttons {
-      gap: 8px;
-    }
-
-    .action-btn {
-      padding: 10px 12px;
-      font-size: 13px;
+    .action-btn-primary,
+    .action-btn-maximize {
+      flex: 0;
+      min-width: var(--touch-target-min);
     }
   }
 
@@ -581,9 +594,9 @@ Used by both desktop side panel and mobile slide-up overlay.
       transition: none;
     }
 
-    .close-button:hover,
-    .nav-btn:not(:disabled):hover,
-    .action-btn:hover {
+    .close-button:active,
+    .nav-btn:not(:disabled):active,
+    .action-btn:active {
       transform: none;
     }
   }

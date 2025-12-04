@@ -2,7 +2,7 @@
 DiscoverModuleNavigation.svelte
 
 Tab-based navigation for the Discover module.
-Allows switching between Gallery, Community, Collections, and Search.
+Tabs: Gallery, Collections, Creators
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -21,12 +21,11 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   let hapticService: IHapticFeedbackService;
 
+  // Note: Library is now integrated into Gallery via scope toggle (Community / My Library)
   const tabs: DiscoverTabConfig[] = [
     { id: "gallery", label: "Gallery", icon: "fa-layer-group" },
     { id: "collections", label: "Collections", icon: "fa-folder" },
     { id: "creators", label: "Creators", icon: "fa-users" },
-    { id: "library", label: "Library", icon: "fa-book" },
-    { id: "search", label: "Search", icon: "fa-search" },
   ];
 
   function handleTabClick(tabId: DiscoverModuleType) {

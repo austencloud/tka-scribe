@@ -6,7 +6,7 @@
    */
 
   import { onMount, onDestroy } from "svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
@@ -46,6 +46,9 @@
 
   onMount(async () => {
     try {
+      // Ensure community module is loaded (provides IUserService)
+      await loadFeatureModule("community");
+
       // Resolve services from DI container
       userService = resolve<IUserService>(TYPES.IUserService);
       hapticService = resolve<IHapticFeedbackService>(

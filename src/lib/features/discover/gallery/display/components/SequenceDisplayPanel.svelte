@@ -111,15 +111,10 @@
     overflow: hidden;
   }
 
-  /* Gallery controls inline header */
+  /* Gallery controls container - wraps the top bar controls */
   .gallery-controls-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .display-content {
@@ -127,6 +122,30 @@
     overflow-y: auto;
     padding: var(--spacing-lg);
     container-type: inline-size; /* Enable container queries for responsive grid */
+  }
+
+  /* Modern scrollbar - thin and subtle */
+  .display-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .display-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .display-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  .display-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Firefox scrollbar */
+  .display-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   }
 
   /* Error state */

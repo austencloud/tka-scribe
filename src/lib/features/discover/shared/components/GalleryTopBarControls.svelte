@@ -1,80 +1,61 @@
 <!--
-Gallery Top Bar Controls
-Renders the Gallery controls in the TopBar (mobile & desktop)
-Uses shared gallery controls state from DiscoverModule (Svelte 5 runes pattern)
-
-Modern Filter UX Pattern:
-- Filter chips show active filters (dismissible)
-- "Filters" button opens comprehensive filter modal
-- Sort control (segmented on desktop, button on mobile)
-- Consistent behavior across all breakpoints
+Gallery Top Bar Controls - 2026 Modern Design (Compact)
+- Sort chips (always visible)
+- Filter button opens drawer with scope toggle + drill-down filters
+- Active filter shown as dismissible chip
 -->
 <script lang="ts">
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { onMount } from "svelte";
-  import FilterChips from "../../gallery/filtering/components/FilterChips.svelte";
-  import SegmentedControl from "./SegmentedControl.svelte";
   import { ExploreSortMethod } from "../domain/enums/discover-enums";
 
-  // Get gallery controls from global reactive state (provided by DiscoverModule)
+  // Get gallery controls from global reactive state
   const galleryControls = $derived(galleryControlsManager.current);
 
+  // Check if filter panel is already open (hide button to avoid redundant UI)
+  const isFilterPanelOpen = $derived(galleryPanelManager.isFiltersOpen);
+
   // Services
-  let deviceDetector: IDeviceDetector | null = null;
-  let hapticService: IHapticFeedbackService | undefined;
-
-  // Reactive responsive settings from DeviceDetector
-  let responsiveSettings = $state<ResponsiveSettings | null>(null);
-
-  // Device detection for UI adaptation
-  const isMobile = $derived(
-    responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
-  );
+  let hapticService: IHapticFeedbackService | null = null;
 
   // Check if there's an active filter
   const hasActiveFilter = $derived(
     galleryControls?.currentFilter?.type !== "all"
   );
 
-  // Get filter count for badge (1 if any filter is active)
-  const filterCount = $derived(hasActiveFilter ? 1 : 0);
-
-  onMount(() => {
-    // Resolve services
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    try {
-      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-
-      // Get initial responsive settings
-      responsiveSettings = deviceDetector.getResponsiveSettings();
-
-      // Return cleanup function from onCapabilitiesChanged
-      return (
-        deviceDetector.onCapabilitiesChanged(() => {
-          responsiveSettings = deviceDetector!.getResponsiveSettings();
-        }) || undefined
-      );
-    } catch (error) {
-      console.warn(
-        "GalleryTopBarControls: Failed to resolve DeviceDetector",
-        error
-      );
-    }
-
-    return undefined;
+  // Get active filter label for display
+  const activeFilterLabel = $derived.by(() => {
+    if (!galleryControls?.currentFilter) return null;
+    const filter = galleryControls.currentFilter;
+    if (filter.type === "all") return null;
+    if (filter.type === "favorites") return "Favorites";
+    if (filter.type === "difficulty") return `Level ${filter.value}`;
+    if (filter.type === "startingLetter") return `Letter ${filter.value}`;
+    if (filter.type === "length") return `${filter.value} beats`;
+    if (filter.type === "startingPosition") return filter.value;
+    return filter.type;
   });
 
-  // Handle removing filter (clear to "all")
-  function handleRemoveFilter() {
+  // Sort options
+  const sortOptions = [
+    { id: ExploreSortMethod.ALPHABETICAL, label: "A-Z", icon: "fa-font" },
+    { id: ExploreSortMethod.DATE_ADDED, label: "New", icon: "fa-clock" },
+    { id: ExploreSortMethod.DIFFICULTY_LEVEL, label: "Level", icon: "fa-signal" },
+    { id: ExploreSortMethod.SEQUENCE_LENGTH, label: "Length", icon: "fa-ruler" },
+  ];
+
+  onMount(() => {
+    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  });
+
+  function handleSortChange(method: ExploreSortMethod) {
     hapticService?.trigger("selection");
     if (galleryControls) {
-      galleryControls.onFilterChange({ type: "all", value: null });
+      galleryControls.onSortMethodChange(method);
     }
   }
 
@@ -83,85 +64,55 @@ Modern Filter UX Pattern:
     galleryPanelManager.openFilters();
   }
 
-  function handleOpenSortJump() {
+  function handleClearFilter() {
     hapticService?.trigger("selection");
-    galleryPanelManager.openSortJump();
+    if (galleryControls) {
+      galleryControls.onFilterChange({ type: "all", value: null });
+    }
   }
 </script>
 
 {#if galleryControls}
   <div class="gallery-topbar-controls">
-    <div class="controls-group">
-      <!-- Filter Chips (if active) -->
-      {#if hasActiveFilter}
-        <div class="filter-chips-container">
-          <FilterChips
-            currentFilter={galleryControls.currentFilter}
-            onRemoveFilter={handleRemoveFilter}
-          />
-        </div>
+    <!-- Sort Chips + Filter Button Row -->
+    <div class="controls-row">
+      <!-- Sort Chips -->
+      <div class="sort-chips">
+        {#each sortOptions as opt}
+          <button
+            class="sort-chip"
+            class:active={galleryControls.currentSortMethod === opt.id}
+            onclick={() => handleSortChange(opt.id)}
+          >
+            <i class="fas {opt.icon}"></i>
+            <span class="chip-label">{opt.label}</span>
+          </button>
+        {/each}
+      </div>
+
+      <!-- Active Filter (if any) -->
+      {#if hasActiveFilter && activeFilterLabel}
+        <button class="active-filter-chip" onclick={handleClearFilter}>
+          <span>{activeFilterLabel}</span>
+          <i class="fas fa-times"></i>
+        </button>
       {/if}
 
-      <!-- Filters Button (with badge if active) -->
-      <div class="control-item">
+      <!-- Filter Button - Hidden when filter panel is already open -->
+      {#if !isFilterPanelOpen}
         <button
-          class="filters-button"
+          class="filter-button"
           class:has-active={hasActiveFilter}
           onclick={handleOpenFilters}
           type="button"
-          aria-label="Filters{filterCount > 0
-            ? ` (${filterCount} active)`
-            : ''}"
-          title="Filters"
+          aria-label="Open filters"
         >
           <i class="fas fa-sliders-h"></i>
-          <span class="button-label">Filters</span>
-          {#if filterCount > 0}
-            <span class="badge" aria-hidden="true">{filterCount}</span>
+          {#if hasActiveFilter}
+            <span class="filter-badge">1</span>
           {/if}
         </button>
-      </div>
-
-      <!-- Sort Method Control -->
-      <div class="control-item">
-        {#if isMobile}
-          <!-- Mobile: Button to trigger bottom sheet -->
-          <button
-            class="mobile-control-button"
-            onclick={handleOpenSortJump}
-            type="button"
-            aria-label="Sort and navigate"
-          >
-            <i class="fas fa-sort"></i>
-            <span>Sort</span>
-          </button>
-        {:else}
-          <!-- Desktop: Segmented control for sort -->
-          <SegmentedControl
-            segments={[
-              {
-                value: ExploreSortMethod.ALPHABETICAL,
-                label: "Letter",
-                icon: "fa-font",
-              },
-              {
-                value: ExploreSortMethod.SEQUENCE_LENGTH,
-                label: "Length",
-                icon: "fa-ruler-horizontal",
-              },
-              {
-                value: ExploreSortMethod.DATE_ADDED,
-                label: "Date",
-                icon: "fa-calendar",
-              },
-            ]}
-            value={galleryControls.currentSortMethod}
-            onChange={(value) =>
-              galleryControls.onSortMethodChange(value as ExploreSortMethod)}
-            ariaLabel="Sort method"
-          />
-        {/if}
-      </div>
+      {/if}
     </div>
   </div>
 {/if}
@@ -170,207 +121,149 @@ Modern Filter UX Pattern:
   .gallery-topbar-controls {
     display: flex;
     align-items: center;
-    justify-content: center;
+    padding: 10px 16px;
+    background: #12121a;
     width: 100%;
-    max-width: 100%;
-    padding: 0;
-    min-height: 48px;
   }
 
-  .controls-group {
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .control-item {
-    flex-shrink: 0;
-    min-height: 48px;
-  }
-
-  .filter-chips-container {
+  /* Controls Row */
+  .controls-row {
     display: flex;
     align-items: center;
     gap: 8px;
+    width: 100%;
+    flex-wrap: wrap;
   }
 
-  /* Filters Button - Modern pill style with badge */
-  .filters-button {
+  /* Sort Chips */
+  .sort-chips {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sort-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    min-height: 48px;
+    background: #252532;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .sort-chip:hover {
+    background: #2d2d3d;
+    color: #fff;
+  }
+
+  .sort-chip.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+  }
+
+  .sort-chip i {
+    font-size: 12px;
+  }
+
+  /* Active Filter Chip */
+  .active-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 0 16px;
+    min-height: 48px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 100px;
+    color: #3b82f6;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .active-filter-chip:hover {
+    background: rgba(59, 130, 246, 0.25);
+  }
+
+  .active-filter-chip i {
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  /* Filter Button */
+  .filter-button {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    padding: 8px 15px;
-    background: rgba(255, 255, 255, 0.08);
-    border: none;
-    border-radius: 100px;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 14px;
-    font-weight: 590;
-    letter-spacing: -0.2px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    min-height: 48px;
-    min-width: 48px;
-  }
-
-  .filters-button:hover {
-    background: rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.98);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  }
-
-  .filters-button:active {
-    transform: translateY(0) scale(0.97);
-  }
-
-  .filters-button.has-active {
-    background: rgba(59, 130, 246, 0.15);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    color: rgba(59, 130, 246, 1);
-  }
-
-  .filters-button.has-active:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
-  }
-
-  .filters-button i {
-    font-size: 14px;
-  }
-
-  .button-label {
-    font-size: 14px;
-  }
-
-  /* Badge */
-  .badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    background: rgba(59, 130, 246, 0.9);
-    color: white;
-    border-radius: 10px;
-    font-size: 11px;
-    font-weight: 700;
-    line-height: 1;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  }
-
-  .filters-button.has-active .badge {
-    background: rgba(255, 255, 255, 0.95);
-    color: rgb(59, 130, 246);
-  }
-
-  /* Mobile Control Buttons - iOS Native Style */
-  .mobile-control-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 7px 14px;
-    background: rgba(120, 120, 128, 0.24);
-    border: none;
-    border-radius: 100px;
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 15px;
-    font-weight: 590;
-    letter-spacing: -0.24px;
-    cursor: pointer;
-    transition: background 0.15s ease-out;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
-    min-height: 48px;
-    min-width: 48px;
-  }
-
-  .mobile-control-button:active {
-    background: rgba(120, 120, 128, 0.32);
-    transition: background 0s;
-  }
-
-  .mobile-control-button i {
+    width: 48px;
+    height: 48px;
+    background: #252532;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 16px;
-    opacity: 0.95;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
   }
 
-  /* Mobile: Hide button label on very small screens */
+  .filter-button:hover {
+    background: #2d2d3d;
+    color: #fff;
+  }
+
+  .filter-button.has-active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+  }
+
+  .filter-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #3b82f6;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  /* Mobile responsive - hide labels on small screens */
   @media (max-width: 480px) {
-    .controls-group {
-      gap: 8px;
+    .gallery-topbar-controls {
+      padding: 8px 12px;
     }
 
-    .filters-button,
-    .mobile-control-button {
-      padding: 6px 11px;
-      font-size: 13px;
+    .sort-chip {
+      padding: 0 12px;
     }
 
-    .button-label {
-      font-size: 13px;
-    }
-
-    .badge {
-      min-width: 16px;
-      height: 16px;
-      font-size: 10px;
-    }
-  }
-
-  /* Very small screens - icon only for filters button */
-  @media (max-width: 380px) {
-    .button-label {
+    .chip-label {
       display: none;
     }
 
-    .filters-button {
-      padding: 8px 12px;
-      gap: 0;
-    }
-
-    .filters-button.has-active {
-      gap: 7px;
-    }
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .filters-button,
-    .mobile-control-button {
-      transition: none;
-    }
-  }
-
-  /* High contrast mode */
-  @media (prefers-contrast: high) {
-    .filters-button {
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid white;
-    }
-
-    .filters-button.has-active {
-      background: rgba(59, 130, 246, 0.8);
-      border: 2px solid white;
-    }
-
-    .mobile-control-button {
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid white;
-    }
-
-    .badge {
-      border: 1px solid white;
+    .sort-chip i {
+      font-size: 16px;
     }
   }
 </style>
