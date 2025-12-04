@@ -21,7 +21,33 @@ import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
 export const navigationCoordinator = $state({
   // Note: Edit and Export are slide-out panels, not navigation sections
   canAccessEditAndExportPanels: false,
+  // Track the module we came from when entering Settings (for return animation)
+  previousModuleBeforeSettings: null as ModuleId | null,
+  // Store the entry point for consistent exit animation
+  settingsEntryOrigin: { x: 90, y: 95 } as { x: number; y: number },
 });
+
+// Set the portal origin position for Settings transition
+// Called when settings button is clicked, before navigation
+export function setSettingsPortalOrigin(x: number, y: number) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // Convert to percentage for responsive positioning
+  const xPercent = (x / vw) * 100;
+  const yPercent = (y / vh) * 100;
+  // Store for reuse on exit
+  navigationCoordinator.settingsEntryOrigin = { x: xPercent, y: yPercent };
+  document.documentElement.style.setProperty('--settings-portal-x', `${xPercent}%`);
+  document.documentElement.style.setProperty('--settings-portal-y', `${yPercent}%`);
+}
+
+// Restore the original entry origin for exit animation
+// Creates consistent "dive in / pull out from same spot" experience
+export function restoreSettingsPortalOrigin() {
+  const { x, y } = navigationCoordinator.settingsEntryOrigin;
+  document.documentElement.style.setProperty('--settings-portal-x', `${x}%`);
+  document.documentElement.style.setProperty('--settings-portal-y', `${y}%`);
+}
 
 // Derived state as functions (Svelte 5 doesn't allow exporting $derived directly)
 export function currentModule() {
@@ -106,8 +132,42 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
   // Going TO dashboard - use pull-out animation
   const isGoingToDashboard = moduleId === 'dashboard';
 
+  // Settings portal transitions - special "dimension" feel
+  const isEnteringSettings = moduleId === 'settings';
+  const isExitingSettings = currentMod === 'settings';
+
   if (typeof doc.startViewTransition === 'function' && !isLeavingDashboard) {
-    if (isGoingToDashboard) {
+    if (isEnteringSettings) {
+      // ENTERING SETTINGS - Portal expand animation
+      // Store where we came from for the return journey
+      navigationCoordinator.previousModuleBeforeSettings = currentMod;
+
+      document.documentElement.classList.add('settings-portal-enter');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('settings-portal-enter');
+      });
+    } else if (isExitingSettings) {
+      // EXITING SETTINGS - Portal collapse animation
+      // Restore original entry point for consistent "pull out" to same spot
+      restoreSettingsPortalOrigin();
+      document.documentElement.classList.add('settings-portal-exit');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('settings-portal-exit');
+        navigationCoordinator.previousModuleBeforeSettings = null;
+      });
+    } else if (isGoingToDashboard) {
       // Pull-out effect when going back to dashboard
       document.documentElement.classList.add('back-transition');
 

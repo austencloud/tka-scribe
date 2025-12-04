@@ -333,6 +333,14 @@ export const FEEDBACK_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%)",
   },
   {
+    id: "my-feedback",
+    label: "My Feedback",
+    icon: '<i class="fas fa-list-check"></i>',
+    description: "Track your submitted feedback and confirmations",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+  {
     id: "manage",
     label: "Manage",
     icon: '<i class="fas fa-inbox"></i>',
@@ -429,7 +437,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     color: "#64748b", // Slate - neutral settings color
     description: "Configure app preferences",
     isMain: false, // Hidden from main module list, accessed via gear icon in sidebar footer
-    sections: [], // Settings handles its own internal tab navigation (like Dashboard)
+    sections: SETTINGS_TABS, // Profile, Props, Background, Visibility, Misc tabs
   },
 ];
 
