@@ -12,7 +12,7 @@
 -->
 <script lang="ts">
   import AnimationControls from "./AnimationControls.svelte";
-  import TrailSettingsPanel from "../trail/TrailSettingsPanel.svelte";
+  import SimpleTrailControls from "../trail/SimpleTrailControls.svelte";
   import MotionVisibilityButtons from "../trail/MotionVisibilityButtons.svelte";
   import ExpandToggleButton from "../inputs/ExpandToggleButton.svelte";
 
@@ -89,15 +89,8 @@
   </div>
 
   <!-- Trail Settings (Hidden in compact mode on mobile) -->
-  <!-- Uses shared animationSettings singleton - no settings prop needed -->
   {#if isSideBySideLayout || isExpanded}
-    <div class="control-group trail-group">
-      <TrailSettingsPanel
-        compact={true}
-        ultraCompact={!isSideBySideLayout}
-        hideVisibilityButtons={true}
-      />
-    </div>
+    <SimpleTrailControls />
   {/if}
 </div>
 

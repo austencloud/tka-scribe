@@ -79,7 +79,10 @@
         console.log("🔗 Loading composition from deep link");
         // TODO: Load composition by ID and open playback overlay
         // For now, just navigate to the specified tab
-        if (deepLinkData.tabId && (deepLinkData.tabId === "arrange" || deepLinkData.tabId === "browse")) {
+        if (
+          deepLinkData.tabId &&
+          (deepLinkData.tabId === "arrange" || deepLinkData.tabId === "browse")
+        ) {
           navigationState.setActiveTab(deepLinkData.tabId);
           animateState.setCurrentTab(deepLinkData.tabId as AnimateTab);
         }
@@ -127,11 +130,7 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: linear-gradient(
-      135deg,
-      rgba(20, 25, 35, 1) 0%,
-      rgba(15, 20, 30, 1) 100%
-    );
+    background: transparent;
     color: var(--foreground, #ffffff);
   }
 
