@@ -26,10 +26,11 @@
   let { cell, isPlaying, isPreviewing, isSelected, onClick }: Props = $props();
 
   const compState = getCompositionState();
-  const speed = $derived(compState.speed);
+  const bpm = $derived(compState.bpm);
 
   const isConfigured = $derived(isCellConfigured(cell));
-  const shouldRenderAnimation = $derived(isConfigured && (isPlaying || isPreviewing));
+  // Always render animation for configured cells - shows first frame when paused
+  const shouldRenderAnimation = $derived(isConfigured);
   const sequenceCount = $derived(cell.sequences.length);
   const primarySequence = $derived(cell.sequences[0] ?? null);
 
@@ -64,7 +65,7 @@
           {cell}
           {isPlaying}
           {isPreviewing}
-          {speed}
+          {bpm}
         />
       {:else}
         <!-- Static preview -->
@@ -112,23 +113,25 @@
 </button>
 
 <style>
-  /* CompositionCell - 48px minimum touch target */
+  /* CompositionCell - 1:1 aspect ratio, no gaps, no rounded edges */
   .composition-cell {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 48px;
-    min-height: 48px;
+    aspect-ratio: 1 / 1;
     background: rgba(30, 30, 45, 0.8);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(6px, 1.5vmin, 12px);
+    /* Thin border for subtle separation, shared between cells */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease;
     overflow: hidden;
     padding: 0;
     color: white;
     text-align: center;
+    container-type: size;
+    container-name: cell;
   }
 
   .composition-cell:hover {
@@ -139,12 +142,10 @@
   .composition-cell:focus {
     outline: none;
     border-color: rgba(59, 130, 246, 0.6);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   }
 
   .composition-cell.selected {
     border-color: rgba(59, 130, 246, 0.8);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
   }
 
   .composition-cell.configured {
@@ -175,7 +176,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(8px, 2vmin, 16px);
+    padding: clamp(4px, 3cqi, 16px);
   }
 
   /* Static preview */
@@ -184,7 +185,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1vmin, 8px);
+    gap: clamp(2px, 2cqi, 8px);
     width: 100%;
   }
 
@@ -192,11 +193,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: clamp(1px, 0.5cqi, 4px);
   }
 
   .sequence-name {
-    font-size: clamp(0.75rem, 2vmin, 1rem);
+    font-size: clamp(0.65rem, 4cqi, 1rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     white-space: nowrap;
@@ -206,7 +207,7 @@
   }
 
   .sequence-count {
-    font-size: clamp(0.625rem, 1.5vmin, 0.8rem);
+    font-size: clamp(0.55rem, 3cqi, 0.8rem);
     color: rgba(255, 255, 255, 0.5);
   }
 
@@ -214,11 +215,11 @@
   .rotation-badge {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
+    gap: clamp(2px, 1cqi, 6px);
+    padding: clamp(1px, 0.5cqi, 4px) clamp(4px, 2cqi, 10px);
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    font-size: clamp(0.625rem, 1.5vmin, 0.75rem);
+    border-radius: clamp(2px, 1cqi, 6px);
+    font-size: clamp(0.55rem, 3cqi, 0.75rem);
     color: rgba(255, 255, 255, 0.7);
   }
 
@@ -233,7 +234,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1vmin, 8px);
+    gap: clamp(2px, 2cqi, 8px);
     color: rgba(255, 255, 255, 0.4);
     transition: color 0.2s ease;
   }
@@ -246,15 +247,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(32px, 8vmin, 48px);
-    height: clamp(32px, 8vmin, 48px);
-    border: 2px dashed currentColor;
+    width: clamp(24px, 20cqi, 48px);
+    height: clamp(24px, 20cqi, 48px);
+    border: clamp(1px, 0.5cqi, 3px) dashed currentColor;
     border-radius: 50%;
-    font-size: clamp(1rem, 3vmin, 1.5rem);
+    font-size: clamp(0.75rem, 8cqi, 1.5rem);
   }
 
   .empty-label {
-    font-size: clamp(0.75rem, 2vmin, 0.9rem);
+    font-size: clamp(0.65rem, 4cqi, 0.9rem);
     font-weight: 500;
   }
 
@@ -263,7 +264,7 @@
     position: absolute;
     inset: -2px;
     border: 2px solid rgba(59, 130, 246, 0.8);
-    border-radius: inherit;
+    border-radius: 0;
     pointer-events: none;
     animation: pulse-ring 1.5s ease-in-out infinite;
   }

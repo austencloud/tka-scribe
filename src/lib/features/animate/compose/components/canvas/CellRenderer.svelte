@@ -18,16 +18,19 @@
     cell: CellConfig;
     isPlaying: boolean;
     isPreviewing: boolean;
-    speed?: number;
+    bpm?: number;
   }
 
-  let { cell, isPlaying, isPreviewing, speed = 1.0 }: Props = $props();
+  let { cell, isPlaying, isPreviewing, bpm = 60 }: Props = $props();
+
+  // Convert BPM to speed multiplier (60 BPM = 1.0x speed)
+  const speed = $derived(bpm / 60);
 
   // Animation state per cell
   const animationState = createAnimationPanelState();
 
-  // Services
-  let playbackController: IAnimationPlaybackController | null = null;
+  // Services - must be $state for reactive effects to track them
+  let playbackController = $state<IAnimationPlaybackController | null>(null);
   let initialized = $state(false);
   let loading = $state(false);
   let error = $state<string | null>(null);
@@ -170,7 +173,7 @@
       <AnimatorCanvas
         blueProp={animationState.bluePropState}
         redProp={animationState.redPropState}
-        gridVisible={false}
+        gridVisible={true}
         gridMode={animationState.sequenceData.gridMode ?? null}
         letter={currentLetter}
         beatData={animationState.sequenceData.beats[animationState.currentBeat - 1] || null}
@@ -202,6 +205,8 @@
     justify-content: center;
     overflow: hidden;
     background: transparent;
+    container-type: size;
+    container-name: renderer;
   }
 
   .canvas-container {
@@ -229,9 +234,9 @@
   }
 
   .spinner {
-    width: 24px;
-    height: 24px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    width: clamp(16px, 15cqi, 32px);
+    height: clamp(16px, 15cqi, 32px);
+    border: clamp(2px, 1cqi, 4px) solid rgba(255, 255, 255, 0.1);
     border-top-color: rgba(236, 72, 153, 0.8);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -248,14 +253,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: clamp(2px, 2cqi, 6px);
     color: rgba(239, 68, 68, 0.8);
-    font-size: clamp(0.65rem, 1.5vmin, 0.8rem);
+    font-size: clamp(0.55rem, 4cqi, 0.85rem);
     text-align: center;
+    padding: clamp(4px, 3cqi, 12px);
   }
 
   .error-state i {
-    font-size: 1.2em;
+    font-size: clamp(0.8rem, 8cqi, 1.5rem);
   }
 
   /* Empty state */
@@ -264,18 +270,18 @@
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.2);
-    font-size: clamp(1.5rem, 4vmin, 2rem);
+    font-size: clamp(1rem, 12cqi, 2.5rem);
   }
 
   /* Tunnel mode indicator */
   .tunnel-overlay-hint {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
-    padding: 2px 6px;
+    bottom: clamp(2px, 2cqi, 6px);
+    right: clamp(2px, 2cqi, 6px);
+    padding: clamp(1px, 1cqi, 4px) clamp(3px, 2cqi, 8px);
     background: rgba(0, 0, 0, 0.6);
-    border-radius: 4px;
-    font-size: 0.65rem;
+    border-radius: clamp(2px, 1cqi, 6px);
+    font-size: clamp(0.5rem, 3cqi, 0.75rem);
     color: rgba(255, 255, 255, 0.7);
     pointer-events: none;
   }

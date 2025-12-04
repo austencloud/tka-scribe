@@ -10,8 +10,10 @@
    */
 
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import { getCompositionState } from "../../state/composition-state.svelte";
   import type { CellType } from "../../domain/types";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   interface Props {
     isOpen: boolean;
@@ -22,6 +24,9 @@
   let { isOpen = $bindable(), cellId, onClose }: Props = $props();
 
   const compState = getCompositionState();
+
+  // Sequence browser state
+  let showSequenceBrowser = $state(false);
 
   // Get the cell being configured
   const cell = $derived(
@@ -66,13 +71,40 @@
     }
   }
 
+  // Check if we're on desktop (has navigation sidebar)
+  function isDesktop(): boolean {
+    return typeof window !== "undefined" && window.innerWidth >= 768;
+  }
+
   function handleBrowseSequences() {
-    // TODO: Open sequence browser modal/sheet
-    console.log("Browse sequences - coming soon");
+    // On desktop, close cell config first so sequence browser replaces it
+    if (isDesktop()) {
+      isOpen = false;
+    }
+    showSequenceBrowser = true;
+  }
+
+  function handleSequenceSelect(sequence: SequenceData) {
+    if (cellId) {
+      compState.addSequenceToCell(cellId, sequence);
+    }
+    showSequenceBrowser = false;
+    // Don't reopen config panel - let user see the result immediately
+    // They can click the cell again if they want to configure more
+    onClose();
+  }
+
+  function handleSequenceBrowserClose() {
+    showSequenceBrowser = false;
+    // Reopen cell config on desktop when closing browser without selecting
+    // (user probably wants to continue configuring)
+    if (isDesktop()) {
+      isOpen = true;
+    }
   }
 </script>
 
-<Drawer bind:isOpen placement="right" ariaLabel="Configure cell">
+<Drawer bind:isOpen placement="right" ariaLabel="Configure cell" class="cell-config-drawer">
   <div class="cell-config-sheet">
     {#if cell}
       <header class="sheet-header">
@@ -199,33 +231,48 @@
   </div>
 </Drawer>
 
+<!-- Sequence Browser Panel - auto-detects placement (right on desktop, bottom on mobile) -->
+<SequenceBrowserPanel
+  mode="primary"
+  show={showSequenceBrowser}
+  onSelect={handleSequenceSelect}
+  onClose={handleSequenceBrowserClose}
+/>
+
 <style>
+  /* Constrain drawer width for right-side panel */
+  :global(.cell-config-drawer) {
+    width: clamp(280px, 25vw, 360px) !important;
+    max-width: 90vw !important;
+  }
+
   .cell-config-sheet {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg, 24px);
-    padding: var(--spacing-md, 16px);
-    min-width: 280px;
-    max-width: 360px;
+    gap: clamp(16px, 4cqi, 28px);
+    padding: clamp(12px, 3cqi, 20px);
+    width: 100%;
     height: 100%;
     overflow-y: auto;
+    container-type: inline-size;
+    container-name: cellconfig;
   }
 
   .sheet-header {
     text-align: center;
-    padding-bottom: var(--spacing-md, 16px);
+    padding-bottom: clamp(12px, 3cqi, 20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .sheet-title {
-    font-size: clamp(1.1rem, 2.5vmin, 1.3rem);
+    font-size: clamp(1.1rem, 3.5cqi, 1.3rem);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 4px 0;
+    margin: 0 0 clamp(3px, 1cqi, 6px) 0;
   }
 
   .sheet-subtitle {
-    font-size: clamp(0.75rem, 1.8vmin, 0.9rem);
+    font-size: clamp(0.75rem, 2.5cqi, 0.9rem);
     color: rgba(255, 255, 255, 0.5);
     margin: 0;
     font-family: monospace;
@@ -235,14 +282,14 @@
   .config-section {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-sm, 8px);
+    gap: clamp(6px, 1.5cqi, 12px);
   }
 
   .section-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: clamp(0.8rem, 2vmin, 0.95rem);
+    font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
@@ -260,19 +307,19 @@
   .type-options {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs, 4px);
+    gap: clamp(3px, 1cqi, 6px);
   }
 
   /* Type option - 48px minimum touch target */
   .type-option {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm, 8px);
+    gap: clamp(6px, 2cqi, 12px);
     min-height: 48px;
-    padding: 12px 16px;
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: clamp(1px, 0.3cqi, 2px) solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(6px, 1.5cqi, 10px);
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -291,23 +338,23 @@
 
   .type-option i {
     font-size: 1.2em;
-    width: 24px;
+    width: clamp(20px, 6cqi, 28px);
     text-align: center;
   }
 
   .option-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: clamp(1px, 0.4cqi, 3px);
   }
 
   .option-label {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 2.8cqi, 1rem);
   }
 
   .option-description {
-    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 2.2cqi, 0.8rem);
     color: rgba(255, 255, 255, 0.5);
   }
 
@@ -316,23 +363,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-sm, 8px);
-    padding: var(--spacing-lg, 24px);
+    gap: clamp(6px, 1.5cqi, 12px);
+    padding: clamp(16px, 4cqi, 28px);
     background: rgba(255, 255, 255, 0.03);
-    border: 2px dashed rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: clamp(1px, 0.3cqi, 2px) dashed rgba(255, 255, 255, 0.1);
+    border-radius: clamp(6px, 1.5cqi, 10px);
     color: rgba(255, 255, 255, 0.5);
     text-align: center;
   }
 
   .empty-sequences i {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 5cqi, 2.2rem);
     opacity: 0.5;
   }
 
   .empty-sequences p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
   }
 
   /* Add sequence buttons - 48px minimum touch target */
@@ -341,12 +388,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: clamp(4px, 1cqi, 8px);
     min-height: 48px;
-    padding: 12px 16px;
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 6px;
+    border-radius: clamp(4px, 1cqi, 8px);
     color: rgba(16, 185, 129, 1);
     font-weight: 500;
     cursor: pointer;
@@ -362,32 +409,33 @@
   .sequence-list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs, 4px);
+    gap: clamp(3px, 1cqi, 6px);
   }
 
   .sequence-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-sm, 8px);
+    padding: clamp(6px, 1.5cqi, 10px);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border-radius: clamp(4px, 1cqi, 8px);
   }
 
   .sequence-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: clamp(1px, 0.4cqi, 3px);
   }
 
   .sequence-name {
     font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(0.85rem, 2.8cqi, 1rem);
   }
 
   .sequence-beats {
-    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 2.2cqi, 0.8rem);
     color: rgba(255, 255, 255, 0.5);
   }
 
@@ -395,7 +443,7 @@
   .remove-btn {
     min-width: 48px;
     min-height: 48px;
-    padding: 12px;
+    padding: clamp(10px, 2.5cqi, 14px);
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.4);
@@ -414,7 +462,7 @@
   .rotation-options {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-xs, 4px);
+    gap: clamp(3px, 1cqi, 6px);
   }
 
   /* Rotation button - 48px minimum touch target */
@@ -423,13 +471,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: clamp(2px, 0.8cqi, 5px);
     min-width: 48px;
     min-height: 48px;
-    padding: 8px;
+    padding: clamp(6px, 1.5cqi, 10px);
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border: clamp(1px, 0.3cqi, 2px) solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(4px, 1cqi, 8px);
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -447,41 +495,41 @@
   }
 
   .rotation-btn i {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 3cqi, 1.1rem);
     transition: transform 0.2s ease;
   }
 
   .rotation-btn span {
-    font-size: 0.75rem;
+    font-size: clamp(0.65rem, 2cqi, 0.8rem);
   }
 
   /* Trail Settings */
   .trail-preview {
-    padding: var(--spacing-md, 16px);
+    padding: clamp(12px, 3cqi, 18px);
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+    border-radius: clamp(6px, 1.5cqi, 10px);
   }
 
   .coming-soon {
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 2.2cqi, 0.85rem);
     color: rgba(255, 255, 255, 0.4);
-    margin: 0 0 var(--spacing-sm, 8px) 0;
+    margin: 0 0 clamp(6px, 1.5cqi, 10px) 0;
     font-style: italic;
   }
 
   .trail-summary {
     display: flex;
-    gap: var(--spacing-md, 16px);
-    font-size: 0.8rem;
+    gap: clamp(12px, 3cqi, 18px);
+    font-size: clamp(0.7rem, 2.2cqi, 0.85rem);
     color: rgba(255, 255, 255, 0.6);
   }
 
   /* Actions */
   .sheet-actions {
     display: flex;
-    gap: var(--spacing-sm, 8px);
+    gap: clamp(6px, 1.5cqi, 10px);
     margin-top: auto;
-    padding-top: var(--spacing-md, 16px);
+    padding-top: clamp(12px, 3cqi, 18px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
@@ -491,11 +539,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: clamp(4px, 1cqi, 8px);
     min-height: 48px;
-    padding: 12px 16px;
-    border-radius: 8px;
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
+    border-radius: clamp(6px, 1.5cqi, 10px);
     font-weight: 500;
+    font-size: clamp(0.85rem, 2.8cqi, 1rem);
     cursor: pointer;
     transition: all 0.15s ease;
   }

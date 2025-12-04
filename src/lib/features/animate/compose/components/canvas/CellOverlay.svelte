@@ -37,39 +37,39 @@
   }
 </script>
 
-<div class="cell-overlay" class:visible={isSelected}>
-  {#if isConfigured}
-    <!-- Actions for configured cells -->
-    <div class="overlay-actions">
-      <button
-        class="overlay-btn configure"
-        onclick={handleConfigure}
-        title="Configure cell"
-        aria-label="Configure cell"
-      >
-        <i class="fas fa-cog"></i>
-      </button>
+{#if isConfigured}
+  <!-- Floating toolbar for configured cells - only on hover, positioned at bottom -->
+  <div class="cell-toolbar">
+    <button
+      class="toolbar-btn configure"
+      onclick={handleConfigure}
+      title="Configure cell"
+      aria-label="Configure cell"
+    >
+      <i class="fas fa-cog"></i>
+    </button>
 
-      <button
-        class="overlay-btn type-toggle"
-        onclick={handleToggleType}
-        title="Toggle {cell.type === 'single' ? 'tunnel' : 'single'} mode"
-        aria-label="Toggle cell type"
-      >
-        <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}"></i>
-      </button>
+    <button
+      class="toolbar-btn type-toggle"
+      onclick={handleToggleType}
+      title="Toggle {cell.type === 'single' ? 'tunnel' : 'single'} mode"
+      aria-label="Toggle cell type"
+    >
+      <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}"></i>
+    </button>
 
-      <button
-        class="overlay-btn clear"
-        onclick={handleClear}
-        title="Clear cell"
-        aria-label="Clear cell"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  {:else}
-    <!-- Prompt for empty cells -->
+    <button
+      class="toolbar-btn clear"
+      onclick={handleClear}
+      title="Clear cell"
+      aria-label="Clear cell"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+{:else}
+  <!-- Full overlay prompt for empty cells -->
+  <div class="cell-overlay" class:visible={isSelected}>
     <div class="overlay-prompt">
       <button
         class="overlay-btn add"
@@ -81,36 +81,90 @@
         <span>Configure</span>
       </button>
     </div>
-  {/if}
-</div>
+  </div>
+{/if}
 
 <style>
+  /* Floating toolbar for configured cells - positioned at bottom */
+  .cell-toolbar {
+    position: absolute;
+    bottom: clamp(4px, 3cqi, 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(clamp(6px, 3cqi, 12px));
+    display: flex;
+    gap: clamp(2px, 1cqi, 6px);
+    padding: clamp(2px, 1cqi, 6px);
+    background: rgba(20, 20, 35, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: clamp(4px, 2cqi, 10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 10;
+  }
+
+  /* Show toolbar on hover only */
+  :global(.composition-cell:hover) .cell-toolbar {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Toolbar buttons - fluid sizing */
+  .toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(28px, 18cqi, 44px);
+    height: clamp(28px, 18cqi, 44px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
+    border-radius: clamp(4px, 1.5cqi, 8px);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: clamp(0.7rem, 5cqi, 1rem);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .toolbar-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .toolbar-btn.configure:hover {
+    background: rgba(59, 130, 246, 0.4);
+    border-color: rgba(59, 130, 246, 0.6);
+  }
+
+  .toolbar-btn.type-toggle:hover {
+    background: rgba(139, 92, 246, 0.4);
+    border-color: rgba(139, 92, 246, 0.6);
+  }
+
+  .toolbar-btn.clear:hover {
+    background: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.6);
+  }
+
+  /* Full overlay for empty cells only */
   .cell-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.4);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
-    border-radius: inherit;
+    border-radius: 0;
   }
 
-  /* Show on hover (parent handles this via :hover) */
+  /* Show overlay on hover or when selected (empty cells only) */
   :global(.composition-cell:hover) .cell-overlay,
-  :global(.composition-cell:focus-within) .cell-overlay,
   .cell-overlay.visible {
     opacity: 1;
     pointer-events: auto;
-  }
-
-  /* Overlay actions row */
-  .overlay-actions {
-    display: flex;
-    gap: clamp(4px, 1vmin, 8px);
   }
 
   /* Overlay prompt for empty cells */
@@ -118,23 +172,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: clamp(2px, 2cqi, 8px);
   }
 
-  /* Overlay buttons - 48px minimum touch target */
+  /* Overlay buttons - fluid touch target */
   .overlay-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-width: 48px;
-    min-height: 48px;
-    padding: clamp(12px, 2vmin, 16px);
+    gap: clamp(4px, 2cqi, 8px);
+    min-width: clamp(40px, 25cqi, 64px);
+    min-height: clamp(40px, 25cqi, 64px);
+    padding: clamp(8px, 4cqi, 16px) clamp(10px, 5cqi, 20px);
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: clamp(6px, 1.5vmin, 10px);
+    border-radius: clamp(4px, 2cqi, 10px);
     color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(0.875rem, 2.5vmin, 1.125rem);
+    font-size: clamp(0.7rem, 5cqi, 1rem);
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -142,36 +196,6 @@
   .overlay-btn:hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
-  }
-
-  .overlay-btn:active {
-    transform: scale(0.95);
-  }
-
-  .overlay-btn i {
-    font-size: 1em;
-  }
-
-  /* Button variants */
-  .overlay-btn.configure:hover {
-    background: rgba(59, 130, 246, 0.4);
-    border-color: rgba(59, 130, 246, 0.6);
-  }
-
-  .overlay-btn.type-toggle:hover {
-    background: rgba(139, 92, 246, 0.4);
-    border-color: rgba(139, 92, 246, 0.6);
-  }
-
-  .overlay-btn.clear:hover {
-    background: rgba(239, 68, 68, 0.4);
-    border-color: rgba(239, 68, 68, 0.6);
-  }
-
-  .overlay-btn.add {
-    min-height: 48px;
-    padding: clamp(12px, 2vmin, 16px) clamp(16px, 3vmin, 24px);
   }
 
   .overlay-btn.add:hover {
@@ -183,22 +207,20 @@
     font-weight: 500;
   }
 
+  /* Hide text on very small cells */
+  @container cell (max-width: 120px) {
+    .overlay-btn span {
+      display: none;
+    }
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .cell-overlay {
-      transition: none;
-    }
-
+    .cell-toolbar,
+    .cell-overlay,
+    .toolbar-btn,
     .overlay-btn {
       transition: none;
-    }
-
-    .overlay-btn:hover {
-      transform: none;
-    }
-
-    .overlay-btn:active {
-      transform: none;
     }
   }
 </style>

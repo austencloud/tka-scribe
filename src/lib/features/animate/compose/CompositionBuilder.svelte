@@ -12,6 +12,7 @@
    * - Toggle between live preview and static thumbnails
    * - Overlay controls on hover/tap
    * - Templates accessible via button (secondary)
+   * - Inline inspector panel on desktop (no overlay drawers)
    */
 
   import { onMount } from "svelte";
@@ -20,6 +21,7 @@
   import CanvasControls from "./components/controls/CanvasControls.svelte";
   import TemplatesSheet from "./components/sheets/TemplatesSheet.svelte";
   import CellConfigSheet from "./components/sheets/CellConfigSheet.svelte";
+  import CellInspector from "./components/panels/CellInspector.svelte";
 
   // Get singleton state (renamed to avoid conflict with $state rune)
   const compState = getCompositionState();
@@ -32,6 +34,9 @@
   const isTemplatesOpen = $derived(compState.isTemplatesOpen);
   const isCellConfigOpen = $derived(compState.isCellConfigOpen);
   const selectedCellId = $derived(compState.selectedCellId);
+
+  // Detect desktop vs mobile for inspector placement
+  let isDesktop = $state(false);
 
   // Interaction tracking for overlay visibility
   let lastInteraction = $state(Date.now());
@@ -65,17 +70,29 @@
       return;
     }
 
-    // Open cell configuration
+    // Select cell for configuration
+    // On desktop, inline inspector shows automatically
+    // On mobile, opens drawer
     compState.openCellConfig(cellId);
+  }
+
+  function updateDesktopState() {
+    isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
   }
 
   onMount(() => {
     console.log("🎨 CompositionBuilder mounted");
+    updateDesktopState();
+
+    // Listen for resize to update desktop state
+    window.addEventListener("resize", updateDesktopState);
+    return () => window.removeEventListener("resize", updateDesktopState);
   });
 </script>
 
 <div
   class="composition-builder"
+  class:with-inspector={isDesktop}
   onmousemove={handleInteraction}
   ontouchstart={handleInteraction}
   role="application"
@@ -99,6 +116,11 @@
     {/if}
   </div>
 
+  <!-- Inline Inspector Panel (desktop only) -->
+  {#if isDesktop}
+    <CellInspector />
+  {/if}
+
   <!-- Templates Sheet (Drawer) -->
   <TemplatesSheet
     isOpen={isTemplatesOpen}
@@ -106,12 +128,14 @@
     onSelectTemplate={(id: string) => compState.applyTemplate(id)}
   />
 
-  <!-- Cell Configuration Sheet (Drawer) -->
-  <CellConfigSheet
-    isOpen={isCellConfigOpen}
-    cellId={selectedCellId}
-    onClose={() => compState.closeCellConfig()}
-  />
+  <!-- Cell Configuration Sheet (Drawer - mobile only) -->
+  {#if !isDesktop}
+    <CellConfigSheet
+      isOpen={isCellConfigOpen}
+      cellId={selectedCellId}
+      onClose={() => compState.closeCellConfig()}
+    />
+  {/if}
 </div>
 
 <style>
@@ -127,6 +151,13 @@
       rgba(10, 10, 20, 1) 100%
     );
     overflow: hidden;
+    container-type: size;
+    container-name: builder;
+  }
+
+  /* Side-by-side layout when inspector is present */
+  .composition-builder.with-inspector {
+    flex-direction: row;
   }
 
   .canvas-area {
@@ -135,8 +166,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-md, 16px);
+    /* Fluid padding based on container size */
+    /* Extra bottom padding to account for overlay controls bar */
+    padding: clamp(8px, 2cqi, 24px);
+    padding-bottom: clamp(80px, 12cqb, 120px);
     min-height: 0;
+    min-width: 0;
+    container-type: size;
+    container-name: canvas;
   }
 
   /* Overlay Controls */
@@ -145,7 +182,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: var(--spacing-md, 16px);
+    padding: clamp(12px, 3cqi, 24px);
     background: linear-gradient(
       to top,
       rgba(0, 0, 0, 0.8) 0%,

@@ -149,39 +149,41 @@
 
 <style>
   .templates-sheet {
-    padding: var(--spacing-md, 16px);
+    padding: clamp(12px, 3cqi, 20px);
     max-height: 70vh;
     overflow-y: auto;
+    container-type: inline-size;
+    container-name: templates;
   }
 
   .sheet-header {
     text-align: center;
-    margin-bottom: var(--spacing-lg, 24px);
+    margin-bottom: clamp(16px, 4cqi, 28px);
   }
 
   .sheet-title {
-    font-size: clamp(1.25rem, 3vmin, 1.5rem);
+    font-size: clamp(1.25rem, 4cqi, 1.5rem);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 4px 0;
+    margin: 0 0 clamp(3px, 1cqi, 6px) 0;
   }
 
   .sheet-subtitle {
-    font-size: clamp(0.8rem, 2vmin, 0.95rem);
+    font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
   }
 
   /* Sections */
   .templates-section {
-    margin-bottom: var(--spacing-lg, 24px);
+    margin-bottom: clamp(16px, 4cqi, 28px);
   }
 
   .section-title {
-    font-size: clamp(0.85rem, 2.2vmin, 1rem);
+    font-size: clamp(0.85rem, 2.8cqi, 1rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
-    margin: 0 0 var(--spacing-sm, 8px) 0;
+    margin: 0 0 clamp(6px, 1.5cqi, 12px) 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -193,7 +195,7 @@
     justify-content: space-between;
     width: 100%;
     min-height: 48px;
-    padding: 12px 0;
+    padding: clamp(10px, 2.5cqi, 14px) 0;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.7);
@@ -211,8 +213,8 @@
   /* Templates Grid */
   .templates-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: var(--spacing-sm, 8px);
+    grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 30cqi, 160px), 1fr));
+    gap: clamp(6px, 1.5cqi, 12px);
   }
 
   /* Template Card */
@@ -220,11 +222,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-sm, 8px);
-    padding: var(--spacing-md, 16px);
+    gap: clamp(6px, 1.5cqi, 12px);
+    padding: clamp(12px, 3cqi, 20px);
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(8px, 2vmin, 12px);
+    border: clamp(1px, 0.3cqi, 2px) solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(6px, 2cqi, 14px);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -232,7 +234,7 @@
   .template-card:hover {
     background: color-mix(in srgb, var(--template-color) 15%, transparent);
     border-color: var(--template-color);
-    transform: translateY(-2px);
+    transform: translateY(clamp(-1px, -0.3cqi, -3px));
   }
 
   .template-card:active {
@@ -243,26 +245,26 @@
   .template-preview {
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    padding: 8px;
+    gap: clamp(2px, 0.6cqi, 4px);
+    padding: clamp(6px, 1.5cqi, 10px);
     background: rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
+    border-radius: clamp(4px, 1cqi, 8px);
   }
 
   .preview-row {
     display: flex;
-    gap: 3px;
+    gap: clamp(2px, 0.6cqi, 4px);
   }
 
   .preview-cell {
-    width: clamp(24px, 6vmin, 32px);
-    height: clamp(24px, 6vmin, 32px);
+    width: clamp(20px, 6cqi, 36px);
+    height: clamp(20px, 6cqi, 36px);
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--template-color, rgba(255, 255, 255, 0.2));
-    border-radius: 4px;
-    font-size: 0.6rem;
+    border-radius: clamp(2px, 0.6cqi, 5px);
+    font-size: clamp(0.5rem, 1.5cqi, 0.7rem);
     color: rgba(255, 255, 255, 0.8);
   }
 
@@ -282,7 +284,7 @@
   .tunnel-indicator,
   .mirror-indicator,
   .rotation-indicator {
-    font-size: 0.55rem;
+    font-size: clamp(0.45rem, 1.4cqi, 0.6rem);
     opacity: 0.9;
   }
 
@@ -291,18 +293,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: clamp(1px, 0.4cqi, 3px);
     text-align: center;
   }
 
   .template-name {
-    font-size: clamp(0.8rem, 2vmin, 0.95rem);
+    font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
   }
 
   .template-description {
-    font-size: clamp(0.65rem, 1.6vmin, 0.75rem);
+    font-size: clamp(0.65rem, 2cqi, 0.75rem);
     color: rgba(255, 255, 255, 0.5);
   }
 
@@ -311,20 +313,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    gap: clamp(6px, 1.5cqi, 10px);
+    padding: clamp(6px, 1.5cqi, 12px) clamp(12px, 3cqi, 20px);
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    border-radius: clamp(6px, 1.5cqi, 10px);
     color: rgba(255, 255, 255, 0.5);
-    font-size: clamp(0.7rem, 1.8vmin, 0.85rem);
+    font-size: clamp(0.7rem, 2.2cqi, 0.85rem);
   }
 
   .custom-hint i {
     color: rgba(59, 130, 246, 0.7);
   }
 
-  /* Responsive */
-  @media (max-width: 480px) {
+  /* Responsive container query */
+  @container templates (max-width: 400px) {
     .templates-grid {
       grid-template-columns: repeat(2, 1fr);
     }

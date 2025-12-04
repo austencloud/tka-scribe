@@ -29,11 +29,17 @@
   const gridTemplate = $derived(
     `repeat(${composition.layout.rows}, 1fr) / repeat(${composition.layout.cols}, 1fr)`
   );
+
+  // Aspect ratio: cols:rows (since each cell is 1:1)
+  const aspectRatio = $derived(
+    `${composition.layout.cols} / ${composition.layout.rows}`
+  );
 </script>
 
 <div
   class="composition-canvas"
   style:grid-template={gridTemplate}
+  style:aspect-ratio={aspectRatio}
   role="grid"
   aria-label="Composition grid with {composition.layout.rows} rows and {composition.layout.cols} columns"
 >
@@ -51,39 +57,17 @@
 <style>
   .composition-canvas {
     display: grid;
-    gap: clamp(4px, 1vmin, 12px);
-    width: 100%;
+    gap: 0;
+    width: auto;
     height: 100%;
-    max-width: min(95vw, 1200px);
-    max-height: min(85vh, 900px);
-    aspect-ratio: 16 / 10;
-    padding: clamp(4px, 1vmin, 12px);
+    max-height: min(90cqb, 100%);
+    /* Canvas aspect ratio matches grid layout (set via style binding) */
     background: rgba(0, 0, 0, 0.3);
-    border-radius: clamp(8px, 2vmin, 16px);
+    border-radius: 0;
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.4),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .composition-canvas {
-      aspect-ratio: 4 / 3;
-      max-height: 70vh;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .composition-canvas {
-      aspect-ratio: 3 / 4;
-      max-height: 60vh;
-    }
-  }
-
-  /* Portrait orientation */
-  @media (orientation: portrait) and (max-height: 700px) {
-    .composition-canvas {
-      aspect-ratio: 1 / 1;
-    }
+      0 clamp(4px, 1cqi, 12px) clamp(16px, 4cqi, 40px) rgba(0, 0, 0, 0.4);
+    container-type: size;
+    container-name: grid;
+    overflow: hidden;
   }
 </style>

@@ -5,14 +5,14 @@
    * Provides:
    * - Play/Pause/Stop playback controls
    * - Preview mode toggle (static/live)
-   * - Speed selector
+   * - BPM control (+/- buttons)
    * - Layout picker
    * - Templates button
    */
 
   import { getCompositionState } from "../../state/composition-state.svelte";
   import { LAYOUT_PRESETS, type LayoutPresetKey } from "../../domain/types";
-  import type { PlaybackSpeed } from "../../domain/types";
+  import TappableBpmControl from "$lib/features/animate/components/controls/TappableBpmControl.svelte";
 
   // Renamed to avoid conflict with $state rune
   const compState = getCompositionState();
@@ -20,12 +20,9 @@
   // Reactive bindings
   const isPlaying = $derived(compState.isPlaying);
   const isPreviewing = $derived(compState.isPreviewing);
-  const speed = $derived(compState.speed);
+  const bpm = $derived(compState.bpm);
   const canPlay = $derived(compState.canPlay);
   const layout = $derived(compState.composition.layout);
-
-  // Speed options
-  const SPEED_OPTIONS: PlaybackSpeed[] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2];
 
   // Current layout key
   const currentLayoutKey = $derived(
@@ -36,7 +33,6 @@
 
   // Layout dropdown state
   let showLayoutDropdown = $state(false);
-  let showSpeedDropdown = $state(false);
 
   function handlePlayPause() {
     compState.togglePlayPause();
@@ -50,9 +46,8 @@
     compState.togglePreview();
   }
 
-  function handleSpeedChange(newSpeed: PlaybackSpeed) {
-    compState.setSpeed(newSpeed);
-    showSpeedDropdown = false;
+  function handleBpmChange(newBpm: number) {
+    compState.setBpm(newBpm);
   }
 
   function handleLayoutChange(key: LayoutPresetKey) {
@@ -70,9 +65,6 @@
     const target = e.target as HTMLElement;
     if (!target.closest(".layout-picker")) {
       showLayoutDropdown = false;
-    }
-    if (!target.closest(".speed-picker")) {
-      showSpeedDropdown = false;
     }
   }
 </script>
@@ -103,33 +95,8 @@
       <i class="fas fa-stop"></i>
     </button>
 
-    <!-- Speed Picker -->
-    <div class="speed-picker">
-      <button
-        class="control-btn speed-btn"
-        onclick={() => (showSpeedDropdown = !showSpeedDropdown)}
-        title="Playback speed"
-        aria-label="Change playback speed"
-        aria-expanded={showSpeedDropdown}
-      >
-        <span>{speed}x</span>
-        <i class="fas fa-chevron-down"></i>
-      </button>
-
-      {#if showSpeedDropdown}
-        <div class="dropdown speed-dropdown">
-          {#each SPEED_OPTIONS as option}
-            <button
-              class="dropdown-item"
-              class:active={speed === option}
-              onclick={() => handleSpeedChange(option)}
-            >
-              {option}x
-            </button>
-          {/each}
-        </div>
-      {/if}
-    </div>
+    <!-- BPM Control (tap to set tempo, hold to edit) -->
+    <TappableBpmControl {bpm} onBpmChange={handleBpmChange} />
   </div>
 
   <!-- Center: Preview Toggle -->
@@ -205,32 +172,34 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-md, 16px);
-    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    gap: clamp(8px, 2cqi, 20px);
+    padding: clamp(6px, 1.5cqi, 12px) clamp(10px, 2cqi, 20px);
     background: rgba(20, 20, 35, 0.95);
-    border-radius: clamp(8px, 2vmin, 12px);
+    border-radius: clamp(6px, 2cqi, 14px);
     backdrop-filter: blur(8px);
+    container-type: inline-size;
+    container-name: controls;
   }
 
   .control-group {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs, 4px);
+    gap: clamp(2px, 1cqi, 8px);
   }
 
-  /* Control buttons - 48px minimum touch target */
+  /* Control buttons - fluid touch target */
   .control-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: 48px;
-    padding: 12px 16px;
+    gap: clamp(4px, 1cqi, 8px);
+    min-height: clamp(40px, 8cqi, 52px);
+    padding: clamp(8px, 2cqi, 14px) clamp(10px, 2.5cqi, 18px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(6px, 1.5vmin, 10px);
+    border-radius: clamp(4px, 1.5cqi, 10px);
     color: rgba(255, 255, 255, 0.85);
-    font-size: clamp(0.8rem, 2vmin, 0.95rem);
+    font-size: clamp(0.75rem, 2.5cqi, 0.95rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -299,38 +268,27 @@
     border-color: rgba(139, 92, 246, 0.6);
   }
 
-  /* Dropdowns */
-  .layout-picker,
-  .speed-picker {
+  /* Layout Dropdown */
+  .layout-picker {
     position: relative;
   }
 
-  .dropdown {
+  .layout-dropdown {
     position: absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    margin-bottom: 8px;
+    margin-bottom: clamp(6px, 1.5cqi, 12px);
     background: rgba(30, 30, 50, 0.98);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(6px, 1.5vmin, 10px);
-    padding: var(--spacing-xs, 4px);
-    min-width: 100px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border-radius: clamp(6px, 1.5cqi, 10px);
+    padding: clamp(3px, 1cqi, 6px);
+    box-shadow: 0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px) rgba(0, 0, 0, 0.5);
     z-index: 100;
-  }
-
-  .layout-dropdown {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    min-width: 180px;
-  }
-
-  .speed-dropdown {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    gap: clamp(3px, 1cqi, 6px);
+    min-width: clamp(140px, 35cqi, 200px);
   }
 
   /* Dropdown items - 48px minimum touch target */
@@ -338,14 +296,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: clamp(4px, 1cqi, 8px);
     min-height: 48px;
-    padding: 12px;
+    padding: clamp(10px, 2.5cqi, 14px);
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: clamp(4px, 1cqi, 8px);
     color: rgba(255, 255, 255, 0.8);
-    font-size: clamp(0.8rem, 2vmin, 0.9rem);
+    font-size: clamp(0.8rem, 2.5cqi, 0.9rem);
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -364,28 +322,28 @@
   .layout-preview {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: clamp(1px, 0.5cqi, 3px);
   }
 
   .layout-row {
     display: flex;
-    gap: 2px;
+    gap: clamp(1px, 0.5cqi, 3px);
   }
 
   .layout-cell {
-    width: 8px;
-    height: 8px;
+    width: clamp(6px, 2cqi, 10px);
+    height: clamp(6px, 2cqi, 10px);
     background: rgba(255, 255, 255, 0.4);
-    border-radius: 2px;
+    border-radius: clamp(1px, 0.3cqi, 3px);
   }
 
-  /* Labels hidden on small screens */
+  /* Labels hidden on small containers */
   .preview-label,
   .templates-label {
     display: none;
   }
 
-  @media (min-width: 600px) {
+  @container controls (min-width: 500px) {
     .preview-label,
     .templates-label {
       display: inline;

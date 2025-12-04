@@ -11,7 +11,6 @@ import type {
   Composition,
   CellConfig,
   GridLayout,
-  PlaybackSpeed,
   CellType,
 } from "../domain/types";
 import {
@@ -30,7 +29,7 @@ import { createCellsFromTemplate, getTemplateById } from "../domain/templates";
 const STORAGE_KEYS = {
   COMPOSITION: "compose-current-composition",
   PREVIEW_MODE: "compose-preview-mode",
-  PLAYBACK_SPEED: "compose-playback-speed",
+  PLAYBACK_BPM: "compose-playback-bpm",
 } as const;
 
 // ============================================================================
@@ -102,7 +101,7 @@ export function createCompositionState() {
   // Playback state
   let isPlaying = $state(false);
   let isPreviewing = $state(loadFromStorage(STORAGE_KEYS.PREVIEW_MODE, false));
-  let speed = $state<PlaybackSpeed>(loadFromStorage(STORAGE_KEYS.PLAYBACK_SPEED, 1));
+  let bpm = $state<number>(loadFromStorage(STORAGE_KEYS.PLAYBACK_BPM, 60));
   let shouldLoop = $state(true);
   let currentBeat = $state(0);
 
@@ -318,10 +317,10 @@ export function createCompositionState() {
     console.log(`👁️ Composition: Preview mode ${isPreviewing ? "ON" : "OFF"}`);
   }
 
-  function setSpeed(newSpeed: PlaybackSpeed) {
-    speed = newSpeed;
-    saveToStorage(STORAGE_KEYS.PLAYBACK_SPEED, speed);
-    console.log(`⏩ Composition: Speed set to ${speed}x`);
+  function setBpm(newBpm: number) {
+    bpm = Math.max(30, Math.min(180, newBpm));
+    saveToStorage(STORAGE_KEYS.PLAYBACK_BPM, bpm);
+    console.log(`⏩ Composition: BPM set to ${bpm}`);
   }
 
   function setLoop(loop: boolean) {
@@ -428,7 +427,7 @@ export function createCompositionState() {
     get composition() { return composition; },
     get isPlaying() { return isPlaying; },
     get isPreviewing() { return isPreviewing; },
-    get speed() { return speed; },
+    get bpm() { return bpm; },
     get shouldLoop() { return shouldLoop; },
     get currentBeat() { return currentBeat; },
 
@@ -465,7 +464,7 @@ export function createCompositionState() {
     stop,
     togglePlayPause,
     togglePreview,
-    setSpeed,
+    setBpm,
     setLoop,
     setBeat,
 
