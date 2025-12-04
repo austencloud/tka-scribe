@@ -89,14 +89,15 @@
     <div class="inspector-content">
       <!-- Cell Type -->
       <section class="inspector-section">
-        <label class="section-label">Type</label>
-        <div class="type-toggle">
+        <span class="section-label" id="type-label">Type</span>
+        <div class="type-toggle" role="group" aria-labelledby="type-label">
           {#each cellTypes as option}
             <button
               class="type-btn"
               class:selected={cell.type === option.value}
               onclick={() => handleTypeChange(option.value)}
               title={option.label}
+              aria-label={option.label}
             >
               <i class="fas {option.icon}"></i>
             </button>
@@ -106,12 +107,12 @@
 
       <!-- Sequences -->
       <section class="inspector-section">
-        <label class="section-label">
+        <span class="section-label" id="sequence-label">
           Sequence
           {#if cell.type === "tunnel"}
             <span class="count">{cell.sequences.length}/4</span>
           {/if}
-        </label>
+        </span>
 
         {#if cell.sequences.length === 0}
           <button class="add-sequence-btn" onclick={handleBrowseSequences}>
@@ -129,6 +130,7 @@
                     selectedCellId &&
                     compState.removeSequenceFromCell(selectedCellId, index)}
                   title="Remove"
+                  aria-label="Remove {sequence.name}"
                 >
                   <i class="fas fa-times"></i>
                 </button>
@@ -140,6 +142,7 @@
                 class="add-more-btn"
                 onclick={handleBrowseSequences}
                 title="Add sequence"
+                aria-label="Add sequence"
               >
                 <i class="fas fa-plus"></i>
               </button>
@@ -151,14 +154,15 @@
       <!-- Rotation (single mode only) -->
       {#if cell.type === "single"}
         <section class="inspector-section">
-          <label class="section-label">Rotation</label>
-          <div class="rotation-grid">
+          <span class="section-label" id="rotation-label">Rotation</span>
+          <div class="rotation-grid" role="group" aria-labelledby="rotation-label">
             {#each rotationOptions as rotation}
               <button
                 class="rotation-btn"
                 class:selected={cell.rotationOffset === rotation}
                 onclick={() => handleRotationChange(rotation)}
                 title="{rotation}°"
+                aria-label="Rotate {rotation} degrees"
               >
                 <i
                   class="fas fa-arrow-up"

@@ -12,7 +12,7 @@
   import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
   import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
   import type { ISequenceService } from "../../services/contracts/ISequenceService";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -110,18 +110,30 @@
 
   // Resolve services on mount
   onMount(() => {
+    // Resolve core services immediately (should be available from create module loading)
     try {
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
-      playbackController = resolve<IAnimationPlaybackController>(
-        TYPES.IAnimationPlaybackController
-      );
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
     } catch (error) {
-      console.error("Failed to resolve animation services:", error);
-      animationPanelState.setError("Failed to initialize animation services");
+      console.error("Failed to resolve core services:", error);
     }
+
+    // Ensure animator module is loaded and resolve animation-specific services
+    loadFeatureModule("animate").then(() => {
+      try {
+        playbackController = resolve<IAnimationPlaybackController>(
+          TYPES.IAnimationPlaybackController
+        );
+      } catch (error) {
+        console.error("Failed to resolve animation services:", error);
+        animationPanelState.setError("Failed to initialize animation services");
+      }
+    }).catch((error) => {
+      console.error("Failed to load animator module:", error);
+      animationPanelState.setError("Failed to load animation module");
+    });
 
     return undefined;
   });

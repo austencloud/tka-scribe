@@ -7,7 +7,7 @@
 -->
 <script lang="ts">
   import AnimatorCanvas from "./AnimatorCanvas.svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { animationSettings } from "../state/animation-settings-state.svelte";
@@ -44,17 +44,23 @@
 
   // Initialize services on mount
   onMount(() => {
-    try {
-      playbackController = resolve(
-        TYPES.IAnimationPlaybackController
-      ) as IAnimationPlaybackController;
-    } catch (err) {
-      console.error(
-        "ShareAnimationViewer: Failed to resolve playback controller:",
-        err
-      );
-      error = "Failed to initialize animation services";
-    }
+    // Load animator module first to ensure animation services are bound
+    loadFeatureModule("animate").then(() => {
+      try {
+        playbackController = resolve(
+          TYPES.IAnimationPlaybackController
+        ) as IAnimationPlaybackController;
+      } catch (err) {
+        console.error(
+          "ShareAnimationViewer: Failed to resolve playback controller:",
+          err
+        );
+        error = "Failed to initialize animation services";
+      }
+    }).catch((err) => {
+      console.error("ShareAnimationViewer: Failed to load animator module:", err);
+      error = "Failed to load animation module";
+    });
 
     // Cleanup on unmount
     return () => {

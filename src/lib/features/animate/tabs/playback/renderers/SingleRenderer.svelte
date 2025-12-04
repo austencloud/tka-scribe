@@ -7,7 +7,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-  import { resolve, loadPixiModule } from "$lib/shared/inversify/di";
+  import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
@@ -51,6 +51,9 @@
   onMount(() => {
     const initialize = async () => {
       try {
+        // Ensure animator module is loaded (handles HMR recovery)
+        await loadFeatureModule("animate");
+
         playbackController = resolve(
           TYPES.IAnimationPlaybackController
         ) as IAnimationPlaybackController;
