@@ -373,6 +373,7 @@
                 : selectedBeatNumber === 0}
               {isMultiSelectMode}
               {shouldOrbitAroundCenter}
+              isPracticeBeat={practiceBeatNumber === 0}
               onLongPress={onStartLongPress}
               {activeMode}
             />

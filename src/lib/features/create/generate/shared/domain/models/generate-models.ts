@@ -11,6 +11,7 @@ import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType
 import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
 // ============================================================================
 // DATA CONTRACTS (Domain Models)
@@ -26,6 +27,12 @@ export interface GenerationOptions {
   turnIntensity?: number | undefined;
   sliceSize?: SliceSize | undefined; // For circular generation
   capType?: CAPType | undefined; // CAP type for circular generation
+
+  // Customize options - advanced constraints for generation
+  startPosition?: PictographData | null; // Specific start position constraint
+  endPosition?: PictographData | null; // Specific end position constraint
+  mustContainLetters?: Letter[]; // Letters that must appear in the sequence
+  mustNotContainLetters?: Letter[]; // Letters that must NOT appear in the sequence
 }
 
 export interface LetterDerivationResult {

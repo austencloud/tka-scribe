@@ -33,6 +33,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   import { setCreateModuleContext } from "../context/create-module-context";
   import CAPCoordinator from "./coordinators/CAPCoordinator.svelte";
   import EditCoordinator from "./coordinators/EditCoordinator.svelte";
+  import CustomizeCoordinator from "./coordinators/CustomizeCoordinator.svelte";
   import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
   import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
 
@@ -206,6 +207,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     else if (panelState.isFilterPanelOpen) currentPanelOpen = "filter";
     else if (panelState.isSequenceActionsPanelOpen) currentPanelOpen = "sequenceActions";
     else if (panelState.isCAPPanelOpen) currentPanelOpen = "cap";
+    else if (panelState.isCustomizePanelOpen) currentPanelOpen = "customize";
 
     // If a panel was open and is now closed (user closed it), clear the saved state
     if (previousPanelOpen !== null && currentPanelOpen === null) {
@@ -237,6 +239,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         else if (panelState.isFilterPanelOpen) openPanelId = "filter";
         else if (panelState.isSequenceActionsPanelOpen) openPanelId = "sequenceActions";
         else if (panelState.isCAPPanelOpen) openPanelId = "cap";
+        else if (panelState.isCustomizePanelOpen) openPanelId = "customize";
 
         if (openPanelId) {
           logger.log(`Saving open panel "${openPanelId}" for tab "${previousModule}:${previousTab}"`);
@@ -257,6 +260,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         panelState.closeFilterPanel();
         panelState.closeSequenceActionsPanel();
         panelState.closeCAPPanel();
+        panelState.closeCustomizePanel();
       }
 
       // Restore panel for the new tab (if returning to create module or switching tabs within it)
@@ -736,6 +740,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 
   <!-- CAP Coordinator -->
   <CAPCoordinator />
+
+  <!-- Customize Options Coordinator -->
+  <CustomizeCoordinator />
 
   <!-- Sequence Transfer Confirmation Dialog -->
   <TransferConfirmDialog

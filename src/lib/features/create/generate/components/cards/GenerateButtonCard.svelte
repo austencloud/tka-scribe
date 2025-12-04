@@ -8,14 +8,16 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   import { onMount } from "svelte";
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
+  import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { uiConfigToGenerationOptions } from "$lib/features/create/generate/shared/utils/config-mapper";
 
-  let { isGenerating, onGenerateClicked, config } = $props<{
+  let { isGenerating, onGenerateClicked, config, customizeOptions = null } = $props<{
     isGenerating: boolean;
     onGenerateClicked: (options: any) => Promise<void>;
     config: UIGenerationConfig;
+    customizeOptions?: CustomizeOptions | null;
   }>();
 
   let hapticService: IHapticFeedbackService | null = $state(null);
@@ -28,7 +30,8 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
   async function handleClick() {
     hapticService?.trigger("selection");
-    const generationOptions = uiConfigToGenerationOptions(config, PropType.FAN);
+    // Pass customize options to include start/end position and letter constraints
+    const generationOptions = uiConfigToGenerationOptions(config, PropType.FAN, customizeOptions);
     await onGenerateClicked(generationOptions);
   }
 </script>

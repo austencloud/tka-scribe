@@ -2,6 +2,7 @@ import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
 import type { DifficultyLevel, GenerationMode, PropContinuity } from '../../domain/models/generate-models';
 import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
 
 /**
  * Card descriptor for rendering in the UI
@@ -29,7 +30,10 @@ export interface CardHandlers {
   handleGenerationModeChange: (mode: GenerationMode) => void;
   handleCAPTypeChange: (capType: CAPType) => void;
   handleSliceSizeChange: (sliceSize: SliceSize) => void;
+  handleCustomizeChange?: (options: CustomizeOptions) => void;
   handleGenerateClick?: () => Promise<void>;
+  // Customize options (optional, for when customize card is shown)
+  customizeOptions?: CustomizeOptions;
 }
 
 /**

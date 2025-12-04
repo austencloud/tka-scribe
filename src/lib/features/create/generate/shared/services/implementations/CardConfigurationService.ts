@@ -138,10 +138,30 @@ export class CardConfigurationService implements ICardConfigurationService {
       });
     }
 
+    // Customize Options Card - for advanced constraints
+    // In circular mode: Add to row 3 with CAP/SliceSize
+    // In freeform mode: Add to final row with Generate button
+    const hasCustomizeCard = handlers.handleCustomizeChange && handlers.customizeOptions;
+
     // Conditional: CAP Type (only in Circular mode)
-    // Shares row 3 with SliceSize if shown: SliceSize=2 cols, CAP=4 cols
-    // Takes full row if SliceSize hidden: CAP=6 cols
+    // Row 3 layout depends on whether slice size and customize are shown:
+    // - SliceSize (2) + CAP (2) + Customize (2) = 6 cols
+    // - CAP (4) + Customize (2) = 6 cols
+    // - SliceSize (2) + CAP (4) = 6 cols (no customize)
+    // - CAP (6) = full row (no customize, no slice size)
     if (!isFreeformMode) {
+      // Determine CAP column span based on what else is in row 3
+      let capColumnSpan: number;
+      if (capTypeAllowsSliceChoice && hasCustomizeCard) {
+        capColumnSpan = 2; // SliceSize(2) + CAP(2) + Customize(2)
+      } else if (capTypeAllowsSliceChoice) {
+        capColumnSpan = 4; // SliceSize(2) + CAP(4)
+      } else if (hasCustomizeCard) {
+        capColumnSpan = 4; // CAP(4) + Customize(2)
+      } else {
+        capColumnSpan = 6; // CAP(6) full row
+      }
+
       cardList.push({
         id: "cap-type",
         props: {
@@ -151,20 +171,54 @@ export class CardConfigurationService implements ICardConfigurationService {
           cardIndex: cardIndex++,
           headerFontSize,
         },
-        gridColumnSpan: capTypeAllowsSliceChoice ? 4 : 6, // Expands to full row when slice size hidden
+        gridColumnSpan: capColumnSpan,
+      });
+
+      // Add Customize card in row 3 for circular mode
+      if (hasCustomizeCard) {
+        cardList.push({
+          id: "customize",
+          props: {
+            currentOptions: handlers.customizeOptions,
+            onOptionsChange: handlers.handleCustomizeChange,
+            isFreeformMode: false, // Circular mode - hide end position selector
+            cardIndex: cardIndex++,
+            headerFontSize,
+          },
+          gridColumnSpan: 2, // Always 2 cols in circular mode row 3
+        });
+      }
+    }
+
+    // In freeform mode: Customize shares row with Generate button
+    if (isFreeformMode && hasCustomizeCard) {
+      cardList.push({
+        id: "customize",
+        props: {
+          currentOptions: handlers.customizeOptions,
+          onOptionsChange: handlers.handleCustomizeChange,
+          isFreeformMode: true, // Freeform mode - show end position selector
+          cardIndex: cardIndex++,
+          headerFontSize,
+        },
+        gridColumnSpan: 2, // 2 cols - shares row with Generate button (4 cols)
       });
     }
 
-    // Generate Button Card - always at the end, spans full width
+    // Generate Button Card - always at the end
+    // In freeform mode with Customize: 4 cols (shares row with Customize)
+    // Otherwise: 6 cols (full width)
     if (handlers.handleGenerateClick) {
+      const generateColumnSpan = (isFreeformMode && hasCustomizeCard) ? 4 : 6;
       cardList.push({
         id: "generate-button",
         props: {
           isGenerating,
           onGenerateClicked: handlers.handleGenerateClick,
           config, // Pass the config so the button can convert it to GenerationOptions
+          customizeOptions: handlers.customizeOptions, // Pass customize options for generation
         },
-        gridColumnSpan: 6, // Full width
+        gridColumnSpan: generateColumnSpan,
       });
     }
 

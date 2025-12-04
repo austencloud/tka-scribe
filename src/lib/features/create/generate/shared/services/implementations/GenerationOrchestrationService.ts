@@ -1,6 +1,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { inject, injectable } from "inversify";
 // Import TYPES directly from inversify/types to avoid HMR issues with re-exports
 import { TYPES } from "$lib/shared/inversify/types";
@@ -76,10 +77,17 @@ export class GenerationOrchestrationService
   private async generateFreeformSequence(
     options: GenerationOptions
   ): Promise<SequenceData> {
-    // Step 1: Get random start position
-    const startPosition = await this.startPositionSelector.selectStartPosition(
-      options.gridMode
-    );
+    // Step 1: Get start position (use customized if provided, otherwise random)
+    let startPosition: StartPositionData | BeatData;
+    if (options.startPosition) {
+      // Use the customized start position - convert PictographData to StartPositionData
+      startPosition = this.convertPictographToStartPosition(options.startPosition);
+    } else {
+      // Fall back to random selection
+      startPosition = await this.startPositionSelector.selectStartPosition(
+        options.gridMode
+      );
+    }
     const sequence: (BeatData | StartPositionData)[] = [startPosition];
 
     // Step 2: Determine rotation directions
@@ -169,17 +177,27 @@ export class GenerationOrchestrationService
     // Get slice size
     const sliceSize = options.sliceSize || SliceSize.HALVED;
 
-    // Determine start and required end positions
+    // Determine start position - use customized if provided, otherwise random
     const { GridPosition } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
-    const basicStartPositions =
-      options.gridMode === "diamond"
-        ? [GridPosition.ALPHA1, GridPosition.BETA5, GridPosition.GAMMA11]
-        : [GridPosition.ALPHA2, GridPosition.BETA4, GridPosition.GAMMA12];
+    type GridPositionType = typeof GridPosition[keyof typeof GridPosition];
 
-    const startPos =
-      basicStartPositions[
-        Math.floor(Math.random() * basicStartPositions.length)
-      ];
+    let startPos: GridPositionType | undefined;
+
+    if (options.startPosition?.startPosition) {
+      // Use the customized start position's grid position
+      startPos = options.startPosition.startPosition as GridPositionType;
+    } else {
+      // Fall back to random selection from basic start positions
+      const basicStartPositions =
+        options.gridMode === "diamond"
+          ? [GridPosition.ALPHA1, GridPosition.BETA5, GridPosition.GAMMA11]
+          : [GridPosition.ALPHA2, GridPosition.BETA4, GridPosition.GAMMA12];
+
+      startPos =
+        basicStartPositions[
+          Math.floor(Math.random() * basicStartPositions.length)
+        ];
+    }
 
     if (!startPos) {
       throw new Error("Failed to determine a starting grid position");
@@ -233,5 +251,19 @@ export class GenerationOrchestrationService
     });
 
     return this.reversalDetectionService.processReversals(sequence);
+  }
+
+  /**
+   * Convert PictographData from customize options to StartPositionData
+   * The PictographData from the position picker already has all the needed data,
+   * we just add the isStartPosition flag to make it a valid StartPositionData.
+   */
+  private convertPictographToStartPosition(pictograph: PictographData): StartPositionData {
+    return {
+      ...pictograph,
+      isStartPosition: true as const,
+      id: pictograph.id || `start-${Date.now()}`,
+      gridPosition: pictograph.startPosition || null,
+    };
   }
 }

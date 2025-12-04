@@ -14,6 +14,7 @@ import type { PropType} from "$lib/shared/pictograph/prop/domain/enums/PropType"
 import { PropType as PropTypeEnum } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { DifficultyLevel, GenerationOptions } from "../domain/models/generate-models";
 import { DifficultyLevel as DifficultyEnum } from "../domain/models/generate-models";
+import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
 
 /**
  * Map difficulty level number to DifficultyLevel enum
@@ -65,10 +66,15 @@ export interface UIGenerationConfig {
 /**
  * Convert UI config to service-layer GenerationOptions
  * This is the main conversion function used when calling the generation service
+ *
+ * @param uiConfig - The UI generation configuration
+ * @param propType - The prop type to use (defaults to FAN)
+ * @param customizeOptions - Optional customize constraints (start/end position, letter constraints)
  */
 export function uiConfigToGenerationOptions(
   uiConfig: UIGenerationConfig,
-  propType: PropType = PropTypeEnum.FAN
+  propType: PropType = PropTypeEnum.FAN,
+  customizeOptions?: CustomizeOptions | null
 ): GenerationOptions {
   // Force halved mode for CAP types that only support halved (not quartered)
   // EXCEPTION: MIRRORED_ROTATED, MIRRORED_INVERTED_ROTATED, and MIRRORED_ROTATED_INVERTED_SWAPPED
@@ -109,6 +115,12 @@ export function uiConfigToGenerationOptions(
     capType: uiConfig.capType
       ? (uiConfig.capType as GenerationOptions["capType"])
       : undefined,
+
+    // Include customize options if provided
+    startPosition: customizeOptions?.startPosition ?? undefined,
+    endPosition: customizeOptions?.endPosition ?? undefined,
+    mustContainLetters: customizeOptions?.mustContainLetters ?? undefined,
+    mustNotContainLetters: customizeOptions?.mustNotContainLetters ?? undefined,
   };
   return options;
 }

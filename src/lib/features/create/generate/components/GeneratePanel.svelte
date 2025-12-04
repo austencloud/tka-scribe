@@ -18,6 +18,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   import { createDeviceState } from "../state/generate-device.svelte";
   import { createGenerationActionsState } from "../state/generate-actions.svelte";
   import { createGenerationConfigState } from "../state/generate-config.svelte";
+  import { createCustomizeOptionsState } from "../state/customize-options-state.svelte";
   import { GeneratorPadder } from "$lib/features/create/generate/shared/services/implementations/GeneratorPadder";
   import CardBasedSettingsContainer from "./CardBasedSettingsContainer.svelte";
 
@@ -40,6 +41,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     () => isSequentialAnimation
   );
   const deviceState = createDeviceState();
+  const customizeState = createCustomizeOptionsState();
 
   // ===== Padding Service =====
   const paddingService = new GeneratorPadder();
@@ -104,6 +106,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       updateConfig={configState.updateConfig}
       isGenerating={actionsState.isGenerating}
       onGenerateClicked={actionsState.onGenerateClicked}
+      customizeState={customizeState}
     />
   </div>
 </div>

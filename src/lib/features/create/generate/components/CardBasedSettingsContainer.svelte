@@ -14,6 +14,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   import type { ICardConfigurationService } from "../shared/services/contracts/ICardConfigurationService";
   import type { IResponsiveTypographyService } from "../shared/services/contracts/IResponsiveTypographyService";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
+  import type { CustomizeOptionsState } from "../state/customize-options-state.svelte";
   import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models/generate-models";
   import type { CAPType, SliceSize } from "../circular/domain/models/circular-models";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
@@ -27,6 +28,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   import SliceSizeCard from "./cards/SliceSizeCard.svelte";
   import TurnIntensityCard from "./cards/TurnIntensityCard.svelte";
   import GenerateButtonCard from "./cards/GenerateButtonCard.svelte";
+  import CustomizeCard from "./cards/CustomizeCard.svelte";
 
   // Props
   let {
@@ -35,12 +37,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     updateConfig,
     isGenerating,
     onGenerateClicked,
+    customizeState,
   } = $props<{
     config: UIGenerationConfig;
     isFreeformMode: boolean;
     updateConfig: (updates: Partial<UIGenerationConfig>) => void;
     isGenerating: boolean;
     onGenerateClicked: (options: any) => Promise<void>;
+    customizeState?: CustomizeOptionsState;
   }>();
 
   // Services - use $state to make them reactive
@@ -123,6 +127,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     updateConfig({ sliceSize });
   }
 
+  // Customize options handler
+  function handleCustomizeChange(options: any) {
+    customizeState?.setOptions(options);
+  }
+
   // Build cards using service - reactive to all dependencies
   let cards = $derived.by((): CardDescriptor[] => {
     if (!cardConfigService || !currentLevel) return [];
@@ -140,6 +149,8 @@ import { TYPES } from "$lib/shared/inversify/types";
         handleGenerationModeChange,
         handleCAPTypeChange,
         handleSliceSizeChange,
+        handleCustomizeChange: customizeState ? handleCustomizeChange : undefined,
+        customizeOptions: customizeState?.options,
         handleGenerateClick: onGenerateClicked,
       },
       headerFontSize,
@@ -175,6 +186,8 @@ import { TYPES } from "$lib/shared/inversify/types";
         <TurnIntensityCard {...card.props as any} />
       {:else if card.id === "cap-type"}
         <CAPCard {...card.props as any} />
+      {:else if card.id === "customize"}
+        <CustomizeCard {...card.props as any} />
       {:else if card.id === "generate-button"}
         <GenerateButtonCard {...card.props as any} />
       {/if}

@@ -17,6 +17,17 @@ import type { BeatData } from "../domain/models/BeatData";
 import type { CAPType } from "../../generate/circular/domain/models/circular-models";
 import type { CAPComponent } from "../../generate/shared/domain/models/generate-models";
 import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
+import type { Letter } from "../../../../shared/foundation/domain/models/Letter";
+
+/**
+ * Customize generation options - passed to the customize options sheet
+ */
+export interface CustomizeOptions {
+  startPosition: PictographData | null;
+  endPosition: PictographData | null;
+  mustContainLetters: Letter[];
+  mustNotContainLetters: Letter[];
+}
 
 export interface PanelCoordinationState {
   // Edit Panel State
@@ -102,16 +113,18 @@ export interface PanelCoordinationState {
   openCreationMethodPanel(): void;
   closeCreationMethodPanel(): void;
 
-  // Start Position Panel State
-  get isStartPositionPanelOpen(): boolean;
-  get startPositionCurrentPosition(): PictographData | null;
-  get startPositionOnChange(): ((position: PictographData) => void) | null;
+  // Customize Options Panel State
+  get isCustomizePanelOpen(): boolean;
+  get customizeOptions(): CustomizeOptions | null;
+  get customizeOnChange(): ((options: CustomizeOptions) => void) | null;
+  get customizeIsFreeformMode(): boolean;
 
-  openStartPositionPanel(
-    currentPosition: PictographData | null,
-    onChange: (position: PictographData) => void
+  openCustomizePanel(
+    currentOptions: CustomizeOptions,
+    onChange: (options: CustomizeOptions) => void,
+    isFreeformMode?: boolean
   ): void;
-  closeStartPositionPanel(): void;
+  closeCustomizePanel(): void;
 
   // Derived: Any Panel Open (for UI hiding coordination)
   get isAnyPanelOpen(): boolean;
@@ -163,10 +176,11 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Creation method panel state
   let isCreationMethodPanelOpen = $state(false);
 
-  // Start position panel state
-  let isStartPositionPanelOpen = $state(false);
-  let startPositionCurrentPosition = $state<PictographData | null>(null);
-  let startPositionOnChange = $state<((position: PictographData) => void) | null>(null);
+  // Customize options panel state
+  let isCustomizePanelOpen = $state(false);
+  let customizeOptions = $state<CustomizeOptions | null>(null);
+  let customizeOnChange = $state<((options: CustomizeOptions) => void) | null>(null);
+  let customizeIsFreeformMode = $state(true); // Default to freeform (shows end position)
 
   /**
    * CRITICAL: Close all panels to enforce mutual exclusivity
@@ -193,9 +207,10 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     isCreationMethodPanelOpen = false;
 
-    isStartPositionPanelOpen = false;
-    startPositionCurrentPosition = null;
-    startPositionOnChange = null;
+    isCustomizePanelOpen = false;
+    customizeOptions = null;
+    customizeOnChange = null;
+    customizeIsFreeformMode = true;
   }
 
   return {
@@ -419,31 +434,37 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       isCreationMethodPanelOpen = false;
     },
 
-    // Start Position Panel Getters
-    get isStartPositionPanelOpen() {
-      return isStartPositionPanelOpen;
+    // Customize Options Panel Getters
+    get isCustomizePanelOpen() {
+      return isCustomizePanelOpen;
     },
-    get startPositionCurrentPosition() {
-      return startPositionCurrentPosition;
+    get customizeOptions() {
+      return customizeOptions;
     },
-    get startPositionOnChange() {
-      return startPositionOnChange;
+    get customizeOnChange() {
+      return customizeOnChange;
+    },
+    get customizeIsFreeformMode() {
+      return customizeIsFreeformMode;
     },
 
-    openStartPositionPanel(
-      currentPosition: PictographData | null,
-      onChange: (position: PictographData) => void
+    openCustomizePanel(
+      currentOptions: CustomizeOptions,
+      onChange: (options: CustomizeOptions) => void,
+      isFreeformMode: boolean = true
     ) {
       closeAllPanels();
-      startPositionCurrentPosition = currentPosition;
-      startPositionOnChange = onChange;
-      isStartPositionPanelOpen = true;
+      customizeOptions = currentOptions;
+      customizeOnChange = onChange;
+      customizeIsFreeformMode = isFreeformMode;
+      isCustomizePanelOpen = true;
     },
 
-    closeStartPositionPanel() {
-      isStartPositionPanelOpen = false;
-      startPositionCurrentPosition = null;
-      startPositionOnChange = null;
+    closeCustomizePanel() {
+      isCustomizePanelOpen = false;
+      customizeOptions = null;
+      customizeOnChange = null;
+      customizeIsFreeformMode = true;
     },
 
     // Derived: Check if any modal/slide panel is open
@@ -456,7 +477,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isFilterPanelOpen ||
         isSequenceActionsPanelOpen ||
         isCAPPanelOpen ||
-        isStartPositionPanelOpen
+        isCustomizePanelOpen
       );
     },
   };
