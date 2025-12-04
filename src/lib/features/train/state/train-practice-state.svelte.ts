@@ -10,6 +10,15 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 
 const MAX_RECENT_SEQUENCES = 3;
 
+/**
+ * Display View - controls WHAT visualization panels are shown
+ * - camera-canvas: Camera + AnimatorCanvas (side-by-side)
+ * - camera-grid: Camera + BeatGrid (current default)
+ * - camera-canvas-grid: Camera + AnimatorCanvas + BeatGrid (all three)
+ */
+type DisplayView = "camera-canvas" | "camera-grid" | "camera-canvas-grid";
+const DISPLAY_VIEWS: DisplayView[] = ["camera-canvas", "camera-grid", "camera-canvas-grid"];
+
 interface AdaptiveConfig {
 	sensitivity: number; // Frames to match before advancing (5-30)
 	autoAdvance: boolean;
@@ -37,6 +46,7 @@ interface RecentSequence {
 
 interface PracticeState {
 	currentMode: PracticeMode;
+	displayView: DisplayView;
 	adaptiveConfig: AdaptiveConfig;
 	stepConfig: StepConfig;
 	timedConfig: TimedConfig;
@@ -49,6 +59,7 @@ interface PracticeState {
 
 const DEFAULT_STATE: PracticeState = {
 	currentMode: PracticeMode.TIMED,
+	displayView: "camera-grid",
 	adaptiveConfig: {
 		sensitivity: 10,
 		autoAdvance: true
@@ -127,6 +138,24 @@ export function createTrainPracticeState() {
 	}
 
 	/**
+	 * Set the display view (what visualization panels are shown)
+	 */
+	function setDisplayView(view: DisplayView) {
+		state.displayView = view;
+		persistSettings();
+	}
+
+	/**
+	 * Cycle through display views: camera-canvas -> camera-grid -> camera-canvas-grid -> ...
+	 */
+	function cycleDisplayView() {
+		const currentIndex = DISPLAY_VIEWS.indexOf(state.displayView);
+		const nextIndex = (currentIndex + 1) % DISPLAY_VIEWS.length;
+		state.displayView = DISPLAY_VIEWS[nextIndex] as DisplayView;
+		persistSettings();
+	}
+
+	/**
 	 * Set the last-used sequence for quick resume on next visit
 	 */
 	function setLastSequence(sequence: SequenceData) {
@@ -185,6 +214,9 @@ export function createTrainPracticeState() {
 		get currentMode() {
 			return state.currentMode;
 		},
+		get displayView() {
+			return state.displayView;
+		},
 		get adaptiveConfig() {
 			return state.adaptiveConfig;
 		},
@@ -207,6 +239,8 @@ export function createTrainPracticeState() {
 			return state.recentSequences;
 		},
 		setMode,
+		setDisplayView,
+		cycleDisplayView,
 		updateAdaptiveConfig,
 		updateStepConfig,
 		updateTimedConfig,
@@ -231,4 +265,4 @@ export function getTrainPracticeState() {
 	return practiceStateInstance;
 }
 
-export type { AdaptiveConfig, StepConfig, TimedConfig, PracticeState, RecentSequence };
+export type { AdaptiveConfig, StepConfig, TimedConfig, PracticeState, RecentSequence, DisplayView };

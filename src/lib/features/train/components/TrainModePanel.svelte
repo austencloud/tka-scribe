@@ -9,11 +9,7 @@
 	import { createTrainState } from "../state/train-state.svelte";
 	import { TrainMode, PracticeMode } from "../domain/enums/TrainEnums";
 	import type { AdaptiveConfig, StepConfig, TimedConfig } from "../state/train-practice-state.svelte";
-	import CameraPreview from "./CameraPreview.svelte";
-	import GridOverlay from "./GridOverlay.svelte";
-	import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 	import ResultsScreen from "./ResultsScreen.svelte";
-	import TrainSetup from "./TrainSetup.svelte";
 	import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 	import { resolve, TYPES } from "$lib/shared/inversify/di";
@@ -31,15 +27,18 @@
 	} from "../utils/challenge-completion-detector";
 	import { addNotification } from "$lib/shared/gamification/state/notification-state.svelte";
 	import { getTrainPracticeState } from "../state/train-practice-state.svelte";
-	import PracticeModeToggle from "./practice/PracticeModeToggle.svelte";
 	import ModeSettingsSheet from "./practice/ModeSettingsSheet.svelte";
+	import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
+	import PracticeViewContainer from "./practice/PracticeViewContainer.svelte";
+	import FloatingControlGroup from "./practice/FloatingControlGroup.svelte";
 
 	interface Props {
 		sequence?: SequenceData | null;
 		practiceMode?: PracticeMode;
 		modeConfig?: AdaptiveConfig | StepConfig | TimedConfig;
 		challengeId?: string;
-		onBack?: () => void;
+		onSequenceSelect?: (sequence: SequenceData) => void;
+		onSequenceClear?: () => void;
 		onSessionComplete?: () => void;
 	}
 
@@ -48,15 +47,18 @@
 		practiceMode = PracticeMode.TIMED,
 		modeConfig,
 		challengeId,
-		onBack,
+		onSequenceSelect,
+		onSequenceClear,
 		onSessionComplete
 	}: Props = $props();
 
 	// Practice state for mode switching and settings
 	const practiceState = getTrainPracticeState();
 
-	// Settings sheet state
+	// UI sheet states
 	let showSettingsSheet = $state(false);
+	let showSequenceBrowser = $state(false);
+	let showModePicker = $state(false);
 
 	// Initialize train state
 	const trainState = createTrainState();
@@ -102,6 +104,15 @@
 	let hasCheckedCurrentBeat = false;
 	let lastHitResult: boolean | null = $state(null);
 	let lastHitPoints = $state(0);
+
+	// Beat selection for setup mode (manual beat preview)
+	// -1 = start position, 0+ = actual beats (0-indexed)
+	let selectedBeatIndex = $state(-1);
+
+	// Determine which beat index to show - selected during setup, current during performance
+	const displayBeatIndex = $derived(
+		trainState.isPerforming ? trainState.currentBeatIndex : selectedBeatIndex
+	);
 
 	// Set sequence if provided
 	$effect(() => {
@@ -152,20 +163,8 @@
 
 	function handleStartCountdown() {
 		hapticService?.trigger("selection");
-		trainState.startCountdown();
-		runCountdown();
-	}
-
-	function runCountdown() {
-		let count = 3;
-		const interval = setInterval(() => {
-			count--;
-			if (count >= 0) {
-				trainState.updateCountdown(count);
-			} else {
-				clearInterval(interval);
-			}
-		}, 1000);
+		// Skip countdown - start immediately for faster testing
+		trainState.startPerformance();
 	}
 
 	function handleBackToSetup() {
@@ -439,6 +438,27 @@
 
 	function handleSelectSequence(selectedSequence: SequenceData) {
 		trainState.setSequence(selectedSequence);
+		showSequenceBrowser = false;
+		// Reset beat selection to start position when sequence changes
+		selectedBeatIndex = -1;
+		onSequenceSelect?.(selectedSequence);
+	}
+
+	function handleBeatSelect(beatIndex: number) {
+		// Only allow beat selection during setup mode
+		if (!trainState.isPerforming) {
+			selectedBeatIndex = beatIndex;
+			hapticService?.trigger("selection");
+		}
+	}
+
+	function handleOpenSequenceBrowser() {
+		hapticService?.trigger("selection");
+		showSequenceBrowser = true;
+	}
+
+	function handleCloseSequenceBrowser() {
+		showSequenceBrowser = false;
 	}
 
 	onMount(() => {
@@ -456,122 +476,32 @@
 </script>
 
 <div class="train-mode-panel">
-	<!-- Step 1: Sequence Selection -->
-	{#if !trainState.hasSequence}
-		<TrainSetup onSequenceSelected={handleSelectSequence} />
-	{:else}
-
-	<!-- Step 2+: Training Interface -->
-	<!-- Header -->
-	<header class="panel-header">
-		<button class="back-button" onclick={() => { hapticService?.trigger("selection"); onBack?.(); }} aria-label="Back to sequence selection">
-			<i class="fas fa-arrow-left"></i>
-		</button>
-		<div class="header-info">
-			<h1>{trainState.sequence?.word || trainState.sequence?.name || "Sequence"}</h1>
-			<span class="beat-count">{trainState.totalBeats} beats</span>
-		</div>
-		<!-- Mode Toggle (compact) -->
-		<div class="header-controls">
-			<PracticeModeToggle
-				activeMode={practiceState.currentMode}
-				onModeChange={(mode) => practiceState.setMode(mode)}
-				compact={true}
-			/>
-			<button
-				class="settings-button"
-				onclick={() => { hapticService?.trigger("selection"); showSettingsSheet = true; }}
-				aria-label="Mode settings"
-			>
-				<i class="fas fa-cog"></i>
-			</button>
-		</div>
-	</header>
-
-	<!-- Main content -->
+	<!-- Main Content: Visualization Panels -->
 	<div class="panel-content">
-		<!-- Top: Camera Feed -->
-		<div class="camera-section">
-			<CameraPreview
-				onCameraReady={handleCameraReady}
-				onCameraError={handleCameraError}
-				onFrame={handleFrame}
-				mirrored={true}
-			>
-				<GridOverlay
-					bluePosition={trainState.currentFrame?.blue ?? null}
-					redPosition={trainState.currentFrame?.red ?? null}
-					expectedBlue={trainState.expectedPositions?.blue ?? null}
-					expectedRed={trainState.expectedPositions?.red ?? null}
-					showExpected={trainState.mode === TrainMode.PERFORMING}
-				/>
-			</CameraPreview>
-
-			<!-- Countdown overlay -->
-			{#if trainState.mode === TrainMode.COUNTDOWN && trainState.countdownValue !== null}
-				<div class="countdown-overlay">
-					<span class="countdown-number">{trainState.countdownValue || "GO!"}</span>
-				</div>
-			{/if}
-
-			<!-- Detection Status Indicators -->
-			<div class="status-indicators-overlay">
-				<div class="status-item" class:active={trainState.isCameraReady}>
-					<div class="status-dot"></div>
-					<span>Camera</span>
-				</div>
-				<div class="status-item" class:active={isDetectionReady}>
-					<div class="status-dot"></div>
-					<span>Hand Tracking</span>
-				</div>
-				<div class="status-item" class:active={trainState.isDetectionActive}>
-					<div class="status-dot"></div>
-					<span>Detecting</span>
-				</div>
-			</div>
-
-			<!-- Performance Feedback (during training) -->
-			{#if trainState.isPerforming}
-				<div class="performance-overlay">
-					<div class="score-display">
-						<div class="combo" class:active={trainState.currentCombo > 0}>
-							{#if trainState.currentCombo > 0}
-								<span class="combo-value">{trainState.currentCombo}x</span>
-								<span class="combo-label">Combo</span>
-							{/if}
-						</div>
-						<div class="score">
-							<span class="score-value">{trainState.currentScore}</span>
-						</div>
-					</div>
-					{#if lastHitResult !== null}
-						<div class="hit-indicator" class:hit={lastHitResult} class:miss={!lastHitResult}>
-							{lastHitResult ? `+${lastHitPoints}` : 'MISS'}
-						</div>
-					{/if}
-				</div>
-			{/if}
-		</div>
-
-		<!-- Bottom: Beat Visualization -->
-		<div class="beats-section">
-			<!-- Beat Progress -->
-			<div class="beat-progress">
-				<span class="beat-label">Beat {trainState.currentBeatIndex + 1} / {trainState.totalBeats}</span>
-				<div class="progress-bar">
-					<div class="progress-fill" style="width: {trainState.progress}%"></div>
-				</div>
-			</div>
-
-			<!-- Beat Grid - reusing shared component -->
-			{#if trainState.sequence}
-				<BeatGrid
-					beats={trainState.sequence.beats}
-					startPosition={trainState.sequence.startPosition}
-					practiceBeatNumber={trainState.currentBeatIndex + 1}
-				/>
-			{/if}
-		</div>
+		<PracticeViewContainer
+			displayView={practiceState.displayView}
+			sequence={trainState.sequence}
+			currentBeatIndex={displayBeatIndex}
+			isPlaying={trainState.isPerforming}
+			bpm={trainState.bpm}
+			isCameraReady={trainState.isCameraReady}
+			{isDetectionReady}
+			isDetectionActive={trainState.isDetectionActive}
+			isPerforming={trainState.isPerforming}
+			currentFrame={trainState.currentFrame}
+			expectedPositions={trainState.expectedPositions}
+			mode={trainState.mode}
+			countdownValue={trainState.countdownValue}
+			currentScore={trainState.currentScore}
+			currentCombo={trainState.currentCombo}
+			{lastHitResult}
+			{lastHitPoints}
+			onCameraReady={handleCameraReady}
+			onCameraError={handleCameraError}
+			onFrame={handleFrame}
+			onBeatSelect={handleBeatSelect}
+			onBrowseSequences={handleOpenSequenceBrowser}
+		/>
 
 		<!-- Results Screen Overlay -->
 		{#if trainState.mode === TrainMode.REVIEW}
@@ -585,31 +515,52 @@
 				xpBreakdown={sessionXPBreakdown}
 				challengeProgress={sessionChallengeProgress}
 				onPlayAgain={handleBackToSetup}
-				onExit={onBack}
+				onExit={() => { handleBackToSetup(); onSequenceClear?.(); }}
 			/>
 		{/if}
 	</div>
 
-	<!-- Footer actions -->
-	<footer class="panel-footer">
+	<!-- Floating Controls (bottom-right) -->
+	<FloatingControlGroup
+		displayView={practiceState.displayView}
+		practiceMode={practiceState.currentMode}
+		hasSequence={!!trainState.sequence}
+		onSequenceClick={handleOpenSequenceBrowser}
+		onViewCycle={() => practiceState.cycleDisplayView()}
+		onModeClick={() => { showModePicker = true; }}
+		onSettingsClick={() => { showSettingsSheet = true; }}
+	/>
+
+	<!-- Floating Start/Stop Button -->
+	<div class="floating-action">
 		{#if trainState.mode === TrainMode.SETUP}
 			<button
-				class="primary-button"
+				class="start-button"
 				disabled={!trainState.canStartPerformance}
 				onclick={handleStartCountdown}
 			>
 				{#if !trainState.isCameraReady}
-					Waiting for Camera...
+					<i class="fas fa-spinner fa-spin"></i>
 				{:else}
-					Start Training
+					<i class="fas fa-play"></i>
+					<span>Start</span>
 				{/if}
 			</button>
 		{:else if trainState.mode === TrainMode.PERFORMING}
-			<button class="secondary-button" onclick={handleBackToSetup}>
-				Stop
+			<button class="stop-button" onclick={handleBackToSetup}>
+				<i class="fas fa-stop"></i>
+				<span>Stop</span>
 			</button>
 		{/if}
-	</footer>
+	</div>
+
+	<!-- Sequence Info Badge (top-left when sequence is loaded) -->
+	{#if trainState.sequence}
+		<div class="sequence-badge">
+			<span class="badge-name">{trainState.sequence?.word || trainState.sequence?.name}</span>
+			<span class="badge-beats">{trainState.totalBeats} beats</span>
+		</div>
+	{/if}
 
 	<!-- Error Toast -->
 	{#if trainState.error}
@@ -631,407 +582,186 @@
 		onStepConfigUpdate={(config) => practiceState.updateStepConfig(config)}
 		onTimedConfigUpdate={(config) => practiceState.updateTimedConfig(config)}
 	/>
-	{/if}
+
+	<!-- Sequence Browser Panel -->
+	<SequenceBrowserPanel
+		mode="primary"
+		show={showSequenceBrowser}
+		onSelect={handleSelectSequence}
+		onClose={handleCloseSequenceBrowser}
+	/>
 </div>
 
 <style>
+	/* ============================================
+	   TRAIN MODE PANEL - Minimal Floating UI
+	   ============================================ */
 	.train-mode-panel {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background: var(--background-primary, #0f0f0f);
-		color: white;
-		overflow: hidden;
-	}
-
-	.panel-header {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		padding: 0.75rem 1rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-		background: rgba(0, 0, 0, 0.3);
-		flex-shrink: 0;
-	}
-
-	.back-button {
-		width: 48px;
-		height: 48px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		background: transparent;
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 10px;
 		color: white;
-		cursor: pointer;
-		transition: background 0.2s;
-		font-size: 1rem;
-	}
-
-	.back-button:hover {
-		background: rgba(255, 255, 255, 0.1);
-	}
-
-	.header-info {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
-		min-width: 0;
-	}
-
-	.header-info h1 {
-		font-size: 1.125rem;
-		font-weight: 600;
-		margin: 0;
-		white-space: nowrap;
 		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 
-	.beat-count {
-		font-size: 0.8rem;
-		color: rgba(255, 255, 255, 0.6);
-	}
-
-	.header-controls {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		flex-shrink: 0;
-	}
-
-	.settings-button {
-		width: 48px;
-		height: 48px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.15);
-		border-radius: 10px;
-		color: rgba(255, 255, 255, 0.7);
-		cursor: pointer;
-		transition: all 0.2s;
-		font-size: 1rem;
-	}
-
-	.settings-button:hover {
-		background: rgba(255, 255, 255, 0.1);
-		border-color: rgba(255, 255, 255, 0.25);
-		color: rgba(255, 255, 255, 0.95);
-	}
-
-	.settings-button:focus-visible {
-		outline: 2px solid rgba(59, 130, 246, 0.8);
-		outline-offset: 2px;
-	}
-
+	/* Main Content Area */
 	.panel-content {
 		flex: 1;
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
-		padding: 0.5rem;
 		overflow: hidden;
 		position: relative;
 	}
 
-	@media (min-width: 768px) {
-		.panel-content {
-			gap: 1rem;
-			padding: 1rem;
-		}
-	}
-
-	.camera-section {
-		position: relative;
-		border-radius: 12px;
-		overflow: hidden;
-		background: #000;
-		flex: 0 0 auto;
-		/* Square aspect ratio - grid is always square */
-		aspect-ratio: 1;
-		width: min(100%, 50vh);
-		max-width: 400px;
-		align-self: center;
-	}
-
-	.status-indicators-overlay {
+	/* ============================================
+	   FLOATING ACTION BUTTON (Start/Stop)
+	   ============================================ */
+	.floating-action {
 		position: absolute;
-		top: 0.5rem;
-		right: 0.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		background: rgba(0, 0, 0, 0.7);
-		padding: 0.5rem;
-		border-radius: 8px;
-		font-size: 0.7rem;
+		bottom: 12px;
+		left: 12px;
+		z-index: 100;
 	}
 
-	@media (min-width: 768px) {
-		.status-indicators-overlay {
-			font-size: 0.8rem;
-			gap: 0.5rem;
-			padding: 0.75rem;
-		}
-	}
-
-	.status-item {
-		display: flex;
-		align-items: center;
-		gap: 0.375rem;
-		opacity: 0.6;
-		transition: opacity 0.3s;
-	}
-
-	.status-item.active {
-		opacity: 1;
-	}
-
-	.status-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: #6b7280;
-		transition: all 0.3s;
-	}
-
-	@media (min-width: 768px) {
-		.status-dot {
-			width: 8px;
-			height: 8px;
-		}
-	}
-
-	.status-item.active .status-dot {
-		background: #22c55e;
-		box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
-	}
-
-	.performance-overlay {
-		position: absolute;
-		top: 0.5rem;
-		left: 0.5rem;
-		right: 0.5rem;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.5rem;
-		pointer-events: none;
-	}
-
-	.score-display {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		background: rgba(0, 0, 0, 0.7);
-		padding: 0.5rem 1rem;
-		border-radius: 8px;
-		font-weight: 600;
-	}
-
-	.combo {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		opacity: 0;
-		transition: opacity 0.3s;
-	}
-
-	.combo.active {
-		opacity: 1;
-	}
-
-	.combo-value {
-		font-size: 1.25rem;
-		color: #fbbf24;
-	}
-
-	.combo-label {
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		color: rgba(255, 255, 255, 0.7);
-	}
-
-	.score-value {
-		font-size: 1.5rem;
-		color: #3b82f6;
-	}
-
-	.hit-indicator {
-		padding: 0.5rem 1rem;
-		border-radius: 8px;
-		font-weight: bold;
-		font-size: 1.25rem;
-		animation: fadeInOut 1s ease-out forwards;
-	}
-
-	.hit-indicator.hit {
-		background: rgba(34, 197, 94, 0.9);
-		color: white;
-	}
-
-	.hit-indicator.miss {
-		background: rgba(239, 68, 68, 0.9);
-		color: white;
-	}
-
-	@keyframes fadeInOut {
-		0% {
-			opacity: 0;
-			transform: scale(0.8);
-		}
-		20% {
-			opacity: 1;
-			transform: scale(1.1);
-		}
-		80% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		100% {
-			opacity: 0;
-			transform: scale(0.9);
-		}
-	}
-
-	.countdown-overlay {
-		position: absolute;
-		inset: 0;
+	.start-button,
+	.stop-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(0, 0, 0, 0.7);
-		z-index: 30;
-	}
-
-	.countdown-number {
-		font-size: 4rem;
-		font-weight: bold;
-		color: white;
-		text-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
-		animation: pulse 1s ease-in-out infinite;
-	}
-
-	@media (min-width: 768px) {
-		.countdown-number {
-			font-size: 6rem;
-		}
-	}
-
-	@keyframes pulse {
-		0%,
-		100% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.1);
-		}
-	}
-
-	.beats-section {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
 		gap: 0.5rem;
-		overflow: hidden;
-		min-height: 0;
-	}
-
-	.beat-progress {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		padding: 0.5rem;
-		background: rgba(255, 255, 255, 0.05);
-		border-radius: 8px;
-	}
-
-	.beat-label {
-		font-size: 0.875rem;
-		font-weight: 600;
-		text-align: center;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	.progress-bar {
-		height: 6px;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 3px;
-		overflow: hidden;
-	}
-
-	.progress-fill {
-		height: 100%;
-		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-		transition: width 0.3s ease;
-	}
-
-	.panel-footer {
-		padding: 0.75rem 1rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		display: flex;
-		justify-content: center;
-		gap: 1rem;
-		flex-shrink: 0;
-	}
-
-	.primary-button,
-	.secondary-button {
-		padding: 0.75rem 2rem;
-		border-radius: 8px;
+		min-width: 56px;
+		min-height: 56px;
+		padding: 0.875rem 1.25rem;
+		border-radius: 28px;
 		font-size: 1rem;
 		font-weight: 600;
 		cursor: pointer;
-		transition: all 0.2s;
-		min-width: 140px;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 	}
 
-	.primary-button {
-		background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-		border: none;
+	.start-button {
+		background: linear-gradient(
+			135deg,
+			rgba(34, 197, 94, 0.9) 0%,
+			rgba(22, 163, 74, 0.9) 100%
+		);
+		border: 1px solid rgba(74, 222, 128, 0.4);
 		color: white;
 	}
 
-	.primary-button:hover:not(:disabled) {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+	.start-button:hover:not(:disabled) {
+		background: linear-gradient(
+			135deg,
+			rgba(34, 197, 94, 1) 0%,
+			rgba(22, 163, 74, 1) 100%
+		);
+		transform: translateY(-2px) scale(1.02);
+		box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
 	}
 
-	.primary-button:disabled {
+	.start-button:active:not(:disabled) {
+		transform: translateY(0) scale(0.98);
+	}
+
+	.start-button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}
 
-	.secondary-button {
-		background: transparent;
-		border: 1px solid rgba(255, 255, 255, 0.3);
+	.stop-button {
+		background: linear-gradient(
+			135deg,
+			rgba(239, 68, 68, 0.9) 0%,
+			rgba(220, 38, 38, 0.9) 100%
+		);
+		border: 1px solid rgba(248, 113, 113, 0.4);
 		color: white;
 	}
 
-	.secondary-button:hover {
-		background: rgba(255, 255, 255, 0.1);
+	.stop-button:hover {
+		background: linear-gradient(
+			135deg,
+			rgba(239, 68, 68, 1) 0%,
+			rgba(220, 38, 38, 1) 100%
+		);
+		transform: translateY(-2px) scale(1.02);
+		box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
 	}
 
+	.stop-button:active {
+		transform: translateY(0) scale(0.98);
+	}
+
+	/* ============================================
+	   SEQUENCE BADGE (Top-left info)
+	   ============================================ */
+	.sequence-badge {
+		position: absolute;
+		top: 12px;
+		left: 12px;
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		padding: 0.5rem 0.75rem;
+		background: linear-gradient(
+			135deg,
+			rgba(255, 255, 255, 0.12) 0%,
+			rgba(255, 255, 255, 0.06) 100%
+		);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: 10px;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+		z-index: 50;
+		pointer-events: none;
+	}
+
+	.badge-name {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: rgba(255, 255, 255, 0.95);
+		white-space: nowrap;
+		max-width: 150px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.badge-beats {
+		font-size: 0.7rem;
+		color: rgba(255, 255, 255, 0.5);
+	}
+
+	/* ============================================
+	   ERROR TOAST
+	   ============================================ */
 	.error-toast {
 		position: absolute;
-		bottom: 1rem;
-		left: 1rem;
-		right: 1rem;
-		background: rgba(239, 68, 68, 0.95);
-		border: 1px solid rgba(239, 68, 68, 0.3);
-		border-radius: 8px;
-		padding: 1rem;
+		bottom: 80px;
+		left: 12px;
+		right: 12px;
+		background: linear-gradient(
+			135deg,
+			rgba(239, 68, 68, 0.95) 0%,
+			rgba(220, 38, 38, 0.95) 100%
+		);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(248, 113, 113, 0.3);
+		border-radius: 12px;
+		padding: 0.75rem 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: 1rem;
-		z-index: 100;
-		animation: slideUp 0.3s ease-out;
+		gap: 0.75rem;
+		z-index: 150;
+		animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
 	}
 
 	@keyframes slideUp {
@@ -1048,21 +778,58 @@
 	.error-toast p {
 		margin: 0;
 		color: white;
+		font-size: 0.875rem;
 		flex: 1;
 	}
 
 	.error-toast button {
-		background: transparent;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		background: rgba(255, 255, 255, 0.15);
 		border: none;
+		border-radius: 8px;
 		color: white;
-		font-size: 1.25rem;
+		font-size: 1rem;
 		cursor: pointer;
-		padding: 0.25rem 0.5rem;
-		opacity: 0.8;
-		transition: opacity 0.2s;
+		transition: background 0.2s;
 	}
 
 	.error-toast button:hover {
-		opacity: 1;
+		background: rgba(255, 255, 255, 0.25);
+	}
+
+	/* ============================================
+	   RESPONSIVE ADJUSTMENTS
+	   ============================================ */
+	@media (min-width: 768px) {
+		.sequence-badge {
+			padding: 0.625rem 1rem;
+		}
+
+		.badge-name {
+			font-size: 0.9375rem;
+			max-width: 200px;
+		}
+
+		.badge-beats {
+			font-size: 0.75rem;
+		}
+	}
+
+	/* Hide text labels on very small screens for action buttons */
+	@media (max-width: 400px) {
+		.start-button span,
+		.stop-button span {
+			display: none;
+		}
+
+		.start-button,
+		.stop-button {
+			min-width: 56px;
+			padding: 0.875rem;
+		}
 	}
 </style>

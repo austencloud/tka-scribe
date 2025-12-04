@@ -93,27 +93,41 @@
 
 	input[type="range"] {
 		width: 100%;
-		height: 0.5rem;
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 0.25rem;
+		height: 48px;
+		background: transparent;
 		outline: none;
 		appearance: none;
 		-webkit-appearance: none;
+		cursor: pointer;
+	}
+
+	/* Track styling */
+	input[type="range"]::-webkit-slider-runnable-track {
+		height: 0.5rem;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 0.25rem;
+	}
+
+	input[type="range"]::-moz-range-track {
+		height: 0.5rem;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 0.25rem;
 	}
 
 	input[type="range"]::-webkit-slider-thumb {
 		-webkit-appearance: none;
 		appearance: none;
-		width: 1.25rem;
-		height: 1.25rem;
+		width: 28px;
+		height: 28px;
 		background: #3b82f6;
 		border-radius: 50%;
 		cursor: pointer;
+		margin-top: -10px;
 	}
 
 	input[type="range"]::-moz-range-thumb {
-		width: 1.25rem;
-		height: 1.25rem;
+		width: 28px;
+		height: 28px;
 		background: #3b82f6;
 		border-radius: 50%;
 		cursor: pointer;
@@ -132,11 +146,14 @@
 		align-items: center;
 		gap: 0.75rem;
 		cursor: pointer;
+		min-height: 48px;
+		padding: 0.5rem 0;
 	}
 
 	input[type="checkbox"] {
-		width: 1.25rem;
-		height: 1.25rem;
+		width: 24px;
+		height: 24px;
 		cursor: pointer;
+		flex-shrink: 0;
 	}
 </style>

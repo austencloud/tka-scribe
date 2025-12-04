@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import GridSvg from "$lib/shared/pictograph/grid/components/GridSvg.svelte";
@@ -10,6 +11,8 @@
     expectedBlue: GridLocation | null;
     expectedRed: GridLocation | null;
     showExpected?: boolean;
+    bpm?: number;
+    isPerforming?: boolean;
   }
 
   let {
@@ -18,6 +21,8 @@
     expectedBlue = null,
     expectedRed = null,
     showExpected = true,
+    bpm = 60,
+    isPerforming = false,
   }: Props = $props();
 
   // Grid coordinate system (950x950 centered at 475,475)
@@ -37,6 +42,187 @@
     [GridLocation.WEST]: { x: 331.9, y: 475 },       // w_diamond_hand_point
     [GridLocation.NORTHWEST]: { x: 331.9, y: 331.9 }, // nw_diamond_layer2_point
   };
+
+  // Angles for each grid location (radians, 0 = East, counter-clockwise)
+  const locationAngles: Record<GridLocation, number> = {
+    [GridLocation.EAST]: 0,
+    [GridLocation.NORTHEAST]: Math.PI / 4,
+    [GridLocation.NORTH]: Math.PI / 2,
+    [GridLocation.NORTHWEST]: (3 * Math.PI) / 4,
+    [GridLocation.WEST]: Math.PI,
+    [GridLocation.SOUTHWEST]: (5 * Math.PI) / 4,
+    [GridLocation.SOUTH]: (3 * Math.PI) / 2,
+    [GridLocation.SOUTHEAST]: (7 * Math.PI) / 4,
+  };
+
+  // Radius from center to hand points
+  const ANIMATION_RADIUS = 143.1; // Distance from center (475) to hand points
+
+  // Animation state for expected position indicators
+  let animatedBluePos = $state<{ x: number; y: number } | null>(null);
+  let animatedRedPos = $state<{ x: number; y: number } | null>(null);
+
+  // Animation tracking
+  let blueAnimTarget: GridLocation | null = null;
+  let blueAnimStartAngle: number = 0;
+  let blueAnimTargetAngle: number = 0;
+  let blueAnimStartTime: number = 0;
+  let blueCurrentAngle: number = 0; // Track current angle for continuity
+
+  let redAnimTarget: GridLocation | null = null;
+  let redAnimStartAngle: number = 0;
+  let redAnimTargetAngle: number = 0;
+  let redAnimStartTime: number = 0;
+  let redCurrentAngle: number = 0; // Track current angle for continuity
+
+  let animationFrameId: number | null = null;
+
+  // Calculate animation duration based on BPM
+  // During performance: 80% of beat duration for smooth continuous motion
+  // Manual: fixed 300ms for responsive feel
+  function getAnimationDuration(): number {
+    if (isPerforming) {
+      return (60 / bpm) * 1000 * 0.8;
+    }
+    return 300;
+  }
+
+  // Convert angle to x,y coordinates on the octagon
+  function angleToCoords(angle: number): { x: number; y: number } {
+    return {
+      x: GRID_CENTER + Math.cos(angle) * ANIMATION_RADIUS,
+      y: GRID_CENTER - Math.sin(angle) * ANIMATION_RADIUS, // SVG y is inverted
+    };
+  }
+
+  // Find shortest angular distance (handles wraparound)
+  function shortestAngleDelta(from: number, to: number): number {
+    let delta = to - from;
+    // Normalize to [-PI, PI]
+    while (delta > Math.PI) delta -= 2 * Math.PI;
+    while (delta < -Math.PI) delta += 2 * Math.PI;
+    return delta;
+  }
+
+  // Start animation loop
+  function startAnimationLoop() {
+    if (animationFrameId !== null) return;
+
+    function animate() {
+      const now = performance.now();
+      const duration = getAnimationDuration();
+      let stillAnimating = false;
+
+      // Animate blue position
+      if (blueAnimTarget !== null) {
+        const elapsed = now - blueAnimStartTime;
+        const progress = Math.min(elapsed / duration, 1.0);
+
+        // Linear interpolation for consistent motion during performance
+        const delta = shortestAngleDelta(blueAnimStartAngle, blueAnimTargetAngle);
+        blueCurrentAngle = blueAnimStartAngle + delta * progress;
+        animatedBluePos = angleToCoords(blueCurrentAngle);
+
+        if (progress >= 1.0) {
+          blueCurrentAngle = blueAnimTargetAngle;
+          animatedBluePos = locationCoords[blueAnimTarget];
+          blueAnimTarget = null;
+        } else {
+          stillAnimating = true;
+        }
+      }
+
+      // Animate red position
+      if (redAnimTarget !== null) {
+        const elapsed = now - redAnimStartTime;
+        const progress = Math.min(elapsed / duration, 1.0);
+
+        const delta = shortestAngleDelta(redAnimStartAngle, redAnimTargetAngle);
+        redCurrentAngle = redAnimStartAngle + delta * progress;
+        animatedRedPos = angleToCoords(redCurrentAngle);
+
+        if (progress >= 1.0) {
+          redCurrentAngle = redAnimTargetAngle;
+          animatedRedPos = locationCoords[redAnimTarget];
+          redAnimTarget = null;
+        } else {
+          stillAnimating = true;
+        }
+      }
+
+      if (stillAnimating) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        animationFrameId = null;
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(animate);
+  }
+
+  // Track last expected positions to detect changes
+  let lastExpectedBlue: GridLocation | null = null;
+  let lastExpectedRed: GridLocation | null = null;
+
+  // Detect blue position changes and start animation
+  $effect(() => {
+    const target = expectedBlue;
+
+    if (target !== lastExpectedBlue) {
+      if (target !== null) {
+        // Use tracked current angle, or initialize from last/target position
+        if (lastExpectedBlue === null) {
+          // First position - initialize current angle
+          blueCurrentAngle = locationAngles[target];
+        }
+
+        blueAnimStartAngle = blueCurrentAngle;
+        blueAnimTargetAngle = locationAngles[target];
+        blueAnimStartTime = performance.now();
+        blueAnimTarget = target;
+
+        startAnimationLoop();
+      } else {
+        animatedBluePos = null;
+        blueAnimTarget = null;
+      }
+      lastExpectedBlue = target;
+    }
+  });
+
+  // Detect red position changes and start animation
+  $effect(() => {
+    const target = expectedRed;
+
+    if (target !== lastExpectedRed) {
+      if (target !== null) {
+        // Use tracked current angle, or initialize from last/target position
+        if (lastExpectedRed === null) {
+          // First position - initialize current angle
+          redCurrentAngle = locationAngles[target];
+        }
+
+        redAnimStartAngle = redCurrentAngle;
+        redAnimTargetAngle = locationAngles[target];
+        redAnimStartTime = performance.now();
+        redAnimTarget = target;
+
+        startAnimationLoop();
+      } else {
+        animatedRedPos = null;
+        redAnimTarget = null;
+      }
+      lastExpectedRed = target;
+    }
+  });
+
+  // Cleanup on destroy
+  onDestroy(() => {
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+  });
 
   // Convert normalized coordinates (0-1) to grid SVG coordinates
   function normalizedToGrid(x: number, y: number): { x: number; y: number } {
@@ -129,15 +315,14 @@
     <!-- Use the existing GridSvg component (no background overlay) -->
     <GridSvg gridMode={GridMode.DIAMOND} showNonRadialPoints={true} />
 
-    <!-- Expected position indicators (dashed circles) -->
+    <!-- Expected position indicators (dashed circles) - now animated -->
     {#if showExpected}
-      {#if expectedBlue}
-        {@const pos = locationCoords[expectedBlue]}
+      {#if animatedBluePos}
         {@const strokeColor = blueCorrect === true ? "#22c55e" : blueCorrect === false ? "#ef4444" : "#3b82f6"}
         {@const fillColor = blueCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
         <circle
-          cx={pos.x}
-          cy={pos.y}
+          cx={animatedBluePos.x}
+          cy={animatedBluePos.y}
           r="40"
           fill={fillColor}
           stroke={strokeColor}
@@ -147,13 +332,12 @@
           class="expected-indicator"
         />
       {/if}
-      {#if expectedRed}
-        {@const pos = locationCoords[expectedRed]}
+      {#if animatedRedPos}
         {@const strokeColor = redCorrect === true ? "#22c55e" : redCorrect === false ? "#ef4444" : "#ef4444"}
         {@const fillColor = redCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
         <circle
-          cx={pos.x}
-          cy={pos.y}
+          cx={animatedRedPos.x}
+          cy={animatedRedPos.y}
           r="40"
           fill={fillColor}
           stroke={strokeColor}
@@ -290,6 +474,7 @@
   }
 
   .expected-indicator {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Only transition color/opacity changes, not position (handled by JS animation) */
+    transition: fill 0.3s ease, stroke 0.3s ease, opacity 0.3s ease, stroke-dasharray 0.3s ease;
   }
 </style>

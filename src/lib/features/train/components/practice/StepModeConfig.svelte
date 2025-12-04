@@ -97,6 +97,7 @@
 
 	input[type="text"],
 	select {
+		min-height: 48px;
 		padding: 0.75rem;
 		background: rgba(255, 255, 255, 0.1);
 		border: 1px solid rgba(255, 255, 255, 0.2);
@@ -117,11 +118,14 @@
 		align-items: center;
 		gap: 0.75rem;
 		cursor: pointer;
+		min-height: 48px;
+		padding: 0.5rem 0;
 	}
 
 	input[type="checkbox"] {
-		width: 1.25rem;
-		height: 1.25rem;
+		width: 24px;
+		height: 24px;
 		cursor: pointer;
+		flex-shrink: 0;
 	}
 </style>

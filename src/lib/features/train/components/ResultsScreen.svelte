@@ -4,6 +4,7 @@
   Shows performance statistics, accuracy, combo stats, final score, XP earned, and challenge progress.
 -->
 <script lang="ts">
+	import { onMount } from "svelte";
 	import type { TrainChallenge } from "../domain/models/TrainChallengeModels";
 
 	interface XPBreakdown {
@@ -61,6 +62,19 @@
 		grade === "C" ? "#f59e0b" :
 		"#ef4444"
 	);
+
+	// Handle Escape key to exit
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === "Escape" && onExit) {
+			event.preventDefault();
+			onExit();
+		}
+	}
+
+	onMount(() => {
+		window.addEventListener("keydown", handleKeydown);
+		return () => window.removeEventListener("keydown", handleKeydown);
+	});
 </script>
 
 <div class="results-screen">
@@ -256,13 +270,13 @@
 	}
 
 	.results-container {
-		max-width: 600px;
+		max-width: 500px;
 		width: 90%;
 		max-height: 90vh;
-		padding: 2rem;
+		padding: 1.25rem;
 		display: flex;
 		flex-direction: column;
-		gap: 2rem;
+		gap: 1rem;
 		animation: slideUp 0.5s ease-out;
 		overflow-y: auto;
 	}
@@ -272,7 +286,7 @@
 			width: 100%;
 			max-height: 100vh;
 			padding: 1rem;
-			gap: 1.5rem;
+			gap: 0.75rem;
 		}
 	}
 
@@ -321,33 +335,34 @@
 
 	.grade-display {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
-		gap: 1rem;
-		padding: 2rem;
+		justify-content: center;
+		gap: 1.5rem;
+		padding: 1rem;
 		background: rgba(255, 255, 255, 0.05);
 		border: 2px solid rgba(255, 255, 255, 0.1);
-		border-radius: 16px;
+		border-radius: 12px;
 	}
 
 	.grade-circle {
-		width: 150px;
-		height: 150px;
+		width: 80px;
+		height: 80px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		border-radius: 50%;
 		background: radial-gradient(circle, var(--grade-color, #3b82f6) 0%, transparent 70%);
-		border: 4px solid var(--grade-color, #3b82f6);
-		box-shadow: 0 0 40px var(--grade-color, #3b82f6);
-		animation: pulseGrade 2s ease-in-out infinite;
+		border: 3px solid var(--grade-color, #3b82f6);
+		box-shadow: 0 0 20px var(--grade-color, #3b82f6);
+		flex-shrink: 0;
 	}
 
 	@media (max-width: 768px) {
 		.grade-circle {
-			width: 120px;
-			height: 120px;
-			border-width: 3px;
+			width: 64px;
+			height: 64px;
+			border-width: 2px;
 		}
 	}
 
@@ -363,39 +378,39 @@
 	}
 
 	.grade-letter {
-		font-size: 5rem;
+		font-size: 2.5rem;
 		font-weight: 900;
 		color: var(--grade-color, #3b82f6);
-		text-shadow: 0 0 20px var(--grade-color, #3b82f6);
+		text-shadow: 0 0 10px var(--grade-color, #3b82f6);
 	}
 
 	@media (max-width: 768px) {
 		.grade-letter {
-			font-size: 4rem;
+			font-size: 2rem;
 		}
 	}
 
 	.accuracy-text {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: 700;
 		color: white;
 	}
 
 	@media (max-width: 768px) {
 		.accuracy-text {
-			font-size: 1.25rem;
+			font-size: 1.125rem;
 		}
 	}
 
 	.stats-grid {
 		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1rem;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.5rem;
 	}
 
 	@media (max-width: 600px) {
 		.stats-grid {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 
@@ -403,27 +418,26 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.75rem;
-		padding: 1.5rem;
+		gap: 0.25rem;
+		padding: 0.75rem 0.5rem;
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
+		border-radius: 8px;
 		transition: all 0.3s;
 	}
 
 	.stat-card:hover {
 		background: rgba(255, 255, 255, 0.08);
-		transform: translateY(-2px);
 	}
 
 	.stat-icon {
-		width: 48px;
-		height: 48px;
+		width: 28px;
+		height: 28px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 12px;
-		padding: 10px;
+		border-radius: 6px;
+		padding: 5px;
 	}
 
 	.stat-icon.score {
@@ -452,16 +466,16 @@
 	}
 
 	.stat-value {
-		font-size: 2rem;
-		font-weight: 800;
+		font-size: 1.25rem;
+		font-weight: 700;
 		color: white;
 		font-variant-numeric: tabular-nums;
 	}
 
 	.stat-label {
-		font-size: 0.875rem;
+		font-size: 0.7rem;
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
+		letter-spacing: 0.05em;
 		color: rgba(255, 255, 255, 0.6);
 		font-weight: 600;
 	}
@@ -469,18 +483,18 @@
 	.detailed-stats {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
-		padding: 1.5rem;
+		gap: 0.25rem;
+		padding: 0.75rem 1rem;
 		background: rgba(255, 255, 255, 0.05);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 12px;
+		border-radius: 8px;
 	}
 
 	.detail-row {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0.5rem 0;
+		padding: 0.25rem 0;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 	}
 
@@ -489,12 +503,12 @@
 	}
 
 	.detail-label {
-		font-size: 0.9rem;
+		font-size: 0.8rem;
 		color: rgba(255, 255, 255, 0.7);
 	}
 
 	.detail-value {
-		font-size: 1rem;
+		font-size: 0.875rem;
 		font-weight: 600;
 		color: white;
 		font-variant-numeric: tabular-nums;
@@ -502,18 +516,21 @@
 
 	.action-buttons {
 		display: flex;
-		gap: 1rem;
+		gap: 0.75rem;
 		justify-content: center;
+		margin-top: 0.5rem;
 	}
 
 	.primary-button,
 	.secondary-button {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		gap: 0.5rem;
-		padding: 0.875rem 2rem;
+		min-height: 44px;
+		padding: 0.625rem 1.5rem;
 		border-radius: 8px;
-		font-size: 1rem;
+		font-size: 0.9rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.2s;
@@ -547,28 +564,28 @@
 
 	/* XP Section */
 	.xp-section {
-		padding: 1.5rem;
+		padding: 0.75rem 1rem;
 		background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.05));
 		border: 1px solid rgba(234, 179, 8, 0.3);
-		border-radius: 12px;
+		border-radius: 8px;
 	}
 
 	.xp-header {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
-		margin-bottom: 1rem;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.xp-header svg {
-		width: 24px;
-		height: 24px;
+		width: 18px;
+		height: 18px;
 		color: #eab308;
 	}
 
 	.xp-header h3 {
 		margin: 0;
-		font-size: 1.125rem;
+		font-size: 0.9rem;
 		font-weight: 700;
 		color: #eab308;
 	}
@@ -576,14 +593,14 @@
 	.xp-breakdown {
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0.25rem;
 	}
 
 	.xp-row {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0.5rem 0;
+		padding: 0.25rem 0;
 		color: rgba(255, 255, 255, 0.8);
 	}
 
@@ -592,11 +609,11 @@
 	}
 
 	.xp-label {
-		font-size: 0.9rem;
+		font-size: 0.8rem;
 	}
 
 	.xp-value {
-		font-size: 1rem;
+		font-size: 0.875rem;
 		font-weight: 600;
 		font-variant-numeric: tabular-nums;
 	}
@@ -605,19 +622,19 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0.75rem 0;
-		margin-top: 0.5rem;
-		border-top: 2px solid rgba(234, 179, 8, 0.3);
+		padding: 0.5rem 0;
+		margin-top: 0.25rem;
+		border-top: 1px solid rgba(234, 179, 8, 0.3);
 	}
 
 	.xp-total-label {
-		font-size: 1.125rem;
+		font-size: 0.9rem;
 		font-weight: 700;
 		color: white;
 	}
 
 	.xp-total-value {
-		font-size: 1.5rem;
+		font-size: 1.125rem;
 		font-weight: 800;
 		color: #eab308;
 		font-variant-numeric: tabular-nums;
@@ -625,10 +642,10 @@
 
 	/* Challenge Section */
 	.challenge-section {
-		padding: 1.5rem;
+		padding: 0.75rem 1rem;
 		background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
 		border: 1px solid rgba(59, 130, 246, 0.3);
-		border-radius: 12px;
+		border-radius: 8px;
 	}
 
 	.challenge-section.complete {
@@ -639,13 +656,13 @@
 	.challenge-header {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
-		margin-bottom: 1rem;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.challenge-header svg {
-		width: 24px;
-		height: 24px;
+		width: 18px;
+		height: 18px;
 		color: #3b82f6;
 	}
 
@@ -655,7 +672,7 @@
 
 	.challenge-header h3 {
 		margin: 0;
-		font-size: 1.125rem;
+		font-size: 0.9rem;
 		font-weight: 700;
 		color: #3b82f6;
 	}
@@ -667,11 +684,11 @@
 	.challenge-info {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 0.5rem;
 	}
 
 	.challenge-title {
-		font-size: 1rem;
+		font-size: 0.875rem;
 		font-weight: 600;
 		color: white;
 	}
@@ -679,21 +696,21 @@
 	.challenge-progress-bar {
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0.25rem;
 	}
 
 	.progress-track {
 		width: 100%;
-		height: 8px;
+		height: 6px;
 		background: rgba(255, 255, 255, 0.1);
-		border-radius: 4px;
+		border-radius: 3px;
 		overflow: hidden;
 	}
 
 	.progress-fill {
 		height: 100%;
 		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-		border-radius: 4px;
+		border-radius: 3px;
 		transition: width 0.5s ease-out;
 	}
 
@@ -702,7 +719,7 @@
 	}
 
 	.progress-text {
-		font-size: 0.875rem;
+		font-size: 0.75rem;
 		font-weight: 600;
 		color: rgba(255, 255, 255, 0.7);
 		text-align: center;
@@ -714,18 +731,18 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.5rem;
-		padding: 0.75rem;
+		padding: 0.5rem;
 		background: rgba(34, 197, 94, 0.2);
-		border-radius: 8px;
+		border-radius: 6px;
 	}
 
 	.reward-label {
-		font-size: 0.875rem;
+		font-size: 0.75rem;
 		color: rgba(255, 255, 255, 0.8);
 	}
 
 	.reward-value {
-		font-size: 1.125rem;
+		font-size: 0.9rem;
 		font-weight: 700;
 		color: #22c55e;
 		font-variant-numeric: tabular-nums;

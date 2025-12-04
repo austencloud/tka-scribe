@@ -1,17 +1,13 @@
 <!--
-  PracticePanel.svelte - Practice Tab Container (Refactored)
+  PracticePanel.svelte - Practice Tab Container
 
-  Simplified to direct-to-workspace pattern:
-  - If last sequence saved: Shows TrainModePanel immediately
-  - If no sequence: Shows SequencePromptCard with recent sequences
-
-  Mode switching and settings moved into TrainModePanel header.
+  Always shows the training workspace (camera + beat grid) immediately.
+  Sequence selection is integrated into the workspace UI for non-disruptive flow.
 -->
 <script lang="ts">
   import { slide } from "svelte/transition";
   import { getTrainPracticeState } from "../../state/train-practice-state.svelte";
   import TrainModePanel from "../TrainModePanel.svelte";
-  import SequencePromptCard from "./SequencePromptCard.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { activeChallengeState } from "../../state/active-challenge-state.svelte";
   import { formatChallengeRequirement } from "../../domain/models/TrainChallengeModels";
@@ -26,15 +22,11 @@
     }
   });
 
-  // Check if we have a sequence ready to go
-  const hasSequence = $derived(practiceState.hasLastSequence());
-
   function handleSequenceSelect(sequence: SequenceData) {
     practiceState.setLastSequence(sequence);
   }
 
-  function handleBack() {
-    // Clear sequence and show selection prompt
+  function handleSequenceClear() {
     practiceState.clearLastSequence();
   }
 
@@ -76,22 +68,17 @@
     </div>
   {/if}
 
-  <!-- Main Content: Direct to workspace or sequence prompt -->
+  <!-- Main Content: Always show training workspace -->
   <div class="practice-content">
-    {#if hasSequence && practiceState.lastSequenceData}
-      <!-- Direct to training interface -->
-      <TrainModePanel
-        sequence={practiceState.lastSequenceData}
-        practiceMode={practiceState.currentMode}
-        modeConfig={practiceState.getCurrentModeConfig()}
-        challengeId={activeChallengeState.activeChallenge?.id}
-        onBack={handleBack}
-        onSessionComplete={handleSessionComplete}
-      />
-    {:else}
-      <!-- Sequence selection prompt -->
-      <SequencePromptCard onSequenceSelect={handleSequenceSelect} />
-    {/if}
+    <TrainModePanel
+      sequence={practiceState.lastSequenceData}
+      practiceMode={practiceState.currentMode}
+      modeConfig={practiceState.getCurrentModeConfig()}
+      challengeId={activeChallengeState.activeChallenge?.id}
+      onSequenceSelect={handleSequenceSelect}
+      onSequenceClear={handleSequenceClear}
+      onSessionComplete={handleSessionComplete}
+    />
   </div>
 </div>
 

@@ -210,7 +210,9 @@
   .recent-card {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: clamp(0.25rem, 1vw, 0.375rem);
+    min-height: 48px;
     padding: clamp(0.75rem, 3vw, 1rem);
     background: linear-gradient(
       135deg,
@@ -274,6 +276,7 @@
     justify-content: center;
     gap: clamp(0.5rem, 2vw, 0.75rem);
     width: 100%;
+    min-height: 48px;
     padding: clamp(0.875rem, 3.5vw, 1.125rem) clamp(1rem, 4vw, 1.5rem);
     margin-top: clamp(0.5rem, 2vw, 0.75rem);
     background: linear-gradient(135deg, #3b82f6, #8b5cf6);
