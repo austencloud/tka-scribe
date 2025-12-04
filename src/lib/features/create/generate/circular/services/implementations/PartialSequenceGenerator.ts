@@ -77,14 +77,13 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     const [blueLocation, redLocation] =
       this.gridPositionDeriver.getGridLocationsFromPosition(startPos);
 
-    // Determine the letter based on the position
+    // Determine the letter based on the position prefix
+    // All positions starting with "alpha" get Letter.ALPHA, etc.
     let letter: typeof Letter[keyof typeof Letter];
-    if (startPos === GridPosition.ALPHA1 || startPos === GridPosition.ALPHA2) {
+    const positionName = startPos.toLowerCase();
+    if (positionName.startsWith("alpha")) {
       letter = Letter.ALPHA;
-    } else if (
-      startPos === GridPosition.BETA5 ||
-      startPos === GridPosition.BETA4
-    ) {
+    } else if (positionName.startsWith("beta")) {
       letter = Letter.BETA;
     } else {
       letter = Letter.GAMMA;

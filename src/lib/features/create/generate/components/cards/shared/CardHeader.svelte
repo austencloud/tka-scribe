@@ -1,69 +1,13 @@
 <!--
-CardHeader.svelte - Shared card header component
-Reusable header for all card types with consistent styling
+CardHeader.svelte - Re-exports from shared for backwards compatibility
 -->
 <script lang="ts">
+  import { CardHeader as SharedCardHeader } from "$lib/shared/components/stepper-card";
+
   let { title, headerFontSize } = $props<{
     title: string;
     headerFontSize?: string;
   }>();
 </script>
 
-<div class="card-header-container">
-  <div class="card-header">
-    <div
-      class="card-title"
-      style={headerFontSize ? `font-size: ${headerFontSize}` : ""}
-    >
-      {title}
-    </div>
-  </div>
-</div>
-
-<style>
-  .card-header-container {
-    /* Enable container queries for intrinsic sizing */
-    container-type: inline-size;
-    container-name: card-header;
-    width: 100%;
-  }
-
-  .card-header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: clamp(0.125rem, 1cqi, 0.375rem);
-    width: 100%;
-    flex-shrink: 0;
-    justify-content: center;
-    padding: clamp(3px, 0.8cqh, 6px) clamp(6px, 1.5cqw, 10px);
-  }
-
-  .card-title {
-    font-weight: 600;
-    color: var(--text-color, rgba(255, 255, 255, 0.9));
-    text-align: center;
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    /* Container-aware font sizing - only applies if no inline style is set */
-    font-size: clamp(8px, 2.5cqi, 11px);
-    transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Progressive enhancement for wider containers */
-  @container card-header (min-width: 200px) {
-    .card-title {
-      font-size: clamp(9px, 2.8cqi, 12px);
-    }
-  }
-
-  @container card-header (min-width: 300px) {
-    .card-title {
-      font-size: clamp(10px, 3cqi, 13px);
-    }
-  }
-</style>
+<SharedCardHeader {title} {headerFontSize} />
