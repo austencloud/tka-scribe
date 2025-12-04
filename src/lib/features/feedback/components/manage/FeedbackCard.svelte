@@ -25,6 +25,10 @@
     ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
     : null;
 
+  // Use Google photo if available, fallback to UI Avatars
+  const avatarUrl = item.userPhotoURL ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`;
+
   // Swipe state
   let swipeOffset = $state(0);
   let isSwiping = $state(false);
@@ -227,7 +231,7 @@
       <!-- Footer row -->
       <div class="card-footer">
         <span class="user-info">
-          <i class="fas fa-user-circle"></i>
+          <img src={avatarUrl} alt="" class="user-avatar" referrerpolicy="no-referrer" crossorigin="anonymous" />
           {item.userDisplayName}
         </span>
         <span class="separator">·</span>
@@ -508,9 +512,11 @@
     gap: var(--fb-space-3xs);
   }
 
-  .user-info i {
-    font-size: 1.1em;
-    opacity: 0.7;
+  .user-avatar {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   .separator {

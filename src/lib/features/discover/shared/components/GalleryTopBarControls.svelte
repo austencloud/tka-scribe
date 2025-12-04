@@ -1,6 +1,7 @@
 <!--
 Gallery Top Bar Controls - 2026 Modern Design (Compact)
-- Sort chips (always visible)
+- Navigation buttons (back/forward) on left
+- Sort chips centered
 - Filter button opens drawer with scope toggle + drill-down filters
 - Active filter shown as dismissible chip
 -->
@@ -10,8 +11,20 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { onMount } from "svelte";
+  import { getContext, onMount } from "svelte";
   import { ExploreSortMethod } from "../domain/enums/discover-enums";
+  import DiscoverNavButtons from "./DiscoverNavButtons.svelte";
+
+  // Get navigation handler from context (provided by DiscoverModule)
+  const navContext = getContext<{
+    onNavigate: (location: {
+      tab: string;
+      view?: string;
+      contextId?: string;
+    }) => void;
+  }>("discoverNavigation");
+
+  const onNavigate = navContext?.onNavigate ?? (() => {});
 
   // Get gallery controls from global reactive state
   const galleryControls = $derived(galleryControlsManager.current);
@@ -74,45 +87,54 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
 
 {#if galleryControls}
   <div class="gallery-topbar-controls">
-    <!-- Sort Chips + Filter Button Row -->
     <div class="controls-row">
-      <!-- Sort Chips -->
-      <div class="sort-chips">
-        {#each sortOptions as opt}
-          <button
-            class="sort-chip"
-            class:active={galleryControls.currentSortMethod === opt.id}
-            onclick={() => handleSortChange(opt.id)}
-          >
-            <i class="fas {opt.icon}"></i>
-            <span class="chip-label">{opt.label}</span>
-          </button>
-        {/each}
+      <!-- Left: Navigation buttons -->
+      <div class="nav-section">
+        <DiscoverNavButtons {onNavigate} />
       </div>
 
-      <!-- Active Filter (if any) -->
-      {#if hasActiveFilter && activeFilterLabel}
-        <button class="active-filter-chip" onclick={handleClearFilter}>
-          <span>{activeFilterLabel}</span>
-          <i class="fas fa-times"></i>
-        </button>
-      {/if}
+      <!-- Center: Sort Chips (truly centered) -->
+      <div class="center-section">
+        <div class="sort-chips">
+          {#each sortOptions as opt}
+            <button
+              class="sort-chip"
+              class:active={galleryControls.currentSortMethod === opt.id}
+              onclick={() => handleSortChange(opt.id)}
+            >
+              <i class="fas {opt.icon}"></i>
+              <span class="chip-label">{opt.label}</span>
+            </button>
+          {/each}
+        </div>
+      </div>
 
-      <!-- Filter Button - Hidden when filter panel is already open -->
-      {#if !isFilterPanelOpen}
-        <button
-          class="filter-button"
-          class:has-active={hasActiveFilter}
-          onclick={handleOpenFilters}
-          type="button"
-          aria-label="Open filters"
-        >
-          <i class="fas fa-sliders-h"></i>
-          {#if hasActiveFilter}
-            <span class="filter-badge">1</span>
-          {/if}
-        </button>
-      {/if}
+      <!-- Right: Filter controls -->
+      <div class="filter-section">
+        <!-- Active Filter (if any) -->
+        {#if hasActiveFilter && activeFilterLabel}
+          <button class="active-filter-chip" onclick={handleClearFilter}>
+            <span>{activeFilterLabel}</span>
+            <i class="fas fa-times"></i>
+          </button>
+        {/if}
+
+        <!-- Filter Button - Hidden when filter panel is already open -->
+        {#if !isFilterPanelOpen}
+          <button
+            class="filter-button"
+            class:has-active={hasActiveFilter}
+            onclick={handleOpenFilters}
+            type="button"
+            aria-label="Open filters"
+          >
+            <i class="fas fa-sliders-h"></i>
+            {#if hasActiveFilter}
+              <span class="filter-badge">1</span>
+            {/if}
+          </button>
+        {/if}
+      </div>
     </div>
   </div>
 {/if}
@@ -126,21 +148,44 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     width: 100%;
   }
 
-  /* Controls Row */
+  /* Three-section layout: left (nav) - center (chips) - right (filter) */
   .controls-row {
     display: flex;
     align-items: center;
-    gap: 8px;
     width: 100%;
-    flex-wrap: wrap;
+    position: relative;
+  }
+
+  /* Left section - nav buttons */
+  .nav-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    min-width: 104px; /* Space for 2 nav buttons (48+8+48) */
+  }
+
+  /* Center section - absolutely centered chips */
+  .center-section {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Right section - filter controls */
+  .filter-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
   }
 
   /* Sort Chips */
   .sort-chips {
     display: flex;
     gap: 6px;
-    flex: 1;
-    min-width: 0;
   }
 
   .sort-chip {

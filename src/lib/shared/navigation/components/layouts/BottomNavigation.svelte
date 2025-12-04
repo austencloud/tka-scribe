@@ -114,22 +114,13 @@
   bind:this={navElement}
   style="--module-color: {moduleColor}"
 >
-  <!-- Module Switcher Button (Left) - or Back button when in Settings -->
-  {#if isSettingsActive}
-    <button
-      type="button"
-      class="back-button"
-      onclick={onSettingsTap}
-      aria-label="Go back"
-    >
-      <i class="fas fa-chevron-left"></i>
-    </button>
-  {:else if showModuleSwitcher}
+  <!-- Module Switcher Button (Left) - Settings handles its own back button in header -->
+  {#if showModuleSwitcher && !isSettingsActive}
     <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
   {/if}
 
   <!-- Current Module's Sections -->
-  <div class="sections" class:hidden={shouldHideNav}>
+  <div class="sections" class:hidden={shouldHideNav} class:full-width={isSettingsActive}>
     {#each sections as section}
       <NavButton
         icon={section.icon}
@@ -254,6 +245,11 @@
     pointer-events: none;
   }
 
+  /* When in settings, no side buttons - sections can use full width */
+  .sections.full-width {
+    max-width: 100%;
+  }
+
   /* ============================================================================
      BUTTON SIZING - Clean specificity, no !important
      ============================================================================ */
@@ -266,40 +262,6 @@
     flex: 1 1 auto;
     max-width: var(--section-button-max);
     border-radius: 12px;
-  }
-
-  /* Back button (shown in settings) */
-  .back-button {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    padding: 0;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    transition: all 0.15s ease;
-  }
-
-  .back-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
-  }
-
-  .back-button:active {
-    transform: scale(0.95);
-  }
-
-  .back-button i {
-    font-size: 18px;
   }
 
   /* Special buttons (Settings) - solid module-colored */

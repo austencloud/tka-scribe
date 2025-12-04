@@ -57,6 +57,21 @@ select {
   font: inherit;
 }
 
+/* Minimum touch target for primary interactive elements */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a.button,
+a[role="button"],
+[role="tab"],
+[role="switch"],
+[role="checkbox"] {
+  min-width: var(--min-touch-target);
+  min-height: var(--min-touch-target);
+}
+
 p,
 h1,
 h2,
@@ -119,6 +134,7 @@ h6 {
   /* Border System */
   --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --glass-border-hover: 1px solid rgba(255, 255, 255, 0.25);
+  --min-touch-target: 48px;
 
   /* Enhanced Shadow System */
   --shadow-glass:

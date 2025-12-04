@@ -11,12 +11,14 @@
     selectedBeatData,
     onOrientationChanged,
     onTurnAmountChanged,
+    onRotationDirectionChanged,
     useSimplifiedLayout = false,
   } = $props<{
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
     useSimplifiedLayout?: boolean;
   }>();
 
@@ -92,6 +94,7 @@
       <TurnControlPanel
         {currentBeatData}
         {onTurnAmountChanged}
+        {onRotationDirectionChanged}
         {useSimplifiedLayout}
         onEditTurnsRequested={handleEditTurnsRequested}
       />

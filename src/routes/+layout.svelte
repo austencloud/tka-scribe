@@ -85,10 +85,18 @@
 
     const isInsideAllowedSwipeZone = (element: HTMLElement | null): boolean => {
       if (!element) return false;
-      // Check if element or any parent is a drawer OR an Embla carousel (horizontal swipe container)
+      // Check if element or any parent is:
+      // - drawer content (for swipe to dismiss)
+      // - Embla carousel (horizontal swipe container)
+      // - Kanban board (for drag-and-drop between columns)
+      // - any element with draggable="true" (generic drag support)
+      // - settings swipe zone (for swipe-left to exit settings)
       return (
         element.closest(".drawer-content") !== null ||
-        element.closest(".embla") !== null
+        element.closest(".embla") !== null ||
+        element.closest(".kanban-board") !== null ||
+        element.closest("[draggable='true']") !== null ||
+        element.closest(".settings-swipe-zone") !== null
       );
     };
 

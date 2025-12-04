@@ -428,11 +428,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       case "account":
       case "settings":
         // Account/Settings uses library services for user stats
-        // Also load feedback-ai for admin AI settings
-        await Promise.all([
-          loadIfNeeded("library", () => import("./modules/library.module")),
-          loadIfNeeded("feedback-ai", () => import("./modules/feedback-ai.module"))
-        ]);
+        await loadIfNeeded("library", () => import("./modules/library.module"));
         break;
 
       case "about":
@@ -456,8 +452,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
           loadIfNeeded("admin", () => import("./modules/admin.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
           loadIfNeeded("train", () => import("./modules/train.module")),
-          loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("feedback-ai", () => import("./modules/feedback-ai.module"))
+          loadIfNeeded("discover", () => import("./modules/discover.module"))
         ]);
         break;
 

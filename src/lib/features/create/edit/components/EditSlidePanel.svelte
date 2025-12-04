@@ -35,6 +35,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     placement, // Override for standalone use outside Create module
     onOrientationChanged,
     onTurnAmountChanged,
+    onRotationDirectionChanged,
     onBatchApply, // Batch apply callback
     onRemoveBeat, // Remove beat callback
   } = $props<{
@@ -47,6 +48,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     placement?: "bottom" | "right"; // Override for standalone use outside Create module
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
     onBatchApply?: (changes: Partial<BeatData>) => void; // Batch mode
     onRemoveBeat?: (beatNumber: number) => void; // Remove beat callback
   }>();
@@ -265,6 +267,7 @@ import { TYPES } from "$lib/shared/inversify/types";
           {selectedBeatData}
           {onOrientationChanged}
           {onTurnAmountChanged}
+          {onRotationDirectionChanged}
         />
       {/if}
     </div>

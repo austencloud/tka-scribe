@@ -17,6 +17,10 @@
   import DiscoverDeleteDialog from "./DiscoverDeleteDialog.svelte";
   import DiscoverSequencesTab from "./DiscoverSequencesTab.svelte";
   import { discoverScrollState } from "../state/DiscoverScrollState.svelte";
+  import {
+    discoverNavigationState,
+    type DiscoverLocation,
+  } from "../state/discover-navigation-state.svelte";
   import { DiscoverScrollBehaviorService } from "../services/implementations/DiscoverScrollBehaviorService";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
@@ -74,6 +78,7 @@
   // This effect syncs the local tab state with the global navigation state
   $effect(() => {
     const navTab = navigationState.activeTab;
+    let newTab: DiscoverModuleType = "sequences";
 
     // Map navigation state to local explore tab
     // Note: "library" now redirects to "sequences" (Gallery) with scope toggle
@@ -83,12 +88,22 @@
       navTab === "gallery" ||
       navTab === "library"
     ) {
-      activeTab = "sequences";
+      newTab = "sequences";
     } else if (navTab === "collections") {
-      activeTab = "collections";
+      newTab = "collections";
     } else if (navTab === "creators") {
-      activeTab = "creators";
+      newTab = "creators";
     }
+
+    // Only push to history if this is a user-initiated tab change (not from history nav)
+    if (newTab !== activeTab && !discoverNavigationState.isNavigating) {
+      // Map to the discover navigation tab format
+      const discoverTab =
+        newTab === "sequences" ? "gallery" : (newTab as "collections" | "creators");
+      discoverNavigationState.navigateTo({ tab: discoverTab, view: "list" });
+    }
+
+    activeTab = newTab;
   });
 
   // Reset creators view state when leaving the creators tab
@@ -97,6 +112,82 @@
       creatorsViewState.reset();
     }
   });
+
+  // Track when viewing a creator profile (push to history via unified state)
+  // This handles the case when creatorsViewState is updated directly (legacy path)
+  $effect(() => {
+    if (
+      creatorsViewState.currentView === "user-profile" &&
+      creatorsViewState.viewingUserId &&
+      !discoverNavigationState.isNavigating
+    ) {
+      discoverNavigationState.navigateTo({
+        tab: "creators",
+        view: "profile",
+        contextId: creatorsViewState.viewingUserId,
+      });
+    }
+  });
+
+  // ✅ SYNC UI FROM NAVIGATION STATE
+  // When discoverNavigationState.currentLocation changes, update the UI accordingly
+  // This handles the new unified navigation API (viewCreatorProfile, etc.)
+  $effect(() => {
+    const location = discoverNavigationState.currentLocation;
+    if (!location) return;
+
+    // Map the location tab to internal activeTab
+    const internalTab =
+      location.tab === "gallery" ? "sequences" : location.tab;
+
+    // Update tab if needed (this will trigger bottom nav sync)
+    if (internalTab !== activeTab) {
+      navigationState.setActiveTab(
+        location.tab === "gallery" ? "sequences" : location.tab
+      );
+    }
+
+    // Handle sub-view navigation for creators
+    if (location.tab === "creators") {
+      if (location.view === "profile" && location.contextId) {
+        // Only update creatorsViewState if it doesn't match
+        if (creatorsViewState.viewingUserId !== location.contextId) {
+          creatorsViewState.viewUserProfile(location.contextId);
+        }
+      } else if (creatorsViewState.currentView !== "list") {
+        creatorsViewState.reset();
+      }
+    }
+  });
+
+  /**
+   * Handle navigation from history back/forward buttons
+   */
+  function handleHistoryNavigation(location: DiscoverLocation) {
+    // Map gallery tab back to sequences for internal state
+    const internalTab =
+      location.tab === "gallery" ? "sequences" : location.tab;
+
+    // Navigate to the tab via global navigation state
+    if (internalTab !== activeTab) {
+      navigationState.setActiveTab(location.tab === "gallery" ? "sequences" : location.tab);
+    }
+
+    // Handle sub-view navigation
+    if (location.tab === "creators") {
+      if (location.view === "profile" && location.contextId) {
+        creatorsViewState.viewUserProfile(location.contextId);
+      } else {
+        creatorsViewState.reset();
+      }
+    }
+
+    // Handle gallery detail view
+    if (location.tab === "gallery" && location.view === "detail" && location.contextId) {
+      // TODO: Re-open sequence detail panel with contextId
+      console.log(`[DiscoverModule] Would open sequence detail: ${location.contextId}`);
+    }
+  }
 
   // ✅ SYNC ANIMATION MODAL STATE
   // This effect syncs the local showAnimator state with galleryState
@@ -132,6 +223,15 @@
     getVisible: () => discoverScrollState.isUIVisible,
     hide: () => scrollBehaviorService.forceHideUI(),
     show: () => scrollBehaviorService.forceShowUI(),
+  });
+
+  // Provide navigation context for back/forward buttons and cross-tab navigation
+  setContext("discoverNavigation", {
+    onNavigate: handleHistoryNavigation,
+    navigateToCreatorProfile: discoverNavigationState.viewCreatorProfile,
+    navigateToSequenceDetail: discoverNavigationState.viewSequenceDetail,
+    navigateToCollectionDetail: discoverNavigationState.viewCollectionDetail,
+    navigateToCreatorSequences: discoverNavigationState.viewCreatorSequences,
   });
 
   // Provide gallery state for TopBar controls via global reactive state
@@ -171,6 +271,9 @@
   // ============================================================================
 
   onMount(() => {
+    // Initialize navigation state (restores from localStorage if available)
+    discoverNavigationState.initialize("gallery");
+
     // Resolve event handler service (feature module should be loaded by now)
     try {
       eventHandlerService = resolve<IDiscoverEventHandlerService>(

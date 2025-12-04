@@ -17,12 +17,36 @@ import { switchModule } from "../application/state/ui/module-state";
 import { authStore } from "../auth/stores/authStore.svelte";
 import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
 
+// Session storage key for persisting navigation history across HMR
+const PREVIOUS_MODULE_KEY = "tka-previous-module-before-settings";
+
+// Load persisted previous module from sessionStorage (survives HMR)
+function loadPreviousModule(): ModuleId | null {
+  if (typeof sessionStorage === "undefined") return null;
+  const saved = sessionStorage.getItem(PREVIOUS_MODULE_KEY);
+  if (saved && MODULE_DEFINITIONS.some((m) => m.id === saved)) {
+    return saved as ModuleId;
+  }
+  return null;
+}
+
+// Persist previous module to sessionStorage
+function savePreviousModule(moduleId: ModuleId | null) {
+  if (typeof sessionStorage === "undefined") return;
+  if (moduleId) {
+    sessionStorage.setItem(PREVIOUS_MODULE_KEY, moduleId);
+  } else {
+    sessionStorage.removeItem(PREVIOUS_MODULE_KEY);
+  }
+}
+
 // Reactive state object using Svelte 5 $state rune
 export const navigationCoordinator = $state({
   // Note: Edit and Export are slide-out panels, not navigation sections
   canAccessEditAndExportPanels: false,
   // Track the module we came from when entering Settings (for return animation)
-  previousModuleBeforeSettings: null as ModuleId | null,
+  // Initialized from sessionStorage to survive HMR
+  previousModuleBeforeSettings: loadPreviousModule(),
   // Store the entry point for consistent exit animation
   settingsEntryOrigin: { x: 90, y: 95 } as { x: number; y: number },
 });
@@ -70,6 +94,7 @@ export function currentModuleName() {
 // Create module: Construct and Generate sections are shown when no sequence exists.
 // When a sequence exists (canAccessEditAndExportPanels = true), all sections are shown.
 // When creation method selector is visible, hide all tabs (user must pick via selector).
+// Settings module: AI tab is admin-only.
 export function moduleSections() {
   const baseSections = currentModuleDefinition()?.sections || [];
   const module = currentModule();
@@ -99,6 +124,17 @@ export function moduleSections() {
 
     // When sequence exists (edit/export panels accessible), show all sections
     return availableSections;
+  }
+
+  // Settings module: Filter AI tab for non-admin users
+  if (module === "settings") {
+    return baseSections.filter((section: { id: string }) => {
+      // AI tab is admin-only
+      if (section.id === "ai") {
+        return featureFlagService.isAdmin;
+      }
+      return true;
+    });
   }
 
   return baseSections;
@@ -139,8 +175,9 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
   if (typeof doc.startViewTransition === 'function' && !isLeavingDashboard) {
     if (isEnteringSettings) {
       // ENTERING SETTINGS - Portal expand animation
-      // Store where we came from for the return journey
+      // Store where we came from for the return journey (persist to survive HMR)
       navigationCoordinator.previousModuleBeforeSettings = currentMod;
+      savePreviousModule(currentMod);
 
       document.documentElement.classList.add('settings-portal-enter');
 
@@ -166,6 +203,7 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
       transition.finished.finally(() => {
         document.documentElement.classList.remove('settings-portal-exit');
         navigationCoordinator.previousModuleBeforeSettings = null;
+        savePreviousModule(null);
       });
     } else if (isGoingToDashboard) {
       // Pull-out effect when going back to dashboard
@@ -283,6 +321,10 @@ export function getModuleDefinitions() {
     }
     // Feedback module only visible to testers and admins
     if (module.id === "feedback") {
+      return featureFlagService.isTester;
+    }
+    // ML Training module only visible to testers and admins
+    if (module.id === "ml-training") {
       return featureFlagService.isTester;
     }
     return true;

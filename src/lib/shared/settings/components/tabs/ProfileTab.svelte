@@ -288,6 +288,20 @@
     }
   }
 
+  /* Mobile: Stack profile card elements on narrow screens */
+  @container settings-content (max-width: 450px) {
+    .profile-top {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .sign-out-chip {
+      grid-column: 1 / -1;
+      justify-self: center;
+      margin-top: 1.5cqh;
+    }
+  }
+
   .profile-top {
     display: grid;
     grid-template-columns: auto 1fr auto;

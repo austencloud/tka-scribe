@@ -12,6 +12,9 @@
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   import { onMount } from "svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
@@ -57,6 +60,13 @@
   // Preview visibility toggle for small screens
   let showPreview = $state(false);
 
+  // Haptic feedback service
+  let hapticService: IHapticFeedbackService | null = null;
+
+  const triggerHaptic = () => {
+    hapticService?.trigger("selection");
+  };
+
   // Example pictograph data for preview - Letter A with turns and reversals
   // Each motion has 1 turn, starting IN and ending OUT
   // Both reversals enabled to demonstrate the reversal indicators
@@ -99,6 +109,8 @@
   };
 
   onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+
     // Load initial state from visibility manager
     tkaVisible = visibilityManager.getRawGlyphVisibility("TKA");
     vtgVisible = visibilityManager.getRawGlyphVisibility("VTG");
@@ -134,48 +146,62 @@
   });
 
   function toggleTKA() {
+    triggerHaptic();
     tkaVisible = !tkaVisible;
     visibilityManager.setGlyphVisibility("TKA", tkaVisible);
   }
 
   function toggleVTG() {
+    triggerHaptic();
     vtgVisible = !vtgVisible;
     visibilityManager.setGlyphVisibility("VTG", vtgVisible);
   }
 
   function toggleElemental() {
+    triggerHaptic();
     elementalVisible = !elementalVisible;
     visibilityManager.setGlyphVisibility("Elemental", elementalVisible);
   }
 
   function togglePositions() {
+    triggerHaptic();
     positionsVisible = !positionsVisible;
     visibilityManager.setGlyphVisibility("Positions", positionsVisible);
   }
 
   function toggleReversals() {
+    triggerHaptic();
     reversalsVisible = !reversalsVisible;
     visibilityManager.setGlyphVisibility("Reversals", reversalsVisible);
   }
 
   function toggleNonRadial() {
+    triggerHaptic();
     nonRadialVisible = !nonRadialVisible;
     visibilityManager.setNonRadialVisibility(nonRadialVisible);
   }
 
   function toggleTurnNumbers() {
+    triggerHaptic();
     turnNumbersVisible = !turnNumbersVisible;
     visibilityManager.setGlyphVisibility("TurnNumbers", turnNumbersVisible);
   }
 
   function toggleBlueMotion() {
+    triggerHaptic();
     blueMotionVisible = !blueMotionVisible;
     visibilityManager.setMotionVisibility(MotionColor.BLUE, blueMotionVisible);
   }
 
   function toggleRedMotion() {
+    triggerHaptic();
     redMotionVisible = !redMotionVisible;
     visibilityManager.setMotionVisibility(MotionColor.RED, redMotionVisible);
+  }
+
+  function togglePreviewVisibility() {
+    triggerHaptic();
+    showPreview = !showPreview;
   }
 </script>
 
@@ -188,7 +214,7 @@
     <!-- Preview Toggle Button (only visible on small containers) -->
     <button
       class="preview-toggle-btn"
-      onclick={() => (showPreview = !showPreview)}
+      onclick={togglePreviewVisibility}
       aria-expanded={showPreview}
       aria-controls="preview-section"
     >

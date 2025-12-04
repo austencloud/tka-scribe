@@ -76,4 +76,4 @@ This project follows a **2025+ AI-assisted development approach**:
 *Last updated: 2025-12-03*
 
 ## Context Management
-When context usage exceeds 50%, proactively suggest running /compact before continuing with new tasks.
+When context usage exceeds 20%, proactively suggest running /compact before continuing with new tasks.

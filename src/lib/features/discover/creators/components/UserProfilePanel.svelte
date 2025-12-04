@@ -17,6 +17,7 @@
   import type { LibrarySequence } from "$lib/features/library/domain/models/LibrarySequence";
   import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
   import { creatorsViewState } from "../state/creators-view-state.svelte";
+  import { discoverNavigationState } from "../../shared/state/discover-navigation-state.svelte";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import ProfileHeaderBar from "./profile/ProfileHeaderBar.svelte";
   import ProfileHeroSection from "./profile/ProfileHeroSection.svelte";
@@ -129,7 +130,12 @@
 
   function handleBack() {
     hapticService?.trigger("selection");
-    creatorsViewState.goBack();
+    // Use unified navigation state to go back to previous location
+    const location = discoverNavigationState.goBack();
+    if (!location) {
+      // Fallback if no history
+      creatorsViewState.goBack();
+    }
   }
 
   async function handleFollowToggle() {
@@ -219,7 +225,8 @@
 
   function handleUserCardClick(user: UserProfile) {
     hapticService?.trigger("selection");
-    creatorsViewState.viewUserProfile(user.id);
+    // Navigate to user profile using unified navigation state
+    discoverNavigationState.viewCreatorProfile(user.id, user.displayName);
   }
 
   // Load following/followers when tabs are selected

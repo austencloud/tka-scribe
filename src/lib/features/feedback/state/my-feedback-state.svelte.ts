@@ -34,11 +34,11 @@ export function createMyFeedbackState() {
   // Pending confirmation count
   let pendingCount = $state(0);
 
-  // Derived: Items needing confirmation (resolved status, no confirmation yet)
+  // Derived: Items needing confirmation (in-review status, no confirmation yet)
   const needsConfirmation = $derived(
     items.filter(
       (item) =>
-        item.status === "resolved" &&
+        item.status === "in-review" &&
         (!item.testerConfirmation || item.testerConfirmation.status === "pending")
     )
   );

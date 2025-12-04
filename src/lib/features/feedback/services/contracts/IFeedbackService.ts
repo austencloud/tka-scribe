@@ -106,4 +106,13 @@ export interface IFeedbackService {
    * Count feedback items needing tester confirmation
    */
   countPendingConfirmations(userId: string): Promise<number>;
+
+  /**
+   * Subscribe to real-time feedback updates
+   * Returns an unsubscribe function
+   */
+  subscribeToFeedback(
+    onUpdate: (items: FeedbackItem[]) => void,
+    onError?: (error: Error) => void
+  ): () => void;
 }

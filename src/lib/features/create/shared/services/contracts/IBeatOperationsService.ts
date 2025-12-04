@@ -100,4 +100,23 @@ export interface IBeatOperationsService {
     propType: PropType,
     CreateModuleState: ICreateModuleState
   ): void;
+
+  /**
+   * Update rotation direction for a specific prop color in a beat
+   * Toggles between CLOCKWISE and COUNTER_CLOCKWISE for turn motions
+   * Handles both start position (beat 0) and sequence beats
+   *
+   * @param beatNumber Beat number (0 = start position, 1+ = sequence beats)
+   * @param color Prop color ('blue' or 'red')
+   * @param rotationDirection New rotation direction ('cw' or 'ccw')
+   * @param CreateModuleState Create Module State for sequence operations
+   * @param panelState Panel state for current beat data
+   */
+  updateRotationDirection(
+    beatNumber: number,
+    color: string,
+    rotationDirection: string,
+    CreateModuleState: ICreateModuleState,
+    panelState: unknown
+  ): void;
 }

@@ -233,6 +233,26 @@ export const ACCOUNT_TABS: Section[] = [
  */
 export const EDIT_TABS: Section[] = [];
 
+// ML Training tabs configuration
+export const ML_TRAINING_TABS: Section[] = [
+  {
+    id: "capture",
+    label: "Capture",
+    icon: '<i class="fas fa-video"></i>',
+    description: "Record prop training data",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "sessions",
+    label: "Sessions",
+    icon: '<i class="fas fa-folder-open"></i>',
+    description: "Manage captured sessions",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+];
+
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
   {
@@ -277,8 +297,7 @@ export const ADMIN_TABS: Section[] = [
   },
 ];
 
-// Settings tabs configuration - internal navigation within settings module
-// Not shown in sidebar (settings is accessed via gear icon in footer)
+// Settings tabs configuration - shown in sidebar like other modules
 export const SETTINGS_TABS: Section[] = [
   {
     id: "profile",
@@ -287,6 +306,14 @@ export const SETTINGS_TABS: Section[] = [
     description: "Account and profile settings",
     color: "#6366f1",
     gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
+  {
+    id: "whats-new",
+    label: "What's New",
+    icon: '<i class="fas fa-gift"></i>',
+    description: "Version history and release notes",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
   {
     id: "props",
@@ -422,6 +449,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: FEEDBACK_TABS,
   },
   {
+    id: "ml-training",
+    label: "ML Training",
+    icon: '<i class="fas fa-brain" style="color: #8b5cf6;"></i>',
+    color: "#8b5cf6", // Purple - AI/ML
+    description: "Train prop detection models",
+    isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
+    sections: ML_TRAINING_TABS,
+  },
+  {
     id: "admin",
     label: "Admin",
     icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>',
@@ -436,10 +472,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',
     color: "#64748b", // Slate - neutral settings color
     description: "Configure app preferences",
-    isMain: false, // Hidden from main module list, accessed via gear icon in sidebar footer
-    sections: SETTINGS_TABS, // Profile, Props, Background, Visibility, Misc tabs
+    isMain: false, // Accessed via footer gear icon, but shows tabs when active
+    sections: SETTINGS_TABS, // Profile, Props, Background, Visibility, Misc, AI tabs
   },
 ];
+
+// Session storage key for persisting previous module across HMR
+const PREVIOUS_MODULE_SESSION_KEY = "tka-previous-module-session";
 
 /**
  * Creates navigation state for managing modules and tabs
@@ -465,7 +504,28 @@ export function createNavigationState() {
 
   // Track previous module for settings toggle behavior
   // When entering settings, we remember where we came from to return on toggle
-  let previousModule = $state<ModuleId | null>(null);
+  // Load from sessionStorage to survive HMR
+  let previousModule = $state<ModuleId | null>(loadPreviousModuleFromSession());
+
+  // Helper to load previous module from sessionStorage
+  function loadPreviousModuleFromSession(): ModuleId | null {
+    if (typeof sessionStorage === "undefined") return null;
+    const saved = sessionStorage.getItem(PREVIOUS_MODULE_SESSION_KEY);
+    if (saved && MODULE_DEFINITIONS.some((m) => m.id === saved)) {
+      return saved as ModuleId;
+    }
+    return null;
+  }
+
+  // Helper to persist previous module to sessionStorage
+  function savePreviousModuleToSession(moduleId: ModuleId | null) {
+    if (typeof sessionStorage === "undefined") return;
+    if (moduleId) {
+      sessionStorage.setItem(PREVIOUS_MODULE_SESSION_KEY, moduleId);
+    } else {
+      sessionStorage.removeItem(PREVIOUS_MODULE_SESSION_KEY);
+    }
+  }
 
   // Load persisted state
   if (typeof localStorage !== "undefined") {
@@ -642,11 +702,14 @@ export function createNavigationState() {
 
       // Track previous module for settings toggle behavior
       // Only save when entering settings from a non-settings module
+      // Persist to sessionStorage so it survives HMR
       if (moduleId === "settings" && currentModule !== "settings") {
         previousModule = currentModule;
+        savePreviousModuleToSession(currentModule);
       } else if (currentModule === "settings" && moduleId !== "settings") {
         // Clear previous module when leaving settings
         previousModule = null;
+        savePreviousModuleToSession(null);
       }
 
       currentModule = moduleId;

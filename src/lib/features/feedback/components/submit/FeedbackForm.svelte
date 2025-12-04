@@ -226,7 +226,7 @@
   <!-- Description Field -->
   <div class="field">
     <label for="fb-description" class="field-label">
-      What's on your mind?
+      {currentTypeConfig?.fieldLabel ?? "What's on your mind?"}
     </label>
     <textarea
       id="fb-description"
@@ -234,7 +234,7 @@
       class:has-error={formState.formErrors.description}
       value={formState.formData.description}
       oninput={(e) => formState.updateField("description", e.currentTarget.value)}
-      placeholder="Describe the issue, suggestion, or idea..."
+      placeholder={currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}
       rows="5"
     ></textarea>
     <div class="field-hint">
@@ -681,12 +681,7 @@
     color: var(--type-color);
   }
 
-  /* Hide label on narrow containers */
-  @container feedback-form (max-width: 380px) {
-    .segment-label {
-      display: none;
-    }
-  }
+  /* Labels always visible for clarity - icons alone are ambiguous */
 
   /* ═══════════════════════════════════════════════════════════════════════════
      FORM FIELDS - Fluid sizing

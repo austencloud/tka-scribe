@@ -325,6 +325,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
+    min-height: 48px;
     cursor: pointer;
     padding: 12px 16px;
     background: linear-gradient(
@@ -355,10 +356,10 @@
   /* iOS-style Toggle Switch */
   .export-option-toggle {
     position: relative;
-    width: 48px;
-    height: 28px;
+    width: 64px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 14px;
+    border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
@@ -367,10 +368,10 @@
   .export-option-toggle::before {
     content: "";
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 22px;
-    height: 22px;
+    top: 4px;
+    left: 4px;
+    width: 40px;
+    height: 40px;
     background: white;
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

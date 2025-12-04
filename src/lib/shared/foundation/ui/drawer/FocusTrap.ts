@@ -230,6 +230,10 @@ export class FocusTrap {
               if (sibling.classList.contains('desktop-navigation-sidebar')) {
                 return;
               }
+              // Skip the drawer overlay - it needs to remain clickable for backdrop dismiss
+              if (sibling.classList.contains('drawer-overlay')) {
+                return;
+              }
               // Don't set inert on elements that already have it
               if (!sibling.hasAttribute('inert')) {
                 sibling.setAttribute('inert', '');

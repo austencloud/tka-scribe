@@ -32,6 +32,7 @@ export type ModuleId =
   | "train"
   | "library"
   | "feedback"
+  | "ml-training"
   | "admin"
   | "settings";
 

@@ -16,14 +16,14 @@ export type FeedbackPriority = "low" | "medium" | "high" | "critical";
 
 /**
  * Feedback status for admin management
- * Simplified to 4 states that map to Kanban columns
+ * 4 Kanban columns + archived (hidden, versioned)
  */
 export type FeedbackStatus =
-  | "new"
-  | "in-progress"
-  | "in-review"
-  | "resolved"
-  | "archived";
+  | "new"          // Unclaimed, ready to be picked up
+  | "in-progress"  // Agent is working on it
+  | "in-review"    // Done, waiting for tester confirmation
+  | "completed"    // Confirmed working, ready for next release
+  | "archived";    // Tagged with version, historical record
 
 /**
  * Tester confirmation status after admin resolves feedback
@@ -33,6 +33,24 @@ export type TesterConfirmationStatus =
   | "confirmed"    // Tester confirms fix works
   | "needs-work"   // Tester says it needs more work
   | "no-response"; // Tester hasn't responded after timeout
+
+/**
+ * Subtask status for prerequisite tracking
+ */
+export type SubtaskStatus = "pending" | "in-progress" | "completed";
+
+/**
+ * Subtask for breaking down complex feedback into prerequisites
+ * Created by agents when feedback is too large to implement directly
+ */
+export interface FeedbackSubtask {
+  id: string; // Unique within parent (e.g., "1", "2", or short slug)
+  title: string; // Short title (2-5 words)
+  description: string; // What needs to be done
+  status: SubtaskStatus;
+  completedAt?: Date;
+  dependsOn?: string[]; // IDs of subtasks this depends on
+}
 
 /**
  * Core feedback item stored in Firestore
@@ -64,6 +82,9 @@ export interface FeedbackItem {
   adminNotes?: string;
   updatedAt?: Date;
 
+  // Subtasks (optional - for complex feedback requiring prerequisites)
+  subtasks?: FeedbackSubtask[];
+
   // Admin response to tester (visible to tester)
   adminResponse?: AdminResponse;
 
@@ -74,6 +95,10 @@ export interface FeedbackItem {
   isDeleted?: boolean;
   deletedAt?: Date;
   deletedBy?: string;
+
+  // Version tracking (set when archived)
+  fixedInVersion?: string; // e.g., "0.2.0"
+  archivedAt?: Date; // When moved to archive
 }
 
 /**
@@ -130,7 +155,7 @@ export interface FeedbackFilterOptions {
 }
 
 /**
- * Status display configuration - 5 columns for Kanban
+ * Status display configuration - 4 Kanban columns + archived
  */
 export const STATUS_CONFIG: Record<
   FeedbackStatus,
@@ -139,7 +164,7 @@ export const STATUS_CONFIG: Record<
   new: { label: "New", color: "#3b82f6", icon: "fa-inbox" },
   "in-progress": { label: "In Progress", color: "#f59e0b", icon: "fa-spinner" },
   "in-review": { label: "In Review", color: "#8b5cf6", icon: "fa-eye" },
-  resolved: { label: "Resolved", color: "#10b981", icon: "fa-check-circle" },
+  completed: { label: "Completed", color: "#10b981", icon: "fa-check-circle" },
   archived: { label: "Archived", color: "#6b7280", icon: "fa-archive" },
 };
 
@@ -174,9 +199,27 @@ export const PRIORITY_CONFIG: Record<
  */
 export const TYPE_CONFIG: Record<
   FeedbackType,
-  { label: string; color: string; icon: string }
+  { label: string; color: string; icon: string; fieldLabel: string; placeholder: string }
 > = {
-  bug: { label: "Bug Report", color: "#ef4444", icon: "fa-bug" },
-  feature: { label: "Feature Request", color: "#8b5cf6", icon: "fa-lightbulb" },
-  general: { label: "General Feedback", color: "#3b82f6", icon: "fa-comment" },
+  bug: {
+    label: "Bug Report",
+    color: "#ef4444",
+    icon: "fa-bug",
+    fieldLabel: "What went wrong?",
+    placeholder: "What happened? What were you doing? Does it happen every time?"
+  },
+  feature: {
+    label: "Feature Request",
+    color: "#8b5cf6",
+    icon: "fa-lightbulb",
+    fieldLabel: "What would you like to see?",
+    placeholder: "Describe the feature and how it would help you..."
+  },
+  general: {
+    label: "General Feedback",
+    color: "#3b82f6",
+    icon: "fa-comment",
+    fieldLabel: "What's on your mind?",
+    placeholder: "Share your thoughts, suggestions, or observations..."
+  },
 };

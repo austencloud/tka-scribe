@@ -13,6 +13,7 @@ import {
   getModuleDefinitions,
 } from "../../navigation-coordinator/navigation-coordinator.svelte";
 import { authStore } from "../../auth/stores/authStore.svelte";
+import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutService,
@@ -112,5 +113,26 @@ export function registerGlobalShortcuts(
         await handleModuleChange(module.id);
       },
     });
+  });
+
+  // ==================== Quick Actions ====================
+
+  // f - Quick Feedback (opens feedback drawer)
+  service.register({
+    id: "global.quick-feedback",
+    label: "Quick Feedback",
+    description: "Open the quick feedback panel (press f)",
+    key: "f",
+    modifiers: [],
+    context: "global",
+    scope: "action",
+    priority: "high",
+    condition: () => {
+      // Only enable if settings allow single-key shortcuts
+      return state.settings.enableSingleKeyShortcuts;
+    },
+    action: () => {
+      quickFeedbackState.toggle();
+    },
   });
 }

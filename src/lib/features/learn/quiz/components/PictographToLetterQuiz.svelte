@@ -257,6 +257,8 @@
     width: 100%;
     height: 100%;
     padding: 1.5rem;
+    /* Ensure top padding clears back button (48px) + breathing room */
+    padding-top: 4.5rem;
     box-sizing: border-box;
     /* Slight upward bias for visual balance */
     padding-bottom: 3rem;
@@ -302,6 +304,10 @@
     color: rgba(255, 255, 255, 0.5);
     letter-spacing: 0.02em;
     text-align: center;
+    /* Add horizontal padding to avoid back button overlap */
+    padding: 0 4rem;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   /* Mobile: Vertical stack layout */
@@ -539,11 +545,11 @@
   }
 
   /* ===========================================
-     Feedback Banner - Absolutely positioned overlay
+     Feedback Banner - Fixed position to escape overflow:hidden parents
      =========================================== */
   .feedback-banner {
-    position: absolute;
-    top: calc(100% + 1rem);
+    position: fixed;
+    bottom: calc(var(--primary-nav-height, 64px) + 1rem);
     left: 50%;
     transform: translateX(-50%);
     padding: 0.75rem 1.25rem;
@@ -553,7 +559,8 @@
     animation: bannerFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     backdrop-filter: blur(8px);
     white-space: nowrap;
-    z-index: 10;
+    /* Must be above bottom nav (z-index: 100) */
+    z-index: 150;
   }
 
   .feedback-banner.correct {
@@ -563,7 +570,7 @@
   @keyframes bannerFadeIn {
     from {
       opacity: 0;
-      transform: translateX(-50%) translateY(-4px);
+      transform: translateX(-50%) translateY(10px);
     }
     to {
       opacity: 1;

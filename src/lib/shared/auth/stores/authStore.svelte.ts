@@ -480,6 +480,19 @@ export const authStore = {
             // Silently fail - settings sync is non-critical
           }
 
+          // Initialize system collections (Favorites, etc.) - non-blocking
+          try {
+            void import("../../inversify/di").then(async ({ loadFeatureModule, tryResolve }) => {
+              await loadFeatureModule("library");
+              const collectionService = tryResolve<{ ensureSystemCollections?: () => Promise<void> }>(TYPES.ICollectionService);
+              if (collectionService?.ensureSystemCollections) {
+                void collectionService.ensureSystemCollections();
+              }
+            });
+          } catch {
+            // Silently fail - system collections init is non-critical
+          }
+
         }
 
         // Revalidate current module after auth state changes

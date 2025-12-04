@@ -1,4 +1,4 @@
-<!-- ExpandedTurnPanel - REFACTORED with Design Tokens -->
+<!-- TurnPanel - Single color turn control panel -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
@@ -14,6 +14,7 @@
     layoutMode = "comfortable",
     showCloseButton = false,
     onTurnAmountChanged,
+    onRotationDirectionChanged,
     onEditTurnsRequested,
     onCollapse,
   } = $props<{
@@ -22,6 +23,7 @@
     layoutMode?: "compact" | "balanced" | "comfortable";
     showCloseButton?: boolean;
     onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
     onEditTurnsRequested?: () => void;
     onCollapse?: () => void;
   }>();
@@ -74,9 +76,22 @@
     return motion.rotationDirection || "NO_ROTATION";
   }
 
+  /**
+   * Determine if rotation buttons should be visible
+   * Rules:
+   * - HIDE when turns = "fl" (float) - no rotation direction for float
+   * - SHOW when turns >= 0 (including 0) - user can set rotation even at 0 turns
+   * - SHOW when turns > 0 - normal case with integer turns
+   */
   function shouldShowRotationButtons(): boolean {
-    const rotDir = getRotationDirection();
-    return rotDir !== "NO_ROTATION";
+    const turnValue = getCurrentTurnValue();
+    // Hide for float turns - float motions don't have rotation direction
+    if (turnValue === "fl") {
+      return false;
+    }
+    // Show for any numeric turn value (including 0)
+    // When turns=0, user can still set rotation direction for when they add turns later
+    return typeof turnValue === "number";
   }
 
   function canDecrementTurn(): boolean {
@@ -116,6 +131,17 @@
     onCollapse?.();
   }
 
+  function handleRotationClick(direction: "cw" | "ccw") {
+    // Allow rotation direction change for any numeric turns (including 0)
+    // Only block for float ("fl") turns
+    const turnValue = getCurrentTurnValue();
+    if (turnValue === "fl") {
+      return; // Float motions don't support rotation direction
+    }
+    hapticService?.trigger("selection");
+    onRotationDirectionChanged?.(color, direction);
+  }
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
@@ -130,18 +156,50 @@
   class:compact={layoutMode === "compact"}
   class:balanced={layoutMode === "balanced"}
   class:comfortable={layoutMode === "comfortable"}
-  data-testid={`expanded-turn-panel-${color}`}
+  data-testid={`turn-panel-${color}`}
 >
-  <!-- Header -->
+  <!-- Header with rotation buttons -->
   <div class="turn-header">
+    <!-- Left rotation button (counter-clockwise) -->
+    {#if shouldShowRotationButtons()}
+      <button
+        type="button"
+        class="rotation-btn"
+        class:active={getRotationDirection() === "ccw"}
+        onclick={() => handleRotationClick("ccw")}
+        aria-label="Set counter-clockwise rotation"
+        aria-pressed={getRotationDirection() === "ccw"}
+      >
+        <i class="fas fa-undo"></i>
+      </button>
+    {:else}
+      <div class="rotation-placeholder"></div>
+    {/if}
+
+    <!-- Center title -->
     <div class="turn-title">
       <span class="turn-label">{displayLabel()}</span>
       <span class="motion-badge">{getMotionType()}</span>
     </div>
-    {#if showCloseButton}
+
+    <!-- Right rotation button (clockwise) or close button -->
+    {#if shouldShowRotationButtons()}
+      <button
+        type="button"
+        class="rotation-btn"
+        class:active={getRotationDirection() === "cw"}
+        onclick={() => handleRotationClick("cw")}
+        aria-label="Set clockwise rotation"
+        aria-pressed={getRotationDirection() === "cw"}
+      >
+        <i class="fas fa-redo"></i>
+      </button>
+    {:else if showCloseButton}
       <button class="close-btn" onclick={handleClose} aria-label="Close panel">
         <i class="fas fa-times"></i>
       </button>
+    {:else}
+      <div class="rotation-placeholder"></div>
     {/if}
   </div>
 
@@ -173,29 +231,6 @@
       <i class="fas fa-plus"></i>
     </button>
   </div>
-
-  <!-- Rotation direction indicator (display-only) -->
-  {#if shouldShowRotationButtons()}
-    <div class="rotation-section">
-      <span class="rotation-label">Rotation:</span>
-      <div class="rotation-btns">
-        <div
-          class="rotation-indicator"
-          class:active={getRotationDirection() === "COUNTER_CLOCKWISE"}
-          aria-label="Counter-clockwise rotation"
-        >
-          <i class="fas fa-undo"></i>
-        </div>
-        <div
-          class="rotation-indicator"
-          class:active={getRotationDirection() === "CLOCKWISE"}
-          aria-label="Clockwise rotation"
-        >
-          <i class="fas fa-redo"></i>
-        </div>
-      </div>
-    </div>
-  {/if}
 </div>
 
 <style>
@@ -205,10 +240,10 @@
     display: flex;
     flex-direction: column;
     border-radius: 12px;
+    overflow: hidden;
 
     /* Smooth height transition for expansion/collapse */
     max-height: 500px; /* Large enough to accommodate all content */
-    overflow: hidden;
     transition:
       max-height var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1)),
       opacity var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1)),
@@ -275,6 +310,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
     border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   }
 
@@ -292,8 +328,18 @@
 
   .turn-title {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    flex: 1;
+    gap: 4px;
+  }
+
+  /* Placeholder keeps layout balanced when rotation buttons are hidden */
+  .rotation-placeholder {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
   }
 
   .turn-label {
@@ -516,60 +562,49 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
-  /* Rotation controls */
-  .rotation-section {
+  /* Rotation direction toggle buttons - in header */
+  .rotation-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.08);
-    border-radius: 8px;
-  }
-
-  .turn-panel.compact .rotation-section {
-    gap: 6px;
-    padding: 6px;
-  }
-
-  .turn-panel.balanced .rotation-section {
-    gap: 8px;
-    padding: 8px;
-  }
-
-  .turn-panel.comfortable .rotation-section {
-    gap: 10px;
-    padding: 10px;
-  }
-
-  .rotation-label {
-    font-weight: 600;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.95);
     color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    /* Minimum 48px touch target for accessibility */
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
 
-  .turn-panel.compact .rotation-label {
-    font-size: 12px;
+  .rotation-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
-  .turn-panel.balanced .rotation-label {
-    font-size: 13px;
+  .rotation-btn:active {
+    transform: scale(0.95);
   }
 
-  .turn-panel.comfortable .rotation-label {
-    font-size: 14px;
+  /* Active state - matches panel color */
+  .turn-panel.blue .rotation-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.5);
   }
 
-  .rotation-btns {
-    display: flex;
-  }
-
-  .turn-panel.compact .rotation-btns {
-    gap: 6px;
-  }
-
-  .turn-panel.balanced .rotation-btns {
-    gap: 8px;
-  }
-
-  .turn-panel.comfortable .rotation-btns {
-    gap: 10px;
+  .turn-panel.red .rotation-btn.active {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.5);
   }
 </style>

@@ -19,7 +19,8 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   import ModuleGroup from "./desktop-sidebar/ModuleGroup.svelte";
   import CollapsedTabButton from "./desktop-sidebar/CollapsedTabButton.svelte";
   import CollapsedModuleButton from "./desktop-sidebar/CollapsedModuleButton.svelte";
-  import { navigationState } from "../state/navigation-state.svelte";
+  import { navigationState, SETTINGS_TABS } from "../state/navigation-state.svelte";
+  import { featureFlagService } from "../../auth/services/FeatureFlagService.svelte";
 
   let {
     currentModule,
@@ -58,6 +59,19 @@ import type { IHapticFeedbackService } from "../../application/services/contract
 
   // Get collapsed state reactively
   const isCollapsed = $derived(desktopSidebarState.isCollapsed);
+
+  // Check if we're in settings mode (hides main modules)
+  const isInSettings = $derived(navigationState.currentModule === "settings");
+
+  // Get filtered settings sections (AI tab is admin-only)
+  const filteredSettingsSections = $derived(
+    SETTINGS_TABS.filter((section) => {
+      if (section.id === "ai") {
+        return featureFlagService.isAdmin;
+      }
+      return true;
+    })
+  );
 
   // Track when we're transitioning from collapsed to expanded
   // This prevents sections from sliding in while the sidebar is still narrow
@@ -153,6 +167,11 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     openDebugPanel();
   }
 
+  function handleSettingsSectionTap(section: Section) {
+    hapticService?.trigger("selection");
+    navigationState.setActiveTab(section.id);
+  }
+
   // Module color mapping for dynamic theming
   function getModuleColor(moduleId: string): string {
     const colorMap: Record<string, string> = {
@@ -166,8 +185,23 @@ import type { IHapticFeedbackService } from "../../application/services/contract
       animate: "#ec4899", // Pink
       account: "#6366f1", // Indigo
       admin: "#ffd700", // Gold
+      settings: "#64748b", // Slate
     };
     return colorMap[moduleId] || "#a855f7"; // Default to purple
+  }
+
+  // Filter sections based on module-specific rules (e.g., admin-only tabs)
+  function getFilteredSections(module: ModuleDefinition): Section[] {
+    if (module.id === "settings") {
+      // AI tab is admin-only
+      return module.sections.filter((section) => {
+        if (section.id === "ai") {
+          return featureFlagService.isAdmin;
+        }
+        return true;
+      });
+    }
+    return module.sections;
   }
 
   onMount(() => {
@@ -218,87 +252,155 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     onToggleCollapse={handleToggleCollapse}
   />
 
-  <!-- Modules List (expanded) or Activity Bar (collapsed) -->
-  <div class="modules-container" class:tabs-mode={isCollapsed}>
-    {#if isCollapsed}
-      <!-- VS Code-style Activity Bar: Modules with nested tabs -->
-      <div class="activity-bar">
-        {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
-          {@const isModuleActive = currentModule === module.id}
-          {@const moduleColor = getModuleColor(module.id)}
-          {@const hasTabs = isModuleActive && module.sections.length > 0}
-
-          <!-- Module Context Group: Unified visual container for module + tabs -->
-          <div
-            class="module-context-group"
-            class:active={isModuleActive}
-            class:has-tabs={hasTabs}
-            style="--module-color: {moduleColor};"
-          >
-            <!-- Module Button -->
-            <CollapsedModuleButton
-              {module}
-              isActive={isModuleActive}
-              onClick={() =>
-                handleModuleTap(module.id, module.disabled ?? false)}
-              {moduleColor}
-              {hasTabs}
-            />
-
-            <!-- Nested Tabs (shown only for active module) -->
-            {#if hasTabs}
-              <div
-                class="nested-tabs"
-                in:slide={{ duration: 200, axis: "y" }}
-                out:slide={{ duration: 150, axis: "y" }}
-              >
-                {#each module.sections as section, index}
-                  {@const isSectionActive = currentSection === section.id}
-
-                  <div
-                    in:fade={{ duration: 150, delay: index * 30 }}
-                    out:fade={{ duration: 100 }}
-                  >
-                    <CollapsedTabButton
-                      {section}
-                      isActive={isSectionActive}
-                      onClick={() => handleSectionTap(module.id, section)}
-                    />
-                  </div>
-                {/each}
-              </div>
-            {/if}
+  <!-- Unified Navigation Content Container -->
+  <!-- Single container holds both modules and settings tabs - no flexbox recalculation -->
+  <div class="navigation-content" class:tabs-mode={isCollapsed}>
+    {#if isInSettings}
+      <!-- Settings Content with Back Button Header -->
+      <div
+        class="settings-content"
+        in:slide={{ duration: 250, axis: "y" }}
+        out:slide={{ duration: 200, axis: "y" }}
+      >
+        <!-- Back Button Header -->
+        <button
+          class="settings-back-button"
+          class:collapsed={isCollapsed}
+          onclick={handleSettingsTap}
+          aria-label="Back to modules"
+        >
+          <div class="back-icon">
+            <i class="fas fa-arrow-left"></i>
           </div>
-        {/each}
+          {#if !isCollapsed}
+            <span class="back-label">Back</span>
+          {/if}
+        </button>
+
+        {#if isCollapsed}
+          <!-- Collapsed Settings Tabs -->
+          <div class="collapsed-settings-tabs">
+            {#each filteredSettingsSections as section, index}
+              {@const isSectionActive = navigationState.activeTab === section.id}
+              <div in:fade={{ duration: 150, delay: index * 25 }}>
+                <CollapsedTabButton
+                  {section}
+                  isActive={isSectionActive}
+                  onClick={() => handleSettingsSectionTap(section)}
+                />
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <!-- Expanded Settings Tabs -->
+          <div class="settings-sections">
+            {#each filteredSettingsSections as section, index}
+              {@const isSectionActive = navigationState.activeTab === section.id}
+              <button
+                class="section-button"
+                class:active={isSectionActive}
+                onclick={() => handleSettingsSectionTap(section)}
+                in:fade={{ duration: 150, delay: 50 + index * 30 }}
+                style="--section-color: {section.color || '#64748b'};"
+              >
+                <span class="section-icon">{@html section.icon}</span>
+                <span class="section-label">{section.label}</span>
+              </button>
+            {/each}
+          </div>
+        {/if}
       </div>
     {:else}
-      <!-- Show modules with expandable sections when expanded -->
-      {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
-        {@const isExpanded = expandedModules.has(module.id)}
-        {@const moduleColor = getModuleColor(module.id)}
+      <!-- Modules List -->
+      <div
+        class="modules-content"
+        in:slide={{ duration: 250, axis: "y" }}
+        out:slide={{ duration: 200, axis: "y" }}
+      >
+        {#if isCollapsed}
+          <!-- VS Code-style Activity Bar: Modules with nested tabs -->
+          <div class="activity-bar">
+            {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
+              {@const isModuleActive = currentModule === module.id}
+              {@const moduleColor = getModuleColor(module.id)}
+              {@const filteredSections = getFilteredSections(module)}
+              {@const hasTabs = isModuleActive && filteredSections.length > 0}
 
-        <ModuleGroup
-          {module}
-          {currentModule}
-          {currentSection}
-          {isExpanded}
-          {isCollapsed}
-          {isTransitioningFromCollapsed}
-          {moduleColor}
-          onModuleClick={handleModuleTap}
-          onSectionClick={handleSectionTap}
-        />
-      {/each}
+              <!-- Module Context Group: Unified visual container for module + tabs -->
+              <div
+                class="module-context-group"
+                class:active={isModuleActive}
+                class:has-tabs={hasTabs}
+                style="--module-color: {moduleColor};"
+              >
+                <!-- Module Button -->
+                <CollapsedModuleButton
+                  {module}
+                  isActive={isModuleActive}
+                  onClick={() =>
+                    handleModuleTap(module.id, module.disabled ?? false)}
+                  {moduleColor}
+                  {hasTabs}
+                />
+
+                <!-- Nested Tabs (shown only for active module) -->
+                {#if hasTabs}
+                  <div
+                    class="nested-tabs"
+                    in:slide={{ duration: 200, axis: "y" }}
+                    out:slide={{ duration: 150, axis: "y" }}
+                  >
+                    {#each filteredSections as section, index}
+                      {@const isSectionActive = currentSection === section.id}
+
+                      <div
+                        in:fade={{ duration: 150, delay: index * 30 }}
+                        out:fade={{ duration: 100 }}
+                      >
+                        <CollapsedTabButton
+                          {section}
+                          isActive={isSectionActive}
+                          onClick={() => handleSectionTap(module.id, section)}
+                        />
+                      </div>
+                    {/each}
+                  </div>
+                {/if}
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <!-- Show modules with expandable sections when expanded -->
+          {#each modules.filter((m: ModuleDefinition) => m.isMain) as module}
+            {@const isExpanded = expandedModules.has(module.id)}
+            {@const moduleColor = getModuleColor(module.id)}
+            {@const filteredSections = getFilteredSections(module)}
+
+            <ModuleGroup
+              module={{ ...module, sections: filteredSections }}
+              {currentModule}
+              {currentSection}
+              {isExpanded}
+              {isCollapsed}
+              {isTransitioningFromCollapsed}
+              {moduleColor}
+              onModuleClick={handleModuleTap}
+              onSectionClick={handleSectionTap}
+            />
+          {/each}
+        {/if}
+      </div>
     {/if}
   </div>
 
-  <!-- Sidebar Footer -->
-  <SidebarFooter
-    {isCollapsed}
-    isSettingsActive={navigationState.currentModule === "settings"}
-    onSettingsClick={handleSettingsTap}
-    onDebugClick={handleDebugTap}
-  />
+  <!-- Sidebar Footer - only shown when NOT in settings (gear icon entry point) -->
+  {#if !isInSettings}
+    <SidebarFooter
+      {isCollapsed}
+      isSettingsActive={false}
+      onSettingsClick={handleSettingsTap}
+    />
+  {/if}
 </nav>
 
 <style>
@@ -333,13 +435,18 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   }
 
   /* ============================================================================
-     MODULES CONTAINER
+     UNIFIED NAVIGATION CONTENT CONTAINER
      ============================================================================ */
-  .modules-container {
+  .navigation-content {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 16px 12px;
+    position: relative;
+
+    /* Enable container queries for responsive sizing */
+    container-type: inline-size;
+    container-name: nav-content;
 
     /* Custom scrollbar */
     scrollbar-width: thin;
@@ -347,11 +454,167 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   }
 
   /* Tabs mode - VS Code activity bar layout when sidebar is collapsed */
-  .modules-container.tabs-mode {
+  .navigation-content.tabs-mode {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 16px 8px;
+  }
+
+  /* Inner content wrappers for transition targeting */
+  .modules-content,
+  .settings-content {
+    width: 100%;
+  }
+
+  /* ============================================================================
+     SETTINGS BACK BUTTON (at top of settings content)
+     ============================================================================ */
+  .settings-back-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .settings-back-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .settings-back-button.collapsed {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .back-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .settings-back-button.collapsed .back-icon {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 12px;
+  }
+
+  .settings-back-button:hover .back-icon {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .back-label {
+    flex: 1;
+    text-align: left;
+    font-weight: 500;
+  }
+
+  .settings-back-button:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline-offset: 2px;
+  }
+
+  /* ============================================================================
+     SETTINGS SECTIONS (within unified container)
+     ============================================================================ */
+  .settings-sections {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 4cqw, 10px);
+  }
+
+  .section-button {
+    width: 100%;
+    min-height: 48px; /* WCAG touch target minimum */
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 6cqw, 14px);
+    padding: clamp(12px, 7cqw, 16px) clamp(12px, 7cqw, 16px);
+    background: transparent;
+    border: none;
+    border-radius: clamp(8px, 5cqw, 12px);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: clamp(13px, 7.5cqw, 15px);
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .section-button:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .section-button.active {
+    background: color-mix(in srgb, var(--section-color) 18%, transparent);
+    color: white;
+    border-left: 3px solid var(--section-color);
+    padding-left: 9px;
+  }
+
+  .section-icon {
+    width: clamp(20px, 12cqw, 26px);
+    height: clamp(20px, 12cqw, 26px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(16px, 10cqw, 20px);
+    opacity: 0.8;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .section-button:hover .section-icon {
+    opacity: 1;
+  }
+
+  .section-button.active .section-icon {
+    opacity: 1;
+    color: var(--section-color);
+  }
+
+  .section-icon :global(i) {
+    font-size: inherit;
+  }
+
+  .section-label {
+    flex: 1;
+  }
+
+  /* Collapsed settings tabs */
+  .collapsed-settings-tabs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .section-button:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline-offset: 2px;
   }
 
   /* ============================================================================

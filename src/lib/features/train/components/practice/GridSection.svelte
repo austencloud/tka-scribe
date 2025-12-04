@@ -60,12 +60,14 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
+		aspect-ratio: 1;
 		min-height: 0;
 		display: flex;
 		flex-direction: column;
 		background: transparent;
 		border-radius: 12px;
 		overflow: hidden;
+		align-self: center;
 	}
 
 	.empty-state {

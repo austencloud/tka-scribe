@@ -786,11 +786,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 32px;
-		height: 32px;
+		width: 48px;
+		height: 48px;
+		min-width: 48px;
+		min-height: 48px;
 		background: rgba(255, 255, 255, 0.15);
 		border: none;
-		border-radius: 8px;
+		border-radius: 12px;
 		color: white;
 		font-size: 1rem;
 		cursor: pointer;

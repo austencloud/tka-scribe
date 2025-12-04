@@ -19,6 +19,8 @@ import {
   where,
   serverTimestamp,
   Timestamp,
+  onSnapshot,
+  type Unsubscribe,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
@@ -81,6 +83,7 @@ export class FeedbackService implements IFeedbackService {
       userId: user.uid,
       userEmail: user.email || "",
       userDisplayName: user.displayName || user.email || "Anonymous",
+      userPhotoURL: user.photoURL || null,
 
       // Feedback content
       type: formData.type,
@@ -173,10 +176,17 @@ export class FeedbackService implements IFeedbackService {
 
   async updateStatus(feedbackId: string, status: FeedbackStatus): Promise<void> {
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
-    await updateDoc(docRef, {
+    const updateData: Record<string, unknown> = {
       status,
       updatedAt: serverTimestamp(),
-    });
+    };
+
+    // Set archivedAt when moving to archived status
+    if (status === "archived") {
+      updateData["archivedAt"] = serverTimestamp();
+    }
+
+    await updateDoc(docRef, updateData);
   }
 
   async updateAdminNotes(feedbackId: string, notes: string): Promise<void> {
@@ -311,8 +321,8 @@ export class FeedbackService implements IFeedbackService {
   ): Promise<void> {
     const testerConfirmation: TesterConfirmation = {
       status,
-      comment: comment || undefined,
       respondedAt: new Date(),
+      ...(comment && { comment }),
     };
 
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
@@ -321,7 +331,7 @@ export class FeedbackService implements IFeedbackService {
     const newStatus: FeedbackStatus =
       status === "confirmed" ? "archived" :
       status === "needs-work" ? "in-progress" :
-      "resolved"; // Keep as resolved if no-response
+      "in-review"; // Keep in review if no-response
 
     await updateDoc(docRef, {
       testerConfirmation,
@@ -334,19 +344,19 @@ export class FeedbackService implements IFeedbackService {
     const q = query(
       collection(firestore, COLLECTION_NAME),
       where("userId", "==", userId),
-      where("status", "==", "resolved"),
+      where("status", "==", "in-review"),
       where("testerConfirmation.status", "==", "pending")
     );
 
     // Firestore doesn't support querying nested fields well,
-    // so we'll do a simpler approach: get resolved items and filter client-side
-    const resolvedQuery = query(
+    // so we'll do a simpler approach: get in-review items and filter client-side
+    const inReviewQuery = query(
       collection(firestore, COLLECTION_NAME),
       where("userId", "==", userId),
-      where("status", "==", "resolved")
+      where("status", "==", "in-review")
     );
 
-    const snapshot = await getDocs(resolvedQuery);
+    const snapshot = await getDocs(inReviewQuery);
 
     // Count items where testerConfirmation is pending or doesn't exist yet
     let count = 0;
@@ -426,6 +436,37 @@ export class FeedbackService implements IFeedbackService {
     });
   }
 
+  /**
+   * Subscribe to real-time feedback updates
+   * Returns an unsubscribe function
+   */
+  subscribeToFeedback(
+    onUpdate: (items: FeedbackItem[]) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    // Query all non-archived feedback ordered by createdAt
+    // We fetch all to support the kanban view
+    const q = query(
+      collection(firestore, COLLECTION_NAME),
+      orderBy("createdAt", "desc"),
+      limit(200) // Reasonable limit for admin dashboard
+    );
+
+    return onSnapshot(
+      q,
+      (snapshot) => {
+        const items: FeedbackItem[] = snapshot.docs.map((docSnap) =>
+          this.mapDocToFeedbackItem(docSnap.id, docSnap.data())
+        );
+        onUpdate(items);
+      },
+      (error) => {
+        console.error("Feedback subscription error:", error);
+        onError?.(error);
+      }
+    );
+  }
+
   private mapDocToFeedbackItem(
     id: string,
     data: Record<string, unknown>
@@ -470,6 +511,8 @@ export class FeedbackService implements IFeedbackService {
       testerConfirmation,
       createdAt: (data["createdAt"] as Timestamp)?.toDate() || new Date(),
       updatedAt: (data["updatedAt"] as Timestamp)?.toDate() || undefined,
+      fixedInVersion: data["fixedInVersion"] as string | undefined,
+      archivedAt: (data["archivedAt"] as Timestamp)?.toDate() || undefined,
     };
   }
 }

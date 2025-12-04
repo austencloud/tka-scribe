@@ -44,15 +44,16 @@
 </div>
 
 <style>
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(8px, 2cqi, 16px);
-    padding: clamp(9px, 2.5cqi, 16px) 0; /* Balanced padding that expands when space is available */
-    border-bottom: 0.33px solid rgba(255, 255, 255, 0.08); /* iOS hairline */
-    transition: opacity 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-  }
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 2cqi, 16px);
+  min-height: 48px;
+  padding: clamp(10px, 2.5cqi, 16px) 0; /* Balanced padding that expands when space is available */
+  border-bottom: 0.33px solid rgba(255, 255, 255, 0.08); /* iOS hairline */
+  transition: opacity 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
+}
 
   .toggle-row:last-child {
     border-bottom: none;
@@ -93,14 +94,14 @@
   }
 
   /* Toggle Switch - iOS Exact Dimensions */
-  .visibility-row-toggle {
-    flex-shrink: 0;
-    position: relative;
-    display: inline-block;
-    width: 51px; /* iOS exact toggle width */
-    height: 31px; /* iOS exact toggle height */
-    cursor: pointer;
-  }
+.visibility-row-toggle {
+  flex-shrink: 0;
+  position: relative;
+  display: inline-block;
+  width: 72px; /* Ensure 48px minimum height while keeping proportionally wider track */
+  height: 48px;
+  cursor: pointer;
+}
 
   .visibility-row-toggle input {
     position: absolute;
@@ -115,42 +116,42 @@
   }
 
   /* iOS Toggle Track */
-  .toggle-slider {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(120, 120, 128, 0.32); /* iOS toggle off - exact */
-    border-radius: 999px; /* Pill shape */
-    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
-    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.04); /* Subtle inset border */
-  }
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(120, 120, 128, 0.32); /* iOS toggle off - exact */
+  border-radius: 999px; /* Pill shape */
+  transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.04); /* Subtle inset border */
+}
 
   /* iOS Toggle Knob */
-  .toggle-slider:before {
-    content: "";
-    position: absolute;
-    height: 27px; /* iOS exact knob size */
-    width: 27px;
-    left: 2px; /* iOS exact offset */
-    top: 2px;
-    background: white;
-    border-radius: 50%;
-    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
-    box-shadow:
-      0 3px 8px rgba(0, 0, 0, 0.15),
+.toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  left: 4px; /* Maintain even inset within 48px height */
+  top: 4px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+  box-shadow:
+    0 3px 8px rgba(0, 0, 0, 0.15),
       0 1px 2px rgba(0, 0, 0, 0.1); /* iOS exact shadow */
   }
 
   /* iOS Toggle - Checked State (System Green) */
-  input:checked + .toggle-slider {
-    background: #34c759; /* iOS system green - exact hex */
-  }
+input:checked + .toggle-slider {
+  background: #34c759; /* iOS system green - exact hex */
+}
 
-  input:checked + .toggle-slider:before {
-    left: 22px; /* iOS exact checked position (51px - 27px - 2px) */
-  }
+input:checked + .toggle-slider:before {
+  left: calc(72px - 40px - 4px); /* Track width minus thumb width minus inset */
+}
 
   input:disabled + .toggle-slider {
     opacity: 0.5;

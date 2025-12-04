@@ -20,19 +20,23 @@ Ultra-minimal design: No overlays, just clean image display.
 </script>
 
 <div class="media">
-  {#if coverUrl}
-    <img
-      src={coverUrl}
-      alt={`Preview of ${word}`}
-      {width}
-      {height}
-      loading="lazy"
-    />
-  {:else}
-    <div class="media-placeholder" aria-label="Sequence preview missing">
-      <span>{word.slice(0, 1) ?? "?"}</span>
+  <div class="media-content">
+    <div class="media-wrapper">
+      {#if coverUrl}
+        <img
+          src={coverUrl}
+          alt={`Preview of ${word}`}
+          {width}
+          {height}
+          loading="lazy"
+        />
+      {:else}
+        <div class="media-placeholder" aria-label="Sequence preview missing">
+          <span>{word.slice(0, 1) ?? "?"}</span>
+        </div>
+      {/if}
     </div>
-  {/if}
+  </div>
 </div>
 
 <style>
@@ -42,6 +46,22 @@ Ultra-minimal design: No overlays, just clean image display.
     background: rgba(255, 255, 255, 0.05);
     flex: 1;
     min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-wrapper {
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;

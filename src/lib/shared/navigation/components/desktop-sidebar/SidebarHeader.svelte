@@ -16,7 +16,7 @@
     aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
     title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
   >
-    <i class="fas fa-{isCollapsed ? 'angle-right' : 'angle-left'}"></i>
+    <i class="fas fa-{isCollapsed ? 'indent' : 'outdent'}"></i>
   </button>
 </div>
 

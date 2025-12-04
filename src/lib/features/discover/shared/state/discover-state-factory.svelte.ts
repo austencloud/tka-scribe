@@ -6,7 +6,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { resolve } from "$lib/shared/inversify/di";
+import { resolve, tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ExploreFilterType } from "$lib/shared/persistence/domain/enums/FilteringEnums";
 import type { IDiscoverFilterService } from "../../gallery/display/services/contracts/IDiscoverFilterService";
@@ -22,6 +22,8 @@ import type {
 } from "../domain/models/discover-models";
 import type { ExploreFilterValue } from "../domain/types/discover-types";
 import type { ISectionService } from "../services/contracts/ISectionService";
+import type { ILibraryService } from "../../../library/services/contracts/ILibraryService";
+import type { GallerySource } from "../state/gallery-source-state.svelte";
 
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
@@ -35,8 +37,18 @@ export function createExploreState() {
   );
   const sectionService = resolve<ISectionService>(TYPES.ISectionService);
 
+  // Library service for "My Library" mode - lazily resolved
+  let libraryService: ILibraryService | null = null;
+  function getLibraryService(): ILibraryService | null {
+    if (!libraryService) {
+      libraryService = tryResolve<ILibraryService>(TYPES.ILibraryService);
+    }
+    return libraryService;
+  }
+
   // State
   let isLoading = $state(false);
+  let currentSource = $state<GallerySource>("community");
   let error = $state<string | null>(null);
   let displayedSequences = $state<SequenceData[]>([]);
   let allSequences = $state<SequenceData[]>([]);
@@ -98,6 +110,55 @@ export function createExploreState() {
       error = err instanceof Error ? err.message : "Failed to load sequences";
     } finally {
       isLoading = false;
+    }
+  }
+
+  // Load user's library sequences
+  async function loadLibrarySequences(): Promise<void> {
+    const libService = getLibraryService();
+    if (!libService) {
+      console.warn("LibraryService not available");
+      error = "Please sign in to view your library";
+      allSequences = [];
+      displayedSequences = [];
+      sequenceSections = [];
+      return;
+    }
+
+    try {
+      isLoading = true;
+      error = null;
+      const librarySequences = await libService.getSequences();
+      // LibrarySequence extends SequenceData, so this is compatible
+      allSequences = librarySequences;
+      displayedSequences = librarySequences;
+      const sections = navigationService.generateNavigationSections(
+        librarySequences,
+        []
+      );
+      navigationSections = sections;
+      applyFilterAndSort();
+      await generateSequenceSections();
+    } catch (err) {
+      console.error("❌ ExploreState: Failed to load library sequences:", err);
+      error = err instanceof Error ? err.message : "Failed to load library";
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  // Switch source and reload data
+  async function setSource(source: GallerySource): Promise<void> {
+    if (source === currentSource) {
+      return;
+    }
+
+    currentSource = source;
+
+    if (source === "my-library") {
+      await loadLibrarySequences();
+    } else {
+      await loadAllSequences();
     }
   }
 
@@ -351,9 +412,14 @@ export function createExploreState() {
     get sequenceToAnimate() {
       return sequenceToAnimate;
     },
+    get currentSource() {
+      return currentSource;
+    },
 
     // Methods
     loadAllSequences,
+    loadLibrarySequences,
+    setSource,
     selectSequence,
     toggleFavorite,
     clearError,

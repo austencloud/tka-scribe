@@ -25,11 +25,13 @@ Layout Modes (determined by container size):
     selectedBeatData,
     onOrientationChanged,
     onTurnAmountChanged,
+    onRotationDirectionChanged,
   } = $props<{
     selectedBeatIndex: number | null;
     selectedBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
+    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
   }>();
 
   // Component references for imperative API
@@ -112,6 +114,7 @@ The container will change layout based on its OWN size, not viewport
       {selectedBeatData}
       {onOrientationChanged}
       {onTurnAmountChanged}
+      {onRotationDirectionChanged}
       {useSimplifiedLayout}
     />
   </div>

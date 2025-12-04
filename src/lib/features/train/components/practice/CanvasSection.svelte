@@ -167,14 +167,32 @@
 <style>
 	.canvas-section {
 		position: relative;
-		width: 100%;
-		height: 100%;
+		aspect-ratio: 1;
+		/* Let the square size itself based on available space */
+		max-width: 100%;
+		max-height: 100%;
 		background: transparent;
 		border-radius: 12px;
 		overflow: hidden;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	/* On mobile (stacked), limit by height */
+	@media (max-width: 767px) {
+		.canvas-section {
+			width: auto;
+			height: 100%;
+		}
+	}
+
+	/* On desktop (side-by-side), limit by width */
+	@media (min-width: 768px) {
+		.canvas-section {
+			width: 100%;
+			height: auto;
+		}
 	}
 
 	/* Loading State */

@@ -12,12 +12,12 @@
     manageState: FeedbackManageState;
   }>();
 
-  // 4 status columns
-  const ALL_STATUSES: FeedbackStatus[] = [
+  // 4 Kanban columns (archived is separate view)
+  const KANBAN_STATUSES: FeedbackStatus[] = [
     "new",
     "in-progress",
     "in-review",
-    "archived",
+    "completed",
   ];
 
   // Mobile: track active status tab
@@ -27,15 +27,17 @@
   const activeStatusColor = $derived(STATUS_CONFIG[activeStatus].color);
 
   // Group items by status (4 columns)
+  // Uses allItems (unfiltered) to show all feedback in their respective status columns
   const itemsByStatus = $derived.by(() => {
     const grouped: Record<string, FeedbackItem[]> = {
       new: [],
       "in-progress": [],
       "in-review": [],
-      archived: [],
+      completed: [],
     };
 
-    for (const item of manageState.items) {
+    // Use allItems for kanban - we always want to show items in their status columns
+    for (const item of manageState.allItems) {
       // Filter out soft-deleted items
       if (item.isDeleted) continue;
 
@@ -108,7 +110,7 @@
             new: "new",
             "in progress": "in-progress",
             "in review": "in-review",
-            archived: "archived",
+            completed: "completed",
           };
           return statusMap[statusLabel] || null;
         }
@@ -148,7 +150,7 @@
 <div class="kanban-board" style="--active-color: {activeStatusColor}">
   <!-- Mobile: Colorful Status Tabs -->
   <div class="status-tabs" role="tablist" aria-label="Feedback status">
-    {#each ALL_STATUSES as status}
+    {#each KANBAN_STATUSES as status}
       {@const config = STATUS_CONFIG[status]}
       {@const count = itemsByStatus[status]?.length ?? 0}
       <button
@@ -175,7 +177,7 @@
   </div>
 
   <div class="columns-container">
-    {#each ALL_STATUSES as status}
+    {#each KANBAN_STATUSES as status}
       <FeedbackKanbanColumn
         {status}
         config={STATUS_CONFIG[status]}
@@ -254,19 +256,11 @@
     overflow: hidden;
     container-type: inline-size;
     container-name: kanban;
+    /* Remove glassmorphic backdrop so the underlying page background shows through */
+    background: transparent;
+    backdrop-filter: none;
+    box-shadow: none;
 
-    /* Dynamic gradient background based on active status */
-    background:
-      radial-gradient(
-        ellipse 80% 50% at 50% 0%,
-        color-mix(in srgb, var(--active-color) 12%, transparent) 0%,
-        transparent 70%
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--active-color) 5%, rgba(15, 15, 20, 1)) 0%,
-        rgba(12, 12, 16, 1) 100%
-      );
     transition: background 0.5s ease;
   }
 
@@ -381,7 +375,7 @@
   /* ===== COLUMNS CONTAINER ===== */
   .columns-container {
     display: flex;
-    gap: clamp(12px, 2cqi, 24px);
+    gap: clamp(16px, 3cqi, 32px);
     flex: 1;
     /* Center with max-width for wide screens */
     width: 100%;

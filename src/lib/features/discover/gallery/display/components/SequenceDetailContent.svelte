@@ -16,6 +16,9 @@ Used by both desktop side panel and mobile slide-up overlay.
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
+  import AvatarImage from "../../../creators/components/profile/AvatarImage.svelte";
+  import { discoverNavigationState } from "../../../shared/state/discover-navigation-state.svelte";
+  import { galleryPanelManager } from "../../../shared/state/gallery-panel-state.svelte";
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -118,6 +121,23 @@ Used by both desktop side panel and mobile slide-up overlay.
     hapticService?.trigger("selection");
     onAction("fullscreen", sequence);
   }
+
+  function handleCreatorClick() {
+    if (!sequence.ownerId) return;
+    hapticService?.trigger("selection");
+
+    // Close the detail panel
+    galleryPanelManager.close();
+
+    // Navigate to creator profile using unified navigation state
+    discoverNavigationState.viewCreatorProfile(
+      sequence.ownerId,
+      sequence.ownerDisplayName
+    );
+  }
+
+  // Check if we have creator info to display
+  const hasCreatorInfo = $derived(Boolean(sequence.ownerId));
 </script>
 
 <div class="detail-content">
@@ -139,6 +159,21 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   <!-- Sequence Preview -->
   <div class="preview-container">
+    <!-- Creator avatar badge (upper left) -->
+    {#if hasCreatorInfo}
+      <button
+        class="creator-badge"
+        onclick={handleCreatorClick}
+        aria-label={`View ${sequence.ownerDisplayName || "creator"}'s profile`}
+      >
+        <AvatarImage
+          src={sequence.ownerAvatarUrl}
+          alt={sequence.ownerDisplayName || "Creator"}
+          size={48}
+        />
+      </button>
+    {/if}
+
     {#if currentImageUrl || previousImageUrl}
       <div class="image-crossfade-container">
         <!-- Previous image (fading out) -->
@@ -203,9 +238,15 @@ Used by both desktop side panel and mobile slide-up overlay.
       <span class="metadata-item">Length: {sequence.sequenceLength} beats</span>
       <span class="metadata-item">Level: {sequence.difficultyLevel}</span>
     </div>
-    {#if sequence.author}
+    {#if hasCreatorInfo || sequence.author}
       <div class="metadata-row">
-        <span class="metadata-item">Author: {sequence.author}</span>
+        {#if hasCreatorInfo}
+          <button class="creator-link" onclick={handleCreatorClick}>
+            <span class="metadata-item">By {sequence.ownerDisplayName || sequence.author || "Unknown"}</span>
+          </button>
+        {:else}
+          <span class="metadata-item">By {sequence.author}</span>
+        {/if}
       </div>
     {/if}
   </div>
@@ -379,6 +420,37 @@ Used by both desktop side panel and mobile slide-up overlay.
     position: relative;
   }
 
+  /* Creator avatar badge - clickable, upper left corner */
+  .creator-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+    padding: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .creator-badge:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .creator-badge:active {
+    transform: scale(0.95);
+  }
+
+  /* Style the avatar inside the badge */
+  .creator-badge :global(.avatar-image) {
+    display: block;
+  }
+
   .image-crossfade-container {
     position: relative;
     width: 100%;
@@ -507,6 +579,28 @@ Used by both desktop side panel and mobile slide-up overlay.
   .metadata-item {
     font-size: clamp(12px, 3cqi, 14px);
     color: rgba(255, 255, 255, 0.7);
+  }
+
+  .creator-link {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .creator-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .creator-link:hover .metadata-item {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .creator-link:active {
+    transform: scale(0.98);
   }
 
   /* Action Buttons */

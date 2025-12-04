@@ -15,18 +15,30 @@ import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import type { MotionColor} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import { injectable } from "inversify";
+import { injectable, inject, optional } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
+import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 
 const START_POSITION_BEAT_NUMBER = 0; // Beat 0 = start position, beats 1+ are in the sequence
 
 @injectable()
 export class BeatOperationsService implements IBeatOperationsService {
   private logger = createComponentLogger("BeatOperations");
+
+  constructor(
+    @inject(TYPES.IMotionQueryHandler)
+    @optional()
+    private motionQueryHandler: IMotionQueryHandler | null,
+    @inject(TYPES.IGridModeDeriver)
+    @optional()
+    private gridModeDeriver: IGridModeDeriver | null
+  ) {}
 
   removeBeat(beatIndex: number, CreateModuleState: ICreateModuleState): void {
     const selectedBeat = CreateModuleState.sequenceState.selectedBeatData;
@@ -653,5 +665,259 @@ export class BeatOperationsService implements IBeatOperationsService {
         `Updated ${updatedBeats.length} beats: ${color} prop type to ${propType}`
       );
     }
+  }
+
+  /**
+   * Update rotation direction for a specific prop color in a beat
+   *
+   * CRITICAL BEHAVIOR (matches legacy PropRotDirLogicHandler):
+   * 1. Rotation direction can be changed when turns >= 0 (including 0)
+   * 2. Rotation direction CANNOT be changed when turns = "fl" (float)
+   * 3. When rotation direction changes, motion type FLIPS: PRO ↔ ANTI
+   * 4. This flip can change the pictograph's letter
+   */
+  updateRotationDirection(
+    beatNumber: number,
+    color: string,
+    rotationDirection: string,
+    CreateModuleState: ICreateModuleState,
+    _panelState: unknown
+  ): void {
+    this.logger.log(`🔄 BeatOperationsService.updateRotationDirection called:`, {
+      beatNumber,
+      color,
+      rotationDirection,
+    });
+
+    // Get beat data from LIVE sequence state
+    let beatData: BeatData | null | undefined;
+    if (beatNumber === START_POSITION_BEAT_NUMBER) {
+      beatData = CreateModuleState.sequenceState
+        .selectedStartPosition as unknown as BeatData | null;
+    } else {
+      const arrayIndex = beatNumber - 1;
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+      beatData = sequence?.beats[arrayIndex];
+    }
+
+    if (!beatData?.motions) {
+      this.logger.warn("Cannot update rotation direction - no beat data available");
+      return;
+    }
+
+    // Get current motion data for the color
+    const colorKey = color as MotionColor;
+    const currentMotion: MotionData | undefined = beatData.motions[colorKey];
+    if (!currentMotion) {
+      this.logger.warn(`No motion data for ${color}`);
+      return;
+    }
+
+    // Block rotation direction change for float turns (they don't have rotation)
+    const currentTurns = currentMotion.turns;
+    if (currentTurns === "fl") {
+      this.logger.warn(`Cannot set rotation direction - float motions don't support rotation`);
+      return;
+    }
+
+    // Map string rotation direction to enum
+    const newRotationDirection = rotationDirection === "cw" || rotationDirection === "CLOCKWISE"
+      ? RotationDirection.CLOCKWISE
+      : RotationDirection.COUNTER_CLOCKWISE;
+
+    // Skip if already at this rotation direction
+    if (currentMotion.rotationDirection === newRotationDirection) {
+      this.logger.log(`Already at ${newRotationDirection}, no change needed`);
+      return;
+    }
+
+    // CRITICAL: Flip motion type when rotation direction changes (legacy behavior)
+    // PRO ↔ ANTI flip is what causes the pictograph's letter to potentially change
+    let newMotionType = currentMotion.motionType;
+    if (currentMotion.motionType === MotionType.PRO) {
+      newMotionType = MotionType.ANTI;
+      this.logger.log(`Flipping motion type: PRO → ANTI`);
+    } else if (currentMotion.motionType === MotionType.ANTI) {
+      newMotionType = MotionType.PRO;
+      this.logger.log(`Flipping motion type: ANTI → PRO`);
+    }
+    // Note: DASH, STATIC, FLOAT don't flip
+
+    // Recalculate endOrientation based on new rotation direction and motion type
+    const orientationCalculator = resolve<IOrientationCalculator>(
+      TYPES.IOrientationCalculator
+    );
+    const tempMotionData = createMotionData({
+      ...currentMotion,
+      rotationDirection: newRotationDirection,
+      motionType: newMotionType,
+    });
+    const newEndOrientation = orientationCalculator.calculateEndOrientation(
+      tempMotionData,
+      colorKey
+    );
+
+    // Create updated beat data with new rotation direction, motion type, and endOrientation
+    const updatedBeatData = {
+      ...beatData,
+      motions: {
+        ...beatData.motions,
+        [color]: {
+          ...currentMotion,
+          rotationDirection: newRotationDirection,
+          motionType: newMotionType,
+          endOrientation: newEndOrientation,
+        },
+      },
+    };
+
+    // Apply update based on beat number
+    if (beatNumber === START_POSITION_BEAT_NUMBER) {
+      CreateModuleState.sequenceState.setStartPosition(updatedBeatData);
+      this.logger.log(
+        `Updated start position ${color}: rotation=${newRotationDirection}, motionType=${newMotionType}, endOri=${newEndOrientation}`
+      );
+
+      // Propagate orientation changes through the entire sequence
+      this.propagateOrientationsThroughSequence(
+        beatNumber,
+        color,
+        CreateModuleState
+      );
+    } else {
+      const arrayIndex = beatNumber - 1;
+      CreateModuleState.sequenceState.updateBeat(arrayIndex, updatedBeatData);
+      this.logger.log(
+        `Updated beat ${beatNumber} ${color}: rotation=${newRotationDirection}, motionType=${newMotionType}, endOri=${newEndOrientation}`
+      );
+
+      // Propagate orientation changes through the subsequent beats
+      this.propagateOrientationsThroughSequence(
+        beatNumber,
+        color,
+        CreateModuleState
+      );
+    }
+
+    // CRITICAL: Recalculate letter after motion type change
+    // The PRO ↔ ANTI flip may change the pictograph's letter
+    void this.recalculateLetterForBeat(beatNumber, CreateModuleState);
+  }
+
+  /**
+   * Recalculate the letter for a beat based on its current motion configuration
+   * This is called after changes that may affect the letter (e.g., rotation direction change)
+   */
+  private async recalculateLetterForBeat(
+    beatNumber: number,
+    CreateModuleState: ICreateModuleState
+  ): Promise<void> {
+    console.log(`📝 recalculateLetterForBeat called for beat ${beatNumber}`);
+    console.log(`  motionQueryHandler available: ${!!this.motionQueryHandler}`);
+    console.log(`  gridModeDeriver available: ${!!this.gridModeDeriver}`);
+
+    if (!this.motionQueryHandler || !this.gridModeDeriver) {
+      console.warn(
+        "⚠️ Cannot recalculate letter - MotionQueryHandler or GridModeDeriver not available"
+      );
+      return;
+    }
+
+    // Get the beat data (re-fetch from state since it was just updated)
+    let beatData: BeatData | null | undefined;
+    if (beatNumber === START_POSITION_BEAT_NUMBER) {
+      beatData = CreateModuleState.sequenceState
+        .selectedStartPosition as unknown as BeatData | null;
+    } else {
+      const arrayIndex = beatNumber - 1;
+      const sequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+      beatData = sequence?.beats[arrayIndex];
+    }
+
+    const blueMotion = beatData?.motions?.[MotionColor.BLUE];
+    const redMotion = beatData?.motions?.[MotionColor.RED];
+
+    if (!blueMotion || !redMotion) {
+      console.warn("⚠️ Cannot recalculate letter - incomplete motion data");
+      return;
+    }
+
+    try {
+      // Derive grid mode from the motions
+      const gridMode = this.gridModeDeriver.deriveGridMode(blueMotion, redMotion);
+      console.log(`  gridMode: ${gridMode}`);
+
+      // Look up the correct letter for this motion configuration
+      console.log(`  Looking up letter for:`, {
+        blueMotionType: blueMotion.motionType,
+        redMotionType: redMotion.motionType,
+        blueRotation: blueMotion.rotationDirection,
+        redRotation: redMotion.rotationDirection,
+      });
+      const newLetter = await this.motionQueryHandler.findLetterByMotionConfiguration(
+        blueMotion,
+        redMotion,
+        gridMode
+      ) as Letter | null;
+
+      console.log(`  Found letter: ${newLetter}, current letter: ${beatData.letter}`);
+
+      if (newLetter) {
+        // Only update if letter changed
+        if (newLetter !== beatData.letter) {
+          console.log(
+            `📝 Letter changed: "${beatData.letter}" → "${newLetter}" for beat ${beatNumber}`
+          );
+
+          // Create updated beat data with new letter
+          const updatedBeatData: BeatData = {
+            ...beatData,
+            letter: newLetter,
+          };
+
+          // Apply update based on beat number
+          if (beatNumber === START_POSITION_BEAT_NUMBER) {
+            CreateModuleState.sequenceState.setStartPosition(updatedBeatData);
+          } else {
+            const arrayIndex = beatNumber - 1;
+            CreateModuleState.sequenceState.updateBeat(arrayIndex, updatedBeatData);
+          }
+
+          // Update the sequence word after letter change
+          this.updateSequenceWord(CreateModuleState);
+        } else {
+          this.logger.log(`Letter unchanged: "${beatData.letter}" for beat ${beatNumber}`);
+        }
+      } else {
+        this.logger.warn(
+          `Could not find letter for beat ${beatNumber} motion configuration (gridMode: ${gridMode})`
+        );
+      }
+    } catch (error) {
+      this.logger.error(`Failed to recalculate letter for beat ${beatNumber}:`, error);
+    }
+  }
+
+  /**
+   * Update the sequence word based on current beat letters
+   */
+  private updateSequenceWord(CreateModuleState: ICreateModuleState): void {
+    const sequence = CreateModuleState.sequenceState.currentSequence;
+    if (!sequence?.beats) return;
+
+    // Build word from beat letters
+    const word = sequence.beats
+      .map((beat) => beat.letter ?? "")
+      .join("")
+      .toUpperCase();
+
+    // Update sequence with new word
+    const updatedSequence: SequenceData = {
+      ...sequence,
+      word,
+    };
+
+    CreateModuleState.sequenceState.setCurrentSequence(updatedSequence);
+    this.logger.log(`Updated sequence word: "${word}"`);
   }
 }

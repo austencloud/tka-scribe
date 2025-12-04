@@ -44,7 +44,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   function handleScopeChange(newScope: "community" | "library") {
     const source: GallerySource = newScope === "library" ? "my-library" : "community";
     gallerySourceManager.setSource(source);
-    // TODO: Trigger galleryState to reload/filter based on source
+    // Trigger galleryState to reload based on source
+    galleryState.setSource(source);
   }
 </script>
 

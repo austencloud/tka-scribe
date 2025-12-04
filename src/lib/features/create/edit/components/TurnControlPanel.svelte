@@ -1,20 +1,22 @@
-<!-- TurnControlPanel.svelte - Unified turn controls using ExpandedTurnPanel -->
+<!-- TurnControlPanel.svelte - Wrapper for blue/red TurnPanel components -->
 <script lang="ts">
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-  import ExpandedTurnPanel from "./ExpandedTurnPanel.svelte";
+  import TurnPanel from "./TurnPanel.svelte";
 
   // Props
   const {
     currentBeatData,
     onTurnAmountChanged,
+    onRotationDirectionChanged,
     onEditTurnsRequested,
     useSimplifiedLayout = false,
   } = $props<{
     currentBeatData: BeatData | null;
     onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
+    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
     onEditTurnsRequested: () => void;
     useSimplifiedLayout?: boolean;
   }>();
@@ -49,20 +51,22 @@ import { TYPES } from "$lib/shared/inversify/types";
 >
   <div class="turn-controls-container">
     <!-- Blue/Left Control -->
-    <ExpandedTurnPanel
+    <TurnPanel
       color="blue"
       {currentBeatData}
       {onTurnAmountChanged}
+      {onRotationDirectionChanged}
       {onEditTurnsRequested}
       layoutMode={layoutMode()}
       showCloseButton={false}
     />
 
     <!-- Red/Right Control -->
-    <ExpandedTurnPanel
+    <TurnPanel
       color="red"
       {currentBeatData}
       {onTurnAmountChanged}
+      {onRotationDirectionChanged}
       {onEditTurnsRequested}
       layoutMode={layoutMode()}
       showCloseButton={false}

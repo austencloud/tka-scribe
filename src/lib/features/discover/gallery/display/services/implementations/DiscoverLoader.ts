@@ -47,6 +47,10 @@ interface RawSequenceData {
   startingPosition?: unknown;
   fullMetadata?: unknown; // Bundled metadata from build script
   metadataBundled?: boolean; // Flag indicating metadata is pre-bundled
+  // Owner info (for creator attribution)
+  ownerId?: string;
+  ownerDisplayName?: string;
+  ownerAvatarUrl?: string;
 }
 
 @injectable()
@@ -217,6 +221,10 @@ export class DiscoverLoader implements IDiscoverLoader {
         startingPositionGroup: (rawSeq.startingPosition ||
           "alpha") as GridPositionGroup,
         startPosition,
+        // Owner info for creator attribution
+        ownerId: rawSeq.ownerId,
+        ownerDisplayName: rawSeq.ownerDisplayName,
+        ownerAvatarUrl: rawSeq.ownerAvatarUrl,
       });
     } catch (error) {
       console.error(`❌ Failed to parse bundled metadata:`, error);
@@ -512,6 +520,10 @@ export class DiscoverLoader implements IDiscoverLoader {
       propType: (rawSeq.propType || "Staff") as PropType,
       startingPositionGroup: (rawSeq.startingPosition ||
         "alpha") as GridPositionGroup,
+      // Owner info for creator attribution
+      ownerId: rawSeq.ownerId,
+      ownerDisplayName: rawSeq.ownerDisplayName,
+      ownerAvatarUrl: rawSeq.ownerAvatarUrl,
     });
   }
 
@@ -547,6 +559,10 @@ export class DiscoverLoader implements IDiscoverLoader {
       propType: (rawSeq.propType || "Staff") as PropType,
       startingPositionGroup: (rawSeq.startingPosition ||
         "alpha") as GridPositionGroup,
+      // Owner info for creator attribution
+      ownerId: rawSeq.ownerId,
+      ownerDisplayName: rawSeq.ownerDisplayName,
+      ownerAvatarUrl: rawSeq.ownerAvatarUrl,
     });
   }
 

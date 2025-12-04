@@ -3,35 +3,50 @@
    * CreatorsPanel (Discover Module)
    * Community creator browser for discovering users
    * Displays user profiles with their contributions and stats.
+   *
+   * Uses singleton data state for caching - data persists across tab switches.
    */
 
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
-  import { creatorsViewState } from "../state/creators-view-state.svelte";
+  import { discoverNavigationState } from "../../shared/state/discover-navigation-state.svelte";
+  import { creatorsDataState } from "../state/creators-data-state.svelte";
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
   import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import PanelContent from "$lib/shared/components/panel/PanelContent.svelte";
   import PanelSearch from "$lib/shared/components/panel/PanelSearch.svelte";
-  import PanelHeader from "$lib/shared/components/panel/PanelHeader.svelte";
   import PanelGrid from "$lib/shared/components/panel/PanelGrid.svelte";
+  import DiscoverNavButtons from "../../shared/components/DiscoverNavButtons.svelte";
+  import { getContext } from "svelte";
+  import type { DiscoverLocation } from "../../shared/state/discover-navigation-state.svelte";
 
-  let users = $state<UserProfile[]>([]);
-  let isLoading = $state(true);
+  // Get navigation handler from context (provided by DiscoverModule)
+  const navContext = getContext<{
+    onNavigate: (location: DiscoverLocation) => void;
+  }>("discoverNavigation");
+
+  const onNavigate = navContext?.onNavigate ?? (() => {});
+
   let searchQuery = $state("");
-  let error = $state<string | null>(null);
   let followingInProgress = $state<Set<string>>(new Set());
 
   // Service instances
   let userService: IUserService;
   let hapticService: IHapticFeedbackService;
-  let unsubscribe: (() => void) | null = null;
 
   // Get current user ID
   const currentUserId = $derived(authStore.user?.uid);
+
+  // Reactive getters from cached state
+  const users = $derived(creatorsDataState.users);
+  const isLoading = $derived(
+    creatorsDataState.isLoading && !creatorsDataState.isLoaded
+  );
+  const error = $derived(creatorsDataState.error);
 
   // Filtered users based on search
   const filteredUsers = $derived.by(() => {
@@ -55,38 +70,17 @@
         TYPES.IHapticFeedbackService
       );
 
-      // Subscribe to real-time user updates with current user context
-      unsubscribe = userService.subscribeToUsers(
-        (updatedUsers) => {
-          users = updatedUsers;
-          isLoading = false;
-          error = null;
-        },
-        undefined,
-        currentUserId
-      );
+      // Load creators data (uses cache if already loaded)
+      await creatorsDataState.loadCreators(userService, currentUserId);
     } catch (err) {
-      console.error("[CreatorsPanel] Error setting up subscription:", err);
-
-      // Show generic error message
-      error =
-        err instanceof Error
-          ? err.message
-          : "Failed to load users. Please try again.";
-      isLoading = false;
-    }
-  });
-
-  onDestroy(() => {
-    // Clean up the subscription when component is destroyed
-    if (unsubscribe) {
-      unsubscribe();
+      console.error("[CreatorsPanel] Error loading creators:", err);
     }
   });
 
   function handleUserClick(user: UserProfile) {
     hapticService?.trigger("selection");
-    creatorsViewState.viewUserProfile(user.id);
+    // Navigate to user profile using unified navigation state
+    discoverNavigationState.viewCreatorProfile(user.id, user.displayName);
   }
 
   async function handleFollowToggle(user: UserProfile) {
@@ -110,27 +104,20 @@
     try {
       if (user.isFollowing) {
         await userService.unfollowUser(currentUserId, user.id);
-        // Optimistic update
-        users = users.map((u) =>
-          u.id === user.id
-            ? {
-                ...u,
-                isFollowing: false,
-                followerCount: Math.max(0, u.followerCount - 1),
-              }
-            : u
-        );
+        // Optimistic update via cached state
+        creatorsDataState.updateUserFollowStatus(user.id, false, -1);
       } else {
         await userService.followUser(currentUserId, user.id);
-        // Optimistic update
-        users = users.map((u) =>
-          u.id === user.id
-            ? { ...u, isFollowing: true, followerCount: u.followerCount + 1 }
-            : u
-        );
+        // Optimistic update via cached state
+        creatorsDataState.updateUserFollowStatus(user.id, true, 1);
       }
     } catch (err) {
-      // Revert will happen on next real-time update
+      // Revert on error
+      if (user.isFollowing) {
+        creatorsDataState.updateUserFollowStatus(user.id, true, 1);
+      } else {
+        creatorsDataState.updateUserFollowStatus(user.id, false, -1);
+      }
     } finally {
       // Remove from in-progress set
       const newSet = new Set(followingInProgress);
@@ -141,11 +128,19 @@
 </script>
 
 <div class="creators-panel">
-  <PanelHeader
-    title="Discover Creators"
-    subtitle="Find talented members of the community"
-    icon="fa-users"
-  />
+  <!-- Top bar with navigation -->
+  <div class="creators-topbar">
+    <div class="nav-section">
+      <DiscoverNavButtons {onNavigate} />
+    </div>
+    <div class="header-section">
+      <h2 class="panel-title">
+        <i class="fas fa-users"></i>
+        Discover Creators
+      </h2>
+    </div>
+    <div class="spacer"></div>
+  </div>
 
   <PanelSearch placeholder="Search creators..." bind:value={searchQuery} />
 
@@ -261,10 +256,52 @@
   .creators-panel {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    padding: 0 16px;
+  }
+
+  /* Top bar with navigation */
+  .creators-topbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    background: transparent;
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .nav-section {
+    flex-shrink: 0;
+    min-width: 104px; /* Space for nav buttons */
+  }
+
+  .header-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .panel-title i {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .spacer {
+    flex-shrink: 0;
+    min-width: 104px; /* Match nav section for centering */
   }
 
   /* ============================================================================
@@ -408,6 +445,11 @@
   @media (max-width: 640px) {
     .creators-panel {
       gap: 16px;
+      padding: 0 12px;
+    }
+
+    .panel-title {
+      font-size: 16px;
     }
 
     .user-card {

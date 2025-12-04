@@ -239,7 +239,7 @@ T,gamma6,gamma8,quarter,same,anti,ccw,se,sw,anti,ccw,sw,nw
 T,gamma8,gamma2,quarter,same,anti,ccw,sw,nw,anti,ccw,nw,ne
 T,gamma2,gamma8,quarter,same,anti,cw,nw,sw,anti,cw,ne,nw
 T,gamma4,gamma2,quarter,same,anti,cw,ne,nw,anti,cw,se,ne
-T,gamma8,gamma6,quarter,same,anti,cw,sw,se,anti,cw,sw,se
+T,gamma8,gamma6,quarter,same,anti,cw,sw,se,anti,cw,nw,sw
 T,gamma6,gamma4,quarter,same,anti,cw,se,ne,anti,cw,sw,se
 
 T,gamma16,gamma10,quarter,same,anti,ccw,ne,se,anti,ccw,nw,ne

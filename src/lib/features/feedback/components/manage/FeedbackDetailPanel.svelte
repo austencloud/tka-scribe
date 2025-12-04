@@ -1,11 +1,12 @@
 <!-- FeedbackDetailPanel - Premium detail view with spring animations -->
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import type {
     FeedbackItem,
     FeedbackStatus,
     FeedbackType,
     FeedbackPriority,
+    FeedbackSubtask,
+    SubtaskStatus,
   } from "../../domain/models/feedback-models";
   import {
     TYPE_CONFIG,
@@ -16,14 +17,13 @@
   import { feedbackService } from "../../services/implementations/FeedbackService";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { MODULE_DEFINITIONS } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
-  import FeedbackAnalysisSection from "../analysis/FeedbackAnalysisSection.svelte";
 
   // Using 'manageState' to avoid conflict with $state rune
-  const { item, manageState, onClose } = $props<{
+  const { item, manageState = null, onClose, readOnly = false } = $props<{
     item: FeedbackItem;
-    manageState: FeedbackManageState;
+    manageState?: FeedbackManageState | null;
     onClose: () => void;
+    readOnly?: boolean;
   }>();
 
   // Default config for fallback
@@ -115,7 +115,7 @@
 
   // Save changes (called on blur or explicitly)
   async function saveChanges() {
-    if (isSaving || !hasChanges) return;
+    if (readOnly || !manageState || isSaving || !hasChanges) return;
     isSaving = true;
 
     try {
@@ -210,7 +210,7 @@
   }
 
   async function handleStatusChange(status: FeedbackStatus) {
-    if (isUpdatingStatus || item.status === status) return;
+    if (readOnly || !manageState || isUpdatingStatus || item.status === status) return;
     isUpdatingStatus = true;
     lastUpdatedStatus = status;
     try {
@@ -225,7 +225,7 @@
   }
 
   async function handleSaveNotes() {
-    if (isSavingNotes || !notesChanged) return;
+    if (readOnly || !manageState || isSavingNotes || !notesChanged) return;
     isSavingNotes = true;
     try {
       await manageState.updateAdminNotes(item.id, adminNotes);
@@ -235,7 +235,7 @@
   }
 
   async function handleDelete() {
-    if (isDeleting) return;
+    if (readOnly || !manageState || isDeleting) return;
     isDeleting = true;
     try {
       await manageState.deleteFeedback(item.id);
@@ -248,7 +248,7 @@
 
   // Send admin response to tester
   async function handleSendResponse() {
-    if (isSendingResponse || !adminResponseMessage.trim()) return;
+    if (readOnly || !manageState || isSendingResponse || !adminResponseMessage.trim()) return;
     isSendingResponse = true;
     try {
       await feedbackService.sendAdminResponse(item.id, adminResponseMessage.trim(), true);
@@ -264,7 +264,7 @@
 
   // Mark as resolved and notify tester
   async function handleMarkResolved() {
-    if (isUpdatingStatus) return;
+    if (readOnly || !manageState || isUpdatingStatus) return;
     isUpdatingStatus = true;
     try {
       await manageState.updateStatus(item.id, "resolved");
@@ -275,44 +275,8 @@
     }
   }
 
-  // Load analysis when panel opens (admin only)
-  onMount(() => {
-    if (authStore.isAdmin) {
-      void manageState.loadAnalysis(item.id);
-    }
-  });
-
-  // Clean up analysis state when panel closes
-  onDestroy(() => {
-    manageState.clearAnalysis();
-  });
-
-  // Analysis handlers
-  function handleAnalyze() {
-    void manageState.triggerAnalysis(item.id);
-  }
-
-  function handleSubmitAnswer(questionId: string, answer: string) {
-    void manageState.submitQuestionAnswer(item.id, questionId, answer);
-  }
-
-  function handlePassToUser(questionId: string) {
-    void manageState.passQuestionToUser(item.id, questionId);
-  }
-
-  function handleGeneratePrompt() {
-    void manageState.generateClaudeCodePrompt(item.id);
-  }
-
-  function handleMarkPromptCopied(promptId: string) {
-    void manageState.markPromptCopied(item.id, promptId);
-  }
-
-  function handleClarify(clarification: string) {
-    void manageState.clarifyAnalysis(item.id, clarification);
-  }
-
   async function handleGenerateTitle() {
+    if (readOnly || !manageState) return;
     try {
       await manageState.generateTitle(item.id, item.description);
     } catch (err) {
@@ -378,26 +342,9 @@
         onblur={handleFieldBlur}
         oninput={(e) => autoResizeTextarea(e.currentTarget)}
         placeholder="Describe the feedback..."
+        readonly={readOnly}
       ></textarea>
     </section>
-
-    <!-- AI Analysis Section (Admin Only) - Shown prominently after description -->
-    {#if authStore.isAdmin}
-      <section class="section">
-        <FeedbackAnalysisSection
-          feedback={item}
-          analysis={manageState.currentAnalysis}
-          isAnalyzing={manageState.isAnalyzing}
-          error={manageState.analysisError}
-          onAnalyze={handleAnalyze}
-          onSubmitAnswer={handleSubmitAnswer}
-          onPassToUser={handlePassToUser}
-          onGeneratePrompt={handleGeneratePrompt}
-          onMarkPromptCopied={handleMarkPromptCopied}
-          onClarify={handleClarify}
-        />
-      </section>
-    {/if}
 
     <!-- Title Section (inline editable) -->
     <section class="section title-section">
@@ -410,21 +357,24 @@
             bind:value={editTitle}
             onblur={handleFieldBlur}
             placeholder="Add a title..."
+            readonly={readOnly}
           />
         </div>
-        <button
-          type="button"
-          class="generate-title-btn"
-          onclick={handleGenerateTitle}
-          disabled={manageState.isGeneratingTitle}
-          title="Generate title with AI"
-        >
-          {#if manageState.isGeneratingTitle}
-            <i class="fas fa-spinner fa-spin"></i>
-          {:else}
-            <i class="fas fa-magic"></i>
-          {/if}
-        </button>
+        {#if !readOnly && manageState}
+          <button
+            type="button"
+            class="generate-title-btn"
+            onclick={handleGenerateTitle}
+            disabled={manageState.isGeneratingTitle}
+            title="Generate title with AI"
+          >
+            {#if manageState.isGeneratingTitle}
+              <i class="fas fa-spinner fa-spin"></i>
+            {:else}
+              <i class="fas fa-magic"></i>
+            {/if}
+          </button>
+        {/if}
       </div>
     </section>
 
@@ -543,17 +493,13 @@
     <section class="section">
       <h3 class="section-title">Submitted By</h3>
       <div class="user-card">
-        {#if item.userPhotoURL}
-          <img
-            src={item.userPhotoURL}
-            alt="{item.userDisplayName}'s avatar"
-            class="user-avatar-img"
-          />
-        {:else}
-          <div class="user-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-        {/if}
+        <img
+          src={item.userPhotoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`}
+          alt="{item.userDisplayName}'s avatar"
+          class="user-avatar-img"
+          referrerpolicy="no-referrer"
+          crossorigin="anonymous"
+        />
         <div class="user-info">
           <span class="user-name">{item.userDisplayName}</span>
           <span class="user-email">{item.userEmail}</span>
@@ -572,99 +518,163 @@
         <i class="fas fa-tasks"></i>
         Status
       </h3>
-      <div class="status-grid">
-        {#each Object.entries(STATUS_CONFIG) as [status, config]}
-          <button
-            type="button"
-            class="status-btn"
-            class:active={item.status === status}
-            class:just-selected={lastUpdatedStatus === status}
-            style="--status-color: {config.color}"
-            onclick={() => handleStatusChange(status as FeedbackStatus)}
-            disabled={isUpdatingStatus}
-          >
-            <span class="status-icon">
-              <i class="fas {config.icon}"></i>
-            </span>
-            <span class="status-label">{config.label}</span>
-            {#if item.status === status}
-              <span class="status-check">
-                <i class="fas fa-check"></i>
-              </span>
-            {/if}
-          </button>
-        {/each}
-      </div>
-    </section>
-
-    <!-- Admin Response to Tester Section -->
-    <section class="section response-section">
-      <h3 class="section-title">
-        <i class="fas fa-reply"></i>
-        Response to Tester
-      </h3>
-
-      {#if item.adminResponse}
-        <!-- Existing response display -->
-        <div class="existing-response">
-          <p class="response-message">{item.adminResponse.message}</p>
-          <span class="response-meta">
-            Sent {formatRelativeTime(item.adminResponse.respondedAt)}
-          </span>
-        </div>
-      {/if}
-
-      {#if showResponseForm || !item.adminResponse}
-        <div class="response-form">
-          <textarea
-            class="response-textarea"
-            bind:value={adminResponseMessage}
-            placeholder="Write a message to notify the tester about this feedback..."
-            rows="3"
-          ></textarea>
-
-          <div class="response-actions">
-            <button
-              type="button"
-              class="send-response-btn"
-              onclick={handleSendResponse}
-              disabled={isSendingResponse || !adminResponseMessage.trim()}
-            >
-              {#if isSendingResponse}
-                <i class="fas fa-spinner fa-spin"></i>
-              {:else}
-                <i class="fas fa-paper-plane"></i>
-              {/if}
-              Send Response
-            </button>
-
-            {#if item.status !== "resolved"}
-              <button
-                type="button"
-                class="resolve-notify-btn"
-                onclick={handleMarkResolved}
-                disabled={isUpdatingStatus}
-              >
-                {#if isUpdatingStatus}
-                  <i class="fas fa-spinner fa-spin"></i>
-                {:else}
-                  <i class="fas fa-check-circle"></i>
-                {/if}
-                Mark Resolved & Notify
-              </button>
-            {/if}
-          </div>
+      {#if readOnly}
+        <!-- Read-only status display -->
+        {@const statusConfig = STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]}
+        <div class="status-display" style="--status-color: {statusConfig.color}">
+          <i class="fas {statusConfig.icon}"></i>
+          <span>{statusConfig.label}</span>
         </div>
       {:else}
-        <button
-          type="button"
-          class="update-response-btn"
-          onclick={() => showResponseForm = true}
-        >
-          <i class="fas fa-edit"></i>
-          Update Response
-        </button>
+        <div class="status-grid">
+          {#each Object.entries(STATUS_CONFIG) as [status, config]}
+            <button
+              type="button"
+              class="status-btn"
+              class:active={item.status === status}
+              class:just-selected={lastUpdatedStatus === status}
+              style="--status-color: {config.color}"
+              onclick={() => handleStatusChange(status as FeedbackStatus)}
+              disabled={isUpdatingStatus}
+            >
+              <span class="status-icon">
+                <i class="fas {config.icon}"></i>
+              </span>
+              <span class="status-label">{config.label}</span>
+              {#if item.status === status}
+                <span class="status-check">
+                  <i class="fas fa-check"></i>
+                </span>
+              {/if}
+            </button>
+          {/each}
+        </div>
       {/if}
+    </section>
+
+    <!-- Subtasks Section (for complex feedback with prerequisites) -->
+    {#if item.subtasks && item.subtasks.length > 0}
+      <section class="section subtasks-section">
+        <h3 class="section-title">
+          <i class="fas fa-tasks"></i>
+          Subtasks
+          <span class="subtask-count">
+            {item.subtasks.filter(s => s.status === 'completed').length}/{item.subtasks.length}
+          </span>
+        </h3>
+        <div class="subtasks-list">
+          {#each item.subtasks as subtask (subtask.id)}
+            {@const isBlocked = subtask.dependsOn && subtask.dependsOn.length > 0 &&
+              !subtask.dependsOn.every(depId =>
+                item.subtasks?.find(s => s.id === depId)?.status === 'completed'
+              )}
+            <div
+              class="subtask-item"
+              class:completed={subtask.status === 'completed'}
+              class:in-progress={subtask.status === 'in-progress'}
+              class:blocked={isBlocked && subtask.status === 'pending'}
+            >
+              <div class="subtask-status-icon">
+                {#if subtask.status === 'completed'}
+                  <i class="fas fa-check-circle"></i>
+                {:else if subtask.status === 'in-progress'}
+                  <i class="fas fa-spinner fa-pulse"></i>
+                {:else if isBlocked}
+                  <i class="fas fa-lock"></i>
+                {:else}
+                  <i class="far fa-circle"></i>
+                {/if}
+              </div>
+              <div class="subtask-content">
+                <span class="subtask-id">#{subtask.id}</span>
+                <span class="subtask-title">{subtask.title}</span>
+                {#if subtask.description}
+                  <p class="subtask-description">{subtask.description}</p>
+                {/if}
+                {#if subtask.dependsOn && subtask.dependsOn.length > 0}
+                  <span class="subtask-deps">
+                    <i class="fas fa-link"></i>
+                    Depends on: {subtask.dependsOn.map(id => `#${id}`).join(', ')}
+                  </span>
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
+      </section>
+    {/if}
+
+    <!-- Admin Response to Tester Section -->
+    {#if !readOnly || item.adminResponse}
+      <section class="section response-section">
+        <h3 class="section-title">
+          <i class="fas fa-reply"></i>
+          Response to Tester
+        </h3>
+
+        {#if item.adminResponse}
+          <!-- Existing response display -->
+          <div class="existing-response">
+            <p class="response-message">{item.adminResponse.message}</p>
+            <span class="response-meta">
+              Sent {formatRelativeTime(item.adminResponse.respondedAt)}
+            </span>
+          </div>
+        {/if}
+
+        {#if !readOnly}
+          {#if showResponseForm || !item.adminResponse}
+            <div class="response-form">
+              <textarea
+                class="response-textarea"
+                bind:value={adminResponseMessage}
+                placeholder="Write a message to notify the tester about this feedback..."
+                rows="3"
+              ></textarea>
+
+              <div class="response-actions">
+                <button
+                  type="button"
+                  class="send-response-btn"
+                  onclick={handleSendResponse}
+                  disabled={isSendingResponse || !adminResponseMessage.trim()}
+                >
+                  {#if isSendingResponse}
+                    <i class="fas fa-spinner fa-spin"></i>
+                  {:else}
+                    <i class="fas fa-paper-plane"></i>
+                  {/if}
+                  Send Response
+                </button>
+
+                {#if item.status !== "resolved"}
+                  <button
+                    type="button"
+                    class="resolve-notify-btn"
+                    onclick={handleMarkResolved}
+                    disabled={isUpdatingStatus}
+                  >
+                    {#if isUpdatingStatus}
+                      <i class="fas fa-spinner fa-spin"></i>
+                    {:else}
+                      <i class="fas fa-check-circle"></i>
+                    {/if}
+                    Mark Resolved & Notify
+                  </button>
+                {/if}
+              </div>
+            </div>
+          {:else}
+            <button
+              type="button"
+              class="update-response-btn"
+              onclick={() => showResponseForm = true}
+            >
+              <i class="fas fa-edit"></i>
+              Update Response
+            </button>
+          {/if}
+        {/if}
 
       <!-- Tester confirmation status -->
       {#if item.testerConfirmation}
@@ -684,10 +694,12 @@
           {/if}
         </div>
       {/if}
-    </section>
+      </section>
+    {/if}
 
     <!-- Delete Section (simplified) -->
-    <section class="section delete-section">
+    {#if !readOnly}
+      <section class="section delete-section">
       {#if showDeleteConfirm}
         <div class="delete-confirm-simple">
           <span class="delete-confirm-text"
@@ -726,7 +738,8 @@
           Delete Feedback
         </button>
       {/if}
-    </section>
+      </section>
+    {/if}
   </div>
 </div>
 
@@ -1310,24 +1323,6 @@
     border-radius: var(--fb-radius-md);
   }
 
-  .user-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.2) 0%,
-      rgba(16, 185, 129, 0.1) 100%
-    );
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    border-radius: 50%;
-    color: var(--fb-primary);
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
   .user-avatar-img {
     width: 48px;
     height: 48px;
@@ -1381,6 +1376,23 @@
   /* ═══════════════════════════════════════════════════════════════════════════
      STATUS SECTION - 48px touch targets with spring animations
      ═══════════════════════════════════════════════════════════════════════════ */
+  .status-display {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs);
+    padding: var(--fb-space-sm) var(--fb-space-md);
+    background: color-mix(in srgb, var(--status-color) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--status-color) 30%, transparent);
+    border-radius: var(--fb-radius-md);
+    color: var(--status-color);
+    font-size: var(--fb-text-sm);
+    font-weight: 500;
+  }
+
+  .status-display i {
+    font-size: 0.9em;
+  }
+
   .status-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1909,6 +1921,131 @@
 
   .panel-content::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     SUBTASKS SECTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .subtasks-section {
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-radius: var(--fb-radius-md);
+    padding: var(--fb-space-md);
+    margin: 0 calc(var(--fb-space-md) * -1);
+  }
+
+  .subtasks-section .section-title {
+    color: #a78bfa;
+  }
+
+  .subtask-count {
+    margin-left: auto;
+    padding: 2px 8px;
+    background: rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #c4b5fd;
+  }
+
+  .subtasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fb-space-xs);
+  }
+
+  .subtask-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--fb-space-sm);
+    padding: var(--fb-space-sm);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-sm);
+    transition: all 0.2s ease;
+  }
+
+  .subtask-item.completed {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+
+  .subtask-item.in-progress {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .subtask-item.blocked {
+    opacity: 0.6;
+  }
+
+  .subtask-status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: var(--fb-text-subtle);
+  }
+
+  .subtask-item.completed .subtask-status-icon {
+    color: #10b981;
+  }
+
+  .subtask-item.in-progress .subtask-status-icon {
+    color: #f59e0b;
+  }
+
+  .subtask-item.blocked .subtask-status-icon {
+    color: var(--fb-text-subtle);
+  }
+
+  .subtask-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .subtask-id {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--fb-text-subtle);
+    font-family: "SF Mono", ui-monospace, monospace;
+  }
+
+  .subtask-title {
+    font-size: var(--fb-text-sm);
+    font-weight: 500;
+    color: var(--fb-text);
+  }
+
+  .subtask-item.completed .subtask-title {
+    text-decoration: line-through;
+    color: var(--fb-text-muted);
+  }
+
+  .subtask-description {
+    margin: var(--fb-space-2xs) 0 0 0;
+    font-size: var(--fb-text-xs);
+    color: var(--fb-text-muted);
+    line-height: 1.4;
+  }
+
+  .subtask-deps {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: var(--fb-space-2xs);
+    font-size: 10px;
+    color: var(--fb-text-subtle);
+  }
+
+  .subtask-deps i {
+    font-size: 9px;
   }
 
   /* Reduced motion */

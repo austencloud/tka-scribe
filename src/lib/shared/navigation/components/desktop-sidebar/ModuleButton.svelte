@@ -90,6 +90,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-height: 48px;
     padding: 12px 14px;
     background: transparent;
     border: 1px solid transparent;

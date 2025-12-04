@@ -59,6 +59,11 @@
       import("../../features/feedback/components/FeedbackModule.svelte"),
     admin: () =>
       import("../../features/admin/components/AdminDashboard.svelte"),
+    // ML Training module for prop detection model training
+    "ml-training": () =>
+      import(
+        "../../features/train/ml-training/components/MLTrainingModule.svelte"
+      ),
     // compose module uses animate folder (legacy naming)
     compose: () => import("../../features/animate/AnimateModule.svelte"),
     // settings module - accessed via gear icon in sidebar footer

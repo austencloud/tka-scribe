@@ -33,11 +33,21 @@ export interface SequenceData {
   readonly dateAdded?: Date;
   readonly gridMode?: GridMode;
   readonly propType?: PropType;
+  /**
+   * @deprecated Use ICollectionService.isFavorite(sequenceId) instead.
+   * Favorites are now stored as collection membership, not as a boolean flag.
+   * This field is kept for backwards compatibility during migration.
+   */
   readonly isFavorite: boolean;
   readonly isCircular: boolean;
   readonly difficultyLevel?: string;
   readonly tags: readonly string[];
   readonly metadata: Record<string, unknown>;
+
+  // Owner info (populated for public sequences)
+  readonly ownerId?: string;
+  readonly ownerDisplayName?: string;
+  readonly ownerAvatarUrl?: string;
 
   // TODO: Add these fields when video upload infrastructure is ready:
   // readonly performanceVideoUrl?: string;        // Firebase Storage URL to user's performance video
@@ -79,6 +89,14 @@ export function createSequenceData(
     }),
     ...(data.difficultyLevel !== undefined && {
       difficultyLevel: data.difficultyLevel,
+    }),
+    // Owner info
+    ...(data.ownerId !== undefined && { ownerId: data.ownerId }),
+    ...(data.ownerDisplayName !== undefined && {
+      ownerDisplayName: data.ownerDisplayName,
+    }),
+    ...(data.ownerAvatarUrl !== undefined && {
+      ownerAvatarUrl: data.ownerAvatarUrl,
     }),
   };
   return result;

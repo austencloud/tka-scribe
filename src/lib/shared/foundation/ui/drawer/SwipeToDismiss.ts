@@ -266,6 +266,9 @@ export class SwipeToDismiss {
       wasAboveThreshold = deltaX < -100 || (deltaX < -50 && duration < 500);
     }
 
+    // Debug logging
+    console.log(`🖐️ Swipe end: placement=${this.options.placement}, deltaX=${deltaX}, deltaY=${deltaY}, duration=${duration}ms, threshold=${wasAboveThreshold}`);
+
     this.startY = 0;
     this.currentY = 0;
     this.startX = 0;
@@ -275,6 +278,7 @@ export class SwipeToDismiss {
     this.options.onDragChange?.(0, 1, false);
 
     if (wasAboveThreshold) {
+      console.log(`🖐️ Dismissing drawer`);
       this.options.onDismiss();
     }
   }

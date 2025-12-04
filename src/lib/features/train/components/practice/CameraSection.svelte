@@ -118,12 +118,28 @@
 	.camera-section {
 		position: relative;
 		aspect-ratio: 1;
-		width: 100%;
-		max-width: min(100%, 50vh);
+		/* Let the square size itself based on available space */
+		max-width: 100%;
+		max-height: 100%;
 		background: transparent;
 		border-radius: 12px;
 		overflow: hidden;
-		align-self: center;
+	}
+
+	/* On mobile (stacked), limit by height */
+	@media (max-width: 767px) {
+		.camera-section {
+			width: auto;
+			height: 100%;
+		}
+	}
+
+	/* On desktop (side-by-side), limit by width */
+	@media (min-width: 768px) {
+		.camera-section {
+			width: 100%;
+			height: auto;
+		}
 	}
 
 	/* Status Indicators */

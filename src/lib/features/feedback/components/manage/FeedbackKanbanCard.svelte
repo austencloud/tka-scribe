@@ -16,6 +16,12 @@
   const typeConfig = $derived(item.type && item.type in TYPE_CONFIG ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG] : null);
   const priorityConfig = $derived(item.priority && item.priority in PRIORITY_CONFIG ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG] : null);
 
+  // Use Google photo if available, fallback to UI Avatars
+  const avatarUrl = $derived(
+    item.userPhotoURL ||
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`
+  );
+
   // Format relative time
   function formatRelativeTime(date: Date): string {
     const now = new Date();
@@ -240,11 +246,16 @@
   <div class="priority-strip"></div>
 
   <div class="card-content">
-    <!-- Header: Type icon + Title + Priority badge -->
+    <!-- Header: User avatar + Title + Priority badge -->
     <div class="card-header">
-      <div class="type-icon" title={typeConfig?.label ?? 'Feedback'}>
-        <i class="fas {typeConfig?.icon ?? 'fa-comment'}"></i>
-      </div>
+      <img
+        src={avatarUrl}
+        alt={item.userDisplayName}
+        class="header-avatar"
+        title={item.userDisplayName}
+        referrerpolicy="no-referrer"
+        crossorigin="anonymous"
+      />
       <h4 class="card-title">{item.title}</h4>
       {#if priorityConfig}
         <span
@@ -271,7 +282,6 @@
     <div class="card-footer">
       <div class="card-meta">
         <span class="meta-user">
-          <i class="fas fa-user"></i>
           {item.userDisplayName.split(" ")[0]}
         </span>
         <span class="meta-time">{formatRelativeTime(item.createdAt)}</span>
@@ -405,6 +415,15 @@
     display: flex;
     align-items: flex-start;
     gap: var(--kc-space-xs);
+  }
+
+  .header-avatar {
+    width: clamp(24px, 5cqi, 30px);
+    height: clamp(24px, 5cqi, 30px);
+    flex-shrink: 0;
+    border-radius: var(--kc-radius-sm);
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
   .type-icon {
