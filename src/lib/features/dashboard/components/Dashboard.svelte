@@ -279,9 +279,10 @@
               <span class="profile-name">{user.displayName || "Flow Artist"}</span>
               <span class="profile-email">{user.email}</span>
             {:else}
-              <button class="guest-sign-in" onclick={openSettings}>
-                <span class="profile-name">Guest</span>
-                <span class="profile-email">Sign in to sync</span>
+              <button class="guest-sign-in-cta" onclick={openSettings}>
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Sign in to sync your data</span>
+                <i class="fas fa-chevron-right"></i>
               </button>
             {/if}
           </div>
@@ -822,30 +823,46 @@
     text-overflow: ellipsis;
   }
 
-  .guest-sign-in {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    background: none;
+  .guest-sign-in-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 14px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     border: none;
-    padding: 8px 12px;
-    margin: -8px -12px;
-    border-radius: 12px;
+    border-radius: 10px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out);
+    transition: filter var(--duration-fast, 150ms) var(--ease-out),
+                transform var(--duration-fast, 150ms) var(--ease-out);
+    white-space: nowrap;
   }
 
-  .guest-sign-in:hover {
-    background: rgba(99, 102, 241, 0.15);
+  .guest-sign-in-cta:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
   }
 
-  .guest-sign-in:hover .profile-email {
-    color: rgba(99, 102, 241, 0.9);
+  .guest-sign-in-cta:active {
+    transform: scale(0.98);
   }
 
-  .guest-sign-in:focus {
+  .guest-sign-in-cta:focus {
     outline: 2px solid rgba(99, 102, 241, 0.5);
     outline-offset: 2px;
+  }
+
+  .guest-sign-in-cta i:first-child {
+    font-size: 14px;
+  }
+
+  .guest-sign-in-cta i:last-child {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: auto;
   }
 
   .profile-stats {

@@ -401,7 +401,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       case "train":
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("train", () => import("./modules/train.module"))
+          loadIfNeeded("train", () => import("./modules/train.module")),
+          loadIfNeeded("animator", () => import("./modules/animator.module"))
         ]);
         break;
 

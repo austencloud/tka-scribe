@@ -26,7 +26,7 @@
   import type { GifExportProgress } from "$lib/features/animate/services/contracts/IGifExportService";
   import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
-  import { resolve } from "../inversify/di";
+  import { resolve, loadFeatureModule } from "../inversify/di";
   import { TYPES } from "../inversify/types";
   import type { SequenceData } from "../foundation/domain/models/SequenceData";
   import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
@@ -162,27 +162,41 @@
 
   // Resolve services on mount
   onMount(() => {
+    let cleanupRouteListener: (() => void) | undefined;
+
+    // Resolve core services immediately (Tier 1 - navigation module)
     try {
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
-      playbackController = resolve<IAnimationPlaybackController>(
-        TYPES.IAnimationPlaybackController
-      );
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
-      );
-      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-        TYPES.IGifExportOrchestrator
       );
       sheetRouterService = resolve<ISheetRouterService>(
         TYPES.ISheetRouterService
       );
     } catch (error) {
-      console.error("Failed to resolve animation services:", error);
-      animationPanelState.setError("Failed to initialize animation services");
+      console.error("Failed to resolve core services:", error);
     }
 
+    // Load animator module and resolve animation-specific services
+    loadFeatureModule("animate").then(() => {
+      try {
+        playbackController = resolve<IAnimationPlaybackController>(
+          TYPES.IAnimationPlaybackController
+        );
+        gifExportOrchestrator = resolve<IGifExportOrchestrator>(
+          TYPES.IGifExportOrchestrator
+        );
+      } catch (error) {
+        console.error("Failed to resolve animation services:", error);
+        animationPanelState.setError("Failed to initialize animation services");
+      }
+    }).catch((error) => {
+      console.error("Failed to load animator module:", error);
+      animationPanelState.setError("Failed to load animation module");
+    });
+
     // Listen for route changes to restore animation panel from URL
-    const cleanupRouteListener = sheetRouterService?.onRouteChange((state) => {
+    cleanupRouteListener = sheetRouterService?.onRouteChange((state) => {
       isRespondingToRouteChange = true;
 
       const sheetType = state.sheet;
