@@ -248,12 +248,11 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    height: 100%;
     min-height: 0; /* Critical for flex containment */
-    overflow: hidden; /* Ensure nothing escapes */
     padding: 8px 12px;
-    container-type: size; /* Enable both width AND height queries */
+    container-type: inline-size;
     container-name: visibility-tab;
+    overflow: visible;
   }
 
   /* Compact layout when parent container height is limited */

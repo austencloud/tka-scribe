@@ -116,33 +116,40 @@
     <div class="profile-section">
       <!-- Profile Card -->
       <div class="profile-card">
-        <!-- Profile Picture -->
-        <div class="profile-avatar">
-          {#if authStore.user.photoURL}
-            <img
-              src={authStore.user.photoURL}
-              alt={authStore.user.displayName || "User"}
-              class="avatar-image"
-              crossorigin="anonymous"
-              referrerpolicy="no-referrer"
-            />
-          {:else}
-            <div class="avatar-placeholder">
-              {(authStore.user.displayName || authStore.user.email || "?")
-                .charAt(0)
-                .toUpperCase()}
-            </div>
-          {/if}
-        </div>
+        <div class="profile-top">
+          <!-- Profile Picture -->
+          <div class="profile-avatar">
+            {#if authStore.user.photoURL}
+              <img
+                src={authStore.user.photoURL}
+                alt={authStore.user.displayName || "User"}
+                class="avatar-image"
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"
+              />
+            {:else}
+              <div class="avatar-placeholder">
+                {(authStore.user.displayName || authStore.user.email || "?")
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+            {/if}
+          </div>
 
-        <!-- User Info -->
-        <div class="profile-info">
-          {#if authStore.user.displayName}
-            <h3 class="profile-name">{authStore.user.displayName}</h3>
-          {/if}
-          {#if authStore.user.email}
-            <p class="profile-email">{authStore.user.email}</p>
-          {/if}
+          <!-- User Info -->
+          <div class="profile-info">
+            {#if authStore.user.displayName}
+              <h3 class="profile-name">{authStore.user.displayName}</h3>
+            {/if}
+            {#if authStore.user.email}
+              <p class="profile-email">{authStore.user.email}</p>
+            {/if}
+          </div>
+
+          <button class="sign-out-chip" onclick={handleSignOut}>
+            <i class="fas fa-sign-out-alt"></i>
+            Sign Out
+          </button>
         </div>
       </div>
 
@@ -173,12 +180,6 @@
           </div>
         {/if}
       </div>
-
-      <!-- Sign Out Button -->
-      <button class="sign-out-button" onclick={handleSignOut}>
-        <i class="fas fa-sign-out-alt"></i>
-        Sign Out
-      </button>
 
       <!-- Account Deletion -->
       <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
@@ -261,7 +262,6 @@
   .profile-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 2cqh;
     padding: 3cqh 3cqw;
     background: rgba(255, 255, 255, 0.05);
@@ -274,6 +274,25 @@
       gap: 1.5cqh;
       padding: 2cqh 2cqw;
     }
+
+    .profile-top {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: start;
+    }
+
+    .sign-out-chip {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: 6px;
+    }
+  }
+
+  .profile-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5cqw;
+    align-items: center;
   }
 
   .profile-avatar {
@@ -303,7 +322,7 @@
   }
 
   .profile-info {
-    text-align: center;
+    text-align: left;
   }
 
   .profile-name {
@@ -317,6 +336,36 @@
     font-size: clamp(12px, 2cqw, 14px);
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
+  }
+
+  .sign-out-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6cqw;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+      border-color 0.15s ease;
+    justify-self: end;
+  }
+
+  .sign-out-chip i {
+    font-size: 14px;
+  }
+
+  .sign-out-chip:hover {
+    transform: translateY(-1px);
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.15);
+  }
+
+  .sign-out-chip:active {
+    transform: translateY(0) scale(0.98);
   }
 
   /* Account Sections */
@@ -345,38 +394,6 @@
   .security-card:hover {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.15);
-  }
-
-  /* Sign Out Button */
-  .sign-out-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1cqw;
-    width: 100%;
-    padding: 2cqh 3cqw;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 12px;
-    color: #ef4444;
-    font-size: clamp(14px, 2cqw, 16px);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .sign-out-button:hover {
-    background: rgba(239, 68, 68, 0.25);
-    border-color: rgba(239, 68, 68, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .sign-out-button:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  .sign-out-button i {
-    font-size: 18px;
   }
 
   /* Auth Section - Inline Auth */

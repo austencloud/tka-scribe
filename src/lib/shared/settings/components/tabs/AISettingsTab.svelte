@@ -215,8 +215,9 @@
       ollamaModels = models;
 
       // If current model isn't in the list, select the first one
-      if (models.length > 0 && !models.some(m => m.id === settings.ollama.modelId)) {
-        settings.ollama.modelId = models[0].id;
+      const firstModel = models[0];
+      if (firstModel && !models.some(m => m.id === settings.ollama.modelId)) {
+        settings.ollama.modelId = firstModel.id;
         await saveSettings();
       }
     } catch (error) {
@@ -244,12 +245,13 @@
         description="Enable AI-powered feedback interpretation and clarification"
       />
       <div class="toggle-row">
-        <span class="toggle-label">Enable AI Analysis</span>
+        <span class="toggle-label" id="enable-ai-label">Enable AI Analysis</span>
         <button
           class="toggle-button"
           class:active={settings.enabled}
           onclick={() => handleEnabledChange(!settings.enabled)}
           aria-pressed={settings.enabled}
+          aria-labelledby="enable-ai-label"
           disabled={saving}
         >
           <span class="toggle-track">
@@ -553,12 +555,13 @@
             <span class="form-hint">Maximum Q&A rounds before finalizing analysis</span>
           </div>
           <div class="toggle-row">
-            <span class="toggle-label">Generate Claude Code Prompts</span>
+            <span class="toggle-label" id="claude-prompts-label">Generate Claude Code Prompts</span>
             <button
               class="toggle-button"
               class:active={settings.generateClaudeCodePrompts}
               onclick={() => handleClaudeCodePromptsChange(!settings.generateClaudeCodePrompts)}
               aria-pressed={settings.generateClaudeCodePrompts}
+              aria-labelledby="claude-prompts-label"
               disabled={saving}
             >
               <span class="toggle-track">
