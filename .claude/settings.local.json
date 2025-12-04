@@ -262,7 +262,11 @@
       "Bash(ollama list:*)",
       "Bash(systeminfo:*)",
       "Bash(wmic path win32_VideoController get name,AdapterRAM,DriverVersion)",
-      "Bash(nvidia-smi:*)"
+      "Bash(nvidia-smi:*)",
+      "Bash(ccusage-monitor:*)",
+      "Bash(ccusage --version:*)",
+      "Bash(PATH=\"$PATH:/c/Users/Austen/AppData/Roaming/npm\" ccusage-monitor:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []
