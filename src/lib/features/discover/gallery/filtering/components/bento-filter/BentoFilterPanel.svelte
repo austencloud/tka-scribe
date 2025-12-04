@@ -9,32 +9,42 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
-  import type { DifficultyLevel, StartingPosition } from "$lib/shared/domain/models/sequence-parameters";
+  import type { DifficultyLevel } from "$lib/shared/domain/models/sequence-parameters";
 
   // Shared parameter cards
   import {
     LevelCard,
-    PositionCard,
     LetterCard,
     LengthCard,
     FavoritesCard,
+    OptionsCard,
   } from "$lib/shared/components/parameter-cards";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   let {
     currentFilter = { type: "all", value: null },
     scope = "community",
+    startPosition = null,
+    endPosition = null,
     onFilterChange = () => {},
     onScopeChange = () => {},
     onOpenLetterSheet = () => {},
-    onOpenLengthSheet = () => {},
+    onOpenOptionsSheet = () => {},
   } = $props<{
     currentFilter?: { type: string; value: ExploreFilterValue };
     scope?: "community" | "library";
+    startPosition?: PictographData | null;
+    endPosition?: PictographData | null;
     onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
     onScopeChange?: (scope: "community" | "library") => void;
     onOpenLetterSheet?: () => void;
-    onOpenLengthSheet?: () => void;
+    onOpenOptionsSheet?: () => void;
   }>();
+
+  // Count active position options
+  const activeOptionsCount = $derived(
+    (startPosition !== null ? 1 : 0) + (endPosition !== null ? 1 : 0)
+  );
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -45,9 +55,6 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   // Derived filter values
   const currentLevel = $derived(
     currentFilter.type === "difficulty" ? (currentFilter.value as DifficultyLevel) : null
-  );
-  const currentPosition = $derived(
-    currentFilter.type === "startingPosition" ? (currentFilter.value as StartingPosition) : null
   );
   const currentLetter = $derived(
     currentFilter.type === "startingLetter" ? (currentFilter.value as string) : null
@@ -71,19 +78,19 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     }
   }
 
-  function handlePositionChange(position: StartingPosition | null) {
-    if (position === null) {
-      onFilterChange("all");
-    } else {
-      onFilterChange("startingPosition", position);
-    }
-  }
-
   function handleFavoritesToggle(active: boolean) {
     if (active) {
       onFilterChange("favorites");
     } else {
       onFilterChange("all");
+    }
+  }
+
+  function handleLengthChange(length: number | null) {
+    if (length === null) {
+      onFilterChange("all");
+    } else {
+      onFilterChange("length", length);
     }
   }
 </script>
@@ -123,10 +130,9 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
       cardIndex={0}
     />
 
-    <PositionCard
-      value={currentPosition}
-      allowNull={true}
-      onChange={handlePositionChange}
+    <OptionsCard
+      activeCount={activeOptionsCount}
+      onOpenSheet={onOpenOptionsSheet}
       gridColumnSpan={2}
       cardIndex={1}
     />
@@ -147,8 +153,9 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
 
     <LengthCard
       value={currentLength}
-      mode="panel-opener"
-      onOpenSheet={onOpenLengthSheet}
+      mode="stepper"
+      allowNull={true}
+      onChange={handleLengthChange}
       gridColumnSpan={3}
       cardIndex={4}
     />

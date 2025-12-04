@@ -42,6 +42,8 @@ export class DiscoverFilterService implements IDiscoverFilterService {
         return this.filterByDifficulty(sequences, filterValue);
       case ExploreFilterType.STARTING_POSITION:
         return this.filterByStartingPosition(sequences, filterValue);
+      case ExploreFilterType.END_POSITION:
+        return this.filterByEndPosition(sequences, filterValue);
       case ExploreFilterType.AUTHOR:
         return this.filterByAuthor(sequences, filterValue);
       case ExploreFilterType.GRID_MODE:
@@ -194,7 +196,127 @@ export class DiscoverFilterService implements IDiscoverFilterService {
       return sequences;
     }
 
-    return sequences.filter((seq) => seq.startingPositionGroup === filterValue);
+    // Extract the position to filter by
+    // filterValue can be a PictographData object (from position picker) or a string
+    let targetPosition: string | null = null;
+
+    if (typeof filterValue === "object" && filterValue !== null) {
+      // PictographData object - extract position from startPosition field
+      const pictoData = filterValue as { startPosition?: string | null };
+      targetPosition = pictoData.startPosition?.toLowerCase() ?? null;
+      console.log("🔍 Position filter - PictographData:", {
+        startPosition: pictoData.startPosition,
+        targetPosition
+      });
+    } else if (typeof filterValue === "string") {
+      // Direct string value (e.g., "alpha1", "beta5")
+      targetPosition = filterValue.toLowerCase();
+      console.log("🔍 Position filter - string:", targetPosition);
+    }
+
+    if (!targetPosition) {
+      console.log("🔍 Position filter - no target position, returning all");
+      return sequences;
+    }
+
+    // Extract position group (alpha, beta, gamma) for fallback matching
+    const targetGroup = targetPosition.replace(/[0-9]/g, "");
+    console.log("🔍 Position filter - targetGroup:", targetGroup, "from", targetPosition);
+    console.log("🔍 Position filter - filtering", sequences.length, "sequences");
+
+    const results = sequences.filter((seq) => {
+      // Try exact position match first
+      const seqStartPos = seq.startPosition || seq.startingPositionBeat;
+      if (seqStartPos) {
+        // Check gridPosition field (StartPositionData)
+        const gridPos = (seqStartPos as { gridPosition?: string | null }).gridPosition;
+        if (gridPos?.toLowerCase() === targetPosition) {
+          return true;
+        }
+
+        // Check startPosition field (PictographData/BeatData)
+        const startPos = (seqStartPos as { startPosition?: string | null }).startPosition;
+        if (startPos?.toLowerCase() === targetPosition) {
+          return true;
+        }
+      }
+
+      // Fallback: match by position group (alpha, beta, gamma)
+      const seqGroup = this.normalizePositionGroup(seq.startingPositionGroup);
+      if (seqGroup === targetGroup) {
+        return true;
+      }
+
+      return false;
+    });
+
+    console.log("🔍 Position filter - found", results.length, "matches");
+    if (results.length === 0 && sequences.length > 0) {
+      // Debug: show what position groups are available
+      const groups = new Set(sequences.map(s => s.startingPositionGroup));
+      console.log("🔍 Available position groups:", Array.from(groups));
+    }
+
+    return results;
+  }
+
+  private filterByEndPosition(
+    sequences: SequenceData[],
+    filterValue: ExploreFilterValue
+  ): SequenceData[] {
+    if (!filterValue) {
+      return sequences;
+    }
+
+    // Extract the position to filter by
+    // filterValue can be a PictographData object (from position picker) or a string
+    let targetPosition: string | null = null;
+
+    if (typeof filterValue === "object" && filterValue !== null) {
+      // PictographData object - extract position from startPosition field (which represents the end position for filtering)
+      const pictoData = filterValue as { startPosition?: string | null };
+      targetPosition = pictoData.startPosition?.toLowerCase() ?? null;
+    } else if (typeof filterValue === "string") {
+      // Direct string value (e.g., "alpha1", "beta5")
+      targetPosition = filterValue.toLowerCase();
+    }
+
+    if (!targetPosition) {
+      return sequences;
+    }
+
+    // Extract position group (alpha, beta, gamma) for fallback matching
+    const targetGroup = targetPosition.replace(/[0-9]/g, "");
+
+    return sequences.filter((seq) => {
+      // Get the last beat to check end position
+      const lastBeat = seq.beats[seq.beats.length - 1];
+      if (!lastBeat) {
+        return false;
+      }
+
+      // Check endPosition field on the last beat
+      const endPos = (lastBeat as { endPosition?: string | null }).endPosition;
+      if (endPos?.toLowerCase() === targetPosition) {
+        return true;
+      }
+
+      // Check startPosition on last beat (some data might use this)
+      const startPos = (lastBeat as { startPosition?: string | null }).startPosition;
+      if (startPos?.toLowerCase() === targetPosition) {
+        return true;
+      }
+
+      // Fallback: match by position group from any available position data
+      if (endPos) {
+        const endGroup = endPos.toLowerCase().replace(/[0-9]/g, "");
+        if (endGroup === targetGroup) {
+          return true;
+        }
+      }
+
+      return false;
+    });
   }
 
   private filterByAuthor(
@@ -245,5 +367,29 @@ export class DiscoverFilterService implements IDiscoverFilterService {
     }
 
     return Array.from(authors).sort();
+  }
+
+  /**
+   * Normalize position group to handle different formats
+   * Handles: "alpha", "Alpha", "ALPHA", "α", etc.
+   */
+  private normalizePositionGroup(group: string | undefined | null): string {
+    if (!group) return "";
+
+    const normalized = group.toLowerCase().trim();
+
+    // Map Greek letters to English names
+    const greekMap: Record<string, string> = {
+      "α": "alpha",
+      "β": "beta",
+      "γ": "gamma",
+    };
+
+    if (greekMap[normalized]) {
+      return greekMap[normalized];
+    }
+
+    // Remove any numbers from the group name
+    return normalized.replace(/[0-9]/g, "");
   }
 }

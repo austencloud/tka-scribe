@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import { BentoFilterPanel, LetterSelectionSheet, LengthSelectionSheet } from "../../gallery/filtering/components/bento-filter";
+  import { BentoFilterPanel, LetterSelectionSheet, PositionOptionsSheet } from "../../gallery/filtering/components/bento-filter";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import SequenceDetailContent from "../../gallery/display/components/SequenceDetailContent.svelte";
   import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
   import SortJumpSheet from "../../gallery/navigation/components/SortJumpSheet.svelte";
@@ -15,7 +16,6 @@
     currentFilter: any;
     currentSortMethod: ExploreSortMethod;
     availableSections: any[];
-    availableSequenceLengths: number[];
     scope?: "community" | "library";
     onFilterChange: (type: string, value?: any) => void;
     onSortMethodChange: (method: ExploreSortMethod) => void;
@@ -31,7 +31,6 @@
     currentFilter,
     currentSortMethod,
     availableSections,
-    availableSequenceLengths,
     scope = "community",
     onFilterChange,
     onSortMethodChange,
@@ -43,14 +42,15 @@
 
   // State for sub-sheets
   let isLetterSheetOpen = $state(false);
-  let isLengthSheetOpen = $state(false);
+  let isOptionsSheetOpen = $state(false);
+
+  // Position filter state
+  let startPosition = $state<PictographData | null>(null);
+  let endPosition = $state<PictographData | null>(null);
 
   // Derived values for sheets
   const currentLetter = $derived(
     currentFilter.type === "startingLetter" ? (currentFilter.value as string) : null
-  );
-  const currentLength = $derived(
-    currentFilter.type === "length" ? (currentFilter.value as number) : null
   );
 
   // Handler functions
@@ -60,10 +60,6 @@
 
   function handleOpenLetterSheet() {
     isLetterSheetOpen = true;
-  }
-
-  function handleOpenLengthSheet() {
-    isLengthSheetOpen = true;
   }
 
   function handleLetterSelect(letter: string) {
@@ -76,14 +72,36 @@
     isLetterSheetOpen = false;
   }
 
-  function handleLengthSelect(length: number) {
-    onFilterChange("length", length);
-    isLengthSheetOpen = false;
+  function handleOpenOptionsSheet() {
+    isOptionsSheetOpen = true;
   }
 
-  function handleLengthClear() {
+  function handleStartPositionChange(position: PictographData | null) {
+    startPosition = position;
+    // Apply position filter
+    if (position) {
+      onFilterChange("startPosition", position);
+    } else if (!endPosition) {
+      // Only clear if no end position either
+      onFilterChange("all");
+    }
+  }
+
+  function handleEndPositionChange(position: PictographData | null) {
+    endPosition = position;
+    // Apply position filter
+    if (position) {
+      onFilterChange("endPosition", position);
+    } else if (!startPosition) {
+      // Only clear if no start position either
+      onFilterChange("all");
+    }
+  }
+
+  function handleClearAllPositions() {
+    startPosition = null;
+    endPosition = null;
     onFilterChange("all");
-    isLengthSheetOpen = false;
   }
 </script>
 
@@ -179,10 +197,12 @@
       <BentoFilterPanel
         {currentFilter}
         {scope}
+        {startPosition}
+        {endPosition}
         onFilterChange={handleBentoFilterChange}
         {onScopeChange}
         onOpenLetterSheet={handleOpenLetterSheet}
-        onOpenLengthSheet={handleOpenLengthSheet}
+        onOpenOptionsSheet={handleOpenOptionsSheet}
       />
     </div>
   </Drawer>
@@ -219,33 +239,34 @@
   </Drawer>
 </div>
 
-<!-- Length Selection Sheet -->
-<div style:--drawer-width={isMobile ? "min(600px, 90vw)" : "min(400px, 40vw)"}>
+<!-- Position Options Sheet -->
+<div style:--drawer-width={isMobile ? "min(600px, 90vw)" : "min(500px, 50vw)"}>
   <Drawer
-    isOpen={isLengthSheetOpen}
+    isOpen={isOptionsSheetOpen}
     placement={isMobile ? "bottom" : "right"}
-    class="length-sheet-drawer"
+    class="options-sheet-drawer"
     showHandle={false}
     onOpenChange={(open) => {
-      if (!open) isLengthSheetOpen = false;
+      if (!open) isOptionsSheetOpen = false;
     }}
   >
     <div class="drawer-header">
-      <h2>Select Length</h2>
+      <h2>Position Options</h2>
       <button
         class="drawer-close-btn"
-        onclick={() => (isLengthSheetOpen = false)}
+        onclick={() => (isOptionsSheetOpen = false)}
         aria-label="Close"
       >
         <i class="fas fa-times"></i>
       </button>
     </div>
-    <div class="sheet-content">
-      <LengthSelectionSheet
-        {currentLength}
-        availableLengths={availableSequenceLengths}
-        onLengthSelect={handleLengthSelect}
-        onClear={handleLengthClear}
+    <div class="sheet-content options-sheet-content">
+      <PositionOptionsSheet
+        {startPosition}
+        {endPosition}
+        onStartPositionChange={handleStartPositionChange}
+        onEndPositionChange={handleEndPositionChange}
+        onClearAll={handleClearAllPositions}
       />
     </div>
   </Drawer>
@@ -560,5 +581,35 @@
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
     background: #1a1a24 !important;
+  }
+
+  /* Options sheet drawer styles - desktop side panel */
+  :global(.options-sheet-drawer.drawer-content[data-placement="right"]) {
+    width: var(--drawer-width, min(500px, 50vw));
+    transition:
+      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+    top: 0 !important;
+    height: 100vh !important;
+    background: #1a1a24 !important;
+    border: none !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 0 !important;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Mobile: Options sheet as bottom sheet */
+  :global(.options-sheet-drawer.drawer-content[data-placement="bottom"]) {
+    max-height: 85vh !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    background: #1a1a24 !important;
+  }
+
+  /* Options sheet content - scrollable */
+  .options-sheet-content {
+    padding: 0;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
   }
 </style>

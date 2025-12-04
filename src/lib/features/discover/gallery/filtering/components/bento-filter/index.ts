@@ -6,6 +6,7 @@ export { default as BentoFilterPanel } from "./BentoFilterPanel.svelte";
 // Selection sheets (filter-specific UI)
 export { default as LetterSelectionSheet } from "./LetterSelectionSheet.svelte";
 export { default as LengthSelectionSheet } from "./LengthSelectionSheet.svelte";
+export { default as PositionOptionsSheet } from "./PositionOptionsSheet.svelte";
 
 // Re-export shared parameter cards for convenience
 export {
@@ -14,6 +15,7 @@ export {
   LetterCard,
   LengthCard,
   FavoritesCard,
+  OptionsCard,
 } from "$lib/shared/components/parameter-cards";
 
 // Legacy exports - deprecated, use shared cards instead

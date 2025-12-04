@@ -77,7 +77,6 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   currentFilter={galleryState.currentFilter}
   currentSortMethod={galleryState.currentSortMethod}
   availableSections={galleryState.availableNavigationSections}
-  availableSequenceLengths={galleryState.availableSequenceLengths}
   {scope}
   onFilterChange={galleryState.handleFilterChange}
   onSortMethodChange={(method) => galleryState.handleSortChange(method, "asc")}
