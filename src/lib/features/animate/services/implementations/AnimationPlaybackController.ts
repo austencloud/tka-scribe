@@ -25,6 +25,13 @@ export class AnimationPlaybackController
   private sequenceData: SequenceData | null = null;
   private isSeamlesslyLoopable: boolean = false;
 
+  // Animation-to-beat state
+  private animationTarget: number | null = null;
+  private animationStartBeat: number = 0;
+  private animationStartTime: number = 0;
+  private animationDuration: number = 300; // ms
+  private useLinearAnimation: boolean = false;
+
   constructor(
     @inject(TYPES.ISequenceAnimationOrchestrator)
     private readonly animationEngine: ISequenceAnimationOrchestrator,
@@ -105,9 +112,10 @@ export class AnimationPlaybackController
   jumpToBeat(beat: number): void {
     if (!this.state) return;
 
-    // Stop any current playback
+    // Stop any current playback/animation
     this.loopService.stop();
     this.state.setIsPlaying(false);
+    this.animationTarget = null;
 
     // Clamp beat to valid range
     const clampedBeat = Math.max(0, Math.min(beat, this.state.totalBeats));
@@ -116,6 +124,79 @@ export class AnimationPlaybackController
     // Calculate state for this beat
     this.animationEngine.calculateState(clampedBeat);
     this.updatePropStatesFromEngine();
+  }
+
+  animateToBeat(beat: number, duration: number = 300, linear: boolean = false): void {
+    if (!this.state) {
+      return;
+    }
+
+    // Clamp target beat to valid range
+    const clampedBeat = Math.max(0, Math.min(beat, this.state.totalBeats));
+
+    // If already animating to this target, don't restart
+    if (this.animationTarget === clampedBeat) {
+      return;
+    }
+
+    // If already at target, just update state
+    if (Math.abs(this.state.currentBeat - clampedBeat) < 0.01) {
+      this.animationEngine.calculateState(clampedBeat);
+      this.updatePropStatesFromEngine();
+      return;
+    }
+
+    // Stop any current playback/animation
+    this.loopService.stop();
+    this.state.setIsPlaying(false);
+
+    // Set up animation parameters
+    this.animationTarget = clampedBeat;
+    this.animationStartBeat = this.state.currentBeat;
+    this.animationStartTime = performance.now();
+    this.animationDuration = duration;
+    this.useLinearAnimation = linear;
+
+    // Start the animation loop with a custom callback
+    this.loopService.start(
+      () => this.onAnimateToBeatUpdate(),
+      1.0 // Speed doesn't matter for time-based animation
+    );
+  }
+
+  private onAnimateToBeatUpdate(): void {
+    if (!this.state || this.animationTarget === null) {
+      this.loopService.stop();
+      return;
+    }
+
+    const elapsed = performance.now() - this.animationStartTime;
+    const progress = Math.min(elapsed / this.animationDuration, 1.0);
+
+    // Use linear interpolation for continuous playback, ease-out for manual selection
+    const interpolatedProgress = this.useLinearAnimation
+      ? progress
+      : 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+
+    // Interpolate from start to target beat
+    const currentBeat =
+      this.animationStartBeat +
+      (this.animationTarget - this.animationStartBeat) * interpolatedProgress;
+
+    this.state.setCurrentBeat(currentBeat);
+    this.animationEngine.calculateState(currentBeat);
+    this.updatePropStatesFromEngine();
+
+    // Check if animation is complete
+    if (progress >= 1.0) {
+      const finalBeat = this.animationTarget;
+      this.loopService.stop();
+      this.animationTarget = null;
+      // Ensure we're exactly at the target
+      this.state.setCurrentBeat(finalBeat);
+      this.animationEngine.calculateState(finalBeat);
+      this.updatePropStatesFromEngine();
+    }
   }
 
   nextBeat(): void {

@@ -28,10 +28,18 @@ export interface IAnimationPlaybackController {
   stop(): void;
 
   /**
-   * Jump to a specific beat
+   * Jump to a specific beat (instant, no animation)
    * @param beat Beat number to jump to
    */
   jumpToBeat(beat: number): void;
+
+  /**
+   * Animate smoothly to a specific beat
+   * @param beat Beat number to animate to
+   * @param duration Animation duration in milliseconds (default 300ms)
+   * @param linear Use linear interpolation instead of easing (default false)
+   */
+  animateToBeat(beat: number, duration?: number, linear?: boolean): void;
 
   /**
    * Move to next beat
