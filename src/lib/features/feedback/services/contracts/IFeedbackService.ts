@@ -53,4 +53,20 @@ export interface IFeedbackService {
    * Delete feedback item (admin)
    */
   deleteFeedback(feedbackId: string): Promise<void>;
+
+  /**
+   * Update editable feedback fields (admin)
+   * Used for correcting context, type, priority, title, description
+   */
+  updateFeedback(
+    feedbackId: string,
+    updates: Partial<Pick<FeedbackItem,
+      | "type"
+      | "title"
+      | "description"
+      | "priority"
+      | "reportedModule"
+      | "reportedTab"
+    >>
+  ): Promise<void>;
 }

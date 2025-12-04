@@ -42,7 +42,7 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    background: var(--background, #0a0a0f);
+    background: transparent;
     color: var(--text-color, rgba(255, 255, 255, 0.9));
     position: relative;
     overflow: hidden;

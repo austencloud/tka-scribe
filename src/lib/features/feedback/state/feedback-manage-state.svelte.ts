@@ -8,8 +8,15 @@ import type {
   FeedbackItem,
   FeedbackFilterOptions,
   FeedbackStatus,
+  FeedbackType,
+  FeedbackPriority,
 } from "../domain/models/feedback-models";
+import type {
+  FeedbackAnalysis,
+  ClaudeCodePrompt,
+} from "../domain/models/analysis-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
+import { getFeedbackAnalysisService } from "../services/implementations/FeedbackAnalysisService";
 
 const PAGE_SIZE = 20;
 
@@ -36,6 +43,12 @@ export function createFeedbackManageState() {
 
   // Selected item for detail view
   let selectedItem = $state<FeedbackItem | null>(null);
+
+  // Analysis state
+  let currentAnalysis = $state<FeedbackAnalysis | null>(null);
+  let isAnalyzing = $state(false);
+  let analysisError = $state<string | null>(null);
+  let analysisUnsubscribe: (() => void) | null = null;
 
   // Filtered items based on search query
   const filteredItems = $derived(
@@ -144,6 +157,36 @@ export function createFeedbackManageState() {
     }
   }
 
+  /**
+   * Update editable feedback fields
+   */
+  async function updateFeedback(
+    feedbackId: string,
+    updates: Partial<{
+      type: FeedbackType;
+      title: string;
+      description: string;
+      priority: FeedbackPriority | undefined;
+      reportedModule: string;
+      reportedTab: string;
+    }>
+  ) {
+    try {
+      await feedbackService.updateFeedback(feedbackId, updates);
+      // Update local state
+      const updateWithTimestamp = { ...updates, updatedAt: new Date() };
+      items = items.map((item) =>
+        item.id === feedbackId ? { ...item, ...updateWithTimestamp } : item
+      );
+      if (selectedItem?.id === feedbackId) {
+        selectedItem = { ...selectedItem, ...updateWithTimestamp };
+      }
+    } catch (err) {
+      console.error("Failed to update feedback:", err);
+      throw err;
+    }
+  }
+
   function loadMore() {
     if (!isLoading && hasMore) {
       void loadFeedback(false);
@@ -152,6 +195,129 @@ export function createFeedbackManageState() {
 
   function setSearchQuery(query: string) {
     searchQuery = query;
+  }
+
+  // Analysis methods
+  async function loadAnalysis(feedbackId: string) {
+    // Clean up previous subscription
+    if (analysisUnsubscribe) {
+      analysisUnsubscribe();
+      analysisUnsubscribe = null;
+    }
+
+    currentAnalysis = null;
+    analysisError = null;
+
+    try {
+      const analysisService = getFeedbackAnalysisService();
+
+      // Load initial analysis
+      currentAnalysis = await analysisService.getAnalysis(feedbackId);
+
+      // Subscribe to changes
+      analysisUnsubscribe = analysisService.onAnalysisChange(feedbackId, (analysis) => {
+        currentAnalysis = analysis;
+      });
+    } catch (err) {
+      console.error("Failed to load analysis:", err);
+      analysisError = "Failed to load analysis";
+    }
+  }
+
+  async function triggerAnalysis(feedbackId: string) {
+    if (isAnalyzing) return;
+
+    isAnalyzing = true;
+    analysisError = null;
+
+    try {
+      const analysisService = getFeedbackAnalysisService();
+      currentAnalysis = await analysisService.analyzeFeedback(feedbackId);
+    } catch (err) {
+      console.error("Failed to analyze feedback:", err);
+      analysisError = err instanceof Error ? err.message : "Analysis failed";
+    } finally {
+      isAnalyzing = false;
+    }
+  }
+
+  async function submitQuestionAnswer(
+    feedbackId: string,
+    questionId: string,
+    answer: string
+  ) {
+    try {
+      const analysisService = getFeedbackAnalysisService();
+      currentAnalysis = await analysisService.submitAnswer(
+        feedbackId,
+        questionId,
+        answer,
+        "admin"
+      );
+    } catch (err) {
+      console.error("Failed to submit answer:", err);
+      throw err;
+    }
+  }
+
+  async function passQuestionToUser(feedbackId: string, questionId: string) {
+    try {
+      const analysisService = getFeedbackAnalysisService();
+      await analysisService.passQuestionToUser(feedbackId, questionId);
+      // Analysis will update via subscription
+    } catch (err) {
+      console.error("Failed to pass question to user:", err);
+      throw err;
+    }
+  }
+
+  async function generateClaudeCodePrompt(feedbackId: string): Promise<ClaudeCodePrompt> {
+    try {
+      const analysisService = getFeedbackAnalysisService();
+      return await analysisService.generateClaudeCodePrompt(feedbackId);
+    } catch (err) {
+      console.error("Failed to generate Claude Code prompt:", err);
+      throw err;
+    }
+  }
+
+  async function markPromptCopied(feedbackId: string, promptId: string) {
+    try {
+      const analysisService = getFeedbackAnalysisService();
+      await analysisService.markPromptCopied(feedbackId, promptId);
+    } catch (err) {
+      console.error("Failed to mark prompt as copied:", err);
+    }
+  }
+
+  async function clarifyAnalysis(feedbackId: string, clarification: string) {
+    if (isAnalyzing) return;
+
+    isAnalyzing = true;
+    analysisError = null;
+
+    try {
+      const analysisService = getFeedbackAnalysisService();
+      currentAnalysis = await analysisService.analyzeFeedbackWithClarification(
+        feedbackId,
+        clarification
+      );
+    } catch (err) {
+      console.error("Failed to clarify analysis:", err);
+      analysisError = err instanceof Error ? err.message : "Clarification failed";
+    } finally {
+      isAnalyzing = false;
+    }
+  }
+
+  function clearAnalysis() {
+    if (analysisUnsubscribe) {
+      analysisUnsubscribe();
+      analysisUnsubscribe = null;
+    }
+    currentAnalysis = null;
+    analysisError = null;
+    isAnalyzing = false;
   }
 
   return {
@@ -178,6 +344,17 @@ export function createFeedbackManageState() {
       return selectedItem;
     },
 
+    // Analysis state
+    get currentAnalysis() {
+      return currentAnalysis;
+    },
+    get isAnalyzing() {
+      return isAnalyzing;
+    },
+    get analysisError() {
+      return analysisError;
+    },
+
     // Actions
     loadFeedback,
     setFilter,
@@ -185,8 +362,19 @@ export function createFeedbackManageState() {
     selectItem,
     updateStatus,
     updateAdminNotes,
+    updateFeedback,
     deleteFeedback,
     loadMore,
+
+    // Analysis actions
+    loadAnalysis,
+    triggerAnalysis,
+    clarifyAnalysis,
+    submitQuestionAnswer,
+    passQuestionToUser,
+    generateClaudeCodePrompt,
+    markPromptCopied,
+    clearAnalysis,
   };
 }
 

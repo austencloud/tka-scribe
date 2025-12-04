@@ -1,8 +1,12 @@
 <!-- FeedbackDetailPanel - Premium detail view with spring animations -->
 <script lang="ts">
-  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
+  import { onMount, onDestroy } from "svelte";
+  import type { FeedbackItem, FeedbackStatus, FeedbackType, FeedbackPriority } from "../../domain/models/feedback-models";
   import { TYPE_CONFIG, STATUS_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
+  import { MODULE_DEFINITIONS } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import FeedbackAnalysisSection from "../analysis/FeedbackAnalysisSection.svelte";
 
   // Using 'manageState' to avoid conflict with $state rune
   const { item, manageState, onClose } = $props<{
@@ -14,12 +18,82 @@
   // Default config for fallback
   const DEFAULT_TYPE_CONFIG = { color: "#6b7280", icon: "fa-question-circle", label: "Unknown" };
 
-  const typeConfig = item.type && item.type in TYPE_CONFIG
-    ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
-    : DEFAULT_TYPE_CONFIG;
-  const priorityConfig = item.priority && item.priority in PRIORITY_CONFIG
-    ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
-    : null;
+  // Derive configs from current item state (will update when item changes)
+  const typeConfig = $derived(
+    item.type && item.type in TYPE_CONFIG
+      ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
+      : DEFAULT_TYPE_CONFIG
+  );
+  const priorityConfig = $derived(
+    item.priority && item.priority in PRIORITY_CONFIG
+      ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
+      : null
+  );
+
+  // Edit mode state
+  let isEditMode = $state(false);
+  let isSaving = $state(false);
+
+  // Editable fields
+  let editType = $state<FeedbackType>(item.type);
+  let editPriority = $state<FeedbackPriority | "">(item.priority || "");
+  let editTitle = $state(item.title);
+  let editDescription = $state(item.description);
+  let editReportedModule = $state(item.reportedModule || "");
+  let editReportedTab = $state(item.reportedTab || "");
+
+  // Reset edit fields when entering edit mode
+  function enterEditMode() {
+    editType = item.type;
+    editPriority = item.priority || "";
+    editTitle = item.title;
+    editDescription = item.description;
+    editReportedModule = item.reportedModule || "";
+    editReportedTab = item.reportedTab || "";
+    isEditMode = true;
+  }
+
+  function cancelEdit() {
+    isEditMode = false;
+  }
+
+  // Check if anything has changed
+  const hasChanges = $derived(
+    editType !== item.type ||
+    (editPriority || undefined) !== item.priority ||
+    editTitle !== item.title ||
+    editDescription !== item.description ||
+    editReportedModule !== (item.reportedModule || "") ||
+    editReportedTab !== (item.reportedTab || "")
+  );
+
+  // Get tabs for selected module
+  const availableTabs = $derived(() => {
+    if (!editReportedModule) return [];
+    const moduleDef = MODULE_DEFINITIONS.find(m => m.id === editReportedModule);
+    return moduleDef?.sections || [];
+  });
+
+  async function saveChanges() {
+    if (isSaving || !hasChanges) return;
+    isSaving = true;
+
+    try {
+      await manageState.updateFeedback(item.id, {
+        type: editType,
+        priority: editPriority || undefined,
+        title: editTitle,
+        description: editDescription,
+        reportedModule: editReportedModule,
+        reportedTab: editReportedTab,
+      });
+      isEditMode = false;
+    } catch (err) {
+      console.error("Failed to save changes:", err);
+    } finally {
+      isSaving = false;
+    }
+  }
 
   // Local reactive state
   let adminNotes = $state(item.adminNotes || "");
@@ -92,31 +166,112 @@
       showDeleteConfirm = false;
     }
   }
+
+  // Load analysis when panel opens (admin only)
+  onMount(() => {
+    if (authStore.isAdmin) {
+      void manageState.loadAnalysis(item.id);
+    }
+  });
+
+  // Clean up analysis state when panel closes
+  onDestroy(() => {
+    manageState.clearAnalysis();
+  });
+
+  // Analysis handlers
+  function handleAnalyze() {
+    void manageState.triggerAnalysis(item.id);
+  }
+
+  function handleSubmitAnswer(questionId: string, answer: string) {
+    void manageState.submitQuestionAnswer(item.id, questionId, answer);
+  }
+
+  function handlePassToUser(questionId: string) {
+    void manageState.passQuestionToUser(item.id, questionId);
+  }
+
+  function handleGeneratePrompt() {
+    void manageState.generateClaudeCodePrompt(item.id);
+  }
+
+  function handleMarkPromptCopied(promptId: string) {
+    void manageState.markPromptCopied(item.id, promptId);
+  }
+
+  function handleClarify(clarification: string) {
+    void manageState.clarifyAnalysis(item.id, clarification);
+  }
 </script>
 
 <div class="detail-panel">
-  <!-- Header with close button -->
+  <!-- Header with edit/close buttons -->
   <header class="panel-header">
     <div class="header-badge" style="--badge-color: {typeConfig.color}">
       <i class="fas {typeConfig.icon}"></i>
       <span>{typeConfig.label}</span>
     </div>
-    <button
-      type="button"
-      class="close-btn"
-      onclick={onClose}
-      aria-label="Close panel"
-    >
-      <i class="fas fa-times"></i>
-    </button>
+    <div class="header-actions">
+      {#if isEditMode}
+        <button
+          type="button"
+          class="header-btn cancel-edit-btn"
+          onclick={cancelEdit}
+          disabled={isSaving}
+          aria-label="Cancel editing"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <button
+          type="button"
+          class="header-btn save-edit-btn"
+          onclick={saveChanges}
+          disabled={isSaving || !hasChanges}
+          aria-label="Save changes"
+        >
+          {#if isSaving}
+            <i class="fas fa-circle-notch fa-spin"></i>
+          {:else}
+            <i class="fas fa-check"></i>
+          {/if}
+        </button>
+      {:else}
+        <button
+          type="button"
+          class="header-btn edit-btn"
+          onclick={enterEditMode}
+          aria-label="Edit feedback"
+        >
+          <i class="fas fa-pen"></i>
+        </button>
+      {/if}
+      <button
+        type="button"
+        class="close-btn"
+        onclick={onClose}
+        aria-label="Close panel"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
   </header>
 
   <!-- Scrollable content -->
   <div class="panel-content">
     <!-- Title Section -->
     <section class="section title-section">
-      <h2 class="feedback-title">{item.title}</h2>
-      {#if priorityConfig}
+      {#if isEditMode}
+        <input
+          type="text"
+          class="edit-title-input"
+          bind:value={editTitle}
+          placeholder="Feedback title..."
+        />
+      {:else}
+        <h2 class="feedback-title">{item.title}</h2>
+      {/if}
+      {#if priorityConfig && !isEditMode}
         <span class="priority-badge" style="--badge-color: {priorityConfig.color}">
           <i class="fas {priorityConfig.icon}"></i>
           {priorityConfig.label} Priority
@@ -124,47 +279,154 @@
       {/if}
     </section>
 
+    <!-- Type & Priority Section (edit mode only) -->
+    {#if isEditMode}
+      <section class="section">
+        <h3 class="section-title">
+          <i class="fas fa-tag"></i>
+          Type
+        </h3>
+        <div class="type-grid">
+          {#each Object.entries(TYPE_CONFIG) as [type, config]}
+            <button
+              type="button"
+              class="type-btn"
+              class:active={editType === type}
+              style="--type-color: {config.color}"
+              onclick={() => editType = type as FeedbackType}
+            >
+              <i class="fas {config.icon}"></i>
+              <span>{config.label}</span>
+            </button>
+          {/each}
+        </div>
+      </section>
+
+      <section class="section">
+        <h3 class="section-title">
+          <i class="fas fa-exclamation-circle"></i>
+          Priority
+        </h3>
+        <div class="priority-grid">
+          <button
+            type="button"
+            class="priority-btn"
+            class:active={editPriority === ""}
+            onclick={() => editPriority = ""}
+          >
+            <i class="fas fa-minus"></i>
+            <span>None</span>
+          </button>
+          {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
+            <button
+              type="button"
+              class="priority-btn"
+              class:active={editPriority === priority}
+              style="--priority-color: {config.color}"
+              onclick={() => editPriority = priority as FeedbackPriority}
+            >
+              <i class="fas {config.icon}"></i>
+              <span>{config.label}</span>
+            </button>
+          {/each}
+        </div>
+      </section>
+    {/if}
+
     <!-- Description Section -->
     <section class="section">
       <h3 class="section-title">Description</h3>
-      <div class="description-content">
-        <p class="description-text">{item.description}</p>
-      </div>
+      {#if isEditMode}
+        <textarea
+          class="edit-description-input"
+          bind:value={editDescription}
+          placeholder="Describe the feedback..."
+          rows="6"
+        ></textarea>
+      {:else}
+        <div class="description-content">
+          <p class="description-text">{item.description}</p>
+        </div>
+      {/if}
     </section>
 
     <!-- Context Section -->
     <section class="section">
       <h3 class="section-title">Context</h3>
-      <div class="context-card">
-        <div class="context-row">
-          <div class="context-item">
-            <span class="context-label">
+      {#if isEditMode}
+        <div class="context-edit-card">
+          <div class="context-edit-row">
+            <span class="context-edit-label">
               <i class="fas fa-crosshairs"></i>
               Captured
             </span>
-            <span class="context-value">
-              {item.capturedModule}
-              <span class="context-separator">›</span>
-              {item.capturedTab || "—"}
+            <span class="context-edit-value">
+              {item.capturedModule} › {item.capturedTab || "—"}
             </span>
           </div>
+          <div class="context-edit-row">
+            <span class="context-edit-label">
+              <i class="fas fa-edit"></i>
+              Set Context
+            </span>
+            <div class="context-selects">
+              <select
+                class="context-select"
+                bind:value={editReportedModule}
+                onchange={() => editReportedTab = ""}
+              >
+                <option value="">Select module...</option>
+                {#each MODULE_DEFINITIONS.filter(m => m.isMain) as mod}
+                  <option value={mod.id}>{mod.label}</option>
+                {/each}
+              </select>
+              <select
+                class="context-select"
+                bind:value={editReportedTab}
+                disabled={!editReportedModule || availableTabs().length === 0}
+              >
+                <option value="">
+                  {availableTabs().length === 0 ? "No tabs" : "Select tab..."}
+                </option>
+                {#each availableTabs() as tab}
+                  <option value={tab.id}>{tab.label}</option>
+                {/each}
+              </select>
+            </div>
+          </div>
         </div>
-        {#if item.reportedModule}
+      {:else}
+        <div class="context-card">
           <div class="context-row">
             <div class="context-item">
               <span class="context-label">
-                <i class="fas fa-edit"></i>
-                Reported
+                <i class="fas fa-crosshairs"></i>
+                Captured
               </span>
               <span class="context-value">
-                {item.reportedModule}
+                {item.capturedModule}
                 <span class="context-separator">›</span>
-                {item.reportedTab || "—"}
+                {item.capturedTab || "—"}
               </span>
             </div>
           </div>
-        {/if}
-      </div>
+          {#if item.reportedModule}
+            <div class="context-row">
+              <div class="context-item">
+                <span class="context-label">
+                  <i class="fas fa-edit"></i>
+                  Reported
+                </span>
+                <span class="context-value">
+                  {item.reportedModule}
+                  <span class="context-separator">›</span>
+                  {item.reportedTab || "—"}
+                </span>
+              </div>
+            </div>
+          {/if}
+        </div>
+      {/if}
     </section>
 
     <!-- User & Time Section -->
@@ -253,6 +515,24 @@
         </div>
       </div>
     </section>
+
+    <!-- AI Analysis Section (Admin Only) -->
+    {#if authStore.isAdmin}
+      <section class="section">
+        <FeedbackAnalysisSection
+          feedback={item}
+          analysis={manageState.currentAnalysis}
+          isAnalyzing={manageState.isAnalyzing}
+          error={manageState.analysisError}
+          onAnalyze={handleAnalyze}
+          onSubmitAnswer={handleSubmitAnswer}
+          onPassToUser={handlePassToUser}
+          onGeneratePrompt={handleGeneratePrompt}
+          onMarkPromptCopied={handleMarkPromptCopied}
+          onClarify={handleClarify}
+        />
+      </section>
+    {/if}
 
     <!-- Danger Zone -->
     <section class="section danger-section">
@@ -401,6 +681,61 @@
     transform: scale(0.95);
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs);
+  }
+
+  .header-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    color: var(--fb-text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .header-btn:hover:not(:disabled) {
+    background: var(--fb-surface-hover);
+    color: var(--fb-text);
+  }
+
+  .header-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .header-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .edit-btn:hover {
+    border-color: var(--fb-purple);
+    color: var(--fb-purple);
+  }
+
+  .save-edit-btn {
+    background: var(--fb-primary);
+    border-color: var(--fb-primary);
+    color: white;
+  }
+
+  .save-edit-btn:hover:not(:disabled) {
+    background: #059669;
+    border-color: #059669;
+  }
+
+  .cancel-edit-btn:hover {
+    border-color: var(--fb-error);
+    color: var(--fb-error);
+  }
+
   /* ═══════════════════════════════════════════════════════════════════════════
      CONTENT
      ═══════════════════════════════════════════════════════════════════════════ */
@@ -445,6 +780,218 @@
      ═══════════════════════════════════════════════════════════════════════════ */
   .title-section {
     gap: var(--fb-space-sm);
+  }
+
+  .edit-title-input {
+    width: 100%;
+    padding: var(--fb-space-sm);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    color: var(--fb-text);
+    font-size: var(--fb-text-lg);
+    font-weight: 700;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .edit-title-input:focus {
+    outline: none;
+    border-color: var(--fb-purple);
+    background: var(--fb-surface-hover);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  }
+
+  .edit-title-input::placeholder {
+    color: var(--fb-text-subtle);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TYPE & PRIORITY GRIDS (Edit Mode)
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--fb-space-xs);
+  }
+
+  .type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--fb-space-2xs);
+    min-height: 56px;
+    padding: var(--fb-space-sm);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    color: var(--fb-text-muted);
+    font-size: var(--fb-text-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .type-btn i {
+    font-size: 1.25rem;
+  }
+
+  .type-btn:hover:not(.active) {
+    background: var(--fb-surface-hover);
+    color: var(--fb-text);
+  }
+
+  .type-btn.active {
+    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+    border-color: var(--type-color);
+    color: var(--type-color);
+  }
+
+  .priority-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--fb-space-xs);
+  }
+
+  .priority-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--fb-space-2xs);
+    min-height: 48px;
+    padding: var(--fb-space-xs);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    color: var(--fb-text-muted);
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .priority-btn i {
+    font-size: 0.875rem;
+  }
+
+  .priority-btn:hover:not(.active) {
+    background: var(--fb-surface-hover);
+    color: var(--fb-text);
+  }
+
+  .priority-btn.active {
+    background: color-mix(in srgb, var(--priority-color, #6b7280) 15%, transparent);
+    border-color: var(--priority-color, #6b7280);
+    color: var(--priority-color, var(--fb-text));
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     EDIT DESCRIPTION
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .edit-description-input {
+    width: 100%;
+    padding: var(--fb-space-sm);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+    color: var(--fb-text);
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 120px;
+    transition: all 0.2s ease;
+  }
+
+  .edit-description-input:focus {
+    outline: none;
+    border-color: var(--fb-purple);
+    background: var(--fb-surface-hover);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  }
+
+  .edit-description-input::placeholder {
+    color: var(--fb-text-subtle);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CONTEXT EDIT
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .context-edit-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fb-space-sm);
+    padding: var(--fb-space-sm);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-md);
+  }
+
+  .context-edit-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--fb-space-2xs);
+  }
+
+  .context-edit-row + .context-edit-row {
+    padding-top: var(--fb-space-sm);
+    border-top: 1px solid var(--fb-border);
+  }
+
+  .context-edit-label {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-2xs);
+    font-size: var(--fb-text-xs);
+    color: var(--fb-text-subtle);
+  }
+
+  .context-edit-label i {
+    width: 14px;
+    text-align: center;
+  }
+
+  .context-edit-value {
+    font-size: var(--fb-text-sm);
+    color: var(--fb-text-muted);
+    font-family: "SF Mono", ui-monospace, monospace;
+    padding-left: calc(14px + var(--fb-space-2xs));
+  }
+
+  .context-selects {
+    display: flex;
+    gap: var(--fb-space-xs);
+    padding-left: calc(14px + var(--fb-space-2xs));
+  }
+
+  .context-select {
+    flex: 1;
+    min-height: 44px;
+    padding: var(--fb-space-xs) var(--fb-space-sm);
+    background: var(--fb-surface-hover);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-sm);
+    color: var(--fb-text);
+    font-size: var(--fb-text-sm);
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .context-select:focus {
+    outline: none;
+    border-color: var(--fb-purple);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  }
+
+  .context-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .context-select option {
+    background: #1a1a24;
+    color: var(--fb-text);
   }
 
   .feedback-title {
@@ -1004,6 +1551,20 @@
     .cancel-btn,
     .confirm-btn {
       flex: 1;
+    }
+
+    /* Edit mode responsive */
+    .priority-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .context-selects {
+      flex-direction: column;
+      padding-left: 0;
+    }
+
+    .context-select {
+      width: 100%;
     }
   }
 

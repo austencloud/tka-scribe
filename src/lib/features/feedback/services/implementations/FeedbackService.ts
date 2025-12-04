@@ -159,6 +159,34 @@ export class FeedbackService implements IFeedbackService {
     await deleteDoc(docRef);
   }
 
+  async updateFeedback(
+    feedbackId: string,
+    updates: Partial<Pick<FeedbackItem,
+      | "type"
+      | "title"
+      | "description"
+      | "priority"
+      | "reportedModule"
+      | "reportedTab"
+    >>
+  ): Promise<void> {
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+
+    // Build update object, converting undefined to null for Firestore
+    const updateData: Record<string, unknown> = {
+      updatedAt: serverTimestamp(),
+    };
+
+    if (updates.type !== undefined) updateData["type"] = updates.type;
+    if (updates.title !== undefined) updateData["title"] = updates.title;
+    if (updates.description !== undefined) updateData["description"] = updates.description;
+    if (updates.priority !== undefined) updateData["priority"] = updates.priority || null;
+    if (updates.reportedModule !== undefined) updateData["reportedModule"] = updates.reportedModule || null;
+    if (updates.reportedTab !== undefined) updateData["reportedTab"] = updates.reportedTab || null;
+
+    await updateDoc(docRef, updateData);
+  }
+
   private mapDocToFeedbackItem(
     id: string,
     data: Record<string, unknown>
