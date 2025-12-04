@@ -191,3 +191,25 @@ export function getFeatureIconAndColor(featureId: FeatureId): { icon: string; co
 		color: type === 'capability' ? '#f59e0b' : '#6b7280',
 	};
 }
+
+/**
+ * Role hierarchy for comparison (higher index = more permissions)
+ */
+const ROLE_HIERARCHY: UserRole[] = ['user', 'tester', 'premium', 'admin'];
+
+/**
+ * Get the effective minimum role for a tab considering its parent module.
+ * The effective role is the stricter (higher) of the tab role and module role.
+ */
+export function getEffectiveRole(tabRole: UserRole, moduleRole: UserRole): UserRole {
+	const tabIndex = ROLE_HIERARCHY.indexOf(tabRole);
+	const moduleIndex = ROLE_HIERARCHY.indexOf(moduleRole);
+	return tabIndex >= moduleIndex ? tabRole : moduleRole;
+}
+
+/**
+ * Check if a role is stricter than another
+ */
+export function isRoleStricter(role: UserRole, comparedTo: UserRole): boolean {
+	return ROLE_HIERARCHY.indexOf(role) > ROLE_HIERARCHY.indexOf(comparedTo);
+}

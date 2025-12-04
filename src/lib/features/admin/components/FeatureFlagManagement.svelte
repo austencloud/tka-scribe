@@ -55,7 +55,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--background-color, #1a1a2e);
+    background: transparent;
     color: var(--text-color, #ffffff);
     overflow: hidden;
     container-type: inline-size;
@@ -93,7 +93,7 @@
     padding: 8px;
     opacity: 0.7;
     transition: opacity 0.2s;
-    min-width: 36px;
+    min-width: 48px;
     min-height: 48px;
     display: flex;
     align-items: center;

@@ -75,6 +75,7 @@ const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
   // Modules
   "module:learn": "tester",
   "module:compose": "user", // Composition/choreography module
+  "module:feedback": "tester", // Feedback requires sign-in (tester access)
   "module:admin": "admin",
 
   // Create tabs

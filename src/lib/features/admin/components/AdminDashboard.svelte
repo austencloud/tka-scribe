@@ -6,7 +6,7 @@
    */
 
   import { onMount } from "svelte";
-import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
+  import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import type { IAdminChallengeService } from "../services/contracts/IAdminChallengeService";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import TrainChallengeManager from "./TrainChallengeManager.svelte";
@@ -92,7 +92,7 @@ import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--background-color, #1a1a2e);
+    background: transparent;
     color: var(--text-color, #ffffff);
     overflow: hidden;
   }
