@@ -4,8 +4,7 @@
   import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
   import { TYPE_CONFIG } from "$lib/features/feedback/domain/models/feedback-models";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IFeedbackService } from "$lib/features/feedback/services/contracts/IFeedbackService";
+  import { feedbackService } from "$lib/features/feedback/services/implementations/FeedbackService";
 
   let {
     feedbackId,
@@ -48,7 +47,6 @@
     error = null;
 
     try {
-      const feedbackService = resolve<IFeedbackService>(TYPES.IFeedbackService);
       feedback = await feedbackService.getFeedback(id);
       if (!feedback) {
         error = "Feedback not found";

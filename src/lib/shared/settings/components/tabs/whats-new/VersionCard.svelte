@@ -1,6 +1,6 @@
 <!-- VersionCard - Clickable card showing a single version's summary -->
 <script lang="ts">
-  import type { AppVersion } from "$lib/features/feedback/domain/models/version-models";
+  import type { AppVersion, ChangelogEntry } from "$lib/features/feedback/domain/models/version-models";
   import { PRE_RELEASE_VERSION } from "$lib/features/feedback/domain/models/version-models";
 
   const { version, onclick } = $props<{
@@ -14,9 +14,9 @@
   // Group changelog entries by category for summary
   const groupedChangelog = $derived.by(() => {
     if (!version.changelogEntries) return { fixed: [], added: [], improved: [] };
-    const fixed = version.changelogEntries.filter((e) => e.category === "fixed");
-    const added = version.changelogEntries.filter((e) => e.category === "added");
-    const improved = version.changelogEntries.filter((e) => e.category === "improved");
+    const fixed = version.changelogEntries.filter((e: ChangelogEntry) => e.category === "fixed");
+    const added = version.changelogEntries.filter((e: ChangelogEntry) => e.category === "added");
+    const improved = version.changelogEntries.filter((e: ChangelogEntry) => e.category === "improved");
     return { fixed, added, improved };
   });
 

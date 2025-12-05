@@ -50,7 +50,7 @@
     <div class="header-content">
       <h2>
         <i class="fas fa-gift"></i>
-        What's New
+        Release Notes
       </h2>
       <p class="subtitle">See what's changed in each version</p>
     </div>

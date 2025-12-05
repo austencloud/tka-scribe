@@ -13,9 +13,11 @@
   let {
     version,
     isOpen = $bindable(false),
+    onVersionUpdated,
   }: {
     version: AppVersion | null;
     isOpen?: boolean;
+    onVersionUpdated?: () => void;
   } = $props();
 
   // Feedback detail panel state
@@ -70,6 +72,11 @@
     const allEntries = version.changelogEntries || [];
     const categoryEntries = allEntries.filter(e => e.category === category);
     const entry = categoryEntries[entryIndex];
+    
+    if (!entry) {
+      throw new Error("Entry not found at index");
+    }
+    
     const absoluteIndex = allEntries.indexOf(entry);
 
     if (absoluteIndex === -1) {
@@ -78,8 +85,9 @@
 
     // Update via service
     const updatedEntry: ChangelogEntry = {
-      ...entry,
+      category: entry.category,
       text: newText,
+      feedbackId: entry.feedbackId,
     };
 
     await versionService.updateChangelogEntry(version.version, absoluteIndex, updatedEntry);

@@ -24,9 +24,13 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
   // Navigation state - use global activeTab
-  import { navigationState, SETTINGS_TABS } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import {
+    navigationState,
+    SETTINGS_TABS,
+  } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Import all tab components directly
   import ProfileTab from "$lib/shared/settings/components/tabs/ProfileTab.svelte";
@@ -48,6 +52,9 @@
   let deviceDetector: IDeviceDetector | null = null;
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
+  // Haptic feedback service
+  let hapticService: IHapticFeedbackService | null = null;
+
   // Show back header when using bottom navigation (not landscape mobile)
   let useBottomNavigation = $derived(!responsiveSettings?.isLandscapeMobile);
 
@@ -56,6 +63,9 @@
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
 
       deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {
         responsiveSettings = deviceDetector!.getResponsiveSettings();
@@ -165,6 +175,7 @@
 
   // Handle back button tap - return to previous module
   async function handleBackToModule() {
+    hapticService?.trigger("selection");
     const previousModuleId = navigationState.previousModule || "dashboard";
     await handleModuleChange(previousModuleId as ModuleId);
   }
