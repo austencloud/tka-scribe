@@ -180,9 +180,8 @@
 <!-- Feedback Detail Drawer -->
 <Drawer
   bind:isOpen={isDetailOpen}
-  position={isMobile ? "bottom" : "right"}
-  size={isMobile ? "85%" : "480px"}
-  onClose={closeDetail}
+  placement={isMobile ? "bottom" : "right"}
+  onclose={closeDetail}
 >
   {#if isLoadingItem}
     <div class="detail-loading">

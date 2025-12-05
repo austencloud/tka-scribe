@@ -22,7 +22,8 @@ import {
   onSnapshot,
   type Unsubscribe,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { firestore, getStorageInstance } from "$lib/shared/auth/firebase";
+import type { FirebaseStorage } from "firebase/storage";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 import type { IFeedbackService } from "../contracts/IFeedbackService";
 import type {
@@ -65,10 +66,32 @@ export class FeedbackService implements IFeedbackService {
     return truncated + "...";
   }
 
+  /**
+   * Upload an image to Firebase Storage
+   * Returns the public download URL
+   */
+  private async uploadImage(file: File, feedbackId: string): Promise<string> {
+    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const storage = await getStorageInstance();
+
+    // Create unique filename
+    const timestamp = Date.now();
+    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    const storagePath = `feedback/${feedbackId}/${timestamp}_${sanitizedFilename}`;
+
+    // Upload file
+    const storageRef = ref(storage, storagePath);
+    await uploadBytes(storageRef, file);
+
+    // Get download URL
+    return getDownloadURL(storageRef);
+  }
+
   async submitFeedback(
     formData: FeedbackFormData,
     capturedModule: string,
-    capturedTab: string
+    capturedTab: string,
+    images?: File[]
   ): Promise<string> {
     const user = authStore.user;
     if (!user) {
@@ -105,7 +128,21 @@ export class FeedbackService implements IFeedbackService {
       updatedAt: null,
     };
 
+    // Create document first to get ID
     const docRef = await addDoc(collection(firestore, COLLECTION_NAME), feedbackData);
+
+    // Upload images if provided
+    if (images && images.length > 0) {
+      const imageUrls = await Promise.all(
+        images.map(file => this.uploadImage(file, docRef.id))
+      );
+
+      // Update document with image URLs
+      await updateDoc(docRef, {
+        imageUrls,
+      });
+    }
+
     return docRef.id;
   }
 
@@ -192,6 +229,17 @@ export class FeedbackService implements IFeedbackService {
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
     await updateDoc(docRef, {
       adminNotes: notes,
+      updatedAt: serverTimestamp(),
+    });
+  }
+
+  async deferFeedback(feedbackId: string, deferredUntil: Date, notes: string): Promise<void> {
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+    await updateDoc(docRef, {
+      status: "archived",
+      deferredUntil: Timestamp.fromDate(deferredUntil),
+      adminNotes: notes,
+      archivedAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
   }
@@ -493,6 +541,7 @@ export class FeedbackService implements IFeedbackService {
       title: data["title"] as string,
       description: data["description"] as string,
       priority: data["priority"] as FeedbackItem["priority"],
+      imageUrls: data["imageUrls"] as string[] | undefined,
       capturedModule: data["capturedModule"] as string,
       capturedTab: data["capturedTab"] as string,
       reportedModule: data["reportedModule"] as string | undefined,
@@ -505,6 +554,9 @@ export class FeedbackService implements IFeedbackService {
       updatedAt: (data["updatedAt"] as Timestamp)?.toDate() || undefined,
       fixedInVersion: data["fixedInVersion"] as string | undefined,
       archivedAt: (data["archivedAt"] as Timestamp)?.toDate() || undefined,
+      deferredUntil: (data["deferredUntil"] as Timestamp)?.toDate() || undefined,
+      reactivatedAt: (data["reactivatedAt"] as Timestamp)?.toDate() || undefined,
+      reactivatedFrom: (data["reactivatedFrom"] as Timestamp)?.toDate() || undefined,
       isDeleted: data["isDeleted"] as boolean | undefined,
       deletedAt: (data["deletedAt"] as Timestamp)?.toDate() || undefined,
       deletedBy: data["deletedBy"] as string | undefined,

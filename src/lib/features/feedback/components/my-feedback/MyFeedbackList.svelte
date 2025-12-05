@@ -6,7 +6,6 @@
 
   const {
     items,
-    needsConfirmation,
     selectedItem,
     onSelect,
     hasMore,
@@ -14,7 +13,6 @@
     onLoadMore,
   } = $props<{
     items: FeedbackItem[];
-    needsConfirmation: FeedbackItem[];
     selectedItem: FeedbackItem | null;
     onSelect: (item: FeedbackItem) => void;
     hasMore: boolean;
@@ -34,33 +32,10 @@
 </script>
 
 <div class="feedback-list" onscroll={handleScroll}>
-  <!-- Needs Confirmation Section (highlighted) -->
-  {#if needsConfirmation.length > 0}
-    <section class="confirmation-section">
-      <header class="section-header confirmation-header">
-        <i class="fas fa-bell"></i>
-        <span>Action Needed</span>
-        <span class="count">{needsConfirmation.length}</span>
-      </header>
-
-      <div class="section-items">
-        {#each needsConfirmation as item (item.id)}
-          <MyFeedbackCard
-            {item}
-            isSelected={selectedItem?.id === item.id}
-            needsConfirmation={true}
-            onClick={() => onSelect(item)}
-          />
-        {/each}
-      </div>
-    </section>
-  {/if}
-
-  <!-- All Feedback Section -->
   <section class="all-section">
     <header class="section-header">
       <i class="fas fa-list"></i>
-      <span>All Feedback</span>
+      <span>Your Feedback</span>
       <span class="count">{items.length}</span>
     </header>
 
@@ -69,7 +44,6 @@
         <MyFeedbackCard
           {item}
           isSelected={selectedItem?.id === item.id}
-          needsConfirmation={item.status === "resolved" && (!item.testerConfirmation || item.testerConfirmation.status === "pending")}
           onClick={() => onSelect(item)}
         />
       {/each}
@@ -119,23 +93,6 @@
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     font-size: 0.75rem;
-  }
-
-  /* Confirmation section highlight */
-  .confirmation-section {
-    background: rgba(245, 158, 11, 0.05);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-    border-radius: 12px;
-    padding: 12px;
-  }
-
-  .confirmation-header {
-    color: #f59e0b;
-  }
-
-  .confirmation-header .count {
-    background: rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
   }
 
   /* Items container */

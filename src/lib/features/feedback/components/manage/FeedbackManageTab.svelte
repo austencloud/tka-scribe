@@ -28,6 +28,7 @@
         manageState.unsubscribe();
       };
     }
+    return undefined;
   });
 </script>
 

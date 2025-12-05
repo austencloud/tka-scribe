@@ -1,6 +1,6 @@
 <!-- MyFeedbackDetail - Detail view with confirmation flow -->
 <script lang="ts">
-  import type { FeedbackItem, TesterConfirmationStatus } from "../../domain/models/feedback-models";
+  import type { FeedbackItem, TesterConfirmationStatus, FeedbackType, FeedbackStatus, FeedbackPriority } from "../../domain/models/feedback-models";
   import {
     STATUS_CONFIG,
     TYPE_CONFIG,
@@ -8,24 +8,14 @@
     CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
 
-  const { item, isConfirming, onConfirm, onClose } = $props<{
+  const { item, onClose } = $props<{
     item: FeedbackItem;
-    isConfirming: boolean;
-    onConfirm: (status: TesterConfirmationStatus, comment?: string) => void;
     onClose: () => void;
   }>();
 
-  let confirmComment = $state("");
-  let showConfirmPanel = $state(false);
-
-  const typeConfig = TYPE_CONFIG[item.type];
-  const statusConfig = STATUS_CONFIG[item.status];
-  const priorityConfig = item.priority ? PRIORITY_CONFIG[item.priority] : null;
-
-  const needsConfirmation = $derived(
-    item.status === "resolved" &&
-    (!item.testerConfirmation || item.testerConfirmation.status === "pending")
-  );
+  const typeConfig = TYPE_CONFIG[item.type as FeedbackType];
+  const statusConfig = STATUS_CONFIG[item.status as FeedbackStatus];
+  const priorityConfig = item.priority ? PRIORITY_CONFIG[item.priority as FeedbackPriority] : null;
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString("en-US", {
@@ -35,12 +25,6 @@
       hour: "numeric",
       minute: "2-digit",
     });
-  }
-
-  function handleConfirm(status: TesterConfirmationStatus) {
-    onConfirm(status, confirmComment.trim() || undefined);
-    confirmComment = "";
-    showConfirmPanel = false;
   }
 </script>
 
@@ -90,6 +74,23 @@
       <p class="description">{item.description}</p>
     </div>
 
+    <!-- Screenshots -->
+    {#if item.imageUrls && item.imageUrls.length > 0}
+      <div class="screenshots-section">
+        <h3>Screenshots ({item.imageUrls.length})</h3>
+        <div class="screenshots-grid">
+          {#each item.imageUrls as imageUrl, index}
+            <a href={imageUrl} target="_blank" rel="noopener noreferrer" class="screenshot-link">
+              <img src={imageUrl} alt="Screenshot {index + 1}" class="screenshot-thumb" />
+              <div class="screenshot-overlay">
+                <i class="fas fa-search-plus"></i>
+              </div>
+            </a>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
     <!-- Context info -->
     {#if item.capturedModule || item.reportedModule}
       <div class="context-section">
@@ -109,112 +110,37 @@
       </div>
     {/if}
 
-    <!-- Admin Response -->
-    {#if item.adminResponse}
+    <!-- Admin Notes -->
+    {#if item.adminNotes}
       <div class="response-section">
         <h3>
-          <i class="fas fa-reply"></i>
-          Developer Response
+          <i class="fas fa-sticky-note"></i>
+          Admin Notes
         </h3>
         <div class="response-card">
-          <p class="response-message">{item.adminResponse.message}</p>
-          <span class="response-date">
-            {formatDate(item.adminResponse.respondedAt)}
-          </span>
+          <p class="response-message">{item.adminNotes}</p>
         </div>
       </div>
     {/if}
 
-    <!-- Tester Confirmation Status -->
-    {#if item.testerConfirmation && item.testerConfirmation.status !== "pending"}
-      {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status]}
-      <div class="confirmation-section">
-        <h3>Your Confirmation</h3>
-        <div class="confirmation-status" style="--status-color: {confConfig.color}">
-          <i class="fas {confConfig.icon}"></i>
-          <span>{confConfig.label}</span>
+    <!-- Resolution Notes -->
+    {#if item.resolutionNotes}
+      <div class="response-section">
+        <h3>
+          <i class="fas fa-check-circle"></i>
+          Resolution
+        </h3>
+        <div class="response-card resolution">
+          <p class="response-message">{item.resolutionNotes}</p>
+          {#if item.updatedAt}
+            <span class="response-date">
+              Resolved {formatDate(item.updatedAt)}
+            </span>
+          {/if}
         </div>
-        {#if item.testerConfirmation.comment}
-          <p class="confirmation-comment">{item.testerConfirmation.comment}</p>
-        {/if}
-        {#if item.testerConfirmation.respondedAt}
-          <span class="confirmation-date">
-            {formatDate(item.testerConfirmation.respondedAt)}
-          </span>
-        {/if}
       </div>
     {/if}
   </div>
-
-  <!-- Confirmation Action Panel -->
-  {#if needsConfirmation}
-    <div class="confirmation-panel">
-      {#if !showConfirmPanel}
-        <div class="confirm-prompt">
-          <div class="prompt-icon">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="prompt-text">
-            <h4>Was this fixed to your satisfaction?</h4>
-            <p>Please confirm if the implementation meets your expectations</p>
-          </div>
-          <button
-            class="show-confirm-btn"
-            onclick={() => showConfirmPanel = true}
-            type="button"
-          >
-            Respond
-          </button>
-        </div>
-      {:else}
-        <div class="confirm-form">
-          <textarea
-            bind:value={confirmComment}
-            placeholder="Optional: Add any comments or feedback about the implementation..."
-            rows="3"
-          ></textarea>
-
-          <div class="confirm-actions">
-            <button
-              class="confirm-btn success"
-              onclick={() => handleConfirm("confirmed")}
-              disabled={isConfirming}
-              type="button"
-            >
-              {#if isConfirming}
-                <i class="fas fa-spinner fa-spin"></i>
-              {:else}
-                <i class="fas fa-check"></i>
-              {/if}
-              Works Great!
-            </button>
-
-            <button
-              class="confirm-btn warning"
-              onclick={() => handleConfirm("needs-work")}
-              disabled={isConfirming}
-              type="button"
-            >
-              {#if isConfirming}
-                <i class="fas fa-spinner fa-spin"></i>
-              {:else}
-                <i class="fas fa-redo"></i>
-              {/if}
-              Needs More Work
-            </button>
-          </div>
-
-          <button
-            class="cancel-btn"
-            onclick={() => { showConfirmPanel = false; confirmComment = ""; }}
-            type="button"
-          >
-            Cancel
-          </button>
-        </div>
-      {/if}
-    </div>
-  {/if}
 </div>
 
 <style>
@@ -389,184 +315,72 @@
     color: rgba(255, 255, 255, 0.4);
   }
 
-  /* Confirmation status display */
-  .confirmation-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    background: color-mix(in srgb, var(--status-color) 15%, transparent);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--status-color);
+  /* Resolution card styling */
+  .response-card.resolution {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
   }
 
-  .confirmation-comment {
-    margin: 12px 0 8px 0;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+  /* Screenshots */
+  .screenshots-section {
+    margin-bottom: 24px;
+  }
+
+  .screenshots-section h3 {
+    margin: 0 0 12px 0;
     font-size: 0.875rem;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
-    line-height: 1.5;
-    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
-  .confirmation-date {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  /* Confirmation Panel */
-  .confirmation-panel {
-    padding: 16px;
-    background: rgba(245, 158, 11, 0.08);
-    border-top: 1px solid rgba(245, 158, 11, 0.2);
-    flex-shrink: 0;
-  }
-
-  .confirm-prompt {
-    display: flex;
-    align-items: center;
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 12px;
   }
 
-  .prompt-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(245, 158, 11, 0.15);
-    border-radius: 10px;
-    color: #f59e0b;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .prompt-text {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .prompt-text h4 {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .prompt-text p {
-    margin: 2px 0 0 0;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  .show-confirm-btn {
-    padding: 8px 16px;
-    background: #f59e0b;
-    border: none;
+  .screenshot-link {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
     border-radius: 8px;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: black;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .show-confirm-btn:hover {
-    background: #fbbf24;
-    transform: translateY(-1px);
-  }
-
-  /* Confirm form */
-  .confirm-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .confirm-form textarea {
-    width: 100%;
-    padding: 10px 12px;
+    overflow: hidden;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.9);
-    resize: none;
-    font-family: inherit;
+    transition: all 200ms ease;
   }
 
-  .confirm-form textarea::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+  .screenshot-link:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: scale(1.05);
   }
 
-  .confirm-form textarea:focus {
-    outline: none;
-    border-color: rgba(255, 255, 255, 0.2);
+  .screenshot-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  .confirm-actions {
-    display: flex;
-    gap: 10px;
-  }
-
-  .confirm-btn {
-    flex: 1;
+  .screenshot-overlay {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
 
-  .confirm-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+  .screenshot-link:hover .screenshot-overlay {
+    opacity: 1;
   }
 
-  .confirm-btn.success {
-    background: #10b981;
+  .screenshot-overlay i {
+    font-size: 1.5rem;
     color: white;
-  }
-
-  .confirm-btn.success:hover:not(:disabled) {
-    background: #059669;
-    transform: translateY(-1px);
-  }
-
-  .confirm-btn.warning {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-  }
-
-  .confirm-btn.warning:hover:not(:disabled) {
-    background: rgba(239, 68, 68, 0.25);
-  }
-
-  .cancel-btn {
-    width: 100%;
-    padding: 8px;
-    background: none;
-    border: none;
-    font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-
-  .cancel-btn:hover {
-    color: rgba(255, 255, 255, 0.8);
   }
 
   /* Scrollbar */

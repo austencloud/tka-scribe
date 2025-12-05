@@ -293,6 +293,43 @@ export function createFeedbackManageState() {
     }
   }
 
+  /**
+   * Defer feedback to be reactivated at a future date
+   */
+  async function deferFeedback(feedbackId: string, deferDate: string, notes: string) {
+    try {
+      const deferredUntil = new Date(deferDate);
+      await feedbackService.deferFeedback(feedbackId, deferredUntil, notes);
+
+      // Update local state - move to archived with deferredUntil
+      items = items.map((item) =>
+        item.id === feedbackId
+          ? {
+              ...item,
+              status: "archived",
+              deferredUntil,
+              adminNotes: notes,
+              archivedAt: new Date(),
+              updatedAt: new Date(),
+            }
+          : item
+      );
+      if (selectedItem?.id === feedbackId) {
+        selectedItem = {
+          ...selectedItem,
+          status: "archived",
+          deferredUntil,
+          adminNotes: notes,
+          archivedAt: new Date(),
+          updatedAt: new Date(),
+        };
+      }
+    } catch (err) {
+      console.error("Failed to defer feedback:", err);
+      throw err;
+    }
+  }
+
   return {
     // State
     get items() {
@@ -340,6 +377,9 @@ export function createFeedbackManageState() {
 
     // Title generation
     generateTitle,
+
+    // Deferment
+    deferFeedback,
   };
 }
 

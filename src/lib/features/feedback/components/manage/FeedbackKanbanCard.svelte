@@ -278,6 +278,14 @@
     <!-- Description preview -->
     <p class="card-description">{item.description}</p>
 
+    <!-- Screenshot indicator -->
+    {#if item.imageUrls && item.imageUrls.length > 0}
+      <div class="screenshot-indicator">
+        <i class="fas fa-images"></i>
+        <span>{item.imageUrls.length} screenshot{item.imageUrls.length !== 1 ? 's' : ''}</span>
+      </div>
+    {/if}
+
     <!-- Footer: User + Time -->
     <div class="card-footer">
       <div class="card-meta">
@@ -470,6 +478,21 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Screenshot indicator */
+  .screenshot-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: var(--kc-text-2xs);
+    color: var(--kc-text-subtle);
+  }
+
+  .screenshot-indicator i {
+    font-size: 10px;
+    color: var(--type-color);
   }
 
   /* Footer */

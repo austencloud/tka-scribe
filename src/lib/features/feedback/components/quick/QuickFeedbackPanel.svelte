@@ -29,6 +29,7 @@
       }, 1500);
       return () => clearTimeout(timeout);
     }
+    return undefined;
   });
 </script>
 

@@ -5,10 +5,7 @@
  * Shows their submitted feedback and pending confirmations.
  */
 
-import type {
-  FeedbackItem,
-  TesterConfirmationStatus,
-} from "../domain/models/feedback-models";
+import type { FeedbackItem } from "../domain/models/feedback-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
@@ -27,21 +24,6 @@ export function createMyFeedbackState() {
 
   // Selected item for detail view
   let selectedItem = $state<FeedbackItem | null>(null);
-
-  // Confirmation in progress
-  let isConfirming = $state(false);
-
-  // Pending confirmation count
-  let pendingCount = $state(0);
-
-  // Derived: Items needing confirmation (in-review status, no confirmation yet)
-  const needsConfirmation = $derived(
-    items.filter(
-      (item) =>
-        item.status === "in-review" &&
-        (!item.testerConfirmation || item.testerConfirmation.status === "pending")
-    )
-  );
 
   // Derived: Items in progress
   const inProgress = $derived(
@@ -83,9 +65,6 @@ export function createMyFeedbackState() {
 
       lastDocId = result.lastDocId;
       hasMore = result.hasMore;
-
-      // Update pending count
-      await refreshPendingCount();
     } catch (err) {
       console.error("Failed to load my feedback:", err);
       error = "Failed to load your feedback";
@@ -94,52 +73,8 @@ export function createMyFeedbackState() {
     }
   }
 
-  async function refreshPendingCount() {
-    const user = authStore.user;
-    if (!user) return;
-
-    try {
-      pendingCount = await feedbackService.countPendingConfirmations(user.uid);
-    } catch (err) {
-      console.error("Failed to count pending confirmations:", err);
-    }
-  }
-
   function selectItem(item: FeedbackItem | null) {
     selectedItem = item;
-  }
-
-  async function confirmFeedback(
-    feedbackId: string,
-    status: TesterConfirmationStatus,
-    comment?: string
-  ) {
-    isConfirming = true;
-
-    try {
-      await feedbackService.submitTesterConfirmation(feedbackId, status, comment);
-
-      // Refresh the item in the list
-      const updatedItem = await feedbackService.getFeedback(feedbackId);
-      if (updatedItem) {
-        items = items.map((item) =>
-          item.id === feedbackId ? updatedItem : item
-        );
-
-        // Update selected if it was the one confirmed
-        if (selectedItem?.id === feedbackId) {
-          selectedItem = updatedItem;
-        }
-      }
-
-      // Refresh pending count
-      await refreshPendingCount();
-    } catch (err) {
-      console.error("Failed to confirm feedback:", err);
-      throw err;
-    } finally {
-      isConfirming = false;
-    }
   }
 
   // Cleanup function
@@ -148,7 +83,6 @@ export function createMyFeedbackState() {
     selectedItem = null;
     lastDocId = null;
     hasMore = true;
-    pendingCount = 0;
   }
 
   return {
@@ -158,20 +92,15 @@ export function createMyFeedbackState() {
     get hasMore() { return hasMore; },
     get error() { return error; },
     get selectedItem() { return selectedItem; },
-    get isConfirming() { return isConfirming; },
-    get pendingCount() { return pendingCount; },
 
     // Derived
-    get needsConfirmation() { return needsConfirmation; },
     get inProgress() { return inProgress; },
     get completed() { return completed; },
     get pending() { return pending; },
 
     // Actions
     loadMyFeedback,
-    refreshPendingCount,
     selectItem,
-    confirmFeedback,
     cleanup,
   };
 }

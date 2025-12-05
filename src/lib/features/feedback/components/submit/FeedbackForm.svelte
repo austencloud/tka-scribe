@@ -7,6 +7,7 @@
   import { TYPE_CONFIG } from "../../domain/models/feedback-models";
   import type { FeedbackType } from "../../domain/models/feedback-models";
   import VoiceInputButton from "./VoiceInputButton.svelte";
+  import ImageUpload from "./ImageUpload.svelte";
 
   // Props
   const { formState } = $props<{
@@ -157,6 +158,15 @@
         <span class="field-error" role="alert">{formState.formErrors.description}</span>
       {/if}
     </div>
+  </div>
+
+  <!-- Image Upload -->
+  <div class="field">
+    <label class="field-label">Screenshots (optional)</label>
+    <ImageUpload
+      bind:images={formState.images}
+      disabled={formState.isSubmitting}
+    />
   </div>
 
   <!-- Submit Button -->

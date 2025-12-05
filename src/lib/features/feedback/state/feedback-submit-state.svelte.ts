@@ -28,6 +28,9 @@ export function createFeedbackSubmitState() {
     description: "",
   });
 
+  // Attached images
+  let images = $state<File[]>([]);
+
   // Form errors
   let formErrors = $state<FeedbackFormErrors>({});
 
@@ -86,7 +89,12 @@ export function createFeedbackSubmitState() {
       const capturedModule = getCapturedModule();
       const capturedTab = getCapturedTab();
 
-      await feedbackService.submitFeedback(formData, capturedModule, capturedTab);
+      await feedbackService.submitFeedback(
+        formData,
+        capturedModule,
+        capturedTab,
+        images.length > 0 ? images : undefined
+      );
       submitStatus = "success";
       return true;
     } catch (error) {
@@ -102,6 +110,7 @@ export function createFeedbackSubmitState() {
       title: "",
       description: "",
     };
+    images = [];
     formErrors = {};
     submitStatus = "idle";
   }
@@ -110,6 +119,12 @@ export function createFeedbackSubmitState() {
     // State
     get formData() {
       return formData;
+    },
+    get images() {
+      return images;
+    },
+    set images(value: File[]) {
+      images = value;
     },
     get formErrors() {
       return formErrors;

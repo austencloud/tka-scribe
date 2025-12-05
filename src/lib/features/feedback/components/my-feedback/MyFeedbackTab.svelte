@@ -28,17 +28,11 @@
         </div>
         <div class="header-text">
           <h1>My Feedback</h1>
-          <p>Track your submissions and confirm fixes</p>
+          <p>View your submissions and their resolution status</p>
         </div>
       </div>
 
       <div class="header-actions">
-        {#if state.pendingCount > 0}
-          <div class="pending-badge">
-            <i class="fas fa-bell"></i>
-            <span>{state.pendingCount} need{state.pendingCount === 1 ? 's' : ''} confirmation</span>
-          </div>
-        {/if}
         <NotificationBell />
       </div>
     </header>
@@ -66,7 +60,6 @@
         <div class="feedback-layout">
           <MyFeedbackList
             items={state.items}
-            needsConfirmation={state.needsConfirmation}
             selectedItem={state.selectedItem}
             onSelect={(item) => state.selectItem(item)}
             hasMore={state.hasMore}
@@ -77,8 +70,6 @@
           {#if state.selectedItem}
             <MyFeedbackDetail
               item={state.selectedItem}
-              isConfirming={state.isConfirming}
-              onConfirm={(status, comment) => state.confirmFeedback(state.selectedItem!.id, status, comment)}
               onClose={() => state.selectItem(null)}
             />
           {/if}
@@ -150,25 +141,6 @@
     margin: 0;
     font-size: clamp(0.75rem, 1.8cqi, 0.875rem);
     color: rgba(255, 255, 255, 0.5);
-  }
-
-  .pending-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: rgba(245, 158, 11, 0.15);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 20px;
-    color: #f59e0b;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
   }
 
   /* Content area */
@@ -256,11 +228,6 @@
     .tab-header {
       flex-direction: column;
       align-items: flex-start;
-    }
-
-    .pending-badge {
-      width: 100%;
-      justify-content: center;
     }
   }
 </style>

@@ -1,21 +1,20 @@
 <!-- MyFeedbackCard - Card for tester's own feedback item -->
 <script lang="ts">
-  import type { FeedbackItem } from "../../domain/models/feedback-models";
+  import type { FeedbackItem, FeedbackType, FeedbackStatus } from "../../domain/models/feedback-models";
   import {
     STATUS_CONFIG,
     TYPE_CONFIG,
     CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
 
-  const { item, isSelected, needsConfirmation, onClick } = $props<{
+  const { item, isSelected, onClick } = $props<{
     item: FeedbackItem;
     isSelected: boolean;
-    needsConfirmation: boolean;
     onClick: () => void;
   }>();
 
-  const typeConfig = TYPE_CONFIG[item.type];
-  const statusConfig = STATUS_CONFIG[item.status];
+  const typeConfig = TYPE_CONFIG[item.type as FeedbackType];
+  const statusConfig = STATUS_CONFIG[item.status as FeedbackStatus];
 
   function formatDate(date: Date): string {
     const now = new Date();
@@ -39,7 +38,6 @@
 <button
   class="feedback-card"
   class:selected={isSelected}
-  class:needs-confirmation={needsConfirmation}
   onclick={onClick}
   type="button"
 >
@@ -52,20 +50,21 @@
   <div class="card-content">
     <div class="card-header">
       <h3 class="card-title">{item.title}</h3>
-      {#if needsConfirmation}
-        <span class="confirm-badge">
-          <i class="fas fa-bell"></i>
-          Confirm
-        </span>
-      {:else}
-        <span class="status-badge" style="--badge-color: {statusConfig.color}">
-          <i class="fas {statusConfig.icon}"></i>
-          {statusConfig.label}
-        </span>
-      {/if}
+      <span class="status-badge" style="--badge-color: {statusConfig.color}">
+        <i class="fas {statusConfig.icon}"></i>
+        {statusConfig.label}
+      </span>
     </div>
 
     <p class="card-description">{item.description}</p>
+
+    <!-- Screenshot indicator -->
+    {#if item.imageUrls && item.imageUrls.length > 0}
+      <div class="screenshot-indicator">
+        <i class="fas fa-images"></i>
+        <span>{item.imageUrls.length} screenshot{item.imageUrls.length !== 1 ? 's' : ''}</span>
+      </div>
+    {/if}
 
     <div class="card-footer">
       <span class="date">{formatDate(item.createdAt)}</span>
@@ -210,6 +209,21 @@
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Screenshot indicator */
+  .screenshot-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 0.6875rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .screenshot-indicator i {
+    font-size: 0.625rem;
+    color: #6366f1;
   }
 
   .card-footer {

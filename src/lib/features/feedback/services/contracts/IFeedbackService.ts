@@ -19,7 +19,8 @@ export interface IFeedbackService {
   submitFeedback(
     formData: FeedbackFormData,
     capturedModule: string,
-    capturedTab: string
+    capturedTab: string,
+    images?: File[]
   ): Promise<string>;
 
   /**
@@ -49,6 +50,11 @@ export interface IFeedbackService {
    * Update admin notes (admin)
    */
   updateAdminNotes(feedbackId: string, notes: string): Promise<void>;
+
+  /**
+   * Defer feedback to be reactivated at a future date (admin)
+   */
+  deferFeedback(feedbackId: string, deferredUntil: Date, notes: string): Promise<void>;
 
   /**
    * Delete feedback item (admin)

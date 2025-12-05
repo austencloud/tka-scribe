@@ -3,13 +3,13 @@
   import { onMount, onDestroy } from "svelte";
   import { notificationService } from "../../services/implementations/NotificationService";
   import { NOTIFICATION_TYPE_CONFIG } from "../../domain/models/notification-models";
-  import type { TesterNotification } from "../../domain/models/notification-models";
+  import type { UserNotification } from "../../domain/models/notification-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
   // Local component state
   let showDropdown = $state(false);
-  let notifications = $state<TesterNotification[]>([]);
+  let notifications = $state<UserNotification[]>([]);
   let unreadCount = $state(0);
   let isLoading = $state(false);
   let unsubscribe: (() => void) | null = null;

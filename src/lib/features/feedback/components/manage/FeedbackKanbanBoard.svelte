@@ -56,9 +56,20 @@
     return grouped;
   });
 
+  // Deferred items (archived items with deferredUntil timestamp)
+  const deferredItems = $derived.by(() => {
+    return manageState.allItems.filter(
+      (item: FeedbackItem) => item.status === "archived" && item.deferredUntil && !item.isDeleted
+    );
+  });
+
+  // Defer dialog state
+  let showDeferDialog = $state(false);
+  let itemToDefer = $state<FeedbackItem | null>(null);
+
   // Drag state
   let draggedItem = $state<FeedbackItem | null>(null);
-  let dragOverColumn = $state<FeedbackStatus | null>(null);
+  let dragOverColumn = $state<FeedbackStatus | "deferred" | null>(null);
 
   // Touch drag state
   let touchDragPosition = $state<{ x: number; y: number } | null>(null);
@@ -96,13 +107,18 @@
   }
 
   // Get the status column at a given screen position
-  function getColumnAtPosition(x: number, y: number): FeedbackStatus | null {
+  function getColumnAtPosition(x: number, y: number): FeedbackStatus | "deferred" | null {
     const element = document.elementFromPoint(x, y);
     if (!element) return null;
 
-    // Walk up the DOM to find the column or archive drop zone
+    // Walk up the DOM to find the column or drop zones
     let current: Element | null = element;
     while (current) {
+      // Check for defer drop zone
+      if (current.classList?.contains("defer-drop-zone")) {
+        return "deferred";
+      }
+
       // Check for archive drop zone
       if (current.classList?.contains("archive-drop-zone")) {
         return ARCHIVE_STATUS;
@@ -128,9 +144,12 @@
     return null;
   }
 
-  function handleDragOver(status: FeedbackStatus) {
-    if (draggedItem && draggedItem.status !== status) {
-      dragOverColumn = status;
+  function handleDragOver(status: FeedbackStatus | "deferred") {
+    if (draggedItem) {
+      // For deferred, always allow hover (we'll show the dialog)
+      if (status === "deferred" || draggedItem.status !== status) {
+        dragOverColumn = status;
+      }
     }
   }
 
@@ -138,8 +157,20 @@
     dragOverColumn = null;
   }
 
-  async function handleDrop(status: FeedbackStatus) {
-    if (draggedItem && draggedItem.status !== status) {
+  async function handleDrop(status: FeedbackStatus | "deferred") {
+    if (!draggedItem) return;
+
+    // Special handling for defer - show dialog instead of immediate update
+    if (status === "deferred") {
+      itemToDefer = draggedItem;
+      showDeferDialog = true;
+      draggedItem = null;
+      dragOverColumn = null;
+      return;
+    }
+
+    // Normal status update
+    if (draggedItem.status !== status) {
       try {
         await manageState.updateStatus(draggedItem.id, status);
       } catch {
@@ -152,6 +183,40 @@
 
   function handleCardClick(item: FeedbackItem) {
     manageState.selectItem(item);
+  }
+
+  // Defer dialog handlers
+  let deferDate = $state("");
+  let deferNotes = $state("");
+  let isSubmittingDefer = $state(false);
+
+  async function handleDeferSubmit() {
+    if (!itemToDefer || !deferDate) return;
+
+    isSubmittingDefer = true;
+
+    try {
+      // Call the feedback service to defer the item
+      await manageState.deferFeedback(itemToDefer.id, deferDate, deferNotes);
+
+      // Close dialog and reset state
+      showDeferDialog = false;
+      itemToDefer = null;
+      deferDate = "";
+      deferNotes = "";
+    } catch (err) {
+      console.error("Failed to defer feedback:", err);
+      // Could show an error toast here
+    } finally {
+      isSubmittingDefer = false;
+    }
+  }
+
+  function handleDeferCancel() {
+    showDeferDialog = false;
+    itemToDefer = null;
+    deferDate = "";
+    deferNotes = "";
   }
 </script>
 
@@ -204,36 +269,72 @@
       />
     {/each}
 
-    <!-- Archived Drop Zone - Thin bar on the right -->
-    <div
-      class="archive-drop-zone"
-      class:drop-target={dragOverColumn === ARCHIVE_STATUS}
-      class:drag-active={draggedItem !== null}
-      style="--column-color: {STATUS_CONFIG[ARCHIVE_STATUS].color}"
-      ondragover={(e) => {
-        e.preventDefault();
-        if (draggedItem && draggedItem.status !== ARCHIVE_STATUS) {
-          dragOverColumn = ARCHIVE_STATUS;
-        }
-      }}
-      ondragleave={handleDragLeave}
-      ondrop={(e) => {
-        e.preventDefault();
-        handleDrop(ARCHIVE_STATUS);
-      }}
-      role="region"
-      aria-label="Archive drop zone"
-    >
-      <div class="archive-label">
-        <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}"></i>
-        <span>Archived</span>
+    <!-- Archive/Defer Stack - Thin bar on the right with stacked zones -->
+    <div class="archive-defer-stack">
+      <!-- Deferred Drop Zone - Smaller top section -->
+      <div
+        class="defer-drop-zone"
+        class:drop-target={dragOverColumn === "deferred"}
+        class:drag-active={draggedItem !== null}
+        style="--column-color: #f59e0b"
+        ondragover={(e) => {
+          e.preventDefault();
+          handleDragOver("deferred");
+        }}
+        ondragleave={handleDragLeave}
+        ondrop={(e) => {
+          e.preventDefault();
+          handleDrop("deferred");
+        }}
+        role="region"
+        aria-label="Defer drop zone"
+      >
+        <div class="defer-label">
+          <i class="fas fa-clock"></i>
+          <span>Deferred</span>
+          {#if deferredItems.length > 0}
+            <span class="defer-count">{deferredItems.length}</span>
+          {/if}
+        </div>
+
+        {#if dragOverColumn === "deferred"}
+          <div class="drop-indicator">
+            <i class="fas fa-calendar-plus"></i>
+          </div>
+        {/if}
       </div>
 
-      {#if dragOverColumn === ARCHIVE_STATUS}
-        <div class="drop-indicator">
-          <i class="fas fa-arrow-right"></i>
+      <!-- Archived Drop Zone - Larger bottom section -->
+      <div
+        class="archive-drop-zone"
+        class:drop-target={dragOverColumn === ARCHIVE_STATUS}
+        class:drag-active={draggedItem !== null}
+        style="--column-color: {STATUS_CONFIG[ARCHIVE_STATUS].color}"
+        ondragover={(e) => {
+          e.preventDefault();
+          if (draggedItem && draggedItem.status !== ARCHIVE_STATUS) {
+            dragOverColumn = ARCHIVE_STATUS;
+          }
+        }}
+        ondragleave={handleDragLeave}
+        ondrop={(e) => {
+          e.preventDefault();
+          handleDrop(ARCHIVE_STATUS);
+        }}
+        role="region"
+        aria-label="Archive drop zone"
+      >
+        <div class="archive-label">
+          <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}"></i>
+          <span>Archived</span>
         </div>
-      {/if}
+
+        {#if dragOverColumn === ARCHIVE_STATUS}
+          <div class="drop-indicator">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        {/if}
+      </div>
     </div>
   </div>
 
@@ -253,6 +354,89 @@
             </div>
           </div>
         {/each}
+      </div>
+    </div>
+  {/if}
+
+  <!-- Defer Dialog -->
+  {#if showDeferDialog && itemToDefer}
+    <div class="defer-dialog-overlay" onclick={handleDeferCancel}>
+      <div class="defer-dialog" onclick={(e) => e.stopPropagation()}>
+        <div class="dialog-header">
+          <div class="dialog-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3 class="dialog-title">Defer Feedback</h3>
+          <button
+            type="button"
+            class="close-button"
+            onclick={handleDeferCancel}
+            aria-label="Close dialog"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="dialog-body">
+          <div class="feedback-preview">
+            <span class="preview-label">Item:</span>
+            <span class="preview-title">{itemToDefer.title || itemToDefer.description.substring(0, 60)}</span>
+          </div>
+
+          <div class="form-field">
+            <label for="defer-date" class="field-label">
+              <i class="fas fa-calendar"></i>
+              Reactivate on
+            </label>
+            <input
+              id="defer-date"
+              type="date"
+              class="date-input"
+              bind:value={deferDate}
+              min={new Date().toISOString().split("T")[0]}
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="defer-notes" class="field-label">
+              <i class="fas fa-sticky-note"></i>
+              Reason (optional)
+            </label>
+            <textarea
+              id="defer-notes"
+              class="notes-input"
+              bind:value={deferNotes}
+              placeholder="Why are you deferring this? (e.g., 'Wait for Svelte 6', 'Revisit after Q1')"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="dialog-footer">
+          <button
+            type="button"
+            class="cancel-button"
+            onclick={handleDeferCancel}
+            disabled={isSubmittingDefer}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="submit-button"
+            onclick={handleDeferSubmit}
+            disabled={!deferDate || isSubmittingDefer}
+          >
+            {#if isSubmittingDefer}
+              <i class="fas fa-spinner fa-spin"></i>
+              Deferring...
+            {:else}
+              <i class="fas fa-clock"></i>
+              Defer
+            {/if}
+          </button>
+        </div>
       </div>
     </div>
   {/if}
@@ -553,6 +737,7 @@
     /* Thin bar - same height as columns */
     width: clamp(60px, 8cqi, 80px);
     min-width: clamp(60px, 8cqi, 80px);
+    flex: 1; /* Fill remaining vertical space */
     flex-shrink: 0;
     background: linear-gradient(
       180deg,
@@ -653,6 +838,138 @@
     }
   }
 
+  /* ===== ARCHIVE/DEFER STACK ===== */
+  .archive-defer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2cqi, 16px);
+    width: clamp(60px, 8cqi, 80px);
+    min-width: clamp(60px, 8cqi, 80px);
+    flex-shrink: 0;
+    align-self: stretch; /* Fill full height of parent container */
+  }
+
+  /* ===== DEFER DROP ZONE (smaller, horizontal layout) ===== */
+  .defer-drop-zone {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    /* Smaller height - about 1/4 of archive */
+    height: clamp(60px, 10cqi, 80px);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--column-color) 8%, rgba(20, 20, 30, 0.95)) 0%,
+      color-mix(in srgb, var(--column-color) 3%, rgba(15, 15, 25, 0.98)) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--column-color) 20%, transparent);
+    border-top: 3px solid var(--column-color);
+    border-radius: var(--kb-radius-md);
+    overflow: hidden;
+    transition: all 0.25s var(--spring-smooth);
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--column-color) 15%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .defer-drop-zone:hover {
+    border-color: color-mix(in srgb, var(--column-color) 30%, transparent);
+    box-shadow:
+      0 6px 24px color-mix(in srgb, var(--column-color) 20%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .defer-drop-zone.drag-active {
+    border-style: dashed;
+    opacity: 0.9;
+  }
+
+  .defer-drop-zone.drop-target {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--column-color) 20%, rgba(20, 20, 30, 0.95)) 0%,
+      color-mix(in srgb, var(--column-color) 12%, rgba(15, 15, 25, 0.98)) 100%
+    );
+    border-color: var(--column-color);
+    border-style: solid;
+    box-shadow:
+      0 0 40px color-mix(in srgb, var(--column-color) 40%, transparent),
+      inset 0 0 30px color-mix(in srgb, var(--column-color) 10%, transparent);
+    transform: scale(1.02);
+  }
+
+  .defer-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kb-space-xs);
+    padding: var(--kb-space-sm);
+    color: var(--kb-text-muted);
+    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  .defer-label i {
+    font-size: clamp(1rem, 3cqi, 1.25rem);
+    color: var(--column-color);
+    opacity: 0.8;
+  }
+
+  .defer-label span {
+    font-size: var(--kb-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .defer-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(18px, 4.5cqi, 24px);
+    height: clamp(18px, 4.5cqi, 24px);
+    padding: 0 var(--kb-space-2xs);
+    background: color-mix(in srgb, var(--column-color) 30%, transparent);
+    border: 1px solid color-mix(in srgb, var(--column-color) 40%, transparent);
+    border-radius: var(--kb-radius-full);
+    font-size: var(--kb-text-xs);
+    font-weight: 700;
+    color: var(--column-color);
+  }
+
+  .defer-drop-zone .drop-indicator {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--column-color) 12%, transparent);
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+    animation: pulseIn 0.2s ease;
+  }
+
+  .defer-drop-zone .drop-indicator i {
+    font-size: clamp(1.25rem, 4cqi, 1.5rem);
+    color: var(--column-color);
+    animation: pulse 0.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
   /* ===== CONTAINER QUERY: Mobile layout (shows tabs) ===== */
   @container kanban (max-width: 650px) {
     .status-tabs {
@@ -664,8 +981,8 @@
       overflow-y: auto;
     }
 
-    /* Hide archive drop zone on mobile - not useful in tab view */
-    .archive-drop-zone {
+    /* Hide archive/defer stack on mobile - not useful in tab view */
+    .archive-defer-stack {
       display: none;
     }
   }
@@ -679,6 +996,248 @@
     .archive-drop-zone .drop-indicator i {
       transition: none;
       animation: none;
+    }
+  }
+
+  /* ===== DEFER DIALOG ===== */
+  .defer-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .defer-dialog {
+    display: flex;
+    flex-direction: column;
+    width: clamp(320px, 90vw, 500px);
+    max-height: 90vh;
+    background: linear-gradient(
+      180deg,
+      rgba(30, 30, 40, 0.98) 0%,
+      rgba(20, 20, 30, 0.98) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(16px, 4cqi, 24px);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 3cqi, 16px);
+    padding: clamp(16px, 4cqi, 24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, #f59e0b 10%, transparent) 0%,
+      transparent 100%
+    );
+  }
+
+  .dialog-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(36px, 9cqi, 44px);
+    height: clamp(36px, 9cqi, 44px);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, #f59e0b 40%, transparent) 0%,
+      color-mix(in srgb, #f59e0b 20%, transparent) 100%
+    );
+    border-radius: clamp(8px, 2cqi, 12px);
+    color: #f59e0b;
+    font-size: clamp(16px, 4cqi, 20px);
+    box-shadow: 0 4px 12px color-mix(in srgb, #f59e0b 30%, transparent);
+  }
+
+  .dialog-title {
+    flex: 1;
+    margin: 0;
+    font-size: clamp(1.125rem, 3.5cqi, 1.375rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(32px, 8cqi, 40px);
+    height: clamp(32px, 8cqi, 40px);
+    background: transparent;
+    border: none;
+    border-radius: clamp(6px, 1.5cqi, 8px);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(16px, 4cqi, 18px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .close-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 4cqi, 24px);
+    padding: clamp(20px, 5cqi, 28px);
+    overflow-y: auto;
+  }
+
+  .feedback-preview {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.5cqi, 8px);
+    padding: clamp(12px, 3cqi, 16px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 3px solid #f59e0b;
+    border-radius: clamp(8px, 2cqi, 12px);
+  }
+
+  .preview-label {
+    font-size: clamp(0.75rem, 2cqi, 0.875rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .preview-title {
+    font-size: clamp(0.875rem, 2.5cqi, 1rem);
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.4;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2cqi, 12px);
+  }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2cqi, 10px);
+    font-size: clamp(0.875rem, 2.5cqi, 1rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .field-label i {
+    font-size: clamp(14px, 3.5cqi, 16px);
+    color: #f59e0b;
+    opacity: 0.8;
+  }
+
+  .date-input,
+  .notes-input {
+    width: 100%;
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 16px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: clamp(8px, 2cqi, 12px);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: clamp(0.875rem, 2.5cqi, 1rem);
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .date-input:focus,
+  .notes-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px color-mix(in srgb, #f59e0b 15%, transparent);
+  }
+
+  .notes-input {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .dialog-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(10px, 2.5cqi, 14px);
+    padding: clamp(16px, 4cqi, 20px) clamp(20px, 5cqi, 28px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .cancel-button,
+  .submit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 1.5cqi, 8px);
+    padding: clamp(10px, 2.5cqi, 12px) clamp(16px, 4cqi, 24px);
+    border: none;
+    border-radius: clamp(8px, 2cqi, 12px);
+    font-size: clamp(0.875rem, 2.5cqi, 1rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-button {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .cancel-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .submit-button {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 4px 12px color-mix(in srgb, #f59e0b 30%, transparent);
+  }
+
+  .submit-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, #f59e0b 40%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .submit-button:disabled,
+  .cancel-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>

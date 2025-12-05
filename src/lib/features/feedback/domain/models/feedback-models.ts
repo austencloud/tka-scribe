@@ -68,6 +68,7 @@ export interface FeedbackItem {
   title: string;
   description: string;
   priority?: FeedbackPriority;
+  imageUrls?: string[]; // Screenshots attached to feedback
 
   // Context (auto-captured)
   capturedModule: string;
@@ -80,6 +81,7 @@ export interface FeedbackItem {
   // Admin management
   status: FeedbackStatus;
   adminNotes?: string;
+  resolutionNotes?: string; // Agent's summary of how feedback was resolved
   updatedAt?: Date;
 
   // Subtasks (optional - for complex feedback requiring prerequisites)
@@ -99,6 +101,11 @@ export interface FeedbackItem {
   // Version tracking (set when archived)
   fixedInVersion?: string; // e.g., "0.2.0"
   archivedAt?: Date; // When moved to archive
+
+  // Deferment (archived items scheduled for reactivation)
+  deferredUntil?: Date; // When to reactivate this item
+  reactivatedAt?: Date; // When this was reactivated from deferment
+  reactivatedFrom?: Date; // Original deferredUntil date when reactivated
 }
 
 /**

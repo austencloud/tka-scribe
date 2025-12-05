@@ -7,6 +7,7 @@
     FeedbackPriority,
     FeedbackSubtask,
     SubtaskStatus,
+    TesterConfirmationStatus,
   } from "../../domain/models/feedback-models";
   import {
     TYPE_CONFIG,
@@ -65,23 +66,31 @@
 
   let isSaving = $state(false);
 
-  // Update snapshot when item changes from external source
+  // Track current item ID to detect when a different item is selected
+  let currentItemId = $state(item.id);
+
+  // Update snapshot and edit fields only when item ID changes (different item selected)
+  // This prevents resetting fields during typing when real-time updates arrive
   $effect(() => {
-    originalSnapshot = {
-      type: item.type,
-      priority: item.priority || "",
-      title: item.title,
-      description: item.description,
-      reportedModule: item.reportedModule || "",
-      reportedTab: item.reportedTab || "",
-    };
-    // Also sync edit fields
-    editType = item.type;
-    editPriority = item.priority || "";
-    editTitle = item.title;
-    editDescription = item.description;
-    editReportedModule = item.reportedModule || "";
-    editReportedTab = item.reportedTab || "";
+    if (item.id !== currentItemId) {
+      // Different item selected - sync everything
+      currentItemId = item.id;
+      originalSnapshot = {
+        type: item.type,
+        priority: item.priority || "",
+        title: item.title,
+        description: item.description,
+        reportedModule: item.reportedModule || "",
+        reportedTab: item.reportedTab || "",
+      };
+      // Also sync edit fields
+      editType = item.type;
+      editPriority = item.priority || "";
+      editTitle = item.title;
+      editDescription = item.description;
+      editReportedModule = item.reportedModule || "";
+      editReportedTab = item.reportedTab || "";
+    }
   });
 
   // Check if anything has changed from the original
@@ -346,6 +355,23 @@
       ></textarea>
     </section>
 
+    <!-- Screenshots Section -->
+    {#if item.imageUrls && item.imageUrls.length > 0}
+      <section class="section">
+        <h3 class="section-title">Screenshots ({item.imageUrls.length})</h3>
+        <div class="screenshots-grid">
+          {#each item.imageUrls as imageUrl, index}
+            <a href={imageUrl} target="_blank" rel="noopener noreferrer" class="screenshot-link">
+              <img src={imageUrl} alt="Screenshot {index + 1}" class="screenshot-thumb" />
+              <div class="screenshot-overlay">
+                <i class="fas fa-search-plus"></i>
+              </div>
+            </a>
+          {/each}
+        </div>
+      </section>
+    {/if}
+
     <!-- Title Section (inline editable) -->
     <section class="section title-section">
       <div class="title-row">
@@ -559,14 +585,14 @@
           <i class="fas fa-tasks"></i>
           Subtasks
           <span class="subtask-count">
-            {item.subtasks.filter(s => s.status === 'completed').length}/{item.subtasks.length}
+            {item.subtasks.filter((s: FeedbackSubtask) => s.status === 'completed').length}/{item.subtasks.length}
           </span>
         </h3>
         <div class="subtasks-list">
           {#each item.subtasks as subtask (subtask.id)}
             {@const isBlocked = subtask.dependsOn && subtask.dependsOn.length > 0 &&
-              !subtask.dependsOn.every(depId =>
-                item.subtasks?.find(s => s.id === depId)?.status === 'completed'
+              !subtask.dependsOn.every((depId: string) =>
+                item.subtasks?.find((s: FeedbackSubtask) => s.id === depId)?.status === 'completed'
               )}
             <div
               class="subtask-item"
@@ -594,7 +620,7 @@
                 {#if subtask.dependsOn && subtask.dependsOn.length > 0}
                   <span class="subtask-deps">
                     <i class="fas fa-link"></i>
-                    Depends on: {subtask.dependsOn.map(id => `#${id}`).join(', ')}
+                    Depends on: {subtask.dependsOn.map((id: string) => `#${id}`).join(', ')}
                   </span>
                 {/if}
               </div>
@@ -678,7 +704,7 @@
 
       <!-- Tester confirmation status -->
       {#if item.testerConfirmation}
-        {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status]}
+        {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status as TesterConfirmationStatus]}
         <div class="tester-confirmation" style="--conf-color: {confConfig.color}">
           <div class="confirmation-header">
             <i class="fas {confConfig.icon}"></i>
@@ -2046,6 +2072,56 @@
 
   .subtask-deps i {
     font-size: 9px;
+  }
+
+  /* Screenshots Grid */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: var(--fb-space-xs);
+  }
+
+  .screenshot-link {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 200ms ease;
+  }
+
+  .screenshot-link:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: scale(1.03);
+  }
+
+  .screenshot-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .screenshot-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .screenshot-link:hover .screenshot-overlay {
+    opacity: 1;
+  }
+
+  .screenshot-overlay i {
+    font-size: 1.5rem;
+    color: white;
   }
 
   /* Reduced motion */
