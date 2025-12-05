@@ -73,6 +73,28 @@ This project follows a **2025+ AI-assisted development approach**:
   - `/release` - Ship completed items as a version
 - Remember: `completed` means "ready to ship", not "shipped" (that's `archived`)
 
+### What Goes in Release Notes (Critical!)
+**Release notes are historical markers for shipped features/fixes** - things Austen would want to remember a week or month later.
+
+**✅ Include (mark as user-facing):**
+- User-visible features (new UI, new workflows, new capabilities)
+- Bug fixes users would notice (crashes, incorrect behavior, broken features)
+- UX improvements (performance, polish, usability)
+- Anything you'd be proud to tell users about
+
+**❌ Mark as internal-only** (`node fetch-feedback.js <id> internal-only true`):
+- Housekeeping (script organization, file cleanup, folder restructuring)
+- Dev tooling (HMR fixes, build optimizations, test improvements)
+- Internal refactoring that users never see
+- Admin-only features (feedback Kanban UI, internal tools)
+- Technical debt cleanup
+- **Rule of thumb:** If it belongs in a git commit but not a changelog, mark it internal-only
+
+**When marking feedback completed:**
+- Always ask yourself: "Would Austen want to see this in release notes a month from now?"
+- If no → mark it `internal-only true` before moving to `completed`
+- This keeps release notes clean and actually useful
+
 ### When Claude should proactively ask about updating this file:
 - User expresses frustration about Claude repeatedly doing something wrong
 - User states a general principle ("I always want...", "Never do...", "My preference is...")

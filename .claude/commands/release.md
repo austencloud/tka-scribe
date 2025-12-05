@@ -297,7 +297,7 @@ All done! Release v0.2.0 is live.
 If you have existing git tags without GitHub releases, use the backfill script:
 
 ```bash
-node scripts/backfill-github-releases.js
+node scripts/temp/backfill-github-releases.js
 ```
 
 This will:

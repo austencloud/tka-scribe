@@ -87,18 +87,8 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
 
    The user will verify and move to `completed` if it works.
 
-7. **When marking as completed, preview the release:**
-   After the user confirms the fix works, before marking as `completed`:
-   ```bash
-   node scripts/release.js -p
-   ```
-
-   This shows:
-   - How many items are ready for next release (including this one)
-   - What the changelog will look like
-   - Suggested version number
-
-   Then mark as completed:
+7. **When user confirms the fix works:**
+   Mark as completed:
    ```
    node fetch-feedback.js <document-id> completed "Verified working"
    ```
