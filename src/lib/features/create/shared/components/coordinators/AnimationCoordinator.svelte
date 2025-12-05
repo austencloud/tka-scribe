@@ -10,6 +10,7 @@
 
   import AnimationPanel from "../../../../../shared/animation-engine/components/AnimationPanel.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
+  import type { IGifExportOrchestrator } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import type { ISequenceService } from "../../services/contracts/ISequenceService";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
@@ -23,6 +24,7 @@
   } from "$lib/features/animate/shared/domain/constants/timing";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Get context
   const ctx = getCreateModuleContext();
@@ -38,8 +40,14 @@
   // Services
   let sequenceService: ISequenceService | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
+  let gifExportOrchestrator: IGifExportOrchestrator | null = null;
   let hapticService: IHapticFeedbackService | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
+
+  // Export state
+  let isExporting = $state(false);
+  let exportProgress = $state(0);
+  let exportStage = $state<string>("");
 
   // Animation state - use shared global state for beat grid synchronization
   const animationPanelState = sharedAnimationState;
@@ -108,32 +116,42 @@
     return null;
   });
 
+  // State to track service readiness
+  let servicesReady = $state(false);
+
   // Resolve services on mount
-  onMount(() => {
+  onMount(async () => {
+    console.log("🔧 AnimationCoordinator: Resolving services...");
+
     // Resolve core services immediately (should be available from create module loading)
     try {
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
+      console.log("✅ Core services resolved");
     } catch (error) {
-      console.error("Failed to resolve core services:", error);
+      console.error("❌ Failed to resolve core services:", error);
     }
 
     // Ensure animator module is loaded and resolve animation-specific services
-    loadFeatureModule("animate").then(() => {
-      try {
-        playbackController = resolve<IAnimationPlaybackController>(
-          TYPES.IAnimationPlaybackController
-        );
-      } catch (error) {
-        console.error("Failed to resolve animation services:", error);
-        animationPanelState.setError("Failed to initialize animation services");
-      }
-    }).catch((error) => {
-      console.error("Failed to load animator module:", error);
-      animationPanelState.setError("Failed to load animation module");
-    });
+    try {
+      await loadFeatureModule("animate");
+      console.log("✅ Animator module loaded");
+
+      playbackController = resolve<IAnimationPlaybackController>(
+        TYPES.IAnimationPlaybackController
+      );
+      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
+        TYPES.IGifExportOrchestrator
+      );
+
+      servicesReady = true;
+      console.log("✅ Animation services resolved, ready to initialize playback");
+    } catch (error) {
+      console.error("❌ Failed to load animator module or resolve services:", error);
+      animationPanelState.setError("Failed to initialize animation services");
+    }
 
     return undefined;
   });
@@ -141,10 +159,29 @@
   // Load and auto-start animation when panel becomes visible
   // Also reload when sequence changes (e.g., after rotation)
   $effect(() => {
+    // Get the active tab's sequence state
+    // CreateModuleState.sequenceState is a getter that internally calls getActiveTabSequenceState()
     const sequence = CreateModuleState.sequenceState.currentSequence;
     const isOpen = panelState.isAnimationPanelOpen;
 
-    if (isOpen && sequence && sequenceService && playbackController) {
+    console.log("🔄 Animation effect triggered:", {
+      isOpen,
+      servicesReady,
+      hasSequence: !!sequence,
+      sequenceId: sequence?.id,
+      sequenceWord: sequence?.word,
+      sequenceName: sequence?.name,
+      hasBeatData: sequence?.beats?.length ?? 0,
+      hasMotionData: sequence?.beats?.some(b => b?.motions?.blue && b?.motions?.red),
+      activeTab: navigationState.activeTab,
+      currentSection: navigationState.currentSection,
+      hasPlaybackController: !!playbackController,
+      hasSequenceService: !!sequenceService,
+    });
+
+    // Wait for services to be ready AND panel to be open AND sequence to exist
+    if (isOpen && servicesReady && sequence && sequenceService && playbackController) {
+      console.log("✅ All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);
 
@@ -153,12 +190,28 @@
       }, ANIMATION_LOAD_DELAY_MS);
 
       return () => clearTimeout(loadTimeout);
+    } else if (isOpen && sequence && !servicesReady) {
+      console.log("⏳ Waiting for animation services to be ready...");
     }
     return undefined;
   });
 
   async function loadAndStartAnimation(sequence: any) {
-    if (!sequenceService || !playbackController) return;
+    console.log("🎬 loadAndStartAnimation called with sequence:", {
+      id: sequence?.id,
+      word: sequence?.word,
+      name: sequence?.name,
+      beatCount: sequence?.beats?.length,
+      hasMotionData: sequence?.beats?.some((b: any) => b?.motions?.blue && b?.motions?.red),
+    });
+
+    if (!sequenceService || !playbackController) {
+      console.error("❌ Missing required services:", {
+        hasSequenceService: !!sequenceService,
+        hasPlaybackController: !!playbackController,
+      });
+      return;
+    }
 
     animationPanelState.setLoading(true);
     animationPanelState.setError(null);
@@ -167,25 +220,39 @@
       // Inline sequence loading logic
       const loadedSequence = await loadSequenceData(sequence, sequenceService);
 
+      console.log("📦 Loaded sequence result:", {
+        success: !!loadedSequence,
+        id: loadedSequence?.id,
+        word: loadedSequence?.word,
+        beatCount: loadedSequence?.beats?.length,
+        hasMotionData: loadedSequence?.beats?.some((b: any) => b?.motions?.blue && b?.motions?.red),
+        hasStartPosition: !!loadedSequence?.startPosition,
+      });
+
       if (!loadedSequence) {
         throw new Error("Failed to load sequence");
       }
 
       // Initialize playback controller
       animationPanelState.setShouldLoop(true);
+      console.log("🎮 Initializing playback controller...");
       const success = playbackController.initialize(
         loadedSequence,
         animationPanelState
       );
+
+      console.log("🎮 Playback controller initialized:", success);
 
       if (!success) {
         throw new Error("Failed to initialize animation playback");
       }
 
       animationPanelState.setSequenceData(loadedSequence);
+      console.log("✅ Sequence data set in animation panel state");
 
       // Auto-start animation
       setTimeout(() => {
+        console.log("▶️ Auto-starting animation playback...");
         playbackController?.togglePlayback();
       }, ANIMATION_AUTO_START_DELAY_MS);
     } catch (err) {
@@ -206,6 +273,14 @@
     service: ISequenceService
   ): Promise<SequenceData | null> {
     if (!sequence) return null;
+
+    console.log("📥 Loading sequence data:", {
+      id: sequence.id,
+      word: sequence.word,
+      name: sequence.name,
+      hasBeatArray: Array.isArray(sequence.beats),
+      beatCount: sequence.beats?.length ?? 0,
+    });
 
     const hasMotionData = (seq: SequenceData) =>
       Array.isArray(seq.beats) &&
@@ -231,14 +306,17 @@
 
     // If sequence already has motion data, use it directly
     if (hasMotionData(sequence)) {
+      console.log("✅ Sequence already has motion data, using directly");
       fullSequence = sequence;
     }
     // Load from database/gallery if needed (empty beats)
     else if (sequence.id && (!sequence.beats || sequence.beats.length === 0)) {
       const galleryId = getGalleryIdentifier(sequence);
+      console.log("🔍 Sequence has no beats, attempting gallery load:", galleryId);
       if (galleryId) {
         const loaded = await service.getSequence(galleryId);
         if (loaded) {
+          console.log("✅ Loaded sequence from gallery:", galleryId);
           fullSequence = loaded;
         } else {
           console.warn(`⚠️ Could not load sequence from gallery: ${galleryId}`);
@@ -252,10 +330,14 @@
     // Hydrate if missing motion data (try gallery lookup)
     else if (fullSequence && !hasMotionData(fullSequence)) {
       const galleryId = getGalleryIdentifier(fullSequence);
+      console.log("🔍 Sequence missing motion data, attempting hydration:", galleryId);
       if (galleryId) {
         const hydrated = await service.getSequence(galleryId);
         if (hydrated && hasMotionData(hydrated)) {
+          console.log("✅ Hydrated sequence from gallery:", galleryId);
           fullSequence = hydrated;
+        } else {
+          console.warn("⚠️ Failed to hydrate sequence from gallery:", galleryId);
         }
       }
     }
@@ -312,6 +394,10 @@
   }
 
   function handlePlaybackToggle() {
+    console.log("🎮 handlePlaybackToggle called");
+    console.log("  playbackController:", playbackController);
+    console.log("  animationPanelState.isPlaying:", animationPanelState.isPlaying);
+
     hapticService?.trigger("selection");
     playbackController?.togglePlayback();
   }
@@ -328,6 +414,69 @@
     // Update the animation panel state with the current beat from video
     // This ensures the beat grid stays in sync with video playback
     animationPanelState.setCurrentBeat(beat);
+  }
+
+  /**
+   * Handle GIF export
+   */
+  async function handleExportGif() {
+    console.log("🎬 GIF export handler called");
+    console.log("Canvas:", animationCanvas);
+    console.log("Playback controller:", playbackController);
+    console.log("GIF export orchestrator:", gifExportOrchestrator);
+
+    hapticService?.trigger("selection");
+
+    if (!animationCanvas) {
+      console.error("❌ No canvas available for GIF export");
+      return;
+    }
+
+    if (!playbackController || !gifExportOrchestrator) {
+      console.error("❌ Required services not available for GIF export");
+      return;
+    }
+
+    if (isExporting) {
+      console.warn("⚠️ Export already in progress");
+      return;
+    }
+
+    try {
+      isExporting = true;
+      exportProgress = 0;
+      exportStage = "preparing";
+
+      await gifExportOrchestrator.executeExport(
+        animationCanvas,
+        playbackController,
+        animationPanelState,
+        (progress) => {
+          exportProgress = progress.progress;
+          exportStage = progress.stage;
+
+          if (progress.stage === "capturing" && progress.currentFrame) {
+            console.log(`📸 Capturing frame ${progress.currentFrame}/${progress.totalFrames}`);
+          } else if (progress.stage === "encoding") {
+            console.log("🔄 Encoding GIF...");
+          } else if (progress.stage === "complete") {
+            console.log("✅ GIF export complete!");
+          } else if (progress.stage === "error") {
+            console.error("❌ GIF export error:", progress.error);
+          }
+        },
+        {
+          // Use default options from the orchestrator
+          // fps: 30, quality: 10, format: "gif"
+        }
+      );
+    } catch (error) {
+      console.error("❌ Failed to export GIF:", error);
+    } finally {
+      isExporting = false;
+      exportProgress = 0;
+      exportStage = "";
+    }
   }
 </script>
 
@@ -353,4 +502,5 @@
   onPlaybackToggle={handlePlaybackToggle}
   onCanvasReady={handleCanvasReady}
   onVideoBeatChange={handleVideoBeatChange}
+  onExportGif={handleExportGif}
 />

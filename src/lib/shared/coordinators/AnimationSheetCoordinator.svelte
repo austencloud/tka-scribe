@@ -62,6 +62,9 @@
   let sheetRouterService: ISheetRouterService | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
+  // State to track service readiness
+  let servicesReady = $state(false);
+
   // Animation state
   const animationPanelState = createAnimationPanelState();
 
@@ -161,7 +164,8 @@
   );
 
   // Resolve services on mount
-  onMount(() => {
+  onMount(async () => {
+    console.log("🔧 AnimationSheetCoordinator: Resolving services...");
     let cleanupRouteListener: (() => void) | undefined;
 
     // Resolve core services immediately (Tier 1 - navigation module)
@@ -173,27 +177,29 @@
       sheetRouterService = resolve<ISheetRouterService>(
         TYPES.ISheetRouterService
       );
+      console.log("✅ Core services resolved");
     } catch (error) {
-      console.error("Failed to resolve core services:", error);
+      console.error("❌ Failed to resolve core services:", error);
     }
 
     // Load animator module and resolve animation-specific services
-    loadFeatureModule("animate").then(() => {
-      try {
-        playbackController = resolve<IAnimationPlaybackController>(
-          TYPES.IAnimationPlaybackController
-        );
-        gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-          TYPES.IGifExportOrchestrator
-        );
-      } catch (error) {
-        console.error("Failed to resolve animation services:", error);
-        animationPanelState.setError("Failed to initialize animation services");
-      }
-    }).catch((error) => {
-      console.error("Failed to load animator module:", error);
-      animationPanelState.setError("Failed to load animation module");
-    });
+    try {
+      await loadFeatureModule("animate");
+      console.log("✅ Animator module loaded");
+
+      playbackController = resolve<IAnimationPlaybackController>(
+        TYPES.IAnimationPlaybackController
+      );
+      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
+        TYPES.IGifExportOrchestrator
+      );
+
+      servicesReady = true;
+      console.log("✅ Animation services resolved, ready to initialize playback");
+    } catch (error) {
+      console.error("❌ Failed to load animator module or resolve services:", error);
+      animationPanelState.setError("Failed to initialize animation services");
+    }
 
     // Listen for route changes to restore animation panel from URL
     cleanupRouteListener = sheetRouterService?.onRouteChange((state) => {
@@ -246,7 +252,21 @@
   // Load and auto-start animation when panel becomes visible
   // Also reloads when sequence changes (e.g., after rotation) while panel is open
   $effect(() => {
-    if (isOpen && sequence && sequenceService && playbackController) {
+    console.log("🔄 Animation effect triggered:", {
+      isOpen,
+      servicesReady,
+      hasSequence: !!sequence,
+      sequenceId: sequence?.id,
+      sequenceWord: sequence?.word,
+      beatCount: sequence?.beats?.length,
+      hasMotionData: sequence?.beats?.some(b => b?.motions?.blue && b?.motions?.red),
+      hasPlaybackController: !!playbackController,
+      hasSequenceService: !!sequenceService,
+    });
+
+    // Wait for services to be ready AND panel to be open AND sequence to exist
+    if (isOpen && servicesReady && sequence && sequenceService && playbackController) {
+      console.log("✅ All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);
 
@@ -255,6 +275,8 @@
       }, ANIMATION_LOAD_DELAY_MS);
 
       return () => clearTimeout(loadTimeout);
+    } else if (isOpen && sequence && !servicesReady) {
+      console.log("⏳ Waiting for animation services to be ready...");
     }
     return undefined;
   });
