@@ -8,7 +8,7 @@
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
   import NotificationItem from "$lib/features/feedback/components/NotificationItem.svelte";
-  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
 
   const notificationState = createNotificationState();
@@ -39,16 +39,16 @@
   function handleNotificationAction(notification: UserNotification) {
     // Navigate based on notification type
     if (notification.type.startsWith("feedback-")) {
-      navigationState.navigateToModule("feedback", "my-feedback");
+      handleModuleChange("feedback", "my-feedback");
     } else if (notification.type.startsWith("sequence-")) {
       // Could navigate to specific sequence or discover module
-      navigationState.navigateToModule("discover", "gallery");
+      handleModuleChange("discover", "gallery");
     }
   }
 
   function viewAllNotifications() {
     // Navigate to a notifications view (settings for now, could be a dedicated view later)
-    navigationState.navigateToModule("settings", "notifications");
+    handleModuleChange("settings", "notifications");
   }
 </script>
 

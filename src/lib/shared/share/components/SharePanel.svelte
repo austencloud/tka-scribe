@@ -1,7 +1,6 @@
-<!-- SharePanel.svelte - Cohesive Share Interface with switchable preview modes -->
+<!-- SharePanel.svelte - Image Composition and Sharing Interface -->
 <script module lang="ts">
   export type ViewMode = "main" | "preview";
-  export type PreviewMode = "image" | "animation" | "video";
 </script>
 
 <script lang="ts">
@@ -17,7 +16,6 @@
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
   import { getInstagramLink } from "../domain/models/InstagramLink";
   import type { InstagramLink } from "../domain/models/InstagramLink";
-  import ShareAnimationViewer from "../../animation-engine/components/ShareAnimationViewer.svelte";
   import { createServiceResolver } from "../../utils/service-resolver.svelte";
 
   // Services
@@ -40,21 +38,11 @@
     onExpandedChange?: (expanded: boolean) => void;
   } = $props();
 
-  // Preview mode state - single select
-  let previewMode = $state<PreviewMode>("image");
-
   // Copy link state
   let isCopyingLink = $state(false);
 
   // Instagram modal state
   let showInstagramModal = $state(false);
-
-  // Preview mode configuration
-  const previewModes: { mode: PreviewMode; icon: string; label: string }[] = [
-    { mode: "image", icon: "fa-image", label: "Image" },
-    { mode: "animation", icon: "fa-play-circle", label: "Animation" },
-    { mode: "video", icon: "fa-video", label: "Video" },
-  ];
 
   // Options configuration
   const exportOptions = [
@@ -104,12 +92,11 @@
     }
   });
 
-  // Generate image preview when in image mode
+  // Generate image preview
   $effect(() => {
     if (providedShareState) return;
     if (!shareState || !currentSequence || currentSequence.beats?.length === 0)
       return;
-    if (previewMode !== "image") return;
     void shareState.options;
     shareState.generatePreview(currentSequence);
   });
@@ -219,11 +206,6 @@
     shareState.updateOptions({ [key]: !shareState.options[key] });
   }
 
-  function selectPreviewMode(mode: PreviewMode) {
-    hapticService?.trigger("selection");
-    previewMode = mode;
-  }
-
   function handleSaveInstagramLink(link: InstagramLink) {
     if (!currentSequence) return;
     onSequenceUpdate?.({
@@ -256,71 +238,38 @@
 </script>
 
 <div class="share-panel">
-  <!-- PREVIEW SECTION - Switchable content based on mode -->
+  <!-- IMAGE PREVIEW SECTION -->
   <section class="preview-section">
     {#if !currentSequence || currentSequence.beats?.length === 0}
       <div class="preview-empty">
         <i class="fas fa-image"></i>
         <span>Add beats to preview</span>
       </div>
-    {:else if previewMode === "image"}
-      <!-- IMAGE PREVIEW -->
-      {#if shareState?.isGeneratingPreview}
-        <div class="preview-loading">
-          <div class="spinner"></div>
-          <span>Generating...</span>
-        </div>
-      {:else if shareState?.previewError}
-        <div class="preview-error">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>Preview failed</span>
-          <button onclick={handleRetryPreview}>Retry</button>
-        </div>
-      {:else if shareState?.previewUrl}
-        <img src={shareState.previewUrl} alt="Preview" class="preview-image" />
-        <button
-          class="refresh-btn"
-          onclick={handleRetryPreview}
-          title="Regenerate"
-          aria-label="Regenerate preview"
-        >
-          <i class="fas fa-sync-alt"></i>
-        </button>
-      {/if}
-    {:else if previewMode === "animation"}
-      <!-- ANIMATION PREVIEW - Reuses full PixiJS animation infrastructure -->
-      <div class="animation-container">
-        <ShareAnimationViewer sequenceData={currentSequence} loop={true} />
+    {:else if shareState?.isGeneratingPreview}
+      <div class="preview-loading">
+        <div class="spinner"></div>
+        <span>Generating...</span>
       </div>
-    {:else if previewMode === "video"}
-      <!-- VIDEO PREVIEW - Coming Soon -->
-      <div class="preview-placeholder">
-        <i class="fas fa-video"></i>
-        <span>Video export</span>
-        <span class="coming-soon">Coming Soon</span>
+    {:else if shareState?.previewError}
+      <div class="preview-error">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Preview failed</span>
+        <button onclick={handleRetryPreview}>Retry</button>
       </div>
+    {:else if shareState?.previewUrl}
+      <img src={shareState.previewUrl} alt="Preview" class="preview-image" />
+      <button
+        class="refresh-btn"
+        onclick={handleRetryPreview}
+        title="Regenerate"
+        aria-label="Regenerate preview"
+      >
+        <i class="fas fa-sync-alt"></i>
+      </button>
     {/if}
   </section>
 
-  <!-- PREVIEW MODE SELECTOR - Controls what's shown above -->
-  <section class="mode-section">
-    <div class="mode-row">
-      {#each previewModes as pm}
-        <button
-          class="mode-btn"
-          class:selected={previewMode === pm.mode}
-          onclick={() => selectPreviewMode(pm.mode)}
-          disabled={!hasSequence()}
-        >
-          <i class="fas {pm.icon}"></i>
-          <span>{pm.label}</span>
-        </button>
-      {/each}
-    </div>
-  </section>
-
-  <!-- OPTIONS CHIPS - For image export -->
-  {#if previewMode === "image"}
+  <!-- IMAGE COMPOSITION OPTIONS -->
     <section class="options-section">
       <div class="options-chips">
         {#each exportOptions as opt}
@@ -336,7 +285,6 @@
         {/each}
       </div>
     </section>
-  {/if}
 
   <!-- PRIMARY ACTIONS - Main buttons -->
   <section class="actions-section">

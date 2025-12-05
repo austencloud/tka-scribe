@@ -11,6 +11,8 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { FilteringError } from "../../domain/errors/generation-errors";
+import { getLetterType } from "$lib/shared/foundation/domain/models/Letter";
+import { LetterType } from "$lib/shared/foundation/domain/models/LetterType";
 
 // Legacy constants for rotation directions
 const ROTATION_DIRS = {
@@ -154,10 +156,6 @@ export class PictographFilterService implements IPictographFilterService {
    * This ensures Type 6 static pictographs are only used when they can have visual interest via turns.
    */
   filterStaticType6(options: PictographData[], level: number): PictographData[] {
-    // Dynamic import to get Letter and getLetterType
-    const { getLetterType } = require("$lib/shared/foundation/domain/models/Letter");
-    const { LetterType } = require("$lib/shared/foundation/domain/models/LetterType");
-
     const filtered = options.filter((option: PictographData) => {
       if (!option.letter) return true; // Keep if no letter specified
 

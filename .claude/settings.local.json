@@ -268,7 +268,14 @@
       "Bash(PATH=\"$PATH:/c/Users/Austen/AppData/Roaming/npm\" ccusage-monitor:*)",
       "mcp__ide__getDiagnostics",
       "SlashCommand(/fb)",
-      "Bash(move testsgenerator-type6-filter.spec.ts testsintegration)"
+      "Bash(move testsgenerator-type6-filter.spec.ts testsintegration)",
+      "Bash(move scripts/add-v010-changelog.js scripts/temp/)",
+      "Bash(move scripts/add-v010-changelog-browser.js scripts/temp/)",
+      "Bash(move scripts/update-version-to-010.js scripts/temp/)",
+      "Bash(move:*)",
+      "Bash(move scripts/audit-feedback.cjs scripts/temp/)",
+      "Bash(move scripts/check-createdAt.cjs scripts/temp/)",
+      "Bash(move scripts/check-feedback-status.js scripts/temp/)"
     ],
     "deny": [],
     "ask": []

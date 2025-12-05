@@ -12,6 +12,7 @@
   import { onMount } from "svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -58,7 +59,7 @@
 
   function handleClick() {
     hapticService?.trigger("selection");
-    navigationState.navigateToModule("dashboard");
+    handleModuleChange("dashboard");
   }
 
   // Check if dashboard is active

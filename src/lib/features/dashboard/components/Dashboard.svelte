@@ -18,7 +18,7 @@
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
@@ -110,6 +110,19 @@
     return gradients[id] || "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)";
   }
 
+  // Load library data when auth state changes
+  $effect(() => {
+    const userId = authStore.effectiveUserId;
+    if (userId) {
+      // Ensure library module is loaded before accessing libraryState
+      loadFeatureModule("library").then(() => {
+        libraryState.loadSequences();
+      }).catch((error) => {
+        console.error('[Dashboard] Failed to load library module:', error);
+      });
+    }
+  });
+
   onMount(() => {
     let cleanup: (() => void) | undefined;
     try {
@@ -122,11 +135,6 @@
       });
     } catch (error) {
       console.warn("Dashboard: Failed to resolve DeviceDetector", error);
-    }
-
-    // Load library data if authenticated
-    if (authStore.effectiveUserId) {
-      libraryState.loadSequences();
     }
 
     setTimeout(() => {
