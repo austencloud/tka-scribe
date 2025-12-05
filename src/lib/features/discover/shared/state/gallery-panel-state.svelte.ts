@@ -135,6 +135,16 @@ class GalleryPanelManager {
   togglePin() {
     this.isPinned = !this.isPinned;
   }
+
+  /**
+   * Update the active sequence with new data
+   * Used when sequence properties change (e.g., favorite status)
+   */
+  updateActiveSequence(updatedSequence: SequenceData) {
+    if (this.activeSequence?.id === updatedSequence.id) {
+      this.activeSequence = updatedSequence;
+    }
+  }
 }
 
 export const galleryPanelManager = new GalleryPanelManager();

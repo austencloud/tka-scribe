@@ -4,8 +4,8 @@
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { FeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
-  import { TYPE_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
-  import type { FeedbackType, FeedbackPriority } from "../../domain/models/feedback-models";
+  import { TYPE_CONFIG } from "../../domain/models/feedback-models";
+  import type { FeedbackType } from "../../domain/models/feedback-models";
   import { MODULE_DEFINITIONS } from "$lib/shared/navigation/state/navigation-state.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
@@ -31,16 +31,10 @@
 
   // Derived: summary of selected options for the trigger button
   const optionsSummary = $derived(() => {
-    const parts: string[] = [];
-    const priority = formState.formData.priority;
-    if (priority && priority in PRIORITY_CONFIG) {
-      const priorityConfig = PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG];
-      parts.push(priorityConfig?.label || priority);
-    }
     if (formState.formData.reportedModule) {
-      parts.push(contextDisplayText());
+      return contextDisplayText();
     }
-    return parts.length > 0 ? parts.join(' · ') : null;
+    return null;
   });
 
   function openOptionsDrawer() {
@@ -138,11 +132,6 @@
   function handleTypeChange(type: FeedbackType) {
     hapticService?.trigger("selection");
     formState.setType(type);
-  }
-
-  function handlePriorityChange(priority: FeedbackPriority | "") {
-    hapticService?.trigger("selection");
-    formState.setPriority(priority);
   }
 
   function closeContextPicker() {

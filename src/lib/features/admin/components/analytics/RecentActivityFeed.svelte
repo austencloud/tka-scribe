@@ -13,9 +13,10 @@
   interface Props {
     activities: RecentActivityEvent[];
     eventBreakdown: EventTypeBreakdown[];
+    loading?: boolean;
   }
 
-  let { activities, eventBreakdown }: Props = $props();
+  let { activities, eventBreakdown, loading = false }: Props = $props();
 
   function getEventColor(eventType: string): string {
     return (
@@ -26,7 +27,27 @@
 
 <section class="section">
   <h3><i class="fas fa-stream"></i> Recent Activity</h3>
-  {#if activities.length > 0}
+  {#if loading}
+    <div class="activity-feed">
+      {#each Array(5) as _}
+        <div class="activity-item">
+          <div class="activity-user-avatar">
+            <div class="user-avatar-placeholder skeleton-avatar"></div>
+          </div>
+          <div class="activity-main">
+            <div class="activity-header-row">
+              <span class="skeleton-name"></span>
+              <span class="skeleton-time"></span>
+            </div>
+            <div class="activity-action-row">
+              <div class="skeleton-action-icon"></div>
+              <span class="skeleton-action"></span>
+            </div>
+          </div>
+        </div>
+      {/each}
+    </div>
+  {:else if activities.length > 0}
     <div class="activity-feed">
       {#each activities as activity}
         <div class="activity-item">
@@ -246,5 +267,51 @@
     .activity-feed {
       max-height: 300px;
     }
+  }
+
+  /* Skeleton styles */
+  .skeleton-avatar {
+    background: rgba(255, 255, 255, 0.1);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-name {
+    display: block;
+    width: 100px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-time {
+    display: block;
+    width: 50px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-action-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-action {
+    display: block;
+    width: 120px;
+    height: 13px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>

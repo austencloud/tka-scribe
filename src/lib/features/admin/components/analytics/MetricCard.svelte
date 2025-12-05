@@ -3,12 +3,23 @@
   import { getChangeClass, formatChange } from "./utils";
 
   interface Props {
-    metric: MetricCardData;
+    metric?: MetricCardData;
+    loading?: boolean;
   }
 
-  let { metric }: Props = $props();
+  let { metric, loading = false }: Props = $props();
 </script>
 
+{#if loading || !metric}
+<div class="metric-card skeleton">
+  <div class="metric-icon skeleton-icon"></div>
+  <div class="metric-content">
+    <span class="skeleton-value"></span>
+    <span class="skeleton-label"></span>
+    <span class="skeleton-change"></span>
+  </div>
+</div>
+{:else}
 <div class="metric-card" style="--accent-color: {metric.color}">
   <div class="metric-icon">
     <i class={metric.icon}></i>
@@ -28,6 +39,7 @@
     {/if}
   </div>
 </div>
+{/if}
 
 <style>
   .metric-card {
@@ -92,5 +104,49 @@
 
   .metric-change.neutral {
     color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Skeleton styles */
+  .metric-card.skeleton {
+    --accent-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .skeleton-icon {
+    background: rgba(255, 255, 255, 0.1);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-value {
+    display: block;
+    width: 60px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-label {
+    display: block;
+    width: 80px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.1s;
+  }
+
+  .skeleton-change {
+    display: block;
+    width: 70px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.2s;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>

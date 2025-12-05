@@ -33,10 +33,18 @@
   } from "./analytics/types";
 
   // State
-  let isLoading = $state(true);
   let hasError = $state(false);
   let errorMessage = $state("");
   let selectedTimeRange = $state<TimeRangeOption>("30d");
+
+  // Per-section loading states
+  let loadingSummary = $state(true);
+  let loadingActivity = $state(true);
+  let loadingContent = $state(true);
+  let loadingEngagement = $state(true);
+  let loadingEvents = $state(true);
+  let loadingModules = $state(true);
+  let loadingRecent = $state(true);
 
   // Analytics data
   let summaryMetrics = $state<MetricCardData[]>([]);
@@ -67,27 +75,20 @@
       return;
     }
 
-    isLoading = true;
     hasError = false;
+    const timeRange = getTimeRange();
 
-    try {
-      const timeRange = getTimeRange();
+    // Reset all loading states
+    loadingSummary = true;
+    loadingActivity = true;
+    loadingContent = true;
+    loadingEngagement = true;
+    loadingEvents = true;
+    loadingModules = true;
+    loadingRecent = true;
 
-      const [summary, activity, content, sequences, engagement, events, modules, recent] = await Promise.all([
-        analyticsService.getSummaryMetrics(timeRange),
-        analyticsService.getUserActivity(timeRange),
-        analyticsService.getContentStatistics(),
-        analyticsService.getTopSequences(5),
-        analyticsService.getEngagementMetrics(),
-        analyticsService.getEventTypeBreakdown(timeRange),
-        analyticsService.getModuleUsage(timeRange),
-        analyticsService.getRecentActivity(10),
-      ]);
-
-      eventBreakdown = events;
-      moduleUsage = modules;
-      recentActivity = recent;
-
+    // Load each section independently - they update as they arrive
+    analyticsService.getSummaryMetrics(timeRange).then((summary) => {
       summaryMetrics = [
         {
           label: "Total Users",
@@ -122,26 +123,46 @@
           color: "#f59e0b",
         },
       ];
+      loadingSummary = false;
+    }).catch((err) => {
+      console.error("Failed to load summary metrics", err);
+      loadingSummary = false;
+    });
 
+    analyticsService.getUserActivity(timeRange).then((activity) => {
       userActivityData = activity.map((point) => ({
         date: point.date,
         value: point.activeUsers,
       }));
+      loadingActivity = false;
+    }).catch((err) => {
+      console.error("Failed to load user activity", err);
+      loadingActivity = false;
+    });
 
+    Promise.all([
+      analyticsService.getContentStatistics(),
+      analyticsService.getTopSequences(5),
+    ]).then(([content, sequences]) => {
       contentStats = [
         { label: "Total Sequences", value: content.totalSequences, icon: "fas fa-layer-group" },
         { label: "Public Sequences", value: content.publicSequences, icon: "fas fa-globe" },
         { label: "Gallery Views", value: content.totalViews, icon: "fas fa-eye" },
         { label: "Shares", value: content.totalShares, icon: "fas fa-share-alt" },
       ];
-
       topSequences = sequences.map((seq) => ({
         name: seq.name,
         word: seq.word,
         views: seq.views,
         creator: seq.creator,
       }));
+      loadingContent = false;
+    }).catch((err) => {
+      console.error("Failed to load content stats", err);
+      loadingContent = false;
+    });
 
+    analyticsService.getEngagementMetrics().then((engagement) => {
       engagementStats = [
         {
           label: "Daily Challenges",
@@ -172,13 +193,35 @@
           color: "#8b5cf6",
         },
       ];
-    } catch (error) {
-      console.error("AnalyticsDashboard: Error loading data", error);
-      hasError = true;
-      errorMessage = error instanceof Error ? error.message : "Failed to load analytics data";
-    } finally {
-      isLoading = false;
-    }
+      loadingEngagement = false;
+    }).catch((err) => {
+      console.error("Failed to load engagement metrics", err);
+      loadingEngagement = false;
+    });
+
+    analyticsService.getEventTypeBreakdown(timeRange).then((events) => {
+      eventBreakdown = events;
+      loadingEvents = false;
+    }).catch((err) => {
+      console.error("Failed to load event breakdown", err);
+      loadingEvents = false;
+    });
+
+    analyticsService.getModuleUsage(timeRange).then((modules) => {
+      moduleUsage = modules;
+      loadingModules = false;
+    }).catch((err) => {
+      console.error("Failed to load module usage", err);
+      loadingModules = false;
+    });
+
+    analyticsService.getRecentActivity(10).then((recent) => {
+      recentActivity = recent;
+      loadingRecent = false;
+    }).catch((err) => {
+      console.error("Failed to load recent activity", err);
+      loadingRecent = false;
+    });
   }
 
   onMount(async () => {
@@ -206,12 +249,7 @@
 </script>
 
 <div class="analytics-dashboard">
-  {#if isLoading}
-    <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
-      <p>Loading analytics from Firebase...</p>
-    </div>
-  {:else if hasError}
+  {#if hasError}
     <div class="error-state">
       <i class="fas fa-exclamation-triangle"></i>
       <p>Failed to load analytics</p>
@@ -220,7 +258,8 @@
         <i class="fas fa-redo"></i> Retry
       </button>
     </div>
-  {:else}
+  {/if}
+
     <header class="dashboard-header">
       <h2>Analytics Overview</h2>
       <div class="time-range-selector">
@@ -237,26 +276,32 @@
     </header>
 
     <section class="metrics-grid">
-      {#each summaryMetrics as metric}
-        <MetricCard {metric} />
-      {/each}
+      {#if loadingSummary}
+        {#each Array(4) as _}
+          <MetricCard loading={true} />
+        {/each}
+      {:else}
+        {#each summaryMetrics as metric}
+          <MetricCard {metric} />
+        {/each}
+      {/if}
     </section>
 
-    <UserActivityChart data={userActivityData} />
+    <UserActivityChart data={userActivityData} loading={loadingActivity} />
 
     <div class="two-column">
-      <EventBreakdown events={eventBreakdown} />
-      <ModuleUsage modules={moduleUsage} />
+      <EventBreakdown events={eventBreakdown} loading={loadingEvents} />
+      <ModuleUsage modules={moduleUsage} loading={loadingModules} />
     </div>
 
-    <RecentActivityFeed activities={recentActivity} {eventBreakdown} />
+    <RecentActivityFeed activities={recentActivity} {eventBreakdown} loading={loadingRecent} />
 
     <div class="two-column">
-      <ContentStatistics stats={contentStats} {topSequences} />
-      <EngagementMetrics stats={engagementStats} />
+      <ContentStatistics stats={contentStats} {topSequences} loading={loadingContent} />
+      <EngagementMetrics stats={engagementStats} loading={loadingEngagement} />
     </div>
 
-    {#if summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
+    {#if !loadingSummary && summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
       <div class="data-notice warning">
         <i class="fas fa-info-circle"></i>
         <span>No data available. Please ensure you're signed in with an admin account and Firebase has user data.</span>
@@ -264,7 +309,7 @@
           <i class="fas fa-sync-alt"></i> Refresh
         </button>
       </div>
-    {:else}
+    {:else if !loadingSummary}
       <div class="data-notice success">
         <i class="fas fa-database"></i>
         <span>Showing live data from Firebase Firestore.</span>
@@ -273,7 +318,6 @@
         </button>
       </div>
     {/if}
-  {/if}
 </div>
 
 <style>
@@ -283,20 +327,6 @@
     width:100%;
     margin: 0 auto;
     color: rgba(255, 255, 255, 0.95);
-  }
-
-  .loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    gap: 16px;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  .loading-state i {
-    font-size: 32px;
   }
 
   .error-state {

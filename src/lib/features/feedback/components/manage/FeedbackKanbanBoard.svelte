@@ -41,13 +41,14 @@
       // Filter out soft-deleted items
       if (item.isDeleted) continue;
 
+      // Filter out archived items - they don't appear in Kanban
+      if (item.status === "archived") continue;
+
       // Map to the 4 statuses
       if (grouped[item.status]) {
         grouped[item.status]?.push(item);
-      } else {
-        // Fallback for any legacy statuses
-        grouped["new"]?.push(item);
       }
+      // Note: No fallback - unknown statuses are ignored
     }
 
     return grouped;

@@ -51,6 +51,15 @@ This project follows a **2025+ AI-assisted development approach**:
 
 ## Conversation Patterns
 
+### /fb command behavior
+- When running `/fb`, **always display the feedback item verbatim first** before any analysis
+- This allows the user to read the original feedback before Claude begins working on it
+- **After implementing feedback**, provide clear testing instructions:
+  - Summarize what was changed
+  - List specific steps to verify the fix works
+  - Include what to look for (expected behavior)
+  - This helps when user has multiple feedback windows open
+
 ### When Claude should proactively ask about updating this file:
 - User expresses frustration about Claude repeatedly doing something wrong
 - User states a general principle ("I always want...", "Never do...", "My preference is...")

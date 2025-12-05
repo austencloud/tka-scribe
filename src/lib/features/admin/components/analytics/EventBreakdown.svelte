@@ -4,9 +4,10 @@
 
   interface Props {
     events: EventTypeBreakdown[];
+    loading?: boolean;
   }
 
-  let { events }: Props = $props();
+  let { events, loading = false }: Props = $props();
 
   function getTotalEvents(): number {
     return events.reduce((sum, e) => sum + e.count, 0);
@@ -15,7 +16,23 @@
 
 <section class="section">
   <h3><i class="fas fa-chart-pie"></i> Activity Breakdown</h3>
-  {#if events.length > 0}
+  {#if loading}
+    <div class="event-breakdown">
+      {#each Array(4) as _, i}
+        <div class="event-row">
+          <div class="event-header">
+            <div class="event-icon skeleton-icon"></div>
+            <span class="skeleton-label"></span>
+            <span class="skeleton-count"></span>
+          </div>
+          <div class="event-bar">
+            <div class="event-bar-fill skeleton-bar" style="width: {40 + i * 10}%"></div>
+          </div>
+        </div>
+      {/each}
+      <div class="total-events skeleton-total"></div>
+    </div>
+  {:else if events.length > 0}
     <div class="event-breakdown">
       {#each events as event}
         {@const percentage = getTotalEvents() > 0 ? (event.count / getTotalEvents()) * 100 : 0}
@@ -148,5 +165,48 @@
   .no-data-message i {
     font-size: 20px;
     color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Skeleton styles */
+  .skeleton-icon {
+    background: rgba(255, 255, 255, 0.1);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-label {
+    display: block;
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-count {
+    display: block;
+    width: 40px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-bar {
+    background: rgba(255, 255, 255, 0.1) !important;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-total {
+    width: 100px;
+    height: 13px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    margin-left: auto;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>

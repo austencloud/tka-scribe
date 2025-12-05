@@ -198,7 +198,13 @@
       {#key questionKey}
         <div class="pictograph-section">
           <div class="pictograph-card">
-            <Pictograph pictographData={currentPictograph} />
+            <Pictograph
+              pictographData={currentPictograph}
+              showTKA={false}
+              showVTG={false}
+              showElemental={false}
+              showPositions={false}
+            />
           </div>
         </div>
       {/key}

@@ -242,7 +242,10 @@ Used by both desktop side panel and mobile slide-up overlay.
       <div class="metadata-row">
         {#if hasCreatorInfo}
           <button class="creator-link" onclick={handleCreatorClick}>
-            <span class="metadata-item">By {sequence.ownerDisplayName || sequence.author || "Unknown"}</span>
+            <span class="creator-label">By {sequence.ownerDisplayName || sequence.author || "Unknown"}</span>
+            <svg class="creator-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
           </button>
         {:else}
           <span class="metadata-item">By {sequence.author}</span>
@@ -582,25 +585,44 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .creator-link {
-    background: none;
-    border: none;
-    padding: 4px 8px;
-    margin: -4px -8px;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 14px;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .creator-link:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .creator-link:hover .metadata-item {
-    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.35);
   }
 
   .creator-link:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
+  }
+
+  .creator-label {
+    font-size: clamp(12px, 3cqi, 14px);
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+  }
+
+  .creator-link:hover .creator-label {
+    color: white;
+  }
+
+  .creator-arrow {
+    opacity: 0.6;
+    transition: all 0.2s ease;
+  }
+
+  .creator-link:hover .creator-arrow {
+    opacity: 1;
+    transform: translateX(2px);
   }
 
   /* Action Buttons */

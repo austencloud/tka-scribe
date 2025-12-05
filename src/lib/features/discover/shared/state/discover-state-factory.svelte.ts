@@ -24,6 +24,8 @@ import type { ExploreFilterValue } from "../domain/types/discover-types";
 import type { ISectionService } from "../services/contracts/ISectionService";
 import type { ILibraryService } from "../../../library/services/contracts/ILibraryService";
 import type { GallerySource } from "../state/gallery-source-state.svelte";
+import type { IFavoritesService } from "../services/contracts/IFavoritesService";
+import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
@@ -36,6 +38,7 @@ export function createExploreState() {
     TYPES.INavigationService
   );
   const sectionService = resolve<ISectionService>(TYPES.ISectionService);
+  const favoritesService = tryResolve<IFavoritesService>(TYPES.IFavoritesService);
 
   // Library service for "My Library" mode - lazily resolved
   let libraryService: ILibraryService | null = null;
@@ -198,8 +201,47 @@ export function createExploreState() {
     selectedSequence = sequence;
   }
 
-  async function toggleFavorite(_sequenceId: string): Promise<void> {
-    // TODO: Implement when favorites service is ready
+  async function toggleFavorite(sequenceId: string): Promise<void> {
+    if (!favoritesService) {
+      console.warn("FavoritesService not available");
+      return;
+    }
+
+    try {
+      // Toggle in the service (persists to storage)
+      await favoritesService.toggleFavorite(sequenceId);
+
+      // Get the new favorite status
+      const isFavorite = await favoritesService.isFavorite(sequenceId);
+
+      // Update local state - find and update the sequence in all relevant arrays
+      const updateSequence = (seq: SequenceData) =>
+        seq.id === sequenceId ? { ...seq, isFavorite } : seq;
+
+      allSequences = allSequences.map(updateSequence);
+      displayedSequences = displayedSequences.map(updateSequence);
+      filteredSequences = filteredSequences.map(updateSequence);
+
+      // Also update sections if they contain the sequence
+      sequenceSections = sequenceSections.map(section => ({
+        ...section,
+        sequences: section.sequences.map(updateSequence)
+      }));
+
+      // Update selected sequence if it's the one being toggled
+      if (selectedSequence?.id === sequenceId) {
+        selectedSequence = { ...selectedSequence, isFavorite };
+      }
+
+      // Update the active sequence in the panel manager (for detail panel)
+      const updatedSequence = allSequences.find(s => s.id === sequenceId);
+      if (updatedSequence) {
+        galleryPanelManager.updateActiveSequence(updatedSequence);
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+      throw err;
+    }
   }
 
   function clearError(): void {

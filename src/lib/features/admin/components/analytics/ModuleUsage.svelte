@@ -3,16 +3,32 @@
 
   interface Props {
     modules: ModuleUsageData[];
+    loading?: boolean;
   }
 
-  let { modules }: Props = $props();
+  let { modules, loading = false }: Props = $props();
 
   const maxViews = $derived(Math.max(...modules.map(m => m.views), 1));
 </script>
 
 <section class="section">
   <h3><i class="fas fa-th-large"></i> Module Usage</h3>
-  {#if modules.length > 0}
+  {#if loading}
+    <div class="module-usage">
+      {#each Array(5) as _, i}
+        <div class="module-row">
+          <div class="module-header">
+            <div class="module-icon skeleton-icon"></div>
+            <span class="skeleton-label"></span>
+            <span class="skeleton-views"></span>
+          </div>
+          <div class="module-bar">
+            <div class="module-bar-fill skeleton-bar" style="width: {80 - i * 12}%"></div>
+          </div>
+        </div>
+      {/each}
+    </div>
+  {:else if modules.length > 0}
     <div class="module-usage">
       {#each modules as module}
         <div class="module-row">
@@ -130,5 +146,39 @@
   .no-data-message i {
     font-size: 20px;
     color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Skeleton styles */
+  .skeleton-icon {
+    background: rgba(255, 255, 255, 0.1) !important;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-label {
+    display: block;
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-views {
+    display: block;
+    width: 60px;
+    height: 13px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-bar {
+    background: rgba(255, 255, 255, 0.1) !important;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>

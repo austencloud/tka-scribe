@@ -3,14 +3,27 @@
 
   interface Props {
     data: TimeSeriesPoint[];
+    loading?: boolean;
   }
 
-  let { data }: Props = $props();
+  let { data, loading = false }: Props = $props();
 </script>
 
 <section class="section">
   <h3><i class="fas fa-chart-line"></i> User Activity</h3>
-  {#if data.length > 0}
+  {#if loading}
+    <div class="activity-chart skeleton-chart">
+      <div class="chart-container">
+        {#each Array(20) as _, i}
+          <div class="bar skeleton-bar" style="height: {30 + Math.random() * 50}%"></div>
+        {/each}
+      </div>
+      <div class="chart-labels">
+        <span class="skeleton-text"></span>
+        <span class="skeleton-text"></span>
+      </div>
+    </div>
+  {:else if data.length > 0}
     <div class="activity-chart">
       <div class="chart-container">
         {#each data as point}
@@ -108,5 +121,25 @@
   .no-data-message i {
     font-size: 20px;
     color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Skeleton styles */
+  .skeleton-chart .skeleton-bar {
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-text {
+    display: block;
+    width: 60px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>

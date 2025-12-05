@@ -363,38 +363,37 @@
 <!-- Main layout - shows immediately with skeletons while data loads -->
 <div class="explore-content">
   <!-- Tab Content - Bottom navigation controls the active tab -->
+  <!-- Note: We keep all tabs mounted but hidden to preserve state and avoid refetching -->
   <div class="explore-tab-content">
-    {#key activeTab}
-      <div class="tab-panel">
-        {#if activeTab === "sequences"}
-          <DiscoverSequencesTab
-            {isMobile}
-            {isUIVisible}
-            {showDesktopSidebar}
-            {drawerWidth}
-            {galleryState}
-            {error}
-            onSequenceAction={(action, sequence) =>
-              eventHandlerService?.handleSequenceAction(action, sequence) ??
-              Promise.resolve()}
-            onDetailPanelAction={(action, sequence) =>
-              eventHandlerService?.handleDetailPanelAction(action, sequence) ??
-              Promise.resolve()}
-            onCloseDetailPanel={() =>
-              eventHandlerService?.handleCloseDetailPanel()}
-            onContainerScroll={handleContainerScroll}
-          />
-        {:else if activeTab === "collections"}
-          <CollectionsDiscoverPanel />
-        {:else if activeTab === "creators"}
-          {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
-            <UserProfilePanel userId={creatorsViewState.viewingUserId} />
-          {:else}
-            <CreatorsPanel />
-          {/if}
-        {/if}
-      </div>
-    {/key}
+    <div class="tab-panel" class:hidden={activeTab !== "sequences"}>
+      <DiscoverSequencesTab
+        {isMobile}
+        {isUIVisible}
+        {showDesktopSidebar}
+        {drawerWidth}
+        {galleryState}
+        {error}
+        onSequenceAction={(action, sequence) =>
+          eventHandlerService?.handleSequenceAction(action, sequence) ??
+          Promise.resolve()}
+        onDetailPanelAction={(action, sequence) =>
+          eventHandlerService?.handleDetailPanelAction(action, sequence) ??
+          Promise.resolve()}
+        onCloseDetailPanel={() =>
+          eventHandlerService?.handleCloseDetailPanel()}
+        onContainerScroll={handleContainerScroll}
+      />
+    </div>
+    <div class="tab-panel" class:hidden={activeTab !== "collections"}>
+      <CollectionsDiscoverPanel />
+    </div>
+    <div class="tab-panel" class:hidden={activeTab !== "creators"}>
+      {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
+        <UserProfilePanel userId={creatorsViewState.viewingUserId} />
+      {:else}
+        <CreatorsPanel />
+      {/if}
+    </div>
   </div>
 </div>
 
@@ -424,5 +423,10 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  .tab-panel.hidden {
+    visibility: hidden;
+    pointer-events: none;
   }
 </style>

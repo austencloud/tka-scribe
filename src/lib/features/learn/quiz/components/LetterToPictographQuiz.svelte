@@ -214,7 +214,13 @@
               disabled={isAnswered}
             >
               <div class="pictograph-wrapper">
-                <Pictograph pictographData={option.content as PictographData} />
+                <Pictograph
+                  pictographData={option.content as PictographData}
+                  showTKA={false}
+                  showVTG={false}
+                  showElemental={false}
+                  showPositions={false}
+                />
               </div>
               {#if state === "correct"}
                 <span class="result-icon correct-icon">✓</span>

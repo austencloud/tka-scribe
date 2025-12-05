@@ -4,13 +4,38 @@
   interface Props {
     stats: ContentStat[];
     topSequences: TopSequence[];
+    loading?: boolean;
   }
 
-  let { stats, topSequences }: Props = $props();
+  let { stats, topSequences, loading = false }: Props = $props();
 </script>
 
 <section class="section">
   <h3><i class="fas fa-layer-group"></i> Content Statistics</h3>
+  {#if loading}
+    <div class="stats-list">
+      {#each Array(4) as _}
+        <div class="stat-row">
+          <div class="stat-icon skeleton-icon"></div>
+          <span class="skeleton-stat-label"></span>
+          <span class="skeleton-stat-value"></span>
+        </div>
+      {/each}
+    </div>
+    <h4>Top Sequences</h4>
+    <div class="top-sequences">
+      {#each Array(5) as _, i}
+        <div class="sequence-row">
+          <span class="rank">#{i + 1}</span>
+          <div class="sequence-info">
+            <span class="skeleton-seq-name"></span>
+            <span class="skeleton-seq-word"></span>
+          </div>
+          <span class="skeleton-seq-views"></span>
+        </div>
+      {/each}
+    </div>
+  {:else}
   <div class="stats-list">
     {#each stats as stat}
       <div class="stat-row">
@@ -36,6 +61,7 @@
       </div>
     {/each}
   </div>
+  {/if}
 </section>
 
 <style>
@@ -147,5 +173,62 @@
   .sequence-views {
     font-size: 13px;
     color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Skeleton styles */
+  .skeleton-icon {
+    background: rgba(255, 255, 255, 0.1);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-stat-label {
+    display: block;
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-stat-value {
+    display: block;
+    width: 50px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-seq-name {
+    display: block;
+    width: 120px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-seq-word {
+    display: block;
+    width: 80px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    margin-top: 4px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-seq-views {
+    display: block;
+    width: 60px;
+    height: 13px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>
