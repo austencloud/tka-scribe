@@ -441,9 +441,15 @@ export class FeedbackService implements IFeedbackService {
     return onSnapshot(
       q,
       (snapshot) => {
-        const items: FeedbackItem[] = snapshot.docs.map((docSnap) =>
-          this.mapDocToFeedbackItem(docSnap.id, docSnap.data())
-        );
+        const items: FeedbackItem[] = [];
+        snapshot.docs.forEach((docSnap) => {
+          try {
+            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+            items.push(item);
+          } catch (err) {
+            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+          }
+        });
         onUpdate(items);
       },
       (error) => {
@@ -499,6 +505,9 @@ export class FeedbackService implements IFeedbackService {
       updatedAt: (data["updatedAt"] as Timestamp)?.toDate() || undefined,
       fixedInVersion: data["fixedInVersion"] as string | undefined,
       archivedAt: (data["archivedAt"] as Timestamp)?.toDate() || undefined,
+      isDeleted: data["isDeleted"] as boolean | undefined,
+      deletedAt: (data["deletedAt"] as Timestamp)?.toDate() || undefined,
+      deletedBy: data["deletedBy"] as string | undefined,
     };
   }
 }

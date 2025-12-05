@@ -19,15 +19,15 @@
 
   // Subscribe to real-time feedback updates when admin status is confirmed
   $effect(() => {
-    if (isAdmin && !manageState.isSubscribed) {
+    if (isAdmin) {
       // Start real-time subscription
       manageState.subscribe();
-    }
 
-    // Cleanup subscription when component unmounts or admin status changes
-    return () => {
-      manageState.unsubscribe();
-    };
+      // Cleanup subscription when component unmounts
+      return () => {
+        manageState.unsubscribe();
+      };
+    }
   });
 </script>
 
@@ -48,6 +48,26 @@
   {:else}
     <!-- Header with actions -->
     <div class="manage-header">
+      <button
+        type="button"
+        class="refresh-btn"
+        onclick={async () => {
+          // Clear Firestore cache and reload
+          if (typeof indexedDB !== 'undefined') {
+            try {
+              await indexedDB.deleteDatabase('firestore/[DEFAULT]/the-kinetic-alphabet/main');
+              console.log('Cleared Firestore cache');
+            } catch (e) {
+              console.warn('Could not clear cache:', e);
+            }
+          }
+          manageState.refresh();
+        }}
+        title="Refresh feedback (clears cache)"
+      >
+        <i class="fas fa-sync-alt"></i>
+        <span>Refresh</span>
+      </button>
       <button
         type="button"
         class="prepare-release-btn"
@@ -132,6 +152,32 @@
     padding: 12px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(0, 0, 0, 0.2);
+  }
+
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .refresh-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
+
+  .refresh-btn i {
+    font-size: 12px;
   }
 
   .prepare-release-btn {

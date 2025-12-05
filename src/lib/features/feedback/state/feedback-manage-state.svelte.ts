@@ -110,6 +110,14 @@ export function createFeedbackManageState() {
   }
 
   /**
+   * Force refresh by restarting the subscription
+   */
+  function refresh() {
+    unsubscribeFromFeedback();
+    subscribe();
+  }
+
+  /**
    * Stop real-time subscription (call on cleanup)
    */
   function unsubscribeFromFeedback() {
@@ -318,6 +326,7 @@ export function createFeedbackManageState() {
     // Actions
     subscribe,
     unsubscribe: unsubscribeFromFeedback,
+    refresh,
     loadFeedback, // Legacy compatibility
     setFilter,
     setSearchQuery,

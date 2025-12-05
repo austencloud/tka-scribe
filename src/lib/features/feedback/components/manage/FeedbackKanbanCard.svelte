@@ -321,6 +321,7 @@
     position: relative;
     display: flex;
     width: 100%;
+    min-height: 180px;
     padding: 0;
     /* Colorful gradient background using type color */
     background: linear-gradient(
@@ -405,7 +406,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--kc-space-xs);
+    gap: var(--kc-space-2xs);
     padding: var(--kc-space-sm);
     min-width: 0;
   }

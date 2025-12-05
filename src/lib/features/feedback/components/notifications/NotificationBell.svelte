@@ -4,7 +4,7 @@
   import { notificationService } from "../../services/implementations/NotificationService";
   import { NOTIFICATION_TYPE_CONFIG } from "../../domain/models/notification-models";
   import type { TesterNotification } from "../../domain/models/notification-models";
-  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
   // Local component state
@@ -65,7 +65,7 @@
     unreadCount = notifications.filter((n) => !n.read).length;
 
     // Navigate to my-feedback tab
-    navigationState.navigateTo("feedback", "my-feedback");
+    handleModuleChange("feedback", "my-feedback");
 
     // Close dropdown
     showDropdown = false;

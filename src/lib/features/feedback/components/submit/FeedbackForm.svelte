@@ -70,6 +70,17 @@
     hapticService?.trigger("selection");
     formState.reset();
   }
+
+  function handleKeydown(event: KeyboardEvent) {
+    // Submit on Shift+Enter
+    if (event.key === "Enter" && event.shiftKey) {
+      event.preventDefault();
+      if (formState.isFormValid && !formState.isSubmitting) {
+        formState.submit();
+        hapticService?.trigger("selection");
+      }
+    }
+  }
 </script>
 
 {#if formState.submitStatus === "success"}
@@ -130,7 +141,8 @@
       class:streaming={interimText.length > 0}
       value={displayText}
       oninput={(e) => handleManualInput(e.currentTarget.value)}
-      placeholder={currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}
+      onkeydown={handleKeydown}
+      placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."} (Shift+Enter to submit)`}
       rows="5"
     ></textarea>
     <div class="field-hint">

@@ -12,13 +12,15 @@
     manageState: FeedbackManageState;
   }>();
 
-  // 4 Kanban columns (archived is separate view)
+  // 4 Kanban columns + archived drop zone
   const KANBAN_STATUSES: FeedbackStatus[] = [
     "new",
     "in-progress",
     "in-review",
     "completed",
   ];
+
+  const ARCHIVE_STATUS: FeedbackStatus = "archived";
 
   // Mobile: track active status tab
   let activeStatus = $state<FeedbackStatus>("new");
@@ -98,9 +100,14 @@
     const element = document.elementFromPoint(x, y);
     if (!element) return null;
 
-    // Walk up the DOM to find the column
+    // Walk up the DOM to find the column or archive drop zone
     let current: Element | null = element;
     while (current) {
+      // Check for archive drop zone
+      if (current.classList?.contains("archive-drop-zone")) {
+        return ARCHIVE_STATUS;
+      }
+
       if (current.classList?.contains("kanban-column")) {
         // Find the status from data attribute or aria-label
         const ariaLabel = current.getAttribute("aria-label");
@@ -196,6 +203,38 @@
         onCardClick={handleCardClick}
       />
     {/each}
+
+    <!-- Archived Drop Zone - Thin bar on the right -->
+    <div
+      class="archive-drop-zone"
+      class:drop-target={dragOverColumn === ARCHIVE_STATUS}
+      class:drag-active={draggedItem !== null}
+      style="--column-color: {STATUS_CONFIG[ARCHIVE_STATUS].color}"
+      ondragover={(e) => {
+        e.preventDefault();
+        if (draggedItem && draggedItem.status !== ARCHIVE_STATUS) {
+          dragOverColumn = ARCHIVE_STATUS;
+        }
+      }}
+      ondragleave={handleDragLeave}
+      ondrop={(e) => {
+        e.preventDefault();
+        handleDrop(ARCHIVE_STATUS);
+      }}
+      role="region"
+      aria-label="Archive drop zone"
+    >
+      <div class="archive-label">
+        <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}"></i>
+        <span>Archived</span>
+      </div>
+
+      {#if dragOverColumn === ARCHIVE_STATUS}
+        <div class="drop-indicator">
+          <i class="fas fa-arrow-right"></i>
+        </div>
+      {/if}
+    </div>
   </div>
 
   {#if manageState.isLoading && manageState.items.length === 0}
@@ -493,6 +532,127 @@
     }
   }
 
+  @keyframes pulseIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* ===== ARCHIVE DROP ZONE ===== */
+  .archive-drop-zone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Thin bar - same height as columns */
+    width: clamp(60px, 8cqi, 80px);
+    min-width: clamp(60px, 8cqi, 80px);
+    flex-shrink: 0;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--column-color) 8%, rgba(20, 20, 30, 0.95)) 0%,
+      color-mix(in srgb, var(--column-color) 3%, rgba(15, 15, 25, 0.98)) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--column-color) 20%, transparent);
+    border-top: 3px solid var(--column-color);
+    border-radius: var(--kb-radius-md);
+    overflow: hidden;
+    transition: all 0.25s var(--spring-smooth);
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--column-color) 15%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .archive-drop-zone:hover {
+    border-color: color-mix(in srgb, var(--column-color) 30%, transparent);
+    box-shadow:
+      0 6px 24px color-mix(in srgb, var(--column-color) 20%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .archive-drop-zone.drag-active {
+    border-style: dashed;
+    opacity: 0.9;
+  }
+
+  .archive-drop-zone.drop-target {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--column-color) 20%, rgba(20, 20, 30, 0.95)) 0%,
+      color-mix(in srgb, var(--column-color) 12%, rgba(15, 15, 25, 0.98)) 100%
+    );
+    border-color: var(--column-color);
+    border-style: solid;
+    box-shadow:
+      0 0 40px color-mix(in srgb, var(--column-color) 40%, transparent),
+      inset 0 0 30px color-mix(in srgb, var(--column-color) 10%, transparent);
+    transform: scale(1.02);
+  }
+
+  .archive-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kb-space-xs);
+    padding: var(--kb-space-md);
+    color: var(--kb-text-muted);
+    text-align: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .archive-label i {
+    font-size: clamp(1.25rem, 4cqi, 1.5rem);
+    color: var(--column-color);
+    opacity: 0.8;
+    writing-mode: horizontal-tb;
+    transform: rotate(-90deg);
+  }
+
+  .archive-label span {
+    font-size: var(--kb-text-sm);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .archive-drop-zone .drop-indicator {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--column-color) 12%, transparent);
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+    animation: pulseIn 0.2s ease;
+  }
+
+  .archive-drop-zone .drop-indicator i {
+    font-size: clamp(1.5rem, 5cqi, 2rem);
+    color: var(--column-color);
+    animation: slideRight 0.6s ease-in-out infinite;
+  }
+
+  @keyframes slideRight {
+    0%,
+    100% {
+      transform: translateX(-4px);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateX(4px);
+      opacity: 1;
+    }
+  }
+
   /* ===== CONTAINER QUERY: Mobile layout (shows tabs) ===== */
   @container kanban (max-width: 650px) {
     .status-tabs {
@@ -503,13 +663,20 @@
       overflow-x: hidden;
       overflow-y: auto;
     }
+
+    /* Hide archive drop zone on mobile - not useful in tab view */
+    .archive-drop-zone {
+      display: none;
+    }
   }
 
   /* ===== REDUCED MOTION ===== */
   @media (prefers-reduced-motion: reduce) {
     .kanban-board,
     .status-tab,
-    .skeleton-card {
+    .skeleton-card,
+    .archive-drop-zone,
+    .archive-drop-zone .drop-indicator i {
       transition: none;
       animation: none;
     }
