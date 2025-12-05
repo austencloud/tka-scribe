@@ -348,11 +348,10 @@
 <div class="sequence-viewer" class:side-by-side={isSideBySide}>
   <!-- Header -->
   <header class="viewer-header">
-    <button class="back-button" onclick={handleClose} aria-label="Go back">
-      <i class="fas fa-arrow-left"></i>
-    </button>
     <h1 class="viewer-title">{viewerTitle}</h1>
-    <div class="header-spacer"></div>
+    <button class="close-button" onclick={handleClose} aria-label="Close">
+      <i class="fas fa-times"></i>
+    </button>
   </header>
 
   <!-- Main Content -->
@@ -455,43 +454,49 @@
 
   /* Header */
   .viewer-header {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 12px 16px;
     background: rgba(15, 20, 30, 0.95);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
+    min-height: 72px;
   }
 
-  .back-button {
+  .viewer-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 12px;
+    right: 16px;
     width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
     color: white;
     font-size: 18px;
     cursor: pointer;
-    border-radius: 50%;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
   }
 
-  .back-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+  .close-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
   }
 
-  .viewer-title {
-    flex: 1;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  .header-spacer {
-    width: 48px;
+  .close-button:active {
+    transform: scale(0.95);
   }
 
   /* Content */

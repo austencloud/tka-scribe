@@ -317,7 +317,7 @@ export const SETTINGS_TABS: Section[] = [
   },
   {
     id: "whats-new",
-    label: "What's New",
+    label: "Release Notes",
     icon: '<i class="fas fa-gift"></i>',
     description: "Version history and release notes",
     color: "#8b5cf6",

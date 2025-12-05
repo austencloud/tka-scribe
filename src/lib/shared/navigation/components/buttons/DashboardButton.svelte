@@ -32,9 +32,12 @@
   // Notification state
   const notificationState = createNotificationState();
 
-  onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+  onMount(() => {
+    // Load haptic service asynchronously
+    resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService).then(
+      (service) => {
+        hapticService = service;
+      }
     );
 
     // Initialize notifications when user is authenticated
