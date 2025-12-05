@@ -1,6 +1,6 @@
 {
   "name": "@tka/studio",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "TKA Studio - Browser-based sequence editor for flow arts",
