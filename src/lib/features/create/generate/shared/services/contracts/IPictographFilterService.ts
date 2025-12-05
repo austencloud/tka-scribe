@@ -13,5 +13,6 @@ export interface IPictographFilterService {
     redRotationDirection: string
   ): PictographData[];
   filterStartPositions(options: PictographData[]): PictographData[];
+  filterStaticType6(options: PictographData[], level: number): PictographData[];
   selectRandom<T>(array: T[]): T;
 }

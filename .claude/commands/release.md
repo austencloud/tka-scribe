@@ -57,7 +57,7 @@ Use AskUserQuestion to confirm the release:
 
 **Options:**
 1. **"Yes, release now"**
-   - Description: "Update package.json, create git commit & tag, archive feedback (if in feedback mode)"
+   - Description: "Update package.json, create git commit & tag, GitHub release, archive feedback"
 
 2. **"Change version number"**
    - Description: "Manually specify a different version (e.g., for major releases)"
@@ -77,6 +77,7 @@ This will:
 - Update package.json version field
 - Create git commit with changelog
 - Create annotated git tag
+- Create GitHub release with formatted changelog
 - Archive completed feedback in Firestore (feedback mode only)
 - Create version record in Firestore (feedback mode only)
 
@@ -290,3 +291,21 @@ Claude: Pushing to remote...
 
 All done! Release v0.2.0 is live.
 ```
+
+## Backfilling GitHub Releases
+
+If you have existing git tags without GitHub releases, use the backfill script:
+
+```bash
+node scripts/backfill-github-releases.js
+```
+
+This will:
+- Check all git tags in the repository
+- Compare against existing GitHub releases
+- For each tag without a release:
+  - Pull changelog from Firestore version record (if available)
+  - Fallback to git tag message if no version record exists
+  - Create a formatted GitHub release
+
+The script is idempotent - safe to run multiple times.

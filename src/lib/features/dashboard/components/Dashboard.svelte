@@ -28,6 +28,7 @@
   // Widgets
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
   import SupportWidget from "./widgets/SupportWidget.svelte";
+  import NotificationCenterWidget from "./widgets/NotificationCenterWidget.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
   let isVisible = $state(false);
@@ -344,6 +345,13 @@
         {:else}
           <SupportWidget />
         {/if}
+      </section>
+    {/if}
+
+    <!-- Notification Center Card -->
+    {#if isVisible && isAuthenticated}
+      <section class="bento-notifications" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 375, easing: cubicOut }}>
+        <NotificationCenterWidget />
       </section>
     {/if}
 
@@ -942,8 +950,14 @@
      ======================================== */
 
   .bento-challenge,
-  .bento-support {
+  .bento-support,
+  .bento-notifications {
     min-height: auto;
+  }
+
+  /* Notification Center - taller to show multiple notifications */
+  .bento-notifications {
+    min-height: 400px;
   }
 
   /* Teaser Card Style (Mobile) */

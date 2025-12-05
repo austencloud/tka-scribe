@@ -22,8 +22,12 @@
  *
  * Usage:
  *   node scripts/release.js                    - Interactive flow
+ *   node scripts/release.js -p                 - Quick preview (for /fb workflow)
+ *   node scripts/release.js --preview          - Quick preview (same as -p)
+ *   node scripts/release.js --dry-run          - Full preview with details
+ *   node scripts/release.js --show-last        - Show what was in the last release
+ *   node scripts/release.js --last             - Show what was in the last release (same as --show-last)
  *   node scripts/release.js --version 0.2.0    - Manual version
- *   node scripts/release.js --dry-run          - Preview only
  *   node scripts/release.js --confirm          - Execute release (requires prior preview)
  */
 
@@ -269,6 +273,61 @@ Co-Authored-By: Claude <noreply@anthropic.com>`;
 }
 
 /**
+ * Create GitHub release
+ */
+function createGitHubRelease(version, changelog) {
+  // Format release notes
+  const fixed = changelog.filter(e => e.category === 'fixed');
+  const added = changelog.filter(e => e.category === 'added');
+  const improved = changelog.filter(e => e.category === 'improved');
+
+  let releaseNotes = '';
+
+  if (fixed.length > 0) {
+    releaseNotes += '## 🐛 Bug Fixes\n\n';
+    fixed.forEach(e => {
+      releaseNotes += `- ${e.text}\n`;
+    });
+    releaseNotes += '\n';
+  }
+
+  if (added.length > 0) {
+    releaseNotes += '## ✨ New Features\n\n';
+    added.forEach(e => {
+      releaseNotes += `- ${e.text}\n`;
+    });
+    releaseNotes += '\n';
+  }
+
+  if (improved.length > 0) {
+    releaseNotes += '## 🔧 Improvements\n\n';
+    improved.forEach(e => {
+      releaseNotes += `- ${e.text}\n`;
+    });
+    releaseNotes += '\n';
+  }
+
+  releaseNotes += '\n---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)';
+
+  // Write release notes to temp file to handle special characters
+  writeFileSync('.release-notes.tmp', releaseNotes);
+
+  try {
+    // Create GitHub release
+    execSync(`gh release create v${version} --title "v${version}" --notes-file .release-notes.tmp`, {
+      stdio: 'inherit'
+    });
+  } finally {
+    // Clean up temp file
+    try {
+      execSync('rm .release-notes.tmp', { stdio: 'ignore' });
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+  }
+}
+
+/**
  * Display changelog preview
  */
 function displayChangelog(entries) {
@@ -298,15 +357,142 @@ function displayChangelog(entries) {
 }
 
 /**
+ * Show what was released in the last version
+ */
+async function showLastRelease() {
+  console.log('📦 Last Release Summary\n');
+  console.log('='.repeat(70));
+
+  try {
+    // Get latest version from git tags
+    const latestTag = getLatestTag();
+
+    if (!latestTag) {
+      console.log('\n⚠️  No releases found.');
+      console.log('   Create your first release with /release\n');
+      return;
+    }
+
+    const version = latestTag;
+    console.log(`\n🏷️  Version: v${version}\n`);
+
+    // Get tag date and message
+    try {
+      const tagInfo = execSync(`git tag -l -n99 v${version}`, { encoding: 'utf8' }).trim();
+      const tagDate = execSync(`git log -1 --format=%ai v${version}`, { encoding: 'utf8' }).trim();
+
+      console.log(`📅 Released: ${tagDate}\n`);
+    } catch (e) {
+      // Ignore if we can't get tag info
+    }
+
+    // Query Firestore for feedback items fixed in this version
+    const snapshot = await db.collection('feedback')
+      .where('fixedInVersion', '==', version)
+      .get();
+
+    if (snapshot.empty) {
+      console.log('⚠️  No feedback items found for this version in Firestore.');
+      console.log('   This might be a git-only release.\n');
+
+      // Show git tag message as fallback
+      try {
+        const tagMessage = execSync(`git tag -l -n99 v${version} | tail -n +2`, { encoding: 'utf8' }).trim();
+        if (tagMessage) {
+          console.log('📋 Release Notes:\n');
+          console.log(tagMessage);
+          console.log('');
+        }
+      } catch (e) {
+        // Ignore
+      }
+      return;
+    }
+
+    const items = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    // Group by type
+    const bugs = items.filter(i => i.type === 'bug');
+    const features = items.filter(i => i.type === 'feature');
+    const general = items.filter(i => i.type === 'general');
+
+    console.log(`✅ Shipped ${items.length} items:`);
+    console.log(`   🐛 ${bugs.length} bug fixes`);
+    console.log(`   ✨ ${features.length} new features`);
+    console.log(`   🔧 ${general.length} improvements\n`);
+
+    console.log('─'.repeat(70));
+
+    // Show details
+    if (bugs.length > 0) {
+      console.log('\n🐛 Bug Fixes:\n');
+      bugs.forEach(item => {
+        const title = item.title || item.description?.substring(0, 60) || 'Untitled';
+        console.log(`   • ${title}${item.title ? '' : '...'}`);
+        if (item.id) {
+          console.log(`     └─ ID: ${item.id.substring(0, 8)}...`);
+        }
+      });
+    }
+
+    if (features.length > 0) {
+      console.log('\n✨ New Features:\n');
+      features.forEach(item => {
+        const title = item.title || item.description?.substring(0, 60) || 'Untitled';
+        console.log(`   • ${title}${item.title ? '' : '...'}`);
+        if (item.id) {
+          console.log(`     └─ ID: ${item.id.substring(0, 8)}...`);
+        }
+      });
+    }
+
+    if (general.length > 0) {
+      console.log('\n🔧 Improvements:\n');
+      general.forEach(item => {
+        const title = item.title || item.description?.substring(0, 60) || 'Untitled';
+        console.log(`   • ${title}${item.title ? '' : '...'}`);
+        if (item.id) {
+          console.log(`     └─ ID: ${item.id.substring(0, 8)}...`);
+        }
+      });
+    }
+
+    console.log('\n' + '─'.repeat(70));
+    console.log(`\n💡 View on GitHub: gh release view v${version}`);
+    console.log(`💡 View in app: Settings → What's New tab\n`);
+
+  } catch (error) {
+    console.error('❌ Error fetching last release:', error.message);
+    process.exit(1);
+  }
+}
+
+/**
  * Main release flow
  */
 async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
+  const quickPreview = args.includes('--preview') || args.includes('-p');
+  const showLast = args.includes('--show-last') || args.includes('--last');
   const manualVersionIndex = args.indexOf('--version');
   const manualVersion = manualVersionIndex >= 0 ? args[manualVersionIndex + 1] : null;
 
-  console.log('📦 Starting release process...\n');
+  // Show last release mode
+  if (showLast) {
+    await showLastRelease();
+    process.exit(0);
+  }
+
+  // Quick preview mode - minimal output
+  if (quickPreview) {
+    console.log('🔍 Quick Release Preview\n');
+  } else {
+    console.log('📦 Starting release process...\n');
+  }
 
   // 1. Check completed feedback
   console.log('🔍 Checking completed feedback...');
@@ -369,8 +555,12 @@ async function main() {
     console.log('');
   }
 
-  if (dryRun) {
-    console.log('🔍 Dry run complete. No changes made.');
+  if (dryRun || quickPreview) {
+    if (quickPreview) {
+      console.log('\n💡 Tip: Run /release to create this release interactively.');
+    } else {
+      console.log('🔍 Dry run complete. No changes made.');
+    }
     process.exit(0);
   }
 
@@ -401,9 +591,14 @@ async function main() {
   console.log('✓ Creating git commit and tag...');
   createGitRelease(suggestedVersion, changelog);
 
+  // Create GitHub release
+  console.log('✓ Creating GitHub release...');
+  createGitHubRelease(suggestedVersion, changelog);
+
   console.log(`\n🎉 Release v${suggestedVersion} complete!\n`);
   console.log('   Next steps:');
   console.log('   - Review the commit: git show');
+  console.log('   - View the release: gh release view v' + suggestedVersion);
   console.log('   - Push to remote: git push && git push --tags');
   console.log('');
 

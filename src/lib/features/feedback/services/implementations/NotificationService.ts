@@ -17,7 +17,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
-import type { TesterNotification } from "../../domain/models/notification-models";
+import type { UserNotification, TesterNotification } from "../../domain/models/notification-models";
 
 const USERS_COLLECTION = "users";
 const NOTIFICATIONS_SUBCOLLECTION = "notifications";
@@ -48,7 +48,7 @@ export class NotificationService {
   async getNotifications(
     userId: string,
     maxCount: number = 20
-  ): Promise<TesterNotification[]> {
+  ): Promise<UserNotification[]> {
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -64,22 +64,66 @@ export class NotificationService {
 
     const snapshot = await getDocs(q);
 
-    return snapshot.docs.map((docSnap) => {
-      const data = docSnap.data();
+    return snapshot.docs.map((docSnap) => this.mapDocToNotification(docSnap.id, docSnap.data()));
+  }
+
+  /**
+   * Map Firestore document to notification object
+   */
+  private mapDocToNotification(id: string, data: Record<string, unknown>): UserNotification {
+    const baseNotification = {
+      id,
+      userId: data["userId"] as string,
+      type: data["type"] as UserNotification["type"],
+      message: data["message"] as string,
+      createdAt: (data["createdAt"] as Timestamp)?.toDate() || new Date(),
+      read: data["read"] as boolean,
+      readAt: (data["readAt"] as Timestamp)?.toDate(),
+      fromUserId: data["fromUserId"] as string | undefined,
+      fromUserName: data["fromUserName"] as string | undefined,
+    };
+
+    const type = data["type"] as string;
+
+    // Map to specific notification type based on type field
+    if (type.startsWith("feedback-")) {
       return {
-        id: docSnap.id,
-        userId: data["userId"] as string,
+        ...baseNotification,
+        type: type as UserNotification["type"],
         feedbackId: data["feedbackId"] as string,
         feedbackTitle: data["feedbackTitle"] as string,
-        type: data["type"] as TesterNotification["type"],
-        message: data["message"] as string,
-        createdAt: (data["createdAt"] as Timestamp)?.toDate() || new Date(),
-        read: data["read"] as boolean,
-        readAt: (data["readAt"] as Timestamp)?.toDate(),
         fromUserId: data["fromUserId"] as string,
         fromUserName: data["fromUserName"] as string,
-      };
-    });
+      } as UserNotification;
+    } else if (type.startsWith("sequence-")) {
+      return {
+        ...baseNotification,
+        type: type as UserNotification["type"],
+        sequenceId: data["sequenceId"] as string,
+        sequenceTitle: data["sequenceTitle"] as string,
+        fromUserId: data["fromUserId"] as string,
+        fromUserName: data["fromUserName"] as string,
+        videoUrl: data["videoUrl"] as string | undefined,
+        commentText: data["commentText"] as string | undefined,
+      } as UserNotification;
+    } else if (type === "user-followed" || type === "achievement-unlocked") {
+      return {
+        ...baseNotification,
+        type: type as UserNotification["type"],
+        achievementId: data["achievementId"] as string | undefined,
+        achievementName: data["achievementName"] as string | undefined,
+      } as UserNotification;
+    } else if (type === "system-announcement") {
+      return {
+        ...baseNotification,
+        type: type as UserNotification["type"],
+        title: data["title"] as string,
+        actionUrl: data["actionUrl"] as string | undefined,
+      } as UserNotification;
+    }
+
+    // Fallback for unknown types - treat as base notification
+    return baseNotification as UserNotification;
   }
 
   /**
@@ -126,7 +170,7 @@ export class NotificationService {
    */
   subscribeToNotifications(
     userId: string,
-    callback: (notifications: TesterNotification[]) => void
+    callback: (notifications: UserNotification[]) => void
   ): () => void {
     // Clean up previous subscription
     if (this.unsubscribe) {
@@ -143,22 +187,9 @@ export class NotificationService {
     const q = query(notificationsRef, orderBy("createdAt", "desc"), limit(20));
 
     this.unsubscribe = onSnapshot(q, (snapshot) => {
-      const notifications: TesterNotification[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data();
-        return {
-          id: docSnap.id,
-          userId: data["userId"] as string,
-          feedbackId: data["feedbackId"] as string,
-          feedbackTitle: data["feedbackTitle"] as string,
-          type: data["type"] as TesterNotification["type"],
-          message: data["message"] as string,
-          createdAt: (data["createdAt"] as Timestamp)?.toDate() || new Date(),
-          read: data["read"] as boolean,
-          readAt: (data["readAt"] as Timestamp)?.toDate(),
-          fromUserId: data["fromUserId"] as string,
-          fromUserName: data["fromUserName"] as string,
-        };
-      });
+      const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
+        this.mapDocToNotification(docSnap.id, docSnap.data())
+      );
       callback(notifications);
     });
 

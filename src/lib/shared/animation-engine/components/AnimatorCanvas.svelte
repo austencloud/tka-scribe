@@ -395,6 +395,53 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
   });
 
+  // CRITICAL: Clear caches when sequence changes to prevent memory leaks
+  // This ensures we don't accumulate trail data and pre-rendered frames for old sequences
+  let previousSequenceId = $state<string | null>(null);
+  $effect(() => {
+    if (!sequenceData) {
+      // No sequence - clear everything
+      pathCache?.clear();
+      framePreRenderer?.clear();
+      trailCaptureService?.clearTrails();
+      previousSequenceId = null;
+      cacheSequenceId = null;
+      preRenderedFramesReady = false;
+      return;
+    }
+
+    // Generate unique sequence ID
+    const word = sequenceData.word || sequenceData.name || "unknown";
+    const totalBeats = sequenceData.beats?.length || 0;
+    const newSequenceId = `${word}-${totalBeats}`;
+
+    // If sequence changed, clear old data
+    if (previousSequenceId !== null && previousSequenceId !== newSequenceId) {
+      console.log(`🧹 Sequence changed (${previousSequenceId} -> ${newSequenceId}), clearing caches to prevent memory leak`);
+      pathCache?.clear();
+      framePreRenderer?.clear();
+      trailCaptureService?.clearTrails();
+      cacheSequenceId = null;
+      preRenderedFramesReady = false;
+    }
+
+    previousSequenceId = newSequenceId;
+  });
+
+  // CRITICAL: Clear caches when playback stops to free memory
+  // Without this, frames accumulate in memory during continuous looping
+  $effect(() => {
+    if (!isPlaying) {
+      // Playback stopped - clear pre-rendered frames to free memory
+      // Keep path cache (it's small) but clear frame bitmaps (they're large)
+      if (framePreRenderer && preRenderedFramesReady) {
+        console.log(`🧹 Playback stopped, clearing pre-rendered frames to free memory`);
+        framePreRenderer.clear();
+        preRenderedFramesReady = false;
+      }
+    }
+  });
+
   // Watch for prop type changes (per-color support)
   let currentBluePropType = $state("staff");
   let currentRedPropType = $state("staff");

@@ -170,6 +170,10 @@ export class TrailCaptureService implements ITrailCaptureService {
   // Default point spacing (used if no performance monitor)
   private readonly DEFAULT_POINT_SPACING = 0.75;
 
+  // Memory leak prevention: Track total accumulated points
+  private totalPointsCaptured = 0;
+  private readonly MAX_TOTAL_POINTS_BEFORE_PRUNE = 50000; // Safety limit to prevent OOM
+
   // Constants
   private readonly GRID_HALFWAY_POINT_OFFSET = 150; // Matches strict grid points
   private readonly INWARD_FACTOR = 1.0; // No inward adjustment for animation mode
@@ -312,6 +316,7 @@ export class TrailCaptureService implements ITrailCaptureService {
     this.secondaryRedTrailBuffer.clear();
     this.lastCapturedPoints.clear();
     this.animationStartTime = null;
+    this.totalPointsCaptured = 0; // Reset counter to prevent false positives
   }
 
   // ============================================================================
@@ -404,6 +409,7 @@ export class TrailCaptureService implements ITrailCaptureService {
             endType,
           };
           buffer.push(point);
+          this.totalPointsCaptured++;
         }
 
         // Always update tracking position (even if we don't capture the point yet)
@@ -451,6 +457,7 @@ export class TrailCaptureService implements ITrailCaptureService {
 
             if (dist >= minSpacing) {
               buffer.push(cachedPoint);
+              this.totalPointsCaptured++; // Track backfilled points too
               lastAddedX = cachedPoint.x;
               lastAddedY = cachedPoint.y;
               addedCount++;
@@ -504,6 +511,7 @@ export class TrailCaptureService implements ITrailCaptureService {
             };
 
             buffer.push(point);
+            this.totalPointsCaptured++;
             this.lastCapturedPoints.set(key, {
               x: endpoint.x,
               y: endpoint.y,
@@ -515,6 +523,40 @@ export class TrailCaptureService implements ITrailCaptureService {
         }
       }
     }
+
+    // CRITICAL: Prevent unbounded memory growth during long playback sessions
+    // If we've accumulated too many points (e.g., playing for hours), prune aggressively
+    if (this.totalPointsCaptured > this.MAX_TOTAL_POINTS_BEFORE_PRUNE) {
+      console.warn(
+        `⚠️ Trail memory limit reached (${this.totalPointsCaptured} points), pruning to prevent crash`
+      );
+      this.pruneToReasonableSize(currentTime);
+    }
+  }
+
+  /**
+   * Emergency memory pruning - keeps only recent trail points
+   * Called when total points exceed safety threshold
+   */
+  private pruneToReasonableSize(currentTime: number): void {
+    const KEEP_DURATION_MS = 5000; // Keep last 5 seconds only
+    const cutoffTime = currentTime - KEEP_DURATION_MS;
+
+    this.blueTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
+    this.redTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
+    this.secondaryBlueTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
+    this.secondaryRedTrailBuffer.filterInPlace((p) => p.timestamp > cutoffTime);
+
+    // Reset counter
+    this.totalPointsCaptured =
+      this.blueTrailBuffer.length +
+      this.redTrailBuffer.length +
+      this.secondaryBlueTrailBuffer.length +
+      this.secondaryRedTrailBuffer.length;
+
+    console.log(
+      `✂️ Pruned trails to ${this.totalPointsCaptured} points (kept last 5s)`
+    );
   }
 
   /**

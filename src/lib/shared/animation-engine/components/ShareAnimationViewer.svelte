@@ -142,6 +142,14 @@
     playbackController.togglePlayback();
   }
 
+  function handleReset() {
+    if (!playbackController || !initialized) return;
+    playbackController.jumpToBeat(0);
+    if (animationPanelState.isPlaying) {
+      playbackController.togglePlayback();
+    }
+  }
+
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
     if (!animationPanelState.sequenceData) return null;
@@ -214,6 +222,31 @@
         onPlaybackToggle={togglePlayback}
         trailSettings={animationSettings.trail}
       />
+
+      <!-- Playback Controls -->
+      <div class="playback-controls">
+        <button
+          class="control-btn reset-btn"
+          onclick={handleReset}
+          title="Reset to start"
+          aria-label="Reset animation"
+        >
+          <i class="fas fa-undo"></i>
+        </button>
+
+        <button
+          class="control-btn play-pause-btn"
+          onclick={togglePlayback}
+          title={animationPanelState.isPlaying ? "Pause" : "Play"}
+          aria-label={animationPanelState.isPlaying ? "Pause animation" : "Play animation"}
+        >
+          <i class="fas {animationPanelState.isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        </button>
+
+        <div class="beat-indicator">
+          Beat {Math.floor(animationPanelState.currentBeat) + 1} / {animationPanelState.totalBeats}
+        </div>
+      </div>
     </div>
   {/if}
 </div>
@@ -275,6 +308,81 @@
   @keyframes spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  /* Playback Controls */
+  .playback-controls {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
+
+  .control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .control-btn:active {
+    transform: scale(0.95);
+  }
+
+  .play-pause-btn {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: transparent;
+    font-size: 16px;
+  }
+
+  .play-pause-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  }
+
+  .beat-indicator {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .control-btn {
+      transition: none;
+    }
+
+    .control-btn:hover,
+    .control-btn:active {
+      transform: none;
     }
   }
 </style>

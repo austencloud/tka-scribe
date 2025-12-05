@@ -1,0 +1,188 @@
+<!-- VoiceInputButton - Web Speech API voice-to-text for feedback -->
+<script lang="ts">
+  import { onMount } from "svelte";
+
+  // Props
+  const { onTranscript, onInterimTranscript, disabled = false } = $props<{
+    onTranscript: (text: string, isFinal: boolean) => void;
+    onInterimTranscript?: (text: string) => void;
+    disabled?: boolean;
+  }>();
+
+  // State
+  let isRecording = $state(false);
+  let isSupported = $state(false);
+  let recognition: SpeechRecognition | null = $state(null);
+  let baseTranscriptLength = 0; // Track where we started this recording session
+
+  // Check browser support
+  onMount(() => {
+    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    isSupported = !!SpeechRecognition;
+
+    if (isSupported) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true; // Enable live streaming
+      recognition.lang = "en-US";
+
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        let interimTranscript = "";
+        let finalTranscript = "";
+
+        // Process all results from the last finalized index
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript + " ";
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        // Stream interim results for live preview
+        if (interimTranscript && onInterimTranscript) {
+          onInterimTranscript(interimTranscript);
+        }
+
+        // Commit final results
+        if (finalTranscript) {
+          onTranscript(finalTranscript.trim(), true);
+        }
+      };
+
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error("Speech recognition error:", event.error);
+        if (event.error !== "no-speech") {
+          isRecording = false;
+        }
+      };
+
+      recognition.onend = () => {
+        isRecording = false;
+        // Clear any lingering interim text
+        if (onInterimTranscript) {
+          onInterimTranscript("");
+        }
+      };
+    }
+  });
+
+  function toggleRecording() {
+    if (!recognition || disabled) return;
+
+    if (isRecording) {
+      recognition.stop();
+      isRecording = false;
+    } else {
+      recognition.start();
+      isRecording = true;
+    }
+  }
+</script>
+
+{#if isSupported}
+  <button
+    type="button"
+    class="voice-btn"
+    class:recording={isRecording}
+    onclick={toggleRecording}
+    disabled={disabled}
+    aria-label={isRecording ? "Stop recording" : "Start voice input"}
+    title={isRecording ? "Stop recording" : "Speak to dictate feedback"}
+  >
+    {#if isRecording}
+      <span class="pulse-ring"></span>
+      <i class="fas fa-stop"></i>
+    {:else}
+      <i class="fas fa-microphone"></i>
+    {/if}
+  </button>
+{/if}
+
+<style>
+  .voice-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    border-radius: 50%;
+    color: #818cf8;
+    cursor: pointer;
+    transition: all 200ms ease;
+    flex-shrink: 0;
+  }
+
+  .voice-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: scale(1.05);
+  }
+
+  .voice-btn:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .voice-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .voice-btn i {
+    font-size: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Recording state */
+  .voice-btn.recording {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+  }
+
+  /* Pulse ring animation */
+  .pulse-ring {
+    position: absolute;
+    inset: -4px;
+    border: 2px solid rgba(239, 68, 68, 0.6);
+    border-radius: 50%;
+    animation: ringPulse 1.5s ease-out infinite;
+  }
+
+  @keyframes ringPulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.3);
+      opacity: 0;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .voice-btn.recording {
+      animation: none;
+    }
+    .pulse-ring {
+      animation: none;
+      display: none;
+    }
+  }
+</style>

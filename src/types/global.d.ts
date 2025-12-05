@@ -24,6 +24,9 @@ declare global {
       diamondData: string;
       boxData: string;
     };
+    // Web Speech API
+    SpeechRecognition?: typeof SpeechRecognition;
+    webkitSpeechRecognition?: typeof SpeechRecognition;
   }
 
   // Custom events

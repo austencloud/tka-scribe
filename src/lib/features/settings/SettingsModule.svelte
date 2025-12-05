@@ -30,6 +30,7 @@
 
   // Import all tab components directly
   import ProfileTab from "$lib/shared/settings/components/tabs/ProfileTab.svelte";
+  import NotificationPreferencesPanel from "$lib/features/feedback/components/NotificationPreferencesPanel.svelte";
   import WhatsNewTab from "$lib/shared/settings/components/tabs/WhatsNewTab.svelte";
   import PropTypeTab from "$lib/shared/settings/components/tabs/PropTypeTab.svelte";
   import BackgroundTab from "$lib/shared/settings/components/tabs/background/BackgroundTab.svelte";
@@ -215,6 +216,8 @@
             currentSettings={settings}
             onSettingUpdate={handleSettingUpdate}
           />
+        {:else if activeTab === "notifications"}
+          <NotificationPreferencesPanel />
         {:else if activeTab === "whats-new"}
           <WhatsNewTab />
         {:else if activeTab === "props"}

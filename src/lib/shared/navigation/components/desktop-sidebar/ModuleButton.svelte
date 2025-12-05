@@ -6,6 +6,8 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ModuleDefinition } from "../../domain/types";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import NotificationBadge from "../NotificationBadge.svelte";
+  import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
   let {
     module,
@@ -25,8 +27,31 @@
 
   let hapticService: IHapticFeedbackService | undefined;
 
+  // Notification state for dashboard module
+  const notificationState = module.id === "dashboard" ? createNotificationState() : null;
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+
+    // Initialize notifications for dashboard module
+    if (module.id === "dashboard" && authStore.isAuthenticated) {
+      notificationState?.init();
+    }
+
+    return () => {
+      notificationState?.cleanup();
+    };
+  });
+
+  // Watch auth state changes to init/cleanup notifications
+  $effect(() => {
+    if (module.id === "dashboard") {
+      if (authStore.isAuthenticated) {
+        notificationState?.init();
+      } else {
+        notificationState?.cleanup();
+      }
+    }
   });
 
   function handleClick() {
@@ -58,17 +83,24 @@
   aria-disabled={isDisabled}
   disabled={isDisabled}
 >
-  {#if showProfilePicture}
-    <img
-      src={profilePictureUrl}
-      alt={profileDisplayName}
-      class="profile-avatar"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  {:else}
-    <span class="module-icon">{@html module.icon}</span>
-  {/if}
+  <div class="icon-wrapper">
+    {#if showProfilePicture}
+      <img
+        src={profilePictureUrl}
+        alt={profileDisplayName}
+        class="profile-avatar"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      />
+    {:else}
+      <span class="module-icon">{@html module.icon}</span>
+    {/if}
+
+    <!-- Notification Badge for Dashboard Module -->
+    {#if module.id === "dashboard" && notificationState}
+      <NotificationBadge count={notificationState.unreadCount} />
+    {/if}
+  </div>
   {#if !isCollapsed}
     <span class="module-label">{module.label}</span>
     {#if isDisabled && module.disabledMessage}
@@ -177,6 +209,14 @@
     height: 3px;
     border-radius: 3px;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+  }
+
+  /* Icon wrapper - for badge positioning */
+  .icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .module-icon {

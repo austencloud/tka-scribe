@@ -1,11 +1,11 @@
 /**
  * Notification State
  *
- * Global state for tester notifications.
+ * Global state for user notifications.
  * Uses a factory function to create reactive state.
  */
 
-import type { TesterNotification } from "../domain/models/notification-models";
+import type { UserNotification } from "../domain/models/notification-models";
 import { notificationService } from "../services/implementations/NotificationService";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
@@ -13,7 +13,7 @@ import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
  * Creates notification state instance
  */
 export function createNotificationState() {
-  let notifications = $state<TesterNotification[]>([]);
+  let notifications = $state<UserNotification[]>([]);
   let unreadCount = $state(0);
   let isLoading = $state(false);
   let unsubscribe: (() => void) | null = null;

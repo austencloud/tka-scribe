@@ -308,6 +308,14 @@ export const SETTINGS_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
   },
   {
+    id: "notifications",
+    label: "Notifications",
+    icon: '<i class="fas fa-bell"></i>',
+    description: "Notification preferences",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+  },
+  {
     id: "whats-new",
     label: "What's New",
     icon: '<i class="fas fa-gift"></i>',

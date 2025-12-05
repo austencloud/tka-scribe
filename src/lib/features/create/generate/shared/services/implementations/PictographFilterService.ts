@@ -43,6 +43,13 @@ export interface IPictographFilterService {
   filterStartPositions(options: PictographData[]): PictographData[];
 
   /**
+   * Filter Type 6 (static) pictographs based on difficulty level
+   * Level 1: No turns allowed, so filter out ALL Type 6 pictographs
+   * Level 2+: Filter out Type 6 pictographs that have no turns applied
+   */
+  filterStaticType6(options: PictographData[], level: number): PictographData[];
+
+  /**
    * Select random item from array
    */
   selectRandom<T>(array: T[]): T;
@@ -134,6 +141,48 @@ export class PictographFilterService implements IPictographFilterService {
         { totalOptions: options.length }
       );
     }
+
+    return filtered;
+  }
+
+  /**
+   * Filter Type 6 (static) pictographs based on difficulty level.
+   *
+   * Level 1: No turns allowed, so filter out ALL Type 6 pictographs
+   * Level 2+: Filter out Type 6 pictographs that have no turns applied (keep those with turns > 0)
+   *
+   * This ensures Type 6 static pictographs are only used when they can have visual interest via turns.
+   */
+  filterStaticType6(options: PictographData[], level: number): PictographData[] {
+    // Dynamic import to get Letter and getLetterType
+    const { getLetterType } = require("$lib/shared/foundation/domain/models/Letter");
+    const { LetterType } = require("$lib/shared/foundation/domain/models/LetterType");
+
+    const filtered = options.filter((option: PictographData) => {
+      if (!option.letter) return true; // Keep if no letter specified
+
+      const letterType = getLetterType(option.letter);
+
+      // If not Type 6, always keep it
+      if (letterType !== LetterType.TYPE6) return true;
+
+      // Level 1: No turns allowed, so exclude ALL Type 6 pictographs
+      if (level === 1) return false;
+
+      // Level 2+: Keep Type 6 only if at least one motion has turns > 0
+      const blueMotion = option.motions.blue;
+      const redMotion = option.motions.red;
+
+      const blueTurns = blueMotion?.turns ?? 0;
+      const redTurns = redMotion?.turns ?? 0;
+
+      // Keep Type 6 only if at least one motion has turns > 0
+      // (turns can be a number or "fl", so handle both cases)
+      const blueHasTurns = blueTurns === "fl" || blueTurns > 0;
+      const redHasTurns = redTurns === "fl" || redTurns > 0;
+
+      return blueHasTurns || redHasTurns;
+    });
 
     return filtered;
   }

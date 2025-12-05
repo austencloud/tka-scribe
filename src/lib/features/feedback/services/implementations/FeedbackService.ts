@@ -34,10 +34,10 @@ import type {
   AdminResponse,
   TesterConfirmation,
 } from "../../domain/models/feedback-models";
-import type { TesterNotification, NotificationType } from "../../domain/models/notification-models";
+import type { NotificationType } from "../../domain/models/notification-models";
+import { notificationTriggerService } from "./NotificationTriggerService";
 
 const COLLECTION_NAME = "feedback";
-const NOTIFICATIONS_SUBCOLLECTION = "notifications";
 
 export class FeedbackService implements IFeedbackService {
   /**
@@ -372,6 +372,7 @@ export class FeedbackService implements IFeedbackService {
 
   /**
    * Create a notification for a tester
+   * Uses NotificationTriggerService to respect user preferences
    */
   private async createNotification(
     userId: string,
@@ -383,30 +384,16 @@ export class FeedbackService implements IFeedbackService {
     const admin = authStore.user;
     if (!admin) return;
 
-    const notification: Omit<TesterNotification, "id"> = {
+    // Use NotificationTriggerService which checks user preferences
+    await notificationTriggerService.createFeedbackNotification(
       userId,
+      type as any, // Type assertion needed due to NotificationType union
       feedbackId,
       feedbackTitle,
-      type,
       message,
-      createdAt: new Date(),
-      read: false,
-      fromUserId: admin.uid,
-      fromUserName: admin.displayName || admin.email || "Admin",
-    };
-
-    // Store in user's notifications subcollection
-    const userNotificationsRef = collection(
-      firestore,
-      "users",
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
+      admin.uid,
+      admin.displayName || admin.email || "Admin"
     );
-
-    await addDoc(userNotificationsRef, {
-      ...notification,
-      createdAt: serverTimestamp(),
-    });
   }
 
   /**

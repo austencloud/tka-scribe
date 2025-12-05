@@ -244,6 +244,13 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       lastBeat
     );
 
+    // Filter out static Type 6 pictographs based on level
+    // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
+    finalMoves = this.pictographFilterService.filterStaticType6(
+      finalMoves,
+      level
+    );
+
     if (options.propContinuity === PropContinuity.CONTINUOUS) {
       finalMoves = this.pictographFilterService.filterByRotation(
         finalMoves,
@@ -362,6 +369,13 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     filteredOptions = this.pictographFilterService.filterByContinuity(
       filteredOptions,
       lastBeatSafe
+    );
+
+    // Filter out static Type 6 pictographs based on level
+    // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
+    filteredOptions = this.pictographFilterService.filterStaticType6(
+      filteredOptions,
+      level
     );
 
     if (propContinuity === PropContinuity.CONTINUOUS) {

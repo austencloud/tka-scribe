@@ -10,6 +10,7 @@
  *   node fetch-feedback.js <id> subtask add "title" "description" - Add subtask
  *   node fetch-feedback.js <id> subtask <subtaskId> <status> - Update subtask status
  *   node fetch-feedback.js <id> subtask list - List subtasks
+ *   node fetch-feedback.js <id> defer "2026-03-15" "Reason" - Defer until date
  *   node fetch-feedback.js delete <id>  - Delete feedback item
  *
  * Workflow:
@@ -616,6 +617,51 @@ async function getFeedbackById(docId) {
   }
 }
 
+/**
+ * Defer feedback until a specific date
+ */
+async function deferFeedback(docId, deferUntilDate, reason) {
+  try {
+    const feedbackRef = db.collection('feedback').doc(docId);
+    const doc = await feedbackRef.get();
+
+    if (!doc.exists) {
+      console.log(`\n  ❌ Feedback item ${docId} not found.\n`);
+      return;
+    }
+
+    // Parse date (YYYY-MM-DD format)
+    const parsedDate = new Date(deferUntilDate);
+    if (isNaN(parsedDate.getTime())) {
+      console.log(`\n  ❌ Invalid date format. Use YYYY-MM-DD (e.g., 2026-03-15)\n`);
+      return;
+    }
+
+    // Set to end of day
+    parsedDate.setHours(23, 59, 59, 999);
+
+    await feedbackRef.update({
+      status: 'archived',
+      deferredUntil: admin.firestore.Timestamp.fromDate(parsedDate),
+      adminNotes: reason || `Deferred until ${deferUntilDate}`,
+      archivedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  ⏰ DEFERRED until ${deferUntilDate}`);
+    console.log(`\n  Item: ${docId}`);
+    console.log(`  Reason: ${reason || 'No reason provided'}`);
+    console.log(`\n  📌 This item will auto-reactivate on ${deferUntilDate}`);
+    console.log(`     Run 'node scripts/reactivate-deferred.js' manually`);
+    console.log(`     or wait for daily cron job to run.`);
+    console.log('\n' + '='.repeat(70) + '\n');
+
+  } catch (error) {
+    console.error('\n  Error deferring feedback:', error.message);
+    throw error;
+  }
+}
+
 // Parse command line arguments
 const args = process.argv.slice(2);
 
@@ -633,6 +679,14 @@ async function main() {
       return;
     }
     await deleteFeedback(args[1]);
+  } else if (args[1] === 'defer') {
+    // Defer: <id> defer "YYYY-MM-DD" "Reason"
+    if (!args[2]) {
+      console.log('\n  Usage: node fetch-feedback.js <id> defer "YYYY-MM-DD" "Reason"\n');
+      console.log('  Example: node fetch-feedback.js abc123 defer "2026-03-15" "Revisit after Q1"\n');
+      return;
+    }
+    await deferFeedback(args[0], args[2], args[3]);
   } else if (args[1] === 'title') {
     // Update title: <id> title "new title"
     await updateFeedbackTitle(args[0], args[2]);

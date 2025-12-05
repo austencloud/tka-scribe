@@ -6,6 +6,7 @@
   import type { FeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
   import { TYPE_CONFIG } from "../../domain/models/feedback-models";
   import type { FeedbackType } from "../../domain/models/feedback-models";
+  import VoiceInputButton from "./VoiceInputButton.svelte";
 
   // Props
   const { formState } = $props<{
@@ -13,10 +14,42 @@
   }>();
 
   let hapticService: IHapticFeedbackService | undefined;
+  let interimText = $state(""); // Store live streaming text
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
   });
+
+  // Derived: combine committed + interim for display
+  const displayText = $derived(
+    interimText
+      ? `${formState.formData.description} ${interimText}`.trim()
+      : formState.formData.description
+  );
+
+  function handleVoiceTranscript(transcript: string, isFinal: boolean) {
+    if (isFinal) {
+      // Commit final transcript to form state
+      const currentText = formState.formData.description.trim();
+      const newText = currentText
+        ? `${currentText} ${transcript}`
+        : transcript;
+      formState.updateField("description", newText);
+      interimText = ""; // Clear interim
+      hapticService?.trigger("selection");
+    }
+  }
+
+  function handleInterimTranscript(transcript: string) {
+    // Update interim text for live preview
+    interimText = transcript;
+  }
+
+  // When user manually types, clear interim
+  function handleManualInput(value: string) {
+    formState.updateField("description", value);
+    interimText = "";
+  }
 
   function handleTypeChange(type: FeedbackType) {
     hapticService?.trigger("selection");
@@ -80,15 +113,23 @@
 
   <!-- Description Field -->
   <div class="field">
-    <label for="fb-description" class="field-label">
-      {currentTypeConfig?.fieldLabel ?? "What's on your mind?"}
-    </label>
+    <div class="field-header">
+      <label for="fb-description" class="field-label">
+        {currentTypeConfig?.fieldLabel ?? "What's on your mind?"}
+      </label>
+      <VoiceInputButton
+        onTranscript={handleVoiceTranscript}
+        onInterimTranscript={handleInterimTranscript}
+        disabled={formState.isSubmitting}
+      />
+    </div>
     <textarea
       id="fb-description"
       class="field-textarea"
       class:has-error={formState.formErrors.description}
-      value={formState.formData.description}
-      oninput={(e) => formState.updateField("description", e.currentTarget.value)}
+      class:streaming={interimText.length > 0}
+      value={displayText}
+      oninput={(e) => handleManualInput(e.currentTarget.value)}
       placeholder={currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}
       rows="5"
     ></textarea>
@@ -379,6 +420,13 @@
     gap: clamp(4px, 1cqi, 8px);
   }
 
+  .field-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
   .field-label {
     font-size: clamp(0.8rem, 2.2cqi, 0.9375rem);
     font-weight: 600;
@@ -419,6 +467,12 @@
 
   .field-textarea.has-error {
     border-color: var(--fb-error);
+  }
+
+  .field-textarea.streaming {
+    border-color: #8b5cf6;
+    background: color-mix(in srgb, #8b5cf6 8%, rgba(0, 0, 0, 0.25));
+    box-shadow: 0 0 0 2px color-mix(in srgb, #8b5cf6 15%, transparent);
   }
 
   .field-textarea {

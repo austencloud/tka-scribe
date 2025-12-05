@@ -1,8 +1,11 @@
 <!-- Collapsed Module Button Component -->
 <!-- Icon-only module button for collapsed sidebar activity bar (VS Code style) -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { ModuleDefinition } from "../../domain/types";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import NotificationBadge from "../NotificationBadge.svelte";
+  import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
   let {
     module,
@@ -19,6 +22,31 @@
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);
+
+  // Notification state for dashboard module
+  const notificationState = module.id === "dashboard" ? createNotificationState() : null;
+
+  onMount(() => {
+    // Initialize notifications for dashboard module
+    if (module.id === "dashboard" && authStore.isAuthenticated) {
+      notificationState?.init();
+    }
+
+    return () => {
+      notificationState?.cleanup();
+    };
+  });
+
+  // Watch auth state changes to init/cleanup notifications
+  $effect(() => {
+    if (module.id === "dashboard") {
+      if (authStore.isAuthenticated) {
+        notificationState?.init();
+      } else {
+        notificationState?.cleanup();
+      }
+    }
+  });
 
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
@@ -39,17 +67,25 @@
   aria-current={isActive ? "page" : undefined}
   style="--module-color: {moduleColor || '#a855f7'};"
 >
-  {#if showProfilePicture}
-    <img
-      src={profilePictureUrl}
-      alt={profileDisplayName}
-      class="profile-avatar"
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  {:else}
-    <span class="module-icon">{@html module.icon}</span>
-  {/if}
+  <div class="icon-wrapper">
+    {#if showProfilePicture}
+      <img
+        src={profilePictureUrl}
+        alt={profileDisplayName}
+        class="profile-avatar"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      />
+    {:else}
+      <span class="module-icon">{@html module.icon}</span>
+    {/if}
+
+    <!-- Notification Badge for Dashboard Module -->
+    {#if module.id === "dashboard" && notificationState}
+      <NotificationBadge count={notificationState.unreadCount} />
+    {/if}
+  </div>
+
   <!-- Hover Label -->
   <span class="hover-label">{module.label}</span>
 </button>
@@ -101,6 +137,14 @@
   .collapsed-module-button.disabled {
     opacity: 0.3;
     cursor: not-allowed;
+  }
+
+  /* Icon wrapper - for badge positioning */
+  .icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .module-icon {

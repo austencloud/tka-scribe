@@ -69,19 +69,45 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
    - For features: implement if approved
    - For unclear issues: investigate and report findings
 
-6. **Verify the fix before resolving:**
-   - **For UI bugs:** Use Playwright to test on relevant viewport sizes (mobile: 375x667, tablet: 768x1024, desktop: 1280x800)
-   - **For functionality bugs:** Run the app and verify the fix works
-   - **For features:** Demonstrate the feature is working
-   - **If you can't test confidently:** Ask the user to confirm before resolving
-   - **NEVER resolve based on "this should work"** - verify or get confirmation
+6. **Move to review and provide testing instructions:**
+   After implementation, move to `in-review` and provide clear testing steps:
+   ```
+   node fetch-feedback.js <document-id> in-review "Testing steps:
+   1. Navigate to [module/tab]
+   2. [Action to perform]
+   3. Expected: [what should happen]
+   4. Verify on mobile/desktop if relevant"
+   ```
 
-7. **Move to review after verification:**
-   The claimed feedback output will show the document ID. Move it to in-review:
+   **Testing instructions should include:**
+   - Exact navigation path (module → tab → component)
+   - Specific actions to perform
+   - Expected behavior
+   - Which viewports to test (mobile/desktop) if UI-related
+
+   The user will verify and move to `completed` if it works.
+
+7. **When marking as completed, preview the release:**
+   After the user confirms the fix works, before marking as `completed`:
+   ```bash
+   node scripts/release.js -p
    ```
-   node fetch-feedback.js <document-id> in-review "Your implementation notes here"
+
+   This shows:
+   - How many items are ready for next release (including this one)
+   - What the changelog will look like
+   - Suggested version number
+
+   Then mark as completed:
    ```
-   The tester will then confirm if it works. Once confirmed, move to archived.
+   node fetch-feedback.js <document-id> completed "Verified working"
+   ```
+
+   **Workflow context:**
+   - `completed` items are staged for the next release
+   - They stay visible in the "completed" column until `/release` is run
+   - When `/release` runs, they're archived and tagged with the version number
+   - This lets you batch multiple fixes into one release
 
 ### Complex feedback with subtasks:
 When you claim feedback that's too large to implement directly (requires multiple prerequisites, infrastructure changes, or multi-sprint work):
@@ -111,12 +137,61 @@ When you claim feedback that's too large to implement directly (requires multipl
 
 The feedback stays in the queue. When agents claim it, they see the subtasks and can work on the next available one (pending with all dependencies completed).
 
+### Archiving without releasing:
+When feedback won't be implemented, move directly to `archived` with a clear reason:
+
+```bash
+# Item declined (not a good fit for the product)
+node fetch-feedback.js <id> archived "Declined: Out of scope for v1 vision"
+
+# Won't fix (working as intended)
+node fetch-feedback.js <id> archived "Won't fix: This is expected behavior"
+
+# Duplicate of another item
+node fetch-feedback.js <id> archived "Duplicate of #xyz123abc"
+
+# Cannot reproduce
+node fetch-feedback.js <id> archived "Cannot reproduce: Needs more details"
+```
+
+**Important:** Archived items bypass the release process. They don't get a `fixedInVersion` tag and won't appear in What's New. Use this for items that are closed but not shipped.
+
+### Deferring to a future date:
+**NEW:** Instead of archiving permanently, defer items with automatic reactivation:
+
+```bash
+# Defer until specific date (YYYY-MM-DD format)
+node fetch-feedback.js <id> defer "2026-03-15" "Revisit after Q1 roadmap finalized"
+node fetch-feedback.js <id> defer "2026-06-01" "Wait for Svelte 6 release"
+node fetch-feedback.js <id> defer "2026-01-15" "Low priority, defer 6 weeks"
+```
+
+**How it works:**
+1. Item moves to `archived` status with `deferredUntil` timestamp
+2. Daily cron job (GitHub Actions) runs `scripts/reactivate-deferred.js`
+3. When date arrives, item automatically moves back to `new` status
+4. You can manually trigger: `node scripts/reactivate-deferred.js`
+
+**Preview deferred items:**
+```bash
+node scripts/reactivate-deferred.js --dry-run
+```
+
+Shows what will reactivate without making changes.
+
+**Why use defer instead of archive:**
+- ✅ Items resurface automatically - you don't forget about them
+- ✅ Clear timeline expectations ("revisit in 3 months")
+- ✅ Keeps backlog clean while preserving valid feedback
+- ❌ Don't defer things you'll never do - use `archived` for permanent closure
+
 ### Other commands:
 - `node fetch-feedback.js list` - See queue status
 - `node fetch-feedback.js <id>` - View a specific item by document ID
 - `node fetch-feedback.js <id> title "short title"` - Update title
 - `node fetch-feedback.js <id> <status> "notes"` - Update status
 - `node fetch-feedback.js delete <id>` - Delete a feedback item
+- `node scripts/release.js --show-last` - View what shipped in last release
 
 ### Stale claims:
 If a feedback item has been "in-progress" for over 2 hours, it's considered stale and will be auto-reclaimed by the next agent that runs `/fb`.

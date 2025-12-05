@@ -60,6 +60,19 @@ This project follows a **2025+ AI-assisted development approach**:
   - Include what to look for (expected behavior)
   - This helps when user has multiple feedback windows open
 
+### Feedback & Release Workflow
+- Full workflow documentation: `docs/FEEDBACK-WORKFLOW.md`
+- Quick reference:
+  - **5 statuses**: `new → in-progress → in-review → completed → archived`
+  - **Kanban phase** (new → in-progress → in-review): Active development
+  - **Staging phase** (completed): Items ready for next release
+  - **Release phase** (archived + fixedInVersion): Released and versioned
+- Key commands:
+  - `/fb` - Claim and work on feedback
+  - `node scripts/release.js -p` - Preview next release
+  - `/release` - Ship completed items as a version
+- Remember: `completed` means "ready to ship", not "shipped" (that's `archived`)
+
 ### When Claude should proactively ask about updating this file:
 - User expresses frustration about Claude repeatedly doing something wrong
 - User states a general principle ("I always want...", "Never do...", "My preference is...")
