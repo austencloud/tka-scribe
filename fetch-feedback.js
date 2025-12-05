@@ -11,6 +11,7 @@
  *   node fetch-feedback.js <id> subtask <subtaskId> <status> - Update subtask status
  *   node fetch-feedback.js <id> subtask list - List subtasks
  *   node fetch-feedback.js <id> defer "2026-03-15" "Reason" - Defer until date
+ *   node fetch-feedback.js <id> internal-only true/false - Mark as internal-only (excluded from user changelog)
  *   node fetch-feedback.js delete <id>  - Delete feedback item
  *
  * Workflow:
@@ -318,8 +319,8 @@ async function updateFeedbackById(docId, status, adminNotes) {
     };
     const normalizedStatus = statusMap[status] || status;
 
-    // Validate status is one of the 4 valid values
-    const validStatuses = ['new', 'in-progress', 'in-review', 'archived'];
+    // Validate status is one of the 5 valid values
+    const validStatuses = ['new', 'in-progress', 'in-review', 'completed', 'archived'];
     if (!validStatuses.includes(normalizedStatus)) {
       console.log(`\n  ⚠️ Invalid status "${status}". Valid: ${validStatuses.join(', ')}\n`);
       return null;
@@ -330,8 +331,8 @@ async function updateFeedbackById(docId, status, adminNotes) {
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     };
 
-    // Clear claimedAt when archiving or moving to review
-    if (['archived', 'in-review'].includes(normalizedStatus)) {
+    // Clear claimedAt when archiving, completing, or moving to review
+    if (['archived', 'completed', 'in-review'].includes(normalizedStatus)) {
       updateData.claimedAt = admin.firestore.FieldValue.delete();
     }
     if (normalizedStatus === 'archived') {
@@ -662,6 +663,38 @@ async function deferFeedback(docId, deferUntilDate, reason) {
   }
 }
 
+/**
+ * Mark feedback as internal-only (excluded from user-facing changelog)
+ */
+async function setInternalOnly(docId, isInternalOnly) {
+  try {
+    const feedbackRef = db.collection('feedback').doc(docId);
+    const doc = await feedbackRef.get();
+
+    if (!doc.exists) {
+      console.log(`\n  ❌ Feedback item ${docId} not found.\n`);
+      return;
+    }
+
+    const value = isInternalOnly === 'true' || isInternalOnly === true;
+
+    await feedbackRef.update({
+      isInternalOnly: value
+    });
+
+    const item = doc.data();
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  ✅ UPDATED`);
+    console.log(`\n  Item: ${item.title || docId}`);
+    console.log(`  Internal Only: ${value ? 'YES (excluded from user changelog)' : 'NO (included in user changelog)'}`);
+    console.log('\n' + '='.repeat(70) + '\n');
+
+  } catch (error) {
+    console.error('\n  Error updating feedback:', error.message);
+    throw error;
+  }
+}
+
 // Parse command line arguments
 const args = process.argv.slice(2);
 
@@ -687,6 +720,14 @@ async function main() {
       return;
     }
     await deferFeedback(args[0], args[2], args[3]);
+  } else if (args[1] === 'internal-only') {
+    // Internal-only: <id> internal-only true/false
+    if (!args[2]) {
+      console.log('\n  Usage: node fetch-feedback.js <id> internal-only true/false\n');
+      console.log('  Example: node fetch-feedback.js abc123 internal-only true\n');
+      return;
+    }
+    await setInternalOnly(args[0], args[2]);
   } else if (args[1] === 'title') {
     // Update title: <id> title "new title"
     await updateFeedbackTitle(args[0], args[2]);

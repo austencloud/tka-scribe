@@ -65,9 +65,15 @@ async function getCompletedFeedback() {
 
 /**
  * Generate changelog entries from feedback items
+ * @param {Array} items - All completed feedback items
+ * @param {boolean} includeInternalOnly - Whether to include internal-only items (default: false)
+ * @returns {Object} - { userFacing: [...], developerNotes: [...] }
  */
-function generateChangelogFromFeedback(items) {
-  return items.map(item => {
+function generateChangelogFromFeedback(items, includeInternalOnly = false) {
+  const userFacing = [];
+  const developerNotes = [];
+
+  items.forEach(item => {
     let category;
     switch (item.type) {
       case 'bug':
@@ -90,8 +96,17 @@ function generateChangelogFromFeedback(items) {
       text = 'Added ' + text.charAt(0).toLowerCase() + text.slice(1);
     }
 
-    return { category, text, feedbackId: item.id };
+    const entry = { category, text, feedbackId: item.id };
+
+    // Separate user-facing from internal-only changes
+    if (item.isInternalOnly) {
+      developerNotes.push(entry);
+    } else {
+      userFacing.push(entry);
+    }
   });
+
+  return { userFacing, developerNotes };
 }
 
 /**
@@ -546,16 +561,25 @@ async function main() {
     useGitHistory = true;
     console.log(`✓ Found ${changelog.length} commits since last release\n`);
   } else {
-    console.log(`✓ Found ${feedbackItems.length} completed items`);
+    const { userFacing, developerNotes } = generateChangelogFromFeedback(feedbackItems);
+
+    // Count user-facing items only for summary
     const summary = { bugs: 0, features: 0, general: 0 };
-    feedbackItems.forEach(item => {
+    feedbackItems.filter(item => !item.isInternalOnly).forEach(item => {
       if (item.type === 'bug') summary.bugs++;
       else if (item.type === 'feature') summary.features++;
       else summary.general++;
     });
+
+    console.log(`✓ Found ${userFacing.length} completed items`);
     console.log(`  (${summary.bugs} bugs, ${summary.features} features, ${summary.general} general)\n`);
 
-    changelog = generateChangelogFromFeedback(feedbackItems);
+    if (developerNotes.length > 0) {
+      console.log(`📝 ${developerNotes.length} internal-only items (excluded from user changelog)\n`);
+    }
+
+    // Use only user-facing items for changelog
+    changelog = userFacing;
   }
 
   // 2. Determine version
