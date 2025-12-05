@@ -52,25 +52,38 @@ interface LibraryStateData {
 }
 
 class LibraryStateManager {
-	private state = $state<LibraryStateData>({
-		activeSection: "sequences",
-		sequences: [],
-		isLoading: false,
-		error: null,
-		selectedIds: new Set(),
-		isSelectMode: false,
-		filters: {
-			searchQuery: "",
-			visibility: "all",
-			source: "all",
-			collectionId: null,
-			sortBy: "updatedAt",
-			sortDirection: "desc",
-		},
-		stats: null,
-		viewingSequenceId: null,
-		unsubscribe: null,
-	});
+	private state = $state<LibraryStateData>(this.getInitialState());
+
+	// ============================================================
+	// HMR SUPPORT
+	// ============================================================
+
+	private getInitialState(): LibraryStateData {
+		// Preserve state across HMR reloads (not full page refresh)
+		if (import.meta.hot?.data.libraryState) {
+			return import.meta.hot.data.libraryState;
+		}
+
+		return {
+			activeSection: "sequences",
+			sequences: [],
+			isLoading: false,
+			error: null,
+			selectedIds: new Set(),
+			isSelectMode: false,
+			filters: {
+				searchQuery: "",
+				visibility: "all",
+				source: "all",
+				collectionId: null,
+				sortBy: "updatedAt",
+				sortDirection: "desc",
+			},
+			stats: null,
+			viewingSequenceId: null,
+			unsubscribe: null,
+		};
+	}
 
 	// ============================================================
 	// GETTERS
@@ -536,3 +549,22 @@ class LibraryStateManager {
 
 // Export singleton instance
 export const libraryState = new LibraryStateManager();
+
+// HMR: Save state before hot reload
+if (import.meta.hot) {
+	import.meta.hot.dispose(() => {
+		// Store current state for next reload
+		import.meta.hot!.data.libraryState = {
+			activeSection: libraryState.activeSection,
+			sequences: libraryState.sequences,
+			isLoading: libraryState.isLoading,
+			error: libraryState.error,
+			selectedIds: libraryState.selectedIds,
+			isSelectMode: libraryState.isSelectMode,
+			filters: libraryState.filters,
+			stats: libraryState.stats,
+			viewingSequenceId: libraryState.viewingSequenceId,
+			unsubscribe: libraryState['state'].unsubscribe, // Access private state
+		};
+	});
+}
