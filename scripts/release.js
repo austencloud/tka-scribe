@@ -156,6 +156,14 @@ function generateChangelogFromGitHistory() {
 
 /**
  * Determine suggested version based on changelog entries
+ *
+ * Pre-1.0 versioning strategy:
+ * - PATCH (0.1.x): Bug fixes and small improvements only
+ * - MINOR (0.x.0): New features or significant changes
+ *
+ * Significant change indicators:
+ * - New modules, major UI changes, architectural shifts
+ * - Keywords: "new module", "major", "refactor", "redesign", "architecture"
  */
 function suggestVersion(currentVersion, changelogEntries) {
   const parts = currentVersion.replace('-beta', '').split('.');
@@ -163,16 +171,36 @@ function suggestVersion(currentVersion, changelogEntries) {
   const minor = parseInt(parts[1]) || 0;
   const patch = parseInt(parts[2]) || 0;
 
-  // Check if any features (added category)
+  // Check if any features exist
   const hasFeatures = changelogEntries.some(entry => entry.category === 'added');
 
-  if (hasFeatures) {
-    // Minor bump for features
-    return `${major}.${minor + 1}.0`;
-  } else {
-    // Patch bump for bugs/improvements
+  if (!hasFeatures) {
+    // Only bugs/improvements → patch bump
     return `${major}.${minor}.${patch + 1}`;
   }
+
+  // Analyze feature significance
+  const significantKeywords = [
+    'new module', 'major', 'refactor', 'redesign', 'architecture',
+    'new tab', 'new feature set', 'migration', 'overhaul'
+  ];
+
+  const allChangeText = changelogEntries
+    .map(e => e.text.toLowerCase())
+    .join(' ');
+
+  const hasSignificantChange = significantKeywords.some(keyword =>
+    allChangeText.includes(keyword)
+  );
+
+  if (hasSignificantChange) {
+    // Significant feature → minor bump
+    return `${major}.${minor + 1}.0`;
+  }
+
+  // Regular features but not significant → patch bump
+  // (avoids version inflation from small features)
+  return `${major}.${minor}.${patch + 1}`;
 }
 
 /**
@@ -535,13 +563,21 @@ async function main() {
   const suggestedVersion = manualVersion || suggestVersion(currentVersion, changelog);
 
   console.log(`📌 Current version: ${currentVersion}`);
-  console.log(`📌 New version: ${suggestedVersion}`);
+  console.log(`📌 Suggested version: ${suggestedVersion}`);
 
-  if (changelog.some(entry => entry.category === 'added')) {
-    console.log('   (minor bump due to features)');
+  // Explain the bump type
+  const parts = currentVersion.split('.');
+  const currentMinor = parseInt(parts[1]) || 0;
+  const suggestedParts = suggestedVersion.split('.');
+  const suggestedMinor = parseInt(suggestedParts[1]) || 0;
+
+  if (suggestedMinor > currentMinor) {
+    console.log('   (minor bump - significant features detected)');
   } else {
-    console.log('   (patch bump)');
+    console.log('   (patch bump - regular changes)');
   }
+
+  console.log('   💡 Override with: --version X.Y.Z');
   console.log('');
 
   // 3. Display changelog
