@@ -9,7 +9,6 @@ import type {
   FeedbackFormErrors,
   FeedbackSubmitStatus,
   FeedbackType,
-  FeedbackPriority,
 } from "../domain/models/feedback-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
 import { getCapturedModule, getCapturedTab } from "./feedback-context-tracker.svelte";
@@ -22,14 +21,11 @@ export function createFeedbackSubmitState() {
   const initialCapturedModule = getCapturedModule();
   const initialCapturedTab = getCapturedTab();
 
-  // Form data
+  // Form data (simplified - just type, title, description)
   let formData = $state<FeedbackFormData>({
     type: "general",
     title: "",
     description: "",
-    priority: "",
-    reportedModule: "",
-    reportedTab: "",
   });
 
   // Form errors
@@ -61,10 +57,6 @@ export function createFeedbackSubmitState() {
 
   function setType(type: FeedbackType) {
     updateField("type", type);
-  }
-
-  function setPriority(priority: FeedbackPriority | "") {
-    updateField("priority", priority);
   }
 
   function validate(): boolean {
@@ -109,9 +101,6 @@ export function createFeedbackSubmitState() {
       type: "general",
       title: "",
       description: "",
-      priority: "",
-      reportedModule: "",
-      reportedTab: "",
     };
     formErrors = {};
     submitStatus = "idle";
@@ -145,7 +134,6 @@ export function createFeedbackSubmitState() {
     // Actions
     updateField,
     setType,
-    setPriority,
     validate,
     submit,
     reset,

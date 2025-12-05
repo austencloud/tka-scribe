@@ -87,6 +87,9 @@ const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
   "tab:learn:play": "tester",
   "tab:learn:codex": "tester",
 
+  // Feedback tabs
+  "tab:feedback:manage": "admin", // Manage tab is admin-only (testers can only submit/view their own)
+
   // Admin tabs - all inherit admin role from parent module
 };
 

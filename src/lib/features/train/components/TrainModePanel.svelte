@@ -31,6 +31,7 @@
 	import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
 	import PracticeViewContainer from "./practice/PracticeViewContainer.svelte";
 	import FloatingControlGroup from "./practice/FloatingControlGroup.svelte";
+	import GridSettingsPopover from "./practice/GridSettingsPopover.svelte";
 
 	interface Props {
 		sequence?: SequenceData | null;
@@ -59,6 +60,7 @@
 	let showSettingsSheet = $state(false);
 	let showSequenceBrowser = $state(false);
 	let showModePicker = $state(false);
+	let showGridSettings = $state(false);
 
 	// Initialize train state
 	const trainState = createTrainState();
@@ -496,11 +498,13 @@
 			currentCombo={trainState.currentCombo}
 			{lastHitResult}
 			{lastHitPoints}
+			gridScale={practiceState.gridScale}
 			onCameraReady={handleCameraReady}
 			onCameraError={handleCameraError}
 			onFrame={handleFrame}
 			onBeatSelect={handleBeatSelect}
 			onBrowseSequences={handleOpenSequenceBrowser}
+			onGridSettingsClick={() => { showGridSettings = true; }}
 		/>
 
 		<!-- Results Screen Overlay -->
@@ -581,6 +585,14 @@
 		onAdaptiveConfigUpdate={(config) => practiceState.updateAdaptiveConfig(config)}
 		onStepConfigUpdate={(config) => practiceState.updateStepConfig(config)}
 		onTimedConfigUpdate={(config) => practiceState.updateTimedConfig(config)}
+	/>
+
+	<!-- Grid Settings Popover -->
+	<GridSettingsPopover
+		isOpen={showGridSettings}
+		gridScale={practiceState.gridScale}
+		onScaleChange={(scale) => practiceState.setGridScale(scale)}
+		onClose={() => { showGridSettings = false; }}
 	/>
 
 	<!-- Sequence Browser Panel -->

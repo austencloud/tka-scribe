@@ -89,13 +89,12 @@ export class FeedbackService implements IFeedbackService {
       type: formData.type,
       title,
       description: formData.description,
-      priority: formData.priority || null,
+      // priority is admin-assigned, not user-provided
+      priority: null,
 
-      // Context
+      // Context (auto-captured, not user-reported)
       capturedModule,
       capturedTab,
-      reportedModule: formData.reportedModule || null,
-      reportedTab: formData.reportedTab || null,
 
       // Admin management
       status: "new" as FeedbackStatus,

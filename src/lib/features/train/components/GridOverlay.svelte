@@ -13,6 +13,7 @@
     showExpected?: boolean;
     bpm?: number;
     isPerforming?: boolean;
+    gridScale?: number;
   }
 
   let {
@@ -23,6 +24,7 @@
     showExpected = true,
     bpm = 60,
     isPerforming = false,
+    gridScale = 1.0,
   }: Props = $props();
 
   // Grid coordinate system (950x950 centered at 475,475)
@@ -306,11 +308,12 @@
     {/if}
   </svg>
 
-  <!-- Grid overlay - 1:1 aspect ratio centered -->
+  <!-- Grid overlay - 1:1 aspect ratio centered, scalable -->
   <svg
     class="grid-overlay"
     viewBox="0 0 950 950"
     preserveAspectRatio="xMidYMid slice"
+    style="transform: scale({gridScale})"
   >
     <!-- Use the existing GridSvg component (no background overlay) -->
     <GridSvg gridMode={GridMode.DIAMOND} showNonRadialPoints={true} />

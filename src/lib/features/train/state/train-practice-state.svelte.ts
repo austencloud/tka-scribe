@@ -55,6 +55,8 @@ interface PracticeState {
 	lastSequenceId: string | null;
 	lastSequenceData: SequenceData | null;
 	recentSequences: RecentSequence[];
+	// Grid overlay settings
+	gridScale: number; // 0.5 to 1.5, default 1.0
 }
 
 const DEFAULT_STATE: PracticeState = {
@@ -76,7 +78,8 @@ const DEFAULT_STATE: PracticeState = {
 	},
 	lastSequenceId: null,
 	lastSequenceData: null,
-	recentSequences: []
+	recentSequences: [],
+	gridScale: 1.0
 };
 
 export function createTrainPracticeState() {
@@ -135,6 +138,14 @@ export function createTrainPracticeState() {
 
 	function clearChallenge() {
 		state.currentChallengeId = undefined;
+	}
+
+	/**
+	 * Set the grid scale (0.5 to 1.5)
+	 */
+	function setGridScale(scale: number) {
+		state.gridScale = Math.max(0.5, Math.min(1.5, scale));
+		persistSettings();
 	}
 
 	/**
@@ -238,9 +249,13 @@ export function createTrainPracticeState() {
 		get recentSequences() {
 			return state.recentSequences;
 		},
+		get gridScale() {
+			return state.gridScale;
+		},
 		setMode,
 		setDisplayView,
 		cycleDisplayView,
+		setGridScale,
 		updateAdaptiveConfig,
 		updateStepConfig,
 		updateTimedConfig,

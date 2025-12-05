@@ -38,12 +38,14 @@
     currentCombo?: number;
     lastHitResult?: boolean | null;
     lastHitPoints?: number;
+    gridScale?: number;
     // Callbacks
     onCameraReady?: () => void;
     onCameraError?: (error: string) => void;
     onFrame?: (video: HTMLVideoElement) => void;
     onBeatSelect?: (beatIndex: number) => void;
     onBrowseSequences?: () => void;
+    onGridSettingsClick?: () => void;
   }
 
   let {
@@ -64,11 +66,13 @@
     currentCombo = 0,
     lastHitResult = null,
     lastHitPoints = 0,
+    gridScale = 1.0,
     onCameraReady,
     onCameraError,
     onFrame,
     onBeatSelect,
     onBrowseSequences,
+    onGridSettingsClick,
   }: Props = $props();
 
   // Determine which panels to show
@@ -103,9 +107,11 @@
       {lastHitResult}
       {lastHitPoints}
       {bpm}
+      {gridScale}
       {onCameraReady}
       {onCameraError}
       {onFrame}
+      {onGridSettingsClick}
     />
   </div>
 

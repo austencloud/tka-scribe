@@ -121,14 +121,13 @@ export interface TesterConfirmation {
 
 /**
  * Form data for feedback submission
+ * Simplified: just type and description. Title is auto-generated.
+ * Priority and context are handled separately (admin-assigned and auto-captured).
  */
 export interface FeedbackFormData {
   type: FeedbackType;
   title: string;
   description: string;
-  priority: FeedbackPriority | "";
-  reportedModule: string;
-  reportedTab: string;
 }
 
 /**

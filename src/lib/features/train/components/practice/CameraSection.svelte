@@ -25,9 +25,11 @@
 		lastHitResult?: boolean | null;
 		lastHitPoints?: number;
 		bpm?: number;
+		gridScale?: number;
 		onCameraReady?: () => void;
 		onCameraError?: (error: string) => void;
 		onFrame?: (video: HTMLVideoElement) => void;
+		onGridSettingsClick?: () => void;
 	}
 
 	let {
@@ -44,9 +46,11 @@
 		lastHitResult = null,
 		lastHitPoints = 0,
 		bpm = 60,
+		gridScale = 1.0,
 		onCameraReady,
 		onCameraError,
-		onFrame
+		onFrame,
+		onGridSettingsClick
 	}: Props = $props();
 </script>
 
@@ -65,8 +69,20 @@
 			showExpected={mode === TrainMode.PERFORMING}
 			{bpm}
 			{isPerforming}
+			{gridScale}
 		/>
 	</CameraPreview>
+
+	<!-- Grid Settings Button -->
+	{#if onGridSettingsClick}
+		<button
+			class="grid-settings-btn"
+			onclick={onGridSettingsClick}
+			aria-label="Grid settings"
+		>
+			<i class="fas fa-sliders-h"></i>
+		</button>
+	{/if}
 
 	<!-- Countdown overlay -->
 	{#if mode === TrainMode.COUNTDOWN && countdownValue !== null}
@@ -124,6 +140,36 @@
 		background: transparent;
 		border-radius: 12px;
 		overflow: hidden;
+	}
+
+	/* Grid Settings Button */
+	.grid-settings-btn {
+		position: absolute;
+		bottom: 0.5rem;
+		left: 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: rgba(0, 0, 0, 0.6);
+		backdrop-filter: blur(8px);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: 8px;
+		color: rgba(255, 255, 255, 0.8);
+		cursor: pointer;
+		transition: all 0.2s;
+		z-index: 25;
+	}
+
+	.grid-settings-btn:hover {
+		background: rgba(0, 0, 0, 0.8);
+		color: white;
+		border-color: rgba(255, 255, 255, 0.3);
+	}
+
+	.grid-settings-btn:active {
+		transform: scale(0.95);
 	}
 
 	/* On mobile (stacked), limit by height */

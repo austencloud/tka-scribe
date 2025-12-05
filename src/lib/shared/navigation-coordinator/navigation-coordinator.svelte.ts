@@ -137,6 +137,13 @@ export function moduleSections() {
     });
   }
 
+  // Feedback module: Filter manage tab for non-admin users
+  if (module === "feedback") {
+    return baseSections.filter((section: { id: string }) => {
+      return featureFlagService.canAccessTab("feedback", section.id);
+    });
+  }
+
   return baseSections;
 }
 
@@ -310,6 +317,11 @@ export function getModuleDefinitions() {
   const isAuthInitialized = authStore.isInitialized;
   const isFeatureFlagsInitialized = featureFlagService.isInitialized;
 
+  // Read role-based flags BEFORE the filter to establish Svelte reactivity
+  // This ensures $derived recalculates when these values change
+  const isAdmin = featureFlagService.isAdmin;
+  const isTester = featureFlagService.isTester;
+
   return MODULE_DEFINITIONS.filter((module) => {
     // Settings module is accessed via sidebar footer gear icon, not main module list
     if (module.id === "settings") {
@@ -317,15 +329,15 @@ export function getModuleDefinitions() {
     }
     // Admin module only visible to admin users (hide until we know they're admin)
     if (module.id === "admin") {
-      return featureFlagService.isAdmin;
+      return isAdmin;
     }
     // Feedback module only visible to testers and admins
     if (module.id === "feedback") {
-      return featureFlagService.isTester;
+      return isTester;
     }
     // ML Training module only visible to testers and admins
     if (module.id === "ml-training") {
-      return featureFlagService.isTester;
+      return isTester;
     }
     return true;
   }).map((module) => {

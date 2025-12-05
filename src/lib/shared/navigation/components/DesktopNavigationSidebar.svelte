@@ -63,13 +63,10 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   // Check if we're in settings mode (hides main modules)
   const isInSettings = $derived(navigationState.currentModule === "settings");
 
-  // Get filtered settings sections (AI tab is admin-only)
+  // Get filtered settings sections using feature flag service
   const filteredSettingsSections = $derived(
     SETTINGS_TABS.filter((section) => {
-      if (section.id === "ai") {
-        return featureFlagService.isAdmin;
-      }
-      return true;
+      return featureFlagService.canAccessTab("settings", section.id);
     })
   );
 
@@ -191,17 +188,11 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   }
 
   // Filter sections based on module-specific rules (e.g., admin-only tabs)
+  // Uses featureFlagService.canAccessTab() for role-based access control
   function getFilteredSections(module: ModuleDefinition): Section[] {
-    if (module.id === "settings") {
-      // AI tab is admin-only
-      return module.sections.filter((section) => {
-        if (section.id === "ai") {
-          return featureFlagService.isAdmin;
-        }
-        return true;
-      });
-    }
-    return module.sections;
+    return module.sections.filter((section) => {
+      return featureFlagService.canAccessTab(module.id, section.id);
+    });
   }
 
   onMount(() => {
