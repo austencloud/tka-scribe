@@ -69,26 +69,45 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
    - For features: implement if approved
    - For unclear issues: investigate and report findings
 
-6. **Move to review and provide testing instructions:**
-   After implementation, move to `in-review` and provide clear testing steps:
+6. **Move to review and add resolution notes:**
+   After implementation, move to `in-review` with brief admin notes, then add user-facing resolution notes:
    ```
-   node fetch-feedback.js <document-id> in-review "Testing steps:
-   1. Navigate to [module/tab]
-   2. [Action to perform]
-   3. Expected: [what should happen]
-   4. Verify on mobile/desktop if relevant"
+   node fetch-feedback.js <document-id> in-review "Fixed card height overflow in Kanban board"
+   node fetch-feedback.js <document-id> resolution "Adjusted the minimum height of feedback cards so all content is visible without being cut off."
    ```
 
-   **Testing instructions should include:**
-   - Exact navigation path (module → tab → component)
-   - Specific actions to perform
-   - Expected behavior
-   - Which viewports to test (mobile/desktop) if UI-related
+   **Admin notes (internal reference):**
+   - Brief summary of what was fixed (1 line, ~5-10 words)
+   - Focus on WHAT was addressed, not HOW
+   - Example: "Fixed card height overflow" not "Updated MyFeedbackCard.svelte:88-92 to set min-height: 120px"
+   - NO file paths, line numbers, or testing steps
+   - Think: "What would I search for later to find this fix?"
 
-   The user will verify and move to `completed` if it works.
+   **Resolution notes (visible to users):**
+   - Explain what was changed from the user's perspective
+   - Clear and concise (1-3 sentences)
+   - Focus on the outcome and user benefit
+   - Help users understand how their feedback was addressed
+   - Example: "Adjusted the minimum height of feedback cards so all content is visible without being cut off."
 
-7. **When user confirms the fix works:**
-   Mark as completed:
+   **Where technical details go:**
+   - File paths, line numbers → Commit messages
+   - Testing steps, reproduction steps → PR descriptions or issue comments
+   - Implementation approach → Code comments or architecture docs
+
+7. **CRITICAL: Offer to mark as completed (don't do it automatically):**
+   After moving to `in-review` and adding resolution notes, END your response by offering to mark as completed.
+
+   **Examples:**
+   - "Should I mark this feedback as completed?"
+   - "Ready to mark as complete?"
+   - "Would you like me to mark this as completed?"
+
+   **DO NOT** automatically mark as completed. Wait for user confirmation.
+   This gives the user a chance to test first and verify it actually works.
+
+8. **When user confirms the fix works:**
+   Only after the user confirms, mark as completed:
    ```
    node fetch-feedback.js <document-id> completed "Verified working"
    ```
@@ -179,6 +198,7 @@ Shows what will reactivate without making changes.
 - `node fetch-feedback.js list` - See queue status
 - `node fetch-feedback.js <id>` - View a specific item by document ID
 - `node fetch-feedback.js <id> title "short title"` - Update title
+- `node fetch-feedback.js <id> resolution "notes"` - Add resolution notes (user-facing summary)
 - `node fetch-feedback.js <id> <status> "notes"` - Update status
 - `node fetch-feedback.js delete <id>` - Delete a feedback item
 - `node scripts/release.js --show-last` - View what shipped in last release

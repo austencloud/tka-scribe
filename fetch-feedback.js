@@ -7,6 +7,7 @@
  *   node fetch-feedback.js <id>         - View specific feedback
  *   node fetch-feedback.js <id> <status> "notes" - Update status
  *   node fetch-feedback.js <id> title "new title" - Update title
+ *   node fetch-feedback.js <id> resolution "notes" - Add resolution notes (summary of how it was fixed)
  *   node fetch-feedback.js <id> subtask add "title" "description" - Add subtask
  *   node fetch-feedback.js <id> subtask <subtaskId> <status> - Update subtask status
  *   node fetch-feedback.js <id> subtask list - List subtasks
@@ -19,6 +20,7 @@
  *   2. If complex, agent adds subtasks to break it down
  *   3. Future agents see subtasks and can work on prerequisites first
  *   4. Agent resolves when all subtasks complete
+ *   5. When moving to in-review/completed, add resolution notes to explain what was done
  */
 
 import admin from 'firebase-admin';
@@ -291,6 +293,41 @@ async function updateFeedbackTitle(docId, title) {
 
   } catch (error) {
     console.error('\n  Error updating title:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Update resolution notes
+ */
+async function updateResolutionNotes(docId, notes) {
+  try {
+    const docRef = db.collection('feedback').doc(docId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      console.log(`\n  ❌ Feedback not found: ${docId}\n`);
+      return null;
+    }
+
+    await docRef.update({
+      resolutionNotes: notes,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    const item = doc.data();
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  ✅ RESOLUTION NOTES UPDATED\n`);
+    console.log('─'.repeat(70));
+    console.log(`  ID: ${docId}`);
+    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Resolution Notes: ${notes}`);
+    console.log('\n' + '='.repeat(70) + '\n');
+
+    return { id: docId, resolutionNotes: notes };
+
+  } catch (error) {
+    console.error('\n  Error updating resolution notes:', error.message);
     throw error;
   }
 }
@@ -731,6 +768,9 @@ async function main() {
   } else if (args[1] === 'title') {
     // Update title: <id> title "new title"
     await updateFeedbackTitle(args[0], args[2]);
+  } else if (args[1] === 'resolution') {
+    // Update resolution notes: <id> resolution "resolution notes"
+    await updateResolutionNotes(args[0], args[2]);
   } else if (args[1] === 'subtask') {
     // Subtask commands: <id> subtask <command> [args...]
     const docId = args[0];

@@ -51,6 +51,16 @@ This project follows a **2025+ AI-assisted development approach**:
 
 ## Conversation Patterns
 
+### /check command behavior
+- Analyzes TypeScript errors and determines optimal fix strategy
+- **Three strategies based on error count and complexity:**
+  - **Single session** (<10 simple errors): Fix all errors immediately
+  - **Multiple subagents** (10-50 errors): Launch parallel Task agents for different file groups
+  - **Multiple Claude Code instances** (>50 errors or complex cascades): Generate scoped prompts for separate sessions
+- **Always assess root causes** - don't just count errors, understand cascading type issues
+- **Present analysis before acting** - show error summary, recommended strategy, and rationale
+- **Get confirmation** before proceeding with fixes
+
 ### /fb command behavior
 - When running `/fb`, **always display the feedback item verbatim first** before any analysis
 - This allows the user to read the original feedback before Claude begins working on it
