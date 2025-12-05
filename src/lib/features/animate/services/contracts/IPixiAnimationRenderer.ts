@@ -26,7 +26,7 @@ export interface IPixiAnimationRenderer {
    * Resize the renderer and all child elements
    * @param newSize - New canvas size
    */
-  resize(newSize: number): void;
+  resize(newSize: number): Promise<void>;
 
   /**
    * Render the complete animation scene

@@ -210,6 +210,40 @@ export class PixiTextureLoader {
         VIEWBOX_SIZE
       );
 
+      // Validate texture has content by checking if canvas has pixels
+      const baseTexture = this.glyphTexture.baseTexture;
+      const resource = baseTexture.resource as any;
+      let hasContent = false;
+
+      if (resource?.source) {
+        const canvas = resource.source as HTMLCanvasElement;
+        if (canvas instanceof HTMLCanvasElement) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            // Check a small region where the glyph should be (bottom-left)
+            // Glyph at x=50, y=800 in 950px viewBox = x=100, y=1600 in 1900px texture
+            const imageData = ctx.getImageData(100, 1600, 50, 50);
+            const pixels = imageData.data;
+            // Check if any pixel has non-zero alpha
+            for (let i = 3; i < pixels.length; i += 4) {
+              if (pixels[i] > 0) {
+                hasContent = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      console.log("🎨 [PixiTextureLoader] Glyph texture created:", {
+        textureWidth: this.glyphTexture.width,
+        textureHeight: this.glyphTexture.height,
+        baseTextureWidth: this.glyphTexture.baseTexture.width,
+        baseTextureHeight: this.glyphTexture.baseTexture.height,
+        valid: this.glyphTexture.valid,
+        hasContent,
+      });
+
       return {
         current: this.glyphTexture,
         previous: this.previousGlyphTexture,

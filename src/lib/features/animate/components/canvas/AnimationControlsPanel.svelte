@@ -25,6 +25,8 @@
     isSideBySideLayout = false,
     isExpanded = false,
     scrollContainerRef = $bindable(null),
+    isExporting = false,
+    exportProgress = null,
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
@@ -42,6 +44,8 @@
     isSideBySideLayout?: boolean;
     isExpanded?: boolean;
     scrollContainerRef?: HTMLDivElement | null;
+    isExporting?: boolean;
+    exportProgress?: { progress: number; stage: string } | null;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
@@ -55,6 +59,8 @@
     ) => any;
     onScroll?: (e: Event) => void;
   } = $props();
+
+  console.log("🎬 AnimationControlsPanel received onExportGif:", onExportGif);
 </script>
 
 <div
@@ -98,7 +104,7 @@
 
   <!-- GIF Export (Hidden in compact mode on mobile) -->
   {#if isSideBySideLayout || isExpanded}
-    <ExportActionsPanel {onExportGif} />
+    <ExportActionsPanel {onExportGif} {isExporting} {exportProgress} />
   {/if}
 </div>
 

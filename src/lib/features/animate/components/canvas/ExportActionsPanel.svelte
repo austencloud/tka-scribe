@@ -8,21 +8,65 @@
 <script lang="ts">
   let {
     onExportGif = () => {},
+    isExporting = false,
+    exportProgress = null,
   }: {
     onExportGif?: () => void;
+    isExporting?: boolean;
+    exportProgress?: { progress: number; stage: string } | null;
   } = $props();
+
+  function handleClick() {
+    if (isExporting) return; // Prevent double-clicks
+    console.log("🎬 ExportActionsPanel: Export GIF button clicked");
+    console.log("🎬 onExportGif handler:", onExportGif);
+    onExportGif();
+  }
+
+  // Derive display text based on export state
+  const buttonText = $derived(() => {
+    if (!isExporting) return "Export GIF";
+    if (!exportProgress) return "Starting...";
+
+    const { stage, progress } = exportProgress;
+    if (stage === "capturing") {
+      return `Capturing ${Math.round(progress * 100)}%`;
+    } else if (stage === "encoding") {
+      return "Encoding GIF...";
+    } else if (stage === "transcoding") {
+      return "Transcoding...";
+    } else if (stage === "complete") {
+      return "Complete!";
+    }
+    return "Exporting...";
+  });
+
+  const buttonHint = $derived(() => {
+    if (!isExporting) return "Save animation";
+    if (exportProgress?.stage === "complete") return "Download started";
+    return "Please wait...";
+  });
 </script>
 
 <div class="export-actions-panel">
   <button
     class="export-btn gif-btn"
-    onclick={onExportGif}
+    class:exporting={isExporting}
+    class:complete={exportProgress?.stage === "complete"}
+    onclick={handleClick}
     type="button"
-    aria-label="Export as GIF"
+    disabled={isExporting && exportProgress?.stage !== "complete"}
+    aria-label={isExporting ? "Exporting GIF..." : "Export as GIF"}
   >
-    <i class="fas fa-film"></i>
-    <span class="btn-label">Export GIF</span>
-    <span class="btn-hint">Save animation</span>
+    <i class="fas" class:fa-film={!isExporting} class:fa-spinner={isExporting && exportProgress?.stage !== "complete"} class:fa-spin={isExporting && exportProgress?.stage !== "complete"} class:fa-check={exportProgress?.stage === "complete"}></i>
+    <span class="btn-label">{buttonText()}</span>
+    <span class="btn-hint">{buttonHint()}</span>
+
+    {#if isExporting && exportProgress?.stage === "capturing"}
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
+      </div>
+    {/if}
   </button>
 </div>
 
@@ -33,6 +77,7 @@
   }
 
   .export-btn {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -47,6 +92,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
   }
 
   .export-btn i {
@@ -84,6 +130,41 @@
 
   .export-btn:active {
     transform: scale(0.98);
+  }
+
+  .export-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  .export-btn.exporting {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+  }
+
+  .export-btn.complete {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.15) 100%);
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .export-btn.complete i {
+    color: rgba(34, 197, 94, 1);
+  }
+
+  .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(168, 85, 247, 1) 0%, rgba(147, 51, 234, 1) 100%);
+    transition: width 0.3s ease;
   }
 
   /* Responsive */

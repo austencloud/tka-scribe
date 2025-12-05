@@ -71,10 +71,25 @@ export class PixiSpriteManager {
     }
 
     // Create new glyph sprite
+    // The texture is the full 950x950 viewBox with glyph positioned at (50, 800)
+    // We scale it to canvas size and position at (0, 0) to overlay the entire canvas
     this.glyphSprite = new Sprite(texture);
     this.glyphSprite.width = size;
     this.glyphSprite.height = size;
+    this.glyphSprite.anchor.set(0, 0); // Top-left anchor (default, but explicit)
+    this.glyphSprite.position.set(0, 0); // Position at canvas origin
     this.glyphSprite.alpha = 0; // Start invisible for fade-in
+
+    console.log("🎨 [PixiSpriteManager] Created glyph sprite:", {
+      width: this.glyphSprite.width,
+      height: this.glyphSprite.height,
+      x: this.glyphSprite.position.x,
+      y: this.glyphSprite.position.y,
+      alpha: this.glyphSprite.alpha,
+      visible: this.glyphSprite.visible,
+      textureWidth: texture.width,
+      textureHeight: texture.height,
+    });
 
     this.glyphContainer.addChild(this.glyphSprite);
 
@@ -87,6 +102,14 @@ export class PixiSpriteManager {
   setGlyphAlpha(currentAlpha: number, previousAlpha?: number): void {
     if (this.glyphSprite) {
       this.glyphSprite.alpha = currentAlpha;
+      console.log("🎨 [PixiSpriteManager] Set glyph alpha:", {
+        currentAlpha,
+        previousAlpha,
+        spriteAlpha: this.glyphSprite.alpha,
+        spriteVisible: this.glyphSprite.visible,
+        spritePosition: { x: this.glyphSprite.x, y: this.glyphSprite.y },
+        spriteSize: { width: this.glyphSprite.width, height: this.glyphSprite.height },
+      });
     }
     if (this.previousGlyphSprite && previousAlpha !== undefined) {
       this.previousGlyphSprite.alpha = previousAlpha;

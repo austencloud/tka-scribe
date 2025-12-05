@@ -23,7 +23,7 @@
     </button>
   </div>
 {:else}
-  <!-- Desktop Header - row with title and close button -->
+  <!-- Desktop Header - centered title with top-right close button -->
   <header class="desktop-header">
     <span class="header-title">Animation Viewer</span>
     <button class="header-close-btn" onclick={onClose} aria-label="Close panel">
@@ -78,25 +78,33 @@
   }
 
   /* ===========================
-     DESKTOP HEADER - Row with title and close button
+     DESKTOP HEADER - Centered title with top-right close button
      =========================== */
   .desktop-header {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: clamp(12px, 3cqi, 16px) clamp(16px, 4cqi, 24px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
     background: rgba(255, 255, 255, 0.02);
+    min-height: 72px;
+    width:100%;
   }
 
   .header-title {
     font-size: clamp(14px, 4cqi, 18px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
+    text-align: center;
   }
 
   .header-close-btn {
+    position: absolute;
+    top: 50%;
+    right: clamp(16px, 4cqi, 24px);
+    transform: translateY(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -110,16 +118,16 @@
     font-size: var(--icon-size-md);
     cursor: pointer;
     transition: all 0.2s ease;
-    flex-shrink: 0;
   }
 
   .header-close-btn:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
+    transform: translateY(-50%) scale(1.05);
   }
 
   .header-close-btn:active {
-    transform: scale(0.95);
+    transform: translateY(-50%) scale(0.95);
   }
 </style>
