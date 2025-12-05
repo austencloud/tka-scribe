@@ -588,6 +588,11 @@
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     animationCanvas = canvas;
   }
+
+  function handleExportGif() {
+    console.log("🎬 AnimationSheetCoordinator: handleExportGif called");
+    _handleExport("gif");
+  }
 </script>
 
 <AnimationPanel
@@ -608,4 +613,7 @@
   onSpeedChange={handleSpeedChange}
   onPlaybackToggle={() => playbackController?.togglePlayback()}
   onCanvasReady={handleCanvasReady}
+  onExportGif={handleExportGif}
+  {isExporting}
+  exportProgress={_exportProgress}
 />

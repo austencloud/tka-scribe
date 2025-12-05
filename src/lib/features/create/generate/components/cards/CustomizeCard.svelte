@@ -53,21 +53,17 @@ Opens sheet with start/end position and letter constraint options
     );
   }
 
-  // Calculate display value based on what's configured
+  // Calculate display value - compact indicator only
   const displayValue = $derived.by(() => {
-    const parts: string[] = [];
+    // Count how many options are configured
+    let configuredCount = 0;
 
     if (currentOptions.startPosition) {
-      // Use startPosition property (e.g., "Alpha1") or fall back to letter
-      const posName = currentOptions.startPosition.startPosition || currentOptions.startPosition.letter || "?";
-      parts.push(`Start: ${posName}`);
+      configuredCount++;
     }
 
-    // Only show end position in freeform mode
     if (isFreeformMode && currentOptions.endPosition) {
-      // Use startPosition property for end position too (it's the same field on PictographData)
-      const posName = currentOptions.endPosition.startPosition || currentOptions.endPosition.letter || "?";
-      parts.push(`End: ${posName}`);
+      configuredCount++;
     }
 
     const letterCount =
@@ -75,14 +71,16 @@ Opens sheet with start/end position and letter constraint options
       currentOptions.mustNotContainLetters.length;
 
     if (letterCount > 0) {
-      parts.push(`${letterCount} letters`);
+      configuredCount++;
     }
 
-    if (parts.length === 0) {
-      return "Tap to Configure";
+    // Show simple indicator
+    if (configuredCount === 0) {
+      return "None";
     }
 
-    return parts.join(" · ");
+    // Show count of configured options (with proper plural)
+    return configuredCount === 1 ? "1 setting" : `${configuredCount} settings`;
   });
 </script>
 

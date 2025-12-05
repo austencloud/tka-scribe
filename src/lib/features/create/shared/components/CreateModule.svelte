@@ -187,8 +187,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   });
 
   // Sync animating beat number from shared animation state
-  // This ensures beat grid highlights current beat when ANY animation plays
-  // (both from AnimationCoordinator and ShareAnimationViewer)
+  // This ensures beat grid highlights current beat when animation plays
   $effect(() => {
     const currentBeat = sharedAnimationState.currentBeat;
     if (sharedAnimationState.isPlaying || currentBeat > 0) {

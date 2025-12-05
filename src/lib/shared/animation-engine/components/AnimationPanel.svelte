@@ -229,6 +229,8 @@
     letter = null,
     beatData = null,
     sequenceData = null,
+    isExporting = false,
+    exportProgress = null,
     onClose = () => {},
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
@@ -251,6 +253,8 @@
     letter?: Letter | null;
     beatData?: StartPositionData | BeatData | null;
     sequenceData?: SequenceData | null;
+    isExporting?: boolean;
+    exportProgress?: { progress: number; stage: string } | null;
     onClose?: () => void;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
@@ -467,6 +471,8 @@
             onToggleRed={toggleRedMotion}
             onToggleExpanded={toggleMobileExpanded}
             {onExportGif}
+            {isExporting}
+            {exportProgress}
             preventBackNavAction={preventBackNavigation}
             onScroll={(e) => handleMobileScroll(e, isSideBySideLayout)}
           />

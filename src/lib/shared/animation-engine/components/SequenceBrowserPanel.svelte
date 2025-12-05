@@ -240,10 +240,10 @@
   <div class="browser-content">
     <!-- Header -->
     <div class="browser-header">
+      <h2 id="sequence-browser-title">{modeLabel}</h2>
       <button class="close-button" onclick={onClose} aria-label="Close">
         <i class="fas fa-times"></i>
       </button>
-      <h2 id="sequence-browser-title">{modeLabel}</h2>
     </div>
 
     <!-- Search Bar -->
@@ -330,30 +330,36 @@
 
   /* Header */
   .browser-header {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
+    justify-content: center;
     padding: var(--spacing-lg);
     background: rgba(255, 255, 255, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
+    min-height: 72px;
   }
 
   .browser-header h2 {
-    flex: 1;
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
+    text-align: center;
   }
 
   .close-button {
+    position: absolute;
+    top: 50%;
+    right: var(--spacing-lg);
+    transform: translateY(-50%);
     width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.1);
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: white;
     cursor: pointer;
@@ -362,6 +368,11 @@
 
   .close-button:hover {
     background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  .close-button:active {
+    transform: translateY(-50%) scale(0.95);
   }
 
   /* Search */

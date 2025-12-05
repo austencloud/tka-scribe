@@ -627,7 +627,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
   }
 
-  function resizeCanvas() {
+  async function resizeCanvas() {
     if (!containerElement || !pixiRenderer) return;
 
     const rect = containerElement.getBoundingClientRect();
@@ -639,7 +639,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     if (newSize !== canvasSize) {
       canvasSize = newSize;
-      pixiRenderer.resize(newSize);
+      await pixiRenderer.resize(newSize);
 
       // Update trail capture service with new canvas size
       trailCaptureService?.updateConfig({ canvasSize: newSize });
@@ -672,6 +672,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       return;
     }
     try {
+      console.log("🎨 [AnimatorCanvas] Loading glyph texture, SVG length:", svgString.length);
+      console.log("🎨 [AnimatorCanvas] SVG preview:", svgString.substring(0, 500));
+
       await pixiRenderer.loadGlyphTexture(svgString, width, height);
       pendingGlyph = null; // Clear any pending
       needsRender = true;

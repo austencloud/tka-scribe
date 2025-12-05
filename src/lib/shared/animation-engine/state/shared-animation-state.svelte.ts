@@ -11,7 +11,7 @@ import { createAnimationPanelState } from "$lib/features/animate/state/animation
 
 /**
  * Global shared animation state instance.
- * Used by both Create module's AnimationCoordinator and SharePanel's ShareAnimationViewer
+ * Used by Create module's AnimationCoordinator
  * to keep beat grid selection in sync with animation playback.
  */
 export const sharedAnimationState = createAnimationPanelState();

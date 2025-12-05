@@ -358,7 +358,6 @@
   }
 
   // Note: animatingBeatNumber is now synced in CreateModule via sharedAnimationState
-  // This ensures synchronization works for both AnimationCoordinator and ShareAnimationViewer
 
   // Cleanup on component destroy
   $effect(() => {
