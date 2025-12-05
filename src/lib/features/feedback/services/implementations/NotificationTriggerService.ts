@@ -3,6 +3,40 @@
  *
  * Central service for creating notifications with user preference checking.
  * All notification creation should go through this service to respect user preferences.
+ *
+ * IMPLEMENTATION GUIDE FOR FUTURE FEATURES:
+ *
+ * When implementing new features that trigger notifications, follow this pattern:
+ *
+ * 1. FEEDBACK NOTIFICATIONS (feedback-response, feedback-status-changed, feedback-needs-info, feedback-resolved)
+ *    - Already implemented in FeedbackService.ts
+ *    - Triggered when admin interacts with user feedback
+ *    - Example: notificationTriggerService.createFeedbackNotification(userId, 'feedback-response', feedbackId, feedbackTitle, message, adminId, adminName)
+ *
+ * 2. SEQUENCE NOTIFICATIONS (sequence-saved, sequence-video-submitted, sequence-liked, sequence-commented)
+ *    - TODO: Implement in SequenceService when save/like/comment features are added
+ *    - sequence-saved: When user saves another user's sequence
+ *    - sequence-video-submitted: When user submits video for another user's sequence
+ *    - sequence-liked: When user likes another user's sequence
+ *    - sequence-commented: When user comments on another user's sequence
+ *    - Example: notificationTriggerService.createSequenceNotification(sequenceOwnerId, 'sequence-liked', sequenceId, sequenceTitle, `${userName} liked your sequence`, userId, userName)
+ *
+ * 3. SOCIAL NOTIFICATIONS (user-followed, achievement-unlocked)
+ *    - user-followed: TODO: Implement in UserService when follow feature is added
+ *    - achievement-unlocked: TODO: Implement in GamificationService when achievement system triggers
+ *    - Example: notificationTriggerService.createSocialNotification(userId, 'achievement-unlocked', `You unlocked ${achievementName}!`, undefined, undefined, achievementId, achievementName)
+ *
+ * 4. SYSTEM NOTIFICATIONS (system-announcement)
+ *    - TODO: Create admin panel for broadcasting announcements
+ *    - Bypasses user preferences (always shown)
+ *    - Use for critical app updates, maintenance notices, etc.
+ *    - Example: notificationTriggerService.createSystemNotification(userId, 'New Feature Released', 'Check out the new animation tools!', '/animate')
+ *
+ * IMPORTANT:
+ * - Never create notifications directly in Firestore - always use this service
+ * - The service automatically checks user preferences before creating notifications
+ * - Returns null if user has disabled that notification type
+ * - System announcements always bypass preferences
  */
 
 import {

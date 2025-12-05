@@ -87,9 +87,11 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
       lastBeat ?? null
     );
 
-    // Filter out static Type 6 pictographs without turns
-    filteredOptions = this.pictographFilterService.filterStaticType6WithoutTurns(
-      filteredOptions
+    // Filter out static Type 6 pictographs based on level
+    // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
+    filteredOptions = this.pictographFilterService.filterStaticType6(
+      filteredOptions,
+      options.level
     );
 
     if (options.propContinuity === PropContinuity.CONTINUOUS) {

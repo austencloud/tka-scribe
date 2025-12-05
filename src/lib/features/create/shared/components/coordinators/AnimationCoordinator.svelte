@@ -10,7 +10,7 @@
 
   import AnimationPanel from "../../../../../shared/animation-engine/components/AnimationPanel.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
-  import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
+  import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import type { ISequenceService } from "../../services/contracts/ISequenceService";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -41,8 +41,8 @@
   let hapticService: IHapticFeedbackService | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
-  // Animation state
-  const animationPanelState = createAnimationPanelState();
+  // Animation state - use shared global state for beat grid synchronization
+  const animationPanelState = sharedAnimationState;
 
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
@@ -275,13 +275,8 @@
     return fullSequence;
   }
 
-  // Notify parent when current beat changes
-  $effect(() => {
-    const currentBeat = animationPanelState.currentBeat;
-    if (animationPanelState.isPlaying || currentBeat > 0) {
-      animatingBeatNumber = Math.floor(currentBeat) + 1;
-    }
-  });
+  // Note: animatingBeatNumber is now synced in CreateModule via sharedAnimationState
+  // This ensures synchronization works for both AnimationCoordinator and ShareAnimationViewer
 
   // Cleanup on component destroy
   $effect(() => {

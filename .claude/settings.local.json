@@ -267,7 +267,8 @@
       "Bash(ccusage --version:*)",
       "Bash(PATH=\"$PATH:/c/Users/Austen/AppData/Roaming/npm\" ccusage-monitor:*)",
       "mcp__ide__getDiagnostics",
-      "SlashCommand(/fb)"
+      "SlashCommand(/fb)",
+      "Bash(move testsgenerator-type6-filter.spec.ts testsintegration)"
     ],
     "deny": [],
     "ask": []

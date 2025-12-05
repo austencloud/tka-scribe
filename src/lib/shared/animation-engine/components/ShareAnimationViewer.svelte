@@ -12,7 +12,7 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { animationSettings } from "../state/animation-settings-state.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
-  import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
+  import { sharedAnimationState } from "../state/shared-animation-state.svelte";
   import { onMount, untrack } from "svelte";
 
   // Props
@@ -36,8 +36,8 @@
   // Services
   let playbackController: IAnimationPlaybackController | null = $state(null);
 
-  // Animation state
-  const animationPanelState = createAnimationPanelState();
+  // Animation state - use shared global state for beat grid synchronization
+  const animationPanelState = sharedAnimationState;
   let loading = $state(false);
   let error = $state<string | null>(null);
   let initialized = $state(false);

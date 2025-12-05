@@ -14,6 +14,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   import { setAnyPanelOpen, setSideBySideLayout } from "$lib/shared/application/state/animation-visibility-state.svelte";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
   import { onMount, setContext, tick } from "svelte";
+  import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
   import type { CreateModuleServices } from "../services/ServiceInitializer";
   import type { ICreateModuleInitializationService } from "../services/contracts/ICreateModuleInitializationService";
@@ -183,6 +184,18 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   $effect(() => {
     setAnyPanelOpen(panelState.isAnyPanelOpen);
     setSideBySideLayout(shouldUseSideBySideLayout);
+  });
+
+  // Sync animating beat number from shared animation state
+  // This ensures beat grid highlights current beat when ANY animation plays
+  // (both from AnimationCoordinator and ShareAnimationViewer)
+  $effect(() => {
+    const currentBeat = sharedAnimationState.currentBeat;
+    if (sharedAnimationState.isPlaying || currentBeat > 0) {
+      animatingBeatNumber = Math.floor(currentBeat) + 1;
+    } else {
+      animatingBeatNumber = null;
+    }
   });
 
   // Track previous module and tab to detect navigation changes
