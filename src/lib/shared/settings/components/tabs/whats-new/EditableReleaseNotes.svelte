@@ -78,67 +78,76 @@
   }
 </script>
 
-{#if isEditing}
-  <!-- Edit Mode -->
-  <div class="edit-container" in:scale={{ duration: 200, start: 0.95 }} out:scale={{ duration: 150, start: 0.95 }}>
-    <textarea
-      bind:value={editText}
-      onkeydown={handleKeydown}
-      placeholder="Enter release notes..."
-      rows="4"
-      disabled={isSaving}
-      autofocus
-    ></textarea>
+{#key isEditing}
+  {#if isEditing}
+    <!-- Edit Mode -->
+    <div class="edit-container" in:scale={{ duration: 250, start: 0.96, opacity: 0 }} out:scale={{ duration: 200, start: 0.96, opacity: 0 }}>
+      <textarea
+        bind:value={editText}
+        onkeydown={handleKeydown}
+        placeholder="Enter release notes..."
+        rows="4"
+        disabled={isSaving}
+        autofocus
+      ></textarea>
 
-    {#if error}
-      <div class="error-message" in:fly={{ y: -10, duration: 200 }}>{error}</div>
-    {:else if !hasChanges}
-      <div class="hint" in:fly={{ y: -10, duration: 200 }}>
-        Make changes to enable Save • Press <kbd>Shift+Enter</kbd> to save, <kbd>Esc</kbd> to cancel
-      </div>
-    {/if}
+      {#if error}
+        <div class="error-message" in:fly={{ y: -10, duration: 200 }}>{error}</div>
+      {:else if !hasChanges}
+        <div class="hint" in:fly={{ y: -10, duration: 200 }}>
+          Make changes to enable Save • Press <kbd>Shift+Enter</kbd> to save, <kbd>Esc</kbd> to cancel
+        </div>
+      {/if}
 
-    {#if hasChanges}
-      <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
-        <button
-          type="button"
-          class="action-btn save"
-          onclick={() => void saveEdit()}
-          disabled={isSaving}
-        >
-          {#if isSaving}
-            <i class="fas fa-spinner fa-spin"></i>
-            Saving...
-          {:else}
-            <i class="fas fa-check"></i>
-            Save
-          {/if}
-        </button>
+      {#if hasChanges}
+        <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
+          <button
+            type="button"
+            class="action-btn save"
+            onclick={() => void saveEdit()}
+            disabled={isSaving}
+          >
+            {#if isSaving}
+              <i class="fas fa-spinner fa-spin"></i>
+              Saving...
+            {:else}
+              <i class="fas fa-check"></i>
+              Save
+            {/if}
+          </button>
 
-        <button
-          type="button"
-          class="action-btn cancel"
-          onclick={cancelEdit}
-          disabled={isSaving}
-        >
-          <i class="fas fa-times"></i>
-          Cancel
-        </button>
-      </div>
-    {/if}
-  </div>
-{:else}
-  <!-- View Mode -->
-  <button
-    type="button"
-    class="release-notes-text"
-    class:clickable={canEdit}
-    onclick={() => canEdit && startEdit()}
-    disabled={!canEdit}
-  >
-    {text}
-  </button>
-{/if}
+          <button
+            type="button"
+            class="action-btn cancel"
+            onclick={cancelEdit}
+            disabled={isSaving}
+          >
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      {/if}
+    </div>
+  {:else}
+    <!-- View Mode -->
+    <button
+      type="button"
+      class="release-notes-text"
+      class:clickable={canEdit}
+      in:scale={{ duration: 250, start: 0.96, opacity: 0 }}
+      out:scale={{ duration: 200, start: 0.96, opacity: 0 }}
+      onclick={(e) => {
+        if (canEdit) {
+          e.stopPropagation(); // Prevent panel click handler from immediately closing
+          startEdit();
+        }
+      }}
+      disabled={!canEdit}
+    >
+      {text}
+    </button>
+  {/if}
+{/key}
 
 <style>
   /* View Mode */

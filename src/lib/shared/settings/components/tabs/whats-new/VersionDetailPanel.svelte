@@ -40,6 +40,21 @@
     currentlyEditingId = null;
   }
 
+  // Click-outside handler: exit edit mode when clicking outside the edit UI
+  function handlePanelClick(event: MouseEvent) {
+    if (!currentlyEditingId) return;
+
+    const target = event.target as HTMLElement;
+
+    // Exit edit mode unless clicking within the edit container or its children
+    // Check if the click is within an .edit-container
+    const isWithinEditContainer = target.closest('.edit-container');
+
+    if (!isWithinEditContainer) {
+      endEditingItem();
+    }
+  }
+
   function isItemEditing(id: string): boolean {
     return currentlyEditingId === id;
   }
@@ -152,7 +167,7 @@
   ariaLabel={version ? `Version ${version.version} details` : "Version details"}
 >
   {#if version}
-    <div class="panel-content">
+    <div class="panel-content" onclick={handlePanelClick}>
       <!-- Header -->
       <header class="panel-header">
         <button type="button" class="close-button" onclick={() => (isOpen = false)} aria-label="Close version details">
