@@ -74,26 +74,28 @@ This project follows a **2025+ AI-assisted development approach**:
 - Remember: `completed` means "ready to ship", not "shipped" (that's `archived`)
 
 ### What Goes in Release Notes (Critical!)
-**Release notes are historical markers for shipped features/fixes** - things Austen would want to remember a week or month later.
+**Release notes are for FLOW ARTISTS, not developers.** Think like a user who creates choreography, doesn't code, and just wants to know what's better for them.
 
 **✅ Include (mark as user-facing):**
-- User-visible features (new UI, new workflows, new capabilities)
-- Bug fixes users would notice (crashes, incorrect behavior, broken features)
-- UX improvements (performance, polish, usability)
-- Anything you'd be proud to tell users about
+- Features flow artists will use (new UI, new creative tools, new capabilities)
+- Bug fixes that impact choreography workflow (crashes, broken features, incorrect animations)
+- UX improvements they'll notice (performance, smoother interactions, easier workflows)
+- **User perspective test:** Would a flow artist care about this?
 
 **❌ Mark as internal-only** (`node fetch-feedback.js <id> internal-only true`):
-- Housekeeping (script organization, file cleanup, folder restructuring)
-- Dev tooling (HMR fixes, build optimizations, test improvements)
-- Internal refactoring that users never see
-- Admin-only features (feedback Kanban UI, internal tools)
-- Technical debt cleanup
-- **Rule of thumb:** If it belongs in a git commit but not a changelog, mark it internal-only
+- Developer workflow tooling (release scripts, feedback systems, build tools)
+- Admin-only features (analytics, feedback Kanban, internal dashboards)
+- Documentation for developers (workflow docs, architecture notes)
+- Housekeeping (file organization, script cleanup, dev dependencies)
+- Internal refactoring that doesn't change user experience
+- **Rule of thumb:** If it's not visible or useful to a flow artist, mark it internal-only
 
-**When marking feedback completed:**
-- Always ask yourself: "Would Austen want to see this in release notes a month from now?"
-- If no → mark it `internal-only true` before moving to `completed`
-- This keeps release notes clean and actually useful
+**When writing release changelogs:**
+- **Audience:** Flow artists who want to create better choreography
+- **Skip:** Anything developer-focused or admin-only
+- **Language:** Plain English, not technical jargon
+- **Version bumps:** Only bump minor (0.x.0) when there are substantial user-facing improvements
+- Always ask: "Would a flow artist who doesn't code care about this?"
 
 ### When Claude should proactively ask about updating this file:
 - User expresses frustration about Claude repeatedly doing something wrong
