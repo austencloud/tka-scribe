@@ -15,6 +15,7 @@
   import SimpleTrailControls from "../trail/SimpleTrailControls.svelte";
   import MotionVisibilityButtons from "../trail/MotionVisibilityButtons.svelte";
   import ExpandToggleButton from "../inputs/ExpandToggleButton.svelte";
+  import ExportActionsPanel from "./ExportActionsPanel.svelte";
 
   let {
     speed = 1,
@@ -30,6 +31,7 @@
     onToggleBlue = () => {},
     onToggleRed = () => {},
     onToggleExpanded = () => {},
+    onExportGif = () => {},
     preventBackNavAction = () => {},
     onScroll = () => {},
   }: {
@@ -46,6 +48,7 @@
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
     onToggleExpanded?: () => void;
+    onExportGif?: () => void;
     preventBackNavAction?: (
       node: HTMLElement,
       isSideBySideLayout: boolean
@@ -91,6 +94,11 @@
   <!-- Trail Settings (Hidden in compact mode on mobile) -->
   {#if isSideBySideLayout || isExpanded}
     <SimpleTrailControls />
+  {/if}
+
+  <!-- GIF Export (Hidden in compact mode on mobile) -->
+  {#if isSideBySideLayout || isExpanded}
+    <ExportActionsPanel {onExportGif} />
   {/if}
 </div>
 

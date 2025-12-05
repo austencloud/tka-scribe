@@ -235,6 +235,7 @@
     onPlaybackToggle = () => {},
     onCanvasReady = () => {},
     onVideoBeatChange = () => {},
+    onExportGif = () => {},
   }: {
     show?: boolean;
     combinedPanelHeight?: number;
@@ -256,6 +257,7 @@
     onPlaybackToggle?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
+    onExportGif?: () => void;
   } = $props();
 
   // ============================================================================
@@ -464,6 +466,7 @@
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
             onToggleExpanded={toggleMobileExpanded}
+            {onExportGif}
             preventBackNavAction={preventBackNavigation}
             onScroll={(e) => handleMobileScroll(e, isSideBySideLayout)}
           />

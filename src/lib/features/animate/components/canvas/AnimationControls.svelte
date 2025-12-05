@@ -247,6 +247,21 @@
 </script>
 
 <div class="animation-controls-container">
+  <!-- Play/Pause Button -->
+  <button
+    class="play-pause-btn"
+    class:playing={isPlaying}
+    onclick={() => {
+      console.log("▶️ Play/Pause button clicked");
+      console.log("  isPlaying:", isPlaying);
+      console.log("  onPlaybackToggle:", onPlaybackToggle);
+      onPlaybackToggle();
+    }}
+    aria-label={isPlaying ? "Pause animation" : "Play animation"}
+    type="button"
+  >
+    <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+  </button>
 
   <!-- Speed Control -->
   <div class="speed-control">
@@ -324,6 +339,72 @@
     gap: clamp(6px, 1.2vw, 12px);
     flex: 1 1 0;
     min-width: 0;
+  }
+
+  /* ===========================
+     PLAY/PAUSE BUTTON
+     =========================== */
+
+  .play-pause-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+    width: clamp(48px, 6.5vw, 52px);
+    height: clamp(48px, 6.5vw, 52px);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.4) 0%,
+      rgba(22, 163, 74, 0.4) 100%
+    );
+    border: 2px solid rgba(34, 197, 94, 0.5);
+    border-radius: 50%;
+    color: rgba(134, 239, 172, 1);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+    -webkit-tap-highlight-color: transparent;
+    font-size: clamp(14px, 2.4vw, 17px);
+    flex-shrink: 0;
+  }
+
+  .play-pause-btn.playing {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.4) 0%,
+      rgba(220, 38, 38, 0.4) 100%
+    );
+    border-color: rgba(239, 68, 68, 0.5);
+    color: rgba(254, 202, 202, 1);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .play-pause-btn:hover {
+      transform: scale(1.08);
+      background: linear-gradient(
+        135deg,
+        rgba(34, 197, 94, 0.5) 0%,
+        rgba(22, 163, 74, 0.5) 100%
+      );
+      border-color: rgba(34, 197, 94, 0.8);
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
+    }
+
+    .play-pause-btn.playing:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.5) 0%,
+        rgba(220, 38, 38, 0.5) 100%
+      );
+      border-color: rgba(239, 68, 68, 0.8);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+    }
+  }
+
+  .play-pause-btn:active {
+    transform: scale(0.95);
   }
 
   /* ===========================
@@ -524,6 +605,13 @@
       gap: 0.5cqw;
     }
 
+    .play-pause-btn {
+      width: 2.5cqh;
+      height: 2.5cqh;
+      font-size: 1cqh;
+      flex-shrink: 0;
+    }
+
     .speed-buttons {
       gap: 0.5cqw;
     }
@@ -562,6 +650,7 @@
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
+    .play-pause-btn,
     .speed-btn,
     .speed-value,
     .speed-value.tapping,
@@ -570,6 +659,8 @@
       animation: none;
     }
 
+    .play-pause-btn:hover,
+    .play-pause-btn:active,
     .speed-btn:hover,
     .speed-btn:active,
     .speed-value:hover,
