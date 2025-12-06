@@ -66,13 +66,27 @@
 
 <div class="mode-grid-container">
   {#if isVisible}
-    <h2 class="section-title" transition:fly={{ y: -SLIDE.sm, duration: DURATION.normal, easing: cubicOut }}>
+    <h2
+      class="section-title"
+      transition:fly={{
+        y: -SLIDE.sm,
+        duration: DURATION.normal,
+        easing: cubicOut,
+      }}
+    >
       Choose Animation Mode
     </h2>
 
     <div class="mode-grid">
       {#each modes as mode, i (mode.id)}
-        <div transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: i * STAGGER.normal, easing: cubicOut }}>
+        <div
+          transition:fly={{
+            y: SLIDE.md,
+            duration: DURATION.normal,
+            delay: i * STAGGER.normal,
+            easing: cubicOut,
+          }}
+        >
           <ModeCard
             mode={mode.id}
             title={mode.title}
