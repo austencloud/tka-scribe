@@ -132,7 +132,8 @@
                   </span>
                 {/if}
               </div>
-              <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} expand-icon"></i>
+              <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} expand-icon"
+              ></i>
             </button>
 
             {#if isExpanded}
@@ -148,7 +149,8 @@
                   </div>
                 {:else}
                   {#each versionState.selectedVersionFeedback as item (item.id)}
-                    {@const typeConfig = TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
+                    {@const typeConfig =
+                      TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
                     <button
                       type="button"
                       class="feedback-item"
@@ -490,7 +492,7 @@
   }
 
   .empty-state i {
-    font-size: 48px;
+    font-size: 52px;
     color: rgba(107, 114, 128, 0.4);
     margin-bottom: 16px;
   }
@@ -523,7 +525,7 @@
     justify-content: center;
     gap: 12px;
     height: 100%;
-    padding: 48px 24px;
+    padding: 52px 24px;
     text-align: center;
     color: rgba(255, 255, 255, 0.7);
   }

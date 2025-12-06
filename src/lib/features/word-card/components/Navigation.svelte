@@ -1,8 +1,8 @@
 <!-- Navigation.svelte - Simple navigation matching legacy desktop -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -273,7 +273,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .length-scroll-area {
-      max-height: 150px;
+      max-height: 152px;
     }
 
     .length-button {

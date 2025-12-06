@@ -21,7 +21,9 @@ Displays A-Z grid with clear option
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -41,9 +43,7 @@ Displays A-Z grid with clear option
   <div class="sheet-header">
     <h3 class="sheet-title">Select Letter</h3>
     {#if currentLetter}
-      <button class="clear-btn" onclick={handleClear}>
-        Clear
-      </button>
+      <button class="clear-btn" onclick={handleClear}> Clear </button>
     {/if}
   </div>
 
@@ -107,7 +107,7 @@ Displays A-Z grid with clear option
 
   .letter-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     gap: 8px;
   }
 
@@ -115,8 +115,8 @@ Displays A-Z grid with clear option
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 50px;
+    min-width: 50px;
     padding: 0;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid transparent;

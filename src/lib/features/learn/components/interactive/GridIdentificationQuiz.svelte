@@ -819,7 +819,7 @@ Two quiz phases:
     display: flex;
     gap: 1rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .action-btn {
@@ -829,7 +829,7 @@ Two quiz phases:
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.25rem;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;

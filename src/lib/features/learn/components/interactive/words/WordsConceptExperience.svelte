@@ -664,8 +664,8 @@ Page 5: Interactive quiz
   }
 
   .point-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -708,8 +708,8 @@ Page 5: Interactive quiz
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(80, 200, 120, 0.2);
     border: 2px solid rgba(80, 200, 120, 0.4);
     border-radius: 10px;
@@ -724,7 +724,7 @@ Page 5: Interactive quiz
   /* Letter comparison cards */
   .comparison-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(252px, 1fr));
     gap: 1rem;
   }
 

@@ -24,8 +24,45 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   // ============================================================================
 
   // Check if workspace has any content to display
+  // CRITICAL: Check ALL tab states explicitly, not through a shared method
+  // This prevents race conditions during tab switches
   const hasWorkspaceContent = $derived.by(() => {
-    return !CreateModuleState.isWorkspaceEmpty();
+    const activeTab = navigationState.activeTab;
+
+    // IMPORTANT: Access each tab's sequence state DIRECTLY via the exported tab state objects
+    // This avoids going through the shared getActiveTabSequenceState() method which can have timing issues
+    let sequence = null;
+
+    if (activeTab === "constructor") {
+      // Access constructor's sequence state directly
+      sequence = CreateModuleState.constructorTabState?.sequenceState?.currentSequence ?? null;
+    } else if (activeTab === "generator") {
+      // Access generator's sequence state directly
+      sequence = CreateModuleState.generatorTabState?.sequenceState?.currentSequence ?? null;
+    } else if (activeTab === "assembler") {
+      // Access assembler's sequence state directly
+      sequence = CreateModuleState.assemblerTabState?.sequenceState?.currentSequence ?? null;
+    } else {
+      // Fallback for other tabs
+      sequence = CreateModuleState.sequenceState.currentSequence;
+    }
+
+    if (!sequence) {
+      console.log(`[${activeTab}] hasWorkspaceContent: FALSE (no sequence)`);
+      return false;
+    }
+
+    const hasBeat = sequence.beats && sequence.beats.length > 0;
+    const hasStartPosition = sequence.startingPositionBeat || sequence.startPosition;
+    const result = hasBeat || hasStartPosition;
+
+    console.log(`[${activeTab}] hasWorkspaceContent: ${result}`, {
+      beats: sequence.beats?.length || 0,
+      hasStartPosition,
+      sequence
+    });
+
+    return result;
   });
 
   // Color border based on active CREATE tab (for visual workspace distinction)

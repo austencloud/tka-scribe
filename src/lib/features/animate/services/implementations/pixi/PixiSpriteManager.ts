@@ -12,6 +12,9 @@
 
 import type { Container, Texture } from "pixi.js";
 import { Sprite } from "pixi.js";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("PixiSpriteManager");
 
 export class PixiSpriteManager {
   // Layer containers
@@ -80,7 +83,7 @@ export class PixiSpriteManager {
     this.glyphSprite.position.set(0, 0); // Position at canvas origin
     this.glyphSprite.alpha = 0; // Start invisible for fade-in
 
-    console.log("🎨 [PixiSpriteManager] Created glyph sprite:", {
+    debug.log("Created glyph sprite:", {
       width: this.glyphSprite.width,
       height: this.glyphSprite.height,
       x: this.glyphSprite.position.x,
@@ -102,7 +105,7 @@ export class PixiSpriteManager {
   setGlyphAlpha(currentAlpha: number, previousAlpha?: number): void {
     if (this.glyphSprite) {
       this.glyphSprite.alpha = currentAlpha;
-      console.log("🎨 [PixiSpriteManager] Set glyph alpha:", {
+      debug.log("Set glyph alpha:", {
         currentAlpha,
         previousAlpha,
         spriteAlpha: this.glyphSprite.alpha,

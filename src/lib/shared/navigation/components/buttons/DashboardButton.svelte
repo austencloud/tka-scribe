@@ -6,7 +6,7 @@
   - Notification badge overlay
   - Navigates to dashboard module
   - Haptic feedback on interaction
-  - 48px minimum touch target (WCAG AAA)
+  - 50px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -20,9 +20,7 @@
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
   // Props
-  let {
-    variant = "bottom-nav",
-  } = $props<{
+  let { variant = "bottom-nav" } = $props<{
     variant?: "bottom-nav" | "sidebar";
   }>();
 
@@ -33,11 +31,9 @@
   const notificationState = createNotificationState();
 
   onMount(() => {
-    // Load haptic service asynchronously
-    resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService).then(
-      (service) => {
-        hapticService = service;
-      }
+    // Load haptic service synchronously
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
     );
 
     // Initialize notifications when user is authenticated
@@ -121,13 +117,13 @@
 
 <style>
   /* ============================================================================
-     DASHBOARD BUTTON - 48px minimum (WCAG AAA)
+     DASHBOARD BUTTON - 50px minimum (WCAG AAA)
      ============================================================================ */
   .dashboard-button {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     border: none;
     background: transparent;
@@ -164,8 +160,8 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;

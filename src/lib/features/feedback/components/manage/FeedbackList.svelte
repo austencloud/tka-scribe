@@ -19,7 +19,11 @@
     observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry?.isIntersecting && manageState.hasMore && !manageState.isLoading) {
+        if (
+          entry?.isIntersecting &&
+          manageState.hasMore &&
+          !manageState.isLoading
+        ) {
           manageState.loadMore();
         }
       },
@@ -408,7 +412,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.4;
     }
     50% {
@@ -444,7 +449,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 48px;
+    height: 52px;
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);
     border-radius: var(--fb-radius-md);

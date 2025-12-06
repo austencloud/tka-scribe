@@ -19,7 +19,7 @@ export class LayoutDetectionService implements ILayoutDetectionService {
    * SIMPLIFIED: Basic swipe detection logic
    *
    * CRITICAL: When in stacked mobile layout (workbench on top, option picker on bottom),
-   * we should ALWAYS use horizontal swipe, even if the container is wide (>= 650px).
+   * we should ALWAYS use horizontal swipe, even if the container is wide (>= 652px).
    * The traditional grid layout should only be used on true desktop/tablet side-by-side layouts.
    */
   shouldUseHorizontalSwipe(
@@ -41,7 +41,7 @@ export class LayoutDetectionService implements ILayoutDetectionService {
 
     // Use swipe if we have multiple sections AND:
     // 1. Mobile device (regardless of container width - includes stacked layout), OR
-    // 2. Narrow container (< 650px)
+    // 2. Narrow container (< 652px)
     //
     // This ensures that stacked mobile layouts (workbench on top, option picker on bottom)
     // always use horizontal swipe with 8 columns, not the traditional grid layout.

@@ -1,12 +1,12 @@
 <!--
-  ShareDrawer.svelte
+  ImageShareDrawer.svelte
 
-  Drawer wrapper around SharePanel with matching layout to AnimationPanel.
+  Drawer wrapper around ImageSharePanel for static image export.
   Uses CreatePanelDrawer and PanelHeader for consistent panel architecture.
 -->
 <script module lang="ts">
   // Re-export ViewMode type for consumers
-  export type { ViewMode } from "./SharePanel.svelte";
+  export type { ViewMode } from "./ImageSharePanel.svelte";
 </script>
 
 <script lang="ts">
@@ -15,7 +15,7 @@
   import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { ShareState } from "../state/share-state.svelte";
-  import SharePanel, { type ViewMode } from "./SharePanel.svelte";
+  import ImageSharePanel, { type ViewMode } from "./ImageSharePanel.svelte";
 
   let {
     show = $bindable(false),
@@ -75,7 +75,7 @@ import type { SequenceData } from "../../foundation/domain/models/SequenceData";
     <h2 id="share-panel-title" class="sr-only">{heading}</h2>
 
     <div class="share-panel__content">
-      <SharePanel
+      <ImageSharePanel
         currentSequence={sequence}
         {shareState}
         bind:viewMode

@@ -14,8 +14,6 @@ Clean design with:
   import { CONCEPT_CATEGORIES } from "../domain/concepts";
   import type { LearnConcept, ConceptStatus } from "../domain/types";
 
-
-
   let {
     concept,
     status,
@@ -31,7 +29,9 @@ Clean design with:
   );
 
   const category = $derived(CONCEPT_CATEGORIES[concept.category]);
-  const isAvailable = $derived(status === "available" || status === "in-progress");
+  const isAvailable = $derived(
+    status === "available" || status === "in-progress"
+  );
 
   function handleStart() {
     if (!isAvailable) return;
@@ -41,19 +41,27 @@ Clean design with:
 
   const buttonText = $derived(() => {
     switch (status) {
-      case "in-progress": return "Continue";
-      case "available": return "Start";
-      case "completed": return "Review";
-      default: return "Locked";
+      case "in-progress":
+        return "Continue";
+      case "available":
+        return "Start";
+      case "completed":
+        return "Review";
+      default:
+        return "Locked";
     }
   });
 
   const buttonIcon = $derived(() => {
     switch (status) {
-      case "in-progress": return "fa-play";
-      case "completed": return "fa-rotate";
-      case "locked": return "fa-lock";
-      default: return "fa-arrow-right";
+      case "in-progress":
+        return "fa-play";
+      case "completed":
+        return "fa-rotate";
+      case "locked":
+        return "fa-lock";
+      default:
+        return "fa-arrow-right";
     }
   });
 </script>
@@ -116,13 +124,16 @@ Clean design with:
     background: transparent;
     cursor: pointer;
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
     min-height: 120px;
   }
 
   .hero-card:hover:not(.locked) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px color-mix(in srgb, var(--category-color) 25%, transparent);
+    box-shadow: 0 8px 32px
+      color-mix(in srgb, var(--category-color) 25%, transparent);
   }
 
   .hero-card:active:not(.locked) {
@@ -177,7 +188,9 @@ Clean design with:
   .icon-wrapper i {
     font-size: 1.5rem;
     color: var(--category-color);
-    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--category-color) 50%, transparent));
+    filter: drop-shadow(
+      0 0 8px color-mix(in srgb, var(--category-color) 50%, transparent)
+    );
   }
 
   .category-label {
@@ -246,16 +259,20 @@ Clean design with:
     gap: 0.375rem;
     padding: 0.875rem 1.25rem;
     min-width: 80px;
-    min-height: 48px;
+    min-height: 52px;
     background: var(--category-color);
     border-radius: 12px;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--category-color) 40%, transparent);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--category-color) 40%, transparent);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
   }
 
   .hero-card:hover:not(.locked) .cta-button {
     transform: scale(1.05);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--category-color) 50%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--category-color) 50%, transparent);
   }
 
   .cta-button i {

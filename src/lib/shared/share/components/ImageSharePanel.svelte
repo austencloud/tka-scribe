@@ -270,21 +270,21 @@
   </section>
 
   <!-- IMAGE COMPOSITION OPTIONS -->
-    <section class="options-section">
-      <div class="options-chips">
-        {#each exportOptions as opt}
-          <button
-            class="chip"
-            class:active={shareState?.options[opt.key]}
-            onclick={() => handleToggle(opt.key)}
-            disabled={!canShare()}
-          >
-            <i class="fas {opt.icon}"></i>
-            <span>{opt.label}</span>
-          </button>
-        {/each}
-      </div>
-    </section>
+  <section class="options-section">
+    <div class="options-chips">
+      {#each exportOptions as opt}
+        <button
+          class="chip"
+          class:active={shareState?.options[opt.key]}
+          onclick={() => handleToggle(opt.key)}
+          disabled={!canShare()}
+        >
+          <i class="fas {opt.icon}"></i>
+          <span>{opt.label}</span>
+        </button>
+      {/each}
+    </div>
+  </section>
 
   <!-- PRIMARY ACTIONS - Main buttons -->
   <section class="actions-section">
@@ -449,8 +449,8 @@
     position: absolute;
     bottom: 8px;
     right: 8px;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -502,7 +502,7 @@
     justify-content: center;
     gap: 6px;
     padding: 14px 16px;
-    min-height: 48px;
+    min-height: 52px;
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -551,7 +551,7 @@
     align-items: center;
     gap: 6px;
     padding: 14px 18px;
-    min-height: 48px;
+    min-height: 52px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;

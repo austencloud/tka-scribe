@@ -166,7 +166,7 @@
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
     color: white;
     position: relative;
-    min-height: clamp(108px, 16cqh, 148px);
+    min-height: clamp(108px, 16cqh, 150px);
     width: 100%;
   }
 
@@ -276,14 +276,14 @@
     font-size: clamp(14px, 2cqw, 16px);
   }
 
-  /* Variation toggle button - 48px minimum touch target */
+  /* Variation toggle button - 50px minimum touch target */
   .variation-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(8px, 1cqw, 12px);
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 52px;
+    min-width: 52px;
     padding: clamp(10px, 1.5cqh, 14px) clamp(16px, 2.5cqw, 24px);
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);

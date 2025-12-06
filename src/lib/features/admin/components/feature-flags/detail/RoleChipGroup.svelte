@@ -1,6 +1,9 @@
 <script lang="ts">
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
-  import { ROLE_HIERARCHY, ROLE_DISPLAY } from "$lib/shared/auth/domain/models/UserRole";
+  import {
+    ROLE_HIERARCHY,
+    ROLE_DISPLAY,
+  } from "$lib/shared/auth/domain/models/UserRole";
   import { getRoleColor, getRoleIcon } from "../utils";
 
   interface Props {
@@ -69,7 +72,7 @@
     font-weight: var(--settings-font-weight-medium);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 48px;
+    min-height: 52px;
   }
 
   @media (min-width: 480px) {

@@ -1,9 +1,9 @@
 <!-- Desktop Navigation Sidebar -->
 <!-- Modern 2026-style sidebar navigation for desktop in side-by-side layout -->
 <script lang="ts">
-import { resolve } from "../../inversify/di";
-import { TYPES } from "../../inversify/types";
-import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import { slide, fade } from "svelte/transition";
   import { openDebugPanel } from "../../application/state/ui/ui-state.svelte";
@@ -19,7 +19,10 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   import ModuleGroup from "./desktop-sidebar/ModuleGroup.svelte";
   import CollapsedTabButton from "./desktop-sidebar/CollapsedTabButton.svelte";
   import CollapsedModuleButton from "./desktop-sidebar/CollapsedModuleButton.svelte";
-  import { navigationState, SETTINGS_TABS } from "../state/navigation-state.svelte";
+  import {
+    navigationState,
+    SETTINGS_TABS,
+  } from "../state/navigation-state.svelte";
   import { featureFlagService } from "../../auth/services/FeatureFlagService.svelte";
 
   let {
@@ -33,7 +36,10 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     currentModule: string;
     currentSection: string;
     modules: ModuleDefinition[];
-    onModuleChange?: (moduleId: ModuleId, targetTab?: string) => void | Promise<void>;
+    onModuleChange?: (
+      moduleId: ModuleId,
+      targetTab?: string
+    ) => void | Promise<void>;
     onSectionChange?: (sectionId: string) => void;
     onHeightChange?: (height: number) => void;
   }>();
@@ -93,7 +99,9 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     hapticService?.trigger("selection");
 
     // Find the module definition to check if it has sections
-    const moduleDefinition = modules.find((m: ModuleDefinition) => m.id === moduleId);
+    const moduleDefinition = modules.find(
+      (m: ModuleDefinition) => m.id === moduleId
+    );
     const hasNoSections = !moduleDefinition?.sections?.length;
     const isCurrentModule = moduleId === currentModule;
 
@@ -272,7 +280,8 @@ import type { IHapticFeedbackService } from "../../application/services/contract
           <!-- Collapsed Settings Tabs -->
           <div class="collapsed-settings-tabs">
             {#each filteredSettingsSections as section, index}
-              {@const isSectionActive = navigationState.activeTab === section.id}
+              {@const isSectionActive =
+                navigationState.activeTab === section.id}
               <div in:fade={{ duration: 150, delay: index * 25 }}>
                 <CollapsedTabButton
                   {section}
@@ -286,7 +295,8 @@ import type { IHapticFeedbackService } from "../../application/services/contract
           <!-- Expanded Settings Tabs -->
           <div class="settings-sections">
             {#each filteredSettingsSections as section, index}
-              {@const isSectionActive = navigationState.activeTab === section.id}
+              {@const isSectionActive =
+                navigationState.activeTab === section.id}
               <button
                 class="section-button"
                 class:active={isSectionActive}
@@ -412,7 +422,8 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     z-index: 150;
     overflow: hidden;
-    transition: width var(--duration-emphasis, 280ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: width var(--duration-emphasis, 280ms)
+      var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
 
     /* Completely exclude from view transitions */
     view-transition-name: none;
@@ -485,8 +496,8 @@ import type { IHapticFeedbackService } from "../../application/services/contract
   }
 
   .settings-back-button.collapsed {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     padding: 0;
     justify-content: center;
     margin-bottom: 8px;
@@ -537,7 +548,7 @@ import type { IHapticFeedbackService } from "../../application/services/contract
 
   .section-button {
     width: 100%;
-    min-height: 48px; /* WCAG touch target minimum */
+    min-height: 52px; /* WCAG touch target minimum */
     display: flex;
     align-items: center;
     gap: clamp(10px, 6cqw, 14px);
@@ -629,7 +640,8 @@ import type { IHapticFeedbackService } from "../../application/services/contract
     padding: 4px;
     border-radius: 12px;
     position: relative;
-    transition: all var(--duration-normal, 200ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition: all var(--duration-normal, 200ms)
+      var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
   }
 
   /* Active module with tabs gets subtle unified background */

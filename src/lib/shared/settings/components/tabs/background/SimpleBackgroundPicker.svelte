@@ -334,7 +334,7 @@
   }
 
   /* Responsive icon sizing based on container dimensions */
-  @container (min-width: 150px) and (min-height: 100px) {
+  @container (min-width: 152px) and (min-height: 100px) {
     .card-icon {
       font-size: clamp(28px, 14cqi, 64px);
     }
@@ -366,7 +366,7 @@
   }
 
   /* Responsive text sizing based on container dimensions */
-  @container (min-width: 150px) and (min-height: 100px) {
+  @container (min-width: 152px) and (min-height: 100px) {
     .card-name {
       font-size: clamp(12px, 6cqi, 22px);
     }
@@ -393,7 +393,7 @@
   }
 
   /* Responsive selection indicator sizing */
-  @container (min-width: 150px) and (min-height: 100px) {
+  @container (min-width: 152px) and (min-height: 100px) {
     .selection-indicator svg {
       width: clamp(22px, 10cqi, 36px);
       height: clamp(22px, 10cqi, 36px);

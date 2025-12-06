@@ -69,7 +69,9 @@
 
   // Initialize services
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     try {
       achievementService = await resolve<IAchievementService>(
         TYPES.IAchievementService
@@ -162,10 +164,10 @@
   // Check if any ranks are available
   let hasRanks = $derived(
     userRanks.xp !== null ||
-    userRanks.level !== null ||
-    userRanks.sequences !== null ||
-    userRanks.achievements !== null ||
-    userRanks.streak !== null
+      userRanks.level !== null ||
+      userRanks.sequences !== null ||
+      userRanks.achievements !== null ||
+      userRanks.streak !== null
   );
 </script>
 
@@ -340,14 +342,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(24px, 6cqi, 48px);
+    padding: clamp(24px, 6cqi, 52px);
     text-align: center;
     gap: clamp(12px, 3cqi, 16px);
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 4px solid rgba(255, 255, 255, 0.2);
     border-top-color: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
@@ -362,7 +364,7 @@
 
   .auth-required i,
   .empty-state i {
-    font-size: clamp(32px, 8cqi, 48px);
+    font-size: clamp(32px, 8cqi, 52px);
     opacity: 0.5;
   }
 
@@ -382,7 +384,7 @@
     }
   }
 
-  @container achievements-section (max-width: 350px) {
+  @container achievements-section (max-width: 352px) {
     .stats-grid {
       grid-template-columns: 1fr;
     }
@@ -540,8 +542,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(48px, 12cqi, 60px);
-    height: clamp(48px, 12cqi, 60px);
+    width: clamp(52px, 12cqi, 60px);
+    height: clamp(52px, 12cqi, 60px);
   }
 
   .achievement-info {

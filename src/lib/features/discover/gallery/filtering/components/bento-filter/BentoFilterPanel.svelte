@@ -49,15 +49,21 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Derived filter values
   const currentLevel = $derived(
-    currentFilter.type === "difficulty" ? (currentFilter.value as DifficultyLevel) : null
+    currentFilter.type === "difficulty"
+      ? (currentFilter.value as DifficultyLevel)
+      : null
   );
   const currentLetter = $derived(
-    currentFilter.type === "startingLetter" ? (currentFilter.value as string) : null
+    currentFilter.type === "startingLetter"
+      ? (currentFilter.value as string)
+      : null
   );
   const currentLength = $derived(
     currentFilter.type === "length" ? (currentFilter.value as number) : null
@@ -203,7 +209,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     position: relative;
     z-index: 1;
     flex: 1;
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 16px;
     background: transparent;
     border: none;

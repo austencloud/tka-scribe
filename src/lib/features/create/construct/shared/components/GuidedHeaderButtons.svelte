@@ -75,7 +75,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .header-right {
@@ -89,7 +89,7 @@
     text-align: center;
     min-width: 0;
     overflow: visible;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .header-title {
@@ -104,8 +104,8 @@
   }
 
   .back-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

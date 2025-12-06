@@ -6,9 +6,9 @@ selecting different game types. Features glass morphism styling
 and smooth hover animations.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { QuizType } from "../domain/enums/quiz-enums";
 
@@ -43,25 +43,25 @@ import { TYPES } from "$lib/shared/inversify/types";
         return {
           icon: "pictograph-to-letter",
           title: "Name That Letter",
-          subtitle: "See the pictograph, pick the letter"
+          subtitle: "See the pictograph, pick the letter",
         };
       case QuizType.LETTER_TO_PICTOGRAPH:
         return {
           icon: "letter-to-pictograph",
           title: "Find The Pictograph",
-          subtitle: "See the letter, pick the symbol"
+          subtitle: "See the letter, pick the symbol",
         };
       case QuizType.VALID_NEXT_PICTOGRAPH:
         return {
           icon: "sequence",
           title: "What Comes Next?",
-          subtitle: "Pick the valid continuation"
+          subtitle: "Pick the valid continuation",
         };
       default:
         return {
           icon: "default",
           title: text,
-          subtitle: description
+          subtitle: description,
         };
     }
   });
@@ -77,50 +77,139 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 </script>
 
-<button
-  class="quiz-card"
-  class:disabled
-  onclick={handleClick}
-  {disabled}
->
+<button class="quiz-card" class:disabled onclick={handleClick} {disabled}>
   <!-- Icon area -->
   <div class="card-icon">
     {#if gameConfig.icon === "pictograph-to-letter"}
       <svg viewBox="0 0 48 48" fill="none">
         <!-- Pictograph symbol -->
-        <rect x="6" y="8" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
-        <circle cx="15" cy="17" r="4" fill="currentColor" opacity="0.7"/>
+        <rect
+          x="6"
+          y="8"
+          width="18"
+          height="18"
+          rx="3"
+          stroke="currentColor"
+          stroke-width="2.5"
+          fill="rgba(255,255,255,0.1)"
+        />
+        <circle cx="15" cy="17" r="4" fill="currentColor" opacity="0.7" />
         <!-- Arrow -->
-        <path d="M28 17h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M28 17h10m0 0l-4-4m4 4l-4 4"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
         <!-- Letter A -->
-        <text x="33" y="40" font-family="Georgia, serif" font-size="16" font-weight="bold" fill="currentColor">A</text>
+        <text
+          x="33"
+          y="40"
+          font-family="Georgia, serif"
+          font-size="16"
+          font-weight="bold"
+          fill="currentColor">A</text
+        >
       </svg>
     {:else if gameConfig.icon === "letter-to-pictograph"}
       <svg viewBox="0 0 48 48" fill="none">
         <!-- Letter A -->
-        <text x="6" y="26" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="currentColor">A</text>
+        <text
+          x="6"
+          y="26"
+          font-family="Georgia, serif"
+          font-size="20"
+          font-weight="bold"
+          fill="currentColor">A</text
+        >
         <!-- Arrow -->
-        <path d="M22 17h10m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M22 17h10m0 0l-4-4m4 4l-4 4"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
         <!-- Pictograph symbol -->
-        <rect x="24" y="24" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
-        <circle cx="33" cy="33" r="4" fill="currentColor" opacity="0.7"/>
+        <rect
+          x="24"
+          y="24"
+          width="18"
+          height="18"
+          rx="3"
+          stroke="currentColor"
+          stroke-width="2.5"
+          fill="rgba(255,255,255,0.1)"
+        />
+        <circle cx="33" cy="33" r="4" fill="currentColor" opacity="0.7" />
       </svg>
     {:else if gameConfig.icon === "sequence"}
       <svg viewBox="0 0 48 48" fill="none">
         <!-- Three connected boxes -->
-        <rect x="4" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.1)"/>
-        <rect x="18" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" fill="rgba(255,255,255,0.1)"/>
-        <rect x="32" y="16" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2"/>
+        <rect
+          x="4"
+          y="16"
+          width="12"
+          height="12"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="rgba(255,255,255,0.1)"
+        />
+        <rect
+          x="18"
+          y="16"
+          width="12"
+          height="12"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          fill="rgba(255,255,255,0.1)"
+        />
+        <rect
+          x="32"
+          y="16"
+          width="12"
+          height="12"
+          rx="2"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-dasharray="3 2"
+        />
         <!-- Question mark -->
-        <text x="35" y="26" font-family="Georgia, serif" font-size="10" font-weight="bold" fill="currentColor" opacity="0.7">?</text>
+        <text
+          x="35"
+          y="26"
+          font-family="Georgia, serif"
+          font-size="10"
+          font-weight="bold"
+          fill="currentColor"
+          opacity="0.7">?</text
+        >
         <!-- Connecting dots -->
-        <circle cx="10" cy="22" r="2" fill="currentColor" opacity="0.5"/>
-        <circle cx="24" cy="22" r="2" fill="currentColor" opacity="0.5"/>
+        <circle cx="10" cy="22" r="2" fill="currentColor" opacity="0.5" />
+        <circle cx="24" cy="22" r="2" fill="currentColor" opacity="0.5" />
       </svg>
     {:else}
       <svg viewBox="0 0 48 48" fill="none">
-        <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5" fill="rgba(255,255,255,0.1)"/>
-        <text x="24" y="29" font-family="Georgia, serif" font-size="14" font-weight="bold" fill="currentColor" text-anchor="middle">?</text>
+        <circle
+          cx="24"
+          cy="24"
+          r="16"
+          stroke="currentColor"
+          stroke-width="2.5"
+          fill="rgba(255,255,255,0.1)"
+        />
+        <text
+          x="24"
+          y="29"
+          font-family="Georgia, serif"
+          font-size="14"
+          font-weight="bold"
+          fill="currentColor"
+          text-anchor="middle">?</text
+        >
       </svg>
     {/if}
   </div>
@@ -133,8 +222,17 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   <!-- Arrow indicator -->
   <div class="card-arrow">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M9 18l6-6-6-6"/>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M9 18l6-6-6-6" />
     </svg>
   </div>
 
@@ -197,7 +295,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.15));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.2),
+      rgba(139, 92, 246, 0.15)
+    );
     border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(99, 102, 241, 0.3);
@@ -210,7 +312,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .quiz-card:hover:not(.disabled) .card-icon {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(139, 92, 246, 0.25));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.35),
+      rgba(139, 92, 246, 0.25)
+    );
     border-color: rgba(99, 102, 241, 0.5);
     transform: scale(1.05);
   }
@@ -223,7 +329,13 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .card-title {
     margin: 0 0 4px 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 1.0625rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
@@ -232,7 +344,13 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .card-subtitle {
     margin: 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.6);
     line-height: 1.4;
@@ -311,8 +429,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .card-icon {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 10px;
     }
 
@@ -342,8 +460,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .card-icon {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
     }
 
     .card-icon svg {

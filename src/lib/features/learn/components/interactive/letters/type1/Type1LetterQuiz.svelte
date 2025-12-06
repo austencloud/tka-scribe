@@ -4,7 +4,10 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
 -->
 <script lang="ts">
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { GridPositionGroup, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridPositionGroup,
+    GridMode,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -47,42 +50,156 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
     // All Type 1 letters with their motion patterns
     const type1Letters: QuizQuestion[] = [
       // Pro-Pro (7 letters)
-      { letter: Letter.A, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-      { letter: Letter.D, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-      { letter: Letter.G, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-      { letter: Letter.J, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-      { letter: Letter.M, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-      { letter: Letter.P, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
-      { letter: Letter.S, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+      {
+        letter: Letter.A,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.D,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.G,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.J,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.M,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.P,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.S,
+        pattern: "pro-pro",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.PRO,
+      },
       // Anti-Anti (7 letters)
-      { letter: Letter.B, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-      { letter: Letter.E, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-      { letter: Letter.H, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-      { letter: Letter.K, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-      { letter: Letter.N, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-      { letter: Letter.Q, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
-      { letter: Letter.T, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+      {
+        letter: Letter.B,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
+      {
+        letter: Letter.E,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
+      {
+        letter: Letter.H,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
+      {
+        letter: Letter.K,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
+      {
+        letter: Letter.N,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
+      {
+        letter: Letter.Q,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
+      {
+        letter: Letter.T,
+        pattern: "anti-anti",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.ANTI,
+      },
       // Hybrid (8 letters)
-      { letter: Letter.C, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.F, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.I, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.L, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.O, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.R, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.U, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
-      { letter: Letter.V, pattern: "hybrid", blueMotion: MotionType.PRO, redMotion: MotionType.ANTI },
+      {
+        letter: Letter.C,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.F,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.I,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.L,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.O,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.R,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.U,
+        pattern: "hybrid",
+        blueMotion: MotionType.ANTI,
+        redMotion: MotionType.PRO,
+      },
+      {
+        letter: Letter.V,
+        pattern: "hybrid",
+        blueMotion: MotionType.PRO,
+        redMotion: MotionType.ANTI,
+      },
     ];
 
     // Select 12 questions: 4 of each pattern
     const selected: QuizQuestion[] = [];
 
-    const proProLetters = type1Letters.filter(q => q.pattern === "pro-pro");
-    const antiAntiLetters = type1Letters.filter(q => q.pattern === "anti-anti");
-    const hybridLetters = type1Letters.filter(q => q.pattern === "hybrid");
+    const proProLetters = type1Letters.filter((q) => q.pattern === "pro-pro");
+    const antiAntiLetters = type1Letters.filter(
+      (q) => q.pattern === "anti-anti"
+    );
+    const hybridLetters = type1Letters.filter((q) => q.pattern === "hybrid");
 
     // Shuffle each category
     const shuffledProPro = [...proProLetters].sort(() => Math.random() - 0.5);
-    const shuffledAntiAnti = [...antiAntiLetters].sort(() => Math.random() - 0.5);
+    const shuffledAntiAnti = [...antiAntiLetters].sort(
+      () => Math.random() - 0.5
+    );
     const shuffledHybrid = [...hybridLetters].sort(() => Math.random() - 0.5);
 
     // Take 4 from each
@@ -213,24 +330,27 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
   const isComplete = $derived(currentQuestionIndex >= questions.length);
 
   // Pattern display info
-  const patternInfo: Record<MotionPattern, { icon: string; label: string; color: string; description: string }> = {
+  const patternInfo: Record<
+    MotionPattern,
+    { icon: string; label: string; color: string; description: string }
+  > = {
     "pro-pro": {
       icon: "fa-rotate-right",
       label: "Pro-Pro",
       color: "#22D3EE",
-      description: "Both hands prospin"
+      description: "Both hands prospin",
     },
     "anti-anti": {
       icon: "fa-rotate-left",
       label: "Anti-Anti",
       color: "#A855F7",
-      description: "Both hands antispin"
+      description: "Both hands antispin",
     },
-    "hybrid": {
+    hybrid: {
       icon: "fa-shuffle",
       label: "Hybrid",
       color: "#F59E0B",
-      description: "Different motions"
+      description: "Different motions",
     },
   };
 </script>
@@ -288,13 +408,14 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
 
       <!-- Answer buttons -->
       <div class="answer-buttons">
-        {#each (["pro-pro", "anti-anti", "hybrid"] as MotionPattern[]) as pattern}
+        {#each ["pro-pro", "anti-anti", "hybrid"] as MotionPattern[] as pattern}
           {@const info = patternInfo[pattern]}
           {@const isSelected = selectedAnswer === pattern}
           {@const isCorrectAnswer = question?.pattern === pattern}
           {@const showCorrect = answerState === "correct" && isSelected}
           {@const showIncorrect = answerState === "incorrect" && isSelected}
-          {@const revealCorrect = answerState === "incorrect" && isCorrectAnswer}
+          {@const revealCorrect =
+            answerState === "incorrect" && isCorrectAnswer}
 
           <button
             class="answer-btn"
@@ -311,7 +432,9 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
               <span class="answer-desc">{info.description}</span>
             </div>
             {#if answerState !== "idle" && isSelected}
-              <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
+              <span class="result-icon"
+                >{answerState === "correct" ? "✓" : "✗"}</span
+              >
             {:else if revealCorrect}
               <span class="result-icon correct">✓</span>
             {/if}
@@ -322,22 +445,29 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
       <!-- Feedback -->
       {#if answerState !== "idle" && question}
         {@const correctInfo = patternInfo[question.pattern]}
-        <div class="feedback" class:correct={answerState === "correct"} class:incorrect={answerState === "incorrect"}>
+        <div
+          class="feedback"
+          class:correct={answerState === "correct"}
+          class:incorrect={answerState === "incorrect"}
+        >
           {#if answerState === "correct"}
             <span>
               Correct! <strong>{question.letter}</strong> is
-              <strong style="color: {correctInfo.color}">{correctInfo.label}</strong>
+              <strong style="color: {correctInfo.color}"
+                >{correctInfo.label}</strong
+              >
             </span>
           {:else}
             <span>
               Not quite! <strong>{question.letter}</strong> is
-              <strong style="color: {correctInfo.color}">{correctInfo.label}</strong>
+              <strong style="color: {correctInfo.color}"
+                >{correctInfo.label}</strong
+              >
             </span>
           {/if}
         </div>
       {/if}
     </div>
-
   {:else}
     <!-- Complete state -->
     <div class="quiz-section complete">
@@ -679,7 +809,7 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
     display: flex;
     gap: 1rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .action-btn {
@@ -689,7 +819,7 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.25rem;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;

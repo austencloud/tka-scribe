@@ -99,8 +99,8 @@
 
 <div class="panel-preview">
   <div class="panel-header">
-    <h2>Share Sequence</h2>
-    <button class="close-btn" aria-label="Close share panel">
+    <h2>Image Share</h2>
+    <button class="close-btn" aria-label="Close image share panel">
       <i class="fas fa-times"></i>
     </button>
   </div>
@@ -207,8 +207,8 @@
   }
 
   .close-btn {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;

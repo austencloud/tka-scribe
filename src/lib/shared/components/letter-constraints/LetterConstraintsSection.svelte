@@ -1,6 +1,6 @@
 <!--
 LetterConstraintsSection.svelte - Section for letter must-contain/must-not-contain constraints
-48px touch targets, modern Material 2026 design
+50px touch targets, modern Material 2026 design
 -->
 <script lang="ts">
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
@@ -10,7 +10,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     mustContainLetters,
     mustNotContainLetters,
     onMustContainChange,
-    onMustNotContainChange
+    onMustNotContainChange,
   } = $props<{
     mustContainLetters: Letter[];
     mustNotContainLetters: Letter[];
@@ -26,25 +26,57 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     {
       name: "Type 1: Dual-Shift",
       letters: [
-        Letter.A, Letter.B, Letter.C, Letter.D, Letter.E, Letter.F,
-        Letter.G, Letter.H, Letter.I, Letter.J, Letter.K, Letter.L,
-        Letter.M, Letter.N, Letter.O, Letter.P, Letter.Q, Letter.R,
-        Letter.S, Letter.T, Letter.U, Letter.V, Letter.GAMMA_LOWERCASE,
+        Letter.A,
+        Letter.B,
+        Letter.C,
+        Letter.D,
+        Letter.E,
+        Letter.F,
+        Letter.G,
+        Letter.H,
+        Letter.I,
+        Letter.J,
+        Letter.K,
+        Letter.L,
+        Letter.M,
+        Letter.N,
+        Letter.O,
+        Letter.P,
+        Letter.Q,
+        Letter.R,
+        Letter.S,
+        Letter.T,
+        Letter.U,
+        Letter.V,
+        Letter.GAMMA_LOWERCASE,
       ],
     },
     {
       name: "Type 2: Shift",
       letters: [
-        Letter.W, Letter.X, Letter.Y, Letter.Z,
-        Letter.SIGMA, Letter.DELTA, Letter.THETA, Letter.OMEGA,
-        Letter.MU, Letter.NU,
+        Letter.W,
+        Letter.X,
+        Letter.Y,
+        Letter.Z,
+        Letter.SIGMA,
+        Letter.DELTA,
+        Letter.THETA,
+        Letter.OMEGA,
+        Letter.MU,
+        Letter.NU,
       ],
     },
     {
       name: "Type 3: Cross-Shift",
       letters: [
-        Letter.W_DASH, Letter.X_DASH, Letter.Y_DASH, Letter.Z_DASH,
-        Letter.SIGMA_DASH, Letter.DELTA_DASH, Letter.THETA_DASH, Letter.OMEGA_DASH,
+        Letter.W_DASH,
+        Letter.X_DASH,
+        Letter.Y_DASH,
+        Letter.Z_DASH,
+        Letter.SIGMA_DASH,
+        Letter.DELTA_DASH,
+        Letter.THETA_DASH,
+        Letter.OMEGA_DASH,
       ],
     },
     {
@@ -58,8 +90,13 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     {
       name: "Type 6: Static",
       letters: [
-        Letter.ALPHA, Letter.BETA, Letter.GAMMA,
-        Letter.ZETA, Letter.ETA, Letter.TAU, Letter.TERRA,
+        Letter.ALPHA,
+        Letter.BETA,
+        Letter.GAMMA,
+        Letter.ZETA,
+        Letter.ETA,
+        Letter.TAU,
+        Letter.TERRA,
       ],
     },
   ];
@@ -225,7 +262,9 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
             <div class="summary-row exclude">
               <span class="summary-label">Exclude:</span>
               <span class="summary-letters">
-                {mustNotContainLetters.map((l: Letter) => l.toString()).join(", ")}
+                {mustNotContainLetters
+                  .map((l: Letter) => l.toString())
+                  .join(", ")}
               </span>
             </div>
           {/if}
@@ -325,7 +364,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
 
   .tab-button {
     flex: 1;
-    min-height: 48px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -397,7 +436,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
 
   .letter-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     gap: 8px;
   }
 

@@ -20,21 +20,30 @@
       return "Use semver format (e.g., 0.2.0)";
     }
     // Must be greater than latest
-    if (versionState.latestVersion && version.trim() <= versionState.latestVersion) {
+    if (
+      versionState.latestVersion &&
+      version.trim() <= versionState.latestVersion
+    ) {
       return `Must be greater than ${versionState.latestVersion}`;
     }
     return null;
   });
 
-  const isValid = $derived(!versionError && versionState.generatedChangelog.length > 0);
+  const isValid = $derived(
+    !versionError && versionState.generatedChangelog.length > 0
+  );
 
   // Get icon for category
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case "fixed": return "fa-bug";
-      case "added": return "fa-lightbulb";
-      case "improved": return "fa-wrench";
-      default: return "fa-circle";
+      case "fixed":
+        return "fa-bug";
+      case "added":
+        return "fa-lightbulb";
+      case "improved":
+        return "fa-wrench";
+      default:
+        return "fa-circle";
     }
   }
 
@@ -90,7 +99,12 @@
       <i class="fas fa-rocket"></i>
       Prepare Release
     </h2>
-    <button type="button" class="close-btn" onclick={onClose} aria-label="Close">
+    <button
+      type="button"
+      class="close-btn"
+      onclick={onClose}
+      aria-label="Close"
+    >
       <i class="fas fa-times"></i>
     </button>
   </header>
@@ -115,11 +129,18 @@
         <div class="empty-state">
           <i class="fas fa-check-circle"></i>
           <p>No completed feedback to release.</p>
-          <p class="hint">Complete some feedback items first, then prepare a release.</p>
+          <p class="hint">
+            Complete some feedback items first, then prepare a release.
+          </p>
         </div>
       {:else}
         <!-- Form -->
-        <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+        <form
+          onsubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+        >
           <div class="form-group">
             <label for="version">Version Number</label>
             <input
@@ -159,7 +180,8 @@
                 {/each}
               </div>
               <p class="changelog-hint">
-                Generated from {versionState.completedFeedback.length} completed feedback items
+                Generated from {versionState.completedFeedback.length} completed
+                feedback items
               </p>
             {:else}
               <div class="changelog-empty">
@@ -191,7 +213,9 @@
       {#if !versionState.latestVersion && versionState.unversionedCount > 0}
         <div class="migration-section">
           <h3>First Time Setup</h3>
-          <p>Tag existing completed feedback as pre-release ({PRE_RELEASE_VERSION})?</p>
+          <p>
+            Tag existing completed feedback as pre-release ({PRE_RELEASE_VERSION})?
+          </p>
           <button
             type="button"
             class="secondary-btn"
@@ -220,8 +244,14 @@
       <h3>Confirm Release v{version}</h3>
       <p>This will:</p>
       <ul>
-        <li>Archive <strong>{versionState.unversionedCount}</strong> completed items as v<strong>{version}</strong></li>
-        <li>Save the auto-generated changelog ({versionState.generatedChangelog.length} entries)</li>
+        <li>
+          Archive <strong>{versionState.unversionedCount}</strong> completed
+          items as v<strong>{version}</strong>
+        </li>
+        <li>
+          Save the auto-generated changelog ({versionState.generatedChangelog
+            .length} entries)
+        </li>
         <li>Make this version visible in What's New</li>
       </ul>
       <p class="warning">This action cannot be undone.</p>
@@ -230,7 +260,7 @@
         <button
           type="button"
           class="secondary-btn"
-          onclick={() => showConfirm = false}
+          onclick={() => (showConfirm = false)}
           disabled={versionState.isPreparingRelease}
         >
           Cancel
@@ -271,7 +301,11 @@
     justify-content: space-between;
     padding: 16px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.15),
+      rgba(59, 130, 246, 0.1)
+    );
   }
 
   .panel-header h2 {
@@ -356,7 +390,7 @@
   }
 
   .empty-state i {
-    font-size: 48px;
+    font-size: 52px;
     color: #10b981;
     margin-bottom: 16px;
   }
@@ -400,7 +434,8 @@
     color: #ef4444;
   }
 
-  input, textarea {
+  input,
+  textarea {
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -411,12 +446,14 @@
     transition: border-color 0.2s;
   }
 
-  input:focus, textarea:focus {
+  input:focus,
+  textarea:focus {
     outline: none;
     border-color: #8b5cf6;
   }
 
-  input.error, textarea.error {
+  input.error,
+  textarea.error {
     border-color: #ef4444;
   }
 
@@ -524,7 +561,8 @@
     padding-top: 8px;
   }
 
-  .primary-btn, .secondary-btn {
+  .primary-btn,
+  .secondary-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -617,7 +655,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.2),
+      rgba(99, 102, 241, 0.1)
+    );
     border-radius: 50%;
     margin-bottom: 16px;
   }

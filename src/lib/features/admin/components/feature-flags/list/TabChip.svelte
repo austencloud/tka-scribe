@@ -52,7 +52,7 @@
     color: var(--text-secondary-current);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .tab-chip:hover {
@@ -63,7 +63,11 @@
 
   .tab-chip.selected {
     background: var(--accent-2026-indigo-soft);
-    border-color: color-mix(in srgb, var(--accent-2026-indigo) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--accent-2026-indigo) 40%,
+      transparent
+    );
     color: var(--accent-2026-indigo);
   }
 

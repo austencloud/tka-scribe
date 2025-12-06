@@ -92,7 +92,7 @@ Ultra-minimal design: No overlays, just clean image display.
     }
   }
 
-  @container sequence-card (min-width: 250px) and (max-width: 299px) {
+  @container sequence-card (min-width: 252px) and (max-width: 299px) {
     .media-placeholder {
       font-size: 3.25rem;
     }

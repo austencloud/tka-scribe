@@ -62,7 +62,8 @@
   let analyticsService: IAnalyticsDataService | null = null;
 
   function getTimeRange(): AnalyticsTimeRange {
-    const days = selectedTimeRange === "7d" ? 7 : selectedTimeRange === "30d" ? 30 : 90;
+    const days =
+      selectedTimeRange === "7d" ? 7 : selectedTimeRange === "30d" ? 30 : 90;
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
@@ -88,146 +89,190 @@
     loadingRecent = true;
 
     // Load each section independently - they update as they arrive
-    analyticsService.getSummaryMetrics(timeRange).then((summary) => {
-      summaryMetrics = [
-        {
-          label: "Total Users",
-          value: formatNumber(summary.totalUsers),
-          change: 0,
-          changeLabel: "all time",
-          icon: "fas fa-users",
-          color: "#3b82f6",
-        },
-        {
-          label: "Active Today",
-          value: formatNumber(summary.activeToday),
-          change: calculateChange(summary.activeToday, summary.previousActiveToday),
-          changeLabel: "vs yesterday",
-          icon: "fas fa-user-check",
-          color: "#10b981",
-        },
-        {
-          label: "Total Sequences",
-          value: formatNumber(summary.sequencesCreated),
-          change: 0,
-          changeLabel: "all time",
-          icon: "fas fa-layer-group",
-          color: "#8b5cf6",
-        },
-        {
-          label: "Total Challenges",
-          value: formatNumber(summary.challengesCompleted),
-          change: 0,
-          changeLabel: "all time",
-          icon: "fas fa-trophy",
-          color: "#f59e0b",
-        },
-      ];
-      loadingSummary = false;
-    }).catch((err) => {
-      console.error("Failed to load summary metrics", err);
-      loadingSummary = false;
-    });
+    analyticsService
+      .getSummaryMetrics(timeRange)
+      .then((summary) => {
+        summaryMetrics = [
+          {
+            label: "Total Users",
+            value: formatNumber(summary.totalUsers),
+            change: 0,
+            changeLabel: "all time",
+            icon: "fas fa-users",
+            color: "#3b82f6",
+          },
+          {
+            label: "Active Today",
+            value: formatNumber(summary.activeToday),
+            change: calculateChange(
+              summary.activeToday,
+              summary.previousActiveToday
+            ),
+            changeLabel: "vs yesterday",
+            icon: "fas fa-user-check",
+            color: "#10b981",
+          },
+          {
+            label: "Total Sequences",
+            value: formatNumber(summary.sequencesCreated),
+            change: 0,
+            changeLabel: "all time",
+            icon: "fas fa-layer-group",
+            color: "#8b5cf6",
+          },
+          {
+            label: "Total Challenges",
+            value: formatNumber(summary.challengesCompleted),
+            change: 0,
+            changeLabel: "all time",
+            icon: "fas fa-trophy",
+            color: "#f59e0b",
+          },
+        ];
+        loadingSummary = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load summary metrics", err);
+        loadingSummary = false;
+      });
 
-    analyticsService.getUserActivity(timeRange).then((activity) => {
-      userActivityData = activity.map((point) => ({
-        date: point.date,
-        value: point.activeUsers,
-      }));
-      loadingActivity = false;
-    }).catch((err) => {
-      console.error("Failed to load user activity", err);
-      loadingActivity = false;
-    });
+    analyticsService
+      .getUserActivity(timeRange)
+      .then((activity) => {
+        userActivityData = activity.map((point) => ({
+          date: point.date,
+          value: point.activeUsers,
+        }));
+        loadingActivity = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load user activity", err);
+        loadingActivity = false;
+      });
 
     Promise.all([
       analyticsService.getContentStatistics(),
       analyticsService.getTopSequences(5),
-    ]).then(([content, sequences]) => {
-      contentStats = [
-        { label: "Total Sequences", value: content.totalSequences, icon: "fas fa-layer-group" },
-        { label: "Public Sequences", value: content.publicSequences, icon: "fas fa-globe" },
-        { label: "Gallery Views", value: content.totalViews, icon: "fas fa-eye" },
-        { label: "Shares", value: content.totalShares, icon: "fas fa-share-alt" },
-      ];
-      topSequences = sequences.map((seq) => ({
-        name: seq.name,
-        word: seq.word,
-        views: seq.views,
-        creator: seq.creator,
-      }));
-      loadingContent = false;
-    }).catch((err) => {
-      console.error("Failed to load content stats", err);
-      loadingContent = false;
-    });
+    ])
+      .then(([content, sequences]) => {
+        contentStats = [
+          {
+            label: "Total Sequences",
+            value: content.totalSequences,
+            icon: "fas fa-layer-group",
+          },
+          {
+            label: "Public Sequences",
+            value: content.publicSequences,
+            icon: "fas fa-globe",
+          },
+          {
+            label: "Gallery Views",
+            value: content.totalViews,
+            icon: "fas fa-eye",
+          },
+          {
+            label: "Shares",
+            value: content.totalShares,
+            icon: "fas fa-share-alt",
+          },
+        ];
+        topSequences = sequences.map((seq) => ({
+          name: seq.name,
+          word: seq.word,
+          views: seq.views,
+          creator: seq.creator,
+        }));
+        loadingContent = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load content stats", err);
+        loadingContent = false;
+      });
 
-    analyticsService.getEngagementMetrics().then((engagement) => {
-      engagementStats = [
-        {
-          label: "Daily Challenges",
-          value: engagement.challengeParticipants,
-          total: engagement.totalUsers,
-          icon: "fas fa-calendar-check",
-          color: "#f59e0b",
-        },
-        {
-          label: "Achievements Unlocked",
-          value: engagement.achievementsUnlocked,
-          total: engagement.totalAchievementsPossible,
-          icon: "fas fa-award",
-          color: "#ec4899",
-        },
-        {
-          label: "Active Streaks",
-          value: engagement.activeStreaks,
-          total: engagement.totalUsers,
-          icon: "fas fa-fire",
-          color: "#ef4444",
-        },
-        {
-          label: "XP Earned (K)",
-          value: Math.round(engagement.totalXPEarned / 1000),
-          total: Math.max(1000, Math.round((engagement.totalXPEarned / 1000) * 2)),
-          icon: "fas fa-star",
-          color: "#8b5cf6",
-        },
-      ];
-      loadingEngagement = false;
-    }).catch((err) => {
-      console.error("Failed to load engagement metrics", err);
-      loadingEngagement = false;
-    });
+    analyticsService
+      .getEngagementMetrics()
+      .then((engagement) => {
+        engagementStats = [
+          {
+            label: "Daily Challenges",
+            value: engagement.challengeParticipants,
+            total: engagement.totalUsers,
+            icon: "fas fa-calendar-check",
+            color: "#f59e0b",
+          },
+          {
+            label: "Achievements Unlocked",
+            value: engagement.achievementsUnlocked,
+            total: engagement.totalAchievementsPossible,
+            icon: "fas fa-award",
+            color: "#ec4899",
+          },
+          {
+            label: "Active Streaks",
+            value: engagement.activeStreaks,
+            total: engagement.totalUsers,
+            icon: "fas fa-fire",
+            color: "#ef4444",
+          },
+          {
+            label: "XP Earned (K)",
+            value: Math.round(engagement.totalXPEarned / 1000),
+            total: Math.max(
+              1000,
+              Math.round((engagement.totalXPEarned / 1000) * 2)
+            ),
+            icon: "fas fa-star",
+            color: "#8b5cf6",
+          },
+        ];
+        loadingEngagement = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load engagement metrics", err);
+        loadingEngagement = false;
+      });
 
-    analyticsService.getEventTypeBreakdown(timeRange).then((events) => {
-      eventBreakdown = events;
-      loadingEvents = false;
-    }).catch((err) => {
-      console.error("Failed to load event breakdown", err);
-      loadingEvents = false;
-    });
+    analyticsService
+      .getEventTypeBreakdown(timeRange)
+      .then((events) => {
+        eventBreakdown = events;
+        loadingEvents = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load event breakdown", err);
+        loadingEvents = false;
+      });
 
-    analyticsService.getModuleUsage(timeRange).then((modules) => {
-      moduleUsage = modules;
-      loadingModules = false;
-    }).catch((err) => {
-      console.error("Failed to load module usage", err);
-      loadingModules = false;
-    });
+    analyticsService
+      .getModuleUsage(timeRange)
+      .then((modules) => {
+        moduleUsage = modules;
+        loadingModules = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load module usage", err);
+        loadingModules = false;
+      });
 
-    analyticsService.getRecentActivity(10).then((recent) => {
-      recentActivity = recent;
-      loadingRecent = false;
-    }).catch((err) => {
-      console.error("Failed to load recent activity", err);
-      loadingRecent = false;
-    });
+    analyticsService
+      .getRecentActivity(10)
+      .then((recent) => {
+        recentActivity = recent;
+        loadingRecent = false;
+      })
+      .catch((err) => {
+        console.error("Failed to load recent activity", err);
+        loadingRecent = false;
+      });
   }
 
   onMount(async () => {
     try {
       await loadFeatureModule("admin");
-      analyticsService = resolve<IAnalyticsDataService>(TYPES.IAnalyticsDataService);
+      analyticsService = resolve<IAnalyticsDataService>(
+        TYPES.IAnalyticsDataService
+      );
       loadAnalyticsData();
     } catch (error) {
       console.error("AnalyticsDashboard: Failed to get service", error);
@@ -241,7 +286,11 @@
 
   $effect(() => {
     const currentRange = selectedTimeRange;
-    if (analyticsService && previousTimeRange !== null && previousTimeRange !== currentRange) {
+    if (
+      analyticsService &&
+      previousTimeRange !== null &&
+      previousTimeRange !== currentRange
+    ) {
       loadAnalyticsData();
     }
     previousTimeRange = currentRange;
@@ -260,71 +309,91 @@
     </div>
   {/if}
 
-    <header class="dashboard-header">
-      <h2>Analytics Overview</h2>
-      <div class="time-range-selector">
-        <button class:active={selectedTimeRange === "7d"} onclick={() => (selectedTimeRange = "7d")}>
-          7 Days
-        </button>
-        <button class:active={selectedTimeRange === "30d"} onclick={() => (selectedTimeRange = "30d")}>
-          30 Days
-        </button>
-        <button class:active={selectedTimeRange === "90d"} onclick={() => (selectedTimeRange = "90d")}>
-          90 Days
-        </button>
-      </div>
-    </header>
-
-    <section class="metrics-grid">
-      {#if loadingSummary}
-        {#each Array(4) as _}
-          <MetricCard loading={true} />
-        {/each}
-      {:else}
-        {#each summaryMetrics as metric}
-          <MetricCard {metric} />
-        {/each}
-      {/if}
-    </section>
-
-    <UserActivityChart data={userActivityData} loading={loadingActivity} />
-
-    <div class="two-column">
-      <EventBreakdown events={eventBreakdown} loading={loadingEvents} />
-      <ModuleUsage modules={moduleUsage} loading={loadingModules} />
+  <header class="dashboard-header">
+    <h2>Analytics Overview</h2>
+    <div class="time-range-selector">
+      <button
+        class:active={selectedTimeRange === "7d"}
+        onclick={() => (selectedTimeRange = "7d")}
+      >
+        7 Days
+      </button>
+      <button
+        class:active={selectedTimeRange === "30d"}
+        onclick={() => (selectedTimeRange = "30d")}
+      >
+        30 Days
+      </button>
+      <button
+        class:active={selectedTimeRange === "90d"}
+        onclick={() => (selectedTimeRange = "90d")}
+      >
+        90 Days
+      </button>
     </div>
+  </header>
 
-    <RecentActivityFeed activities={recentActivity} {eventBreakdown} loading={loadingRecent} />
-
-    <div class="two-column">
-      <ContentStatistics stats={contentStats} {topSequences} loading={loadingContent} />
-      <EngagementMetrics stats={engagementStats} loading={loadingEngagement} />
-    </div>
-
-    {#if !loadingSummary && summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
-      <div class="data-notice warning">
-        <i class="fas fa-info-circle"></i>
-        <span>No data available. Please ensure you're signed in with an admin account and Firebase has user data.</span>
-        <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
-      </div>
-    {:else if !loadingSummary}
-      <div class="data-notice success">
-        <i class="fas fa-database"></i>
-        <span>Showing live data from Firebase Firestore.</span>
-        <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
-      </div>
+  <section class="metrics-grid">
+    {#if loadingSummary}
+      {#each Array(4) as _}
+        <MetricCard loading={true} />
+      {/each}
+    {:else}
+      {#each summaryMetrics as metric}
+        <MetricCard {metric} />
+      {/each}
     {/if}
+  </section>
+
+  <UserActivityChart data={userActivityData} loading={loadingActivity} />
+
+  <div class="two-column">
+    <EventBreakdown events={eventBreakdown} loading={loadingEvents} />
+    <ModuleUsage modules={moduleUsage} loading={loadingModules} />
+  </div>
+
+  <RecentActivityFeed
+    activities={recentActivity}
+    {eventBreakdown}
+    loading={loadingRecent}
+  />
+
+  <div class="two-column">
+    <ContentStatistics
+      stats={contentStats}
+      {topSequences}
+      loading={loadingContent}
+    />
+    <EngagementMetrics stats={engagementStats} loading={loadingEngagement} />
+  </div>
+
+  {#if !loadingSummary && summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
+    <div class="data-notice warning">
+      <i class="fas fa-info-circle"></i>
+      <span
+        >No data available. Please ensure you're signed in with an admin account
+        and Firebase has user data.</span
+      >
+      <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  {:else if !loadingSummary}
+    <div class="data-notice success">
+      <i class="fas fa-database"></i>
+      <span>Showing live data from Firebase Firestore.</span>
+      <button class="refresh-btn" onclick={() => loadAnalyticsData()}>
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+    </div>
+  {/if}
 </div>
 
 <style>
   .analytics-dashboard {
     padding: 24px;
     max-width: 1600px;
-    width:100%;
+    width: 100%;
     margin: 0 auto;
     color: rgba(255, 255, 255, 0.95);
   }
@@ -340,7 +409,7 @@
   }
 
   .error-state i {
-    font-size: 48px;
+    font-size: 52px;
     color: #ef4444;
   }
 

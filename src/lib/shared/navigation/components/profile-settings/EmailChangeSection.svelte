@@ -335,7 +335,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(12px, 1.8vh, 16px) clamp(20px, 3vw, 28px);
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: clamp(14px, 1.9vh, 17px);
     font-weight: 600;
@@ -346,7 +346,7 @@
 
   .email-change-section.compact .button {
     padding: 11px 20px;
-    min-height: 48px;
+    min-height: 52px;
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -354,7 +354,7 @@
 
   .email-change-section.very-compact .button {
     padding: 11px 18px;
-    min-height: 48px;
+    min-height: 52px;
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;

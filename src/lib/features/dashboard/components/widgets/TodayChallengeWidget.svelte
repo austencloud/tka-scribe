@@ -141,8 +141,12 @@
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   .empty-state {
@@ -171,7 +175,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 48px;
+    min-height: 52px;
     padding: 14px 20px;
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     border: none;

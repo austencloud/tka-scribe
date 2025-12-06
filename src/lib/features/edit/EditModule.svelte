@@ -345,8 +345,8 @@
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #06b6d4;
     border-radius: 50%;

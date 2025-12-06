@@ -22,6 +22,9 @@ Features:
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+  const debug = createComponentLogger("BrowseTab");
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -74,10 +77,7 @@ Features:
     }
   }
 
-  function handleDetailPanelAction(
-    action: string,
-    animation: SavedAnimation
-  ) {
+  function handleDetailPanelAction(action: string, animation: SavedAnimation) {
     hapticService?.trigger("selection");
 
     switch (action) {
@@ -86,7 +86,7 @@ Features:
         animateModuleState.setCurrentMode(animation.mode);
         animateModuleState.openPlayback("browse");
         isDetailPanelOpen = false;
-        console.log("🎬 BrowseTab: Playing composition:", animation.name);
+        debug.log("Playing composition:", animation.name);
         break;
 
       case "edit":
@@ -143,10 +143,7 @@ Features:
       <div class="error-state">
         <i class="fas fa-exclamation-triangle error-icon"></i>
         <p class="error-message">{browseState.error}</p>
-        <button
-          class="retry-btn"
-          onclick={() => browseState.loadAnimations()}
-        >
+        <button class="retry-btn" onclick={() => browseState.loadAnimations()}>
           <i class="fas fa-redo"></i>
           Try Again
         </button>
@@ -279,7 +276,7 @@ Features:
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
-    height: 48px;
+    height: 52px;
     background: linear-gradient(
       to bottom,
       transparent 0%,

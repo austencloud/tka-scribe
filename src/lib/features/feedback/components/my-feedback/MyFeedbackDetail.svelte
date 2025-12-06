@@ -1,6 +1,12 @@
 <!-- MyFeedbackDetail - Detail view with confirmation flow -->
 <script lang="ts">
-  import type { FeedbackItem, TesterConfirmationStatus, FeedbackType, FeedbackStatus, FeedbackPriority } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    TesterConfirmationStatus,
+    FeedbackType,
+    FeedbackStatus,
+    FeedbackPriority,
+  } from "../../domain/models/feedback-models";
   import {
     STATUS_CONFIG,
     TYPE_CONFIG,
@@ -15,7 +21,9 @@
 
   const typeConfig = TYPE_CONFIG[item.type as FeedbackType];
   const statusConfig = STATUS_CONFIG[item.status as FeedbackStatus];
-  const priorityConfig = item.priority ? PRIORITY_CONFIG[item.priority as FeedbackPriority] : null;
+  const priorityConfig = item.priority
+    ? PRIORITY_CONFIG[item.priority as FeedbackPriority]
+    : null;
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString("en-US", {
@@ -44,7 +52,10 @@
         {statusConfig.label}
       </span>
       {#if priorityConfig}
-        <span class="priority-badge" style="--badge-color: {priorityConfig.color}">
+        <span
+          class="priority-badge"
+          style="--badge-color: {priorityConfig.color}"
+        >
           <i class="fas {priorityConfig.icon}"></i>
           {priorityConfig.label}
         </span>
@@ -80,8 +91,17 @@
         <h3>Screenshots ({item.imageUrls.length})</h3>
         <div class="screenshots-grid">
           {#each item.imageUrls as imageUrl, index}
-            <a href={imageUrl} target="_blank" rel="noopener noreferrer" class="screenshot-link">
-              <img src={imageUrl} alt="Screenshot {index + 1}" class="screenshot-thumb" />
+            <a
+              href={imageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="screenshot-link"
+            >
+              <img
+                src={imageUrl}
+                alt="Screenshot {index + 1}"
+                class="screenshot-thumb"
+              />
               <div class="screenshot-overlay">
                 <i class="fas fa-search-plus"></i>
               </div>

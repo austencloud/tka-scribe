@@ -3,12 +3,12 @@
    * Animation Coordinator Component
    *
    * Orchestrates all animation business logic, service resolution, and state management.
-   * AnimationPanel is a pure presentation component that receives everything as props.
+   * AnimationShareDrawer is a pure presentation component that receives everything as props.
    *
-   * Domain: Create module - Animation Panel Coordination
+   * Domain: Create module - Animation Share Drawer Coordination
    */
 
-  import AnimationPanel from "../../../../../shared/animation-engine/components/AnimationPanel.svelte";
+  import AnimationShareDrawer from "../../../../../shared/animation-engine/components/AnimationShareDrawer.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
   import type { IGifExportOrchestrator } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
@@ -479,7 +479,7 @@
   }
 </script>
 
-<AnimationPanel
+<AnimationShareDrawer
   show={panelState.isAnimationPanelOpen}
   combinedPanelHeight={panelState.combinedPanelHeight}
   isSideBySideLayout={ctx.layout.shouldUseSideBySideLayout}

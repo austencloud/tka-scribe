@@ -29,8 +29,12 @@ Opens a sheet/panel for letter selection
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    rippleService = tryResolve<IRippleEffectService>(
+      TYPES.IRippleEffectService
+    );
 
     if (cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
@@ -108,7 +112,12 @@ Opens a sheet/panel for letter selection
     padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: radial-gradient(ellipse at top left, #34d399 0%, #10b981 40%, #059669 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #34d399 0%,
+      #10b981 40%,
+      #059669 100%
+    );
     border: none;
     color: white;
     text-align: center;
@@ -215,7 +224,7 @@ Opens a sheet/panel for letter selection
   }
 
   .letter-value {
-    font-size: clamp(28px, 10cqw, 48px);
+    font-size: clamp(28px, 10cqw, 50px);
     font-weight: 800;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }

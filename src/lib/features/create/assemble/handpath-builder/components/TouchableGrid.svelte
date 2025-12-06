@@ -5,7 +5,10 @@ Handles pointer events and converts them to hand path segments.
 Provides visual feedback for current position and drawn path.
 -->
 <script lang="ts">
-import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { onMount } from "svelte";
   import type { GridPositionPoint } from "../domain/path-models";
   import type { GesturalPathState } from "../state/handpath-state.svelte";
@@ -426,7 +429,7 @@ import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums
   @media (min-width: 768px) {
     .touchable-grid {
       min-height: 280px;
-      max-width: min(100%, 450px);
+      max-width: min(100%, 452px);
     }
   }
 </style>

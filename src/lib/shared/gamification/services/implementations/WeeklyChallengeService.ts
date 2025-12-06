@@ -28,6 +28,9 @@ import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,
 } from "../../domain/models/challenge-models";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("WeeklyChallengeService");
 import {
   getWeeklyChallengeId,
   getCurrentWeekNumber,
@@ -105,8 +108,8 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
 
         return firestoreChallenge;
       } else {
-        console.warn(
-          `⚠️ No weekly challenge found for week ${weekNumber}/${year}. Admin needs to create it.`
+        debug.log(
+          `No weekly challenge found for week ${weekNumber}/${year}. Admin needs to create it.`
         );
         return null;
       }

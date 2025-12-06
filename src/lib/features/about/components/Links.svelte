@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   let isVisible = $state(false);
@@ -462,7 +462,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .quick-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(252px, 1fr));
     gap: var(--spacing-lg);
     max-width: 900px;
     margin: 0 auto;

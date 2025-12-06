@@ -3,9 +3,9 @@ VTGConceptExperience - Multi-page VTG (Velocity-Timing-Direction) learning exper
 Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import VTGVisualizer from "./VTGVisualizer.svelte";
   import VTGQuiz from "./VTGQuiz.svelte";
 
@@ -24,15 +24,18 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   const VTG_MODES: VTGMode[] = ["SS", "TS", "SO", "TO", "QS", "QO"];
 
-  const MODE_INFO: Record<VTGMode, {
-    name: string;
-    color: string;
-    icon: string;
-    directionLabel: string;
-    timingLabel: string;
-    description: string;
-    keyPoint: string;
-  }> = {
+  const MODE_INFO: Record<
+    VTGMode,
+    {
+      name: string;
+      color: string;
+      icon: string;
+      directionLabel: string;
+      timingLabel: string;
+      description: string;
+      keyPoint: string;
+    }
+  > = {
     SS: {
       name: "Split-Same",
       color: "#22D3EE",
@@ -40,7 +43,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       directionLabel: "Split (opposite)",
       timingLabel: "Same (together)",
       description: "Hands move in opposite directions at the same time",
-      keyPoint: "Like opening a book - hands move apart simultaneously"
+      keyPoint: "Like opening a book - hands move apart simultaneously",
     },
     TS: {
       name: "Together-Same",
@@ -49,7 +52,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       directionLabel: "Together (parallel)",
       timingLabel: "Same (together)",
       description: "Hands move in the same direction at the same time",
-      keyPoint: "Like pushing forward - both hands move as one"
+      keyPoint: "Like pushing forward - both hands move as one",
     },
     SO: {
       name: "Same-Opposite",
@@ -58,7 +61,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       directionLabel: "Same direction",
       timingLabel: "Opposite (staggered)",
       description: "Same direction movement with staggered timing",
-      keyPoint: "One hand leads, the other follows half-beat later"
+      keyPoint: "One hand leads, the other follows half-beat later",
     },
     TO: {
       name: "Together-Opposite",
@@ -67,7 +70,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       directionLabel: "Together (parallel)",
       timingLabel: "Opposite (alternating)",
       description: "Parallel paths but alternating start times",
-      keyPoint: "Like walking - arms swing in alternating rhythm"
+      keyPoint: "Like walking - arms swing in alternating rhythm",
     },
     QS: {
       name: "Quarter-Same",
@@ -76,7 +79,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       directionLabel: "Same direction",
       timingLabel: "Quarter (90� offset)",
       description: "Same direction with quarter-beat timing offset",
-      keyPoint: "One hand is always 90� ahead in the cycle"
+      keyPoint: "One hand is always 90� ahead in the cycle",
     },
     QO: {
       name: "Quarter-Opposite",
@@ -85,7 +88,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       directionLabel: "Opposite directions",
       timingLabel: "Quarter (90� offset)",
       description: "Opposite directions with quarter-beat offset",
-      keyPoint: "Complex cross-pattern with 90� phase difference"
+      keyPoint: "Complex cross-pattern with 90� phase difference",
     },
   };
 
@@ -119,7 +122,8 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <div class="intro-section">
         <p class="intro-text">
-          <strong>VTG</strong> describes how your two hands coordinate together during movement.
+          <strong>VTG</strong> describes how your two hands coordinate together during
+          movement.
         </p>
 
         <div class="vtg-components">
@@ -137,7 +141,10 @@ import { TYPES } from "$lib/shared/inversify/types";
               <i class="fa-solid fa-clock"></i>
             </div>
             <h4>Timing</h4>
-            <p><strong>Same</strong>, <strong>Opposite</strong>, or <strong>Quarter</strong></p>
+            <p>
+              <strong>Same</strong>, <strong>Opposite</strong>, or
+              <strong>Quarter</strong>
+            </p>
             <small>When do hands start relative to each other?</small>
           </div>
         </div>
@@ -161,7 +168,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
-
   {:else if currentPage >= 2 && currentPage <= 7}
     <!-- Pages 2-7: Individual VTG Modes -->
     {@const vtgMode = getCurrentMode()}
@@ -229,7 +235,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         </button>
       </div>
     {/if}
-
   {:else if currentPage === 8}
     <!-- Page 8: Quiz -->
     <div class="page quiz-page">
@@ -262,8 +267,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   h2 {
@@ -272,7 +283,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, var(--type-color, #22D3EE) 0%, color-mix(in srgb, var(--type-color, #22D3EE) 70%, #06B6D4) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--type-color, #22d3ee) 0%,
+      color-mix(in srgb, var(--type-color, #22d3ee) 70%, #06b6d4) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -336,8 +351,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .component-icon {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,12 +362,12 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .component-card.direction .component-icon {
     background: rgba(34, 211, 238, 0.2);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .component-card.timing .component-icon {
     background: rgba(167, 139, 250, 0.2);
-    color: #A78BFA;
+    color: #a78bfa;
   }
 
   .component-card h4 {
@@ -361,8 +376,12 @@ import { TYPES } from "$lib/shared/inversify/types";
     margin: 0;
   }
 
-  .component-card.direction h4 { color: #22D3EE; }
-  .component-card.timing h4 { color: #A78BFA; }
+  .component-card.direction h4 {
+    color: #22d3ee;
+  }
+  .component-card.timing h4 {
+    color: #a78bfa;
+  }
 
   .component-card p {
     font-size: 0.9375rem;
@@ -422,7 +441,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     gap: 0.75rem;
     padding: 1.5rem;
     border-radius: 16px;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--type-color) 10%, transparent) 0%, transparent 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--type-color) 10%, transparent) 0%,
+      transparent 100%
+    );
     border: 1px solid color-mix(in srgb, var(--type-color) 25%, transparent);
   }
 
@@ -544,7 +567,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
     backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
@@ -558,7 +585,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4) 0%, rgba(6, 182, 212, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4) 0%,
+      rgba(6, 182, 212, 0.4) 100%
+    );
     border-color: rgba(34, 211, 238, 0.8);
     transform: translateY(-2px);
   }

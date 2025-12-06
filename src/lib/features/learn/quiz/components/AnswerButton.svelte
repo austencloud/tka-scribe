@@ -6,9 +6,9 @@
 -->
 
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -235,7 +235,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   @media (max-width: 480px) {
     .answer-button {
-      height: 50px;
+      height: 52px;
       font-size: 1.25rem;
     }
 

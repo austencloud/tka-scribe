@@ -54,7 +54,10 @@
         <div class="empty-state">
           <i class="fas fa-inbox"></i>
           <h2>No feedback yet</h2>
-          <p>You haven't submitted any feedback. Head to the Submit tab to share your thoughts!</p>
+          <p>
+            You haven't submitted any feedback. Head to the Submit tab to share
+            your thoughts!
+          </p>
         </div>
       {:else}
         <div class="feedback-layout">
@@ -204,7 +207,7 @@
   }
 
   .empty-state i {
-    font-size: 48px;
+    font-size: 52px;
     color: rgba(255, 255, 255, 0.2);
   }
 

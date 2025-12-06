@@ -140,7 +140,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 48px; /* WCAG minimum */
+    min-height: 52px; /* WCAG minimum */
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
@@ -217,7 +217,7 @@
     }
 
     .social-compact-button {
-      min-height: 48px;
+      min-height: 52px;
       padding: 9px 12px;
       font-size: 13px;
       gap: 6px;

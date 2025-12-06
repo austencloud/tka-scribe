@@ -11,7 +11,7 @@
 import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import ShareDrawer, { type ViewMode } from "$lib/shared/share/components/ShareDrawer.svelte";
+  import ImageShareDrawer, { type ViewMode } from "$lib/shared/share/components/ImageShareDrawer.svelte";
   import { createShareState } from "$lib/shared/share/state/share-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
@@ -261,7 +261,7 @@ import { resolve } from "$lib/shared/inversify/di";
   });
 </script>
 
-<ShareDrawer
+<ImageShareDrawer
   show={panelState.isSharePanelOpen}
   sequence={CreateModuleState.sequenceState.currentSequence}
   shareState={backgroundShareState}

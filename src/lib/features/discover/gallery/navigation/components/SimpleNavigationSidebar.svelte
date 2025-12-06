@@ -252,7 +252,7 @@ Matches the desktop Python app navigation pattern exactly.
     font-weight: 600;
     transition: all 0.2s ease;
     text-align: center;
-    min-height: clamp(48px, 8vw, 56px);
+    min-height: clamp(52px, 8vw, 56px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -263,8 +263,8 @@ Matches the desktop Python app navigation pattern exactly.
     padding: 8px 16px;
     font-size: 1rem;
     font-weight: 600;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 52px;
+    min-width: 52px;
     flex-shrink: 0;
     white-space: nowrap;
     border-radius: 8px;
@@ -327,7 +327,7 @@ Matches the desktop Python app navigation pattern exactly.
     .nav-button {
       padding: 0.75rem 0.5rem;
       font-size: 1rem;
-      min-height: 48px;
+      min-height: 52px;
       border-radius: 8px;
     }
 
@@ -343,7 +343,7 @@ Matches the desktop Python app navigation pattern exactly.
     .simple-navigation-sidebar.horizontal .nav-button {
       padding: 0.6rem 1rem;
       font-size: 1rem;
-      min-width: 50px;
+      min-width: 52px;
     }
   }
 
@@ -360,7 +360,7 @@ Matches the desktop Python app navigation pattern exactly.
     .nav-button {
       padding: 0.6875rem 0.5rem;
       font-size: 1.0625rem;
-      min-height: 48px;
+      min-height: 52px;
     }
   }
 </style>

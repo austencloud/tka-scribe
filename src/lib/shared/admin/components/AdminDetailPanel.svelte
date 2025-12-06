@@ -134,8 +134,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 50px;
+    min-height: 50px;
   }
 
   .close-btn:hover {

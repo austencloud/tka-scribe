@@ -106,7 +106,9 @@
 
   // Initialize DeviceDetector service
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
@@ -367,7 +369,7 @@
     cursor: pointer;
     border: none;
     width: 100%;
-    min-height: 48px; /* Accessibility: minimum touch target */
+    min-height: 52px; /* Accessibility: minimum touch target */
   }
 
   .social-auth-button:disabled {

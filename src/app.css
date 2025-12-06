@@ -134,7 +134,7 @@ h6 {
   /* Border System */
   --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --glass-border-hover: 1px solid rgba(255, 255, 255, 0.25);
-  --min-touch-target: 48px;
+  --min-touch-target: 52px;
 
   /* Enhanced Shadow System */
   --shadow-glass:
@@ -144,7 +144,7 @@ h6 {
     0 12px 40px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --shadow-modal:
-    0 25px 50px rgba(0, 0, 0, 0.25), 0 12px 24px rgba(0, 0, 0, 0.15),
+    0 25px 52px rgba(0, 0, 0, 0.25), 0 12px 24px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --shadow-elevated:
     0 20px 40px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.12),
@@ -231,7 +231,7 @@ h6 {
   --spacing-2xl: 3rem;
 
   /* Interactive Element Sizing */
-  --touch-target-min: 48px; /* WCAG 2.5.5 AAA compliant minimum touch target */
+  --touch-target-min: 52px; /* WCAG 2.5.5 AAA compliant minimum touch target */
   --icon-size-sm: 16px;
   --icon-size-md: 20px;
   --icon-size-lg: 24px;
@@ -458,11 +458,11 @@ h6 {
   /* Close Button Styles */
   --sheet-close-bg: rgba(255, 255, 255, 0.08);
   --sheet-close-bg-hover: rgba(255, 255, 255, 0.16);
-  --sheet-close-size-default: 48px;
-  --sheet-close-size-small: 48px; /* iOS/Android minimum touch target */
+  --sheet-close-size-default: 52px;
+  --sheet-close-size-small: 52px; /* iOS/Android minimum touch target */
 
   /* Unified Drag Handle Styles */
-  --sheet-handle-width: 48px;
+  --sheet-handle-width: 52px;
   --sheet-handle-height: 5px;
   --sheet-handle-bg: rgba(255, 255, 255, 0.3);
   --sheet-handle-bg-hover: rgba(255, 255, 255, 0.5);
@@ -603,13 +603,13 @@ body.star-twinkle::before {
   bottom: 0;
   background:
     radial-gradient(1px 1px at 25px 25px, #ffffff, transparent),
-    radial-gradient(2px 2px at 75px 50px, #ffeb3b, transparent),
+    radial-gradient(2px 2px at 75px 52px, #ffeb3b, transparent),
     radial-gradient(1px 1px at 125px 75px, #ffffff, transparent),
     radial-gradient(1px 1px at 175px 25px, #81c784, transparent),
     radial-gradient(2px 2px at 200px 100px, #ffffff, transparent),
-    radial-gradient(1px 1px at 50px 120px, #ffcdd2, transparent),
-    radial-gradient(1px 1px at 150px 140px, #ffffff, transparent),
-    radial-gradient(2px 2px at 250px 60px, #e1bee7, transparent);
+    radial-gradient(1px 1px at 52px 120px, #ffcdd2, transparent),
+    radial-gradient(1px 1px at 152px 140px, #ffffff, transparent),
+    radial-gradient(2px 2px at 252px 60px, #e1bee7, transparent);
   background-repeat: repeat;
   background-size: 280px 180px;
   animation: star-twinkle-animation 3s ease-in-out infinite;
@@ -665,7 +665,7 @@ body.deep-ocean-flow::before {
       rgba(0, 150, 255, 0.08) 0%,
       transparent 50%
     );
-  background-size: 250px 200px;
+  background-size: 252px 200px;
   animation: bubble-rise 8s ease-in-out infinite;
   opacity: 0.8;
   pointer-events: none;
@@ -791,12 +791,12 @@ body.deep-ocean-flow::before {
 
 /* ========================================
    TOUCH TARGET ACCESSIBILITY
-   Best Practice: 48px minimum (Material Design, iOS guidelines)
-   WCAG 2.1 Level AAA (2.5.5): 48px minimum (exceeded)
+   Best Practice: 52px minimum (Material Design, iOS guidelines)
+   WCAG 2.1 Level AAA (2.5.5): 52px minimum (exceeded)
    ======================================== */
 
 /* Accessible touch target utility
-   Expands clickable/touchable area to 48px minimum
+   Expands clickable/touchable area to 52px minimum
    while preserving visual appearance */
 .accessible-touch-target {
   position: relative;
@@ -808,11 +808,11 @@ body.deep-ocean-flow::before {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 48px;
-  min-height: 48px;
+  min-width: 52px;
+  min-height: 52px;
   /* Ensure it covers at least the full element */
-  width: max(100%, 48px);
-  height: max(100%, 48px);
+  width: max(100%, 52px);
+  height: max(100%, 52px);
 }
 
 /* ========================================

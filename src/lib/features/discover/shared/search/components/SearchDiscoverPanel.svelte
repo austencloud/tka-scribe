@@ -318,7 +318,7 @@ Allows natural language queries to find sequences, users, and collections.
 
   .search-input {
     flex: 1;
-    padding: 14px 16px 14px 48px;
+    padding: 14px 16px 14px 50px;
     background: var(--input-bg-current);
     border: 2px solid var(--input-border-current);
     border-radius: 12px;
@@ -339,8 +339,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .search-button {
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 14px 20px;
     background: rgba(0, 123, 255, 0.2);
     border: 2px solid rgba(0, 123, 255, 0.4);
@@ -376,7 +376,7 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .filter-tab {
-    min-height: 48px;
+    min-height: 52px;
     padding: 12px 18px;
     background: var(--panel-bg-current);
     border: var(--panel-border-current);
@@ -431,7 +431,7 @@ Allows natural language queries to find sequences, users, and collections.
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 48px;
+    min-height: 52px;
     padding: 12px 16px;
     background: var(--card-bg-current);
     border: var(--card-border-current);
@@ -500,7 +500,7 @@ Allows natural language queries to find sequences, users, and collections.
 
   .loading-state i,
   .empty-state i {
-    font-size: 48px;
+    font-size: 50px;
   }
 
   .empty-state h3 {
@@ -542,8 +542,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .result-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -638,13 +638,13 @@ Allows natural language queries to find sequences, users, and collections.
 
     .search-input {
       font-size: 14px;
-      padding: 12px 12px 12px 48px;
-      min-height: 48px;
+      padding: 12px 12px 12px 50px;
+      min-height: 52px;
     }
 
     .search-button {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
       padding: 12px 16px;
     }
 
@@ -655,7 +655,7 @@ Allows natural language queries to find sequences, users, and collections.
     .result-item {
       padding: 12px;
       gap: 12px;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     /* Visual size reduced but icon is not the touch target - result-item is */

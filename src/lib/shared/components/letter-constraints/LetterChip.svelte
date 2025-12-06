@@ -1,5 +1,5 @@
 <!--
-LetterChip.svelte - Letter selection chip with 48px touch target
+LetterChip.svelte - Letter selection chip with 50px touch target
 Supports include (green) and exclude (red) modes
 -->
 <script lang="ts">
@@ -9,7 +9,7 @@ Supports include (green) and exclude (red) modes
     letter,
     isSelected = false,
     mode = "include",
-    onClick
+    onClick,
   } = $props<{
     letter: Letter;
     isSelected?: boolean;
@@ -31,8 +31,8 @@ Supports include (green) and exclude (red) modes
 
 <style>
   .letter-chip {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,7 +44,10 @@ Supports include (green) and exclude (red) modes
     color: white;
     font-size: 18px;
     font-weight: 700;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
 
     cursor: pointer;
     transition: all 0.15s ease;

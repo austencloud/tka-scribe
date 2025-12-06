@@ -324,7 +324,7 @@ Follows Svelte 5 runes + microservices architecture.
     font-size: var(--font-size-xs);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 48px;
+    min-height: 52px;
     aspect-ratio: 1;
   }
 

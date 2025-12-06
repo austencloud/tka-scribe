@@ -42,7 +42,10 @@
         {#if tab.icon}
           <i class="fas {tab.icon}" aria-hidden="true"></i>
         {/if}
-        <span class="panel-tab__label" class:panel-tab__label--compact={compactOnMobile}>
+        <span
+          class="panel-tab__label"
+          class:panel-tab__label--compact={compactOnMobile}
+        >
           {tab.label}
         </span>
       </button>
@@ -76,7 +79,7 @@
     justify-content: center;
     gap: 6px;
     padding: 14px 18px;
-    min-height: 48px;
+    min-height: 52px;
     background: transparent;
     border: none;
     border-radius: 100px;
@@ -114,7 +117,7 @@
 
     .panel-tab {
       padding: 14px 16px;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .panel-tab i {

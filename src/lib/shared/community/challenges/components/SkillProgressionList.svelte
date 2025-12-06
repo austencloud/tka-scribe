@@ -444,8 +444,8 @@
     }
 
     .skill-icon {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 18px;
       border-radius: 10px;
     }

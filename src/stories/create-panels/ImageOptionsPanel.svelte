@@ -73,7 +73,9 @@
         <div class="options-group">
           <h4>
             Quality
-            <span class="quality-value">{Math.round(options.quality * 100)}%</span>
+            <span class="quality-value"
+              >{Math.round(options.quality * 100)}%</span
+            >
           </h4>
           <input
             type="range"
@@ -225,7 +227,7 @@
 
   .image-option-toggle {
     position: relative;
-    width: 48px;
+    width: 52px;
     height: 28px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 14px;

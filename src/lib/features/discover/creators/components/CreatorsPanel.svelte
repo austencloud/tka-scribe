@@ -270,7 +270,7 @@
     padding: 10px 0;
     background: transparent;
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .nav-section {

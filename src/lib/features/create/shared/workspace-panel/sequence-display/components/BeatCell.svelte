@@ -352,7 +352,7 @@
     transform: scale(1.12);
     box-shadow:
       0 0 30px rgba(251, 191, 36, 0.7),
-      0 12px 48px rgba(251, 191, 36, 0.4),
+      0 12px 52px rgba(251, 191, 36, 0.4),
       0 0 0 1px rgba(251, 191, 36, 0.3);
   }
 

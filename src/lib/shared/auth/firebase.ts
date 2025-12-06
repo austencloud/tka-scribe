@@ -20,6 +20,10 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("Firebase");
+
 // Firebase Storage is lazily loaded - only imported where actually needed
 // See: src/routes/api/instagram/upload-media/+server.ts
 
@@ -92,11 +96,11 @@ if (typeof window !== "undefined") {
     .then((supported) => {
       if (supported) {
         analytics = getAnalytics(app);
-        console.log("✅ Firebase Analytics initialized");
+        debug.success("Firebase Analytics initialized");
       }
     })
     .catch((error) => {
-      console.warn("⚠️ Firebase Analytics not supported:", error);
+      debug.warn("Firebase Analytics not supported:", error);
     });
 }
 

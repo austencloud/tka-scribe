@@ -1,10 +1,13 @@
 <!-- MusicPlayer.svelte - Music player component with playback controls -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { MusicPlayerState } from "../../word-card/domain/types/write";
-  import { createDefaultMusicPlayerState, formatTime } from "../../word-card/domain/types/write";
+  import {
+    createDefaultMusicPlayerState,
+    formatTime,
+  } from "../../word-card/domain/types/write";
   import { onMount } from "svelte";
 
   // Props
@@ -328,8 +331,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     font-weight: bold;
     font-size: var(--font-size-sm);
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     cursor: pointer;
     transition: all var(--transition-normal);
     display: flex;
@@ -387,8 +390,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .control-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: var(--font-size-xs);
     }
   }

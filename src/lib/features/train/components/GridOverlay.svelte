@@ -14,6 +14,7 @@
     bpm?: number;
     isPerforming?: boolean;
     gridScale?: number;
+    gridMode?: GridMode;
   }
 
   let {
@@ -25,6 +26,7 @@
     bpm = 60,
     isPerforming = false,
     gridScale = 1.0,
+    gridMode = GridMode.DIAMOND,
   }: Props = $props();
 
   // Grid coordinate system (950x950 centered at 475,475)
@@ -256,7 +258,7 @@
   );
 </script>
 
-<div class="grid-overlay-container">
+<div class="grid-overlay-container" class:mode-diamond={gridMode === GridMode.DIAMOND} class:mode-box={gridMode === GridMode.BOX}>
   <!-- Debug overlay - matches camera coordinates exactly (0-100%) -->
   <svg
     class="debug-overlay"
@@ -316,9 +318,9 @@
     style="transform: scale({gridScale})"
   >
     <!-- Use the existing GridSvg component (no background overlay) -->
-    <GridSvg gridMode={GridMode.DIAMOND} showNonRadialPoints={true} />
+    <GridSvg {gridMode} showNonRadialPoints={true} />
 
-    <!-- Expected position indicators (dashed circles) - now animated -->
+    <!-- Expected position indicators (dashed circles) - animated -->
     {#if showExpected}
       {#if animatedBluePos}
         {@const strokeColor = blueCorrect === true ? "#22c55e" : blueCorrect === false ? "#ef4444" : "#3b82f6"}
@@ -442,7 +444,7 @@
     opacity: 0.9;
   }
 
-  /* Make ALL grid points black and visible */
+  /* Make ALL grid points black and visible by default */
   .grid-overlay :global(.normal-hand-point) {
     fill: #000 !important;
     opacity: 0.9;
@@ -451,6 +453,16 @@
   .grid-overlay :global(.normal-layer2-point) {
     fill: #000 !important;
     opacity: 0.9;
+  }
+
+  /* DIAMOND mode: Show only cardinal points (N, E, S, W) - hide intercardinal */
+  .mode-diamond .grid-overlay :global(.normal-layer2-point) {
+    display: none;
+  }
+
+  /* BOX mode: Show only intercardinal points (NE, SE, SW, NW) - hide cardinal */
+  .mode-box .grid-overlay :global(.normal-hand-point) {
+    display: none;
   }
 
   .grid-overlay :global(#center_point) {

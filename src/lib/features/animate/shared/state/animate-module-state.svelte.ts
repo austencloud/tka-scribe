@@ -15,6 +15,9 @@
  */
 
 import type { AnimationMode } from "../domain/AnimationMode";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("ComposeModuleState");
 
 // Tab types - Playback is an overlay, not a tab
 export type AnimateTab = "arrange" | "browse";
@@ -151,56 +154,56 @@ export function createAnimateModuleState(): AnimateModuleState {
     setCurrentTab(tab: AnimateTab) {
       currentTab = tab;
       saveToStorage(STORAGE_KEYS.CURRENT_TAB, tab);
-      console.log("🎬 ComposeModuleState: Tab changed to", tab);
+      debug.log("Tab changed to", tab);
     },
 
     // Mode switching (for playback configuration)
     setCurrentMode(mode: AnimateMode) {
       currentMode = mode;
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, mode);
-      console.log("🎬 ComposeModuleState: Mode changed to", mode);
+      debug.log("Mode changed to", mode);
     },
 
     // Browser panel
     openSequenceBrowser(mode: BrowserTargetMode) {
-      console.log("🎬 ComposeModuleState: Opening browser for", mode, {
+      debug.log("Opening browser for", mode, {
         currentlyOpen: isSequenceBrowserOpen,
         currentMode: browserMode,
       });
 
       browserMode = mode;
       isSequenceBrowserOpen = true;
-      console.log("🎬 ComposeModuleState: Browser opened for", mode);
+      debug.log("Browser opened for", mode);
     },
 
     closeSequenceBrowser() {
       isSequenceBrowserOpen = false;
-      console.log("🎬 ComposeModuleState: Browser closed");
+      debug.log("Browser closed");
     },
 
     // Playback overlay
     openPlayback(source: PlaybackSource) {
       playbackSource = source;
       isPlaybackOpen = true;
-      console.log("🎬 ComposeModuleState: Opening playback from", source);
+      debug.log("Opening playback from", source);
     },
 
     closePlayback() {
       isPlaybackOpen = false;
-      console.log("🎬 ComposeModuleState: Closing playback, returning to", playbackSource);
+      debug.log("Closing playback, returning to", playbackSource);
     },
 
     // Navigation helpers
     goToArrange() {
       currentTab = "arrange";
       saveToStorage(STORAGE_KEYS.CURRENT_TAB, "arrange");
-      console.log("🎬 ComposeModuleState: Navigating to Arrange");
+      debug.log("Navigating to Arrange");
     },
 
     goToBrowse() {
       currentTab = "browse";
       saveToStorage(STORAGE_KEYS.CURRENT_TAB, "browse");
-      console.log("🎬 ComposeModuleState: Navigating to Browse");
+      debug.log("Navigating to Browse");
     },
 
     // Reset
@@ -214,7 +217,7 @@ export function createAnimateModuleState(): AnimateModuleState {
 
       saveToStorage(STORAGE_KEYS.CURRENT_TAB, "arrange");
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, "single");
-      console.log("🎬 ComposeModuleState: Reset");
+      debug.log("Reset");
     },
   };
 }

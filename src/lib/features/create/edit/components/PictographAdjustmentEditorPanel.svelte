@@ -358,8 +358,8 @@ Features:
   }
 
   .close-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: none;
     background: hsl(var(--muted));

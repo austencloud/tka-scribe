@@ -43,14 +43,6 @@ export interface TrailAppearance {
 }
 
 /**
- * Motion visibility settings
- */
-export interface MotionVisibility {
-	blue: boolean;
-	red: boolean;
-}
-
-/**
  * Complete animation settings (persisted)
  */
 export interface AnimationSettings {
@@ -60,9 +52,6 @@ export interface AnimationSettings {
 
 	// Trails
 	trail: TrailSettings;
-
-	// Visibility
-	motionVisibility: MotionVisibility;
 }
 
 // ============================================================================
@@ -84,11 +73,7 @@ export const DEFAULT_TRAIL_SETTINGS: TrailSettings = { ...MODULE_DEFAULT_TRAIL_S
 export const DEFAULT_ANIMATION_SETTINGS: AnimationSettings = {
 	bpm: 120,
 	shouldLoop: true,
-	trail: { ...DEFAULT_TRAIL_SETTINGS },
-	motionVisibility: {
-		blue: true,
-		red: true
-	}
+	trail: { ...DEFAULT_TRAIL_SETTINGS }
 };
 
 // ============================================================================
@@ -114,10 +99,6 @@ function loadSettings(): AnimationSettings {
 			trail: {
 				...DEFAULT_TRAIL_SETTINGS,
 				...parsed.trail
-			},
-			motionVisibility: {
-				...DEFAULT_ANIMATION_SETTINGS.motionVisibility,
-				...parsed.motionVisibility
 			}
 		};
 	} catch (error) {
@@ -146,7 +127,6 @@ export type AnimationSettingsState = {
 	readonly bpm: number;
 	readonly shouldLoop: boolean;
 	readonly trail: TrailSettings;
-	readonly motionVisibility: MotionVisibility;
 
 	// Playback setters
 	setBpm: (bpm: number) => void;
@@ -159,12 +139,6 @@ export type AnimationSettingsState = {
 	setFadeDuration: (ms: number) => void;
 	setTrailAppearance: (appearance: Partial<TrailAppearance>) => void;
 	setHideProps: (hide: boolean) => void;
-
-	// Visibility setters
-	setBlueVisible: (visible: boolean) => void;
-	setRedVisible: (visible: boolean) => void;
-	toggleBlueVisibility: () => void;
-	toggleRedVisibility: () => void;
 
 	// Bulk operations
 	updateSettings: (partial: Partial<AnimationSettings>) => void;
@@ -196,9 +170,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 		},
 		get trail() {
 			return settings.trail;
-		},
-		get motionVisibility() {
-			return settings.motionVisibility;
 		},
 
 		// Playback setters
@@ -268,45 +239,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 			settings = {
 				...settings,
 				trail: { ...settings.trail, hideProps: hide }
-			};
-			persist();
-		},
-
-		// Visibility setters
-		setBlueVisible: (visible: boolean) => {
-			settings = {
-				...settings,
-				motionVisibility: { ...settings.motionVisibility, blue: visible }
-			};
-			persist();
-		},
-
-		setRedVisible: (visible: boolean) => {
-			settings = {
-				...settings,
-				motionVisibility: { ...settings.motionVisibility, red: visible }
-			};
-			persist();
-		},
-
-		toggleBlueVisibility: () => {
-			settings = {
-				...settings,
-				motionVisibility: {
-					...settings.motionVisibility,
-					blue: !settings.motionVisibility.blue
-				}
-			};
-			persist();
-		},
-
-		toggleRedVisibility: () => {
-			settings = {
-				...settings,
-				motionVisibility: {
-					...settings.motionVisibility,
-					red: !settings.motionVisibility.red
-				}
 			};
 			persist();
 		},

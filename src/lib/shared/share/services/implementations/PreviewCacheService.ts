@@ -8,6 +8,9 @@
 import { browser } from "$app/environment";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ShareOptions } from '../../domain/models/ShareOptions';
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("PreviewCacheService");
 
 interface CachedPreview {
   sequenceHash: string;
@@ -130,14 +133,14 @@ export class PreviewCacheService {
           // Check if cache is stale (older than 7 days)
           const age = Date.now() - cached.timestamp;
           if (age > MAX_CACHE_AGE_MS) {
-            console.log("⏰ Cache expired, regenerating");
+            debug.log("Cache expired, regenerating");
             resolve(null);
             return;
           }
 
           // Convert blob to object URL
           const url = URL.createObjectURL(cached.imageBlob);
-          console.log("✅ Using cached preview from IndexedDB");
+          debug.success("Using cached preview from IndexedDB");
           resolve(url);
         };
 

@@ -7,7 +7,7 @@
   - Visual filter grid with drill-down
   - Level cards using TKA color gradients
   - Container queries for responsive sizing
-  - 48px minimum touch targets
+  - 50px minimum touch targets
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -32,11 +32,15 @@
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Filter type state for drill-down
-  let activeFilterType = $state<"all" | "favorites" | "difficulty" | "letter" | "length" | "position">("all");
+  let activeFilterType = $state<
+    "all" | "favorites" | "difficulty" | "letter" | "length" | "position"
+  >("all");
 
   // Track if drill-down should show based on current filter
   $effect(() => {
@@ -57,11 +61,31 @@
 
   // TKA Level colors (white, silver, gold, red, purple)
   const levelConfig = [
-    { level: 1, bgGradient: "linear-gradient(135deg, #ffffff, #e5e5e5)", textColor: "#1f2937" },
-    { level: 2, bgGradient: "linear-gradient(135deg, #dcdce1, #a8a8b0)", textColor: "#1f2937" },
-    { level: 3, bgGradient: "linear-gradient(135deg, #ffd700, #b8860b)", textColor: "#1f2937" },
-    { level: 4, bgGradient: "linear-gradient(135deg, #ff7878, #dc2626)", textColor: "#ffffff" },
-    { level: 5, bgGradient: "linear-gradient(135deg, #d8b4fe, #9333ea)", textColor: "#ffffff" },
+    {
+      level: 1,
+      bgGradient: "linear-gradient(135deg, #ffffff, #e5e5e5)",
+      textColor: "#1f2937",
+    },
+    {
+      level: 2,
+      bgGradient: "linear-gradient(135deg, #dcdce1, #a8a8b0)",
+      textColor: "#1f2937",
+    },
+    {
+      level: 3,
+      bgGradient: "linear-gradient(135deg, #ffd700, #b8860b)",
+      textColor: "#1f2937",
+    },
+    {
+      level: 4,
+      bgGradient: "linear-gradient(135deg, #ff7878, #dc2626)",
+      textColor: "#ffffff",
+    },
+    {
+      level: 5,
+      bgGradient: "linear-gradient(135deg, #d8b4fe, #9333ea)",
+      textColor: "#ffffff",
+    },
   ];
 
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -104,7 +128,10 @@
 
   function handleLetterSelect(letter: string) {
     hapticService?.trigger("selection");
-    if (currentFilter.type === "startingLetter" && currentFilter.value === letter) {
+    if (
+      currentFilter.type === "startingLetter" &&
+      currentFilter.value === letter
+    ) {
       onFilterChange("all");
       activeFilterType = "all";
     } else {
@@ -124,7 +151,10 @@
 
   function handlePositionSelect(position: string) {
     hapticService?.trigger("selection");
-    if (currentFilter.type === "startingPosition" && currentFilter.value === position) {
+    if (
+      currentFilter.type === "startingPosition" &&
+      currentFilter.value === position
+    ) {
       onFilterChange("all");
       activeFilterType = "all";
     } else {
@@ -149,10 +179,14 @@
   }
 
   // Derived states
-  const isLevelSelected = (level: number) => currentFilter.type === "difficulty" && currentFilter.value === level;
-  const isLetterSelected = (letter: string) => currentFilter.type === "startingLetter" && currentFilter.value === letter;
-  const isLengthSelected = (length: number) => currentFilter.type === "length" && currentFilter.value === length;
-  const isPositionSelected = (pos: string) => currentFilter.type === "startingPosition" && currentFilter.value === pos;
+  const isLevelSelected = (level: number) =>
+    currentFilter.type === "difficulty" && currentFilter.value === level;
+  const isLetterSelected = (letter: string) =>
+    currentFilter.type === "startingLetter" && currentFilter.value === letter;
+  const isLengthSelected = (length: number) =>
+    currentFilter.type === "length" && currentFilter.value === length;
+  const isPositionSelected = (pos: string) =>
+    currentFilter.type === "startingPosition" && currentFilter.value === pos;
 </script>
 
 <div class="hybrid-filter-panel">
@@ -399,7 +433,7 @@
     position: relative;
     z-index: 1;
     flex: 1;
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 16px;
     background: transparent;
     border: none;
@@ -422,7 +456,7 @@
   }
 
   .quick-chip {
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 clamp(12px, 3cqi, 18px);
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -602,7 +636,7 @@
   }
 
   .letter-btn {
-    min-height: 48px;
+    min-height: 52px;
     min-width: 44px;
     padding: 0;
     background: #252532;
@@ -634,7 +668,7 @@
 
   .length-chip,
   .position-chip {
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 clamp(14px, 3.5cqi, 20px);
     background: #252532;
     border: 1px solid transparent;

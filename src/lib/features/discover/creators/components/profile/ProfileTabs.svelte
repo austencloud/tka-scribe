@@ -41,7 +41,9 @@
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleSequenceClick(sequence: LibrarySequence) {
@@ -376,8 +378,8 @@
   }
 
   .user-list-avatar {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     flex-shrink: 0;
   }
 

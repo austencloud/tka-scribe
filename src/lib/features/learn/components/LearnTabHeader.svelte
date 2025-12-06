@@ -10,7 +10,7 @@ Features:
 - Syncs with navigationState for persistence
 - Haptic feedback on tab switches
 - Active tab indicator with slide animation
-- 48px minimum touch targets
+- 52px minimum touch targets
 -->
 <script lang="ts">
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -108,8 +108,8 @@ Features:
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 52px;
+    min-width: 52px;
     padding: 0.5rem 1rem;
     background: transparent;
     border: none;

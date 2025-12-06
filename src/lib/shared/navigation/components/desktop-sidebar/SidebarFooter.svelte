@@ -1,11 +1,7 @@
 <!-- Sidebar Footer Component -->
 <!-- Minimal footer with just the settings gear/back button -->
 <script lang="ts">
-  let {
-    isCollapsed,
-    isSettingsActive,
-    onSettingsClick,
-  } = $props<{
+  let { isCollapsed, isSettingsActive, onSettingsClick } = $props<{
     isCollapsed: boolean;
     isSettingsActive: boolean;
     onSettingsClick?: () => void;
@@ -82,8 +78,8 @@
   }
 
   .settings-button.collapsed {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     padding: 0;
     justify-content: center;
     border-radius: 12px;

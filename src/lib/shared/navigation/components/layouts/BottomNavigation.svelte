@@ -120,7 +120,11 @@
   {/if}
 
   <!-- Current Module's Sections -->
-  <div class="sections" class:hidden={shouldHideNav} class:full-width={isSettingsActive}>
+  <div
+    class="sections"
+    class:hidden={shouldHideNav}
+    class:full-width={isSettingsActive}
+  >
     {#each sections as section}
       <NavButton
         icon={section.icon}
@@ -155,7 +159,7 @@
     --nav-min-height: 64px;
 
     /* Button tokens */
-    --section-button-min: 48px;
+    --section-button-min: 50px;
     --section-button-max: 72px;
 
     /* Typography tokens */
@@ -232,7 +236,7 @@
     justify-content: center;
     align-items: center;
     min-width: 0;
-    /* Leave room for 48px avatar + 48px settings + gaps */
+    /* Leave room for 50px avatar + 50px settings + gaps */
     max-width: calc(100% - 96px - (var(--nav-gap) * 2));
     opacity: 1;
     transition: opacity var(--transition-smooth);
@@ -267,10 +271,10 @@
   /* Special buttons (Settings) - solid module-colored */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 0;
     background: transparent;
     border: 1px solid var(--module-color, #667eea);
@@ -278,7 +282,9 @@
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    transition: opacity 0.15s ease, transform 0.1s ease;
+    transition:
+      opacity 0.15s ease,
+      transform 0.1s ease;
   }
 
   .bottom-navigation :global(.nav-button.special:hover) {
@@ -290,7 +296,11 @@
   }
 
   .bottom-navigation :global(.nav-button.special.active) {
-    background: color-mix(in srgb, var(--module-color, #667eea) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--module-color, #667eea) 15%,
+      transparent
+    );
   }
 
   /* No labels on special buttons - icon only */
@@ -363,7 +373,7 @@
       font-size: var(--icon-size-large);
     }
 
-    /* Both special buttons are already 48px round - no changes needed at small sizes */
+    /* Both special buttons are already 50px round - no changes needed at small sizes */
   }
 
   /* Fallback for browsers without container query support */
@@ -399,7 +409,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 48px;
+    height: 52px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -476,7 +486,11 @@
     }
 
     .peek-indicator {
-      background: linear-gradient(to top, hsl(0 0% 0% / 0.95) 0%, transparent 100%);
+      background: linear-gradient(
+        to top,
+        hsl(0 0% 0% / 0.95) 0%,
+        transparent 100%
+      );
     }
 
     .peek-indicator i {

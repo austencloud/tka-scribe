@@ -64,7 +64,7 @@ class SequencePickerNavSidebar(QWidget):
                 sidebar_fraction = 0.18  # 18% of available space
                 new_width = int(available_width * sidebar_fraction)
 
-                # Apply reasonable bounds: min 120px, max 250px
+                # Apply reasonable bounds: min 120px, max 252px
                 new_width = max(120, min(new_width, 250))
 
             except (AttributeError, TypeError):

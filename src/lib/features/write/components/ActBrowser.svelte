@@ -1,8 +1,8 @@
 <!-- ActBrowser.svelte - Act browser component with grid layout -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { ActThumbnailInfo } from "../../word-card/domain/types/write";
   import { onMount } from "svelte";
   import ActThumbnail from "./ActThumbnail.svelte";
@@ -97,7 +97,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     flex-direction: column;
     height: 100%;
     width: 100%;
-    min-width: 250px;
+    min-width: 252px;
     background: var(--surface-color);
     backdrop-filter: var(--glass-backdrop);
     border: var(--glass-border);
@@ -243,7 +243,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   @media (max-width: 480px) {
     .act-browser {
-      min-width: 150px;
+      min-width: 152px;
     }
 
     .empty-state {

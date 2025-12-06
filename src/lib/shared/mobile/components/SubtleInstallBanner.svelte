@@ -195,10 +195,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 10px;
     background: linear-gradient(
       135deg,
@@ -275,10 +275,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
@@ -315,12 +315,12 @@
       padding: 12px 16px;
     }
 
-    /* Keep 48px minimum for accessibility */
+    /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 16px;
     }
 
@@ -333,14 +333,14 @@
       padding: 7px 14px;
       font-size: 12px;
       gap: 5px;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .dismiss-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 13px;
     }
   }
@@ -355,12 +355,12 @@
       gap: 12px;
     }
 
-    /* Keep 48px minimum for accessibility */
+    /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 14px;
     }
 
@@ -372,7 +372,7 @@
     .learn-btn {
       padding: 6px 12px;
       font-size: 11px;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .install-btn span,
@@ -381,10 +381,10 @@
     }
 
     .dismiss-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 </style>

@@ -242,9 +242,21 @@ Used by both desktop side panel and mobile slide-up overlay.
       <div class="metadata-row">
         {#if hasCreatorInfo}
           <button class="creator-link" onclick={handleCreatorClick}>
-            <span class="creator-label">By {sequence.ownerDisplayName || sequence.author || "Unknown"}</span>
-            <svg class="creator-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M9 18l6-6-6-6"/>
+            <span class="creator-label"
+              >By {sequence.ownerDisplayName ||
+                sequence.author ||
+                "Unknown"}</span
+            >
+            <svg
+              class="creator-arrow"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 18l6-6-6-6" />
             </svg>
           </button>
         {:else}
@@ -410,7 +422,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   /* Preview - Space Maximization Algorithm (from legacy Sequence Viewer) */
   .preview-container {
     flex: 1;
-    min-height: clamp(150px, 40cqi, 250px);
+    min-height: clamp(152px, 40cqi, 252px);
     max-height: 65%;
     width: 95%;
     max-width: 100%;
@@ -493,13 +505,21 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .preview-placeholder {
@@ -553,7 +573,7 @@ Used by both desktop side panel and mobile slide-up overlay.
     font-size: clamp(12px, 3.5cqi, 15px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
-    min-width: clamp(50px, 15cqi, 70px);
+    min-width: clamp(52px, 15cqi, 70px);
     text-align: center;
   }
 

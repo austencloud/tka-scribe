@@ -156,7 +156,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     _width: number,
     _height: number
   ): Promise<void> {
-    console.log("🎨 PixiAnimationRenderer: Loading glyph texture");
     const { current, previous } = await this.textureLoader.loadGlyphTexture(
       svgString,
       _width,
@@ -170,32 +169,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       previous
     );
 
-    console.log("🎨 Glyph sprite created, alpha:", sprites.current.alpha);
-    console.log("🎨 Glyph container visible:", this.glyphContainer?.visible);
-    console.log("🎨 Glyph container children:", this.glyphContainer?.children.length);
-    console.log("🎨 Glyph container position:", { x: this.glyphContainer?.x, y: this.glyphContainer?.y });
-    console.log("🎨 Glyph container alpha:", this.glyphContainer?.alpha);
-    console.log("🎨 Glyph container in stage:", !!this.glyphContainer?.parent);
-
-    // DIAGNOSTIC: Export canvas to see what's actually rendered
-    setTimeout(() => {
-      const canvas = this.getCanvas();
-      if (canvas) {
-        const dataUrl = canvas.toDataURL();
-        console.log("🖼️ Canvas snapshot after glyph load:");
-        console.log("   Open this in a new tab to see what's rendered:", dataUrl);
-      }
-    }, 100);
-
     // Start fade transition
     if (sprites.previous) {
-      console.log("🎨 Starting fade transition");
       this.fadeManager.startFadeTransition();
     } else {
       // First glyph - no fade, just show it
-      console.log("🎨 First glyph, setting alpha to 1");
       this.spriteManager!.setGlyphAlpha(1);
-      console.log("🎨 After setGlyphAlpha, sprite alpha:", sprites.current.alpha);
     }
   }
 
@@ -237,15 +216,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
         previousSprite
       );
 
-      console.log("🎨 [PixiAnimationRenderer] Fade update:", {
-        fadeComplete,
-        currentAlpha: currentSprite?.alpha,
-        previousAlpha: previousSprite?.alpha,
-        fadeProgress: this.fadeManager.getFadeProgress(),
-      });
-
       if (fadeComplete) {
-        console.log("🎨 [PixiAnimationRenderer] Fade complete, removing previous glyph");
         // Remove and destroy previous glyph
         this.spriteManager.removePreviousGlyph();
         this.textureLoader.clearPreviousGlyphTexture();

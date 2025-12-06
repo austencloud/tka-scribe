@@ -6,9 +6,9 @@ Modern, clean UI pattern used by Airbnb, Zillow, and modern e-commerce.
 Shows visual feedback of active filters with easy removal.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 
@@ -123,7 +123,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 12px;
     padding: 12px 14px 12px 20px;
-    min-height: 48px;
+    min-height: 52px;
     background: color-mix(in srgb, var(--chip-color) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--chip-color) 30%, transparent);
     border-radius: 100px;
@@ -173,13 +173,13 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   /* Expand touch target for remove button using pseudo-element */
   .chip-remove::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   .chip-remove:hover {
@@ -203,7 +203,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       padding: 12px 12px 12px 16px;
       font-size: 13px;
       gap: 10px;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .chip-label {
@@ -220,8 +220,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .chip-remove::before {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 

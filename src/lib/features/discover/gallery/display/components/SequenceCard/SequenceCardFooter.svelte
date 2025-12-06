@@ -48,7 +48,7 @@ All actions are in the detail panel (accessed by clicking the card).
     }
   }
 
-  @container sequence-card (min-width: 250px) and (max-width: 299px) {
+  @container sequence-card (min-width: 252px) and (max-width: 299px) {
     .title {
       font-size: 1.15rem;
     }

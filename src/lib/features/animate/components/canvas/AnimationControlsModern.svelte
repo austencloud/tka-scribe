@@ -14,6 +14,8 @@
   import FloatingControlBar from "../controls/FloatingControlBar.svelte";
   import QuickTogglesRow from "../trail/QuickTogglesRow.svelte";
   import { animationSettings } from "../../../../shared/animation-engine/state/animation-settings-state.svelte";
+  import { getAnimationVisibilityManager } from "../../../../shared/animation-engine/state/animation-visibility-state.svelte";
+  import { onMount } from "svelte";
 
   type ControlsMode = "fullscreen" | "inline" | "compact";
 
@@ -35,10 +37,33 @@
     onOpenAdvancedSettings?: () => void;
   } = $props();
 
-  // Get state from singleton
+  // Get visibility manager
+  const visibilityManager = getAnimationVisibilityManager();
+
+  // Visibility state - reactive to manager changes
+  let blueVisible = $state(true);
+  let redVisible = $state(true);
+
+  // Load visibility settings on mount
+  onMount(() => {
+    blueVisible = visibilityManager.getVisibility("blueMotion");
+    redVisible = visibilityManager.getVisibility("redMotion");
+
+    // Register observer for visibility changes
+    const observer = () => {
+      blueVisible = visibilityManager.getVisibility("blueMotion");
+      redVisible = visibilityManager.getVisibility("redMotion");
+    };
+
+    visibilityManager.registerObserver(observer);
+
+    return () => {
+      visibilityManager.unregisterObserver(observer);
+    };
+  });
+
+  // Get other state from animation settings singleton
   let bpm = $derived(animationSettings.bpm);
-  let blueVisible = $derived(animationSettings.motionVisibility.blue);
-  let redVisible = $derived(animationSettings.motionVisibility.red);
   let trailSettings = $derived(animationSettings.trail);
 
   // Handlers - BPM
@@ -52,13 +77,13 @@
     onPlayToggle?.(playing);
   }
 
-  // Handlers - Visibility
+  // Handlers - Visibility (now uses AnimationVisibilityManager)
   function handleBlueToggle(visible: boolean) {
-    animationSettings.setBlueVisible(visible);
+    visibilityManager.setVisibility("blueMotion", visible);
   }
 
   function handleRedToggle(visible: boolean) {
-    animationSettings.setRedVisible(visible);
+    visibilityManager.setVisibility("redMotion", visible);
   }
 
   // Handlers - Advanced Settings
@@ -183,8 +208,8 @@
   }
 
   .compact-settings-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,10 +249,10 @@
     }
 
     .compact-settings-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 0.8rem;
     }
   }
@@ -244,12 +269,12 @@
       gap: 4px;
     }
 
-    /* Keep 48px minimum for accessibility */
+    /* Keep 52px minimum for accessibility */
     .compact-settings-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 0.75rem;
       border-radius: 8px;
     }

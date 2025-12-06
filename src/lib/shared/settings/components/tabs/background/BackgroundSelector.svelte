@@ -138,7 +138,7 @@
       grid-template-rows: 1fr;
       gap: clamp(14px, 2.8cqi, 24px);
       max-width: 100%;
-      max-height: min(350px, 85cqh);
+      max-height: min(352px, 85cqh);
     }
   }
 
@@ -160,7 +160,7 @@
     Very height-constrained: Use 2×2 with smaller gaps
     Prevents cards from becoming too small in landscape mobile
   */
-  @container (max-height: 350px) and (max-width: 599px) {
+  @container (max-height: 352px) and (max-width: 599px) {
     .background-grid {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);

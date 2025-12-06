@@ -2,14 +2,21 @@
   CameraSection.svelte - Camera preview with detection overlay for Practice tab
 
   Displays the camera feed with grid overlay and detection status indicators.
-  Used as the primary visualization panel in all Practice view modes.
+  Uses AnimatorCanvas with orchestrator for proper prop animation.
 -->
 <script lang="ts">
+	import { onMount, onDestroy } from "svelte";
 	import CameraPreview from "../CameraPreview.svelte";
 	import GridOverlay from "../GridOverlay.svelte";
+	import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
 	import { TrainMode } from "../../domain/enums/TrainEnums";
 	import type { DetectionFrame } from "../../domain/models/DetectionFrame";
 	import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+	import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+	import { resolve, TYPES } from "$lib/shared/inversify/di";
+	import type { IPositionDetectionService } from "../../services/contracts/IPositionDetectionService";
+	import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 	interface Props {
 		isCameraReady?: boolean;
@@ -26,6 +33,11 @@
 		lastHitPoints?: number;
 		bpm?: number;
 		gridScale?: number;
+		gridMode?: GridMode;
+		propsVisible?: boolean;
+		propType?: PropType | null;
+		sequence?: SequenceData | null;
+		currentBeatIndex?: number;
 		onCameraReady?: () => void;
 		onCameraError?: (error: string) => void;
 		onFrame?: (video: HTMLVideoElement) => void;
@@ -47,11 +59,92 @@
 		lastHitPoints = 0,
 		bpm = 60,
 		gridScale = 1.0,
+		gridMode = GridMode.DIAMOND,
+		propsVisible = true,
+		propType = null,
+		sequence = null,
+		currentBeatIndex = 0,
 		onCameraReady,
 		onCameraError,
 		onFrame,
 		onGridSettingsClick
 	}: Props = $props();
+
+	// Performance monitoring
+	let detectionService: IPositionDetectionService | null = null;
+	let fps = $state(0);
+	let avgFrameTime = $state(0);
+	let videoResolution = $state('N/A');
+	let perfInterval: number | null = null;
+
+	// Beat interpolation for smooth animation
+	let fractionalBeat = $state(0);
+	let beatAnimFrameId: number | null = null;
+	let beatStartTime = 0;
+
+	// Track beat changes and start interpolation
+	let lastBeatIndex = -1;
+	$effect(() => {
+		if (currentBeatIndex !== lastBeatIndex) {
+			lastBeatIndex = currentBeatIndex;
+			beatStartTime = performance.now();
+			if (!beatAnimFrameId && isPerforming) {
+				startBeatAnimation();
+			}
+		}
+	});
+
+	// Start/stop animation based on performance state
+	$effect(() => {
+		if (isPerforming && !beatAnimFrameId) {
+			beatStartTime = performance.now();
+			startBeatAnimation();
+		} else if (!isPerforming && beatAnimFrameId) {
+			cancelAnimationFrame(beatAnimFrameId);
+			beatAnimFrameId = null;
+			fractionalBeat = currentBeatIndex;
+		}
+	});
+
+	function startBeatAnimation() {
+		function animate() {
+			const elapsed = performance.now() - beatStartTime;
+			const beatDuration = (60 / bpm) * 1000;
+			const progress = Math.min(elapsed / beatDuration, 1.0);
+
+			fractionalBeat = currentBeatIndex + progress;
+
+			if (isPerforming) {
+				beatAnimFrameId = requestAnimationFrame(animate);
+			} else {
+				beatAnimFrameId = null;
+			}
+		}
+		beatAnimFrameId = requestAnimationFrame(animate);
+	}
+
+	onMount(() => {
+		detectionService = resolve<IPositionDetectionService>(TYPES.IPositionDetectionService);
+
+		// Update performance stats every 500ms
+		perfInterval = window.setInterval(() => {
+			if (detectionService?.getPerformanceStats) {
+				const stats = detectionService.getPerformanceStats();
+				fps = stats.fps;
+				avgFrameTime = stats.avgFrameTime;
+				videoResolution = stats.videoResolution;
+			}
+		}, 500);
+	});
+
+	onDestroy(() => {
+		if (perfInterval !== null) {
+			clearInterval(perfInterval);
+		}
+		if (beatAnimFrameId !== null) {
+			cancelAnimationFrame(beatAnimFrameId);
+		}
+	});
 </script>
 
 <div class="camera-section">
@@ -61,26 +154,37 @@
 		onFrame={onFrame}
 		mirrored={true}
 	>
+		<!-- Grid overlay with detection feedback (hide circles when showing props) -->
 		<GridOverlay
 			bluePosition={currentFrame?.blue ?? null}
 			redPosition={currentFrame?.red ?? null}
 			expectedBlue={expectedPositions?.blue ?? null}
 			expectedRed={expectedPositions?.red ?? null}
-			showExpected={mode === TrainMode.PERFORMING}
+			showExpected={mode === TrainMode.PERFORMING && !propType}
 			{bpm}
 			{isPerforming}
 			{gridScale}
+			{gridMode}
 		/>
+
+		<!-- AnimatorCanvas for prop rendering (uses orchestrator for correct motion) -->
+		{#if sequence && propType && propsVisible}
+			<div class="animator-overlay" style="transform: scale({gridScale})">
+				<AnimatorCanvas
+					sequenceData={sequence}
+					currentBeat={fractionalBeat}
+					gridVisible={false}
+					backgroundAlpha={0}
+					isPlaying={isPerforming}
+				/>
+			</div>
+		{/if}
 	</CameraPreview>
 
-	<!-- Grid Settings Button -->
+	<!-- Grid Settings Button (floating in top-right of camera) -->
 	{#if onGridSettingsClick}
-		<button
-			class="grid-settings-btn"
-			onclick={onGridSettingsClick}
-			aria-label="Grid settings"
-		>
-			<i class="fas fa-sliders-h"></i>
+		<button class="grid-settings-btn" onclick={onGridSettingsClick} aria-label="Grid settings">
+			<i class="fas fa-cog"></i>
 		</button>
 	{/if}
 
@@ -90,22 +194,6 @@
 			<span class="countdown-number">{countdownValue || "GO!"}</span>
 		</div>
 	{/if}
-
-	<!-- Detection Status Indicators -->
-	<div class="status-indicators">
-		<div class="status-item" class:active={isCameraReady}>
-			<div class="status-dot"></div>
-			<span>Camera</span>
-		</div>
-		<div class="status-item" class:active={isDetectionReady}>
-			<div class="status-dot"></div>
-			<span>Tracking</span>
-		</div>
-		<div class="status-item" class:active={isDetectionActive}>
-			<div class="status-dot"></div>
-			<span>Active</span>
-		</div>
-	</div>
 
 	<!-- Performance Feedback -->
 	{#if isPerforming}
@@ -142,35 +230,64 @@
 		overflow: hidden;
 	}
 
-	/* Grid Settings Button */
+	/* AnimatorCanvas overlay - positioned over camera feed */
+	.animator-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		z-index: 5; /* Between grid (10) and camera (0) */
+	}
+
+	/* Override AnimatorCanvas's white background to make it transparent */
+	.animator-overlay :global(.canvas-wrapper),
+	.animator-overlay :global(.canvas-wrapper) :global(canvas),
+	.animator-overlay :global(canvas) {
+		background: transparent !important;
+		background-color: transparent !important;
+		border: none !important;
+	}
+
+	/* Ensure PixiJS canvas is also transparent */
+	.animator-overlay :global(canvas[data-pixi]) {
+		background: transparent !important;
+		background-color: transparent !important;
+	}
+
+	/* Grid Settings Button - floating in top-right */
 	.grid-settings-btn {
 		position: absolute;
-		bottom: 0.5rem;
-		left: 0.5rem;
+		top: 0.5rem;
+		right: 0.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 36px;
-		height: 36px;
-		background: rgba(0, 0, 0, 0.6);
-		backdrop-filter: blur(8px);
-		border: 1px solid rgba(255, 255, 255, 0.15);
-		border-radius: 8px;
-		color: rgba(255, 255, 255, 0.8);
+		width: 40px;
+		height: 40px;
+		background: #252532;
+		border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+		border-radius: 50%;
+		color: rgba(255, 255, 255, 0.7);
+		font-size: 1rem;
 		cursor: pointer;
+		z-index: 20;
 		transition: all 0.2s;
-		z-index: 25;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	}
 
 	.grid-settings-btn:hover {
-		background: rgba(0, 0, 0, 0.8);
-		color: white;
-		border-color: rgba(255, 255, 255, 0.3);
+		background: #2d2d3a;
+		border-color: var(--border-2026-hover, rgba(255, 255, 255, 0.12));
+		color: rgba(255, 255, 255, 0.9);
+		transform: scale(1.05);
 	}
 
 	.grid-settings-btn:active {
 		transform: scale(0.95);
 	}
+
 
 	/* On mobile (stacked), limit by height */
 	@media (max-width: 767px) {
@@ -188,46 +305,6 @@
 		}
 	}
 
-	/* Status Indicators */
-	.status-indicators {
-		position: absolute;
-		top: 0.5rem;
-		right: 0.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		background: rgba(0, 0, 0, 0.6);
-		backdrop-filter: blur(8px);
-		padding: 0.5rem;
-		border-radius: 8px;
-		font-size: 0.7rem;
-	}
-
-	.status-item {
-		display: flex;
-		align-items: center;
-		gap: 0.375rem;
-		opacity: 0.5;
-		transition: opacity 0.3s;
-		color: rgba(255, 255, 255, 0.9);
-	}
-
-	.status-item.active {
-		opacity: 1;
-	}
-
-	.status-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: rgba(107, 114, 128, 0.8);
-		transition: all 0.3s;
-	}
-
-	.status-item.active .status-dot {
-		background: #22c55e;
-		box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
-	}
 
 	/* Countdown Overlay */
 	.countdown-overlay {
@@ -263,14 +340,15 @@
 		align-items: flex-start;
 		gap: 0.5rem;
 		pointer-events: none;
+		z-index: 20;
 	}
 
 	.score-display {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		background: rgba(0, 0, 0, 0.6);
-		backdrop-filter: blur(8px);
+		background: #252532;
+		border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
 		padding: 0.5rem 0.75rem;
 		border-radius: 8px;
 		font-weight: 600;

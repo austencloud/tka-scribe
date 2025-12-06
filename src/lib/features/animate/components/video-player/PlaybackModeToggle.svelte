@@ -60,7 +60,7 @@
     border: none;
     color: rgba(255, 255, 255, 0.7);
     padding: 12px 18px;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;

@@ -33,7 +33,9 @@
 
   // Initialize
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     let interval: ReturnType<typeof setInterval> | null = null;
     let unsubscribe: (() => void) | null = null;
 
@@ -118,10 +120,10 @@
 <style>
   .gamification-button {
     /* Match ProfileButton sizing - WCAG AAA minimum touch target */
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);

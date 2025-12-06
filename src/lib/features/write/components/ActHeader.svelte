@@ -238,7 +238,7 @@
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 48px;
+    min-height: 52px;
     display: flex;
     align-items: center;
   }
@@ -354,7 +354,7 @@
     }
 
     .music-load-btn {
-      max-width: 150px;
+      max-width: 152px;
     }
   }
 

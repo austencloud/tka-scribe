@@ -291,10 +291,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 0;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -351,11 +351,7 @@
   /* Panel - content card */
   .panel {
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    background: rgba(12, 14, 24, 0.94);
-    box-shadow:
-      0 12px 40px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
     padding: clamp(12px, 2vw, 20px);
     min-width: 0;
   }
@@ -379,7 +375,7 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 48px;
+    width: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

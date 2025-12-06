@@ -180,14 +180,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(24px, 6cqi, 48px);
+    padding: clamp(24px, 6cqi, 50px);
     text-align: center;
     gap: clamp(12px, 3cqi, 16px);
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border: 4px solid rgba(255, 255, 255, 0.2);
     border-top-color: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
@@ -203,7 +203,7 @@
   .auth-required i,
   .empty-state i,
   .coming-soon i {
-    font-size: clamp(32px, 8cqi, 48px);
+    font-size: clamp(32px, 8cqi, 50px);
     opacity: 0.5;
   }
 

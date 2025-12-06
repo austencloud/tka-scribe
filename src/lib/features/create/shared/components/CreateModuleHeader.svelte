@@ -183,7 +183,7 @@
     border-radius: 10px;
     white-space: nowrap;
     user-select: none;
-    min-height: 48px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -192,8 +192,8 @@
 
   .create-tab-header.vertical .segment-button {
     padding: 12px 8px;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 52px;
+    min-width: 52px;
     font-size: 20px;
     white-space: normal;
   }
@@ -236,8 +236,8 @@
   @media (max-width: 768px) {
     .create-tab-header.vertical .segment-button {
       padding: 10px 6px;
-      min-height: 48px;
-      min-width: 48px;
+      min-height: 52px;
+      min-width: 52px;
       font-size: 18px;
     }
   }

@@ -1,9 +1,9 @@
 <!--
 SimplifiedOrientationControl.svelte - Always-visible stepper control for narrow screens
 
-Research-backed design for 348px portrait (Z Fold):
+Research-backed design for 352px portrait (Z Fold):
 - Zero interaction cost - all controls visible
-- 44x48px touch targets (previous/next buttons)
+- 44x52px touch targets (previous/next buttons)
 - Horizontal stepper layout matching turn controls
 - Current orientation prominently displayed
 - Cycles through: In → Out → Clock → Counter → In
@@ -138,7 +138,7 @@ Research-backed design for 348px portrait (Z Fold):
 <style>
   .simplified-orientation-control {
     display: grid;
-    /* Flexible grid - allows side columns to shrink below 50px if needed */
+    /* Flexible grid - allows side columns to shrink below 52px if needed */
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 10px; /* Reduced from 12px for tighter spacing */
@@ -194,12 +194,12 @@ Research-backed design for 348px portrait (Z Fold):
     min-width: 0;
   }
 
-  /* Stepper buttons - Reduced from 44x48px for better fit */
+  /* Stepper buttons - Reduced from 44x52px for better fit */
   .stepper-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 8px;
     border: 2px solid;
     background: white;
@@ -268,7 +268,7 @@ Research-backed design for 348px portrait (Z Fold):
     letter-spacing: 0.3px; /* Reduced from 0.5px */
     color: #666;
     white-space: nowrap;
-    min-width: 50px; /* Reduced from 60px */
+    min-width: 52px; /* Reduced from 60px */
     text-align: center;
     justify-self: center; /* Center within the right column */
   }
@@ -282,7 +282,7 @@ Research-backed design for 348px portrait (Z Fold):
 
     .color-label {
       font-size: 14px;
-      min-width: 48px;
+      min-width: 52px;
     }
 
     .orientation-display {

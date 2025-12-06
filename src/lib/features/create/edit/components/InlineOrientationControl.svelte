@@ -206,13 +206,13 @@
 
   /* Compact (desktop) - smaller buttons */
   .inline-orientation-control.compact .orientation-btn {
-    min-height: 48px;
+    min-height: 52px;
     border-width: 2px;
   }
 
   /* Balanced/Comfortable - larger buttons */
   .inline-orientation-control.balanced .orientation-btn {
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .inline-orientation-control.comfortable .orientation-btn {

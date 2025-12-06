@@ -205,27 +205,24 @@ export const PRIORITY_CONFIG: Record<
  */
 export const TYPE_CONFIG: Record<
   FeedbackType,
-  { label: string; color: string; icon: string; fieldLabel: string; placeholder: string }
+  { label: string; color: string; icon: string; placeholder: string }
 > = {
   bug: {
     label: "Bug Report",
     color: "#ef4444",
     icon: "fa-bug",
-    fieldLabel: "What went wrong?",
-    placeholder: "What happened? What were you doing? Does it happen every time?"
+    placeholder: "What went wrong? Describe the issue in detail..."
   },
   feature: {
     label: "Feature Request",
     color: "#8b5cf6",
     icon: "fa-lightbulb",
-    fieldLabel: "What would you like to see?",
     placeholder: "Describe the feature and how it would help you..."
   },
   general: {
     label: "General Feedback",
     color: "#3b82f6",
     icon: "fa-comment",
-    fieldLabel: "What's on your mind?",
     placeholder: "Share your thoughts, suggestions, or observations..."
   },
 };

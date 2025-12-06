@@ -57,12 +57,22 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   const sortOptions = [
     { id: ExploreSortMethod.ALPHABETICAL, label: "A-Z", icon: "fa-font" },
     { id: ExploreSortMethod.DATE_ADDED, label: "New", icon: "fa-clock" },
-    { id: ExploreSortMethod.DIFFICULTY_LEVEL, label: "Level", icon: "fa-signal" },
-    { id: ExploreSortMethod.SEQUENCE_LENGTH, label: "Length", icon: "fa-ruler" },
+    {
+      id: ExploreSortMethod.DIFFICULTY_LEVEL,
+      label: "Level",
+      icon: "fa-signal",
+    },
+    {
+      id: ExploreSortMethod.SEQUENCE_LENGTH,
+      label: "Length",
+      icon: "fa-ruler",
+    },
   ];
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleSortChange(method: ExploreSortMethod) {
@@ -194,7 +204,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     justify-content: center;
     gap: 6px;
     padding: 0 14px;
-    min-height: 48px;
+    min-height: 52px;
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 100px;
@@ -227,7 +237,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     align-items: center;
     gap: 8px;
     padding: 0 12px 0 16px;
-    min-height: 48px;
+    min-height: 52px;
     background: rgba(59, 130, 246, 0.15);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 100px;
@@ -254,8 +264,8 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;

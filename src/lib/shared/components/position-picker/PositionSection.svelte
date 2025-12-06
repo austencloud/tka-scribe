@@ -1,18 +1,13 @@
 <!--
 PositionSection.svelte - Collapsible section for selecting a position (start or end)
 Uses 4x4 pictograph grid with all 16 variations
-48px touch targets, modern Material 2026 design
+50px touch targets, modern Material 2026 design
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import PositionPickerGrid from "./PositionPickerGrid.svelte";
 
-  let {
-    title,
-    description,
-    currentPosition,
-    onPositionChange
-  } = $props<{
+  let { title, description, currentPosition, onPositionChange } = $props<{
     title: string;
     description: string;
     currentPosition: PictographData | null;
@@ -68,10 +63,7 @@ Uses 4x4 pictograph grid with all 16 variations
 
   {#if isExpanded}
     <div class="section-content">
-      <PositionPickerGrid
-        {currentPosition}
-        {onPositionChange}
-      />
+      <PositionPickerGrid {currentPosition} {onPositionChange} />
     </div>
   {/if}
 </section>

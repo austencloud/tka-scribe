@@ -130,7 +130,9 @@
 
                 <div class="template-info">
                   <span class="template-name">{template.name}</span>
-                  <span class="template-description">{template.description}</span>
+                  <span class="template-description"
+                    >{template.description}</span
+                  >
                 </div>
               </button>
             {/each}
@@ -188,13 +190,13 @@
     letter-spacing: 0.5px;
   }
 
-  /* Section toggle - 48px minimum touch target */
+  /* Section toggle - 52px minimum touch target */
   .section-toggle {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px) 0;
     background: transparent;
     border: none;
@@ -213,7 +215,10 @@
   /* Templates Grid */
   .templates-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 30cqi, 160px), 1fr));
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(clamp(120px, 30cqi, 160px), 1fr)
+    );
     gap: clamp(6px, 1.5cqi, 12px);
   }
 

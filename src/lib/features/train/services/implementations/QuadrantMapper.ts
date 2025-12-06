@@ -1,4 +1,4 @@
-import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export class QuadrantMapper {
   /**
@@ -16,10 +16,9 @@ export class QuadrantMapper {
     let angle = Math.atan2(dx, dy) * (180 / Math.PI);
     if (angle < 0) angle += 360;
 
-    // 8 sectors of 45 degrees each, offset by 22.5 degrees
+    // Always detect all 8 directions
     const sector = Math.floor((angle + 22.5) / 45) % 8;
-
-    const quadrants: GridLocation[] = [
+    const allQuadrants: GridLocation[] = [
       GridLocation.NORTH,
       GridLocation.NORTHEAST,
       GridLocation.EAST,
@@ -29,8 +28,43 @@ export class QuadrantMapper {
       GridLocation.WEST,
       GridLocation.NORTHWEST,
     ];
+    return allQuadrants[sector] ?? GridLocation.NORTH;
+  }
 
-    return quadrants[sector] ?? GridLocation.NORTH;
+  /**
+   * Check if a quadrant is valid for the given grid mode.
+   * DIAMOND mode: Only cardinal directions (N, E, S, W)
+   * BOX mode: Only intercardinal directions (NE, SE, SW, NW)
+   * @param quadrant - The detected quadrant
+   * @param gridMode - The active grid mode
+   * @returns true if the quadrant is valid for this mode, false otherwise
+   */
+  isValidForMode(quadrant: GridLocation, gridMode?: GridMode): boolean {
+    if (!gridMode) {
+      return true; // All quadrants valid when no mode specified
+    }
+
+    const cardinalQuadrants = [
+      GridLocation.NORTH,
+      GridLocation.EAST,
+      GridLocation.SOUTH,
+      GridLocation.WEST,
+    ];
+
+    const intercardinalQuadrants = [
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST,
+    ];
+
+    if (gridMode === GridMode.DIAMOND) {
+      return cardinalQuadrants.includes(quadrant);
+    } else if (gridMode === GridMode.BOX) {
+      return intercardinalQuadrants.includes(quadrant);
+    }
+
+    return true; // Default: all valid
   }
 
   /**

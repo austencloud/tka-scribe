@@ -394,7 +394,7 @@ Follows Svelte 5 runes + microservices architecture.
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 48px;
+    min-width: 52px;
   }
 
   .sort-direction-button:hover {

@@ -11,9 +11,9 @@
 </script>
 
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -288,7 +288,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   /* Responsive Design */
   @media (max-width: 768px) {
     .category-button {
-      min-height: 50px;
+      min-height: 52px;
       padding: var(--spacing-sm);
       font-size: var(--font-size-xs);
     }

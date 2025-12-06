@@ -2,8 +2,51 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  // Web Speech API type declarations
+  interface SpeechRecognitionResult {
+    readonly isFinal: boolean;
+    readonly length: number;
+    [index: number]: { transcript: string; confidence: number };
+  }
+
+  interface SpeechRecognitionResultList {
+    readonly length: number;
+    [index: number]: SpeechRecognitionResult;
+  }
+
+  interface SpeechRecognitionEventInit extends EventInit {
+    resultIndex?: number;
+    results: SpeechRecognitionResultList;
+  }
+
+  interface SpeechRecognitionEventCustom extends Event {
+    readonly resultIndex: number;
+    readonly results: SpeechRecognitionResultList;
+  }
+
+  interface SpeechRecognitionErrorEventCustom extends Event {
+    readonly error: string;
+    readonly message: string;
+  }
+
+  interface SpeechRecognitionInstance {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    onresult: ((event: SpeechRecognitionEventCustom) => void) | null;
+    onerror: ((event: SpeechRecognitionErrorEventCustom) => void) | null;
+    onend: (() => void) | null;
+    start: () => void;
+    stop: () => void;
+    abort: () => void;
+  }
+
   // Props
-  const { onTranscript, onInterimTranscript, disabled = false } = $props<{
+  const {
+    onTranscript,
+    onInterimTranscript,
+    disabled = false,
+  } = $props<{
     onTranscript: (text: string, isFinal: boolean) => void;
     onInterimTranscript?: (text: string) => void;
     disabled?: boolean;
@@ -12,21 +55,23 @@
   // State
   let isRecording = $state(false);
   let isSupported = $state(false);
-  let recognition: SpeechRecognition | null = $state(null);
+  let recognition: SpeechRecognitionInstance | null = $state(null);
   let baseTranscriptLength = 0; // Track where we started this recording session
 
   // Check browser support
   onMount(() => {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
-    isSupported = !!SpeechRecognition;
+    const SpeechRecognitionCtor =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    isSupported = !!SpeechRecognitionCtor;
 
     if (isSupported) {
-      recognition = new SpeechRecognition();
+      recognition = new SpeechRecognitionCtor() as SpeechRecognitionInstance;
       recognition.continuous = true;
       recognition.interimResults = true; // Enable live streaming
       recognition.lang = "en-US";
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
+      recognition.onresult = (event: SpeechRecognitionEventCustom) => {
         let interimTranscript = "";
         let finalTranscript = "";
 
@@ -51,7 +96,7 @@
         }
       };
 
-      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEventCustom) => {
         console.error("Speech recognition error:", event.error);
         if (event.error !== "no-speech") {
           isRecording = false;
@@ -87,7 +132,7 @@
     class="voice-btn"
     class:recording={isRecording}
     onclick={toggleRecording}
-    disabled={disabled}
+    {disabled}
     aria-label={isRecording ? "Stop recording" : "Start voice input"}
     title={isRecording ? "Stop recording" : "Speak to dictate feedback"}
   >
@@ -147,7 +192,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
     }
     50% {

@@ -54,7 +54,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .panel-btn:disabled {

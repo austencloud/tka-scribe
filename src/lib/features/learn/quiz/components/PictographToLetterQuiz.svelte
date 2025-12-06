@@ -263,7 +263,7 @@
     width: 100%;
     height: 100%;
     padding: 1.5rem;
-    /* Ensure top padding clears back button (48px) + breathing room */
+    /* Ensure top padding clears back button (50px) + breathing room */
     padding-top: 4.5rem;
     box-sizing: border-box;
     /* Slight upward bias for visual balance */
@@ -280,8 +280,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -339,8 +339,8 @@
   }
 
   .loading-spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-left-color: #667eea;
     border-radius: 50%;
@@ -654,7 +654,7 @@
       width: 400px;
       height: 400px;
       box-shadow:
-        0 12px 48px rgba(0, 0, 0, 0.15),
+        0 12px 50px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.06),
         0 0 120px -30px rgba(102, 126, 234, 0.2);
     }

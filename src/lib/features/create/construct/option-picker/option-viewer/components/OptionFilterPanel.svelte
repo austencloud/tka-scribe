@@ -207,7 +207,7 @@ Provides a dedicated UI for filtering option viewer content:
 
   /* Compact mode for smaller containers */
   .filter-panel.compact {
-    max-height: min(350px, 60cqh);
+    max-height: min(352px, 60cqh);
     border-radius: 0 0 12px 12px;
   }
 
@@ -271,9 +271,9 @@ Provides a dedicated UI for filtering option viewer content:
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 50%;
-    /* 48px minimum for touch targets on mobile */
-    width: 48px;
-    height: 48px;
+    /* 52px minimum for touch targets on mobile */
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -283,8 +283,8 @@ Provides a dedicated UI for filtering option viewer content:
   }
 
   .filter-panel.compact .close-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
   }
 
   .filter-panel.extra-compact .close-button {
@@ -294,15 +294,15 @@ Provides a dedicated UI for filtering option viewer content:
     position: relative;
   }
 
-  /* Ensure 48px touch target even in extra-compact mode */
+  /* Ensure 52px touch target even in extra-compact mode */
   .filter-panel.extra-compact .close-button::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   .close-button:hover {
@@ -428,8 +428,8 @@ Provides a dedicated UI for filtering option viewer content:
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     font-size: 1.25rem;
@@ -438,15 +438,15 @@ Provides a dedicated UI for filtering option viewer content:
   }
 
   .filter-panel.compact .toggle-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 11px;
     font-size: 1.15rem;
   }
 
   .filter-panel.extra-compact .toggle-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 10px;
     font-size: 1.05rem;
   }

@@ -13,6 +13,9 @@
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { createHMRState } from "$lib/shared/utils/hmr-state-backup";
 import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("ConstructTabState");
 import type { BeatData } from "../domain/models/BeatData";
 import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
 import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
@@ -226,13 +229,13 @@ export function createConstructTabState(
 
         // Check if we have a persisted state that should affect UI
         const savedState = await sequencePersistenceService.loadCurrentState();
-        console.log("🔍 ConstructTabState init: savedState =", savedState);
-        console.log("🔍 ConstructTabState init: savedState?.hasStartPosition =", savedState?.hasStartPosition);
-        console.log("🔍 ConstructTabState init: sequenceState.hasStartPosition =", sequenceState.hasStartPosition);
-        console.log("🔍 ConstructTabState init: sequenceState.getCurrentSequenceData() =", sequenceState.getCurrentSequenceData());
+        debug.log("init: savedState =", savedState);
+        debug.log("init: savedState?.hasStartPosition =", savedState?.hasStartPosition);
+        debug.log("init: sequenceState.hasStartPosition =", sequenceState.hasStartPosition);
+        debug.log("init: sequenceState.getCurrentSequenceData() =", sequenceState.getCurrentSequenceData());
 
         if (savedState && savedState.hasStartPosition) {
-          console.log("🔍 ConstructTabState: Persisted state has start position, setting showStartPositionPicker = false");
+          debug.log("Persisted state has start position, setting showStartPositionPicker = false");
           setShowStartPositionPicker(false);
           setSelectedStartPosition(savedState.selectedStartPosition);
           if (savedState.selectedStartPosition) {
@@ -242,7 +245,7 @@ export function createConstructTabState(
           }
         } else {
           // No saved state, set default to show start position picker
-          console.log("🔍 ConstructTabState: No persisted start position, setting showStartPositionPicker = true");
+          debug.log("No persisted start position, setting showStartPositionPicker = true");
           setShowStartPositionPicker(true);
           startPositionStateService.clearSelectedPosition();
         }
@@ -257,7 +260,7 @@ export function createConstructTabState(
       }
     } else {
       // No persistence service, default to showing start position picker
-      console.log("🔍 ConstructTabState: No persistence service, setting showStartPositionPicker = true");
+      debug.log("No persistence service, setting showStartPositionPicker = true");
       setShowStartPositionPicker(true);
       startPositionStateService.clearSelectedPosition();
     }
@@ -266,21 +269,21 @@ export function createConstructTabState(
     // This logic was moved from $effect to avoid effect_orphan error
     // IMPORTANT: Uses construct tab's own sequence state, not the shared state
     if (sequenceState) {
-      console.log("🔍 ConstructTabState sync: sequenceState.hasStartPosition =", sequenceState.hasStartPosition);
-      console.log("🔍 ConstructTabState sync: showStartPositionPicker =", showStartPositionPicker);
+      debug.log("sync: sequenceState.hasStartPosition =", sequenceState.hasStartPosition);
+      debug.log("sync: showStartPositionPicker =", showStartPositionPicker);
       if (sequenceState.hasStartPosition && showStartPositionPicker === true) {
-        console.log("🔍 ConstructTabState sync: Sequence has start position, hiding picker");
+        debug.log("sync: Sequence has start position, hiding picker");
         setShowStartPositionPicker(false);
       } else if (
         !sequenceState.hasStartPosition &&
         showStartPositionPicker === false
       ) {
-        console.log("🔍 ConstructTabState sync: Sequence has NO start position, showing picker");
+        debug.log("sync: Sequence has NO start position, showing picker");
         setShowStartPositionPicker(true);
       }
     }
 
-    console.log("🔍 ConstructTabState init complete: showStartPositionPicker =", showStartPositionPicker);
+    debug.log("init complete: showStartPositionPicker =", showStartPositionPicker);
 
     // Mark as initialized after all setup is complete
     isInitialized = true;

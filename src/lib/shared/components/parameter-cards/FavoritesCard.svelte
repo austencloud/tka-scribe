@@ -25,7 +25,9 @@ Filter-specific card (not used in Generate)
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleToggle() {
@@ -98,7 +100,12 @@ Filter-specific card (not used in Generate)
     padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: radial-gradient(ellipse at top left, #4b5563 0%, #374151 40%, #1f2937 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #4b5563 0%,
+      #374151 40%,
+      #1f2937 100%
+    );
     border: none;
     cursor: pointer;
     color: white;
@@ -126,7 +133,12 @@ Filter-specific card (not used in Generate)
   }
 
   .favorites-card.active {
-    background: radial-gradient(ellipse at top left, #f472b6 0%, #ec4899 40%, #be185d 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #f472b6 0%,
+      #ec4899 40%,
+      #be185d 100%
+    );
     box-shadow:
       0 1px 2px hsl(330deg 81% 45% / 0.15),
       0 2px 4px hsl(330deg 81% 45% / 0.12),
@@ -222,8 +234,8 @@ Filter-specific card (not used in Generate)
   }
 
   .heart-icon {
-    width: clamp(32px, 10cqw, 48px);
-    height: clamp(32px, 10cqw, 48px);
+    width: clamp(32px, 10cqw, 50px);
+    height: clamp(32px, 10cqw, 50px);
     color: rgba(255, 255, 255, 0.5);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }

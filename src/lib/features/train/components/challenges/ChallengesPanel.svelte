@@ -2,7 +2,7 @@
   ChallengesPanel.svelte - Train Challenges Panel
 
   Displays available train challenges with filtering and sorting.
-  Modern mobile-first design with slide-up filter panel and 48px touch targets.
+  Modern mobile-first design with slide-up filter panel and 52px touch targets.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -13,7 +13,10 @@
     TrainChallengeFilter,
     TrainChallengeSortBy,
   } from "../../domain/models/TrainChallengeModels";
-  import { getDifficultySortIndex, type ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
+  import {
+    getDifficultySortIndex,
+    type ChallengeDifficulty,
+  } from "$lib/shared/gamification/domain/models/achievement-models";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { activeChallengeState } from "../../state/active-challenge-state.svelte";
   import { trainChallengesState } from "../../state/train-challenges-state.svelte";
@@ -37,7 +40,9 @@
   // Get cached data from state (reactive getters)
   const challenges = $derived(trainChallengesState.challenges);
   const progressMap = $derived(trainChallengesState.progressMap);
-  const loading = $derived(trainChallengesState.isLoading && !trainChallengesState.isLoaded);
+  const loading = $derived(
+    trainChallengesState.isLoading && !trainChallengesState.isLoaded
+  );
 
   // Stats
   const stats = $derived.by(() => {
@@ -105,7 +110,9 @@
 
   // Load challenges (will use cache if already loaded)
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     await trainChallengesState.loadChallenges(challengeService);
   });
 
@@ -381,13 +388,13 @@
     flex-shrink: 0;
   }
 
-  /* Filter Button - 48px touch target */
+  /* Filter Button - 52px touch target */
   .filter-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -454,7 +461,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 48px;
+    height: 52px;
     padding: 0 18px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -516,8 +523,8 @@
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(239, 68, 68, 0.2);
     border-top-color: #ef4444;
     border-radius: 50%;
@@ -579,7 +586,7 @@
   }
 
   .clear-filters-btn {
-    height: 48px;
+    height: 52px;
     padding: 0 24px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -627,8 +634,8 @@
   }
 
   .close-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -675,7 +682,7 @@
     gap: 10px;
   }
 
-  /* Option Buttons - 48px touch targets */
+  /* Option Buttons - 52px touch targets */
   .option-btn {
     display: flex;
     flex-direction: column;
@@ -833,13 +840,13 @@
     }
 
     .filter-button::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
     }
 
     /* Visual size reduced but touch target maintained via pseudo-element */
@@ -852,13 +859,13 @@
     }
 
     .chip::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       min-width: 100%;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .content {
@@ -886,7 +893,7 @@
     }
 
     .chip {
-      height: 48px;
+      height: 52px;
       padding: 0 20px;
       font-size: 14px;
     }

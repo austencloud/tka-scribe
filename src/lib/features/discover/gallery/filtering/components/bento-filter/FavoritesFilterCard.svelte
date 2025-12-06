@@ -23,7 +23,9 @@ Single tap toggles favorites on/off
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleToggle() {
@@ -198,8 +200,8 @@ Single tap toggles favorites on/off
   }
 
   .heart-icon {
-    width: clamp(32px, 10cqw, 48px);
-    height: clamp(32px, 10cqw, 48px);
+    width: clamp(32px, 10cqw, 50px);
+    height: clamp(32px, 10cqw, 50px);
     color: rgba(255, 255, 255, 0.5);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }

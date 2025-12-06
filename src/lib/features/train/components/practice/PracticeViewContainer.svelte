@@ -7,17 +7,15 @@
   - camera-canvas-grid: Camera + AnimatorCanvas + BeatGrid (all three)
 -->
 <script lang="ts">
-  import type { DisplayView } from "../../state/train-practice-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { DetectionFrame } from "../../domain/models/DetectionFrame";
   import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { TrainMode } from "../../domain/enums/TrainEnums";
   import CameraSection from "./CameraSection.svelte";
   import GridSection from "./GridSection.svelte";
-  import CanvasSection from "./CanvasSection.svelte";
 
   interface Props {
-    displayView: DisplayView;
     sequence: SequenceData | null;
     currentBeatIndex?: number;
     isPlaying?: boolean;
@@ -39,6 +37,8 @@
     lastHitResult?: boolean | null;
     lastHitPoints?: number;
     gridScale?: number;
+    gridMode?: GridMode;
+    propsVisible?: boolean;
     // Callbacks
     onCameraReady?: () => void;
     onCameraError?: (error: string) => void;
@@ -49,7 +49,6 @@
   }
 
   let {
-    displayView,
     sequence = null,
     currentBeatIndex = 0,
     isPlaying = false,
@@ -67,6 +66,8 @@
     lastHitResult = null,
     lastHitPoints = 0,
     gridScale = 1.0,
+    gridMode = GridMode.DIAMOND,
+    propsVisible = true,
     onCameraReady,
     onCameraError,
     onFrame,
@@ -75,22 +76,14 @@
     onGridSettingsClick,
   }: Props = $props();
 
-  // Determine which panels to show
-  const showCanvas = $derived(
-    displayView === "camera-canvas" || displayView === "camera-canvas-grid"
-  );
-  const showGrid = $derived(
-    displayView === "camera-grid" || displayView === "camera-canvas-grid"
-  );
-  const isTripleView = $derived(displayView === "camera-canvas-grid");
+  // Always show camera + grid (no display view modes)
+  const showGrid = true; // Always show beat grid
+
+  // Extract propType from sequence
+  const propType = $derived(sequence?.propType ?? null);
 </script>
 
-<div
-  class="view-container"
-  class:view-camera-canvas={displayView === "camera-canvas"}
-  class:view-camera-grid={displayView === "camera-grid"}
-  class:view-camera-canvas-grid={displayView === "camera-canvas-grid"}
->
+<div class="view-container">
   <!-- Camera is always shown -->
   <div class="panel camera-panel">
     <CameraSection
@@ -108,6 +101,11 @@
       {lastHitPoints}
       {bpm}
       {gridScale}
+      {gridMode}
+      {propsVisible}
+      {propType}
+      sequence={sequence}
+      currentBeatIndex={currentBeatIndex}
       {onCameraReady}
       {onCameraError}
       {onFrame}
@@ -115,31 +113,15 @@
     />
   </div>
 
-  <!-- Canvas panel (Views A and C) -->
-  {#if showCanvas}
-    <div class="panel canvas-panel">
-      <CanvasSection
-        {sequence}
-        {currentBeatIndex}
-        {isPlaying}
-        {isPerforming}
-        {bpm}
-        {onBrowseSequences}
-      />
-    </div>
-  {/if}
-
-  <!-- Grid panel (Views B and C) -->
-  {#if showGrid}
-    <div class="panel grid-panel">
-      <GridSection
-        {sequence}
-        {currentBeatIndex}
-        {onBeatSelect}
-        {onBrowseSequences}
-      />
-    </div>
-  {/if}
+  <!-- Beat Grid panel (always shown) -->
+  <div class="panel grid-panel">
+    <GridSection
+      {sequence}
+      {currentBeatIndex}
+      {onBeatSelect}
+      {onBrowseSequences}
+    />
+  </div>
 </div>
 
 <style>
@@ -148,8 +130,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    gap: var(--space-2026-sm, 12px);
+    padding: var(--space-2026-sm, 12px);
     background: transparent;
     overflow: hidden;
   }
@@ -160,6 +142,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-2026-md, 14px);
+    box-shadow: var(--shadow-2026-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
+    overflow: hidden;
   }
 
   /* Camera panel always takes priority space */

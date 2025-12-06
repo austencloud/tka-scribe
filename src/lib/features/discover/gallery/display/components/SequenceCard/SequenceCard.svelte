@@ -12,7 +12,7 @@ All actions (favorite, edit, animate, delete) are in the detail panel.
 Enhanced with Svelte 5 runes for reactive state management.
 -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceCardMedia from "./SequenceCardMedia.svelte";
   import SequenceCardFooter from "./SequenceCardFooter.svelte";
 
@@ -193,7 +193,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     /* Subtle scale instead of lift - more modern, less aggressive */
     transform: scale(1.02);
     /* Slightly enhanced shadow - much more subtle */
-    box-shadow: 0 14px 48px rgba(0, 0, 0, 0.38);
+    box-shadow: 0 14px 50px rgba(0, 0, 0, 0.38);
     border-color: rgba(255, 255, 255, 0.12);
   }
 

@@ -43,7 +43,7 @@
   }
 
   .grade-letter {
-    font-size: 48px;
+    font-size: 50px;
     font-weight: 700;
   }
 

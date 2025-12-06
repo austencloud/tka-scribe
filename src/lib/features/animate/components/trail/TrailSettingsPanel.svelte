@@ -534,8 +534,8 @@
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    min-width: 48px; /* Maintain touch target */
-    min-height: 48px;
+    min-width: 52px; /* Maintain touch target */
+    min-height: 52px;
   }
 
   .mode-btn i {
@@ -545,8 +545,8 @@
   /* Compact mode buttons - proper touch targets */
   .compact .mode-btn {
     padding: clamp(10px, 2vw, 12px);
-    min-width: clamp(48px, 8.8vw, 52px); /* Better touch target */
-    min-height: clamp(48px, 8.8vw, 52px);
+    min-width: clamp(52px, 8.8vw, 52px); /* Better touch target */
+    min-height: clamp(52px, 8.8vw, 52px);
     font-size: clamp(9px, 1.8vw, 11px);
   }
 
@@ -605,7 +605,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 0.8vw, 6px);
-    min-height: clamp(48px, 8.8vw, 48px);
+    min-height: clamp(52px, 8.8vw, 52px);
     padding: clamp(8px, 1.6vw, 10px);
     background: rgba(0, 0, 0, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.15);
@@ -758,14 +758,14 @@
 
   /* ===========================
      ULTRA-COMPACT MODE (iPhone SE and small devices)
-     Fits all controls in ~350px without scrolling
-     Only applies to truly small devices (width ≤ 430px AND height ≤ 750px)
+     Fits all controls in ~352px without scrolling
+     Only applies to truly small devices (width ≤ 430px AND height ≤ 752px)
      =========================== */
 
   /* ===========================
      SMALL DEVICES ONLY (iPhone SE, small phones)
      =========================== */
-  @media (max-width: 430px) and (max-height: 750px) {
+  @media (max-width: 430px) and (max-height: 752px) {
     .ultra-compact {
       gap: 4px !important; /* Minimal gaps */
     }
@@ -785,8 +785,8 @@
     }
 
     .ultra-compact .mode-btn {
-      min-width: 48px !important; /* Maintain accessibility */
-      min-height: 48px !important;
+      min-width: 52px !important; /* Maintain accessibility */
+      min-height: 52px !important;
       padding: 6px !important;
       font-size: 9px !important;
       border-radius: 6px !important;
@@ -807,7 +807,7 @@
 
     .ultra-compact .mode-grid .mode-btn {
       flex: 1 1 0 !important;
-      min-width: 48px !important;
+      min-width: 52px !important;
     }
 
     /* SMART LAYOUT: Track buttons in single row of 3 */
@@ -823,7 +823,7 @@
 
     .ultra-compact .track-buttons .mode-btn {
       flex: 1 1 0 !important;
-      min-width: 48px !important;
+      min-width: 52px !important;
     }
 
     .ultra-compact .both-btn {
@@ -850,8 +850,8 @@
     }
 
     .ultra-compact .mode-btn {
-      min-width: 48px !important; /* Better touch targets */
-      min-height: 48px !important;
+      min-width: 52px !important; /* Better touch targets */
+      min-height: 52px !important;
       padding: 8px !important;
     }
 
@@ -866,7 +866,7 @@
 
     .ultra-compact .mode-grid .mode-btn {
       flex: 1 1 0 !important;
-      min-width: 48px !important;
+      min-width: 52px !important;
     }
 
     .ultra-compact .track-buttons {
@@ -881,7 +881,7 @@
 
     .ultra-compact .track-buttons .mode-btn {
       flex: 1 1 0 !important;
-      min-width: 48px !important;
+      min-width: 52px !important;
     }
 
     .ultra-compact .both-btn {
@@ -890,17 +890,17 @@
   }
 
   /* Stepper and Toggle styles - responsive sizing */
-  @media (max-width: 430px) and (max-height: 750px) {
+  @media (max-width: 430px) and (max-height: 752px) {
     /* Small devices: Ultra-compact steppers */
     .ultra-compact :global(.modern-stepper) {
-      min-height: 48px !important;
+      min-height: 52px !important;
       padding: 4px 6px !important;
       gap: 4px !important;
     }
 
     .ultra-compact :global(.modern-stepper .stepper-btn) {
-      width: 48px !important;
-      height: 48px !important;
+      width: 52px !important;
+      height: 52px !important;
       font-size: 12px !important;
     }
 
@@ -911,7 +911,7 @@
 
     /* Small devices: Ultra-compact toggles */
     .ultra-compact :global(.animate-control-toggle) {
-      min-height: 48px !important;
+      min-height: 52px !important;
       padding: 4px 6px !important;
       gap: 6px !important;
     }
@@ -944,14 +944,14 @@
   @media (min-width: 431px), (min-height: 751px) {
     /* Larger devices: Standard compact steppers with more space */
     .ultra-compact :global(.modern-stepper) {
-      min-height: 48px !important;
+      min-height: 52px !important;
       padding: 6px 8px !important;
       gap: 6px !important;
     }
 
     .ultra-compact :global(.modern-stepper .stepper-btn) {
-      width: 48px !important;
-      height: 48px !important;
+      width: 52px !important;
+      height: 52px !important;
       font-size: 14px !important;
     }
 
@@ -962,7 +962,7 @@
 
     /* Larger devices: Standard compact toggles */
     .ultra-compact :global(.animate-control-toggle) {
-      min-height: 48px !important;
+      min-height: 52px !important;
       padding: 6px 8px !important;
       gap: 8px !important;
     }

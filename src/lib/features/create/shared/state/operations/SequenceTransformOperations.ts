@@ -75,9 +75,7 @@ export function createSequenceTransformOperations(
     },
 
     async mirrorSequence() {
-      console.log("🔵 mirrorSequence called, currentSequence:", coreState.currentSequence);
       if (!coreState.currentSequence || !sequenceTransformationService) {
-        console.log("❌ mirrorSequence aborted - no sequence or service");
         return;
       }
 

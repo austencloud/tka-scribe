@@ -124,7 +124,7 @@
     font-size: 13px;
     line-height: 1.4;
     white-space: nowrap;
-    max-width: 250px;
+    max-width: 252px;
     white-space: normal;
     text-align: left;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -163,7 +163,7 @@
   }
 
   /* Container query: Switch to vertical layout on very narrow containers */
-  @container (max-width: 350px) {
+  @container (max-width: 352px) {
     .card-header {
       flex-direction: column;
       gap: clamp(6px, 1cqi, 10px);

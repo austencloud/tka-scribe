@@ -306,7 +306,7 @@ Shows both grids simultaneously for comparison
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .split-button:hover {

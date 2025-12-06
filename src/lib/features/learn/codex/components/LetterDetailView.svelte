@@ -155,8 +155,8 @@ Shows all pictographs for a selected letter with:
   }
 
   .back-button {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;

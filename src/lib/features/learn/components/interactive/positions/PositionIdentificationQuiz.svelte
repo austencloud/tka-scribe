@@ -3,9 +3,9 @@ PositionIdentificationQuiz - Quiz to identify Alpha, Beta, and Gamma positions
 Shows hand positions on grid, user identifies the type
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import PositionVisualizer from "./PositionVisualizer.svelte";
 
   let { onComplete } = $props<{
@@ -54,7 +54,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     ];
 
     // Create a mix of questions
-    const q: { left: HandPosition; right: HandPosition; type: PositionType }[] = [];
+    const q: { left: HandPosition; right: HandPosition; type: PositionType }[] =
+      [];
 
     // Add 3 of each type
     for (let i = 0; i < 3; i++) {
@@ -138,7 +139,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   const isComplete = $derived(currentQuestion >= questions.length);
 
   // Position type info
-  const positionInfo: Record<PositionType, { icon: string; label: string; color: string }> = {
+  const positionInfo: Record<
+    PositionType,
+    { icon: string; label: string; color: string }
+  > = {
     alpha: { icon: "fa-arrows-left-right", label: "Alpha", color: "#FF6B6B" },
     beta: { icon: "fa-circle-dot", label: "Beta", color: "#4ECDC4" },
     gamma: { icon: "fa-rotate-right", label: "Gamma", color: "#FFE66D" },
@@ -178,13 +182,14 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <!-- Answer buttons -->
       <div class="answer-buttons">
-        {#each (["alpha", "beta", "gamma"] as PositionType[]) as type}
+        {#each ["alpha", "beta", "gamma"] as PositionType[] as type}
           {@const info = positionInfo[type]}
           {@const isSelected = selectedAnswer === type}
           {@const isCorrectAnswer = question.type === type}
           {@const showCorrect = answerState === "correct" && isSelected}
           {@const showIncorrect = answerState === "incorrect" && isSelected}
-          {@const revealCorrect = answerState === "incorrect" && isCorrectAnswer}
+          {@const revealCorrect =
+            answerState === "incorrect" && isCorrectAnswer}
 
           <button
             class="answer-btn"
@@ -198,7 +203,9 @@ import { TYPES } from "$lib/shared/inversify/types";
             <i class="fa-solid {info.icon}"></i>
             <span>{info.label}</span>
             {#if answerState !== "idle" && isSelected}
-              <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
+              <span class="result-icon"
+                >{answerState === "correct" ? "✓" : "✗"}</span
+              >
             {:else if revealCorrect}
               <span class="result-icon correct">✓</span>
             {/if}
@@ -209,16 +216,27 @@ import { TYPES } from "$lib/shared/inversify/types";
       <!-- Feedback -->
       {#if answerState !== "idle"}
         {@const correctInfo = positionInfo[question.type]}
-        <div class="feedback" class:correct={answerState === "correct"} class:incorrect={answerState === "incorrect"}>
+        <div
+          class="feedback"
+          class:correct={answerState === "correct"}
+          class:incorrect={answerState === "incorrect"}
+        >
           {#if answerState === "correct"}
-            <span>Correct! That's <strong style="color: {correctInfo.color}">{correctInfo.label}</strong> position.</span>
+            <span
+              >Correct! That's <strong style="color: {correctInfo.color}"
+                >{correctInfo.label}</strong
+              > position.</span
+            >
           {:else}
-            <span>Not quite! That was <strong style="color: {correctInfo.color}">{correctInfo.label}</strong> position.</span>
+            <span
+              >Not quite! That was <strong style="color: {correctInfo.color}"
+                >{correctInfo.label}</strong
+              > position.</span
+            >
           {/if}
         </div>
       {/if}
     </div>
-
   {:else}
     <!-- Complete state -->
     <div class="quiz-section complete">
@@ -272,7 +290,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #22D3EE, #06B6D4);
+    background: linear-gradient(90deg, #22d3ee, #06b6d4);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -293,8 +311,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .quiz-title {
@@ -322,7 +346,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     gap: 0.75rem;
     width: 100%;
-    max-width: 450px;
+    max-width: 452px;
     flex-wrap: wrap;
     justify-content: center;
   }
@@ -369,9 +393,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes correctPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .answer-btn.incorrect {
@@ -381,9 +411,16 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
   }
 
   .result-icon {
@@ -392,7 +429,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     right: 0.5rem;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #FF4A4A;
+    color: #ff4a4a;
   }
 
   .result-icon.correct,
@@ -410,20 +447,26 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .feedback.correct {
     background: rgba(34, 211, 238, 0.15);
     border: 1px solid rgba(34, 211, 238, 0.3);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .feedback.incorrect {
     background: rgba(255, 158, 74, 0.15);
     border: 1px solid rgba(255, 158, 74, 0.3);
-    color: #FF9E4A;
+    color: #ff9e4a;
   }
 
   /* Complete section */
@@ -454,7 +497,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .score-value {
     font-size: 3rem;
     font-weight: 800;
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .score-separator {
@@ -478,7 +521,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     gap: 1rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .action-btn {
@@ -488,7 +531,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.25rem;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
@@ -508,13 +551,21 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), rgba(6, 182, 212, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3),
+      rgba(6, 182, 212, 0.3)
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(6, 182, 212, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4),
+      rgba(6, 182, 212, 0.4)
+    );
     border-color: rgba(34, 211, 238, 0.6);
     transform: translateY(-2px);
   }

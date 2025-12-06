@@ -46,14 +46,14 @@ export function createGridLayoutState(
 
     // Determine max columns based on layout mode
     // Side-by-side layout: ALWAYS 4 columns (ignores container width)
-    // Top-and-bottom layout: Width-based threshold (8 or 4 columns based on 650px breakpoint)
+    // Top-and-bottom layout: Width-based threshold (8 or 4 columns based on 652px breakpoint)
     let maxColumns: number;
     if (isSideBySideLayout()) {
       // Side-by-side layout: Always 4 columns regardless of width
       maxColumns = 4;
     } else {
       // Top-and-bottom layout: Use width-based threshold
-      // 650px threshold determines whether to use 8 or 4 columns
+      // 652px threshold determines whether to use 8 or 4 columns
       maxColumns = containerWidth >= 650 ? 8 : 4;
     }
 
@@ -73,7 +73,7 @@ export function createGridLayoutState(
   function calculateLayoutForBeats(beatCount: number): GridLayout {
     // Determine if we should use wide layout
     // Side-by-side layout: Always use narrow layout (ignore width)
-    // Top-and-bottom layout: Use width to determine narrow vs wide (650px threshold)
+    // Top-and-bottom layout: Use width to determine narrow vs wide (652px threshold)
     const useWideLayout = !isSideBySideLayout() && containerWidth >= 650;
 
     // Get the optimal layout from configuration

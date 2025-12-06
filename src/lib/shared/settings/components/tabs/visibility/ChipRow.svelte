@@ -41,46 +41,64 @@
 </button>
 
 <style>
+  /* Bento Box Glass Card Style */
   .chip {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2px;
-    padding: 10px 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 12px 8px;
+    /* Bento box frosted glass background */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.6);
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-    min-height: 48px; /* iOS touch target */
+    /* Smooth Bento box transition */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 54px; /* iOS touch target + Bento spacing */
     text-align: center;
+    /* Subtle inset glow */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .chip:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
     color: rgba(255, 255, 255, 0.9);
+    /* Subtle lift effect */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
   }
 
   .chip:active:not(:disabled) {
-    transform: scale(0.96);
+    transform: translateY(0) scale(0.98);
     transition-duration: 0.1s;
   }
 
-  /* Active (On) State - iOS System Green */
+  /* Active (On) State - Blue Accent (Bento box system) */
   .chip.active {
-    background: rgba(52, 199, 89, 0.15);
-    border-color: rgba(52, 199, 89, 0.5);
-    color: #34c759;
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 0 1px rgba(59, 130, 246, 0.2);
   }
 
   .chip.active:hover:not(:disabled) {
-    background: rgba(52, 199, 89, 0.2);
-    border-color: rgba(52, 199, 89, 0.6);
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 0 0 1px rgba(59, 130, 246, 0.3),
+      0 4px 12px rgba(59, 130, 246, 0.2);
   }
 
   /* Disabled State */
@@ -106,15 +124,15 @@
 
   /* Focus State */
   .chip:focus-visible {
-    outline: 2px solid rgba(52, 199, 89, 0.5);
+    outline: 2px solid rgba(59, 130, 246, 0.5);
     outline-offset: 2px;
   }
 
   /* Compact mode when container height is limited */
-  @container settings-content (max-height: 550px) {
+  @container settings-content (max-height: 552px) {
     .chip {
-      padding: 8px 6px;
-      min-height: 48px;
+      padding: 10px 6px;
+      min-height: 52px;
       border-radius: 10px;
     }
 
@@ -130,9 +148,9 @@
   /* Ultra-compact mode */
   @container settings-content (max-height: 480px) {
     .chip {
-      padding: 6px 4px;
-      min-height: 48px;
-      border-radius: 8px;
+      padding: 8px 4px;
+      min-height: 52px;
+      border-radius: 10px;
       gap: 1px;
     }
 
@@ -150,6 +168,10 @@
     .chip {
       transition: none;
     }
+
+    .chip:hover:not(:disabled) {
+      transform: none;
+    }
   }
 
   @media (prefers-contrast: high) {
@@ -158,7 +180,7 @@
     }
 
     .chip.active {
-      border-color: #34c759;
+      border-color: rgba(59, 130, 246, 0.8);
     }
   }
 </style>

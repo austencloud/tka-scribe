@@ -23,7 +23,10 @@
     layoutMode?: "compact" | "balanced" | "comfortable";
     showCloseButton?: boolean;
     onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
-    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
+    onRotationDirectionChanged?: (
+      color: string,
+      rotationDirection: string
+    ) => void;
     onEditTurnsRequested?: () => void;
     onCollapse?: () => void;
   }>();
@@ -337,8 +340,8 @@
 
   /* Placeholder keeps layout balanced when rotation buttons are hidden */
   .rotation-placeholder {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
   }
 
@@ -403,26 +406,26 @@
   }
 
   .turn-panel.compact .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 14px;
   }
 
   .turn-panel.balanced .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 16px;
   }
 
   .turn-panel.comfortable .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 18px;
   }
 
@@ -458,24 +461,24 @@
   }
 
   .turn-panel.compact .turn-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 16px;
     border-width: 2px;
   }
 
   .turn-panel.balanced .turn-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     font-size: 18px;
     border-width: 3px;
   }
 
   .turn-panel.comfortable .turn-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     font-size: 20px;
     border-width: 4px;
   }
@@ -519,8 +522,8 @@
   }
 
   .turn-panel.compact .turn-display {
-    min-width: 48px;
-    height: 48px;
+    min-width: 52px;
+    height: 52px;
     font-size: 24px;
     border-width: 2px;
     border-radius: 8px;
@@ -574,11 +577,11 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 16px;
-    /* Minimum 48px touch target for accessibility */
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    /* Minimum 52px touch target for accessibility */
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     flex-shrink: 0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }

@@ -184,7 +184,7 @@
     .sort-control select {
       padding: 12px 16px;
       font-size: 1rem;
-      min-height: 48px;
+      min-height: 52px;
       border-radius: 8px;
       flex: 1;
       margin-left: var(--spacing-sm);
@@ -197,8 +197,8 @@
 
     .view-button {
       padding: 12px 16px;
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
     }
 
     .view-button svg {
@@ -212,13 +212,13 @@
     .sort-control select {
       padding: 10px 14px;
       font-size: 0.9375rem;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .view-button {
       padding: 10px 12px;
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
     }
 
     .view-button svg {

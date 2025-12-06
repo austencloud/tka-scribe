@@ -5,7 +5,7 @@ Allows user to select between clockwise and counter-clockwise rotation
 for SHIFT motions in the completed hand paths.
 -->
 <script lang="ts">
-import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   const { onSelect } = $props<{
     onSelect: (rotation: RotationDirection) => void;
@@ -201,12 +201,12 @@ import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pi
     }
 
     .rotation-button {
-      min-height: 150px;
+      min-height: 152px;
       padding: 24px;
     }
 
     .rotation-button .icon {
-      font-size: 48px;
+      font-size: 52px;
     }
 
     .rotation-button .label {

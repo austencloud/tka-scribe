@@ -7,7 +7,7 @@
   Uses glassmorphism styling for modern appearance.
 -->
 <script lang="ts">
-  import TappableBpmControl from "./TappableBpmControl.svelte";
+  import BpmControl from "./BpmControl.svelte";
   import ExportButton from "./ExportButton.svelte";
   import PlayPauseButton from "./PlayPauseButton.svelte";
 
@@ -29,15 +29,8 @@
 </script>
 
 <div class="floating-control-bar">
-  <div class="bar-content">
-    <!-- BPM Control -->
-    <div class="control-section bpm-section">
-      <TappableBpmControl bind:bpm {onBpmChange} />
-    </div>
-
-    <!-- Divider -->
-    <div class="divider"></div>
-
+  <!-- Playback Row -->
+  <div class="bar-content playback-row">
     <!-- Play/Pause Button -->
     <div class="control-section play-section">
       <PlayPauseButton bind:isPlaying onToggle={onPlayToggle} />
@@ -56,10 +49,20 @@
       </div>
     {/if}
   </div>
+
+  <!-- BPM Control Row -->
+  <div class="bar-content bpm-row">
+    <div class="control-section bpm-section">
+      <BpmControl bind:bpm {onBpmChange} />
+    </div>
+  </div>
 </div>
 
 <style>
   .floating-control-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     background: rgba(20, 25, 35, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -75,6 +78,14 @@
     display: flex;
     align-items: center;
     gap: 12px;
+  }
+
+  .playback-row {
+    justify-content: center;
+  }
+
+  .bpm-row {
+    width: 100%;
   }
 
   .control-section {

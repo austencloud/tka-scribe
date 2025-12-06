@@ -171,7 +171,7 @@
   }
 
   .icon {
-    font-size: 48px;
+    font-size: 50px;
     line-height: 1;
   }
 

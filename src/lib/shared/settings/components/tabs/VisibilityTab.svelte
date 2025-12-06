@@ -1,83 +1,72 @@
 <!--
-  VisibilityTab.svelte - Pictograph Visibility Settings
+  VisibilityTab.svelte - Visibility Settings
 
-  Allows users to control which elements are visible in pictographs:
-  - Glyphs (TKA, VTG, Elemental, Positions, Reversals)
-  - Grid elements (Non-radial points)
+  Desktop: Side-by-side panels for Pictograph and Animation settings
+  Mobile: Segmented control to switch between modes
 
-  Features:
-  - Interactive preview pictograph
-  - Click-to-toggle on preview elements
-  - Toggle buttons for each element type
+  Uses PictographWithVisibility for interactive preview where clicking
+  elements toggles their visibility, and disabled elements show at 50% opacity.
+
+  Note: Blue/Red motion toggles removed - those are contextual controls
+  that belong in Sequence Viewers, Animation Player, and Export dialogs.
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-
   import { onMount } from "svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import {
-    GridLocation,
-    GridMode,
-  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import ElementVisibilityControls from "./visibility/ElementVisibilityControls.svelte";
-  import PreviewSection from "./visibility/PreviewSection.svelte";
-  import { createMotionData } from "../../../pictograph/shared/domain/models/MotionData";
-  import {
-    MotionType,
-    RotationDirection,
-    Orientation,
-    MotionColor,
-  } from "../../../pictograph/shared/domain/enums/pictograph-enums";
+  import { GridLocation, GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import PictographWithVisibility from "$lib/shared/pictograph/shared/components/PictographWithVisibility.svelte";
+  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+  import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   interface Props {
     currentSettings: unknown;
     onSettingUpdate: (event: { key: string; value: unknown }) => void;
   }
 
-  let {
-    currentSettings: _currentSettings,
-    onSettingUpdate: _onSettingUpdate,
-  }: Props = $props();
+  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
 
-  // Visibility state manager
+  // State managers
   const visibilityManager = getVisibilityStateManager();
+  const animationVisibilityManager = getAnimationVisibilityManager();
 
-  // Local reactive state for UI
-  let tkaVisible = $state(true);
-  let vtgVisible = $state(false);
-  let elementalVisible = $state(false);
-  let positionsVisible = $state(false);
-  let reversalsVisible = $state(true);
+  // Mobile mode selection (only used on small screens)
+  let mobileMode = $state<'pictograph' | 'animation'>('pictograph');
+  let isVisible = $state(false);
+
+  // Pictograph visibility
+  let tkaGlyphVisible = $state(true);
+  let vtgGlyphVisible = $state(false);
+  let elementalGlyphVisible = $state(false);
+  let positionsGlyphVisible = $state(false);
+  let reversalIndicatorsVisible = $state(true);
   let turnNumbersVisible = $state(true);
   let nonRadialVisible = $state(false);
-  let blueMotionVisible = $state(true);
-  let redMotionVisible = $state(true);
 
-  // Preview visibility toggle for small screens
-  let showPreview = $state(false);
+  // Animation visibility
+  let animGridVisible = $state(true);
+  let animBeatNumbersVisible = $state(true);
+  let animTrailsVisible = $state(true);
+  let animTkaGlyphVisible = $state(true);
+  let animReversalIndicatorsVisible = $state(false);
+  let animTurnNumbersVisible = $state(true);
 
-  // Haptic feedback service
   let hapticService: IHapticFeedbackService | null = null;
+  const triggerHaptic = () => hapticService?.trigger("selection");
 
-  const triggerHaptic = () => {
-    hapticService?.trigger("selection");
-  };
-
-  // Example pictograph data for preview - Letter A with turns and reversals
-  // Each motion has 1 turn, starting IN and ending OUT
-  // Both reversals enabled to demonstrate the reversal indicators
+  // Example pictograph data for preview
   const examplePictographData = {
     id: "visibility-preview",
     letter: Letter.A,
     startPosition: GridPosition.ALPHA1,
     endPosition: GridPosition.ALPHA3,
     gridMode: GridMode.DIAMOND,
-    blueReversal: true, // Show blue reversal indicator
-    redReversal: true, // Show red reversal indicator
+    blueReversal: true,
+    redReversal: true,
     motions: {
       blue: createMotionData({
         motionType: MotionType.PRO,
@@ -111,452 +100,568 @@
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
-    // Load initial state from visibility manager
-    tkaVisible = visibilityManager.getRawGlyphVisibility("TKA");
-    vtgVisible = visibilityManager.getRawGlyphVisibility("VTG");
-    elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
-    positionsVisible = visibilityManager.getRawGlyphVisibility("Positions");
-    reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
-    turnNumbersVisible = visibilityManager.getRawGlyphVisibility("TurnNumbers");
+    // Load pictograph visibility
+    tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
+    vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
+    elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
+    positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
+    reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+    turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
-    blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
-    redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
 
-    // Register observer for external changes
-    const observer = () => {
-      tkaVisible = visibilityManager.getRawGlyphVisibility("TKA");
-      vtgVisible = visibilityManager.getRawGlyphVisibility("VTG");
-      elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
-      positionsVisible = visibilityManager.getRawGlyphVisibility("Positions");
-      reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
-      turnNumbersVisible =
-        visibilityManager.getRawGlyphVisibility("TurnNumbers");
+    // Load animation visibility
+    animGridVisible = animationVisibilityManager.getVisibility("grid");
+    animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+    animTrailsVisible = animationVisibilityManager.getVisibility("trails");
+    animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
+    animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
+    animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+
+    const pictographObserver = () => {
+      tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
+      vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
+      elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
+      positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
+      reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+      turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
-      blueMotionVisible = visibilityManager.getMotionVisibility(
-        MotionColor.BLUE
-      );
-      redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 
-    visibilityManager.registerObserver(observer, ["all"]);
+    const animationObserver = () => {
+      animGridVisible = animationVisibilityManager.getVisibility("grid");
+      animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+      animTrailsVisible = animationVisibilityManager.getVisibility("trails");
+      animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
+      animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
+      animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+    };
+
+    visibilityManager.registerObserver(pictographObserver, ["all"]);
+    animationVisibilityManager.registerObserver(animationObserver);
+
+    // Entry animation
+    setTimeout(() => isVisible = true, 30);
 
     return () => {
-      visibilityManager.unregisterObserver(observer);
+      visibilityManager.unregisterObserver(pictographObserver);
+      animationVisibilityManager.unregisterObserver(animationObserver);
     };
   });
 
-  function toggleTKA() {
+  // Toggle functions - Pictograph
+  function togglePicto(key: string) {
     triggerHaptic();
-    tkaVisible = !tkaVisible;
-    visibilityManager.setGlyphVisibility("TKA", tkaVisible);
+    switch (key) {
+      case 'tka': tkaGlyphVisible = !tkaGlyphVisible; visibilityManager.setGlyphVisibility("tkaGlyph", tkaGlyphVisible); break;
+      case 'vtg': vtgGlyphVisible = !vtgGlyphVisible; visibilityManager.setGlyphVisibility("vtgGlyph", vtgGlyphVisible); break;
+      case 'elemental': elementalGlyphVisible = !elementalGlyphVisible; visibilityManager.setGlyphVisibility("elementalGlyph", elementalGlyphVisible); break;
+      case 'positions': positionsGlyphVisible = !positionsGlyphVisible; visibilityManager.setGlyphVisibility("positionsGlyph", positionsGlyphVisible); break;
+      case 'reversals': reversalIndicatorsVisible = !reversalIndicatorsVisible; visibilityManager.setGlyphVisibility("reversalIndicators", reversalIndicatorsVisible); break;
+      case 'turnNumbers': turnNumbersVisible = !turnNumbersVisible; visibilityManager.setGlyphVisibility("turnNumbers", turnNumbersVisible); break;
+      case 'nonRadial': nonRadialVisible = !nonRadialVisible; visibilityManager.setNonRadialVisibility(nonRadialVisible); break;
+    }
   }
 
-  function toggleVTG() {
+  // Toggle functions - Animation
+  function toggleAnim(key: string) {
     triggerHaptic();
-    vtgVisible = !vtgVisible;
-    visibilityManager.setGlyphVisibility("VTG", vtgVisible);
+    switch (key) {
+      case 'grid': animGridVisible = !animGridVisible; animationVisibilityManager.setVisibility("grid", animGridVisible); break;
+      case 'beatNumbers': animBeatNumbersVisible = !animBeatNumbersVisible; animationVisibilityManager.setVisibility("beatNumbers", animBeatNumbersVisible); break;
+      case 'trails': animTrailsVisible = !animTrailsVisible; animationVisibilityManager.setVisibility("trails", animTrailsVisible); break;
+      case 'tka': animTkaGlyphVisible = !animTkaGlyphVisible; animationVisibilityManager.setVisibility("tkaGlyph", animTkaGlyphVisible); break;
+      case 'reversals': animReversalIndicatorsVisible = !animReversalIndicatorsVisible; animationVisibilityManager.setVisibility("reversalIndicators", animReversalIndicatorsVisible); break;
+      case 'turnNumbers': animTurnNumbersVisible = !animTurnNumbersVisible; animationVisibilityManager.setVisibility("turnNumbers", animTurnNumbersVisible); break;
+    }
   }
 
-  function toggleElemental() {
+  function setMobileMode(mode: 'pictograph' | 'animation') {
     triggerHaptic();
-    elementalVisible = !elementalVisible;
-    visibilityManager.setGlyphVisibility("Elemental", elementalVisible);
-  }
-
-  function togglePositions() {
-    triggerHaptic();
-    positionsVisible = !positionsVisible;
-    visibilityManager.setGlyphVisibility("Positions", positionsVisible);
-  }
-
-  function toggleReversals() {
-    triggerHaptic();
-    reversalsVisible = !reversalsVisible;
-    visibilityManager.setGlyphVisibility("Reversals", reversalsVisible);
-  }
-
-  function toggleNonRadial() {
-    triggerHaptic();
-    nonRadialVisible = !nonRadialVisible;
-    visibilityManager.setNonRadialVisibility(nonRadialVisible);
-  }
-
-  function toggleTurnNumbers() {
-    triggerHaptic();
-    turnNumbersVisible = !turnNumbersVisible;
-    visibilityManager.setGlyphVisibility("TurnNumbers", turnNumbersVisible);
-  }
-
-  function toggleBlueMotion() {
-    triggerHaptic();
-    blueMotionVisible = !blueMotionVisible;
-    visibilityManager.setMotionVisibility(MotionColor.BLUE, blueMotionVisible);
-  }
-
-  function toggleRedMotion() {
-    triggerHaptic();
-    redMotionVisible = !redMotionVisible;
-    visibilityManager.setMotionVisibility(MotionColor.RED, redMotionVisible);
-  }
-
-  function togglePreviewVisibility() {
-    triggerHaptic();
-    showPreview = !showPreview;
+    mobileMode = mode;
   }
 </script>
 
-<div class="visibility-tab">
-  <!-- Compact Header -->
-  <div class="visibility-header">
-    <h3 class="title">Visibility Settings</h3>
-    <p class="description">Control which elements are visible in pictographs</p>
-
-    <!-- Preview Toggle Button (only visible on small containers) -->
+<div class="visibility-tab" class:visible={isVisible}>
+  <!-- Mobile: Segmented Control (hidden on desktop) -->
+  <div class="mobile-segment-control">
     <button
-      class="preview-toggle-btn"
-      onclick={togglePreviewVisibility}
-      aria-expanded={showPreview}
-      aria-controls="preview-section"
+      class="segment-btn"
+      class:active={mobileMode === 'pictograph'}
+      onclick={() => setMobileMode('pictograph')}
     >
-      <span class="toggle-icon" class:expanded={showPreview}>▼</span>
-      {showPreview ? "Hide" : "Show"} Preview
+      <i class="fas fa-image"></i>
+      <span>Pictograph</span>
+    </button>
+    <button
+      class="segment-btn"
+      class:active={mobileMode === 'animation'}
+      onclick={() => setMobileMode('animation')}
+    >
+      <i class="fas fa-film"></i>
+      <span>Animation</span>
     </button>
   </div>
 
-  <!-- Main Content Area -->
-  <div class="visibility-content">
-    <!-- Controls Section -->
-    <div class="controls-section" class:hidden-mobile={showPreview}>
-      <ElementVisibilityControls
-        {tkaVisible}
-        {vtgVisible}
-        {elementalVisible}
-        {positionsVisible}
-        {reversalsVisible}
-        {turnNumbersVisible}
-        {nonRadialVisible}
-        {blueMotionVisible}
-        {redMotionVisible}
-        onToggleTKA={toggleTKA}
-        onToggleVTG={toggleVTG}
-        onToggleElemental={toggleElemental}
-        onTogglePositions={togglePositions}
-        onToggleReversals={toggleReversals}
-        onToggleTurnNumbers={toggleTurnNumbers}
-        onToggleNonRadial={toggleNonRadial}
-        onToggleBlueMotion={toggleBlueMotion}
-        onToggleRedMotion={toggleRedMotion}
-      />
-    </div>
-
-    <!-- Right Side: Interactive Preview (only shown on small screens when toggled) -->
-    <div
-      id="preview-section"
-      class="preview-wrapper"
-      class:visible-mobile={showPreview}
+  <!-- Desktop: Side-by-side panels / Mobile: Single panel based on segment -->
+  <div class="panels-container">
+    <!-- Pictograph Panel -->
+    <section
+      class="settings-panel pictograph-panel"
+      class:mobile-hidden={mobileMode !== 'pictograph'}
     >
-      <PreviewSection
-        pictographData={examplePictographData}
-        onToggleTKA={toggleTKA}
-        onToggleVTG={toggleVTG}
-        onToggleElemental={toggleElemental}
-        onTogglePositions={togglePositions}
-        onToggleReversals={toggleReversals}
-        onToggleNonRadial={toggleNonRadial}
-      />
-    </div>
+      <header class="panel-header">
+        <span class="panel-icon pictograph-icon"><i class="fas fa-image"></i></span>
+        <h3 class="panel-title">Pictograph</h3>
+      </header>
+
+      <!-- Pictograph Preview - Interactive: click elements to toggle -->
+      <div class="preview-frame">
+        <PictographWithVisibility
+          pictographData={examplePictographData}
+          forceShowAll={true}
+          previewMode={true}
+          onToggleTKA={() => togglePicto('tka')}
+          onToggleVTG={() => togglePicto('vtg')}
+          onToggleElemental={() => togglePicto('elemental')}
+          onTogglePositions={() => togglePicto('positions')}
+          onToggleReversals={() => togglePicto('reversals')}
+          onToggleNonRadial={() => togglePicto('nonRadial')}
+        />
+      </div>
+
+      <div class="panel-controls">
+        <div class="control-group">
+          <span class="group-label">Glyphs</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={tkaGlyphVisible} onclick={() => togglePicto('tka')}>TKA</button>
+            <button class="toggle-btn" class:active={vtgGlyphVisible} onclick={() => togglePicto('vtg')}>VTG</button>
+            <button class="toggle-btn" class:active={elementalGlyphVisible} onclick={() => togglePicto('elemental')}>Elemental</button>
+            <button class="toggle-btn" class:active={positionsGlyphVisible} onclick={() => togglePicto('positions')}>Positions</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="group-label">Details</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={reversalIndicatorsVisible} onclick={() => togglePicto('reversals')}>Reversals</button>
+            <button class="toggle-btn" class:active={turnNumbersVisible} onclick={() => togglePicto('turnNumbers')}>Turn #s</button>
+            <button class="toggle-btn" class:active={nonRadialVisible} onclick={() => togglePicto('nonRadial')}>Non-Radial</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Animation Panel -->
+    <section
+      class="settings-panel animation-panel"
+      class:mobile-hidden={mobileMode !== 'animation'}
+    >
+      <header class="panel-header">
+        <span class="panel-icon animation-icon"><i class="fas fa-film"></i></span>
+        <h3 class="panel-title">Animation</h3>
+      </header>
+
+      <!-- Animation Preview -->
+      <div class="preview-frame animation-preview">
+        <div class="animation-placeholder">
+          <i class="fas fa-play-circle"></i>
+          <span>Animation Preview</span>
+        </div>
+      </div>
+
+      <div class="panel-controls">
+        <div class="control-group">
+          <span class="group-label">Canvas</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={animGridVisible} onclick={() => toggleAnim('grid')}>Grid</button>
+            <button class="toggle-btn" class:active={animBeatNumbersVisible} onclick={() => toggleAnim('beatNumbers')}>Beat #s</button>
+            <button class="toggle-btn" class:active={animTrailsVisible} onclick={() => toggleAnim('trails')}>Trails</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="group-label">Overlays</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={animTkaGlyphVisible} onclick={() => toggleAnim('tka')}>TKA Glyph</button>
+            <button class="toggle-btn" class:active={animReversalIndicatorsVisible} onclick={() => toggleAnim('reversals')}>Reversals</button>
+            <button class="toggle-btn" class:active={animTurnNumbersVisible} onclick={() => toggleAnim('turnNumbers')}>Turn #s</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
 <style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CONTAINER-QUERY BASED FLUID LAYOUT
+     Centers content vertically & horizontally for intentional appearance
+     ═══════════════════════════════════════════════════════════════════════════ */
   .visibility-tab {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    min-height: 0; /* Critical for flex containment */
-    padding: 8px 12px;
-    container-type: inline-size;
+    /* Establish as container for queries */
+    container-type: size;
     container-name: visibility-tab;
-    overflow: visible;
-  }
 
-  /* Compact layout when parent container height is limited */
-  @container visibility-tab (max-height: 550px) {
-    .visibility-tab {
-      gap: 8px;
-      padding: 4px 8px;
-    }
-  }
-
-  /* Header - Compact */
-  .visibility-header {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    /* Fluid padding */
+    padding: clamp(12px, 3cqi, 24px);
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .visibility-tab.visible {
+    opacity: 1;
+  }
+
+  /* ========================================
+     MOBILE SEGMENTED CONTROL
+     ======================================== */
+  .mobile-segment-control {
+    display: flex;
     flex-shrink: 0;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(20, 22, 35, 0.8);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: clamp(8px, 2cqh, 16px);
   }
 
-  .title {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.45px;
-    line-height: 1.2;
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
-  }
-
-  .description {
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: -0.08px;
-    line-height: 1.3;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-
-  @container visibility-tab (max-height: 550px) {
-    .title {
-      font-size: 16px;
-    }
-    .description {
-      font-size: 12px;
-    }
-  }
-
-  /* Main Content Area - Default: Vertical Stack */
-  .visibility-content {
-    display: flex;
-    flex-direction: column;
+  .segment-btn {
     flex: 1;
-    min-height: 0; /* Critical for flex containment */
-    overflow: hidden; /* Contain children */
-    background: rgba(255, 255, 255, 0.04);
-    border: 0.5px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    padding: 12px;
-    gap: 12px;
-  }
-
-  @container visibility-tab (max-height: 550px) {
-    .visibility-content {
-      padding: 8px;
-      border-radius: 10px;
-      gap: 8px;
-    }
-  }
-
-  /* Controls Section */
-  .controls-section {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0; /* Don't shrink controls in vertical mode */
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .controls-section.hidden-mobile {
-    display: none;
-  }
-
-  /* Preview Toggle Button - shown in vertical layout by default */
-  .preview-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 100%;
-    max-width: 280px;
-    margin: 4px auto 0;
-    padding: 10px 16px;
-    background: #007aff;
-    color: white;
+    min-height: 44px;
+    padding: 10px 14px;
+    background: transparent;
     border: none;
     border-radius: 10px;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
-    transition: all 0.2s ease;
-    min-height: 48px;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  @container visibility-tab (max-height: 550px) {
-    .preview-toggle-btn {
-      padding: 8px 12px;
-      min-height: 48px;
-      font-size: 13px;
+  .segment-btn i {
+    font-size: 15px;
+  }
+
+  .segment-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .segment-btn.active {
+    background: rgba(99, 102, 241, 0.3);
+    color: #e0e7ff;
+  }
+
+  /* Hide segment control on desktop (>=700px container width) */
+  @container visibility-tab (min-width: 700px) {
+    .mobile-segment-control {
+      display: none;
     }
   }
 
-  .preview-toggle-btn:hover {
-    background: #0051d5;
+  /* ========================================
+     PANELS CONTAINER - Centered, constrained width
+     ======================================== */
+  .panels-container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 2cqi, 20px);
+    width: 100%;
+    max-width: 400px; /* Single panel max width */
+    max-height: 100%;
   }
 
-  .preview-toggle-btn:active {
-    transform: scale(0.98);
+  /* Desktop: Side by side with wider constraint */
+  @container visibility-tab (min-width: 700px) {
+    .panels-container {
+      flex-direction: row;
+      max-width: 900px;
+      align-items: stretch;
+    }
   }
 
-  .preview-toggle-btn:focus-visible {
-    outline: 2px solid #007aff;
+  /* Mobile: Hide inactive panel */
+  .settings-panel.mobile-hidden {
+    display: none;
+  }
+
+  @container visibility-tab (min-width: 700px) {
+    .settings-panel.mobile-hidden {
+      display: flex;
+    }
+  }
+
+  /* ========================================
+     SETTINGS PANEL - Centered content
+     ======================================== */
+  .settings-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 1.5cqh, 16px);
+    padding: clamp(12px, 2cqi, 20px);
+    background: rgba(25, 28, 40, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ========================================
+     PANEL HEADER
+     ======================================== */
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+
+  .panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .panel-icon.pictograph-icon {
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+  }
+
+  .panel-icon.animation-icon {
+    background: rgba(236, 72, 153, 0.2);
+    color: #f472b6;
+  }
+
+  .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  /* ========================================
+     PREVIEW FRAME - Square, centered
+     ======================================== */
+  .preview-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    /* Square aspect ratio, scales with container */
+    width: min(100%, clamp(140px, 30cqh, 280px));
+    aspect-ratio: 1;
+    flex-shrink: 0;
+  }
+
+  /* Scale pictograph SVG to fill the preview */
+  .preview-frame :global(.pictograph-with-visibility),
+  .preview-frame :global(.pictograph) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .preview-frame :global(svg.pictograph) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Animation placeholder */
+  .animation-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .animation-placeholder i {
+    font-size: clamp(28px, 8cqh, 40px);
+    color: rgba(236, 72, 153, 0.5);
+  }
+
+  .animation-placeholder span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* ========================================
+     PANEL CONTROLS - Full width within panel
+     ======================================== */
+  .panel-controls {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.5cqh, 14px);
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  /* ========================================
+     TOGGLE GRID & BUTTONS
+     ======================================== */
+  .toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  /* 3 columns when panel is wide enough */
+  @container visibility-tab (min-width: 900px) {
+    .toggle-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 10px;
+    background: rgba(30, 32, 45, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .toggle-btn:hover {
+    background: rgba(45, 48, 65, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .toggle-btn:active {
+    transform: scale(0.97);
+    transition-duration: 50ms;
+  }
+
+  /* Active state - indigo accent */
+  .toggle-btn.active {
+    background: rgba(99, 102, 241, 0.35);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #e0e7ff;
+  }
+
+  .toggle-btn.active:hover {
+    background: rgba(99, 102, 241, 0.45);
+    border-color: rgba(99, 102, 241, 0.6);
+    color: #fff;
+  }
+
+  /* Animation panel uses pink accent */
+  .animation-panel .toggle-btn.active {
+    background: rgba(236, 72, 153, 0.3);
+    border-color: rgba(236, 72, 153, 0.5);
+    color: #fbcfe8;
+  }
+
+  .animation-panel .toggle-btn.active:hover {
+    background: rgba(236, 72, 153, 0.4);
+    border-color: rgba(236, 72, 153, 0.6);
+    color: #fff;
+  }
+
+  /* ========================================
+     SCROLLBAR
+     ======================================== */
+  .visibility-tab::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .visibility-tab::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .visibility-tab::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+  }
+
+  /* ========================================
+     FOCUS STATES
+     ======================================== */
+  .toggle-btn:focus-visible,
+  .segment-btn:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.6);
     outline-offset: 2px;
   }
 
-  .toggle-icon {
-    display: inline-block;
-    transition: transform 0.2s ease;
-    font-size: 0.75em;
-  }
-
-  .toggle-icon.expanded {
-    transform: rotate(180deg);
-  }
-
-  /* Preview Wrapper - hidden by default in vertical mode */
-  .preview-wrapper {
-    display: none;
-    flex: 1;
-    min-height: 0;
-  }
-
-  .preview-wrapper.visible-mobile {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* ===== CONTENT-AWARE LAYOUT USING CONTAINER QUERIES ===== */
-
-  /* 
-   * Side-by-side layout when:
-   * - Container is wide enough (min-width: 500px) AND
-   * - Container has enough height to show both sections comfortably (min-height: 350px)
-   * 
-   * This ensures the preview has enough vertical space to be useful
-   */
-  @container visibility-tab (min-width: 500px) and (min-height: 350px) {
-    .visibility-content {
-      display: grid;
-      grid-template-columns: minmax(180px, 1fr) minmax(200px, 1.5fr);
-      gap: 16px;
-    }
-
-    .preview-toggle-btn {
-      display: none;
-    }
-
-    .controls-section,
-    .controls-section.hidden-mobile {
-      display: flex;
-      flex: 1;
-    }
-
-    .preview-wrapper,
-    .preview-wrapper.visible-mobile {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-  }
-
-  /* 
-   * Wide but short container: Stack vertically with preview below
-   * This handles wide-but-short scenarios (like landscape mobile)
-   */
-  @container visibility-tab (min-width: 500px) and (max-height: 349px) {
-    .visibility-content {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .controls-section {
-      flex-shrink: 0;
-    }
-
-    /* In short+wide mode, show preview below controls (no toggle needed) */
-    .preview-toggle-btn {
-      display: none;
-    }
-
-    .preview-wrapper,
-    .preview-wrapper.visible-mobile {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 150px;
-    }
-
-    .controls-section.hidden-mobile {
-      display: flex;
-    }
-  }
-
-  /* 
-   * Narrow container (< 500px): Always stack vertically with toggle
-   * This handles narrow sidebars, mobile portrait, etc.
-   */
-  @container visibility-tab (max-width: 499px) {
-    .visibility-content {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .preview-toggle-btn {
-      display: flex;
-    }
-
-    .controls-section.hidden-mobile {
-      display: none;
-    }
-
-    .preview-wrapper {
-      display: none;
-    }
-
-    .preview-wrapper.visible-mobile {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-  }
-
-  /* 
-   * Extra-wide container: Better proportions for large screens
-   */
-  @container visibility-tab (min-width: 700px) and (min-height: 400px) {
-    .visibility-content {
-      grid-template-columns: minmax(220px, 1fr) minmax(280px, 2fr);
-      gap: 20px;
-    }
-  }
-
-  /* 
-   * Very wide container: Cap proportions to keep controls readable
-   */
-  @container visibility-tab (min-width: 900px) and (min-height: 450px) {
-    .visibility-content {
-      grid-template-columns: minmax(250px, 350px) minmax(350px, 1fr);
-      gap: 24px;
-    }
-  }
-
-  /* Accessibility */
+  /* ========================================
+     REDUCED MOTION
+     ======================================== */
   @media (prefers-reduced-motion: reduce) {
-    .preview-toggle-btn,
-    .toggle-icon {
+    .visibility-tab,
+    .toggle-btn,
+    .segment-btn {
       transition: none;
     }
   }
 
+  /* ========================================
+     HIGH CONTRAST
+     ======================================== */
   @media (prefers-contrast: high) {
-    .visibility-content {
+    .toggle-btn,
+    .segment-btn,
+    .settings-panel {
       border-width: 2px;
+    }
+
+    .toggle-btn.active {
+      border-color: #6366f1;
     }
   }
 </style>

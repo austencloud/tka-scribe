@@ -35,7 +35,8 @@ export class PixiApplicationManager {
       await this.app.init({
         width: size,
         height: size,
-        backgroundColor: 0xffffff,
+        // Use transparent black when alpha is 0, white otherwise
+        backgroundColor: backgroundAlpha === 0 ? 0x000000 : 0xffffff,
         backgroundAlpha, // Support transparent canvas for overlay rendering
         antialias: true,
         resolution: window.devicePixelRatio || 1,

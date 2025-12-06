@@ -155,7 +155,11 @@
       {#if cell.type === "single"}
         <section class="inspector-section">
           <span class="section-label" id="rotation-label">Rotation</span>
-          <div class="rotation-grid" role="group" aria-labelledby="rotation-label">
+          <div
+            class="rotation-grid"
+            role="group"
+            aria-labelledby="rotation-label"
+          >
             {#each rotationOptions as rotation}
               <button
                 class="rotation-btn"
@@ -288,7 +292,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(36px, 14cqi, 48px);
+    min-height: clamp(36px, 14cqi, 52px);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: clamp(4px, 2cqi, 8px);
@@ -357,7 +361,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 2cqi, 8px);
-    min-height: clamp(36px, 14cqi, 48px);
+    min-height: clamp(36px, 14cqi, 52px);
     padding: clamp(6px, 2.5cqi, 12px);
     background: rgba(16, 185, 129, 0.15);
     border: 1px dashed rgba(16, 185, 129, 0.4);

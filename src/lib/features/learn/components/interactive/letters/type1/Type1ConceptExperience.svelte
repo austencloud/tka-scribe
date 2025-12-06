@@ -948,8 +948,8 @@ Page 5: Quiz
   }
 
   .nav-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -995,8 +995,8 @@ Page 5: Quiz
   }
 
   .letter-chip {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -4,7 +4,10 @@
    * Displays a daily challenge with progress bar and completion status.
    */
 
-  import type { DailyChallenge, UserChallengeProgress } from "$lib/shared/gamification/domain/models/achievement-models";
+  import type {
+    DailyChallenge,
+    UserChallengeProgress,
+  } from "$lib/shared/gamification/domain/models/achievement-models";
 
   interface Props {
     challenge: DailyChallenge;
@@ -56,10 +59,7 @@
     <div class="challenge-title">
       <h3>{challenge.title}</h3>
       {#if !compact}
-        <span
-          class="difficulty-badge"
-          style="--badge-color: {difficultyColor}"
-        >
+        <span class="difficulty-badge" style="--badge-color: {difficultyColor}">
           {challenge.difficulty}
         </span>
       {/if}
@@ -364,8 +364,8 @@
     }
 
     .challenge-icon {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 18px;
       border-radius: 12px;
     }

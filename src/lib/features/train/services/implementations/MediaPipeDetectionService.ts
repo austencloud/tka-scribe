@@ -28,6 +28,7 @@ import type { IHandStateAnalyzer } from "../contracts/IHandStateAnalyzer";
 import type { IHandTrackingStabilizer } from "../contracts/IHandTrackingStabilizer";
 import type { DetectedHandData } from "../contracts/IHandAssignmentService";
 import { QuadrantMapper } from "./QuadrantMapper";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 // How many frames to persist a hand after it disappears (for stability)
 const HAND_PERSISTENCE_FRAMES = 5;
@@ -47,6 +48,13 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
   private _animationFrameId: number | null = null;
   private _videoElement: HTMLVideoElement | null = null;
   private _isMirrored = true;
+  private _gridMode: GridMode | undefined = undefined;
+
+  // Performance monitoring
+  private _frameCount = 0;
+  private _lastFpsUpdate = 0;
+  private _detectionTimes: number[] = [];
+  private _currentFps = 0;
 
   // Persistence tracking
   private _lastBluePosition: DetectedPosition | null = null;
@@ -102,6 +110,7 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     this._videoElement = video;
     this._frameCallback = onFrame;
     this._isMirrored = options?.mirrored ?? true;
+    this._gridMode = options?.gridMode;
     this._isDetecting = true;
 
     this._processVideoFrame();
@@ -112,11 +121,32 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
       return;
     }
 
-    if (this._videoElement.readyState >= 2) {
-      const timestamp = performance.now();
-      const result = this._landmarker.detectForVideo(this._videoElement, timestamp);
-      const frame = this._processResult(result, timestamp);
-      this._frameCallback(frame);
+    if (this._videoElement.readyState < 2) {
+      this._animationFrameId = requestAnimationFrame(() => this._processVideoFrame());
+      return;
+    }
+
+    const now = performance.now();
+    const frameStart = now;
+
+    // Detection
+    const result = this._landmarker.detectForVideo(this._videoElement, now);
+    const frame = this._processResult(result, now);
+    this._frameCallback(frame);
+
+    // Track performance
+    const totalTime = performance.now() - frameStart;
+    this._detectionTimes.push(totalTime);
+    if (this._detectionTimes.length > 60) {
+      this._detectionTimes.shift();
+    }
+
+    // Update FPS counter
+    this._frameCount++;
+    if (now - this._lastFpsUpdate >= 1000) {
+      this._currentFps = this._frameCount;
+      this._frameCount = 0;
+      this._lastFpsUpdate = now;
     }
 
     this._animationFrameId = requestAnimationFrame(() => this._processVideoFrame());
@@ -148,19 +178,27 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
         const palmCenter = this._stateAnalyzer.calculatePalmCenter(landmarks, handState);
         const referencePoint = this._stateAnalyzer.getReferencePoint(landmarks, handState);
 
-        // Create debug landmarks (apply mirroring for display)
+        // Transform debug landmarks from full video space to crop space
+        const wristTransformed = this._transformCropCoordinates(wrist.x, wrist.y);
+        const fingerTransformed = this._transformCropCoordinates(
+          referencePoint?.x ?? wrist.x,
+          referencePoint?.y ?? wrist.y
+        );
+        const palmTransformed = this._transformCropCoordinates(palmCenter.x, palmCenter.y);
+
+        // Create debug landmarks (apply mirroring AFTER crop transformation)
         const debugLandmarks = {
           wrist: {
-            x: this._isMirrored ? 1 - wrist.x : wrist.x,
-            y: wrist.y,
+            x: this._isMirrored ? 1 - wristTransformed.x : wristTransformed.x,
+            y: wristTransformed.y,
           },
           middleFingerTip: {
-            x: this._isMirrored ? 1 - (referencePoint?.x ?? wrist.x) : (referencePoint?.x ?? wrist.x),
-            y: referencePoint?.y ?? wrist.y,
+            x: this._isMirrored ? 1 - fingerTransformed.x : fingerTransformed.x,
+            y: fingerTransformed.y,
           },
           palmCenter: {
-            x: this._isMirrored ? 1 - palmCenter.x : palmCenter.x,
-            y: palmCenter.y,
+            x: this._isMirrored ? 1 - palmTransformed.x : palmTransformed.x,
+            y: palmTransformed.y,
           },
         };
 
@@ -188,12 +226,15 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
         // Create detected position
         const position = this._createDetectedPosition(palmCenter, timestamp, debugLandmarks, handState);
 
-        detectedHands.push({
-          position,
-          wristX: wrist.x,
-          isUserLeftHand,
-          confidence,
-        });
+        // Only add hand if position is valid for current grid mode
+        if (position) {
+          detectedHands.push({
+            position,
+            wristX: wrist.x,
+            isUserLeftHand,
+            confidence,
+          });
+        }
       }
 
       // Assign hands to blue/red slots
@@ -376,6 +417,66 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     return { blue, red };
   }
 
+  /**
+   * Transform coordinates from full video space to displayed crop space.
+   *
+   * When video uses object-fit: cover, the displayed area may be a crop of the full frame.
+   * MediaPipe returns coordinates normalized to the full video dimensions.
+   * We need to transform these to the visible crop region.
+   *
+   * For example, if video is 1920x1080 (16:9) displayed in a square container:
+   * - object-fit: cover crops the sides, showing center 1080x1080 pixels
+   * - Visible x range: (1920-1080)/2 / 1920 = 0.219 to 0.781
+   * - Transform: x_crop = (x - 0.219) / 0.562
+   */
+  private _transformCropCoordinates(x: number, y: number): { x: number; y: number } {
+    if (!this._videoElement) {
+      return { x, y };
+    }
+
+    const videoWidth = this._videoElement.videoWidth;
+    const videoHeight = this._videoElement.videoHeight;
+    const displayWidth = this._videoElement.clientWidth;
+    const displayHeight = this._videoElement.clientHeight;
+
+    if (!videoWidth || !videoHeight || !displayWidth || !displayHeight) {
+      return { x, y };
+    }
+
+    const videoAspect = videoWidth / videoHeight;
+    const displayAspect = displayWidth / displayHeight;
+
+    // object-fit: cover behavior
+    if (videoAspect > displayAspect) {
+      // Video is wider - crop sides
+      const visibleWidth = videoHeight * displayAspect;
+      const cropLeft = (videoWidth - visibleWidth) / 2;
+      const cropRight = cropLeft + visibleWidth;
+
+      // Transform x coordinate
+      const cropLeftNorm = cropLeft / videoWidth;
+      const cropRightNorm = cropRight / videoWidth;
+      const xTransformed = (x - cropLeftNorm) / (cropRightNorm - cropLeftNorm);
+
+      return { x: xTransformed, y };
+    } else if (videoAspect < displayAspect) {
+      // Video is taller - crop top/bottom
+      const visibleHeight = videoWidth / displayAspect;
+      const cropTop = (videoHeight - visibleHeight) / 2;
+      const cropBottom = cropTop + visibleHeight;
+
+      // Transform y coordinate
+      const cropTopNorm = cropTop / videoHeight;
+      const cropBottomNorm = cropBottom / videoHeight;
+      const yTransformed = (y - cropTopNorm) / (cropBottomNorm - cropTopNorm);
+
+      return { x, y: yTransformed };
+    }
+
+    // Same aspect ratio - no crop needed
+    return { x, y };
+  }
+
   private _createDetectedPosition(
     landmark: HandLandmark,
     timestamp: number,
@@ -385,17 +486,43 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
       palmCenter: { x: number; y: number };
     },
     handState?: "open" | "closed" | "partial"
-  ): DetectedPosition {
-    const x = this._isMirrored ? 1 - landmark.x : landmark.x;
-    const quadrant = this._quadrantMapper.mapToQuadrant(x, landmark.y);
+  ): DetectedPosition | null {
+    // Transform coordinates from full video space to visible crop space
+    const transformed = this._transformCropCoordinates(landmark.x, landmark.y);
+
+    // Apply mirroring AFTER crop transformation
+    const x = this._isMirrored ? 1 - transformed.x : transformed.x;
+    const y = transformed.y;
+
+    const quadrant = this._quadrantMapper.mapToQuadrant(x, y);
+
+    // Check if this quadrant is valid for the current grid mode
+    if (!this._quadrantMapper.isValidForMode(quadrant, this._gridMode)) {
+      // Position detected but not valid for current mode - reject it
+      return null;
+    }
 
     return {
       quadrant,
       confidence: 1.0,
-      rawPosition: { x, y: landmark.y },
+      rawPosition: { x, y },
       timestamp,
       debug: debugLandmarks,
       handState,
+    };
+  }
+
+  getPerformanceStats(): { fps: number; avgFrameTime: number; videoResolution: string } {
+    const avgTime = this._detectionTimes.length > 0
+      ? this._detectionTimes.reduce((a, b) => a + b, 0) / this._detectionTimes.length
+      : 0;
+    const resolution = this._videoElement
+      ? `${this._videoElement.videoWidth}x${this._videoElement.videoHeight}`
+      : 'N/A';
+    return {
+      fps: this._currentFps,
+      avgFrameTime: avgTime,
+      videoResolution: resolution
     };
   }
 
@@ -412,6 +539,11 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
 
     // Reset stabilizer
     this._stabilizer.resetAll();
+
+    // Reset performance tracking
+    this._frameCount = 0;
+    this._detectionTimes = [];
+    this._currentFps = 0;
 
     if (this._animationFrameId !== null) {
       cancelAnimationFrame(this._animationFrameId);

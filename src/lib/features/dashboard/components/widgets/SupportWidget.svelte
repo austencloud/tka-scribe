@@ -105,7 +105,9 @@
           <i class={option.icon}></i>
         {/if}
         <span>
-          {option.name === "Zelle" && copiedEmail ? "Email Copied!" : option.name}
+          {option.name === "Zelle" && copiedEmail
+            ? "Email Copied!"
+            : option.name}
         </span>
       </a>
     {/each}
@@ -138,7 +140,11 @@
     flex-direction: column;
     height: 100%;
     padding: 24px;
-    background: linear-gradient(145deg, rgba(236, 72, 153, 0.1) 0%, rgba(168, 85, 247, 0.08) 100%);
+    background: linear-gradient(
+      145deg,
+      rgba(236, 72, 153, 0.1) 0%,
+      rgba(168, 85, 247, 0.08) 100%
+    );
     border: 1px solid rgba(236, 72, 153, 0.15);
     border-radius: 24px;
   }
@@ -155,8 +161,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
     border-radius: 14px;
     color: white;
@@ -166,8 +172,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
   }
 
   .header-text h3 {
@@ -258,8 +269,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -303,7 +314,7 @@
     }
 
     .donate-btn {
-      min-height: 48px;
+      min-height: 52px;
       padding: 12px 16px;
       font-size: 0.9375rem;
     }

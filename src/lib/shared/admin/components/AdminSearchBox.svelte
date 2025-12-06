@@ -58,7 +58,7 @@
     border-radius: 10px;
     padding: 10px 12px;
     transition: all 0.2s;
-    min-height: 48px; /* Touch target */
+    min-height: 52px; /* Touch target */
     box-sizing: border-box;
   }
 
@@ -113,8 +113,8 @@
     flex-shrink: 0;
     transition: all 0.2s;
     border-radius: 6px;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   @media (hover: hover) {

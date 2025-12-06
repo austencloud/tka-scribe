@@ -1,5 +1,8 @@
 import { injectable } from "inversify";
 import type { IMobileFullscreenService } from "../contracts/IMobileFullscreenService";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("MobileFullscreenService");
 
 /**
  * Type definitions for vendor-prefixed fullscreen APIs
@@ -69,7 +72,7 @@ export class MobileFullscreenService implements IMobileFullscreenService {
       e.preventDefault();
       this.deferredPrompt = e as BeforeInstallPromptEvent;
       this.installCallbacks.forEach((callback) => callback(true));
-      console.log("📱 PWA install prompt available");
+      debug.log("PWA install prompt available");
     });
 
     // Listen for PWA install completion
@@ -236,7 +239,7 @@ export class MobileFullscreenService implements IMobileFullscreenService {
 
   private showPWAPrompt(): void {
     // This would show a custom UI prompt for PWA installation
-    console.log("💡 Showing PWA install prompt");
+    debug.log("Showing PWA install prompt");
     // Implementation would depend on your UI framework
   }
 

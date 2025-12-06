@@ -9,14 +9,17 @@
   import { createFeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
   import FeedbackForm from "../submit/FeedbackForm.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+  const debug = createComponentLogger("QuickFeedbackPanel");
 
   // Create form state when panel opens, reset when it closes
   let formState = $state(createFeedbackSubmitState());
 
   function handleClose() {
-    console.log("🔴 QuickFeedbackPanel handleClose called, current isOpen:", quickFeedbackState.isOpen);
+    debug.log("handleClose called, current isOpen:", quickFeedbackState.isOpen);
     quickFeedbackState.close();
-    console.log("🔴 After close(), isOpen:", quickFeedbackState.isOpen);
+    debug.log("After close(), isOpen:", quickFeedbackState.isOpen);
     // Reset form state for next time
     formState = createFeedbackSubmitState();
   }
@@ -193,15 +196,15 @@
     letter-spacing: -0.02em;
   }
 
-  /* Close button - 48px minimum touch target */
+  /* Close button - 52px minimum touch target */
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 48px;
-    min-height: 48px;
-    width: clamp(48px, 12cqi, 52px);
-    height: clamp(48px, 12cqi, 52px);
+    min-width: 52px;
+    min-height: 52px;
+    width: clamp(52px, 12cqi, 52px);
+    height: clamp(52px, 12cqi, 52px);
     background: var(--bg-subtle);
     border: 1px solid var(--border-subtle);
     border-radius: clamp(8px, 2cqi, 12px);

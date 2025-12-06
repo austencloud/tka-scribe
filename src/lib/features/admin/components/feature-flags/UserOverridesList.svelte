@@ -151,7 +151,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 24px;
+    padding: 52px 24px;
     gap: 12px;
     color: rgba(255, 255, 255, 0.5);
   }
@@ -161,8 +161,8 @@
   }
 
   .user-avatar {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;

@@ -1,6 +1,9 @@
 <!-- VersionCard - Clickable card showing a single version's summary -->
 <script lang="ts">
-  import type { AppVersion, ChangelogEntry } from "$lib/features/feedback/domain/models/version-models";
+  import type {
+    AppVersion,
+    ChangelogEntry,
+  } from "$lib/features/feedback/domain/models/version-models";
   import { PRE_RELEASE_VERSION } from "$lib/features/feedback/domain/models/version-models";
 
   const { version, onclick } = $props<{
@@ -9,14 +12,23 @@
   }>();
 
   // Check if we have curated changelog entries
-  const hasChangelog = $derived(version.changelogEntries && version.changelogEntries.length > 0);
+  const hasChangelog = $derived(
+    version.changelogEntries && version.changelogEntries.length > 0
+  );
 
   // Group changelog entries by category for summary
   const groupedChangelog = $derived.by(() => {
-    if (!version.changelogEntries) return { fixed: [], added: [], improved: [] };
-    const fixed = version.changelogEntries.filter((e: ChangelogEntry) => e.category === "fixed");
-    const added = version.changelogEntries.filter((e: ChangelogEntry) => e.category === "added");
-    const improved = version.changelogEntries.filter((e: ChangelogEntry) => e.category === "improved");
+    if (!version.changelogEntries)
+      return { fixed: [], added: [], improved: [] };
+    const fixed = version.changelogEntries.filter(
+      (e: ChangelogEntry) => e.category === "fixed"
+    );
+    const added = version.changelogEntries.filter(
+      (e: ChangelogEntry) => e.category === "added"
+    );
+    const improved = version.changelogEntries.filter(
+      (e: ChangelogEntry) => e.category === "improved"
+    );
     return { fixed, added, improved };
   });
 
@@ -37,26 +49,38 @@
     if (hasChangelog) {
       const parts: string[] = [];
       if (groupedChangelog.fixed.length > 0) {
-        parts.push(`${groupedChangelog.fixed.length} fix${groupedChangelog.fixed.length === 1 ? "" : "es"}`);
+        parts.push(
+          `${groupedChangelog.fixed.length} fix${groupedChangelog.fixed.length === 1 ? "" : "es"}`
+        );
       }
       if (groupedChangelog.added.length > 0) {
-        parts.push(`${groupedChangelog.added.length} new feature${groupedChangelog.added.length === 1 ? "" : "s"}`);
+        parts.push(
+          `${groupedChangelog.added.length} new feature${groupedChangelog.added.length === 1 ? "" : "s"}`
+        );
       }
       if (groupedChangelog.improved.length > 0) {
-        parts.push(`${groupedChangelog.improved.length} improvement${groupedChangelog.improved.length === 1 ? "" : "s"}`);
+        parts.push(
+          `${groupedChangelog.improved.length} improvement${groupedChangelog.improved.length === 1 ? "" : "s"}`
+        );
       }
       return parts.join(", ") || "Updates included";
     }
     // Fall back to feedback summary
     const parts: string[] = [];
     if (version.feedbackSummary.bugs > 0) {
-      parts.push(`${version.feedbackSummary.bugs} bug${version.feedbackSummary.bugs === 1 ? "" : "s"} fixed`);
+      parts.push(
+        `${version.feedbackSummary.bugs} bug${version.feedbackSummary.bugs === 1 ? "" : "s"} fixed`
+      );
     }
     if (version.feedbackSummary.features > 0) {
-      parts.push(`${version.feedbackSummary.features} feature${version.feedbackSummary.features === 1 ? "" : "s"} added`);
+      parts.push(
+        `${version.feedbackSummary.features} feature${version.feedbackSummary.features === 1 ? "" : "s"} added`
+      );
     }
     if (version.feedbackSummary.general > 0) {
-      parts.push(`${version.feedbackSummary.general} improvement${version.feedbackSummary.general === 1 ? "" : "s"}`);
+      parts.push(
+        `${version.feedbackSummary.general} improvement${version.feedbackSummary.general === 1 ? "" : "s"}`
+      );
     }
     return parts.join(", ") || "No changes recorded";
   });
@@ -69,7 +93,12 @@
   );
 </script>
 
-<button type="button" class="version-card" class:pre-release={isPreRelease} {onclick}>
+<button
+  type="button"
+  class="version-card"
+  class:pre-release={isPreRelease}
+  {onclick}
+>
   <div class="version-info">
     <span class="version-number">
       {#if isPreRelease}
@@ -84,7 +113,8 @@
   <div class="version-summary">
     <span class="summary-text">{summary}</span>
     <span class="total-count">
-      {totalChanges} {hasChangelog ? "change" : "resolved item"}{totalChanges === 1 ? "" : "s"}
+      {totalChanges}
+      {hasChangelog ? "change" : "resolved item"}{totalChanges === 1 ? "" : "s"}
     </span>
   </div>
 
@@ -168,7 +198,9 @@
     width: 28px;
     height: 28px;
     color: rgba(255, 255, 255, 0.3);
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
   }
 
   .version-card:hover .arrow-icon {

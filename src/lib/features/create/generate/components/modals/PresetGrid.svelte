@@ -102,7 +102,7 @@ Displays a list of presets in a scrollable grid layout
     }
 
     .empty-icon {
-      font-size: 48px;
+      font-size: 52px;
       margin-bottom: 12px;
     }
 

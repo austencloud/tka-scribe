@@ -2,7 +2,7 @@
   /**
    * Dashboard - 2026 Bento Box Design
    * Full-width grid layout with rich colored module cards
-   * Accessibility-first: 48px min touch targets, proper contrast
+   * Accessibility-first: 50px min touch targets, proper contrast
    */
 
   import { onMount } from "svelte";
@@ -79,12 +79,7 @@
   // Module cards with rich colors and access status
   const moduleCards = $derived(
     navigationState.moduleDefinitions
-      .filter(
-        (m) =>
-          m.isMain &&
-          m.id !== "dashboard" &&
-          m.id !== "admin"
-      )
+      .filter((m) => m.isMain && m.id !== "dashboard" && m.id !== "admin")
       .map((m) => {
         const canAccess = featureFlagService.canAccessModule(m.id);
         // Module is locked if user can't access AND they're not authenticated
@@ -115,11 +110,13 @@
     const userId = authStore.effectiveUserId;
     if (userId) {
       // Ensure library module is loaded before accessing libraryState
-      loadFeatureModule("library").then(() => {
-        libraryState.loadSequences();
-      }).catch((error) => {
-        console.error('[Dashboard] Failed to load library module:', error);
-      });
+      loadFeatureModule("library")
+        .then(() => {
+          libraryState.loadSequences();
+        })
+        .catch((error) => {
+          console.error("[Dashboard] Failed to load library module:", error);
+        });
     }
   });
 
@@ -127,7 +124,9 @@
     let cleanup: (() => void) | undefined;
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
       cleanup = deviceDetector.onCapabilitiesChanged(() => {
@@ -163,7 +162,12 @@
     }, 3000);
   }
 
-  function navigateToModule(moduleId: string, event: MouseEvent, isLocked: boolean = false, moduleLabel: string = "") {
+  function navigateToModule(
+    moduleId: string,
+    event: MouseEvent,
+    isLocked: boolean = false,
+    moduleLabel: string = ""
+  ) {
     hapticService?.trigger("selection");
 
     // If module is locked, show toast and redirect to settings
@@ -173,30 +177,36 @@
       return;
     }
 
-    const card = (event.currentTarget as HTMLElement);
+    const card = event.currentTarget as HTMLElement;
     const doc = document as any;
 
-    if (typeof doc.startViewTransition === 'function') {
+    if (typeof doc.startViewTransition === "function") {
       // Get card position for custom animation origin
       const rect = card.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
       // Set CSS custom properties for animation origin
-      document.documentElement.style.setProperty('--transition-origin-x', `${centerX}px`);
-      document.documentElement.style.setProperty('--transition-origin-y', `${centerY}px`);
+      document.documentElement.style.setProperty(
+        "--transition-origin-x",
+        `${centerX}px`
+      );
+      document.documentElement.style.setProperty(
+        "--transition-origin-y",
+        `${centerY}px`
+      );
 
       // Add a quick scale-up on the card for visual feedback
-      card.style.transform = 'scale(1.05)';
-      card.style.zIndex = '100';
+      card.style.transform = "scale(1.05)";
+      card.style.zIndex = "100";
 
       const transition = doc.startViewTransition(async () => {
         await handleModuleChange(moduleId as any);
       });
 
       transition.finished.finally(() => {
-        document.documentElement.style.removeProperty('--transition-origin-x');
-        document.documentElement.style.removeProperty('--transition-origin-y');
+        document.documentElement.style.removeProperty("--transition-origin-x");
+        document.documentElement.style.removeProperty("--transition-origin-y");
       });
     } else {
       handleModuleChange(moduleId as any);
@@ -227,7 +237,14 @@
 <div class="dashboard" class:visible={isVisible}>
   <!-- Welcome Header (compact) -->
   {#if isVisible}
-    <header class="welcome-header" transition:fly={{ y: -SLIDE.sm, duration: DURATION.normal, easing: cubicOut }}>
+    <header
+      class="welcome-header"
+      transition:fly={{
+        y: -SLIDE.sm,
+        duration: DURATION.normal,
+        easing: cubicOut,
+      }}
+    >
       <h1>{welcomeMessage()}</h1>
       <p>Where would you like to go?</p>
     </header>
@@ -235,15 +252,29 @@
 
   <!-- MODULE GRID - THE MAIN ATTRACTION -->
   {#if isVisible}
-    <section class="modules-section" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: STAGGER.normal, easing: cubicOut }}>
+    <section
+      class="modules-section"
+      transition:fly={{
+        y: SLIDE.md,
+        duration: DURATION.normal,
+        delay: STAGGER.normal,
+        easing: cubicOut,
+      }}
+    >
       <div class="modules-grid">
         {#each moduleCards as module, i (module.id)}
           <button
             class="module-card"
             class:locked={module.isLocked}
             style="--module-gradient: {module.gradient}; --module-color: {module.color}"
-            onclick={(e) => navigateToModule(module.id, e, module.isLocked, module.label)}
-            transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 100 + i * STAGGER.normal, easing: cubicOut }}
+            onclick={(e) =>
+              navigateToModule(module.id, e, module.isLocked, module.label)}
+            transition:fly={{
+              y: SLIDE.md,
+              duration: DURATION.normal,
+              delay: 100 + i * STAGGER.normal,
+              easing: cubicOut,
+            }}
           >
             {#if module.isLocked}
               <div class="lock-badge" aria-label="Sign in required">
@@ -267,7 +298,15 @@
   <div class="secondary-grid" class:mobile={isMobile}>
     <!-- Profile Card -->
     {#if isVisible}
-      <section class="bento-profile" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 250, easing: cubicOut }}>
+      <section
+        class="bento-profile"
+        transition:fly={{
+          y: SLIDE.md,
+          duration: DURATION.normal,
+          delay: 250,
+          easing: cubicOut,
+        }}
+      >
         <div class="profile-header">
           <div class="profile-avatar">
             {#if isAuthenticated && user?.photoURL}
@@ -285,7 +324,9 @@
           </div>
           <div class="profile-info">
             {#if isAuthenticated && user}
-              <span class="profile-name">{user.displayName || "Flow Artist"}</span>
+              <span class="profile-name"
+                >{user.displayName || "Flow Artist"}</span
+              >
               <span class="profile-email">{user.email}</span>
             {:else}
               <button class="guest-sign-in-cta" onclick={openSettings}>
@@ -318,7 +359,15 @@
 
     <!-- Challenge Card -->
     {#if isVisible}
-      <section class="bento-challenge" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 300, easing: cubicOut }}>
+      <section
+        class="bento-challenge"
+        transition:fly={{
+          y: SLIDE.md,
+          duration: DURATION.normal,
+          delay: 300,
+          easing: cubicOut,
+        }}
+      >
         {#if isMobile}
           <button class="teaser-card" onclick={openChallengeDrawer}>
             <div class="teaser-icon challenge">
@@ -338,7 +387,15 @@
 
     <!-- Support Card -->
     {#if isVisible}
-      <section class="bento-support" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 350, easing: cubicOut }}>
+      <section
+        class="bento-support"
+        transition:fly={{
+          y: SLIDE.md,
+          duration: DURATION.normal,
+          delay: 350,
+          easing: cubicOut,
+        }}
+      >
         {#if isMobile}
           <button class="teaser-card" onclick={openSupportDrawer}>
             <div class="teaser-icon support">
@@ -358,14 +415,30 @@
 
     <!-- Notification Center Card -->
     {#if isVisible && isAuthenticated}
-      <section class="bento-notifications" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 375, easing: cubicOut }}>
+      <section
+        class="bento-notifications"
+        transition:fly={{
+          y: SLIDE.md,
+          duration: DURATION.normal,
+          delay: 375,
+          easing: cubicOut,
+        }}
+      >
         <NotificationCenterWidget />
       </section>
     {/if}
 
     <!-- Settings Card -->
     {#if isVisible}
-      <section class="bento-settings" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 400, easing: cubicOut }}>
+      <section
+        class="bento-settings"
+        transition:fly={{
+          y: SLIDE.md,
+          duration: DURATION.normal,
+          delay: 400,
+          easing: cubicOut,
+        }}
+      >
         <button class="settings-card" onclick={openSettings}>
           <div class="settings-icon">
             <i class="fas fa-cog"></i>
@@ -410,7 +483,6 @@
   {/if}
 </div>
 
-
 <style>
   /* ========================================
      VIEW TRANSITIONS - Zoom from card effect
@@ -419,13 +491,15 @@
   /* Old page (dashboard) zooms out and fades */
   :global(::view-transition-old(root)) {
     animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-out-fade;
-    transform-origin: var(--transition-origin-x, 50%) var(--transition-origin-y, 50%);
+    transform-origin: var(--transition-origin-x, 50%)
+      var(--transition-origin-y, 50%);
   }
 
   /* New page (module) zooms in from card position */
   :global(::view-transition-new(root)) {
     animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-in-reveal;
-    transform-origin: var(--transition-origin-x, 50%) var(--transition-origin-y, 50%);
+    transform-origin: var(--transition-origin-x, 50%)
+      var(--transition-origin-y, 50%);
   }
 
   /* Dashboard zooms IN and fades (we're diving through it) */
@@ -592,8 +666,11 @@
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    transition: transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
-                box-shadow var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition:
+      transform var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      box-shadow var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     text-align: left;
     position: relative;
     overflow: hidden;
@@ -603,13 +680,18 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%
+    );
     pointer-events: none;
   }
 
   /* 2026 refined hover - subtle lift with scale */
   .module-card:hover {
-    transform: translateY(var(--hover-lift-md, -2px)) scale(var(--hover-scale-sm, 1.01));
+    transform: translateY(var(--hover-lift-md, -2px))
+      scale(var(--hover-scale-sm, 1.01));
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
   }
 
@@ -720,7 +802,8 @@
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: 14px;
     color: white;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     font-size: 15px;
     font-weight: 600;
     line-height: 20px;
@@ -843,7 +926,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 14px;
     background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     border: none;
@@ -852,8 +935,9 @@
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: filter var(--duration-fast, 150ms) var(--ease-out),
-                transform var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      filter var(--duration-fast, 150ms) var(--ease-out),
+      transform var(--duration-fast, 150ms) var(--ease-out);
     white-space: nowrap;
   }
 
@@ -898,8 +982,9 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out),
-                border-color var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      background var(--duration-fast, 150ms) var(--ease-out),
+      border-color var(--duration-fast, 150ms) var(--ease-out);
   }
 
   .stat-card:hover {
@@ -938,8 +1023,9 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: filter var(--duration-fast, 150ms) var(--ease-out),
-                transform var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      filter var(--duration-fast, 150ms) var(--ease-out),
+      transform var(--duration-fast, 150ms) var(--ease-out);
     margin-top: auto;
   }
 
@@ -992,8 +1078,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
     font-size: 20px;
     flex-shrink: 0;
@@ -1052,8 +1138,9 @@
     border: 1px solid rgba(107, 114, 128, 0.2);
     border-radius: 18px;
     cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out),
-                border-color var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      background var(--duration-fast, 150ms) var(--ease-out),
+      border-color var(--duration-fast, 150ms) var(--ease-out);
     text-align: left;
   }
 
@@ -1066,8 +1153,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(107, 114, 128, 0.2);
     border-radius: 14px;
     font-size: 20px;
@@ -1216,7 +1303,7 @@
     }
 
     .library-btn {
-      min-height: 48px;
+      min-height: 52px;
       padding: 12px 16px;
       font-size: 0.875rem;
     }

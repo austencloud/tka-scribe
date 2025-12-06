@@ -17,7 +17,9 @@ Modern, touch-friendly interface for selecting view presets
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handlePresetChange(preset: FilterPreset) {
@@ -134,8 +136,8 @@ Modern, touch-friendly interface for selecting view presets
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     font-size: 20px;

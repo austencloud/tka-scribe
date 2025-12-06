@@ -1,11 +1,8 @@
 <!--
   SimpleTrailControls.svelte
 
-  Dramatically simplified trail controls:
-  - On/Off toggle
-  - Preset selector (None, Subtle, Vivid)
-
-  That's it. No MODE, TRACK, FADE, WIDTH, OPACITY, Glow, Hide Props.
+  2026 Bento Box Design - Trail presets
+  - Off/Subtle/Vivid preset selector
 -->
 <script lang="ts">
   import {
@@ -81,20 +78,28 @@
 </div>
 
 <style>
+  /* ===========================
+     2026 BENTO BOX DESIGN
+     Trail Controls
+     =========================== */
+
   .trail-controls {
     display: flex;
     align-items: center;
-    gap: clamp(8px, 2cqi, 12px);
-    padding: clamp(8px, 2cqi, 12px);
+    gap: 10px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(8px, 2cqi, 12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .label {
-    font-size: clamp(11px, 3cqi, 13px);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -102,42 +107,70 @@
 
   .preset-buttons {
     display: flex;
-    gap: clamp(4px, 1cqi, 6px);
+    gap: 6px;
     flex: 1;
   }
 
   .preset-btn {
     flex: 1;
-    min-height: var(--touch-target-min);
-    padding: clamp(8px, 2cqi, 12px) clamp(12px, 3cqi, 16px);
-    background: rgba(255, 255, 255, 0.06);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: clamp(6px, 1.5cqi, 8px);
+    min-height: 40px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.6);
-    font-size: clamp(11px, 3cqi, 13px);
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .preset-btn:not(.active):hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.8);
+      transform: translateY(-1px);
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .preset-btn:active {
+    transform: scale(0.97);
   }
 
   .preset-btn.active {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.4) 0%,
-      rgba(37, 99, 235, 0.4) 100%
+      rgba(59, 130, 246, 0.25) 0%,
+      rgba(37, 99, 235, 0.2) 100%
     );
-    border-color: rgba(59, 130, 246, 0.7);
+    border-color: rgba(59, 130, 246, 0.5);
     color: rgba(191, 219, 254, 1);
-    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.3);
+    box-shadow:
+      0 2px 12px rgba(59, 130, 246, 0.2),
+      0 0 16px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .preset-btn:not(.active):hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.8);
-  }
+  /* ===========================
+     ACCESSIBILITY
+     =========================== */
 
-  .preset-btn:active {
-    transform: scale(0.97);
+  @media (prefers-reduced-motion: reduce) {
+    .preset-btn {
+      transition: none;
+    }
+
+    .preset-btn:hover,
+    .preset-btn:active {
+      transform: none;
+    }
   }
 </style>

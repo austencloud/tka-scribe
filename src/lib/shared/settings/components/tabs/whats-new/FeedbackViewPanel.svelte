@@ -148,11 +148,7 @@
         <h3>Submitted By</h3>
         <div class="submitter-info">
           {#if feedback.userPhotoURL}
-            <img
-              src={feedback.userPhotoURL}
-              alt=""
-              class="submitter-avatar"
-            />
+            <img src={feedback.userPhotoURL} alt="" class="submitter-avatar" />
           {:else}
             <div class="submitter-avatar-placeholder">
               <i class="fas fa-user"></i>
@@ -223,10 +219,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

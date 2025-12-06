@@ -18,7 +18,9 @@
   let interimText = $state(""); // Store live streaming text
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Derived: combine committed + interim for display
@@ -32,9 +34,7 @@
     if (isFinal) {
       // Commit final transcript to form state
       const currentText = formState.formData.description.trim();
-      const newText = currentText
-        ? `${currentText} ${transcript}`
-        : transcript;
+      const newText = currentText ? `${currentText} ${transcript}` : transcript;
       formState.updateField("description", newText);
       interimText = ""; // Clear interim
       hapticService?.trigger("selection");
@@ -59,7 +59,27 @@
 
   // Derived: current type configuration for dynamic theming
   const feedbackType = $derived(formState.formData.type);
-  const currentTypeConfig = $derived(feedbackType && feedbackType in TYPE_CONFIG ? TYPE_CONFIG[feedbackType as keyof typeof TYPE_CONFIG] : undefined);
+  const currentTypeConfig = $derived(
+    feedbackType && feedbackType in TYPE_CONFIG
+      ? TYPE_CONFIG[feedbackType as keyof typeof TYPE_CONFIG]
+      : undefined
+  );
+
+  // Encouragement messages by type
+  const ENCOURAGEMENT_CONFIG: Record<FeedbackType, string> = {
+    bug: "Include steps to reproduce, error messages, and screenshots for faster fixes.",
+
+    feature:
+      "Dream big! Describe exactly what you'd love to see in the app and how it would help you.",
+    general:
+      "Share your thoughts on the app experience - what's working, what's confusing, what could be smoother.",
+  };
+
+  const currentEncouragement = $derived(
+    feedbackType && feedbackType in ENCOURAGEMENT_CONFIG
+      ? ENCOURAGEMENT_CONFIG[feedbackType as keyof typeof ENCOURAGEMENT_CONFIG]
+      : ENCOURAGEMENT_CONFIG.general
+  );
 
   async function handleSubmit(event: SubmitEvent) {
     event.preventDefault();
@@ -91,7 +111,10 @@
       <i class="fas fa-check"></i>
     </div>
     <h2 class="success-title">Feedback Submitted!</h2>
-    <p class="success-message">Thank you for helping improve TKA Studio. Your feedback has been received and will be reviewed.</p>
+    <p class="success-message">
+      Thank you for helping improve TKA Studio. Your feedback has been received
+      and will be reviewed.
+    </p>
     <button type="button" class="success-action" onclick={handleReset}>
       <i class="fas fa-plus"></i>
       Submit Another
@@ -105,100 +128,115 @@
   >
     <!-- Type Selector - Segmented Control -->
     <fieldset class="type-selector">
-    <legend class="visually-hidden">Feedback Type</legend>
-    <div class="segment-control">
-      {#each Object.entries(TYPE_CONFIG) as [type, config]}
-        <button
-          type="button"
-          class="segment"
-          class:selected={formState.formData.type === type}
-          onclick={() => handleTypeChange(type as FeedbackType)}
-          style="--type-color: {config.color}"
-          aria-pressed={formState.formData.type === type}
-        >
-          <i class="fas {config.icon}"></i>
-          <span class="segment-label">{config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}</span>
-        </button>
-      {/each}
-    </div>
-  </fieldset>
+      <legend class="visually-hidden">Feedback Type</legend>
+      <div class="segment-control">
+        {#each Object.entries(TYPE_CONFIG) as [type, config]}
+          <button
+            type="button"
+            class="segment"
+            class:selected={formState.formData.type === type}
+            onclick={() => handleTypeChange(type as FeedbackType)}
+            style="--type-color: {config.color}"
+            aria-pressed={formState.formData.type === type}
+          >
+            <i class="fas {config.icon}"></i>
+            <span class="segment-label"
+              >{config.label
+                .replace(" Report", "")
+                .replace(" Request", "")
+                .replace(" Feedback", "")}</span
+            >
+          </button>
+        {/each}
+      </div>
+    </fieldset>
 
-  <!-- Description Field -->
-  <div class="field">
-    <div class="field-header">
-      <label for="fb-description" class="field-label">
-        {currentTypeConfig?.fieldLabel ?? "What's on your mind?"}
-      </label>
-      <VoiceInputButton
-        onTranscript={handleVoiceTranscript}
-        onInterimTranscript={handleInterimTranscript}
-        disabled={formState.isSubmitting}
-      />
+    <!-- Encouragement message -->
+    <div class="encouragement-hint">
+      <i class="fas fa-robot"></i>
+      <span>{currentEncouragement}</span>
     </div>
-    <textarea
-      id="fb-description"
-      class="field-textarea"
-      class:has-error={formState.formErrors.description}
-      class:streaming={interimText.length > 0}
-      value={displayText}
-      oninput={(e) => handleManualInput(e.currentTarget.value)}
-      onkeydown={handleKeydown}
-      placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."} (Shift+Enter to submit)`}
-      rows="5"
-    ></textarea>
-    <div class="field-hint">
-      <span class="char-count" class:met={formState.formData.description.trim().length >= 10}>
-        {#if formState.formData.description.trim().length < 10}
-          {10 - formState.formData.description.trim().length} more needed
+    <!-- Description Field -->
+    <div class="field">
+      <div class="textarea-wrapper">
+        <textarea
+          id="fb-description"
+          class="field-textarea"
+          class:has-error={formState.formErrors.description}
+          class:streaming={interimText.length > 0}
+          value={displayText}
+          oninput={(e) => handleManualInput(e.currentTarget.value)}
+          onkeydown={handleKeydown}
+          placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."} (Shift+Enter to submit)`}
+          rows="6"
+        ></textarea>
+        <div class="voice-input-wrapper">
+          <VoiceInputButton
+            onTranscript={handleVoiceTranscript}
+            onInterimTranscript={handleInterimTranscript}
+            disabled={formState.isSubmitting}
+          />
+        </div>
+      </div>
+      <div class="field-footer">
+        <div class="field-hint">
+          <span
+            class="char-count"
+            class:met={formState.formData.description.trim().length >= 10}
+          >
+            {#if formState.formData.description.trim().length < 10}
+              {10 - formState.formData.description.trim().length} more needed
+            {:else}
+              <i class="fas fa-check"></i>
+            {/if}
+          </span>
+          {#if formState.formErrors.description}
+            <span class="field-error" role="alert"
+              >{formState.formErrors.description}</span
+            >
+          {/if}
+        </div>
+        <div class="field-actions">
+          <ImageUpload
+            bind:images={formState.images}
+            disabled={formState.isSubmitting}
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-footer">
+      <button
+        type="submit"
+        class="submit-btn"
+        disabled={formState.isSubmitting || !formState.isFormValid}
+      >
+        {#if formState.isSubmitting}
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span>Submitting...</span>
         {:else}
-          <i class="fas fa-check"></i>
+          <i class="fas fa-paper-plane"></i>
+          <span>Submit Feedback</span>
         {/if}
-      </span>
-      {#if formState.formErrors.description}
-        <span class="field-error" role="alert">{formState.formErrors.description}</span>
-      {/if}
+      </button>
     </div>
-  </div>
 
-  <!-- Image Upload -->
-  <div class="field">
-    <label class="field-label">Screenshots (optional)</label>
-    <ImageUpload
-      bind:images={formState.images}
-      disabled={formState.isSubmitting}
-    />
-  </div>
-
-  <!-- Submit Button -->
-  <div class="form-footer">
-    <button
-      type="submit"
-      class="submit-btn"
-      disabled={formState.isSubmitting || !formState.isFormValid}
-    >
-      {#if formState.isSubmitting}
-        <i class="fas fa-circle-notch fa-spin"></i>
-        <span>Submitting...</span>
-      {:else}
-        <i class="fas fa-paper-plane"></i>
-        <span>Submit Feedback</span>
-      {/if}
-    </button>
-  </div>
-
-  <!-- Error State (shown inline in form) -->
-  {#if formState.submitStatus === "error"}
-    <div class="toast error" role="alert">
-      <div class="toast-icon">
-        <i class="fas fa-exclamation"></i>
+    <!-- Error State (shown inline in form) -->
+    {#if formState.submitStatus === "error"}
+      <div class="toast error" role="alert">
+        <div class="toast-icon">
+          <i class="fas fa-exclamation"></i>
+        </div>
+        <div class="toast-content">
+          <p class="toast-title">Submission failed</p>
+          <p class="toast-message">
+            Please check your connection and try again.
+          </p>
+        </div>
       </div>
-      <div class="toast-content">
-        <p class="toast-title">Submission failed</p>
-        <p class="toast-message">Please check your connection and try again.</p>
-      </div>
-    </div>
-  {/if}
-</form>
+    {/if}
+  </form>
 {/if}
 
 <style>
@@ -213,7 +251,11 @@
     /* Colors - Type-reactive */
     --fb-primary: var(--active-type-color, #3b82f6);
     --fb-error: #ef4444;
-    --fb-border: color-mix(in srgb, var(--active-type-color, #3b82f6) 25%, rgba(255, 255, 255, 0.1));
+    --fb-border: color-mix(
+      in srgb,
+      var(--active-type-color, #3b82f6) 25%,
+      rgba(255, 255, 255, 0.1)
+    );
     --fb-text: rgba(255, 255, 255, 0.95);
     --fb-text-muted: rgba(255, 255, 255, 0.7);
     --fb-text-subtle: rgba(255, 255, 255, 0.5);
@@ -229,8 +271,18 @@
     padding: clamp(12px, 3cqi, 24px);
     background: linear-gradient(
       145deg,
-      color-mix(in srgb, var(--active-type-color, #3b82f6) 6%, rgba(22, 22, 32, 0.95)) 0%,
-      color-mix(in srgb, var(--active-type-color, #3b82f6) 3%, rgba(18, 18, 28, 0.98)) 100%
+      color-mix(
+          in srgb,
+          var(--active-type-color, #3b82f6) 6%,
+          rgba(22, 22, 32, 0.95)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--active-type-color, #3b82f6) 3%,
+          rgba(18, 18, 28, 0.98)
+        )
+        100%
     );
     border: 1.5px solid var(--fb-border);
     border-radius: clamp(10px, 2cqi, 14px);
@@ -239,7 +291,11 @@
   }
 
   .feedback-form:hover {
-    border-color: color-mix(in srgb, var(--active-type-color) 45%, rgba(255, 255, 255, 0.12));
+    border-color: color-mix(
+      in srgb,
+      var(--active-type-color) 45%,
+      rgba(255, 255, 255, 0.12)
+    );
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -305,7 +361,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 20px;
     background: rgba(16, 185, 129, 0.15);
     border: 1px solid rgba(16, 185, 129, 0.3);
@@ -367,7 +423,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(6px, 1.5cqi, 10px) clamp(8px, 2cqi, 14px);
     background: transparent;
     border: 1.5px solid transparent;
@@ -382,7 +438,7 @@
   }
 
   .segment::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: linear-gradient(
@@ -442,10 +498,18 @@
     gap: clamp(4px, 1cqi, 8px);
   }
 
-  .field-header {
+  .field-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: clamp(8px, 2cqi, 12px);
+  }
+
+  .field-actions {
+    display: flex;
+    align-items: center;
     gap: 8px;
   }
 
@@ -461,46 +525,71 @@
     color: var(--fb-primary);
   }
 
-  .field-textarea {
-    width: 100%;
-    padding: clamp(8px, 2cqi, 12px) clamp(10px, 2.5cqi, 16px);
+  .textarea-wrapper {
+    position: relative;
     background: rgba(0, 0, 0, 0.2);
-    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 20%, rgba(255, 255, 255, 0.1));
+    border: 1.5px solid
+      color-mix(in srgb, var(--active-type-color) 20%, rgba(255, 255, 255, 0.1));
     border-radius: clamp(8px, 1.8cqi, 12px);
-    color: var(--fb-text);
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 200ms ease, background 200ms ease;
+    transition:
+      border-color 200ms ease,
+      background 200ms ease;
   }
 
-  .field-textarea::placeholder {
-    color: var(--fb-text-subtle);
+  .textarea-wrapper:hover {
+    border-color: color-mix(
+      in srgb,
+      var(--active-type-color) 45%,
+      rgba(255, 255, 255, 0.15)
+    );
   }
 
-  .field-textarea:hover {
-    border-color: color-mix(in srgb, var(--active-type-color) 45%, rgba(255, 255, 255, 0.15));
-  }
-
-  .field-textarea:focus {
-    outline: none;
+  .textarea-wrapper:focus-within {
     border-color: var(--fb-primary);
-    background: color-mix(in srgb, var(--active-type-color) 5%, rgba(0, 0, 0, 0.25));
+    background: color-mix(
+      in srgb,
+      var(--active-type-color) 5%,
+      rgba(0, 0, 0, 0.25)
+    );
   }
 
-  .field-textarea.has-error {
+  .textarea-wrapper:has(.field-textarea.has-error) {
     border-color: var(--fb-error);
   }
 
-  .field-textarea.streaming {
+  .textarea-wrapper:has(.field-textarea.streaming) {
     border-color: #8b5cf6;
     background: color-mix(in srgb, #8b5cf6 8%, rgba(0, 0, 0, 0.25));
     box-shadow: 0 0 0 2px color-mix(in srgb, #8b5cf6 15%, transparent);
   }
 
   .field-textarea {
+    width: 100%;
+    padding: clamp(8px, 2cqi, 12px) clamp(10px, 2.5cqi, 16px);
+    padding-right: clamp(52px, 10cqi, 60px); /* Make room for voice button */
+    background: transparent;
+    border: none;
+    color: var(--fb-text);
+    font-size: 1rem;
+    font-family: inherit;
     min-height: clamp(72px, 15cqi, 100px);
     resize: none;
     line-height: 1.5;
+  }
+
+  .field-textarea:focus {
+    outline: none;
+  }
+
+  .field-textarea::placeholder {
+    color: var(--fb-text-subtle);
+  }
+
+  .voice-input-wrapper {
+    position: absolute;
+    bottom: clamp(10px, 2.5cqi, 16px);
+    right: clamp(10px, 2.5cqi, 16px);
+    z-index: 1;
   }
 
   .field-hint {
@@ -534,6 +623,57 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
+     ENCOURAGEMENT HINT
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .encouragement-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(8px, 2cqi, 12px);
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 16px);
+    background: linear-gradient(
+      135deg,
+      color-mix(
+          in srgb,
+          var(--active-type-color, #3b82f6) 8%,
+          rgba(255, 255, 255, 0.03)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--active-type-color, #3b82f6) 4%,
+          rgba(255, 255, 255, 0.01)
+        )
+        100%
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--active-type-color, #3b82f6) 15%,
+        rgba(255, 255, 255, 0.06)
+      );
+    border-radius: clamp(8px, 1.8cqi, 10px);
+    margin-top: clamp(4px, 1cqi, 8px);
+  }
+
+  .encouragement-hint i {
+    flex-shrink: 0;
+    font-size: clamp(0.8rem, 2cqi, 0.9rem);
+    color: color-mix(
+      in srgb,
+      var(--active-type-color, #3b82f6) 70%,
+      rgba(255, 255, 255, 0.6)
+    );
+    margin-top: 2px;
+  }
+
+  .encouragement-hint span {
+    font-size: clamp(0.75rem, 2cqi, 0.8125rem);
+    font-style: italic;
+    color: var(--fb-text-subtle);
+    line-height: 1.5;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
      SUBMIT BUTTON - Fluid
      ═══════════════════════════════════════════════════════════════════════════ */
   .form-footer {
@@ -543,12 +683,24 @@
     margin-inline: calc(-1 * clamp(12px, 3cqi, 24px));
     padding-inline: clamp(12px, 3cqi, 24px);
     margin-bottom: calc(-1 * clamp(12px, 3cqi, 24px));
-    padding-bottom: calc(clamp(12px, 3cqi, 24px) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(
+      clamp(12px, 3cqi, 24px) + env(safe-area-inset-bottom, 0px)
+    );
     padding-top: clamp(10px, 2.5cqi, 14px);
     background: linear-gradient(
       to top,
-      color-mix(in srgb, var(--active-type-color, #3b82f6) 4%, rgba(18, 18, 28, 1)) 0%,
-      color-mix(in srgb, var(--active-type-color, #3b82f6) 4%, rgba(18, 18, 28, 1)) 70%,
+      color-mix(
+          in srgb,
+          var(--active-type-color, #3b82f6) 4%,
+          rgba(18, 18, 28, 1)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--active-type-color, #3b82f6) 4%,
+          rgba(18, 18, 28, 1)
+        )
+        70%,
       transparent 100%
     );
     display: flex;
@@ -560,7 +712,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(8px, 2cqi, 12px);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px) clamp(18px, 4cqi, 28px);
     background: linear-gradient(
       135deg,
@@ -576,12 +728,14 @@
     letter-spacing: 0.01em;
     cursor: pointer;
     transition: all 200ms ease;
-    box-shadow: 0 3px 12px color-mix(in srgb, var(--active-type-color) 30%, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 3px 12px
+      color-mix(in srgb, var(--active-type-color) 30%, rgba(0, 0, 0, 0.2));
   }
 
   .submit-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--active-type-color) 35%, rgba(0, 0, 0, 0.25));
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--active-type-color) 35%, rgba(0, 0, 0, 0.25));
   }
 
   .submit-btn:active:not(:disabled) {
@@ -632,7 +786,11 @@
   }
 
   .toast.error {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.15) 0%,
+      rgba(239, 68, 68, 0.08) 100%
+    );
     border: 1px solid rgba(239, 68, 68, 0.25);
   }
 

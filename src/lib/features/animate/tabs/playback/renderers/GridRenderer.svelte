@@ -61,7 +61,7 @@
 </script>
 
 <div class="grid-renderer">
-  <CanvasControls canvasId="grid" onOpenSettings={onOpenSettings} />
+  <CanvasControls canvasId="grid" {onOpenSettings} />
 
   <div class="grid-canvas">
     {#each gridPositions as pos}
@@ -100,7 +100,9 @@
               <i class="fas fa-person-walking"></i>
             </div>
             <div class="sequence-name">{sequence.word || "Untitled"}</div>
-            <div class="sequence-beats">{sequence.beats?.length ?? 0} beats</div>
+            <div class="sequence-beats">
+              {sequence.beats?.length ?? 0} beats
+            </div>
           </div>
 
           <button
@@ -217,13 +219,13 @@
   }
 
   .remove-btn::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   .grid-cell:hover .remove-btn {

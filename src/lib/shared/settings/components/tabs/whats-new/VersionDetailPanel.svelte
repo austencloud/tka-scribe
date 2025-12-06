@@ -1,7 +1,11 @@
 <!-- VersionDetailPanel - Shows full release details in a drawer -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { AppVersion, ChangelogCategory, ChangelogEntry } from "$lib/features/feedback/domain/models/version-models";
+  import type {
+    AppVersion,
+    ChangelogCategory,
+    ChangelogEntry,
+  } from "$lib/features/feedback/domain/models/version-models";
   import { PRE_RELEASE_VERSION } from "$lib/features/feedback/domain/models/version-models";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackViewPanel from "./FeedbackViewPanel.svelte";
@@ -50,7 +54,7 @@
 
     // Exit edit mode unless clicking within the edit container or its children
     // Check if the click is within an .edit-container
-    const isWithinEditContainer = target.closest('.edit-container');
+    const isWithinEditContainer = target.closest(".edit-container");
 
     if (!isWithinEditContainer) {
       endEditingItem();
@@ -65,18 +69,22 @@
   const isAdmin = $derived(authStore.isAdmin);
 
   // Handle saving an edited changelog entry
-  async function handleSaveEntry(category: ChangelogCategory, entryIndex: number, newText: string) {
+  async function handleSaveEntry(
+    category: ChangelogCategory,
+    entryIndex: number,
+    newText: string
+  ) {
     if (!version) return;
 
     // Find the absolute index in the full changelog array
     const allEntries = version.changelogEntries || [];
-    const categoryEntries = allEntries.filter(e => e.category === category);
+    const categoryEntries = allEntries.filter((e) => e.category === category);
     const entry = categoryEntries[entryIndex];
-    
+
     if (!entry) {
       throw new Error("Entry not found at index");
     }
-    
+
     const absoluteIndex = allEntries.indexOf(entry);
 
     if (absoluteIndex === -1) {
@@ -90,7 +98,11 @@
       feedbackId: entry.feedbackId,
     };
 
-    await versionService.updateChangelogEntry(version.version, absoluteIndex, updatedEntry);
+    await versionService.updateChangelogEntry(
+      version.version,
+      absoluteIndex,
+      updatedEntry
+    );
 
     // Update local state
     if (version.changelogEntries) {
@@ -125,14 +137,23 @@
   const placement = $derived(isMobile ? "bottom" : "right");
 
   // Check if we have curated changelog entries
-  const hasChangelog = $derived(version?.changelogEntries && version.changelogEntries.length > 0);
+  const hasChangelog = $derived(
+    version?.changelogEntries && version.changelogEntries.length > 0
+  );
 
   // Group changelog entries by category
   const groupedChangelog = $derived.by(() => {
-    if (!version?.changelogEntries) return { fixed: [], added: [], improved: [] };
-    const fixed = version.changelogEntries.filter((e) => e.category === "fixed");
-    const added = version.changelogEntries.filter((e) => e.category === "added");
-    const improved = version.changelogEntries.filter((e) => e.category === "improved");
+    if (!version?.changelogEntries)
+      return { fixed: [], added: [], improved: [] };
+    const fixed = version.changelogEntries.filter(
+      (e) => e.category === "fixed"
+    );
+    const added = version.changelogEntries.filter(
+      (e) => e.category === "added"
+    );
+    const improved = version.changelogEntries.filter(
+      (e) => e.category === "improved"
+    );
     return { fixed, added, improved };
   });
 
@@ -151,18 +172,24 @@
   // Get icon for category
   function getCategoryIcon(category: ChangelogCategory): string {
     switch (category) {
-      case "fixed": return "fa-bug";
-      case "added": return "fa-sparkles";
-      case "improved": return "fa-arrow-up";
+      case "fixed":
+        return "fa-bug";
+      case "added":
+        return "fa-sparkles";
+      case "improved":
+        return "fa-arrow-up";
     }
   }
 
   // Get label for category
   function getCategoryLabel(category: ChangelogCategory): string {
     switch (category) {
-      case "fixed": return "Bug Fixes";
-      case "added": return "New Features";
-      case "improved": return "Improvements";
+      case "fixed":
+        return "Bug Fixes";
+      case "added":
+        return "New Features";
+      case "improved":
+        return "Improvements";
     }
   }
 </script>
@@ -178,7 +205,12 @@
     <div class="panel-content" onclick={handlePanelClick}>
       <!-- Header -->
       <header class="panel-header">
-        <button type="button" class="close-button" onclick={() => (isOpen = false)} aria-label="Close version details">
+        <button
+          type="button"
+          class="close-button"
+          onclick={() => (isOpen = false)}
+          aria-label="Close version details"
+        >
           <i class="fas fa-times"></i>
         </button>
 
@@ -229,7 +261,8 @@
                     <EditableChangelogItem
                       {entry}
                       canEdit={isAdmin}
-                      onSave={(newText) => handleSaveEntry('fixed', index, newText)}
+                      onSave={(newText) =>
+                        handleSaveEntry("fixed", index, newText)}
                       onOpenFeedback={() => openFeedbackDetail(entry)}
                       {itemId}
                       isEditing={isItemEditing(itemId)}
@@ -257,7 +290,8 @@
                     <EditableChangelogItem
                       {entry}
                       canEdit={isAdmin}
-                      onSave={(newText) => handleSaveEntry('added', index, newText)}
+                      onSave={(newText) =>
+                        handleSaveEntry("added", index, newText)}
                       onOpenFeedback={() => openFeedbackDetail(entry)}
                       {itemId}
                       isEditing={isItemEditing(itemId)}
@@ -285,7 +319,8 @@
                     <EditableChangelogItem
                       {entry}
                       canEdit={isAdmin}
-                      onSave={(newText) => handleSaveEntry('improved', index, newText)}
+                      onSave={(newText) =>
+                        handleSaveEntry("improved", index, newText)}
                       onOpenFeedback={() => openFeedbackDetail(entry)}
                       {itemId}
                       isEditing={isItemEditing(itemId)}
@@ -308,7 +343,6 @@
           </div>
         </section>
       {/if}
-
     </div>
   {/if}
 </Drawer>
@@ -342,10 +376,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -366,7 +400,11 @@
     display: inline-flex;
     align-items: center;
     padding: 8px 20px;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.2),
+      rgba(139, 92, 246, 0.1)
+    );
     border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 24px;
   }
@@ -488,7 +526,7 @@
   }
 
   .no-changelog-content i {
-    font-size: 48px;
+    font-size: 50px;
     color: rgba(255, 255, 255, 0.15);
     margin-bottom: 16px;
   }

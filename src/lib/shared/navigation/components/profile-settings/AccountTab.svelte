@@ -70,7 +70,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 48px); /* Fluid padding */
+    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 50px); /* Fluid padding */
     min-height: 0;
     transition: padding 0.2s ease;
     display: flex;

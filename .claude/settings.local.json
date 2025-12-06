@@ -275,7 +275,12 @@
       "Bash(move:*)",
       "Bash(move scripts/audit-feedback.cjs scripts/temp/)",
       "Bash(move scripts/check-createdAt.cjs scripts/temp/)",
-      "Bash(move scripts/check-feedback-status.js scripts/temp/)"
+      "Bash(move scripts/check-feedback-status.js scripts/temp/)",
+      "Bash(firebase deploy:*)",
+      "Bash(firebase projects:list:*)",
+      "WebFetch(domain:firebasestorage.googleapis.com)",
+      "Bash(pkill:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []

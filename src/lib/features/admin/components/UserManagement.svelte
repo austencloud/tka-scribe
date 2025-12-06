@@ -50,7 +50,7 @@
     try {
       const result = await userManagementService.loadUsers(
         PAGE_SIZE,
-        append ? lastDocId ?? undefined : undefined
+        append ? (lastDocId ?? undefined) : undefined
       );
 
       if (append) {
@@ -108,11 +108,17 @@
 
       // Update local state
       users = users.map((u) =>
-        u.id === user.id ? { ...u, role: newRole, isAdmin: newRole === "admin" } : u
+        u.id === user.id
+          ? { ...u, role: newRole, isAdmin: newRole === "admin" }
+          : u
       );
 
       if (selectedUser?.id === user.id) {
-        selectedUser = { ...selectedUser, role: newRole, isAdmin: newRole === "admin" };
+        selectedUser = {
+          ...selectedUser,
+          role: newRole,
+          isAdmin: newRole === "admin",
+        };
       }
     } catch (error) {
       console.error("Failed to change role:", error);
@@ -129,7 +135,10 @@
     actionError = null;
 
     try {
-      await userManagementService.toggleDisabled(user.id, user.isDisabled ?? false);
+      await userManagementService.toggleDisabled(
+        user.id,
+        user.isDisabled ?? false
+      );
 
       // Update local state
       users = users.map((u) =>
@@ -137,7 +146,10 @@
       );
 
       if (selectedUser?.id === user.id) {
-        selectedUser = { ...selectedUser, isDisabled: !selectedUser.isDisabled };
+        selectedUser = {
+          ...selectedUser,
+          isDisabled: !selectedUser.isDisabled,
+        };
       }
     } catch (error) {
       console.error("Failed to toggle disabled:", error);
@@ -159,7 +171,13 @@
       // Update local state
       users = users.map((u) =>
         u.id === user.id
-          ? { ...u, totalXP: 0, currentLevel: 1, achievementCount: 0, currentStreak: 0 }
+          ? {
+              ...u,
+              totalXP: 0,
+              currentLevel: 1,
+              achievementCount: 0,
+              currentStreak: 0,
+            }
           : u
       );
 
@@ -386,7 +404,7 @@
     overflow-y: auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 450px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 452px), 1fr));
     gap: 16px;
     align-content: start;
   }
@@ -398,7 +416,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px;
+    padding: 52px;
     color: rgba(255, 255, 255, 0.5);
     gap: 12px;
   }

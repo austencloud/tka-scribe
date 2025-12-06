@@ -13,7 +13,11 @@
   import AdaptiveModeConfig from "./AdaptiveModeConfig.svelte";
   import StepModeConfig from "./StepModeConfig.svelte";
   import TimedModeConfig from "./TimedModeConfig.svelte";
-  import type { AdaptiveConfig, StepConfig, TimedConfig } from "../../state/train-practice-state.svelte";
+  import type {
+    AdaptiveConfig,
+    StepConfig,
+    TimedConfig,
+  } from "../../state/train-practice-state.svelte";
 
   interface Props {
     isOpen: boolean;
@@ -36,7 +40,7 @@
     timedConfig,
     onAdaptiveConfigUpdate,
     onStepConfigUpdate,
-    onTimedConfigUpdate
+    onTimedConfigUpdate,
   }: Props = $props();
 
   // Responsive placement: bottom on mobile, right on desktop
@@ -61,25 +65,25 @@
         return {
           icon: "fa-brain",
           title: "Adaptive Mode",
-          description: "Auto-advance when you match positions"
+          description: "Auto-advance when you match positions",
         };
       case PracticeMode.STEP_BY_STEP:
         return {
           icon: "fa-shoe-prints",
           title: "Step-by-Step Mode",
-          description: "Advance manually or with voice"
+          description: "Advance manually or with voice",
         };
       case PracticeMode.TIMED:
         return {
           icon: "fa-stopwatch",
           title: "Timed Mode",
-          description: "Follow beat timing with scoring"
+          description: "Follow beat timing with scoring",
         };
       default:
         return {
           icon: "fa-cog",
           title: "Settings",
-          description: ""
+          description: "",
         };
     }
   });
@@ -127,15 +131,9 @@
           onUpdate={onAdaptiveConfigUpdate}
         />
       {:else if currentMode === PracticeMode.STEP_BY_STEP}
-        <StepModeConfig
-          config={stepConfig}
-          onUpdate={onStepConfigUpdate}
-        />
+        <StepModeConfig config={stepConfig} onUpdate={onStepConfigUpdate} />
       {:else if currentMode === PracticeMode.TIMED}
-        <TimedModeConfig
-          config={timedConfig}
-          onUpdate={onTimedConfigUpdate}
-        />
+        <TimedModeConfig config={timedConfig} onUpdate={onTimedConfigUpdate} />
       {/if}
     </div>
   </div>
@@ -144,14 +142,12 @@
 <style>
   /* Backdrop styling */
   :global(.mode-settings-backdrop) {
-    background: rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.7) !important;
   }
 
   /* Drawer content styling */
   :global(.mode-settings-sheet) {
-    --sheet-bg: rgba(20, 25, 35, 0.98);
+    --sheet-bg: #1a1a24;
   }
 
   .settings-panel {
@@ -218,8 +214,8 @@
   }
 
   .close-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

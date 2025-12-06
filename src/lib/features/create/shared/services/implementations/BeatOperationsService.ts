@@ -834,8 +834,13 @@ export class BeatOperationsService implements IBeatOperationsService {
       beatData = sequence?.beats[arrayIndex];
     }
 
-    const blueMotion = beatData?.motions?.[MotionColor.BLUE];
-    const redMotion = beatData?.motions?.[MotionColor.RED];
+    if (!beatData) {
+      console.warn("⚠️ Cannot recalculate letter - beat data not found");
+      return;
+    }
+
+    const blueMotion = beatData.motions?.[MotionColor.BLUE];
+    const redMotion = beatData.motions?.[MotionColor.RED];
 
     if (!blueMotion || !redMotion) {
       console.warn("⚠️ Cannot recalculate letter - incomplete motion data");
@@ -873,6 +878,7 @@ export class BeatOperationsService implements IBeatOperationsService {
           const updatedBeatData: BeatData = {
             ...beatData,
             letter: newLetter,
+            beatNumber: beatData.beatNumber ?? beatNumber,
           };
 
           // Apply update based on beat number

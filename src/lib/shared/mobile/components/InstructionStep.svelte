@@ -112,7 +112,7 @@
     border-radius: clamp(6px, 1.5cqw, 8px);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    max-width: clamp(150px, 40cqw, 200px);
+    max-width: clamp(152px, 40cqw, 200px);
   }
 
   .step-image {

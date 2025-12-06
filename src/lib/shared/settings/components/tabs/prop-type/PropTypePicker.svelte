@@ -57,7 +57,11 @@
       <!-- Header -->
       <div class="picker-header">
         <h2>{getTitle()}</h2>
-        <button class="close-button" onclick={onClose} aria-label="Close picker">
+        <button
+          class="close-button"
+          onclick={onClose}
+          aria-label="Close picker"
+        >
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -169,13 +173,13 @@
     font-weight: 700;
     color: white;
     letter-spacing: -0.45px;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui,
-      sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .close-button {
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: none;

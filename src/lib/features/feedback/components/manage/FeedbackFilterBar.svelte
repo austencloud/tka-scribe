@@ -24,11 +24,13 @@
   // Local reactive state
   let isSheetOpen = $state(false);
   let isSheetAnimating = $state(false);
-  let activeSection = $state<'type' | 'status' | 'priority' | null>(null);
+  let activeSection = $state<"type" | "status" | "priority" | null>(null);
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Desktop drawer state (replacing dropdowns with side panels)
@@ -58,15 +60,21 @@
   // Get current status label for button display
   const currentStatusLabel = $derived(() => {
     const status = manageState.filters.status;
-    if (status === 'all') return 'All Status';
-    return status in STATUS_CONFIG ? STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label ?? 'All Status' : 'All Status';
+    if (status === "all") return "All Status";
+    return status in STATUS_CONFIG
+      ? (STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.label ??
+          "All Status")
+      : "All Status";
   });
 
   // Get current priority label for button display
   const currentPriorityLabel = $derived(() => {
     const priority = manageState.filters.priority;
-    if (priority === 'all') return 'All Priority';
-    return priority in PRIORITY_CONFIG ? PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG]?.label ?? 'All Priority' : 'All Priority';
+    if (priority === "all") return "All Priority";
+    return priority in PRIORITY_CONFIG
+      ? (PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG]?.label ??
+          "All Priority")
+      : "All Priority";
   });
 
   // Count active filters
@@ -83,7 +91,9 @@
     isSheetOpen = true;
     isSheetAnimating = true;
     document.body.style.overflow = "hidden";
-    setTimeout(() => { isSheetAnimating = false; }, 350);
+    setTimeout(() => {
+      isSheetAnimating = false;
+    }, 350);
   }
 
   function closeSheet() {
@@ -136,7 +146,7 @@
   }
 
   // Section toggle for mobile sheet accordion
-  function toggleSection(section: 'type' | 'status' | 'priority') {
+  function toggleSection(section: "type" | "status" | "priority") {
     hapticService?.trigger("selection");
     activeSection = activeSection === section ? null : section;
   }
@@ -202,7 +212,12 @@
           onclick={() => handleTypeFilter(type as FeedbackType)}
         >
           <i class="fas {config.icon}"></i>
-          <span class="chip-label">{config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}</span>
+          <span class="chip-label"
+            >{config.label
+              .replace(" Report", "")
+              .replace(" Request", "")
+              .replace(" Feedback", "")}</span
+          >
         </button>
       {/each}
     </div>
@@ -211,14 +226,19 @@
     <button
       type="button"
       class="filter-panel-btn"
-      class:active={manageState.filters.status !== 'all'}
+      class:active={manageState.filters.status !== "all"}
       onclick={openStatusDrawer}
       aria-label="Filter by status"
       aria-haspopup="dialog"
     >
-      {#if manageState.filters.status !== 'all'}
+      {#if manageState.filters.status !== "all"}
         {@const status = manageState.filters.status}
-        <i class="fas {status in STATUS_CONFIG ? (STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon ?? 'fa-circle') : 'fa-circle'}"></i>
+        <i
+          class="fas {status in STATUS_CONFIG
+            ? (STATUS_CONFIG[status as keyof typeof STATUS_CONFIG]?.icon ??
+              'fa-circle')
+            : 'fa-circle'}"
+        ></i>
       {/if}
       <span>{currentStatusLabel()}</span>
       <i class="fas fa-chevron-right panel-arrow"></i>
@@ -228,14 +248,19 @@
     <button
       type="button"
       class="filter-panel-btn"
-      class:active={manageState.filters.priority !== 'all'}
+      class:active={manageState.filters.priority !== "all"}
       onclick={openPriorityDrawer}
       aria-label="Filter by priority"
       aria-haspopup="dialog"
     >
-      {#if manageState.filters.priority !== 'all'}
+      {#if manageState.filters.priority !== "all"}
         {@const priority = manageState.filters.priority}
-        <i class="fas {priority in PRIORITY_CONFIG ? (PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG]?.icon ?? 'fa-circle') : 'fa-circle'}"></i>
+        <i
+          class="fas {priority in PRIORITY_CONFIG
+            ? (PRIORITY_CONFIG[priority as keyof typeof PRIORITY_CONFIG]
+                ?.icon ?? 'fa-circle')
+            : 'fa-circle'}"
+        ></i>
       {/if}
       <span>{currentPriorityLabel()}</span>
       <i class="fas fa-chevron-right panel-arrow"></i>
@@ -272,7 +297,12 @@
       aria-label="Filter options"
     >
       <!-- Handle -->
-      <button type="button" class="sheet-handle-area" onclick={closeSheet} aria-label="Close filters">
+      <button
+        type="button"
+        class="sheet-handle-area"
+        onclick={closeSheet}
+        aria-label="Close filters"
+      >
         <div class="sheet-handle"></div>
       </button>
 
@@ -298,11 +328,14 @@
       <!-- Content -->
       <div class="sheet-content">
         <!-- Type filter -->
-        <div class="filter-section" class:expanded={activeSection === 'type' || activeSection === null}>
+        <div
+          class="filter-section"
+          class:expanded={activeSection === "type" || activeSection === null}
+        >
           <button
             type="button"
             class="filter-section-header"
-            onclick={() => toggleSection('type')}
+            onclick={() => toggleSection("type")}
           >
             <h3 class="filter-section-title">Type</h3>
             {#if manageState.filters.type !== "all"}
@@ -330,18 +363,24 @@
               >
                 <span class="option-radio"></span>
                 <i class="fas {config.icon}"></i>
-                {config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}
+                {config.label
+                  .replace(" Report", "")
+                  .replace(" Request", "")
+                  .replace(" Feedback", "")}
               </button>
             {/each}
           </div>
         </div>
 
         <!-- Status filter -->
-        <div class="filter-section" class:expanded={activeSection === 'status' || activeSection === null}>
+        <div
+          class="filter-section"
+          class:expanded={activeSection === "status" || activeSection === null}
+        >
           <button
             type="button"
             class="filter-section-header"
-            onclick={() => toggleSection('status')}
+            onclick={() => toggleSection("status")}
           >
             <h3 class="filter-section-title">Status</h3>
             {#if manageState.filters.status !== "all"}
@@ -376,11 +415,15 @@
         </div>
 
         <!-- Priority filter -->
-        <div class="filter-section" class:expanded={activeSection === 'priority' || activeSection === null}>
+        <div
+          class="filter-section"
+          class:expanded={activeSection === "priority" ||
+            activeSection === null}
+        >
           <button
             type="button"
             class="filter-section-header"
-            onclick={() => toggleSection('priority')}
+            onclick={() => toggleSection("priority")}
           >
             <h3 class="filter-section-title">Priority</h3>
             {#if manageState.filters.priority !== "all"}
@@ -404,7 +447,8 @@
                 class="filter-option"
                 class:selected={manageState.filters.priority === priority}
                 style="--option-color: {config.color}"
-                onclick={() => handlePriorityFilter(priority as FeedbackPriority)}
+                onclick={() =>
+                  handlePriorityFilter(priority as FeedbackPriority)}
               >
                 <span class="option-radio"></span>
                 <i class="fas {config.icon}"></i>
@@ -426,11 +470,7 @@
           <i class="fas fa-undo"></i>
           Clear All
         </button>
-        <button
-          type="button"
-          class="sheet-btn primary"
-          onclick={closeSheet}
-        >
+        <button type="button" class="sheet-btn primary" onclick={closeSheet}>
           <i class="fas fa-check"></i>
           Done
         </button>
@@ -466,8 +506,11 @@
       <button
         type="button"
         class="drawer-option"
-        class:selected={manageState.filters.status === 'all'}
-        onclick={() => { handleStatusFilter('all'); closeStatusDrawer(); }}
+        class:selected={manageState.filters.status === "all"}
+        onclick={() => {
+          handleStatusFilter("all");
+          closeStatusDrawer();
+        }}
       >
         <span class="option-radio"></span>
         <span class="option-label">All Status</span>
@@ -478,7 +521,10 @@
           class="drawer-option"
           class:selected={manageState.filters.status === status}
           style="--option-color: {config.color}"
-          onclick={() => { handleStatusFilter(status as FeedbackStatus); closeStatusDrawer(); }}
+          onclick={() => {
+            handleStatusFilter(status as FeedbackStatus);
+            closeStatusDrawer();
+          }}
         >
           <span class="option-radio"></span>
           <i class="fas {config.icon}"></i>
@@ -516,8 +562,11 @@
       <button
         type="button"
         class="drawer-option"
-        class:selected={manageState.filters.priority === 'all'}
-        onclick={() => { handlePriorityFilter('all'); closePriorityDrawer(); }}
+        class:selected={manageState.filters.priority === "all"}
+        onclick={() => {
+          handlePriorityFilter("all");
+          closePriorityDrawer();
+        }}
       >
         <span class="option-radio"></span>
         <span class="option-label">All Priority</span>
@@ -528,7 +577,10 @@
           class="drawer-option"
           class:selected={manageState.filters.priority === priority}
           style="--option-color: {config.color}"
-          onclick={() => { handlePriorityFilter(priority as FeedbackPriority); closePriorityDrawer(); }}
+          onclick={() => {
+            handlePriorityFilter(priority as FeedbackPriority);
+            closePriorityDrawer();
+          }}
         >
           <span class="option-radio"></span>
           <i class="fas {config.icon}"></i>
@@ -603,7 +655,7 @@
 
   .search-input {
     width: 100%;
-    height: 48px;
+    height: 52px;
     padding: 0 var(--fb-space-lg) 0 calc(var(--fb-space-sm) + 24px);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--fb-border);
@@ -649,13 +701,13 @@
 
   /* Expand touch target for search clear button */
   .search-clear::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   .search-clear:hover {
@@ -674,8 +726,8 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-xs);
-    height: 48px;
-    min-width: 48px;
+    height: 52px;
+    min-width: 52px;
     padding: 0 var(--fb-space-md);
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);
@@ -714,8 +766,14 @@
   }
 
   @keyframes popIn {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -737,7 +795,7 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-2xs);
-    height: 48px;
+    height: 52px;
     padding: 0 var(--fb-space-md);
     background: transparent;
     border: 1px solid var(--fb-border);
@@ -765,7 +823,11 @@
   }
 
   .filter-chip.active {
-    background: color-mix(in srgb, var(--chip-color, var(--fb-primary)) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--chip-color, var(--fb-primary)) 15%,
+      transparent
+    );
     border-color: var(--chip-color, var(--fb-primary));
     color: var(--fb-text);
   }
@@ -781,7 +843,7 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-xs);
-    height: 48px;
+    height: 52px;
     padding: 0 var(--fb-space-md);
     background: transparent;
     border: 1px solid var(--fb-border);
@@ -833,7 +895,7 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-xs);
-    height: 48px;
+    height: 52px;
     padding: 0 var(--fb-space-md);
     background: none;
     border: none;
@@ -896,13 +958,21 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
   .sheet-container {
@@ -925,13 +995,21 @@
   }
 
   @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 
   @keyframes slideDown {
-    from { transform: translateY(0); }
-    to { transform: translateY(100%); }
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(100%);
+    }
   }
 
   .sheet-handle-area {
@@ -993,8 +1071,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     margin: calc(var(--fb-space-sm) * -1);
     margin-left: 0;
     background: none;
@@ -1039,7 +1117,7 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-xs);
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 var(--fb-space-md);
     background: none;
     border: none;
@@ -1067,8 +1145,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   .section-chevron {
@@ -1096,15 +1179,21 @@
   }
 
   @keyframes expandIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .filter-option {
     display: flex;
     align-items: center;
     gap: var(--fb-space-sm);
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 var(--fb-space-md);
     background: transparent;
     border: none;
@@ -1144,7 +1233,7 @@
   }
 
   .option-radio::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -1157,7 +1246,11 @@
   }
 
   .filter-option.selected {
-    background: color-mix(in srgb, var(--option-color, var(--fb-primary)) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--option-color, var(--fb-primary)) 10%,
+      transparent
+    );
     color: var(--fb-text);
   }
 
@@ -1322,8 +1415,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     margin-left: auto;
     margin-right: calc(-1 * var(--fb-space-sm, 13px));
     background: none;
@@ -1400,7 +1493,7 @@
   }
 
   .drawer-option .option-radio::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -1413,7 +1506,11 @@
   }
 
   .drawer-option.selected {
-    background: color-mix(in srgb, var(--option-color, #10b981) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--option-color, #10b981) 12%,
+      transparent
+    );
     color: rgba(255, 255, 255, 0.95);
   }
 

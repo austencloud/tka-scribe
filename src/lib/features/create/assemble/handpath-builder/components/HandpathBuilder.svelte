@@ -16,7 +16,10 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   import { fade } from "svelte/transition";
   import type { IHandPathDirectionDetector } from "../services/contracts/IHandPathDirectionDetector";
   import type { IPathToMotionConverter } from "../services/contracts/IPathToMotionConverter";
-  import { createGesturalPathState, type GesturalPathState } from "../state/handpath-state.svelte";
+  import {
+    createGesturalPathState,
+    type GesturalPathState,
+  } from "../state/handpath-state.svelte";
   import PathControlPanel from "./PathControlPanel.svelte";
   import SequenceLengthPicker from "./SequenceLengthPicker.svelte";
   import TouchableGrid from "./TouchableGrid.svelte";
@@ -271,8 +274,8 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .restart-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     padding: 0;
     background: linear-gradient(
       135deg,
@@ -346,7 +349,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 48px;
+    min-height: 52px;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
   }
 
@@ -390,7 +393,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .action-btn.primary {
@@ -440,7 +443,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 48px;
+    min-height: 52px;
     font-size: 0.9rem;
   }
 

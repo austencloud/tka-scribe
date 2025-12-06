@@ -26,6 +26,9 @@ import type { DailyChallenge, UserChallengeProgress, XPEventMetadata } from '../
 import type { IDailyChallengeService } from "../contracts/IDailyChallengeService";
 import type { IAchievementService } from "../contracts/IAchievementService";
 import { TYPES } from "../../../inversify/types";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("DailyChallengeService");
 
 @injectable()
 export class DailyChallengeService implements IDailyChallengeService {
@@ -89,8 +92,8 @@ export class DailyChallengeService implements IDailyChallengeService {
 
         return firestoreChallenge;
       } else {
-        console.warn(
-          "⚠️ No daily challenge found for today. Admin needs to create it."
+        debug.log(
+          "No daily challenge found for today. Admin needs to create it."
         );
         return null;
       }

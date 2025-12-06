@@ -111,7 +111,11 @@
   .card-shine {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      transparent 60%
+    );
     pointer-events: none;
   }
 
@@ -120,8 +124,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(36px, 14cqi, 48px);
-    height: clamp(36px, 14cqi, 48px);
+    width: clamp(36px, 14cqi, 50px);
+    height: clamp(36px, 14cqi, 50px);
     background: rgba(255, 255, 255, 0.25);
     border-radius: clamp(10px, 3cqi, 14px);
     font-size: clamp(16px, 6cqi, 22px);
@@ -131,8 +135,8 @@
   }
 
   .card-avatar {
-    width: clamp(36px, 14cqi, 48px);
-    height: clamp(36px, 14cqi, 48px);
+    width: clamp(36px, 14cqi, 50px);
+    height: clamp(36px, 14cqi, 50px);
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 255, 255, 0.5);

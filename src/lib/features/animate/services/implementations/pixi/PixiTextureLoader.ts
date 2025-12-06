@@ -13,7 +13,9 @@
 
 import { Texture } from "pixi.js";
 import type { ISVGGenerator } from "../../contracts/ISVGGenerator";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
+const debug = createComponentLogger("PixiTextureLoader");
 const VIEWBOX_SIZE = 950;
 
 export class PixiTextureLoader {
@@ -211,8 +213,8 @@ export class PixiTextureLoader {
       );
 
       // Validate texture has content by checking if canvas has pixels
-      const baseTexture = this.glyphTexture.baseTexture;
-      const resource = baseTexture.resource as any;
+      const source = this.glyphTexture.source;
+      const resource = source.resource as any;
       let hasContent = false;
 
       if (resource?.source) {
@@ -221,12 +223,13 @@ export class PixiTextureLoader {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             // Check a small region where the glyph should be (bottom-left)
-            // Glyph at x=50, y=800 in 950px viewBox = x=100, y=1600 in 1900px texture
+            // Glyph at x=50, y=800 in 952px viewBox = x=100, y=1600 in 1900px texture
             const imageData = ctx.getImageData(100, 1600, 50, 50);
             const pixels = imageData.data;
             // Check if any pixel has non-zero alpha
             for (let i = 3; i < pixels.length; i += 4) {
-              if (pixels[i] > 0) {
+              const alpha = pixels[i];
+              if (alpha !== undefined && alpha > 0) {
                 hasContent = true;
                 break;
               }
@@ -235,12 +238,11 @@ export class PixiTextureLoader {
         }
       }
 
-      console.log("🎨 [PixiTextureLoader] Glyph texture created:", {
+      debug.log("Glyph texture created:", {
         textureWidth: this.glyphTexture.width,
         textureHeight: this.glyphTexture.height,
-        baseTextureWidth: this.glyphTexture.baseTexture.width,
-        baseTextureHeight: this.glyphTexture.baseTexture.height,
-        valid: this.glyphTexture.valid,
+        sourceWidth: this.glyphTexture.source.width,
+        sourceHeight: this.glyphTexture.source.height,
         hasContent,
       });
 

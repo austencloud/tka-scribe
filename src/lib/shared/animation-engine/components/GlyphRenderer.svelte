@@ -88,7 +88,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
       const bbox = (glyphGroup as SVGGraphicsElement).getBBox();
 
       // TKAGlyph has transform="translate(50, 800)", so bbox is relative to that transform
-      // We need to get the actual position in the 950px viewBox coordinate system
+      // We need to get the actual position in the 952px viewBox coordinate system
       // The glyph is positioned at (50, 800) by default in TKAGlyph.svelte
       const glyphBaseX = 50;
       const glyphBaseY = 800;
@@ -203,7 +203,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
 <svg
   bind:this={svgElement}
   xmlns="http://www.w3.org/2000/svg"
-  style="position: absolute; left: -9999px; top: -9999px; width: 950px; height: 950px;"
+  style="position: absolute; left: -9999px; top: -9999px; width: 952px; height: 952px;"
   viewBox="0 0 950 950"
 >
   {#if letter}

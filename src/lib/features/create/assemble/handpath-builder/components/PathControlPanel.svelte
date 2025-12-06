@@ -253,7 +253,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.75rem;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .rotation-btn:hover {
@@ -323,7 +323,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
   }
 
   /* Stack segment info on very narrow panels */
-  @media (max-width: 350px) {
+  @media (max-width: 352px) {
     .segment-item {
       flex-direction: column;
       align-items: flex-start;
@@ -359,7 +359,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .action-btn.primary {
@@ -471,7 +471,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
 
     .rotation-btn {
       padding: 0.25rem;
-      min-height: 48px; /* Maintain accessibility */
+      min-height: 52px; /* Maintain accessibility */
       gap: 0.125rem;
       font-size: 0.65625rem;
     }
@@ -486,7 +486,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
 
     .action-btn {
       padding: 0.375rem 0.5rem;
-      min-height: 48px; /* Maintain accessibility */
+      min-height: 52px; /* Maintain accessibility */
       font-size: 0.8125rem;
     }
   }
@@ -500,12 +500,12 @@ Displays current state, beat progress, rotation selector, and action buttons.
 
     .rotation-btn {
       padding: 0.375rem;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .action-btn {
       padding: 0.5rem;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .progress-bar {

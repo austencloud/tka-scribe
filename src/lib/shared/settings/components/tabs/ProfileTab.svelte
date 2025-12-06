@@ -289,7 +289,7 @@
   }
 
   /* Mobile: Stack profile card elements on narrow screens */
-  @container settings-content (max-width: 450px) {
+  @container settings-content (max-width: 452px) {
     .profile-top {
       grid-template-columns: auto 1fr;
       grid-template-rows: auto auto;
@@ -363,7 +363,9 @@
     color: #ef4444;
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease,
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
       border-color 0.15s ease;
     justify-self: end;
   }

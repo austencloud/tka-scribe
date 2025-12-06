@@ -15,6 +15,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
 import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { getLetterImagePath } from "$lib/shared/pictograph/tka-glyph/utils/letter-image-getter";
 /**
  * Pre-rendered frame data
  */
@@ -98,6 +100,7 @@ export class SequenceFramePreRenderer {
   private shouldCancel = false;
   private offscreenRenderer: IPixiAnimationRenderer | null = null;
   private offscreenContainer: HTMLDivElement | null = null;
+  private loadedGlyphs = new Set<Letter>(); // Track which glyphs have been loaded
 
   constructor(
     private readonly orchestrator: ISequenceAnimationOrchestrator,
@@ -138,6 +141,62 @@ export class SequenceFramePreRenderer {
     );
 
     return offscreenRenderer;
+  }
+
+  /**
+   * Load glyph texture for a specific letter into the offscreen renderer
+   * Uses caching to avoid reloading the same letter multiple times
+   */
+  private async loadGlyphTextureForLetter(letter: Letter): Promise<void> {
+    // Skip if already loaded
+    if (this.loadedGlyphs.has(letter)) {
+      return;
+    }
+
+    if (!this.offscreenRenderer) {
+      console.warn("[SequenceFramePreRenderer] Cannot load glyph - offscreen renderer not initialized");
+      return;
+    }
+
+    try {
+      // Fetch the letter SVG file
+      const imagePath = getLetterImagePath(letter);
+      const response = await fetch(imagePath);
+
+      if (!response.ok) {
+        console.warn(`[SequenceFramePreRenderer] Failed to fetch letter ${letter} from ${imagePath}`);
+        this.loadedGlyphs.add(letter); // Mark as attempted to avoid repeated failures
+        return;
+      }
+
+      let svgText = await response.text();
+
+      // Parse original viewBox to get glyph dimensions
+      const viewBoxMatch = svgText.match(/viewBox\s*=\s*"([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)"/i);
+      const viewBoxX = viewBoxMatch?.[1] ? parseFloat(viewBoxMatch[1]) : 0;
+      const viewBoxY = viewBoxMatch?.[2] ? parseFloat(viewBoxMatch[2]) : 0;
+      const viewBoxWidth = viewBoxMatch?.[3] ? parseFloat(viewBoxMatch[3]) : 100;
+      const viewBoxHeight = viewBoxMatch?.[4] ? parseFloat(viewBoxMatch[4]) : 100;
+
+      // CRITICAL: Modify SVG to have full 950x950 viewBox (matching GlyphRenderer.svelte logic)
+      // This ensures the glyph appears at the correct position when rendered
+      svgText = svgText.replace(
+        /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+[\d.-]+\s+[\d.-]+"/i,
+        'viewBox="0 0 950 950"'
+      );
+      svgText = svgText.replace(/width\s*=\s*"[\d.-]+"/i, 'width="950"');
+      svgText = svgText.replace(/height\s*=\s*"[\d.-]+"/i, 'height="950"');
+
+      // Load texture into offscreen renderer
+      await this.offscreenRenderer.loadGlyphTexture(svgText, viewBoxWidth, viewBoxHeight);
+
+      // Mark as loaded
+      this.loadedGlyphs.add(letter);
+      console.log(`✅ [SequenceFramePreRenderer] Loaded glyph texture for letter "${letter}"`);
+    } catch (error) {
+      console.error(`[SequenceFramePreRenderer] Error loading glyph for letter ${letter}:`, error);
+      this.loadedGlyphs.add(letter); // Mark as attempted to avoid repeated failures
+    }
   }
 
   /**
@@ -389,6 +448,7 @@ export class SequenceFramePreRenderer {
       if (metadata.gridMode) {
         await this.offscreenRenderer.loadGridTexture(metadata.gridMode);
       }
+
     }
 
     // Calculate animation state for this beat
@@ -396,6 +456,12 @@ export class SequenceFramePreRenderer {
     const blueProp = this.orchestrator.getBluePropState();
     const redProp = this.orchestrator.getRedPropState();
     const currentLetter = this.orchestrator.getCurrentLetter();
+
+    // CRITICAL FIX: Load glyph texture for current letter if present
+    // Without this, pre-rendered frames don't have glyphs
+    if (currentLetter) {
+      await this.loadGlyphTextureForLetter(currentLetter);
+    }
 
     // Get prop dimensions from metadata
     const metadata = this.orchestrator.getMetadata();
@@ -524,5 +590,8 @@ export class SequenceFramePreRenderer {
       );
       this.offscreenContainer = null;
     }
+
+    // Clear loaded glyphs cache
+    this.loadedGlyphs.clear();
   }
 }

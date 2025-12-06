@@ -1,7 +1,7 @@
 <!--
 PositionPickerGrid.svelte - Compact 4x4 grid of all 16 start position variations
 Uses IStartPositionService to load variations and displays actual pictographs
-48px minimum touch targets for accessibility
+50px minimum touch targets for accessibility
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
@@ -16,10 +16,7 @@ Uses IStartPositionService to load variations and displays actual pictographs
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
   import { createStartPositionVariations } from "./start-position-utils";
 
-  let {
-    currentPosition = null,
-    onPositionChange,
-  } = $props<{
+  let { currentPosition = null, onPositionChange } = $props<{
     currentPosition: PictographData | null;
     onPositionChange: (position: PictographData | null) => void;
   }>();
@@ -33,22 +30,30 @@ Uses IStartPositionService to load variations and displays actual pictographs
   onMount(async () => {
     try {
       // Load haptic service
-      hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = tryResolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
 
       // Try to get grid mode from settings
       const settingsState = tryResolve<ISettingsState>(TYPES.ISettingsState);
       gridMode = settingsState?.currentSettings?.gridMode || GridMode.DIAMOND;
 
       // Try to use StartPositionService if available (in Create module)
-      const startPositionService = tryResolve<IStartPositionService>(TYPES.IStartPositionService);
+      const startPositionService = tryResolve<IStartPositionService>(
+        TYPES.IStartPositionService
+      );
       if (startPositionService) {
-        variations = startPositionService.getAllStartPositionVariations(gridMode);
+        variations =
+          startPositionService.getAllStartPositionVariations(gridMode);
       } else {
         // Fallback: create variations directly (works outside Create module)
         variations = createStartPositionVariations(gridMode);
       }
     } catch (error) {
-      console.warn("PositionPickerGrid: Failed to load variations, using fallback:", error);
+      console.warn(
+        "PositionPickerGrid: Failed to load variations, using fallback:",
+        error
+      );
       // Fallback on any error
       variations = createStartPositionVariations(gridMode);
     } finally {
@@ -121,7 +126,9 @@ Uses IStartPositionService to load variations and displays actual pictographs
           onclick={() => handleSelect(position)}
           onkeydown={(e) => handleKeydown(e, position)}
           type="button"
-          style:--letter-border-color={getLetterBorderColorSafe(position.letter)}
+          style:--letter-border-color={getLetterBorderColorSafe(
+            position.letter
+          )}
           aria-label="Select position {position.startPosition}"
         >
           <div class="pictograph-wrapper">
@@ -142,7 +149,7 @@ Uses IStartPositionService to load variations and displays actual pictographs
   }
 
   .any-button {
-    min-height: 48px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -189,8 +196,8 @@ Uses IStartPositionService to load variations and displays actual pictographs
 
   .position-cell {
     aspect-ratio: 1 / 1;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

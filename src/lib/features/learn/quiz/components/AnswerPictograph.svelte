@@ -6,10 +6,10 @@
 -->
 
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import PictographRenderer from "./QuizPictographRenderer.svelte";
 
   // Services
@@ -269,7 +269,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   /* Responsive Design */
   @media (max-width: 768px) {
     .answer-pictograph {
-      min-height: 150px;
+      min-height: 152px;
       padding: 0.75rem;
       gap: 0.5rem;
     }

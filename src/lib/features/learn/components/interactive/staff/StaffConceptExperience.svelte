@@ -7,9 +7,9 @@ Page 4: Antispin Rotation (prop rotates opposite direction of handpath)
 Page 5: Summary & Quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import StaffPositionVisualizer from "./StaffPositionVisualizer.svelte";
   import StaffIdentificationQuiz from "./StaffIdentificationQuiz.svelte";
 
@@ -42,10 +42,34 @@ import { TYPES } from "$lib/shared/inversify/types";
     rightThumb: ThumbOrientation;
     label: string;
   }> = [
-    { leftPos: "N", rightPos: "S", leftThumb: "in", rightThumb: "in", label: "Both Thumbs In" },
-    { leftPos: "N", rightPos: "S", leftThumb: "out", rightThumb: "out", label: "Both Thumbs Out" },
-    { leftPos: "E", rightPos: "W", leftThumb: "in", rightThumb: "out", label: "Left In / Right Out" },
-    { leftPos: "E", rightPos: "W", leftThumb: "out", rightThumb: "in", label: "Left Out / Right In" },
+    {
+      leftPos: "N",
+      rightPos: "S",
+      leftThumb: "in",
+      rightThumb: "in",
+      label: "Both Thumbs In",
+    },
+    {
+      leftPos: "N",
+      rightPos: "S",
+      leftThumb: "out",
+      rightThumb: "out",
+      label: "Both Thumbs Out",
+    },
+    {
+      leftPos: "E",
+      rightPos: "W",
+      leftThumb: "in",
+      rightThumb: "out",
+      label: "Left In / Right Out",
+    },
+    {
+      leftPos: "E",
+      rightPos: "W",
+      leftThumb: "out",
+      rightThumb: "in",
+      label: "Left Out / Right In",
+    },
   ];
 
   // Page 3 & 4: Rotation demos
@@ -58,14 +82,18 @@ import { TYPES } from "$lib/shared/inversify/types";
     description: string;
   }> = [
     {
-      leftPos: "N", rightPos: "S",
-      leftThumb: "in", rightThumb: "in",
-      description: "Thumbs stay IN during the entire motion"
+      leftPos: "N",
+      rightPos: "S",
+      leftThumb: "in",
+      rightThumb: "in",
+      description: "Thumbs stay IN during the entire motion",
     },
     {
-      leftPos: "E", rightPos: "W",
-      leftThumb: "in", rightThumb: "in",
-      description: "Staff rotates WITH the hand direction"
+      leftPos: "E",
+      rightPos: "W",
+      leftThumb: "in",
+      rightThumb: "in",
+      description: "Staff rotates WITH the hand direction",
     },
   ];
 
@@ -78,14 +106,18 @@ import { TYPES } from "$lib/shared/inversify/types";
     description: string;
   }> = [
     {
-      leftPos: "N", rightPos: "S",
-      leftThumb: "in", rightThumb: "in",
-      description: "Start: Thumbs IN"
+      leftPos: "N",
+      rightPos: "S",
+      leftThumb: "in",
+      rightThumb: "in",
+      description: "Start: Thumbs IN",
     },
     {
-      leftPos: "E", rightPos: "W",
-      leftThumb: "out", rightThumb: "out",
-      description: "End: Thumbs OUT (swapped during motion)"
+      leftPos: "E",
+      rightPos: "W",
+      leftThumb: "out",
+      rightThumb: "out",
+      description: "End: Thumbs OUT (swapped during motion)",
     },
   ];
 
@@ -135,7 +167,8 @@ import { TYPES } from "$lib/shared/inversify/types";
           <i class="fa-solid fa-wand-magic-sparkles"></i>
         </div>
         <p class="concept-summary">
-          Staff positions show <strong>where your hands are</strong> and <strong>how the prop is oriented</strong>
+          Staff positions show <strong>where your hands are</strong> and
+          <strong>how the prop is oriented</strong>
         </p>
       </div>
 
@@ -153,10 +186,16 @@ import { TYPES } from "$lib/shared/inversify/types";
       <div class="explanation">
         <h3>Key Concepts</h3>
         <ul>
-          <li><strong>The Thumb End</strong> is marked with a perpendicular line (T)</li>
-          <li>One end of the staff is always at the <strong>center point</strong></li>
+          <li>
+            <strong>The Thumb End</strong> is marked with a perpendicular line (T)
+          </li>
+          <li>
+            One end of the staff is always at the <strong>center point</strong>
+          </li>
           <li>The outer end points toward <strong>N, E, S, or W</strong></li>
-          <li>Tracking the thumb helps you <strong>verify rotations</strong></li>
+          <li>
+            Tracking the thumb helps you <strong>verify rotations</strong>
+          </li>
         </ul>
       </div>
 
@@ -164,7 +203,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         Next: Thumb Orientations
       </button>
     </div>
-
   {:else if currentPage === 2}
     <!-- Page 2: Thumb Orientations -->
     <div class="page">
@@ -175,7 +213,8 @@ import { TYPES } from "$lib/shared/inversify/types";
           <i class="fa-solid fa-hand-point-up"></i>
         </div>
         <p class="concept-summary">
-          <strong>Thumbs In</strong> or <strong>Thumbs Out</strong> affects the staff's orientation
+          <strong>Thumbs In</strong> or <strong>Thumbs Out</strong> affects the staff's
+          orientation
         </p>
       </div>
 
@@ -197,10 +236,19 @@ import { TYPES } from "$lib/shared/inversify/types";
       <div class="explanation">
         <h3>Understanding Thumb Orientation</h3>
         <ul>
-          <li><strong>Thumbs In</strong>: Thumb ends point toward the center</li>
-          <li><strong>Thumbs Out</strong>: Thumb ends point away from center</li>
-          <li>Mixed orientations: <strong>(in/out)</strong> or <strong>(out/in)</strong></li>
-          <li>Most sequences start with <strong>thumbs in</strong> for consistency</li>
+          <li>
+            <strong>Thumbs In</strong>: Thumb ends point toward the center
+          </li>
+          <li>
+            <strong>Thumbs Out</strong>: Thumb ends point away from center
+          </li>
+          <li>
+            Mixed orientations: <strong>(in/out)</strong> or
+            <strong>(out/in)</strong>
+          </li>
+          <li>
+            Most sequences start with <strong>thumbs in</strong> for consistency
+          </li>
         </ul>
       </div>
 
@@ -221,7 +269,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         Next: Prospin Rotation
       </button>
     </div>
-
   {:else if currentPage === 3}
     <!-- Page 3: Prospin Rotation -->
     <div class="page">
@@ -246,7 +293,9 @@ import { TYPES } from "$lib/shared/inversify/types";
           showRotationPath={true}
           rotationType="prospin"
         />
-        <div class="example-description">{currentProspinExample.description}</div>
+        <div class="example-description">
+          {currentProspinExample.description}
+        </div>
         <button class="cycle-button" onclick={cycleProspinExample}>
           <i class="fa-solid fa-play"></i>
           Show Motion Step
@@ -256,7 +305,10 @@ import { TYPES } from "$lib/shared/inversify/types";
       <div class="explanation prospin-explanation">
         <h3>Prospin = 90° Isolation</h3>
         <ul>
-          <li>Think of it as an <strong>isolation</strong>: the prop follows the hand</li>
+          <li>
+            Think of it as an <strong>isolation</strong>: the prop follows the
+            hand
+          </li>
           <li>Thumb orientation <strong>stays the same</strong> throughout</li>
           <li>If you start with thumbs IN, you end with thumbs IN</li>
           <li>The staff "rotates with" your hand movement</li>
@@ -284,7 +336,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         Next: Antispin Rotation
       </button>
     </div>
-
   {:else if currentPage === 4}
     <!-- Page 4: Antispin Rotation -->
     <div class="page">
@@ -309,7 +360,9 @@ import { TYPES } from "$lib/shared/inversify/types";
           showRotationPath={true}
           rotationType="antispin"
         />
-        <div class="example-description">{currentAntispinExample.description}</div>
+        <div class="example-description">
+          {currentAntispinExample.description}
+        </div>
         <button class="cycle-button" onclick={cycleAntispinExample}>
           <i class="fa-solid fa-play"></i>
           Show Motion Step
@@ -319,7 +372,9 @@ import { TYPES } from "$lib/shared/inversify/types";
       <div class="explanation antispin-explanation">
         <h3>Antispin = Thumb Swap</h3>
         <ul>
-          <li>The prop rotates <strong>against</strong> your hand's direction</li>
+          <li>
+            The prop rotates <strong>against</strong> your hand's direction
+          </li>
           <li>Thumb orientation <strong>swaps</strong> during the motion</li>
           <li>If you start with thumbs IN, you end with thumbs OUT</li>
           <li>A 90° antispin is the base unit of antispin motion</li>
@@ -372,7 +427,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         Take the Quiz
       </button>
     </div>
-
   {:else if currentPage === 5}
     <!-- Page 5: Quiz -->
     <div class="page quiz-page">
@@ -405,8 +459,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   h2 {
@@ -415,7 +475,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -447,22 +507,38 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .staff-intro {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.1) 0%,
+      rgba(168, 85, 247, 0.02) 100%
+    );
     border: 1px solid rgba(168, 85, 247, 0.2);
   }
 
   .thumb-intro {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.1) 0%,
+      rgba(59, 130, 246, 0.02) 100%
+    );
     border: 1px solid rgba(59, 130, 246, 0.2);
   }
 
   .prospin-intro {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(34, 211, 238, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.1) 0%,
+      rgba(34, 211, 238, 0.02) 100%
+    );
     border: 1px solid rgba(34, 211, 238, 0.2);
   }
 
   .antispin-intro {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.1) 0%,
+      rgba(249, 115, 22, 0.02) 100%
+    );
     border: 1px solid rgba(249, 115, 22, 0.2);
   }
 
@@ -478,22 +554,22 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .staff-intro .concept-icon {
     background: rgba(168, 85, 247, 0.2);
-    color: #A855F7;
+    color: #a855f7;
   }
 
   .thumb-intro .concept-icon {
     background: rgba(59, 130, 246, 0.2);
-    color: #3B82F6;
+    color: #3b82f6;
   }
 
   .prospin-intro .concept-icon {
     background: rgba(34, 211, 238, 0.2);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .antispin-intro .concept-icon {
     background: rgba(249, 115, 22, 0.2);
-    color: #F97316;
+    color: #f97316;
   }
 
   .concept-summary {
@@ -592,13 +668,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   .thumb-card.in {
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.25);
-    color: #3B82F6;
+    color: #3b82f6;
   }
 
   .thumb-card.out {
     background: rgba(168, 85, 247, 0.1);
     border: 1px solid rgba(168, 85, 247, 0.25);
-    color: #A855F7;
+    color: #a855f7;
   }
 
   .thumb-card i {
@@ -657,12 +733,12 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .prospin-item {
     background: rgba(34, 211, 238, 0.15);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .antispin-item {
     background: rgba(249, 115, 22, 0.15);
-    color: #F97316;
+    color: #f97316;
   }
 
   .formula-item i {
@@ -686,7 +762,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .comparison-card {
     flex: 1;
-    min-width: 150px;
+    min-width: 152px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -698,13 +774,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   .comparison-card.prospin {
     background: rgba(34, 211, 238, 0.1);
     border: 1px solid rgba(34, 211, 238, 0.25);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .comparison-card.antispin {
     background: rgba(249, 115, 22, 0.1);
     border: 1px solid rgba(249, 115, 22, 0.25);
-    color: #F97316;
+    color: #f97316;
   }
 
   .comparison-card i {
@@ -737,7 +813,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 3rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
     backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
@@ -751,7 +831,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4) 0%, rgba(6, 182, 212, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4) 0%,
+      rgba(6, 182, 212, 0.4) 100%
+    );
     border-color: rgba(34, 211, 238, 0.8);
     transform: translateY(-2px);
   }

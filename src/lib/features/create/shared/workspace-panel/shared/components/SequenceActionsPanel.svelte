@@ -136,7 +136,6 @@
   // Handle drawer open/close state changes (called for all close methods: swipe, backdrop, button)
   function handleOpenChange(open: boolean): void {
     if (!open) {
-      console.log("🔵 Drawer closed - calling onClose");
       onClose?.();
     }
   }
@@ -269,7 +268,7 @@
     top: 50%;
     left: 18px;
     width: 4px;
-    height: 48px;
+    height: 52px;
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
@@ -543,8 +542,8 @@
   /* Note: Container queries handle button sizing, these are viewport-level adjustments */
   @media (max-width: 380px) {
     .close-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
       font-size: 16px;
       top: 12px;
       right: 12px;

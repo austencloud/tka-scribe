@@ -5,11 +5,11 @@
   Reuses the existing BeatGrid component from the Create module.
 -->
 <script lang="ts">
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData"
-import type { BeatData } from "../../create/shared/domain/models/BeatData";;
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { StartPositionData } from "../../create/shared/domain/models/StartPositionData";
+  import type { BeatData } from "../../create/shared/domain/models/BeatData";
   import { isStartPosition } from "../../create/shared/domain/type-guards/pictograph-type-guards";
   import BeatGrid from "../../create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import type { ISequenceNormalizationService } from "$lib/features/animate/services/contracts/ISequenceNormalizationService";
@@ -42,7 +42,10 @@ import type { BeatData } from "../../create/shared/domain/models/BeatData";;
         TYPES.ISequenceNormalizationService
       );
     } catch (error) {
-      console.warn("EditWorkspace: Failed to resolve ISequenceNormalizationService:", error);
+      console.warn(
+        "EditWorkspace: Failed to resolve ISequenceNormalizationService:",
+        error
+      );
     }
   });
 
@@ -90,16 +93,19 @@ import type { BeatData } from "../../create/shared/domain/models/BeatData";;
 
   // Get beats and start position
   const beats = $derived(normalizedData.beats);
-  const startPosition = $derived<StartPositionData | BeatData | null>(normalizedData.startPosition);
+  const startPosition = $derived<StartPositionData | BeatData | null>(
+    normalizedData.startPosition
+  );
 
   // Convert selectedBeatNumbers array to Set for BeatGrid
   const selectedBeatNumbersSet = $derived(new Set(selectedBeatNumbers));
 
   // Handle beat click from BeatGrid
   function handleBeatClick(beatNumber: number) {
-    const beatData = beatNumber === 0
-      ? (startPosition as BeatData | null)
-      : (beats[beatNumber - 1] ?? null);
+    const beatData =
+      beatNumber === 0
+        ? (startPosition as BeatData | null)
+        : (beats[beatNumber - 1] ?? null);
     onBeatSelect(beatNumber, beatData);
   }
 
@@ -126,7 +132,12 @@ import type { BeatData } from "../../create/shared/domain/models/BeatData";;
         <span class="beat-count">{beats.length} beats</span>
       </div>
       {#if onChangeSequence}
-        <button class="change-sequence-btn" onclick={onChangeSequence} title="Change sequence" aria-label="Change sequence">
+        <button
+          class="change-sequence-btn"
+          onclick={onChangeSequence}
+          title="Change sequence"
+          aria-label="Change sequence"
+        >
           <i class="fas fa-folder-open"></i>
         </button>
       {/if}
@@ -150,9 +161,7 @@ import type { BeatData } from "../../create/shared/domain/models/BeatData";;
       Click a beat to select. Long-press to multi-select.
     </div>
   {:else}
-    <div class="no-sequence">
-      No sequence loaded
-    </div>
+    <div class="no-sequence">No sequence loaded</div>
   {/if}
 </div>
 
@@ -204,8 +213,8 @@ import type { BeatData } from "../../create/shared/domain/models/BeatData";;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border-radius: 8px;
     background: rgba(6, 182, 212, 0.1);
     border: 1px solid rgba(6, 182, 212, 0.3);

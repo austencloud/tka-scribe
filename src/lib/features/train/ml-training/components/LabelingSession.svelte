@@ -448,7 +448,7 @@ Allows navigating through frames and labeling each one.
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    min-width: 150px;
+    min-width: 152px;
   }
 
   .progress-bar {

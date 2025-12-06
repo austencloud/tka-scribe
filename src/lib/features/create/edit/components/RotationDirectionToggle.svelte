@@ -217,7 +217,7 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
   }
 
   /* Compact mode - hide text labels on very small screens */
-  @container (max-width: 350px) {
+  @container (max-width: 352px) {
     .btn-text {
       display: none;
     }

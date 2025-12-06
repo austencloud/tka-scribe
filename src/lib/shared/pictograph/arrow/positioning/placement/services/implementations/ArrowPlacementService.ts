@@ -11,6 +11,9 @@ import { injectable } from "inversify";
 import { jsonCache } from "$lib/shared/pictograph/shared/services/implementations/SimpleJsonCache";
 import type { AllPlacementData, JsonPlacementData } from "../../domain/models/PlacementDataTypes";
 import type { IArrowPlacementService } from "../contracts/IArrowPlacementService";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("ArrowPlacementService");
 
 @injectable()
 export class ArrowPlacementService implements IArrowPlacementService {
@@ -71,9 +74,9 @@ export class ArrowPlacementService implements IArrowPlacementService {
 
     // Log when we're loading a new grid mode (helps trace startup issues)
     // Include stack trace to help identify what triggered the load
-    console.log(`⚡ ArrowPlacementService: Loading ${actualGridMode} mode placement data (lazy load triggered)`);
+    debug.log(`Loading ${actualGridMode} mode placement data (lazy load triggered)`);
     if (actualGridMode === GridMode.BOX) {
-      console.trace(`📍 BOX mode placement load triggered from:`);
+      debug.log(`BOX mode placement load triggered from:`, new Error().stack);
     }
 
     try {

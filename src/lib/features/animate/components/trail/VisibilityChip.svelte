@@ -70,7 +70,7 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .visibility-chip:hover {

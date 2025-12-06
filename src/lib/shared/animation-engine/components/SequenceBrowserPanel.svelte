@@ -105,16 +105,25 @@
       await loadFeatureModule("discover");
 
       loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
-      normalizationService = tryResolve<ISequenceNormalizationService>(TYPES.ISequenceNormalizationService);
+      thumbnailService = tryResolve<IDiscoverThumbnailService>(
+        TYPES.IDiscoverThumbnailService
+      );
+      normalizationService = tryResolve<ISequenceNormalizationService>(
+        TYPES.ISequenceNormalizationService
+      );
 
       servicesReady = !!(loaderService && thumbnailService);
 
       if (!servicesReady) {
-        console.warn("⚠️ SequenceBrowserPanel: Some services failed to resolve");
+        console.warn(
+          "⚠️ SequenceBrowserPanel: Some services failed to resolve"
+        );
       }
     } catch (err) {
-      console.error("❌ SequenceBrowserPanel: Failed to initialize services:", err);
+      console.error(
+        "❌ SequenceBrowserPanel: Failed to initialize services:",
+        err
+      );
       error = "Failed to initialize services";
     }
   }
@@ -353,8 +362,8 @@
     top: 50%;
     right: var(--spacing-lg);
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -511,8 +520,8 @@
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #ec4899;
     border-radius: 50%;

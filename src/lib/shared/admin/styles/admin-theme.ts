@@ -60,7 +60,7 @@ export const ADMIN_SPACING = {
   md: '1rem',      // 16px
   lg: '1.5rem',    // 24px
   xl: '2rem',      // 32px
-  '2xl': '3rem',   // 48px
+  '2xl': '3rem',   // 50px
 } as const;
 
 /**

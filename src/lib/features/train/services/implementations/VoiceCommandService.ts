@@ -8,14 +8,6 @@
 import { injectable } from "inversify";
 import type { IVoiceCommandService } from "../contracts/IVoiceCommandService";
 
-// Type declaration for webkit speech recognition
-declare global {
-	interface Window {
-		webkitSpeechRecognition: any;
-		SpeechRecognition: any;
-	}
-}
-
 @injectable()
 export class VoiceCommandService implements IVoiceCommandService {
 	private recognition: any = null;
@@ -25,7 +17,7 @@ export class VoiceCommandService implements IVoiceCommandService {
 
 	constructor() {
 		// Check for browser support
-		const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+		const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 		if (SpeechRecognition) {
 			this.recognition = new SpeechRecognition();
 			this.setupRecognition();

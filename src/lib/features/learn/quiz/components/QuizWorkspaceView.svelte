@@ -1,8 +1,7 @@
 <!-- LessonWorkspaceView.svelte - Enhanced lesson workspace with full functionality -->
 <script lang="ts">
-	import QuizTimer from './QuizTimer.svelte';
+  import QuizTimer from "./QuizTimer.svelte";
   import { onDestroy, onMount } from "svelte";
-
 
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
@@ -308,8 +307,8 @@
   }
 
   .loading-spinner {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-left: 4px solid #667eea;
     border-radius: 50%;

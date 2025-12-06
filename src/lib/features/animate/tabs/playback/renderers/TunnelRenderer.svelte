@@ -7,7 +7,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-  import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
+  import {
+    resolve,
+    loadPixiModule,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
@@ -319,7 +323,7 @@
       <p>{error}</p>
     </div>
   {:else if primarySequence && secondarySequence}
-    <CanvasControls canvasId="tunnel" onOpenSettings={onOpenSettings} />
+    <CanvasControls canvasId="tunnel" {onOpenSettings} />
     <AnimatorCanvas
       blueProp={primaryBlueVisible && primaryVisible
         ? primaryAnimationState.bluePropState
@@ -406,8 +410,8 @@
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-top-color: #ec4899;
     border-radius: 50%;

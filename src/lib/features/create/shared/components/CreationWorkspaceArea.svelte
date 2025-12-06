@@ -70,16 +70,21 @@
   in:fade={{ duration: 400, delay: 200 }}
   out:fade={{ duration: 300 }}
 >
-  <WorkspacePanel
-    sequenceState={activeSequenceState}
-    createModuleState={CreateModuleState}
-    {practiceBeatIndex}
-    {animatingBeatNumber}
-    {isSideBySideLayout}
-    {shouldOrbitAroundCenter}
-    {animationStateRef}
-    {currentDisplayWord}
-  />
+  <!-- CRITICAL: {#key} block ensures fresh BeatGrid instances per tab
+       This prevents animation state pollution (beat-grid-display-state.svelte)
+       But we DON'T key the parent layout to avoid workspace visibility timing issues -->
+  {#key navigationState.activeTab}
+    <WorkspacePanel
+      sequenceState={activeSequenceState}
+      createModuleState={CreateModuleState}
+      {practiceBeatIndex}
+      {animatingBeatNumber}
+      {isSideBySideLayout}
+      {shouldOrbitAroundCenter}
+      {animationStateRef}
+      {currentDisplayWord}
+    />
+  {/key}
 </div>
 
 <style>

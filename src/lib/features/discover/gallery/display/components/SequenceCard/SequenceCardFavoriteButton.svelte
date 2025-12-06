@@ -17,7 +17,9 @@ Handles click events and accessibility.
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleClick(e: MouseEvent) {
@@ -46,10 +48,10 @@ Handles click events and accessibility.
     align-items: center;
     justify-content: center;
   }
-
-  .favorite {
-    min-width: 48px;
-    min-height: 48px;
+52px
+  .favorite {52px
+    min-width: 52px;
+    min-height: 52px;
     border: none;
     border-radius: 999px;
     background: rgba(17, 17, 23, 0.7);
@@ -81,18 +83,18 @@ Handles click events and accessibility.
   }
 
   /* Container query responsive sizing */
-  @container sequence-card (max-width: 249px) {
-    .favorite {
-      min-width: 48px;
-      min-height: 48px;
+  @container sequ52px-card (max-width: 249px) {
+    .favorite {52px
+      min-width: 52px;
+      min-height: 52px;
       font-size: 1rem;
     }
-  }
+  }52px
 
-  @container sequence-card (min-width: 250px) and (max-width: 299px) {
-    .favorite {
-      min-width: 48px;
-      min-height: 48px;
+  @container sequ52px-card (min-width: 250px) and (max-width: 299px) {
+    .favorite {52px
+      min-width: 52px;
+      min-height: 52px;
       font-size: 1.15rem;
     }
   }

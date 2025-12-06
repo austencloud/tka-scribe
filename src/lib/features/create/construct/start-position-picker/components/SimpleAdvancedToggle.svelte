@@ -53,7 +53,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     gap: 8px;
 
     /* Bigger touch target */
-    min-height: 48px;
+    min-height: 52px;
     padding: 10px 20px;
 
     /* Glass morphism styling */
@@ -130,7 +130,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   /* Mobile responsive */
   @media (max-width: 600px) {
     .view-mode-toggle {
-      min-height: 48px;
+      min-height: 52px;
       padding: 8px 16px;
       gap: 6px;
     }

@@ -5,7 +5,10 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
 <script lang="ts">
   import type { Type1LetterData } from "./Type1LetterData";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import { GridMode, GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridMode,
+    GridPositionGroup,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
@@ -53,7 +56,11 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
       }
     } catch (e) {
       error = e instanceof Error ? e.message : "Failed to load pictograph";
-      console.error("Failed to load pictograph for letter:", letterData.letter, e);
+      console.error(
+        "Failed to load pictograph for letter:",
+        letterData.letter,
+        e
+      );
     } finally {
       isLoading = false;
     }
@@ -116,7 +123,10 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
 
   // Size configuration
   type SizeKey = "small" | "medium" | "large";
-  const sizeConfig: Record<SizeKey, { pictographSize: number; fontSize: string }> = {
+  const sizeConfig: Record<
+    SizeKey,
+    { pictographSize: number; fontSize: string }
+  > = {
     small: { pictographSize: 100, fontSize: "1.25rem" },
     medium: { pictographSize: 160, fontSize: "1.75rem" },
     large: { pictographSize: 220, fontSize: "2.25rem" },
@@ -179,19 +189,13 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     <div class="motion-info">
       <div class="hand-info">
         <span class="hand-dot" style="background: {BLUE_COLOR}"></span>
-        <span
-          class="motion-type"
-          style="color: {MOTION_COLORS[blueMotion]}"
-        >
+        <span class="motion-type" style="color: {MOTION_COLORS[blueMotion]}">
           {getMotionLabel(blueMotion)}
         </span>
       </div>
       <div class="hand-info">
         <span class="hand-dot" style="background: {RED_COLOR}"></span>
-        <span
-          class="motion-type"
-          style="color: {MOTION_COLORS[redMotion]}"
-        >
+        <span class="motion-type" style="color: {MOTION_COLORS[redMotion]}">
           {getMotionLabel(redMotion)}
         </span>
       </div>
@@ -390,7 +394,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     color: rgba(255, 255, 255, 0.7);
     text-align: center;
     margin: 0;
-    max-width: 250px;
+    max-width: 252px;
     line-height: 1.4;
   }
 

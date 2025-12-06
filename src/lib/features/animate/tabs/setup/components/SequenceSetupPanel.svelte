@@ -74,7 +74,9 @@
   onMount(() => {
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
       const cleanup = deviceDetector.onCapabilitiesChanged(() => {
@@ -128,19 +130,39 @@
     <button
       class="back-button"
       onclick={handleBack}
-      transition:fly={{ y: -SLIDE.sm, duration: DURATION.normal, easing: cubicOut }}
+      transition:fly={{
+        y: -SLIDE.sm,
+        duration: DURATION.normal,
+        easing: cubicOut,
+      }}
     >
       <i class="fas fa-arrow-left"></i>
       Back to Modes
     </button>
 
     <!-- Title -->
-    <h2 class="panel-title" transition:fly={{ y: -SLIDE.sm, duration: DURATION.normal, delay: 50, easing: cubicOut }}>
+    <h2
+      class="panel-title"
+      transition:fly={{
+        y: -SLIDE.sm,
+        duration: DURATION.normal,
+        delay: 50,
+        easing: cubicOut,
+      }}
+    >
       Configure {selectedMode.charAt(0).toUpperCase() + selectedMode.slice(1)} Mode
     </h2>
 
     <!-- Slots Grid -->
-    <div class="slots-grid" transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 100, easing: cubicOut }}>
+    <div
+      class="slots-grid"
+      transition:fly={{
+        y: SLIDE.md,
+        duration: DURATION.normal,
+        delay: 100,
+        easing: cubicOut,
+      }}
+    >
       {#each requiredSlots as slotId, i (slotId)}
         {@const sequence = sequenceSlots.get(slotId)}
         {@const meta = slotMetadata[slotId]}
@@ -155,7 +177,9 @@
             <!-- Filled slot -->
             <div class="slot-filled">
               <div class="sequence-info">
-                <span class="sequence-name">{sequence.name || sequence.word}</span>
+                <span class="sequence-name"
+                  >{sequence.name || sequence.word}</span
+                >
                 <span class="sequence-meta">
                   {sequence.beats.length} beats
                   {#if sequence.author}
@@ -202,14 +226,27 @@
       class="start-button"
       disabled={!isConfigurationComplete}
       onclick={handleStart}
-      transition:fly={{ y: SLIDE.md, duration: DURATION.normal, delay: 150, easing: cubicOut }}
+      transition:fly={{
+        y: SLIDE.md,
+        duration: DURATION.normal,
+        delay: 150,
+        easing: cubicOut,
+      }}
     >
       <i class="fas fa-play"></i>
       Start Animation
     </button>
 
     {#if !isConfigurationComplete}
-      <p class="helper-text" transition:fly={{ y: SLIDE.sm, duration: DURATION.normal, delay: 200, easing: cubicOut }}>
+      <p
+        class="helper-text"
+        transition:fly={{
+          y: SLIDE.sm,
+          duration: DURATION.normal,
+          delay: 200,
+          easing: cubicOut,
+        }}
+      >
         Fill all sequence slots to continue
       </p>
     {/if}
@@ -217,11 +254,14 @@
 
   <!-- Sequence Browser Panel -->
   <SequenceBrowserPanel
-    mode={currentSlotId as any || "primary"}
+    mode={(currentSlotId as any) || "primary"}
     show={browserOpen}
     placement={isMobile ? "bottom" : "right"}
     onSelect={handleSequenceSelected}
-    onClose={() => { browserOpen = false; currentSlotId = null; }}
+    onClose={() => {
+      browserOpen = false;
+      currentSlotId = null;
+    }}
   />
 </div>
 
@@ -248,8 +288,9 @@
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out),
-                border-color var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      background var(--duration-fast, 150ms) var(--ease-out),
+      border-color var(--duration-fast, 150ms) var(--ease-out);
     align-self: flex-start;
   }
 
@@ -293,8 +334,9 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 18px;
-    transition: background var(--duration-fast, 150ms) var(--ease-out),
-                border-color var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      background var(--duration-fast, 150ms) var(--ease-out),
+      border-color var(--duration-fast, 150ms) var(--ease-out);
   }
 
   .slot-header {
@@ -325,9 +367,10 @@
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out),
-                border-color var(--duration-fast, 150ms) var(--ease-out),
-                color var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      background var(--duration-fast, 150ms) var(--ease-out),
+      border-color var(--duration-fast, 150ms) var(--ease-out),
+      color var(--duration-fast, 150ms) var(--ease-out);
   }
 
   .slot-empty:hover {
@@ -379,8 +422,9 @@
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out),
-                color var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      background var(--duration-fast, 150ms) var(--ease-out),
+      color var(--duration-fast, 150ms) var(--ease-out);
   }
 
   .change-btn {
@@ -421,9 +465,10 @@
     font-size: 1.125rem;
     font-weight: 600;
     cursor: pointer;
-    transition: filter var(--duration-fast, 150ms) var(--ease-out),
-                transform var(--duration-fast, 150ms) var(--ease-out),
-                opacity var(--duration-fast, 150ms) var(--ease-out);
+    transition:
+      filter var(--duration-fast, 150ms) var(--ease-out),
+      transform var(--duration-fast, 150ms) var(--ease-out),
+      opacity var(--duration-fast, 150ms) var(--ease-out);
     align-self: center;
     max-width: 400px;
     width: 100%;
@@ -483,7 +528,7 @@
     }
 
     .start-button {
-      min-height: 48px;
+      min-height: 52px;
       padding: 14px 24px;
       font-size: 0.9375rem;
     }

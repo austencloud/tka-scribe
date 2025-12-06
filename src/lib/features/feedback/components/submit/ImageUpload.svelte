@@ -23,23 +23,23 @@
   // Generate previews when images change
   $effect(() => {
     // Clean up old previews
-    previousUrls.forEach(url => URL.revokeObjectURL(url));
+    previousUrls.forEach((url) => URL.revokeObjectURL(url));
 
     // Generate new previews
-    const newPreviews = images.map(file => ({
+    const newPreviews = images.map((file: File) => ({
       file,
       url: URL.createObjectURL(file),
     }));
 
     // Store URLs for next cleanup
-    previousUrls = newPreviews.map(p => p.url);
+    previousUrls = newPreviews.map((p: { file: File; url: string }) => p.url);
 
     // Update previews
     previews = newPreviews;
 
     // Clean up on unmount
     return () => {
-      previousUrls.forEach(url => URL.revokeObjectURL(url));
+      previousUrls.forEach((url) => URL.revokeObjectURL(url));
     };
   });
 
@@ -86,7 +86,7 @@
     const imageFiles: File[] = [];
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
-      if (item.type.startsWith("image/")) {
+      if (item && item.type.startsWith("image/")) {
         const file = item.getAsFile();
         if (file) {
           imageFiles.push(file);
@@ -102,7 +102,9 @@
 
   // Add files to the list
   function addFiles(newFiles: File[]) {
-    const imageFiles = newFiles.filter(file => file.type.startsWith("image/"));
+    const imageFiles = newFiles.filter((file) =>
+      file.type.startsWith("image/")
+    );
     const remainingSlots = maxImages - images.length;
     const filesToAdd = imageFiles.slice(0, remainingSlots);
 
@@ -126,34 +128,29 @@
 </script>
 
 <div class="image-upload">
-  <!-- Compact upload button -->
+  <!-- Minimal upload button -->
   {#if images.length < maxImages}
-    <div
-      class="upload-zone"
+    <button
+      type="button"
+      class="upload-button"
       class:dragging={isDragging}
-      class:disabled
+      onclick={() => !disabled && fileInput.click()}
       ondrop={handleDrop}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}
+      {disabled}
+      title="Upload image or paste screenshot"
     >
-      <button
-        type="button"
-        class="upload-button"
-        onclick={() => !disabled && fileInput.click()}
-        disabled={disabled}
-      >
-        <i class="fas fa-paperclip"></i>
-        <span>Attach image</span>
-      </button>
-      <span class="upload-hint">or paste screenshot ({maxImages - images.length} slots)</span>
-    </div>
+      <i class="fas fa-paperclip"></i>
+      <span>Attach image</span>
+    </button>
     <input
       type="file"
       bind:this={fileInput}
       onchange={handleFileSelect}
       accept="image/*"
       multiple
-      disabled={disabled}
+      {disabled}
       style="display: none;"
     />
   {/if}
@@ -168,7 +165,7 @@
             type="button"
             class="remove-btn"
             onclick={() => removeImage(index)}
-            disabled={disabled}
+            {disabled}
             aria-label="Remove image"
           >
             <i class="fas fa-times"></i>
@@ -183,64 +180,50 @@
 <style>
   .image-upload {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .upload-zone {
-    display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    transition: all 200ms ease;
-  }
-
-  .upload-zone.dragging {
-    border-color: #6366f1;
-    background: rgba(99, 102, 241, 0.1);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-  }
-
-  .upload-zone.disabled {
-    opacity: 0.5;
+    flex-wrap: wrap;
   }
 
   .upload-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 6px 12px;
+    height: 32px;
+    padding: 0 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 150ms ease;
+    flex-shrink: 0;
     white-space: nowrap;
   }
 
   .upload-button:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .upload-button.dragging {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
   }
 
   .upload-button:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
   .upload-button i {
     font-size: 0.75rem;
-  }
-
-  .upload-hint {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
-    white-space: nowrap;
   }
 
   .previews {

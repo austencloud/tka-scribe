@@ -1,7 +1,7 @@
 <!--
 OrientationSection.svelte - Collapsible section for selecting an orientation (start or end)
 Uses 2x2 grid with all 4 orientation options
-48px touch targets, modern Material 2026 design
+50px touch targets, modern Material 2026 design
 -->
 <script lang="ts">
   import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
@@ -11,7 +11,7 @@ Uses 2x2 grid with all 4 orientation options
     title,
     description,
     currentOrientation = null,
-    onOrientationChange
+    onOrientationChange,
   } = $props<{
     title: string;
     description: string;
@@ -29,11 +29,16 @@ Uses 2x2 grid with all 4 orientation options
   const displayValue = $derived.by(() => {
     if (!currentOrientation) return "Any";
     switch (currentOrientation) {
-      case Orientation.IN: return "In";
-      case Orientation.OUT: return "Out";
-      case Orientation.CLOCK: return "Clock";
-      case Orientation.COUNTER: return "Counter";
-      default: return "?";
+      case Orientation.IN:
+        return "In";
+      case Orientation.OUT:
+        return "Out";
+      case Orientation.CLOCK:
+        return "Clock";
+      case Orientation.COUNTER:
+        return "Counter";
+      default:
+        return "?";
     }
   });
 
@@ -73,10 +78,7 @@ Uses 2x2 grid with all 4 orientation options
 
   {#if isExpanded}
     <div class="section-content">
-      <OrientationPickerGrid
-        {currentOrientation}
-        {onOrientationChange}
-      />
+      <OrientationPickerGrid {currentOrientation} {onOrientationChange} />
     </div>
   {/if}
 </section>

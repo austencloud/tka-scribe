@@ -52,7 +52,7 @@
     border: none;
     color: white;
     padding: 12px 16px;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;

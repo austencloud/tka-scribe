@@ -5,8 +5,8 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   let { onclick, isAnimating = false } = $props<{
     onclick?: () => void;
@@ -43,9 +43,9 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Desktop: 48px, Mobile: 48px minimum (iOS/Android touch target guidelines) */
-    width: 48px;
-    height: 48px;
+    /* Desktop: 52px, Mobile: 52px minimum (iOS/Android touch target guidelines) */
+    width: 52px;
+    height: 52px;
     border: none;
     background: rgba(
       59,
@@ -90,20 +90,20 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-size: 18px;
   }
 
-  /* Mobile responsive adjustments - ALWAYS 48px minimum per iOS/Android guidelines */
+  /* Mobile responsive adjustments - ALWAYS 52px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .play-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 16px;
     }
   }
 
-  /* Keep 48px on all smaller screens - reduce gaps instead of buttons */
+  /* Keep 52px on all smaller screens - reduce gaps instead of buttons */
   @media (max-width: 480px) {
     .play-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 16px;
     }
 
@@ -114,8 +114,8 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   @media (max-width: 320px) {
     .play-button {
-      width: 48px; /* NEVER below 48px for accessibility */
-      height: 48px;
+      width: 52px; /* NEVER below 52px for accessibility */
+      height: 52px;
       font-size: 16px;
     }
 
@@ -124,11 +124,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
   }
 
-  /* Landscape mobile: Maintain 48px minimum */
+  /* Landscape mobile: Maintain 52px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .play-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
     }
 
     .play-button i {

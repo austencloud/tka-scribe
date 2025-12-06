@@ -101,35 +101,35 @@
     visibilityUpdateCount; // Force reactivity
     return showTKA !== undefined
       ? showTKA
-      : visibilityManager.getGlyphVisibility("TKA");
+      : visibilityManager.getGlyphVisibility("tkaGlyph");
   });
 
   const effectiveShowVTG = $derived.by(() => {
     visibilityUpdateCount;
     return showVTG !== undefined
       ? showVTG
-      : visibilityManager.getGlyphVisibility("VTG");
+      : visibilityManager.getGlyphVisibility("vtgGlyph");
   });
 
   const effectiveShowElemental = $derived.by(() => {
     visibilityUpdateCount;
     return showElemental !== undefined
       ? showElemental
-      : visibilityManager.getGlyphVisibility("Elemental");
+      : visibilityManager.getGlyphVisibility("elementalGlyph");
   });
 
   const effectiveShowPositions = $derived.by(() => {
     visibilityUpdateCount;
     return showPositions !== undefined
       ? showPositions
-      : visibilityManager.getGlyphVisibility("Positions");
+      : visibilityManager.getGlyphVisibility("positionsGlyph");
   });
 
   const effectiveShowReversals = $derived.by(() => {
     visibilityUpdateCount;
     return showReversals !== undefined
       ? showReversals
-      : visibilityManager.getGlyphVisibility("Reversals");
+      : visibilityManager.getGlyphVisibility("reversalIndicators");
   });
 
   const effectiveShowNonRadialPoints = $derived.by(() => {

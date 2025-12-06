@@ -1,9 +1,9 @@
 <!-- SocialLinks.svelte - Social media links section -->
 <script lang="ts">
   import { browser } from "$app/environment";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import SocialIcons from "../icons/SocialIcons.svelte";
 
@@ -153,8 +153,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .social-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: linear-gradient(
       135deg,
       var(--primary-color),

@@ -6,7 +6,10 @@
 -->
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
-  import { getTrainPracticeState, type RecentSequence } from "../../state/train-practice-state.svelte";
+  import {
+    getTrainPracticeState,
+    type RecentSequence,
+  } from "../../state/train-practice-state.svelte";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { tryResolve } from "$lib/shared/inversify/di";
@@ -28,7 +31,9 @@
   const recentSequences = $derived(practiceState.recentSequences);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleBrowseClick() {
@@ -69,7 +74,7 @@
 
     return new Date(timestamp).toLocaleDateString("en-US", {
       month: "short",
-      day: "numeric"
+      day: "numeric",
     });
   }
 </script>
@@ -83,7 +88,9 @@
 
     <!-- Title -->
     <h2 class="prompt-title">Select a Sequence to Practice</h2>
-    <p class="prompt-subtitle">Choose a sequence to start your training session</p>
+    <p class="prompt-subtitle">
+      Choose a sequence to start your training session
+    </p>
 
     <!-- Recent Sequences (if any) -->
     {#if recentSequences.length > 0}
@@ -102,7 +109,9 @@
               <div class="recent-name">{recent.word ?? recent.name}</div>
               <div class="recent-meta">
                 <span class="beat-count">{recent.beatCount} beats</span>
-                <span class="time-ago">{formatTimeAgo(recent.lastPracticedAt)}</span>
+                <span class="time-ago"
+                  >{formatTimeAgo(recent.lastPracticedAt)}</span
+                >
               </div>
             </button>
           {/each}
@@ -114,7 +123,11 @@
     <button
       class="browse-button"
       onclick={handleBrowseClick}
-      in:fly={{ y: 10, duration: 200, delay: recentSequences.length > 0 ? 300 : 100 }}
+      in:fly={{
+        y: 10,
+        duration: 200,
+        delay: recentSequences.length > 0 ? 300 : 100,
+      }}
     >
       <i class="fas fa-folder-open"></i>
       <span>Browse All Sequences</span>
@@ -157,7 +170,11 @@
     justify-content: center;
     width: clamp(56px, 14vw, 80px);
     height: clamp(56px, 14vw, 80px);
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2),
+      rgba(139, 92, 246, 0.2)
+    );
     border: 2px solid rgba(59, 130, 246, 0.3);
     border-radius: clamp(14px, 4vw, 20px);
     color: #60a5fa;
@@ -212,7 +229,7 @@
     flex-direction: column;
     justify-content: center;
     gap: clamp(0.25rem, 1vw, 0.375rem);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(0.75rem, 3vw, 1rem);
     background: linear-gradient(
       135deg,
@@ -276,7 +293,7 @@
     justify-content: center;
     gap: clamp(0.5rem, 2vw, 0.75rem);
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(0.875rem, 3.5vw, 1.125rem) clamp(1rem, 4vw, 1.5rem);
     margin-top: clamp(0.5rem, 2vw, 0.75rem);
     background: linear-gradient(135deg, #3b82f6, #8b5cf6);

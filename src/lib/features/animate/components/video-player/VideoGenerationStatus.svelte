@@ -90,7 +90,7 @@
     border: none;
     color: white;
     padding: 10px 14px;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 12px;

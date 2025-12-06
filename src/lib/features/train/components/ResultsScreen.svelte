@@ -254,8 +254,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(0, 0, 0, 0.95);
-		backdrop-filter: blur(10px);
+		background: rgba(0, 0, 0, 0.98);
 		z-index: 100;
 		animation: fadeIn 0.4s ease-out;
 	}

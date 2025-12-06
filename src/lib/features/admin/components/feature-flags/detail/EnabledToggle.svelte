@@ -48,7 +48,7 @@
     background: transparent;
     cursor: pointer;
     color: var(--text-secondary-current);
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .toggle-track {
@@ -79,7 +79,8 @@
   .toggle-button.enabled .toggle-thumb {
     left: 27px;
     background: var(--accent-2026-emerald);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--accent-2026-emerald) 40%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--accent-2026-emerald) 40%, transparent);
   }
 
   .toggle-label {

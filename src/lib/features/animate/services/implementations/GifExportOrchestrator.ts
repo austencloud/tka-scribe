@@ -298,7 +298,7 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
       beatIndex < panelState.sequenceData.beats.length
     ) {
       const beatData = panelState.sequenceData.beats[beatIndex];
-      return beatData.letter ? (beatData.letter as Letter) : null;
+      return beatData?.letter ? (beatData.letter as Letter) : null;
     }
 
     return null;

@@ -4,7 +4,7 @@ Shows diamond or box grid respecting user's theme settings.
 Uses the actual GridSvg component for consistency with the rest of the app.
 -->
 <script lang="ts">
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import GridSvg from "$lib/shared/pictograph/grid/components/GridSvg.svelte";
 
   type GridType = "diamond" | "box" | "merged";
@@ -54,7 +54,11 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
   // Get size class based on size prop
   const sizeClass = $derived(
-    size === "small" ? "grid-small" : size === "large" ? "grid-large" : "grid-medium"
+    size === "small"
+      ? "grid-small"
+      : size === "large"
+        ? "grid-large"
+        : "grid-medium"
   );
 </script>
 
@@ -144,7 +148,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
   /* Direction labels */
   .direction-label {
-    font-size: 48px;
+    font-size: 50px;
     font-weight: 700;
     fill: #374151;
     font-family:

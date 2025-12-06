@@ -346,8 +346,8 @@
   }
 
   .loading-state .spinner {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border: 4px solid rgba(99, 102, 241, 0.2);
     border-top-color: #6366f1;
     border-radius: 50%;

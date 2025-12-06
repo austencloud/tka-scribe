@@ -7,6 +7,7 @@
 
 import { PracticeMode } from "../domain/enums/TrainEnums";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 const MAX_RECENT_SEQUENCES = 3;
 
@@ -57,6 +58,8 @@ interface PracticeState {
 	recentSequences: RecentSequence[];
 	// Grid overlay settings
 	gridScale: number; // 0.5 to 1.5, default 1.0
+	gridMode: GridMode; // BOX (cardinal) or DIAMOND (intercardinal)
+	propsVisible: boolean; // Toggle prop visibility on camera overlay
 }
 
 const DEFAULT_STATE: PracticeState = {
@@ -79,7 +82,9 @@ const DEFAULT_STATE: PracticeState = {
 	lastSequenceId: null,
 	lastSequenceData: null,
 	recentSequences: [],
-	gridScale: 1.0
+	gridScale: 1.0,
+	gridMode: GridMode.DIAMOND,
+	propsVisible: true
 };
 
 export function createTrainPracticeState() {
@@ -145,6 +150,22 @@ export function createTrainPracticeState() {
 	 */
 	function setGridScale(scale: number) {
 		state.gridScale = Math.max(0.5, Math.min(1.5, scale));
+		persistSettings();
+	}
+
+	/**
+	 * Set the grid mode (BOX or DIAMOND)
+	 */
+	function setGridMode(mode: GridMode) {
+		state.gridMode = mode;
+		persistSettings();
+	}
+
+	/**
+	 * Toggle prop visibility on camera overlay
+	 */
+	function setPropsVisible(visible: boolean) {
+		state.propsVisible = visible;
 		persistSettings();
 	}
 
@@ -252,10 +273,18 @@ export function createTrainPracticeState() {
 		get gridScale() {
 			return state.gridScale;
 		},
+		get gridMode() {
+			return state.gridMode;
+		},
+		get propsVisible() {
+			return state.propsVisible;
+		},
 		setMode,
 		setDisplayView,
 		cycleDisplayView,
 		setGridScale,
+		setGridMode,
+		setPropsVisible,
 		updateAdaptiveConfig,
 		updateStepConfig,
 		updateTimedConfig,

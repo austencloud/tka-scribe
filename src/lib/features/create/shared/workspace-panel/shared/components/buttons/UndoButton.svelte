@@ -2,8 +2,8 @@
   import { UndoOperationType } from "$lib/features/create/shared/services/contracts/IUndoService";
   import type { createCreateModuleState } from "$lib/features/create/shared/state/create-module-state.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   type CreateModuleState = ReturnType<typeof createCreateModuleState>;
 
@@ -116,8 +116,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -163,36 +163,36 @@ import { TYPES } from "$lib/shared/inversify/types";
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
-  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 52px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .undo-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .undo-button {
-      width: 48px; /* Maintain 48px minimum */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum */
+      height: 52px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .undo-button {
-      width: 48px; /* NEVER below 48px for accessibility */
-      height: 48px;
+      width: 52px; /* NEVER below 52px for accessibility */
+      height: 52px;
       font-size: 14px;
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSCAPE MOBILE: Maintain 52px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .undo-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
       font-size: 14px;
     }
   }

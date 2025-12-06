@@ -275,7 +275,7 @@ Refactored to use Drawer component for consistent behavior
     top: 50%;
     left: 18px;
     width: 4px;
-    height: 48px;
+    height: 52px;
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);

@@ -4,20 +4,22 @@
   Displays a notification with icon, message, and action button.
 -->
 <script lang="ts">
-  import type { UserNotification } from "../domain/models/notification-models";
+  import type {
+    UserNotification,
+    NotificationType,
+  } from "../domain/models/notification-models";
   import { NOTIFICATION_TYPE_CONFIG } from "../domain/models/notification-models";
   import { notificationService } from "../services/implementations/NotificationService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
-  let {
-    notification,
-    onAction,
-  } = $props<{
+  let { notification, onAction } = $props<{
     notification: UserNotification;
     onAction?: (notification: UserNotification) => void;
   }>();
 
-  const config = $derived(NOTIFICATION_TYPE_CONFIG[notification.type]);
+  const config = $derived(
+    NOTIFICATION_TYPE_CONFIG[notification.type as NotificationType]
+  );
 
   // Format timestamp
   const timeAgo = $derived(() => {

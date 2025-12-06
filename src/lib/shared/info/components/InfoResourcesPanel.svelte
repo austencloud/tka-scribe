@@ -140,8 +140,8 @@
   }
 
   .resource-icon {
-    width: clamp(50px, 10cqh, 80px);
-    height: clamp(50px, 10cqh, 80px);
+    width: clamp(52px, 10cqh, 80px);
+    height: clamp(52px, 10cqh, 80px);
     background: rgba(255, 255, 255, 0.95);
     border-radius: clamp(0.375rem, 1.25cqh, 0.625rem);
     display: flex;

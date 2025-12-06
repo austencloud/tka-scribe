@@ -1,9 +1,12 @@
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { SUPPORT_OPTIONS, SOCIAL_LINKS } from "../../../shared/info/domain/content";
+  import {
+    SUPPORT_OPTIONS,
+    SOCIAL_LINKS,
+  } from "../../../shared/info/domain/content";
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
@@ -18,36 +21,42 @@ import { TYPES } from "$lib/shared/inversify/types";
       shortName: "VTG",
       url: "https://noelyee.com/instruction/vulcan-tech-gospel/",
       creator: "Noel Yee & Jordan Campbell",
-      desc: "Foundational poi theory establishing core concepts for technical spinning mechanics and transitions."
+      desc: "Foundational poi theory establishing core concepts for technical spinning mechanics and transitions.",
     },
     {
       name: "9 Square Theory",
       shortName: "9 Square",
       url: "https://www.spinmorepoi.com/advanced/",
       creator: "Charlie Cushing",
-      desc: "Advanced framework for connecting unit circles with a geometric approach to spatial relationships."
+      desc: "Advanced framework for connecting unit circles with a geometric approach to spatial relationships.",
     },
     {
       name: "Flow Arts Institute",
       shortName: "FAI",
       url: "https://flowartsinstitute.com/",
       creator: "Community Organization",
-      desc: "Retreats, workshops, and festivals fostering flow arts education and community building."
+      desc: "Retreats, workshops, and festivals fostering flow arts education and community building.",
     },
     {
       name: "Playpoi",
       shortName: "Playpoi",
       url: "https://playpoi.com/",
       creator: "Nick Woolsey",
-      desc: "Extensive library of poi tutorials covering beginner to advanced techniques."
+      desc: "Extensive library of poi tutorials covering beginner to advanced techniques.",
     },
   ];
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
-  async function handleSupportClick(event: MouseEvent, name: string, url: string) {
+  async function handleSupportClick(
+    event: MouseEvent,
+    name: string,
+    url: string
+  ) {
     hapticService?.trigger("selection");
 
     if (name === "Zelle") {
@@ -72,7 +81,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   <!-- Hero -->
   <header class="hero">
     <h1>TKA Studio</h1>
-    <p>Build, animate, and share flow arts sequences with The Kinetic Alphabet notation system.</p>
+    <p>
+      Build, animate, and share flow arts sequences with The Kinetic Alphabet
+      notation system.
+    </p>
   </header>
 
   <!-- Support Section -->
@@ -81,7 +93,9 @@ import { TYPES } from "$lib/shared/inversify/types";
       <i class="fas fa-heart" aria-hidden="true"></i>
       Support TKA
     </h2>
-    <p class="section-desc">Help fund development and keep TKA free for everyone</p>
+    <p class="section-desc">
+      Help fund development and keep TKA free for everyone
+    </p>
 
     <div class="donate-grid">
       {#each SUPPORT_OPTIONS as option}
@@ -98,7 +112,9 @@ import { TYPES } from "$lib/shared/inversify/types";
             <i class={option.icon} aria-hidden="true"></i>
           </div>
           <span class="donate-label">
-            {option.name === "Zelle" && copiedEmail ? "Email Copied!" : option.name}
+            {option.name === "Zelle" && copiedEmail
+              ? "Email Copied!"
+              : option.name}
           </span>
           {#if option.name === "Zelle" && !copiedEmail}
             <span class="donate-hint">Tap to copy email</span>
@@ -134,7 +150,9 @@ import { TYPES } from "$lib/shared/inversify/types";
       <i class="fas fa-book-open" aria-hidden="true"></i>
       Standing on Shoulders
     </h2>
-    <p class="section-desc">TKA builds upon foundational work by pioneers in flow arts theory</p>
+    <p class="section-desc">
+      TKA builds upon foundational work by pioneers in flow arts theory
+    </p>
 
     <div class="lineage-grid">
       {#each lineage as link}
@@ -147,7 +165,10 @@ import { TYPES } from "$lib/shared/inversify/types";
         >
           <div class="lineage-header">
             <span class="lineage-name">{link.name}</span>
-            <i class="fas fa-external-link-alt lineage-link-icon" aria-hidden="true"></i>
+            <i
+              class="fas fa-external-link-alt lineage-link-icon"
+              aria-hidden="true"
+            ></i>
           </div>
           <span class="lineage-creator">{link.creator}</span>
           <p class="lineage-desc">{link.desc}</p>
@@ -198,7 +219,11 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   /* Section Styles */
   section {
-    background: linear-gradient(145deg, hsl(230 30% 12%) 0%, hsl(240 25% 8%) 100%);
+    background: linear-gradient(
+      145deg,
+      hsl(230 30% 12%) 0%,
+      hsl(240 25% 8%) 100%
+    );
     border: 1px solid hsl(240 30% 25% / 0.5);
     border-radius: 20px;
     padding: clamp(1.5rem, 3vw, 2rem);
@@ -207,13 +232,18 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   section::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(240 60% 65% / 0.4), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(240 60% 65% / 0.4),
+      transparent
+    );
   }
 
   section h2 {
@@ -252,7 +282,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 0.75rem;
     padding: 1.5rem 1rem;
-    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
+    background: linear-gradient(
+      160deg,
+      hsl(230 30% 15%) 0%,
+      hsl(230 25% 10%) 100%
+    );
     border: 1px solid hsl(230 25% 22%);
     border-radius: 14px;
     color: hsl(0 0% 95%);
@@ -264,10 +298,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .donate-card::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(160deg, var(--brand-color) / 0.08, transparent 60%);
+    background: linear-gradient(
+      160deg,
+      var(--brand-color) / 0.08,
+      transparent 60%
+    );
     opacity: 0;
     transition: opacity 0.2s ease;
   }
@@ -275,7 +313,9 @@ import { TYPES } from "$lib/shared/inversify/types";
   .donate-card:hover {
     border-color: var(--brand-color);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px hsl(230 50% 5% / 0.5), 0 0 0 1px var(--brand-color) / 0.3;
+    box-shadow:
+      0 8px 24px hsl(230 50% 5% / 0.5),
+      0 0 0 1px var(--brand-color) / 0.3;
   }
 
   .donate-card:hover::after {
@@ -297,7 +337,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: linear-gradient(135deg, var(--brand-color) / 0.15, var(--brand-color) / 0.05);
+    background: linear-gradient(
+      135deg,
+      var(--brand-color) / 0.15,
+      var(--brand-color) / 0.05
+    );
     border: 1px solid var(--brand-color) / 0.2;
     border-radius: 12px;
     font-size: 1.5rem;
@@ -312,7 +356,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .donate-card.copied .donate-icon {
-    background: linear-gradient(135deg, hsl(145 60% 45% / 0.2), hsl(145 60% 45% / 0.05));
+    background: linear-gradient(
+      135deg,
+      hsl(145 60% 45% / 0.2),
+      hsl(145 60% 45% / 0.05)
+    );
     border-color: hsl(145 60% 45% / 0.3);
     color: hsl(145 60% 55%);
   }
@@ -358,7 +406,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 0.5rem;
     padding: 0.625rem 1.125rem;
-    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
+    background: linear-gradient(
+      160deg,
+      hsl(230 30% 15%) 0%,
+      hsl(230 25% 10%) 100%
+    );
     border: 1px solid hsl(230 25% 22%);
     border-radius: 10px;
     color: hsl(0 0% 93%);
@@ -376,7 +428,11 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .social-btn:hover {
     border-color: var(--brand-color);
-    background: linear-gradient(160deg, var(--brand-color) / 0.15, var(--brand-color) / 0.05);
+    background: linear-gradient(
+      160deg,
+      var(--brand-color) / 0.15,
+      var(--brand-color) / 0.05
+    );
     transform: translateY(-1px);
   }
 
@@ -395,7 +451,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     flex-direction: column;
     padding: 1.25rem;
-    background: linear-gradient(160deg, hsl(230 30% 15%) 0%, hsl(230 25% 10%) 100%);
+    background: linear-gradient(
+      160deg,
+      hsl(230 30% 15%) 0%,
+      hsl(230 25% 10%) 100%
+    );
     border: 1px solid hsl(230 25% 22%);
     border-left: 3px solid hsl(240 60% 60% / 0.5);
     border-radius: 12px;
@@ -465,8 +525,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .donate-icon {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 1.25rem;
     }
 

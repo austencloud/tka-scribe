@@ -134,13 +134,13 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 
   // Check if turn numbers should be visible
   let turnNumbersVisible = $state(
-    visibilityManager.getGlyphVisibility("TurnNumbers")
+    visibilityManager.getGlyphVisibility("turnNumbers")
   );
 
   // Register observer to update turn numbers visibility when it changes
   onMount(() => {
     const observer = () => {
-      turnNumbersVisible = visibilityManager.getGlyphVisibility("TurnNumbers");
+      turnNumbersVisible = visibilityManager.getGlyphVisibility("turnNumbers");
     };
 
     visibilityManager.registerObserver(observer, ["glyph"]);
@@ -151,8 +151,8 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   });
 </script>
 
-<!-- TKA Glyph Group -->
-{#if hasLetter}
+<!-- TKA Glyph Group - only render when dimensions are loaded to prevent flash -->
+{#if hasLetter && dimensionsLoaded}
   <g
     class="tka-glyph"
     class:visible
@@ -182,16 +182,14 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     />
 
     <!-- Turns Column - displays turn numbers to the right of the letter -->
-    {#if dimensionsLoaded}
-      <TurnsColumn
-        {turnsTuple}
-        {letter}
-        {letterDimensions}
-        {pictographData}
-        visible={turnNumbersVisible}
-        {previewMode}
-      />
-    {/if}
+    <TurnsColumn
+      {turnsTuple}
+      {letter}
+      {letterDimensions}
+      {pictographData}
+      visible={turnNumbersVisible}
+      {previewMode}
+    />
   </g>
 {/if}
 

@@ -20,17 +20,15 @@ Uses shared PositionSection components for consistent UX with Generate module
     onClearAll: () => void;
   }>();
 
-  const hasAnySelection = $derived(startPosition !== null || endPosition !== null);
+  const hasAnySelection = $derived(
+    startPosition !== null || endPosition !== null
+  );
 </script>
 
 <div class="position-options-content">
   {#if hasAnySelection}
     <div class="clear-section">
-      <button
-        class="clear-all-button"
-        onclick={onClearAll}
-        type="button"
-      >
+      <button class="clear-all-button" onclick={onClearAll} type="button">
         Clear All Positions
       </button>
     </div>
@@ -68,7 +66,7 @@ Uses shared PositionSection components for consistent UX with Generate module
 
   .clear-all-button {
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
     padding: 12px 24px;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);

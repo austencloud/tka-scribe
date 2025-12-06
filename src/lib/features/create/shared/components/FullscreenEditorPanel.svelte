@@ -22,6 +22,8 @@
   import { goto } from "$app/navigation";
   import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
 
   type EditMode = "turns" | "transforms";
 
@@ -63,6 +65,8 @@
   // Local state
   let currentMode = $state<EditMode>("transforms");
   let isTransforming = $state(false);
+  let showConfirmDialog = $state(false);
+  let pendingSequenceTransfer = $state<any>(null);
 
   // Get selected beat from the main sequence state
   const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
@@ -257,6 +261,174 @@
     } catch (err) {
       console.error("Failed to generate preview URL:", err);
     }
+  }
+
+  function handleEditInConstructor() {
+    if (!sequence) return;
+    hapticService?.trigger("selection");
+
+    // Check if constructor tab has an existing sequence
+    const constructTabState = ctx.constructTabState;
+    if (!constructTabState?.sequenceState) {
+      console.error("Constructor tab state not initialized");
+      return;
+    }
+
+    const hasExistingSequence = constructTabState.sequenceState.hasSequence();
+
+    if (hasExistingSequence) {
+      // Show confirmation dialog
+      pendingSequenceTransfer = sequence;
+      showConfirmDialog = true;
+    } else {
+      // Proceed directly
+      performSequenceTransfer(sequence);
+    }
+  }
+
+  async function performSequenceTransfer(sequenceToTransfer: any) {
+    const constructTabState = ctx.constructTabState;
+    if (!constructTabState?.sequenceState) return;
+
+    console.log("=== SEQUENCE TRANSFER DEBUG ===");
+    console.log("Source sequence:", sequenceToTransfer);
+
+    // Deep clone the sequence to avoid reference issues
+    const sequenceCopy = JSON.parse(JSON.stringify(sequenceToTransfer));
+
+    // Close panel
+    handleClose();
+
+    // CRITICAL FIX: Switch to constructor tab FIRST
+    // This ensures any persistence restoration happens BEFORE we set the sequence
+    console.log("Switching to constructor tab FIRST");
+    navigationState.setActiveTab("constructor");
+
+    // Wait for tab switch, persistence restoration, AND debounced auto-save to complete
+    // Auto-save has a 500ms debounce, so we wait 600ms to be safe
+    console.log("Waiting 600ms for auto-save debounce to complete...");
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    console.log("Tab switched, now setting sequence...");
+
+    // Now set the sequence on the constructor tab's sequence state
+    constructTabState.sequenceState.setCurrentSequence(sequenceCopy);
+    console.log("Set sequence on constructTabState.sequenceState");
+
+    // CRITICAL: Also update the constructor tab's UI state
+    // This ensures the UI knows to hide the start position picker and show the workspace
+    if (sequenceCopy.startPosition || sequenceCopy.startingPositionBeat) {
+      const startPos =
+        sequenceCopy.startPosition || sequenceCopy.startingPositionBeat;
+
+      // Set start position on both sequence state AND construct tab state
+      constructTabState.sequenceState.setStartPosition(startPos);
+      constructTabState.setSelectedStartPosition(startPos);
+
+      // Explicitly hide start position picker
+      constructTabState.setShowStartPositionPicker(false);
+
+      console.log("Set start position:", startPos);
+      console.log("Set showStartPositionPicker to false");
+    }
+
+    // Sync the picker state to ensure UI is in the correct mode
+    if (constructTabState.syncPickerStateWithSequence) {
+      constructTabState.syncPickerStateWithSequence();
+      console.log("Called syncPickerStateWithSequence");
+    }
+
+    // CRITICAL: Trigger persistence save immediately
+    // This ensures when auto-restore runs, it loads our new sequence, not the old empty one
+    try {
+      // The sequence state should auto-save, but let's force a state change notification
+      // by re-setting the sequence (this triggers the save debounce)
+      const currentSeq = constructTabState.sequenceState.currentSequence;
+      if (currentSeq) {
+        constructTabState.sequenceState.setCurrentSequence({ ...currentSeq });
+        console.log("Triggered save via sequence re-set");
+      }
+    } catch (err) {
+      console.warn("Could not trigger save:", err);
+    }
+
+    // Wait for save to complete
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    // Verify state was set correctly
+    console.log(
+      "Constructor sequence after transfer:",
+      constructTabState.sequenceState.currentSequence
+    );
+    console.log(
+      "Constructor hasSequence:",
+      constructTabState.sequenceState.hasSequence()
+    );
+    console.log(
+      "Constructor hasStartPosition:",
+      constructTabState.sequenceState.hasStartPosition
+    );
+    console.log(
+      "Constructor showStartPositionPicker:",
+      constructTabState.showStartPositionPicker
+    );
+    console.log(
+      "CreateModuleState.isWorkspaceEmpty():",
+      CreateModuleState.isWorkspaceEmpty()
+    );
+
+    // Check state at multiple intervals to catch when it gets cleared
+    setTimeout(() => {
+      console.log("Check at +50ms:");
+      console.log(
+        "  Sequence:",
+        constructTabState?.sequenceState?.currentSequence?.id
+      );
+    }, 50);
+
+    setTimeout(() => {
+      console.log("Check at +100ms:");
+      console.log(
+        "  Sequence:",
+        constructTabState?.sequenceState?.currentSequence?.id
+      );
+    }, 100);
+
+    setTimeout(() => {
+      console.log("Check at +150ms:");
+      console.log(
+        "  Sequence:",
+        constructTabState?.sequenceState?.currentSequence?.id
+      );
+    }, 150);
+
+    setTimeout(() => {
+      console.log("Final check at +200ms:");
+      console.log("  Active tab:", navigationState.activeTab);
+      const afterSwitchActiveSeqState =
+        CreateModuleState.getActiveTabSequenceState();
+      console.log(
+        "  Active sequence state's sequence:",
+        afterSwitchActiveSeqState.currentSequence
+      );
+      console.log(
+        "  constructTabState.sequenceState's sequence:",
+        constructTabState?.sequenceState?.currentSequence
+      );
+      console.log("  isWorkspaceEmpty:", CreateModuleState.isWorkspaceEmpty());
+      console.log("=== END DEBUG ===");
+    }, 200);
+  }
+
+  function handleConfirmTransfer() {
+    if (pendingSequenceTransfer) {
+      performSequenceTransfer(pendingSequenceTransfer);
+      pendingSequenceTransfer = null;
+    }
+  }
+
+  function handleCancelTransfer() {
+    pendingSequenceTransfer = null;
   }
 
   function handleClose() {
@@ -483,11 +655,31 @@
             <i class="fas fa-eye"></i>
             <span>Preview</span>
           </button>
+          <button
+            class="action-btn edit-constructor"
+            onclick={handleEditInConstructor}
+            disabled={!hasSequence}
+          >
+            <i class="fas fa-pen-to-square"></i>
+            <span>Edit in Constructor</span>
+          </button>
         </div>
       {/if}
     </div>
   </div>
 </CreatePanelDrawer>
+
+<!-- Confirmation Dialog -->
+<ConfirmDialog
+  bind:isOpen={showConfirmDialog}
+  title="Replace Constructor Sequence?"
+  message="The Constructor tab has an active sequence. Replacing it will overwrite your current work. Don't worry - the undo button can restore it."
+  confirmText="Replace & Edit"
+  cancelText="Keep Current"
+  variant="warning"
+  onConfirm={handleConfirmTransfer}
+  onCancel={handleCancelTransfer}
+/>
 
 <style>
   .editor-panel {
@@ -522,8 +714,8 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.15s ease;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 52px;
+    min-width: 52px;
   }
 
   .mode-btn:hover {
@@ -617,8 +809,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.1);
     border: none;
@@ -640,7 +832,7 @@
     font-size: 1.75rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    min-width: 48px;
+    min-width: 52px;
     text-align: center;
   }
 
@@ -653,8 +845,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -726,6 +918,21 @@
   .action-btn span {
     font-size: 0.8rem;
     font-weight: 500;
+  }
+
+  /* Edit in Constructor button - distinct styling as it's a navigation action */
+  .action-btn.edit-constructor {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+
+  .action-btn.edit-constructor:hover:not(:disabled) {
+    background: rgba(251, 191, 36, 0.2);
+    border-color: rgba(251, 191, 36, 0.5);
+  }
+
+  .action-btn.edit-constructor i {
+    color: #fbbf24;
   }
 
   /* Reduced motion */

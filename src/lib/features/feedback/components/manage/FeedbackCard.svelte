@@ -1,7 +1,14 @@
 <!-- FeedbackCard - Premium card with spring animations and swipe actions -->
 <script lang="ts">
-  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
-  import { TYPE_CONFIG, STATUS_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
+  import {
+    TYPE_CONFIG,
+    STATUS_CONFIG,
+    PRIORITY_CONFIG,
+  } from "../../domain/models/feedback-models";
 
   const { item, isSelected, onClick, onStatusChange, onDelete } = $props<{
     item: FeedbackItem;
@@ -12,21 +19,33 @@
   }>();
 
   // Default configs for fallback
-  const DEFAULT_TYPE_CONFIG = { color: "#6b7280", icon: "fa-question-circle", label: "Unknown" };
-  const DEFAULT_STATUS_CONFIG = { color: "#6b7280", icon: "fa-circle", label: "Unknown" };
+  const DEFAULT_TYPE_CONFIG = {
+    color: "#6b7280",
+    icon: "fa-question-circle",
+    label: "Unknown",
+  };
+  const DEFAULT_STATUS_CONFIG = {
+    color: "#6b7280",
+    icon: "fa-circle",
+    label: "Unknown",
+  };
 
-  const typeConfig = item.type && item.type in TYPE_CONFIG
-    ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
-    : DEFAULT_TYPE_CONFIG;
-  const statusConfig = item.status && item.status in STATUS_CONFIG
-    ? STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]
-    : DEFAULT_STATUS_CONFIG;
-  const priorityConfig = item.priority && item.priority in PRIORITY_CONFIG
-    ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
-    : null;
+  const typeConfig =
+    item.type && item.type in TYPE_CONFIG
+      ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
+      : DEFAULT_TYPE_CONFIG;
+  const statusConfig =
+    item.status && item.status in STATUS_CONFIG
+      ? STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]
+      : DEFAULT_STATUS_CONFIG;
+  const priorityConfig =
+    item.priority && item.priority in PRIORITY_CONFIG
+      ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
+      : null;
 
   // Use Google photo if available, fallback to UI Avatars
-  const avatarUrl = item.userPhotoURL ||
+  const avatarUrl =
+    item.userPhotoURL ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`;
 
   // Swipe state
@@ -44,7 +63,9 @@
   $effect(() => {
     if (isSelected) {
       justSelected = true;
-      const timer = setTimeout(() => { justSelected = false; }, 400);
+      const timer = setTimeout(() => {
+        justSelected = false;
+      }, 400);
       return () => clearTimeout(timer);
     }
     return undefined;
@@ -127,7 +148,10 @@
     const isRightSwipe = swipeOffset > 0;
 
     // Check for delete action (swipe left past delete threshold)
-    if (isLeftSwipe && (absOffset > DELETE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)) {
+    if (
+      isLeftSwipe &&
+      (absOffset > DELETE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)
+    ) {
       if (onDelete) {
         // Animate out then delete
         swipeOffset = -300;
@@ -141,13 +165,20 @@
     }
 
     // Check for status action (swipe right past threshold)
-    if (isRightSwipe && (absOffset > SWIPE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)) {
+    if (
+      isRightSwipe &&
+      (absOffset > SWIPE_THRESHOLD || Math.abs(velocity) > VELOCITY_THRESHOLD)
+    ) {
       if (onStatusChange) {
         // Cycle through quick status changes: new → in-progress → in-review → archived → new
-        const nextStatus: FeedbackStatus = 
-          item.status === "new" ? "in-progress" :
-          item.status === "in-progress" ? "in-review" :
-          item.status === "in-review" ? "archived" : "new";
+        const nextStatus: FeedbackStatus =
+          item.status === "new"
+            ? "in-progress"
+            : item.status === "in-progress"
+              ? "in-review"
+              : item.status === "in-review"
+                ? "archived"
+                : "new";
         onStatusChange(nextStatus);
       }
     }
@@ -160,14 +191,18 @@
   // Computed styles
   const cardStyle = $derived(
     swipeOffset !== 0
-      ? `transform: translateX(${swipeOffset}px); transition: ${isSwiping ? 'none' : 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'}`
-      : ''
+      ? `transform: translateX(${swipeOffset}px); transition: ${isSwiping ? "none" : "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)"}`
+      : ""
   );
 
-  const leftActionOpacity = $derived(Math.min(1, Math.abs(Math.min(0, swipeOffset)) / SWIPE_THRESHOLD));
-  const rightActionOpacity = $derived(Math.min(1, Math.max(0, swipeOffset) / SWIPE_THRESHOLD));
-  const leftActionScale = $derived(0.8 + (leftActionOpacity * 0.2));
-  const rightActionScale = $derived(0.8 + (rightActionOpacity * 0.2));
+  const leftActionOpacity = $derived(
+    Math.min(1, Math.abs(Math.min(0, swipeOffset)) / SWIPE_THRESHOLD)
+  );
+  const rightActionOpacity = $derived(
+    Math.min(1, Math.max(0, swipeOffset) / SWIPE_THRESHOLD)
+  );
+  const leftActionScale = $derived(0.8 + leftActionOpacity * 0.2);
+  const rightActionScale = $derived(0.8 + rightActionOpacity * 0.2);
 </script>
 
 <div class="card-wrapper">
@@ -191,7 +226,13 @@
     >
       <div class="action-content" style="transform: scale({rightActionScale})">
         <i class="fas fa-check-circle"></i>
-        <span>{item.status === "new" ? "Start" : item.status === "in_progress" ? "Resolve" : "Reopen"}</span>
+        <span
+          >{item.status === "new"
+            ? "Start"
+            : item.status === "in_progress"
+              ? "Resolve"
+              : "Reopen"}</span
+        >
       </div>
     </div>
   {/if}
@@ -231,13 +272,22 @@
       <!-- Footer row -->
       <div class="card-footer">
         <span class="user-info">
-          <img src={avatarUrl} alt="" class="user-avatar" referrerpolicy="no-referrer" crossorigin="anonymous" />
+          <img
+            src={avatarUrl}
+            alt=""
+            class="user-avatar"
+            referrerpolicy="no-referrer"
+            crossorigin="anonymous"
+          />
           {item.userDisplayName}
         </span>
         <span class="separator">·</span>
         <span class="date-info">{formatDate(item.createdAt)}</span>
         {#if priorityConfig}
-          <span class="priority-badge" style="--badge-color: {priorityConfig.color}">
+          <span
+            class="priority-badge"
+            style="--badge-color: {priorityConfig.color}"
+          >
             <i class="fas {priorityConfig.icon}"></i>
             <span class="priority-label">{priorityConfig.label}</span>
           </span>
@@ -381,9 +431,15 @@
   }
 
   @keyframes selectPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.01); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.01);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .feedback-card.swiping {
@@ -403,19 +459,25 @@
   }
 
   @keyframes indicatorSlide {
-    from { transform: scaleY(0); opacity: 0; }
-    to { transform: scaleY(1); opacity: 1; }
+    from {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     TYPE COLUMN - 48px touch target
+     TYPE COLUMN - 52px touch target
      ═══════════════════════════════════════════════════════════════════════════ */
   .card-type {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
     background: color-mix(in srgb, var(--type-color) 15%, transparent);
     border-radius: var(--fb-radius-sm);

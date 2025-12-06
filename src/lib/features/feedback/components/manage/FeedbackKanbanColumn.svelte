@@ -1,6 +1,9 @@
 <!-- FeedbackKanbanColumn - A single status column in the Kanban board -->
 <script lang="ts">
-  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
   import FeedbackKanbanCard from "./FeedbackKanbanCard.svelte";
 
   const {
@@ -73,21 +76,27 @@
     {#if items.length === 0}
       <div class="empty-state">
         <div class="empty-icon">
-          <i class="fas {status === 'completed' ? 'fa-check-circle' : status === 'wont-fix' ? 'fa-ban' : 'fa-inbox'}"></i>
+          <i
+            class="fas {status === 'completed'
+              ? 'fa-check-circle'
+              : status === 'wont-fix'
+                ? 'fa-ban'
+                : 'fa-inbox'}"
+          ></i>
         </div>
         <span class="empty-title">
-          {#if status === 'new'}
+          {#if status === "new"}
             No new feedback
-          {:else if status === 'completed'}
+          {:else if status === "completed"}
             Nothing completed yet
-          {:else if status === 'wont-fix'}
+          {:else if status === "wont-fix"}
             No declined items
           {:else}
             No items here
           {/if}
         </span>
         <span class="empty-hint">
-          {#if status === 'new'}
+          {#if status === "new"}
             Feedback will appear here when submitted
           {:else}
             Drag items here to update their status
@@ -126,10 +135,10 @@
     --kc-space-md: clamp(16px, 4cqi, 28px);
 
     /* ===== FLUID TYPOGRAPHY - Accessible minimums ===== */
-    --kc-text-xs: clamp(0.8125rem, 2cqi, 0.875rem);   /* min 13px */
-    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem);      /* min 14px */
-    --kc-text-base: clamp(1rem, 3cqi, 1.125rem);      /* min 16px */
-    --kc-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem);   /* min 18px */
+    --kc-text-xs: clamp(0.8125rem, 2cqi, 0.875rem); /* min 13px */
+    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem); /* min 14px */
+    --kc-text-base: clamp(1rem, 3cqi, 1.125rem); /* min 16px */
+    --kc-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem); /* min 18px */
 
     /* ===== FLUID RADII ===== */
     --kc-radius-sm: clamp(8px, 2cqi, 12px);
@@ -148,7 +157,7 @@
     display: flex;
     flex-direction: column;
     /* Fluid column width - grows to fill but with reasonable max */
-    max-width: 550px;
+    max-width: 552px;
     flex: 1;
     /* Colorful gradient background based on column color */
     background: linear-gradient(
@@ -206,7 +215,8 @@
       color-mix(in srgb, var(--column-color) 15%, transparent) 0%,
       transparent 100%
     );
-    border-bottom: 1px solid color-mix(in srgb, var(--column-color) 20%, transparent);
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--column-color) 20%, transparent);
   }
 
   .header-icon {
@@ -223,7 +233,8 @@
     border-radius: var(--kc-radius-sm);
     color: var(--column-color);
     font-size: clamp(12px, 2.5cqi, 15px);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--column-color) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--column-color) 30%, transparent);
   }
 
   .header-title {
@@ -304,15 +315,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(48px, 12cqi, 64px);
-    height: clamp(48px, 12cqi, 64px);
+    width: clamp(52px, 12cqi, 64px);
+    height: clamp(52px, 12cqi, 64px);
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--column-color) 20%, transparent) 0%,
       color-mix(in srgb, var(--column-color) 10%, transparent) 100%
     );
     border-radius: 50%;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--column-color) 15%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--column-color) 15%, transparent);
   }
 
   .empty-icon i {
@@ -372,7 +384,7 @@
 
   /* ===== CONTAINER QUERY: Mobile tab-based layout ===== */
   /* When inside the kanban board's mobile layout, columns hide unless active */
-  @container kanban (max-width: 650px) {
+  @container kanban (max-width: 652px) {
     .kanban-column {
       display: none;
       min-width: 100%;

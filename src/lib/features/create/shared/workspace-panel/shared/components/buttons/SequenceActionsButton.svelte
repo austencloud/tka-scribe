@@ -5,8 +5,8 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   let { onclick } = $props<{
     onclick?: () => void;
@@ -38,8 +38,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 1px solid rgba(6, 182, 212, 0.3);
     background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
     border-radius: 50%;
@@ -69,36 +69,36 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-size: 18px;
   }
 
-  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 52px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .sequence-actions-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .sequence-actions-button {
-      width: 48px; /* Maintain 48px minimum */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum */
+      height: 52px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .sequence-actions-button {
-      width: 48px; /* NEVER below 48px for accessibility */
-      height: 48px;
+      width: 52px; /* NEVER below 52px for accessibility */
+      height: 52px;
       font-size: 14px;
     }
   }
 
-  /* Landscape mobile: Maintain 48px minimum */
+  /* Landscape mobile: Maintain 52px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .sequence-actions-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
     }
 
     .sequence-actions-button i {

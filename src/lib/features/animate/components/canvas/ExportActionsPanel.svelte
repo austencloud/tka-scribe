@@ -1,7 +1,7 @@
 <!--
   ExportActionsPanel.svelte
 
-  GIF export button for Animation Panel.
+  2026 Bento Box Design - GIF export button
   Animation Panel focuses on animated GIF export.
   Static image export lives in Share Panel.
 -->
@@ -50,7 +50,7 @@
 
 <div class="export-actions-panel">
   <button
-    class="export-btn gif-btn"
+    class="export-btn"
     class:exporting={isExporting}
     class:complete={exportProgress?.stage === "complete"}
     onclick={handleClick}
@@ -71,9 +71,14 @@
 </div>
 
 <style>
+  /* ===========================
+     2026 BENTO BOX DESIGN
+     Export Actions Panel
+     =========================== */
+
   .export-actions-panel {
     display: flex;
-    padding: 8px;
+    width: 100%;
   }
 
   .export-btn {
@@ -83,52 +88,67 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 16px;
+    padding: 18px;
     width: 100%;
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(147, 51, 234, 0.12) 100%);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.15) 0%,
+      rgba(147, 51, 234, 0.12) 100%
+    );
+    border: 1.5px solid rgba(168, 85, 247, 0.3);
+    border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
+    box-shadow:
+      0 2px 8px rgba(168, 85, 247, 0.12),
+      0 0 16px rgba(168, 85, 247, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .export-btn i {
-    font-size: 24px;
+    font-size: 26px;
     transition: transform 0.2s ease;
     color: rgba(168, 85, 247, 1);
   }
 
   .btn-label {
-    font-size: 13px;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     letter-spacing: 0.3px;
   }
 
   .btn-hint {
-    font-size: 10px;
+    font-size: 0.7rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.5);
     letter-spacing: 0.2px;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .export-btn:hover {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+    .export-btn:hover:not(:disabled) {
+      background: linear-gradient(
+        135deg,
+        rgba(168, 85, 247, 0.25) 0%,
+        rgba(147, 51, 234, 0.2) 100%
+      );
       border-color: rgba(168, 85, 247, 0.5);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.2);
+      box-shadow:
+        0 4px 16px rgba(168, 85, 247, 0.2),
+        0 0 24px rgba(168, 85, 247, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .export-btn:hover i {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
   }
 
-  .export-btn:active {
+  .export-btn:active:not(:disabled) {
     transform: scale(0.98);
   }
 
@@ -138,12 +158,24 @@
   }
 
   .export-btn.exporting {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.18) 0%,
+      rgba(147, 51, 234, 0.15) 100%
+    );
   }
 
   .export-btn.complete {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.2) 0%,
+      rgba(22, 163, 74, 0.15) 100%
+    );
     border-color: rgba(34, 197, 94, 0.5);
+    box-shadow:
+      0 2px 12px rgba(34, 197, 94, 0.2),
+      0 0 20px rgba(34, 197, 94, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   .export-btn.complete i {
@@ -155,38 +187,48 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 0 0 12px 12px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 0 0 14px 14px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, rgba(168, 85, 247, 1) 0%, rgba(147, 51, 234, 1) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(168, 85, 247, 1) 0%,
+      rgba(147, 51, 234, 1) 100%
+    );
     transition: width 0.3s ease;
   }
 
-  /* Responsive */
+  /* ===========================
+     RESPONSIVE
+     =========================== */
+
   @media (max-width: 360px) {
     .export-btn {
-      padding: 14px;
+      padding: 16px;
     }
 
     .export-btn i {
-      font-size: 22px;
+      font-size: 24px;
     }
 
     .btn-label {
-      font-size: 12px;
+      font-size: 0.8rem;
     }
 
     .btn-hint {
-      font-size: 9px;
+      font-size: 0.65rem;
     }
   }
 
-  /* Reduced motion */
+  /* ===========================
+     ACCESSIBILITY
+     =========================== */
+
   @media (prefers-reduced-motion: reduce) {
     .export-btn,
     .export-btn i {

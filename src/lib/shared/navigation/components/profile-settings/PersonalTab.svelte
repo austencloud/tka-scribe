@@ -170,7 +170,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 48px); /* Fluid padding */
+    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 50px); /* Fluid padding */
     min-height: 0;
     transition: padding 0.2s ease;
     display: flex;
@@ -326,7 +326,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(12px, 1.8vh, 16px) clamp(20px, 3vw, 28px);
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: clamp(14px, 1.9vh, 17px);
     font-weight: 600;
@@ -339,7 +339,7 @@
 
   .section.compact .sign-out-button {
     padding: 11px 20px;
-    min-height: 48px;
+    min-height: 52px;
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -347,7 +347,7 @@
 
   .section.very-compact .sign-out-button {
     padding: 11px 18px;
-    min-height: 48px;
+    min-height: 52px;
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;
@@ -412,7 +412,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(12px, 1.8vh, 16px) clamp(20px, 3vw, 28px);
-    min-height: 48px; /* WCAG minimum maintained */
+    min-height: 52px; /* WCAG minimum maintained */
     border-radius: 10px;
     font-size: clamp(14px, 1.9vh, 17px);
     font-weight: 600;
@@ -424,7 +424,7 @@
 
   .section.compact :global(.button) {
     padding: 11px 20px;
-    min-height: 48px; /* WCAG 2.1 AA minimum touch target size */
+    min-height: 52px; /* WCAG 2.1 AA minimum touch target size */
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -433,7 +433,7 @@
 
   .section.very-compact :global(.button) {
     padding: 11px 18px;
-    min-height: 48px; /* WCAG 2.1 AA minimum touch target size */
+    min-height: 52px; /* WCAG 2.1 AA minimum touch target size */
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;

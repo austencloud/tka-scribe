@@ -71,7 +71,7 @@ Implemented a clear, intuitive navigation header pattern for both desktop and mo
    - `aria-label="Back to settings overview"` for screen readers
    - Keyboard navigation support (Escape key works too!)
    - Clear focus indicators
-   - Adequate touch targets (48px+ WCAG compliance)
+   - Adequate touch targets (52px+ WCAG compliance)
 
 ## User Flow
 

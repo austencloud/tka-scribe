@@ -75,7 +75,7 @@
     gap: 5px;
     white-space: nowrap;
     flex-shrink: 0;
-    min-height: 48px; /* Touch target */
+    min-height: 52px; /* Touch target */
   }
 
   @media (hover: hover) {

@@ -288,8 +288,8 @@ Features square aspect ratio for consistent layout and settings dialog for camer
     position: absolute;
     top: var(--spacing-md, 16px);
     right: var(--spacing-md, 16px);
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: var(--surface-glass, rgba(0, 0, 0, 0.6));
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
@@ -352,8 +352,8 @@ Features square aspect ratio for consistent layout and settings dialog for camer
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 4px solid var(--surface-light, #333);
     border-top-color: var(--primary, #3b82f6);
     border-radius: 50%;

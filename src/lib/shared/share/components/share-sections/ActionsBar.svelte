@@ -171,7 +171,7 @@
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
-    min-height: 48px;
+    min-height: 52px;
     overflow: hidden;
     isolation: isolate;
 
@@ -410,7 +410,7 @@
 
     .action-btn {
       padding: 10px 12px;
-      min-height: 48px;
+      min-height: 52px;
     }
   }
 </style>

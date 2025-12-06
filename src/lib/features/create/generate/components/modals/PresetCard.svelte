@@ -3,7 +3,10 @@ PresetCard.svelte - Individual preset card display
 Displays a single preset with icon, name, summary, and action buttons
 -->
 <script lang="ts">
-  import { CAP_TYPE_LABELS, type CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+  import {
+    CAP_TYPE_LABELS,
+    type CAPType,
+  } from "$lib/features/create/generate/circular/domain/models/circular-models";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
@@ -329,8 +332,8 @@ Displays a single preset with icon, name, summary, and action buttons
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -366,8 +369,8 @@ Displays a single preset with icon, name, summary, and action buttons
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -428,8 +431,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
       padding: 9px;
     }
 
@@ -473,8 +476,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
       padding: 8px;
     }
 
@@ -535,8 +538,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
       padding: 7px;
       border-radius: 7px;
     }

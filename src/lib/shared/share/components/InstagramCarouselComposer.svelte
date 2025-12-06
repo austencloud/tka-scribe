@@ -348,7 +348,7 @@ ${caption}
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 250px;
+    min-width: 252px;
   }
 
   .upload-button {
@@ -430,7 +430,7 @@ ${caption}
 
   .media-preview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
     gap: 1rem;
     width: 100%;
   }

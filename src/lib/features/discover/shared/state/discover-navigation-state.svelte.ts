@@ -61,7 +61,7 @@ function createDiscoverNavigationState() {
   const canGoForward = $derived(state.currentIndex < state.history.length - 1);
   const currentLocation = $derived<DiscoverLocation | null>(
     state.currentIndex >= 0 && state.currentIndex < state.history.length
-      ? state.history[state.currentIndex]
+      ? (state.history[state.currentIndex] ?? null)
       : null
   );
 

@@ -98,8 +98,8 @@
   }
 
   .settings-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,10 +149,10 @@
     .settings-btn {
       order: 2;
       margin-left: auto;
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 0.85rem;
     }
   }
@@ -165,12 +165,12 @@
       border-radius: 10px;
     }
 
-    /* Keep 48px minimum for accessibility */
+    /* Keep 52px minimum for accessibility */
     .settings-btn {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 0.85rem;
       border-radius: 8px;
     }

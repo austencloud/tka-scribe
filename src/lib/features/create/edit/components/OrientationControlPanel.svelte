@@ -1,9 +1,9 @@
 <!-- OrientationControlPanel.svelte - Container-aware orientation controls with multiple layout modes -->
 <script lang="ts">
-import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import ExpandedOrientationPanel from "./ExpandedOrientationPanel.svelte";
@@ -119,7 +119,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 >
   <div class="orientation-controls-container">
     {#if controlMode() === "simplified"}
-      <!-- Simplified always-visible controls for narrow portrait (348px Z Fold) -->
+      <!-- Simplified always-visible controls for narrow portrait (352px Z Fold) -->
       <SimplifiedOrientationControl
         color="blue"
         {currentBeatData}

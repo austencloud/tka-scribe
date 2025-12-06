@@ -81,7 +81,10 @@
             onclick={toggleCurrentPassword}
             aria-label={showCurrentPassword ? "Hide password" : "Show password"}
           >
-            <i class="fas {showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+            <i
+              class="fas {showCurrentPassword ? 'fa-eye-slash' : 'fa-eye'}"
+              aria-hidden="true"
+            ></i>
           </button>
         </div>
       </div>
@@ -106,7 +109,10 @@
             onclick={toggleNewPassword}
             aria-label={showNewPassword ? "Hide password" : "Show password"}
           >
-            <i class="fas {showNewPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
+            <i
+              class="fas {showNewPassword ? 'fa-eye-slash' : 'fa-eye'}"
+              aria-hidden="true"
+            ></i>
           </button>
         </div>
         {#if isPasswordWeak}
@@ -178,7 +184,7 @@
   }
 
   .input-with-toggle {
-    padding-right: 48px;
+    padding-right: 50px;
   }
 
   .toggle-visibility {
@@ -250,7 +256,7 @@
     justify-content: center;
     gap: 10px;
     padding: 14px 24px;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: 15px;
     font-weight: 600;

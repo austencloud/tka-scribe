@@ -596,8 +596,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top-color: #fff;
     border-radius: 50%;
@@ -742,8 +742,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .btn-settings {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

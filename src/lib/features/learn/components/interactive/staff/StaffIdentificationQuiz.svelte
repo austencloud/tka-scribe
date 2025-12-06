@@ -6,9 +6,9 @@ Tests understanding of:
 - Prospin vs Antispin rotations
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import StaffPositionVisualizer from "./StaffPositionVisualizer.svelte";
 
   let { onComplete } = $props<{
@@ -129,7 +129,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       rightThumb: "in",
       correctAnswer: "prospin",
       options: ["prospin", "antispin"],
-      questionText: "If the thumbs STAY IN during motion, what rotation type is this?",
+      questionText:
+        "If the thumbs STAY IN during motion, what rotation type is this?",
       showRotationPath: true,
       rotationType: "prospin",
     });
@@ -142,7 +143,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       rightThumb: "out",
       correctAnswer: "antispin",
       options: ["prospin", "antispin"],
-      questionText: "If thumbs started IN and now are OUT, what rotation occurred?",
+      questionText:
+        "If thumbs started IN and now are OUT, what rotation occurred?",
       showRotationPath: true,
       rotationType: "antispin",
     });
@@ -276,7 +278,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   {#if !isComplete}
     {@const question = getCurrentQuestion()}
     <div class="quiz-section">
-      <div class="question-type-badge" class:position={question.type === "position"} class:thumb={question.type === "thumb"} class:rotation={question.type === "rotation"}>
+      <div
+        class="question-type-badge"
+        class:position={question.type === "position"}
+        class:thumb={question.type === "thumb"}
+        class:rotation={question.type === "rotation"}
+      >
         {#if question.type === "position"}
           <i class="fa-solid fa-crosshairs"></i>
           <span>Position</span>
@@ -301,7 +308,9 @@ import { TYPES } from "$lib/shared/inversify/types";
           showLabels={true}
           showRotationPath={question.showRotationPath || false}
           rotationType={question.rotationType || "none"}
-          highlightType={answerState !== "idle" && question.type === "position" ? question.correctAnswer as PositionType : null}
+          highlightType={answerState !== "idle" && question.type === "position"
+            ? (question.correctAnswer as PositionType)
+            : null}
         />
       </div>
 
@@ -313,7 +322,8 @@ import { TYPES } from "$lib/shared/inversify/types";
           {@const isCorrectAnswer = question.correctAnswer === option}
           {@const showCorrect = answerState === "correct" && isSelected}
           {@const showIncorrect = answerState === "incorrect" && isSelected}
-          {@const revealCorrect = answerState === "incorrect" && isCorrectAnswer}
+          {@const revealCorrect =
+            answerState === "incorrect" && isCorrectAnswer}
 
           <button
             class="answer-btn"
@@ -327,7 +337,9 @@ import { TYPES } from "$lib/shared/inversify/types";
             <i class="fa-solid {info.icon}"></i>
             <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
             {#if answerState !== "idle" && isSelected}
-              <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
+              <span class="result-icon"
+                >{answerState === "correct" ? "✓" : "✗"}</span
+              >
             {:else if revealCorrect}
               <span class="result-icon correct">✓</span>
             {/if}
@@ -338,16 +350,28 @@ import { TYPES } from "$lib/shared/inversify/types";
       <!-- Feedback -->
       {#if answerState !== "idle"}
         {@const correctInfo = getAnswerInfo(question.correctAnswer)}
-        <div class="feedback" class:correct={answerState === "correct"} class:incorrect={answerState === "incorrect"}>
+        <div
+          class="feedback"
+          class:correct={answerState === "correct"}
+          class:incorrect={answerState === "incorrect"}
+        >
           {#if answerState === "correct"}
-            <span>Correct! That's <strong style="color: {correctInfo.color}">{question.correctAnswer}</strong>.</span>
+            <span
+              >Correct! That's <strong style="color: {correctInfo.color}"
+                >{question.correctAnswer}</strong
+              >.</span
+            >
           {:else}
-            <span>Not quite! The answer is <strong style="color: {correctInfo.color}">{question.correctAnswer}</strong>.</span>
+            <span
+              >Not quite! The answer is <strong
+                style="color: {correctInfo.color}"
+                >{question.correctAnswer}</strong
+              >.</span
+            >
           {/if}
         </div>
       {/if}
     </div>
-
   {:else}
     <!-- Complete state -->
     <div class="quiz-section complete">
@@ -419,7 +443,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #22D3EE, #06B6D4);
+    background: linear-gradient(90deg, #22d3ee, #06b6d4);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -444,17 +468,17 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .question-type-badge.position {
     background: rgba(255, 107, 107, 0.15);
-    color: #FF6B6B;
+    color: #ff6b6b;
   }
 
   .question-type-badge.thumb {
     background: rgba(59, 130, 246, 0.15);
-    color: #3B82F6;
+    color: #3b82f6;
   }
 
   .question-type-badge.rotation {
     background: rgba(34, 211, 238, 0.15);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   /* Quiz section */
@@ -467,8 +491,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .quiz-title {
@@ -496,7 +526,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .answer-buttons.two-col {
     grid-template-columns: repeat(2, 1fr);
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .answer-btn {
@@ -544,9 +574,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes correctPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .answer-btn.incorrect {
@@ -556,9 +592,16 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
   }
 
   .result-icon {
@@ -567,7 +610,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     right: 0.5rem;
     font-size: 1rem;
     font-weight: 700;
-    color: #FF4A4A;
+    color: #ff4a4a;
   }
 
   .result-icon.correct,
@@ -585,20 +628,26 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .feedback.correct {
     background: rgba(34, 211, 238, 0.15);
     border: 1px solid rgba(34, 211, 238, 0.3);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .feedback.incorrect {
     background: rgba(255, 158, 74, 0.15);
     border: 1px solid rgba(255, 158, 74, 0.3);
-    color: #FF9E4A;
+    color: #ff9e4a;
   }
 
   /* Complete section */
@@ -629,7 +678,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .score-value {
     font-size: 3rem;
     font-weight: 800;
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .score-separator {
@@ -656,7 +705,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     border-radius: 12px;
     margin-bottom: 1rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .score-breakdown h4 {
@@ -685,24 +734,24 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .topic-badge.position {
     background: rgba(255, 107, 107, 0.15);
-    color: #FF6B6B;
+    color: #ff6b6b;
   }
 
   .topic-badge.thumb {
     background: rgba(59, 130, 246, 0.15);
-    color: #3B82F6;
+    color: #3b82f6;
   }
 
   .topic-badge.rotation {
     background: rgba(34, 211, 238, 0.15);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .complete-actions {
     display: flex;
     gap: 1rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .action-btn {
@@ -712,7 +761,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.25rem;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
@@ -732,13 +781,21 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), rgba(6, 182, 212, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3),
+      rgba(6, 182, 212, 0.3)
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), rgba(6, 182, 212, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4),
+      rgba(6, 182, 212, 0.4)
+    );
     border-color: rgba(34, 211, 238, 0.6);
     transform: translateY(-2px);
   }

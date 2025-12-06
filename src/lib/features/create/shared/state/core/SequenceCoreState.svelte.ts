@@ -71,6 +71,11 @@ export function createSequenceCoreState() {
 
     // Setters
     setCurrentSequence(sequence: SequenceData | null) {
+      // 🐛 DEBUG: Track when sequence is being cleared
+      if (sequence === null && state.currentSequence !== null) {
+        console.log(`🐛 [DEBUG] setCurrentSequence(null) called! Previous sequence had ${state.currentSequence.beats.length} beats`);
+        console.trace();
+      }
       state.currentSequence = sequence;
       state.selectedSequenceId = sequence?.id ?? null;
       // Sync gridMode from the sequence if it has one defined

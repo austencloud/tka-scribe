@@ -36,31 +36,31 @@
       {/each}
     </div>
   {:else}
-  <div class="stats-list">
-    {#each stats as stat}
-      <div class="stat-row">
-        <div class="stat-icon">
-          <i class={stat.icon}></i>
+    <div class="stats-list">
+      {#each stats as stat}
+        <div class="stat-row">
+          <div class="stat-icon">
+            <i class={stat.icon}></i>
+          </div>
+          <span class="stat-label">{stat.label}</span>
+          <span class="stat-value">{stat.value.toLocaleString()}</span>
         </div>
-        <span class="stat-label">{stat.label}</span>
-        <span class="stat-value">{stat.value.toLocaleString()}</span>
-      </div>
-    {/each}
-  </div>
+      {/each}
+    </div>
 
-  <h4>Top Sequences</h4>
-  <div class="top-sequences">
-    {#each topSequences as seq, i}
-      <div class="sequence-row">
-        <span class="rank">#{i + 1}</span>
-        <div class="sequence-info">
-          <span class="sequence-name">{seq.name}</span>
-          <span class="sequence-word">{seq.word}</span>
+    <h4>Top Sequences</h4>
+    <div class="top-sequences">
+      {#each topSequences as seq, i}
+        <div class="sequence-row">
+          <span class="rank">#{i + 1}</span>
+          <div class="sequence-info">
+            <span class="sequence-name">{seq.name}</span>
+            <span class="sequence-word">{seq.word}</span>
+          </div>
+          <span class="sequence-views">{seq.views} views</span>
         </div>
-        <span class="sequence-views">{seq.views} views</span>
-      </div>
-    {/each}
-  </div>
+      {/each}
+    </div>
   {/if}
 </section>
 
@@ -192,7 +192,7 @@
 
   .skeleton-stat-value {
     display: block;
-    width: 50px;
+    width: 52px;
     height: 16px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
@@ -228,7 +228,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

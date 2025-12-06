@@ -9,6 +9,9 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { TrailSettings } from "../../../shared/domain/types/TrailTypes";
 import { DEFAULT_TRAIL_SETTINGS } from "../../../shared/domain/types/TrailTypes";
 import type { AnimateMode } from "../../../shared/state/animate-module-state.svelte";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("PlaybackState");
 
 /**
  * Animation sequence slot for a specific canvas/position
@@ -162,7 +165,7 @@ export function createPlaybackState(): PlaybackState {
     setSpeed(newSpeed: number) {
       speed = Math.max(0.1, Math.min(3.0, newSpeed));
       saveToStorage(STORAGE_KEYS.SPEED, speed);
-      console.log(`🎬 Playback: Speed set to ${speed}x`);
+      debug.log(`Speed set to ${speed}x`);
     },
 
     setLoop(loop: boolean) {

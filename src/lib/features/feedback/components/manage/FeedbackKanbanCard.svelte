@@ -2,24 +2,36 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { FeedbackItem } from "../../domain/models/feedback-models";
-  import { TYPE_CONFIG, PRIORITY_CONFIG } from "../../domain/models/feedback-models";
+  import {
+    TYPE_CONFIG,
+    PRIORITY_CONFIG,
+  } from "../../domain/models/feedback-models";
 
-  const { item, isSelected, onDragStart, onDragEnd, onTouchDrag, onClick } = $props<{
-    item: FeedbackItem;
-    isSelected: boolean;
-    onDragStart: (item: FeedbackItem) => void;
-    onDragEnd: () => void;
-    onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
-    onClick: () => void;
-  }>();
+  const { item, isSelected, onDragStart, onDragEnd, onTouchDrag, onClick } =
+    $props<{
+      item: FeedbackItem;
+      isSelected: boolean;
+      onDragStart: (item: FeedbackItem) => void;
+      onDragEnd: () => void;
+      onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
+      onClick: () => void;
+    }>();
 
-  const typeConfig = $derived(item.type && item.type in TYPE_CONFIG ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG] : null);
-  const priorityConfig = $derived(item.priority && item.priority in PRIORITY_CONFIG ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG] : null);
+  const typeConfig = $derived(
+    item.type && item.type in TYPE_CONFIG
+      ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
+      : null
+  );
+  const priorityConfig = $derived(
+    item.priority && item.priority in PRIORITY_CONFIG
+      ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
+      : null
+  );
 
   // Use Google photo if available, fallback to UI Avatars
   const avatarUrl = $derived(
     item.userPhotoURL ||
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`
   );
 
   // Format relative time
@@ -47,10 +59,18 @@
   onMount(() => {
     if (!cardElement) return;
 
-    cardElement.addEventListener("touchstart", handleTouchStart, { passive: true });
-    cardElement.addEventListener("touchmove", handleTouchMove, { passive: false });
-    cardElement.addEventListener("touchend", handleTouchEnd, { passive: false });
-    cardElement.addEventListener("touchcancel", handleTouchCancel, { passive: true });
+    cardElement.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+    cardElement.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
+    cardElement.addEventListener("touchend", handleTouchEnd, {
+      passive: false,
+    });
+    cardElement.addEventListener("touchcancel", handleTouchCancel, {
+      passive: true,
+    });
 
     return () => {
       if (!cardElement) return;
@@ -110,7 +130,7 @@
       pointer-events: none;
       opacity: 0.9;
       transform: scale(1.05) rotate(2deg);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${typeConfig?.color ?? '#6366f1'};
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${typeConfig?.color ?? "#6366f1"};
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     `;
     document.body.appendChild(dragGhost);
@@ -235,7 +255,8 @@
   class:priority-high={item.priority === "high"}
   class:priority-medium={item.priority === "medium"}
   class:priority-low={item.priority === "low" || !item.priority}
-  style="--type-color: {typeConfig?.color ?? '#6366f1'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
+  style="--type-color: {typeConfig?.color ??
+    '#6366f1'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
   draggable="true"
   ondragstart={handleDragStart}
   ondragend={handleDragEnd}
@@ -258,10 +279,7 @@
       />
       <h4 class="card-title">{item.title}</h4>
       {#if priorityConfig}
-        <span
-          class="priority-badge"
-          title="{priorityConfig.label} priority"
-        >
+        <span class="priority-badge" title="{priorityConfig.label} priority">
           {#if item.priority === "critical"}
             <i class="fas fa-exclamation-circle"></i>
           {:else if item.priority === "high"}
@@ -282,7 +300,11 @@
     {#if item.imageUrls && item.imageUrls.length > 0}
       <div class="screenshot-indicator">
         <i class="fas fa-images"></i>
-        <span>{item.imageUrls.length} screenshot{item.imageUrls.length !== 1 ? 's' : ''}</span>
+        <span
+          >{item.imageUrls.length} screenshot{item.imageUrls.length !== 1
+            ? "s"
+            : ""}</span
+        >
       </div>
     {/if}
 
@@ -311,9 +333,9 @@
     --kc-space-sm: clamp(12px, 3cqi, 18px);
 
     /* ===== FLUID TYPOGRAPHY - Accessible minimums ===== */
-    --kc-text-2xs: clamp(0.75rem, 2cqi, 0.8125rem);    /* min 12px - accessible */
-    --kc-text-xs: clamp(0.8125rem, 2.2cqi, 0.875rem);  /* min 13px */
-    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem);       /* min 14px */
+    --kc-text-2xs: clamp(0.75rem, 2cqi, 0.8125rem); /* min 12px - accessible */
+    --kc-text-xs: clamp(0.8125rem, 2.2cqi, 0.875rem); /* min 13px */
+    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem); /* min 14px */
 
     /* ===== FLUID RADII ===== */
     --kc-radius-sm: clamp(8px, 2cqi, 12px);
@@ -329,15 +351,18 @@
     position: relative;
     display: flex;
     width: 100%;
-    min-height: 180px;
     padding: 0;
+    /* Prevent flex container from shrinking card below content size */
+    flex-shrink: 0;
+    min-height: fit-content;
     /* Colorful gradient background using type color */
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--type-color) 8%, rgba(30, 30, 40, 0.95)) 0%,
       color-mix(in srgb, var(--type-color) 3%, rgba(25, 25, 35, 0.98)) 100%
     );
-    border: 1px solid color-mix(in srgb, var(--type-color) 20%, rgba(255, 255, 255, 0.08));
+    border: 1px solid
+      color-mix(in srgb, var(--type-color) 20%, rgba(255, 255, 255, 0.08));
     border-radius: var(--kc-radius-md);
     cursor: grab;
     text-align: left;
@@ -354,7 +379,11 @@
       color-mix(in srgb, var(--type-color) 15%, rgba(35, 35, 45, 0.95)) 0%,
       color-mix(in srgb, var(--type-color) 8%, rgba(30, 30, 40, 0.98)) 100%
     );
-    border-color: color-mix(in srgb, var(--type-color) 40%, rgba(255, 255, 255, 0.1));
+    border-color: color-mix(
+      in srgb,
+      var(--type-color) 40%,
+      rgba(255, 255, 255, 0.1)
+    );
     transform: translateY(-2px) scale(1.01);
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.3),
@@ -388,7 +417,8 @@
       var(--priority-color) 0%,
       color-mix(in srgb, var(--priority-color) 70%, transparent) 100%
     );
-    box-shadow: 2px 0 8px color-mix(in srgb, var(--priority-color) 30%, transparent);
+    box-shadow: 2px 0 8px
+      color-mix(in srgb, var(--priority-color) 30%, transparent);
   }
 
   /* Priority-specific card styling */
@@ -414,9 +444,10 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--kc-space-2xs);
+    gap: var(--kc-space-sm);
     padding: var(--kc-space-sm);
     min-width: 0;
+    min-height: min-content;
   }
 
   /* Header */
@@ -474,10 +505,13 @@
     color: var(--kc-text-muted);
     line-height: 1.5;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    flex-shrink: 0;
+    /* Ensure space for 3 lines based on fluid font size */
+    min-height: 3.6em; /* 3 lines * 1.5 line-height = 4.5em, but using em units for proper scaling */
   }
 
   /* Screenshot indicator */
@@ -501,9 +535,10 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--kc-space-xs);
-    margin-top: var(--kc-space-2xs);
+    margin-top: auto;
     padding-top: var(--kc-space-xs);
-    border-top: 1px solid color-mix(in srgb, var(--type-color) 10%, rgba(255, 255, 255, 0.05));
+    border-top: 1px solid
+      color-mix(in srgb, var(--type-color) 10%, rgba(255, 255, 255, 0.05));
   }
 
   .card-meta {
@@ -546,8 +581,13 @@
   }
 
   @keyframes pulse-critical {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 
   /* Drag handle */
@@ -579,7 +619,7 @@
   }
 
   /* ===== Mobile optimizations ===== */
-  @container kanban (max-width: 650px) {
+  @container kanban (max-width: 652px) {
     .kanban-card {
       /* Remove hover transform on mobile - feels janky */
       transform: none !important;

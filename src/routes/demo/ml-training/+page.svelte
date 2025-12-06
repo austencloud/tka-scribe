@@ -40,10 +40,10 @@
               {captureState.status === "recording"
                 ? "Recording"
                 : captureState.status === "paused"
-                ? "Paused"
-                : captureState.status === "backpressure"
-                ? "Catching up"
-                : "Ready"}
+                  ? "Paused"
+                  : captureState.status === "backpressure"
+                    ? "Catching up"
+                    : "Ready"}
             </div>
             <div class="mini-stats">
               <span class="pill">FPS {captureState.fps}</span>
@@ -99,7 +99,8 @@
           <div class="main-buttons">
             <button class="record"><i class="fa fa-circle"></i></button>
             <button class="action pause"><i class="fa fa-pause"></i></button>
-            <button class="action snapshot"><i class="fa fa-camera"></i></button>
+            <button class="action snapshot"><i class="fa fa-camera"></i></button
+            >
             <button class="action stop"><i class="fa fa-stop"></i></button>
           </div>
           <div class="prop-tag">Club</div>
@@ -160,7 +161,10 @@
         </div>
         <div class="meter-label">
           <span>Storage</span>
-          <span>{storageUsage.usedMb} MB / ~{storageUsage.usedMb + storageUsage.freeMb} MB</span>
+          <span
+            >{storageUsage.usedMb} MB / ~{storageUsage.usedMb +
+              storageUsage.freeMb} MB</span
+          >
         </div>
         <div class="meter storage">
           <div
@@ -186,7 +190,9 @@
             <div class="session-row">
               <div>
                 <div class="name">{session.name}</div>
-                <div class="meta">{session.frames} frames • {session.prop} • {session.time}</div>
+                <div class="meta">
+                  {session.frames} frames • {session.prop} • {session.time}
+                </div>
               </div>
               <div class="row-actions">
                 <button class="text-btn">Open</button>
@@ -256,8 +262,17 @@
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.95rem;
     letter-spacing: 0.02em;
-    background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1), transparent 45%),
-      radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.15), transparent 40%),
+    background:
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(99, 102, 241, 0.1),
+        transparent 45%
+      ),
+      radial-gradient(
+        circle at 80% 30%,
+        rgba(59, 130, 246, 0.15),
+        transparent 40%
+      ),
       #05060b;
   }
 
@@ -288,9 +303,18 @@
     color: #93c5fd;
     background: rgba(59, 130, 246, 0.18);
   }
-  .chip.recording { background: #ef4444; color: #fff; }
-  .chip.paused { background: #f59e0b; color: #1f1302; }
-  .chip.backpressure { background: rgba(245, 158, 11, 0.25); color: #fbbf24; }
+  .chip.recording {
+    background: #ef4444;
+    color: #fff;
+  }
+  .chip.paused {
+    background: #f59e0b;
+    color: #1f1302;
+  }
+  .chip.backpressure {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+  }
 
   .chip .dot {
     width: 10px;
@@ -361,8 +385,15 @@
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(0.98); opacity: 0.7; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.98);
+      opacity: 0.7;
+    }
   }
 
   .stats-bar {
@@ -374,18 +405,33 @@
     border-radius: 12px;
   }
 
-  .stat { text-align: center; }
-  .stat .value { font-size: 1.2rem; font-weight: 700; font-family: "JetBrains Mono", monospace; }
-  .stat .label { font-size: 0.8rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat {
+    text-align: center;
+  }
+  .stat .value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: "JetBrains Mono", monospace;
+  }
+  .stat .label {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
 
   .controls {
     margin-top: 12px;
     display: grid;
-    grid-template-columns: 48px 1fr auto;
+    grid-template-columns: 50px 1fr auto;
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: linear-gradient(180deg, rgba(26, 26, 46, 0.95), rgba(15, 15, 30, 0.98));
+    background: linear-gradient(
+      180deg,
+      rgba(26, 26, 46, 0.95),
+      rgba(15, 15, 30, 0.98)
+    );
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
@@ -397,8 +443,8 @@
   }
 
   .ghost {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: grid;
     place-items: center;
     background: rgba(255, 255, 255, 0.08);
@@ -409,10 +455,22 @@
     transition: all 0.2s ease;
   }
 
-  .ghost.sm { width: 40px; height: 36px; font-size: 0.8rem; }
-  .ghost.full { width: 100%; height: auto; padding: 10px 12px; border-radius: 10px; }
+  .ghost.sm {
+    width: 40px;
+    height: 36px;
+    font-size: 0.8rem;
+  }
+  .ghost.full {
+    width: 100%;
+    height: auto;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
 
-  .ghost:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-1px); }
+  .ghost:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+  }
 
   .main-buttons button {
     width: 56px;
@@ -426,12 +484,26 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   }
 
-  .main-buttons .record { width: 72px; height: 72px; background: linear-gradient(135deg, #ef4444, #dc2626); }
-  .main-buttons .pause { background: linear-gradient(135deg, #f59e0b, #d97706); }
-  .main-buttons .snapshot { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-  .main-buttons .stop { background: linear-gradient(135deg, #6b7280, #4b5563); }
-  .main-buttons button:hover { transform: translateY(-2px); }
-  .main-buttons button:active { transform: scale(0.97); }
+  .main-buttons .record {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+  .main-buttons .pause {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  .main-buttons .snapshot {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+  }
+  .main-buttons .stop {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+  }
+  .main-buttons button:hover {
+    transform: translateY(-2px);
+  }
+  .main-buttons button:active {
+    transform: scale(0.97);
+  }
 
   .prop-tag {
     justify-self: end;
@@ -477,8 +549,12 @@
     gap: 10px;
   }
 
-  label { font-size: 0.85rem; color: rgba(255, 255, 255, 0.75); }
-  input, select {
+  label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  input,
+  select {
     width: 100%;
     padding: 12px 14px;
     background: rgba(255, 255, 255, 0.08);
@@ -487,7 +563,10 @@
     color: #fff;
     font-size: 0.95rem;
   }
-  input:focus, select:focus { outline: 2px solid rgba(99, 102, 241, 0.7); }
+  input:focus,
+  select:focus {
+    outline: 2px solid rgba(99, 102, 241, 0.7);
+  }
 
   .hint {
     margin: 6px 0 0;
@@ -507,8 +586,14 @@
     font-weight: 700;
     font-size: 0.85rem;
   }
-  .badge.ok { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-  .text-muted { color: rgba(255, 255, 255, 0.65); font-size: 0.9rem; }
+  .badge.ok {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+  }
+  .text-muted {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.9rem;
+  }
 
   .meter-label {
     display: flex;
@@ -552,8 +637,13 @@
     gap: 10px;
   }
 
-  .session-row .name { font-weight: 700; }
-  .session-row .meta { font-size: 0.9rem; color: rgba(255, 255, 255, 0.65); }
+  .session-row .name {
+    font-weight: 700;
+  }
+  .session-row .meta {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.65);
+  }
 
   .row-actions {
     display: flex;
@@ -580,12 +670,29 @@
   }
 
   @media (max-width: 640px) {
-    .mock-shell { padding: 12px; }
-    .controls { grid-template-columns: 40px 1fr 1fr; }
-    .main-buttons { gap: 10px; }
-    .main-buttons .record { width: 64px; height: 64px; }
-    .main-buttons button { width: 48px; height: 48px; }
-    .video-overlay.top-bar { grid-template-columns: 1fr; row-gap: 8px; }
-    .queue { justify-self: start; }
+    .mock-shell {
+      padding: 12px;
+    }
+    .controls {
+      grid-template-columns: 40px 1fr 1fr;
+    }
+    .main-buttons {
+      gap: 10px;
+    }
+    .main-buttons .record {
+      width: 64px;
+      height: 64px;
+    }
+    .main-buttons button {
+      width: 52px;
+      height: 52px;
+    }
+    .video-overlay.top-bar {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
+    .queue {
+      justify-self: start;
+    }
   }
 </style>

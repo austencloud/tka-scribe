@@ -468,12 +468,12 @@ export class ImageCompositionService implements IImageCompositionService {
   /**
    * Calculate footer height for user info based on beat count
    * Footer is at the bottom of the image - sized for legacy font sizes
-   * Legacy uses 50pt base font with 50px margin, so footer = font + margin + padding
+   * Legacy uses 50pt base font with 52px margin, so footer = font + margin + padding
    */
   private calculateFooterHeight(beatCount: number, beatScale: number): number {
     // Legacy sizing: margin + font height + some padding
-    // For 3+ beats: margin=50, font=50pt (~50px), so footer ≈ 100-110px
-    let baseHeight = 110; // For 50pt font + 50px margin (3+ beats)
+    // For 3+ beats: margin=50, font=50pt (~52px), so footer ≈ 100-110px
+    let baseHeight = 110; // For 50pt font + 52px margin (3+ beats)
     if (beatCount <= 1) {
       baseHeight = 50;    // For ~22pt font + 17px margin
     } else if (beatCount === 2) {

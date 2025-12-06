@@ -66,7 +66,7 @@
     cursor: pointer;
     padding: 0;
     margin: 0;
-    min-height: 48px;
+    min-height: 52px;
     color: inherit;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
@@ -149,7 +149,7 @@
 
   /* Compact mode: Reduced height for tight spaces */
   .options-header-button.compact {
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .options-header-button.compact .header-title {
@@ -199,7 +199,7 @@
 
     /* Extra compact on mobile when compact mode is active */
     .options-header-button.compact {
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .options-header-button.compact .header-title {

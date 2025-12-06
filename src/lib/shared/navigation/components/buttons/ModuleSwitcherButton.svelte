@@ -12,7 +12,9 @@
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleClick() {
@@ -25,11 +27,7 @@
   const isAuthenticated = $derived(authStore.isAuthenticated);
 </script>
 
-<button
-  class="home-button"
-  onclick={handleClick}
-  aria-label="Go to Dashboard"
->
+<button class="home-button" onclick={handleClick} aria-label="Go to Dashboard">
   <div class="avatar-container">
     {#if isAuthenticated && userPhoto}
       <img
@@ -53,17 +51,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Clean 48px round target - no container */
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    /* Clean 50px round target - no container */
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 0;
     background: transparent;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    transition: transform 0.1s ease, opacity 0.15s ease;
+    transition:
+      transform 0.1s ease,
+      opacity 0.15s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
@@ -103,7 +103,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(263 70% 65%) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(239 84% 67%) 0%,
+      hsl(263 70% 65%) 100%
+    );
     color: white;
     font-size: 20px;
   }

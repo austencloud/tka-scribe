@@ -36,20 +36,6 @@ Features frame processing loop for pose estimation and overlay support.
   let errorMessage = $state<string | null>(null);
   let isActive = $state(false);
 
-  // Frame processing loop
-  let animationFrameId: number | null = null;
-
-  function processFrame() {
-    if (videoElement && isActive && onFrame) {
-      if (videoElement.readyState >= 2) {
-        onFrame(videoElement);
-      }
-    }
-    if (isActive) {
-      animationFrameId = requestAnimationFrame(processFrame);
-    }
-  }
-
   async function initCamera() {
     isInitializing = true;
     errorMessage = null;
@@ -75,12 +61,13 @@ Features frame processing loop for pose estimation and overlay support.
       isActive = true;
       isInitializing = false;
 
-      // Start frame processing
-      if (onFrame) {
-        animationFrameId = requestAnimationFrame(processFrame);
-      }
-
       onCameraReady?.();
+
+      // Pass video element to parent for external detection loop
+      // (parent will start its own RAF loop - don't create a second one here)
+      if (onFrame && videoElement) {
+        onFrame(videoElement);
+      }
     } catch (error) {
       isInitializing = false;
       const message =
@@ -102,10 +89,6 @@ Features frame processing loop for pose estimation and overlay support.
 
   function stopCamera() {
     isActive = false;
-    if (animationFrameId !== null) {
-      cancelAnimationFrame(animationFrameId);
-      animationFrameId = null;
-    }
     if (cameraService) {
       cameraService.stop();
     }
@@ -220,8 +203,8 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid var(--surface-light, rgba(255, 255, 255, 0.2));
     border-top-color: var(--primary, #3b82f6);
     border-radius: 50%;
@@ -235,8 +218,8 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .error-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     color: var(--error, #ef4444);
   }
 
@@ -276,20 +259,20 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .control-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     padding: 8px;
-    background: var(--surface-glass, rgba(0, 0, 0, 0.6));
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
-    border-radius: var(--border-radius-md, 8px);
+    background: #252532;
+    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-2026-md, 14px);
+    box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
     color: var(--foreground, #ffffff);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .control-button:hover {
-    background: var(--surface-glass-hover, rgba(0, 0, 0, 0.8));
+    background: #2d2d3a;
     border-color: var(--primary, #3b82f6);
     transform: translateY(-2px);
   }

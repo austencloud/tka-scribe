@@ -1,6 +1,6 @@
 <!-- SpotlightViewer.svelte - Simplified fullscreen image viewer -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IDiscoverThumbnailService } from "../../display/services/contracts/IDiscoverThumbnailService";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -282,8 +282,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);

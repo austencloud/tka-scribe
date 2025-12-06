@@ -29,7 +29,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(48px, 8.8vw, 48px);
+    min-height: clamp(52px, 8.8vw, 52px);
     padding: clamp(8px, 1.6vw, 10px);
     background: linear-gradient(
       135deg,

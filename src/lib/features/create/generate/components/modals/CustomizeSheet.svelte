@@ -1,6 +1,6 @@
 <!--
 CustomizeSheet.svelte - Sheet for configuring customize generation options
-Follows modern 2026 Material Design patterns with 48px touch targets
+Follows modern 2026 Material Design patterns with 52px touch targets
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -16,7 +16,13 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   import PositionSection from "./customize/PositionSection.svelte";
   import LetterConstraintsSection from "./customize/LetterConstraintsSection.svelte";
 
-  let { isOpen, options, onChange, onClose, isFreeformMode = true } = $props<{
+  let {
+    isOpen,
+    options,
+    onChange,
+    onClose,
+    isFreeformMode = true,
+  } = $props<{
     isOpen: boolean;
     options: CustomizeOptions | null;
     onChange: (options: CustomizeOptions) => void;
@@ -89,9 +95,9 @@ Follows modern 2026 Material Design patterns with 48px touch targets
 
   const hasAnyOptions = $derived(
     pendingOptions.startPosition !== null ||
-    (isFreeformMode && pendingOptions.endPosition !== null) ||
-    pendingOptions.mustContainLetters.length > 0 ||
-    pendingOptions.mustNotContainLetters.length > 0
+      (isFreeformMode && pendingOptions.endPosition !== null) ||
+      pendingOptions.mustContainLetters.length > 0 ||
+      pendingOptions.mustNotContainLetters.length > 0
   );
 
   const createModuleContext = tryGetCreateModuleContext();
@@ -114,16 +120,11 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   class="customize-sheet"
   backdropClass="customize-backdrop"
 >
-  <div
-    class="customize-content"
-    class:desktop-layout={isSideBySideLayout}
-  >
+  <div class="customize-content" class:desktop-layout={isSideBySideLayout}>
     <SheetDragHandle class={isSideBySideLayout ? "side-handle" : ""} />
 
     <header class="sheet-header">
-      <h2 id="customize-title" class="sheet-title">
-        Customize
-      </h2>
+      <h2 id="customize-title" class="sheet-title">Customize</h2>
       <div class="header-actions">
         {#if hasAnyOptions}
           <button
@@ -266,13 +267,12 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   }
 
   /* Position drag handle on the left for side-by-side layout */
-  .customize-content.desktop-layout
-    :global(.sheet-drag-handle.side-handle) {
+  .customize-content.desktop-layout :global(.sheet-drag-handle.side-handle) {
     position: absolute;
     top: 50%;
     left: 18px;
     width: 4px;
-    height: 48px;
+    height: 52px;
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
@@ -303,7 +303,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   }
 
   .clear-button {
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -327,8 +327,8 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   }
 
   .close-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

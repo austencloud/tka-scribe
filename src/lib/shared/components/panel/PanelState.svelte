@@ -56,9 +56,7 @@
   {/if}
 
   {#if type === "error" && onretry}
-    <button class="panel-state__retry" onclick={onretry}>
-      Try Again
-    </button>
+    <button class="panel-state__retry" onclick={onretry}> Try Again </button>
   {/if}
 </div>
 
@@ -74,7 +72,7 @@
   }
 
   .panel-state__icon {
-    font-size: 48px;
+    font-size: 50px;
     color: rgba(255, 255, 255, 0.3);
   }
 

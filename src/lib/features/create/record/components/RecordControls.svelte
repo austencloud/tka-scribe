@@ -222,8 +222,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .bpm-adjust-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -295,7 +295,7 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .metronome-toggle input[type="checkbox"] {
-    width: 48px;
+    width: 52px;
     height: 24px;
     appearance: none;
     background: var(--surface-light, #333);

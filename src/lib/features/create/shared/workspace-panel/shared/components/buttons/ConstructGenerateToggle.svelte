@@ -9,7 +9,7 @@ Design Principles:
 - Action-oriented: Shows what you'll switch TO, not what you're ON
 - Accessible: Full keyboard navigation and screen reader support
 - Adaptive: Shows text label when alone, icon-only when with other buttons
-- Consistent: Same size as other action buttons (48px circle), neutral slate color
+- Consistent: Same size as other action buttons (52px circle), neutral slate color
 -->
 <script lang="ts">
   import { resolve } from "$lib/shared/inversify/di";
@@ -85,8 +85,8 @@ Design Principles:
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 1px solid rgba(148, 163, 184, 0.3);
     border-radius: 50%;
     background: rgba(100, 116, 139, 0.8);
@@ -137,8 +137,8 @@ Design Principles:
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .toggle-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
     }
 
     .toggle-button i {
@@ -152,8 +152,8 @@ Design Principles:
 
   @media (max-width: 480px) {
     .toggle-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
     }
 
     .toggle-button i {
@@ -167,8 +167,8 @@ Design Principles:
 
   @media (max-width: 320px) {
     .toggle-button {
-      width: 48px; /* NEVER below 48px for accessibility */
-      height: 48px;
+      width: 52px; /* NEVER below 52px for accessibility */
+      height: 52px;
     }
 
     .toggle-button i {
@@ -180,11 +180,11 @@ Design Principles:
     }
   }
 
-  /* Landscape mobile: Maintain 48px minimum */
+  /* Landscape mobile: Maintain 52px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .toggle-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
     }
 
     .toggle-button i {

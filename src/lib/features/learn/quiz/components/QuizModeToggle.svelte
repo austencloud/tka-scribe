@@ -5,9 +5,9 @@ A smooth pill-style segmented control with icons for selecting between
 Fixed Questions mode (set number) and Countdown mode (timed challenge).
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { QuizMode } from "../domain/enums/quiz-enums";
 
@@ -32,7 +32,9 @@ import { TYPES } from "$lib/shared/inversify/types";
   });
 
   // Calculate slider position based on selected mode
-  let sliderPosition = $derived(selectedMode === QuizMode.FIXED_QUESTION ? 0 : 1);
+  let sliderPosition = $derived(
+    selectedMode === QuizMode.FIXED_QUESTION ? 0 : 1
+  );
 
   // Handle mode selection
   function selectMode(mode: QuizMode) {
@@ -49,10 +51,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 <div class="mode-toggle-container">
   <div class="segmented-control" class:disabled>
     <!-- Animated sliding background -->
-    <div
-      class="slider-track"
-      style="--slider-position: {sliderPosition}"
-    ></div>
+    <div class="slider-track" style="--slider-position: {sliderPosition}"></div>
 
     <!-- Fixed Questions Option -->
     <button
@@ -64,9 +63,18 @@ import { TYPES } from "$lib/shared/inversify/types";
       aria-pressed={selectedMode === QuizMode.FIXED_QUESTION}
     >
       <span class="segment-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 11l3 3L22 4"/>
-          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 11l3 3L22 4" />
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
         </svg>
       </span>
       <span class="segment-label">20 Questions</span>
@@ -82,9 +90,18 @@ import { TYPES } from "$lib/shared/inversify/types";
       aria-pressed={selectedMode === QuizMode.COUNTDOWN}
     >
       <span class="segment-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 16 14"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
         </svg>
       </span>
       <span class="segment-label">2 Min Timer</span>
@@ -126,7 +143,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     left: 4px;
     width: calc(50% - 4px);
     height: calc(100% - 8px);
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(79, 70, 229, 0.9));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.9),
+      rgba(79, 70, 229, 0.9)
+    );
     border-radius: 12px;
     transform: translateX(calc(var(--slider-position) * 100%));
     transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -148,7 +169,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     border: none;
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.65);
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -207,7 +234,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     .segment {
       padding: 14px 16px;
       font-size: 0.875rem;
-      min-height: 48px;
+      min-height: 52px;
       gap: 6px;
     }
 

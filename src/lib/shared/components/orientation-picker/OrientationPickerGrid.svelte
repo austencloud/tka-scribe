@@ -1,7 +1,7 @@
 <!--
 OrientationPickerGrid.svelte - 2x2 grid for selecting prop orientation
 Shows all 4 orientations: in, out, clock, counter
-48px touch targets for accessibility
+50px touch targets for accessibility
 -->
 <script lang="ts">
   import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
@@ -10,10 +10,7 @@ Shows all 4 orientations: in, out, clock, counter
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
-  let {
-    currentOrientation = null,
-    onOrientationChange
-  } = $props<{
+  let { currentOrientation = null, onOrientationChange } = $props<{
     currentOrientation: Orientation | null;
     onOrientationChange: (orientation: Orientation | null) => void;
   }>();
@@ -21,7 +18,9 @@ Shows all 4 orientations: in, out, clock, counter
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Orientation options with display info
@@ -31,10 +30,30 @@ Shows all 4 orientations: in, out, clock, counter
     icon: string;
     description: string;
   }> = [
-    { value: Orientation.IN, label: "In", icon: "↓", description: "Facing inward" },
-    { value: Orientation.OUT, label: "Out", icon: "↑", description: "Facing outward" },
-    { value: Orientation.CLOCK, label: "Clock", icon: "↻", description: "Clockwise" },
-    { value: Orientation.COUNTER, label: "Counter", icon: "↺", description: "Counter-clockwise" },
+    {
+      value: Orientation.IN,
+      label: "In",
+      icon: "↓",
+      description: "Facing inward",
+    },
+    {
+      value: Orientation.OUT,
+      label: "Out",
+      icon: "↑",
+      description: "Facing outward",
+    },
+    {
+      value: Orientation.CLOCK,
+      label: "Clock",
+      icon: "↻",
+      description: "Clockwise",
+    },
+    {
+      value: Orientation.COUNTER,
+      label: "Counter",
+      icon: "↺",
+      description: "Counter-clockwise",
+    },
   ];
 
   function handleSelect(orientation: Orientation) {
@@ -71,11 +90,7 @@ Shows all 4 orientations: in, out, clock, counter
   </div>
 
   {#if currentOrientation !== null}
-    <button
-      class="clear-button"
-      onclick={handleClear}
-      type="button"
-    >
+    <button class="clear-button" onclick={handleClear} type="button">
       Clear Selection
     </button>
   {/if}
@@ -122,7 +137,11 @@ Shows all 4 orientations: in, out, clock, counter
   }
 
   .orientation-cell.selected {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.25));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.25),
+      rgba(139, 92, 246, 0.25)
+    );
     border-color: rgba(139, 92, 246, 0.6);
     box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
   }
@@ -145,7 +164,7 @@ Shows all 4 orientations: in, out, clock, counter
   }
 
   .clear-button {
-    min-height: 48px;
+    min-height: 52px;
     padding: 12px 24px;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);

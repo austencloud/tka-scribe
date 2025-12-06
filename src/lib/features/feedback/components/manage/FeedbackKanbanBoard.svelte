@@ -59,7 +59,8 @@
   // Deferred items (archived items with deferredUntil timestamp)
   const deferredItems = $derived.by(() => {
     return manageState.allItems.filter(
-      (item: FeedbackItem) => item.status === "archived" && item.deferredUntil && !item.isDeleted
+      (item: FeedbackItem) =>
+        item.status === "archived" && item.deferredUntil && !item.isDeleted
     );
   });
 
@@ -107,7 +108,10 @@
   }
 
   // Get the status column at a given screen position
-  function getColumnAtPosition(x: number, y: number): FeedbackStatus | "deferred" | null {
+  function getColumnAtPosition(
+    x: number,
+    y: number
+  ): FeedbackStatus | "deferred" | null {
     const element = document.elementFromPoint(x, y);
     if (!element) return null;
 
@@ -291,7 +295,7 @@
       >
         <div class="defer-label">
           <i class="fas fa-clock"></i>
-          <span>Deferred</span>
+          <span>Defer</span>
           {#if deferredItems.length > 0}
             <span class="defer-count">{deferredItems.length}</span>
           {/if}
@@ -380,7 +384,10 @@
         <div class="dialog-body">
           <div class="feedback-preview">
             <span class="preview-label">Item:</span>
-            <span class="preview-title">{itemToDefer.title || itemToDefer.description.substring(0, 60)}</span>
+            <span class="preview-title"
+              >{itemToDefer.title ||
+                itemToDefer.description.substring(0, 60)}</span
+            >
           </div>
 
           <div class="form-field">
@@ -450,7 +457,7 @@
     --kb-space-sm: clamp(10px, 2.5cqi, 16px);
     --kb-space-md: clamp(14px, 3.5cqi, 24px);
     --kb-space-lg: clamp(20px, 5cqi, 32px);
-    --kb-space-xl: clamp(28px, 7cqi, 48px);
+    --kb-space-xl: clamp(28px, 7cqi, 52px);
 
     /* ===== FLUID TYPOGRAPHY - Accessible minimum sizes ===== */
     --kb-text-xs: clamp(0.8125rem, 2cqi, 0.875rem); /* min 13px */
@@ -679,7 +686,7 @@
   }
 
   .skeleton-body {
-    height: clamp(36px, 9cqi, 48px);
+    height: clamp(36px, 9cqi, 52px);
     background: rgba(255, 255, 255, 0.08);
     border-radius: var(--kb-radius-sm);
   }
@@ -971,7 +978,7 @@
   }
 
   /* ===== CONTAINER QUERY: Mobile layout (shows tabs) ===== */
-  @container kanban (max-width: 650px) {
+  @container kanban (max-width: 652px) {
     .status-tabs {
       display: flex;
     }

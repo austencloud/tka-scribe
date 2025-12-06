@@ -179,7 +179,7 @@
 
   .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
     gap: 12px;
     margin-bottom: 16px;
   }

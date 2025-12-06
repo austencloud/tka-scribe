@@ -476,8 +476,8 @@
     position: absolute;
     top: 12px;
     right: 16px;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -522,8 +522,8 @@
   }
 
   .spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top-color: white;
     border-radius: 50%;
@@ -537,7 +537,7 @@
   }
 
   .error-state i {
-    font-size: 48px;
+    font-size: 50px;
     color: #ef4444;
   }
 
@@ -575,7 +575,7 @@
     justify-content: center;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    font-size: 48px;
+    font-size: 50px;
     color: rgba(255, 255, 255, 0.2);
   }
 
@@ -608,8 +608,6 @@
 
   /* Beats Section */
 
-
-
   /* Side-by-side layout (desktop) */
   .sequence-viewer.side-by-side .viewer-content {
     flex-direction: row;
@@ -623,8 +621,6 @@
     flex: 1;
     min-width: 300px;
   }
-
-
 
   .sequence-viewer.side-by-side .metadata-section {
     width: 100%;

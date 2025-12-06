@@ -5,10 +5,13 @@
   Provides controls for turns, rotation direction, and motion type.
 -->
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+  import {
+    MotionColor,
+    RotationDirection,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   interface Props {
     selectedBeatNumber: number | null;
@@ -48,13 +51,21 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
   const currentBlueTurns = $derived(normalizeTurns(rawBlueTurns));
   const currentRedTurns = $derived(normalizeTurns(rawRedTurns));
   // Display values - show "fl" for floats, otherwise the number
-  const displayBlueTurns = $derived(rawBlueTurns === "fl" ? "fl" : currentBlueTurns);
-  const displayRedTurns = $derived(rawRedTurns === "fl" ? "fl" : currentRedTurns);
+  const displayBlueTurns = $derived(
+    rawBlueTurns === "fl" ? "fl" : currentBlueTurns
+  );
+  const displayRedTurns = $derived(
+    rawRedTurns === "fl" ? "fl" : currentRedTurns
+  );
   // Show rotation controls only when turns >= 0 (hide for floats)
   const showBlueRotation = $derived(currentBlueTurns >= 0);
   const showRedRotation = $derived(currentRedTurns >= 0);
-  const currentBlueRotation = $derived(blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION);
-  const currentRedRotation = $derived(redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION);
+  const currentBlueRotation = $derived(
+    blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
+  );
+  const currentRedRotation = $derived(
+    redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
+  );
 
   function handleBlueTurnsChange(delta: number) {
     if (selectedBeatNumber === null || !selectedBeatData?.motions) return;
@@ -65,7 +76,8 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
     // Allow turns to go to -0.5 (float), floor at -0.5
     const newNumericTurns = Math.max(-0.5, currentBlueTurns + delta);
     // Store as "fl" when -0.5, otherwise store the number
-    const newTurns: number | "fl" = newNumericTurns === -0.5 ? "fl" : newNumericTurns;
+    const newTurns: number | "fl" =
+      newNumericTurns === -0.5 ? "fl" : newNumericTurns;
     const updatedMotions = {
       ...selectedBeatData.motions,
       [MotionColor.BLUE]: {
@@ -90,7 +102,8 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
     // Allow turns to go to -0.5 (float), floor at -0.5
     const newNumericTurns = Math.max(-0.5, currentRedTurns + delta);
     // Store as "fl" when -0.5, otherwise store the number
-    const newTurns: number | "fl" = newNumericTurns === -0.5 ? "fl" : newNumericTurns;
+    const newTurns: number | "fl" =
+      newNumericTurns === -0.5 ? "fl" : newNumericTurns;
     const updatedMotions = {
       ...selectedBeatData.motions,
       [MotionColor.RED]: {
@@ -164,7 +177,9 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
   {:else}
     <div class="edit-controls">
       <h3 class="panel-title">
-        {isStartPosition ? "Edit Start Position" : `Edit Beat ${selectedBeatNumber}`}
+        {isStartPosition
+          ? "Edit Start Position"
+          : `Edit Beat ${selectedBeatNumber}`}
       </h3>
 
       <!-- Blue Prop Section -->
@@ -186,7 +201,11 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
               <i class="fas fa-minus"></i>
             </button>
             <span class="turns-value">{displayBlueTurns}</span>
-            <button class="control-btn" onclick={() => handleBlueTurnsChange(0.5)} aria-label="Increase turns">
+            <button
+              class="control-btn"
+              onclick={() => handleBlueTurnsChange(0.5)}
+              aria-label="Increase turns"
+            >
               <i class="fas fa-plus"></i>
             </button>
           </div>
@@ -198,8 +217,10 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
           <div class="rotation-control">
             <button
               class="rotation-btn"
-              class:active={showBlueRotation && currentBlueRotation === RotationDirection.CLOCKWISE}
-              onclick={() => handleBlueRotationChange(RotationDirection.CLOCKWISE)}
+              class:active={showBlueRotation &&
+                currentBlueRotation === RotationDirection.CLOCKWISE}
+              onclick={() =>
+                handleBlueRotationChange(RotationDirection.CLOCKWISE)}
               disabled={!showBlueRotation}
               aria-label="Clockwise rotation"
             >
@@ -207,8 +228,10 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
             </button>
             <button
               class="rotation-btn"
-              class:active={showBlueRotation && currentBlueRotation === RotationDirection.COUNTER_CLOCKWISE}
-              onclick={() => handleBlueRotationChange(RotationDirection.COUNTER_CLOCKWISE)}
+              class:active={showBlueRotation &&
+                currentBlueRotation === RotationDirection.COUNTER_CLOCKWISE}
+              onclick={() =>
+                handleBlueRotationChange(RotationDirection.COUNTER_CLOCKWISE)}
               disabled={!showBlueRotation}
               aria-label="Counter-clockwise rotation"
             >
@@ -237,7 +260,11 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
               <i class="fas fa-minus"></i>
             </button>
             <span class="turns-value">{displayRedTurns}</span>
-            <button class="control-btn" onclick={() => handleRedTurnsChange(0.5)} aria-label="Increase turns">
+            <button
+              class="control-btn"
+              onclick={() => handleRedTurnsChange(0.5)}
+              aria-label="Increase turns"
+            >
               <i class="fas fa-plus"></i>
             </button>
           </div>
@@ -249,8 +276,10 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
           <div class="rotation-control">
             <button
               class="rotation-btn"
-              class:active={showRedRotation && currentRedRotation === RotationDirection.CLOCKWISE}
-              onclick={() => handleRedRotationChange(RotationDirection.CLOCKWISE)}
+              class:active={showRedRotation &&
+                currentRedRotation === RotationDirection.CLOCKWISE}
+              onclick={() =>
+                handleRedRotationChange(RotationDirection.CLOCKWISE)}
               disabled={!showRedRotation}
               aria-label="Clockwise rotation"
             >
@@ -258,8 +287,10 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
             </button>
             <button
               class="rotation-btn"
-              class:active={showRedRotation && currentRedRotation === RotationDirection.COUNTER_CLOCKWISE}
-              onclick={() => handleRedRotationChange(RotationDirection.COUNTER_CLOCKWISE)}
+              class:active={showRedRotation &&
+                currentRedRotation === RotationDirection.COUNTER_CLOCKWISE}
+              onclick={() =>
+                handleRedRotationChange(RotationDirection.COUNTER_CLOCKWISE)}
               disabled={!showRedRotation}
               aria-label="Counter-clockwise rotation"
             >
@@ -381,8 +412,8 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -405,7 +436,7 @@ import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/do
     font-size: 1.25rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
-    min-width: 50px;
+    min-width: 52px;
     text-align: center;
   }
 

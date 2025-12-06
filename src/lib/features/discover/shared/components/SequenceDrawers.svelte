@@ -1,7 +1,11 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import { BentoFilterPanel, LetterSelectionSheet, PositionOptionsSheet } from "../../gallery/filtering/components/bento-filter";
+  import {
+    BentoFilterPanel,
+    LetterSelectionSheet,
+    PositionOptionsSheet,
+  } from "../../gallery/filtering/components/bento-filter";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import SequenceDetailContent from "../../gallery/display/components/SequenceDetailContent.svelte";
   import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
@@ -50,7 +54,9 @@
 
   // Derived values for sheets
   const currentLetter = $derived(
-    currentFilter.type === "startingLetter" ? (currentFilter.value as string) : null
+    currentFilter.type === "startingLetter"
+      ? (currentFilter.value as string)
+      : null
   );
 
   // Handler functions
@@ -330,7 +336,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
-    height: 48px;
+    height: 52px;
     background: linear-gradient(
       to bottom,
       transparent 0%,
@@ -442,8 +448,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   :global(.drawer-content) .drawer-close-btn:hover {
@@ -494,7 +500,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
-    height: 48px;
+    height: 52px;
     background: linear-gradient(
       to bottom,
       transparent 0%,
@@ -532,8 +538,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 48px !important;
-    min-height: 48px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
   }
 
   :global(.filters-drawer .close-button:hover) {

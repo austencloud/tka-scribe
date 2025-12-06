@@ -276,7 +276,7 @@ export class OptionSizer implements IOptionSizer {
    *
    * IMPORTANT: When in stacked mobile layout (workbench on top, option picker on bottom),
    * we should use 8 columns with horizontal swipe, NOT switch to traditional grid.
-   * The container width check (>= 650px) is only for determining column count,
+   * The container width check (>= 652px) is only for determining column count,
    * not for determining whether to use swipe vs grid layout.
    */
   getOptimalColumns(containerWidth: number, _isMobileDevice: boolean): number {

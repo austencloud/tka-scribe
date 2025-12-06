@@ -98,7 +98,7 @@
     border: 1px solid rgba(80, 80, 100, 0.4);
     border-radius: 8px;
     backdrop-filter: var(--glass-backdrop);
-    min-height: 48px;
+    min-height: 52px;
     transition: all var(--transition-normal);
   }
 
@@ -201,7 +201,7 @@
     .write-toolbar {
       padding: var(--spacing-xs) var(--spacing-sm);
       gap: var(--spacing-sm);
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .toolbar-section {

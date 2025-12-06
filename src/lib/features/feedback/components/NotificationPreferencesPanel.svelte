@@ -11,7 +11,9 @@
   import { DEFAULT_NOTIFICATION_PREFERENCES } from "../domain/models/notification-models";
 
   // State
-  let preferences = $state<NotificationPreferences>(DEFAULT_NOTIFICATION_PREFERENCES);
+  let preferences = $state<NotificationPreferences>(
+    DEFAULT_NOTIFICATION_PREFERENCES
+  );
   let isLoading = $state(true);
   let isSaving = $state(false);
 
@@ -29,7 +31,9 @@
 
     try {
       isLoading = true;
-      preferences = await notificationPreferencesService.getPreferences(user.uid);
+      preferences = await notificationPreferencesService.getPreferences(
+        user.uid
+      );
     } catch (error) {
       console.error("Failed to load preferences:", error);
     } finally {
@@ -91,28 +95,68 @@
       title: "Feedback Notifications",
       description: "Get notified when your feedback is addressed",
       items: [
-        { key: "feedbackResolved" as const, label: "Feedback Resolved", description: "When your feedback is marked as resolved" },
-        { key: "feedbackInProgress" as const, label: "Being Worked On", description: "When work starts on your feedback" },
-        { key: "feedbackNeedsInfo" as const, label: "More Info Needed", description: "When admin needs more details from you" },
-        { key: "feedbackResponse" as const, label: "Admin Response", description: "When admin sends you a message" },
+        {
+          key: "feedbackResolved" as const,
+          label: "Feedback Resolved",
+          description: "When your feedback is marked as resolved",
+        },
+        {
+          key: "feedbackInProgress" as const,
+          label: "Being Worked On",
+          description: "When work starts on your feedback",
+        },
+        {
+          key: "feedbackNeedsInfo" as const,
+          label: "More Info Needed",
+          description: "When admin needs more details from you",
+        },
+        {
+          key: "feedbackResponse" as const,
+          label: "Admin Response",
+          description: "When admin sends you a message",
+        },
       ],
     },
     {
       title: "Sequence Engagement",
       description: "Get notified when others interact with your sequences",
       items: [
-        { key: "sequenceSaved" as const, label: "Sequence Saved", description: "When someone saves your sequence" },
-        { key: "sequenceVideoSubmitted" as const, label: "Video Submitted", description: "When someone submits a video of your sequence" },
-        { key: "sequenceLiked" as const, label: "Sequence Liked", description: "When someone likes your sequence" },
-        { key: "sequenceCommented" as const, label: "New Comment", description: "When someone comments on your sequence" },
+        {
+          key: "sequenceSaved" as const,
+          label: "Sequence Saved",
+          description: "When someone saves your sequence",
+        },
+        {
+          key: "sequenceVideoSubmitted" as const,
+          label: "Video Submitted",
+          description: "When someone submits a video of your sequence",
+        },
+        {
+          key: "sequenceLiked" as const,
+          label: "Sequence Liked",
+          description: "When someone likes your sequence",
+        },
+        {
+          key: "sequenceCommented" as const,
+          label: "New Comment",
+          description: "When someone comments on your sequence",
+        },
       ],
     },
     {
       title: "Social & Achievements",
       description: "Get notified about followers and milestones",
       items: [
-        { key: "userFollowed" as const, label: "New Follower", description: "When someone follows you" },
-        { key: "achievementUnlocked" as const, label: "Achievement Unlocked", description: "When you unlock an achievement" },
+        {
+          key: "userFollowed" as const,
+          label: "New Follower",
+          description: "When someone follows you",
+        },
+        {
+          key: "achievementUnlocked" as const,
+          label: "Achievement Unlocked",
+          description: "When you unlock an achievement",
+        },
       ],
     },
   ];
@@ -177,7 +221,10 @@
               <div class="item-content">
                 <div class="item-header">
                   <span class="item-label">{item.label}</span>
-                  <div class="toggle-switch" class:enabled={preferences[item.key]}>
+                  <div
+                    class="toggle-switch"
+                    class:enabled={preferences[item.key]}
+                  >
                     <div class="toggle-thumb"></div>
                   </div>
                 </div>
@@ -234,7 +281,7 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    padding: 48px 24px;
+    padding: 52px 24px;
     color: rgba(255, 255, 255, 0.5);
   }
 

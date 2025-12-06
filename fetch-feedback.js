@@ -25,6 +25,8 @@
 
 import admin from 'firebase-admin';
 import { readFileSync } from 'fs';
+import { execSync } from 'child_process';
+import { existsSync, mkdirSync } from 'fs';
 
 // Load service account key
 const serviceAccount = JSON.parse(
@@ -40,6 +42,42 @@ const db = admin.firestore();
 
 // Stale claim threshold (2 hours) - items claimed longer than this can be reclaimed
 const STALE_CLAIM_MS = 2 * 60 * 60 * 1000;
+
+/**
+ * Download images from Firebase Storage for a feedback item
+ * Returns array of local file paths
+ */
+async function downloadFeedbackImages(feedbackId, imageUrls) {
+  if (!imageUrls || imageUrls.length === 0) {
+    return [];
+  }
+
+  // Ensure feedback-images directory exists
+  const imageDir = './feedback-images';
+  if (!existsSync(imageDir)) {
+    mkdirSync(imageDir);
+  }
+
+  const downloadedPaths = [];
+
+  for (let i = 0; i < imageUrls.length; i++) {
+    const url = imageUrls[i];
+    const filename = `feedback-${feedbackId}-${i + 1}.png`;
+    const filepath = `${imageDir}/${filename}`;
+
+    try {
+      // Use curl with --ssl-no-revoke to handle certificate issues
+      execSync(`curl --ssl-no-revoke -s -o "${filepath}" "${url}"`, {
+        stdio: 'pipe'
+      });
+      downloadedPaths.push(filepath);
+    } catch (error) {
+      console.error(`  ⚠️  Failed to download image ${i + 1}: ${error.message}`);
+    }
+  }
+
+  return downloadedPaths;
+}
 
 /**
  * List all feedback with queue status summary
@@ -250,6 +288,21 @@ async function claimNextFeedback() {
 
       if (nextSubtask) {
         console.log(`\n  ➡️ Next subtask: #${nextSubtask.id} ${nextSubtask.title}`);
+      }
+    }
+
+    // Download and display images if they exist
+    if (itemToClaim.imageUrls && itemToClaim.imageUrls.length > 0) {
+      console.log('─'.repeat(70));
+      console.log(`  📸 IMAGES (${itemToClaim.imageUrls.length}):\n`);
+
+      const downloadedPaths = await downloadFeedbackImages(itemToClaim.id, itemToClaim.imageUrls);
+
+      if (downloadedPaths.length > 0) {
+        downloadedPaths.forEach((path, idx) => {
+          console.log(`     [${idx + 1}] Downloaded to: ${path}`);
+        });
+        console.log(`\n  ✅ Images ready to view - use the Read tool on the paths above`);
       }
     }
 
@@ -643,6 +696,21 @@ async function getFeedbackById(docId) {
         console.log(`     ${statusIcon} #${s.id} ${s.title}${deps}`);
         console.log(`        ${s.description.substring(0, 60)}${s.description.length > 60 ? '...' : ''}`);
       });
+    }
+
+    // Download and display images if they exist
+    if (item.imageUrls && item.imageUrls.length > 0) {
+      console.log('─'.repeat(70));
+      console.log(`  📸 IMAGES (${item.imageUrls.length}):\n`);
+
+      const downloadedPaths = await downloadFeedbackImages(item.id, item.imageUrls);
+
+      if (downloadedPaths.length > 0) {
+        downloadedPaths.forEach((path, idx) => {
+          console.log(`     [${idx + 1}] Downloaded to: ${path}`);
+        });
+        console.log(`\n  ✅ Images ready to view - use the Read tool on the paths above`);
+      }
     }
 
     console.log('\n' + '='.repeat(70) + '\n');

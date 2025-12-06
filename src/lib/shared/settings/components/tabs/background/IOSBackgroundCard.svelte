@@ -195,7 +195,7 @@
       0 2px 8px rgba(0, 0, 0, 0.6),
       0 0 4px rgba(0, 0, 0, 0.8);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-    font-size: clamp(24px, 7cqi, 48px);
+    font-size: clamp(24px, 7cqi, 52px);
     transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
@@ -451,7 +451,7 @@
       200px 200px,
       180px 180px,
       220px 220px,
-      250px 250px,
+      252px 252px,
       190px 190px,
       210px 210px,
       170px 170px,
@@ -461,9 +461,9 @@
       40px 60px,
       130px 80px,
       70px 120px,
-      150px 30px,
-      90px 150px,
-      200px 50px,
+      152px 30px,
+      90px 152px,
+      200px 52px,
       160px 110px;
     background-repeat: repeat;
     animation: twinkle 3s ease-in-out infinite;
@@ -644,7 +644,7 @@
       140px 60px,
       100px 140px,
       180px 100px,
-      40px 150px;
+      40px 152px;
     animation: bubbles 12s ease-in-out infinite;
   }
 

@@ -204,8 +204,8 @@
     align-items: center;
     justify-content: center;
     padding: clamp(10px, 2vw, 14px);
-    min-width: clamp(48px, 8.8vw, 52px); /* Better touch target */
-    min-height: clamp(48px, 8.8vw, 52px);
+    min-width: clamp(52px, 8.8vw, 52px); /* Better touch target */
+    min-height: clamp(52px, 8.8vw, 52px);
     background: rgba(255, 255, 255, 0.08);
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: clamp(10px, 2vw, 12px);

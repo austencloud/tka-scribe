@@ -7,6 +7,9 @@
 
 import type { AppSettings } from "../../../settings/domain/AppSettings";
 import { MotionColor } from "../domain/enums/pictograph-enums";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("VisibilityManager");
 
 type VisibilityObserver = () => void;
 
@@ -14,20 +17,20 @@ type VisibilityCategory = "glyph" | "motion" | "non_radial" | "all" | "buttons";
 
 interface VisibilitySettings {
   // Motion visibility (independent)
-  red_motion: boolean;
-  blue_motion: boolean;
+  redMotion: boolean;
+  blueMotion: boolean;
 
   // Independent glyphs
-  Reversals: boolean;
+  reversalIndicators: boolean;
 
   // Dependent glyphs (only available when both motions are visible)
-  TKA: boolean;
-  VTG: boolean;
-  Elemental: boolean;
-  Positions: boolean;
+  tkaGlyph: boolean;
+  vtgGlyph: boolean;
+  elementalGlyph: boolean;
+  positionsGlyph: boolean;
 
   // TKA sub-elements (dependent on TKA glyph)
-  TurnNumbers: boolean;
+  turnNumbers: boolean;
 
   // Grid elements
   nonRadialPoints: boolean;
@@ -39,29 +42,29 @@ export class VisibilityStateManager {
     new Map();
 
   // Dependent glyphs that require both motions to be visible
-  private readonly DEPENDENT_GLYPHS = ["TKA", "VTG", "Elemental", "Positions"];
+  private readonly DEPENDENT_GLYPHS = ["tkaGlyph", "vtgGlyph", "elementalGlyph", "positionsGlyph"];
 
   // Sub-elements that depend on their parent glyph
-  private readonly TKA_SUB_ELEMENTS = ["TurnNumbers"];
+  private readonly TKA_SUB_ELEMENTS = ["turnNumbers"];
 
   constructor(initialSettings?: Partial<AppSettings>) {
     // Initialize with defaults matching desktop app
     this.settings = {
       // Motion defaults - both visible
-      red_motion: true,
-      blue_motion: true,
+      redMotion: true,
+      blueMotion: true,
 
       // Independent glyph defaults
-      Reversals: true,
+      reversalIndicators: true,
 
       // Dependent glyph defaults
-      TKA: true,
-      VTG: false,
-      Elemental: false,
-      Positions: false,
+      tkaGlyph: true,
+      vtgGlyph: false,
+      elementalGlyph: false,
+      positionsGlyph: false,
 
       // TKA sub-element defaults
-      TurnNumbers: true,
+      turnNumbers: true,
 
       // Grid defaults
       nonRadialPoints: false,
@@ -94,12 +97,12 @@ export class VisibilityStateManager {
    */
   public toAppSettings(): Record<string, boolean> {
     return {
-      TKA: this.settings.TKA,
-      Reversals: this.settings.Reversals,
-      VTG: this.settings.VTG,
-      Elemental: this.settings.Elemental,
-      Positions: this.settings.Positions,
-      TurnNumbers: this.settings.TurnNumbers,
+      tkaGlyph: this.settings.tkaGlyph,
+      reversalIndicators: this.settings.reversalIndicators,
+      vtgGlyph: this.settings.vtgGlyph,
+      elementalGlyph: this.settings.elementalGlyph,
+      positionsGlyph: this.settings.positionsGlyph,
+      turnNumbers: this.settings.turnNumbers,
       nonRadialPoints: this.settings.nonRadialPoints,
     };
   }
@@ -141,8 +144,8 @@ export class VisibilityStateManager {
     categories.forEach((category) => {
       const observers = this.observers.get(category);
       if (observers) {
-        console.log(
-          `📢 [VisibilityManager] Notifying ${observers.size} observers for category: ${category}`
+        debug.log(
+          `Notifying ${observers.size} observers for category: ${category}`
         );
         observers.forEach((callback) => callbacksToNotify.add(callback));
       }
@@ -151,14 +154,14 @@ export class VisibilityStateManager {
     // Always notify "all" observers
     const allObservers = this.observers.get("all");
     if (allObservers) {
-      console.log(
-        `📢 [VisibilityManager] Notifying ${allObservers.size} "all" observers`
+      debug.log(
+        `Notifying ${allObservers.size} "all" observers`
       );
       allObservers.forEach((callback) => callbacksToNotify.add(callback));
     }
 
-    console.log(
-      `📢 [VisibilityManager] Total callbacks to execute: ${callbacksToNotify.size}`
+    debug.log(
+      `Total callbacks to execute: ${callbacksToNotify.size}`
     );
 
     // Execute callbacks
@@ -180,7 +183,7 @@ export class VisibilityStateManager {
    */
   getMotionVisibility(color: MotionColor): boolean {
     return this.settings[
-      `${color}_motion` as keyof VisibilitySettings
+      `${color}Motion` as keyof VisibilitySettings
     ] as boolean;
   }
 
@@ -191,9 +194,9 @@ export class VisibilityStateManager {
     const otherColor =
       color === MotionColor.RED ? MotionColor.BLUE : MotionColor.RED;
 
-    const colorMotionKey = `${color}_motion` as keyof VisibilitySettings;
+    const colorMotionKey = `${color}Motion` as keyof VisibilitySettings;
     const otherColorMotionKey =
-      `${otherColor}_motion` as keyof VisibilitySettings;
+      `${otherColor}Motion` as keyof VisibilitySettings;
 
     // Enforce constraint: at least one motion must remain visible
     if (!visible && !this.settings[otherColorMotionKey]) {
@@ -213,14 +216,14 @@ export class VisibilityStateManager {
    * Check if all motions are visible
    */
   areAllMotionsVisible(): boolean {
-    return this.settings.red_motion && this.settings.blue_motion;
+    return this.settings.redMotion && this.settings.blueMotion;
   }
 
   /**
    * Check if any motion is visible
    */
   isAnyMotionVisible(): boolean {
-    return this.settings.red_motion || this.settings.blue_motion;
+    return this.settings.redMotion || this.settings.blueMotion;
   }
 
   /**
@@ -228,8 +231,8 @@ export class VisibilityStateManager {
    */
   saveMotionVisibilityState(): { blue: boolean; red: boolean } {
     return {
-      blue: this.settings.blue_motion,
-      red: this.settings.red_motion,
+      blue: this.settings.blueMotion,
+      red: this.settings.redMotion,
     };
   }
 
@@ -240,8 +243,8 @@ export class VisibilityStateManager {
     blue: boolean;
     red: boolean;
   }): void {
-    this.settings.blue_motion = savedState.blue;
-    this.settings.red_motion = savedState.red;
+    this.settings.blueMotion = savedState.blue;
+    this.settings.redMotion = savedState.red;
     this.notifyObservers(["motion", "glyph", "buttons"]);
   }
 
@@ -259,7 +262,7 @@ export class VisibilityStateManager {
 
     // For TKA sub-elements, also check if TKA glyph is visible
     if (this.TKA_SUB_ELEMENTS.includes(glyphType)) {
-      return baseVisibility && this.getGlyphVisibility("TKA");
+      return baseVisibility && this.getGlyphVisibility("tkaGlyph");
     }
 
     // For dependent glyphs, also check if both motions are visible
@@ -278,8 +281,8 @@ export class VisibilityStateManager {
     if (glyphType in this.settings) {
       (this.settings as unknown as Record<string, boolean>)[glyphType] =
         visible;
-      console.log(
-        "📢 [VisibilityManager] Notifying observers for glyph change"
+      debug.log(
+        "Notifying observers for glyph change"
       );
       this.notifyObservers(["glyph"]);
     }
@@ -328,7 +331,7 @@ export class VisibilityStateManager {
    * Get all visible glyph types
    */
   getVisibleGlyphs(): string[] {
-    return ["TKA", "Reversals", "VTG", "Elemental", "Positions"].filter(
+    return ["tkaGlyph", "reversalIndicators", "vtgGlyph", "elementalGlyph", "positionsGlyph"].filter(
       (glyph) => this.getGlyphVisibility(glyph)
     );
   }

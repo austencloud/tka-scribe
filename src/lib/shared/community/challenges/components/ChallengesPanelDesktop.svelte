@@ -463,8 +463,8 @@
   }
 
   .loading-spinner {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #8b5cf6;
     border-radius: 50%;
@@ -554,8 +554,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: var(--stat-gradient);
     border-radius: 12px;
     font-size: 20px;
@@ -617,8 +617,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 14px;
     font-size: 20px;
     color: white;
@@ -886,8 +886,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: color-mix(in srgb, var(--skill-color) 15%, transparent);
     border-radius: 12px;
     color: var(--skill-color);
@@ -1001,8 +1001,8 @@
     }
 
     .stat-icon-wrap {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 18px;
     }
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+  import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
   import type { createShareState } from "../../state/share-state.svelte";
 
   let {
@@ -56,7 +56,11 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
         alt="Sequence preview"
         class="preview-image"
       />
-      <button class="regenerate-button" onclick={onRetry} title="Force regenerate preview (bypass cache)">
+      <button
+        class="regenerate-button"
+        onclick={onRetry}
+        title="Force regenerate preview (bypass cache)"
+      >
         <i class="fas fa-sync-alt"></i>
         <span>Refresh</span>
       </button>
@@ -119,8 +123,8 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 
   .placeholder-icon,
   .error-icon {
-    width: clamp(48px, 6cqw, 64px);
-    height: clamp(48px, 6cqw, 64px);
+    width: clamp(50px, 6cqw, 64px);
+    height: clamp(50px, 6cqw, 64px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -140,8 +144,15 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
   }
 
   @keyframes iconPulse {
-    0%, 100% { opacity: 0.4; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.05); }
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
   }
 
   .error-icon {
@@ -172,8 +183,8 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 
   /* Modern loading ring */
   .loading-ring {
-    width: clamp(48px, 6cqw, 64px);
-    height: clamp(48px, 6cqw, 64px);
+    width: clamp(50px, 6cqw, 64px);
+    height: clamp(50px, 6cqw, 64px);
     position: relative;
     margin-bottom: 8px;
   }
@@ -196,7 +207,9 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
   }
 
   @keyframes ringRotate {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .retry-button {
@@ -243,8 +256,14 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .regenerate-button {

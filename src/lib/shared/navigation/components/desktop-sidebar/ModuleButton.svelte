@@ -28,10 +28,13 @@
   let hapticService: IHapticFeedbackService | undefined;
 
   // Notification state for dashboard module
-  const notificationState = module.id === "dashboard" ? createNotificationState() : null;
+  const notificationState =
+    module.id === "dashboard" ? createNotificationState() : null;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Initialize notifications for dashboard module
     if (module.id === "dashboard" && authStore.isAuthenticated) {
@@ -63,7 +66,9 @@
 
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
-    module.id === "dashboard" && authStore.isAuthenticated && authStore.user?.photoURL
+    module.id === "dashboard" &&
+      authStore.isAuthenticated &&
+      authStore.user?.photoURL
   );
   const profilePictureUrl = $derived(authStore.user?.photoURL || "");
   const profileDisplayName = $derived(authStore.user?.displayName || "User");
@@ -122,7 +127,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 48px;
+    min-height: 52px;
     padding: 12px 14px;
     background: transparent;
     border: 1px solid transparent;
@@ -161,8 +166,12 @@
   }
 
   @keyframes shimmer {
-    0% { transform: translateX(-100%) translateY(-100%); }
-    100% { transform: translateX(100%) translateY(100%); }
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+    }
   }
 
   .module-button:hover {
@@ -199,7 +208,11 @@
     width: 3px;
     height: 50%;
     border-radius: 0 3px 3px 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.7),
+      rgba(255, 255, 255, 0.3)
+    );
   }
 
   .module-button.sidebar-collapsed.active::after {
@@ -208,7 +221,12 @@
     width: 50%;
     height: 3px;
     border-radius: 3px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.7),
+      rgba(255, 255, 255, 0.3)
+    );
   }
 
   /* Icon wrapper - for badge positioning */

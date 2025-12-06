@@ -27,7 +27,10 @@
     isOpen: boolean;
     canvasId: string;
     trailSettings: TrailSettings;
-    onSettingsChange: (canvasId: string, settings: Partial<TrailSettings>) => void;
+    onSettingsChange: (
+      canvasId: string,
+      settings: Partial<TrailSettings>
+    ) => void;
   } = $props();
 
   // Advanced settings toggle
@@ -114,11 +117,7 @@
   <div class="trail-settings-panel">
     <header class="panel-header">
       <h3 class="panel-title">Trail Settings</h3>
-      <button
-        class="close-btn"
-        onclick={handleClose}
-        aria-label="Close"
-      >
+      <button class="close-btn" onclick={handleClose} aria-label="Close">
         <i class="fas fa-times"></i>
       </button>
     </header>
@@ -280,8 +279,8 @@
   }
 
   .close-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,8 +346,8 @@
   }
 
   .preset-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

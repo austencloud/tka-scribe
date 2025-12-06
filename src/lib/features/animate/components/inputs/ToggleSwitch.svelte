@@ -65,7 +65,7 @@
     justify-content: space-between;
     gap: clamp(8px, 1.6vw, 12px);
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(8px, 1.6vw, 10px) clamp(10px, 2vw, 12px);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -217,7 +217,7 @@
 
   @container (min-aspect-ratio: 5/4) {
     .animate-control-toggle {
-      min-height: max(48px, 4cqh);
+      min-height: max(52px, 4cqh);
       padding: max(8px, 0.4cqh) max(10px, 0.5cqw);
       gap: max(8px, 0.5cqw);
     }

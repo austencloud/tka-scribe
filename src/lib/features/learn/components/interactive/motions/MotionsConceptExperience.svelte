@@ -4,9 +4,9 @@ Pages 1-6: Each motion type with examples and animations
 Page 7: Interactive quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import MotionVisualizer from "./MotionVisualizer.svelte";
   import MotionIdentificationQuiz from "./MotionIdentificationQuiz.svelte";
 
@@ -35,41 +35,178 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   // Examples for each motion type
   const TYPE_EXAMPLES: Record<number, MotionExample[]> = {
-    1: [ // Dual-Shift
-      { leftStart: "N", leftEnd: "E", rightStart: "S", rightEnd: "W", leftMotion: "shift", rightMotion: "shift" },
-      { leftStart: "E", leftEnd: "S", rightStart: "W", rightEnd: "N", leftMotion: "shift", rightMotion: "shift" },
-      { leftStart: "W", leftEnd: "N", rightStart: "E", rightEnd: "S", leftMotion: "shift", rightMotion: "shift" },
+    1: [
+      // Dual-Shift
+      {
+        leftStart: "N",
+        leftEnd: "E",
+        rightStart: "S",
+        rightEnd: "W",
+        leftMotion: "shift",
+        rightMotion: "shift",
+      },
+      {
+        leftStart: "E",
+        leftEnd: "S",
+        rightStart: "W",
+        rightEnd: "N",
+        leftMotion: "shift",
+        rightMotion: "shift",
+      },
+      {
+        leftStart: "W",
+        leftEnd: "N",
+        rightStart: "E",
+        rightEnd: "S",
+        leftMotion: "shift",
+        rightMotion: "shift",
+      },
     ],
-    2: [ // Shift (one shifts, one static)
-      { leftStart: "N", leftEnd: "E", rightStart: "S", rightEnd: "S", leftMotion: "shift", rightMotion: "static" },
-      { leftStart: "W", leftEnd: "W", rightStart: "E", rightEnd: "S", leftMotion: "static", rightMotion: "shift" },
-      { leftStart: "S", leftEnd: "W", rightStart: "N", rightEnd: "N", leftMotion: "shift", rightMotion: "static" },
+    2: [
+      // Shift (one shifts, one static)
+      {
+        leftStart: "N",
+        leftEnd: "E",
+        rightStart: "S",
+        rightEnd: "S",
+        leftMotion: "shift",
+        rightMotion: "static",
+      },
+      {
+        leftStart: "W",
+        leftEnd: "W",
+        rightStart: "E",
+        rightEnd: "S",
+        leftMotion: "static",
+        rightMotion: "shift",
+      },
+      {
+        leftStart: "S",
+        leftEnd: "W",
+        rightStart: "N",
+        rightEnd: "N",
+        leftMotion: "shift",
+        rightMotion: "static",
+      },
     ],
-    3: [ // Cross-Shift (one shifts, one dashes)
-      { leftStart: "N", leftEnd: "E", rightStart: "S", rightEnd: "N", leftMotion: "shift", rightMotion: "dash" },
-      { leftStart: "E", leftEnd: "W", rightStart: "S", rightEnd: "W", leftMotion: "dash", rightMotion: "shift" },
-      { leftStart: "W", leftEnd: "N", rightStart: "E", rightEnd: "W", leftMotion: "shift", rightMotion: "dash" },
+    3: [
+      // Cross-Shift (one shifts, one dashes)
+      {
+        leftStart: "N",
+        leftEnd: "E",
+        rightStart: "S",
+        rightEnd: "N",
+        leftMotion: "shift",
+        rightMotion: "dash",
+      },
+      {
+        leftStart: "E",
+        leftEnd: "W",
+        rightStart: "S",
+        rightEnd: "W",
+        leftMotion: "dash",
+        rightMotion: "shift",
+      },
+      {
+        leftStart: "W",
+        leftEnd: "N",
+        rightStart: "E",
+        rightEnd: "W",
+        leftMotion: "shift",
+        rightMotion: "dash",
+      },
     ],
-    4: [ // Dash (one dashes, one static)
-      { leftStart: "N", leftEnd: "S", rightStart: "E", rightEnd: "E", leftMotion: "dash", rightMotion: "static" },
-      { leftStart: "W", leftEnd: "W", rightStart: "S", rightEnd: "N", leftMotion: "static", rightMotion: "dash" },
-      { leftStart: "E", leftEnd: "W", rightStart: "N", rightEnd: "N", leftMotion: "dash", rightMotion: "static" },
+    4: [
+      // Dash (one dashes, one static)
+      {
+        leftStart: "N",
+        leftEnd: "S",
+        rightStart: "E",
+        rightEnd: "E",
+        leftMotion: "dash",
+        rightMotion: "static",
+      },
+      {
+        leftStart: "W",
+        leftEnd: "W",
+        rightStart: "S",
+        rightEnd: "N",
+        leftMotion: "static",
+        rightMotion: "dash",
+      },
+      {
+        leftStart: "E",
+        leftEnd: "W",
+        rightStart: "N",
+        rightEnd: "N",
+        leftMotion: "dash",
+        rightMotion: "static",
+      },
     ],
-    5: [ // Dual-Dash
-      { leftStart: "N", leftEnd: "S", rightStart: "S", rightEnd: "N", leftMotion: "dash", rightMotion: "dash" },
-      { leftStart: "E", leftEnd: "W", rightStart: "W", rightEnd: "E", leftMotion: "dash", rightMotion: "dash" },
-      { leftStart: "N", leftEnd: "S", rightStart: "E", rightEnd: "W", leftMotion: "dash", rightMotion: "dash" },
+    5: [
+      // Dual-Dash
+      {
+        leftStart: "N",
+        leftEnd: "S",
+        rightStart: "S",
+        rightEnd: "N",
+        leftMotion: "dash",
+        rightMotion: "dash",
+      },
+      {
+        leftStart: "E",
+        leftEnd: "W",
+        rightStart: "W",
+        rightEnd: "E",
+        leftMotion: "dash",
+        rightMotion: "dash",
+      },
+      {
+        leftStart: "N",
+        leftEnd: "S",
+        rightStart: "E",
+        rightEnd: "W",
+        leftMotion: "dash",
+        rightMotion: "dash",
+      },
     ],
-    6: [ // Static
-      { leftStart: "N", leftEnd: "N", rightStart: "S", rightEnd: "S", leftMotion: "static", rightMotion: "static" },
-      { leftStart: "E", leftEnd: "E", rightStart: "W", rightEnd: "W", leftMotion: "static", rightMotion: "static" },
-      { leftStart: "N", leftEnd: "N", rightStart: "E", rightEnd: "E", leftMotion: "static", rightMotion: "static" },
+    6: [
+      // Static
+      {
+        leftStart: "N",
+        leftEnd: "N",
+        rightStart: "S",
+        rightEnd: "S",
+        leftMotion: "static",
+        rightMotion: "static",
+      },
+      {
+        leftStart: "E",
+        leftEnd: "E",
+        rightStart: "W",
+        rightEnd: "W",
+        leftMotion: "static",
+        rightMotion: "static",
+      },
+      {
+        leftStart: "N",
+        leftEnd: "N",
+        rightStart: "E",
+        rightEnd: "E",
+        leftMotion: "static",
+        rightMotion: "static",
+      },
     ],
   };
 
   // Current example indices for each type
   let exampleIndices = $state<Record<number, number>>({
-    1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
   });
 
   function getCurrentExample(type: number): MotionExample {
@@ -151,12 +288,15 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <div class="intro-section">
         <p class="intro-text">
-          In TKA, hands move between grid points using three fundamental motions:
+          In TKA, hands move between grid points using three fundamental
+          motions:
         </p>
 
         <div class="fundamental-motions">
           <div class="fundamental-card shift">
-            <div class="motion-icon"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="motion-icon">
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
             <h4>Shift</h4>
             <p>Move to an <strong>adjacent</strong> point (90�)</p>
           </div>
@@ -173,7 +313,8 @@ import { TYPES } from "$lib/shared/inversify/types";
         </div>
 
         <p class="intro-text">
-          These combine into <strong>6 Motion Types</strong> that describe what both hands do together.
+          These combine into <strong>6 Motion Types</strong> that describe what both
+          hands do together.
         </p>
       </div>
 
@@ -182,7 +323,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         <i class="fa-solid fa-arrow-right"></i>
       </button>
     </div>
-
   {:else if currentPage >= 2 && currentPage <= 7}
     <!-- Pages 2-7: Motion Types 1-6 -->
     {@const typeNum = currentPage - 1}
@@ -250,7 +390,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         {/if}
       </button>
     </div>
-
   {:else if currentPage === 8}
     <!-- Page 8: Quiz -->
     <div class="page quiz-page">
@@ -283,8 +422,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   h2 {
@@ -293,7 +438,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, var(--type-color, #22D3EE) 0%, color-mix(in srgb, var(--type-color, #22D3EE) 70%, #06B6D4) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--type-color, #22d3ee) 0%,
+      color-mix(in srgb, var(--type-color, #22d3ee) 70%, #06b6d4) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -361,8 +510,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .fundamental-card .motion-icon {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -372,17 +521,17 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .fundamental-card.shift .motion-icon {
     background: rgba(74, 222, 128, 0.2);
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .fundamental-card.dash .motion-icon {
     background: rgba(251, 146, 60, 0.2);
-    color: #FB923C;
+    color: #fb923c;
   }
 
   .fundamental-card.static .motion-icon {
     background: rgba(148, 163, 184, 0.2);
-    color: #94A3B8;
+    color: #94a3b8;
   }
 
   .fundamental-card h4 {
@@ -391,9 +540,15 @@ import { TYPES } from "$lib/shared/inversify/types";
     margin: 0;
   }
 
-  .fundamental-card.shift h4 { color: #4ADE80; }
-  .fundamental-card.dash h4 { color: #FB923C; }
-  .fundamental-card.static h4 { color: #94A3B8; }
+  .fundamental-card.shift h4 {
+    color: #4ade80;
+  }
+  .fundamental-card.dash h4 {
+    color: #fb923c;
+  }
+  .fundamental-card.static h4 {
+    color: #94a3b8;
+  }
 
   .fundamental-card p {
     font-size: 0.8125rem;
@@ -409,7 +564,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     gap: 0.75rem;
     padding: 1.5rem;
     border-radius: 16px;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--type-color) 10%, transparent) 0%, transparent 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--type-color) 10%, transparent) 0%,
+      transparent 100%
+    );
     border: 1px solid color-mix(in srgb, var(--type-color) 25%, transparent);
   }
 
@@ -531,7 +690,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
     backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
@@ -545,7 +708,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4) 0%, rgba(6, 182, 212, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4) 0%,
+      rgba(6, 182, 212, 0.4) 100%
+    );
     border-color: rgba(34, 211, 238, 0.8);
     transform: translateY(-2px);
   }

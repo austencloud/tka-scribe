@@ -34,8 +34,8 @@
 
 <style>
   .play-pause-button {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,14 +104,14 @@
   /* Responsive: Smaller screens */
   @media (max-width: 480px) {
     .play-pause-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 1rem;
     }
 
     .play-pause-button.large {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 1.1rem;
     }
 
@@ -122,20 +122,20 @@
 
   /* Very small screens */
   @media (max-width: 360px) {
-    /* Keep 48px minimum for accessibility */
+    /* Keep 52px minimum for accessibility */
     .play-pause-button {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 0.9rem;
     }
 
     .play-pause-button.large {
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 1rem;
     }
 

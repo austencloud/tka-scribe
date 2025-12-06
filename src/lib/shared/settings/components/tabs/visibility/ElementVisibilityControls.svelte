@@ -151,7 +151,7 @@
   }
 
   /* Compact mode when height is very limited */
-  @container visibility-tab (max-height: 550px) {
+  @container visibility-tab (max-height: 552px) {
     .element-controls {
       gap: 8px;
     }
@@ -191,7 +191,7 @@
   }
 
   /* Very wide: can afford 3 columns in controls */
-  @container visibility-tab (min-width: 900px) and (min-height: 450px) {
+  @container visibility-tab (min-width: 900px) and (min-height: 452px) {
     .chips-grid {
       grid-template-columns: repeat(3, 1fr);
     }

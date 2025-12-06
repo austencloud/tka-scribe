@@ -165,16 +165,16 @@
   }
 
   .user-avatar {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 255, 255, 0.1);
   }
 
   .user-avatar-placeholder {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     display: flex;
@@ -286,7 +286,7 @@
 
   .skeleton-time {
     display: block;
-    width: 50px;
+    width: 52px;
     height: 12px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 3px;
@@ -311,7 +311,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

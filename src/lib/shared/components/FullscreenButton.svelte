@@ -158,8 +158,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -209,8 +209,8 @@
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .fullscreen-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
     }
   }
 
@@ -218,10 +218,10 @@
     .fullscreen-button {
       top: 12px;
       right: 12px;
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 
@@ -230,10 +230,10 @@
     .fullscreen-button {
       top: 8px;
       right: 8px;
-      width: 48px;
-      height: 48px;
-      min-width: 48px;
-      min-height: 48px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 </style>

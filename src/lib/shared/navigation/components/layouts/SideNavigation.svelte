@@ -1,16 +1,21 @@
 <!-- SideNavigation - Landscape/Side Navigation Layout -->
 <script lang="ts">
-import type { Section } from "$lib/shared/navigation/domain/types";
-import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
-import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
-import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
+  import type { Section } from "$lib/shared/navigation/domain/types";
+  import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
+  import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
+  import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
   import { shouldHideUIForPanels } from "../../../application/state/animation-visibility-state.svelte";
-  import { navigationState, MODULE_DEFINITIONS } from "../../state/navigation-state.svelte";
+  import {
+    navigationState,
+    MODULE_DEFINITIONS,
+  } from "../../state/navigation-state.svelte";
 
   // Get current module color for themed navigation
   let moduleColor = $derived(() => {
     const currentModuleId = navigationState.currentModule;
-    const moduleDefinition = MODULE_DEFINITIONS.find(m => m.id === currentModuleId);
+    const moduleDefinition = MODULE_DEFINITIONS.find(
+      (m) => m.id === currentModuleId
+    );
     return moduleDefinition?.color ?? "#667eea"; // Default indigo
   });
 
@@ -46,7 +51,11 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
   }
 </script>
 
-<nav class="side-navigation" class:hidden={!isUIVisible} style="--module-color: {moduleColor()}">
+<nav
+  class="side-navigation"
+  class:hidden={!isUIVisible}
+  style="--module-color: {moduleColor()}"
+>
   <!-- Module Switcher Button (Top) -->
   {#if showModuleSwitcher}
     <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
@@ -94,12 +103,27 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
     /* Module-colored background with subtle sheen */
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--module-color, #667eea) 12%, rgba(255, 255, 255, 0.08)) 0%,
-      color-mix(in srgb, var(--module-color, #667eea) 6%, rgba(255, 255, 255, 0.04)) 100%
+      color-mix(
+          in srgb,
+          var(--module-color, #667eea) 12%,
+          rgba(255, 255, 255, 0.08)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--module-color, #667eea) 6%,
+          rgba(255, 255, 255, 0.04)
+        )
+        100%
     );
     backdrop-filter: var(--glass-backdrop-strong);
     /* Module-colored right border */
-    border-right: 1px solid color-mix(in srgb, var(--module-color, #667eea) 30%, rgba(255, 255, 255, 0.15));
+    border-right: 1px solid
+      color-mix(
+        in srgb,
+        var(--module-color, #667eea) 30%,
+        rgba(255, 255, 255, 0.15)
+      );
     width: 72px;
     min-height: 100vh;
     z-index: 100;
@@ -163,11 +187,11 @@ import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsBu
   /* Menu and Settings buttons - circular with visible background */
   .side-navigation :global(.nav-button.special) {
     flex: 0 0 auto !important;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    max-width: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    max-width: 52px;
     padding: 0;
     /* Glass background to make button clearly tappable */
     background: rgba(255, 255, 255, 0.08);

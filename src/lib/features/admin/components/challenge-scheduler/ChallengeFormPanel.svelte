@@ -28,7 +28,9 @@
   // Initialize services on mount
   onMount(async () => {
     await loadFeatureModule("discover");
-    thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+    thumbnailService = tryResolve<IDiscoverThumbnailService>(
+      TYPES.IDiscoverThumbnailService
+    );
   });
 
   // Local form state
@@ -373,8 +375,8 @@
   }
 
   .select-sequence-btn .btn-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(102, 126, 234, 0.2);
     border-radius: 8px;
     display: flex;

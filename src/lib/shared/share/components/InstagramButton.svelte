@@ -166,7 +166,7 @@ Shows different states: no link, has link, opening link.
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
-    min-width: 48px;
+    min-width: 52px;
   }
 
   .edit-button:hover {
@@ -183,7 +183,7 @@ Shows different states: no link, has link, opening link.
 
     .instagram-button {
       padding: 0.625rem;
-      min-width: 48px;
+      min-width: 52px;
       justify-content: center;
     }
   }

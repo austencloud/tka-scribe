@@ -34,7 +34,12 @@
   );
 
   // Cell type options
-  const cellTypes: { value: CellType; label: string; icon: string; description: string }[] = [
+  const cellTypes: {
+    value: CellType;
+    label: string;
+    icon: string;
+    description: string;
+  }[] = [
     {
       value: "single",
       label: "Single",
@@ -104,7 +109,12 @@
   }
 </script>
 
-<Drawer bind:isOpen placement="right" ariaLabel="Configure cell" class="cell-config-drawer">
+<Drawer
+  bind:isOpen
+  placement="right"
+  ariaLabel="Configure cell"
+  class="cell-config-drawer"
+>
   <div class="cell-config-sheet">
     {#if cell}
       <header class="sheet-header">
@@ -156,11 +166,14 @@
               <div class="sequence-item">
                 <div class="sequence-info">
                   <span class="sequence-name">{sequence.name}</span>
-                  <span class="sequence-beats">{sequence.beats?.length ?? 0} beats</span>
+                  <span class="sequence-beats"
+                    >{sequence.beats?.length ?? 0} beats</span
+                  >
                 </div>
                 <button
                   class="remove-btn"
-                  onclick={() => cellId && compState.removeSequenceFromCell(cellId, index)}
+                  onclick={() =>
+                    cellId && compState.removeSequenceFromCell(cellId, index)}
                   title="Remove sequence"
                   aria-label="Remove sequence"
                 >
@@ -208,7 +221,11 @@
           <p class="coming-soon">Trail customization coming soon</p>
           <div class="trail-summary">
             <span>Width: {cell.trailSettings.lineWidth}px</span>
-            <span>Opacity: {(cell.trailSettings.maxOpacity * 100).toFixed(0)}%</span>
+            <span
+              >Opacity: {(cell.trailSettings.maxOpacity * 100).toFixed(
+                0
+              )}%</span
+            >
           </div>
         </div>
       </section>
@@ -219,9 +236,7 @@
           <i class="fas fa-trash-alt"></i>
           Clear Cell
         </button>
-        <button class="action-btn done-btn" onclick={onClose}>
-          Done
-        </button>
+        <button class="action-btn done-btn" onclick={onClose}> Done </button>
       </div>
     {:else}
       <div class="no-cell">
@@ -310,12 +325,12 @@
     gap: clamp(3px, 1cqi, 6px);
   }
 
-  /* Type option - 48px minimum touch target */
+  /* Type option - 52px minimum touch target */
   .type-option {
     display: flex;
     align-items: center;
     gap: clamp(6px, 2cqi, 12px);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
     background: rgba(255, 255, 255, 0.05);
     border: clamp(1px, 0.3cqi, 2px) solid rgba(255, 255, 255, 0.1);
@@ -382,14 +397,14 @@
     font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
   }
 
-  /* Add sequence buttons - 48px minimum touch target */
+  /* Add sequence buttons - 52px minimum touch target */
   .add-sequence-btn,
   .add-more-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
@@ -439,10 +454,10 @@
     color: rgba(255, 255, 255, 0.5);
   }
 
-  /* Remove button - 48px minimum touch target */
+  /* Remove button - 52px minimum touch target */
   .remove-btn {
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px);
     background: transparent;
     border: none;
@@ -465,15 +480,15 @@
     gap: clamp(3px, 1cqi, 6px);
   }
 
-  /* Rotation button - 48px minimum touch target */
+  /* Rotation button - 52px minimum touch target */
   .rotation-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: clamp(2px, 0.8cqi, 5px);
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 52px;
+    min-height: 52px;
     padding: clamp(6px, 1.5cqi, 10px);
     background: rgba(255, 255, 255, 0.05);
     border: clamp(1px, 0.3cqi, 2px) solid rgba(255, 255, 255, 0.1);
@@ -533,14 +548,14 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Action buttons - 48px minimum touch target */
+  /* Action buttons - 52px minimum touch target */
   .action-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
     border-radius: clamp(6px, 1.5cqi, 10px);
     font-weight: 500;

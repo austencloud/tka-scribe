@@ -1,6 +1,10 @@
 <!-- MyFeedbackCard - Card for tester's own feedback item -->
 <script lang="ts">
-  import type { FeedbackItem, FeedbackType, FeedbackStatus } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackType,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
   import {
     STATUS_CONFIG,
     TYPE_CONFIG,
@@ -62,7 +66,11 @@
     {#if item.imageUrls && item.imageUrls.length > 0}
       <div class="screenshot-indicator">
         <i class="fas fa-images"></i>
-        <span>{item.imageUrls.length} screenshot{item.imageUrls.length !== 1 ? 's' : ''}</span>
+        <span
+          >{item.imageUrls.length} screenshot{item.imageUrls.length !== 1
+            ? "s"
+            : ""}</span
+        >
       </div>
     {/if}
 
@@ -191,8 +199,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
   }
 
   .confirm-badge i {

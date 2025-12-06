@@ -20,7 +20,12 @@
   import { MODULE_DEFINITIONS } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Using 'manageState' to avoid conflict with $state rune
-  const { item, manageState = null, onClose, readOnly = false } = $props<{
+  const {
+    item,
+    manageState = null,
+    onClose,
+    readOnly = false,
+  } = $props<{
     item: FeedbackItem;
     manageState?: FeedbackManageState | null;
     onClose: () => void;
@@ -219,7 +224,8 @@
   }
 
   async function handleStatusChange(status: FeedbackStatus) {
-    if (readOnly || !manageState || isUpdatingStatus || item.status === status) return;
+    if (readOnly || !manageState || isUpdatingStatus || item.status === status)
+      return;
     isUpdatingStatus = true;
     lastUpdatedStatus = status;
     try {
@@ -257,10 +263,20 @@
 
   // Send admin response to tester
   async function handleSendResponse() {
-    if (readOnly || !manageState || isSendingResponse || !adminResponseMessage.trim()) return;
+    if (
+      readOnly ||
+      !manageState ||
+      isSendingResponse ||
+      !adminResponseMessage.trim()
+    )
+      return;
     isSendingResponse = true;
     try {
-      await feedbackService.sendAdminResponse(item.id, adminResponseMessage.trim(), true);
+      await feedbackService.sendAdminResponse(
+        item.id,
+        adminResponseMessage.trim(),
+        true
+      );
       showResponseForm = false;
       // Reload to get updated item
       await manageState.refreshItem(item.id);
@@ -278,7 +294,10 @@
     try {
       await manageState.updateStatus(item.id, "resolved");
       // Send notification to tester
-      await feedbackService.notifyTesterResolved(item.id, adminResponseMessage.trim() || undefined);
+      await feedbackService.notifyTesterResolved(
+        item.id,
+        adminResponseMessage.trim() || undefined
+      );
     } finally {
       isUpdatingStatus = false;
     }
@@ -361,8 +380,17 @@
         <h3 class="section-title">Screenshots ({item.imageUrls.length})</h3>
         <div class="screenshots-grid">
           {#each item.imageUrls as imageUrl, index}
-            <a href={imageUrl} target="_blank" rel="noopener noreferrer" class="screenshot-link">
-              <img src={imageUrl} alt="Screenshot {index + 1}" class="screenshot-thumb" />
+            <a
+              href={imageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="screenshot-link"
+            >
+              <img
+                src={imageUrl}
+                alt="Screenshot {index + 1}"
+                class="screenshot-thumb"
+              />
               <div class="screenshot-overlay">
                 <i class="fas fa-search-plus"></i>
               </div>
@@ -520,7 +548,8 @@
       <h3 class="section-title">Submitted By</h3>
       <div class="user-card">
         <img
-          src={item.userPhotoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`}
+          src={item.userPhotoURL ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(item.userDisplayName)}&background=random&color=fff&size=64`}
           alt="{item.userDisplayName}'s avatar"
           class="user-avatar-img"
           referrerpolicy="no-referrer"
@@ -546,8 +575,12 @@
       </h3>
       {#if readOnly}
         <!-- Read-only status display -->
-        {@const statusConfig = STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]}
-        <div class="status-display" style="--status-color: {statusConfig.color}">
+        {@const statusConfig =
+          STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]}
+        <div
+          class="status-display"
+          style="--status-color: {statusConfig.color}"
+        >
           <i class="fas {statusConfig.icon}"></i>
           <span>{statusConfig.label}</span>
         </div>
@@ -585,25 +618,31 @@
           <i class="fas fa-tasks"></i>
           Subtasks
           <span class="subtask-count">
-            {item.subtasks.filter((s: FeedbackSubtask) => s.status === 'completed').length}/{item.subtasks.length}
+            {item.subtasks.filter(
+              (s: FeedbackSubtask) => s.status === "completed"
+            ).length}/{item.subtasks.length}
           </span>
         </h3>
         <div class="subtasks-list">
           {#each item.subtasks as subtask (subtask.id)}
-            {@const isBlocked = subtask.dependsOn && subtask.dependsOn.length > 0 &&
-              !subtask.dependsOn.every((depId: string) =>
-                item.subtasks?.find((s: FeedbackSubtask) => s.id === depId)?.status === 'completed'
+            {@const isBlocked =
+              subtask.dependsOn &&
+              subtask.dependsOn.length > 0 &&
+              !subtask.dependsOn.every(
+                (depId: string) =>
+                  item.subtasks?.find((s: FeedbackSubtask) => s.id === depId)
+                    ?.status === "completed"
               )}
             <div
               class="subtask-item"
-              class:completed={subtask.status === 'completed'}
-              class:in-progress={subtask.status === 'in-progress'}
-              class:blocked={isBlocked && subtask.status === 'pending'}
+              class:completed={subtask.status === "completed"}
+              class:in-progress={subtask.status === "in-progress"}
+              class:blocked={isBlocked && subtask.status === "pending"}
             >
               <div class="subtask-status-icon">
-                {#if subtask.status === 'completed'}
+                {#if subtask.status === "completed"}
                   <i class="fas fa-check-circle"></i>
-                {:else if subtask.status === 'in-progress'}
+                {:else if subtask.status === "in-progress"}
                   <i class="fas fa-spinner fa-pulse"></i>
                 {:else if isBlocked}
                   <i class="fas fa-lock"></i>
@@ -620,7 +659,9 @@
                 {#if subtask.dependsOn && subtask.dependsOn.length > 0}
                   <span class="subtask-deps">
                     <i class="fas fa-link"></i>
-                    Depends on: {subtask.dependsOn.map((id: string) => `#${id}`).join(', ')}
+                    Depends on: {subtask.dependsOn
+                      .map((id: string) => `#${id}`)
+                      .join(", ")}
                   </span>
                 {/if}
               </div>
@@ -694,7 +735,7 @@
             <button
               type="button"
               class="update-response-btn"
-              onclick={() => showResponseForm = true}
+              onclick={() => (showResponseForm = true)}
             >
               <i class="fas fa-edit"></i>
               Update Response
@@ -702,68 +743,76 @@
           {/if}
         {/if}
 
-      <!-- Tester confirmation status -->
-      {#if item.testerConfirmation}
-        {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status as TesterConfirmationStatus]}
-        <div class="tester-confirmation" style="--conf-color: {confConfig.color}">
-          <div class="confirmation-header">
-            <i class="fas {confConfig.icon}"></i>
-            <span class="confirmation-label">{confConfig.label}</span>
+        <!-- Tester confirmation status -->
+        {#if item.testerConfirmation}
+          {@const confConfig =
+            CONFIRMATION_STATUS_CONFIG[
+              item.testerConfirmation.status as TesterConfirmationStatus
+            ]}
+          <div
+            class="tester-confirmation"
+            style="--conf-color: {confConfig.color}"
+          >
+            <div class="confirmation-header">
+              <i class="fas {confConfig.icon}"></i>
+              <span class="confirmation-label">{confConfig.label}</span>
+            </div>
+            {#if item.testerConfirmation.comment}
+              <p class="confirmation-comment">
+                "{item.testerConfirmation.comment}"
+              </p>
+            {/if}
+            {#if item.testerConfirmation.respondedAt}
+              <span class="confirmation-date">
+                {formatRelativeTime(item.testerConfirmation.respondedAt)}
+              </span>
+            {/if}
           </div>
-          {#if item.testerConfirmation.comment}
-            <p class="confirmation-comment">"{item.testerConfirmation.comment}"</p>
-          {/if}
-          {#if item.testerConfirmation.respondedAt}
-            <span class="confirmation-date">
-              {formatRelativeTime(item.testerConfirmation.respondedAt)}
-            </span>
-          {/if}
-        </div>
-      {/if}
+        {/if}
       </section>
     {/if}
 
     <!-- Delete Section (simplified) -->
     {#if !readOnly}
       <section class="section delete-section">
-      {#if showDeleteConfirm}
-        <div class="delete-confirm-simple">
-          <span class="delete-confirm-text"
-            >Are you sure you want to delete this feedback?</span
-          >
-          <div class="delete-confirm-actions">
-            <button
-              type="button"
-              class="cancel-btn-simple"
-              onclick={() => (showDeleteConfirm = false)}
+        {#if showDeleteConfirm}
+          <div class="delete-confirm-simple">
+            <span class="delete-confirm-text"
+              >Are you sure you want to delete this feedback?</span
             >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="confirm-btn-simple"
-              onclick={handleDelete}
-              disabled={isDeleting}
-            >
-              {#if isDeleting}
-                <i class="fas fa-circle-notch fa-spin"></i>
-              {:else}
-                <i class="fas fa-trash"></i>
-              {/if}
-              Delete
-            </button>
+            <div class="delete-confirm-actions">
+              <button
+                type="button"
+                class="cancel-btn-simple"
+                onclick={() => (showDeleteConfirm = false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="confirm-btn-simple"
+                onclick={handleDelete}
+                disabled={isDeleting}
+              >
+                {#if isDeleting}
+                  <i class="fas fa-circle-notch fa-spin"></i>
+                {:else}
+                  <i class="fas fa-trash"></i>
+                {/if}
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
-      {:else}
-        <button
-          type="button"
-          class="delete-btn-simple"
-          onclick={() => (showDeleteConfirm = true)}
-        >
-          <i class="fas fa-trash-alt"></i>
-          Delete Feedback
-        </button>
-      {/if}
+        {:else}
+          <button
+            type="button"
+            class="delete-btn-simple"
+            onclick={() => (showDeleteConfirm = true)}
+          >
+            <i class="fas fa-trash-alt"></i>
+            Delete Feedback
+          </button>
+        {/if}
       </section>
     {/if}
   </div>
@@ -841,8 +890,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     margin: calc(var(--fb-space-xs) * -1);
     background: none;
     border: 1px solid transparent;
@@ -1034,7 +1083,7 @@
     flex-direction: column;
     align-items: center;
     gap: var(--fb-space-2xs);
-    min-height: 48px;
+    min-height: 52px;
     padding: var(--fb-space-xs);
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);
@@ -1350,8 +1399,8 @@
   }
 
   .user-avatar-img {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
@@ -1400,7 +1449,7 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     STATUS SECTION - 48px touch targets with spring animations
+     STATUS SECTION - 52px touch targets with spring animations
      ═══════════════════════════════════════════════════════════════════════════ */
   .status-display {
     display: flex;
@@ -1430,7 +1479,7 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-xs);
-    min-height: 48px;
+    min-height: 52px;
     padding: var(--fb-space-sm) var(--fb-space-md);
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);
@@ -1586,7 +1635,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--fb-space-xs);
-    min-height: 48px;
+    min-height: 52px;
     padding: 0 var(--fb-space-md);
     background: var(--fb-purple);
     border: none;
@@ -2077,7 +2126,7 @@
   /* Screenshots Grid */
   .screenshots-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
     gap: 12px;
     margin-top: var(--fb-space-xs);
   }

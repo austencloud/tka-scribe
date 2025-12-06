@@ -22,37 +22,43 @@
             <span class="skeleton-eng-value"></span>
           </div>
           <div class="progress-bar">
-            <div class="progress-fill skeleton-bar" style="width: {30 + i * 15}%"></div>
+            <div
+              class="progress-fill skeleton-bar"
+              style="width: {30 + i * 15}%"
+            ></div>
           </div>
           <span class="skeleton-eng-percent"></span>
         </div>
       {/each}
     </div>
   {:else}
-  <div class="engagement-list">
-    {#each stats as stat}
-      <div class="engagement-row">
-        <div class="engagement-header">
-          <div class="engagement-icon" style="color: {stat.color}">
-            <i class={stat.icon}></i>
+    <div class="engagement-list">
+      {#each stats as stat}
+        <div class="engagement-row">
+          <div class="engagement-header">
+            <div class="engagement-icon" style="color: {stat.color}">
+              <i class={stat.icon}></i>
+            </div>
+            <span class="engagement-label">{stat.label}</span>
+            <span class="engagement-value">
+              {stat.value.toLocaleString()}
+            </span>
           </div>
-          <span class="engagement-label">{stat.label}</span>
-          <span class="engagement-value">
-            {stat.value.toLocaleString()}
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              style="width: {getBarWidth(
+                stat.value,
+                stat.total
+              )}; background: {stat.color}"
+            ></div>
+          </div>
+          <span class="engagement-percent">
+            {((stat.value / stat.total) * 100).toFixed(1)}% of users
           </span>
         </div>
-        <div class="progress-bar">
-          <div
-            class="progress-fill"
-            style="width: {getBarWidth(stat.value, stat.total)}; background: {stat.color}"
-          ></div>
-        </div>
-        <span class="engagement-percent">
-          {((stat.value / stat.total) * 100).toFixed(1)}% of users
-        </span>
-      </div>
-    {/each}
-  </div>
+      {/each}
+    </div>
   {/if}
 </section>
 
@@ -152,7 +158,7 @@
 
   .skeleton-eng-value {
     display: block;
-    width: 50px;
+    width: 52px;
     height: 16px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
@@ -174,7 +180,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

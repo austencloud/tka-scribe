@@ -36,7 +36,9 @@
 
   // Cell type indicator
   const typeLabel = $derived(cell.type === "tunnel" ? "Tunnel" : "Single");
-  const typeIcon = $derived(cell.type === "tunnel" ? "fa-layer-group" : "fa-square");
+  const typeIcon = $derived(
+    cell.type === "tunnel" ? "fa-layer-group" : "fa-square"
+  );
 
   // Rotation indicator
   const hasRotation = $derived((cell.rotationOffset ?? 0) !== 0);
@@ -61,17 +63,14 @@
     <div class="cell-content">
       {#if shouldRenderAnimation}
         <!-- Live animation rendering -->
-        <CellRenderer
-          {cell}
-          {isPlaying}
-          {isPreviewing}
-          {bpm}
-        />
+        <CellRenderer {cell} {isPlaying} {isPreviewing} {bpm} />
       {:else}
         <!-- Static preview -->
         <div class="static-preview">
           <div class="sequence-info">
-            <span class="sequence-name">{primarySequence?.name || "Sequence"}</span>
+            <span class="sequence-name"
+              >{primarySequence?.name || "Sequence"}</span
+            >
             {#if cell.type === "tunnel" && sequenceCount > 1}
               <span class="sequence-count">+{sequenceCount - 1} more</span>
             {/if}
@@ -125,7 +124,9 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 0;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease;
     overflow: hidden;
     padding: 0;
     color: white;
@@ -247,8 +248,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(24px, 20cqi, 48px);
-    height: clamp(24px, 20cqi, 48px);
+    width: clamp(24px, 20cqi, 52px);
+    height: clamp(24px, 20cqi, 52px);
     border: clamp(1px, 0.5cqi, 3px) dashed currentColor;
     border-radius: 50%;
     font-size: clamp(0.75rem, 8cqi, 1.5rem);
@@ -270,7 +271,8 @@
   }
 
   @keyframes pulse-ring {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {

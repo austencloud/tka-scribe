@@ -31,7 +31,10 @@ Layout Modes (determined by container size):
     selectedBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
-    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
+    onRotationDirectionChanged?: (
+      color: string,
+      rotationDirection: string
+    ) => void;
   }>();
 
   // Component references for imperative API
@@ -43,7 +46,7 @@ Layout Modes (determined by container size):
   let resizeObserver: ResizeObserver | null = null;
 
   // Determine if we should use simplified layout based on container width
-  // Narrow portrait (Z Fold 348px): <= 500px uses simplified always-visible controls
+  // Narrow portrait (Z Fold 352px): <= 500px uses simplified always-visible controls
   const useSimplifiedLayout = $derived(
     containerWidth > 0 && containerWidth <= 500
   );
@@ -183,7 +186,7 @@ The container will change layout based on its OWN size, not viewport
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 150px;
+    min-height: 152px;
     color: var(--muted-foreground);
     font-size: var(--font-size-sm);
   }
@@ -233,8 +236,8 @@ The container will change layout based on its OWN size, not viewport
     }
 
     .pictograph-wrapper {
-      max-width: 350px;
-      max-height: 350px;
+      max-width: 352px;
+      max-height: 352px;
     }
   }
 

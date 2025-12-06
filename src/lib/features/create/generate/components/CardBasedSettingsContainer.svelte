@@ -3,8 +3,8 @@ CardBasedSettingsContainer - Minimal card grid renderer
 Delegates ALL logic to services (SRP compliant)
 -->
 <script lang="ts">
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
@@ -15,8 +15,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   import type { IResponsiveTypographyService } from "../shared/services/contracts/IResponsiveTypographyService";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
   import type { CustomizeOptionsState } from "../state/customize-options-state.svelte";
-  import type { DifficultyLevel, GenerationMode, PropContinuity } from "../shared/domain/models/generate-models";
-  import type { CAPType, SliceSize } from "../circular/domain/models/circular-models";
+  import type {
+    DifficultyLevel,
+    GenerationMode,
+    PropContinuity,
+  } from "../shared/domain/models/generate-models";
+  import type {
+    CAPType,
+    SliceSize,
+  } from "../circular/domain/models/circular-models";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   // Card components
   import CAPCard from "./cards/CAPCard.svelte";
@@ -149,7 +156,9 @@ import { TYPES } from "$lib/shared/inversify/types";
         handleGenerationModeChange,
         handleCAPTypeChange,
         handleSliceSizeChange,
-        handleCustomizeChange: customizeState ? handleCustomizeChange : undefined,
+        handleCustomizeChange: customizeState
+          ? handleCustomizeChange
+          : undefined,
         customizeOptions: customizeState?.options,
         handleGenerateClick: onGenerateClicked,
       },
@@ -296,7 +305,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   /* Large desktop (1600px+): Similar constraints */
   @container settings-grid (min-width: 1600px) {
     .card-settings-container {
-      grid-auto-rows: minmax(auto, 150px);
+      grid-auto-rows: minmax(auto, 152px);
       gap: calc(var(--element-spacing) * 0.8);
       align-content: center;
     }

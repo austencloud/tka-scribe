@@ -89,7 +89,7 @@ Uses grid layout for perfect centering with multi-select toggle
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .cap-modal-header h2 {

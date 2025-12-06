@@ -102,7 +102,7 @@
     width: var(
       --sidebar-width,
       clamp(180px, 12vw, 200px)
-    ); /* Reduced max from 250px to 200px for better desktop layout */
+    ); /* Reduced max from 252px to 200px for better desktop layout */
     max-width: 200px; /* Never exceed 200px */
     background: rgba(255, 255, 255, 0.08);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
@@ -126,7 +126,7 @@
     align-items: center;
     gap: clamp(10px, 3cqi, 14px);
     padding: 14px 16px; /* Consistent padding for predictable sizing */
-    min-height: 48px; /* WCAG AAA: 48px minimum, we use 48px for comfort */
+    min-height: 52px; /* WCAG AAA: 52px minimum, we use 52px for comfort */
     flex: 1; /* Allow items to grow and fill space evenly */
     max-height: 72px; /* Cap growth so items don't get too tall */
     background: rgba(255, 255, 255, 0.06); /* Visible inactive background */
@@ -221,8 +221,8 @@
 
   /* Navigation indicator - shows these are clickable destinations */
   .settings-sidebar-item::after {
-    content: '\f054'; /* FontAwesome chevron-right */
-    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    content: "\f054"; /* FontAwesome chevron-right */
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
     font-weight: 900;
     font-size: 10px;
     color: rgba(255, 255, 255, 0.3);
@@ -362,7 +362,7 @@
     }
 
     .settings-sidebar-item {
-      min-height: 50px;
+      min-height: 52px;
       padding: 4px 4px;
       gap: 2px;
     }

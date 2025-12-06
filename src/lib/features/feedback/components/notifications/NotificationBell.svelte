@@ -3,7 +3,10 @@
   import { onMount, onDestroy } from "svelte";
   import { notificationService } from "../../services/implementations/NotificationService";
   import { NOTIFICATION_TYPE_CONFIG } from "../../domain/models/notification-models";
-  import type { UserNotification } from "../../domain/models/notification-models";
+  import type {
+    UserNotification,
+    FeedbackNotification,
+  } from "../../domain/models/notification-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
@@ -13,6 +16,29 @@
   let unreadCount = $state(0);
   let isLoading = $state(false);
   let unsubscribe: (() => void) | null = null;
+
+  // Type guard for feedback notifications
+  function isFeedbackNotification(
+    n: UserNotification
+  ): n is FeedbackNotification {
+    return "feedbackId" in n && "feedbackTitle" in n;
+  }
+
+  // Get display title for any notification type
+  function getNotificationTitle(n: UserNotification): string {
+    if (isFeedbackNotification(n)) return n.feedbackTitle;
+    if ("sequenceTitle" in n) return n.sequenceTitle;
+    if ("achievementName" in n) return n.achievementName || "Achievement";
+    if ("title" in n) return n.title;
+    return "Notification";
+  }
+
+  // Get action ID for notification click
+  function getNotificationActionId(n: UserNotification): string | null {
+    if (isFeedbackNotification(n)) return n.feedbackId;
+    if ("sequenceId" in n) return n.sequenceId;
+    return null;
+  }
 
   onMount(() => {
     const user = authStore.user;
@@ -51,7 +77,10 @@
     return `${days}d ago`;
   }
 
-  async function handleNotificationClick(feedbackId: string, notificationId: string) {
+  async function handleNotificationClick(
+    actionId: string | null,
+    notificationId: string
+  ) {
     const user = authStore.user;
     if (!user) return;
 
@@ -100,7 +129,7 @@
   <button
     class="notification-bell"
     class:has-unread={unreadCount > 0}
-    onclick={() => showDropdown = !showDropdown}
+    onclick={() => (showDropdown = !showDropdown)}
     type="button"
     aria-label="Notifications"
   >
@@ -139,16 +168,27 @@
             <button
               class="notification-item"
               class:unread={!notification.read}
-              onclick={() => handleNotificationClick(notification.feedbackId, notification.id)}
+              onclick={() =>
+                handleNotificationClick(
+                  getNotificationActionId(notification),
+                  notification.id
+                )}
               type="button"
             >
-              <div class="notification-icon" style="--icon-color: {config.color}">
+              <div
+                class="notification-icon"
+                style="--icon-color: {config.color}"
+              >
                 <i class="fas {config.icon}"></i>
               </div>
               <div class="notification-content">
-                <span class="notification-title">{notification.feedbackTitle}</span>
+                <span class="notification-title"
+                  >{getNotificationTitle(notification)}</span
+                >
                 <span class="notification-message">{notification.message}</span>
-                <span class="notification-time">{formatDate(notification.createdAt)}</span>
+                <span class="notification-time"
+                  >{formatDate(notification.createdAt)}</span
+                >
               </div>
               {#if !notification.read}
                 <div class="unread-dot"></div>
@@ -170,10 +210,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -194,9 +234,16 @@
   }
 
   @keyframes bellShake {
-    0%, 100% { transform: rotate(0); }
-    25% { transform: rotate(10deg); }
-    75% { transform: rotate(-10deg); }
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    25% {
+      transform: rotate(10deg);
+    }
+    75% {
+      transform: rotate(-10deg);
+    }
   }
 
   .unread-badge {

@@ -53,7 +53,7 @@
     color: rgba(255, 255, 255, 0.6);
   }
 
-  /* iOS-style switch - 48px minimum touch target */
+  /* iOS-style switch - 50px minimum touch target */
   .ios-switch {
     position: relative;
     width: 51px;

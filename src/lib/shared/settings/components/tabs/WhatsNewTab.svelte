@@ -10,10 +10,12 @@
   const versionState = createVersionState();
 
   // Expose seed function globally for one-time use (can be removed after seeding)
-  if (typeof window !== 'undefined') {
-    (window as unknown as { seedChangelog: () => Promise<void> }).seedChangelog = async () => {
+  if (typeof window !== "undefined") {
+    (
+      window as unknown as { seedChangelog: () => Promise<void> }
+    ).seedChangelog = async () => {
       await versionService.seedV010Changelog();
-      console.log('✅ Changelog seeded! Refresh the page to see changes.');
+      console.log("✅ Changelog seeded! Refresh the page to see changes.");
       versionState.loadVersions();
     };
   }
@@ -37,7 +39,9 @@
     versionState.loadVersions();
     // Update selected version with fresh data
     if (selectedVersion) {
-      const updated = versionState.versions.find(v => v.version === selectedVersion?.version);
+      const updated = versionState.versions.find(
+        (v) => v.version === selectedVersion?.version
+      );
       if (updated) {
         selectedVersion = updated;
       }
@@ -52,7 +56,6 @@
         <i class="fas fa-gift"></i>
         Release Notes
       </h2>
-      <p class="subtitle">See what's changed in each version</p>
     </div>
   </header>
 
@@ -80,10 +83,7 @@
     {:else}
       <div class="versions-list">
         {#each versionState.versions as version (version.version)}
-          <VersionCard
-            {version}
-            onclick={() => openVersionDetail(version)}
-          />
+          <VersionCard {version} onclick={() => openVersionDetail(version)} />
         {/each}
       </div>
     {/if}
@@ -173,7 +173,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -187,7 +188,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 24px;
+    padding: 50px 24px;
     text-align: center;
   }
 
@@ -229,7 +230,7 @@
   }
 
   .empty-state i {
-    font-size: 48px;
+    font-size: 50px;
     color: rgba(139, 92, 246, 0.4);
     margin-bottom: 16px;
   }

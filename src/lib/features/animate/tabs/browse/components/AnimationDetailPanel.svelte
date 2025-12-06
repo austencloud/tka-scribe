@@ -188,11 +188,19 @@ Features:
       ></i>
     </button>
 
-    <button class="action-btn" onclick={() => handleAction("duplicate")} aria-label="Duplicate animation">
+    <button
+      class="action-btn"
+      onclick={() => handleAction("duplicate")}
+      aria-label="Duplicate animation"
+    >
       <i class="fas fa-copy"></i>
     </button>
 
-    <button class="action-btn" onclick={() => handleAction("share")} aria-label="Share animation">
+    <button
+      class="action-btn"
+      onclick={() => handleAction("share")}
+      aria-label="Share animation"
+    >
       <i class="fas fa-share-alt"></i>
     </button>
 
@@ -222,8 +230,8 @@ Features:
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -242,7 +250,7 @@ Features:
   }
 
   .close-button-spacer {
-    height: 48px;
+    height: 52px;
     flex-shrink: 0;
   }
 
@@ -424,7 +432,7 @@ Features:
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .action-btn:hover {

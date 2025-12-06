@@ -26,7 +26,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
     padding: 14px 20px;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     cursor: pointer;
     font-size: 13px;

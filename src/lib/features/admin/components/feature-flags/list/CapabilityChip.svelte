@@ -25,7 +25,9 @@
   <span class="capability-name">{capability.name}</span>
   <span
     class="role-badge"
-    style="background: {getRoleColor(capability.minimumRole)}20; color: {getRoleColor(capability.minimumRole)}"
+    style="background: {getRoleColor(
+      capability.minimumRole
+    )}20; color: {getRoleColor(capability.minimumRole)}"
   >
     <i class="fas {getRoleIcon(capability.minimumRole)}"></i>
   </span>
@@ -47,7 +49,7 @@
     color: var(--text-secondary-current);
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .capability-chip:hover {
@@ -58,7 +60,11 @@
 
   .capability-chip.selected {
     background: var(--accent-2026-indigo-soft);
-    border-color: color-mix(in srgb, var(--accent-2026-indigo) 35%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--accent-2026-indigo) 35%,
+      transparent
+    );
     color: var(--accent-2026-indigo);
   }
 

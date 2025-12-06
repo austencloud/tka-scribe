@@ -11,34 +11,35 @@
 </script>
 
 {#if loading || !metric}
-<div class="metric-card skeleton">
-  <div class="metric-icon skeleton-icon"></div>
-  <div class="metric-content">
-    <span class="skeleton-value"></span>
-    <span class="skeleton-label"></span>
-    <span class="skeleton-change"></span>
+  <div class="metric-card skeleton">
+    <div class="metric-icon skeleton-icon"></div>
+    <div class="metric-content">
+      <span class="skeleton-value"></span>
+      <span class="skeleton-label"></span>
+      <span class="skeleton-change"></span>
+    </div>
   </div>
-</div>
 {:else}
-<div class="metric-card" style="--accent-color: {metric.color}">
-  <div class="metric-icon">
-    <i class={metric.icon}></i>
+  <div class="metric-card" style="--accent-color: {metric.color}">
+    <div class="metric-icon">
+      <i class={metric.icon}></i>
+    </div>
+    <div class="metric-content">
+      <span class="metric-value">{metric.value}</span>
+      <span class="metric-label">{metric.label}</span>
+      {#if metric.changeLabel === "all time"}
+        <span class="metric-change neutral">
+          {metric.changeLabel}
+        </span>
+      {:else}
+        <span class="metric-change {getChangeClass(metric.change)}">
+          <i class="fas fa-arrow-{metric.change >= 0 ? 'up' : 'down'}"></i>
+          {formatChange(metric.change)}
+          {metric.changeLabel}
+        </span>
+      {/if}
+    </div>
   </div>
-  <div class="metric-content">
-    <span class="metric-value">{metric.value}</span>
-    <span class="metric-label">{metric.label}</span>
-    {#if metric.changeLabel === "all time"}
-      <span class="metric-change neutral">
-        {metric.changeLabel}
-      </span>
-    {:else}
-      <span class="metric-change {getChangeClass(metric.change)}">
-        <i class="fas fa-arrow-{metric.change >= 0 ? 'up' : 'down'}"></i>
-        {formatChange(metric.change)} {metric.changeLabel}
-      </span>
-    {/if}
-  </div>
-</div>
 {/if}
 
 <style>
@@ -49,7 +50,9 @@
     display: flex;
     gap: 16px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
   }
 
   .metric-card:hover {
@@ -58,8 +61,8 @@
   }
 
   .metric-icon {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border-radius: 12px;
     background: color-mix(in srgb, var(--accent-color) 20%, transparent);
     display: flex;
@@ -146,7 +149,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

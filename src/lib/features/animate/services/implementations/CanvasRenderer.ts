@@ -9,7 +9,7 @@ import type { ICanvasRenderer } from "../contracts/ICanvasRenderer";
 
 // Constants from standalone_animator.html
 // Using "strict" hand point offset (actual hand position, further from center)
-// From gridCoordinates.ts: n_diamond_hand_point_strict at (475, 325.0) = 150px from center
+// From gridCoordinates.ts: n_diamond_hand_point_strict at (475, 325.0) = 152px from center
 const GRID_HALFWAY_POINT_OFFSET = 150;
 
 @injectable()
@@ -165,7 +165,7 @@ export class CanvasRenderer implements ICanvasRenderer {
 
   /**
    * Draw letter glyph in the bottom-left area of the canvas
-   * Position matches the SVG overlay positioning: x=50, y=800 in 950px viewBox
+   * Position matches the SVG overlay positioning: x=50, y=800 in 952px viewBox
    */
   private drawLetter(
     ctx: CanvasRenderingContext2D,
@@ -176,11 +176,11 @@ export class CanvasRenderer implements ICanvasRenderer {
 
     const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
 
-    // Position matches TKAGlyph.svelte defaults: x=50, y=800 in 950px viewBox
+    // Position matches TKAGlyph.svelte defaults: x=50, y=800 in 952px viewBox
     const x = 50 * gridScaleFactor;
     const y = 800 * gridScaleFactor;
 
-    // Scale letter to match canvas size relative to 950px viewBox (same as props and grid)
+    // Scale letter to match canvas size relative to 952px viewBox (same as props and grid)
     // All SVGs are designed relative to the 950×950 viewBox, so we use gridScaleFactor consistently
     const scaledWidth = letterViewBoxDimensions.width * gridScaleFactor;
     const scaledHeight = letterViewBoxDimensions.height * gridScaleFactor;

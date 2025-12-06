@@ -70,7 +70,7 @@
   }
 
   .placeholder i {
-    font-size: 48px;
+    font-size: 52px;
     color: #10b981;
   }
 

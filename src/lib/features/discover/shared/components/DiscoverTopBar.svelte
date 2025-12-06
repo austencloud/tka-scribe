@@ -124,7 +124,7 @@ Structure:
     align-items: center;
     width: 100%;
     position: relative;
-    min-height: 48px;
+    min-height: 52px;
   }
 
   /* Left section - nav buttons */
@@ -160,13 +160,13 @@ Structure:
     gap: 8px;
   }
 
-  /* Navigation button - 48px touch target */
+  /* Navigation button - 50px touch target */
   .nav-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;

@@ -5,9 +5,8 @@
   Uses the shared Drawer component (vaul-svelte based) for consistent UX.
 -->
 <script lang="ts">
-
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import ModuleList from "./ModuleList.svelte";
@@ -75,10 +74,7 @@ import { TYPES } from "$lib/shared/inversify/types";
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
     } catch (error) {
-      console.warn(
-        "ModuleSwitcher: Failed to resolve DeviceDetector",
-        error
-      );
+      console.warn("ModuleSwitcher: Failed to resolve DeviceDetector", error);
     }
 
     // Return cleanup function
@@ -267,10 +263,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: rgba(255, 255, 255, 0.75); /* Slightly more prominent */
   }
 
-  /* Close button - accessible touch target (48px minimum) */
+  /* Close button - accessible touch target (50px minimum) */
   .close-button {
-    width: 48px; /* Increased from 36px for proper touch target */
-    height: 48px; /* Increased from 36px for proper touch target */
+    width: 52px; /* Increased from 36px for proper touch target */
+    height: 52px; /* Increased from 36px for proper touch target */
     border-radius: 12px; /* Slightly larger to match new size */
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.06);

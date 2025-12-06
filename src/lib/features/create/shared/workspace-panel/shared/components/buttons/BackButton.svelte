@@ -5,9 +5,9 @@
   Shows a left arrow icon to go back to the previous panel.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -61,8 +61,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -101,36 +101,36 @@ import { TYPES } from "$lib/shared/inversify/types";
     border-color: rgba(148, 163, 184, 0.4);
   }
 
-  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 52px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .panel-button {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .panel-button {
-      width: 48px; /* Maintain 48px minimum */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum */
+      height: 52px;
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .panel-button {
-      width: 48px; /* NEVER below 48px for accessibility */
-      height: 48px;
+      width: 52px; /* NEVER below 52px for accessibility */
+      height: 52px;
       font-size: 14px;
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSCAPE MOBILE: Maintain 52px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: 48px; /* Maintain 48px minimum for accessibility */
-      height: 48px;
+      width: 52px; /* Maintain 52px minimum for accessibility */
+      height: 52px;
       font-size: 14px;
     }
   }

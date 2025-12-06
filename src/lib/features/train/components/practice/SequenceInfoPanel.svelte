@@ -1,0 +1,219 @@
+<!--
+  SequenceInfoPanel.svelte - Sequence info panel for Practice tab
+
+  Rich gradient background showing current sequence name and beat count.
+  Compact on mobile. Click to open sequence browser.
+-->
+<script lang="ts">
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { onMount } from "svelte";
+
+  interface Props {
+    sequence: SequenceData | null;
+    totalBeats?: number;
+    onBrowseSequences?: () => void;
+  }
+
+  let { sequence = null, totalBeats = 0, onBrowseSequences }: Props = $props();
+
+  let hapticService: IHapticFeedbackService | null = null;
+
+  onMount(() => {
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  function handleClick() {
+    hapticService?.trigger("selection");
+    onBrowseSequences?.();
+  }
+</script>
+
+<button
+  class="sequence-info-panel"
+  class:has-sequence={!!sequence}
+  onclick={handleClick}
+  aria-label={sequence
+    ? `Current sequence: ${sequence.word || sequence.name}`
+    : "Select sequence"}
+>
+  {#if sequence}
+    <div class="sequence-content">
+      <span class="sequence-name">{sequence.word || sequence.name}</span>
+      <span class="sequence-beats">{totalBeats} beats</span>
+    </div>
+  {:else}
+    <div class="sequence-content">
+      <i class="fas fa-folder-open"></i>
+      <span class="sequence-name">Select Sequence</span>
+    </div>
+  {/if}
+</button>
+
+<style>
+  /* ============================================
+	   SEQUENCE INFO PANEL - 2026 Design
+	   ============================================ */
+  .sequence-info-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2026-sm, 12px);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12) 0%,
+      rgba(99, 102, 241, 0.08) 100%
+    );
+    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    border-radius: var(--radius-2026-md, 14px);
+    box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background var(--duration-2026-fast, 150ms)
+        var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1)),
+      border-color var(--duration-2026-fast, 150ms)
+        var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1)),
+      transform var(--duration-2026-instant, 100ms)
+        var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1));
+    color: rgba(255, 255, 255, 0.85);
+    width: 100%;
+  }
+
+  .sequence-info-panel:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2) 0%,
+      rgba(99, 102, 241, 0.15) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .sequence-info-panel:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: var(--duration-2026-instant, 100ms);
+  }
+
+  .sequence-info-panel.has-sequence {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.12) 0%,
+      rgba(16, 185, 129, 0.08) 100%
+    );
+  }
+
+  .sequence-info-panel.has-sequence:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.2) 0%,
+      rgba(16, 185, 129, 0.15) 100%
+    );
+    border-color: rgba(34, 197, 94, 0.25);
+  }
+
+  .sequence-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    align-items: center;
+  }
+
+  .sequence-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+
+  .sequence-beats {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+  }
+
+  /* ============================================
+	   MOBILE (< 768px)
+	   ============================================ */
+  @media (max-width: 767px) {
+    .sequence-info-panel {
+      padding: var(--space-2026-xs, 6px) var(--space-2026-sm, 12px);
+    }
+
+    .sequence-name {
+      font-size: 0.75rem;
+      max-width: 120px;
+    }
+
+    .sequence-beats {
+      font-size: 0.625rem;
+    }
+  }
+
+  /* ============================================
+	   TABLET (768px - 1023px)
+	   ============================================ */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .sequence-content {
+      flex-direction: row;
+      gap: var(--space-2026-sm, 12px);
+    }
+
+    .sequence-name {
+      max-width: 152px;
+    }
+
+    .sequence-beats::before {
+      content: "•";
+      margin-right: var(--space-2026-xs, 6px);
+      color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* ============================================
+	   DESKTOP (≥ 1024px) - LARGER & MORE DETAILS
+	   ============================================ */
+  @media (min-width: 1024px) {
+    .sequence-info-panel {
+      padding: var(--space-2026-md, 20px) var(--space-2026-lg, 28px);
+    }
+
+    .sequence-content {
+      flex-direction: row;
+      gap: var(--space-2026-md, 20px);
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .sequence-name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      max-width: none;
+      flex: 1;
+      text-align: left;
+    }
+
+    .sequence-beats {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .sequence-beats::before {
+      content: "•";
+      margin-right: var(--space-2026-sm, 12px);
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Icon sizing */
+    .sequence-content i {
+      font-size: 1.125rem;
+    }
+  }
+</style>

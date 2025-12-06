@@ -15,7 +15,7 @@ export interface BeatFrameLayout {
 
 /**
  * Desktop-aligned beat frame layouts - NARROW/STANDARD
- * Used for: Side-by-side layout OR narrow portrait (< 650px)
+ * Used for: Side-by-side layout OR narrow portrait (< 652px)
  * Source: desktop/data/beat_frame_layouts.py
  * Format: Desktop stores as (rows, columns) tuples
  *
@@ -95,7 +95,7 @@ export const BEAT_FRAME_LAYOUTS: Record<number, BeatFrameLayout> = {
 
 /**
  * Wide portrait mode beat frame layouts - WIDE
- * Used for: Wide portrait layout (≥ 650px in stacked mode)
+ * Used for: Wide portrait layout (≥ 652px in stacked mode)
  * Takes advantage of horizontal space with up to 8 columns
  *
  * Strategy: Use more columns to spread beats horizontally, fewer rows
@@ -174,7 +174,7 @@ export const BEAT_FRAME_LAYOUTS_WIDE: Record<number, BeatFrameLayout> = {
  * Falls back to calculated layout for counts not in the table
  *
  * @param beatCount - Number of beats in the sequence
- * @param useWideLayout - Whether to use wide layout (≥650px in portrait mode)
+ * @param useWideLayout - Whether to use wide layout (≥652px in portrait mode)
  */
 export function getBeatFrameLayout(
   beatCount: number,

@@ -25,7 +25,9 @@ Touch-friendly interface for changing sort method and jumping to sections
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleSortChange(method: string) {
@@ -188,8 +190,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     font-size: 18px;

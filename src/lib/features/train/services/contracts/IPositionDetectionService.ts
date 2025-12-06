@@ -1,4 +1,5 @@
 import type { DetectionFrame } from "../../domain/models/DetectionFrame";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface DetectionCapabilities {
 	supportsRealtime: boolean;
@@ -9,6 +10,8 @@ export interface DetectionCapabilities {
 export interface DetectionOptions {
 	/** Whether the video feed is mirrored (default: true for front-facing camera) */
 	mirrored?: boolean;
+	/** Grid mode for position detection (BOX = cardinal only, DIAMOND = intercardinal only) */
+	gridMode?: GridMode;
 }
 
 export interface IPositionDetectionService {
@@ -24,4 +27,5 @@ export interface IPositionDetectionService {
 	dispose(): void;
 	readonly isInitialized: boolean;
 	readonly isDetecting: boolean;
+	getPerformanceStats?(): { fps: number; avgFrameTime: number; videoResolution: string };
 }

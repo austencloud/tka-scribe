@@ -4,6 +4,7 @@ Start-to-end position glyph renderer for pictograph components.
 Handles rendering of position glyphs that show the start and end positions
 with an arrow between them (e.g., α → β).
 """
+
 from __future__ import annotations
 
 import os
@@ -196,6 +197,6 @@ class PositionGlyphRenderer:
 
         # Center horizontally using legacy's calculation (integer division for exact match)
         x_position = self.SCENE_SIZE // 2 - total_width // 2
-        y_position = 50  # 50px from top
+        y_position = 50  # 52px from top
 
         position_group.setPos(x_position, y_position)

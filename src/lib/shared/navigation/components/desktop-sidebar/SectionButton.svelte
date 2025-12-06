@@ -35,7 +35,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 48px;
+    min-height: 52px;
     padding: 10px 14px;
     background: transparent;
     border: 1px solid transparent;
@@ -70,8 +70,12 @@
   }
 
   @keyframes section-shimmer {
-    0% { transform: translateX(-100%) translateY(-100%); }
-    100% { transform: translateX(100%) translateY(100%); }
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+    }
   }
 
   .section-button:hover:not(.disabled) {
@@ -89,7 +93,8 @@
     color: rgba(255, 255, 255, 1);
     background: color-mix(in srgb, var(--section-color) 12%, transparent);
     border-color: color-mix(in srgb, var(--section-color) 25%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--section-color) 15%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--section-color) 15%, transparent);
   }
 
   .section-button.disabled {
@@ -128,13 +133,16 @@
 
   .section-button:hover:not(.disabled) .section-icon :global(i) {
     opacity: 1;
-    filter: drop-shadow(0 1px 4px color-mix(in srgb, var(--section-color) 30%, transparent));
+    filter: drop-shadow(
+      0 1px 4px color-mix(in srgb, var(--section-color) 30%, transparent)
+    );
   }
 
   .section-button.active .section-icon :global(i) {
     opacity: 1;
-    filter:
-      drop-shadow(0 0 6px color-mix(in srgb, var(--section-color) 40%, transparent))
+    filter: drop-shadow(
+        0 0 6px color-mix(in srgb, var(--section-color) 40%, transparent)
+      )
       brightness(1.1);
   }
 

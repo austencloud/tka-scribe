@@ -145,8 +145,16 @@ export function createCreateModulePersistenceController({
       const savedState =
         await sequencePersistenceService.loadCurrentState(panel);
 
+      // 🐛 DEBUG: Track persistence restoration
+      console.log(`🐛 [PERSISTENCE] restoreWorkspaceForMode(${panel})`, {
+        hasSavedState: !!savedState,
+        currentInMemorySequence: tabSequenceState.currentSequence,
+        savedSequence: savedState?.currentSequence,
+      });
+
       if (savedState) {
         // Load saved state for this tab's specific sequence state
+        console.log(`🐛 [PERSISTENCE] Restoring saved state for ${panel}`);
         tabSequenceState.setCurrentSequence(savedState.currentSequence);
         tabSequenceState.setSelectedStartPosition(
           savedState.selectedStartPosition ?? null
@@ -159,6 +167,8 @@ export function createCreateModulePersistenceController({
         );
       } else {
         // No saved state for this tab - clear the workspace
+        console.log(`🐛 [PERSISTENCE] No saved state for ${panel} - CLEARING IN-MEMORY SEQUENCE!`);
+        console.trace();
         tabSequenceState.setCurrentSequence(null);
         tabSequenceState.setSelectedStartPosition(null);
         syncConstructTabState(constructTabState, false, null);

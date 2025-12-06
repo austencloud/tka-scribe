@@ -10,7 +10,10 @@
   import { onMount } from "svelte";
   import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
   import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-  import type { ShortcutRegistrationOptions, ShortcutScope } from "../domain/types/keyboard-types";
+  import type {
+    ShortcutRegistrationOptions,
+    ShortcutScope,
+  } from "../domain/types/keyboard-types";
   import { resolve, TYPES } from "../../inversify/di";
 
   // Service
@@ -279,8 +282,8 @@
   }
 
   .shortcuts-help__close {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

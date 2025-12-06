@@ -1,15 +1,15 @@
 <!--
-  AnimationPanel.svelte
+  AnimationShareDrawer.svelte
 
-  Pure presentation component for animation display.
+  Drawer component for animated GIF export and playback.
   All business logic lives in AnimationCoordinator.
 
   This component:
   - Receives all state as props
-  - Displays UI based on props
+  - Displays animation playback UI
+  - Handles GIF export controls
   - Emits events when user interacts
   - Has ZERO business logic
-  - ONLY shows animation and allows exiting (export moved to Share panel)
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
@@ -549,9 +549,9 @@
   }
 
   /* Small devices (iPhone SE, small phones): Fixed compact canvas */
-  @media (max-width: 430px) and (max-height: 750px) {
+  @media (max-width: 430px) and (max-height: 752px) {
     .content-wrapper.mobile-expanded :global(.canvas-area) {
-      flex: 0 0 150px;
+      flex: 0 0 152px;
       min-height: 140px;
     }
 

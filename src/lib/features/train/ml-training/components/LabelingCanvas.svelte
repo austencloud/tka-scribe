@@ -659,8 +659,8 @@ Supports:
   } /* NW */
 
   .direction-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);

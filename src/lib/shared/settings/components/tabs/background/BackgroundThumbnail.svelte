@@ -467,7 +467,7 @@
       200px 200px,
       180px 180px,
       220px 220px,
-      250px 250px,
+      252px 252px,
       190px 190px,
       210px 210px,
       170px 170px,
@@ -477,9 +477,9 @@
       40px 60px,
       130px 80px,
       70px 120px,
-      150px 30px,
-      90px 150px,
-      200px 50px,
+      152px 30px,
+      90px 152px,
+      200px 52px,
       160px 110px;
     background-repeat: repeat;
     animation: twinkle 3s ease-in-out infinite;
@@ -661,7 +661,7 @@
       140px 60px,
       100px 140px,
       180px 100px,
-      40px 150px;
+      40px 152px;
     animation: bubbles 12s ease-in-out infinite;
   }
 
@@ -680,7 +680,7 @@
   }
 
   /* Compact mode optimizations */
-  @container (max-width: 150px) {
+  @container (max-width: 152px) {
     /* Reduce animation complexity on very small buttons */
     .background-preview::before,
     .background-preview::after {
@@ -722,8 +722,8 @@
   /* Ultra-compact mode: smaller than 100px */
   @container (max-width: 100px) {
     .background-thumbnail {
-      min-height: 50px;
-      min-width: 50px;
+      min-height: 52px;
+      min-width: 52px;
       border-radius: clamp(6px, 1.5cqi, 10px);
       border-width: 1px;
     }

@@ -95,12 +95,15 @@
     align-items: center;
     gap: clamp(6px, 0.8cqw, 8px);
     padding: clamp(14px, 1.4cqh, 16px) clamp(16px, 2cqw, 20px);
-    min-height: 48px;
+    min-height: 52px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
     user-select: none;
     font-family: inherit;
     outline: none;
@@ -163,7 +166,7 @@
   @container options (max-width: 280px) {
     .toggle-chip {
       padding: 12px 14px;
-      min-height: 48px;
+      min-height: 52px;
     }
 
     .toggle-chip span {

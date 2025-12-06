@@ -120,7 +120,7 @@ def propose_solution():
     print()
 
     print("3. EXPECTED RESULTS")
-    print("   - 1-4 beats: beat_size ≈ 133-150px (vs current 300px)")
+    print("   - 1-4 beats: beat_size ≈ 133-152px (vs current 300px)")
     print("   - Fonts will appear smaller and match legacy")
     print("   - Image dimensions will be smaller and match legacy")
     print("   - Overall export will be pixel-perfect with legacy")

@@ -1,6 +1,11 @@
 <script lang="ts">
   import type { FeatureFlagConfig } from "$lib/shared/auth/domain/models/FeatureFlag";
-  import { getFeatureIconAndColor, getRoleColor, getRoleIcon, getEffectiveRole } from "../utils";
+  import {
+    getFeatureIconAndColor,
+    getRoleColor,
+    getRoleIcon,
+    getEffectiveRole,
+  } from "../utils";
   import TabChip from "./TabChip.svelte";
 
   interface Props {
@@ -27,7 +32,10 @@
     onclick={() => onSelectFlag(module)}
     aria-label={`Edit ${module.name} settings`}
   >
-    <div class="module-icon" style="background: {style.color}15; color: {style.color}">
+    <div
+      class="module-icon"
+      style="background: {style.color}15; color: {style.color}"
+    >
       <i class="fas {style.icon}"></i>
     </div>
     <div class="module-info">
@@ -37,7 +45,9 @@
     <div class="module-meta">
       <span
         class="role-badge"
-        style="background: {getRoleColor(module.minimumRole)}20; color: {getRoleColor(module.minimumRole)}"
+        style="background: {getRoleColor(
+          module.minimumRole
+        )}20; color: {getRoleColor(module.minimumRole)}"
       >
         <i class="fas {getRoleIcon(module.minimumRole)}"></i>
         {module.minimumRole}
@@ -90,7 +100,7 @@
     cursor: pointer;
     text-align: left;
     transition: background var(--transition-fast);
-    min-height: 48px;
+    min-height: 52px;
   }
 
   .module-header:hover {
@@ -173,6 +183,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--settings-space-sm);
-    padding: 0 var(--settings-space-md) var(--settings-space-md) var(--settings-space-md);
+    padding: 0 var(--settings-space-md) var(--settings-space-md)
+      var(--settings-space-md);
   }
 </style>

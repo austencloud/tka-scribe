@@ -25,6 +25,9 @@ import type { ISettingsPersistenceService } from "../services/contracts/ISetting
 import { authStore } from "../../auth/stores/authStore.svelte";
 import type { ISettingsState } from "../services/contracts/ISettingsState";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("SettingsState");
 
 const SETTINGS_STORAGE_KEY = "tka-modern-web-settings";
 const OFFLINE_QUEUE_KEY = "tka-settings-offline-queue";
@@ -140,17 +143,17 @@ class SettingsState implements ISettingsState {
         if (localTimestamp > 0) {
           // We have local changes with a timestamp - push them to Firebase
           // This ensures local changes made while offline are not lost
-          console.log("✅ [SettingsState] Local settings are newer, pushing to Firebase");
+          debug.success("Local settings are newer, pushing to Firebase");
           await this.firebasePersistence.saveSettings(this.getSettingsForPersistence());
         } else {
           // No local timestamp means fresh load - accept Firebase settings
           this.applyRemoteSettings(firebaseSettings);
-          console.log("✅ [SettingsState] Applied settings from Firebase");
+          debug.success("Applied settings from Firebase");
         }
       } else {
         // No Firebase settings - push local settings to Firebase
         await this.firebasePersistence.saveSettings(this.getSettingsForPersistence());
-        console.log("✅ [SettingsState] Pushed local settings to Firebase");
+        debug.success("Pushed local settings to Firebase");
       }
     } catch (error) {
       console.error("❌ [SettingsState] Failed to sync from Firebase:", error);

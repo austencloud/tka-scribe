@@ -12,9 +12,7 @@
     TrainChallenge,
     UserTrainChallengeProgress,
   } from "../../domain/models/TrainChallengeModels";
-  import {
-    calculateChallengeProgress,
-  } from "../../domain/models/TrainChallengeModels";
+  import { calculateChallengeProgress } from "../../domain/models/TrainChallengeModels";
   import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
 
   interface Props {
@@ -29,7 +27,9 @@
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Calculated values
@@ -45,54 +45,57 @@
 
   // Refined color theme - accent colors for top bar and subtle tints
   const difficultyTheme = $derived.by(() => {
-    const themes: Record<ChallengeDifficulty, {
-      color: string;
-      gradient: string;
-      tint: string;
-      glow: string;
-    }> = {
+    const themes: Record<
+      ChallengeDifficulty,
+      {
+        color: string;
+        gradient: string;
+        tint: string;
+        glow: string;
+      }
+    > = {
       easy: {
         color: "#10b981",
         gradient: "linear-gradient(90deg, #10b981 0%, #34d399 100%)",
         tint: "rgba(16, 185, 129, 0.06)",
-        glow: "rgba(16, 185, 129, 0.3)"
+        glow: "rgba(16, 185, 129, 0.3)",
       },
       beginner: {
         color: "#22c55e",
         gradient: "linear-gradient(90deg, #22c55e 0%, #4ade80 100%)",
         tint: "rgba(34, 197, 94, 0.06)",
-        glow: "rgba(34, 197, 94, 0.3)"
+        glow: "rgba(34, 197, 94, 0.3)",
       },
       medium: {
         color: "#f59e0b",
         gradient: "linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)",
         tint: "rgba(245, 158, 11, 0.06)",
-        glow: "rgba(245, 158, 11, 0.3)"
+        glow: "rgba(245, 158, 11, 0.3)",
       },
       intermediate: {
         color: "#eab308",
         gradient: "linear-gradient(90deg, #eab308 0%, #facc15 100%)",
         tint: "rgba(234, 179, 8, 0.06)",
-        glow: "rgba(234, 179, 8, 0.3)"
+        glow: "rgba(234, 179, 8, 0.3)",
       },
       hard: {
         color: "#f97316",
         gradient: "linear-gradient(90deg, #f97316 0%, #fb923c 100%)",
         tint: "rgba(249, 115, 22, 0.06)",
-        glow: "rgba(249, 115, 22, 0.3)"
+        glow: "rgba(249, 115, 22, 0.3)",
       },
       advanced: {
         color: "#ef4444",
         gradient: "linear-gradient(90deg, #ef4444 0%, #f87171 100%)",
         tint: "rgba(239, 68, 68, 0.06)",
-        glow: "rgba(239, 68, 68, 0.3)"
+        glow: "rgba(239, 68, 68, 0.3)",
       },
       expert: {
         color: "#dc2626",
         gradient: "linear-gradient(90deg, #dc2626 0%, #ef4444 100%)",
         tint: "rgba(220, 38, 38, 0.08)",
-        glow: "rgba(220, 38, 38, 0.35)"
-      }
+        glow: "rgba(220, 38, 38, 0.35)",
+      },
     };
     return themes[challenge.difficulty] ?? themes.medium;
   });
@@ -396,7 +399,7 @@
   .card-footer {
     display: flex;
     justify-content: flex-end;
-    min-height: 48px;
+    min-height: 52px;
     align-items: center;
     margin-top: auto;
   }
@@ -405,7 +408,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 48px;
+    height: 52px;
     padding: 0 18px;
     background: color-mix(in srgb, var(--accent-color) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent-color) 25%, transparent);
@@ -435,7 +438,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 48px;
+    height: 52px;
     padding: 0 16px;
     border-radius: 12px;
     font-size: 13px;
@@ -531,7 +534,7 @@
       font-size: 13px;
     }
 
-    /* Visual size compact but touch target maintained at 48px */
+    /* Visual size compact but touch target maintained at 52px */
     .action-hint,
     .status-badge {
       height: 40px;
@@ -541,13 +544,13 @@
 
     .action-hint::before,
     .status-badge::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       min-width: 100%;
-      min-height: 48px;
+      min-height: 52px;
     }
   }
 

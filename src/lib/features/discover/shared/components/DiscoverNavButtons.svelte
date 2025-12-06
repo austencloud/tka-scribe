@@ -5,7 +5,10 @@ Shows back and forward buttons when navigation history exists.
 Integrates with discoverNavigationState for proper navigation flow.
 -->
 <script lang="ts">
-  import { discoverNavigationState, type DiscoverLocation } from "../state/discover-navigation-state.svelte";
+  import {
+    discoverNavigationState,
+    type DiscoverLocation,
+  } from "../state/discover-navigation-state.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -76,13 +79,13 @@ Integrates with discoverNavigationState for proper navigation flow.
     flex-shrink: 0;
   }
 
-  /* 48px minimum touch target for accessibility */
+  /* 50px minimum touch target for accessibility */
   .nav-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;

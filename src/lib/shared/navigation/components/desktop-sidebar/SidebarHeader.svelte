@@ -60,7 +60,7 @@
      ============================================================================ */
   .collapse-toggle {
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -66,7 +66,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
 
   .settings-container {
     width: 100%;
-    max-width: 450px;
+    max-width: 452px;
     display: flex;
     flex-direction: column;
     gap: clamp(1.75rem, 4vh, 2.25rem);
@@ -168,7 +168,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     }
   }
 
-  @media (max-height: 650px) {
+  @media (max-height: 652px) {
     .settings-view {
       padding: 1rem;
     }

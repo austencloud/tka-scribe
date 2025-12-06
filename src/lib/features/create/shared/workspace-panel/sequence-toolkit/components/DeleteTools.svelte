@@ -5,9 +5,9 @@ Handles sequence deletion operations like delete beat and clear sequence.
 Pure presentation component that delegates to deletion services.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { Snippet } from "svelte";
   import { onMount } from "svelte";
 
@@ -143,8 +143,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .tool-btn {
-      width: 48px; /* Larger touch targets on mobile */
-      height: 48px;
+      width: 52px; /* Larger touch targets on mobile */
+      height: 52px;
       font-size: 18px;
     }
   }
@@ -156,13 +156,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .tool-btn {
-      width: 48px; /* Minimum touch target size */
-      height: 48px;
+      width: 52px; /* Minimum touch target size */
+      height: 52px;
       font-size: 16px;
     }
   }
 
-  /* Z Fold 6 cover screen optimization - compact visual with 48px touch target */
+  /* Z Fold 6 cover screen optimization - compact visual with 52px touch target */
   @media (max-width: 320px) {
     .delete-tools {
       gap: 2px;
@@ -177,13 +177,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     }
 
     .tool-btn::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 </style>

@@ -12,7 +12,7 @@
 
   import { getCompositionState } from "../../state/composition-state.svelte";
   import { LAYOUT_PRESETS, type LayoutPresetKey } from "../../domain/types";
-  import TappableBpmControl from "$lib/features/animate/components/controls/TappableBpmControl.svelte";
+  import BpmControl from "$lib/features/animate/components/controls/BpmControl.svelte";
 
   // Renamed to avoid conflict with $state rune
   const compState = getCompositionState();
@@ -27,7 +27,8 @@
   // Current layout key
   const currentLayoutKey = $derived(
     (Object.entries(LAYOUT_PRESETS).find(
-      ([_, preset]) => preset.rows === layout.rows && preset.cols === layout.cols
+      ([_, preset]) =>
+        preset.rows === layout.rows && preset.cols === layout.cols
     )?.[0] ?? "custom") as LayoutPresetKey | "custom"
   );
 
@@ -72,113 +73,128 @@
 <svelte:window onclick={handleClickOutside} />
 
 <div class="canvas-controls">
-  <!-- Left: Playback Controls -->
-  <div class="control-group playback-controls">
-    <button
-      class="control-btn play-btn"
-      class:playing={isPlaying}
-      onclick={handlePlayPause}
-      disabled={!canPlay}
-      title={isPlaying ? "Pause" : "Play"}
-      aria-label={isPlaying ? "Pause playback" : "Start playback"}
-    >
-      <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
-    </button>
-
-    <button
-      class="control-btn stop-btn"
-      onclick={handleStop}
-      disabled={!isPlaying}
-      title="Stop"
-      aria-label="Stop playback"
-    >
-      <i class="fas fa-stop"></i>
-    </button>
-
-    <!-- BPM Control (tap to set tempo, hold to edit) -->
-    <TappableBpmControl {bpm} onBpmChange={handleBpmChange} />
-  </div>
-
-  <!-- Center: Preview Toggle -->
-  <div class="control-group preview-group">
-    <button
-      class="control-btn preview-toggle"
-      class:active={isPreviewing}
-      onclick={handlePreviewToggle}
-      title={isPreviewing ? "Switch to static" : "Switch to live preview"}
-      aria-label="Toggle preview mode"
-      aria-pressed={isPreviewing}
-    >
-      <i class="fas {isPreviewing ? 'fa-eye' : 'fa-eye-slash'}"></i>
-      <span class="preview-label">{isPreviewing ? "Live" : "Static"}</span>
-    </button>
-  </div>
-
-  <!-- Right: Layout & Templates -->
-  <div class="control-group config-controls">
-    <!-- Layout Picker -->
-    <div class="layout-picker">
+  <!-- Row 1: Playback + Preview + Layout/Templates -->
+  <div class="control-row top-row">
+    <!-- Playback Controls -->
+    <div class="control-group playback-controls">
       <button
-        class="control-btn layout-btn"
-        onclick={() => (showLayoutDropdown = !showLayoutDropdown)}
-        title="Change grid layout"
-        aria-label="Change grid layout"
-        aria-expanded={showLayoutDropdown}
+        class="control-btn play-btn"
+        class:playing={isPlaying}
+        onclick={handlePlayPause}
+        disabled={!canPlay}
+        title={isPlaying ? "Pause" : "Play"}
+        aria-label={isPlaying ? "Pause playback" : "Start playback"}
       >
-        <i class="fas fa-th"></i>
-        <span>{layout.rows}×{layout.cols}</span>
-        <i class="fas fa-chevron-down"></i>
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
       </button>
 
-      {#if showLayoutDropdown}
-        <div class="dropdown layout-dropdown">
-          {#each Object.entries(LAYOUT_PRESETS) as [key, preset]}
-            <button
-              class="dropdown-item"
-              class:active={currentLayoutKey === key}
-              onclick={() => handleLayoutChange(key as LayoutPresetKey)}
-            >
-              <span class="layout-preview">
-                {#each Array(preset.rows) as _, row}
-                  <span class="layout-row">
-                    {#each Array(preset.cols) as _, col}
-                      <span class="layout-cell"></span>
-                    {/each}
-                  </span>
-                {/each}
-              </span>
-              <span>{preset.rows}×{preset.cols}</span>
-            </button>
-          {/each}
-        </div>
-      {/if}
+      <button
+        class="control-btn stop-btn"
+        onclick={handleStop}
+        disabled={!isPlaying}
+        title="Stop"
+        aria-label="Stop playback"
+      >
+        <i class="fas fa-stop"></i>
+      </button>
     </div>
 
-    <!-- Templates Button -->
-    <button
-      class="control-btn templates-btn"
-      onclick={handleOpenTemplates}
-      title="Browse templates"
-      aria-label="Open templates"
-    >
-      <i class="fas fa-magic"></i>
-      <span class="templates-label">Templates</span>
-    </button>
+    <!-- Preview Toggle -->
+    <div class="control-group preview-group">
+      <button
+        class="control-btn preview-toggle"
+        class:active={isPreviewing}
+        onclick={handlePreviewToggle}
+        title={isPreviewing ? "Switch to static" : "Switch to live preview"}
+        aria-label="Toggle preview mode"
+        aria-pressed={isPreviewing}
+      >
+        <i class="fas {isPreviewing ? 'fa-eye' : 'fa-eye-slash'}"></i>
+        <span class="preview-label">{isPreviewing ? "Live" : "Static"}</span>
+      </button>
+    </div>
+
+    <!-- Layout & Templates -->
+    <div class="control-group config-controls">
+      <!-- Layout Picker -->
+      <div class="layout-picker">
+        <button
+          class="control-btn layout-btn"
+          onclick={() => (showLayoutDropdown = !showLayoutDropdown)}
+          title="Change grid layout"
+          aria-label="Change grid layout"
+          aria-expanded={showLayoutDropdown}
+        >
+          <i class="fas fa-th"></i>
+          <span>{layout.rows}×{layout.cols}</span>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+
+        {#if showLayoutDropdown}
+          <div class="dropdown layout-dropdown">
+            {#each Object.entries(LAYOUT_PRESETS) as [key, preset]}
+              <button
+                class="dropdown-item"
+                class:active={currentLayoutKey === key}
+                onclick={() => handleLayoutChange(key as LayoutPresetKey)}
+              >
+                <span class="layout-preview">
+                  {#each Array(preset.rows) as _, row}
+                    <span class="layout-row">
+                      {#each Array(preset.cols) as _, col}
+                        <span class="layout-cell"></span>
+                      {/each}
+                    </span>
+                  {/each}
+                </span>
+                <span>{preset.rows}×{preset.cols}</span>
+              </button>
+            {/each}
+          </div>
+        {/if}
+      </div>
+
+      <!-- Templates Button -->
+      <button
+        class="control-btn templates-btn"
+        onclick={handleOpenTemplates}
+        title="Browse templates"
+        aria-label="Open templates"
+      >
+        <i class="fas fa-magic"></i>
+        <span class="templates-label">Templates</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Row 2: BPM Control -->
+  <div class="control-row bpm-row">
+    <BpmControl {bpm} onBpmChange={handleBpmChange} />
   </div>
 </div>
 
 <style>
   .canvas-controls {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: clamp(8px, 2cqi, 20px);
+    flex-direction: column;
+    gap: clamp(8px, 2cqi, 12px);
     padding: clamp(6px, 1.5cqi, 12px) clamp(10px, 2cqi, 20px);
     background: rgba(20, 20, 35, 0.95);
     border-radius: clamp(6px, 2cqi, 14px);
     backdrop-filter: blur(8px);
     container-type: inline-size;
     container-name: controls;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(8px, 2cqi, 20px);
+  }
+
+  .bpm-row {
+    width: 100%;
   }
 
   .control-group {
@@ -224,11 +240,11 @@
     font-size: 1em;
   }
 
-  /* Play button - 48px minimum */
+  /* Play button - 52px minimum */
   .play-btn {
     background: rgba(16, 185, 129, 0.3);
     border-color: rgba(16, 185, 129, 0.5);
-    min-width: 48px;
+    min-width: 52px;
   }
 
   .play-btn:hover:not(:disabled) {
@@ -283,7 +299,8 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: clamp(6px, 1.5cqi, 10px);
     padding: clamp(3px, 1cqi, 6px);
-    box-shadow: 0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px) rgba(0, 0, 0, 0.5);
+    box-shadow: 0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px)
+      rgba(0, 0, 0, 0.5);
     z-index: 100;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -291,13 +308,13 @@
     min-width: clamp(140px, 35cqi, 200px);
   }
 
-  /* Dropdown items - 48px minimum touch target */
+  /* Dropdown items - 52px minimum touch target */
   .dropdown-item {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 48px;
+    min-height: 52px;
     padding: clamp(10px, 2.5cqi, 14px);
     background: transparent;
     border: 1px solid transparent;

@@ -109,8 +109,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    min-height:48px;
-    min-width: 48px;
+    min-height: 50px;
+    min-width: 50px;
   }
 
   .mobile-control-button:hover {
@@ -176,7 +176,6 @@
     .mobile-control-button,
     .advanced-filter-button {
       padding: 6px 10px;
-      
     }
   }
 </style>

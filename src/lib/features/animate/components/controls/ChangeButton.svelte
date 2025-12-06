@@ -41,8 +41,8 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px;
-    min-width: 48px;
+    min-height: 52px;
+    min-width: 52px;
   }
 
   .change-btn:hover {
@@ -52,10 +52,10 @@
 
   /* Mobile variant - icon only, square button */
   .change-btn.mobile {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 0;
     justify-content: center;
     color: rgba(255, 255, 255, 0.6);

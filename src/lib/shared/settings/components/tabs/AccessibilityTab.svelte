@@ -448,7 +448,7 @@
     cursor: pointer;
     background: #ff3b30; /* iOS system red - exact hex */
     color: white;
-    min-height: 48px; /* iOS minimum touch target */
+    min-height: 52px; /* iOS minimum touch target */
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     box-shadow:
       0 3px 12px rgba(255, 59, 48, 0.3),
@@ -461,7 +461,7 @@
   @container settings-content (max-height: 500px) {
     .clear-cache-btn {
       padding: 1cqh 2cqw;
-      min-height: 48px;
+      min-height: 52px;
     }
   }
 

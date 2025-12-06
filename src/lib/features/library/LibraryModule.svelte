@@ -12,7 +12,10 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { libraryState, type LibraryViewSection } from "./state/library-state.svelte";
+  import {
+    libraryState,
+    type LibraryViewSection,
+  } from "./state/library-state.svelte";
   import LibraryDashboard from "./components/LibraryDashboard.svelte";
   import SequencesView from "./components/SequencesView.svelte";
   // Navigation state
@@ -21,7 +24,9 @@
   let hapticService: IHapticFeedbackService | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Navigation functions
@@ -37,7 +42,8 @@
     hapticService?.trigger("selection");
     if (viewStack.length > 0) {
       const previous = viewStack.pop();
-      currentView = (previous as "dashboard" | LibraryViewSection) ?? "dashboard";
+      currentView =
+        (previous as "dashboard" | LibraryViewSection) ?? "dashboard";
       viewStack = [...viewStack]; // Trigger reactivity
 
       if (previous && previous !== "dashboard") {
@@ -135,8 +141,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-md, 8px);
@@ -170,7 +176,7 @@
   }
 
   .header-spacer {
-    width: 48px; /* Match back button width for centering */
+    width: 52px; /* Match back button width for centering */
   }
 
   /* Content Area */

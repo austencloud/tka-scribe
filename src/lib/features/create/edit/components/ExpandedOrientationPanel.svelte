@@ -255,26 +255,26 @@
   }
 
   .orientation-panel.compact .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 14px;
   }
 
   .orientation-panel.balanced .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 16px;
   }
 
   .orientation-panel.comfortable .close-btn {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     font-size: 18px;
   }
 
@@ -322,13 +322,13 @@
   }
 
   .orientation-panel.compact .orientation-btn {
-    min-height: 48px;
+    min-height: 52px;
     font-size: 12px;
     border-width: 2px;
   }
 
   .orientation-panel.balanced .orientation-btn {
-    min-height: 48px;
+    min-height: 52px;
     font-size: 13px;
     border-width: 3px;
   }

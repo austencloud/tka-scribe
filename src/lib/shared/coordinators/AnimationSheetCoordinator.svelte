@@ -19,7 +19,7 @@
     />
 -->
 <script lang="ts">
-  import AnimationPanel from "../animation-engine/components/AnimationPanel.svelte";
+  import AnimationShareDrawer from "../animation-engine/components/AnimationShareDrawer.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
   import type { IGifExportOrchestrator } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
   import type { AnimationExportFormat } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
@@ -40,6 +40,9 @@
     ISheetRouterService,
     AnimationPanelState,
   } from "../navigation/services/contracts/ISheetRouterService";
+  import { createComponentLogger } from "../utils/debug-logger";
+
+  const debug = createComponentLogger("AnimationSheetCoordinator");
 
   // Props - decoupled from any specific module state
   let {
@@ -165,7 +168,7 @@
 
   // Resolve services on mount
   onMount(async () => {
-    console.log("🔧 AnimationSheetCoordinator: Resolving services...");
+    debug.log("Resolving services...");
     let cleanupRouteListener: (() => void) | undefined;
 
     // Resolve core services immediately (Tier 1 - navigation module)
@@ -177,7 +180,7 @@
       sheetRouterService = resolve<ISheetRouterService>(
         TYPES.ISheetRouterService
       );
-      console.log("✅ Core services resolved");
+      debug.success("Core services resolved");
     } catch (error) {
       console.error("❌ Failed to resolve core services:", error);
     }
@@ -185,7 +188,7 @@
     // Load animator module and resolve animation-specific services
     try {
       await loadFeatureModule("animate");
-      console.log("✅ Animator module loaded");
+      debug.success("Animator module loaded");
 
       playbackController = resolve<IAnimationPlaybackController>(
         TYPES.IAnimationPlaybackController
@@ -195,7 +198,7 @@
       );
 
       servicesReady = true;
-      console.log("✅ Animation services resolved, ready to initialize playback");
+      debug.success("Animation services resolved, ready to initialize playback");
     } catch (error) {
       console.error("❌ Failed to load animator module or resolve services:", error);
       animationPanelState.setError("Failed to initialize animation services");
@@ -252,7 +255,7 @@
   // Load and auto-start animation when panel becomes visible
   // Also reloads when sequence changes (e.g., after rotation) while panel is open
   $effect(() => {
-    console.log("🔄 Animation effect triggered:", {
+    debug.log("Animation effect triggered:", {
       isOpen,
       servicesReady,
       hasSequence: !!sequence,
@@ -266,7 +269,7 @@
 
     // Wait for services to be ready AND panel to be open AND sequence to exist
     if (isOpen && servicesReady && sequence && sequenceService && playbackController) {
-      console.log("✅ All conditions met, loading animation...");
+      debug.success("All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);
 
@@ -276,7 +279,7 @@
 
       return () => clearTimeout(loadTimeout);
     } else if (isOpen && sequence && !servicesReady) {
-      console.log("⏳ Waiting for animation services to be ready...");
+      debug.info("Waiting for animation services to be ready...");
     }
     return undefined;
   });
@@ -595,7 +598,7 @@
   }
 </script>
 
-<AnimationPanel
+<AnimationShareDrawer
   show={isOpen ?? false}
   {combinedPanelHeight}
   loading={animationPanelState.loading}

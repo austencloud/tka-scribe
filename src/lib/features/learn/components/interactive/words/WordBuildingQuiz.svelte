@@ -3,9 +3,9 @@ WordBuildingQuiz - Quiz to test understanding of TKA word formation
 Questions about letter sequences, motion types, position transitions, and CAPs
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import WordVisualizer from "./WordVisualizer.svelte";
 
   let { onComplete } = $props<{
@@ -31,7 +31,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   interface QuizQuestion {
-    type: "identify-word" | "motion-pattern" | "position-transition" | "letter-sequence" | "cap-concept";
+    type:
+      | "identify-word"
+      | "motion-pattern"
+      | "position-transition"
+      | "letter-sequence"
+      | "cap-concept";
     question: string;
     letters?: LetterDefinition[];
     options: string[];
@@ -102,9 +107,15 @@ import { TYPES } from "$lib/shared/inversify/types";
     {
       type: "motion-pattern",
       question: "What motion type repeats throughout the TKA alphabet?",
-      options: ["Pro, Anti, Static", "Pro, Anti, Hybrid", "Pro, Pro, Anti", "Hybrid, Hybrid, Pro"],
+      options: [
+        "Pro, Anti, Static",
+        "Pro, Anti, Hybrid",
+        "Pro, Pro, Anti",
+        "Hybrid, Hybrid, Pro",
+      ],
       correctAnswer: 1,
-      explanation: "The Pro-Anti-Hybrid pattern repeats throughout the alphabet (A=Pro, B=Anti, C=Hybrid, D=Pro, E=Anti, F=Hybrid, etc.)"
+      explanation:
+        "The Pro-Anti-Hybrid pattern repeats throughout the alphabet (A=Pro, B=Anti, C=Hybrid, D=Pro, E=Anti, F=Hybrid, etc.)",
     },
     {
       type: "identify-word",
@@ -112,14 +123,22 @@ import { TYPES } from "$lib/shared/inversify/types";
       letters: [letterA, letterA],
       options: ["AB", "AA", "BB", "CC"],
       correctAnswer: 1,
-      explanation: "This shows the letter A performed twice in sequence, forming the word 'AA'."
+      explanation:
+        "This shows the letter A performed twice in sequence, forming the word 'AA'.",
     },
     {
       type: "position-transition",
-      question: "In Alpha (α) position, where are the hands relative to each other?",
-      options: ["Same point (together)", "Opposite sides (180°)", "Right angle (90°)", "Adjacent points"],
+      question:
+        "In Alpha (α) position, where are the hands relative to each other?",
+      options: [
+        "Same point (together)",
+        "Opposite sides (180°)",
+        "Right angle (90°)",
+        "Adjacent points",
+      ],
       correctAnswer: 1,
-      explanation: "Alpha position has hands on opposite sides of the grid (180° apart), like N-S or E-W."
+      explanation:
+        "Alpha position has hands on opposite sides of the grid (180° apart), like N-S or E-W.",
     },
     {
       type: "letter-sequence",
@@ -128,10 +147,11 @@ import { TYPES } from "$lib/shared/inversify/types";
         "Letters must be alphabetical",
         "End position of one letter = Start of next",
         "All letters must be the same",
-        "Letters must alternate motion types"
+        "Letters must alternate motion types",
       ],
       correctAnswer: 1,
-      explanation: "Letters connect when the end position of one letter matches the start position of the next letter."
+      explanation:
+        "Letters connect when the end position of one letter matches the start position of the next letter.",
     },
     {
       type: "cap-concept",
@@ -140,10 +160,11 @@ import { TYPES } from "$lib/shared/inversify/types";
         "A letter that uses only one hand",
         "A word where end position returns to start",
         "A transition between pro and anti",
-        "A position with both hands together"
+        "A position with both hands together",
       ],
       correctAnswer: 1,
-      explanation: "A CAP is a word where the final position returns to the original starting position, creating a loop."
+      explanation:
+        "A CAP is a word where the final position returns to the original starting position, creating a loop.",
     },
     {
       type: "identify-word",
@@ -151,7 +172,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       letters: [letterA, letterB],
       options: ["AA", "AB", "BA", "BB"],
       correctAnswer: 1,
-      explanation: "First a Pro motion (letter A), then an Anti motion (letter B), forming 'AB'."
+      explanation:
+        "First a Pro motion (letter A), then an Anti motion (letter B), forming 'AB'.",
     },
     {
       type: "motion-pattern",
@@ -159,28 +181,43 @@ import { TYPES } from "$lib/shared/inversify/types";
       letters: [letterA],
       options: ["Antispin", "Prospin", "Hybrid", "Static"],
       correctAnswer: 1,
-      explanation: "Letter A uses Prospin motion for both hands - they rotate in the same direction as their travel."
+      explanation:
+        "Letter A uses Prospin motion for both hands - they rotate in the same direction as their travel.",
     },
     {
       type: "position-transition",
       question: "In Beta (β) position, where are the hands?",
-      options: ["Opposite sides", "Right angle apart", "Same point (together)", "Diagonal corners"],
+      options: [
+        "Opposite sides",
+        "Right angle apart",
+        "Same point (together)",
+        "Diagonal corners",
+      ],
       correctAnswer: 2,
-      explanation: "Beta position has both hands at the same point on the grid (0° apart)."
+      explanation:
+        "Beta position has both hands at the same point on the grid (0° apart).",
     },
     {
       type: "letter-sequence",
-      question: "If a letter ends in Alpha position (α), what must the next letter start in?",
+      question:
+        "If a letter ends in Alpha position (α), what must the next letter start in?",
       options: ["Beta (β)", "Gamma (γ)", "Alpha (α)", "Any position"],
       correctAnswer: 2,
-      explanation: "For letters to connect, the end position type must match the next letter's start position type."
+      explanation:
+        "For letters to connect, the end position type must match the next letter's start position type.",
     },
     {
       type: "cap-concept",
       question: "Which word type creates a seamless loop?",
-      options: ["Any word with 2+ letters", "Words starting with A", "CAPs (returning to start)", "Words with all Pro motions"],
+      options: [
+        "Any word with 2+ letters",
+        "Words starting with A",
+        "CAPs (returning to start)",
+        "Words with all Pro motions",
+      ],
       correctAnswer: 2,
-      explanation: "CAPs (Continuous Assembly Patterns) return to the starting position, creating seamless loops."
+      explanation:
+        "CAPs (Continuous Assembly Patterns) return to the starting position, creating seamless loops.",
     },
     {
       type: "identify-word",
@@ -188,7 +225,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       letters: [letterG, letterG],
       options: ["AA", "BB", "GG", "HH"],
       correctAnswer: 2,
-      explanation: "Letter G shows both hands starting at the same point (Beta) and moving together with Pro motion."
+      explanation:
+        "Letter G shows both hands starting at the same point (Beta) and moving together with Pro motion.",
     },
     {
       type: "motion-pattern",
@@ -197,15 +235,18 @@ import { TYPES } from "$lib/shared/inversify/types";
         "Antispin is faster",
         "Antispin rotates opposite to travel direction",
         "Antispin uses only one hand",
-        "Antispin starts from Beta position"
+        "Antispin starts from Beta position",
       ],
       correctAnswer: 1,
-      explanation: "In Antispin, the props rotate opposite to their direction of travel. In Prospin, they rotate the same direction."
-    }
+      explanation:
+        "In Antispin, the props rotate opposite to their direction of travel. In Prospin, they rotate the same direction.",
+    },
   ];
 
   // Shuffle questions for variety
-  const shuffledQuestions = $state([...questions].sort(() => Math.random() - 0.5).slice(0, 9));
+  const shuffledQuestions = $state(
+    [...questions].sort(() => Math.random() - 0.5).slice(0, 9)
+  );
 
   function getCurrentQuestion(): QuizQuestion {
     return shuffledQuestions[currentQuestion]!;
@@ -243,7 +284,9 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   function restartQuiz() {
     shuffledQuestions.length = 0;
-    shuffledQuestions.push(...[...questions].sort(() => Math.random() - 0.5).slice(0, 9));
+    shuffledQuestions.push(
+      ...[...questions].sort(() => Math.random() - 0.5).slice(0, 9)
+    );
     currentQuestion = 0;
     score = 0;
     answerState = "idle";
@@ -336,7 +379,8 @@ import { TYPES } from "$lib/shared/inversify/types";
           {@const isCorrectAnswer = question.correctAnswer === i}
           {@const showCorrect = answerState === "correct" && isSelected}
           {@const showIncorrect = answerState === "incorrect" && isSelected}
-          {@const revealCorrect = answerState === "incorrect" && isCorrectAnswer}
+          {@const revealCorrect =
+            answerState === "incorrect" && isCorrectAnswer}
 
           <button
             class="answer-btn"
@@ -349,7 +393,9 @@ import { TYPES } from "$lib/shared/inversify/types";
             <span class="option-letter">{String.fromCharCode(65 + i)}</span>
             <span class="option-text">{option}</span>
             {#if answerState !== "idle" && isSelected}
-              <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
+              <span class="result-icon"
+                >{answerState === "correct" ? "✓" : "✗"}</span
+              >
             {:else if revealCorrect}
               <span class="result-icon correct">✓</span>
             {/if}
@@ -359,7 +405,11 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <!-- Feedback with explanation -->
       {#if answerState !== "idle"}
-        <div class="feedback" class:correct={answerState === "correct"} class:incorrect={answerState === "incorrect"}>
+        <div
+          class="feedback"
+          class:correct={answerState === "correct"}
+          class:incorrect={answerState === "incorrect"}
+        >
           {#if answerState === "correct"}
             <div class="feedback-header">
               <i class="fa-solid fa-check-circle"></i>
@@ -375,7 +425,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         </div>
       {/if}
     </div>
-
   {:else}
     <!-- Complete state -->
     <div class="quiz-section complete">
@@ -429,7 +478,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #A855F7, #EC4899);
+    background: linear-gradient(90deg, #a855f7, #ec4899);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -451,7 +500,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #A855F7;
+    color: #a855f7;
     text-transform: capitalize;
   }
 
@@ -465,8 +514,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .quiz-title {
@@ -545,13 +600,19 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .answer-btn.correct .option-letter {
     background: rgba(34, 211, 238, 0.3);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   @keyframes correctPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .answer-btn.incorrect {
@@ -562,13 +623,20 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .answer-btn.incorrect .option-letter {
     background: rgba(255, 74, 74, 0.3);
-    color: #FF4A4A;
+    color: #ff4a4a;
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
   }
 
   .result-icon {
@@ -576,12 +644,12 @@ import { TYPES } from "$lib/shared/inversify/types";
     right: 1rem;
     font-size: 1.25rem;
     font-weight: 700;
-    color: #FF4A4A;
+    color: #ff4a4a;
   }
 
   .result-icon.correct,
   .answer-btn.correct .result-icon {
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   /* Feedback */
@@ -594,8 +662,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .feedback.correct {
@@ -618,11 +692,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .feedback.correct .feedback-header {
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .feedback.incorrect .feedback-header {
-    color: #FF9E4A;
+    color: #ff9e4a;
   }
 
   .explanation {
@@ -660,7 +734,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .score-value {
     font-size: 3rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #A855F7, #EC4899);
+    background: linear-gradient(135deg, #a855f7, #ec4899);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -687,7 +761,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     display: flex;
     gap: 1rem;
     width: 100%;
-    max-width: 350px;
+    max-width: 352px;
   }
 
   .action-btn {
@@ -697,7 +771,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.25rem;
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
@@ -717,13 +791,21 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(236, 72, 153, 0.3));
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.3),
+      rgba(236, 72, 153, 0.3)
+    );
     border: 1px solid rgba(168, 85, 247, 0.4);
     color: white;
   }
 
   .action-btn.primary:hover {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(236, 72, 153, 0.4));
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.4),
+      rgba(236, 72, 153, 0.4)
+    );
     border-color: rgba(168, 85, 247, 0.6);
     transform: translateY(-2px);
   }

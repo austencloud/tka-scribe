@@ -55,7 +55,9 @@
 
   onMount(() => {
     authService = resolve<IAuthService>(TYPES.IAuthService);
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Derived state
@@ -175,7 +177,11 @@
     <div class="error-banner" role="alert">
       <i class="fas fa-exclamation-circle"></i>
       <span>{errorMessage}</span>
-      <button class="dismiss-btn" onclick={dismissError} aria-label="Dismiss error">
+      <button
+        class="dismiss-btn"
+        onclick={dismissError}
+        aria-label="Dismiss error"
+      >
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -295,7 +301,9 @@
               </div>
               <div class="provider-info">
                 <span class="provider-name">
-                  {isLinking ? `Connecting ${config.name}...` : `Connect ${config.name}`}
+                  {isLinking
+                    ? `Connecting ${config.name}...`
+                    : `Connect ${config.name}`}
                 </span>
                 <span class="provider-description">
                   Sign in with your {config.name} account
@@ -525,8 +533,8 @@
 
   /* Unlink Button */
   .unlink-btn {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -638,13 +646,13 @@
     }
 
     .unlink-btn::before {
-      content: '';
+      content: "";
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      min-width: 48px;
-      min-height: 48px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 

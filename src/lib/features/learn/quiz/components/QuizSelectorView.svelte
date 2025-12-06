@@ -53,9 +53,18 @@ Features a welcoming header, mode toggle, and game cards.
   <!-- Header Section -->
   <header class="header-section">
     <div class="header-icon">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
         <!-- Play/Game controller icon -->
-        <polygon points="5 3 19 12 5 21 5 3"/>
+        <polygon points="5 3 19 12 5 21 5 3" />
       </svg>
     </div>
     <h1 class="header-title">Let's Play!</h1>
@@ -121,7 +130,11 @@ Features a welcoming header, mode toggle, and game cards.
     justify-content: center;
     width: 64px;
     height: 64px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.2));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.25),
+      rgba(139, 92, 246, 0.2)
+    );
     border-radius: 18px;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 8px;
@@ -133,7 +146,13 @@ Features a welcoming header, mode toggle, and game cards.
 
   .header-title {
     margin: 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 2rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
@@ -143,7 +162,13 @@ Features a welcoming header, mode toggle, and game cards.
 
   .header-subtitle {
     margin: 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 400;
@@ -171,7 +196,13 @@ Features a welcoming header, mode toggle, and game cards.
 
   .section-label {
     margin: 0;
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -226,8 +257,8 @@ Features a welcoming header, mode toggle, and game cards.
     }
 
     .header-icon {
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       border-radius: 14px;
     }
 

@@ -10,6 +10,7 @@ import {
   orderBy,
   limit,
   getDocs,
+  getDocsFromServer,
   doc,
   updateDoc,
   deleteDoc,
@@ -473,6 +474,10 @@ export class FeedbackService implements IFeedbackService {
   /**
    * Subscribe to real-time feedback updates
    * Returns an unsubscribe function
+   *
+   * This method ensures fresh data by:
+   * 1. First fetching directly from the server (bypassing cache)
+   * 2. Then setting up a real-time listener for ongoing updates
    */
   subscribeToFeedback(
     onUpdate: (items: FeedbackItem[]) => void,
@@ -486,9 +491,39 @@ export class FeedbackService implements IFeedbackService {
       limit(200) // Reasonable limit for admin dashboard
     );
 
-    return onSnapshot(
+    let unsubscribed = false;
+
+    // First, do an initial server fetch to ensure fresh data
+    // getDocsFromServer bypasses the local cache entirely
+    getDocsFromServer(q)
+      .then((snapshot) => {
+        if (unsubscribed) return;
+
+        const items: FeedbackItem[] = [];
+        snapshot.docs.forEach((docSnap) => {
+          try {
+            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+            items.push(item);
+          } catch (err) {
+            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+          }
+        });
+        onUpdate(items);
+      })
+      .catch((error) => {
+        console.error("Initial feedback fetch error:", error);
+        // Continue to set up the listener even if initial fetch fails
+        // The listener will provide cached data and retry server connection
+      });
+
+    // Then set up the real-time listener for ongoing updates
+    // includeMetadataChanges: false means we only get notified of actual data changes
+    const unsubscribe = onSnapshot(
       q,
+      { includeMetadataChanges: false },
       (snapshot) => {
+        if (unsubscribed) return;
+
         const items: FeedbackItem[] = [];
         snapshot.docs.forEach((docSnap) => {
           try {
@@ -505,6 +540,12 @@ export class FeedbackService implements IFeedbackService {
         onError?.(error);
       }
     );
+
+    // Return combined unsubscribe function
+    return () => {
+      unsubscribed = true;
+      unsubscribe();
+    };
   }
 
   private mapDocToFeedbackItem(
