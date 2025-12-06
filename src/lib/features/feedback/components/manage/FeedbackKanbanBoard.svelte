@@ -398,6 +398,7 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="defer-dialog-title"
+      tabindex="-1"
     >
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div

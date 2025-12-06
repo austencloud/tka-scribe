@@ -180,82 +180,86 @@
 
     // Use an async IIFE to handle async initialization
     (async () => {
-
-    // Resolve core services immediately (Tier 1 - navigation module)
-    try {
-      sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
-      );
-      sheetRouterService = resolve<ISheetRouterService>(
-        TYPES.ISheetRouterService
-      );
-      debug.success("Core services resolved");
-    } catch (error) {
-      console.error("❌ Failed to resolve core services:", error);
-    }
-
-    // Load animator module and resolve animation-specific services
-    try {
-      await loadFeatureModule("animate");
-      debug.success("Animator module loaded");
-
-      playbackController = resolve<IAnimationPlaybackController>(
-        TYPES.IAnimationPlaybackController
-      );
-      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-        TYPES.IGifExportOrchestrator
-      );
-
-      servicesReady = true;
-      debug.success("Animation services resolved, ready to initialize playback");
-    } catch (error) {
-      console.error("❌ Failed to load animator module or resolve services:", error);
-      animationPanelState.setError("Failed to initialize animation services");
-    }
-
-    // Listen for route changes to restore animation panel from URL
-    cleanupRouteListener = sheetRouterService?.onRouteChange((state) => {
-      isRespondingToRouteChange = true;
-
-      const sheetType = state.sheet;
-      if (sheetType === "animation") {
-        // Open animation panel if it's not already open
-        if (!isOpen) {
-          isOpen = true;
-        }
-
-        // Restore animation state from URL if available
-        if (state.animationPanel) {
-          restoreAnimationState(state.animationPanel);
-        }
-      } else if (isOpen && sheetType && sheetType !== null) {
-        // Close animation panel if a different sheet is opened (not animation, not null)
-        const otherSheets: readonly string[] = [
-          "settings",
-          "auth",
-          "terms",
-          "privacy",
-        ];
-        if (otherSheets.includes(sheetType)) {
-          isOpen = false;
-        }
-      } else if (isOpen && !sheetType) {
-        // Close animation panel if no sheet is in URL (user swiped away or pressed back)
-        isOpen = false;
+      // Resolve core services immediately (Tier 1 - navigation module)
+      try {
+        sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
+        hapticService = resolve<IHapticFeedbackService>(
+          TYPES.IHapticFeedbackService
+        );
+        sheetRouterService = resolve<ISheetRouterService>(
+          TYPES.ISheetRouterService
+        );
+        debug.success("Core services resolved");
+      } catch (error) {
+        console.error("❌ Failed to resolve core services:", error);
       }
 
-      // Reset flag after a tick to allow effects to run
-      setTimeout(() => {
-        isRespondingToRouteChange = false;
-      }, 0);
-    });
+      // Load animator module and resolve animation-specific services
+      try {
+        await loadFeatureModule("animate");
+        debug.success("Animator module loaded");
 
-    // Check if animation panel should be open on initial load
-    const initialState = sheetRouterService?.getCurrentAnimationPanelState();
-    if (initialState) {
-      isOpen = true;
-    }
+        playbackController = resolve<IAnimationPlaybackController>(
+          TYPES.IAnimationPlaybackController
+        );
+        gifExportOrchestrator = resolve<IGifExportOrchestrator>(
+          TYPES.IGifExportOrchestrator
+        );
+
+        servicesReady = true;
+        debug.success(
+          "Animation services resolved, ready to initialize playback"
+        );
+      } catch (error) {
+        console.error(
+          "❌ Failed to load animator module or resolve services:",
+          error
+        );
+        animationPanelState.setError("Failed to initialize animation services");
+      }
+
+      // Listen for route changes to restore animation panel from URL
+      cleanupRouteListener = sheetRouterService?.onRouteChange((state) => {
+        isRespondingToRouteChange = true;
+
+        const sheetType = state.sheet;
+        if (sheetType === "animation") {
+          // Open animation panel if it's not already open
+          if (!isOpen) {
+            isOpen = true;
+          }
+
+          // Restore animation state from URL if available
+          if (state.animationPanel) {
+            restoreAnimationState(state.animationPanel);
+          }
+        } else if (isOpen && sheetType && sheetType !== null) {
+          // Close animation panel if a different sheet is opened (not animation, not null)
+          const otherSheets: readonly string[] = [
+            "settings",
+            "auth",
+            "terms",
+            "privacy",
+          ];
+          if (otherSheets.includes(sheetType)) {
+            isOpen = false;
+          }
+        } else if (isOpen && !sheetType) {
+          // Close animation panel if no sheet is in URL (user swiped away or pressed back)
+          isOpen = false;
+        }
+
+        // Reset flag after a tick to allow effects to run
+        setTimeout(() => {
+          isRespondingToRouteChange = false;
+        }, 0);
+      });
+
+      // Check if animation panel should be open on initial load
+      const initialState = sheetRouterService?.getCurrentAnimationPanelState();
+      if (initialState) {
+        isOpen = true;
+      }
     })();
   });
 
@@ -269,13 +273,21 @@
       sequenceId: sequence?.id,
       sequenceWord: sequence?.word,
       beatCount: sequence?.beats?.length,
-      hasMotionData: sequence?.beats?.some(b => b?.motions?.blue && b?.motions?.red),
+      hasMotionData: sequence?.beats?.some(
+        (b) => b?.motions?.blue && b?.motions?.red
+      ),
       hasPlaybackController: !!playbackController,
       hasSequenceService: !!sequenceService,
     });
 
     // Wait for services to be ready AND panel to be open AND sequence to exist
-    if (isOpen && servicesReady && sequence && sequenceService && playbackController) {
+    if (
+      isOpen &&
+      servicesReady &&
+      sequence &&
+      sequenceService &&
+      playbackController
+    ) {
       debug.success("All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);

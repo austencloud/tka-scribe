@@ -112,7 +112,7 @@
       <!-- BPM Control (only shown when animated) -->
       {#if settings.animated}
         <div class="bpm-control">
-          <label>BPM: {settings.bpm}</label>
+          <span class="control-label">BPM: {settings.bpm}</span>
           <div class="button-group">
             <button class="control-btn" onclick={() => updateBpm(-10)} disabled={settings.bpm <= 30}>−</button>
             <button class="control-btn" onclick={() => updateBpm(10)} disabled={settings.bpm >= 200}>+</button>
@@ -190,7 +190,7 @@
     gap: 12px;
   }
 
-  .bpm-control label {
+  .control-label {
     font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);

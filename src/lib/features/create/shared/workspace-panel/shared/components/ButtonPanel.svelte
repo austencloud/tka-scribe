@@ -45,7 +45,9 @@
   // Derive computed values from context
   const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
   const showShareButton = $derived(CreateModuleState.canShowActionButtons());
-  const showRecordVideoButton = $derived(CreateModuleState.canShowActionButtons());
+  const showRecordVideoButton = $derived(
+    CreateModuleState.canShowActionButtons()
+  );
   const showSequenceActions = $derived(
     CreateModuleState.canShowSequenceActionsButton()
   );
@@ -136,7 +138,10 @@
           <!-- Record Video Button -->
           {#if showRecordVideoButton && onRecordVideo}
             <div>
-              <RecordVideoButton onclick={onRecordVideo} isActive={isRecordVideoOpen} />
+              <RecordVideoButton
+                onclick={onRecordVideo}
+                isActive={isRecordVideoOpen}
+              />
             </div>
           {/if}
         </div>

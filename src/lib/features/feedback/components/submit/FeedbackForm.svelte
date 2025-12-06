@@ -639,10 +639,6 @@
     transition: color 150ms ease;
   }
 
-  .field:focus-within .field-label {
-    color: var(--fb-primary);
-  }
-
   .textarea-wrapper {
     position: relative;
     background: rgba(0, 0, 0, 0.2);
@@ -727,10 +723,6 @@
 
   .char-count.met {
     color: #10b981;
-  }
-
-  .field:has(.field-textarea:not(:placeholder-shown)) .field-label {
-    color: var(--fb-primary);
   }
 
   .field-error {

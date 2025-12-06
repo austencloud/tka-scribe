@@ -1,13 +1,16 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { container } from '$lib/shared/inversify/container';
-  import { TYPES } from '$lib/shared/inversify/types';
-  import { Letter } from '$lib/shared/foundation/domain/models/Letter';
-  import { GridMode } from '$lib/shared/pictograph/grid/domain/enums/grid-enums';
-  import { PropType } from '$lib/shared/pictograph/prop/domain/enums/PropType';
-  import { DifficultyLevel, GenerationMode } from '$lib/features/create/generate/shared/domain/models/generate-models';
-  import { loadFeatureModule } from '$lib/shared/inversify/container';
-  import type { IGenerationOrchestrationService } from '$lib/features/create/generate/shared/services/contracts/IGenerationOrchestrationService';
+  import { onMount } from "svelte";
+  import { container } from "$lib/shared/inversify/container";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import {
+    DifficultyLevel,
+    GenerationMode,
+  } from "$lib/features/create/generate/shared/domain/models/generate-models";
+  import { loadFeatureModule } from "$lib/shared/inversify/container";
+  import type { IGenerationOrchestrationService } from "$lib/features/create/generate/shared/services/contracts/IGenerationOrchestrationService";
 
   interface TestResult {
     letter: string;
@@ -31,11 +34,11 @@
   } | null>(null);
 
   const TEST_LETTERS = [
-    { letter: Letter.A, name: 'A (Type 1: Dual-Shift)' },
-    { letter: Letter.W, name: 'W (Type 2: Shift)' },
+    { letter: Letter.A, name: "A (Type 1: Dual-Shift)" },
+    { letter: Letter.W, name: "W (Type 2: Shift)" },
     { letter: Letter.W_DASH, name: "W' (Type 3: Cross-Shift)" },
-    { letter: Letter.PHI, name: 'Φ (Type 4: Dash)' },
-    { letter: Letter.ALPHA, name: 'α (Type 6: Static)' },
+    { letter: Letter.PHI, name: "Φ (Type 4: Dash)" },
+    { letter: Letter.ALPHA, name: "α (Type 6: Static)" },
   ];
 
   async function runTests() {
@@ -45,15 +48,18 @@
 
     try {
       // Ensure Tier 2 modules are loaded first (pictograph is needed by create)
-      const { loadSharedModules } = await import('$lib/shared/inversify/container');
+      const { loadSharedModules } = await import(
+        "$lib/shared/inversify/container"
+      );
       await loadSharedModules();
 
       // Then load the create module
-      await loadFeatureModule('create');
+      await loadFeatureModule("create");
 
-      const orchestrationService = container.get<IGenerationOrchestrationService>(
-        TYPES.IGenerationOrchestrationService
-      );
+      const orchestrationService =
+        container.get<IGenerationOrchestrationService>(
+          TYPES.IGenerationOrchestrationService
+        );
 
       for (const { letter, name } of TEST_LETTERS) {
         const startTime = Date.now();
@@ -69,7 +75,7 @@
           });
 
           const endTime = Date.now();
-          const word = sequence.word || '';
+          const word = sequence.word || "";
           const letterStr = letter.toString();
           const contains = word.includes(letterStr);
 
@@ -93,9 +99,9 @@
       }
 
       // Calculate summary
-      const successful = testResults.filter(r => r.success && r.contains);
-      const failed = testResults.filter(r => !r.success || !r.contains);
-      const durations = successful.map(r => r.duration);
+      const successful = testResults.filter((r) => r.success && r.contains);
+      const failed = testResults.filter((r) => !r.success || !r.contains);
+      const durations = successful.map((r) => r.duration);
 
       summary = {
         total: testResults.length,
@@ -107,7 +113,7 @@
         allCorrect: failed.length === 0,
       };
     } catch (error: any) {
-      console.error('Test failed:', error);
+      console.error("Test failed:", error);
       alert(`Test failed: ${error.message}`);
     } finally {
       isRunning = false;
@@ -125,7 +131,7 @@
   <p>Testing rejection sampling approach for mustContainLetters constraint.</p>
 
   <button onclick={runTests} disabled={isRunning}>
-    {isRunning ? 'Running tests...' : 'Run Tests Again'}
+    {isRunning ? "Running tests..." : "Run Tests Again"}
   </button>
 
   {#if testResults.length > 0}
@@ -133,11 +139,14 @@
       <h2>Results:</h2>
 
       {#each testResults as result}
-        <div class="test-result" class:error={!result.success || !result.contains}>
-          <strong>{result.letter}</strong><br>
+        <div
+          class="test-result"
+          class:error={!result.success || !result.contains}
+        >
+          <strong>{result.letter}</strong><br />
           {#if result.success}
-            Generated: "{result.word}" ({result.duration}ms)<br>
-            Contains required letter: {result.contains ? '✅ YES' : '❌ NO'}
+            Generated: "{result.word}" ({result.duration}ms)<br />
+            Contains required letter: {result.contains ? "✅ YES" : "❌ NO"}
           {:else}
             ❌ FAILED: {result.error} ({result.duration}ms)
           {/if}
@@ -150,12 +159,17 @@
     <div class="summary">
       <h2>Summary:</h2>
       <div>Total tests: {summary.total}</div>
-      <div>Successful: {summary.successful}/{summary.total} ({((summary.successful / summary.total) * 100).toFixed(1)}%)</div>
+      <div>
+        Successful: {summary.successful}/{summary.total} ({(
+          (summary.successful / summary.total) *
+          100
+        ).toFixed(1)}%)
+      </div>
       <div>Failed: {summary.failed}/{summary.total}</div>
       <div>Average duration: {summary.avgDuration.toFixed(0)}ms</div>
       <div>Min duration: {summary.minDuration}ms</div>
       <div>Max duration: {summary.maxDuration}ms</div>
-      <div>All correct: {summary.allCorrect ? '✅ YES' : '❌ NO'}</div>
+      <div>All correct: {summary.allCorrect ? "✅ YES" : "❌ NO"}</div>
     </div>
   {/if}
 </div>

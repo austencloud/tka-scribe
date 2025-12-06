@@ -13,7 +13,7 @@
     disabled?: boolean;
   }>();
 
-  let fileInput: HTMLInputElement;
+  let fileInput: HTMLInputElement | undefined = $state(undefined);
   let isDragging = $state(false);
   let previews = $state<{ file: File; url: string }[]>([]);
 
@@ -134,7 +134,7 @@
       type="button"
       class="upload-button"
       class:dragging={isDragging}
-      onclick={() => !disabled && fileInput.click()}
+      onclick={() => !disabled && fileInput?.click()}
       ondrop={handleDrop}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}

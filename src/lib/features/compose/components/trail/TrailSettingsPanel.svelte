@@ -27,8 +27,12 @@
     settings = undefined, // Optional override for backward compatibility
     compact = false,
     ultraCompact = false,
-    blueMotionVisible = $bindable(visibilityState.getMotionVisibility(MotionColor.BLUE)),
-    redMotionVisible = $bindable(visibilityState.getMotionVisibility(MotionColor.RED)),
+    blueMotionVisible = $bindable(
+      visibilityState.getMotionVisibility(MotionColor.BLUE)
+    ),
+    redMotionVisible = $bindable(
+      visibilityState.getMotionVisibility(MotionColor.RED)
+    ),
     onToggleBlueMotion = undefined,
     onToggleRedMotion = undefined,
     hideVisibilityButtons = false,

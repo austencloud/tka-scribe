@@ -98,7 +98,7 @@
     <div class="animation-controls">
       <!-- Speed Control -->
       <div class="control-group">
-        <label>Speed: {settings.speed.toFixed(2)}x</label>
+        <span class="control-label">Speed: {settings.speed.toFixed(2)}x</span>
         <div class="button-group">
           <button
             class="control-btn"
@@ -184,7 +184,7 @@
     gap: 12px;
   }
 
-  .control-group label {
+  .control-label {
     font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);

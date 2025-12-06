@@ -8,7 +8,7 @@
    * Domain: Create module - Layout
    */
 
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import ButtonPanel from "../workspace-panel/shared/components/ButtonPanel.svelte";
   import CreationWorkspaceArea from "./CreationWorkspaceArea.svelte";
   import CreationToolPanelSlot from "./CreationToolPanelSlot.svelte";
@@ -34,9 +34,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     }
 
     const hasBeat = sequence.beats && sequence.beats.length > 0;
-    const hasStartPosition = sequence.startingPositionBeat || sequence.startPosition;
+    const hasStartPosition =
+      sequence.startingPositionBeat || sequence.startPosition;
     const result = hasBeat || hasStartPosition;
-
 
     return result;
   });
@@ -158,10 +158,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 
     <!-- Button Panel -->
     {#if hasWorkspaceContent && navigationState.activeTab !== "gestural"}
-      <div
-        class="button-panel-wrapper"
-        bind:this={buttonPanelElement}
-      >
+      <div class="button-panel-wrapper" bind:this={buttonPanelElement}>
         <ButtonPanel
           {onPlayAnimation}
           {onClearSequence}

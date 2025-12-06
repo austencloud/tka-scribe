@@ -192,8 +192,9 @@
 
     <!-- Title -->
     <div class="form-section">
-      <label class="section-label">Title</label>
+      <label class="section-label" for="announcement-title">Title</label>
       <input
+        id="announcement-title"
         type="text"
         class="text-input"
         bind:value={title}
@@ -206,8 +207,9 @@
 
     <!-- Message -->
     <div class="form-section">
-      <label class="section-label">Message</label>
+      <label class="section-label" for="announcement-message">Message</label>
       <textarea
+        id="announcement-message"
         class="text-input"
         bind:value={message}
         placeholder="Announcement message (supports markdown)"
@@ -219,8 +221,9 @@
 
     <!-- Severity Selection (Chips) -->
     <div class="form-section">
-      <label class="section-label">Severity</label>
-      <div class="chip-group">
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <span class="section-label">Severity</span>
+      <div class="chip-group" role="group" aria-label="Severity">
         {#each severityOptions as option}
           <button
             type="button"
@@ -242,8 +245,9 @@
 
     <!-- Target Audience Selection (Chips) -->
     <div class="form-section">
-      <label class="section-label">Target Audience</label>
-      <div class="chip-group">
+      <!-- svelte-ignore a11y_label_has_associated_control -->
+      <span class="section-label">Target Audience</span>
+      <div class="chip-group" role="group" aria-label="Target Audience">
         {#each audienceOptions as option}
           <button
             type="button"
@@ -265,7 +269,8 @@
     <!-- Specific User Search (conditional) -->
     {#if targetAudience === "specific-user"}
       <div class="form-section indented">
-        <label class="section-label">Select User</label>
+        <!-- svelte-ignore a11y_label_has_associated_control -->
+        <span class="section-label">Select User</span>
         <UserSearchInput
           selectedUserId={targetUserId}
           selectedUserDisplay={targetUserDisplay}
@@ -277,8 +282,8 @@
 
     <!-- Display Options (Toggle Chips) -->
     <div class="form-section">
-      <label class="section-label">Display Options</label>
-      <div class="chip-group">
+      <span class="section-label">Display Options</span>
+      <div class="chip-group" role="group" aria-label="Display Options">
         <button
           type="button"
           class="toggle-chip"
@@ -312,8 +317,9 @@
     <!-- Expiration Date (conditional) -->
     {#if hasExpiration}
       <div class="form-section indented">
-        <label class="section-label">Expiration Date</label>
+        <label class="section-label" for="expiration-date">Expiration Date</label>
         <input
+          id="expiration-date"
           type="date"
           class="text-input"
           bind:value={expirationDate}
@@ -324,10 +330,11 @@
 
     <!-- Action URL (optional) -->
     <div class="form-section">
-      <label class="section-label"
+      <label class="section-label" for="action-url"
         >Action URL <span class="optional">(optional)</span></label
       >
       <input
+        id="action-url"
         type="url"
         class="text-input"
         bind:value={actionUrl}
@@ -338,8 +345,9 @@
 
     {#if actionUrl}
       <div class="form-section indented">
-        <label class="section-label">Action Button Label</label>
+        <label class="section-label" for="action-label">Action Button Label</label>
         <input
+          id="action-label"
           type="text"
           class="text-input"
           bind:value={actionLabel}

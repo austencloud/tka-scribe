@@ -402,18 +402,9 @@
   }
 
   .preview-empty i,
-  .preview-error i,
-  .preview-placeholder i {
+  .preview-error i {
     font-size: 32px;
     opacity: 0.5;
-  }
-
-  .preview-placeholder .coming-soon {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.3);
-    margin-top: 4px;
   }
 
   .preview-error {
@@ -511,10 +502,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
-  }
-
-  .mode-btn i {
-    font-size: 14px;
   }
 
   .mode-btn:hover:not(:disabled) {

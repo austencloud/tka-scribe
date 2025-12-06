@@ -485,24 +485,6 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
-  .type-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: clamp(24px, 5cqi, 30px);
-    height: clamp(24px, 5cqi, 30px);
-    flex-shrink: 0;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--type-color) 30%, transparent) 0%,
-      color-mix(in srgb, var(--type-color) 15%, transparent) 100%
-    );
-    border-radius: var(--kc-radius-sm);
-    color: var(--type-color);
-    font-size: clamp(10px, 2cqi, 13px);
-    box-shadow: 0 2px 6px color-mix(in srgb, var(--type-color) 25%, transparent);
-  }
-
   .card-title {
     margin: 0;
     flex: 1;
@@ -573,10 +555,6 @@
     display: flex;
     align-items: center;
     gap: clamp(2px, 0.5cqi, 4px);
-  }
-
-  .meta-user i {
-    font-size: 0.9em;
   }
 
   /* Priority badge in header */
