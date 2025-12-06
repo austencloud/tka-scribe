@@ -60,11 +60,7 @@
   </div>
 
   <div class="header-right">
-    <button
-      class="close-btn"
-      onclick={onClose}
-      aria-label="Close playback"
-    >
+    <button class="close-btn" onclick={onClose} aria-label="Close playback">
       <i class="fas fa-times"></i>
     </button>
   </div>
