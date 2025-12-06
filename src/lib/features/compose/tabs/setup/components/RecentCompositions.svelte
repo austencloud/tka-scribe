@@ -7,8 +7,14 @@
    */
 
   import { onMount } from "svelte";
-  import { getBrowseState, type SavedAnimation } from "../../browse/state/browse-state.svelte";
-  import { getComposeModuleState, type ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
+  import {
+    getBrowseState,
+    type SavedAnimation,
+  } from "../../browse/state/browse-state.svelte";
+  import {
+    getComposeModuleState,
+    type ComposeMode,
+  } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -33,7 +39,7 @@
     mirror: "#8b5cf6",
     tunnel: "#ec4899",
     grid: "#f59e0b",
-    "side-by-side": "#10b981"
+    "side-by-side": "#10b981",
   };
 
   // Mode icons
@@ -42,11 +48,13 @@
     mirror: "fa-clone",
     tunnel: "fa-circle-notch",
     grid: "fa-th-large",
-    "side-by-side": "fa-columns"
+    "side-by-side": "fa-columns",
   };
 
   onMount(async () => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Ensure animations are loaded
     if (browseState.animations.length === 0) {
@@ -188,11 +196,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      135deg,
-      var(--mode-color) 0%,
-      transparent 100%
-    );
+    background: linear-gradient(135deg, var(--mode-color) 0%, transparent 100%);
     opacity: 0.1;
     transition: opacity 0.2s ease;
   }
