@@ -4,7 +4,6 @@
   import { createMyFeedbackState } from "../../state/my-feedback-state.svelte";
   import MyFeedbackList from "./MyFeedbackList.svelte";
   import MyFeedbackDetail from "./MyFeedbackDetail.svelte";
-  import NotificationBell from "../notifications/NotificationBell.svelte";
 
   const state = createMyFeedbackState();
 
@@ -30,10 +29,6 @@
           <h1>My Feedback</h1>
           <p>View your submissions and their resolution status</p>
         </div>
-      </div>
-
-      <div class="header-actions">
-        <NotificationBell />
       </div>
     </header>
 
@@ -107,12 +102,6 @@
     padding: clamp(12px, 3cqi, 20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-shrink: 0;
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
   }
 
   .header-content {

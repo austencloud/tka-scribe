@@ -47,6 +47,7 @@ if (import.meta.hot) {
           // Tier 2: Shared services
           "render",
           "pictograph",
+          "admin",
         ].includes(module)
     );
 
@@ -277,7 +278,7 @@ export async function loadCriticalModules(): Promise<void> {
 }
 
 /**
- * TIER 2: Load shared service modules (rendering, pictographs)
+ * TIER 2: Load shared service modules (rendering, pictographs, admin)
  * ⏱️ Non-blocking - Loads in background while user reads content
  * Only truly shared modules that are needed across ALL features
  */
@@ -296,19 +297,23 @@ export async function loadSharedModules(): Promise<void> {
       // Only load modules that are truly needed everywhere
       const [
         { renderModule },
-        { pictographModule }
+        { pictographModule },
+        { adminModule }
       ] = await Promise.all([
         import("./modules/render.module"),
-        import("./modules/pictograph.module")
+        import("./modules/pictograph.module"),
+        import("./modules/admin.module")
       ]);
 
       await container.load(
         renderModule,
-        pictographModule
+        pictographModule,
+        adminModule
       );
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
+      loadedModules.add("admin");
       tier2Loaded = true;
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
@@ -448,8 +453,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "admin":
+        // Admin module is loaded in Tier 2, only load its dependencies here
         await Promise.all([
-          loadIfNeeded("admin", () => import("./modules/admin.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
           loadIfNeeded("train", () => import("./modules/train.module")),
           loadIfNeeded("discover", () => import("./modules/discover.module"))

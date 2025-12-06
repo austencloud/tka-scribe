@@ -8,6 +8,12 @@
   import type { FeedbackType } from "../../domain/models/feedback-models";
   import VoiceInputButton from "./VoiceInputButton.svelte";
   import ImageUpload from "./ImageUpload.svelte";
+  import {
+    saveDraft,
+    loadDraft,
+    clearDraft,
+    hasDraft,
+  } from "../../utils/draft-persistence";
 
   // Props
   const { formState } = $props<{
@@ -16,11 +22,85 @@
 
   let hapticService: IHapticFeedbackService | undefined;
   let interimText = $state(""); // Store live streaming text
+  let lastVoiceCommit = $state(""); // Track what voice text has been committed (for deduplication)
+  let draftSaveStatus = $state<"idle" | "saving" | "saved">("idle");
+  let draftSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  let draftResetTimer: ReturnType<typeof setTimeout> | null = null;
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    // Restore draft if form is empty and a draft exists
+    if (
+      !formState.formData.description.trim() &&
+      !formState.formData.title.trim()
+    ) {
+      const draft = loadDraft();
+      if (draft) {
+        formState.updateField("description", draft.formData.description);
+        formState.updateField("title", draft.formData.title);
+        formState.setType(draft.formData.type);
+      }
+    }
+  });
+
+  // Auto-save draft with debouncing (500ms after user stops typing)
+  $effect(() => {
+    const description = formState.formData.description;
+    const type = formState.formData.type;
+    const title = formState.formData.title;
+
+    // Only auto-save if there's content
+    if (description.trim().length > 0 || title.trim().length > 0) {
+      // Clear existing timers
+      if (draftSaveTimer) {
+        clearTimeout(draftSaveTimer);
+      }
+      if (draftResetTimer) {
+        clearTimeout(draftResetTimer);
+      }
+
+      // Set status to saving
+      draftSaveStatus = "saving";
+
+      // Debounce save (500ms)
+      draftSaveTimer = setTimeout(() => {
+        saveDraft(formState.formData);
+        draftSaveStatus = "saved";
+
+        // Reset to idle after 2 seconds
+        draftResetTimer = setTimeout(() => {
+          draftSaveStatus = "idle";
+        }, 2000);
+      }, 500);
+
+      // Cleanup both timers
+      return () => {
+        if (draftSaveTimer) {
+          clearTimeout(draftSaveTimer);
+        }
+        if (draftResetTimer) {
+          clearTimeout(draftResetTimer);
+        }
+      };
+    } else {
+      // If form is empty, clear any existing draft
+      clearDraft();
+      draftSaveStatus = "idle";
+    }
+
+    return undefined;
+  });
+
+  // Clear draft after successful submission
+  $effect(() => {
+    if (formState.submitStatus === "success") {
+      clearDraft();
+      draftSaveStatus = "idle";
+    }
+    return undefined;
   });
 
   // Derived: combine committed + interim for display
@@ -32,12 +112,28 @@
 
   function handleVoiceTranscript(transcript: string, isFinal: boolean) {
     if (isFinal) {
-      // Commit final transcript to form state
-      const currentText = formState.formData.description.trim();
-      const newText = currentText ? `${currentText} ${transcript}` : transcript;
-      formState.updateField("description", newText);
+      // Mobile browsers re-emit entire transcript including previously finalized segments.
+      // Strip any prefix that matches what we've already committed to avoid duplication.
+      let newContent = transcript.trim();
+
+      if (lastVoiceCommit && newContent.startsWith(lastVoiceCommit)) {
+        // Strip the already-committed prefix
+        newContent = newContent.slice(lastVoiceCommit.length).trim();
+      }
+
+      // Only append if there's actually new content
+      if (newContent) {
+        const currentText = formState.formData.description.trim();
+        const updatedText = currentText ? `${currentText} ${newContent}` : newContent;
+        formState.updateField("description", updatedText);
+
+        // Track the cumulative voice transcript for next deduplication
+        lastVoiceCommit = transcript.trim();
+
+        hapticService?.trigger("selection");
+      }
+
       interimText = ""; // Clear interim
-      hapticService?.trigger("selection");
     }
   }
 
@@ -46,10 +142,17 @@
     interimText = transcript;
   }
 
-  // When user manually types, clear interim
+  function handleRecordingEnd() {
+    // Reset voice tracking when recording session ends
+    // Each new recording session starts with a fresh transcript
+    lastVoiceCommit = "";
+  }
+
+  // When user manually types, clear interim and reset voice tracking
   function handleManualInput(value: string) {
     formState.updateField("description", value);
     interimText = "";
+    lastVoiceCommit = ""; // Reset voice deduplication when user types manually
   }
 
   function handleTypeChange(type: FeedbackType) {
@@ -90,6 +193,8 @@
   function handleReset() {
     hapticService?.trigger("selection");
     formState.reset();
+    lastVoiceCommit = ""; // Reset voice tracking
+    interimText = "";
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -174,6 +279,7 @@
           <VoiceInputButton
             onTranscript={handleVoiceTranscript}
             onInterimTranscript={handleInterimTranscript}
+            onRecordingEnd={handleRecordingEnd}
             disabled={formState.isSubmitting}
           />
         </div>
@@ -190,6 +296,12 @@
               <i class="fas fa-check"></i>
             {/if}
           </span>
+          {#if draftSaveStatus === "saved"}
+            <span class="draft-saved" aria-live="polite">
+              <i class="fas fa-cloud-upload-alt"></i>
+              Draft saved
+            </span>
+          {/if}
           {#if formState.formErrors.description}
             <span class="field-error" role="alert"
               >{formState.formErrors.description}</span
@@ -620,6 +732,40 @@
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
     font-weight: 500;
     color: var(--fb-error);
+  }
+
+  .draft-saved {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 500;
+    color: #6366f1;
+    animation: fadeInOut 2s ease-in-out;
+  }
+
+  .draft-saved i {
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════

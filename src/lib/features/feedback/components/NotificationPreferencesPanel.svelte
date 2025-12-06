@@ -201,40 +201,42 @@
       </button>
     </div>
 
-    <!-- Preference Groups -->
-    {#each preferenceGroups as group}
-      <div class="preference-group">
-        <div class="group-header">
-          <h3>{group.title}</h3>
-          <p class="group-description">{group.description}</p>
-        </div>
+    <!-- Preference Groups Grid -->
+    <div class="preference-groups-grid">
+      {#each preferenceGroups as group}
+        <div class="preference-group">
+          <div class="group-header">
+            <h3>{group.title}</h3>
+            <p class="group-description">{group.description}</p>
+          </div>
 
-        <div class="preference-items">
-          {#each group.items as item}
-            <button
-              class="preference-item"
-              class:enabled={preferences[item.key]}
-              onclick={() => togglePreference(item.key)}
-              disabled={isSaving}
-              aria-label="Toggle {item.label}"
-            >
-              <div class="item-content">
-                <div class="item-header">
-                  <span class="item-label">{item.label}</span>
-                  <div
-                    class="toggle-switch"
-                    class:enabled={preferences[item.key]}
-                  >
-                    <div class="toggle-thumb"></div>
+          <div class="preference-items">
+            {#each group.items as item}
+              <button
+                class="preference-item"
+                class:enabled={preferences[item.key]}
+                onclick={() => togglePreference(item.key)}
+                disabled={isSaving}
+                aria-label="Toggle {item.label}"
+              >
+                <div class="item-content">
+                  <div class="item-header">
+                    <span class="item-label">{item.label}</span>
+                    <div
+                      class="toggle-switch"
+                      class:enabled={preferences[item.key]}
+                    >
+                      <div class="toggle-thumb"></div>
+                    </div>
                   </div>
+                  <p class="item-description">{item.description}</p>
                 </div>
-                <p class="item-description">{item.description}</p>
-              </div>
-            </button>
-          {/each}
+              </button>
+            {/each}
+          </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
 
     <!-- System Notifications Notice -->
     <div class="system-notice">
@@ -247,27 +249,27 @@
 <style>
   .notification-preferences-panel {
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 20px;
   }
 
   /* ============================================================================
      PANEL HEADER
      ============================================================================ */
   .panel-header {
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .panel-header h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
   }
 
   .subtitle {
-    font-size: 14px;
+    font-size: 13px;
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
   }
@@ -296,24 +298,24 @@
   .quick-actions {
     display: flex;
     gap: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .action-button {
     flex: 1;
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    border-radius: 8px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .action-button:hover:not(:disabled) {
@@ -328,33 +330,58 @@
   }
 
   /* ============================================================================
-     PREFERENCE GROUPS
+     PREFERENCE GROUPS GRID
      ============================================================================ */
+  .preference-groups-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* Desktop: 2 columns for better space usage */
+  @media (min-width: 900px) {
+    .preference-groups-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+
+  /* Large desktop: 3 columns */
+  @media (min-width: 1400px) {
+    .preference-groups-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+  }
+
   .preference-group {
-    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
   }
 
   .group-header {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .group-header h3 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     margin: 0 0 4px 0;
   }
 
   .group-description {
-    font-size: 13px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     margin: 0;
+    line-height: 1.4;
   }
 
   .preference-items {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   /* ============================================================================
@@ -362,10 +389,10 @@
      ============================================================================ */
   .preference-item {
     width: 100%;
-    padding: 16px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
@@ -388,36 +415,37 @@
   .item-content {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
   }
 
   .item-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 10px;
   }
 
   .item-label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
   }
 
   .item-description {
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(255, 255, 255, 0.5);
     margin: 0;
+    line-height: 1.4;
   }
 
   /* ============================================================================
      TOGGLE SWITCH
      ============================================================================ */
   .toggle-switch {
-    width: 44px;
-    height: 24px;
+    width: 40px;
+    height: 22px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 11px;
     position: relative;
     transition: background-color 0.2s ease;
     flex-shrink: 0;
@@ -428,8 +456,8 @@
   }
 
   .toggle-thumb {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background: white;
     border-radius: 50%;
     position: absolute;
@@ -440,7 +468,7 @@
   }
 
   .toggle-switch.enabled .toggle-thumb {
-    transform: translateX(20px);
+    transform: translateX(18px);
   }
 
   /* ============================================================================
@@ -449,23 +477,24 @@
   .system-notice {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
+    gap: 10px;
+    padding: 12px 14px;
     background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.2);
-    border-radius: 10px;
-    margin-top: 24px;
+    border-radius: 8px;
   }
 
   .system-notice i {
     color: rgba(99, 102, 241, 0.8);
-    font-size: 16px;
+    font-size: 14px;
+    flex-shrink: 0;
   }
 
   .system-notice p {
-    font-size: 13px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     margin: 0;
+    line-height: 1.4;
   }
 
   /* ============================================================================
@@ -476,12 +505,32 @@
       padding: 16px;
     }
 
+    .panel-header {
+      margin-bottom: 20px;
+    }
+
     .panel-header h2 {
-      font-size: 20px;
+      font-size: 18px;
     }
 
     .quick-actions {
       flex-direction: column;
+    }
+
+    .preference-groups-grid {
+      gap: 16px;
+    }
+
+    .preference-item {
+      padding: 14px;
+    }
+
+    .item-label {
+      font-size: 14px;
+    }
+
+    .item-description {
+      font-size: 12px;
     }
   }
 

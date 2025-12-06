@@ -15,9 +15,8 @@
   import { getTrainChallengesPath } from "$lib/shared/gamification/data/firestore-collections";
   import { SEED_CHALLENGES } from "$lib/features/train/data/seed-challenges";
 
-  const challengeService = resolve<ITrainChallengeService>(
-    TYPES.ITrainChallengeService
-  );
+  // Services (resolved lazily to avoid module initialization errors)
+  let challengeService: ITrainChallengeService | null = null;
 
   // State
   let challenges = $state<TrainChallenge[]>([]);
@@ -42,10 +41,15 @@
   });
 
   onMount(async () => {
+    challengeService = resolve<ITrainChallengeService>(
+      TYPES.ITrainChallengeService
+    );
     await loadChallenges();
   });
 
   async function loadChallenges() {
+    if (!challengeService) return;
+
     loading = true;
     try {
       challenges = await challengeService.getActiveChallenges();

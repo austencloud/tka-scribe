@@ -34,12 +34,11 @@
 
   // Import all tab components directly
   import ProfileTab from "$lib/shared/settings/components/tabs/ProfileTab.svelte";
-  import NotificationPreferencesPanel from "$lib/features/feedback/components/NotificationPreferencesPanel.svelte";
   import WhatsNewTab from "$lib/shared/settings/components/tabs/WhatsNewTab.svelte";
+  import NotificationsTab from "$lib/shared/settings/components/tabs/NotificationsTab.svelte";
   import PropTypeTab from "$lib/shared/settings/components/tabs/PropTypeTab.svelte";
   import BackgroundTab from "$lib/shared/settings/components/tabs/background/BackgroundTab.svelte";
   import VisibilityTab from "$lib/shared/settings/components/tabs/VisibilityTab.svelte";
-  import AccessibilityTab from "$lib/shared/settings/components/tabs/AccessibilityTab.svelte";
 
   // Reactive settings - derives from getSettings() to maintain reactivity
   let settings = $derived(getSettings());
@@ -227,21 +226,16 @@
             currentSettings={settings}
             onSettingUpdate={handleSettingUpdate}
           />
-        {:else if activeTab === "notifications"}
-          <NotificationPreferencesPanel />
         {:else if activeTab === "whats-new"}
           <WhatsNewTab />
+        {:else if activeTab === "notifications"}
+          <NotificationsTab />
         {:else if activeTab === "props"}
           <PropTypeTab {settings} onUpdate={handleSettingUpdate} />
         {:else if activeTab === "background"}
           <BackgroundTab {settings} onUpdate={handleSettingUpdate} />
         {:else if activeTab === "visibility"}
           <VisibilityTab
-            currentSettings={settings}
-            onSettingUpdate={handleSettingUpdate}
-          />
-        {:else if activeTab === "misc"}
-          <AccessibilityTab
             currentSettings={settings}
             onSettingUpdate={handleSettingUpdate}
           />

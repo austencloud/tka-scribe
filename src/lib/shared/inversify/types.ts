@@ -436,6 +436,7 @@ export const TYPES = {
   // === ADMIN SERVICES ===
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
   IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
+  IAnnouncementService: Symbol.for("IAnnouncementService"),
 
   // === ANALYTICS SERVICES ===
   IActivityLogService: Symbol.for("IActivityLogService"),
