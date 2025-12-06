@@ -13,6 +13,7 @@
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
+  import AnnouncementManagement from "./AnnouncementManagement.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Services
@@ -81,6 +82,14 @@
       {:else if activeSection === "flags"}
         <div id="flags-panel" role="tabpanel" aria-labelledby="flags-tab">
           <FeatureFlagManagement />
+        </div>
+      {:else if activeSection === "announcements"}
+        <div
+          id="announcements-panel"
+          role="tabpanel"
+          aria-labelledby="announcements-tab"
+        >
+          <AnnouncementManagement />
         </div>
       {/if}
     </main>

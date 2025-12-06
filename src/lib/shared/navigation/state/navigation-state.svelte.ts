@@ -295,6 +295,14 @@ export const ADMIN_TABS: Section[] = [
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
+  {
+    id: "announcements",
+    label: "Announcements",
+    icon: '<i class="fas fa-bullhorn"></i>',
+    description: "Create and manage system announcements",
+    color: "#6366f1",
+    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
 ];
 
 // Settings tabs configuration - shown in sidebar like other modules
@@ -308,20 +316,20 @@ export const SETTINGS_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
   },
   {
-    id: "notifications",
-    label: "Notifications",
-    icon: '<i class="fas fa-bell"></i>',
-    description: "Notification preferences",
-    color: "#ef4444",
-    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
-  },
-  {
     id: "whats-new",
     label: "Release Notes",
     icon: '<i class="fas fa-gift"></i>',
     description: "Version history and release notes",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "notifications",
+    label: "Notifications",
+    icon: '<i class="fas fa-bell"></i>',
+    description: "Announcements and notification preferences",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
   },
   {
     id: "props",
@@ -346,14 +354,6 @@ export const SETTINGS_TABS: Section[] = [
     description: "Element visibility controls",
     color: "#22c55e",
     gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
-  },
-  {
-    id: "misc",
-    label: "Misc",
-    icon: '<i class="fas fa-sliders-h"></i>',
-    description: "Accessibility and other settings",
-    color: "#f97316",
-    gradient: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
   },
 ];
 

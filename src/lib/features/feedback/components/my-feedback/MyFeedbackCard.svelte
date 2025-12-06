@@ -98,32 +98,45 @@
     gap: 12px;
     width: 100%;
     padding: 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(25, 25, 35, 0.95) 0%, rgba(30, 30, 40, 0.95) 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .feedback-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.98) 0%, rgba(35, 35, 45, 0.98) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
   }
 
   .feedback-card.selected {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%);
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow:
+      0 6px 20px rgba(59, 130, 246, 0.3),
+      0 0 0 1px rgba(59, 130, 246, 0.3);
   }
 
   .feedback-card.needs-confirmation {
-    background: rgba(245, 158, 11, 0.08);
-    border-color: rgba(245, 158, 11, 0.25);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow:
+      0 4px 16px rgba(245, 158, 11, 0.25),
+      0 0 0 1px rgba(245, 158, 11, 0.2);
   }
 
   .feedback-card.needs-confirmation:hover {
-    background: rgba(245, 158, 11, 0.12);
-    border-color: rgba(245, 158, 11, 0.35);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.32) 0%, rgba(245, 158, 11, 0.22) 100%);
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow:
+      0 6px 20px rgba(245, 158, 11, 0.35),
+      0 0 0 1px rgba(245, 158, 11, 0.3);
+    transform: translateY(-1px);
   }
 
   /* Type icon */
@@ -134,10 +147,15 @@
     width: 40px;
     height: 40px;
     flex-shrink: 0;
-    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--type-color) 35%, rgba(20, 20, 25, 0.9)),
+      color-mix(in srgb, var(--type-color) 20%, rgba(15, 15, 20, 0.9))
+    );
+    border: 1px solid color-mix(in srgb, var(--type-color) 40%, transparent);
     border-radius: 8px;
     color: var(--type-color);
     font-size: 16px;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--type-color) 25%, black);
   }
 
   /* Content */
@@ -172,12 +190,17 @@
     align-items: center;
     gap: 4px;
     padding: 3px 8px;
-    background: color-mix(in srgb, var(--badge-color) 15%, transparent);
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--badge-color) 40%, rgba(20, 20, 25, 0.9)),
+      color-mix(in srgb, var(--badge-color) 25%, rgba(15, 15, 20, 0.9))
+    );
+    border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
     border-radius: 12px;
     font-size: 0.6875rem;
     font-weight: 500;
     color: var(--badge-color);
     white-space: nowrap;
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--badge-color) 20%, black);
   }
 
   .status-badge i {

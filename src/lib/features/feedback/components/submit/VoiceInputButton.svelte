@@ -45,10 +45,12 @@
   const {
     onTranscript,
     onInterimTranscript,
+    onRecordingEnd,
     disabled = false,
   } = $props<{
     onTranscript: (text: string, isFinal: boolean) => void;
     onInterimTranscript?: (text: string) => void;
+    onRecordingEnd?: () => void;
     disabled?: boolean;
   }>();
 
@@ -108,6 +110,10 @@
         // Clear any lingering interim text
         if (onInterimTranscript) {
           onInterimTranscript("");
+        }
+        // Notify parent that recording session ended
+        if (onRecordingEnd) {
+          onRecordingEnd();
         }
       };
     }

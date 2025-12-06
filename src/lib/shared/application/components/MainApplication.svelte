@@ -2,6 +2,7 @@
 <script lang="ts">
   import AchievementNotificationToast from "../../gamification/components/AchievementNotificationToast.svelte";
   import QuickFeedbackPanel from "$lib/features/feedback/components/quick/QuickFeedbackPanel.svelte";
+  import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
 
   import { TYPES } from "../../inversify/types";
 
@@ -330,6 +331,9 @@
 
     <!-- Quick Feedback Panel (desktop hotkey: f) -->
     <QuickFeedbackPanel />
+
+    <!-- System Announcements Modal -->
+    <AnnouncementChecker />
   {/if}
 </div>
 
