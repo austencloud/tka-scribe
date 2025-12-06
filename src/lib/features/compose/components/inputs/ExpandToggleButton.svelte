@@ -43,8 +43,8 @@
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    flex: 1 1 calc(50% - 4px);
-    min-width: 0;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   @media (hover: hover) and (pointer: fine) {

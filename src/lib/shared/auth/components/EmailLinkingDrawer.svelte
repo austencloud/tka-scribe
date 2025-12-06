@@ -543,8 +543,8 @@
   }
 
   .header-icon {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

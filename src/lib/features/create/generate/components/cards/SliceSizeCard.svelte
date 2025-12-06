@@ -31,7 +31,7 @@ Shows BOTH slice size options vertically with clear active/inactive states
   option1={{
     value: SliceSize.QUARTERED,
     label: "Quartered",
-    icon: "chart-pie",
+    icon: "circle-quarter-custom",
   }}
   option2={{
     value: SliceSize.HALVED,

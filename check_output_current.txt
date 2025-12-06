@@ -1,0 +1,433 @@
+
+> @tka/studio@0.2.0 check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+
+====================================
+Loading svelte-check in workspace: f:\_THE KINETIC ALPHABET\_TKA-STUDIO
+Getting Svelte diagnostics...
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\video-record\components\AnimationPreview.svelte[39m:101:9
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m      <div class="control-group">
+        [35m<label>Speed: {settings.speed.toFixed(2)}x</label>[36m
+        <div class="button-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\video-record\components\GridPreview.svelte[39m:115:11
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m        <div class="bpm-control">
+          [35m<label>BPM: {settings.bpm}</label>[36m
+          <div class="button-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:195:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="form-section">
+      [35m<label class="section-label">Title</label>[36m
+      <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:209:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="form-section">
+      [35m<label class="section-label">Message</label>[36m
+      <textarea
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:222:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="form-section">
+      [35m<label class="section-label">Severity</label>[36m
+      <div class="chip-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:245:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="form-section">
+      [35m<label class="section-label">Target Audience</label>[36m
+      <div class="chip-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:268:9
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m      <div class="form-section indented">
+        [35m<label class="section-label">Select User</label>[36m
+        <UserSearchInput
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:280:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="form-section">
+      [35m<label class="section-label">Display Options</label>[36m
+      <div class="chip-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:315:9
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m      <div class="form-section indented">
+        [35m<label class="section-label">Expiration Date</label>[36m
+        <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:327:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="form-section">
+      [35m<label class="section-label"
+        >Action URL <span class="optional">(optional)</span></label
+      >[36m
+      <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementForm.svelte[39m:341:9
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m      <div class="form-section indented">
+        [35m<label class="section-label">Action Button Label</label>[36m
+        <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\announcements\AnnouncementList.svelte[39m:267:5
+[33mWarn[39m: Also define the standard property 'line-clamp' for compatibility (css)
+[36m    display: -webkit-box;
+    [35m-webkit-line-clamp[36m: 3;
+    -webkit-box-orient: vertical;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\AnnouncementModal.svelte[39m:76:3
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m>
+  [35m<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-header" style="--severity-color: {getSeverityColor(announcement.severity)};">
+      <div class="header-icon">
+        <i class="fas {getSeverityIcon(announcement.severity)}"></i>
+      </div>
+      <button class="close-button" onclick={handleDismiss} aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <span class="severity-badge" style="background: {getSeverityColor(announcement.severity)};">
+        {announcement.severity}
+      </span>
+      <h2 class="announcement-title">{announcement.title}</h2>
+      <p class="announcement-message">{announcement.message}</p>
+    </div>
+
+    <div class="modal-footer">
+      {#if announcement.actionUrl}
+        <a
+          href={announcement.actionUrl}
+          class="action-button secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {announcement.actionLabel || "Learn More"}
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+      {/if}
+      <button class="action-button primary" onclick={handleDismiss}>
+        <i class="fas fa-check"></i>
+        Got it
+      </button>
+    </div>
+  </div>[36m
+</div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\admin\components\AnnouncementModal.svelte[39m:76:3
+[33mWarn[39m: `<div>` with a click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m>
+  [35m<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-header" style="--severity-color: {getSeverityColor(announcement.severity)};">
+      <div class="header-icon">
+        <i class="fas {getSeverityIcon(announcement.severity)}"></i>
+      </div>
+      <button class="close-button" onclick={handleDismiss} aria-label="Close">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <span class="severity-badge" style="background: {getSeverityColor(announcement.severity)};">
+        {announcement.severity}
+      </span>
+      <h2 class="announcement-title">{announcement.title}</h2>
+      <p class="announcement-message">{announcement.message}</p>
+    </div>
+
+    <div class="modal-footer">
+      {#if announcement.actionUrl}
+        <a
+          href={announcement.actionUrl}
+          class="action-button secondary"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {announcement.actionLabel || "Learn More"}
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+      {/if}
+      <button class="action-button primary" onclick={handleDismiss}>
+        <i class="fas fa-check"></i>
+        Got it
+      </button>
+    </div>
+  </div>[36m
+</div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\compose\components\controls\BpmControl.svelte[39m:70:24
+[31mError[39m: Object is possibly 'undefined'. (ts)
+[36m      for (let i = 1; i < tapTimes.length; i++) {
+        intervals.push([35mtapTimes[i][36m - tapTimes[i - 1]);
+      }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\compose\components\controls\BpmControl.svelte[39m:70:38
+[31mError[39m: Object is possibly 'undefined'. (ts)
+[36m      for (let i = 1; i < tapTimes.length; i++) {
+        intervals.push(tapTimes[i] - [35mtapTimes[i - 1][36m);
+      }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\coordinators\AnimationSheetCoordinator.svelte[39m:170:11
+[31mError[39m: Argument of type '() => Promise<() => void>' is not assignable to parameter of type '() => Promise<never> | (() => any)'.
+  Type 'Promise<() => void>' is not assignable to type 'Promise<never> | (() => any)'.
+    Type 'Promise<() => void>' is not assignable to type 'Promise<never>'.
+      Type '() => void' is not assignable to type 'never'. (ts)
+[36m  // Resolve services on mount
+  onMount([35masync () => {[36m
+    debug.log("Resolving services...");
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\compose\components\controls\BpmPresetChips.svelte[39m:97:11
+[31mError[39m: Not all code paths return a value. (ts)
+[36m
+  $effect([35m() => {[36m
+    if (showCustomPopover) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\compose\components\trail\TrailSettingsPanel.svelte[39m:16:12
+[31mError[39m: Module '"../../../../shared/pictograph/shared/state/visibility-state.svelte"' has no exported member 'visibilityState'. (ts)
+[36m  } from "../../../../shared/animation-engine/state/animation-settings-state.svelte";
+  import { [35mvisibilityState[36m } from "../../../../shared/pictograph/shared/state/visibility-state.svelte";
+  import ToggleSwitch from "../inputs/ToggleSwitch.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\create\shared\components\StandardWorkspaceLayout.svelte[39m:38:57
+[31mError[39m: Property 'sequenceState' does not exist on type '{}'. (ts)
+[36m      // Access constructor's sequence state directly
+      sequence = CreateModuleState.constructorTabState?.[35msequenceState[36m?.currentSequence ?? null;
+    } else if (activeTab === "generator") {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\ImageSharePanel.svelte[39m:406:3
+[33mWarn[39m: Unused CSS selector ".preview-placeholder i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  .preview-error i,
+  [35m.preview-placeholder i[36m {
+    font-size: 32px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\ImageSharePanel.svelte[39m:411:3
+[33mWarn[39m: Unused CSS selector ".preview-placeholder .coming-soon"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.preview-placeholder .coming-soon[36m {
+    font-size: 10px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\shared\share\components\ImageSharePanel.svelte[39m:516:3
+[33mWarn[39m: Unused CSS selector ".mode-btn i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.mode-btn i[36m {
+    font-size: 14px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\NotificationItem.svelte[39m:162:5
+[33mWarn[39m: Also define the standard property 'line-clamp' for compatibility (css)
+[36m    display: -webkit-box;
+    [35m-webkit-line-clamp[36m: 2;
+    -webkit-box-orient: vertical;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\submit\VoiceInputButton.svelte[39m:82:30
+[31mError[39m: Object is possibly 'undefined'. (ts)
+[36m        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = [35mevent.results[i][36m[0].transcript;
+          if (event.results[i].isFinal) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\submit\VoiceInputButton.svelte[39m:82:30
+[31mError[39m: Object is possibly 'undefined'. (ts)
+[36m        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = [35mevent.results[i][0][36m.transcript;
+          if (event.results[i].isFinal) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\submit\VoiceInputButton.svelte[39m:83:15
+[31mError[39m: Object is possibly 'undefined'. (ts)
+[36m          const transcript = event.results[i][0].transcript;
+          if ([35mevent.results[i][36m.isFinal) {
+            finalTranscript += transcript + " ";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\submit\ImageUpload.svelte[39m:16:7
+[33mWarn[39m: `fileInput` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m
+  let [35m[36mfileInput: HTMLInputElement;
+  let isDragging = $state(false);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\submit\FeedbackForm.svelte[39m:642:3
+[33mWarn[39m: Unused CSS selector ".field:focus-within .field-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.field:focus-within .field-label[36m {
+    color: var(--fb-primary);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\submit\FeedbackForm.svelte[39m:732:3
+[33mWarn[39m: Unused CSS selector ".field:has(.field-textarea:not(:placeholder-shown)) .field-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.field:has(.field-textarea:not(:placeholder-shown)) .field-label[36m {
+    color: var(--fb-primary);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\manage\FeedbackKanbanCard.svelte[39m:488:3
+[33mWarn[39m: Unused CSS selector ".type-icon"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.type-icon[36m {
+    display: flex;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\manage\FeedbackKanbanCard.svelte[39m:578:3
+[33mWarn[39m: Unused CSS selector ".meta-user i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.meta-user i[36m {
+    font-size: 0.9em;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-STUDIO\[32msrc\lib\features\feedback\components\manage\FeedbackKanbanBoard.svelte[39m:394:5
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    [35m<div
+      class="defer-dialog-overlay"
+      onclick={handleDeferCancel}
+      onkeydown={(e) => e.key === "Escape" && handleDeferCancel()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="defer-dialog-title"
+    >
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div
+        class="defer-dialog"
+        onclick={(e) => e.stopPropagation()}
+        onkeydown={(e) => e.stopPropagation()}
+      >
+        <div class="dialog-header">
+          <div class="dialog-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3 class="dialog-title" id="defer-dialog-title">Defer Feedback</h3>
+          <button
+            type="button"
+            class="close-button"
+            onclick={handleDeferCancel}
+            aria-label="Close dialog"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="dialog-body">
+          <div class="feedback-preview">
+            <span class="preview-label">Item:</span>
+            <span class="preview-title"
+              >{itemToDefer.title ||
+                itemToDefer.description.substring(0, 60)}</span
+            >
+          </div>
+
+          <div class="form-field">
+            <label for="defer-date" class="field-label">
+              <i class="fas fa-calendar"></i>
+              Reactivate on
+            </label>
+            <input
+              id="defer-date"
+              type="date"
+              class="date-input"
+              bind:value={deferDate}
+              min={new Date().toISOString().split("T")[0]}
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="defer-notes" class="field-label">
+              <i class="fas fa-sticky-note"></i>
+              Reason (optional)
+            </label>
+            <textarea
+              id="defer-notes"
+              class="notes-input"
+              bind:value={deferNotes}
+              placeholder="Why are you deferring this? (e.g., 'Wait for Svelte 6', 'Revisit after Q1')"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="dialog-footer">
+          <button
+            type="button"
+            class="cancel-button"
+            onclick={handleDeferCancel}
+            disabled={isSubmittingDefer}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="submit-button"
+            onclick={handleDeferSubmit}
+            disabled={!deferDate || isSubmittingDefer}
+          >
+            {#if isSubmittingDefer}
+              <i class="fas fa-spinner fa-spin"></i>
+              Deferring...
+            {:else}
+              <i class="fas fa-clock"></i>
+              Defer
+            {/if}
+          </button>
+        </div>
+      </div>
+    </div>[36m
+  {/if}
+[39m
+
+====================================
+[31msvelte-check found 9 errors and 24 warnings in 17 files
+[39m

@@ -120,10 +120,10 @@
      DASHBOARD BUTTON - 50px minimum (WCAG AAA)
      ============================================================================ */
   .dashboard-button {
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    min-height: 56px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     border: none;
     background: transparent;
@@ -160,8 +160,8 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -207,14 +207,6 @@
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  }
-
-  /* ============================================================================
-     VARIANT STYLES
-     ============================================================================ */
-  /* Sidebar variant */
-  .dashboard-button.variant-sidebar {
-    /* Sidebar-specific styles if needed */
   }
 
   /* ============================================================================

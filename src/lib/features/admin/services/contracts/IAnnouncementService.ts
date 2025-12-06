@@ -46,4 +46,9 @@ export interface IAnnouncementService {
    * Get undismissed modal announcements for a user
    */
   getUndismissedModalAnnouncements(userId: string): Promise<Announcement[]>;
+
+  /**
+   * Search users by name or email
+   */
+  searchUsers(query: string): Promise<Array<{ uid: string; displayName: string; email: string }>>;
 }

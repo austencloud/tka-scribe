@@ -52,6 +52,11 @@
   // Animation state - use shared global state for beat grid synchronization
   const animationPanelState = sharedAnimationState;
 
+  // Glyph crossfade look-ahead threshold
+  // Start showing next beat's glyph at 60% through current beat
+  // This gives the 200ms crossfade time to complete well before beat grid updates
+  const GLYPH_LOOKAHEAD_THRESHOLD = 0.6;
+
   // Derived: Current letter from sequence data
   let currentLetter = $derived.by(() => {
     if (!animationPanelState.sequenceData) return null;
@@ -67,12 +72,20 @@
       return animationPanelState.sequenceData.startPosition.letter || null;
     }
 
-    // During animation: show beat letters
+    // During animation: show beat letters with look-ahead for smooth crossfade
     if (
       animationPanelState.sequenceData.beats &&
       animationPanelState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
+      // Look ahead: if we're 60% through a beat, start showing next beat's glyph
+      // This allows the 200ms crossfade to complete well before beat grid updates
+      const fractionalPart = currentBeat - Math.floor(currentBeat);
+      const shouldLookAhead = fractionalPart >= GLYPH_LOOKAHEAD_THRESHOLD;
+
+      const beatIndex = shouldLookAhead
+        ? Math.ceil(currentBeat)  // Next beat
+        : Math.floor(currentBeat); // Current beat
+
       const clampedIndex = Math.max(
         0,
         Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1)
@@ -100,12 +113,20 @@
       return animationPanelState.sequenceData.startPosition;
     }
 
-    // During animation: show beat data
+    // During animation: show beat data with look-ahead for smooth crossfade
     if (
       animationPanelState.sequenceData.beats &&
       animationPanelState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
+      // Look ahead: if we're 60% through a beat, start showing next beat's glyph
+      // This allows the 200ms crossfade to complete well before beat grid updates
+      const fractionalPart = currentBeat - Math.floor(currentBeat);
+      const shouldLookAhead = fractionalPart >= GLYPH_LOOKAHEAD_THRESHOLD;
+
+      const beatIndex = shouldLookAhead
+        ? Math.ceil(currentBeat)  // Next beat
+        : Math.floor(currentBeat); // Current beat
+
       const clampedIndex = Math.max(
         0,
         Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1)

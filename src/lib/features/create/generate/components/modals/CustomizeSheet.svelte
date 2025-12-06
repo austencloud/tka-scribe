@@ -169,12 +169,13 @@ Follows modern 2026 Material Design patterns with 52px touch targets
         />
       {/if}
 
-      <LetterConstraintsSection
+      <!-- Letter constraints removed - too complex given generation constraints -->
+      <!-- <LetterConstraintsSection
         mustContainLetters={pendingOptions.mustContainLetters}
         mustNotContainLetters={pendingOptions.mustNotContainLetters}
         onMustContainChange={handleMustContainChange}
         onMustNotContainChange={handleMustNotContainChange}
-      />
+      /> -->
     </div>
   </div>
 </Drawer>

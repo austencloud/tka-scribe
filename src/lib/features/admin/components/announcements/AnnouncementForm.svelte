@@ -14,6 +14,7 @@
     AnnouncementSeverity,
     AnnouncementAudience,
   } from "../../domain/models/announcement-models";
+  import UserSearchInput from "./UserSearchInput.svelte";
 
   interface Props {
     announcement?: Announcement | null;
@@ -35,13 +36,12 @@
   // Form state
   let title = $state(announcement?.title ?? "");
   let message = $state(announcement?.message ?? "");
-  let severity = $state<AnnouncementSeverity>(
-    announcement?.severity ?? "info"
-  );
+  let severity = $state<AnnouncementSeverity>(announcement?.severity ?? "info");
   let targetAudience = $state<AnnouncementAudience>(
     announcement?.targetAudience ?? "all"
   );
   let targetUserId = $state(announcement?.targetUserId ?? "");
+  let targetUserDisplay = $state(""); // Display name for selected user
   let showAsModal = $state(announcement?.showAsModal ?? true);
   let hasExpiration = $state(!!announcement?.expiresAt);
   let expirationDate = $state(
@@ -55,6 +55,16 @@
   let isSaving = $state(false);
   let error = $state<string | null>(null);
 
+  // Handler for user selection
+  function handleUserSelect(
+    userId: string,
+    displayName: string,
+    email: string
+  ) {
+    targetUserId = userId;
+    targetUserDisplay = displayName || email;
+  }
+
   // Severity options with colors
   const severityOptions: {
     value: AnnouncementSeverity;
@@ -63,8 +73,18 @@
     color: string;
   }[] = [
     { value: "info", label: "Info", icon: "fa-info-circle", color: "#6366f1" },
-    { value: "warning", label: "Warning", icon: "fa-exclamation-triangle", color: "#f59e0b" },
-    { value: "critical", label: "Critical", icon: "fa-exclamation-circle", color: "#ef4444" },
+    {
+      value: "warning",
+      label: "Warning",
+      icon: "fa-exclamation-triangle",
+      color: "#f59e0b",
+    },
+    {
+      value: "critical",
+      label: "Critical",
+      icon: "fa-exclamation-circle",
+      color: "#ef4444",
+    },
   ];
 
   // Audience options
@@ -123,9 +143,13 @@
         message: message.trim(),
         severity,
         targetAudience,
-        targetUserId: targetAudience === "specific-user" ? targetUserId.trim() : undefined,
+        targetUserId:
+          targetAudience === "specific-user" ? targetUserId.trim() : undefined,
         showAsModal,
-        expiresAt: hasExpiration && expirationDate ? new Date(expirationDate) : undefined,
+        expiresAt:
+          hasExpiration && expirationDate
+            ? new Date(expirationDate)
+            : undefined,
         actionUrl: actionUrl.trim() || undefined,
         actionLabel: actionLabel.trim() || undefined,
         createdBy: user.uid,
@@ -238,18 +262,16 @@
       </div>
     </div>
 
-    <!-- Specific User ID (conditional) -->
+    <!-- Specific User Search (conditional) -->
     {#if targetAudience === "specific-user"}
       <div class="form-section indented">
-        <label class="section-label">User ID</label>
-        <input
-          type="text"
-          class="text-input"
-          bind:value={targetUserId}
-          placeholder="Enter user ID (Firebase UID)"
-          required
+        <label class="section-label">Select User</label>
+        <UserSearchInput
+          selectedUserId={targetUserId}
+          selectedUserDisplay={targetUserDisplay}
+          onSelect={handleUserSelect}
         />
-        <span class="help-text">Enter the Firebase user ID</span>
+        <span class="help-text">Search by name or email</span>
       </div>
     {/if}
 
@@ -302,7 +324,9 @@
 
     <!-- Action URL (optional) -->
     <div class="form-section">
-      <label class="section-label">Action URL <span class="optional">(optional)</span></label>
+      <label class="section-label"
+        >Action URL <span class="optional">(optional)</span></label
+      >
       <input
         type="url"
         class="text-input"
@@ -523,7 +547,11 @@
   }
 
   .selection-chip.active {
-    background: linear-gradient(135deg, var(--chip-color, #6366f1) 0%, color-mix(in srgb, var(--chip-color, #6366f1) 80%, black) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--chip-color, #6366f1) 0%,
+      color-mix(in srgb, var(--chip-color, #6366f1) 80%, black) 100%
+    );
     border-color: var(--chip-color, #6366f1);
     color: #ffffff;
     box-shadow:
@@ -579,7 +607,7 @@
     justify-content: center;
     gap: 10px;
     padding: 16px 28px;
-    min-height: 56px;
+    min-height: 52px;
     border-radius: 12px;
     font-size: 15px;
     font-weight: 600;

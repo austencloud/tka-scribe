@@ -160,10 +160,10 @@
 
           <!-- Auto-generated Changelog Preview -->
           <div class="form-group">
-            <label>
+            <span class="label-text">
               <i class="fas fa-magic"></i>
               Auto-Generated Changelog
-            </label>
+            </span>
 
             {#if versionState.isGeneratingChangelog}
               <div class="changelog-loading">
@@ -426,7 +426,16 @@
     color: rgba(255, 255, 255, 0.8);
   }
 
-  label i {
+  .label-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .label-text i {
     color: #8b5cf6;
   }
 
@@ -434,8 +443,7 @@
     color: #ef4444;
   }
 
-  input,
-  textarea {
+  input {
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -446,20 +454,13 @@
     transition: border-color 0.2s;
   }
 
-  input:focus,
-  textarea:focus {
+  input:focus {
     outline: none;
     border-color: #8b5cf6;
   }
 
-  input.error,
-  textarea.error {
+  input.error {
     border-color: #ef4444;
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 60px;
   }
 
   .error-text {

@@ -110,16 +110,23 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     const index = current.indexOf(letter);
 
     if (index >= 0) {
+      // Deselect if already selected
       current.splice(index, 1);
     } else {
+      // LIMIT: Only allow ONE letter in must-contain
+      // Clear any existing selection and add this one
+      const updated = [letter];
+
       // Remove from must-not-contain if present
       const excludeIndex = mustNotContainLetters.indexOf(letter);
       if (excludeIndex >= 0) {
-        const updated = [...mustNotContainLetters];
-        updated.splice(excludeIndex, 1);
-        onMustNotContainChange(updated);
+        const excludeUpdated = [...mustNotContainLetters];
+        excludeUpdated.splice(excludeIndex, 1);
+        onMustNotContainChange(excludeUpdated);
       }
-      current.push(letter);
+
+      onMustContainChange(updated);
+      return;
     }
 
     onMustContainChange(current);
@@ -201,7 +208,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
           onclick={() => (activeTab = "include")}
         >
           <span class="tab-icon">+</span>
-          Must Include
+          Must Include (1 max)
           {#if mustContainLetters.length > 0}
             <span class="tab-count">{mustContainLetters.length}</span>
           {/if}
@@ -210,6 +217,8 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
           class="tab-button exclude"
           class:active={activeTab === "exclude"}
           onclick={() => (activeTab = "exclude")}
+          disabled
+          title="Coming soon"
         >
           <span class="tab-icon">−</span>
           Must Exclude
@@ -396,6 +405,12 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
   .tab-button.exclude.active {
     background: rgba(239, 68, 68, 0.25);
     border-color: rgba(239, 68, 68, 0.6);
+  }
+
+  .tab-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .tab-icon {

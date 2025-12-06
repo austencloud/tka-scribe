@@ -362,8 +362,8 @@
     top: 50%;
     right: var(--spacing-lg);
     transform: translateY(-50%);
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -520,8 +520,8 @@
   }
 
   .spinner {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #ec4899;
     border-radius: 50%;

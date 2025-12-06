@@ -113,7 +113,7 @@
 
   .preset-btn {
     flex: 1;
-    min-height: 40px;
+    min-height: 52px;
     padding: 8px 12px;
     background: rgba(255, 255, 255, 0.04);
     border: 1.5px solid rgba(255, 255, 255, 0.1);

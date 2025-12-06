@@ -476,8 +476,8 @@
     position: absolute;
     top: 12px;
     right: 16px;
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -522,8 +522,8 @@
   }
 
   .spinner {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top-color: white;
     border-radius: 50%;

@@ -281,7 +281,8 @@
       "WebFetch(domain:firebasestorage.googleapis.com)",
       "Bash(pkill:*)",
       "Bash(taskkill:*)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "WebFetch(domain:fontawesome.com)"
     ],
     "deny": [],
     "ask": []

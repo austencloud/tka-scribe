@@ -30,7 +30,7 @@
   import { TYPES } from "../inversify/types";
   import type { SequenceData } from "../foundation/domain/models/SequenceData";
   import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
@@ -166,10 +166,20 @@
     animationPanelState.sequenceData?.gridMode ?? sequence?.gridMode
   );
 
+  // Track route listener cleanup at module level
+  let cleanupRouteListener: (() => void) | undefined;
+
+  // Cleanup on destroy
+  onDestroy(() => {
+    cleanupRouteListener?.();
+  });
+
   // Resolve services on mount
-  onMount(async () => {
+  onMount(() => {
     debug.log("Resolving services...");
-    let cleanupRouteListener: (() => void) | undefined;
+
+    // Use an async IIFE to handle async initialization
+    (async () => {
 
     // Resolve core services immediately (Tier 1 - navigation module)
     try {
@@ -246,10 +256,7 @@
     if (initialState) {
       isOpen = true;
     }
-
-    return () => {
-      cleanupRouteListener?.();
-    };
+    })();
   });
 
   // Load and auto-start animation when panel becomes visible

@@ -27,14 +27,18 @@ import type { ISequencePersistenceService } from "./ISequencePersistenceService"
 import type { ICreateModuleService } from "./ICreateModuleService";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts/IStartPositionService";
 import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
-import type { ICreateModuleState, IConstructTabState } from "../../types/create-module-types";
+import type { ICreateModuleState } from "../../types/create-module-types";
+import type { createConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { AssemblerTabState } from "../../state/assembler-tab-state.svelte";
 import type { GeneratorTabState } from "../../state/generator-tab-state.svelte";
+
+// Use the actual return type of createConstructTabState instead of the incomplete interface
+type ConstructTabState = ReturnType<typeof createConstructTabState>;
 
 export interface CreateModuleInitializationResult {
   // State objects
   CreateModuleState: ICreateModuleState;
-  constructTabState: IConstructTabState;
+  constructTabState: ConstructTabState;
   assemblerTabState: AssemblerTabState;
   generatorTabState: GeneratorTabState;
 

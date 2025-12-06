@@ -187,8 +187,8 @@
   }
 
   .toast-close {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);

@@ -14,7 +14,6 @@ import type {
 } from "../domain/models/snowfall-models";
 import { createSnowflakeSystem } from "./SnowflakeSystem";
 import type { GradientStop } from "$lib/shared/background/shared/domain/models/background-models";
-import type { SnowfallTuning } from "$lib/shared/background/shared/domain/constants/BackgroundConfigs";
 
 export class SnowfallBackgroundSystem implements IBackgroundSystem {
   private snowflakeSystem: ReturnType<typeof createSnowflakeSystem>;
@@ -29,11 +28,8 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
 
   private quality: QualityLevel = "medium";
   private isInitialized: boolean = false;
-  private snowfallTuning?: SnowfallTuning;
-
-  constructor(tuning?: SnowfallTuning) {
-    this.snowfallTuning = tuning;
-    this.snowflakeSystem = createSnowflakeSystem(this.snowfallTuning);
+  constructor() {
+    this.snowflakeSystem = createSnowflakeSystem();
     // Inject services
     this.renderingService = resolve<IBackgroundRenderingService>(
       TYPES.IBackgroundRenderingService
@@ -115,11 +111,6 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
   public setQuality(quality: QualityLevel): void {
     this.quality = quality;
     this.snowflakeSystem.setQuality(quality);
-  }
-
-  public setSnowfallTuning(tuning?: SnowfallTuning): void {
-    this.snowfallTuning = tuning;
-    this.snowflakeSystem.setTuning?.(tuning);
   }
 
   public setAccessibility(_settings: {

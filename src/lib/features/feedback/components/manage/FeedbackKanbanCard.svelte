@@ -7,15 +7,23 @@
     PRIORITY_CONFIG,
   } from "../../domain/models/feedback-models";
 
-  const { item, isSelected, onDragStart, onDragEnd, onTouchDrag, onClick } =
-    $props<{
-      item: FeedbackItem;
-      isSelected: boolean;
-      onDragStart: (item: FeedbackItem) => void;
-      onDragEnd: () => void;
-      onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
-      onClick: () => void;
-    }>();
+  const {
+    item,
+    isSelected,
+    disableDrag = false,
+    onDragStart,
+    onDragEnd,
+    onTouchDrag,
+    onClick,
+  } = $props<{
+    item: FeedbackItem;
+    isSelected: boolean;
+    disableDrag?: boolean;
+    onDragStart: (item: FeedbackItem) => void;
+    onDragEnd: () => void;
+    onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
+    onClick: () => void;
+  }>();
 
   const typeConfig = $derived(
     item.type && item.type in TYPE_CONFIG
@@ -56,8 +64,9 @@
   let justDragged = false;
 
   // Mount touch listeners with passive: false to allow preventDefault
+  // Only set up touch drag listeners if drag is not disabled
   onMount(() => {
-    if (!cardElement) return;
+    if (!cardElement || disableDrag) return;
 
     cardElement.addEventListener("touchstart", handleTouchStart, {
       passive: true,
@@ -251,15 +260,16 @@
   class="kanban-card"
   class:selected={isSelected}
   class:dragging={isDragging}
+  class:drag-disabled={disableDrag}
   class:priority-critical={item.priority === "critical"}
   class:priority-high={item.priority === "high"}
   class:priority-medium={item.priority === "medium"}
   class:priority-low={item.priority === "low" || !item.priority}
   style="--type-color: {typeConfig?.color ??
     '#6366f1'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
-  draggable="true"
-  ondragstart={handleDragStart}
-  ondragend={handleDragEnd}
+  draggable={!disableDrag}
+  ondragstart={disableDrag ? undefined : handleDragStart}
+  ondragend={disableDrag ? undefined : handleDragEnd}
   onclick={handleClick}
   aria-label="View {item.title}"
 >
@@ -394,6 +404,15 @@
   .kanban-card:active {
     cursor: grabbing;
     transform: scale(0.98);
+  }
+
+  .kanban-card.drag-disabled {
+    cursor: default;
+  }
+
+  .kanban-card.drag-disabled:active {
+    cursor: default;
+    transform: none;
   }
 
   .kanban-card.selected {
@@ -609,6 +628,11 @@
 
   .kanban-card:hover .drag-handle {
     opacity: 0.5;
+  }
+
+  /* Hide drag handle when drag is disabled */
+  .kanban-card.drag-disabled .drag-handle {
+    display: none;
   }
 
   /* Focus state */

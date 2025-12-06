@@ -533,8 +533,8 @@
 
   /* Unlink Button */
   .unlink-btn {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -651,8 +651,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      min-width: 56px;
-      min-height: 56px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 

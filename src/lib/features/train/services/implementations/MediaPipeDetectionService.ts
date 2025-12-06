@@ -97,7 +97,7 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
   async startRealTimeDetection(
     video: HTMLVideoElement,
     onFrame: (frame: DetectionFrame) => void,
-    options?: { mirrored?: boolean }
+    options?: { mirrored?: boolean; gridMode?: GridMode }
   ): Promise<void> {
     if (!this.isInitialized) {
       await this.initialize();

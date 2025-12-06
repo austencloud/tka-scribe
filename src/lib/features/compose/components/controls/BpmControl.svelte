@@ -67,7 +67,11 @@
       // Calculate intervals between consecutive taps
       const intervals: number[] = [];
       for (let i = 1; i < tapTimes.length; i++) {
-        intervals.push(tapTimes[i] - tapTimes[i - 1]);
+        const current = tapTimes[i];
+        const previous = tapTimes[i - 1];
+        if (current !== undefined && previous !== undefined) {
+          intervals.push(current - previous);
+        }
       }
 
       // Average the intervals

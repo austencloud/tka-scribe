@@ -19,6 +19,7 @@
   import PlayButton from "./buttons/PlayButton.svelte";
   import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
   import ShareButton from "./buttons/ShareButton.svelte";
+  import RecordVideoButton from "./buttons/RecordVideoButton.svelte";
   import UndoButton from "./buttons/UndoButton.svelte";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
@@ -29,12 +30,14 @@
     onClearSequence,
     onSequenceActionsClick,
     onShare,
+    onRecordVideo,
     onPlayAnimation,
     visible = true,
   }: {
     onClearSequence?: () => void;
     onSequenceActionsClick?: () => void;
     onShare?: () => void;
+    onRecordVideo?: () => void;
     onPlayAnimation?: () => void;
     visible?: boolean;
   } = $props();
@@ -42,12 +45,15 @@
   // Derive computed values from context
   const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
   const showShareButton = $derived(CreateModuleState.canShowActionButtons());
+  const showRecordVideoButton = $derived(CreateModuleState.canShowActionButtons());
   const showSequenceActions = $derived(
     CreateModuleState.canShowSequenceActionsButton()
   );
   const canClearSequence = $derived(CreateModuleState.canClearSequence());
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isShareOpen = $derived(panelState.isSharePanelOpen);
+  // TODO: Video record panel not yet implemented in PanelCoordinationState
+  const isRecordVideoOpen = false;
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
   const centerZoneButtonCount = $derived(() => {
@@ -55,6 +61,7 @@
     if (showPlayButton) count++;
     if (showSequenceActions) count++;
     if (showShareButton) count++;
+    if (showRecordVideoButton) count++;
     // Note: Clear button moved to right zone
     return count;
   });
@@ -123,6 +130,13 @@
           {#if showShareButton && onShare}
             <div>
               <ShareButton onclick={onShare} isActive={isShareOpen} />
+            </div>
+          {/if}
+
+          <!-- Record Video Button -->
+          {#if showRecordVideoButton && onRecordVideo}
+            <div>
+              <RecordVideoButton onclick={onRecordVideo} isActive={isRecordVideoOpen} />
             </div>
           {/if}
         </div>

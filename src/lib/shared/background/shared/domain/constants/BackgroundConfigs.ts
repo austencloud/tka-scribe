@@ -46,50 +46,6 @@ export const SnowfallConfig = {
   },
 };
 
-export type SnowfallTuning = {
-  /** Scales min/max fall speed (percent) */
-  speed: number;
-  /** Scales particle count (percent) */
-  density: number;
-  /** Scales min/max flake size (percent) */
-  size: number;
-  /** Scales sway/gust strength (percent) */
-  wind: number;
-  /** Scales sparkle probability/intensity (percent) */
-  sparkle: number;
-};
-
-export const SNOWFALL_TUNING_DEFAULTS: SnowfallTuning = {
-  speed: 100,
-  density: 100,
-  size: 100,
-  wind: 100,
-  sparkle: 100,
-};
-
-const clampPercent = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
-
-/**
- * Normalize user-provided snowfall tuning values and keep them inside safe bounds.
- */
-export function normalizeSnowfallTuning(
-  tuning?: Partial<SnowfallTuning>
-): SnowfallTuning {
-  const merged = {
-    ...SNOWFALL_TUNING_DEFAULTS,
-    ...(tuning ?? {}),
-  };
-
-  return {
-    speed: clampPercent(merged.speed, 20, 200),
-    density: clampPercent(merged.density, 0, 200),
-    size: clampPercent(merged.size, 50, 200),
-    wind: clampPercent(merged.wind, 0, 200),
-    sparkle: clampPercent(merged.sparkle, 0, 200),
-  };
-}
-
 /**
  * Core background configuration
  */

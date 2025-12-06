@@ -722,8 +722,8 @@
   /* Ultra-compact mode: smaller than 100px */
   @container (max-width: 100px) {
     .background-thumbnail {
-      min-height: 56px;
-      min-width: 56px;
+      min-height: 52px;
+      min-width: 52px;
       border-radius: clamp(6px, 1.5cqi, 10px);
       border-width: 1px;
     }

@@ -85,7 +85,12 @@
 {#key isEditing}
   {#if isEditing}
     <!-- Edit Mode -->
-    <div class="edit-container" in:scale={{ duration: 250, start: 0.96, opacity: 0 }} out:scale={{ duration: 200, start: 0.96, opacity: 0 }}>
+    <div
+      class="edit-container"
+      in:scale={{ duration: 250, start: 0.96, opacity: 0 }}
+      out:scale={{ duration: 200, start: 0.96, opacity: 0 }}
+    >
+      <!-- svelte-ignore a11y_autofocus -->
       <textarea
         bind:value={editText}
         onkeydown={handleKeydown}
@@ -96,7 +101,9 @@
       ></textarea>
 
       {#if error}
-        <div class="error-message" in:fly={{ y: -10, duration: 200 }}>{error}</div>
+        <div class="error-message" in:fly={{ y: -10, duration: 200 }}>
+          {error}
+        </div>
       {:else if !hasChanges}
         <div class="hint" in:fly={{ y: -10, duration: 200 }}>
           Make changes to enable Save • Press <kbd>Esc</kbd> to exit
@@ -173,7 +180,9 @@
     border-radius: 8px;
     text-align: left;
     cursor: default;
-    transition: background 0.2s, transform 0.2s;
+    transition:
+      background 0.2s,
+      transform 0.2s;
     position: relative;
   }
 
@@ -188,7 +197,6 @@
   .change-item.clickable:active {
     transform: scale(0.99);
   }
-
 
   .change-item:disabled {
     cursor: default;
@@ -215,7 +223,9 @@
     flex-shrink: 0;
     color: rgba(255, 255, 255, 0.3);
     font-size: 12px;
-    transition: transform 0.2s, color 0.2s;
+    transition:
+      transform 0.2s,
+      color 0.2s;
   }
 
   .change-item.clickable:hover .arrow {

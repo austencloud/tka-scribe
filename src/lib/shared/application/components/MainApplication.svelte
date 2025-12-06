@@ -290,7 +290,6 @@
       backgroundType={settings.backgroundType || BackgroundType.NIGHT_SKY}
       quality={settings.backgroundQuality || "medium"}
       backgroundColor={settings.backgroundColor || "#000000"}
-      snowfallTuning={settings.snowfallTuning}
       {...settings.gradientColors
         ? { gradientColors: settings.gradientColors }
         : {}}

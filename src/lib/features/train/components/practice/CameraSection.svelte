@@ -5,399 +5,424 @@
   Uses AnimatorCanvas with orchestrator for proper prop animation.
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from "svelte";
-	import CameraPreview from "../CameraPreview.svelte";
-	import GridOverlay from "../GridOverlay.svelte";
-	import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-	import { TrainMode } from "../../domain/enums/TrainEnums";
-	import type { DetectionFrame } from "../../domain/models/DetectionFrame";
-	import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-	import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-	import { resolve, TYPES } from "$lib/shared/inversify/di";
-	import type { IPositionDetectionService } from "../../services/contracts/IPositionDetectionService";
-	import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { onMount, onDestroy } from "svelte";
+  import CameraPreview from "../CameraPreview.svelte";
+  import GridOverlay from "../GridOverlay.svelte";
+  import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
+  import { TrainMode } from "../../domain/enums/TrainEnums";
+  import type { DetectionFrame } from "../../domain/models/DetectionFrame";
+  import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IPositionDetectionService } from "../../services/contracts/IPositionDetectionService";
+  import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
-	interface Props {
-		isCameraReady?: boolean;
-		isDetectionReady?: boolean;
-		isDetectionActive?: boolean;
-		isPerforming?: boolean;
-		currentFrame?: DetectionFrame | null;
-		expectedPositions?: { blue: GridLocation | null; red: GridLocation | null } | null;
-		mode?: TrainMode;
-		countdownValue?: number | null;
-		currentScore?: number;
-		currentCombo?: number;
-		lastHitResult?: boolean | null;
-		lastHitPoints?: number;
-		bpm?: number;
-		gridScale?: number;
-		gridMode?: GridMode;
-		propsVisible?: boolean;
-		propType?: PropType | null;
-		sequence?: SequenceData | null;
-		currentBeatIndex?: number;
-		onCameraReady?: () => void;
-		onCameraError?: (error: string) => void;
-		onFrame?: (video: HTMLVideoElement) => void;
-		onGridSettingsClick?: () => void;
-	}
+  interface Props {
+    isCameraReady?: boolean;
+    isDetectionReady?: boolean;
+    isDetectionActive?: boolean;
+    isPerforming?: boolean;
+    currentFrame?: DetectionFrame | null;
+    expectedPositions?: {
+      blue: GridLocation | null;
+      red: GridLocation | null;
+    } | null;
+    mode?: TrainMode;
+    countdownValue?: number | null;
+    currentScore?: number;
+    currentCombo?: number;
+    lastHitResult?: boolean | null;
+    lastHitPoints?: number;
+    bpm?: number;
+    gridScale?: number;
+    gridMode?: GridMode;
+    propsVisible?: boolean;
+    propType?: PropType | null;
+    sequence?: SequenceData | null;
+    currentBeatIndex?: number;
+    onCameraReady?: () => void;
+    onCameraError?: (error: string) => void;
+    onFrame?: (video: HTMLVideoElement) => void;
+    onGridSettingsClick?: () => void;
+  }
 
-	let {
-		isCameraReady = false,
-		isDetectionReady = false,
-		isDetectionActive = false,
-		isPerforming = false,
-		currentFrame = null,
-		expectedPositions = null,
-		mode = TrainMode.SETUP,
-		countdownValue = null,
-		currentScore = 0,
-		currentCombo = 0,
-		lastHitResult = null,
-		lastHitPoints = 0,
-		bpm = 60,
-		gridScale = 1.0,
-		gridMode = GridMode.DIAMOND,
-		propsVisible = true,
-		propType = null,
-		sequence = null,
-		currentBeatIndex = 0,
-		onCameraReady,
-		onCameraError,
-		onFrame,
-		onGridSettingsClick
-	}: Props = $props();
+  let {
+    isCameraReady = false,
+    isDetectionReady = false,
+    isDetectionActive = false,
+    isPerforming = false,
+    currentFrame = null,
+    expectedPositions = null,
+    mode = TrainMode.SETUP,
+    countdownValue = null,
+    currentScore = 0,
+    currentCombo = 0,
+    lastHitResult = null,
+    lastHitPoints = 0,
+    bpm = 60,
+    gridScale = 1.0,
+    gridMode = GridMode.DIAMOND,
+    propsVisible = true,
+    propType = null,
+    sequence = null,
+    currentBeatIndex = 0,
+    onCameraReady,
+    onCameraError,
+    onFrame,
+    onGridSettingsClick,
+  }: Props = $props();
 
-	// Performance monitoring
-	let detectionService: IPositionDetectionService | null = null;
-	let fps = $state(0);
-	let avgFrameTime = $state(0);
-	let videoResolution = $state('N/A');
-	let perfInterval: number | null = null;
+  // Performance monitoring
+  let detectionService: IPositionDetectionService | null = null;
+  let fps = $state(0);
+  let avgFrameTime = $state(0);
+  let videoResolution = $state("N/A");
+  let perfInterval: number | null = null;
 
-	// Beat interpolation for smooth animation
-	let fractionalBeat = $state(0);
-	let beatAnimFrameId: number | null = null;
-	let beatStartTime = 0;
+  // Beat interpolation for smooth animation
+  let fractionalBeat = $state(0);
+  let beatAnimFrameId: number | null = null;
+  let beatStartTime = 0;
 
-	// Track beat changes and start interpolation
-	let lastBeatIndex = -1;
-	$effect(() => {
-		if (currentBeatIndex !== lastBeatIndex) {
-			lastBeatIndex = currentBeatIndex;
-			beatStartTime = performance.now();
-			if (!beatAnimFrameId && isPerforming) {
-				startBeatAnimation();
-			}
-		}
-	});
+  // Track beat changes and start interpolation
+  let lastBeatIndex = -1;
+  $effect(() => {
+    if (currentBeatIndex !== lastBeatIndex) {
+      lastBeatIndex = currentBeatIndex;
+      beatStartTime = performance.now();
+      if (!beatAnimFrameId && isPerforming) {
+        startBeatAnimation();
+      }
+    }
+  });
 
-	// Start/stop animation based on performance state
-	$effect(() => {
-		if (isPerforming && !beatAnimFrameId) {
-			beatStartTime = performance.now();
-			startBeatAnimation();
-		} else if (!isPerforming && beatAnimFrameId) {
-			cancelAnimationFrame(beatAnimFrameId);
-			beatAnimFrameId = null;
-			fractionalBeat = currentBeatIndex;
-		}
-	});
+  // Start/stop animation based on performance state
+  $effect(() => {
+    if (isPerforming && !beatAnimFrameId) {
+      beatStartTime = performance.now();
+      startBeatAnimation();
+    } else if (!isPerforming && beatAnimFrameId) {
+      cancelAnimationFrame(beatAnimFrameId);
+      beatAnimFrameId = null;
+      fractionalBeat = currentBeatIndex;
+    }
+  });
 
-	function startBeatAnimation() {
-		function animate() {
-			const elapsed = performance.now() - beatStartTime;
-			const beatDuration = (60 / bpm) * 1000;
-			const progress = Math.min(elapsed / beatDuration, 1.0);
+  function startBeatAnimation() {
+    function animate() {
+      const elapsed = performance.now() - beatStartTime;
+      const beatDuration = (60 / bpm) * 1000;
+      const progress = Math.min(elapsed / beatDuration, 1.0);
 
-			fractionalBeat = currentBeatIndex + progress;
+      fractionalBeat = currentBeatIndex + progress;
 
-			if (isPerforming) {
-				beatAnimFrameId = requestAnimationFrame(animate);
-			} else {
-				beatAnimFrameId = null;
-			}
-		}
-		beatAnimFrameId = requestAnimationFrame(animate);
-	}
+      if (isPerforming) {
+        beatAnimFrameId = requestAnimationFrame(animate);
+      } else {
+        beatAnimFrameId = null;
+      }
+    }
+    beatAnimFrameId = requestAnimationFrame(animate);
+  }
 
-	onMount(() => {
-		detectionService = resolve<IPositionDetectionService>(TYPES.IPositionDetectionService);
+  onMount(() => {
+    detectionService = resolve<IPositionDetectionService>(
+      TYPES.IPositionDetectionService
+    );
 
-		// Update performance stats every 500ms
-		perfInterval = window.setInterval(() => {
-			if (detectionService?.getPerformanceStats) {
-				const stats = detectionService.getPerformanceStats();
-				fps = stats.fps;
-				avgFrameTime = stats.avgFrameTime;
-				videoResolution = stats.videoResolution;
-			}
-		}, 500);
-	});
+    // Update performance stats every 500ms
+    perfInterval = window.setInterval(() => {
+      if (detectionService?.getPerformanceStats) {
+        const stats = detectionService.getPerformanceStats();
+        fps = stats.fps;
+        avgFrameTime = stats.avgFrameTime;
+        videoResolution = stats.videoResolution;
+      }
+    }, 500);
+  });
 
-	onDestroy(() => {
-		if (perfInterval !== null) {
-			clearInterval(perfInterval);
-		}
-		if (beatAnimFrameId !== null) {
-			cancelAnimationFrame(beatAnimFrameId);
-		}
-	});
+  onDestroy(() => {
+    if (perfInterval !== null) {
+      clearInterval(perfInterval);
+    }
+    if (beatAnimFrameId !== null) {
+      cancelAnimationFrame(beatAnimFrameId);
+    }
+  });
 </script>
 
 <div class="camera-section">
-	<CameraPreview
-		onCameraReady={onCameraReady}
-		onCameraError={onCameraError}
-		onFrame={onFrame}
-		mirrored={true}
-	>
-		<!-- Grid overlay with detection feedback (hide circles when showing props) -->
-		<GridOverlay
-			bluePosition={currentFrame?.blue ?? null}
-			redPosition={currentFrame?.red ?? null}
-			expectedBlue={expectedPositions?.blue ?? null}
-			expectedRed={expectedPositions?.red ?? null}
-			showExpected={mode === TrainMode.PERFORMING && !propType}
-			{bpm}
-			{isPerforming}
-			{gridScale}
-			{gridMode}
-		/>
+  <CameraPreview {onCameraReady} {onCameraError} {onFrame} mirrored={true}>
+    <!-- Grid overlay with detection feedback (hide circles when showing props) -->
+    <GridOverlay
+      bluePosition={currentFrame?.blue ?? null}
+      redPosition={currentFrame?.red ?? null}
+      expectedBlue={expectedPositions?.blue ?? null}
+      expectedRed={expectedPositions?.red ?? null}
+      showExpected={mode === TrainMode.PERFORMING && !propType}
+      {bpm}
+      {isPerforming}
+      {gridScale}
+      {gridMode}
+    />
 
-		<!-- AnimatorCanvas for prop rendering (uses orchestrator for correct motion) -->
-		{#if sequence && propType && propsVisible}
-			<div class="animator-overlay" style="transform: scale({gridScale})">
-				<AnimatorCanvas
-					sequenceData={sequence}
-					currentBeat={fractionalBeat}
-					gridVisible={false}
-					backgroundAlpha={0}
-					isPlaying={isPerforming}
-				/>
-			</div>
-		{/if}
-	</CameraPreview>
+    <!-- AnimatorCanvas for prop rendering (uses orchestrator for correct motion) -->
+    {#if sequence && propType && propsVisible}
+      <div class="animator-overlay" style="transform: scale({gridScale})">
+        <AnimatorCanvas
+          blueProp={null}
+          redProp={null}
+          sequenceData={sequence}
+          currentBeat={fractionalBeat}
+          gridVisible={false}
+          backgroundAlpha={0}
+          isPlaying={isPerforming}
+        />
+      </div>
+    {/if}
+  </CameraPreview>
 
-	<!-- Grid Settings Button (floating in top-right of camera) -->
-	{#if onGridSettingsClick}
-		<button class="grid-settings-btn" onclick={onGridSettingsClick} aria-label="Grid settings">
-			<i class="fas fa-cog"></i>
-		</button>
-	{/if}
+  <!-- Grid Settings Button (floating in top-right of camera) -->
+  {#if onGridSettingsClick}
+    <button
+      class="grid-settings-btn"
+      onclick={onGridSettingsClick}
+      aria-label="Grid settings"
+    >
+      <i class="fas fa-cog"></i>
+    </button>
+  {/if}
 
-	<!-- Countdown overlay -->
-	{#if mode === TrainMode.COUNTDOWN && countdownValue !== null}
-		<div class="countdown-overlay">
-			<span class="countdown-number">{countdownValue || "GO!"}</span>
-		</div>
-	{/if}
+  <!-- Countdown overlay -->
+  {#if mode === TrainMode.COUNTDOWN && countdownValue !== null}
+    <div class="countdown-overlay">
+      <span class="countdown-number">{countdownValue || "GO!"}</span>
+    </div>
+  {/if}
 
-	<!-- Performance Feedback -->
-	{#if isPerforming}
-		<div class="performance-overlay">
-			<div class="score-display">
-				{#if currentCombo > 0}
-					<div class="combo">
-						<span class="combo-value">{currentCombo}x</span>
-						<span class="combo-label">Combo</span>
-					</div>
-				{/if}
-				<div class="score">
-					<span class="score-value">{currentScore}</span>
-				</div>
-			</div>
-			{#if lastHitResult !== null}
-				<div class="hit-indicator" class:hit={lastHitResult} class:miss={!lastHitResult}>
-					{lastHitResult ? `+${lastHitPoints}` : "MISS"}
-				</div>
-			{/if}
-		</div>
-	{/if}
+  <!-- Performance Feedback -->
+  {#if isPerforming}
+    <div class="performance-overlay">
+      <div class="score-display">
+        {#if currentCombo > 0}
+          <div class="combo">
+            <span class="combo-value">{currentCombo}x</span>
+            <span class="combo-label">Combo</span>
+          </div>
+        {/if}
+        <div class="score">
+          <span class="score-value">{currentScore}</span>
+        </div>
+      </div>
+      {#if lastHitResult !== null}
+        <div
+          class="hit-indicator"
+          class:hit={lastHitResult}
+          class:miss={!lastHitResult}
+        >
+          {lastHitResult ? `+${lastHitPoints}` : "MISS"}
+        </div>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <style>
-	.camera-section {
-		position: relative;
-		aspect-ratio: 1;
-		/* Let the square size itself based on available space */
-		max-width: 100%;
-		max-height: 100%;
-		background: transparent;
-		border-radius: 12px;
-		overflow: hidden;
-	}
+  .camera-section {
+    position: relative;
+    aspect-ratio: 1;
+    /* Let the square size itself based on available space */
+    max-width: 100%;
+    max-height: 100%;
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+  }
 
-	/* AnimatorCanvas overlay - positioned over camera feed */
-	.animator-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
-		z-index: 5; /* Between grid (10) and camera (0) */
-	}
+  /* AnimatorCanvas overlay - positioned over camera feed */
+  .animator-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5; /* Between grid (10) and camera (0) */
+  }
 
-	/* Override AnimatorCanvas's white background to make it transparent */
-	.animator-overlay :global(.canvas-wrapper),
-	.animator-overlay :global(.canvas-wrapper) :global(canvas),
-	.animator-overlay :global(canvas) {
-		background: transparent !important;
-		background-color: transparent !important;
-		border: none !important;
-	}
+  /* Override AnimatorCanvas's white background to make it transparent */
+  .animator-overlay :global(.canvas-wrapper),
+  .animator-overlay :global(.canvas-wrapper) :global(canvas),
+  .animator-overlay :global(canvas) {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+  }
 
-	/* Ensure PixiJS canvas is also transparent */
-	.animator-overlay :global(canvas[data-pixi]) {
-		background: transparent !important;
-		background-color: transparent !important;
-	}
+  /* Ensure PixiJS canvas is also transparent */
+  .animator-overlay :global(canvas[data-pixi]) {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
 
-	/* Grid Settings Button - floating in top-right */
-	.grid-settings-btn {
-		position: absolute;
-		top: 0.5rem;
-		right: 0.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 40px;
-		height: 40px;
-		background: #252532;
-		border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
-		border-radius: 50%;
-		color: rgba(255, 255, 255, 0.7);
-		font-size: 1rem;
-		cursor: pointer;
-		z-index: 20;
-		transition: all 0.2s;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-	}
+  /* Grid Settings Button - floating in top-right */
+  .grid-settings-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #252532;
+    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
 
-	.grid-settings-btn:hover {
-		background: #2d2d3a;
-		border-color: var(--border-2026-hover, rgba(255, 255, 255, 0.12));
-		color: rgba(255, 255, 255, 0.9);
-		transform: scale(1.05);
-	}
+  .grid-settings-btn:hover {
+    background: #2d2d3a;
+    border-color: var(--border-2026-hover, rgba(255, 255, 255, 0.12));
+    color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.05);
+  }
 
-	.grid-settings-btn:active {
-		transform: scale(0.95);
-	}
+  .grid-settings-btn:active {
+    transform: scale(0.95);
+  }
 
+  /* On mobile (stacked), limit by height */
+  @media (max-width: 767px) {
+    .camera-section {
+      width: auto;
+      height: 100%;
+    }
+  }
 
-	/* On mobile (stacked), limit by height */
-	@media (max-width: 767px) {
-		.camera-section {
-			width: auto;
-			height: 100%;
-		}
-	}
+  /* On desktop (side-by-side), limit by width */
+  @media (min-width: 768px) {
+    .camera-section {
+      width: 100%;
+      height: auto;
+    }
+  }
 
-	/* On desktop (side-by-side), limit by width */
-	@media (min-width: 768px) {
-		.camera-section {
-			width: 100%;
-			height: auto;
-		}
-	}
+  /* Countdown Overlay */
+  .countdown-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 30;
+  }
 
+  .countdown-number {
+    font-size: clamp(3rem, 15vw, 6rem);
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+    animation: pulse 1s ease-in-out infinite;
+  }
 
-	/* Countdown Overlay */
-	.countdown-overlay {
-		position: absolute;
-		inset: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: rgba(0, 0, 0, 0.7);
-		z-index: 30;
-	}
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
 
-	.countdown-number {
-		font-size: clamp(3rem, 15vw, 6rem);
-		font-weight: bold;
-		color: white;
-		text-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
-		animation: pulse 1s ease-in-out infinite;
-	}
+  /* Performance Overlay */
+  .performance-overlay {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    pointer-events: none;
+    z-index: 20;
+  }
 
-	@keyframes pulse {
-		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.1); }
-	}
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #252532;
+    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+  }
 
-	/* Performance Overlay */
-	.performance-overlay {
-		position: absolute;
-		top: 0.5rem;
-		left: 0.5rem;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 0.5rem;
-		pointer-events: none;
-		z-index: 20;
-	}
+  .combo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-	.score-display {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		background: #252532;
-		border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
-		padding: 0.5rem 0.75rem;
-		border-radius: 8px;
-		font-weight: 600;
-	}
+  .combo-value {
+    font-size: 1.125rem;
+    color: #fbbf24;
+  }
 
-	.combo {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
+  .combo-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+  }
 
-	.combo-value {
-		font-size: 1.125rem;
-		color: #fbbf24;
-	}
+  .score-value {
+    font-size: 1.25rem;
+    color: #3b82f6;
+  }
 
-	.combo-label {
-		font-size: 0.625rem;
-		text-transform: uppercase;
-		color: rgba(255, 255, 255, 0.6);
-	}
+  .hit-indicator {
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    animation: fadeInOut 0.8s ease-out forwards;
+  }
 
-	.score-value {
-		font-size: 1.25rem;
-		color: #3b82f6;
-	}
+  .hit-indicator.hit {
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+  }
 
-	.hit-indicator {
-		padding: 0.375rem 0.75rem;
-		border-radius: 6px;
-		font-weight: bold;
-		font-size: 1rem;
-		animation: fadeInOut 0.8s ease-out forwards;
-	}
+  .hit-indicator.miss {
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+  }
 
-	.hit-indicator.hit {
-		background: rgba(34, 197, 94, 0.9);
-		color: white;
-	}
-
-	.hit-indicator.miss {
-		background: rgba(239, 68, 68, 0.9);
-		color: white;
-	}
-
-	@keyframes fadeInOut {
-		0% { opacity: 0; transform: scale(0.8); }
-		20% { opacity: 1; transform: scale(1.1); }
-		80% { opacity: 1; transform: scale(1); }
-		100% { opacity: 0; transform: scale(0.9); }
-	}
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    80% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
 </style>

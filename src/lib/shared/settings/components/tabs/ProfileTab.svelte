@@ -517,13 +517,8 @@
     font-weight: 500;
   }
 
-  /* Desktop: Constrain button width */
+  /* Desktop: Constrain content width */
   @container settings-content (min-width: 600px) {
-    .sign-out-button {
-      max-width: 280px;
-      margin: 0 auto;
-    }
-
     .auth-content {
       max-width: 440px;
     }
@@ -531,20 +526,14 @@
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .security-card,
-    .sign-out-button {
+    .security-card {
       transition: none;
-    }
-
-    .sign-out-button:hover {
-      transform: none;
     }
   }
 
   @media (prefers-contrast: high) {
     .profile-card,
-    .security-card,
-    .sign-out-button {
+    .security-card {
       border-width: 2px;
     }
 

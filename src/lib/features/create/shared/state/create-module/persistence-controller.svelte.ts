@@ -29,7 +29,6 @@ type PersistenceControllerDeps = {
   sequencePersistenceService?: ISequencePersistenceService;
   handPathCoordinator: { initializeServices: () => void };
   optionHistoryManager: OptionHistoryManager;
-  undoService: IUndoService;
   /** Function to get the sequence state for a specific tab (or fallback to shared) */
   getSequenceStateForTab?: (tab: BuildModeId) => SequenceState;
 };
@@ -39,7 +38,6 @@ export function createCreateModulePersistenceController({
   sequencePersistenceService,
   handPathCoordinator,
   optionHistoryManager,
-  undoService,
   getSequenceStateForTab,
 }: PersistenceControllerDeps) {
   let isPersistenceInitialized = $state(false);
@@ -77,7 +75,7 @@ export function createCreateModulePersistenceController({
       }
 
       optionHistoryManager.rebuildFromSequence();
-      await undoService.loadHistory();
+      // Note: Undo history loading is now handled by each tab's undo controller
     } catch (error) {
       console.error(
         "? CreateModuleState: Failed to initialize persistence:",

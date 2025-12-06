@@ -618,7 +618,6 @@
   <div class="bottom-bar mobile-only">
     <ControlBar
       mode={trainState.mode}
-      displayView={practiceState.displayView}
       practiceMode={practiceState.currentMode}
       hasSequence={!!trainState.sequence}
       canStartPerformance={trainState.canStartPerformance}
@@ -626,7 +625,6 @@
       onPlayStop={trainState.mode === TrainMode.PERFORMING
         ? handleBackToSetup
         : handleStartCountdown}
-      onViewCycle={() => practiceState.cycleDisplayView()}
       onModeClick={() => {
         showModePicker = true;
       }}
@@ -772,12 +770,12 @@
     flex-wrap: wrap;
   }
 
-  .top-bar > :first-child {
+  .top-bar > :global(:first-child) {
     flex: 1 1 60%;
     min-width: 200px;
   }
 
-  .top-bar > :last-child {
+  .top-bar > :global(:last-child) {
     flex: 1 1 35%;
     min-width: 152px;
   }

@@ -61,6 +61,13 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
   }
 
   /**
+   * Handle video record button click
+   */
+  handleOpenVideoRecordPanel(panelState: PanelCoordinationState): void {
+    panelState.openVideoRecordPanel();
+  }
+
+  /**
    * Handle creation method selection
    */
   handleCreationMethodSelected(

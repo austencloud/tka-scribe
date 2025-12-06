@@ -24,31 +24,12 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   // ============================================================================
 
   // Check if workspace has any content to display
-  // CRITICAL: Check ALL tab states explicitly, not through a shared method
-  // This prevents race conditions during tab switches
+  // Use the exposed getActiveTabSequenceState() method which handles tab-specific sequence states
   const hasWorkspaceContent = $derived.by(() => {
-    const activeTab = navigationState.activeTab;
-
-    // IMPORTANT: Access each tab's sequence state DIRECTLY via the exported tab state objects
-    // This avoids going through the shared getActiveTabSequenceState() method which can have timing issues
-    let sequence = null;
-
-    if (activeTab === "constructor") {
-      // Access constructor's sequence state directly
-      sequence = CreateModuleState.constructorTabState?.sequenceState?.currentSequence ?? null;
-    } else if (activeTab === "generator") {
-      // Access generator's sequence state directly
-      sequence = CreateModuleState.generatorTabState?.sequenceState?.currentSequence ?? null;
-    } else if (activeTab === "assembler") {
-      // Access assembler's sequence state directly
-      sequence = CreateModuleState.assemblerTabState?.sequenceState?.currentSequence ?? null;
-    } else {
-      // Fallback for other tabs
-      sequence = CreateModuleState.sequenceState.currentSequence;
-    }
+    // Use the proper API method that handles tab switching
+    const sequence = CreateModuleState.sequenceState.currentSequence;
 
     if (!sequence) {
-      console.log(`[${activeTab}] hasWorkspaceContent: FALSE (no sequence)`);
       return false;
     }
 
@@ -56,11 +37,6 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     const hasStartPosition = sequence.startingPositionBeat || sequence.startPosition;
     const result = hasBeat || hasStartPosition;
 
-    console.log(`[${activeTab}] hasWorkspaceContent: ${result}`, {
-      beats: sequence.beats?.length || 0,
-      hasStartPosition,
-      sequence
-    });
 
     return result;
   });
@@ -99,6 +75,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     onPlayAnimation,
     onClearSequence,
     onShare,
+    onRecordVideo = undefined,
     onSequenceActionsClick,
     onOptionSelected,
     onOpenFilters,
@@ -115,6 +92,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     onPlayAnimation: () => void;
     onClearSequence: () => void;
     onShare: () => void;
+    onRecordVideo?: () => void;
     onSequenceActionsClick: () => void;
     onOptionSelected: (option: PictographData) => Promise<void>;
     onOpenFilters: () => void;
@@ -188,6 +166,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
           {onPlayAnimation}
           {onClearSequence}
           {onShare}
+          {onRecordVideo}
           {onSequenceActionsClick}
         />
       </div>

@@ -48,8 +48,8 @@ Handles click events and accessibility.
     align-items: center;
     justify-content: center;
   }
-52px
-  .favorite {52px
+
+  .favorite {
     min-width: 52px;
     min-height: 52px;
     border: none;
@@ -83,18 +83,18 @@ Handles click events and accessibility.
   }
 
   /* Container query responsive sizing */
-  @container sequ52px-card (max-width: 249px) {
-    .favorite {52px
-      min-width: 52px;
-      min-height: 52px;
+  @container sequence-card (max-width: 249px) {
+    .favorite {
+      min-width: 44px;
+      min-height: 44px;
       font-size: 1rem;
     }
-  }52px
+  }
 
-  @container sequ52px-card (min-width: 250px) and (max-width: 299px) {
-    .favorite {52px
-      min-width: 52px;
-      min-height: 52px;
+  @container sequence-card (min-width: 250px) and (max-width: 299px) {
+    .favorite {
+      min-width: 48px;
+      min-height: 48px;
       font-size: 1.15rem;
     }
   }

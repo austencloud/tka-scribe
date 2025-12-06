@@ -79,8 +79,12 @@
 
         // Process all results from the last finalized index
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
+          const result = event.results[i];
+          if (!result) continue;
+          const firstAlternative = result[0];
+          if (!firstAlternative) continue;
+          const transcript = firstAlternative.transcript;
+          if (result.isFinal) {
             finalTranscript += transcript + " ";
           } else {
             interimTranscript += transcript;
@@ -97,7 +101,6 @@
           onTranscript(finalTranscript.trim(), true);
         }
       };
-
       recognition.onerror = (event: SpeechRecognitionErrorEventCustom) => {
         console.error("Speech recognition error:", event.error);
         if (event.error !== "no-speech") {

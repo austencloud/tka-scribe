@@ -110,7 +110,7 @@
   // Swipe-to-exit gesture state
   let swipeStartX = 0;
   let swipeStartY = 0;
-  let isSwiping = false;
+  let isSwiping = $state(false);
   let swipeProgress = $state(0); // 0 to 1, for visual feedback
   const SWIPE_EDGE_ZONE = 50; // px from left edge to start swipe
   const SWIPE_THRESHOLD = 100; // px to trigger exit

@@ -44,7 +44,11 @@ Features:
   });
 
   // Mode options
-  const modeOptions: { value: ComposeMode | "all"; label: string; icon: string }[] = [
+  const modeOptions: {
+    value: ComposeMode | "all";
+    label: string;
+    icon: string;
+  }[] = [
     { value: "all", label: "All", icon: "fa-layer-group" },
     { value: "single", label: "Single", icon: "fa-play" },
     { value: "mirror", label: "Mirror", icon: "fa-clone" },
@@ -144,9 +148,7 @@ Features:
         aria-label={sortDirection === "asc"
           ? "Sort descending"
           : "Sort ascending"}
-        title={sortDirection === "asc"
-          ? "Sort descending"
-          : "Sort ascending"}
+        title={sortDirection === "asc" ? "Sort descending" : "Sort ascending"}
       >
         <i
           class="fas {sortDirection === 'asc'

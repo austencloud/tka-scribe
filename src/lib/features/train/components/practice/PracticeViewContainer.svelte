@@ -104,8 +104,8 @@
       {gridMode}
       {propsVisible}
       {propType}
-      sequence={sequence}
-      currentBeatIndex={currentBeatIndex}
+      {sequence}
+      {currentBeatIndex}
       {onCameraReady}
       {onCameraError}
       {onFrame}
@@ -153,48 +153,9 @@
     flex: 1 1 auto;
   }
 
-  .canvas-panel,
   .grid-panel {
     flex: 1 1 auto;
   }
-
-  /* ============================================
-	   MOBILE LAYOUTS (stacked vertically, max-width: 767px)
-	   ============================================ */
-  @media (max-width: 767px) {
-    /* View A: Camera + Canvas - equal space for both squares */
-    .view-camera-canvas .camera-panel {
-      flex: 1 1 0;
-    }
-
-    .view-camera-canvas .canvas-panel {
-      flex: 1 1 0;
-      width: 100%;
-    }
-
-    /* View B: Camera + Grid - similar distribution */
-    .view-camera-grid .camera-panel {
-      flex: 1 1 60%;
-    }
-
-    .view-camera-grid .grid-panel {
-      flex: 0 0 auto;
-      width: 100%;
-    }
-
-    /* View C: Three panels stacked - canvas gets 60%, grid gets 40% of remaining space */
-    .view-camera-canvas-grid .canvas-panel {
-      flex: 3 1 auto;
-      max-height: 36%;
-    }
-
-    .view-camera-canvas-grid .grid-panel {
-      flex: 2 1 auto;
-      max-height: 24%;
-    }
-  }
-
-
 
   /* ============================================
 	   DESKTOP LAYOUTS (side-by-side when nav visible)
@@ -208,114 +169,32 @@
       padding: 1rem;
     }
 
-    /* View A: Camera + Canvas (50/50) - reset mobile constraints */
-    .view-camera-canvas .camera-panel {
-      flex: 1 1 50%;
-      max-width: 50%;
-      max-height: none;
-      height: 100%;
-    }
-
-    .view-camera-canvas .canvas-panel {
-      flex: 1 1 50%;
-      max-width: 50%;
-      max-height: none;
-      height: 100%;
-    }
-
-    /* View B: Camera + Grid (50/50) */
-    .view-camera-grid .camera-panel {
-      flex: 1 1 50%;
-      max-width: 50%;
-      max-height: none;
-      height: 100%;
-    }
-
-    .view-camera-grid .grid-panel {
-      flex: 1 1 50%;
-      max-width: 50%;
-      max-height: none;
-      height: 100%;
-    }
-
-    /* View C: Camera left (50%), Canvas+Grid stacked right (50%) */
-    .view-camera-canvas-grid {
-      flex-wrap: wrap;
-    }
-
-    .view-camera-canvas-grid .camera-panel {
+    .camera-panel {
       flex: 1 1 50%;
       max-width: 50%;
       height: 100%;
     }
 
-    .view-camera-canvas-grid .canvas-panel,
-    .view-camera-canvas-grid .grid-panel {
-      flex: 1 1 calc(50% - 0.5rem);
-      max-width: calc(50% - 0.5rem);
-      max-height: calc(50% - 0.25rem);
-    }
-
-    /* Make the right side a nested grid: canvas 60%, grid 40% */
-    .view-camera-canvas-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 3fr 2fr;
-      gap: 0.5rem;
-    }
-
-    .view-camera-canvas-grid .camera-panel {
-      grid-row: 1 / -1;
-      max-width: 100%;
-    }
-
-    .view-camera-canvas-grid .canvas-panel {
-      grid-column: 2;
-      grid-row: 1;
-      max-width: 100%;
-      max-height: 100%;
-    }
-
-    .view-camera-canvas-grid .grid-panel {
-      grid-column: 2;
-      grid-row: 2;
-      max-width: 100%;
-      max-height: 100%;
+    .grid-panel {
+      flex: 1 1 50%;
+      max-width: 50%;
+      height: 100%;
     }
   }
 
   /* Tablet intermediate layout */
   @media (min-width: 768px) and (max-width: 1023px) {
     .view-container {
+      flex-direction: row;
       gap: 0.75rem;
       padding: 0.75rem;
     }
 
-    /* Two-panel views can go side-by-side on tablet */
-    .view-camera-canvas,
-    .view-camera-grid {
-      flex-direction: row;
-    }
-
-    .view-camera-canvas .camera-panel,
-    .view-camera-canvas .canvas-panel {
+    .camera-panel,
+    .grid-panel {
       flex: 1 1 50%;
       max-width: 50%;
-      max-height: none;
       height: 100%;
-    }
-
-    .view-camera-grid .camera-panel,
-    .view-camera-grid .grid-panel {
-      flex: 1 1 50%;
-      max-width: 50%;
-      max-height: none;
-      height: 100%;
-    }
-
-    /* Three-panel stays stacked on tablet */
-    .view-camera-canvas-grid {
-      flex-direction: column;
     }
   }
 </style>

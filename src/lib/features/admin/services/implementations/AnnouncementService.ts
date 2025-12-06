@@ -69,13 +69,30 @@ export class AnnouncementService implements IAnnouncementService {
     const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
     const newDoc = doc(announcementsRef);
 
-    const announcementData = {
-      ...announcement,
+    // Build data object, excluding undefined fields (Firestore doesn't accept undefined)
+    const announcementData: Record<string, unknown> = {
+      title: announcement.title,
+      message: announcement.message,
+      severity: announcement.severity,
+      targetAudience: announcement.targetAudience,
+      showAsModal: announcement.showAsModal,
+      createdBy: announcement.createdBy,
       createdAt: Timestamp.now(),
-      expiresAt: announcement.expiresAt
-        ? Timestamp.fromDate(announcement.expiresAt)
-        : null,
     };
+
+    // Add optional fields only if defined
+    if (announcement.expiresAt) {
+      announcementData.expiresAt = Timestamp.fromDate(announcement.expiresAt);
+    }
+    if (announcement.targetUserId) {
+      announcementData.targetUserId = announcement.targetUserId;
+    }
+    if (announcement.actionUrl) {
+      announcementData.actionUrl = announcement.actionUrl;
+    }
+    if (announcement.actionLabel) {
+      announcementData.actionLabel = announcement.actionLabel;
+    }
 
     await setDoc(newDoc, announcementData);
     return newDoc.id;
@@ -90,12 +107,20 @@ export class AnnouncementService implements IAnnouncementService {
   ): Promise<void> {
     const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
 
-    const updateData: Record<string, unknown> = { ...updates };
-    delete updateData.id;
-    delete updateData.createdAt;
+    // Build update data, excluding undefined fields
+    const updateData: Record<string, unknown> = {};
 
-    if (updates.expiresAt) {
-      updateData.expiresAt = Timestamp.fromDate(updates.expiresAt);
+    if (updates.title !== undefined) updateData.title = updates.title;
+    if (updates.message !== undefined) updateData.message = updates.message;
+    if (updates.severity !== undefined) updateData.severity = updates.severity;
+    if (updates.targetAudience !== undefined) updateData.targetAudience = updates.targetAudience;
+    if (updates.showAsModal !== undefined) updateData.showAsModal = updates.showAsModal;
+    if (updates.targetUserId !== undefined) updateData.targetUserId = updates.targetUserId;
+    if (updates.actionUrl !== undefined) updateData.actionUrl = updates.actionUrl;
+    if (updates.actionLabel !== undefined) updateData.actionLabel = updates.actionLabel;
+
+    if (updates.expiresAt !== undefined) {
+      updateData.expiresAt = updates.expiresAt ? Timestamp.fromDate(updates.expiresAt) : null;
     }
 
     await updateDoc(docRef, updateData);
@@ -219,5 +244,38 @@ export class AnnouncementService implements IAnnouncementService {
     }
 
     return undismissed;
+  }
+
+  /**
+   * Search users by name or email
+   */
+  async searchUsers(
+    query: string
+  ): Promise<Array<{ uid: string; displayName: string; email: string }>> {
+    if (!query || query.trim().length < 2) {
+      return [];
+    }
+
+    const usersRef = collection(firestore, "users");
+    const snapshot = await getDocs(usersRef);
+
+    const queryLower = query.toLowerCase();
+    const results = snapshot.docs
+      .map((doc) => {
+        const data = doc.data();
+        return {
+          uid: doc.id,
+          displayName: data.displayName as string,
+          email: data.email as string,
+        };
+      })
+      .filter((user) => {
+        const displayName = user.displayName?.toLowerCase() || "";
+        const email = user.email?.toLowerCase() || "";
+        return displayName.includes(queryLower) || email.includes(queryLower);
+      })
+      .slice(0, 10); // Limit to 10 results
+
+    return results;
   }
 }

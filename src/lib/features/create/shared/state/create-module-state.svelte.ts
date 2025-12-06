@@ -11,15 +11,11 @@ import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
 import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
 import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
-import { createUndoController } from "./create-module/undo-controller.svelte";
 import type { ISequenceService } from "../services/contracts/ISequenceService";
 import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { IUndoService } from "../services/contracts/IUndoService";
 import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
@@ -60,9 +56,6 @@ export function createCreateModuleState(
     getSequence: () => sequenceState.currentSequence,
   });
 
-  // Resolve undo service from DI container
-  const undoService = resolve<IUndoService>(TYPES.IUndoService);
-
   // Store tab states in closure - moved up so getSequenceStateForTab can access them
   let _constructorTabState: any = null; // Will be set during initialization
   let _assemblerTabState: AssemblerTabState | null = null;
@@ -95,7 +88,6 @@ export function createCreateModuleState(
     ...(sequencePersistenceService && { sequencePersistenceService }),
     handPathCoordinator,
     optionHistoryManager,
-    undoService,
     getSequenceStateForTab,
   });
 
@@ -104,15 +96,6 @@ export function createCreateModuleState(
     sequenceState,
     persistenceController,
     getConstructTabState: () => null, // Will be set later if needed
-  });
-
-  // Create undo controller (needs navigation controller for callbacks)
-  const undoController = createUndoController({
-    undoService,
-    sequenceState,
-    getActiveSection: () => navigationController.activeSection,
-    setActiveSectionInternal: (panel, addToHistory) =>
-      navigationController.setActiveToolPanelInternal(panel, addToHistory),
   });
 
   /**
@@ -202,6 +185,30 @@ export function createCreateModuleState(
     return getSequenceStateForTab(activeTab);
   }
 
+  /**
+   * Get the undo controller for the currently active tab
+   * Each tab has its own independent undo history
+   *
+   * @returns The undo controller for the active tab (constructor, assembler, or generator)
+   */
+  function getActiveTabUndoController() {
+    const activeTab = navigationState.activeTab as BuildModeId;
+    switch (activeTab) {
+      case "constructor": {
+        const ctor = _constructorTabState as any;
+        return ctor?.undoController || null;
+      }
+      case "assembler": {
+        return _assemblerTabState?.undoController || null;
+      }
+      case "generator": {
+        return _generatorTabState?.undoController || null;
+      }
+      default:
+        return null;
+    }
+  }
+
   const stateObject = {
     // Sequence state - now returns active tab's sequence state
     get sequenceState() {
@@ -233,21 +240,49 @@ export function createCreateModuleState(
     optionHistoryManager,
     addOptionToHistory,
 
-    // Undo
-    undoService,
-    undoController,
-    pushUndoSnapshot: undoController.pushUndoSnapshot,
-    undo: undoController.undo,
-    clearUndoHistory: undoController.clearUndoHistory,
-    setShowStartPositionPickerCallback:
-      undoController.setShowStartPositionPickerCallback,
-    setSyncPickerStateCallback: undoController.setSyncPickerStateCallback,
-    setOnUndoingOptionCallback: undoController.setOnUndoingOptionCallback,
+    // Undo (tab-scoped - delegates to active tab's undo controller)
+    get undoController() {
+      return getActiveTabUndoController();
+    },
+    pushUndoSnapshot: (type: any, metadata?: any) => {
+      const controller = getActiveTabUndoController();
+      controller?.pushUndoSnapshot(type, metadata);
+    },
+    undo: () => {
+      const controller = getActiveTabUndoController();
+      return controller?.undo() || false;
+    },
+    redo: () => {
+      const controller = getActiveTabUndoController();
+      return controller?.redo() || false;
+    },
+    clearUndoHistory: () => {
+      const controller = getActiveTabUndoController();
+      controller?.clearUndoHistory();
+    },
+    setShowStartPositionPickerCallback: (callback: () => void) => {
+      const controller = getActiveTabUndoController();
+      controller?.setShowStartPositionPickerCallback(callback);
+    },
+    setSyncPickerStateCallback: (callback: () => void) => {
+      const controller = getActiveTabUndoController();
+      controller?.setSyncPickerStateCallback(callback);
+    },
+    setOnUndoingOptionCallback: (callback: (isUndoing: boolean) => void) => {
+      const controller = getActiveTabUndoController();
+      controller?.setOnUndoingOptionCallback(callback);
+    },
     get canUndo() {
-      return undoController.canUndo;
+      const controller = getActiveTabUndoController();
+      return controller?.canUndo || false;
+    },
+    get canRedo() {
+      const controller = getActiveTabUndoController();
+      return controller?.canRedo || false;
     },
     get undoHistory() {
-      return undoController.undoHistory;
+      const controller = getActiveTabUndoController();
+      return controller?.undoHistory || [];
     },
 
     // Hand path

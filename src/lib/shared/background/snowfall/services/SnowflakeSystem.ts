@@ -1,28 +1,11 @@
 import type { Dimensions } from "../../shared/domain/types/background-types";
-import {
-  SnowfallConfig,
-  type SnowfallTuning,
-  normalizeSnowfallTuning,
-} from "../../shared/domain/constants/BackgroundConfigs";
+import { SnowfallConfig } from "../../shared/domain/constants/BackgroundConfigs";
 import type { Snowflake } from "../domain/models/snowfall-models";
 
-export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
+export const createSnowflakeSystem = () => {
   const config = SnowfallConfig;
   let windStrength = 0;
   let windChangeTimer = 0;
-  let tuning = normalizeSnowfallTuning(initialTuning);
-
-  const getMultipliers = () => ({
-    speed: tuning.speed / 100,
-    density: tuning.density / 100,
-    size: tuning.size / 100,
-    wind: tuning.wind / 100,
-    sparkle: tuning.sparkle / 100,
-  });
-
-  const setTuning = (next?: Partial<SnowfallTuning>) => {
-    tuning = normalizeSnowfallTuning({ ...tuning, ...(next ?? {}) });
-  };
 
   const generateSnowflakeShape = (size: number): Path2D => {
     const path = new Path2D();
@@ -79,12 +62,10 @@ export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
   };
 
   const createSnowflake = (width: number, height: number): Snowflake => {
-    const multipliers = getMultipliers();
     const size =
       Math.random() * (config.snowflake.maxSize - config.snowflake.minSize) +
       config.snowflake.minSize;
     const depth = Math.random(); // Depth for layering effects
-    const windScale = multipliers.wind;
 
     return {
       x: Math.random() * width,
@@ -93,26 +74,15 @@ export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
         ((Math.random() *
           (config.snowflake.maxSpeed - config.snowflake.minSpeed) +
           config.snowflake.minSpeed) *
-          (0.5 + depth * 0.5)) *
-        multipliers.speed, // Vary speed by depth
-      size: size * (0.4 + depth * 0.6) * multipliers.size, // Smaller flakes appear further away
-      sway:
-        (Math.random() * 1 - 0.5) *
-        (windScale === 0 ? 0 : windScale * (1 + depth)),
+          (0.5 + depth * 0.5)), // Vary speed by depth
+      size: size * (0.4 + depth * 0.6), // Smaller flakes appear further away
+      sway: (Math.random() * 1 - 0.5) * (1 + depth),
       opacity: (Math.random() * 0.6 + 0.3) * (0.6 + depth * 0.4),
       shape: generateSnowflakeShape(size),
       color: randomSnowflakeColor(),
       rotation: Math.random() * Math.PI * 2,
       rotationSpeed: (Math.random() - 0.5) * 0.02, // Gentle rotation
-      sparkle: (() => {
-        const sparkleMultiplier = multipliers.sparkle;
-        const sparkleChance = Math.min(0.85, 0.3 * sparkleMultiplier);
-        const sparkleStrength =
-          sparkleMultiplier > 0
-            ? Math.min(1.5, sparkleMultiplier) * Math.random()
-            : 0;
-        return Math.random() < sparkleChance ? sparkleStrength : 0;
-      })(), // Only some sparkle
+      sparkle: Math.random() > 0.7 ? Math.random() : 0, // Only some sparkle
       sparklePhase: Math.random() * Math.PI * 2,
       depth,
     };
@@ -122,8 +92,7 @@ export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
     { width, height }: Dimensions,
     quality: string
   ): Snowflake[] => {
-    const multipliers = getMultipliers();
-    let adjustedDensity = config.snowflake.density * multipliers.density;
+    let adjustedDensity = config.snowflake.density;
 
     const screenSizeFactor = Math.min(1, (width * height) / (1920 * 1080));
     adjustedDensity *= screenSizeFactor;
@@ -144,13 +113,11 @@ export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
     { width, height }: Dimensions,
     frameMultiplier: number = 1.0
   ): Snowflake[] => {
-    const { wind } = getMultipliers();
     windChangeTimer += frameMultiplier;
     if (windChangeTimer >= config.snowflake.windChangeInterval) {
       windChangeTimer = 0;
       // Very gentle wind - much softer movement
-      windStrength =
-        (Math.random() * 0.08 - 0.04) * width * 0.000008 * wind;
+      windStrength = (Math.random() * 0.08 - 0.04) * width * 0.000008;
     }
 
     return flakes.map((flake) => {
@@ -290,14 +257,12 @@ export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
     newDimensions: Dimensions,
     quality: string
   ): Snowflake[] => {
-    const { density } = getMultipliers();
     const densityMultiplier =
       quality === "low" ? 0.4 : quality === "medium" ? 0.7 : 1;
     const targetCount = Math.floor(
       newDimensions.width *
         newDimensions.height *
         config.snowflake.density *
-        density *
         densityMultiplier
     );
 
@@ -327,6 +292,5 @@ export const createSnowflakeSystem = (initialTuning?: SnowfallTuning) => {
     draw,
     adjustToResize,
     setQuality,
-    setTuning,
   };
 };

@@ -170,8 +170,8 @@
   }
 
   .loading-spinner {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border: 3px solid var(--border-color, #e0e0e0);
     border-top: 3px solid var(--primary-color, #007bff);
     border-radius: 50%;

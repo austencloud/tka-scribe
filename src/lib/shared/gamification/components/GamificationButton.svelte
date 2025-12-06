@@ -120,10 +120,10 @@
 <style>
   .gamification-button {
     /* Match ProfileButton sizing - WCAG AAA minimum touch target */
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    min-height: 56px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);

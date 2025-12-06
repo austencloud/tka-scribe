@@ -279,8 +279,8 @@ Provides quick access to common device dimensions for responsive testing.
   }
 
   .close-btn {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     background: transparent;
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
     border-radius: var(--border-radius-md, 8px);

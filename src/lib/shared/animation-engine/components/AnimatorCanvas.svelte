@@ -6,7 +6,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { resolve, loadPixiModule, loadFeatureModule, tryResolve } from "$lib/shared/inversify/di";
+  import {
+    resolve,
+    loadPixiModule,
+    loadFeatureModule,
+    tryResolve,
+  } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
@@ -78,9 +83,15 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       // Now resolve services
       svgGenerator = resolve(TYPES.ISVGGenerator) as ISVGGenerator;
       settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
-      orchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
-      trailCaptureService = resolve(TYPES.ITrailCaptureService) as ITrailCaptureService;
-      turnsTupleGenerator = resolve(TYPES.ITurnsTupleGeneratorService) as ITurnsTupleGeneratorService;
+      orchestrator = resolve(
+        TYPES.ISequenceAnimationOrchestrator
+      ) as ISequenceAnimationOrchestrator;
+      trailCaptureService = resolve(
+        TYPES.ITrailCaptureService
+      ) as ITrailCaptureService;
+      turnsTupleGenerator = resolve(
+        TYPES.ITurnsTupleGeneratorService
+      ) as ITurnsTupleGeneratorService;
       servicesReady = true;
       return true;
     } catch (err) {
@@ -100,7 +111,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   let displayedTurnsTuple = $state<string>("(s, 0, 0)");
   let displayedBeatNumber = $state<number | null>(null);
   let isNewLetter = $state(false);
-  const GLYPH_TRANSITION_DURATION_MS = 300;
+  const GLYPH_TRANSITION_DURATION_MS = 200;
 
   // Convert float currentBeat to integer beat number for display
   // NOTE: We derive from beatData instead of currentBeat because currentBeat prop isn't reactive
@@ -108,7 +119,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     if (!sequenceData || !beatData) return 0;
 
     // Find the index of the current beatData in the sequence
-    const beatIndex = sequenceData.beats?.findIndex(b => b === beatData);
+    const beatIndex = sequenceData.beats?.findIndex((b) => b === beatData);
     if (beatIndex !== undefined && beatIndex >= 0) {
       return beatIndex + 1; // Beat numbers are 1-indexed
     }
@@ -239,24 +250,37 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   onMount(() => {
     // Load initial visibility settings
     gridVisibleFromManager = animationVisibilityManager.getVisibility("grid");
-    beatNumbersVisibleFromManager = animationVisibilityManager.getVisibility("beatNumbers");
+    beatNumbersVisibleFromManager =
+      animationVisibilityManager.getVisibility("beatNumbers");
     propsVisibleFromManager = animationVisibilityManager.getVisibility("props");
-    trailsVisibleFromManager = animationVisibilityManager.getVisibility("trails");
-    tkaGlyphVisibleFromManager = animationVisibilityManager.getVisibility("tkaGlyph");
-    turnNumbersVisibleFromManager = animationVisibilityManager.getVisibility("turnNumbers");
-    blueMotionVisibleFromManager = animationVisibilityManager.getVisibility("blueMotion");
-    redMotionVisibleFromManager = animationVisibilityManager.getVisibility("redMotion");
+    trailsVisibleFromManager =
+      animationVisibilityManager.getVisibility("trails");
+    tkaGlyphVisibleFromManager =
+      animationVisibilityManager.getVisibility("tkaGlyph");
+    turnNumbersVisibleFromManager =
+      animationVisibilityManager.getVisibility("turnNumbers");
+    blueMotionVisibleFromManager =
+      animationVisibilityManager.getVisibility("blueMotion");
+    redMotionVisibleFromManager =
+      animationVisibilityManager.getVisibility("redMotion");
 
     // Register observer for visibility changes
     const visibilityObserver = () => {
       gridVisibleFromManager = animationVisibilityManager.getVisibility("grid");
-      beatNumbersVisibleFromManager = animationVisibilityManager.getVisibility("beatNumbers");
-      propsVisibleFromManager = animationVisibilityManager.getVisibility("props");
-      trailsVisibleFromManager = animationVisibilityManager.getVisibility("trails");
-      tkaGlyphVisibleFromManager = animationVisibilityManager.getVisibility("tkaGlyph");
-      turnNumbersVisibleFromManager = animationVisibilityManager.getVisibility("turnNumbers");
-      blueMotionVisibleFromManager = animationVisibilityManager.getVisibility("blueMotion");
-      redMotionVisibleFromManager = animationVisibilityManager.getVisibility("redMotion");
+      beatNumbersVisibleFromManager =
+        animationVisibilityManager.getVisibility("beatNumbers");
+      propsVisibleFromManager =
+        animationVisibilityManager.getVisibility("props");
+      trailsVisibleFromManager =
+        animationVisibilityManager.getVisibility("trails");
+      tkaGlyphVisibleFromManager =
+        animationVisibilityManager.getVisibility("tkaGlyph");
+      turnNumbersVisibleFromManager =
+        animationVisibilityManager.getVisibility("turnNumbers");
+      blueMotionVisibleFromManager =
+        animationVisibilityManager.getVisibility("blueMotion");
+      redMotionVisibleFromManager =
+        animationVisibilityManager.getVisibility("redMotion");
     };
 
     animationVisibilityManager.registerObserver(visibilityObserver);
@@ -507,7 +531,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     // If sequence changed, clear old data
     if (previousSequenceId !== null && previousSequenceId !== newSequenceId) {
-      console.log(`🧹 Sequence changed (${previousSequenceId} -> ${newSequenceId}), clearing caches to prevent memory leak`);
+      console.log(
+        `🧹 Sequence changed (${previousSequenceId} -> ${newSequenceId}), clearing caches to prevent memory leak`
+      );
       pathCache?.clear();
       framePreRenderer?.clear();
       trailCaptureService?.clearTrails();
@@ -525,7 +551,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       // Playback stopped - clear pre-rendered frames to free memory
       // Keep path cache (it's small) but clear frame bitmaps (they're large)
       if (framePreRenderer && preRenderedFramesReady) {
-        console.log(`🧹 Playback stopped, clearing pre-rendered frames to free memory`);
+        console.log(
+          `🧹 Playback stopped, clearing pre-rendered frames to free memory`
+        );
         framePreRenderer.clear();
         preRenderedFramesReady = false;
       }
@@ -593,10 +621,15 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
           pixiError = null;
           try {
             await loadPixiModule();
-            pixiRenderer = resolve(TYPES.IPixiAnimationRenderer) as IPixiAnimationRenderer;
+            pixiRenderer = resolve(
+              TYPES.IPixiAnimationRenderer
+            ) as IPixiAnimationRenderer;
             // Create frame pre-renderer now that pixi is available
             if (orchestrator) {
-              framePreRenderer = new SequenceFramePreRenderer(orchestrator, pixiRenderer);
+              framePreRenderer = new SequenceFramePreRenderer(
+                orchestrator,
+                pixiRenderer
+              );
             }
           } catch (err) {
             pixiError = "Failed to load animation renderer";
@@ -871,25 +904,22 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     // DUAL-MODE RENDERING: Preview vs Perfect Playback
     // ============================================================================
 
-    // MODE 1: Perfect Pre-rendered Frames (when ready)
-    // TEMPORARILY DISABLED to test live glyph rendering
-    if (false && preRenderedFramesReady && framePreRenderer?.isReady()) {
-      const frame = framePreRenderer?.getFrameAtBeat(currentBeat);
-      if (frame) {
-        // Get the PixiJS canvas and draw pre-rendered frame directly
-        const canvas = pixiRenderer.getCanvas();
-        if (canvas) {
-          const ctx = canvas.getContext("2d");
-          if (ctx) {
-            // Clear and draw pre-rendered frame
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-            return; // Done! Perfect smooth playback
-          }
-        }
-      }
-      // If frame lookup failed, fall through to preview mode
-    }
+    // MODE 1: Perfect Pre-rendered Frames (TEMPORARILY DISABLED to test live glyph rendering)
+    // TODO: Re-enable when frame pre-rendering is ready
+    // if (preRenderedFramesReady && framePreRenderer?.isReady()) {
+    //   const frame = framePreRenderer?.getFrameAtBeat(currentBeat);
+    //   if (frame) {
+    //     const canvas = pixiRenderer?.getCanvas();
+    //     if (canvas) {
+    //       const ctx = canvas.getContext("2d");
+    //       if (ctx) {
+    //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //         ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+    //         return;
+    //       }
+    //     }
+    //   }
+    // }
 
     // MODE 2: Preview/Live Rendering (immediate, may stutter)
     // Get turn tuple for glyph rendering
@@ -956,16 +986,25 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     // Apply animation visibility settings
     const effectiveGridVisible = gridVisible && gridVisibleFromManager;
     const effectivePropsVisible = propsVisibleFromManager;
-    const effectiveTrailsVisible = trailsVisibleFromManager && trailSettings.enabled;
+    const effectiveTrailsVisible =
+      trailsVisibleFromManager && trailSettings.enabled;
     const effectiveBlueMotionVisible = blueMotionVisibleFromManager;
     const effectiveRedMotionVisible = redMotionVisibleFromManager;
 
     // Render scene using PixiJS
     pixiRenderer.renderScene({
-      blueProp: effectivePropsVisible && effectiveBlueMotionVisible ? blueProp : null,
-      redProp: effectivePropsVisible && effectiveRedMotionVisible ? redProp : null,
-      secondaryBlueProp: effectivePropsVisible && effectiveBlueMotionVisible ? secondaryBlueProp : null,
-      secondaryRedProp: effectivePropsVisible && effectiveRedMotionVisible ? secondaryRedProp : null,
+      blueProp:
+        effectivePropsVisible && effectiveBlueMotionVisible ? blueProp : null,
+      redProp:
+        effectivePropsVisible && effectiveRedMotionVisible ? redProp : null,
+      secondaryBlueProp:
+        effectivePropsVisible && effectiveBlueMotionVisible
+          ? secondaryBlueProp
+          : null,
+      secondaryRedProp:
+        effectivePropsVisible && effectiveRedMotionVisible
+          ? secondaryRedProp
+          : null,
       gridVisible: effectiveGridVisible,
       gridMode: gridMode?.toString() ?? null,
       letter: letter ?? null,
@@ -974,8 +1013,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       redPropDimensions,
       blueTrailPoints: effectiveTrailsVisible ? blueTrailPoints : [],
       redTrailPoints: effectiveTrailsVisible ? redTrailPoints : [],
-      secondaryBlueTrailPoints: effectiveTrailsVisible ? secondaryBlueTrailPoints : [],
-      secondaryRedTrailPoints: effectiveTrailsVisible ? secondaryRedTrailPoints : [],
+      secondaryBlueTrailPoints: effectiveTrailsVisible
+        ? secondaryBlueTrailPoints
+        : [],
+      secondaryRedTrailPoints: effectiveTrailsVisible
+        ? secondaryRedTrailPoints
+        : [],
       trailSettings,
       currentTime, // Trail service manages animation-relative timestamps internally
     });
@@ -987,7 +1030,11 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   <GlyphRenderer {letter} {beatData} onSvgReady={handleGlyphSvgReady} />
 {/if}
 
-<div class="canvas-wrapper" bind:this={containerElement} data-transparent={backgroundAlpha === 0 ? "true" : "false"}>
+<div
+  class="canvas-wrapper"
+  bind:this={containerElement}
+  data-transparent={backgroundAlpha === 0 ? "true" : "false"}
+>
   <!-- DOM overlay glyph (visible on top of canvas) -->
   <div class="glyph-overlay">
     <!-- Fading out glyph (previous letter + beat number) -->
@@ -1001,7 +1048,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
           {#if fadingOutLetter && tkaGlyphVisibleFromManager}
             <TKAGlyph
               letter={fadingOutLetter}
-              turnsTuple={fadingOutTurnsTuple}
+              turnsTuple={fadingOutTurnsTuple ?? "(s, 0, 0)"}
               pictographData={null}
               x={50}
               y={800}
@@ -1108,11 +1155,11 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   }
 
   .glyph-wrapper.fade-out {
-    animation: glyphFadeOut 300ms ease-out forwards;
+    animation: glyphFadeOut 200ms ease-out forwards;
   }
 
   .glyph-wrapper.fade-in {
-    animation: glyphFadeIn 300ms ease-in forwards;
+    animation: glyphFadeIn 200ms ease-in forwards;
   }
 
   @keyframes glyphFadeOut {

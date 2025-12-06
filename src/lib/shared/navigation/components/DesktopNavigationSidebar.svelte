@@ -663,23 +663,6 @@
     position: relative;
   }
 
-  .modules-container::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .modules-container::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .modules-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-  }
-
-  .modules-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
   /* ============================================================================
      ANIMATIONS & TRANSITIONS
      ============================================================================ */

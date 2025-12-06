@@ -127,12 +127,6 @@
     color: #a78bfa;
   }
 
-  .subtitle {
-    margin: 4px 0 0 0;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
   .tab-content {
     flex: 1;
     overflow-y: auto;

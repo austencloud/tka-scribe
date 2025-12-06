@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letter Constraints Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #f0f0f0;
+    }
+    .test-output {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border-left: 4px solid #4ade80;
+    }
+    .test-output.error {
+      border-left-color: #f87171;
+    }
+    .stats {
+      background: #3a3a3a;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    button {
+      background: #4ade80;
+      color: #1a1a1a;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-family: monospace;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #22c55e;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Letter Constraint Generation Test</h1>
+  <p>This test verifies the rejection sampling approach for letter constraints.</p>
+
+  <div>
+    <button onclick="runFullTest()">Run Full Test (All Letters)</button>
+    <button onclick="runQuickTest()">Quick Test (Letter A, 5 iterations)</button>
+    <button onclick="clearResults()">Clear Results</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script type="module">
+    import { container } from '/src/lib/shared/inversify/container.js';
+    import { TYPES } from '/src/lib/shared/inversify/types.js';
+    import { Letter } from '/src/lib/shared/foundation/domain/models/Letter.js';
+    import { GridMode } from '/src/lib/shared/pictograph/grid/domain/enums/grid-enums.js';
+    import { PropType } from '/src/lib/shared/pictograph/prop/domain/enums/PropType.js';
+    import { DifficultyLevel } from '/src/lib/features/create/generate/shared/domain/models/generate-models.js';
+    import { ensureContainerInitialized, loadFeatureModule } from '/src/lib/shared/inversify/container.js';
+
+    let orchestrationService;
+
+    async function init() {
+      await ensureContainerInitialized();
+      await loadFeatureModule('create');
+      orchestrationService = container.get(TYPES.IGenerationOrchestrationService);
+      console.log('✅ Container initialized and services loaded');
+    }
+
+    async function testLetter(letter, letterName, iterations = 1) {
+      const results = [];
+
+      for (let i = 0; i < iterations; i++) {
+        const startTime = Date.now();
+
+        try {
+          const sequence = await orchestrationService.generateSequence({
+            mode: 'freeform',
+            length: 16,
+            gridMode: GridMode.DIAMOND,
+            propType: PropType.FAN,
+            difficulty: DifficultyLevel.INTERMEDIATE,
+            mustContainLetters: [letter],
+          });
+
+          const endTime = Date.now();
+          const word = sequence.word || '';
+          const letterStr = letter.toString();
+          const contains = word.includes(letterStr);
+
+          results.push({
+            success: true,
+            word,
+            duration: endTime - startTime,
+            contains,
+          });
+        } catch (error) {
+          const endTime = Date.now();
+          results.push({
+            success: false,
+            error: error.message,
+            duration: endTime - startTime,
+          });
+        }
+      }
+
+      return {
+        letter: letterName,
+        iterations,
+        results,
+        stats: calculateStats(results),
+      };
+    }
+
+    function calculateStats(results) {
+      const successful = results.filter(r => r.success && r.contains);
+      const failed = results.filter(r => !r.success || !r.contains);
+      const durations = successful.map(r => r.duration);
+
+      return {
+        successCount: successful.length,
+        failCount: failed.length,
+        successRate: (successful.length / results.length * 100).toFixed(1),
+        avgDuration: durations.length ? (durations.reduce((a, b) => a + b, 0) / durations.length).toFixed(0) : 0,
+        minDuration: durations.length ? Math.min(...durations) : 0,
+        maxDuration: durations.length ? Math.max(...durations) : 0,
+        words: successful.map(r => r.word),
+      };
+    }
+
+    function displayResult(testResult) {
+      const { letter, iterations, stats } = testResult;
+      const div = document.createElement('div');
+      div.className = stats.failCount > 0 ? 'test-output error' : 'test-output';
+
+      div.innerHTML = `
+        <strong>${letter}</strong> (${iterations} iteration${iterations > 1 ? 's' : ''})<br>
+        Success: ${stats.successCount}/${iterations} (${stats.successRate}%)<br>
+        Avg time: ${stats.avgDuration}ms (min: ${stats.minDuration}ms, max: ${stats.maxDuration}ms)<br>
+        ${stats.words.length > 0 ? `Words: ${stats.words.join(', ')}` : 'No successful generations'}
+      `;
+
+      document.getElementById('results').appendChild(div);
+    }
+
+    window.runQuickTest = async function() {
+      document.getElementById('results').innerHTML = '<div class="test-output">Running quick test...</div>';
+      await init();
+
+      const result = await testLetter(Letter.A, 'A (Type 1: Dual-Shift)', 5);
+      document.getElementById('results').innerHTML = '';
+      displayResult(result);
+    };
+
+    window.runFullTest = async function() {
+      document.getElementById('results').innerHTML = '<div class="test-output">Running full test...</div>';
+      await init();
+
+      const testLetters = [
+        { letter: Letter.A, name: 'A (Type 1: Dual-Shift)' },
+        { letter: Letter.W, name: 'W (Type 2: Shift)' },
+        { letter: Letter.W_DASH, name: "W' (Type 3: Cross-Shift)" },
+        { letter: Letter.PHI, name: 'Φ (Type 4: Dash)' },
+        { letter: Letter.ALPHA, name: 'α (Type 6: Static)' },
+      ];
+
+      document.getElementById('results').innerHTML = '';
+
+      for (const { letter, name } of testLetters) {
+        const result = await testLetter(letter, name, 3);
+        displayResult(result);
+      }
+
+      // Overall stats
+      const allTests = document.querySelectorAll('.test-output:not(.error)').length;
+      const failedTests = document.querySelectorAll('.test-output.error').length;
+      const statsDiv = document.createElement('div');
+      statsDiv.className = 'stats';
+      statsDiv.innerHTML = `
+        <strong>Overall Results:</strong><br>
+        Passed: ${allTests}/${allTests + failedTests}<br>
+        Failed: ${failedTests}/${allTests + failedTests}
+      `;
+      document.getElementById('results').appendChild(statsDiv);
+    };
+
+    window.clearResults = function() {
+      document.getElementById('results').innerHTML = '';
+    };
+
+    console.log('Test page loaded. Click buttons above to run tests.');
+  </script>
+</body>
+</html>

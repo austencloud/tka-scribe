@@ -4,6 +4,7 @@ Presentational component for a single toggle option with icon and label
 -->
 <script lang="ts">
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
+  import CircleQuarterIcon from "$lib/shared/icons/CircleQuarterIcon.svelte";
 
   let {
     label,
@@ -22,8 +23,15 @@ Presentational component for a single toggle option with icon and label
   // Helper function to detect if icon is a Font Awesome icon name
   function isFontAwesomeIcon(iconStr: string | undefined): boolean {
     if (!iconStr) return false;
+    // Custom icons handled separately
+    if (iconStr === "circle-quarter-custom") return false;
     // Font Awesome icon names are lowercase with hyphens only
     return /^[a-z-]+$/.test(iconStr);
+  }
+
+  // Helper function to detect custom icons
+  function isCustomIcon(iconStr: string | undefined): boolean {
+    return iconStr === "circle-quarter-custom";
   }
 </script>
 
@@ -39,7 +47,9 @@ Presentational component for a single toggle option with icon and label
 >
   {#if icon && !isLandscapeMobile}
     <span class="option-icon">
-      {#if isFontAwesomeIcon(icon)}
+      {#if isCustomIcon(icon)}
+        <CircleQuarterIcon size="1em" />
+      {:else if isFontAwesomeIcon(icon)}
         <FontAwesomeIcon {icon} size="1em" />
       {:else}
         {icon}

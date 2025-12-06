@@ -98,7 +98,11 @@
     gap: 12px;
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, rgba(25, 25, 35, 0.95) 0%, rgba(30, 30, 40, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(25, 25, 35, 0.95) 0%,
+      rgba(30, 30, 40, 0.95) 100%
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     text-align: left;
@@ -108,14 +112,22 @@
   }
 
   .feedback-card:hover {
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.98) 0%, rgba(35, 35, 45, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.98) 0%,
+      rgba(35, 35, 45, 0.98) 100%
+    );
     border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
     transform: translateY(-1px);
   }
 
   .feedback-card.selected {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.3) 0%,
+      rgba(59, 130, 246, 0.2) 100%
+    );
     border-color: rgba(59, 130, 246, 0.6);
     box-shadow:
       0 6px 20px rgba(59, 130, 246, 0.3),
@@ -123,7 +135,11 @@
   }
 
   .feedback-card.needs-confirmation {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.25) 0%,
+      rgba(245, 158, 11, 0.15) 100%
+    );
     border-color: rgba(245, 158, 11, 0.5);
     box-shadow:
       0 4px 16px rgba(245, 158, 11, 0.25),
@@ -131,7 +147,11 @@
   }
 
   .feedback-card.needs-confirmation:hover {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.32) 0%, rgba(245, 158, 11, 0.22) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.32) 0%,
+      rgba(245, 158, 11, 0.22) 100%
+    );
     border-color: rgba(245, 158, 11, 0.6);
     box-shadow:
       0 6px 20px rgba(245, 158, 11, 0.35),
@@ -147,7 +167,8 @@
     width: 40px;
     height: 40px;
     flex-shrink: 0;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--type-color) 35%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--type-color) 20%, rgba(15, 15, 20, 0.9))
     );
@@ -190,7 +211,8 @@
     align-items: center;
     gap: 4px;
     padding: 3px 8px;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--badge-color) 40%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--badge-color) 25%, rgba(15, 15, 20, 0.9))
     );
@@ -204,34 +226,6 @@
   }
 
   .status-badge i {
-    font-size: 0.625rem;
-  }
-
-  .confirm-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    background: rgba(245, 158, 11, 0.2);
-    border-radius: 12px;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: #f59e0b;
-    white-space: nowrap;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.7;
-    }
-  }
-
-  .confirm-badge i {
     font-size: 0.625rem;
   }
 

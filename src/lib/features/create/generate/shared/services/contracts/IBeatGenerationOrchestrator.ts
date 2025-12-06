@@ -8,6 +8,7 @@ import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enu
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { PropContinuity } from "../../domain/models/generate-models";
 import type { TurnAllocation } from "./ITurnAllocator";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 
 export interface BeatGenerationOptions {
   level: number;

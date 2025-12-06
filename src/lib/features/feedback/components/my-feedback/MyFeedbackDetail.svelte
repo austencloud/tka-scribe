@@ -39,7 +39,12 @@
 <div class="detail-panel">
   <!-- Header -->
   <header class="panel-header">
-    <button class="close-button" onclick={onClose} type="button">
+    <button
+      class="close-button"
+      onclick={onClose}
+      type="button"
+      aria-label="Close detail panel"
+    >
       <i class="fas fa-times"></i>
     </button>
     <div class="header-meta">
@@ -193,7 +198,11 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(35, 35, 45, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.95) 0%,
+      rgba(35, 35, 45, 0.95) 100%
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.7);
@@ -203,7 +212,11 @@
   }
 
   .close-button:hover {
-    background: linear-gradient(135deg, rgba(40, 40, 50, 0.98) 0%, rgba(45, 45, 55, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(40, 40, 50, 0.98) 0%,
+      rgba(45, 45, 55, 0.98) 100%
+    );
     border-color: rgba(255, 255, 255, 0.3);
     color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -223,7 +236,8 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--badge-color) 40%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--badge-color) 25%, rgba(15, 15, 20, 0.9))
     );
@@ -268,15 +282,13 @@
   /* Sections */
   .description-section,
   .context-section,
-  .response-section,
-  .confirmation-section {
+  .response-section {
     margin-bottom: 20px;
   }
 
   .description-section h3,
   .context-section h3,
-  .response-section h3,
-  .confirmation-section h3 {
+  .response-section h3 {
     margin: 0 0 8px 0;
     font-size: 0.75rem;
     font-weight: 600;
@@ -312,7 +324,11 @@
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(35, 35, 45, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.95) 0%,
+      rgba(35, 35, 45, 0.95) 100%
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 6px;
     font-size: 0.8125rem;
@@ -328,7 +344,11 @@
   /* Response card */
   .response-card {
     padding: 12px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(59, 130, 246, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25) 0%,
+      rgba(59, 130, 246, 0.15) 100%
+    );
     border: 1.5px solid rgba(59, 130, 246, 0.5);
     border-radius: 10px;
     box-shadow:
@@ -351,7 +371,11 @@
 
   /* Resolution card styling */
   .response-card.resolution {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.25) 0%,
+      rgba(16, 185, 129, 0.15) 100%
+    );
     border: 1.5px solid rgba(16, 185, 129, 0.5);
     box-shadow:
       0 4px 16px rgba(16, 185, 129, 0.2),

@@ -228,6 +228,62 @@ export function registerCreateShortcuts(
     },
   });
 
+  // Ctrl+Z - Undo last action
+  service.register({
+    id: "create.undo",
+    label: "Undo",
+    description: "Undo the last action in the current tab",
+    key: "z",
+    modifiers: ["ctrl"],
+    context: "create",
+    scope: "sequence-management",
+    priority: "high",
+    action: () => {
+      const ref = getCreateModuleRef();
+      if (!ref) {
+        debug.log("Undo - Create module reference not available");
+        return;
+      }
+
+      const { CreateModuleState } = ref;
+      const success = CreateModuleState.undo();
+
+      if (success) {
+        console.log("⌨️ Ctrl+Z - Undo successful");
+      } else {
+        debug.log("Ctrl+Z - Nothing to undo");
+      }
+    },
+  });
+
+  // Ctrl+Shift+Z - Redo last undone action
+  service.register({
+    id: "create.redo",
+    label: "Redo",
+    description: "Redo the last undone action in the current tab",
+    key: "z",
+    modifiers: ["ctrl", "shift"],
+    context: "create",
+    scope: "sequence-management",
+    priority: "high",
+    action: () => {
+      const ref = getCreateModuleRef();
+      if (!ref) {
+        debug.log("Redo - Create module reference not available");
+        return;
+      }
+
+      const { CreateModuleState } = ref;
+      const success = CreateModuleState.redo();
+
+      if (success) {
+        console.log("⌨️ Ctrl+Shift+Z - Redo successful");
+      } else {
+        debug.log("Ctrl+Shift+Z - Nothing to redo");
+      }
+    },
+  });
+
   // Backspace - Delete selected beat
   service.register({
     id: "create.delete-beat",

@@ -219,10 +219,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    min-height: 56px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

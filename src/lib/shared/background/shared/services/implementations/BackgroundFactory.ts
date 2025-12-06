@@ -6,7 +6,6 @@ import type { QualityLevel } from "../../domain/types/background-types";
 import { BackgroundType } from "../../domain/enums/background-enums";
 import { getContainerInstance, resolve } from "../../../../inversify/di";
 import { TYPES } from "../../../../inversify/types";
-import type { SnowfallTuning } from "../../domain/constants/BackgroundConfigs";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {
@@ -14,9 +13,6 @@ interface BackgroundFactoryParams {
   quality: QualityLevel;
   initialQuality: QualityLevel;
   accessibility?: Record<string, unknown>;
-  settings?: {
-    snowfallTuning?: SnowfallTuning;
-  };
   thumbnailMode?: boolean;
   // Simple background settings
   backgroundColor?: string;
@@ -117,9 +113,7 @@ export class BackgroundFactory {
       }
       case BackgroundType.SNOWFALL: {
         const { SnowfallBackgroundSystem } = await backgroundLoaders.snowfall();
-        backgroundSystem = new SnowfallBackgroundSystem(
-          options.settings?.snowfallTuning
-        );
+        backgroundSystem = new SnowfallBackgroundSystem();
         break;
       }
       case BackgroundType.NIGHT_SKY: {

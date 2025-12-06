@@ -18,6 +18,10 @@ import type { ISequenceTransformationService } from "../services/contracts/ISequ
 import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
+import type { IUndoService } from "../services/contracts/IUndoService";
+import { createUndoController } from "./create-module/undo-controller.svelte";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
 
 /**
  * Creates generator tab state for generator-specific concerns
@@ -53,6 +57,20 @@ export function createGeneratorTabState(
         ...(sequenceStatisticsService && { sequenceStatisticsService }),
         ...(sequenceTransformationService && { sequenceTransformationService }),
         ...(sequenceValidationService && { sequenceValidationService }),
+      })
+    : null;
+
+  // Generator tab has its own independent undo controller
+  const undoService = resolve<IUndoService>(TYPES.IUndoService);
+  const undoController = sequenceState
+    ? createUndoController({
+        undoService,
+        sequenceState,
+        getActiveSection: () => "generator",
+        setActiveSectionInternal: async (panel, addToHistory) => {
+          // Generator tab doesn't need to change active section since it's always generator
+          // This is just for compatibility with the undo controller interface
+        },
       })
     : null;
 
@@ -169,6 +187,32 @@ export function createGeneratorTabState(
     // Sequence state access
     get sequenceState() {
       return sequenceState;
+    },
+
+    // Undo controller (tab-scoped)
+    get undoController() {
+      return undoController;
+    },
+    get canUndo() {
+      return undoController?.canUndo || false;
+    },
+    get canRedo() {
+      return undoController?.canRedo || false;
+    },
+    get undoHistory() {
+      return undoController?.undoHistory || [];
+    },
+    pushUndoSnapshot: (type: any, metadata?: any) => {
+      undoController?.pushUndoSnapshot(type, metadata);
+    },
+    undo: () => {
+      return undoController?.undo() || false;
+    },
+    redo: () => {
+      return undoController?.redo() || false;
+    },
+    clearUndoHistory: () => {
+      undoController?.clearUndoHistory();
     },
 
     // State mutations

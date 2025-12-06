@@ -37,6 +37,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   import CustomizeCoordinator from "./coordinators/CustomizeCoordinator.svelte";
   import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
   import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
+  import VideoRecordCoordinator from "./coordinators/VideoRecordCoordinator.svelte";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -216,6 +217,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     if (panelState.isAnimationPanelOpen) currentPanelOpen = "animation";
     else if (panelState.isEditPanelOpen) currentPanelOpen = "edit";
     else if (panelState.isSharePanelOpen) currentPanelOpen = "share";
+    else if (panelState.isVideoRecordPanelOpen) currentPanelOpen = "videoRecord";
     else if (panelState.isFilterPanelOpen) currentPanelOpen = "filter";
     else if (panelState.isSequenceActionsPanelOpen) currentPanelOpen = "sequenceActions";
     else if (panelState.isCAPPanelOpen) currentPanelOpen = "cap";
@@ -248,6 +250,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         if (panelState.isAnimationPanelOpen) openPanelId = "animation";
         else if (panelState.isEditPanelOpen) openPanelId = "edit";
         else if (panelState.isSharePanelOpen) openPanelId = "share";
+        else if (panelState.isVideoRecordPanelOpen) openPanelId = "videoRecord";
         else if (panelState.isFilterPanelOpen) openPanelId = "filter";
         else if (panelState.isSequenceActionsPanelOpen) openPanelId = "sequenceActions";
         else if (panelState.isCAPPanelOpen) openPanelId = "cap";
@@ -269,6 +272,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         panelState.closeEditPanel();
         panelState.closeAnimationPanel();
         panelState.closeSharePanel();
+        panelState.closeVideoRecordPanel();
         panelState.closeFilterPanel();
         panelState.closeSequenceActionsPanel();
         panelState.closeCAPPanel();
@@ -289,6 +293,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
                 break;
               case "share":
                 panelState.openSharePanel();
+                break;
+              case "videoRecord":
+                panelState.openVideoRecordPanel();
                 break;
               case "filter":
                 panelState.openFilterPanel();
@@ -502,6 +509,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
               case "share":
                 panelState.openSharePanel();
                 break;
+              case "videoRecord":
+                panelState.openVideoRecordPanel();
+                break;
               case "filter":
                 panelState.openFilterPanel();
                 break;
@@ -565,6 +575,11 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   function handleOpenSharePanel() {
     if (!handlers) return;
     handlers.handleOpenSharePanel(panelState);
+  }
+
+  function handleOpenVideoRecordPanel() {
+    if (!handlers) return;
+    handlers.handleOpenVideoRecordPanel(panelState);
   }
 
   async function handleCreationMethodSelected(method: BuildModeId) {
@@ -719,6 +734,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
             onPlayAnimation={handlePlayAnimation}
             onClearSequence={handleClearSequence}
             onShare={handleOpenSharePanel}
+            onRecordVideo={handleOpenVideoRecordPanel}
             onSequenceActionsClick={handleOpenSequenceActions}
             onOptionSelected={handleOptionSelected}
             onOpenFilters={handleOpenFilterPanel}
@@ -736,6 +752,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 
   <!-- Share Coordinator -->
   <ShareCoordinator />
+
+  <!-- Video Record Coordinator -->
+  <VideoRecordCoordinator />
 
   <!-- Sequence Actions Coordinator -->
   <SequenceActionsCoordinator />

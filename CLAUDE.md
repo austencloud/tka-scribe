@@ -62,8 +62,37 @@ This project follows a **2025+ AI-assisted development approach**:
 - **Get confirmation** before proceeding with fixes
 
 ### /fb command behavior
-- When running `/fb`, **always display the feedback item verbatim first** before any analysis
-- This allows the user to read the original feedback before Claude begins working on it
+
+**CRITICAL FIRST STEP: Display feedback verbatim before ANY analysis**
+
+When running `/fb`, you MUST start your response with the raw feedback details in this exact format:
+
+```
+## Claimed Feedback: [Title or "Untitled"]
+
+**ID:** [document-id]
+**Type:** [bug/feature/enhancement]
+**Priority:** [low/medium/high]
+**User:** [username]
+**Created:** [timestamp]
+**Module/Tab:** [module] / [tab]
+
+---
+
+**Description:**
+[Full feedback text exactly as provided]
+
+---
+
+**Previous Notes:** [if any]
+
+**Subtasks:** [if any]
+
+---
+```
+
+**Then and only then** proceed with your assessment, interpretation, and recommendations.
+
 - **After implementing feedback**, provide clear testing instructions:
   - Summarize what was changed
   - List specific steps to verify the fix works

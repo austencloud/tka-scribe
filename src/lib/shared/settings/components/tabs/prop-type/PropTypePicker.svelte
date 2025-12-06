@@ -178,8 +178,8 @@
   }
 
   .close-button {
-    min-width: 56px;
-    min-height: 56px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: none;

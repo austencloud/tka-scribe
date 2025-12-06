@@ -44,6 +44,11 @@ export interface ICreateModuleHandlers {
   handleOpenSharePanel(panelState: PanelCoordinationState): void;
 
   /**
+   * Handle video record button click
+   */
+  handleOpenVideoRecordPanel(panelState: PanelCoordinationState): void;
+
+  /**
    * Handle creation method selection
    */
   handleCreationMethodSelected(

@@ -20,27 +20,31 @@
     onclick: () => void;
   }
 
-  let { mode, title, description, slotCount, gradient, onclick }: Props = $props();
+  let { mode, title, description, slotCount, gradient, onclick }: Props =
+    $props();
 
   // Visual preview configurations for each mode
-  const modePreviewConfig: Record<ComposeMode, { type: string; elements: any[] }> = {
+  const modePreviewConfig: Record<
+    ComposeMode,
+    { type: string; elements: any[] }
+  > = {
     single: {
       type: "single",
-      elements: [{ x: 50, y: 50, width: 60, height: 70 }]
+      elements: [{ x: 50, y: 50, width: 60, height: 70 }],
     },
     mirror: {
       type: "mirror",
       elements: [
         { x: 25, y: 50, width: 35, height: 60, mirrored: false },
-        { x: 75, y: 50, width: 35, height: 60, mirrored: true }
-      ]
+        { x: 75, y: 50, width: 35, height: 60, mirrored: true },
+      ],
     },
     tunnel: {
       type: "tunnel",
       elements: [
         { cx: 50, cy: 50, r: 35, opacity: 0.7 },
-        { cx: 50, cy: 50, r: 25, opacity: 0.9 }
-      ]
+        { cx: 50, cy: 50, r: 25, opacity: 0.9 },
+      ],
     },
     grid: {
       type: "grid",
@@ -48,16 +52,16 @@
         { x: 25, y: 25, size: 35 },
         { x: 75, y: 25, size: 35 },
         { x: 25, y: 75, size: 35 },
-        { x: 75, y: 75, size: 35 }
-      ]
+        { x: 75, y: 75, size: 35 },
+      ],
     },
     "side-by-side": {
       type: "side-by-side",
       elements: [
         { x: 25, y: 50, width: 40, height: 70 },
-        { x: 75, y: 50, width: 40, height: 70 }
-      ]
-    }
+        { x: 75, y: 50, width: 40, height: 70 },
+      ],
+    },
   };
 
   const previewConfig = $derived(modePreviewConfig[mode]);
@@ -66,7 +70,9 @@
   let hapticService: IHapticFeedbackService | undefined;
 
   try {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   } catch (error) {
     console.warn("ModeCard: Failed to resolve HapticFeedbackService", error);
   }
@@ -149,7 +155,8 @@
   <div class="mode-meta">
     <span class="slot-count">
       <i class="fas fa-layer-group"></i>
-      {slotCount} {slotCount === 1 ? 'sequence' : 'sequences'}
+      {slotCount}
+      {slotCount === 1 ? "sequence" : "sequences"}
     </span>
   </div>
 </button>
@@ -170,8 +177,11 @@
     border: none;
     border-radius: clamp(1rem, 6cqi, 1.5rem);
     cursor: pointer;
-    transition: transform var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
-                box-shadow var(--duration-fast, 150ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition:
+      transform var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      box-shadow var(--duration-fast, 150ms)
+        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     text-align: left;
     position: relative;
     overflow: hidden;
@@ -181,7 +191,11 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%
+    );
     pointer-events: none;
   }
 
@@ -196,7 +210,9 @@
     border-radius: clamp(0.375rem, 3cqi, 0.625rem);
     padding: clamp(0.25rem, 2cqi, 0.375rem);
     backdrop-filter: blur(4px);
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
     z-index: 1;
   }
 

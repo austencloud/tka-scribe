@@ -101,6 +101,7 @@
       }, 0);
       return () => document.removeEventListener("click", handleDocumentClick);
     }
+    return undefined;
   });
 </script>
 

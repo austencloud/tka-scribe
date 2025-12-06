@@ -26,6 +26,10 @@ import type { ISequenceValidationService } from "../services/contracts/ISequence
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { ICreateModuleState } from "../types/create-module-types";
+import type { IUndoService } from "../services/contracts/IUndoService";
+import { createUndoController } from "./create-module/undo-controller.svelte";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
 
 /**
  * Creates construct tab state for construct-specific concerns
@@ -88,6 +92,20 @@ export function createConstructTabState(
       })
     : null;
 
+  // Construct tab has its own independent undo controller
+  const undoService = resolve<IUndoService>(TYPES.IUndoService);
+  const undoController = sequenceState
+    ? createUndoController({
+        undoService,
+        sequenceState,
+        getActiveSection: () => createModuleState?.activeSection || "constructor",
+        setActiveSectionInternal: async (panel, addToHistory) => {
+          // Construct tab doesn't need to change active section since it's always constructor
+          // This is just for compatibility with the undo controller interface
+        },
+      })
+    : null;
+
   // Sub-states (construct-specific)
   // Start position state service using proper simplified state
   const startPositionStateService = createSimplifiedStartPositionState();
@@ -109,8 +127,8 @@ export function createConstructTabState(
       return;
     }
 
-    if (source === "user" && createModuleState?.pushUndoSnapshot) {
-      createModuleState.pushUndoSnapshot("SELECT_START_POSITION", {
+    if (source === "user" && undoController) {
+      undoController.pushUndoSnapshot("SELECT_START_POSITION", {
         description: "Select start position",
       });
     }
@@ -211,14 +229,13 @@ export function createConstructTabState(
         );
     }
 
-    // Register callbacks with Create Module State for undo functionality
-    // TODO: These callbacks need to be added to CreateModuleState type definition
-    createModuleState?.setShowStartPositionPickerCallback?.(() => {
+    // Register callbacks with local undo controller for undo functionality
+    undoController?.setShowStartPositionPickerCallback(() => {
       setShowStartPositionPicker(true);
     });
 
     // Register sync picker state callback for smart picker detection after undo
-    createModuleState?.setSyncPickerStateCallback?.(() => {
+    undoController?.setSyncPickerStateCallback(() => {
       syncPickerStateWithSequence();
     });
 
@@ -461,6 +478,32 @@ export function createConstructTabState(
     // Sub-states
     get startPositionStateService() {
       return startPositionStateService;
+    },
+
+    // Undo controller (tab-scoped)
+    get undoController() {
+      return undoController;
+    },
+    get canUndo() {
+      return undoController?.canUndo || false;
+    },
+    get canRedo() {
+      return undoController?.canRedo || false;
+    },
+    get undoHistory() {
+      return undoController?.undoHistory || [];
+    },
+    pushUndoSnapshot: (type: any, metadata?: any) => {
+      undoController?.pushUndoSnapshot(type, metadata);
+    },
+    undo: () => {
+      return undoController?.undo() || false;
+    },
+    redo: () => {
+      return undoController?.redo() || false;
+    },
+    clearUndoHistory: () => {
+      undoController?.clearUndoHistory();
     },
 
     // State mutations

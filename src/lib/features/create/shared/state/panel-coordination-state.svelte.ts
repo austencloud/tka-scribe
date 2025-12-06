@@ -60,6 +60,13 @@ export interface PanelCoordinationState {
   openSharePanel(): void;
   closeSharePanel(): void;
 
+  // Video Record Panel State
+  get isVideoRecordPanelOpen(): boolean;
+  set isVideoRecordPanelOpen(value: boolean);
+
+  openVideoRecordPanel(): void;
+  closeVideoRecordPanel(): void;
+
   // Filter Panel State
   get isFilterPanelOpen(): boolean;
 
@@ -148,6 +155,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Share panel state
   let isSharePanelOpen = $state(false);
 
+  // Video record panel state
+  let isVideoRecordPanelOpen = $state(false);
+
   // Filter panel state
   let isFilterPanelOpen = $state(false);
 
@@ -197,6 +207,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     isAnimating = false;
 
     isSharePanelOpen = false;
+    isVideoRecordPanelOpen = false;
     isFilterPanelOpen = false;
     isSequenceActionsPanelOpen = false;
 
@@ -307,6 +318,28 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     closeSharePanel() {
       isSharePanelOpen = false;
+    },
+
+    // Video Record Panel Getters
+    get isVideoRecordPanelOpen() {
+      return isVideoRecordPanelOpen;
+    },
+    set isVideoRecordPanelOpen(value: boolean) {
+      if (value) {
+        // Opening should respect mutual exclusivity rules
+        closeAllPanels();
+      }
+
+      isVideoRecordPanelOpen = value;
+    },
+
+    openVideoRecordPanel() {
+      closeAllPanels();
+      isVideoRecordPanelOpen = true;
+    },
+
+    closeVideoRecordPanel() {
+      isVideoRecordPanelOpen = false;
     },
 
     // Filter Panel Getters
@@ -474,6 +507,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isEditPanelOpen ||
         isAnimationPanelOpen ||
         isSharePanelOpen ||
+        isVideoRecordPanelOpen ||
         isFilterPanelOpen ||
         isSequenceActionsPanelOpen ||
         isCAPPanelOpen ||

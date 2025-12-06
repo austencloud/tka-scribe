@@ -1344,40 +1344,16 @@
     border-radius: var(--fb-radius-md);
   }
 
-  .context-row {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .context-row + .context-row {
-    padding-top: var(--fb-space-xs);
-    border-top: 1px solid var(--fb-border);
-  }
-
   .context-item {
     display: flex;
     flex-direction: column;
     gap: var(--fb-space-3xs);
   }
 
-  .context-label {
-    display: flex;
-    align-items: center;
-    gap: var(--fb-space-2xs);
-    font-size: var(--fb-text-xs);
-    color: var(--fb-text-subtle);
-  }
-
-  .context-label i {
-    width: 14px;
-    text-align: center;
-  }
-
   .context-value {
     font-size: var(--fb-text-sm);
     color: var(--fb-text);
     font-family: "SF Mono", ui-monospace, monospace;
-    padding-left: calc(14px + var(--fb-space-2xs));
   }
 
   .context-separator {

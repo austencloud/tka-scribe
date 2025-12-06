@@ -14,6 +14,7 @@
     isDragActive,
     isActiveTab = false,
     selectedItemId,
+    disableDrag = false,
     onDragStart,
     onDragEnd,
     onTouchDrag,
@@ -29,6 +30,7 @@
     isDragActive: boolean;
     isActiveTab?: boolean;
     selectedItemId: string | null;
+    disableDrag?: boolean;
     onDragStart: (item: FeedbackItem) => void;
     onDragEnd: () => void;
     onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
@@ -108,6 +110,7 @@
         <FeedbackKanbanCard
           {item}
           isSelected={selectedItemId === item.id}
+          {disableDrag}
           {onDragStart}
           {onDragEnd}
           {onTouchDrag}

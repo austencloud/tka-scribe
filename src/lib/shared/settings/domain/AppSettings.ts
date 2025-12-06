@@ -8,7 +8,6 @@
 import type { PropType } from "../../pictograph/prop/domain/enums/PropType";
 import type { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import type { BackgroundType } from "../../background/shared/domain/enums/background-enums";
-import type { SnowfallTuning } from "../../background/shared/domain/constants/BackgroundConfigs";
 
 export interface AppSettings {
   // Metadata for sync tracking (not persisted to Firebase)
@@ -31,7 +30,6 @@ export interface AppSettings {
   backgroundType?: BackgroundType;
   backgroundQuality?: "high" | "medium" | "low" | "minimal";
   backgroundEnabled?: boolean;
-  snowfallTuning?: SnowfallTuning;
 
   // Simple background settings
   backgroundColor?: string; // For solid color backgrounds

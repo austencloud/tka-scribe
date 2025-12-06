@@ -16,7 +16,15 @@
   }
 </script>
 
-<div class="settings-button-wrapper" onclick={handleClick}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+  class="settings-button-wrapper"
+  onclick={handleClick}
+  onkeydown={(e) =>
+    e.key === "Enter" && handleClick(e as unknown as MouseEvent)}
+  role="button"
+  tabindex="0"
+>
   <NavButton
     icon="<i class='fas fa-cog'></i>"
     label="Settings"

@@ -168,6 +168,27 @@ export function createUndoController({
     }
   }
 
+  function redo(): boolean {
+    const entry = undoService.redo();
+    if (!entry) {
+      return false;
+    }
+
+    // For redo, we want to restore the state that was undone
+    // This is typically stored in afterState, or we can get it from the current position
+    const afterState = entry.afterState;
+    if (!afterState) {
+      // If no afterState, just return true (the service already moved it back to undo history)
+      return true;
+    }
+
+    // Restore the sequence from the after state
+    sequenceState.setCurrentSequence(afterState.sequence);
+    restoreSelection(afterState.selectedBeatNumber);
+
+    return true;
+  }
+
   function clearUndoHistory() {
     undoService.clearHistory();
   }
@@ -187,6 +208,7 @@ export function createUndoController({
   return {
     pushUndoSnapshot,
     undo,
+    redo,
     clearUndoHistory,
     setShowStartPositionPickerCallback,
     setSyncPickerStateCallback,

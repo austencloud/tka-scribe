@@ -1,5 +1,6 @@
 <!-- FeedbackKanbanBoard - Kanban board layout for feedback management -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import type {
     FeedbackItem,
@@ -67,6 +68,11 @@
   // Defer dialog state
   let showDeferDialog = $state(false);
   let itemToDefer = $state<FeedbackItem | null>(null);
+
+  // Mobile view detection (matches container query breakpoint)
+  // When in mobile view (< 652px), we show tabs instead of columns, so drag-drop should be disabled
+  let isMobileView = $state(false);
+  let resizeObserver: ResizeObserver | null = null;
 
   // Drag state
   let draggedItem = $state<FeedbackItem | null>(null);
@@ -222,6 +228,25 @@
     deferDate = "";
     deferNotes = "";
   }
+
+  // Set up ResizeObserver to detect mobile view (< 652px container width)
+  onMount(() => {
+    const boardElement = document.querySelector(".kanban-board");
+    if (!boardElement) return;
+
+    resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width;
+        isMobileView = width < 652;
+      }
+    });
+
+    resizeObserver.observe(boardElement);
+
+    return () => {
+      resizeObserver?.disconnect();
+    };
+  });
 </script>
 
 <div class="kanban-board" style="--active-color: {activeStatusColor}">
@@ -263,6 +288,7 @@
         isDragActive={draggedItem !== null}
         isActiveTab={activeStatus === status}
         selectedItemId={manageState.selectedItem?.id ?? null}
+        disableDrag={isMobileView}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onTouchDrag={handleTouchDrag}
@@ -364,13 +390,26 @@
 
   <!-- Defer Dialog -->
   {#if showDeferDialog && itemToDefer}
-    <div class="defer-dialog-overlay" onclick={handleDeferCancel}>
-      <div class="defer-dialog" onclick={(e) => e.stopPropagation()}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="defer-dialog-overlay"
+      onclick={handleDeferCancel}
+      onkeydown={(e) => e.key === "Escape" && handleDeferCancel()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="defer-dialog-title"
+    >
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div
+        class="defer-dialog"
+        onclick={(e) => e.stopPropagation()}
+        onkeydown={(e) => e.stopPropagation()}
+      >
         <div class="dialog-header">
           <div class="dialog-icon">
             <i class="fas fa-clock"></i>
           </div>
-          <h3 class="dialog-title">Defer Feedback</h3>
+          <h3 class="dialog-title" id="defer-dialog-title">Defer Feedback</h3>
           <button
             type="button"
             class="close-button"
@@ -606,13 +645,13 @@
   /* ===== COLUMNS CONTAINER ===== */
   .columns-container {
     display: flex;
-    gap: clamp(16px, 3cqi, 32px);
+    gap: clamp(16px, 1cqi, 32px);
     flex: 1;
     /* Center with max-width for wide screens */
     width: 100%;
     margin: 0 auto;
     /* Generous padding that scales */
-    padding: clamp(16px, 3cqi, 32px);
+    padding: clamp(16px, 1cqi, 32px);
     overflow-x: auto;
     overflow-y: hidden;
   }

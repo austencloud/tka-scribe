@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { FeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
   import { TYPE_CONFIG } from "../../domain/models/feedback-models";
   import type { FeedbackType } from "../../domain/models/feedback-models";
@@ -21,6 +22,8 @@
   }>();
 
   let hapticService: IHapticFeedbackService | undefined;
+  let deviceDetector: IDeviceDetector | undefined;
+  let isMobileDevice = $state(false);
   let interimText = $state(""); // Store live streaming text
   let lastVoiceCommit = $state(""); // Track what voice text has been committed (for deduplication)
   let draftSaveStatus = $state<"idle" | "saving" | "saved">("idle");
@@ -31,6 +34,9 @@
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+    isMobileDevice = deviceDetector.isMobile();
 
     // Restore draft if form is empty and a draft exists
     if (
@@ -272,7 +278,7 @@
           value={displayText}
           oninput={(e) => handleManualInput(e.currentTarget.value)}
           onkeydown={handleKeydown}
-          placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."} (Shift+Enter to submit)`}
+          placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}${isMobileDevice ? "" : " (Shift+Enter to submit)"}`}
           rows="6"
         ></textarea>
         <div class="voice-input-wrapper">

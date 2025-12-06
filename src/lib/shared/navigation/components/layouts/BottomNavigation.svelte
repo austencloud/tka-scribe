@@ -159,7 +159,7 @@
     --nav-min-height: 64px;
 
     /* Button tokens */
-    --section-button-min: 50px;
+    --section-button-min: 52px;
     --section-button-max: 72px;
 
     /* Typography tokens */
@@ -183,7 +183,7 @@
     gap: var(--nav-gap);
     padding: var(--nav-padding);
     padding-bottom: max(var(--nav-padding), env(safe-area-inset-bottom));
-    min-height: var(--nav-min-height);
+    max-height: 56px;
 
     /* 2026 design: Solid confident surface with subtle module tint */
     background: linear-gradient(
@@ -236,8 +236,8 @@
     justify-content: center;
     align-items: center;
     min-width: 0;
-    /* Leave room for 50px avatar + 50px settings + gaps */
-    max-width: calc(100% - 96px - (var(--nav-gap) * 2));
+    /* Leave room for 52px avatar + 52px settings + gaps */
+    max-width: calc(100% - 104px - (var(--nav-gap) * 2));
     opacity: 1;
     transition: opacity var(--transition-smooth);
     pointer-events: auto;
@@ -271,10 +271,10 @@
   /* Special buttons (Settings) - solid module-colored */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto;
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    min-height: 56px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 0;
     background: transparent;
     border: 1px solid var(--module-color, #667eea);
@@ -365,7 +365,7 @@
   /* Icons only mode (<400px) - iPhone SE territory */
   @container bottom-nav (max-width: 399px) {
     .bottom-navigation :global(.nav-button.section) {
-      max-width: 56px;
+      max-width: 52px;
       padding: 6px 4px;
     }
 
@@ -409,7 +409,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 56px;
+    height: 52px;
     display: flex;
     align-items: flex-end;
     justify-content: center;

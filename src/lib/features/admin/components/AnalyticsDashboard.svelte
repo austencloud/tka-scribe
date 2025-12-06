@@ -278,7 +278,13 @@
       console.error("AnalyticsDashboard: Failed to get service", error);
       hasError = true;
       errorMessage = "Failed to initialize analytics service";
-      isLoading = false;
+      loadingSummary = false;
+      loadingActivity = false;
+      loadingContent = false;
+      loadingEngagement = false;
+      loadingEvents = false;
+      loadingModules = false;
+      loadingRecent = false;
     }
   });
 

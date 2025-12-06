@@ -202,7 +202,13 @@
   ariaLabel={version ? `Version ${version.version} details` : "Version details"}
 >
   {#if version}
-    <div class="panel-content" onclick={handlePanelClick}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="panel-content"
+      onclick={handlePanelClick}
+      onkeydown={() => {}}
+      role="presentation"
+    >
       <!-- Header -->
       <header class="panel-header">
         <button
@@ -376,10 +382,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    min-height: 56px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -1,24 +1,25 @@
 <!-- MyFeedbackList - List of tester's own feedback items -->
 <script lang="ts">
-  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
-  import { STATUS_CONFIG, TYPE_CONFIG, CONFIRMATION_STATUS_CONFIG } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
+  import {
+    STATUS_CONFIG,
+    TYPE_CONFIG,
+    CONFIRMATION_STATUS_CONFIG,
+  } from "../../domain/models/feedback-models";
   import MyFeedbackCard from "./MyFeedbackCard.svelte";
 
-  const {
-    items,
-    selectedItem,
-    onSelect,
-    hasMore,
-    isLoading,
-    onLoadMore,
-  } = $props<{
-    items: FeedbackItem[];
-    selectedItem: FeedbackItem | null;
-    onSelect: (item: FeedbackItem) => void;
-    hasMore: boolean;
-    isLoading: boolean;
-    onLoadMore: () => void;
-  }>();
+  const { items, selectedItem, onSelect, hasMore, isLoading, onLoadMore } =
+    $props<{
+      items: FeedbackItem[];
+      selectedItem: FeedbackItem | null;
+      onSelect: (item: FeedbackItem) => void;
+      hasMore: boolean;
+      isLoading: boolean;
+      onLoadMore: () => void;
+    }>();
 
   // Filter state
   let selectedStatus = $state<FeedbackStatus | "all">("all");
@@ -27,16 +28,23 @@
   const filteredItems = $derived(
     selectedStatus === "all"
       ? items
-      : items.filter((item) => item.status === selectedStatus)
+      : items.filter((item: FeedbackItem) => item.status === selectedStatus)
   );
 
   // Status order for sorting
-  const statusOrder: FeedbackStatus[] = ["new", "in-progress", "in-review", "completed", "archived"];
+  const statusOrder: FeedbackStatus[] = [
+    "new",
+    "in-progress",
+    "in-review",
+    "completed",
+    "archived",
+  ];
 
   // Scroll handler for infinite loading
   function handleScroll(e: Event) {
     const target = e.target as HTMLElement;
-    const nearBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 100;
+    const nearBottom =
+      target.scrollHeight - target.scrollTop - target.clientHeight < 100;
 
     if (nearBottom && hasMore && !isLoading) {
       onLoadMore();
@@ -56,7 +64,9 @@
       <span class="count">{items.length}</span>
     </button>
     {#each statusOrder as status}
-      {@const count = items.filter((item) => item.status === status).length}
+      {@const count = items.filter(
+        (item: FeedbackItem) => item.status === status
+      ).length}
       {#if count > 0}
         <button
           class="filter-chip"
@@ -76,7 +86,9 @@
     <header class="section-header">
       <i class="fas fa-list"></i>
       <span>
-        {selectedStatus === "all" ? "Your Feedback" : STATUS_CONFIG[selectedStatus].label}
+        {selectedStatus === "all"
+          ? "Your Feedback"
+          : STATUS_CONFIG[selectedStatus].label}
       </span>
       <span class="count">{filteredItems.length}</span>
     </header>
@@ -94,7 +106,11 @@
     {#if filteredItems.length === 0 && !isLoading}
       <div class="empty-filter">
         <i class="fas fa-filter"></i>
-        <span>No {selectedStatus === "all" ? "" : STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span>
+        <span
+          >No {selectedStatus === "all"
+            ? ""
+            : STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span
+        >
       </div>
     {/if}
 
@@ -132,7 +148,11 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(35, 35, 45, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.95) 0%,
+      rgba(35, 35, 45, 0.95) 100%
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     color: rgba(255, 255, 255, 0.7);
@@ -144,19 +164,29 @@
   }
 
   .filter-chip:hover {
-    background: linear-gradient(135deg, rgba(40, 40, 50, 0.98) 0%, rgba(45, 45, 55, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(40, 40, 50, 0.98) 0%,
+      rgba(45, 45, 55, 0.98) 100%
+    );
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
   }
 
   .filter-chip.active {
-    background: linear-gradient(135deg, var(--status-color, #3b82f6) 0%, color-mix(in srgb, var(--status-color, #3b82f6) 80%, black) 100%);
-    border: 1.5px solid color-mix(in srgb, var(--status-color, #3b82f6) 120%, white);
+    background: linear-gradient(
+      135deg,
+      var(--status-color, #3b82f6) 0%,
+      color-mix(in srgb, var(--status-color, #3b82f6) 80%, black) 100%
+    );
+    border: 1.5px solid
+      color-mix(in srgb, var(--status-color, #3b82f6) 120%, white);
     color: #ffffff;
     box-shadow:
       0 6px 16px color-mix(in srgb, var(--status-color, #3b82f6) 40%, black),
-      0 0 0 1px color-mix(in srgb, var(--status-color, #3b82f6) 50%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--status-color, #3b82f6) 50%, transparent);
     transform: translateY(-2px);
   }
 

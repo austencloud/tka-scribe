@@ -97,11 +97,18 @@
             <i class="fa fa-cog"></i>
           </button>
           <div class="main-buttons">
-            <button class="record"><i class="fa fa-circle"></i></button>
-            <button class="action pause"><i class="fa fa-pause"></i></button>
-            <button class="action snapshot"><i class="fa fa-camera"></i></button
+            <button class="record" aria-label="Record"
+              ><i class="fa fa-circle"></i></button
             >
-            <button class="action stop"><i class="fa fa-stop"></i></button>
+            <button class="action pause" aria-label="Pause"
+              ><i class="fa fa-pause"></i></button
+            >
+            <button class="action snapshot" aria-label="Take snapshot"
+              ><i class="fa fa-camera"></i></button
+            >
+            <button class="action stop" aria-label="Stop"
+              ><i class="fa fa-stop"></i></button
+            >
           </div>
           <div class="prop-tag">Club</div>
         </div>
@@ -116,21 +123,26 @@
           <button class="ghost sm" aria-label="Test camera">Test</button>
         </div>
         <div class="field">
-          <label>Session Name</label>
-          <input type="text" placeholder="Club Capture" value="Club Capture" />
+          <label for="session-name">Session Name</label>
+          <input
+            id="session-name"
+            type="text"
+            placeholder="Club Capture"
+            value="Club Capture"
+          />
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Prop</label>
-            <select>
+            <label for="prop-select">Prop</label>
+            <select id="prop-select">
               <option>Club</option>
               <option>Fan</option>
               <option>Buugeng</option>
             </select>
           </div>
           <div class="field">
-            <label>FPS</label>
-            <select>
+            <label for="fps-select">FPS</label>
+            <select id="fps-select">
               <option>10</option>
               <option selected>15</option>
               <option>30</option>

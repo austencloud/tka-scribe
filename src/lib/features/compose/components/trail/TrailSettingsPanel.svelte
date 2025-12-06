@@ -13,7 +13,12 @@
     TrackingMode,
     type TrailSettings,
   } from "../../../../shared/animation-engine/state/animation-settings-state.svelte";
+  import { getVisibilityStateManager } from "../../../../shared/pictograph/shared/state/visibility-state.svelte";
+  import { MotionColor } from "../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
   import ToggleSwitch from "../inputs/ToggleSwitch.svelte";
+
+  // Get visibility state manager instance
+  const visibilityState = getVisibilityStateManager();
   import ModernStepper from "../inputs/ModernStepper.svelte";
   import SwipeAdjuster from "../inputs/SwipeAdjuster.svelte";
 
@@ -22,8 +27,8 @@
     settings = undefined, // Optional override for backward compatibility
     compact = false,
     ultraCompact = false,
-    blueMotionVisible = $bindable(animationSettings.motionVisibility.blue),
-    redMotionVisible = $bindable(animationSettings.motionVisibility.red),
+    blueMotionVisible = $bindable(visibilityState.getMotionVisibility(MotionColor.BLUE)),
+    redMotionVisible = $bindable(visibilityState.getMotionVisibility(MotionColor.RED)),
     onToggleBlueMotion = undefined,
     onToggleRedMotion = undefined,
     hideVisibilityButtons = false,
@@ -108,8 +113,8 @@
     if (onToggleBlueMotion) {
       onToggleBlueMotion();
     } else {
-      animationSettings.toggleBlueVisibility();
-      blueMotionVisible = animationSettings.motionVisibility.blue;
+      visibilityState.setMotionVisibility(MotionColor.BLUE, !blueMotionVisible);
+      blueMotionVisible = visibilityState.getMotionVisibility(MotionColor.BLUE);
     }
   }
 
@@ -117,16 +122,16 @@
     if (onToggleRedMotion) {
       onToggleRedMotion();
     } else {
-      animationSettings.toggleRedVisibility();
-      redMotionVisible = animationSettings.motionVisibility.red;
+      visibilityState.setMotionVisibility(MotionColor.RED, !redMotionVisible);
+      redMotionVisible = visibilityState.getMotionVisibility(MotionColor.RED);
     }
   }
 
   // Sync bindable props with singleton state when not using override
   $effect(() => {
     if (!settings) {
-      blueMotionVisible = animationSettings.motionVisibility.blue;
-      redMotionVisible = animationSettings.motionVisibility.red;
+      blueMotionVisible = visibilityState.getMotionVisibility(MotionColor.BLUE);
+      redMotionVisible = visibilityState.getMotionVisibility(MotionColor.RED);
     }
   });
 </script>
