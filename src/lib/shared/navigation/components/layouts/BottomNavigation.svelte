@@ -271,10 +271,10 @@
   /* Special buttons (Settings) - solid module-colored */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     padding: 0;
     background: transparent;
     border: 1px solid var(--module-color, #667eea);
@@ -365,7 +365,7 @@
   /* Icons only mode (<400px) - iPhone SE territory */
   @container bottom-nav (max-width: 399px) {
     .bottom-navigation :global(.nav-button.section) {
-      max-width: 52px;
+      max-width: 56px;
       padding: 6px 4px;
     }
 
@@ -409,7 +409,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 52px;
+    height: 56px;
     display: flex;
     align-items: flex-end;
     justify-content: center;

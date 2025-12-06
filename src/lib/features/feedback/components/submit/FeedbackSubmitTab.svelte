@@ -77,8 +77,8 @@
     align-items: center;
     justify-content: center;
     /* Fluid icon size */
-    width: clamp(36px, 6cqi, 56px);
-    height: clamp(36px, 6cqi, 56px);
+    width: clamp(36px, 6cqi, 52px);
+    height: clamp(36px, 6cqi, 52px);
     background: rgba(16, 185, 129, 0.12);
     border: 1px solid rgba(16, 185, 129, 0.25);
     border-radius: clamp(8px, 1.5cqi, 14px);

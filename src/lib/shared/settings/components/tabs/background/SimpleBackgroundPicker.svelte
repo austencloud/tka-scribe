@@ -326,8 +326,8 @@
   }
 
   .card-icon {
-    /* Use clamp for intelligent sizing: min 24px, preferred 12cqi, max 56px */
-    font-size: clamp(24px, 12cqi, 56px);
+    /* Use clamp for intelligent sizing: min 24px, preferred 12cqi, max 52px */
+    font-size: clamp(24px, 12cqi, 52px);
     color: white;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));

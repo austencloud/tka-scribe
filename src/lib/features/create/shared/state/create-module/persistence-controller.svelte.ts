@@ -145,16 +145,8 @@ export function createCreateModulePersistenceController({
       const savedState =
         await sequencePersistenceService.loadCurrentState(panel);
 
-      // 🐛 DEBUG: Track persistence restoration
-      console.log(`🐛 [PERSISTENCE] restoreWorkspaceForMode(${panel})`, {
-        hasSavedState: !!savedState,
-        currentInMemorySequence: tabSequenceState.currentSequence,
-        savedSequence: savedState?.currentSequence,
-      });
-
       if (savedState) {
         // Load saved state for this tab's specific sequence state
-        console.log(`🐛 [PERSISTENCE] Restoring saved state for ${panel}`);
         tabSequenceState.setCurrentSequence(savedState.currentSequence);
         tabSequenceState.setSelectedStartPosition(
           savedState.selectedStartPosition ?? null
@@ -166,12 +158,17 @@ export function createCreateModulePersistenceController({
           savedState.selectedStartPosition
         );
       } else {
-        // No saved state for this tab - clear the workspace
-        console.log(`🐛 [PERSISTENCE] No saved state for ${panel} - CLEARING IN-MEMORY SEQUENCE!`);
-        console.trace();
-        tabSequenceState.setCurrentSequence(null);
-        tabSequenceState.setSelectedStartPosition(null);
-        syncConstructTabState(constructTabState, false, null);
+        // FIX: No saved state exists - preserve in-memory sequence!
+        // Previously, this would unconditionally clear in-memory sequences on every tab switch
+        // if no localStorage data existed. This caused the workspace collapse bug where
+        // Constructor's in-memory sequence was cleared when switching back from other tabs.
+        // Now we only preserve existing in-memory data instead of clearing it.
+
+        // Don't touch the sequence state - it may already have valid in-memory data
+        // Only sync construct tab state to show the start position picker if needed
+        if (constructTabState && !tabSequenceState.currentSequence) {
+          syncConstructTabState(constructTabState, false, null);
+        }
       }
     } catch (error) {
       console.error(`? Failed to load ${panel} state:`, error);

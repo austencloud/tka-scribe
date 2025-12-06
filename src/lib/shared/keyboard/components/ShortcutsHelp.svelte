@@ -282,8 +282,8 @@
   }
 
   .shortcuts-help__close {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;

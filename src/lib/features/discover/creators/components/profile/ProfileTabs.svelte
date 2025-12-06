@@ -378,8 +378,8 @@
   }
 
   .user-list-avatar {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
   }
 

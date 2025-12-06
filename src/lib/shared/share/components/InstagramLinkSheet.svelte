@@ -286,8 +286,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     border: none;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;

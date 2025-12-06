@@ -334,7 +334,7 @@
   }
 
   .orientation-panel.comfortable .orientation-btn {
-    min-height: 56px;
+    min-height: 52px;
     font-size: 14px;
     border-width: 4px;
   }

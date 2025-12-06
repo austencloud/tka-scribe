@@ -1045,7 +1045,7 @@
     flex-direction: column;
     align-items: center;
     gap: var(--fb-space-2xs);
-    min-height: 56px;
+    min-height: 52px;
     padding: var(--fb-space-sm);
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);

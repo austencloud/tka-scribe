@@ -351,8 +351,8 @@ Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
   }
 
   .component-icon {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -450,8 +450,8 @@ Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
   }
 
   .mode-icon {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

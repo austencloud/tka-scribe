@@ -91,7 +91,7 @@
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 1.5rem;
-    min-height: 56px;
+    min-height: 52px;
     width: 100%;
     background: linear-gradient(
       135deg,

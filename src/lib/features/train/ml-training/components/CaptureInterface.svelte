@@ -696,8 +696,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .main-controls button {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

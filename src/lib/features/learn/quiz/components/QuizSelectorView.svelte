@@ -227,8 +227,8 @@ Features a welcoming header, mode toggle, and game cards.
     }
 
     .header-icon {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       border-radius: 16px;
     }
 
@@ -257,8 +257,8 @@ Features a welcoming header, mode toggle, and game cards.
     }
 
     .header-icon {
-      width: 50px;
-      height: 50px;
+      width: 52px;
+      height: 52px;
       border-radius: 14px;
     }
 

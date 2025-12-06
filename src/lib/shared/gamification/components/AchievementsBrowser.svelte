@@ -5,7 +5,7 @@
    * Full-screen achievement browser panel with:
    * - Container query support for adaptive layouts
    * - Fluid typography using clamp()
-   * - WCAG AAA touch targets (48px minimum)
+   * - WCAG AAA touch targets (52px minimum)
    * - ResizeObserver for dynamic sizing
    * - Compact/extra-compact modes for mobile
    * - Full accessibility support
@@ -391,12 +391,12 @@
     gap: clamp(8px, 2cqi, 12px);
   }
 
-  /* WCAG AAA Touch target (48px minimum) */
+  /* WCAG AAA Touch target (52px minimum) */
   .close-button {
-    min-width: var(--min-touch-target, 48px);
-    min-height: var(--min-touch-target, 48px);
-    width: clamp(48px, 10cqi, 48px);
-    height: clamp(48px, 10cqi, 48px);
+    min-width: var(--min-touch-target, 52px);
+    min-height: var(--min-touch-target, 52px);
+    width: clamp(52px, 10cqi, 52px);
+    height: clamp(52px, 10cqi, 52px);
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);
@@ -433,8 +433,8 @@
   }
 
   .spinner-large {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: 4px solid rgba(255, 255, 255, 0.2);
     border-top-color: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
@@ -624,7 +624,7 @@
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 8px);
     padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
-    min-height: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 52px);
     border-radius: clamp(10px, 2.5cqi, 14px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(255, 255, 255, 0.05);
@@ -674,7 +674,7 @@
     }
 
     .category-tab {
-      min-width: var(--min-touch-target, 48px);
+      min-width: var(--min-touch-target, 52px);
       padding: clamp(8px, 2cqi, 10px);
     }
   }
@@ -725,8 +725,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(40px, 10cqi, 56px);
-    height: clamp(40px, 10cqi, 56px);
+    width: clamp(40px, 10cqi, 52px);
+    height: clamp(40px, 10cqi, 52px);
   }
 
   .achievement-content {
@@ -790,7 +790,7 @@
   }
 
   /* Hide description on extra-compact mode */
-  @container achievements-panel (max-width: 350px) {
+  @container achievements-panel (max-width: 352px) {
     .achievement-description {
       display: none;
     }
@@ -864,7 +864,7 @@
   }
 
   /* Extra compact mode */
-  @container achievements-panel (max-width: 350px) {
+  @container achievements-panel (max-width: 352px) {
     .daily-challenge {
       margin: 0 clamp(8px, 2cqi, 12px) clamp(8px, 2cqi, 12px);
       padding: clamp(10px, 2.5cqi, 12px);

@@ -213,8 +213,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     border-radius: 8px;
     background: rgba(6, 182, 212, 0.1);
     border: 1px solid rgba(6, 182, 212, 0.3);

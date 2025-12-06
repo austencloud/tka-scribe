@@ -973,8 +973,8 @@
     }
 
     .stat-icon-wrap {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       font-size: 24px;
     }
 

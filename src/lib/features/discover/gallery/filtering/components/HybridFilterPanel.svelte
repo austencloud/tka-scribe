@@ -577,7 +577,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(56px, 14cqi, 72px);
+    min-height: clamp(52px, 14cqi, 72px);
     padding: clamp(12px, 3cqi, 18px);
     background: var(--level-bg);
     border: 2px solid transparent;

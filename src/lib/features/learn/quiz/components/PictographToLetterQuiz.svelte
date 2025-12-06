@@ -441,7 +441,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 56px;
+    height: 52px;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.06);
     border: 1.5px solid rgba(255, 255, 255, 0.12);

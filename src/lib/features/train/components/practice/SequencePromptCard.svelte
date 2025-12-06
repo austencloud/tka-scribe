@@ -168,8 +168,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(56px, 14vw, 80px);
-    height: clamp(56px, 14vw, 80px);
+    width: clamp(52px, 14vw, 80px);
+    height: clamp(52px, 14vw, 80px);
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.2),

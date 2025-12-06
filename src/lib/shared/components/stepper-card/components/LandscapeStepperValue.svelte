@@ -39,7 +39,7 @@ LandscapeStepperValue.svelte - Centered value display for landscape stepper
 
   @media (min-width: 1280px) {
     .landscape-value {
-      font-size: clamp(32px, 8cqh, 56px);
+      font-size: clamp(32px, 8cqh, 52px);
     }
   }
 </style>

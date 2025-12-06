@@ -52,10 +52,10 @@
     align-items: center;
     justify-content: center;
     /* Clean 50px round target - no container */
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     padding: 0;
     background: transparent;
     border: none;

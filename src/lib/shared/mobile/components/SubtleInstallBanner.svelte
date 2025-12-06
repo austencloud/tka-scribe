@@ -195,10 +195,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     border-radius: 10px;
     background: linear-gradient(
       135deg,
@@ -275,10 +275,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
@@ -317,10 +317,10 @@
 
     /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
       font-size: 16px;
     }
 
@@ -333,14 +333,14 @@
       padding: 7px 14px;
       font-size: 12px;
       gap: 5px;
-      min-height: 52px;
+      min-height: 56px;
     }
 
     .dismiss-btn {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
       font-size: 13px;
     }
   }
@@ -357,10 +357,10 @@
 
     /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
       font-size: 14px;
     }
 
@@ -372,7 +372,7 @@
     .learn-btn {
       padding: 6px 12px;
       font-size: 11px;
-      min-height: 52px;
+      min-height: 56px;
     }
 
     .install-btn span,
@@ -381,10 +381,10 @@
     }
 
     .dismiss-btn {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
+      min-height: 56px;
     }
   }
 </style>

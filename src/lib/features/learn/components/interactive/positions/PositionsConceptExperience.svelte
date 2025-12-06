@@ -6,9 +6,9 @@ Page 3: Gamma position (hands at right angles)
 Page 4: Interactive quiz
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import PositionVisualizer from "./PositionVisualizer.svelte";
   import PositionIdentificationQuiz from "./PositionIdentificationQuiz.svelte";
 
@@ -24,14 +24,26 @@ import { TYPES } from "$lib/shared/inversify/types";
   const totalPages = 4;
 
   // Demo positions for each page
-  let alphaLeftHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">("N");
-  let alphaRightHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">("S");
+  let alphaLeftHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">(
+    "N"
+  );
+  let alphaRightHand = $state<
+    "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW"
+  >("S");
 
-  let betaLeftHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">("E");
-  let betaRightHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">("E");
+  let betaLeftHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">(
+    "E"
+  );
+  let betaRightHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">(
+    "E"
+  );
 
-  let gammaLeftHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">("N");
-  let gammaRightHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">("E");
+  let gammaLeftHand = $state<"N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW">(
+    "N"
+  );
+  let gammaRightHand = $state<
+    "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW"
+  >("E");
 
   function handleNext() {
     hapticService?.trigger("selection");
@@ -128,7 +140,9 @@ import { TYPES } from "$lib/shared/inversify/types";
       <div class="explanation">
         <h3>Understanding Alpha</h3>
         <ul>
-          <li>Hands form a <strong>straight line</strong> through the center</li>
+          <li>
+            Hands form a <strong>straight line</strong> through the center
+          </li>
           <li>Think: <strong>180° apart</strong> (opposite sides)</li>
           <li>Examples: N↔S, E↔W, NE↔SW, NW↔SE</li>
         </ul>
@@ -136,7 +150,6 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <button class="next-button" onclick={handleNext}>Next</button>
     </div>
-
   {:else if currentPage === 2}
     <!-- Page 2: Beta Position -->
     <div class="page">
@@ -175,7 +188,6 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <button class="next-button" onclick={handleNext}>Next</button>
     </div>
-
   {:else if currentPage === 3}
     <!-- Page 3: Gamma Position -->
     <div class="page">
@@ -238,7 +250,6 @@ import { TYPES } from "$lib/shared/inversify/types";
         Take the Quiz
       </button>
     </div>
-
   {:else if currentPage === 4}
     <!-- Page 4: Quiz -->
     <div class="page quiz-page">
@@ -271,8 +282,14 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes slideInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   h2 {
@@ -281,7 +298,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     color: white;
     margin: 0;
     text-align: center;
-    background: linear-gradient(135deg, #22D3EE 0%, #06B6D4 100%);
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -313,23 +330,35 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .position-intro.alpha {
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 107, 107, 0.1) 0%,
+      rgba(255, 107, 107, 0.02) 100%
+    );
     border: 1px solid rgba(255, 107, 107, 0.2);
   }
 
   .position-intro.beta {
-    background: linear-gradient(135deg, rgba(78, 205, 196, 0.1) 0%, rgba(78, 205, 196, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(78, 205, 196, 0.1) 0%,
+      rgba(78, 205, 196, 0.02) 100%
+    );
     border: 1px solid rgba(78, 205, 196, 0.2);
   }
 
   .position-intro.gamma {
-    background: linear-gradient(135deg, rgba(255, 230, 109, 0.1) 0%, rgba(255, 230, 109, 0.02) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 230, 109, 0.1) 0%,
+      rgba(255, 230, 109, 0.02) 100%
+    );
     border: 1px solid rgba(255, 230, 109, 0.2);
   }
 
   .position-icon {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -338,17 +367,17 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .position-intro.alpha .position-icon {
     background: rgba(255, 107, 107, 0.2);
-    color: #FF6B6B;
+    color: #ff6b6b;
   }
 
   .position-intro.beta .position-icon {
     background: rgba(78, 205, 196, 0.2);
-    color: #4ECDC4;
+    color: #4ecdc4;
   }
 
   .position-intro.gamma .position-icon {
     background: rgba(255, 230, 109, 0.2);
-    color: #FFE66D;
+    color: #ffe66d;
   }
 
   .position-icon i {
@@ -440,19 +469,19 @@ import { TYPES } from "$lib/shared/inversify/types";
   .position-card.alpha {
     background: rgba(255, 107, 107, 0.1);
     border: 1px solid rgba(255, 107, 107, 0.25);
-    color: #FF6B6B;
+    color: #ff6b6b;
   }
 
   .position-card.beta {
     background: rgba(78, 205, 196, 0.1);
     border: 1px solid rgba(78, 205, 196, 0.25);
-    color: #4ECDC4;
+    color: #4ecdc4;
   }
 
   .position-card.gamma {
     background: rgba(255, 230, 109, 0.1);
     border: 1px solid rgba(255, 230, 109, 0.25);
-    color: #FFE66D;
+    color: #ffe66d;
   }
 
   .position-card i {
@@ -477,7 +506,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.625rem;
     padding: 1rem 3rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
     backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
@@ -486,12 +519,16 @@ import { TYPES } from "$lib/shared/inversify/types";
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
-    min-height: 56px;
+    min-height: 52px;
     margin-top: 1rem;
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.4) 0%, rgba(6, 182, 212, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4) 0%,
+      rgba(6, 182, 212, 0.4) 100%
+    );
     border-color: rgba(34, 211, 238, 0.8);
     transform: translateY(-2px);
   }

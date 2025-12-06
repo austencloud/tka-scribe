@@ -208,7 +208,7 @@ Shows both grids simultaneously for comparison
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 56px;
+    min-height: 52px;
   }
 
   .merge-button:hover:not(:disabled) {

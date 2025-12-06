@@ -84,8 +84,8 @@ Integrates with discoverNavigationState for proper navigation flow.
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;

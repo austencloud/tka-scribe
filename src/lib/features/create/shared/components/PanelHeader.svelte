@@ -260,7 +260,7 @@
 
   /* Mobile adjustments - maintain accessible touch targets (52px minimum) */
   .panel-header.mobile {
-    min-height: 56px;
+    min-height: 52px;
     padding: 10px 12px;
   }
 

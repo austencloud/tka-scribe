@@ -543,8 +543,8 @@ Page 5: Summary & Quiz
   }
 
   .concept-icon {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -826,7 +826,7 @@ Page 5: Summary & Quiz
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
-    min-height: 56px;
+    min-height: 52px;
     margin-top: 1rem;
   }
 

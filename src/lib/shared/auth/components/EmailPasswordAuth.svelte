@@ -40,7 +40,9 @@
   let lockoutInterval: ReturnType<typeof setInterval> | null = null;
 
   // Check if currently locked out
-  const isLockedOut = $derived(lockoutEndTime !== null && Date.now() < lockoutEndTime);
+  const isLockedOut = $derived(
+    lockoutEndTime !== null && Date.now() < lockoutEndTime
+  );
 
   // Start lockout countdown timer
   function startLockoutTimer() {
@@ -173,23 +175,29 @@
       // SECURITY: Use generic messages for email/password errors to prevent enumeration
       if (err.code === "auth/email-already-in-use") {
         // Generic message - don't reveal that email exists
-        error = "Unable to create account. Please try a different email or sign in.";
+        error =
+          "Unable to create account. Please try a different email or sign in.";
         mode = "signin";
       } else if (err.code === "auth/weak-password") {
         error = "Password is too weak. Use at least 8 characters.";
       } else if (err.code === "auth/invalid-email") {
         error = "Invalid email address format.";
-      } else if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
+      } else if (
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password"
+      ) {
         // SECURITY: Generic message to prevent email enumeration
         const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
-        error = attemptsLeft > 0
-          ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
-          : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
+        error =
+          attemptsLeft > 0
+            ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
+            : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
       } else if (err.code === "auth/invalid-credential") {
         const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
-        error = attemptsLeft > 0
-          ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
-          : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
+        error =
+          attemptsLeft > 0
+            ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
+            : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
       } else if (err.code === "auth/too-many-requests") {
         error = "Too many failed attempts. Please try again later.";
       } else {
@@ -523,7 +531,7 @@
     }
 
     .submit-button {
-      min-height: 50px;
+      min-height: 52px;
       padding: 0.8125rem 1.375rem;
       font-size: 0.9375rem;
     }
@@ -568,7 +576,7 @@
     }
 
     .submit-button {
-      min-height: 48px;
+      min-height: 52px;
       padding: 0.75rem 1.25rem;
       font-size: 0.875rem;
       gap: 0.625rem;
@@ -618,7 +626,7 @@
     }
 
     .submit-button {
-      min-height: 48px;
+      min-height: 52px;
       padding: 0.625rem 1.125rem;
       font-size: 0.8125rem;
       gap: 0.5rem;

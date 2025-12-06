@@ -24,7 +24,8 @@
   const isDisabled = $derived(module.disabled ?? false);
 
   // Notification state for dashboard module
-  const notificationState = module.id === "dashboard" ? createNotificationState() : null;
+  const notificationState =
+    module.id === "dashboard" ? createNotificationState() : null;
 
   onMount(() => {
     // Initialize notifications for dashboard module
@@ -50,7 +51,9 @@
 
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
-    module.id === "dashboard" && authStore.isAuthenticated && authStore.user?.photoURL
+    module.id === "dashboard" &&
+      authStore.isAuthenticated &&
+      authStore.user?.photoURL
   );
   const profilePictureUrl = $derived(authStore.user?.photoURL || "");
   const profileDisplayName = $derived(authStore.user?.displayName || "User");

@@ -327,7 +327,7 @@
     .control-btn {
       flex-direction: row;
       gap: var(--space-2026-sm, 12px);
-      min-height: 56px;
+      min-height: 52px;
       padding: var(--space-2026-sm, 12px) var(--space-2026-md, 20px);
     }
 

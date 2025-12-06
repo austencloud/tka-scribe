@@ -72,7 +72,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
-    min-height: 56px;
+    min-height: 52px;
     width: 100%;
   }
 

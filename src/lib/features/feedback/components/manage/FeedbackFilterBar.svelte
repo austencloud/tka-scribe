@@ -1449,7 +1449,7 @@
     display: flex;
     align-items: center;
     gap: var(--fb-space-sm, 13px);
-    min-height: 56px;
+    min-height: 52px;
     padding: 0 var(--fb-space-md, 21px);
     background: transparent;
     border: none;

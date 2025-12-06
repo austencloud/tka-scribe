@@ -418,16 +418,16 @@
   }
 
   .sequence-thumbnail {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 8px;
     object-fit: cover;
     background: rgba(0, 0, 0, 0.2);
   }
 
   .sequence-icon-large {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     display: flex;

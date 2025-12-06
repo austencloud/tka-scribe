@@ -196,8 +196,8 @@ Provides access to the complete TKA letter codex with drill-down detail view:
   }
 
   .loading-spinner {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-left: 3px solid rgba(167, 139, 250, 0.9);
     border-radius: 50%;

@@ -359,8 +359,8 @@
 
   /* Larger play button in expanded mode */
   .play-pause-btn.large {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     font-size: 18px;
   }
 

@@ -105,7 +105,7 @@
   /* Hover Label - slides in from right */
   .hover-label {
     position: absolute;
-    left: 56px;
+    left: 52px;
     padding: 5px 10px;
     background: rgba(20, 20, 30, 0.95);
     backdrop-filter: blur(10px);

@@ -825,8 +825,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-width: 56px;
-    min-height: 56px;
+    min-width: 52px;
+    min-height: 52px;
     padding: 0.875rem 1.25rem;
     border-radius: 28px;
     font-size: 1rem;
@@ -1016,7 +1016,7 @@
 
     .start-button,
     .stop-button {
-      min-width: 56px;
+      min-width: 52px;
       padding: 0.875rem;
     }
   }

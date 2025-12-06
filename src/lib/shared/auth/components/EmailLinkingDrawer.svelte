@@ -58,7 +58,9 @@
 
   onMount(() => {
     authService = resolve<IAuthService>(TYPES.IAuthService);
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   onDestroy(() => {
@@ -262,7 +264,11 @@
     >
       <!-- Header -->
       <div class="modal-header">
-        <div class="header-icon" class:success={currentStep === "success"} class:verifying={currentStep === "verifying"}>
+        <div
+          class="header-icon"
+          class:success={currentStep === "success"}
+          class:verifying={currentStep === "verifying"}
+        >
           {#if currentStep === "success"}
             <i class="fas fa-check-circle"></i>
           {:else if currentStep === "verifying"}
@@ -302,7 +308,13 @@
       <div class="modal-content">
         {#if currentStep === "form"}
           <!-- Form Step -->
-          <form class="email-form" onsubmit={(e) => { e.preventDefault(); submitForm(); }}>
+          <form
+            class="email-form"
+            onsubmit={(e) => {
+              e.preventDefault();
+              submitForm();
+            }}
+          >
             <div class="form-group">
               <label for="email-link-email">Email Address</label>
               <div class="input-wrapper">
@@ -338,7 +350,7 @@
                 <button
                   type="button"
                   class="toggle-password"
-                  onclick={() => showPassword = !showPassword}
+                  onclick={() => (showPassword = !showPassword)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   disabled={isSubmitting}
                   tabindex={-1}
@@ -359,10 +371,20 @@
             {/if}
 
             <div class="form-actions">
-              <button type="button" class="cancel-btn" onclick={handleClose} disabled={isSubmitting}>
+              <button
+                type="button"
+                class="cancel-btn"
+                onclick={handleClose}
+                disabled={isSubmitting}
+              >
                 Cancel
               </button>
-              <button type="submit" class="submit-btn" disabled={isSubmitting} aria-busy={isSubmitting}>
+              <button
+                type="submit"
+                class="submit-btn"
+                disabled={isSubmitting}
+                aria-busy={isSubmitting}
+              >
                 {#if isSubmitting}
                   <i class="fas fa-spinner fa-spin"></i>
                   <span>Linking...</span>
@@ -373,7 +395,6 @@
               </button>
             </div>
           </form>
-
         {:else if currentStep === "verifying"}
           <!-- Verification Step -->
           <div class="verification-content">
@@ -396,7 +417,10 @@
                 <span>Waiting for verification...</span>
               </div>
               <div class="progress-bar">
-                <div class="progress-fill" style:width="{progressPercent}%"></div>
+                <div
+                  class="progress-fill"
+                  style:width="{progressPercent}%"
+                ></div>
               </div>
             </div>
 
@@ -428,7 +452,6 @@
               I'll verify later
             </button>
           </div>
-
         {:else if currentStep === "success"}
           <!-- Success Step -->
           <div class="success-content">
@@ -492,8 +515,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes modalSlideIn {
@@ -516,8 +543,8 @@
   }
 
   .header-icon {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;

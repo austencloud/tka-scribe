@@ -207,8 +207,8 @@
   }
 
   .close-btn {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

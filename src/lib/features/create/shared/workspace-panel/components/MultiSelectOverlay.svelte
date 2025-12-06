@@ -138,7 +138,7 @@ Shows "Select Items" banner and makes escape prominent.
   /* Mobile adjustments */
   @media (max-width: 768px) {
     .mode-banner {
-      top: 56px; /* Smaller header on mobile */
+      top: 52px; /* Smaller header on mobile */
       padding: var(--spacing-sm) var(--spacing-md);
     }
 

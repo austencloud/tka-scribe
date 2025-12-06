@@ -115,8 +115,8 @@ Displays A-Z grid with clear option
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 50px;
-    min-width: 50px;
+    min-height: 52px;
+    min-width: 52px;
     padding: 0;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid transparent;

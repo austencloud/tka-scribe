@@ -206,8 +206,8 @@
     }
 
     .stat-icon {
-      width: 52px;
-      height: 52px;
+      width: 56px;
+      height: 56px;
       font-size: 18px;
     }
 

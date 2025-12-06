@@ -138,7 +138,7 @@
     align-items: center;
     gap: 6px;
     padding: 14px 18px;
-    min-height: 52px;
+    min-height: 56px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
@@ -178,7 +178,7 @@
 
   .bpm-chip {
     padding: 12px 16px;
-    min-height: 52px;
+    min-height: 56px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
@@ -187,7 +187,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
-    min-width: 52px;
+    min-width: 56px;
     text-align: center;
   }
 
@@ -205,7 +205,7 @@
   .bpm-input {
     width: 75px;
     padding: 12px 14px;
-    min-height: 52px;
+    min-height: 56px;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
@@ -239,7 +239,7 @@
     justify-content: center;
     gap: 8px;
     padding: 14px 18px;
-    min-height: 52px;
+    min-height: 56px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;

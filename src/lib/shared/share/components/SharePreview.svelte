@@ -117,8 +117,8 @@
 
   /* Modern Loading Spinner */
   .loading-spinner {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;

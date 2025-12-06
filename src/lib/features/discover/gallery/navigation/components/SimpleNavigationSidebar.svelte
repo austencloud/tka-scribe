@@ -252,7 +252,7 @@ Matches the desktop Python app navigation pattern exactly.
     font-weight: 600;
     transition: all 0.2s ease;
     text-align: center;
-    min-height: clamp(52px, 8vw, 56px);
+    min-height: clamp(52px, 8vw, 52px);
     display: flex;
     align-items: center;
     justify-content: center;

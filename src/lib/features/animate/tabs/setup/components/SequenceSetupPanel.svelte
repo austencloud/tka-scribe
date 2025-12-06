@@ -456,7 +456,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 56px;
+    min-height: 52px;
     padding: 16px 32px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;

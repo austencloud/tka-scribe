@@ -338,7 +338,7 @@
 
     .settings-sidebar-item {
       padding: 5px 3px;
-      min-height: 56px;
+      min-height: 52px;
       gap: 2px;
     }
 

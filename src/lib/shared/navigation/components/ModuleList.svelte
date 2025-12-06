@@ -424,8 +424,8 @@
   .cell-icon {
     /* Larger icons for more prominent display: min 32px, preferred 4.5vh, max 50px */
     font-size: clamp(32px, 4.5vh, 50px);
-    width: clamp(50px, 6vh, 56px);
-    height: clamp(50px, 6vh, 56px);
+    width: clamp(50px, 6vh, 52px);
+    height: clamp(50px, 6vh, 52px);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -875,8 +875,8 @@
   }
 
   .profile-avatar {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 16px;
     overflow: hidden;
     background: rgba(99, 102, 241, 0.2);

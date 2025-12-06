@@ -68,8 +68,8 @@
   }
 
   .stat-icon {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     border-radius: 8px;
     display: flex;
     align-items: center;

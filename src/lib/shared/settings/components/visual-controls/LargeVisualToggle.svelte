@@ -185,8 +185,8 @@
     transition: all var(--settings-transition-base) var(--settings-ease-out);
     background: transparent;
     /* Container query aware sizing with 50px min touch target */
-    min-width: 52px;
-    min-height: 52px;
+    min-width: 56px;
+    min-height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -300,7 +300,7 @@
   @container visual-toggle (max-width: 200px) {
     .visual-setting-toggle.large .toggle-track,
     .visual-setting-toggle.standard .toggle-track {
-      width: 52px;
+      width: 56px;
       height: 28px;
     }
 

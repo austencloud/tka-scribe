@@ -1,7 +1,7 @@
 <!--
   VisibilityTab.svelte - Visibility Settings
 
-  Desktop: Side-by-side panels for Pictograph and Animation settings
+  Desktop: Side-by-side panels for Pictograph, Animation, and Image settings
   Mobile: Segmented control to switch between modes
 
   Uses PictographWithVisibility for interactive preview where clicking
@@ -13,6 +13,7 @@
 <script lang="ts">
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -33,10 +34,18 @@
   // State managers
   const visibilityManager = getVisibilityStateManager();
   const animationVisibilityManager = getAnimationVisibilityManager();
+  const imageCompositionManager = getImageCompositionManager();
 
   // Mobile mode selection (only used on small screens)
-  let mobileMode = $state<'pictograph' | 'animation'>('pictograph');
+  let mobileMode = $state<'pictograph' | 'animation' | 'image'>('pictograph');
   let isVisible = $state(false);
+
+  // Image composition visibility
+  let imgAddWord = $state(true);
+  let imgAddBeatNumbers = $state(true);
+  let imgAddDifficultyLevel = $state(false);
+  let imgIncludeStartPosition = $state(true);
+  let imgAddUserInfo = $state(false);
 
   // Pictograph visibility
   let tkaGlyphVisible = $state(true);
@@ -117,6 +126,13 @@
     animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
     animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
 
+    // Load image composition settings
+    imgAddWord = imageCompositionManager.addWord;
+    imgAddBeatNumbers = imageCompositionManager.addBeatNumbers;
+    imgAddDifficultyLevel = imageCompositionManager.addDifficultyLevel;
+    imgIncludeStartPosition = imageCompositionManager.includeStartPosition;
+    imgAddUserInfo = imageCompositionManager.addUserInfo;
+
     const pictographObserver = () => {
       tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
       vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
@@ -136,8 +152,17 @@
       animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
     };
 
+    const imageCompositionObserver = () => {
+      imgAddWord = imageCompositionManager.addWord;
+      imgAddBeatNumbers = imageCompositionManager.addBeatNumbers;
+      imgAddDifficultyLevel = imageCompositionManager.addDifficultyLevel;
+      imgIncludeStartPosition = imageCompositionManager.includeStartPosition;
+      imgAddUserInfo = imageCompositionManager.addUserInfo;
+    };
+
     visibilityManager.registerObserver(pictographObserver, ["all"]);
     animationVisibilityManager.registerObserver(animationObserver);
+    imageCompositionManager.registerObserver(imageCompositionObserver);
 
     // Entry animation
     setTimeout(() => isVisible = true, 30);
@@ -145,6 +170,7 @@
     return () => {
       visibilityManager.unregisterObserver(pictographObserver);
       animationVisibilityManager.unregisterObserver(animationObserver);
+      imageCompositionManager.unregisterObserver(imageCompositionObserver);
     };
   });
 
@@ -175,7 +201,19 @@
     }
   }
 
-  function setMobileMode(mode: 'pictograph' | 'animation') {
+  // Toggle functions - Image Composition
+  function toggleImage(key: string) {
+    triggerHaptic();
+    switch (key) {
+      case 'word': imgAddWord = !imgAddWord; imageCompositionManager.setAddWord(imgAddWord); break;
+      case 'beatNumbers': imgAddBeatNumbers = !imgAddBeatNumbers; imageCompositionManager.setAddBeatNumbers(imgAddBeatNumbers); break;
+      case 'difficulty': imgAddDifficultyLevel = !imgAddDifficultyLevel; imageCompositionManager.setAddDifficultyLevel(imgAddDifficultyLevel); break;
+      case 'startPosition': imgIncludeStartPosition = !imgIncludeStartPosition; imageCompositionManager.setIncludeStartPosition(imgIncludeStartPosition); break;
+      case 'userInfo': imgAddUserInfo = !imgAddUserInfo; imageCompositionManager.setAddUserInfo(imgAddUserInfo); break;
+    }
+  }
+
+  function setMobileMode(mode: 'pictograph' | 'animation' | 'image') {
     triggerHaptic();
     mobileMode = mode;
   }
@@ -190,7 +228,7 @@
       onclick={() => setMobileMode('pictograph')}
     >
       <i class="fas fa-image"></i>
-      <span>Pictograph</span>
+      <span>Picto</span>
     </button>
     <button
       class="segment-btn"
@@ -198,7 +236,15 @@
       onclick={() => setMobileMode('animation')}
     >
       <i class="fas fa-film"></i>
-      <span>Animation</span>
+      <span>Anim</span>
+    </button>
+    <button
+      class="segment-btn"
+      class:active={mobileMode === 'image'}
+      onclick={() => setMobileMode('image')}
+    >
+      <i class="fas fa-download"></i>
+      <span>Export</span>
     </button>
   </div>
 
@@ -289,6 +335,38 @@
         </div>
       </div>
     </section>
+
+    <!-- Image Export Panel -->
+    <section
+      class="settings-panel image-panel"
+      class:mobile-hidden={mobileMode !== 'image'}
+    >
+      <header class="panel-header">
+        <span class="panel-icon image-icon"><i class="fas fa-download"></i></span>
+        <h3 class="panel-title">Image Export</h3>
+      </header>
+
+      <!-- Export Preview -->
+      <div class="preview-frame image-preview">
+        <div class="image-placeholder">
+          <i class="fas fa-file-image"></i>
+          <span>Export Preview</span>
+        </div>
+      </div>
+
+      <div class="panel-controls">
+        <div class="control-group">
+          <span class="group-label">Include in Image</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={imgAddWord} onclick={() => toggleImage('word')}>Word</button>
+            <button class="toggle-btn" class:active={imgAddBeatNumbers} onclick={() => toggleImage('beatNumbers')}>Beat #s</button>
+            <button class="toggle-btn" class:active={imgIncludeStartPosition} onclick={() => toggleImage('startPosition')}>Start Pos</button>
+            <button class="toggle-btn" class:active={imgAddDifficultyLevel} onclick={() => toggleImage('difficulty')}>Difficulty</button>
+            <button class="toggle-btn" class:active={imgAddUserInfo} onclick={() => toggleImage('userInfo')}>User Info</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -298,18 +376,15 @@
      Centers content vertically & horizontally for intentional appearance
      ═══════════════════════════════════════════════════════════════════════════ */
   .visibility-tab {
-    /* Establish as container for queries */
-    container-type: size;
+    /* Establish as container for width queries only (inline-size avoids height collapse) */
+    container-type: inline-size;
     container-name: visibility-tab;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    gap: 16px;
 
     /* Fluid padding */
     padding: clamp(12px, 3cqi, 24px);
@@ -334,7 +409,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
     max-width: 400px;
-    margin-bottom: clamp(8px, 2cqh, 16px);
+    margin-bottom: 12px;
   }
 
   .segment-btn {
@@ -416,7 +491,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(10px, 1.5cqh, 16px);
+    gap: 12px;
     padding: clamp(12px, 2cqi, 20px);
     background: rgba(25, 28, 40, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -458,6 +533,11 @@
     color: #f472b6;
   }
 
+  .panel-icon.image-icon {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+  }
+
   .panel-title {
     font-size: 15px;
     font-weight: 600;
@@ -478,8 +558,8 @@
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.06);
     overflow: hidden;
-    /* Square aspect ratio, scales with container */
-    width: min(100%, clamp(140px, 30cqh, 280px));
+    /* Square aspect ratio, scales with container width */
+    width: min(100%, clamp(140px, 45cqi, 200px));
     aspect-ratio: 1;
     flex-shrink: 0;
   }
@@ -507,11 +587,31 @@
   }
 
   .animation-placeholder i {
-    font-size: clamp(28px, 8cqh, 40px);
+    font-size: 32px;
     color: rgba(236, 72, 153, 0.5);
   }
 
   .animation-placeholder span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* Image export placeholder */
+  .image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .image-placeholder i {
+    font-size: 32px;
+    color: rgba(16, 185, 129, 0.5);
+  }
+
+  .image-placeholder span {
     font-size: 12px;
     font-weight: 500;
   }
@@ -522,7 +622,7 @@
   .panel-controls {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 1.5cqh, 14px);
+    gap: 10px;
     flex-shrink: 0;
     width: 100%;
   }
@@ -611,6 +711,19 @@
   .animation-panel .toggle-btn.active:hover {
     background: rgba(236, 72, 153, 0.4);
     border-color: rgba(236, 72, 153, 0.6);
+    color: #fff;
+  }
+
+  /* Image panel uses green/emerald accent */
+  .image-panel .toggle-btn.active {
+    background: rgba(16, 185, 129, 0.3);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #a7f3d0;
+  }
+
+  .image-panel .toggle-btn.active:hover {
+    background: rgba(16, 185, 129, 0.4);
+    border-color: rgba(16, 185, 129, 0.6);
     color: #fff;
   }
 

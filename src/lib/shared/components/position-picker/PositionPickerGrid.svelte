@@ -149,7 +149,7 @@ Uses IStartPositionService to load variations and displays actual pictographs
   }
 
   .any-button {
-    min-height: 52px;
+    min-height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,8 +196,8 @@ Uses IStartPositionService to load variations and displays actual pictographs
 
   .position-cell {
     aspect-ratio: 1 / 1;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: 56px;
+    min-height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;

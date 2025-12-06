@@ -120,10 +120,10 @@
      DASHBOARD BUTTON - 50px minimum (WCAG AAA)
      ============================================================================ */
   .dashboard-button {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
     border-radius: 50%;
     border: none;
     background: transparent;
@@ -160,8 +160,8 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;

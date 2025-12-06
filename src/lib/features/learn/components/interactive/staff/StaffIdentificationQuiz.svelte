@@ -822,7 +822,7 @@ Tests understanding of:
       flex-direction: row;
       justify-content: center;
       gap: 0.75rem;
-      min-height: 56px;
+      min-height: 52px;
       padding: 0.875rem 1rem;
     }
 

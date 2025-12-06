@@ -473,8 +473,8 @@
   }
 
   .main-buttons button {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: none;
     color: #fff;

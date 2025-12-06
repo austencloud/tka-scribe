@@ -109,8 +109,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    min-height: 50px;
-    min-width: 50px;
+    min-height: 52px;
+    min-width: 52px;
   }
 
   .mobile-control-button:hover {

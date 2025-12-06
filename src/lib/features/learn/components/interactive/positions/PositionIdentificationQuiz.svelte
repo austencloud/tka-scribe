@@ -589,7 +589,7 @@ Shows hand positions on grid, user identifies the type
       flex-direction: row;
       justify-content: center;
       gap: 0.75rem;
-      min-height: 56px;
+      min-height: 52px;
     }
 
     .complete-actions {

@@ -134,8 +134,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 50px;
-    min-height: 50px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   .close-btn:hover {
@@ -223,8 +223,8 @@
     }
 
     .header-icon {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
       margin: 0 auto 12px;
       font-size: 22px;
     }

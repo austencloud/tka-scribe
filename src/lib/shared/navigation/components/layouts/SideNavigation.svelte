@@ -178,9 +178,9 @@
      ============================================================================ */
   .side-navigation :global(.nav-button.section) {
     padding: 8px;
-    min-width: 56px;
-    min-height: 56px;
-    width: 56px;
+    min-width: 52px;
+    min-height: 52px;
+    width: 52px;
     flex: 0 0 auto;
   }
 

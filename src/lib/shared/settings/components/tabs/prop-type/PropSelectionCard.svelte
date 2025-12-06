@@ -206,7 +206,7 @@
     width: auto;
     height: 100%;
     max-height: clamp(58px, 8.5cqh, 78px);
-    max-width: clamp(42px, 6cqw, 56px);
+    max-width: clamp(42px, 6cqw, 52px);
     opacity: 0.92;
   }
 

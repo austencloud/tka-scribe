@@ -290,8 +290,8 @@ and smooth hover animations.
   /* Icon area */
   .card-icon {
     flex-shrink: 0;
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;

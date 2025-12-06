@@ -530,8 +530,8 @@
   }
 
   .turn-panel.balanced .turn-display {
-    min-width: 56px;
-    height: 56px;
+    min-width: 52px;
+    height: 52px;
     font-size: 28px;
     border-width: 3px;
     border-radius: 10px;
