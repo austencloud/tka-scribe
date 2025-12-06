@@ -74,37 +74,45 @@ matching the legacy desktop app's behavior.
     return undefined;
   });
 
-  // Compute visibility flags based on forceShowAll or global settings
-  // When forceShowAll is true (preview mode), show everything
-  // Otherwise, let Pictograph use global settings by passing undefined
+  // Compute visibility flags based on forceShowAll and previewMode
+  // - forceShowAll + previewMode: pass undefined to let Pictograph use global state
+  //   (previewMode handles showing "off" elements at 40% opacity)
+  // - forceShowAll + !previewMode: force everything visible
+  // - !forceShowAll: pass undefined to use global settings
   const showTKA = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined; // Let Pictograph use global visibility state
   });
 
   const showVTG = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showElemental = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showPositions = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showReversals = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showNonRadialPoints = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   // Use original pictograph data without mutation

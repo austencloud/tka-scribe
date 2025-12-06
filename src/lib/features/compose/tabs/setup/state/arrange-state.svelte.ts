@@ -6,17 +6,17 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
 
 // LocalStorage keys
 const STORAGE_KEYS = {
-  SELECTED_MODE: "animate-arrange-selected-mode",
-  SEQUENCE_SLOTS: "animate-arrange-sequence-slots",
+  SELECTED_MODE: "compose-arrange-selected-mode",
+  SEQUENCE_SLOTS: "compose-arrange-sequence-slots",
 } as const;
 
 export type ArrangeTabState = {
   // Mode selection
-  readonly selectedMode: AnimateMode | null;
+  readonly selectedMode: ComposeMode | null;
 
   // Sequence slots (keyed by slot identifier, e.g., "primary", "secondary", "grid-0", etc.)
   readonly sequenceSlots: Map<string, SequenceData | null>;
@@ -26,7 +26,7 @@ export type ArrangeTabState = {
   readonly requiredSlots: string[];
 
   // State mutators
-  selectMode: (mode: AnimateMode | null) => void;
+  selectMode: (mode: ComposeMode | null) => void;
   setSequenceForSlot: (slotId: string, sequence: SequenceData | null) => void;
   clearSlot: (slotId: string) => void;
   startPlayback: () => void;
@@ -34,7 +34,7 @@ export type ArrangeTabState = {
 };
 
 // Mode slot requirements
-const MODE_SLOT_REQUIREMENTS: Record<AnimateMode, string[]> = {
+const MODE_SLOT_REQUIREMENTS: Record<ComposeMode, string[]> = {
   single: ["primary"],
   mirror: ["primary"],
   tunnel: ["primary", "secondary"],
@@ -90,8 +90,8 @@ function objectToMap<T>(obj: Record<string, T>): Map<string, T> {
 
 export function createArrangeTabState(): ArrangeTabState {
   // Selected mode
-  let selectedMode = $state<AnimateMode | null>(
-    loadFromStorage<AnimateMode | null>(STORAGE_KEYS.SELECTED_MODE, null)
+  let selectedMode = $state<ComposeMode | null>(
+    loadFromStorage<ComposeMode | null>(STORAGE_KEYS.SELECTED_MODE, null)
   );
 
   // Sequence slots
@@ -136,7 +136,7 @@ export function createArrangeTabState(): ArrangeTabState {
     },
 
     // Mode selection
-    selectMode(mode: AnimateMode | null) {
+    selectMode(mode: ComposeMode | null) {
       selectedMode = mode;
       saveToStorage(STORAGE_KEYS.SELECTED_MODE, mode);
 

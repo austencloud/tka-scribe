@@ -14,7 +14,7 @@ Features:
 -->
 <script lang="ts">
   import type { SavedAnimation } from "../state/browse-state.svelte";
-  import type { AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
 
   const {
     animation,
@@ -27,7 +27,7 @@ Features:
   } = $props();
 
   // Mode icon mapping
-  const modeIcons: Record<AnimateMode, string> = {
+  const modeIcons: Record<ComposeMode, string> = {
     single: "fa-play",
     mirror: "fa-clone",
     tunnel: "fa-circle-notch",
@@ -36,7 +36,7 @@ Features:
   };
 
   // Mode display names
-  const modeNames: Record<AnimateMode, string> = {
+  const modeNames: Record<ComposeMode, string> = {
     single: "Single",
     mirror: "Mirror",
     tunnel: "Tunnel",
@@ -45,7 +45,7 @@ Features:
   };
 
   // Mode color gradients
-  const modeGradients: Record<AnimateMode, string> = {
+  const modeGradients: Record<ComposeMode, string> = {
     single:
       "linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%)",
     mirror:
@@ -58,7 +58,7 @@ Features:
   };
 
   // Mode accent colors
-  const modeAccents: Record<AnimateMode, string> = {
+  const modeAccents: Record<ComposeMode, string> = {
     single: "#3b82f6",
     mirror: "#8b5cf6",
     tunnel: "#ec4899",

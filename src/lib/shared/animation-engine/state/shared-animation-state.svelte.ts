@@ -7,7 +7,7 @@
  * This enables beat grid synchronization when animations play in different contexts.
  */
 
-import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
+import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
 
 /**
  * Global shared animation state instance.

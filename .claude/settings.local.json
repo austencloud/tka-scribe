@@ -280,7 +280,8 @@
       "Bash(firebase projects:list:*)",
       "WebFetch(domain:firebasestorage.googleapis.com)",
       "Bash(pkill:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(lsof:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,7 +1,7 @@
 <!--
-  AnnouncementForm - Create/Edit Announcement
+  AnnouncementForm - Create/Edit Announcement (2025 Design)
 
-  Form for creating new announcements or editing existing ones.
+  Modern chip-based form with solid gradients and vibrant colors.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -14,7 +14,6 @@
     AnnouncementSeverity,
     AnnouncementAudience,
   } from "../../domain/models/announcement-models";
-  import { DEFAULT_ANNOUNCEMENT } from "../../domain/models/announcement-models";
 
   interface Props {
     announcement?: Announcement | null;
@@ -24,7 +23,7 @@
 
   let { announcement = null, onSave, onCancel }: Props = $props();
 
-  // Services (resolved lazily to avoid module initialization errors)
+  // Services
   let announcementService: IAnnouncementService | null = null;
 
   onMount(() => {
@@ -42,6 +41,7 @@
   let targetAudience = $state<AnnouncementAudience>(
     announcement?.targetAudience ?? "all"
   );
+  let targetUserId = $state(announcement?.targetUserId ?? "");
   let showAsModal = $state(announcement?.showAsModal ?? true);
   let hasExpiration = $state(!!announcement?.expiresAt);
   let expirationDate = $state(
@@ -54,6 +54,33 @@
 
   let isSaving = $state(false);
   let error = $state<string | null>(null);
+
+  // Severity options with colors
+  const severityOptions: {
+    value: AnnouncementSeverity;
+    label: string;
+    icon: string;
+    color: string;
+  }[] = [
+    { value: "info", label: "Info", icon: "fa-info-circle", color: "#6366f1" },
+    { value: "warning", label: "Warning", icon: "fa-exclamation-triangle", color: "#f59e0b" },
+    { value: "critical", label: "Critical", icon: "fa-exclamation-circle", color: "#ef4444" },
+  ];
+
+  // Audience options
+  const audienceOptions: {
+    value: AnnouncementAudience;
+    label: string;
+    icon: string;
+  }[] = [
+    { value: "all", label: "All Users", icon: "fa-users" },
+    { value: "admins", label: "Admins Only", icon: "fa-shield-alt" },
+    { value: "beta", label: "Beta Testers", icon: "fa-flask" },
+    { value: "new", label: "New Users", icon: "fa-user-plus" },
+    { value: "active", label: "Active Users", icon: "fa-user-check" },
+    { value: "creators", label: "Creators", icon: "fa-magic" },
+    { value: "specific-user", label: "Specific User", icon: "fa-user" },
+  ];
 
   async function handleSubmit(e: Event) {
     e.preventDefault();
@@ -69,6 +96,10 @@
     }
     if (hasExpiration && !expirationDate) {
       error = "Expiration date is required";
+      return;
+    }
+    if (targetAudience === "specific-user" && !targetUserId.trim()) {
+      error = "User ID is required for specific user targeting";
       return;
     }
 
@@ -92,21 +123,20 @@
         message: message.trim(),
         severity,
         targetAudience,
+        targetUserId: targetAudience === "specific-user" ? targetUserId.trim() : undefined,
         showAsModal,
-        expiresAt: hasExpiration ? new Date(expirationDate) : undefined,
+        expiresAt: hasExpiration && expirationDate ? new Date(expirationDate) : undefined,
         actionUrl: actionUrl.trim() || undefined,
         actionLabel: actionLabel.trim() || undefined,
         createdBy: user.uid,
       };
 
       if (announcement) {
-        // Update existing
         await announcementService.updateAnnouncement(
           announcement.id,
           announcementData
         );
       } else {
-        // Create new
         await announcementService.createAnnouncement(announcementData);
       }
 
@@ -137,11 +167,11 @@
     {/if}
 
     <!-- Title -->
-    <div class="form-group">
-      <label for="title">Title</label>
+    <div class="form-section">
+      <label class="section-label">Title</label>
       <input
         type="text"
-        id="title"
+        class="text-input"
         bind:value={title}
         placeholder="e.g., New Feature: Dark Mode"
         maxlength="100"
@@ -151,10 +181,10 @@
     </div>
 
     <!-- Message -->
-    <div class="form-group">
-      <label for="message">Message</label>
+    <div class="form-section">
+      <label class="section-label">Message</label>
       <textarea
-        id="message"
+        class="text-input"
         bind:value={message}
         placeholder="Announcement message (supports markdown)"
         rows="6"
@@ -163,57 +193,119 @@
       <span class="help-text">Supports markdown formatting</span>
     </div>
 
-    <!-- Severity -->
-    <div class="form-group">
-      <label for="severity">Severity</label>
-      <select id="severity" bind:value={severity}>
-        <option value="info">Info</option>
-        <option value="warning">Warning</option>
-        <option value="critical">Critical</option>
-      </select>
+    <!-- Severity Selection (Chips) -->
+    <div class="form-section">
+      <label class="section-label">Severity</label>
+      <div class="chip-group">
+        {#each severityOptions as option}
+          <button
+            type="button"
+            class="selection-chip"
+            class:active={severity === option.value}
+            style="--chip-color: {option.color}"
+            onclick={() => (severity = option.value)}
+            aria-pressed={severity === option.value}
+          >
+            <i class="fas {option.icon}"></i>
+            <span>{option.label}</span>
+            {#if severity === option.value}
+              <i class="fas fa-check chip-check"></i>
+            {/if}
+          </button>
+        {/each}
+      </div>
     </div>
 
-    <!-- Target Audience -->
-    <div class="form-group">
-      <label for="target">Target Audience</label>
-      <select id="target" bind:value={targetAudience}>
-        <option value="all">All Users</option>
-        <option value="beta">Beta Testers</option>
-        <option value="new">New Users</option>
-        <option value="active">Active Users</option>
-        <option value="creators">Creators</option>
-      </select>
+    <!-- Target Audience Selection (Chips) -->
+    <div class="form-section">
+      <label class="section-label">Target Audience</label>
+      <div class="chip-group">
+        {#each audienceOptions as option}
+          <button
+            type="button"
+            class="selection-chip"
+            class:active={targetAudience === option.value}
+            onclick={() => (targetAudience = option.value)}
+            aria-pressed={targetAudience === option.value}
+          >
+            <i class="fas {option.icon}"></i>
+            <span>{option.label}</span>
+            {#if targetAudience === option.value}
+              <i class="fas fa-check chip-check"></i>
+            {/if}
+          </button>
+        {/each}
+      </div>
     </div>
 
-    <!-- Show as Modal -->
-    <div class="form-group checkbox-group">
-      <label class="checkbox-label">
-        <input type="checkbox" bind:checked={showAsModal} />
-        <span>Show as modal (force users to dismiss)</span>
-      </label>
+    <!-- Specific User ID (conditional) -->
+    {#if targetAudience === "specific-user"}
+      <div class="form-section indented">
+        <label class="section-label">User ID</label>
+        <input
+          type="text"
+          class="text-input"
+          bind:value={targetUserId}
+          placeholder="Enter user ID (Firebase UID)"
+          required
+        />
+        <span class="help-text">Enter the Firebase user ID</span>
+      </div>
+    {/if}
+
+    <!-- Display Options (Toggle Chips) -->
+    <div class="form-section">
+      <label class="section-label">Display Options</label>
+      <div class="chip-group">
+        <button
+          type="button"
+          class="toggle-chip"
+          class:active={showAsModal}
+          onclick={() => (showAsModal = !showAsModal)}
+          aria-pressed={showAsModal}
+        >
+          <i class="fas fa-window-maximize"></i>
+          <span>Show as Modal</span>
+          {#if showAsModal}
+            <i class="fas fa-check chip-check"></i>
+          {/if}
+        </button>
+
+        <button
+          type="button"
+          class="toggle-chip"
+          class:active={hasExpiration}
+          onclick={() => (hasExpiration = !hasExpiration)}
+          aria-pressed={hasExpiration}
+        >
+          <i class="fas fa-calendar-times"></i>
+          <span>Set Expiration</span>
+          {#if hasExpiration}
+            <i class="fas fa-check chip-check"></i>
+          {/if}
+        </button>
+      </div>
     </div>
 
-    <!-- Expiration -->
-    <div class="form-group checkbox-group">
-      <label class="checkbox-label">
-        <input type="checkbox" bind:checked={hasExpiration} />
-        <span>Set expiration date</span>
-      </label>
-    </div>
-
+    <!-- Expiration Date (conditional) -->
     {#if hasExpiration}
-      <div class="form-group indented">
-        <label for="expiration">Expiration Date</label>
-        <input type="date" id="expiration" bind:value={expirationDate} />
+      <div class="form-section indented">
+        <label class="section-label">Expiration Date</label>
+        <input
+          type="date"
+          class="text-input"
+          bind:value={expirationDate}
+          required={hasExpiration}
+        />
       </div>
     {/if}
 
     <!-- Action URL (optional) -->
-    <div class="form-group">
-      <label for="action-url">Action URL (optional)</label>
+    <div class="form-section">
+      <label class="section-label">Action URL <span class="optional">(optional)</span></label>
       <input
         type="url"
-        id="action-url"
+        class="text-input"
         bind:value={actionUrl}
         placeholder="https://example.com/learn-more"
       />
@@ -221,11 +313,11 @@
     </div>
 
     {#if actionUrl}
-      <div class="form-group">
-        <label for="action-label">Action Button Label</label>
+      <div class="form-section indented">
+        <label class="section-label">Action Button Label</label>
         <input
           type="text"
-          id="action-label"
+          class="text-input"
           bind:value={actionLabel}
           placeholder="Learn More"
           maxlength="30"
@@ -236,6 +328,7 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <button type="button" class="cancel-button" onclick={onCancel}>
+        <i class="fas fa-times"></i>
         Cancel
       </button>
       <button type="submit" class="save-button" disabled={isSaving}>
@@ -244,7 +337,7 @@
           Saving...
         {:else}
           <i class="fas fa-check"></i>
-          {announcement ? "Update" : "Create"} Announcement
+          {announcement ? "Update" : "Create"}
         {/if}
       </button>
     </div>
@@ -256,6 +349,7 @@
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
+    padding: 0 4px;
   }
 
   /* ============================================================================
@@ -265,33 +359,38 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.2);
   }
 
   .form-header h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
     margin: 0;
+    letter-spacing: -0.5px;
   }
 
   .close-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    min-width: 52px;
+    min-height: 52px;
+    background: linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, #3d3d4a 0%, #2f2f38 100%);
+    color: #ffffff;
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.25);
   }
 
   /* ============================================================================
@@ -301,94 +400,164 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 10px;
-    color: #f87171;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border: 2px solid #ef4444;
+    border-radius: 12px;
+    color: #ffffff;
     font-size: 14px;
-    margin-bottom: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
   }
 
   /* ============================================================================
-     FORM GROUPS
+     FORM SECTIONS
      ============================================================================ */
-  .form-group {
-    margin-bottom: 20px;
+  .form-section {
+    margin-bottom: 28px;
   }
 
-  .form-group label {
+  .section-label {
     display: block;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 8px;
+    color: #ffffff;
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
   }
 
-  .form-group input[type="text"],
-  .form-group input[type="url"],
-  .form-group input[type="date"],
-  .form-group select,
-  .form-group textarea {
+  .optional {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .text-input {
     width: 100%;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 14px;
+    padding: 16px 20px;
+    min-height: 52px;
+    background: linear-gradient(135deg, #1a1a24 0%, #16161e 100%);
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 15px;
     font-family: inherit;
     transition: all 0.2s ease;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    outline: none;
-    border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  .form-group textarea {
     resize: vertical;
-    min-height: 120px;
+  }
+
+  .text-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .text-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: linear-gradient(135deg, #20202e 0%, #1c1c28 100%);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+  }
+
+  textarea.text-input {
+    min-height: 140px;
+    line-height: 1.6;
   }
 
   .char-count,
   .help-text {
     display: block;
-    margin-top: 6px;
-    font-size: 12px;
+    margin-top: 8px;
+    font-size: 13px;
     color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* ============================================================================
-     CHECKBOX GROUPS
-     ============================================================================ */
-  .checkbox-group {
-    margin-bottom: 16px;
-  }
-
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-  }
-
-  .checkbox-label input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-  }
-
-  .checkbox-label span {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
   }
 
   .indented {
-    margin-left: 32px;
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 3px solid #6366f1;
+  }
+
+  /* ============================================================================
+     CHIP GROUPS - 2025 SOLID DESIGN
+     ============================================================================ */
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .selection-chip,
+  .toggle-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    min-height: 52px;
+    background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .selection-chip i:not(.chip-check),
+  .toggle-chip i:not(.chip-check) {
+    font-size: 16px;
+    opacity: 0.9;
+  }
+
+  .selection-chip:hover,
+  .toggle-chip:hover {
+    background: linear-gradient(135deg, #3d3d4a 0%, #35353f 100%);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .selection-chip.active {
+    background: linear-gradient(135deg, var(--chip-color, #6366f1) 0%, color-mix(in srgb, var(--chip-color, #6366f1) 80%, black) 100%);
+    border-color: var(--chip-color, #6366f1);
+    color: #ffffff;
+    box-shadow:
+      0 0 24px color-mix(in srgb, var(--chip-color, #6366f1) 40%, transparent),
+      0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .toggle-chip.active {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border-color: #818cf8;
+    color: #ffffff;
+    box-shadow:
+      0 0 24px rgba(99, 102, 241, 0.4),
+      0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .chip-check {
+    margin-left: auto;
+    font-size: 14px;
+    animation: checkPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes checkPop {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   /* ============================================================================
@@ -397,7 +566,9 @@
   .form-actions {
     display: flex;
     gap: 12px;
-    margin-top: 32px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 2px solid rgba(99, 102, 241, 0.2);
   }
 
   .cancel-button,
@@ -406,35 +577,47 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 14px 24px;
-    border-radius: 10px;
-    font-size: 14px;
+    gap: 10px;
+    padding: 16px 28px;
+    min-height: 56px;
+    border-radius: 12px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
   }
 
   .cancel-button {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, #3d3d4a 0%, #35353f 100%);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .save-button {
     background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
-    border: none;
-    color: white;
+    border: 2px solid #a5b4fc;
+    color: #ffffff;
+    box-shadow:
+      0 0 20px rgba(99, 102, 241, 0.3),
+      0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .save-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #9ca3f8 0%, #7c7fef 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    box-shadow:
+      0 0 30px rgba(99, 102, 241, 0.5),
+      0 6px 20px rgba(0, 0, 0, 0.5);
   }
 
   .save-button:active:not(:disabled) {
@@ -444,6 +627,7 @@
   .save-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 
   /* ============================================================================
@@ -451,11 +635,57 @@
      ============================================================================ */
   @media (max-width: 640px) {
     .form-header h2 {
-      font-size: 20px;
+      font-size: 24px;
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    .chip-group {
+      gap: 8px;
+    }
+
+    .selection-chip,
+    .toggle-chip {
+      padding: 12px 16px;
+      font-size: 13px;
+      min-height: 52px;
     }
 
     .form-actions {
       flex-direction: column;
+      gap: 10px;
+    }
+
+    .indented {
+      margin-left: 12px;
+      padding-left: 12px;
+    }
+  }
+
+  /* ============================================================================
+     ACCESSIBILITY
+     ============================================================================ */
+  @media (prefers-reduced-motion: reduce) {
+    .selection-chip,
+    .toggle-chip,
+    .cancel-button,
+    .save-button,
+    .text-input {
+      transition: none;
+      animation: none;
+    }
+
+    .chip-check {
+      animation: none;
+    }
+
+    .selection-chip:hover,
+    .toggle-chip:hover,
+    .cancel-button:hover,
+    .save-button:hover {
+      transform: none;
     }
   }
 </style>

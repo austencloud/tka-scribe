@@ -8,7 +8,12 @@
   import type { IViewportService } from "../../../../device/services/contracts/IViewportService";
   import { onMount } from "svelte";
   import IOSBackgroundCardGrid from "./IOSBackgroundCardGrid.svelte";
+  import SnowfallTuningControls from "./SnowfallTuningControls.svelte";
   import { backgroundsConfig } from "./background-config";
+  import {
+    SNOWFALL_TUNING_DEFAULTS,
+    type SnowfallTuning,
+  } from "../../../../background/shared/domain/constants/BackgroundConfigs";
   import {
     calculateGradientLuminance,
     calculateLuminance,
@@ -34,6 +39,9 @@
     backgroundEnabled: settings?.backgroundEnabled ?? true,
     backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
     backgroundQuality: settings?.backgroundQuality || "medium",
+    snowfallTuning: settings?.snowfallTuning
+      ? { ...SNOWFALL_TUNING_DEFAULTS, ...settings.snowfallTuning }
+      : { ...SNOWFALL_TUNING_DEFAULTS },
     backgroundColor: settings?.backgroundColor || "#000000",
     gradientColors: settings?.gradientColors || [
       "#0d1117",
@@ -102,6 +110,11 @@
     }
   }
 
+  function handleSnowfallTuningChange(value: SnowfallTuning) {
+    backgroundSettings.snowfallTuning = value;
+    updateBackgroundSetting("snowfallTuning", value);
+  }
+
   /**
    * Apply dynamic glass morphism based on background luminance
    */
@@ -154,6 +167,14 @@
       onBackgroundSelect={handleBackgroundSelect}
       {orientation}
     />
+    {#if backgroundSettings.backgroundType === BackgroundType.SNOWFALL}
+      <div class="background-control-panel">
+        <SnowfallTuningControls
+          value={backgroundSettings.snowfallTuning}
+          onChange={handleSnowfallTuningChange}
+        />
+      </div>
+    {/if}
   {/if}
 </div>
 
@@ -163,5 +184,12 @@
     display: block;
     padding: 12px 6px 6px;
     box-sizing: border-box;
+  }
+
+  .background-control-panel {
+    margin-top: 12px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
   }
 </style>

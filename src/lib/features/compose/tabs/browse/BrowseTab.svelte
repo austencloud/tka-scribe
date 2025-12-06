@@ -14,7 +14,7 @@ Features:
   import { onMount } from "svelte";
   import { getBrowseState } from "./state/browse-state.svelte";
   import type { SavedAnimation } from "./state/browse-state.svelte";
-  import { getAnimateModuleState } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import { getComposeModuleState } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import AnimationFilters from "./components/AnimationFilters.svelte";
   import AnimationGrid from "./components/AnimationGrid.svelte";
   import AnimationDetailPanel from "./components/AnimationDetailPanel.svelte";
@@ -30,7 +30,7 @@ Features:
 
   // Get singleton state
   const browseState = getBrowseState();
-  const animateModuleState = getAnimateModuleState();
+  const composeModuleState = getComposeModuleState();
 
   // Local state for drawer
   let isDetailPanelOpen = $state(false);
@@ -83,8 +83,8 @@ Features:
     switch (action) {
       case "play":
         // Set the animation mode and open playback overlay
-        animateModuleState.setCurrentMode(animation.mode);
-        animateModuleState.openPlayback("browse");
+        composeModuleState.setCurrentMode(animation.mode);
+        composeModuleState.openPlayback("browse");
         isDetailPanelOpen = false;
         debug.log("Playing composition:", animation.name);
         break;

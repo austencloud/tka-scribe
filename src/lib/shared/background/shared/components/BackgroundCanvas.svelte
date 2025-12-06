@@ -13,6 +13,7 @@ without the complex BackgroundContext system.
   } from "../domain/models/background-models";
   import type { BackgroundType } from "../domain/enums/background-enums";
   import type { QualityLevel } from "../domain/types/background-types";
+  import type { SnowfallTuning } from "../domain/constants/BackgroundConfigs";
   import { BackgroundFactory } from "../services/implementations/BackgroundFactory";
 
   // Props
@@ -23,6 +24,7 @@ without the complex BackgroundContext system.
     gradientColors,
     gradientDirection,
     thumbnailMode = false,
+    snowfallTuning,
     onReady,
     onPerformanceReport,
   } = $props<{
@@ -32,6 +34,7 @@ without the complex BackgroundContext system.
     gradientColors?: string[];
     gradientDirection?: number;
     thumbnailMode?: boolean;
+    snowfallTuning?: SnowfallTuning;
     onReady?: () => void;
     onPerformanceReport?: (metrics: PerformanceMetrics) => void;
   }>();
@@ -72,6 +75,9 @@ without the complex BackgroundContext system.
         backgroundColor,
         gradientColors,
         gradientDirection,
+        settings: snowfallTuning
+          ? { snowfallTuning }
+          : undefined,
       });
 
       currentBackgroundSystem = system;

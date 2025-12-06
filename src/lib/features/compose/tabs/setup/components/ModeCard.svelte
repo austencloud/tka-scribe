@@ -6,13 +6,13 @@
    * Visual previews show mini diagrams of each mode's layout arrangement.
    */
 
-  import type { AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
   interface Props {
-    mode: AnimateMode;
+    mode: ComposeMode;
     title: string;
     description: string;
     slotCount: number;
@@ -23,7 +23,7 @@
   let { mode, title, description, slotCount, gradient, onclick }: Props = $props();
 
   // Visual preview configurations for each mode
-  const modePreviewConfig: Record<AnimateMode, { type: string; elements: any[] }> = {
+  const modePreviewConfig: Record<ComposeMode, { type: string; elements: any[] }> = {
     single: {
       type: "single",
       elements: [{ x: 50, y: 50, width: 60, height: 70 }]

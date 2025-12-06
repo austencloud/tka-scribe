@@ -8,14 +8,14 @@
 
   import { onMount } from "svelte";
   import { getBrowseState, type SavedAnimation } from "../../browse/state/browse-state.svelte";
-  import { getAnimateModuleState, type AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import { getComposeModuleState, type ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
   // Get state instances
   const browseState = getBrowseState();
-  const animateModuleState = getAnimateModuleState();
+  const composeModuleState = getComposeModuleState();
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -28,7 +28,7 @@
   );
 
   // Mode colors for consistency
-  const modeColors: Record<AnimateMode, string> = {
+  const modeColors: Record<ComposeMode, string> = {
     single: "#3b82f6",
     mirror: "#8b5cf6",
     tunnel: "#ec4899",
@@ -37,7 +37,7 @@
   };
 
   // Mode icons
-  const modeIcons: Record<AnimateMode, string> = {
+  const modeIcons: Record<ComposeMode, string> = {
     single: "fa-play",
     mirror: "fa-clone",
     tunnel: "fa-circle-notch",
@@ -58,8 +58,8 @@
     hapticService?.trigger("selection");
 
     // Set mode and open playback
-    animateModuleState.setCurrentMode(composition.mode);
-    animateModuleState.openPlayback("arrange");
+    composeModuleState.setCurrentMode(composition.mode);
+    composeModuleState.openPlayback("arrange");
 
     console.log("🎬 RecentCompositions: Quick play:", composition.name);
   }

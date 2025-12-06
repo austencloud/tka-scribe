@@ -345,7 +345,6 @@
   /* Panel - content card */
   .panel {
     border-radius: 16px;
-
     padding: clamp(12px, 2vw, 20px);
     min-width: 0;
   }

@@ -20,11 +20,11 @@
 -->
 <script lang="ts">
   import AnimationShareDrawer from "../animation-engine/components/AnimationShareDrawer.svelte";
-  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
-  import type { IGifExportOrchestrator } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
-  import type { AnimationExportFormat } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
-  import type { GifExportProgress } from "$lib/features/animate/services/contracts/IGifExportService";
-  import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
+  import type { IGifExportOrchestrator } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
+  import type { AnimationExportFormat } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
+  import type { GifExportProgress } from "$lib/features/compose/services/contracts/IGifExportService";
+  import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
   import { resolve, loadFeatureModule } from "../inversify/di";
   import { TYPES } from "../inversify/types";
@@ -35,7 +35,7 @@
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
     GIF_EXPORT_SUCCESS_DELAY_MS,
-  } from "$lib/features/animate/shared/domain/constants/timing";
+  } from "$lib/features/compose/shared/domain/constants/timing";
   import type {
     ISheetRouterService,
     AnimationPanelState,

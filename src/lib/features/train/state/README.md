@@ -157,11 +157,11 @@ SETUP
 ## Pattern Comparison
 
 This implementation follows similar patterns to:
-- `src/lib/modules/animate/shared/state/animate-module-state.svelte.ts`
+- `src/lib/features/compose/shared/state/compose-module-state.svelte.ts`
 - `src/lib/modules/word-card/state/word-card-state.svelte.ts`
 
 Key differences:
-- Uses factory function returning an object with getters (like animate state)
-- Includes configurable defaults (like animate state)
+- Uses factory function returning an object with getters (like compose state)
+- Includes configurable defaults (like compose state)
 - Uses Svelte context for DI (like both examples)
 - Focuses on performance/training specific state

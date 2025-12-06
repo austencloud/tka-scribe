@@ -12,7 +12,9 @@ export type AnnouncementAudience =
   | "beta" // Beta testers only
   | "new" // New users (< 30 days)
   | "active" // Active users (logged in within 7 days)
-  | "creators"; // Users who have created sequences
+  | "creators" // Users who have created sequences
+  | "admins" // Admin users only
+  | "specific-user"; // Specific user by ID
 
 /**
  * Announcement severity level
@@ -37,6 +39,9 @@ export interface Announcement {
   createdAt: Date;
   createdBy: string; // Admin user ID
   expiresAt?: Date; // Optional expiration (auto-hide after this date)
+
+  // Targeting
+  targetUserId?: string; // Specific user ID (when targetAudience is "specific-user")
 
   // Metadata
   actionUrl?: string; // Optional link for "Learn More" button

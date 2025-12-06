@@ -54,6 +54,7 @@ export class AnnouncementService implements IAnnouncementService {
       createdAt: this.firestoreToDate(doc.createdAt),
       createdBy: doc.createdBy as string,
       expiresAt: doc.expiresAt ? this.firestoreToDate(doc.expiresAt) : undefined,
+      targetUserId: doc.targetUserId as string | undefined,
       actionUrl: doc.actionUrl as string | undefined,
       actionLabel: doc.actionLabel as string | undefined,
     };
@@ -126,6 +127,10 @@ export class AnnouncementService implements IAnnouncementService {
     const now = Timestamp.now();
     const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
 
+    // Get user document to check admin status
+    const userDoc = await getDoc(doc(firestore, `users/${userId}`));
+    const isAdmin = userDoc.exists() ? (userDoc.data()?.isAdmin as boolean) : false;
+
     // Get all announcements (we'll filter targeting client-side)
     const snapshot = await getDocs(
       query(announcementsRef, orderBy("createdAt", "desc"))
@@ -139,9 +144,23 @@ export class AnnouncementService implements IAnnouncementService {
           return false;
         }
 
-        // TODO: Implement user targeting logic when user metadata is available
-        // For now, show all non-expired announcements
-        return true;
+        // Apply audience targeting
+        switch (announcement.targetAudience) {
+          case "all":
+            return true;
+          case "admins":
+            return isAdmin;
+          case "specific-user":
+            return announcement.targetUserId === userId;
+          case "beta":
+          case "new":
+          case "active":
+          case "creators":
+            // TODO: Implement user targeting logic when user metadata is available
+            return true;
+          default:
+            return true;
+        }
       });
 
     return announcements;

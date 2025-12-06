@@ -8,7 +8,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { TrailSettings } from "../../../shared/domain/types/TrailTypes";
 import { DEFAULT_TRAIL_SETTINGS } from "../../../shared/domain/types/TrailTypes";
-import type { AnimateMode } from "../../../shared/state/animate-module-state.svelte";
+import type { ComposeMode } from "../../../shared/state/compose-module-state.svelte";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const debug = createComponentLogger("PlaybackState");
@@ -46,7 +46,7 @@ export type PlaybackState = {
   readonly currentBeat: number;
 
   // Current mode
-  readonly currentMode: AnimateMode;
+  readonly currentMode: ComposeMode;
 
   // Sequences
   readonly sequences: AnimationSequenceSlot[];
@@ -63,7 +63,7 @@ export type PlaybackState = {
   setCurrentBeat: (beat: number) => void;
 
   // Mutators - Mode & Sequences
-  setCurrentMode: (mode: AnimateMode) => void;
+  setCurrentMode: (mode: ComposeMode) => void;
   setSequences: (sequences: AnimationSequenceSlot[]) => void;
   updateSequenceSlot: (index: number, slot: Partial<AnimationSequenceSlot>) => void;
 
@@ -108,7 +108,7 @@ export function createPlaybackState(): PlaybackState {
   let currentBeat = $state(0);
 
   // Current mode
-  let currentMode = $state<AnimateMode>("single");
+  let currentMode = $state<ComposeMode>("single");
 
   // Sequences
   let sequences = $state<AnimationSequenceSlot[]>([]);
@@ -179,7 +179,7 @@ export function createPlaybackState(): PlaybackState {
     },
 
     // Mode & Sequences
-    setCurrentMode(mode: AnimateMode) {
+    setCurrentMode(mode: ComposeMode) {
       currentMode = mode;
       console.log(`🎬 Playback: Mode changed to ${mode}`);
     },

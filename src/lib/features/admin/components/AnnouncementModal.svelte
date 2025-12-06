@@ -66,7 +66,13 @@
   }
 </script>
 
-<div class="modal-overlay" onclick={handleDismiss}>
+<div
+  class="modal-overlay"
+  onclick={handleDismiss}
+  onkeydown={(e) => e.key === 'Escape' && handleDismiss()}
+  role="button"
+  tabindex="-1"
+>
   <div class="modal-content" onclick={(e) => e.stopPropagation()}>
     <div class="modal-header" style="--severity-color: {getSeverityColor(announcement.severity)};">
       <div class="header-icon">

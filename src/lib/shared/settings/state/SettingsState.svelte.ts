@@ -14,6 +14,7 @@
 import { browser } from "$app/environment";
 import { injectable } from "inversify";
 import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
+import { SNOWFALL_TUNING_DEFAULTS } from "../../background/shared/domain/constants/BackgroundConfigs";
 import { updateBodyBackground } from "../../background/shared/background-preloader";
 import { ThemeService } from "../../theme/services/ThemeService";
 import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
@@ -37,6 +38,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   backgroundType: BackgroundType.NIGHT_SKY,
   backgroundQuality: "medium",
   backgroundEnabled: true,
+  snowfallTuning: { ...SNOWFALL_TUNING_DEFAULTS },
   hapticFeedback: true,
   reducedMotion: false,
   catDogMode: false, // Default: both hands use the same prop

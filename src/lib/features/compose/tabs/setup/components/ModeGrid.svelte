@@ -9,10 +9,10 @@
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import ModeCard from "./ModeCard.svelte";
-  import type { AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
 
   interface Props {
-    onModeSelect: (mode: AnimateMode) => void;
+    onModeSelect: (mode: ComposeMode) => void;
   }
 
   let { onModeSelect }: Props = $props();
@@ -28,28 +28,28 @@
   // Mode definitions with metadata
   const modes = [
     {
-      id: "single" as AnimateMode,
+      id: "single" as ComposeMode,
       title: "Single",
       description: "Full-screen single sequence",
       slotCount: 1,
       gradient: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)", // Pink
     },
     {
-      id: "mirror" as AnimateMode,
+      id: "mirror" as ComposeMode,
       title: "Mirror",
       description: "Side-by-side mirrored copy",
       slotCount: 1,
       gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)", // Purple
     },
     {
-      id: "tunnel" as AnimateMode,
+      id: "tunnel" as ComposeMode,
       title: "Tunnel",
       description: "Two sequences overlaid",
       slotCount: 2,
       gradient: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)", // Blue
     },
     {
-      id: "grid" as AnimateMode,
+      id: "grid" as ComposeMode,
       title: "Grid",
       description: "Multiple in grid layout",
       slotCount: 4,

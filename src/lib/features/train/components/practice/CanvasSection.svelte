@@ -11,8 +11,8 @@
   import { loadFeatureModule } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
-  import { createAnimationPanelState } from "$lib/features/animate/state/animation-panel-state.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
+  import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
 
   interface Props {
     sequence: SequenceData | null;

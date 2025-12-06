@@ -318,7 +318,7 @@ export async function loadPixiModule(): Promise<void> {
   }
 
   const { pixiModule } = await import(
-    "../../features/animate/inversify/PixiModule"
+    "../../features/compose/inversify/PixiModule"
   );
   await container.load(pixiModule);
 }

@@ -13,15 +13,15 @@
    */
 
   import { getArrangeTabState } from "./state/arrange-state.svelte";
-  import { getAnimateModuleState } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import { getComposeModuleState } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import ModeGrid from "./components/ModeGrid.svelte";
   import SequenceSetupPanel from "./components/SequenceSetupPanel.svelte";
   import RecentCompositions from "./components/RecentCompositions.svelte";
-  import type { AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
 
   // Get state instances
   const arrangeState = getArrangeTabState();
-  const animateModuleState = getAnimateModuleState();
+  const composeModuleState = getComposeModuleState();
 
   // Reactive bindings
   const selectedMode = $derived(arrangeState.selectedMode);
@@ -30,7 +30,7 @@
   const isConfigurationComplete = $derived(arrangeState.isConfigurationComplete);
 
   // Handlers
-  function handleModeSelect(mode: AnimateMode) {
+  function handleModeSelect(mode: ComposeMode) {
     arrangeState.selectMode(mode);
     console.log("🎨 ArrangeTab: Mode selected:", mode);
   }
@@ -47,10 +47,10 @@
     }
 
     // Set the animation mode for playback
-    animateModuleState.setCurrentMode(selectedMode);
+    composeModuleState.setCurrentMode(selectedMode);
 
     // Open the playback overlay (source: arrange tab)
-    animateModuleState.openPlayback("arrange");
+    composeModuleState.openPlayback("arrange");
 
     console.log("🎨 ArrangeTab: Opening playback overlay for mode:", selectedMode);
   }

@@ -12,7 +12,7 @@
   import type { BeatData } from "../../create/shared/domain/models/BeatData";
   import { isStartPosition } from "../../create/shared/domain/type-guards/pictograph-type-guards";
   import BeatGrid from "../../create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import type { ISequenceNormalizationService } from "$lib/features/animate/services/contracts/ISequenceNormalizationService";
+  import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
   import { onMount } from "svelte";
 
   interface Props {

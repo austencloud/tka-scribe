@@ -18,7 +18,7 @@
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
-  import type { ISequenceNormalizationService } from "$lib/features/animate/services/contracts/ISequenceNormalizationService";
+  import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
   import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props

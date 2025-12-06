@@ -9,12 +9,12 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { AnimateMode } from "../../../shared/state/animate-module-state.svelte";
+import type { ComposeMode } from "../../../shared/state/compose-module-state.svelte";
 
 export interface SavedAnimation {
   id: string;
   name: string;
-  mode: AnimateMode;
+  mode: ComposeMode;
   sequences: SequenceData[]; // Array of sequences (1 for single, 2 for tunnel/mirror, 4 for grid)
   thumbnailUrl?: string;
   createdAt: Date;
@@ -26,7 +26,7 @@ export interface SavedAnimation {
 }
 
 export interface AnimationFilter {
-  mode?: AnimateMode;
+  mode?: ComposeMode;
   favorites?: boolean;
   creator?: string;
 }

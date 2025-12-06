@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import { getPlaybackState } from "./state/playback-state.svelte";
-  import { getAnimateModuleState } from "../../shared/state/animate-module-state.svelte";
+  import { getComposeModuleState } from "../../shared/state/compose-module-state.svelte";
   import PlaybackHeader from "./components/PlaybackHeader.svelte";
   import PlaybackControls from "./components/PlaybackControls.svelte";
   import TrailSettingsSheet from "./components/TrailSettingsSheet.svelte";
@@ -18,7 +18,7 @@
 
   // Get state instances
   const playbackState = getPlaybackState();
-  const moduleState = getAnimateModuleState();
+  const moduleState = getComposeModuleState();
 
   // Trail settings sheet
   let isTrailSettingsOpen = $state(false);
@@ -83,7 +83,9 @@
     const settings = playbackState.canvasSettings.find(
       (cs) => cs.id === currentSettingsCanvasId
     );
-    return settings?.trailSettings || playbackState.canvasSettings[0]?.trailSettings;
+    return (
+      settings?.trailSettings || playbackState.canvasSettings[0]?.trailSettings
+    );
   });
 
   // Get primary and secondary sequences for tunnel mode
@@ -131,7 +133,7 @@
       <TunnelRenderer
         primarySequence={primarySequence()}
         secondarySequence={secondarySequence()}
-        tunnelColors={tunnelColors}
+        {tunnelColors}
         isPlaying={playbackState.isPlaying}
         speed={playbackState.speed}
         primaryVisible={playbackState.sequences[0]?.visible ?? true}
@@ -152,8 +154,8 @@
       />
     {:else if playbackState.currentMode === "grid"}
       <GridRenderer
-        gridSequences={gridSequences}
-        gridRotationOffsets={gridRotationOffsets}
+        {gridSequences}
+        {gridRotationOffsets}
         isPlaying={playbackState.isPlaying}
         speed={playbackState.speed}
         onSelectCell={handleGridSelectCell}

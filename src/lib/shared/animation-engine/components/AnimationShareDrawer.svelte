@@ -16,9 +16,9 @@
   import { onMount } from "svelte";
 
   // Extracted components (from animate module)
-  import AnimationPanelHeader from "$lib/features/animate/components/canvas/AnimationPanelHeader.svelte";
-  import AnimationCanvas from "$lib/features/animate/components/canvas/AnimationCanvas.svelte";
-  import AnimationControlsPanel from "$lib/features/animate/components/canvas/AnimationControlsPanel.svelte";
+  import AnimationPanelHeader from "$lib/features/compose/components/canvas/AnimationPanelHeader.svelte";
+  import AnimationCanvas from "$lib/features/compose/components/canvas/AnimationCanvas.svelte";
+  import AnimationControlsPanel from "$lib/features/compose/components/canvas/AnimationControlsPanel.svelte";
   import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
 
   // Services
@@ -28,14 +28,14 @@
 
   // Types
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
-  import type { PropState } from "$lib/features/animate/shared/domain/types/PropState";
-  import type { TrailSettings as TrailSettingsType } from "$lib/features/animate/shared/domain/types/TrailTypes";
+  import type { PropState } from "$lib/features/compose/shared/domain/types/PropState";
+  import type { TrailSettings as TrailSettingsType } from "$lib/features/compose/shared/domain/types/TrailTypes";
   import {
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
     TrackingMode,
     TrailMode,
-  } from "$lib/features/animate/shared/domain/types/TrailTypes";
+  } from "$lib/features/compose/shared/domain/types/TrailTypes";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";

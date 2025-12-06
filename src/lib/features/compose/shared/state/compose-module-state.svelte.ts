@@ -20,10 +20,14 @@ import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 const debug = createComponentLogger("ComposeModuleState");
 
 // Tab types - Playback is an overlay, not a tab
-export type AnimateTab = "arrange" | "browse";
+export type ComposeTab = "arrange" | "browse";
+/** @deprecated Use ComposeTab instead */
+export type AnimateTab = ComposeTab;
 
 // Re-export AnimationMode for backwards compatibility
-export type AnimateMode = AnimationMode;
+export type ComposeMode = AnimationMode;
+/** @deprecated Use ComposeMode instead */
+export type AnimateMode = ComposeMode;
 
 export type BrowserTargetMode =
   | "primary"
@@ -35,19 +39,19 @@ export type BrowserTargetMode =
 
 // LocalStorage keys
 const STORAGE_KEYS = {
-  CURRENT_TAB: "animate-current-tab",
-  CURRENT_MODE: "animate-current-mode",
+  CURRENT_TAB: "compose-current-tab",
+  CURRENT_MODE: "compose-current-mode",
 } as const;
 
 // Source tab for playback overlay (where to return when closed)
 export type PlaybackSource = "arrange" | "browse";
 
-export type AnimateModuleState = {
+export type ComposeModuleState = {
   // Current tab (arrange, browse)
-  readonly currentTab: AnimateTab;
+  readonly currentTab: ComposeTab;
 
   // Current animation mode (for playback) - single, tunnel, mirror, grid, side-by-side
-  readonly currentMode: AnimateMode;
+  readonly currentMode: ComposeMode;
 
   // Sequence browser panel
   readonly isSequenceBrowserOpen: boolean;
@@ -58,10 +62,10 @@ export type AnimateModuleState = {
   readonly playbackSource: PlaybackSource;
 
   // Tab switching
-  setCurrentTab: (tab: AnimateTab) => void;
+  setCurrentTab: (tab: ComposeTab) => void;
 
   // Mode switching (for playback configuration)
-  setCurrentMode: (mode: AnimateMode) => void;
+  setCurrentMode: (mode: ComposeMode) => void;
 
   // Browser panel
   openSequenceBrowser: (mode: BrowserTargetMode) => void;
@@ -108,16 +112,16 @@ function saveToStorage<T>(key: string, value: T): void {
   }
 }
 
-export function createAnimateModuleState(): AnimateModuleState {
+export function createComposeModuleState(): ComposeModuleState {
   // Migrate old "compose" tab value to "arrange"
   const storedTab = loadFromStorage<string>(STORAGE_KEYS.CURRENT_TAB, "arrange");
-  const migratedTab: AnimateTab = storedTab === "compose" || storedTab === "playback" ? "arrange" : (storedTab as AnimateTab);
+  const migratedTab: ComposeTab = storedTab === "compose" || storedTab === "playback" ? "arrange" : (storedTab as ComposeTab);
 
   // Current tab (persisted)
-  let currentTab = $state<AnimateTab>(migratedTab);
+  let currentTab = $state<ComposeTab>(migratedTab);
 
   // Current animation mode (persisted) - used for playback configuration
-  let currentMode = $state<AnimateMode>(
+  let currentMode = $state<ComposeMode>(
     loadFromStorage(STORAGE_KEYS.CURRENT_MODE, "single")
   );
 
@@ -151,14 +155,14 @@ export function createAnimateModuleState(): AnimateModuleState {
     },
 
     // Tab switching
-    setCurrentTab(tab: AnimateTab) {
+    setCurrentTab(tab: ComposeTab) {
       currentTab = tab;
       saveToStorage(STORAGE_KEYS.CURRENT_TAB, tab);
       debug.log("Tab changed to", tab);
     },
 
     // Mode switching (for playback configuration)
-    setCurrentMode(mode: AnimateMode) {
+    setCurrentMode(mode: ComposeMode) {
       currentMode = mode;
       saveToStorage(STORAGE_KEYS.CURRENT_MODE, mode);
       debug.log("Mode changed to", mode);
@@ -223,11 +227,16 @@ export function createAnimateModuleState(): AnimateModuleState {
 }
 
 // Singleton instance
-let animateModuleStateInstance: AnimateModuleState | null = null;
+let composeModuleStateInstance: ComposeModuleState | null = null;
 
-export function getAnimateModuleState(): AnimateModuleState {
-  if (!animateModuleStateInstance) {
-    animateModuleStateInstance = createAnimateModuleState();
+export function getComposeModuleState(): ComposeModuleState {
+  if (!composeModuleStateInstance) {
+    composeModuleStateInstance = createComposeModuleState();
   }
-  return animateModuleStateInstance;
+  return composeModuleStateInstance;
 }
+
+/** @deprecated Use getComposeModuleState instead */
+export const getAnimateModuleState = getComposeModuleState;
+/** @deprecated Use ComposeModuleState instead */
+export type AnimateModuleState = ComposeModuleState;

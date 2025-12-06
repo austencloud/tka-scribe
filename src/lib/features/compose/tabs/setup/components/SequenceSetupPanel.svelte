@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import type { AnimateMode } from "$lib/features/compose/shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import { resolve } from "$lib/shared/inversify/di";
@@ -18,7 +18,7 @@
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
 
   interface Props {
-    selectedMode: AnimateMode;
+    selectedMode: ComposeMode;
     requiredSlots: string[];
     sequenceSlots: Map<string, SequenceData | null>;
     isConfigurationComplete: boolean;

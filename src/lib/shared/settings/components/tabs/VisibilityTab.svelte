@@ -228,7 +228,7 @@
       onclick={() => setMobileMode('pictograph')}
     >
       <i class="fas fa-image"></i>
-      <span>Picto</span>
+      <span>Pictograph</span>
     </button>
     <button
       class="segment-btn"
@@ -236,7 +236,7 @@
       onclick={() => setMobileMode('animation')}
     >
       <i class="fas fa-film"></i>
-      <span>Anim</span>
+      <span>Animation</span>
     </button>
     <button
       class="segment-btn"
@@ -244,12 +244,12 @@
       onclick={() => setMobileMode('image')}
     >
       <i class="fas fa-download"></i>
-      <span>Export</span>
+      <span>Image</span>
     </button>
   </div>
 
   <!-- Desktop: Side-by-side panels / Mobile: Single panel based on segment -->
-  <div class="panels-container">
+  <div class="visibility-panels-container">
     <!-- Pictograph Panel -->
     <section
       class="settings-panel pictograph-panel"
@@ -385,9 +385,7 @@
     align-items: center;
     width: 100%;
     gap: 16px;
-
     /* Fluid padding */
-    padding: clamp(12px, 3cqi, 24px);
     opacity: 0;
     transition: opacity 200ms ease;
   }
@@ -408,7 +406,6 @@
     border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
-    max-width: 400px;
     margin-bottom: 12px;
   }
 
@@ -418,8 +415,8 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 44px;
-    padding: 10px 14px;
+    min-height: 52px;
+    padding: 12px 14px;
     background: transparent;
     border: none;
     border-radius: 10px;
@@ -455,20 +452,19 @@
   /* ========================================
      PANELS CONTAINER - Centered, constrained width
      ======================================== */
-  .panels-container {
+  .visibility-panels-container {
     display: flex;
     flex-direction: column;
     gap: clamp(12px, 2cqi, 20px);
     width: 100%;
-    max-width: 400px; /* Single panel max width */
     max-height: 100%;
   }
-
+  
   /* Desktop: Side by side with wider constraint */
   @container visibility-tab (min-width: 700px) {
-    .panels-container {
+    .visibility-panels-container {
       flex-direction: row;
-      max-width: 900px;
+      max-width: 1200px;
       align-items: stretch;
     }
   }
@@ -559,7 +555,7 @@
     border: 1px solid rgba(255, 255, 255, 0.06);
     overflow: hidden;
     /* Square aspect ratio, scales with container width */
-    width: min(100%, clamp(140px, 45cqi, 200px));
+    width: 100%;
     aspect-ratio: 1;
     flex-shrink: 0;
   }
@@ -663,8 +659,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 38px;
-    padding: 8px 10px;
+    min-height: 52px;
+    padding: 12px 10px;
     background: rgba(30, 32, 45, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;

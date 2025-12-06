@@ -95,7 +95,7 @@
     const updatedEntry: ChangelogEntry = {
       category: entry.category,
       text: newText,
-      feedbackId: entry.feedbackId,
+      ...(entry.feedbackId && { feedbackId: entry.feedbackId }),
     };
 
     await versionService.updateChangelogEntry(

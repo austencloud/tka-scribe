@@ -10,7 +10,7 @@ Features:
 - Sort direction toggle
 -->
 <script lang="ts">
-  import type { AnimateMode } from "../../../shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "../../../shared/state/compose-module-state.svelte";
   import type {
     AnimationFilter,
     SortMethod,
@@ -44,7 +44,7 @@ Features:
   });
 
   // Mode options
-  const modeOptions: { value: AnimateMode | "all"; label: string; icon: string }[] = [
+  const modeOptions: { value: ComposeMode | "all"; label: string; icon: string }[] = [
     { value: "all", label: "All", icon: "fa-layer-group" },
     { value: "single", label: "Single", icon: "fa-play" },
     { value: "mirror", label: "Mirror", icon: "fa-clone" },
@@ -60,7 +60,7 @@ Features:
   ];
 
   // Handlers
-  function handleModeChange(mode: AnimateMode | "all") {
+  function handleModeChange(mode: ComposeMode | "all") {
     hapticService?.trigger("selection");
     if (mode === "all") {
       onFilterChange({ ...currentFilter, mode: undefined });

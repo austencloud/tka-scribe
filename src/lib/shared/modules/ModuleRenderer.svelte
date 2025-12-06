@@ -47,7 +47,7 @@
       import("../../features/discover/shared/components/DiscoverModule.svelte"),
     // community module retired - creators moved to discover, challenges to dashboard
     learn: () => import("../../features/learn/LearnTab.svelte"),
-    animate: () => import("../../features/animate/AnimateModule.svelte"),
+    animate: () => import("../../features/compose/ComposeModule.svelte"),
     train: () => import("../../features/train/components/TrainModule.svelte"),
     // library module retired - moved to Discover as a tab
     edit: () => import("../../features/edit/EditModule.svelte"),
@@ -64,8 +64,8 @@
       import(
         "../../features/train/ml-training/components/MLTrainingModule.svelte"
       ),
-    // compose module uses animate folder (legacy naming)
-    compose: () => import("../../features/animate/AnimateModule.svelte"),
+    // compose module
+    compose: () => import("../../features/compose/ComposeModule.svelte"),
     // settings module - accessed via gear icon in sidebar footer
     settings: () => import("../../features/settings/SettingsModule.svelte"),
   };

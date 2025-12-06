@@ -4,7 +4,7 @@
   Header bar for playback overlay with mode info, actions, and close button.
 -->
 <script lang="ts">
-  import type { AnimateMode } from "../../../shared/state/animate-module-state.svelte";
+  import type { ComposeMode } from "../../../shared/state/compose-module-state.svelte";
 
   let {
     currentMode,
@@ -12,7 +12,7 @@
     onShare,
     onClose,
   }: {
-    currentMode: AnimateMode;
+    currentMode: ComposeMode;
     onSave: () => void;
     onShare: () => void;
     onClose: () => void;
@@ -20,7 +20,7 @@
 
   // Format mode name for display
   const modeLabel = $derived(() => {
-    const labels: Record<AnimateMode, string> = {
+    const labels: Record<ComposeMode, string> = {
       single: "Single",
       tunnel: "Tunnel",
       mirror: "Mirror",

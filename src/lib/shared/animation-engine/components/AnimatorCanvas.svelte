@@ -12,9 +12,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { StartPositionData } from "../../../features/create/shared/domain/models/StartPositionData";
   import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
-  import type { IPixiAnimationRenderer } from "$lib/features/animate/services/contracts/IPixiAnimationRenderer";
-  import type { ISVGGenerator } from "$lib/features/animate/services/contracts/ISVGGenerator";
-  import type { ITrailCaptureService } from "$lib/features/animate/services/contracts/ITrailCaptureService";
+  import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+  import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
+  import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
   import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
   import GlyphRenderer from "./GlyphRenderer.svelte";
   import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
@@ -25,16 +25,16 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     TrailMode,
     DEFAULT_TRAIL_SETTINGS,
     TRAIL_SETTINGS_STORAGE_KEY,
-  } from "$lib/features/animate/shared/domain/types/TrailTypes";
+  } from "$lib/features/compose/shared/domain/types/TrailTypes";
   import {
     AnimationPathCache,
     type AnimationPathCacheData,
-  } from "$lib/features/animate/services/implementations/AnimationPathCache";
-  import type { ISequenceAnimationOrchestrator } from "$lib/features/animate/services/contracts/ISequenceAnimationOrchestrator";
+  } from "$lib/features/compose/services/implementations/AnimationPathCache";
+  import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
   import {
     SequenceFramePreRenderer,
     type PreRenderProgress,
-  } from "$lib/features/animate/services/implementations/SequenceFramePreRenderer";
+  } from "$lib/features/compose/services/implementations/SequenceFramePreRenderer";
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import type { PropState } from "../domain/PropState";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";

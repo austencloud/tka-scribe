@@ -242,14 +242,14 @@ if (deepLinkData && CreateModuleState) {
 
 ### 3. AnimateTab.svelte
 
-Animate module consumes deep links similarly:
+Compose module consumes deep links similarly:
 
 ```typescript
-const deepLinkData = deepLinkStore.consume("animate");
+const deepLinkData = deepLinkStore.consume("compose");
 if (deepLinkData) {
-  animateState.setPrimarySequence(deepLinkData.sequence);
+  composeState.setPrimarySequence(deepLinkData.sequence);
   if (deepLinkData.tabId) {
-    animateState.setCurrentMode(deepLinkData.tabId as AnimateMode);
+    composeState.setCurrentMode(deepLinkData.tabId as ComposeMode);
   }
 }
 ```

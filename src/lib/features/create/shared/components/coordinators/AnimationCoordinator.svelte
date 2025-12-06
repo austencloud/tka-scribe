@@ -9,8 +9,8 @@
    */
 
   import AnimationShareDrawer from "../../../../../shared/animation-engine/components/AnimationShareDrawer.svelte";
-  import type { IAnimationPlaybackController } from "$lib/features/animate/services/contracts/IAnimationPlaybackController";
-  import type { IGifExportOrchestrator } from "$lib/features/animate/services/contracts/IGifExportOrchestrator";
+  import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
+  import type { IGifExportOrchestrator } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import type { ISequenceService } from "../../services/contracts/ISequenceService";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
@@ -21,7 +21,7 @@
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
-  } from "$lib/features/animate/shared/domain/constants/timing";
+  } from "$lib/features/compose/shared/domain/constants/timing";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
