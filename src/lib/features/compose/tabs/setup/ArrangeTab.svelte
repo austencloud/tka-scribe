@@ -27,7 +27,9 @@
   const selectedMode = $derived(arrangeState.selectedMode);
   const sequenceSlots = $derived(arrangeState.sequenceSlots);
   const requiredSlots = $derived(arrangeState.requiredSlots);
-  const isConfigurationComplete = $derived(arrangeState.isConfigurationComplete);
+  const isConfigurationComplete = $derived(
+    arrangeState.isConfigurationComplete
+  );
 
   // Handlers
   function handleModeSelect(mode: ComposeMode) {
@@ -42,7 +44,9 @@
 
   function handleStartPlayback() {
     if (!isConfigurationComplete || !selectedMode) {
-      console.warn("🎨 ArrangeTab: Cannot start playback - configuration incomplete");
+      console.warn(
+        "🎨 ArrangeTab: Cannot start playback - configuration incomplete"
+      );
       return;
     }
 
@@ -52,7 +56,10 @@
     // Open the playback overlay (source: arrange tab)
     composeModuleState.openPlayback("arrange");
 
-    console.log("🎨 ArrangeTab: Opening playback overlay for mode:", selectedMode);
+    console.log(
+      "🎨 ArrangeTab: Opening playback overlay for mode:",
+      selectedMode
+    );
   }
 </script>
 
@@ -66,10 +73,10 @@
   {:else}
     <!-- Sequence Configuration Panel -->
     <SequenceSetupPanel
-      selectedMode={selectedMode}
-      requiredSlots={requiredSlots}
-      sequenceSlots={sequenceSlots}
-      isConfigurationComplete={isConfigurationComplete}
+      {selectedMode}
+      {requiredSlots}
+      {sequenceSlots}
+      {isConfigurationComplete}
       onBack={handleBack}
       onSetSequence={arrangeState.setSequenceForSlot}
       onClearSlot={arrangeState.clearSlot}
