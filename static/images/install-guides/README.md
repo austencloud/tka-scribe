@@ -10,7 +10,7 @@ This directory contains platform-specific screenshots for the PWA installation g
 - `ios-safari-step2.png` - Share menu with "Add to Home Screen" highlighted
 - `ios-safari-step3.png` - "Add to Home Screen" dialog with "Add" button
 
-**Recommended size:** 375x667px (iPhone SE) or 390x844px (iPhone 13)
+**Recommended size:** 375x667px (iPhone SE) or 390x852px (iPhone 13)
 
 ### Android Chrome/Edge
 

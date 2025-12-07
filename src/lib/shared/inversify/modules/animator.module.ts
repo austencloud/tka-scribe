@@ -1,29 +1,31 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import {
-  AngleCalculator,
-  AnimationLoopService,
-  AnimationPlaybackController,
-  AnimationStateService,
-  AnimatedImageTranscoder,
-  BeatCalculationService,
-  CanvasRenderer,
-  CoordinateUpdater,
-  EndpointCalculator,
-  GifExportService,
-  GifExportOrchestrator,
-  MotionCalculator,
-  PixiAnimationRenderer,
-  PropInterpolationService,
-  SequenceAnimationOrchestrator,
-  SequenceLoopabilityChecker,
-  SVGGenerator,
-} from "../../../modules/animate/services";
-import { AnimationService } from "../../application/services/implementations";
+import { AngleCalculator } from "../../../features/compose/services/implementations/AngleCalculator";
+import { AnimationLoopService } from "../../../features/compose/services/implementations/AnimationLoopService";
+import { AnimationPlaybackController } from "../../../features/compose/services/implementations/AnimationPlaybackController";
+import { AnimationStateManager as AnimationStateService } from "../../../features/compose/services/implementations/AnimationStateManager";
+import { AnimatedImageTranscoder } from "../../../features/compose/services/implementations/AnimatedImageTranscoder";
+import { BeatCalculator as BeatCalculationService } from "../../../features/compose/services/implementations/BeatCalculator";
+import { CanvasRenderer } from "../../../features/compose/services/implementations/CanvasRenderer";
+import { CoordinateUpdater } from "../../../features/compose/services/implementations/CoordinateUpdater";
+import { EndpointCalculator } from "../../../features/compose/services/implementations/EndpointCalculator";
+import { GifExportService } from "../../../features/compose/services/implementations/GifExportService";
+import { GifExportOrchestrator } from "../../../features/compose/services/implementations/GifExportOrchestrator";
+import { MotionCalculator } from "../../../features/compose/services/implementations/MotionCalculator";
+// PixiAnimationRenderer moved to on-demand loading in PixiModule (pixi.js ~500KB)
+import { PropInterpolator as PropInterpolationService } from "../../../features/compose/services/implementations/PropInterpolator";
+import { SequenceAnimationOrchestrator } from "../../../features/compose/services/implementations/SequenceAnimationOrchestrator";
+import { SequenceLoopabilityChecker } from "../../../features/compose/services/implementations/SequenceLoopabilityChecker";
+import { SequenceNormalizationService } from "../../../features/compose/services/implementations/SequenceNormalizationService";
+import { SVGGenerator } from "../../../features/compose/services/implementations/SVGGenerator";
+import { TrailCaptureService } from "../../../features/compose/services/implementations/TrailCaptureService";
+import { TunnelModeSequenceManager } from "../../../features/compose/services/implementations/TunnelModeSequenceManager";
+import { AnimationStorageService } from "../../../features/compose/services/implementations/AnimationStorageService";
+import { AnimationService } from "../../application/services/implementations/AnimationService";
 import { TYPES } from "../types";
 
 export const animatorModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === CORE ANIMATION SERVICES ===
     options.bind(TYPES.IAnimationService).to(AnimationService);
     options.bind(TYPES.IAnimationLoopService).to(AnimationLoopService);
@@ -48,11 +50,27 @@ export const animatorModule = new ContainerModule(
 
     // === RENDERING SERVICES ===
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
-    options.bind(TYPES.IPixiAnimationRenderer).to(PixiAnimationRenderer);
+    // IPixiAnimationRenderer loaded on-demand via PixiModule when animation canvas is used
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IGifExportService).to(GifExportService);
     options.bind(TYPES.IAnimatedImageTranscoder).to(AnimatedImageTranscoder);
     options.bind(TYPES.IGifExportOrchestrator).to(GifExportOrchestrator);
+
+    // === TRAIL SERVICES ===
+    options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);
+
+    // === MODE-SPECIFIC SERVICES ===
+    options
+      .bind(TYPES.ISequenceNormalizationService)
+      .to(SequenceNormalizationService);
+    options
+      .bind(TYPES.ITunnelModeSequenceManager)
+      .to(TunnelModeSequenceManager);
+
+    // === ANIMATION STORAGE ===
+    options
+      .bind(TYPES.IAnimationStorageService)
+      .to(AnimationStorageService);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

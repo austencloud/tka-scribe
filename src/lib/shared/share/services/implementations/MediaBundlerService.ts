@@ -6,12 +6,13 @@
  */
 
 import { injectable, inject } from "inversify";
-import type { IShareService } from "../contracts";
-import type { IMediaBundlerService } from "../contracts";
-import type { SequenceData } from "$shared";
-import type { InstagramMediaItem, ShareOptions } from "../../domain";
-import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from "../../domain";
-import { TYPES } from "$shared/inversify";
+import type { IShareService } from '../contracts/IShareService';
+import type { IMediaBundlerService } from '../contracts/IMediaBundlerService';
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import type { InstagramMediaItem } from '../../domain/models/InstagramMedia';
+import type { ShareOptions } from '../../domain/models/ShareOptions';
+import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from '../../domain/models/InstagramMedia';
+import { TYPES } from '../../../inversify/bootstrap';
 
 @injectable()
 export class MediaBundlerService implements IMediaBundlerService {
@@ -51,9 +52,10 @@ export class MediaBundlerService implements IMediaBundlerService {
       items.push(gifItem);
 
       return items;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to bundle sequence media:", error);
-      throw new Error(`Media bundling failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Media bundling failed: ${errorMessage}`);
     }
   }
 
@@ -131,7 +133,7 @@ export class MediaBundlerService implements IMediaBundlerService {
       }
 
       return items;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to create carousel bundle:", error);
       throw error;
     }
@@ -185,7 +187,7 @@ export class MediaBundlerService implements IMediaBundlerService {
 
     // Revoke preview URL for cleanup
     const itemToRemove = items[index];
-    if (itemToRemove?.url?.startsWith("blob:")) {
+    if (itemToRemove?.url.startsWith("blob:")) {
       URL.revokeObjectURL(itemToRemove.url);
     }
 
@@ -266,12 +268,12 @@ export class MediaBundlerService implements IMediaBundlerService {
   /**
    * Create InstagramMediaItem from Blob
    */
-  private async createMediaItemFromBlob(
+  private createMediaItemFromBlob(
     blob: Blob,
     type: "IMAGE" | "VIDEO",
     order: number,
     filename: string
-  ): Promise<InstagramMediaItem> {
+  ): InstagramMediaItem {
     // Create preview URL
     const url = URL.createObjectURL(blob);
 

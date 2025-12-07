@@ -12,8 +12,9 @@
  * - When override flag is present, arrow uses different rotation angle maps
  */
 
-import type { MotionData, PictographData } from "$shared";
-import { Orientation } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import { Orientation } from "../../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 
 export interface IRotationAngleOverrideKeyGenerator {

@@ -42,12 +42,13 @@
       <PictographWithVisibility
         {pictographData}
         enableVisibility={true}
-        {...(onToggleTKA && { onToggleTKA })}
-        {...(onToggleVTG && { onToggleVTG })}
-        {...(onToggleElemental && { onToggleElemental })}
-        {...(onTogglePositions && { onTogglePositions })}
-        {...(onToggleReversals && { onToggleReversals })}
-        {...(onToggleNonRadial && { onToggleNonRadial })}
+        previewMode={true}
+        {...onToggleTKA && { onToggleTKA }}
+        {...onToggleVTG && { onToggleVTG }}
+        {...onToggleElemental && { onToggleElemental }}
+        {...onTogglePositions && { onTogglePositions }}
+        {...onToggleReversals && { onToggleReversals }}
+        {...onToggleNonRadial && { onToggleNonRadial }}
       />
     </div>
   </div>
@@ -119,8 +120,8 @@
     height: min(98cqw, 98cqh); /* Maintains 1:1 aspect ratio */
     max-width: 800px; /* Maximum size cap for very large screens */
     max-height: 800px;
-    min-width: 150px; /* Minimum usable size */
-    min-height: 150px;
+    min-width: 152px; /* Minimum usable size */
+    min-height: 152px;
     display: flex;
     align-items: center;
     justify-content: center;

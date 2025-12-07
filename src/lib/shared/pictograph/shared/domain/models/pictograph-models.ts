@@ -1,15 +1,2 @@
-export interface CSVRow {
-  letter: string;
-  startPosition: string;
-  endPosition: string;
-  timing: string;
-  direction: string;
-  blueMotionType: string;
-  blueRotationDirection: string;
-  blueStartLocation: string;
-  blueEndLocation: string;
-  redMotionType: string;
-  redRotationDirection: string;
-  redStartLocation: string;
-  redEndLocation: string;
-}
+// CSVRow is defined in $lib/shared/foundation/services/contracts/data/ICSVPictographParser.ts
+// Do not duplicate the definition here to avoid re-export conflicts

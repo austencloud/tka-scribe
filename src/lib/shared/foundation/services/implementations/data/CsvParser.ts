@@ -5,7 +5,7 @@
  * Handles line splitting, header extraction, and row parsing with error handling.
  */
 
-import type { CSVParseResult as CsvParseResult, ParsedCsvRow } from "$shared";
+import type { CSVParseResult as CsvParseResult, ParsedCsvRow } from "$lib/features/create/generate/shared/domain/csv-handling/CsvModels";
 import { injectable } from "inversify";
 // import type { ICSVParser } from "../../contracts";
 
@@ -240,7 +240,9 @@ export class CSVParser implements ICSVParser {
     const hasStartPosition = !!(
       row["startPosition"] && row["startPosition"].trim() !== ""
     );
-    const hasEndPosition = !!(row["endPosition"] && row["endPosition"].trim() !== "");
+    const hasEndPosition = !!(
+      row["endPosition"] && row["endPosition"].trim() !== ""
+    );
 
     return hasLetter && hasStartPosition && hasEndPosition;
   }

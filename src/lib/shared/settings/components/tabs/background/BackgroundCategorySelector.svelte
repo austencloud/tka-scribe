@@ -5,8 +5,10 @@
   Mobile-first, touch-friendly, with haptic feedback.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../../inversify/di";
+  import { TYPES } from "../../../../inversify/types";
+  import { onMount } from "svelte";
 
   const { selectedCategory, onCategorySelect } = $props<{
     selectedCategory: "animated" | "simple";
@@ -14,9 +16,13 @@
   }>();
 
   // Services
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
-  );
+  let hapticService: IHapticFeedbackService | null = null;
+
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
 
   function handleCategorySelect(category: "animated" | "simple") {
     if (category !== selectedCategory) {
@@ -91,7 +97,7 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    min-height: 46px; /* Slightly larger touch target */
+    min-height: 52px; /* iOS minimum touch target */
     min-width: 130px;
   }
 

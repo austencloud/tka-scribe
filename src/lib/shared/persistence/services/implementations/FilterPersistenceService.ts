@@ -12,11 +12,12 @@ import type {
   IFilterPersistenceService,
   SimpleBrowseState,
 } from "../contracts/IFilterPersistenceService";
-import {
-  safeSessionStorageGet,
-  safeSessionStorageRemove,
-  safeSessionStorageSet,
-} from "../../..";
+import { StorageService } from "../../../foundation/services/implementations/StorageService";
+
+const storageService = new StorageService();
+const safeSessionStorageGet = storageService.safeSessionStorageGet.bind(storageService);
+const safeSessionStorageSet = storageService.safeSessionStorageSet.bind(storageService);
+const safeSessionStorageRemove = storageService.removeSessionStorageItem.bind(storageService);
 
 @injectable()
 export class FilterPersistenceService implements IFilterPersistenceService {
@@ -25,7 +26,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
   private readonly FILTER_HISTORY_KEY = `tka-${this.CACHE_VERSION}-filter-history`;
   private readonly MAX_HISTORY_SIZE = 50;
 
-  async saveBrowseState(state: SimpleBrowseState): Promise<void> {
+  saveBrowseState(state: SimpleBrowseState): void {
     try {
       const stateToSave = {
         ...state,
@@ -37,7 +38,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     }
   }
 
-  async loadBrowseState(): Promise<SimpleBrowseState | null> {
+  loadBrowseState(): SimpleBrowseState | null {
     try {
       const parsed = safeSessionStorageGet<Record<string, unknown>>(
         this.BROWSE_STATE_KEY,
@@ -92,33 +93,43 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     }
   }
 
-  async getFilterHistory(): Promise<FilterHistoryEntry[]> {
+  getFilterHistory(): FilterHistoryEntry[] {
     try {
       const parsed = safeSessionStorageGet<unknown[]>(
         this.FILTER_HISTORY_KEY,
         []
       );
-      if (!parsed) return [];
+      if (!parsed || !Array.isArray(parsed)) return [];
 
-      // Convert date strings back to Date objects
-      return parsed.map((filter: unknown) => {
-        const f = filter as {
-          type: ExploreFilterType;
-          value: ExploreFilterValue;
-          appliedAt: string;
-        };
-        return {
-          ...f,
-          appliedAt: new Date(f.appliedAt),
-        };
-      });
+      // Convert date strings back to Date objects with type validation
+      return parsed
+        .filter((filter): filter is Record<string, unknown> =>
+          typeof filter === "object" && filter !== null
+        )
+        .filter((filter) => this.isValidFilterHistoryEntry(filter))
+        .map((filter) => ({
+          type: filter["type"] as ExploreFilterType,
+          value: filter["value"] as ExploreFilterValue,
+          appliedAt: new Date(filter["appliedAt"] as string),
+        }));
     } catch (error) {
       console.warn("Failed to load filter history:", error);
       return [];
     }
   }
 
-  async clearFilterHistory(): Promise<void> {
+  /**
+   * Type guard for filter history entry validation
+   */
+  private isValidFilterHistoryEntry(obj: Record<string, unknown>): boolean {
+    return (
+      typeof obj["type"] === "string" &&
+      obj["value"] !== undefined &&
+      (typeof obj["appliedAt"] === "string" || obj["appliedAt"] instanceof Date)
+    );
+  }
+
+  clearFilterHistory(): void {
     safeSessionStorageRemove(this.FILTER_HISTORY_KEY);
   }
 
@@ -127,7 +138,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     return history.slice(0, limit);
   }
 
-  async clearAllState(): Promise<void> {
+  clearAllState(): void {
     safeSessionStorageRemove(this.BROWSE_STATE_KEY);
     safeSessionStorageRemove(this.FILTER_HISTORY_KEY);
   }
@@ -174,7 +185,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     return Array.from(uniqueFilters.values()).slice(0, limit);
   }
 
-  async getDefaultBrowseState(): Promise<SimpleBrowseState> {
+  getDefaultBrowseState(): SimpleBrowseState {
     return {
       filterType: null,
       filterValue: null,
@@ -192,7 +203,7 @@ export class FilterPersistenceService implements IFilterPersistenceService {
     await this.saveBrowseState(browseState);
   }
 
-  async loadFilterState(): Promise<FilterHistoryEntry> {
+  loadFilterState(): FilterHistoryEntry {
     // Return a default filter state matching the interface
     return {
       type: ExploreFilterType.ALL_SEQUENCES,

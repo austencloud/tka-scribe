@@ -18,10 +18,10 @@ export type KeyModifier = "ctrl" | "alt" | "shift" | "meta";
 export type ShortcutContext =
   | "global" // Active anywhere in the app
   | "create" // Active in CREATE module
-  | "explore" // Active in EXPLORE module
+  | "discover" // Active in EXPLORE module
   | "learn" // Active in LEARN module
   | "collect" // Active in COLLECT module
-  | "animate" // Active in ANIMATE module
+  | "compose" // Active in COMPOSE module
   | "admin" // Active in ADMIN module
   | "edit-panel" // Active when Edit panel is open
   | "animation-panel" // Active when Animation panel is open

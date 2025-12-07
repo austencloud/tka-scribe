@@ -6,24 +6,29 @@
  * and how they're indexed for fast queries.
  */
 
-import type { AppSettings, PictographData, SequenceData } from "$shared";
+import type { AppSettings } from "../../settings/domain/AppSettings";
+import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import Dexie, { type EntityTable } from "dexie";
+import type { AchievementNotification, DailyChallenge, UserAchievement, UserChallengeProgress, UserStreak, UserXP, XPGainEvent } from '../../gamification/domain/models/achievement-models';
 import type {
-  AchievementNotification,
-  DailyChallenge,
-  UserAchievement,
-  UserChallengeProgress,
-  UserStreak,
-  UserXP,
-  XPGainEvent,
-} from "../../gamification/domain/models";
+  WeeklyChallenge,
+  UserWeeklyChallengeProgress,
+  SkillProgression,
+  UserSkillProgress,
+} from "../../gamification/domain/models/challenge-models";
+import type {
+  StoredPerformance,
+  StoredCalibrationProfile,
+} from "$lib/features/train/domain/models/TrainDatabaseModels";
 import {
   DATABASE_NAME,
   DATABASE_VERSION,
   DEFAULT_USER_WORK_VERSION,
   TABLE_INDEXES,
-} from "../domain/constants";
-import type { UserProject, UserWorkData } from "../domain/models";
+} from "../domain/constants/DATABASE_CONSTANTS";
+import type { UserProject } from "../domain/models/UserProject";
+import type { UserWorkData } from "../domain/models/UserWorkData";
 
 // ============================================================================
 // DATABASE CLASS
@@ -51,6 +56,16 @@ export class TKADatabase extends Dexie {
   userChallengeProgress!: EntityTable<UserChallengeProgress, "id">;
   userStreaks!: EntityTable<UserStreak, "id">;
   achievementNotifications!: EntityTable<AchievementNotification, "id">;
+
+  // Challenge extension tables (v3)
+  weeklyChallenges!: EntityTable<WeeklyChallenge, "id">;
+  userWeeklyProgress!: EntityTable<UserWeeklyChallengeProgress, "id">;
+  skillProgressions!: EntityTable<SkillProgression, "id">;
+  userSkillProgress!: EntityTable<UserSkillProgress, "id">;
+
+  // Train module tables (v4)
+  trainPerformances!: EntityTable<StoredPerformance, "id">;
+  trainCalibrationProfiles!: EntityTable<StoredCalibrationProfile, "id">;
 
   constructor() {
     super(DATABASE_NAME);
@@ -119,6 +134,12 @@ export async function clearAllData(): Promise<void> {
       db.userChallengeProgress,
       db.userStreaks,
       db.achievementNotifications,
+      db.weeklyChallenges,
+      db.userWeeklyProgress,
+      db.skillProgressions,
+      db.userSkillProgress,
+      db.trainPerformances,
+      db.trainCalibrationProfiles,
     ],
     async () => {
       await db.sequences.clear();
@@ -133,6 +154,12 @@ export async function clearAllData(): Promise<void> {
       await db.userChallengeProgress.clear();
       await db.userStreaks.clear();
       await db.achievementNotifications.clear();
+      await db.weeklyChallenges.clear();
+      await db.userWeeklyProgress.clear();
+      await db.skillProgressions.clear();
+      await db.userSkillProgress.clear();
+      await db.trainPerformances.clear();
+      await db.trainCalibrationProfiles.clear();
     }
   );
   console.log("🗑️ All database data cleared");
@@ -148,7 +175,7 @@ export async function getDatabaseInfo() {
     userWork: await db.userWork.count(),
     userProjects: await db.userProjects.count(),
     settings: await db.settings.count(),
-    // Gamification stats
+    // Gamification stats (v2)
     userAchievements: await db.userAchievements.count(),
     userXP: await db.userXP.count(),
     xpEvents: await db.xpEvents.count(),
@@ -156,6 +183,14 @@ export async function getDatabaseInfo() {
     userChallengeProgress: await db.userChallengeProgress.count(),
     userStreaks: await db.userStreaks.count(),
     achievementNotifications: await db.achievementNotifications.count(),
+    // Challenge extension stats (v3)
+    weeklyChallenges: await db.weeklyChallenges.count(),
+    userWeeklyProgress: await db.userWeeklyProgress.count(),
+    skillProgressions: await db.skillProgressions.count(),
+    userSkillProgress: await db.userSkillProgress.count(),
+    // Train module stats (v4)
+    trainPerformances: await db.trainPerformances.count(),
+    trainCalibrationProfiles: await db.trainCalibrationProfiles.count(),
   };
   console.log("📊 Database info:", info);
   return info;

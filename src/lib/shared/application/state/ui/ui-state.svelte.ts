@@ -1,17 +1,24 @@
-import type { SequenceData, TabId } from "$shared";
-import type { IExploreThumbnailService } from "../../../../modules/explore/gallery/display";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import type { TabId } from "../../../navigation/domain/types";
+import type { IDiscoverThumbnailService } from "../../../../features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
 
 // Centralized UI state leveraging Svelte 5 runes.
 // Uses TabId (which includes both ModuleId and LegacyTabId) for backwards compatibility
 export const uiState = $state({
   activeModule: null as TabId | null, // Start null - will be set after services load in initializeModulePersistence()
   showSettings: false,
+  // Default to "desktop" mode - mobile will override this when navigation buttons are clicked
+  // Desktop is the primary/default experience (769px+)
+  settingsPanelMode: (typeof window !== "undefined" && window.innerWidth >= 769
+    ? "desktop"
+    : "mobile") as "mobile" | "desktop",
   isFullScreen: false,
   isTransitioning: false,
   isWaitingForModuleLoad: false,
   showSpotlight: false,
   spotlightSequence: null as SequenceData | null,
-  spotlightThumbnailService: null as IExploreThumbnailService | null,
+  spotlightThumbnailService: null as IDiscoverThumbnailService | null,
+  showDebugPanel: false, // Admin-only debug console
 });
 
 // ============================================================================
@@ -60,30 +67,62 @@ export function isTabActive(module: string): boolean {
 }
 
 // ============================================================================
-// SETTINGS STATE
+// SETTINGS STATE (DEPRECATED - Settings is now a module)
+// These functions are deprecated. Use handleModuleChange("settings") instead.
+// The settings panel has been replaced with a full module at ModuleId="settings"
 // ============================================================================
 
+/** @deprecated Settings is now a module. Use handleModuleChange("settings") instead */
 export function getShowSettings(): boolean {
+  console.warn("getShowSettings() is deprecated. Settings is now a module.");
   return uiState.showSettings;
 }
 
+/** @deprecated Settings is now a module. This function will be removed. */
+export function getSettingsPanelMode(): "mobile" | "desktop" {
+  console.warn("getSettingsPanelMode() is deprecated. Settings is now a module.");
+  return uiState.settingsPanelMode;
+}
+
+/** @deprecated Settings is now a module. Use handleModuleChange("settings") instead */
 export function setShowSettings(show: boolean): void {
+  console.warn("setShowSettings() is deprecated. Settings is now a module.");
   uiState.showSettings = show;
 }
 
+/** @deprecated Settings is now a module. This function will be removed. */
+export function setSettingsPanelMode(mode: "mobile" | "desktop"): void {
+  console.warn("setSettingsPanelMode() is deprecated. Settings is now a module.");
+  uiState.settingsPanelMode = mode;
+}
+
+/** @deprecated Settings is now a module. Use handleModuleChange("settings") instead */
 export function toggleShowSettings(): void {
+  console.warn("toggleShowSettings() is deprecated. Settings is now a module.");
   uiState.showSettings = !uiState.showSettings;
 }
 
-export function showSettingsDialog(): void {
+/** @deprecated Settings is now a module. Use handleModuleChange("settings") instead */
+export function showSettingsDialog(mode?: "mobile" | "desktop"): void {
+  console.warn("showSettingsDialog() is deprecated. Settings is now a module. Use handleModuleChange('settings').");
+  if (mode) {
+    setSettingsPanelMode(mode);
+  }
   setShowSettings(true);
 }
 
+/** @deprecated Settings is now a module. Use handleModuleChange(previousModule) instead */
 export function hideSettingsDialog(): void {
+  console.warn("hideSettingsDialog() is deprecated. Settings is now a module.");
   setShowSettings(false);
 }
 
-export function toggleSettingsDialog(): void {
+/** @deprecated Settings is now a module. Use navigation toggle instead */
+export function toggleSettingsDialog(mode?: "mobile" | "desktop"): void {
+  console.warn("toggleSettingsDialog() is deprecated. Settings is now a module.");
+  if (mode) {
+    setSettingsPanelMode(mode);
+  }
   toggleShowSettings();
 }
 
@@ -145,13 +184,13 @@ export function getSpotlightSequence(): SequenceData | null {
   return uiState.spotlightSequence;
 }
 
-export function getSpotlightThumbnailService(): IExploreThumbnailService | null {
+export function getSpotlightThumbnailService(): IDiscoverThumbnailService | null {
   return uiState.spotlightThumbnailService;
 }
 
 export function openSpotlightViewer(
   sequence: SequenceData,
-  thumbnailService: IExploreThumbnailService
+  thumbnailService: IDiscoverThumbnailService
 ): void {
   uiState.spotlightSequence = sequence;
   uiState.spotlightThumbnailService = thumbnailService;
@@ -162,6 +201,30 @@ export function closeSpotlightViewer(): void {
   uiState.showSpotlight = false;
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
+}
+
+// ============================================================================
+// DEBUG PANEL STATE (Admin Only)
+// ============================================================================
+
+export function getShowDebugPanel(): boolean {
+  return uiState.showDebugPanel;
+}
+
+export function setShowDebugPanel(show: boolean): void {
+  uiState.showDebugPanel = show;
+}
+
+export function toggleDebugPanel(): void {
+  uiState.showDebugPanel = !uiState.showDebugPanel;
+}
+
+export function openDebugPanel(): void {
+  uiState.showDebugPanel = true;
+}
+
+export function closeDebugPanel(): void {
+  uiState.showDebugPanel = false;
 }
 
 // ============================================================================
@@ -177,4 +240,5 @@ export function resetUIState(): void {
   uiState.showSpotlight = false;
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
+  uiState.showDebugPanel = false;
 }

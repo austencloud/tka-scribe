@@ -4,7 +4,10 @@
  * Service contracts for data handling, CSV parsing, and query operations.
  */
 
-import type { GridMode, Letter, PictographData } from "$shared";
+import type { PictographData } from "../../../../pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "../../../../pictograph/shared/domain/models/MotionData";
+import type { GridMode } from "../../../../pictograph/grid/domain/enums/grid-enums";
+import type { Letter } from "../../../domain/models/Letter";
 
 // ============================================================================
 // DATA CONTRACTS - MOVED TO DOMAIN
@@ -82,13 +85,13 @@ export interface IMotionQueryHandler {
    * Used when reversing sequences to find the correct letter for the reversed motion
    */
   findLetterByMotionConfiguration(
-    blueMotion: import("$shared").MotionData,
-    redMotion: import("$shared").MotionData,
+    blueMotion: MotionData,
+    redMotion: MotionData,
     gridMode: GridMode
   ): Promise<string | null>;
 }
 
-// ICSVPictographParserService moved to dedicated contract file
+// ICSVPictographParser moved to dedicated contract file
 
 // Re-export from data interfaces for backward compatibility
 export type { ICSVLoader } from "./ICSVLoader";

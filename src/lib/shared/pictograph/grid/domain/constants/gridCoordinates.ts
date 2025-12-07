@@ -1,4 +1,4 @@
-import type { GridMode } from "$shared";
+import type { GridMode } from "../enums/grid-enums";
 import type { GridCoordinateData } from "../models/grid-models";
 
 export const gridCoordinates: Record<

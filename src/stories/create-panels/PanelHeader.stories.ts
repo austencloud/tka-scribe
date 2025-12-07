@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import PanelHeader from "../../lib/modules/create/shared/components/PanelHeader.svelte";
+import type { ComponentProps } from "svelte";
+import PanelHeader from "../../lib/features/create/shared/components/PanelHeader.svelte";
+
+type PanelHeaderProps = ComponentProps<typeof PanelHeader>;
 
 const meta = {
   title: "Create/Panels/PanelHeader",
-  component: PanelHeader as any,
+  component: PanelHeader,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -18,7 +21,7 @@ const meta = {
   argTypes: {
     onClose: { action: "close" },
   },
-} satisfies Meta<PanelHeader>;
+} satisfies Meta<PanelHeaderProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

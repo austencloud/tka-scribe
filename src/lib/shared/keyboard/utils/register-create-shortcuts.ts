@@ -6,10 +6,13 @@
  * Domain: Keyboard Shortcuts - CREATE Module
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts";
+import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-import { getCreateModuleRef } from "$lib/modules/create/shared/state/create-module-state-ref.svelte";
-import { executeClearSequenceWorkflow } from "$lib/modules/create/shared/utils/clearSequenceWorkflow";
+import { getCreateModuleRef } from "$lib/features/create/shared/state/create-module-state-ref.svelte";
+import { executeClearSequenceWorkflow } from "$lib/features/create/shared/utils/clearSequenceWorkflow";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("CreateShortcuts");
 
 export function registerCreateShortcuts(
   service: IKeyboardShortcutService,
@@ -34,7 +37,7 @@ export function registerCreateShortcuts(
     },
     action: () => {
       // TODO: Integrate with animation service when pause is implemented
-      console.log("⌨️ Space pressed - Play/Pause (not yet implemented)");
+      debug.log("Space pressed - Play/Pause (not yet implemented)");
       // This will need to call something like:
       // const animService = getAnimationService();
       // animService.togglePlayback();
@@ -60,7 +63,7 @@ export function registerCreateShortcuts(
       // && !isEditPanelOpen();
     },
     action: () => {
-      console.log("⌨️ Arrow Up - Grid navigation (not yet implemented)");
+      debug.log("Arrow Up - Grid navigation (not yet implemented)");
       // TODO: Integrate with beat grid navigation
     },
   });
@@ -80,7 +83,7 @@ export function registerCreateShortcuts(
       // TODO: Add check for edit panel state
     },
     action: () => {
-      console.log("⌨️ Arrow Down - Grid navigation (not yet implemented)");
+      debug.log("Arrow Down - Grid navigation (not yet implemented)");
       // TODO: Integrate with beat grid navigation
     },
   });
@@ -99,7 +102,7 @@ export function registerCreateShortcuts(
       return state.settings.enableSingleKeyShortcuts;
     },
     action: () => {
-      console.log("⌨️ Arrow Left - Grid navigation (not yet implemented)");
+      debug.log("Arrow Left - Grid navigation (not yet implemented)");
       // TODO: Integrate with beat grid navigation
     },
   });
@@ -118,7 +121,7 @@ export function registerCreateShortcuts(
       return state.settings.enableSingleKeyShortcuts;
     },
     action: () => {
-      console.log("⌨️ Arrow Right - Grid navigation (not yet implemented)");
+      debug.log("Arrow Right - Grid navigation (not yet implemented)");
       // TODO: Integrate with beat grid navigation
     },
   });
@@ -141,7 +144,7 @@ export function registerCreateShortcuts(
       // TODO: Add check: && isEditPanelOpen();
     },
     action: () => {
-      console.log("⌨️ Arrow Left - Previous beat (not yet implemented)");
+      debug.log("Arrow Left - Previous beat (not yet implemented)");
       // TODO: Integrate with edit panel navigation
       // navigateToPreviousBeat();
     },
@@ -162,7 +165,7 @@ export function registerCreateShortcuts(
       // TODO: Add check: && isEditPanelOpen();
     },
     action: () => {
-      console.log("⌨️ Arrow Right - Next beat (not yet implemented)");
+      debug.log("Arrow Right - Next beat (not yet implemented)");
       // TODO: Integrate with edit panel navigation
       // navigateToNextBeat();
     },
@@ -179,7 +182,7 @@ export function registerCreateShortcuts(
     scope: "editing",
     priority: "high",
     action: () => {
-      console.log("⌨️ Enter - Accept changes (not yet implemented)");
+      debug.log("Enter - Accept changes (not yet implemented)");
       // TODO: Integrate with edit panel
       // acceptChangesAndClose();
     },
@@ -198,7 +201,7 @@ export function registerCreateShortcuts(
     scope: "sequence-management",
     priority: "high",
     action: () => {
-      console.log("⌨️ Ctrl+S - Save sequence (not yet implemented)");
+      debug.log("Ctrl+S - Save sequence (not yet implemented)");
       // TODO: Integrate with sequence save functionality
       // saveCurrentSequence();
     },
@@ -219,9 +222,65 @@ export function registerCreateShortcuts(
       return state.settings.enableSingleKeyShortcuts;
     },
     action: () => {
-      console.log("⌨️ Plus - Add beat (not yet implemented)");
+      debug.log("Plus - Add beat (not yet implemented)");
       // TODO: Determine logic for which prop color to add
       // User mentioned needing to figure out non-confusing pattern
+    },
+  });
+
+  // Ctrl+Z - Undo last action
+  service.register({
+    id: "create.undo",
+    label: "Undo",
+    description: "Undo the last action in the current tab",
+    key: "z",
+    modifiers: ["ctrl"],
+    context: "create",
+    scope: "sequence-management",
+    priority: "high",
+    action: () => {
+      const ref = getCreateModuleRef();
+      if (!ref) {
+        debug.log("Undo - Create module reference not available");
+        return;
+      }
+
+      const { CreateModuleState } = ref;
+      const success = CreateModuleState.undo();
+
+      if (success) {
+        console.log("⌨️ Ctrl+Z - Undo successful");
+      } else {
+        debug.log("Ctrl+Z - Nothing to undo");
+      }
+    },
+  });
+
+  // Ctrl+Shift+Z - Redo last undone action
+  service.register({
+    id: "create.redo",
+    label: "Redo",
+    description: "Redo the last undone action in the current tab",
+    key: "z",
+    modifiers: ["ctrl", "shift"],
+    context: "create",
+    scope: "sequence-management",
+    priority: "high",
+    action: () => {
+      const ref = getCreateModuleRef();
+      if (!ref) {
+        debug.log("Redo - Create module reference not available");
+        return;
+      }
+
+      const { CreateModuleState } = ref;
+      const success = CreateModuleState.redo();
+
+      if (success) {
+        console.log("⌨️ Ctrl+Shift+Z - Redo successful");
+      } else {
+        debug.log("Ctrl+Shift+Z - Nothing to redo");
+      }
     },
   });
 
@@ -236,13 +295,13 @@ export function registerCreateShortcuts(
     scope: "sequence-management",
     priority: "medium",
     action: async () => {
-      console.log("⌨️ Backspace key pressed!");
+      debug.log("Backspace key pressed!");
 
       const ref = getCreateModuleRef();
-      console.log("⌨️ Create module ref:", ref ? "Available" : "Not available");
+      debug.log("Create module ref:", ref ? "Available" : "Not available");
 
       if (!ref) {
-        console.warn("⌨️ Create module reference not available");
+        debug.log("Create module reference not available");
         return;
       }
 
@@ -284,7 +343,7 @@ export function registerCreateShortcuts(
       const selectedBeatIndex = sequenceState.getSelectedBeatIndex();
 
       if (selectedBeatIndex === null) {
-        console.log("⌨️ Backspace - No beat selected");
+        debug.log("Backspace - No beat selected");
         return;
       }
 
@@ -323,7 +382,7 @@ export function registerCreateShortcuts(
       return state.settings.enableSingleKeyShortcuts;
     },
     action: () => {
-      console.log("⌨️ [ - Decrease value (not yet implemented)");
+      debug.log("[ - Decrease value (not yet implemented)");
       // TODO: Integrate with edit panel controls
       // decreaseCurrentValue();
     },
@@ -343,7 +402,7 @@ export function registerCreateShortcuts(
       return state.settings.enableSingleKeyShortcuts;
     },
     action: () => {
-      console.log("⌨️ ] - Increase value (not yet implemented)");
+      debug.log("] - Increase value (not yet implemented)");
       // TODO: Integrate with edit panel controls
       // increaseCurrentValue();
     },

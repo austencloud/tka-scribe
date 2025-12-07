@@ -1,59 +1,63 @@
 <!-- Main Application Layout -->
 <script lang="ts">
-  import {
-    BackgroundCanvas,
-    BackgroundType,
-    updateBodyBackground,
-  } from "../../background";
-  import type { IDeviceDetector } from "../../device";
-  import { ErrorScreen } from "../../foundation";
   import AchievementNotificationToast from "../../gamification/components/AchievementNotificationToast.svelte";
-  import {
-    ensureContainerInitialized,
-    isContainerReady,
-    resolve,
-  } from "../../inversify";
-  import { TYPES } from "../../inversify/types";
-  import { ThemeService } from "../../theme";
+  import QuickFeedbackPanel from "$lib/features/feedback/components/quick/QuickFeedbackPanel.svelte";
+  import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
 
-  import type { ISettingsService } from "$shared";
+  import { TYPES } from "../../inversify/types";
+
   import type { Container } from "inversify";
   import { getContext, onMount } from "svelte";
   import MainInterface from "../../MainInterface.svelte";
   import AuthSheet from "../../navigation/components/AuthSheet.svelte";
   import PrivacySheet from "../../navigation/components/PrivacySheet.svelte";
   import TermsSheet from "../../navigation/components/TermsSheet.svelte";
-  import type { SheetType } from "../../navigation/utils/sheet-router";
+  import type {
+    ISheetRouterService,
+    SheetType,
+  } from "../../navigation/services/contracts/ISheetRouterService";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
+  import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
+  import { ThemeService } from "../../theme/services/ThemeService";
+  import type { IApplicationInitializer } from "../services/contracts/IApplicationInitializer";
   import {
-    closeSheet,
-    getCurrentSheet,
-    onSheetChange,
-    openSheet,
-  } from "../../navigation/utils/sheet-router";
-  import SettingsSheet from "../../settings/components/SettingsSheet.svelte";
-  import type { IApplicationInitializer } from "../services";
-  import {
-    getInitializationError,
-    getIsInitialized,
     getSettings,
-    getShowSettings,
-    hideSettingsDialog,
-    initializeAppState,
     restoreApplicationState,
+    updateSettings,
+  } from "../state/app-state.svelte";
+  import {
+    getIsInitialized,
+    getInitializationError,
     setInitializationError,
     setInitializationState,
-    showSettingsDialog,
-    switchTab,
-    updateSettings,
-  } from "../state";
+    initializeAppState,
+  } from "../state/initialization-state.svelte";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import BackgroundCanvas from "../../background/shared/components/BackgroundCanvas.svelte";
+  import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
+  import {
+    getShowDebugPanel,
+    toggleDebugPanel,
+  } from "../state/ui/ui-state.svelte";
+  import { switchModule } from "../state/ui/module-state";
+  import { navigationState } from "../../navigation/state/navigation-state.svelte";
+  import type { ModuleId } from "../../navigation/domain/types";
+  import { handleModuleChange } from "../../navigation-coordinator/navigation-coordinator.svelte";
+  import {
+    ensureContainerInitialized,
+    resolve,
+    isContainerReady,
+  } from "../../inversify/di";
 
   // Get DI container from context
   const getContainer = getContext<() => Container | null>("di-container");
 
   // Services - resolved lazily
   let initService: IApplicationInitializer | null = $state(null);
-  let settingsService: ISettingsService | null = $state(null);
+  let settingsService: ISettingsState | null = $state(null);
   let deviceService: IDeviceDetector | null = $state(null);
+  let sheetRouterService: ISheetRouterService | null = $state(null);
   let servicesResolved = $state(false);
 
   // App state
@@ -63,67 +67,45 @@
 
   // Route-based sheet state
   let currentSheetType = $state<SheetType>(null);
-  let showRouteBasedSettings = $derived(() => currentSheetType === "settings");
-  let showAuthSheet = $derived(() => currentSheetType === "auth");
-  let showTermsSheet = $derived(() => currentSheetType === "terms");
-  let showPrivacySheet = $derived(() => currentSheetType === "privacy");
+  let showAuthSheet = $derived(currentSheetType === "auth");
+  let showTermsSheet = $derived(currentSheetType === "terms");
+  let showPrivacySheet = $derived(currentSheetType === "privacy");
+
+  // Debug panel state (admin-only) - uses centralized UI state
+  let showDebugPanel = $derived(getShowDebugPanel());
 
   // Resolve services when container is available
   $effect(() => {
     const container = getContainer?.();
 
     if (container && !servicesResolved) {
-      try {
-        if (!isContainerReady()) {
-          console.warn(
-            "Container available but not cached, ensuring initialization..."
-          );
-          ensureContainerInitialized().then(() => {
-            if (!servicesResolved) {
-              try {
-                initService = resolve(TYPES.IApplicationInitializer);
-                settingsService = resolve(TYPES.ISettingsService);
-                deviceService = resolve(TYPES.IDeviceDetector);
-                servicesResolved = true;
-              } catch (error) {
-                console.error(
-                  "Failed to resolve services after caching:",
-                  error
-                );
-                setInitializationError(`Service resolution failed: ${error}`);
-              }
-            }
-          });
-          return;
-        }
+      (async () => {
+        try {
+          if (!isContainerReady()) {
+            console.warn(
+              "Container available but not cached, ensuring initialization..."
+            );
+            await ensureContainerInitialized();
+          }
 
-        initService = resolve(TYPES.IApplicationInitializer);
-        settingsService = resolve(TYPES.ISettingsService);
-        deviceService = resolve(TYPES.IDeviceDetector);
-        servicesResolved = true;
-      } catch (error) {
-        console.error("Failed to resolve services:", error);
-        setInitializationError(`Service resolution failed: ${error}`);
-      }
+          if (!servicesResolved) {
+            initService = resolve(TYPES.IApplicationInitializer);
+            settingsService = resolve(TYPES.ISettingsState);
+            deviceService = resolve(TYPES.IDeviceDetector);
+            sheetRouterService = resolve(TYPES.ISheetRouterService);
+            servicesResolved = true;
+          }
+        } catch (error) {
+          console.error("Failed to resolve services:", error);
+          setInitializationError(`Service resolution failed: ${error}`);
+        }
+      })();
     }
   });
 
   // Initialize application
   onMount(() => {
-    currentSheetType = getCurrentSheet();
-
-    const cleanupSheetListener = onSheetChange((sheetType) => {
-      currentSheetType = sheetType;
-
-      // Sync with legacy settings dialog state
-      if (sheetType === "settings") {
-        if (!getShowSettings()) {
-          showSettingsDialog();
-        }
-      } else if (sheetType === null && getShowSettings()) {
-        hideSettingsDialog();
-      }
-    });
+    let cleanupSheetListener: (() => void) | null = null;
 
     // Run async initialization without blocking cleanup function return
     (async () => {
@@ -155,11 +137,38 @@
           return;
         }
 
-        if (!initService || !settingsService || !deviceService) {
+        if (
+          !initService ||
+          !settingsService ||
+          !deviceService ||
+          !sheetRouterService
+        ) {
           console.error("Services not properly resolved");
           setInitializationError("Services not properly resolved");
           return;
         }
+
+        // Initialize sheet router state (now that service is resolved)
+        currentSheetType = sheetRouterService.getCurrentSheet();
+
+        // Check for legacy ?sheet=settings URL and redirect to settings module
+        if (currentSheetType === "settings") {
+          sheetRouterService.closeSheet();
+          await handleModuleChange("settings" as ModuleId);
+        }
+
+        cleanupSheetListener = sheetRouterService.onRouteChange(
+          async (state) => {
+            // Redirect legacy ?sheet=settings to settings module
+            if (state.sheet === "settings") {
+              sheetRouterService?.closeSheet();
+              await handleModuleChange("settings" as ModuleId);
+              return;
+            }
+
+            currentSheetType = state.sheet ?? null;
+          }
+        );
 
         await restoreApplicationState();
         await initService.initialize();
@@ -192,23 +201,33 @@
     })();
 
     return () => {
-      cleanupSheetListener();
+      cleanupSheetListener?.();
     };
   });
 
   // Handle keyboard shortcuts
   $effect(() => {
     function handleKeydown(event: KeyboardEvent) {
-      // Settings dialog toggle (Ctrl/Cmd + ,)
+      // Debug panel toggle (Ctrl/Cmd + `) - Admin only
+      if ((event.ctrlKey || event.metaKey) && event.key === "`") {
+        event.preventDefault();
+        if (authStore.isAdmin) {
+          toggleDebugPanel();
+        }
+        return;
+      }
+
+      // Settings module toggle (Ctrl/Cmd + ,)
       if ((event.ctrlKey || event.metaKey) && event.key === ",") {
         event.preventDefault();
-        if (getShowSettings() || currentSheetType === "settings") {
-          closeSheet();
-          hideSettingsDialog();
+        // Toggle behavior: if in settings, go back to previous module
+        if (navigationState.currentModule === "settings") {
+          const previousModule = navigationState.previousModule || "dashboard";
+          switchModule(previousModule as ModuleId);
         } else {
-          openSheet("settings");
-          showSettingsDialog();
+          switchModule("settings" as ModuleId);
         }
+        return;
       }
 
       // Tab navigation (Ctrl/Cmd + 1-6)
@@ -216,27 +235,27 @@
         switch (event.key) {
           case "1":
             event.preventDefault();
-            switchTab("create"); // Maps to construct/Create module
+            switchModule("create");
             break;
           case "2":
             event.preventDefault();
-            switchTab("explore"); // Maps to browse/explore module
+            switchModule("discover");
             break;
           case "3":
             event.preventDefault();
-            switchTab("word_card");
+            switchModule("learn");
             break;
           case "4":
             event.preventDefault();
-            switchTab("write");
+            switchModule("compose");
             break;
           case "5":
             event.preventDefault();
-            switchTab("learn");
+            switchModule("train");
             break;
           case "6":
             event.preventDefault();
-            switchTab("create"); // Animator is part of Create module
+            switchModule("library");
             break;
         }
       }
@@ -246,12 +265,29 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 
-  // Watch for background type changes and update body background immediately
+  // Create a serialized key for background settings to detect actual changes
+  const backgroundSettingsKey = $derived(
+    JSON.stringify({
+      type: settings.backgroundType,
+    })
+  );
+
+  // Watch for background changes to update theme (CSS variable updates handled by SettingsState)
   $effect(() => {
-    const backgroundType = settings.backgroundType;
-    if (backgroundType && isInitialized) {
-      updateBodyBackground(backgroundType);
-      ThemeService.updateTheme(backgroundType);
+    // Track only the serialized key to detect actual value changes
+    const key = backgroundSettingsKey;
+    const initialized = isInitialized;
+
+    if (!initialized) return;
+
+    // Parse the key back to get values (avoids re-reading reactive state)
+    const parsed = JSON.parse(key) as {
+      type: BackgroundType;
+    };
+
+    if (parsed.type) {
+      // Only update theme - SettingsState handles updateBodyBackground
+      ThemeService.updateTheme(parsed.type);
     }
   });
 </script>
@@ -290,20 +326,32 @@
     <!-- Main Interface - Always shown, progressive loading inside -->
     <MainInterface />
 
-    <!-- Settings slide panel (route-aware) -->
-    <SettingsSheet isOpen={getShowSettings() || showRouteBasedSettings()} />
-
     <!-- Auth sheet (route-based) -->
-    <AuthSheet isOpen={showAuthSheet()} onClose={() => closeSheet()} />
+    <AuthSheet
+      isOpen={showAuthSheet}
+      onClose={() => sheetRouterService?.closeSheet()}
+    />
 
     <!-- Terms sheet (route-based) -->
-    <TermsSheet isOpen={showTermsSheet()} onClose={() => closeSheet()} />
+    <TermsSheet
+      isOpen={showTermsSheet}
+      onClose={() => sheetRouterService?.closeSheet()}
+    />
 
     <!-- Privacy sheet (route-based) -->
-    <PrivacySheet isOpen={showPrivacySheet()} onClose={() => closeSheet()} />
+    <PrivacySheet
+      isOpen={showPrivacySheet}
+      onClose={() => sheetRouterService?.closeSheet()}
+    />
 
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />
+
+    <!-- Quick Feedback Panel (desktop hotkey: f) -->
+    <QuickFeedbackPanel />
+
+    <!-- System Announcements Modal -->
+    <AnnouncementChecker />
   {/if}
 </div>
 
@@ -314,6 +362,7 @@
     min-height: 100vh;
     width: 100%;
     position: relative;
+    z-index: 2; /* Above body::after transition layer (z-index: 1) */
     overflow: hidden;
     transition: all 0.3s ease;
     background: transparent;

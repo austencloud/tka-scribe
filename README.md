@@ -42,7 +42,6 @@ web/
 ├── src/
 │   ├── lib/
 │   │   ├── modules/          # Feature modules
-│   │   │   ├── about/        # Landing page
 │   │   │   ├── animator/     # Animation engine
 │   │   │   ├── browse/       # Browse sequences
 │   │   │   ├── build/        # Sequence construction

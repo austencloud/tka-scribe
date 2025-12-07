@@ -1,6 +1,7 @@
-import type { AccessibilitySettings, Dimensions, QualityLevel } from "$shared";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type { Dimensions, QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
 // Removed resolve import - calculation service now injected via constructor
-import type { INightSkyCalculationService } from "../services";
+import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
 export interface NebulaConfig {
   count: number;

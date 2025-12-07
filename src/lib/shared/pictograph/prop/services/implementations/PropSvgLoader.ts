@@ -16,6 +16,7 @@ import { injectable } from "inversify";
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 import type { IPropSvgLoader } from "../contracts/IPropSvgLoader";
 import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
+import { applyMotionColorToSvg } from "../../../../utils/svg-color-utils";
 
 @injectable()
 export class PropSvgLoader implements IPropSvgLoader {
@@ -37,10 +38,14 @@ export class PropSvgLoader implements IPropSvgLoader {
   /**
    * Load prop SVG data with color transformation
    * 🚀 OPTIMIZED: Checks transformed cache first, then raw cache, then fetches
+   * @param propData - Prop placement data
+   * @param motionData - Motion data including prop type
+   * @param useAnimatedVersion - If true, loads {propType}_animated.svg for animation canvas (300px width)
    */
   async loadPropSvg(
     propData: PropPlacementData,
-    motionData: MotionData
+    motionData: MotionData,
+    useAnimatedVersion: boolean = false
   ): Promise<PropRenderData> {
     try {
       // Get prop type and color
@@ -48,7 +53,9 @@ export class PropSvgLoader implements IPropSvgLoader {
       const color = motionData.color || MotionColor.BLUE;
 
       // Create cache key including color for transformed prop cache
-      const path = `/images/props/${propType}.svg`;
+      // Use _animated version for animation canvas (scaled to 300px width)
+      const suffix = useAnimatedVersion ? "_animated" : "";
+      const path = `/images/props/${propType}${suffix}.svg`;
       const transformedCacheKey = `${path}:${color}`;
 
       // 🚀 OPTIMIZATION: Check transformed cache first (fastest path)
@@ -208,46 +215,13 @@ export class PropSvgLoader implements IPropSvgLoader {
   }
 
   /**
-   * Apply color transformation to SVG - sophisticated approach matching arrows
-   * Simple and correct: props are blue by default, change to red when needed
-   * Also makes CSS class names unique to prevent conflicts between different colored props
+   * Apply color transformation to SVG
+   * Delegates to shared svg-color-utils for consistency across the app
    */
   private applyColorToSvg(svgText: string, color: MotionColor): string {
-    const colorMap: Record<MotionColor, string> = {
-      [MotionColor.BLUE]: "#2E3192",
-      [MotionColor.RED]: "#ED1C24",
-    };
-
-    const targetColor = colorMap[color] || colorMap[MotionColor.BLUE];
-
-    // Replace fill colors in both attribute and CSS style formats
-    let coloredSvg = svgText.replace(
-      /fill="#[0-9A-Fa-f]{6}"/g,
-      `fill="${targetColor}"`
-    );
-    coloredSvg = coloredSvg.replace(
-      /fill:\s*#[0-9A-Fa-f]{6}/g,
-      `fill:${targetColor}`
-    );
-
-    // Make CSS class names unique for each color to prevent conflicts
-    // Replace .st0, .st1, etc. with .st0-blue, .st1-blue, etc.
-    const colorSuffix = color.toLowerCase();
-    coloredSvg = coloredSvg.replace(/\.st(\d+)/g, `.st$1-${colorSuffix}`);
-
-    // Also update class references in elements
-    coloredSvg = coloredSvg.replace(
-      /class="st(\d+)"/g,
-      `class="st$1-${colorSuffix}"`
-    );
-
-    // Remove the centerPoint circle entirely to prevent unwanted visual elements
-    coloredSvg = coloredSvg.replace(
-      /<circle[^>]*id="centerPoint"[^>]*\/?>/,
-      ""
-    );
-
-    return coloredSvg;
+    return applyMotionColorToSvg(svgText, color, {
+      makeClassNamesUnique: true,
+    });
   }
 
   /**

@@ -12,10 +12,12 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared";
-  import type { IMediaBundlerService } from "../services/contracts";
-  import type { SequenceData } from "$shared";
-  import type { InstagramMediaItem, ShareOptions } from "../domain";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IMediaBundlerService } from "../services/contracts/IMediaBundlerService";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+  import type { InstagramMediaItem } from "../domain/models/InstagramMedia";
+  import type { ShareOptions } from "../domain/models/ShareOptions";
 
   let {
     currentSequence,
@@ -40,7 +42,7 @@
   let hasNativeShare = $state(false);
 
   onMount(async () => {
-    mediaBundlerService = resolve<IMediaBundlerService>(
+    mediaBundlerService = await resolve<IMediaBundlerService>(
       TYPES.IMediaBundlerService
     );
     // Check if Web Share API is available (mobile devices)
@@ -346,7 +348,7 @@ ${caption}
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 250px;
+    min-width: 252px;
   }
 
   .upload-button {
@@ -428,7 +430,7 @@ ${caption}
 
   .media-preview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(152px, 1fr));
     gap: 1rem;
     width: 100%;
   }

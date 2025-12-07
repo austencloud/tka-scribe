@@ -22,13 +22,13 @@ import {
   getDailyChallengesPath,
   getUserChallengeProgressPath,
 } from "../../data/firestore-collections";
-import type {
-  DailyChallenge,
-  UserChallengeProgress,
-} from "../../domain/models";
-import type { IDailyChallengeService } from "../contracts";
+import type { DailyChallenge, UserChallengeProgress, XPEventMetadata } from '../../domain/models/achievement-models';
+import type { IDailyChallengeService } from "../contracts/IDailyChallengeService";
 import type { IAchievementService } from "../contracts/IAchievementService";
 import { TYPES } from "../../../inversify/types";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("DailyChallengeService");
 
 @injectable()
 export class DailyChallengeService implements IDailyChallengeService {
@@ -92,8 +92,8 @@ export class DailyChallengeService implements IDailyChallengeService {
 
         return firestoreChallenge;
       } else {
-        console.warn(
-          "⚠️ No daily challenge found for today. Admin needs to create it."
+        debug.log(
+          "No daily challenge found for today. Admin needs to create it."
         );
         return null;
       }
@@ -146,7 +146,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async updateChallengeProgress(
     progressDelta: number,
-    _metadata?: Record<string, any>
+    _metadata?: XPEventMetadata
   ): Promise<{
     completed: boolean;
     progress: UserChallengeProgress;
@@ -250,7 +250,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
   async isTodayChallengeComplete(): Promise<boolean> {
     const progress = await this.getChallengeProgress();
-    return progress?.isCompleted || false;
+    return progress?.isCompleted ?? false;
   }
 
   // ============================================================================
@@ -286,7 +286,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
       history.push({
         challenge: challengeDoc,
-        progress: progressDoc || null,
+        progress: progressDoc ?? null,
       });
     }
 

@@ -4,24 +4,16 @@
    * Domain: Module Content Rendering
    *
    * Responsibilities:
-   * - Render active module content
+   * - Render active module content with LAZY LOADING
    * - Handle module transitions with simple, clean fade
    * - Coordinate with child module components via callbacks
    * - Provide loading states
+   * - Code-split modules to reduce initial bundle size
+   * - Ensure DI modules are loaded before components
    */
-  import { isModuleActive } from "../application/state/app-state.svelte";
-  import { fade } from "svelte/transition";
-  import AboutTab from "../../modules/about/components/AboutTab.svelte";
-  import AdminDashboard from "../../modules/admin/components/AdminDashboard.svelte";
-  import AnimateTab from "../../modules/animate/AnimateTab.svelte";
-  import CreateModule from "../../modules/create/shared/components/CreateModule.svelte";
-  import LearnTab from "../../modules/learn/LearnTab.svelte";
-  import CollectTab from "../../modules/collect/CollectTab.svelte";
-  import LibraryTab from "../../modules/library/LibraryTab.svelte"; // Legacy support
-  import WordCardTab from "../../modules/word-card/components/WordCardTab.svelte";
-  import WriteTab from "../../modules/write/components/WriteTab.svelte";
-  import { ExploreModule } from "../../modules";
-  import CommunityModule from "../../modules/community/CommunityModule.svelte";
+  import { isModuleActive } from "../application/state/ui/ui-state.svelte";
+  import { loadFeatureModule } from "../inversify/di";
+  import type { Component } from "svelte";
 
   interface Props {
     activeModule: string | null;
@@ -38,6 +30,71 @@
     onCurrentWordChange,
     onLearnHeaderChange,
   }: Props = $props();
+
+  // Cache for loaded modules to avoid re-importing
+  const moduleCache = new Map<string, Component<any>>();
+
+  // Dynamic import functions for each module (enables code-splitting)
+  const moduleLoaders: Record<
+    string,
+    () => Promise<{ default: Component<any> }>
+  > = {
+    dashboard: () =>
+      import("../../features/dashboard/components/Dashboard.svelte"),
+    create: () =>
+      import("../../features/create/shared/components/CreateModule.svelte"),
+    discover: () =>
+      import("../../features/discover/shared/components/DiscoverModule.svelte"),
+    // community module retired - creators moved to discover, challenges to dashboard
+    learn: () => import("../../features/learn/LearnTab.svelte"),
+    animate: () => import("../../features/compose/ComposeModule.svelte"),
+    train: () => import("../../features/train/components/TrainModule.svelte"),
+    // library module retired - moved to Discover as a tab
+    edit: () => import("../../features/edit/EditModule.svelte"),
+    word_card: () =>
+      import("../../features/word-card/components/WordCardTab.svelte"),
+    write: () => import("../../features/write/components/WriteTab.svelte"),
+    // account module retired - merged into dashboard (profile widget handles auth, library is a Discover tab)
+    feedback: () =>
+      import("../../features/feedback/components/FeedbackModule.svelte"),
+    admin: () =>
+      import("../../features/admin/components/AdminDashboard.svelte"),
+    // ML Training module for prop detection model training
+    "ml-training": () =>
+      import(
+        "../../features/train/ml-training/components/MLTrainingModule.svelte"
+      ),
+    // compose module
+    compose: () => import("../../features/compose/ComposeModule.svelte"),
+    // settings module - accessed via gear icon in sidebar footer
+    settings: () => import("../../features/settings/SettingsModule.svelte"),
+  };
+
+  // Load module with caching
+  async function loadModule(
+    moduleName: string
+  ): Promise<Component<any> | null> {
+    if (!moduleName || !moduleLoaders[moduleName]) return null;
+
+    // Return cached module if available
+    if (moduleCache.has(moduleName)) {
+      return moduleCache.get(moduleName)!;
+    }
+
+    // Load the DI module FIRST to ensure services are available
+    // This is critical - the component will resolve services during import
+    await loadFeatureModule(moduleName);
+
+    // Load and cache the component
+    const { default: ModuleComponent } = await moduleLoaders[moduleName]();
+    moduleCache.set(moduleName, ModuleComponent);
+    return ModuleComponent;
+  }
+
+  // Reactive module loading based on activeModule
+  let modulePromise = $derived(
+    activeModule ? loadModule(activeModule) : Promise.resolve(null)
+  );
 </script>
 
 {#if isModuleLoading}
@@ -50,36 +107,29 @@
   <!-- Transition container for overlaying content -->
   <div class="transition-container">
     {#key activeModule}
-      <div
-        class="module-content"
-        class:about-module={isModuleActive("about")}
-        transition:fade={{ duration: 200 }}
-      >
-        {#if isModuleActive("create")}
-          <CreateModule {onTabAccessibilityChange} {onCurrentWordChange} />
-        {:else if isModuleActive("explore")}
-          <ExploreModule />
-        {:else if isModuleActive("community")}
-          <CommunityModule />
-        {:else if isModuleActive("learn")}
-          <LearnTab onHeaderChange={onLearnHeaderChange} />
-        {:else if isModuleActive("collect")}
-          <CollectTab />
-        {:else if isModuleActive("animate")}
-          <AnimateTab />
-        {:else if isModuleActive("collection")}
-          <CollectTab />
-        {:else if isModuleActive("library")}
-          <LibraryTab />
-        {:else if isModuleActive("word_card")}
-          <WordCardTab />
-        {:else if isModuleActive("write")}
-          <WriteTab />
-        {:else if isModuleActive("admin")}
-          <AdminDashboard />
-        {:else if isModuleActive("about")}
-          <AboutTab />
-        {/if}
+      <div class="module-content">
+        {#await modulePromise}
+          <!-- Loading state while module chunk is being fetched -->
+          <div class="module-loading">
+            <div class="loading-spinner"></div>
+            <p>Loading module...</p>
+          </div>
+        {:then LoadedModule}
+          {#if LoadedModule}
+            {#if isModuleActive("create")}
+              <LoadedModule {onTabAccessibilityChange} {onCurrentWordChange} />
+            {:else if isModuleActive("learn")}
+              <LoadedModule onHeaderChange={onLearnHeaderChange} />
+            {:else}
+              <LoadedModule />
+            {/if}
+          {/if}
+        {:catch error}
+          <div class="module-error">
+            <p>Failed to load module</p>
+            <p class="error-details">{error?.message || "Unknown error"}</p>
+          </div>
+        {/await}
       </div>
     {/key}
   </div>
@@ -109,12 +159,6 @@
     height: 100%;
   }
 
-  /* Allow scrolling for About module */
-  .module-content.about-module {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-  }
-
   .module-loading {
     display: flex;
     flex-direction: column;
@@ -126,8 +170,8 @@
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
     border: 3px solid var(--border-color, #e0e0e0);
     border-top: 3px solid var(--primary-color, #007bff);
     border-radius: 50%;
@@ -147,6 +191,26 @@
   .module-loading p {
     margin: 0;
     font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .module-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: var(--error-color, #dc3545);
+  }
+
+  .module-error p {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+  }
+
+  .module-error .error-details {
+    font-size: 12px;
     opacity: 0.7;
   }
 

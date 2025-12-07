@@ -60,7 +60,7 @@ import { LetterQueryHandler } from "../../pictograph/tka-glyph/services/implemen
 import { TYPES } from "../types";
 
 export const pictographModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === ARROW SERVICES ===
     options.bind(TYPES.IArrowPlacementService).to(ArrowPlacementService);
     options.bind(TYPES.IArrowLocationService).to(ArrowLocationService);
@@ -74,7 +74,10 @@ export const pictographModule = new ContainerModule(
 
     // === ARROW RENDERING SERVICES ===
     options.bind(TYPES.IArrowPathResolver).to(ArrowPathResolver);
-    options.bind(TYPES.IArrowSvgLoader).to(ArrowSvgLoader);
+    options
+      .bind(TYPES.IArrowSvgLoader)
+      .to(ArrowSvgLoader)
+      .inSingletonScope(); // PERF: Cache persists across all uses
     options.bind(TYPES.IArrowSvgParser).to(ArrowSvgParser);
     options.bind(TYPES.IArrowSvgColorTransformer).to(ArrowSvgColorTransformer);
 
@@ -143,9 +146,12 @@ export const pictographModule = new ContainerModule(
     // === PROP SERVICES ===
     options.bind(TYPES.IBetaDetectionService).to(BetaDetectionService);
     options.bind(TYPES.IPropPlacementService).to(PropPlacementService);
-    options.bind(TYPES.IPropSvgLoader).to(PropSvgLoader);
     options
-      .bind(TYPES.IOrientationCalculationService)
+      .bind(TYPES.IPropSvgLoader)
+      .to(PropSvgLoader)
+      .inSingletonScope(); // PERF: Cache persists across all uses
+    options
+      .bind(TYPES.IOrientationCalculator)
       .to(OrientationCalculator);
 
     // === COORDINATION SERVICES ===
@@ -162,6 +168,6 @@ export const pictographModule = new ContainerModule(
     options.bind(TYPES.ILetterQueryHandler).to(LetterQueryHandler);
 
     // === DATA PARSERS ===
-    options.bind(TYPES.ICSVPictographParserService).to(CSVPictographParser);
+    options.bind(TYPES.ICSVPictographParser).to(CSVPictographParser);
   }
 );

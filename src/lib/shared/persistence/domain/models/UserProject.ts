@@ -104,12 +104,12 @@ export function createUserProject(
     ...(options.description !== undefined && {
       description: options.description,
     }),
-    sequenceIds: options.sequenceIds || [],
+    sequenceIds: options.sequenceIds ?? [],
     ...(options.userId !== undefined && { userId: options.userId }),
     createdAt: now,
     lastModified: now,
-    isPublic: options.isPublic || false,
-    tags: options.tags || [],
+    isPublic: options.isPublic ?? false,
+    tags: options.tags ?? [],
     ...(options.version !== undefined && { version: options.version }),
   };
 }

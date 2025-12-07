@@ -1,6 +1,6 @@
 <!-- PreviewSection.svelte - Preview display in the middle -->
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import SharePreview from "./SharePreview.svelte";
 
   let {

@@ -49,16 +49,18 @@ export function setLearnHeader(header: string) {
 }
 
 // Helper to check if module needs primary navigation
+// Dashboard is the meta/launcher layer - no nav bar needed
+// Modules are the app layer - they have nav bar with Home button to return
 export function moduleHasPrimaryNav(moduleId: string): boolean {
   return (
-    moduleId === "create" ||
-    moduleId === "learn" ||
-    moduleId === "explore" ||
-    moduleId === "community" ||
-    moduleId === "collect" ||
-    moduleId === "collection" || // Legacy support
-    moduleId === "library" ||
-    moduleId === "animate" ||
-    moduleId === "admin"
+    moduleId === "create" ||    // Assembler, Constructor, Generator tabs
+    moduleId === "discover" ||  // Gallery, Collections, Creators, Library tabs
+    moduleId === "learn" ||     // Concepts, Play, Codex tabs
+    moduleId === "compose" ||   // Compose, Playback, Browse tabs
+    moduleId === "train" ||     // Challenges, Sessions tabs
+    moduleId === "feedback" ||  // Submit, Manage tabs
+    moduleId === "ml-training" || // ML Training - no tabs, full page
+    moduleId === "admin" ||     // Various admin tabs
+    moduleId === "settings"     // No tabs, but needs nav bar for module switcher on mobile
   );
 }

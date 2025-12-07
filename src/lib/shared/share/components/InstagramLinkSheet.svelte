@@ -4,11 +4,14 @@
   Modern slide-up panel for linking Instagram videos to TKA sequences.
 -->
 <script lang="ts">
-  import { Drawer, SheetDragHandle, resolve, TYPES } from "$shared";
-  import type { IHapticFeedbackService } from "$shared";
-  import type { IInstagramLinkService } from "../services/contracts";
-  import type { InstagramLink } from "../domain";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IInstagramLinkService } from "../services/contracts/IInstagramLinkService";
+  import type { InstagramLink } from "../domain/models/InstagramLink";
   import { onMount } from "svelte";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import SheetDragHandle from "../../foundation/ui/SheetDragHandle.svelte";
 
   const {
     show = false,
@@ -283,8 +286,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
     border: none;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;

@@ -5,10 +5,14 @@
  * Provides a single source of truth for raw CSV content without parsing logic.
  */
 
-import type { CsvDataSet } from "$shared";
-import { GridMode } from "$shared";
+import type { CsvDataSet } from "$lib/features/create/generate/shared/domain/csv-handling/CsvModels";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import type { ICSVLoader } from "../../contracts";
+import type { ICSVLoader } from "../../contracts/data/ICSVLoader";
+
+// Module-level cache shared across all instances (defense against non-singleton usage)
+let sharedCsvCache: CsvDataSet | null = null;
+let sharedIsLoaded = false;
 
 @injectable()
 export class CsvLoader implements ICSVLoader {
@@ -117,7 +121,8 @@ export class CsvLoader implements ICSVLoader {
   }
 
   isDataCached(): boolean {
-    return this.isLoaded && this.csvData !== null;
+    // Check both module-level and instance cache
+    return (sharedIsLoaded && sharedCsvCache !== null) || (this.isLoaded && this.csvData !== null);
   }
   private static readonly CSV_FILES = {
     DIAMOND: "/DiamondPictographDataframe.csv",
@@ -130,16 +135,31 @@ export class CsvLoader implements ICSVLoader {
   /**
    * Loads CSV data with caching. Returns cached data on subsequent calls.
    * Attempts to load from window.csvData first, then falls back to static files.
+   * Uses module-level cache to prevent duplicate fetches even across multiple instances.
    */
   async loadCsvData(): Promise<CsvDataSet> {
+    // Check module-level cache first (shared across all instances)
+    if (sharedIsLoaded && sharedCsvCache) {
+      this.csvData = sharedCsvCache;
+      this.isLoaded = true;
+      return sharedCsvCache;
+    }
+
+    // Check instance cache (for singleton usage)
     if (this.isLoaded && this.csvData) {
       return this.csvData;
     }
 
     try {
-      this.csvData = await this.loadFromWindowOrFiles();
+      const data = await this.loadFromWindowOrFiles();
+
+      // Update both module-level and instance caches
+      sharedCsvCache = data;
+      sharedIsLoaded = true;
+      this.csvData = data;
       this.isLoaded = true;
-      return this.csvData;
+
+      return data;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       console.error("Failed to load CSV data:", message);
@@ -151,15 +171,18 @@ export class CsvLoader implements ICSVLoader {
    * Returns cached CSV data or null if not yet loaded.
    */
   getCsvData(): CsvDataSet | null {
-    return this.csvData;
+    // Return module-level cache if available (shared across instances)
+    return sharedCsvCache || this.csvData;
   }
 
   /**
-   * Clears cached data and loading state.
+   * Clears cached data and loading state (both instance and module-level).
    */
   clearCache(): void {
     this.csvData = null;
     this.isLoaded = false;
+    sharedCsvCache = null;
+    sharedIsLoaded = false;
   }
 
   private async loadFromWindowOrFiles(): Promise<CsvDataSet> {

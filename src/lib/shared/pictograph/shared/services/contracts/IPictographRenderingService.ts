@@ -5,7 +5,7 @@
  * Orchestrates the rendering of all pictograph elements.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../domain/models/PictographData";
 
 export interface IPictographRenderingService {
   renderPictograph(data: PictographData): Promise<SVGElement>;

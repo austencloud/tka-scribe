@@ -1,11 +1,15 @@
 // background-config.ts - Background metadata configuration
-import { BackgroundType } from "$shared/background/shared/domain/enums/background-enums";
+import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
 
 export interface BackgroundMetadata {
   type: BackgroundType;
   name: string;
   description: string;
   icon: string;
+  // For simple backgrounds
+  color?: string;
+  colors?: string[];
+  direction?: number;
 }
 
 /**
@@ -36,6 +40,33 @@ export const backgroundsConfig: BackgroundMetadata[] = [
     description:
       "Immersive underwater scene with marine life and floating bubbles",
     icon: '<i class="fas fa-water"></i>',
+  },
+  {
+    type: BackgroundType.EMBER_GLOW,
+    name: "Ember Glow",
+    description: "Warm dark amber with rising glowing embers",
+    icon: "🔥",
+  },
+  {
+    type: BackgroundType.SAKURA_DRIFT,
+    name: "Sakura Drift",
+    description: "Soft twilight with gently falling cherry blossoms",
+    icon: "🌸",
+  },
+  {
+    type: BackgroundType.SOLID_COLOR,
+    name: "Pure Black",
+    description: "Classic solid black background",
+    icon: '<i class="fas fa-circle"></i>',
+    color: "#000000",
+  },
+  {
+    type: BackgroundType.LINEAR_GRADIENT,
+    name: "Modern",
+    description: "Sleek dark gradient",
+    icon: '<i class="fas fa-square"></i>',
+    colors: ["#0d1117", "#161b22", "#21262d"],
+    direction: 135,
   },
 ];
 

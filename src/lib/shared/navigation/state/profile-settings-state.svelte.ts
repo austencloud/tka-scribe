@@ -5,7 +5,7 @@
  * Handles form state, UI state, and viewport adaptivity.
  */
 
-import { authStore } from "$shared/auth";
+import { authStore } from "../../auth/stores/authStore.svelte";
 
 // ============================================================================
 // FORM STATE
@@ -25,7 +25,6 @@ export const originalPersonalInfoState = $state({
 export const passwordState = $state({
   current: "",
   new: "",
-  confirm: "",
 });
 
 export const emailChangeState = $state({
@@ -41,7 +40,6 @@ export type SettingsTab =
   | "personal"
   | "security"
   | "subscription"
-  | "achievements"
   | "developer";
 
 export const uiState = $state({
@@ -86,7 +84,7 @@ export function isVeryCompactMode() {
 export function hasPasswordProvider() {
   if (!authStore.user?.providerData) return false;
   return authStore.user.providerData.some(
-    (provider) => provider?.providerId === "password"
+    (provider) => provider.providerId === "password"
   );
 }
 
@@ -143,7 +141,6 @@ export function resetPersonalInfoForm() {
 export function resetPasswordForm() {
   passwordState.current = "";
   passwordState.new = "";
-  passwordState.confirm = "";
 }
 
 /**
@@ -194,7 +191,6 @@ const TAB_ORDER: SettingsTab[] = [
   "personal",
   "security",
   "subscription",
-  "achievements",
 ];
 
 /**

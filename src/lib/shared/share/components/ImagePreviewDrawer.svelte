@@ -1,8 +1,8 @@
 <!-- ImagePreviewDrawer.svelte - Preview and Options Drawer -->
 <script lang="ts">
-  import { Drawer } from "$shared";
-  import type { SequenceData } from "$shared";
-  import type { createShareState } from "../state";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+  import type { createShareState } from "../state/share-state.svelte";
 
   let {
     isOpen = $bindable(false),
@@ -76,7 +76,7 @@
                 checked={shareState.options.addWord}
                 onchange={() => handleToggle("addWord")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Word Label</span>
             </label>
 
@@ -86,7 +86,7 @@
                 checked={shareState.options.addBeatNumbers}
                 onchange={() => handleToggle("addBeatNumbers")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Beat Numbers</span>
             </label>
 
@@ -96,7 +96,7 @@
                 checked={shareState.options.addDifficultyLevel}
                 onchange={() => handleToggle("addDifficultyLevel")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Difficulty Level</span>
             </label>
 
@@ -106,7 +106,7 @@
                 checked={shareState.options.includeStartPosition}
                 onchange={() => handleToggle("includeStartPosition")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">Start Position</span>
             </label>
 
@@ -116,7 +116,7 @@
                 checked={shareState.options.addUserInfo}
                 onchange={() => handleToggle("addUserInfo")}
               />
-              <span class="toggle-switch"></span>
+              <span class="export-option-toggle"></span>
               <span class="toggle-label">User Info</span>
             </label>
           </div>
@@ -189,7 +189,7 @@
 
   .drawer-preview-section {
     width: 100%;
-    min-height: 250px;
+    min-height: 252px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -242,8 +242,8 @@
   }
 
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;
@@ -262,6 +262,8 @@
   .retry-button {
     margin-top: 8px;
     padding: 10px 20px;
+    min-height: 52px;
+    min-width: 52px;
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     border: none;
@@ -323,6 +325,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
+    min-height: 52px;
     cursor: pointer;
     padding: 12px 16px;
     background: linear-gradient(
@@ -351,24 +354,24 @@
   }
 
   /* iOS-style Toggle Switch */
-  .toggle-switch {
+  .export-option-toggle {
     position: relative;
-    width: 48px;
-    height: 28px;
+    width: 64px;
+    height: 52px;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 14px;
+    border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
   }
 
-  .toggle-switch::before {
+  .export-option-toggle::before {
     content: "";
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 22px;
-    height: 22px;
+    top: 4px;
+    left: 4px;
+    width: 40px;
+    height: 40px;
     background: white;
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -377,13 +380,15 @@
       0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .toggle-option input[type="checkbox"]:checked + .toggle-switch {
+  .toggle-option input[type="checkbox"]:checked + .export-option-toggle {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     border-color: #3b82f6;
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
 
-  .toggle-option input[type="checkbox"]:checked + .toggle-switch::before {
+  .toggle-option
+    input[type="checkbox"]:checked
+    + .export-option-toggle::before {
     transform: translateX(20px);
   }
 

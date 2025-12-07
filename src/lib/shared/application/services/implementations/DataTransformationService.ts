@@ -5,7 +5,9 @@
  * This includes merging different data sources, filtering, and computing display values.
  */
 
-import type { MotionColor, MotionData, PictographData } from "$shared";
+import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
+import type { MotionColor } from "../../../pictograph/shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../pictograph/shared/domain/models/MotionData";
 import { injectable } from "inversify";
 import type {
   IDataTransformationService,

@@ -1,4 +1,4 @@
-import type { GridLocation } from "$shared";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 
 /**
  * Handpath direction types.

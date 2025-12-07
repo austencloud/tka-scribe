@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   let {
@@ -13,8 +15,8 @@
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -48,7 +50,7 @@
     padding: clamp(0.625rem, 1.5vh, 0.875rem) clamp(1.25rem, 3.5vw, 2rem);
     width: 100%;
     max-width: 360px;
-    min-height: 44px;
+    min-height: 52px;
     margin: 0 auto;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -85,7 +87,7 @@
     }
 
     .cta-button {
-      min-height: 44px;
+      min-height: 52px;
       padding: 0.625rem 1.25rem;
       font-size: clamp(0.875rem, 3vw, 1rem);
       gap: 0.5rem;

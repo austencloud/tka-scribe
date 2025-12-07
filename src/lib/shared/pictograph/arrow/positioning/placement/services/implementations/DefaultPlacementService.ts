@@ -1,3 +1,4 @@
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 /**
  * Default Placement Service
  *
@@ -5,7 +6,7 @@
  * Mirrors the exact functionality from desktop DefaultPlacementService.
  */
 
-import type { GridMode, MotionType } from "$shared";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import { ArrowPlacementService } from "./ArrowPlacementService";
 
@@ -61,8 +62,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     gridMode: GridMode
   ): Promise<{ x: number; y: number }> {
     try {
-      // Ensure placement data is loaded
-      await this._loadAllDefaultPlacements();
+      // Lazy load only the grid mode we need (5 files instead of 10)
+      await this.placementDataService.ensureGridModeLoaded(gridMode);
 
       // Get the adjustment from the data service
       const adjustment = await this.placementDataService.getDefaultAdjustment(
@@ -94,7 +95,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     motionType: MotionType,
     gridMode: GridMode
   ): Promise<string[]> {
-    await this._loadAllDefaultPlacements();
+    // Lazy load only the grid mode we need
+    await this.placementDataService.ensureGridModeLoaded(gridMode);
     return this.placementDataService.getAvailablePlacementKeys(
       motionType,
       gridMode
@@ -111,32 +113,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     return this.placementDataService.isLoaded();
   }
 
-  /**
-   * Load all default placement data from JSON files.
-   * This mirrors the Python _load_all_default_placements() method.
-   *
-   * The Python version loads from:
-   * - /data/arrow_placement/{gridMode}/default/{motionType}_placements.json
-   *
-   * Our TypeScript version uses the same file structure and loading pattern.
-   */
-  private async _loadAllDefaultPlacements(): Promise<void> {
-    if (this.placementDataService.isLoaded()) {
-      return;
-    }
-
-    try {
-      await this.placementDataService.loadPlacementData();
-    } catch (error) {
-      console.error(
-        "❌ DefaultPlacementService: Failed to load placement data:",
-        error
-      );
-      throw new Error(
-        `Default placement loading failed: ${error instanceof Error ? error.message : "Unknown error"}`
-      );
-    }
-  }
+  // NOTE: _loadAllDefaultPlacements() was removed as dead code.
+  // All public methods now use ensureGridModeLoaded() for lazy loading.
 
   /**
    * Get raw placement data for debugging purposes.
@@ -152,7 +130,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     placementKey: string,
     gridMode: GridMode
   ): Promise<{ [turns: string]: [number, number] }> {
-    await this._loadAllDefaultPlacements();
+    // Lazy load only the grid mode we need
+    await this.placementDataService.ensureGridModeLoaded(gridMode);
     return this.placementDataService.getPlacementData(
       motionType,
       placementKey,
@@ -171,7 +150,8 @@ export class DefaultPlacementService implements IDefaultPlacementServiceJson {
     motionType: MotionType,
     gridMode: GridMode
   ): Promise<void> {
-    await this._loadAllDefaultPlacements();
+    // Lazy load only the grid mode we need
+    await this.placementDataService.ensureGridModeLoaded(gridMode);
     await this.placementDataService.debugAvailableKeys(motionType, gridMode);
   }
 }

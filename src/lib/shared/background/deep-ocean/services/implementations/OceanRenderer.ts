@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import type { Dimensions } from "$shared";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import type {
   MarineLife,
   Bubble,
@@ -7,7 +7,7 @@ import type {
   FishMarineLife,
   JellyfishMarineLife,
 } from "../../domain/models/DeepOceanModels";
-import type { IOceanRenderer } from "../contracts";
+import type { IOceanRenderer } from '../contracts/IOceanRenderer';
 
 @injectable()
 export class OceanRenderer implements IOceanRenderer {

@@ -1,7 +1,8 @@
 <!-- IOSListItem.svelte - iOS-native list row component -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   interface IOSListItemProps {
@@ -28,8 +29,8 @@
 
   let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -86,7 +87,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 44px; /* iOS minimum touch target */
+    min-height: 52px; /* iOS minimum touch target */
     padding: 11px 16px;
     background: transparent;
     border: none;

@@ -6,6 +6,9 @@
  */
 
 import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
+import { tryResolve } from "../../inversify/di";
+import { TYPES } from "../../inversify/types";
+import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 // Create tabs configuration - mutable to allow dynamic tab accessibility updates
 // Note: Edit functionality is now handled via a slide-out panel, not a tab
@@ -50,17 +53,26 @@ export const LEARN_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
   },
   {
-    id: "drills",
-    label: "Drills",
-    icon: '<i class="fas fa-bolt"></i>',
-    description: "Quick pictograph flash card quizzes",
+    id: "play",
+    label: "Play",
+    icon: '<i class="fas fa-gamepad"></i>',
+    description: "Fun games to test your pictograph skills",
     color: "#f472b6",
     gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
+  {
+    id: "codex",
+    label: "Codex",
+    icon: '<i class="fas fa-book-open"></i>',
+    description: "Browse all letters and pictographs",
+    color: "#a78bfa",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
 ];
 
-// Explore tabs configuration
-export const EXPLORE_TABS: Section[] = [
+// Discover tabs configuration (public discovery)
+// Note: Library functionality is now integrated into Gallery via scope toggle (Community / My Library)
+export const DISCOVER_TABS: Section[] = [
   {
     id: "gallery",
     label: "Gallery",
@@ -74,20 +86,8 @@ export const EXPLORE_TABS: Section[] = [
     label: "Collections",
     icon: '<i class="fas fa-folder"></i>',
     description: "Browse curated playlists",
-    color: "#f59e0b",
-    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
-  },
-];
-
-// Community tabs configuration
-export const COMMUNITY_TABS: Section[] = [
-  {
-    id: "leaderboards",
-    label: "Leaderboards",
-    icon: '<i class="fas fa-trophy"></i>',
-    description: "Top performers and rankings",
-    color: "#fbbf24",
-    gradient: "linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)",
+    color: "#c084fc",
+    gradient: "linear-gradient(135deg, #d8b4fe 0%, #c084fc 100%)",
   },
   {
     id: "creators",
@@ -97,91 +97,159 @@ export const COMMUNITY_TABS: Section[] = [
     color: "#06b6d4",
     gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
   },
+];
+
+// Library tabs configuration - DEPRECATED: Library is now a scope toggle within Gallery
+// Kept for backward compatibility
+export const LIBRARY_TABS: Section[] = [];
+
+// Community tabs configuration
+export const COMMUNITY_TABS: Section[] = [
   {
-    id: "achievements",
-    label: "Achievements",
-    icon: '<i class="fas fa-award"></i>',
-    description: "Community achievement showcase",
-    color: "#a855f7",
-    gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 100%)",
+    id: "creators",
+    label: "Creators",
+    icon: '<i class="fas fa-users"></i>',
+    description: "Discover community members",
+    color: "#06b6d4",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
   },
   {
     id: "challenges",
     label: "Challenges",
-    icon: '<i class="fas fa-bullseye"></i>',
-    description: "Active challenges and events",
-    color: "#ef4444",
-    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
-    disabled: true, // Phase 2 feature
+    icon: '<i class="fas fa-bolt"></i>',
+    description: "Daily and weekly challenges",
+    color: "#fbbf24",
+    gradient: "linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%)",
+  },
+  {
+    id: "support",
+    label: "Support",
+    icon: '<i class="fas fa-heart"></i>',
+    description: "Support TKA development",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
 ];
 
-// Collect tabs configuration (formerly Library/Collection)
-export const COLLECT_TABS: Section[] = [
-  {
-    id: "gallery",
-    label: "Gallery",
-    icon: '<i class="fas fa-images"></i>',
-    description: "My saved sequences",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
-  },
-  {
-    id: "achievements",
-    label: "Achievements",
-    icon: '<i class="fas fa-trophy"></i>',
-    description: "Progress, stats, and unlocked achievements",
-    color: "#ffd700",
-    gradient: "linear-gradient(135deg, #fbbf24 0%, #ffd700 100%)",
-  },
-  {
-    id: "challenges",
-    label: "Challenges",
-    icon: '<i class="fas fa-bullseye"></i>',
-    description: "Daily challenges and active quests",
-    color: "#667eea",
-    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  },
-];
+/**
+ * @deprecated Collect module renamed to Library.
+ */
+export const COLLECT_TABS: Section[] = LIBRARY_TABS;
 
 // Legacy exports for backwards compatibility during migration
 export const BUILD_TABS = CREATE_TABS; // Legacy name
-export const LIBRARY_TABS = COLLECT_TABS; // Legacy name
-export const COLLECTION_TABS = COLLECT_TABS; // Legacy name
+export const COLLECTION_TABS = LIBRARY_TABS; // Legacy name
 
-// Animate tabs configuration
+// Compose module tabs configuration
+// Arrange (mode selection + sequence config) | Browse (saved compositions)
+// Note: Playback is an overlay, not a tab - triggered from Arrange or Browse
 export const ANIMATE_TABS: Section[] = [
   {
-    id: "single",
-    label: "Single",
-    icon: '<i class="fas fa-user"></i>',
-    description: "Animate one sequence",
+    id: "arrange",
+    label: "Arrange",
+    icon: '<i class="fas fa-layer-group"></i>',
+    description: "Arrange sequences into compositions",
     color: "#3b82f6",
     gradient: "linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)",
   },
   {
-    id: "tunnel",
-    label: "Tunnel",
-    icon: '<i class="fas fa-users"></i>',
-    description: "Overlay two sequences",
-    color: "#ec4899",
-    gradient: "linear-gradient(135deg, #ec4899 0%, #f472b6 100%)",
-  },
-  {
-    id: "mirror",
-    label: "Mirror",
-    icon: '<i class="fas fa-left-right"></i>',
-    description: "Side-by-side mirrored view",
+    id: "browse",
+    label: "Browse",
+    icon: '<i class="fas fa-film"></i>',
+    description: "Explore saved compositions",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)",
   },
+];
+
+// Train tabs configuration
+export const TRAIN_TABS: Section[] = [
   {
-    id: "grid",
-    label: "Grid",
-    icon: '<i class="fas fa-th"></i>',
-    description: "2×2 rotated grid",
+    id: "practice",
+    label: "Practice",
+    icon: '<i class="fas fa-dumbbell"></i>',
+    description: "Free practice with adaptive, step, and timed modes",
+    color: "#3b82f6",
+  },
+  {
+    id: "challenges",
+    label: "Challenges",
+    icon: '<i class="fas fa-trophy"></i>',
+    description: "Structured challenges with XP rewards",
     color: "#f59e0b",
-    gradient: "linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)",
+  },
+  {
+    id: "progress",
+    label: "Progress",
+    icon: '<i class="fas fa-chart-line"></i>',
+    description: "View stats and performance history",
+    color: "#8b5cf6",
+  },
+];
+
+// About - single page module (no sub-tabs)
+export const ABOUT_TABS: Section[] = [];
+
+// Account tabs configuration (personal account management)
+export const ACCOUNT_TABS: Section[] = [
+  {
+    id: "overview",
+    label: "Overview",
+    icon: '<i class="fas fa-user"></i>',
+    description: "Profile info, stats, and achievements",
+    color: "#6366f1",
+    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
+  {
+    id: "library",
+    label: "Library",
+    icon: '<i class="fas fa-book"></i>',
+    description: "Your sequences, favorites, and collections",
+    color: "#0891b2",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #0891b2 100%)",
+  },
+  {
+    id: "preferences",
+    label: "Preferences",
+    icon: '<i class="fas fa-sliders-h"></i>',
+    description: "App settings and customization",
+    color: "#64748b",
+    gradient: "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)",
+  },
+  {
+    id: "security",
+    label: "Security",
+    icon: '<i class="fas fa-shield-alt"></i>',
+    description: "Sign in, accounts, and privacy",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+  },
+];
+
+/**
+ * @deprecated Edit is no longer a navigation tab.
+ * Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer.
+ * Kept for backwards compatibility.
+ */
+export const EDIT_TABS: Section[] = [];
+
+// ML Training tabs configuration
+export const ML_TRAINING_TABS: Section[] = [
+  {
+    id: "capture",
+    label: "Capture",
+    icon: '<i class="fas fa-video"></i>',
+    description: "Record prop training data",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "sessions",
+    label: "Sessions",
+    icon: '<i class="fas fa-folder-open"></i>',
+    description: "Manage captured sessions",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
   },
 ];
 
@@ -196,12 +264,20 @@ export const ADMIN_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #fbbf24 0%, #ffd700 100%)",
   },
   {
+    id: "train-challenges",
+    label: "Train",
+    icon: '<i class="fas fa-dumbbell"></i>',
+    description: "Manage training challenges",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+  {
     id: "analytics",
     label: "Analytics",
     icon: '<i class="fas fa-chart-line"></i>',
     description: "View app usage and metrics",
-    color: "#3b82f6",
-    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+    color: "#64748b",
+    gradient: "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)",
   },
   {
     id: "users",
@@ -211,76 +287,206 @@ export const ADMIN_TABS: Section[] = [
     color: "#10b981",
     gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
   },
+  {
+    id: "flags",
+    label: "Flags",
+    icon: '<i class="fas fa-flag"></i>',
+    description: "Manage feature flags and access control",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "announcements",
+    label: "Announcements",
+    icon: '<i class="fas fa-bullhorn"></i>',
+    description: "Create and manage system announcements",
+    color: "#6366f1",
+    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
+];
+
+// Settings tabs configuration - shown in sidebar like other modules
+export const SETTINGS_TABS: Section[] = [
+  {
+    id: "profile",
+    label: "Profile",
+    icon: '<i class="fas fa-user"></i>',
+    description: "Account and profile settings",
+    color: "#6366f1",
+    gradient: "linear-gradient(135deg, #818cf8 0%, #6366f1 100%)",
+  },
+  {
+    id: "whats-new",
+    label: "Release Notes",
+    icon: '<i class="fas fa-gift"></i>',
+    description: "Version history and release notes",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "notifications",
+    label: "Notifications",
+    icon: '<i class="fas fa-bell"></i>',
+    description: "Announcements and notification preferences",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+  },
+  {
+    id: "props",
+    label: "Props",
+    icon: '<i class="fas fa-tags"></i>',
+    description: "Prop type preferences",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
+  },
+  {
+    id: "background",
+    label: "Background",
+    icon: '<i class="fas fa-image"></i>',
+    description: "Background and theme settings",
+    color: "#06b6d4",
+    gradient: "linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)",
+  },
+  {
+    id: "visibility",
+    label: "Visibility",
+    icon: '<i class="fas fa-eye"></i>',
+    description: "Element visibility controls",
+    color: "#22c55e",
+    gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
+  },
+];
+
+// Feedback tabs configuration (testers/admins only)
+export const FEEDBACK_TABS: Section[] = [
+  {
+    id: "submit",
+    label: "Submit",
+    icon: '<i class="fas fa-paper-plane"></i>',
+    description: "Submit feedback, bug reports, or feature requests",
+    color: "#14b8a6",
+    gradient: "linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%)",
+  },
+  {
+    id: "my-feedback",
+    label: "My Feedback",
+    icon: '<i class="fas fa-list-check"></i>',
+    description: "Track your submitted feedback and confirmations",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+  {
+    id: "manage",
+    label: "Manage",
+    icon: '<i class="fas fa-inbox"></i>',
+    description: "Review and manage submitted feedback",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
 ];
 
 // Module definitions for the new navigation system
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: '<i class="fas fa-home" style="color: #10b981;"></i>',
+    color: "#10b981", // Emerald - home/dashboard
+    description: "Your TKA Studio home",
+    isMain: true,
+    sections: [], // Dashboard has no sub-tabs
+  },
+  {
     id: "create",
     label: "Create",
-    icon: '<i class="fas fa-tools" style="color: #f59e0b;"></i>', // Amber - construction/creation
+    icon: '<i class="fas fa-tools" style="color: #f59e0b;"></i>',
+    color: "#f59e0b", // Amber - construction/creation
     description: "Construct and generate sequences",
     isMain: true,
     sections: CREATE_TABS,
   },
   {
-    id: "explore",
-    label: "Explore",
-    icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>', // Purple - discovery/exploration
-    description: "Explore and discover sequences",
+    id: "discover",
+    label: "Discover",
+    icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>',
+    color: "#a855f7", // Purple - discovery/exploration
+    description: "Discover sequences and creators",
     isMain: true,
-    sections: EXPLORE_TABS,
+    sections: DISCOVER_TABS,
   },
-  {
-    id: "community",
-    label: "Community",
-    icon: '<i class="fas fa-users" style="color: #06b6d4;"></i>', // Cyan - social/community
-    description: "Leaderboards, creators, and achievements",
-    isMain: true,
-    sections: COMMUNITY_TABS,
-  },
+  // Community module retired - Creators moved to Discover, Challenges to Dashboard
   {
     id: "learn",
     label: "Learn",
-    icon: '<i class="fas fa-graduation-cap" style="color: #3b82f6;"></i>', // Blue - education/knowledge
+    icon: '<i class="fas fa-graduation-cap" style="color: #3b82f6;"></i>',
+    color: "#3b82f6", // Blue - education/knowledge
     description: "Study and practice TKA",
     isMain: true,
     sections: LEARN_TABS,
   },
   {
-    id: "collect",
-    label: "Collect",
-    icon: '<i class="fas fa-box-archive" style="color: #10b981;"></i>', // Green - collect/archive
-    description: "My gallery, achievements, and challenges",
+    id: "compose",
+    label: "Compose",
+    icon: '<i class="fas fa-layer-group" style="color: #ec4899;"></i>',
+    color: "#ec4899", // Pink - composition/choreography
+    description: "Compose sequences into animations",
     isMain: true,
-    sections: COLLECT_TABS,
+    sections: ANIMATE_TABS, // TODO: Rename to COMPOSE_TABS
   },
   {
-    id: "animate",
-    label: "Animate",
-    icon: '<i class="fas fa-play-circle" style="color: #ec4899;"></i>', // Pink - animation/motion
-    description: "Advanced animation visualization",
+    id: "train",
+    label: "Train",
+    icon: '<i class="fas fa-running" style="color: #ef4444;"></i>',
+    color: "#ef4444", // Red - action/training
+    description: "Practice with real-time scoring",
     isMain: true,
-    sections: ANIMATE_TABS,
+    sections: TRAIN_TABS,
   },
-  {
-    id: "about",
-    label: "About",
-    icon: '<i class="fas fa-circle-info" style="color: #38bdf8;"></i>', // Sky blue - information
-    description: "Resources, support, and app information",
-    isMain: true,
-    sections: [], // No sections - single page module
-  },
+  // Removed: library module (moved to Discover as a tab)
+  // Removed: account module (merged into Dashboard - profile widget handles auth)
+  // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)
+  // Removed: about module (content moved to Dashboard > Support widget)
+  {
+    id: "feedback",
+    label: "Feedback",
+    icon: '<i class="fas fa-comment-dots" style="color: #14b8a6;"></i>',
+    color: "#14b8a6", // Teal - feedback/communication
+    description: "Submit and manage feedback",
+    isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
+    sections: FEEDBACK_TABS,
+  },
+  {
+    id: "ml-training",
+    label: "ML Training",
+    icon: '<i class="fas fa-brain" style="color: #8b5cf6;"></i>',
+    color: "#8b5cf6", // Purple - AI/ML
+    description: "Train prop detection models",
+    isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
+    sections: ML_TRAINING_TABS,
+  },
   {
     id: "admin",
     label: "Admin",
-    icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>', // Gold - admin/privileged
+    icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>',
+    color: "#ffd700", // Gold - admin/privileged
     description: "System management & configuration",
-    isMain: false, // Only visible to admins
+    isMain: true, // Visibility controlled by getModuleDefinitions() based on admin status
     sections: ADMIN_TABS,
   },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',
+    color: "#64748b", // Slate - neutral settings color
+    description: "Configure app preferences",
+    isMain: false, // Accessed via footer gear icon, but shows tabs when active
+    sections: SETTINGS_TABS, // Profile, Props, Background, Visibility, Misc, AI tabs
+  },
 ];
+
+// Session storage key for persisting previous module across HMR
+const PREVIOUS_MODULE_SESSION_KEY = "tka-previous-module-session";
 
 /**
  * Creates navigation state for managing modules and tabs
@@ -291,13 +497,43 @@ export function createNavigationState() {
   let currentLearnMode = $state<string>("concepts");
 
   // Module-based state
-  let currentModule = $state<ModuleId>("create");
-  let activeTab = $state<string>("constructor"); // Active tab within the current module
+  let currentModule = $state<ModuleId>("dashboard");
+  let activeTab = $state<string>(""); // Active tab within the current module (dashboard has no tabs)
   const MODULE_LAST_TABS_KEY = "tka-module-last-tabs";
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
 
+  // Panel persistence per tab (e.g., animation panel open in construct tab)
+  // Key format: "moduleId:tabId" (e.g., "create:constructor", "create:assembler")
+  const TAB_LAST_PANELS_KEY = "tka-tab-last-panels";
+  let lastPanelByTab = $state<Record<string, string | null>>({});
+
   // Creation method selector visibility (for hiding tabs when selector is shown)
   let isCreationMethodSelectorVisible = $state<boolean>(false);
+
+  // Track previous module for settings toggle behavior
+  // When entering settings, we remember where we came from to return on toggle
+  // Load from sessionStorage to survive HMR
+  let previousModule = $state<ModuleId | null>(loadPreviousModuleFromSession());
+
+  // Helper to load previous module from sessionStorage
+  function loadPreviousModuleFromSession(): ModuleId | null {
+    if (typeof sessionStorage === "undefined") return null;
+    const saved = sessionStorage.getItem(PREVIOUS_MODULE_SESSION_KEY);
+    if (saved && MODULE_DEFINITIONS.some((m) => m.id === saved)) {
+      return saved as ModuleId;
+    }
+    return null;
+  }
+
+  // Helper to persist previous module to sessionStorage
+  function savePreviousModuleToSession(moduleId: ModuleId | null) {
+    if (typeof sessionStorage === "undefined") return;
+    if (moduleId) {
+      sessionStorage.setItem(PREVIOUS_MODULE_SESSION_KEY, moduleId);
+    } else {
+      sessionStorage.removeItem(PREVIOUS_MODULE_SESSION_KEY);
+    }
+  }
 
   // Load persisted state
   if (typeof localStorage !== "undefined") {
@@ -314,7 +550,17 @@ export function createNavigationState() {
 
     // Load module persistence
     const savedModule = localStorage.getItem("tka-current-module");
-    if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
+    if (savedModule === "community" || savedModule === "account") {
+      // Migration: community and account modules retired, redirect to dashboard
+      currentModule = "dashboard";
+      localStorage.setItem("tka-current-module", "dashboard");
+    } else if (savedModule === "library") {
+      // Migration: library module retired, now a scope toggle in Gallery
+      currentModule = "discover";
+      activeTab = "gallery";
+      localStorage.setItem("tka-current-module", "discover");
+      localStorage.setItem("tka-active-tab", "gallery");
+    } else if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
       currentModule = savedModule as ModuleId;
     }
 
@@ -351,19 +597,37 @@ export function createNavigationState() {
       }
     }
 
+    // Load last open panel for each tab (key format: "moduleId:tabId")
+    const savedLastPanels = localStorage.getItem(TAB_LAST_PANELS_KEY);
+    if (savedLastPanels) {
+      try {
+        const parsed = JSON.parse(savedLastPanels) as Record<string, string | null>;
+        // Validate tab keys - format "moduleId:tabId"
+        const filteredEntries = Object.entries(parsed).filter(([tabKey]) => {
+          const [moduleId, tabId] = tabKey.split(":");
+          if (!moduleId || !tabId) return false;
+          const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
+          return moduleDefinition?.sections.some((tab) => tab.id === tabId) ?? false;
+        });
+        if (filteredEntries.length > 0) {
+          lastPanelByTab = Object.fromEntries(filteredEntries);
+        }
+      } catch (error) {
+        console.warn(
+          "NavigationState: failed to parse saved tab panel map:",
+          error
+        );
+      }
+    }
+
     // Load current active tab
     const savedActiveTab = localStorage.getItem("tka-active-tab");
     if (savedActiveTab) {
       activeTab = savedActiveTab;
     }
 
-    // Remember the last active tab for current module
-    const getRememberedTab = () => {
-      const module = currentModule;
-      const lastTabs = lastTabByModule;
-      return lastTabs[module];
-    };
-    const rememberedTab = getRememberedTab();
+    // Remember the last active tab for current module (inline to avoid closure warning)
+    const rememberedTab = lastTabByModule[currentModule];
     if (rememberedTab) {
       const moduleDefinition = MODULE_DEFINITIONS.find(
         (m) => m.id === currentModule
@@ -371,6 +635,17 @@ export function createNavigationState() {
       if (moduleDefinition?.sections.some((tab) => tab.id === rememberedTab)) {
         activeTab = rememberedTab;
       }
+    }
+
+    // Sync mode-specific state with activeTab after all loading is complete
+    // This ensures currentLearnMode/currentCreateMode match activeTab on refresh
+    // Note: These comparisons use the current values directly (not in a closure)
+    const moduleAtInit = currentModule;
+    const tabAtInit = activeTab;
+    if (moduleAtInit === "learn" && LEARN_TABS.some((t) => t.id === tabAtInit)) {
+      currentLearnMode = tabAtInit;
+    } else if (moduleAtInit === "create" && CREATE_TABS.some((t) => t.id === tabAtInit)) {
+      currentCreateMode = tabAtInit;
     }
   }
 
@@ -412,9 +687,39 @@ export function createNavigationState() {
     }
   }
 
+  function persistLastPanels() {
+    if (typeof localStorage === "undefined") {
+      return;
+    }
+
+    try {
+      localStorage.setItem(
+        TAB_LAST_PANELS_KEY,
+        JSON.stringify(lastPanelByTab)
+      );
+    } catch (error) {
+      console.warn("NavigationState: failed to persist tab panel map:", error);
+    }
+  }
+
   // Module-based functions
-  function setCurrentModule(moduleId: ModuleId) {
+  // targetTab: Optional tab to set directly (bypasses remembered/default tab logic)
+  function setCurrentModule(moduleId: ModuleId, targetTab?: string) {
     if (MODULE_DEFINITIONS.some((m) => m.id === moduleId)) {
+      const previousModuleLocal = currentModule;
+
+      // Track previous module for settings toggle behavior
+      // Only save when entering settings from a non-settings module
+      // Persist to sessionStorage so it survives HMR
+      if (moduleId === "settings" && currentModule !== "settings") {
+        previousModule = currentModule;
+        savePreviousModuleToSession(currentModule);
+      } else if (currentModule === "settings" && moduleId !== "settings") {
+        // Clear previous module when leaving settings
+        previousModule = null;
+        savePreviousModuleToSession(null);
+      }
+
       currentModule = moduleId;
 
       // Set default tab for the module
@@ -423,19 +728,24 @@ export function createNavigationState() {
       );
       let nextTab = activeTab;
       if (moduleDefinition && moduleDefinition.sections.length > 0) {
-        const remembered = lastTabByModule[moduleId];
-        const firstSection = moduleDefinition.sections[0];
-        const fallbackTab = firstSection ? firstSection.id : "";
-        const resolvedTab =
-          remembered &&
-          moduleDefinition.sections.some((tab) => tab.id === remembered)
-            ? remembered
-            : fallbackTab;
+        // If targetTab is specified and valid, use it directly
+        if (targetTab && moduleDefinition.sections.some((tab) => tab.id === targetTab)) {
+          nextTab = targetTab;
+        } else {
+          // Otherwise fall back to remembered or first tab
+          const remembered = lastTabByModule[moduleId];
+          const firstSection = moduleDefinition.sections[0];
+          const fallbackTab = firstSection ? firstSection.id : "";
+          nextTab =
+            remembered &&
+            moduleDefinition.sections.some((tab) => tab.id === remembered)
+              ? remembered
+              : fallbackTab;
+        }
 
-        nextTab = resolvedTab;
         lastTabByModule = {
           ...lastTabByModule,
-          [moduleId]: resolvedTab,
+          [moduleId]: nextTab,
         };
       } else {
         const updatedMap = { ...lastTabByModule };
@@ -444,6 +754,20 @@ export function createNavigationState() {
       }
 
       activeTab = nextTab;
+
+      // Log module navigation for analytics (non-blocking)
+      // Include the tab for more granular tracking (e.g., "create:generator")
+      if (previousModuleLocal !== moduleId) {
+        try {
+          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          if (activityService) {
+            const moduleWithTab = nextTab ? `${moduleId}:${nextTab}` : moduleId;
+            void activityService.logModuleView(moduleWithTab, previousModuleLocal);
+          }
+        } catch {
+          // Silently fail - activity logging is non-critical
+        }
+      }
 
       // Persist both module and active tab
       if (typeof localStorage !== "undefined") {
@@ -473,7 +797,22 @@ export function createNavigationState() {
       moduleDefinition &&
       moduleDefinition.sections.some((tab) => tab.id === tabId)
     ) {
+      const previousTab = activeTab;
       activeTab = tabId;
+
+      // Log tab switch for analytics (non-blocking)
+      if (previousTab !== tabId) {
+        try {
+          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          if (activityService) {
+            const moduleWithTab = `${currentModule}:${tabId}`;
+            const previousModuleWithTab = `${currentModule}:${previousTab}`;
+            void activityService.logModuleView(moduleWithTab, previousModuleWithTab);
+          }
+        } catch {
+          // Silently fail - activity logging is non-critical
+        }
+      }
 
       if (typeof localStorage !== "undefined") {
         localStorage.setItem("tka-active-tab", tabId);
@@ -538,6 +877,9 @@ export function createNavigationState() {
     get activeTab() {
       return activeTab;
     },
+    get previousModule() {
+      return previousModule;
+    },
 
     // Tab configurations
     get createTabs() {
@@ -546,8 +888,8 @@ export function createNavigationState() {
     get learnTabs() {
       return LEARN_TABS;
     },
-    get exploreTabs() {
-      return EXPLORE_TABS;
+    get discoverTabs() {
+      return DISCOVER_TABS;
     },
     get communityTabs() {
       return COMMUNITY_TABS;
@@ -557,6 +899,12 @@ export function createNavigationState() {
     },
     get adminTabs() {
       return ADMIN_TABS;
+    },
+    get accountTabs() {
+      return ACCOUNT_TABS;
+    },
+    get settingsTabs() {
+      return SETTINGS_TABS;
     },
     get moduleDefinitions() {
       return MODULE_DEFINITIONS;
@@ -583,13 +931,13 @@ export function createNavigationState() {
     get learnModes() {
       return LEARN_TABS;
     },
-    /** @deprecated Use exploreTabs instead */
-    get exploreModes() {
-      return EXPLORE_TABS;
+    /** @deprecated Use discoverTabs instead */
+    get discoverModes() {
+      return DISCOVER_TABS;
     },
-    /** @deprecated Use exploreTabs instead */
-    get ExploreModes() {
-      return EXPLORE_TABS;
+    /** @deprecated Use discoverTabs instead */
+    get DiscoverModes() {
+      return DISCOVER_TABS;
     },
     /** @deprecated Use activeTab instead */
     get currentSection() {
@@ -615,6 +963,52 @@ export function createNavigationState() {
     },
     setCreationMethodSelectorVisible(visible: boolean) {
       isCreationMethodSelectorVisible = visible;
+    },
+
+    // Panel persistence per tab (key format: "moduleId:tabId")
+    /**
+     * Get the last open panel for a specific tab
+     * @param moduleId The module (defaults to current module)
+     * @param tabId The tab within the module (defaults to active tab)
+     * @returns The panel ID (e.g., "animation", "edit", "share") or null if no panel was open
+     */
+    getLastPanelForTab(moduleId?: ModuleId, tabId?: string): string | null {
+      const module = moduleId ?? currentModule;
+      const tab = tabId ?? activeTab;
+      const tabKey = `${module}:${tab}`;
+      return lastPanelByTab[tabKey] ?? null;
+    },
+
+    /**
+     * Set the last open panel for a specific tab
+     * @param panelId The panel ID to save (e.g., "animation", "edit", "share") or null to clear
+     * @param moduleId The module (defaults to current module)
+     * @param tabId The tab within the module (defaults to active tab)
+     */
+    setLastPanelForTab(panelId: string | null, moduleId?: ModuleId, tabId?: string) {
+      const module = moduleId ?? currentModule;
+      const tab = tabId ?? activeTab;
+      const tabKey = `${module}:${tab}`;
+      lastPanelByTab = {
+        ...lastPanelByTab,
+        [tabKey]: panelId,
+      };
+      persistLastPanels();
+    },
+
+    /**
+     * Clear the panel state for a tab (use when explicitly closing a panel)
+     * @param moduleId The module (defaults to current module)
+     * @param tabId The tab within the module (defaults to active tab)
+     */
+    clearPanelForTab(moduleId?: ModuleId, tabId?: string) {
+      const module = moduleId ?? currentModule;
+      const tab = tabId ?? activeTab;
+      const tabKey = `${module}:${tab}`;
+      const updated = { ...lastPanelByTab };
+      delete updated[tabKey];
+      lastPanelByTab = updated;
+      persistLastPanels();
     },
 
     // Legacy action aliases (deprecated)

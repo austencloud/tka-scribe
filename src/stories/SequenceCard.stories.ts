@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import SequenceCard from "../lib/modules/explore/gallery/display/components/SequenceCard/SequenceCard.svelte";
-import { createSequenceData } from "$shared";
+import type { ComponentProps } from "svelte";
+import SequenceCard from "../lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
+import { createSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+
+type SequenceCardProps = ComponentProps<typeof SequenceCard>;
 
 const baseSequence = createSequenceData({
   id: "seq-001",
@@ -24,7 +27,7 @@ const coverUrl =
 
 const meta = {
   title: "Explore/SequenceCard",
-  component: SequenceCard as any,
+  component: SequenceCard,
   tags: ["autodocs"],
   args: {
     sequence: baseSequence,
@@ -33,7 +36,7 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-} satisfies Meta<SequenceCard>;
+} satisfies Meta<SequenceCardProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -96,8 +99,8 @@ export const Favorited: Story = {
       ...baseSequence,
       difficultyLevel: "advanced",
       level: 3,
+      isFavorite: true,
     }),
-    isFavorite: true,
   },
 };
 

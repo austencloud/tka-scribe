@@ -10,7 +10,7 @@
  */
 
 import { injectable } from "inversify";
-import type { ILayoutCalculationService } from "../contracts";
+import type { ILayoutCalculationService } from "../contracts/ILayoutCalculationService";
 
 @injectable()
 export class LayoutCalculationService implements ILayoutCalculationService {

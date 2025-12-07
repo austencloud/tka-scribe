@@ -6,8 +6,12 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { IAdminChallengeService } from "../../../modules/admin/services/contracts";
-import { AdminChallengeService } from "../../../modules/admin/services/implementations";
+import type { IAdminChallengeService } from "../../../features/admin/services/contracts/IAdminChallengeService";
+import type { IAnalyticsDataService } from "../../../features/admin/services/contracts/IAnalyticsDataService";
+import type { IAnnouncementService } from "../../../features/admin/services/contracts/IAnnouncementService";
+import { AdminChallengeService } from "../../../features/admin/services/implementations/AdminChallengeService";
+import { AnalyticsDataService } from "../../../features/admin/services/implementations/AnalyticsDataService";
+import { AnnouncementService } from "../../../features/admin/services/implementations/AnnouncementService";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -15,6 +19,18 @@ export const adminModule = new ContainerModule(
     options
       .bind<IAdminChallengeService>(TYPES.IAdminChallengeService)
       .to(AdminChallengeService)
+      .inSingletonScope();
+
+    // Analytics Data Service
+    options
+      .bind<IAnalyticsDataService>(TYPES.IAnalyticsDataService)
+      .to(AnalyticsDataService)
+      .inSingletonScope();
+
+    // Announcement Service
+    options
+      .bind<IAnnouncementService>(TYPES.IAnnouncementService)
+      .to(AnnouncementService)
       .inSingletonScope();
   }
 );

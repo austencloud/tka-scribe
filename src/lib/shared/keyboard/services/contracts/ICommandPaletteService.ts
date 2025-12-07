@@ -7,7 +7,7 @@
  * Domain: Keyboard Shortcuts - Command Palette
  */
 
-import type { CommandPaletteItem } from "../../domain";
+import type { CommandPaletteItem } from '../../domain/types/keyboard-types';
 
 export interface ICommandPaletteService {
   /**

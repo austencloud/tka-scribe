@@ -1,7 +1,8 @@
 <!-- SettingsSidebar.svelte - Improved contrast navigation sidebar -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   interface Tab {
@@ -28,8 +29,9 @@
   const isWide = $derived(sidebarWidth >= 250);
 
   // Smart navigation pattern selection based on tab count
-  const shouldUseDropdown = $derived(tabs.length > 5);
-  const _shouldUseIconAboveText = $derived(tabs.length <= 5);
+  // Show individual buttons for up to 8 tabs, dropdown only for 9+
+  const shouldUseDropdown = $derived(tabs.length > 8);
+  const _shouldUseIconAboveText = $derived(tabs.length <= 8);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -100,38 +102,41 @@
     width: var(
       --sidebar-width,
       clamp(180px, 12vw, 200px)
-    ); /* Reduced max from 250px to 200px for better desktop layout */
+    ); /* Reduced max from 252px to 200px for better desktop layout */
     max-width: 200px; /* Never exceed 200px */
     background: rgba(255, 255, 255, 0.08);
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     overflow-y: auto;
     container-type: inline-size;
+    display: flex;
+    flex-direction: column;
   }
 
   .settings-sidebar-nav {
-    padding: clamp(12px, 2vw, 8px);
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px; /* Increased gap for better visual rhythm */
+    flex: 1; /* Fill available vertical space */
+    justify-content: flex-start; /* Start from top, items will grow */
   }
 
   .settings-sidebar-item {
     display: flex;
     align-items: center;
-    gap: clamp(8px, 3cqi, 12px); /* Reduced gap for desktop compactness */
-    padding: clamp(10px, 5cqi, 14px); /* Reduced padding for better fit */
-    background: transparent;
-    border: 1.5px solid transparent;
-    border-radius: 10px; /* More rounded for modern feel */
-    color: rgba(255, 255, 255, 0.8);
+    gap: clamp(10px, 3cqi, 14px);
+    padding: 14px 16px; /* Consistent padding for predictable sizing */
+    min-height: 52px; /* WCAG AAA: 52px minimum, we use 52px for comfort */
+    flex: 1; /* Allow items to grow and fill space evenly */
+    max-height: 72px; /* Cap growth so items don't get too tall */
+    background: rgba(255, 255, 255, 0.06); /* Visible inactive background */
+    border: 1.5px solid rgba(255, 255, 255, 0.12); /* Visible border shows it's a button */
+    border-radius: 12px; /* Slightly more rounded */
+    color: rgba(255, 255, 255, 0.85); /* Slightly brighter text */
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
-    font-size: clamp(
-      13px,
-      5cqi,
-      15px
-    ); /* Reduced max from 20px to 15px for desktop */
+    font-size: clamp(13px, 4cqi, 15px);
     font-weight: 500;
     position: relative;
     overflow: hidden;
@@ -143,11 +148,8 @@
     .settings-sidebar-item {
       justify-content: center;
       gap: 0;
-      padding: clamp(
-        14px,
-        2vw,
-        20px
-      ); /* Slightly larger padding for icon-only */
+      padding: 16px; /* Maintain touch target size */
+      min-height: 52px; /* Slightly taller for icon-only */
     }
 
     .sidebar-label {
@@ -155,14 +157,19 @@
     }
 
     .sidebar-icon {
-      font-size: 20px; /* Larger icons when labels are hidden */
+      font-size: 24px; /* Larger icons when labels are hidden */
+    }
+
+    /* Hide chevron in icon-only mode */
+    .settings-sidebar-item::after {
+      display: none;
     }
   }
 
   @container (min-width: 161px) {
     /* Show labels when there's enough space */
     .settings-sidebar-item {
-      gap: clamp(8px, 1vw, 16px);
+      gap: clamp(10px, 2cqi, 14px);
     }
 
     .sidebar-label {
@@ -171,14 +178,15 @@
   }
 
   .settings-sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
     color: #ffffff;
-    transform: scale(1.02); /* Subtle scale */
+    transform: translateX(3px); /* Slide right hint - "go here" */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .settings-sidebar-item:active {
-    transform: scale(0.98); /* Press feedback */
+    transform: translateX(1px) scale(0.98); /* Press feedback */
   }
 
   .settings-sidebar-item.active {
@@ -195,19 +203,42 @@
   }
 
   .sidebar-icon {
-    font-size: 18px; /* Reduced from 20px for better desktop proportion */
-    width: 20px;
+    font-size: 20px; /* Good size for touch target visibility */
+    width: 24px;
     text-align: center;
     transition: transform 0.2s ease;
     flex-shrink: 0; /* Prevent icon from shrinking */
   }
 
   .settings-sidebar-item:hover .sidebar-icon {
-    transform: scale(1.1); /* Icon emphasis on hover */
+    transform: scale(1.15); /* Icon emphasis on hover */
   }
 
   .sidebar-label {
     transition: opacity 0.2s ease;
+    flex: 1; /* Allow label to take remaining space */
+  }
+
+  /* Navigation indicator - shows these are clickable destinations */
+  .settings-sidebar-item::after {
+    content: "\f054"; /* FontAwesome chevron-right */
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: all 0.2s ease;
+    margin-left: auto;
+  }
+
+  .settings-sidebar-item:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .settings-sidebar-item.active::after {
+    opacity: 0; /* Hide chevron on active - you're already here */
   }
 
   /* Mobile responsive - Icon-above-text pattern (iOS/Android style) */
@@ -260,6 +291,20 @@
       text-overflow: ellipsis;
       max-width: 100%; /* Prevent overflow */
     }
+
+    /* Hide chevron on mobile - layout is horizontal, not navigational */
+    .settings-sidebar-item::after {
+      display: none;
+    }
+
+    /* Mobile hover: no translateX, just subtle lift */
+    .settings-sidebar-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .settings-sidebar-item:active {
+      transform: translateY(0) scale(0.97);
+    }
   }
 
   /* Narrow mobile screens - Maintain icon-above-text */
@@ -293,7 +338,7 @@
 
     .settings-sidebar-item {
       padding: 5px 3px;
-      min-height: 56px;
+      min-height: 52px;
       gap: 2px;
     }
 
@@ -317,7 +362,7 @@
     }
 
     .settings-sidebar-item {
-      min-height: 50px;
+      min-height: 52px;
       padding: 4px 4px;
       gap: 2px;
     }

@@ -4,8 +4,9 @@
  * Handles rendering of props in pictographs.
  */
 
-import type { GridMode, MotionData } from "$shared";
+import type { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 
 export interface IPropRenderingService {
   renderProp(

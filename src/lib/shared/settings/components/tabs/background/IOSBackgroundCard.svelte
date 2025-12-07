@@ -9,8 +9,10 @@
   - iOS semantic colors
 -->
 <script lang="ts">
-  import type { BackgroundType, IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../../inversify/di";
+  import { TYPES } from "../../../../inversify/types";
+  import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
   import { onMount } from "svelte";
   import type { BackgroundMetadata } from "./background-config";
 
@@ -29,8 +31,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -61,14 +63,21 @@
   aria-label={`Select ${background.name} background`}
 >
   <!-- Background preview with CSS animations -->
-  <div class="background-preview" data-background={background.type}></div>
+  <div
+    class="background-preview"
+    data-background={background.type}
+    style={background.color
+      ? `background: ${background.color};`
+      : background.colors
+        ? `background: linear-gradient(${background.direction || 135}deg, ${background.colors.join(", ")});`
+        : ""}
+  ></div>
 
   <!-- iOS glass morphism overlay -->
   <div class="card-overlay">
     <div class="card-icon">{@html background.icon}</div>
     <div class="card-info">
       <h4 class="card-name">{background.name}</h4>
-      <p class="card-description">{background.description}</p>
     </div>
 
     <!-- iOS-style selection indicator (small checkmark) -->
@@ -186,7 +195,7 @@
       0 2px 8px rgba(0, 0, 0, 0.6),
       0 0 4px rgba(0, 0, 0, 0.8);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-    font-size: clamp(24px, 7cqi, 48px);
+    font-size: clamp(24px, 7cqi, 52px);
     transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
@@ -209,18 +218,6 @@
     letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
     line-height: 22px; /* iOS line-height: 1.29411 ratio */
     margin: 0;
-    text-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.8),
-      0 0 3px rgba(0, 0, 0, 0.9);
-  }
-
-  .card-description {
-    margin: 0;
-    opacity: 0.95;
-    font-size: clamp(12px, 3cqi, 13px); /* iOS footnote */
-    font-weight: 400;
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 18px; /* iOS footnote line-height: 1.38461 ratio */
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.8),
       0 0 3px rgba(0, 0, 0, 0.9);
@@ -454,7 +451,7 @@
       200px 200px,
       180px 180px,
       220px 220px,
-      250px 250px,
+      252px 252px,
       190px 190px,
       210px 210px,
       170px 170px,
@@ -464,9 +461,9 @@
       40px 60px,
       130px 80px,
       70px 120px,
-      150px 30px,
-      90px 150px,
-      200px 50px,
+      152px 30px,
+      90px 152px,
+      200px 52px,
       160px 110px;
     background-repeat: repeat;
     animation: twinkle 3s ease-in-out infinite;
@@ -647,7 +644,7 @@
       140px 60px,
       100px 140px,
       180px 100px,
-      40px 150px;
+      40px 152px;
     animation: bubbles 12s ease-in-out infinite;
   }
 
@@ -733,10 +730,6 @@
       min-height: 60px;
       min-width: 60px;
       border-radius: 10px; /* iOS small corner radius */
-    }
-
-    .card-description {
-      display: none;
     }
 
     .card-name {

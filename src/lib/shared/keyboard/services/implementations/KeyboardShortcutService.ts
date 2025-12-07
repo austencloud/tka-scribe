@@ -8,15 +8,15 @@
  */
 
 import { inject, injectable } from "inversify";
-import type { IShortcutRegistryService } from "../contracts";
-import type { IKeyboardShortcutService } from "../contracts";
-import type {
-  ShortcutContext,
-  ShortcutRegistrationOptions,
-} from "../../domain";
+import type { IShortcutRegistryService } from '../contracts/IShortcutRegistryService';
+import type { IKeyboardShortcutService } from '../contracts/IKeyboardShortcutService';
+import type { ShortcutContext, ShortcutDefinition, ShortcutRegistrationOptions } from '../../domain/types/keyboard-types';
 import { Shortcut } from "../../domain/models/Shortcut";
 import { NormalizedKeyboardEvent } from "../../domain/models/KeyboardEvent";
-import { TYPES } from "$shared/inversify";
+import { TYPES } from '../../../inversify/bootstrap';
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("KeyboardShortcutService");
 
 @injectable()
 export class KeyboardShortcutService implements IKeyboardShortcutService {
@@ -46,7 +46,7 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     this.registry.clear();
     this.isInitialized = false;
 
-    console.log("⌨️ KeyboardShortcutService disposed");
+    debug.log("KeyboardShortcutService disposed");
   }
 
   register(options: ShortcutRegistrationOptions): () => void {
@@ -70,7 +70,7 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     }
 
     // Create shortcut with defaults
-    const shortcutDefinition: any = {
+    const shortcutDefinition: ShortcutDefinition = {
       id: options.id,
       label: options.label,
       key: options.key,
@@ -189,7 +189,7 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
 
     // Debug Backspace specifically
     if (normalized.key === "Backspace") {
-      console.log(`⌨️ Backspace pressed! Context: ${this.currentContext}`);
+      debug.log(`Backspace pressed! Context: ${this.currentContext}`);
     }
 
     // Find matching shortcuts
@@ -201,8 +201,8 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     );
 
     if (normalized.key === "Backspace") {
-      console.log(
-        `⌨️ Backspace matches found: ${matches.length}`,
+      debug.log(
+        `Backspace matches found: ${matches.length}`,
         matches.map((m) => m.id)
       );
     }
@@ -217,7 +217,7 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     if (normalized.shouldIgnore(shortcut.isSingleKey)) return;
 
     // Log for debugging
-    console.log(`⌨️ Executing shortcut: ${shortcut.id}`, {
+    debug.log(`Executing shortcut: ${shortcut.id}`, {
       key: normalized.key,
       modifiers: normalized.modifiers,
       context: this.currentContext,

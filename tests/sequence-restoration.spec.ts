@@ -18,7 +18,11 @@ import path from "path";
 // Test configuration
 const BASE_URL = "http://localhost:5173";
 const NUM_SEQUENCES_TO_TEST = 25;
-const TEST_RESULTS_DIR = path.join(process.cwd(), "test-results", "sequence-restoration");
+const TEST_RESULTS_DIR = path.join(
+  process.cwd(),
+  "test-results",
+  "sequence-restoration"
+);
 
 // Ensure test results directory exists
 if (!fs.existsSync(TEST_RESULTS_DIR)) {
@@ -37,7 +41,10 @@ async function waitForAppReady(page: any) {
 /**
  * Helper to create a sequence with random beats
  */
-async function createSequence(page: any, numBeats: number): Promise<{
+async function createSequence(
+  page: any,
+  numBeats: number
+): Promise<{
   sequenceName: string;
   shareUrl: string;
   sequenceData: any;
@@ -145,7 +152,10 @@ async function getSequenceDataFromPage(page: any): Promise<any> {
 /**
  * Compare two sequences deeply
  */
-function compareSequences(original: any, restored: any): {
+function compareSequences(
+  original: any,
+  restored: any
+): {
   matches: boolean;
   differences: string[];
 } {
@@ -168,19 +178,26 @@ function compareSequences(original: any, restored: any): {
   }
 
   // Compare each beat
-  const beatCount = Math.min(original.beats?.length || 0, restored.beats?.length || 0);
+  const beatCount = Math.min(
+    original.beats?.length || 0,
+    restored.beats?.length || 0
+  );
   for (let i = 0; i < beatCount; i++) {
     const origBeat = original.beats[i];
     const restBeat = restored.beats[i];
 
     // Compare beat number
     if (origBeat.beat !== restBeat.beat) {
-      differences.push(`Beat ${i + 1}: beat number ${origBeat.beat} vs ${restBeat.beat}`);
+      differences.push(
+        `Beat ${i + 1}: beat number ${origBeat.beat} vs ${restBeat.beat}`
+      );
     }
 
     // Compare letter
     if (origBeat.letter !== restBeat.letter) {
-      differences.push(`Beat ${i + 1}: letter ${origBeat.letter} vs ${restBeat.letter}`);
+      differences.push(
+        `Beat ${i + 1}: letter ${origBeat.letter} vs ${restBeat.letter}`
+      );
     }
 
     // Compare blue motion
@@ -235,7 +252,10 @@ function compareSequences(original: any, restored: any): {
 }
 
 test.describe("Sequence Restoration", () => {
-  test("should restore a simple 3-beat sequence from URL", async ({ page, context }) => {
+  test("should restore a simple 3-beat sequence from URL", async ({
+    page,
+    context,
+  }) => {
     // Create a sequence in first page
     await waitForAppReady(page);
 
@@ -320,7 +340,9 @@ test.describe("Sequence Restoration", () => {
     expect(testResult.passed).toBe(true);
   });
 
-  test.skip("should test 25 sequences for restoration accuracy", async ({ page }) => {
+  test.skip("should test 25 sequences for restoration accuracy", async ({
+    page,
+  }) => {
     // This is a more comprehensive test that generates and tests many sequences
     // Marked as skip for now until we implement the full workflow
 
@@ -371,7 +393,10 @@ test.describe("Sequence Restoration", () => {
     };
 
     // Write results to file
-    const resultsPath = path.join(TEST_RESULTS_DIR, `restoration-test-${Date.now()}.json`);
+    const resultsPath = path.join(
+      TEST_RESULTS_DIR,
+      `restoration-test-${Date.now()}.json`
+    );
     fs.writeFileSync(resultsPath, JSON.stringify(summary, null, 2));
 
     console.log("\n" + "=".repeat(80));

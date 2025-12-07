@@ -1,7 +1,0 @@
-
-> @tka/studio@2.0.0 build
-> svelte-kit sync && vite build
-
-[36mvite v6.4.1 [32mbuilding SSR bundle for production...[36m[39m
-transforming...
-[32m✓[39m 619 modules transformed.

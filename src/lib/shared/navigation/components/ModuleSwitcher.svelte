@@ -5,16 +5,15 @@
   Uses the shared Drawer component (vaul-svelte based) for consistent UX.
 -->
 <script lang="ts">
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { Drawer } from "$shared";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import ModuleList from "./ModuleList.svelte";
-  import InstallPromptButton from "./InstallPromptButton.svelte";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import type { ResponsiveSettings } from "../../device/domain/models/device-models";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
 
   let {
     // Current state
@@ -34,12 +33,18 @@
   }>();
 
   let hapticService: IHapticFeedbackService;
-  let fullscreenService: IMobileFullscreenService;
+  let deviceDetector: IDeviceDetector | null = null;
   let isOpen = $state(false);
 
-  // PWA install state
-  let showInstallOption = $state(false);
-  let canUseNativeInstall = $state(false);
+  // Responsive settings from DeviceDetector (same as PrimaryNavigation)
+  let responsiveSettings = $state<ResponsiveSettings | null>(null);
+
+  // Determine drawer placement based on navigation layout
+  // - Landscape mobile (side navigation) → drawer from left
+  // - Portrait mobile (bottom navigation) → drawer from bottom
+  let drawerPlacement = $derived<"left" | "bottom">(
+    responsiveSettings?.isLandscapeMobile ? "left" : "bottom"
+  );
 
   function closeDrawer() {
     hapticService?.trigger("selection");
@@ -55,50 +60,31 @@
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-    fullscreenService = resolve<IMobileFullscreenService>(
-      TYPES.IMobileFullscreenService
-    );
 
-    // Check if PWA install should be shown
+    // Resolve DeviceDetector service (same pattern as PrimaryNavigation)
+    let deviceCleanup: (() => void) | undefined;
     try {
-      const isPWA = fullscreenService?.isPWA?.() ?? false;
+      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
-      // Only show install option if not already installed as PWA
-      if (!isPWA) {
-        showInstallOption = true;
-        canUseNativeInstall = fullscreenService?.canInstallPWA?.() ?? false;
+      // Get initial responsive settings
+      responsiveSettings = deviceDetector.getResponsiveSettings();
 
-        // Listen for install prompt availability
-        const unsubscribe = fullscreenService?.onInstallPromptAvailable?.(
-          (available: boolean) => {
-            canUseNativeInstall = available;
-          }
-        );
-
-        // Listen for app installation
-        const handleAppInstalled = () => {
-          showInstallOption = false;
-        };
-        window.addEventListener("appinstalled", handleAppInstalled);
-
-        return () => {
-          unsubscribe?.();
-          window.removeEventListener("appinstalled", handleAppInstalled);
-        };
-      }
+      // Subscribe to device capability changes
+      deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {
+        responsiveSettings = deviceDetector!.getResponsiveSettings();
+      });
     } catch (error) {
-      console.warn("Failed to check PWA install status:", error);
+      console.warn("ModuleSwitcher: Failed to resolve DeviceDetector", error);
     }
 
-    return undefined;
+    // Return cleanup function
+    return () => {
+      deviceCleanup?.();
+    };
   });
 
   function handleModuleSelect(moduleId: ModuleId) {
     onModuleChange?.(moduleId);
-    closeDrawer();
-  }
-
-  function handleInstallClose() {
     closeDrawer();
   }
 
@@ -125,6 +111,7 @@
   ariaLabel="Module navigation menu"
   class="module-switcher-drawer"
   backdropClass="module-switcher-backdrop"
+  placement={drawerPlacement}
   showHandle={true}
   closeOnBackdrop={true}
 >
@@ -154,41 +141,44 @@
         {modules}
         onModuleSelect={handleModuleSelect}
       />
-
-      <!-- App Actions Section -->
-      <section class="menu-section">
-        <div class="menu-items">
-          {#if showInstallOption}
-            <InstallPromptButton
-              {canUseNativeInstall}
-              onInstall={handleInstallClose}
-            />
-          {/if}
-        </div>
-      </section>
     </div>
   </div>
 </Drawer>
 
 <style>
   /* ============================================================================
-     DRAWER STYLING
+     DRAWER STYLING - Refined Minimal Design
      ============================================================================ */
   :global(.module-switcher-drawer) {
-    --sheet-max-height: calc(100vh - 1px) !important;
-    max-height: calc(100vh - 1px) !important;
-    height: calc(100vh - 1px) !important;
-    /* Don't override --sheet-width, use default min(720px, 100%) for centered drawer */
-    --sheet-bg: rgba(10, 10, 15, 0.98);
-    --sheet-filter: blur(40px) saturate(180%);
-    --sheet-border: 1px solid rgba(255, 255, 255, 0.15);
-    --sheet-radius-large: 24px;
+    /* Drawer fills viewport appropriately based on placement */
+    --sheet-bg: rgba(12, 12, 18, 0.96);
+    --sheet-filter: blur(24px) saturate(140%);
+    --sheet-border: 1px solid rgba(255, 255, 255, 0.08);
+    --sheet-radius-large: 20px;
     box-sizing: border-box !important;
   }
 
+  /* Bottom placement: Full width, full height for focused navigation */
+  :global(.module-switcher-drawer[data-placement="bottom"]) {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+  }
+
+  /* Left placement: Full height, partial width */
+  :global(.module-switcher-drawer[data-placement="left"]) {
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    width: 320px !important;
+    max-width: 85vw !important;
+  }
+
   :global(.module-switcher-backdrop) {
-    --sheet-backdrop-bg: rgba(0, 0, 0, 0.6);
-    --sheet-backdrop-filter: blur(8px);
+    --sheet-backdrop-bg: rgba(0, 0, 0, 0.4);
+    --sheet-backdrop-filter: blur(3px);
   }
 
   /* Sheet content - ensure proper z-index */
@@ -196,34 +186,55 @@
     z-index: 1100 !important;
   }
 
-  /* CRITICAL: Disable overflow on drawer-inner to allow swipe-to-dismiss */
+  /* Drawer inner fills available height */
   :global(.drawer-content.module-switcher-drawer .drawer-inner) {
-    overflow-y: visible !important;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 
   /* ============================================================================
-     CONTAINER
+     CONTAINER - Fills drawer height
      ============================================================================ */
   .module-switcher-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
-    max-height: 100%;
-    /* NO overflow: hidden - let child elements handle scrolling for drag gestures */
+    flex: 1;
+    min-height: 0;
   }
 
   /* ============================================================================
-     HEADER
+     HEADER - Refined Minimal
      ============================================================================ */
   .module-switcher-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    padding: 16px 24px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 16px 14px; /* Adjusted for larger close button */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
-    gap: 16px;
+    gap: 16px; /* More space between header content and close button */
+    position: relative;
+  }
+
+  /* Subtle gradient accent at top of header */
+  .module-switcher-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(99, 102, 241, 0.3),
+      rgba(139, 92, 246, 0.3),
+      transparent
+    );
   }
 
   .header-content {
@@ -232,75 +243,76 @@
   }
 
   .module-switcher-header h2 {
-    margin: 0 0 8px 0;
-    font-size: 22px;
+    margin: 0 0 4px 0;
+    font-size: 20px; /* Larger, more prominent on mobile */
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    letter-spacing: -0.02em;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: -0.01em;
   }
 
   .current-location {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 14px; /* Increased from 12px for better mobile readability */
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .module-name {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.75); /* Slightly more prominent */
   }
 
-  /* Close button */
+  /* Close button - accessible touch target (50px minimum) */
   .close-button {
-    width: 44px; /* iOS/Android minimum touch target */
-    height: 44px;
-    border-radius: 50%; /* Consistent circular style */
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    width: 52px; /* Increased from 36px for proper touch target */
+    height: 52px; /* Increased from 36px for proper touch target */
+    border-radius: 12px; /* Slightly larger to match new size */
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    transition: all 0.2s ease;
+    font-size: 16px; /* Slightly larger icon */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .close-button:active {
     transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   /* ============================================================================
-     CONTENT
+     CONTENT - Fill available space with generous padding
      ============================================================================ */
   .module-switcher-content {
-    flex: 1;
+    padding: 20px 20px 40px; /* More generous padding for modern spacious feel */
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 16px;
-    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 
     /* Smooth scrolling */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
 
-    /* Scrollbar styling */
+    /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
   }
 
   .module-switcher-content::-webkit-scrollbar {
-    width: 8px;
+    width: 4px;
   }
 
   .module-switcher-content::-webkit-scrollbar-track {
@@ -308,43 +320,53 @@
   }
 
   .module-switcher-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-  }
-
-  .module-switcher-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-  }
-
-  /* Menu sections */
-  .menu-section {
-    margin-bottom: 24px;
-  }
-
-  .menu-section:last-child {
-    margin-bottom: 0;
-  }
-
-  .menu-items {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
   }
 
   /* ============================================================================
      RESPONSIVE ADJUSTMENTS
      ============================================================================ */
-  @media (max-width: 500px) {
+
+  /* Landscape mobile - optimize for left drawer */
+  @media (max-height: 600px) and (orientation: landscape) {
     .module-switcher-header {
-      padding: 12px 20px;
+      padding: 12px 14px 10px;
     }
 
     .module-switcher-header h2 {
-      font-size: 20px;
+      font-size: 18px; /* Keep it readable in landscape */
+    }
+
+    .current-location {
+      font-size: 13px;
     }
 
     .module-switcher-content {
-      padding: 12px;
+      padding: 14px 16px 24px;
+    }
+
+    :global(.module-switcher-drawer[data-placement="left"]) {
+      width: 280px !important; /* Slightly narrower in landscape */
+    }
+  }
+
+  /* Portrait mobile - maintain readability */
+  @media (max-width: 500px) and (orientation: portrait) {
+    .module-switcher-header {
+      padding: 14px 14px 12px;
+    }
+
+    .module-switcher-header h2 {
+      font-size: 19px; /* Slightly smaller on very small screens */
+    }
+
+    .current-location {
+      font-size: 14px; /* Maintain readability */
+    }
+
+    .module-switcher-content {
+      padding: 16px 16px 32px; /* Maintain generous padding on mobile */
     }
   }
 

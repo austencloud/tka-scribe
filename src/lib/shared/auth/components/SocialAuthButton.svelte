@@ -6,8 +6,11 @@
    */
 
   import { goto } from "$app/navigation";
-  import { resolve, TYPES, type IDeviceDetector } from "$shared";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import type { ResponsiveSettings } from "../../device/domain/models/device-models";
   import {
     browserLocalPersistence,
     FacebookAuthProvider,
@@ -40,6 +43,7 @@
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
+  let hapticService: IHapticFeedbackService | undefined;
 
   // Reactive responsive settings from DeviceDetector
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
@@ -102,6 +106,9 @@
 
   // Initialize DeviceDetector service
   onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
@@ -133,6 +140,7 @@
   };
 
   async function handleLogin() {
+    hapticService?.trigger("selection");
     loading = true;
     error = null;
 
@@ -361,7 +369,7 @@
     cursor: pointer;
     border: none;
     width: 100%;
-    min-height: 44px; /* Accessibility: minimum touch target */
+    min-height: 52px; /* Accessibility: minimum touch target */
   }
 
   .social-auth-button:disabled {

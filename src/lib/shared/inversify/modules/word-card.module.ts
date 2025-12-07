@@ -1,17 +1,17 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { WordCardBatchProcessingService } from "../../../modules/word-card/services/implementations/WordCardBatchProcessingService";
-import { WordCardCacheService } from "../../../modules/word-card/services/implementations/WordCardCacheService";
-import { WordCardExportOrchestrator } from "../../../modules/word-card/services/implementations/WordCardExportOrchestrator";
-import { WordCardExportProgressTracker } from "../../../modules/word-card/services/implementations/WordCardExportProgressTracker";
-import { WordCardImageConversionService } from "../../../modules/word-card/services/implementations/WordCardImageConversionService";
-import { WordCardImageGenerationService } from "../../../modules/word-card/services/implementations/WordCardImageGenerationService";
-import { WordCardMetadataOverlayService } from "../../../modules/word-card/services/implementations/WordCardMetadataOverlayService";
-import { WordCardSVGCompositionService } from "../../../modules/word-card/services/implementations/WordCardSVGCompositionService";
+import { WordCardBatchProcessingService } from "../../../features/word-card/services/implementations/WordCardBatchProcessingService";
+import { WordCardCacheService } from "../../../features/word-card/services/implementations/WordCardCacheService";
+import { WordCardExportOrchestrator } from "../../../features/word-card/services/implementations/WordCardExportOrchestrator";
+import { WordCardExportProgressTracker } from "../../../features/word-card/services/implementations/WordCardExportProgressTracker";
+import { WordCardImageConversionService } from "../../../features/word-card/services/implementations/WordCardImageConversionService";
+import { WordCardImageGenerationService } from "../../../features/word-card/services/implementations/WordCardImageGenerationService";
+import { WordCardMetadataOverlayService } from "../../../features/word-card/services/implementations/WordCardMetadataOverlayService";
+import { WordCardSVGCompositionService } from "../../../features/word-card/services/implementations/WordCardSVGCompositionService";
 import { TYPES } from "../types";
 
 export const wordCardModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === WORD CARD SERVICES ===
     options
       .bind(TYPES.IWordCardImageGenerationService)

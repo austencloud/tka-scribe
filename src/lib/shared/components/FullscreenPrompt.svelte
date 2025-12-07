@@ -12,7 +12,8 @@ the actual fullscreen state rather than inferring from viewport size.
 <script lang="ts">
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { IMobileFullscreenService } from "$lib/shared/mobile/services/contracts/IMobileFullscreenService";
-  import { resolve, TYPES } from "$shared";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   let showPrompt = $state(false);
@@ -38,36 +39,42 @@ the actual fullscreen state rather than inferring from viewport size.
   ];
 
   onMount(() => {
-    try {
-      // Resolve services
-      deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      fullscreenService = resolve<IMobileFullscreenService>(
-        TYPES.IMobileFullscreenService
-      );
+    let unsubscribe: (() => void) | undefined;
+    let handleResize: (() => void) | undefined;
 
-      // Pick a random message
-      message = messages[Math.floor(Math.random() * messages.length)] || "";
+    (async () => {
+      try {
+        // Resolve services
+        deviceDetector = await resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+        fullscreenService = await resolve<IMobileFullscreenService>(
+          TYPES.IMobileFullscreenService
+        );
 
-      // Initial check
-      checkShouldPrompt();
+        // Pick a random message
+        message = messages[Math.floor(Math.random() * messages.length)] || "";
 
-      // Listen for fullscreen state changes
-      const unsubscribe = fullscreenService?.onFullscreenChange(() => {
+        // Initial check
         checkShouldPrompt();
-      });
 
-      // Re-check on resize (device orientation change)
-      const handleResize = () => checkShouldPrompt();
-      window.addEventListener("resize", handleResize);
+        // Listen for fullscreen state changes
+        unsubscribe = fullscreenService?.onFullscreenChange(() => {
+          checkShouldPrompt();
+        });
 
-      return () => {
-        unsubscribe?.();
+        // Re-check on resize (device orientation change)
+        handleResize = () => checkShouldPrompt();
+        window.addEventListener("resize", handleResize);
+      } catch (error) {
+        console.error("Failed to initialize FullscreenPrompt:", error);
+      }
+    })();
+
+    return () => {
+      unsubscribe?.();
+      if (handleResize) {
         window.removeEventListener("resize", handleResize);
-      };
-    } catch (error) {
-      console.error("Failed to initialize FullscreenPrompt:", error);
-      return undefined;
-    }
+      }
+    };
   });
 
   function checkShouldPrompt() {

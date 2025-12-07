@@ -5,7 +5,7 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { ILetterClassificationService } from "../contracts/ILetterClassificationService";
 
 @injectable()

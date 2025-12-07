@@ -6,17 +6,14 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import {
-  GridLocation,
-  GridMode,
-  MotionType,
-  Letter,
-  type PictographData,
-  type MotionData,
-} from "$shared";
-import { DashLocationCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations/DashLocationCalculator";
-import { DirectionalTupleCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations/DirectionalTupleProcessor";
-import { ArrowQuadrantCalculator } from "$shared/pictograph/arrow/orchestration/services/implementations/ArrowQuadrantCalculator";
+import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { DashLocationCalculator } from "$lib/shared/pictograph/arrow/positioning/calculation/services/implementations/DashLocationCalculator";
+import { DirectionalTupleCalculator } from "$lib/shared/pictograph/arrow/positioning/calculation/services/implementations/DirectionalTupleProcessor";
+import { ArrowQuadrantCalculator } from "$lib/shared/pictograph/arrow/orchestration/services/implementations/ArrowQuadrantCalculator";
 
 // Test data: 4 dash arrows from the sequence Σ-YΣ-YΣ-YΣ-Y
 const dashMotions = [

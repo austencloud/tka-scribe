@@ -11,7 +11,8 @@
   - Respects dismissal timing (7/30/90 days)
 -->
 <script lang="ts">
-  import { resolve, TYPES } from "$shared";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
   import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";
@@ -194,8 +195,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 10px;
     background: linear-gradient(
       135deg,
@@ -272,8 +275,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
@@ -310,9 +315,12 @@
       padding: 12px 16px;
     }
 
+    /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 32px;
-      height: 32px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 16px;
     }
 
@@ -325,11 +333,14 @@
       padding: 7px 14px;
       font-size: 12px;
       gap: 5px;
+      min-height: 52px;
     }
 
     .dismiss-btn {
-      width: 30px;
-      height: 30px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 13px;
     }
   }
@@ -344,9 +355,12 @@
       gap: 12px;
     }
 
+    /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 28px;
-      height: 28px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
       font-size: 14px;
     }
 
@@ -358,6 +372,7 @@
     .learn-btn {
       padding: 6px 12px;
       font-size: 11px;
+      min-height: 52px;
     }
 
     .install-btn span,
@@ -366,8 +381,10 @@
     }
 
     .dismiss-btn {
-      width: 28px;
-      height: 28px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 </style>

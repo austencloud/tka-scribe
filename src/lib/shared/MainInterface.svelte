@@ -7,7 +7,7 @@
    * Delegates all business logic to specialized managers.
    */
   import { onMount } from "svelte";
-  import { getActiveTab } from "./application/state/app-state.svelte";
+  import { getActiveTab } from "./application/state/ui/ui-state.svelte";
   // import { handleHMRInit } from "./hmr-helper"; // No longer needed
   import {
     layoutState,
@@ -34,7 +34,6 @@
 
   // Layout components
   import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
-  import ModuleSwitcher from "./navigation/components/ModuleSwitcher.svelte";
   import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
@@ -42,25 +41,28 @@
   import SpotlightRouter from "./spotlight/SpotlightRouter.svelte";
   import { desktopSidebarState } from "./layout/desktop-sidebar-state.svelte";
   // Keyboard shortcuts
-  import {
-    KeyboardShortcutCoordinator,
-    CommandPalette,
-    ShortcutsHelp,
-  } from "./keyboard/components";
-  import {
-    resolve,
-    TYPES,
-    type IDeviceDetector,
-    type IViewportService,
-  } from "$shared";
+
+  import type { IDeepLinkService } from "./navigation/services/contracts/IDeepLinkService";
   import { useDesktopSidebarVisibility } from "./navigation/services/desktop-sidebar-visibility.svelte";
-  import { explorerScrollState } from "../modules/explore/shared/state/ExplorerScrollState.svelte";
-  import { initializeDeepLinks } from "./navigation/utils/deep-link-init";
+  import { discoverScrollState } from "../features/discover/shared/state/DiscoverScrollState.svelte";
+  import type { IViewportService } from "./device/services/contracts/IViewportService";
+  import { resolve } from "./inversify/di";
+  import { TYPES } from "./inversify/types";
+  import type { IDeviceDetector } from "./device/services/contracts/IDeviceDetector";
+  import type { ModuleId } from "./navigation/domain/types";
+  import { navigationState } from "./navigation/state/navigation-state.svelte";
+  import { hasOpenDrawers } from "./foundation/ui/drawer/DrawerStack";
+  import { keyboardShortcutState } from "./keyboard/state/keyboard-shortcut-state.svelte";
+  import CommandPalette from "./keyboard/components/CommandPalette.svelte";
+  import ShortcutsHelp from "./keyboard/components/ShortcutsHelp.svelte";
+  import KeyboardShortcutCoordinator from "./keyboard/coordinators/KeyboardShortcutCoordinator.svelte";
+
+  // Debug tools
+  import RoleSwitcherDebugPanel from "./debug/components/RoleSwitcherDebugPanel.svelte";
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
   const isModuleLoading = $derived(activeModule === null);
-  const isAboutActive = $derived(activeModule === "about");
 
   // Desktop sidebar visibility management
   let desktopSidebarVisibility: ReturnType<
@@ -70,7 +72,7 @@
 
   // Primary navigation visibility - only hide in Explorer module during scroll
   const isPrimaryNavVisible = $derived(
-    currentModule() === "explore" ? explorerScrollState.isUIVisible : true
+    currentModule() === "discover" ? discoverScrollState.isUIVisible : true
   );
 
   // Sync state to coordinators
@@ -81,15 +83,61 @@
 
   // Handle reveal navigation from peek indicator
   function handleRevealNav() {
-    explorerScrollState.forceShowUI();
+    discoverScrollState.forceShowUI();
   }
+
+  function isTypingTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+    const tag = target.tagName.toLowerCase();
+    return (
+      tag === "input" ||
+      tag === "textarea" ||
+      tag === "select" ||
+      target.isContentEditable ||
+      target.getAttribute("role") === "textbox"
+    );
+  }
+
+  function shouldDeferEscapeNavigation(): boolean {
+    if (keyboardShortcutState.showCommandPalette) return true;
+    if (keyboardShortcutState.showHelp) return true;
+    if (hasOpenDrawers()) return true;
+    return false;
+  }
+
+  const handleGlobalEscape = (event: KeyboardEvent) => {
+    if (event.key !== "Escape") return;
+    if (isTypingTarget(event.target)) return;
+    if (shouldDeferEscapeNavigation()) return;
+
+    const currentModuleId = navigationState.currentModule;
+    if (currentModuleId === "dashboard") return;
+
+    event.preventDefault();
+
+    if (currentModuleId === "settings") {
+      const previousModule =
+        navigationState.previousModule ||
+        navigationCoordinator.previousModuleBeforeSettings ||
+        "dashboard";
+      void handleModuleChange(previousModule as ModuleId);
+      return;
+    }
+
+    void handleModuleChange("dashboard");
+  };
 
   onMount(() => {
     if (typeof window === "undefined") return;
     // handleHMRInit(); // Disabled - causing HMR verification loops
 
     // Initialize deep linking for shareable sequence URLs
-    initializeDeepLinks();
+    try {
+      const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+      deepLinkService.initialize();
+    } catch (error) {
+      console.warn("Failed to initialize deep link service:", error);
+    }
 
     // Initialize desktop sidebar visibility
     try {
@@ -108,8 +156,10 @@
 
     // No longer auto-opening info page - users go straight into Create module
     // Info page is now an info/resources page accessible via the info button
+    window.addEventListener("keydown", handleGlobalEscape, true);
 
     return () => {
+      window.removeEventListener("keydown", handleGlobalEscape, true);
       desktopSidebarVisibility?.cleanup();
     };
   });
@@ -119,17 +169,8 @@
   class="main-interface"
   class:nav-landscape={layoutState.isPrimaryNavLandscape}
   class:has-desktop-sidebar={showDesktopSidebar}
-  class:about-active={isAboutActive}
   style="--primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
 >
-  <!-- Module Switcher -->
-  <ModuleSwitcher
-    currentModule={currentModule()}
-    currentModuleName={currentModuleName()}
-    modules={moduleDefinitions}
-    onModuleChange={handleModuleChange}
-  />
-
   <!-- Desktop Navigation Sidebar (only on desktop in side-by-side layout) -->
   {#if showDesktopSidebar}
     <DesktopNavigationSidebar
@@ -141,48 +182,64 @@
     />
   {/if}
 
-  <!-- Main Content Area -->
-  <main
-    class="content-area"
-    class:about-active={isAboutActive}
-    class:has-primary-nav={moduleHasPrimaryNav(currentModule()) &&
-      !showDesktopSidebar}
-    class:nav-hidden={!isPrimaryNavVisible}
-    class:nav-landscape={layoutState.isPrimaryNavLandscape}
-  >
-    <ModuleRenderer
-      {activeModule}
-      {isModuleLoading}
-      onTabAccessibilityChange={setTabAccessibility}
-      onCurrentWordChange={setCurrentWord}
-      onLearnHeaderChange={setLearnHeader}
-    />
-  </main>
+  <!-- Content + Navigation Wrapper (flex layout) -->
+  <div class="content-wrapper">
+    <!-- Main Content Area -->
+    <main
+      class="content-area"
+      class:nav-hidden={!isPrimaryNavVisible}
+      class:nav-landscape={layoutState.isPrimaryNavLandscape}
+    >
+      <ModuleRenderer
+        {activeModule}
+        {isModuleLoading}
+        onTabAccessibilityChange={setTabAccessibility}
+        onCurrentWordChange={setCurrentWord}
+        onLearnHeaderChange={setLearnHeader}
+      />
+    </main>
 
-  <!-- Primary Navigation (conditionally rendered) -->
-  {#if moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
-    <PrimaryNavigation
-      sections={moduleSections()}
-      currentSection={currentSection()}
-      onSectionChange={handleSectionChange}
-      onModuleSwitcherTap={() => {
-        window.dispatchEvent(new CustomEvent("module-switcher-toggle"));
-      }}
-      onLayoutChange={setPrimaryNavLandscape}
-      onHeightChange={setPrimaryNavHeight}
-      isUIVisible={isPrimaryNavVisible}
-      onRevealNav={handleRevealNav}
-    />
-  {/if}
+    <!-- Primary Navigation (conditionally rendered) -->
+    {#if moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
+      <PrimaryNavigation
+        sections={moduleSections()}
+        currentSection={currentSection()}
+        onSectionChange={handleSectionChange}
+        onModuleSwitcherTap={() => {
+          // Navigate to Dashboard with "pull out" view transition
+          const doc = document as any;
+          if (typeof doc.startViewTransition === "function") {
+            // Set direction for CSS to use reverse animation
+            document.documentElement.classList.add("back-transition");
+
+            const transition = doc.startViewTransition(async () => {
+              await handleModuleChange("dashboard");
+            });
+
+            transition.finished.finally(() => {
+              document.documentElement.classList.remove("back-transition");
+            });
+          } else {
+            handleModuleChange("dashboard");
+          }
+        }}
+        onLayoutChange={setPrimaryNavLandscape}
+        onHeightChange={setPrimaryNavHeight}
+        isUIVisible={isPrimaryNavVisible}
+        onRevealNav={handleRevealNav}
+      />
+    {/if}
+  </div>
 
   <!-- Domain Managers -->
   <PWAInstallationManager />
   <SpotlightRouter />
-
   <!-- Keyboard Shortcuts -->
   <KeyboardShortcutCoordinator />
   <CommandPalette />
   <ShortcutsHelp />
+  <!-- Debug Tools -->
+  <RoleSwitcherDebugPanel />
 </div>
 
 <style>
@@ -199,17 +256,19 @@
     transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .main-interface.about-active {
-    overflow: visible !important;
-    height: auto !important;
-    min-height: 100vh !important;
-    min-height: var(--viewport-height, 100vh) !important;
-    min-height: 100dvh !important;
-  }
-
   /* Desktop sidebar support */
   .main-interface.has-desktop-sidebar {
     padding-left: var(--desktop-sidebar-width, 280px);
+  }
+
+  /* Content + Navigation Wrapper - flex container for content and nav */
+  .content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    min-height: 0;
   }
 
   .content-area {
@@ -221,19 +280,8 @@
     min-height: 0;
   }
 
-  .content-area.has-primary-nav {
-    padding-bottom: var(--primary-nav-height, 64px);
-    padding-left: 0;
-    transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Remove bottom padding when navigation is hidden to utilize the space */
-  .content-area.has-primary-nav.nav-hidden {
-    padding-bottom: 0;
-  }
-
-  .content-area.has-primary-nav.nav-landscape {
-    padding-bottom: 0 !important;
+  /* Landscape mode - add left padding for side navigation */
+  .content-area.nav-landscape {
     padding-left: 72px !important;
     padding-left: max(72px, env(safe-area-inset-left)) !important;
   }
@@ -241,10 +289,6 @@
   /* Reset padding when desktop sidebar is visible */
   .main-interface.has-desktop-sidebar .content-area {
     padding-left: 0 !important;
-  }
-
-  .content-area.about-active {
-    overflow: visible !important;
   }
 
   @media (prefers-reduced-motion: reduce) {

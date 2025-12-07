@@ -5,15 +5,18 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import type { CodexLetterMapping } from "$learn/codex";
-import type { ICodexLetterMappingRepo } from "$learn/codex/services/contracts";
-import type { CSVRow, MotionType, PictographData, Letter } from "$shared";
-import { GridMode, type ICSVPictographParser } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { CodexLetterMapping } from "../../../../../features/learn/codex/domain/models/codex-models";
+import type { ICodexLetterMappingRepo } from "../../../../../features/learn/codex/services/contracts/ICodexLetterMappingRepo";
+import type { MotionType } from "../../../shared/domain/enums/pictograph-enums";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
+import { TYPES } from "../../../../inversify/types";
 import { inject, injectable, optional } from "inversify";
-import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
-import type { ICSVLoader } from "../../../../foundation/services/contracts/data";
-import type { ILetterQueryHandler } from "../../../../foundation/services/contracts/data";
+import type { ParsedCsvRow } from "../../../../../features/create/generate/shared/domain/csv-handling/CsvModels";
+
+import type { Letter } from "../../../../foundation/domain/models/Letter";
+import type { CSVRow, ICSVPictographParser } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { ICSVLoader, ILetterQueryHandler } from "../../../../foundation/services/contracts/data/data-contracts";
 
 interface CsvParseError {
   error: string;
@@ -45,7 +48,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
     private csvLoader: ICSVLoader,
     @inject(TYPES.ICSVParser)
     private CSVParser: ICSVParser,
-    @inject(TYPES.ICSVPictographParserService)
+    @inject(TYPES.ICSVPictographParser)
     private csvPictographParser: ICSVPictographParser,
     // OPTIONAL: Only needed for Codex-specific methods (getPictographByLetter, getAllCodexPictographs)
     // NOT needed for getAllPictographVariations (used by Generate)
@@ -76,10 +79,10 @@ export class LetterQueryHandler implements ILetterQueryHandler {
 
       // Parse CSV data using shared service
       const diamondParseResult = this.CSVParser.parseCSV(
-        csvData.data?.diamondData || ""
+        csvData.data?.diamondData ?? ""
       );
       const boxParseResult = this.CSVParser.parseCSV(
-        csvData.data?.boxData || ""
+        csvData.data?.boxData ?? ""
       );
 
       // Only log significant parsing errors (not empty row issues)
@@ -241,7 +244,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
         gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
       const csvRows =
         this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
-      if (!csvRows || csvRows.length === 0) {
+      if (csvRows.length === 0) {
         console.error(`❌ No CSV data available for grid mode: ${gridMode}`);
         return [];
       }
@@ -254,9 +257,7 @@ export class LetterQueryHandler implements ILetterQueryHandler {
             row as unknown as CSVRow,
             actualGridMode
           );
-          if (pictograph) {
-            pictographs.push(pictograph);
-          }
+          pictographs.push(pictograph);
         } catch (error) {
           console.warn(
             `⚠️ Failed to convert CSV row ${i} (letter: ${row?.letter}):`,
@@ -350,9 +351,6 @@ export class LetterQueryHandler implements ILetterQueryHandler {
       gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
     const csvRows =
       this.parsedData[actualGridMode as Exclude<GridMode, GridMode.SKEWED>];
-    if (!csvRows) {
-      return null;
-    }
 
     // Handle the mismatch between JSON config and LetterMapping interface
     const mappingData = mapping as CodexLetterMapping & {
@@ -365,11 +363,11 @@ export class LetterQueryHandler implements ILetterQueryHandler {
         row.startPosition === mapping.startPosition &&
         row.endPosition === mapping.endPosition &&
         row.blueMotionType ===
-          (mappingData.blueMotion || mappingData.blueMotionType) &&
+          String(mappingData.blueMotion ?? mappingData.blueMotionType) &&
         row.redMotionType ===
-          (mappingData.redMotion || mappingData.redMotionType)
+          String(mappingData.redMotion ?? mappingData.redMotionType)
     );
 
-    return matchingRow || null;
+    return matchingRow ?? null;
   }
 }

@@ -1,0 +1,295 @@
+<!--
+CodexControlPanel - Modern control panel for codex operations
+
+Provides sleek control buttons and orientation selector for
+rotating, mirroring, and color-swapping pictographs.
+-->
+<script lang="ts">
+import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
+  import { onMount } from "svelte";
+
+  // Props
+  let {
+    onRotate,
+    onMirror,
+    onColorSwap,
+    onOrientationChange,
+    currentOrientation = "Diamond",
+  } = $props<{
+    onRotate?: () => void;
+    onMirror?: () => void;
+    onColorSwap?: () => void;
+    onOrientationChange?: (orientation: string) => void;
+    currentOrientation?: string;
+  }>();
+
+  // Services
+  let hapticService: IHapticFeedbackService;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  // Available orientations (matches desktop options)
+  const orientations = ["Diamond", "Box", "Skewed"];
+
+  // Handle orientation change
+  function handleOrientationChange(event: Event) {
+    hapticService?.trigger("selection");
+    const target = event.target as HTMLSelectElement;
+    onOrientationChange?.(target.value);
+  }
+
+  // Button click handlers
+  function handleRotateClick() {
+    hapticService?.trigger("selection");
+    onRotate?.();
+  }
+
+  function handleMirrorClick() {
+    hapticService?.trigger("selection");
+    onMirror?.();
+  }
+
+  function handleColorSwapClick() {
+    hapticService?.trigger("selection");
+    onColorSwap?.();
+  }
+</script>
+
+<div class="codex-control-panel">
+  <!-- Row with orientation and controls -->
+  <div class="control-row">
+    <!-- Orientation Selector -->
+    <div class="orientation-wrapper">
+      <select
+        id="orientation-selector"
+        class="orientation-selector"
+        value={currentOrientation}
+        onchange={handleOrientationChange}
+      >
+        {#each orientations as orientation}
+          <option value={orientation}>{orientation}</option>
+        {/each}
+      </select>
+      <span class="select-icon">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="control-buttons">
+      <button
+        class="control-button"
+        onclick={handleRotateClick}
+        title="Rotate 90° clockwise"
+        aria-label="Rotate pictographs"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 2v6h-6"/>
+          <path d="M3 12a9 9 0 0115-6.7L21 8"/>
+          <path d="M3 22v-6h6"/>
+          <path d="M21 12a9 9 0 01-15 6.7L3 16"/>
+        </svg>
+      </button>
+
+      <button
+        class="control-button"
+        onclick={handleMirrorClick}
+        title="Mirror horizontally"
+        aria-label="Mirror pictographs"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 00-2 2v14a2 2 0 002 2h3"/>
+          <path d="M16 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3"/>
+          <path d="M12 20v2"/>
+          <path d="M12 14v2"/>
+          <path d="M12 8v2"/>
+          <path d="M12 2v2"/>
+        </svg>
+      </button>
+
+      <button
+        class="control-button swap-button"
+        onclick={handleColorSwapClick}
+        title="Swap colors"
+        aria-label="Swap colors"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="8" r="5" fill="rgba(239, 68, 68, 0.6)"/>
+          <circle cx="16" cy="16" r="5" fill="rgba(59, 130, 246, 0.6)"/>
+          <path d="M13 7l3 3-3 3"/>
+          <path d="M11 17l-3-3 3-3"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .codex-control-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    margin-bottom: 12px;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* Orientation selector wrapper */
+  .orientation-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 140px;
+  }
+
+  .orientation-selector {
+    width: 100%;
+    padding: 10px 32px 10px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: all 200ms ease;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .orientation-selector:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .orientation-selector:focus {
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  .orientation-selector option {
+    background: #1e1e23;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 8px;
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Control buttons */
+  .control-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .control-button {
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 200ms ease;
+  }
+
+  .control-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  .control-button:active {
+    transform: translateY(0) scale(0.96);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .control-button:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline-offset: 2px;
+  }
+
+  /* Swap button with colored circles */
+  .swap-button svg circle:first-of-type {
+    transition: fill 200ms ease;
+  }
+
+  .swap-button svg circle:last-of-type {
+    transition: fill 200ms ease;
+  }
+
+  .swap-button:hover svg circle:first-of-type {
+    fill: rgba(59, 130, 246, 0.7);
+  }
+
+  .swap-button:hover svg circle:last-of-type {
+    fill: rgba(239, 68, 68, 0.7);
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .codex-control-panel {
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+
+    .orientation-wrapper {
+      max-width: 120px;
+    }
+
+    .orientation-selector {
+      padding: 8px 28px 8px 12px;
+      font-size: 0.8125rem;
+      border-radius: 8px;
+    }
+
+    .control-button {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+    }
+
+    .control-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .control-button,
+    .orientation-selector {
+      transition: none;
+    }
+  }
+</style>

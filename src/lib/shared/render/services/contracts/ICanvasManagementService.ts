@@ -1,4 +1,5 @@
-import type { BeatData, SequenceData } from "$shared";
+import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 
 /**
  * Canvas management and optimization service

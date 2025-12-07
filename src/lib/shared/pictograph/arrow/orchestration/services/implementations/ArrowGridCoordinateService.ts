@@ -5,11 +5,13 @@
  * Provides arrow-specific coordinate functionality using the authoritative grid data.
  */
 
-import { GridLocation, GridMode, type MotionData } from "$shared";
+import { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import { GridMode } from "../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import { Point } from "fabric";
 import { injectable } from "inversify";
 import { createGridPointData } from "../../../../grid/utils/grid-coordinate-utils";
-import type { IArrowGridCoordinateService } from "../contracts";
+import type { IArrowGridCoordinateService } from '../contracts/IArrowGridCoordinateService';
 
 @injectable()
 export class ArrowGridCoordinateService implements IArrowGridCoordinateService {

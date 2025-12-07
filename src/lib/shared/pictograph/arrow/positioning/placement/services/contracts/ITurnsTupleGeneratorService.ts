@@ -4,7 +4,7 @@
  * Generates turns tuple strings for looking up special placement data.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 
 export interface ITurnsTupleGeneratorService {
   /**

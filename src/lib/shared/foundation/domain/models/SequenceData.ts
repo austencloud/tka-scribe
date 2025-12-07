@@ -1,23 +1,30 @@
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 /**
  * Sequence Domain Model
  *
  * Immutable data structure for complete kinetic sequences.
  * Based on the modern desktop app's SequenceData but adapted for TypeScript.
+ *
+ * MIGRATION NOTE: Start position now uses StartPositionData type instead of BeatData.
+ * The beats array should only contain actual beats (beatNumber >= 1), never start position.
  */
 
-import type { BeatData } from "$create/shared/workspace-panel";
-import type { GridMode, GridPositionGroup, PropType } from "$shared";
+import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
+import type { GridPositionGroup } from "../../../pictograph/grid/domain/enums/grid-enums";
+import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
 
 export interface SequenceData {
   readonly id: string;
   readonly name: string;
   readonly word: string;
-  readonly beats: readonly BeatData[];
+  readonly beats: readonly BeatData[]; // Only actual beats (beatNumber >= 1), never start position
 
-  // Starting position clarification:
-  readonly startingPositionBeat?: BeatData; // The actual visual beat (beat 0)
-  readonly startingPositionGroup?: GridPositionGroup; // Position group: "alpha", "beta", "gamma"
-  readonly startPosition?: BeatData; // Start position beat data
+  // Start position storage (CONSOLIDATED):
+  // MIGRATION: Prefer startPosition field. startingPositionBeat is legacy for backward compatibility.
+  readonly startPosition?: StartPositionData | BeatData; // Primary field: use StartPositionData going forward
+  readonly startingPositionBeat?: StartPositionData | BeatData; // Legacy field: kept for backward compatibility
+  readonly startingPositionGroup?: GridPositionGroup; // Position group metadata: "alpha", "beta", "gamma"
 
   readonly thumbnails: readonly string[];
   readonly sequenceLength?: number;
@@ -26,11 +33,21 @@ export interface SequenceData {
   readonly dateAdded?: Date;
   readonly gridMode?: GridMode;
   readonly propType?: PropType;
+  /**
+   * @deprecated Use ICollectionService.isFavorite(sequenceId) instead.
+   * Favorites are now stored as collection membership, not as a boolean flag.
+   * This field is kept for backwards compatibility during migration.
+   */
   readonly isFavorite: boolean;
   readonly isCircular: boolean;
   readonly difficultyLevel?: string;
   readonly tags: readonly string[];
   readonly metadata: Record<string, unknown>;
+
+  // Owner info (populated for public sequences)
+  readonly ownerId?: string;
+  readonly ownerDisplayName?: string;
+  readonly ownerAvatarUrl?: string;
 
   // TODO: Add these fields when video upload infrastructure is ready:
   // readonly performanceVideoUrl?: string;        // Firebase Storage URL to user's performance video
@@ -72,6 +89,14 @@ export function createSequenceData(
     }),
     ...(data.difficultyLevel !== undefined && {
       difficultyLevel: data.difficultyLevel,
+    }),
+    // Owner info
+    ...(data.ownerId !== undefined && { ownerId: data.ownerId }),
+    ...(data.ownerDisplayName !== undefined && {
+      ownerDisplayName: data.ownerDisplayName,
+    }),
+    ...(data.ownerAvatarUrl !== undefined && {
+      ownerAvatarUrl: data.ownerAvatarUrl,
     }),
   };
   return result;
@@ -115,6 +140,14 @@ export function removeBeatFromSequence(
 // ============================================================================
 
 /**
+ * Prop dimensions for rendering
+ */
+export interface PropDimensions {
+  width: number;
+  height: number;
+}
+
+/**
  * Essential metadata about a sequence
  * Subset of SequenceData containing the most commonly needed fields
  */
@@ -122,4 +155,11 @@ export interface SequenceMetadata {
   word: string;
   author: string;
   totalBeats: number;
+  // Optional animation-related properties
+  propType?: PropType; // Legacy - kept for backward compatibility
+  bluePropType?: PropType; // Per-color prop type for blue motions
+  redPropType?: PropType; // Per-color prop type for red motions
+  gridMode?: GridMode;
+  bluePropDimensions?: PropDimensions;
+  redPropDimensions?: PropDimensions;
 }

@@ -4,6 +4,9 @@ export type Dimensions = {
   height: number;
 };
 
+// Re-export QualitySettings from models for convenient access
+export type { QualitySettings } from "../models/background-models";
+
 export type PerformanceMetrics = {
   fps: number;
   warnings: string[];

@@ -1,0 +1,324 @@
+<!--
+  AnnouncementList - Display List of Announcements
+
+  Shows all announcements with edit/delete actions.
+-->
+<script lang="ts">
+  import type { Announcement } from "../../domain/models/announcement-models";
+
+  interface Props {
+    announcements: Announcement[];
+    onEdit: (announcement: Announcement) => void;
+    onDelete: (id: string) => void;
+  }
+
+  let { announcements, onEdit, onDelete }: Props = $props();
+
+  function getSeverityColor(severity: Announcement["severity"]): string {
+    switch (severity) {
+      case "critical":
+        return "#ef4444";
+      case "warning":
+        return "#f59e0b";
+      case "info":
+        return "#6366f1";
+    }
+  }
+
+  function formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+</script>
+
+<div class="announcement-list">
+  {#if announcements.length === 0}
+    <div class="empty-state">
+      <i class="fas fa-bullhorn"></i>
+      <p>No announcements yet</p>
+      <span>Create your first announcement to get started</span>
+    </div>
+  {:else}
+    <div class="announcements-grid">
+      {#each announcements as announcement (announcement.id)}
+        <div class="announcement-card">
+          <div class="card-header">
+            <div class="header-left">
+              <span
+                class="severity-badge"
+                style="background: {getSeverityColor(announcement.severity)};"
+              >
+                {announcement.severity}
+              </span>
+              {#if announcement.showAsModal}
+                <span class="modal-badge">
+                  <i class="fas fa-window-restore"></i>
+                  Modal
+                </span>
+              {/if}
+            </div>
+            <div class="header-actions">
+              <button
+                class="action-button edit"
+                onclick={() => onEdit(announcement)}
+                aria-label="Edit announcement"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              <button
+                class="action-button delete"
+                onclick={() => onDelete(announcement.id)}
+                aria-label="Delete announcement"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <h3 class="announcement-title">{announcement.title}</h3>
+            <p class="announcement-message">{announcement.message}</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="footer-info">
+              <span class="target-audience">
+                <i class="fas fa-users"></i>
+                {announcement.targetAudience}
+              </span>
+              <span class="created-date">
+                <i class="fas fa-calendar"></i>
+                {formatDate(announcement.createdAt)}
+              </span>
+            </div>
+            {#if announcement.expiresAt}
+              <span class="expires-date">
+                <i class="fas fa-clock"></i>
+                Expires {formatDate(announcement.expiresAt)}
+              </span>
+            {/if}
+          </div>
+        </div>
+      {/each}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .announcement-list {
+    width: 100%;
+  }
+
+  /* ============================================================================
+     EMPTY STATE
+     ============================================================================ */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 52px 24px;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+  }
+
+  .empty-state i {
+    font-size: 48px;
+    opacity: 0.5;
+  }
+
+  .empty-state p {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .empty-state span {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* ============================================================================
+     ANNOUNCEMENTS GRID
+     ============================================================================ */
+  .announcements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 16px;
+  }
+
+  /* ============================================================================
+     ANNOUNCEMENT CARD
+     ============================================================================ */
+  .announcement-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .announcement-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* ============================================================================
+     CARD HEADER
+     ============================================================================ */
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .severity-badge {
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .modal-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 6px;
+    color: #818cf8;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .action-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .action-button.delete:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+  }
+
+  .action-button.edit:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: #818cf8;
+  }
+
+  /* ============================================================================
+     CARD CONTENT
+     ============================================================================ */
+  .card-content {
+    flex: 1;
+  }
+
+  .announcement-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 8px 0;
+  }
+
+  .announcement-message {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  /* ============================================================================
+     CARD FOOTER
+     ============================================================================ */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .footer-info {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-info span,
+  .expires-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .footer-info i,
+  .expires-date i {
+    font-size: 11px;
+  }
+
+  .target-audience {
+    text-transform: capitalize;
+  }
+
+  .expires-date {
+    color: rgba(251, 191, 36, 0.8);
+  }
+
+  /* ============================================================================
+     RESPONSIVE
+     ============================================================================ */
+  @media (max-width: 768px) {
+    .announcements-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+</style>

@@ -5,31 +5,39 @@
   Displays user profile picture if authenticated.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { authStore } from "$shared/auth";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { onMount } from "svelte";
 
   let { navigationLayout = "top" } = $props<{
     navigationLayout?: "top" | "left";
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
 
-  // Initialize services (without onMount to avoid timing issues)
-  if (typeof window !== "undefined") {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-  }
+    try {
+      sheetRouterService = await resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
+    } catch {
+      // Service not available
+    }
+  });
 
   // Handle settings button click
   function handleSettingsClick() {
     hapticService?.trigger("selection");
     // Use route-based navigation
-    import("../utils/sheet-router").then(({ openSheet }) => {
-      openSheet("settings");
-    });
+    sheetRouterService?.openSheet("settings");
   }
 </script>
 
@@ -50,6 +58,8 @@
       src={authStore.user.photoURL}
       alt={authStore.user.displayName || "User"}
       class="user-avatar"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
   {:else if authStore.isAuthenticated && authStore.user}
     <div class="user-initial">
@@ -82,7 +92,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 48px;
+    min-width: 52px;
     height: 100%;
     padding: 0 var(--spacing-sm);
     background: rgba(100, 116, 139, 0.8);
@@ -95,8 +105,8 @@
   }
 
   .nav-action.layout-left {
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     flex-shrink: 0;
     padding: 0;
   }

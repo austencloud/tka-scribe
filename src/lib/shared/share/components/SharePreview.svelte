@@ -1,6 +1,6 @@
 <!-- SharePreview.svelte - Preview of the sequence image -->
 <script lang="ts">
-  import type { SequenceData } from "$shared";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 
   let {
     currentSequence,
@@ -94,7 +94,7 @@
 
   .placeholder-icon,
   .error-icon {
-    font-size: 48px;
+    font-size: 50px;
     opacity: 0.4;
     filter: grayscale(0.3);
   }
@@ -117,8 +117,8 @@
 
   /* Modern Loading Spinner */
   .loading-spinner {
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;

@@ -8,6 +8,7 @@
 import {
   GoogleAuthProvider,
   FacebookAuthProvider,
+  EmailAuthProvider,
   signInWithRedirect,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -17,10 +18,13 @@ import {
   browserLocalPersistence,
   sendEmailVerification,
   updateProfile,
+  linkWithRedirect,
+  linkWithCredential,
+  unlink,
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { injectable } from "inversify";
-import type { IAuthService } from "../contracts";
+import type { IAuthService } from "../contracts/IAuthService";
 
 @injectable()
 export class AuthService implements IAuthService {
@@ -39,9 +43,10 @@ export class AuthService implements IAuthService {
 
       console.log("🔐 [google] Redirecting to Google sign-in...");
       await signInWithRedirect(auth, provider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [google] Sign-in error:", error);
-      throw new Error(`Google sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Google sign-in failed: ${message}`);
     }
   }
 
@@ -56,9 +61,10 @@ export class AuthService implements IAuthService {
 
       console.log("🔐 [facebook] Redirecting to Facebook sign-in...");
       await signInWithRedirect(auth, provider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [facebook] Sign-in error:", error);
-      throw new Error(`Facebook sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Facebook sign-in failed: ${message}`);
     }
   }
 
@@ -81,9 +87,10 @@ export class AuthService implements IAuthService {
       );
 
       console.log("✅ [email] Sign-in successful:", userCredential.user.email);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [email] Sign-in error:", error);
-      throw new Error(`Email sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Email sign-in failed: ${message}`);
     }
   }
 
@@ -118,9 +125,10 @@ export class AuthService implements IAuthService {
         await sendEmailVerification(userCredential.user);
         console.log("✅ [email] Verification email sent");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [email] Sign-up error:", error);
-      throw new Error(`Email sign-up failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Email sign-up failed: ${message}`);
     }
   }
 
@@ -134,9 +142,10 @@ export class AuthService implements IAuthService {
     try {
       await firebaseSignOut(auth);
       console.log("✅ [auth] Sign-out successful");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [auth] Sign-out error:", error);
-      throw new Error(`Sign-out failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Sign-out failed: ${message}`);
     }
   }
 
@@ -149,7 +158,7 @@ export class AuthService implements IAuthService {
       // Try IndexedDB first (preferred)
       await setPersistence(auth, indexedDBLocalPersistence);
       console.log("✅ [auth] IndexedDB persistence set");
-    } catch (indexedDBError) {
+    } catch (_indexedDBError) {
       console.warn(
         "⚠️ [auth] IndexedDB persistence failed, falling back to localStorage"
       );
@@ -158,15 +167,227 @@ export class AuthService implements IAuthService {
         // Fallback to localStorage
         await setPersistence(auth, browserLocalPersistence);
         console.log("✅ [auth] localStorage persistence set");
-      } catch (localStorageError: any) {
+      } catch (localStorageError: unknown) {
         console.error(
           "❌ [auth] Failed to set persistence:",
           localStorageError
         );
+        const message = localStorageError instanceof Error ? localStorageError.message : "Unknown error";
         throw new Error(
-          `Failed to set persistence: ${localStorageError.message}`
+          `Failed to set persistence: ${message}`
         );
       }
     }
+  }
+
+  // ============================================================================
+  // ACCOUNT LINKING
+  // ============================================================================
+
+  async linkGoogleAccount(): Promise<void> {
+    console.log("🔗 [google] Starting account linking...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    // Check if Google is already linked
+    const isAlreadyLinked = currentUser.providerData.some(
+      (provider) => provider.providerId === "google.com"
+    );
+    if (isAlreadyLinked) {
+      throw new Error("Google account is already linked");
+    }
+
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.addScope("email");
+      provider.addScope("profile");
+
+      console.log("🔗 [google] Redirecting to Google for account linking...");
+      await linkWithRedirect(currentUser, provider);
+    } catch (error: unknown) {
+      console.error("❌ [google] Account linking error:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to link Google account: ${message}`);
+    }
+  }
+
+  async linkFacebookAccount(): Promise<void> {
+    console.log("🔗 [facebook] Starting account linking...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    // Check if Facebook is already linked
+    const isAlreadyLinked = currentUser.providerData.some(
+      (provider) => provider.providerId === "facebook.com"
+    );
+    if (isAlreadyLinked) {
+      throw new Error("Facebook account is already linked");
+    }
+
+    try {
+      const provider = new FacebookAuthProvider();
+      provider.addScope("email");
+      provider.addScope("public_profile");
+
+      console.log("🔗 [facebook] Redirecting to Facebook for account linking...");
+      await linkWithRedirect(currentUser, provider);
+    } catch (error: unknown) {
+      console.error("❌ [facebook] Account linking error:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to link Facebook account: ${message}`);
+    }
+  }
+
+  getLinkedProviders(): string[] {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return [];
+    }
+
+    return currentUser.providerData.map((provider) => provider.providerId);
+  }
+
+  async unlinkProvider(providerId: string): Promise<void> {
+    console.log(`🔗 [auth] Unlinking provider: ${providerId}...`);
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    // Check if provider is linked
+    const isLinked = currentUser.providerData.some(
+      (provider) => provider.providerId === providerId
+    );
+    if (!isLinked) {
+      throw new Error(`Provider ${providerId} is not linked to this account`);
+    }
+
+    // Prevent unlinking if it's the only auth method
+    if (currentUser.providerData.length <= 1) {
+      throw new Error("Cannot unlink the only authentication method");
+    }
+
+    try {
+      await unlink(currentUser, providerId);
+      console.log(`✅ [auth] Successfully unlinked ${providerId}`);
+    } catch (error: unknown) {
+      console.error(`❌ [auth] Failed to unlink ${providerId}:`, error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to unlink provider: ${message}`);
+    }
+  }
+
+  async linkEmailPassword(email: string, password: string): Promise<void> {
+    console.log("🔗 [email] Starting email/password linking...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    // Check if email/password is already linked
+    const isAlreadyLinked = currentUser.providerData.some(
+      (provider) => provider.providerId === "password"
+    );
+    if (isAlreadyLinked) {
+      throw new Error("Email/password is already linked to this account");
+    }
+
+    try {
+      // Create email/password credential
+      const credential = EmailAuthProvider.credential(email, password);
+
+      // Link the credential to the current user
+      await linkWithCredential(currentUser, credential);
+      console.log("✅ [email] Successfully linked email/password");
+
+      // Send verification email if the email is new
+      if (!currentUser.emailVerified) {
+        await sendEmailVerification(currentUser);
+        console.log("✅ [email] Verification email sent");
+      }
+    } catch (error: unknown) {
+      console.error("❌ [email] Failed to link email/password:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      // Handle specific Firebase errors
+      if (message.includes("email-already-in-use")) {
+        throw new Error(
+          "This email is already associated with another account"
+        );
+      } else if (message.includes("weak-password")) {
+        throw new Error("Password is too weak. Use at least 6 characters.");
+      } else if (message.includes("invalid-email")) {
+        throw new Error("Invalid email address");
+      } else {
+        throw new Error(`Failed to link email/password: ${message}`);
+      }
+    }
+  }
+
+  // ============================================================================
+  // EMAIL VERIFICATION
+  // ============================================================================
+
+  async resendVerificationEmail(): Promise<void> {
+    console.log("📧 [email] Resending verification email...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    if (currentUser.emailVerified) {
+      console.log("✅ [email] Email already verified");
+      return;
+    }
+
+    try {
+      await sendEmailVerification(currentUser);
+      console.log("✅ [email] Verification email resent successfully");
+    } catch (error: unknown) {
+      console.error("❌ [email] Failed to resend verification email:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      // Handle rate limiting
+      if (message.includes("too-many-requests")) {
+        throw new Error(
+          "Too many requests. Please wait a few minutes before trying again."
+        );
+      }
+
+      throw new Error(`Failed to resend verification email: ${message}`);
+    }
+  }
+
+  async reloadUser(): Promise<boolean> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    try {
+      await currentUser.reload();
+      return currentUser.emailVerified;
+    } catch (error: unknown) {
+      console.error("❌ [email] Failed to reload user:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to reload user: ${message}`);
+    }
+  }
+
+  isEmailVerified(): boolean {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return false;
+    }
+    return currentUser.emailVerified;
   }
 }

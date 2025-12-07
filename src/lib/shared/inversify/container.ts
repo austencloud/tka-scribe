@@ -1,4 +1,5 @@
 import { Container } from "inversify";
+import type { ContainerModule } from "inversify";
 
 // Export TYPES immediately to avoid circular dependency
 export { TYPES } from "./types";
@@ -17,6 +18,8 @@ let isHMRRecovering = false; // Track HMR recovery state
 
 // Track loaded modules to prevent duplicate loading
 const loadedModules = new Set<string>();
+// Track modules currently being loaded to prevent race conditions
+const pendingModules = new Map<string, Promise<void>>();
 let tier1Loaded = false;
 let tier2Loaded = false;
 let tier2Promise: Promise<void> | null = null;
@@ -31,17 +34,20 @@ if (import.meta.hot) {
     isHMRRecovering = true;
 
     // Save the list of loaded feature modules BEFORE clearing
+    // Tier 1 + Tier 2 modules are automatically reloaded, only save Tier 3 feature modules
     const featureModulesToRestore = Array.from(loadedModules).filter(
       (module) =>
         ![
+          // Tier 1: Core infrastructure
           "core",
           "navigation",
           "data",
           "keyboard",
+          "analytics",
+          // Tier 2: Shared services
           "render",
           "pictograph",
-          "animator",
-          "gamification",
+          "admin",
         ].includes(module)
     );
 
@@ -58,6 +64,7 @@ if (import.meta.hot) {
       tier2Loaded = false;
       tier2Promise = null;
       loadedModules.clear();
+      pendingModules.clear();
 
       // Rebuild the container
       initializeContainer()
@@ -105,11 +112,13 @@ if (import.meta.hot) {
     tier2Loaded = false;
     tier2Promise = null;
     loadedModules.clear();
+    pendingModules.clear();
   });
 }
 
-// DEPRECATED: Sync resolve function - use async resolve instead
-export function resolveSync<T>(serviceType: symbol): T {
+// Primary synchronous resolve used throughout the app
+// Throws if the container is not yet initialized; call ensureContainerInitialized() early
+export function resolve<T>(serviceType: symbol): T {
   // Don't resolve services during SSR
   if (!isBrowser) {
     throw new Error(
@@ -180,8 +189,8 @@ export function tryResolve<T>(serviceType: symbol): T | null {
   }
 }
 
-// Async resolve function for use during initialization
-export async function resolve<T>(serviceType: symbol): Promise<T> {
+// Async resolve preserved for callers that want to await initialization explicitly
+export async function resolveAsync<T>(serviceType: symbol): Promise<T> {
   await ensureContainerInitialized();
   return container.get<T>(serviceType);
 }
@@ -218,14 +227,19 @@ export async function loadCriticalModules(): Promise<void> {
   if (tier1Loaded) return;
 
   try {
-    const modules = await import("./modules");
-
-    if (!modules) {
-      throw new Error("Failed to import modules - modules is undefined");
-    }
-
-    const { coreModule, navigationModule, dataModule, keyboardModule } =
-      modules;
+    const [
+      { coreModule },
+      { navigationModule },
+      { dataModule },
+      { keyboardModule },
+      { analyticsModule }
+    ] = await Promise.all([
+      import("./modules/core.module"),
+      import("./modules/navigation.module"),
+      import("./modules/data.module"),
+      import("./modules/keyboard.module"),
+      import("./modules/analytics.module")
+    ]);
 
     if (!coreModule) {
       throw new Error("coreModule is undefined");
@@ -239,18 +253,23 @@ export async function loadCriticalModules(): Promise<void> {
     if (!keyboardModule) {
       throw new Error("keyboardModule is undefined");
     }
+    if (!analyticsModule) {
+      throw new Error("analyticsModule is undefined");
+    }
 
     await container.load(
       coreModule,
       navigationModule,
       dataModule,
-      keyboardModule
+      keyboardModule,
+      analyticsModule
     );
 
     loadedModules.add("core");
     loadedModules.add("navigation");
     loadedModules.add("data");
     loadedModules.add("keyboard");
+    loadedModules.add("analytics");
     tier1Loaded = true;
   } catch (error) {
     console.error("❌ Failed to load Tier 1 modules:", error);
@@ -259,9 +278,9 @@ export async function loadCriticalModules(): Promise<void> {
 }
 
 /**
- * TIER 2: Load shared service modules (rendering, animation, pictographs)
+ * TIER 2: Load shared service modules (rendering, pictographs, admin)
  * ⏱️ Non-blocking - Loads in background while user reads content
- * These modules are used across ALL features (panels, rendering, etc.)
+ * Only truly shared modules that are needed across ALL features
  */
 export async function loadSharedModules(): Promise<void> {
   if (tier2Loaded) return;
@@ -275,25 +294,26 @@ export async function loadSharedModules(): Promise<void> {
   // Start loading and cache the promise
   tier2Promise = (async () => {
     try {
-      const modules = await import("./modules");
-      const {
-        renderModule,
-        pictographModule,
-        animatorModule, // Animation panels appear across all modules
-        gamificationModule,
-      } = modules;
+      // Only load modules that are truly needed everywhere
+      const [
+        { renderModule },
+        { pictographModule },
+        { adminModule }
+      ] = await Promise.all([
+        import("./modules/render.module"),
+        import("./modules/pictograph.module"),
+        import("./modules/admin.module")
+      ]);
 
       await container.load(
         renderModule,
         pictographModule,
-        animatorModule,
-        gamificationModule
+        adminModule
       );
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
-      loadedModules.add("animator");
-      loadedModules.add("gamification");
+      loadedModules.add("admin");
       tier2Loaded = true;
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
@@ -310,7 +330,7 @@ export async function loadSharedModules(): Promise<void> {
  * TIER 3: Load feature modules on-demand (user tabs)
  * ⏱️ Load when tab is clicked OR when user hovers >50ms (preloading)
  *
- * @param feature - Tab name: 'create', 'explore', 'learn', 'word_card', 'write', 'admin', 'share'
+ * @param feature - Tab name: 'create', 'discover', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share', 'compose'
  */
 export async function loadFeatureModule(feature: string): Promise<void> {
   // Check if already loaded
@@ -319,50 +339,140 @@ export async function loadFeatureModule(feature: string): Promise<void> {
   }
 
   try {
-    const modules = await import("./modules");
+    // Helper to load a module only if not already loaded
+    // Uses pendingModules map to prevent race conditions during parallel loads
+    const loadIfNeeded = async (
+      name: string,
+      importFn: () => Promise<{ [key: string]: ContainerModule }>
+    ): Promise<void> => {
+      // Already loaded - return immediately
+      if (loadedModules.has(name)) return;
 
-    // Map feature names to their DI modules with dependency tracking
-    const moduleMap: Record<string, Array<{ module: any; name: string }>> = {
-      create: [
-        { module: modules.createModule, name: "create" },
-        { module: modules.shareModule, name: "share" },
-      ],
-      explore: [{ module: modules.exploreModule, name: "explore" }],
-      community: [
-        { module: modules.exploreModule, name: "explore" },
-        { module: modules.communityModule, name: "community" },
-      ],
-      learn: [{ module: modules.learnModule, name: "learn" }],
-      animate: [{ module: modules.exploreModule, name: "explore" }],
-      collect: [], // Collect/Library use shared services
-      library: [], // Legacy alias for collect
-      word_card: [
-        { module: modules.wordCardModule, name: "word_card" },
-        { module: modules.exploreModule, name: "explore" },
-      ],
-      write: [{ module: modules.writeModule, name: "write" }],
-      admin: [{ module: modules.adminModule, name: "admin" }],
-      share: [{ module: modules.shareModule, name: "share" }],
+      // Currently loading - wait for the existing promise
+      const pending = pendingModules.get(name);
+      if (pending) return pending;
+
+      // Start loading and track the promise
+      const loadPromise = (async () => {
+        try {
+          const moduleExports = await importFn();
+          const module = Object.values(moduleExports)[0] as ContainerModule;
+          if (!module) {
+            throw new Error(`Module ${name} export is undefined`);
+          }
+          await container.load(module);
+          loadedModules.add(name);
+        } finally {
+          pendingModules.delete(name);
+        }
+      })();
+
+      pendingModules.set(name, loadPromise);
+      return loadPromise;
     };
 
-    const moduleList = moduleMap[feature];
-    if (!moduleList) {
-      console.warn(`Unknown feature module: ${feature}`);
-      return;
-    }
+    // Load only the modules needed for each feature
+    switch (feature) {
+      case "create":
+        // Create needs build (create), share, animator, and gamification
+        await Promise.all([
+          loadIfNeeded("create", () => import("./modules/build.module")),
+          loadIfNeeded("share", () => import("./modules/share.module")),
+          loadIfNeeded("animator", () => import("./modules/animator.module")),
+          loadIfNeeded("gamification", () => import("./modules/gamification.module"))
+        ]);
+        break;
 
-    // Filter out already-loaded modules to prevent duplicate bindings
-    const modulesToLoad = moduleList.filter(
-      ({ name }) => !loadedModules.has(name)
-    );
+      case "discover":
+        // Discover needs community module for CreatorsPanel (IUserService)
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("community", () => import("./modules/community.module"))
+        ]);
+        break;
 
-    if (modulesToLoad.length > 0) {
-      await container.load(...modulesToLoad.map(({ module }) => module));
+      case "community":
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("library", () => import("./modules/library.module")),
+          loadIfNeeded("community", () => import("./modules/community.module"))
+        ]);
+        break;
 
-      // Mark all newly loaded modules
-      modulesToLoad.forEach(({ name }) => {
-        loadedModules.add(name);
-      });
+      case "learn":
+        await loadIfNeeded("learn", () => import("./modules/learn.module"));
+        break;
+
+      case "train":
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("train", () => import("./modules/train.module")),
+          loadIfNeeded("animator", () => import("./modules/animator.module"))
+        ]);
+        break;
+
+      case "compose":
+      case "animate":
+        // Compose/Animate needs discover (for sequence browser) and animator
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded("animator", () => import("./modules/animator.module"))
+        ]);
+        break;
+
+      case "edit":
+        // Edit uses discover services for sequence browser
+        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        break;
+
+      case "collect":
+      case "library":
+        await loadIfNeeded("library", () => import("./modules/library.module"));
+        break;
+
+      case "account":
+      case "settings":
+        // Account/Settings uses library services for user stats
+        await loadIfNeeded("library", () => import("./modules/library.module"));
+        break;
+
+      case "about":
+      case "dashboard":
+        // These modules use no additional DI services
+        break;
+
+      case "word_card":
+        await Promise.all([
+          loadIfNeeded("word_card", () => import("./modules/word-card.module")),
+          loadIfNeeded("discover", () => import("./modules/discover.module"))
+        ]);
+        break;
+
+      case "write":
+        await loadIfNeeded("write", () => import("./modules/write.module"));
+        break;
+
+      case "admin":
+        // Admin module is loaded in Tier 2, only load its dependencies here
+        await Promise.all([
+          loadIfNeeded("library", () => import("./modules/library.module")),
+          loadIfNeeded("train", () => import("./modules/train.module")),
+          loadIfNeeded("discover", () => import("./modules/discover.module"))
+        ]);
+        break;
+
+      case "share":
+        await loadIfNeeded("share", () => import("./modules/share.module"));
+        break;
+
+      case "gamification":
+        await loadIfNeeded("gamification", () => import("./modules/gamification.module"));
+        break;
+
+      default:
+        // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
+        console.warn(`Unknown feature module: ${feature}`);
+        return;
     }
 
     // Always mark the feature itself as loaded
@@ -426,6 +536,7 @@ function initializeContainer() {
       tier1Loaded = false;
       tier2Loaded = false;
       loadedModules.clear();
+      pendingModules.clear();
       throw error;
     }
   })();
@@ -446,9 +557,6 @@ function preloadCachedFeatureModule(): void {
       const parsed = JSON.parse(cached);
       if (parsed?.moduleId && typeof parsed.moduleId === "string") {
         const moduleId = parsed.moduleId as string;
-        console.log(
-          `⚡ [container] Preloading cached feature module: ${moduleId}`
-        );
 
         // Start loading in background (non-blocking)
         loadFeatureModule(moduleId).catch((error) => {

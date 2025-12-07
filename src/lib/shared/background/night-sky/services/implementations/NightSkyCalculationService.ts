@@ -1,6 +1,7 @@
-import type { AccessibilitySettings, Dimensions, Star } from "$shared";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import { injectable } from "inversify";
-import type { StarConfig } from "../../domain/models/night-sky-models";
+import type { StarConfig, Star } from "../../domain/models/night-sky-models";
 import type { INightSkyCalculationService } from "../contracts/INightSkyCalculationService";
 
 @injectable()
@@ -39,7 +40,7 @@ export class NightSkyCalculationService implements INightSkyCalculationService {
   ): Star {
     const r =
       this.randFloat(config.minSize, config.maxSize) *
-      (accessibility.visibleParticleSize > 2 ? 1.5 : 1);
+      ((accessibility.visibleParticleSize ?? 1) > 2 ? 1.5 : 1);
     const tw = Math.random() < config.twinkleChance;
 
     // 30% of larger stars get the classic 4-pointed sparkle shape

@@ -1,0 +1,443 @@
+<!-- FeedbackKanbanColumn - A single status column in the Kanban board -->
+<script lang="ts">
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
+  import FeedbackKanbanCard from "./FeedbackKanbanCard.svelte";
+
+  const {
+    status,
+    config,
+    items,
+    isDropTarget,
+    isDragActive,
+    isActiveTab = false,
+    selectedItemId,
+    disableDrag = false,
+    onDragStart,
+    onDragEnd,
+    onTouchDrag,
+    onDragOver,
+    onDragLeave,
+    onDrop,
+    onCardClick,
+  } = $props<{
+    status: FeedbackStatus;
+    config: { label: string; color: string; icon: string };
+    items: FeedbackItem[];
+    isDropTarget: boolean;
+    isDragActive: boolean;
+    isActiveTab?: boolean;
+    selectedItemId: string | null;
+    disableDrag?: boolean;
+    onDragStart: (item: FeedbackItem) => void;
+    onDragEnd: () => void;
+    onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
+    onDragOver: () => void;
+    onDragLeave: () => void;
+    onDrop: () => void;
+    onCardClick: (item: FeedbackItem) => void;
+  }>();
+
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
+    onDragOver();
+  }
+
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
+    onDrop();
+  }
+</script>
+
+<div
+  class="kanban-column"
+  class:drop-target={isDropTarget}
+  class:drag-active={isDragActive}
+  class:active-tab={isActiveTab}
+  style="--column-color: {config.color}"
+  ondragover={handleDragOver}
+  ondragleave={onDragLeave}
+  ondrop={handleDrop}
+  role="region"
+  id="column-{status}"
+  aria-label="{config.label} column"
+>
+  <!-- Column Header -->
+  <header class="column-header">
+    <div class="header-icon">
+      <i class="fas {config.icon}"></i>
+    </div>
+    <h3 class="header-title">{config.label}</h3>
+    <span class="header-count">{items.length}</span>
+  </header>
+
+  <!-- Cards Container -->
+  <div class="cards-container">
+    {#if items.length === 0}
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i
+            class="fas {status === 'completed'
+              ? 'fa-check-circle'
+              : status === 'wont-fix'
+                ? 'fa-ban'
+                : 'fa-inbox'}"
+          ></i>
+        </div>
+        <span class="empty-title">
+          {#if status === "new"}
+            No new feedback
+          {:else if status === "completed"}
+            Nothing completed yet
+          {:else if status === "wont-fix"}
+            No declined items
+          {:else}
+            No items here
+          {/if}
+        </span>
+        <span class="empty-hint">
+          {#if status === "new"}
+            Feedback will appear here when submitted
+          {:else}
+            Drag items here to update their status
+          {/if}
+        </span>
+      </div>
+    {:else}
+      {#each items as item (item.id)}
+        <FeedbackKanbanCard
+          {item}
+          isSelected={selectedItemId === item.id}
+          {disableDrag}
+          {onDragStart}
+          {onDragEnd}
+          {onTouchDrag}
+          onClick={() => onCardClick(item)}
+        />
+      {/each}
+    {/if}
+  </div>
+
+  <!-- Drop zone indicator -->
+  {#if isDropTarget}
+    <div class="drop-indicator">
+      <i class="fas fa-plus-circle"></i>
+      <span>Drop here</span>
+    </div>
+  {/if}
+</div>
+
+<style>
+  .kanban-column {
+    /* ===== FLUID SPACING ===== */
+    --kc-space-2xs: clamp(4px, 1cqi, 8px);
+    --kc-space-xs: clamp(8px, 2cqi, 12px);
+    --kc-space-sm: clamp(12px, 3cqi, 18px);
+    --kc-space-md: clamp(16px, 4cqi, 28px);
+
+    /* ===== FLUID TYPOGRAPHY - Accessible minimums ===== */
+    --kc-text-xs: clamp(0.8125rem, 2cqi, 0.875rem); /* min 13px */
+    --kc-text-sm: clamp(0.875rem, 2.5cqi, 1rem); /* min 14px */
+    --kc-text-base: clamp(1rem, 3cqi, 1.125rem); /* min 16px */
+    --kc-text-lg: clamp(1.125rem, 3.5cqi, 1.25rem); /* min 18px */
+
+    /* ===== FLUID RADII ===== */
+    --kc-radius-sm: clamp(8px, 2cqi, 12px);
+    --kc-radius-md: clamp(12px, 3cqi, 18px);
+    --kc-radius-lg: clamp(16px, 4cqi, 24px);
+
+    /* ===== COLORS ===== */
+    --kc-text: rgba(255, 255, 255, 0.95);
+    --kc-text-muted: rgba(255, 255, 255, 0.7);
+    --kc-text-subtle: rgba(255, 255, 255, 0.5);
+
+    /* ===== TRANSITIONS ===== */
+    --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Fluid column width - grows to fill but with reasonable max */
+    max-width: 552px;
+    flex: 1;
+    /* Colorful gradient background based on column color */
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--column-color) 12%, rgba(20, 20, 30, 0.95)) 0%,
+      color-mix(in srgb, var(--column-color) 5%, rgba(15, 15, 25, 0.98)) 100%
+    );
+    /* Vibrant top border accent */
+    border: 1px solid color-mix(in srgb, var(--column-color) 25%, transparent);
+    border-top: 3px solid var(--column-color);
+    border-radius: var(--kc-radius-md);
+    overflow: hidden;
+    transition: all 0.25s var(--spring-smooth);
+    /* Subtle glow */
+    box-shadow:
+      0 4px 20px color-mix(in srgb, var(--column-color) 15%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .kanban-column:hover {
+    border-color: color-mix(in srgb, var(--column-color) 40%, transparent);
+    box-shadow:
+      0 8px 30px color-mix(in srgb, var(--column-color) 25%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .kanban-column.drag-active {
+    border-style: dashed;
+    opacity: 0.9;
+  }
+
+  .kanban-column.drop-target {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--column-color) 20%, rgba(20, 20, 30, 0.95)) 0%,
+      color-mix(in srgb, var(--column-color) 12%, rgba(15, 15, 25, 0.98)) 100%
+    );
+    border-color: var(--column-color);
+    border-style: solid;
+    box-shadow:
+      0 0 40px color-mix(in srgb, var(--column-color) 40%, transparent),
+      inset 0 0 30px color-mix(in srgb, var(--column-color) 10%, transparent);
+    transform: scale(1.02);
+  }
+
+  /* Column Header - Gradient with color accent */
+  .column-header {
+    display: flex;
+    align-items: center;
+    gap: var(--kc-space-xs);
+    padding: var(--kc-space-sm) var(--kc-space-md);
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--column-color) 15%, transparent) 0%,
+      transparent 100%
+    );
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--column-color) 20%, transparent);
+  }
+
+  .header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(26px, 5cqi, 34px);
+    height: clamp(26px, 5cqi, 34px);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--column-color) 40%, transparent) 0%,
+      color-mix(in srgb, var(--column-color) 20%, transparent) 100%
+    );
+    border-radius: var(--kc-radius-sm);
+    color: var(--column-color);
+    font-size: clamp(12px, 2.5cqi, 15px);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--column-color) 30%, transparent);
+  }
+
+  .header-title {
+    margin: 0;
+    flex: 1;
+    font-size: var(--kc-text-sm);
+    font-weight: 700;
+    color: var(--kc-text);
+    letter-spacing: 0.02em;
+  }
+
+  .header-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(24px, 5cqi, 30px);
+    height: clamp(24px, 5cqi, 30px);
+    padding: 0 clamp(6px, 1.5cqi, 10px);
+    background: color-mix(in srgb, var(--column-color) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--column-color) 30%, transparent);
+    border-radius: 999px;
+    font-size: var(--kc-text-xs);
+    font-weight: 700;
+    color: var(--column-color);
+  }
+
+  /* Cards Container */
+  .cards-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--kc-space-sm);
+    padding: var(--kc-space-sm);
+    overflow-y: auto;
+    min-height: clamp(80px, 15cqi, 120px);
+  }
+
+  .cards-container::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .cards-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .cards-container::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--column-color) 40%, transparent);
+    border-radius: 3px;
+  }
+
+  .cards-container::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--column-color) 60%, transparent);
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kc-space-sm);
+    padding: clamp(24px, 6cqi, 40px) clamp(16px, 4cqi, 28px);
+    margin: var(--kc-space-xs);
+    border-radius: var(--kc-radius-lg);
+    background:
+      radial-gradient(
+        ellipse 100% 80% at 50% 0%,
+        color-mix(in srgb, var(--column-color) 8%, transparent) 0%,
+        transparent 70%
+      ),
+      color-mix(in srgb, var(--column-color) 4%, rgba(255, 255, 255, 0.02));
+    border: 1px dashed color-mix(in srgb, var(--column-color) 25%, transparent);
+    text-align: center;
+  }
+
+  .empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(52px, 12cqi, 64px);
+    height: clamp(52px, 12cqi, 64px);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--column-color) 20%, transparent) 0%,
+      color-mix(in srgb, var(--column-color) 10%, transparent) 100%
+    );
+    border-radius: 50%;
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--column-color) 15%, transparent);
+  }
+
+  .empty-icon i {
+    font-size: clamp(1.25rem, 3cqi, 1.75rem);
+    color: var(--column-color);
+  }
+
+  .empty-title {
+    font-size: var(--kc-text-base);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .empty-hint {
+    font-size: var(--kc-text-sm);
+    color: rgba(255, 255, 255, 0.5);
+    max-width: clamp(180px, 45cqi, 280px);
+    line-height: 1.5;
+  }
+
+  /* Drop Indicator */
+  .drop-indicator {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--kc-space-xs);
+    background: color-mix(in srgb, var(--column-color) 10%, transparent);
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+    animation: pulseIn 0.2s ease;
+  }
+
+  .drop-indicator i {
+    font-size: clamp(24px, 5cqi, 32px);
+    color: var(--column-color);
+  }
+
+  .drop-indicator span {
+    font-size: var(--kc-text-sm);
+    font-weight: 600;
+    color: var(--column-color);
+  }
+
+  @keyframes pulseIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* ===== CONTAINER QUERY: Mobile tab-based layout ===== */
+  /* When inside the kanban board's mobile layout, columns hide unless active */
+  @container kanban (max-width: 652px) {
+    .kanban-column {
+      display: none;
+      min-width: 100%;
+      max-width: 100%;
+      border-top: none;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    .kanban-column.active-tab {
+      display: flex;
+    }
+
+    .kanban-column:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Hide header on mobile since we have tabs */
+    .column-header {
+      display: none;
+    }
+
+    .cards-container {
+      padding: var(--kc-space-xs);
+      gap: var(--kc-space-sm);
+    }
+
+    /* Mobile empty state uses same fluid values - no overrides needed */
+    .empty-state {
+      margin: 0;
+      background:
+        radial-gradient(
+          ellipse 100% 60% at 50% 0%,
+          color-mix(in srgb, var(--column-color) 10%, transparent) 0%,
+          transparent 70%
+        ),
+        rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  /* ===== Reduced Motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .kanban-column,
+    .drop-indicator {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>

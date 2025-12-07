@@ -60,9 +60,9 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     // Validate and parse query parameters
     const rawParams = {
-      page: url.searchParams.get("page") || "1",
-      limit: url.searchParams.get("limit") || "20",
-      priority: url.searchParams.get("priority") || "false",
+      page: url.searchParams.get("page") ?? "1",
+      limit: url.searchParams.get("limit") ?? "20",
+      priority: url.searchParams.get("priority") ?? "false",
     };
 
     const validationResult = paginationSchema.safeParse(rawParams);
@@ -156,7 +156,7 @@ async function loadSequencesFromManifest(): Promise<SequenceMetadata[]> {
 
     // Read manifest file
     const manifestContent = await readFile(manifestPath, "utf-8");
-    const manifest: ExploreManifest = JSON.parse(manifestContent);
+    const manifest = JSON.parse(manifestContent) as ExploreManifest;
 
     const duration = Math.round(performance.now() - startTime);
 
@@ -169,7 +169,7 @@ async function loadSequencesFromManifest(): Promise<SequenceMetadata[]> {
     const sequences: SequenceMetadata[] = manifest.sequences.map((seq) => ({
       id: seq.id,
       word: seq.word,
-      thumbnailUrl: seq.webpPath || seq.thumbnailPath, // Prefer WebP
+      thumbnailUrl: seq.webpPath ?? seq.thumbnailPath, // Prefer WebP
       ...(seq.webpPath ? { webpThumbnailUrl: seq.webpPath } : {}),
       width: seq.width,
       height: seq.height,

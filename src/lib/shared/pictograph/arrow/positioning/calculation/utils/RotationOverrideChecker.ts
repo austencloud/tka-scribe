@@ -1,6 +1,8 @@
-import type { GridLocation, MotionData, PictographData } from "$shared";
-import type { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
-import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import type { PictographData } from "../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import type { ISpecialPlacementService } from '../../placement/services/contracts/IArrowPlacementService';
+import type { IRotationAngleOverrideKeyGenerator } from "../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { RotationMapSelector } from "./RotationMapSelector";
 import { normalizeRotationDirection } from "./RotationDirectionUtils";
 

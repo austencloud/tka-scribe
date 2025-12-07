@@ -21,23 +21,23 @@ export interface SimpleBrowseState {
  */
 export interface IFilterPersistenceService {
   /** Save current browse state */
-  saveBrowseState(state: SimpleBrowseState): Promise<void>;
+  saveBrowseState(state: SimpleBrowseState): void;
 
   /** Load saved browse state */
-  loadBrowseState(): Promise<SimpleBrowseState | null>;
+  loadBrowseState(): SimpleBrowseState | null;
 
   /** Save filter history */
   saveFilterToHistory(filter: FilterHistoryEntry): Promise<void>;
 
   /** Get filter history */
-  getFilterHistory(): Promise<FilterHistoryEntry[]>;
+  getFilterHistory(): FilterHistoryEntry[];
 
   /** Clear filter history */
-  clearFilterHistory(): Promise<void>;
+  clearFilterHistory(): void;
 
   /** Get recently used filters */
   getRecentFilters(limit?: number): Promise<FilterHistoryEntry[]>;
 
   /** Clear all saved state */
-  clearAllState(): Promise<void>;
+  clearAllState(): void;
 }

@@ -5,12 +5,19 @@ Development tool for testing different device viewport sizes.
 Provides quick access to common device dimensions for responsive testing.
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { onMount } from "svelte";
 
   // Services
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
-  );
+  let hapticService: IHapticFeedbackService | null = null;
+
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
 
   // State
   let isOpen = $state(false);
@@ -272,8 +279,8 @@ Provides quick access to common device dimensions for responsive testing.
   }
 
   .close-btn {
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 52px;
     background: transparent;
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
     border-radius: var(--border-radius-md, 8px);

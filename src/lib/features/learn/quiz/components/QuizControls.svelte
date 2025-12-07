@@ -1,0 +1,198 @@
+<!--
+	Lesson Controls Component
+
+	Provides lesson navigation and control buttons including
+	pause/resume and restart functionality with desktop-matching styling.
+-->
+<script lang="ts">
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { onMount } from "svelte";
+
+  // Props
+  let {
+    currentView = "",
+    showPauseButton = false,
+    showRestartButton = false,
+    isPaused = false,
+    isDisabled = false,
+    onPauseClicked,
+    onResumeClicked,
+    onRestartClicked,
+    onReturnToSelector,
+  } = $props<{
+    currentView?: string;
+    showPauseButton?: boolean;
+    showRestartButton?: boolean;
+    isPaused?: boolean;
+    isDisabled?: boolean;
+    onPauseClicked?: () => void;
+    onResumeClicked?: () => void;
+    onRestartClicked?: () => void;
+    onReturnToSelector?: () => void;
+  }>();
+
+  // Services
+  let hapticService: IHapticFeedbackService;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
+  // Methods
+  function handlePauseClick() {
+    // Trigger selection haptic feedback for pause/resume
+    hapticService?.trigger("selection");
+
+    if (isPaused) {
+      onResumeClicked?.();
+    } else {
+      onPauseClicked?.();
+    }
+  }
+
+  function handleRestartClick() {
+    // Trigger warning haptic feedback for restart (destructive action)
+    hapticService?.trigger("warning");
+
+    onRestartClicked?.();
+  }
+
+  function handleReturnToSelector() {
+    // Trigger navigation haptic feedback for return to selector
+    hapticService?.trigger("selection");
+
+    onReturnToSelector?.();
+  }
+</script>
+
+<div class="lesson-controls">
+  {#if showPauseButton}
+    <button
+      class="control-button pause-button"
+      class:paused={isPaused}
+      disabled={isDisabled}
+      onclick={handlePauseClick}
+    >
+      {isPaused ? "▶ Resume" : "⏸ Pause"}
+    </button>
+  {/if}
+
+  {#if showRestartButton}
+    <button
+      class="control-button restart-button"
+      disabled={isDisabled}
+      onclick={handleRestartClick}
+    >
+      ↻ Restart
+    </button>
+  {/if}
+</div>
+
+<style>
+  .lesson-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--desktop-spacing-md);
+  }
+
+  .control-button {
+    font-family: var(--desktop-font-family);
+    font-weight: 600;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: clamp(0.5rem, 1.5cqi, 0.75rem) clamp(1rem, 3cqi, 1.5rem);
+    font-size: clamp(0.875rem, 2cqi, 1rem);
+    min-width: clamp(80px, 15cqi, 120px);
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .control-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  }
+
+  .control-button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
+  }
+
+  .control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Pause/Resume button */
+  .pause-button {
+    background: linear-gradient(
+      135deg,
+      rgba(251, 146, 60, 0.2),
+      rgba(249, 115, 22, 0.2)
+    );
+    border-color: rgba(251, 146, 60, 0.4);
+  }
+
+  .pause-button:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      rgba(251, 146, 60, 0.3),
+      rgba(249, 115, 22, 0.3)
+    );
+    border-color: rgba(251, 146, 60, 0.6);
+  }
+
+  /* Resume state styling */
+  .pause-button.paused {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.2),
+      rgba(22, 163, 74, 0.2)
+    );
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+
+  .pause-button.paused:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.3),
+      rgba(22, 163, 74, 0.3)
+    );
+    border-color: rgba(34, 197, 94, 0.6);
+  }
+
+  /* Restart button */
+  .restart-button {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.2),
+      rgba(118, 75, 162, 0.2)
+    );
+    border-color: rgba(102, 126, 234, 0.4);
+  }
+
+  .restart-button:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      rgba(102, 126, 234, 0.3),
+      rgba(118, 75, 162, 0.3)
+    );
+    border-color: rgba(102, 126, 234, 0.6);
+  }
+</style>

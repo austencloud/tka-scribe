@@ -6,10 +6,11 @@ Shows different states: no link, has link, opening link.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import type { IInstagramLinkService } from "../services/contracts";
-  import type { InstagramLink } from "../domain";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IInstagramLinkService } from "../services/contracts/IInstagramLinkService";
+  import type { InstagramLink } from "../domain/models/InstagramLink";
 
   let {
     instagramLink = null,
@@ -27,11 +28,11 @@ Shows different states: no link, has link, opening link.
   let instagramService: IInstagramLinkService;
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    instagramService = resolve<IInstagramLinkService>(
+  onMount(async () => {
+    instagramService = await resolve<IInstagramLinkService>(
       TYPES.IInstagramLinkService
     );
-    hapticService = resolve<IHapticFeedbackService>(
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -165,7 +166,7 @@ Shows different states: no link, has link, opening link.
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
-    min-width: 40px;
+    min-width: 52px;
   }
 
   .edit-button:hover {
@@ -182,7 +183,7 @@ Shows different states: no link, has link, opening link.
 
     .instagram-button {
       padding: 0.625rem;
-      min-width: 40px;
+      min-width: 52px;
       justify-content: center;
     }
   }

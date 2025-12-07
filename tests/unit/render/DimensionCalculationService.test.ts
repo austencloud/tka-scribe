@@ -613,7 +613,7 @@ describe("DimensionCalculationService", () => {
     });
 
     it("should validate memory for typical export", () => {
-      // Typical export: 16 beats, 144px each, 2 columns = ~1500x1500
+      // Typical export: 16 beats, 150px each, 2 columns = ~1500x1500
       const result = service.validateMemoryUsage(1500, 1500);
 
       expect(result.safe).toBe(true);

@@ -7,7 +7,7 @@
  * REFACTORED: Converted from utils to proper service with interface.
  */
 import { injectable } from "inversify";
-import type { ArrowLocationInput, IArrowLocationService } from "../contracts";
+import type { ArrowLocationInput, IArrowLocationService } from '../contracts/IArrowLocationService';
 
 @injectable()
 export class ArrowLocationService implements IArrowLocationService {

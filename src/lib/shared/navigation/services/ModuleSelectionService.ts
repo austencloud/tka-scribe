@@ -1,11 +1,8 @@
 import { injectable } from "inversify";
-import type {
-  ModuleSelectionContext,
-  ModuleSelectionResult,
-  ModuleSelectionState,
-} from "../domain";
+
 import type { ModuleDefinition } from "../domain/types";
-import type { IModuleSelectionService } from "./contracts";
+import type { ModuleSelectionState, ModuleSelectionContext, ModuleSelectionResult } from "../domain/models/ModuleSelection";
+import type { IModuleSelectionService } from "./contracts/IModuleSelectionService";
 
 @injectable()
 export class ModuleSelectionService implements IModuleSelectionService {

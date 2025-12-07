@@ -5,9 +5,11 @@
  * Simplified version of the desktop PlacementKeyGenerator logic.
  */
 
-import { MotionType, type MotionData, type PictographData } from "$shared";
+import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import { injectable } from "inversify";
-import type { IArrowPlacementKeyService } from "../contracts";
+import type { IArrowPlacementKeyService } from '../contracts/IArrowPlacementKeyService';
 
 @injectable()
 export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
@@ -140,8 +142,8 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     hasGammaProps: boolean;
   } {
     // Implement legacy layer detection logic
-    const redEndOri = pictographData.motions?.red?.endOrientation;
-    const blueEndOri = pictographData.motions?.blue?.endOrientation;
+    const redEndOri = pictographData.motions.red?.endOrientation;
+    const blueEndOri = pictographData.motions.blue?.endOrientation;
 
     if (!redEndOri || !blueEndOri) {
       return {
@@ -168,39 +170,53 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
     const hasHybridOrientation =
       (redIsRadial && blueIsNonRadial) || (redIsNonRadial && blueIsRadial);
 
-    // Letter type detection (matching legacy + Greek letters)
+    // Letter type detection (matching legacy letter_condition_mappings.py)
+    // ALPHA_ENDING, BETA_ENDING, GAMMA_ENDING conditions from legacy
     const letter = pictographData.letter;
     const alphaLetters = [
+      // Type1 letters A-F
       "A",
       "B",
       "C",
       "D",
       "E",
       "F",
+      // Type2 letters W, X
       "W",
       "X",
+      // Type3 cross-shift
       "W-",
       "X-",
-      "Δ",
-      "Δ-",
-      "θ-",
-      "Ω-",
+      // Type4 dash
+      "Φ",
+      // Type5 dual-dash
+      "Φ-",
+      // Type6 static - lowercase Greek alpha
+      "α",
     ];
     const betaLetters = [
+      // Type1 letters G-L
       "G",
       "H",
       "I",
       "J",
       "K",
       "L",
+      // Type2 letters Y, Z
       "Y",
       "Z",
+      // Type3 cross-shift
       "Y-",
       "Z-",
-      "θ",
-      "Ω",
+      // Type4 dash
+      "Ψ",
+      // Type5 dual-dash
+      "Ψ-",
+      // Type6 static - lowercase Greek beta
+      "β",
     ];
     const gammaLetters = [
+      // Type1 letters M-V
       "M",
       "N",
       "O",
@@ -211,14 +227,31 @@ export class ArrowPlacementKeyService implements IArrowPlacementKeyService {
       "T",
       "U",
       "V",
+      // Type2 Greek letters
       "Σ",
+      "Δ",
+      "θ",
+      "Ω",
+      // Type3 cross-shift Greek
       "Σ-",
-      "Φ",
-      "Φ-",
-      "Ψ",
-      "Ψ-",
+      "Δ-",
+      "θ-",
+      "Ω-",
+      // Type4 dash
       "Λ",
+      // Type5 dual-dash
       "Λ-",
+      // Type6 static - uppercase Greek gamma and new letters
+      "Γ",
+      "ζ",
+      "η",
+      "τ",
+      "⊕",
+      // Type1 with lowercase gamma
+      "γ",
+      // Type2 mu and nu
+      "μ",
+      "ν",
     ];
 
     const hasAlphaProps = letter ? alphaLetters.includes(letter) : false;

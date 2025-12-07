@@ -1,8 +1,6 @@
-import type {
-  ISpecialPlacementOriKeyGenerator,
-  MotionData,
-  PictographData,
-} from "$shared";
+import type { ISpecialPlacementOriKeyGenerator } from "../contracts/ISpecialPlacementOriKeyGenerator";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import { injectable } from "inversify";
 
 /**

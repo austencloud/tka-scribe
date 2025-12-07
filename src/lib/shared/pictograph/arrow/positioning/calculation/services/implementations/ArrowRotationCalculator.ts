@@ -1,14 +1,14 @@
-import type { GridLocation } from "$shared";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import {
   MotionType,
   Orientation,
-  type MotionData,
-  type PictographData,
-} from "$shared";
-import type { ISpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/contracts";
-import type { IRotationAngleOverrideKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+} from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { ISpecialPlacementService } from '../../../placement/services/contracts/IArrowPlacementService';
+import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { injectable, inject, optional } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "../../../../../../inversify/types";
 import { dashNoRotationMap } from "../../config/DashRotationMaps";
 import { RotationMapSelector } from "../../utils/RotationMapSelector";
 import { RotationOverrideChecker } from "../../utils/RotationOverrideChecker";

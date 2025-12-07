@@ -33,7 +33,7 @@ declare global {
       accounts: {
         id: {
           initialize: (config: GoogleIdentityConfig) => void;
-          prompt: (momentListener?: (notification: any) => void) => void;
+          prompt: (momentListener?: (notification: unknown) => void) => void;
           renderButton: (
             parent: HTMLElement,
             options: {
@@ -157,9 +157,10 @@ export class GoogleIdentityService {
         email: userCredential.user.email,
         displayName: userCredential.user.displayName,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [GoogleIdentity] Sign-in error:", error);
-      throw new Error(`Google sign-in failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Google sign-in failed: ${message}`);
     }
   }
 
@@ -183,21 +184,27 @@ export class GoogleIdentityService {
         email: userCredential.user.email,
         displayName: userCredential.user.displayName,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ [GoogleIdentity] Popup sign-in error:", error);
 
       // If popup is blocked by COOP, provide helpful error
-      if (
-        error.code === "auth/popup-blocked" ||
-        error.code === "auth/popup-closed-by-user"
-      ) {
-        throw new Error(
-          "Popup was blocked. Please allow popups for this site and try again."
-        );
-      } else if (error.code === "auth/cancelled-popup-request") {
-        throw new Error("Sign-in cancelled. Please try again.");
+      if (error instanceof Error && 'code' in error) {
+        const firebaseError = error as { code: string; message: string };
+        if (
+          firebaseError.code === "auth/popup-blocked" ||
+          firebaseError.code === "auth/popup-closed-by-user"
+        ) {
+          throw new Error(
+            "Popup was blocked. Please allow popups for this site and try again."
+          );
+        } else if (firebaseError.code === "auth/cancelled-popup-request") {
+          throw new Error("Sign-in cancelled. Please try again.");
+        } else {
+          throw new Error(`Google sign-in failed: ${firebaseError.message}`);
+        }
       } else {
-        throw new Error(`Google sign-in failed: ${error.message}`);
+        const message = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(`Google sign-in failed: ${message}`);
       }
     }
   }

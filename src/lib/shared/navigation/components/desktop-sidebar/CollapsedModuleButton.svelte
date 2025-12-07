@@ -1,7 +1,11 @@
 <!-- Collapsed Module Button Component -->
 <!-- Icon-only module button for collapsed sidebar activity bar (VS Code style) -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { ModuleDefinition } from "../../domain/types";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import NotificationBadge from "../NotificationBadge.svelte";
+  import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
   let {
     module,
@@ -18,6 +22,41 @@
   }>();
 
   const isDisabled = $derived(module.disabled ?? false);
+
+  // Notification state for dashboard module
+  const notificationState =
+    module.id === "dashboard" ? createNotificationState() : null;
+
+  onMount(() => {
+    // Initialize notifications for dashboard module
+    if (module.id === "dashboard" && authStore.isAuthenticated) {
+      notificationState?.init();
+    }
+
+    return () => {
+      notificationState?.cleanup();
+    };
+  });
+
+  // Watch auth state changes to init/cleanup notifications
+  $effect(() => {
+    if (module.id === "dashboard") {
+      if (authStore.isAuthenticated) {
+        notificationState?.init();
+      } else {
+        notificationState?.cleanup();
+      }
+    }
+  });
+
+  // Show user's profile picture for dashboard module when signed in
+  const showProfilePicture = $derived(
+    module.id === "dashboard" &&
+      authStore.isAuthenticated &&
+      authStore.user?.photoURL
+  );
+  const profilePictureUrl = $derived(authStore.user?.photoURL || "");
+  const profileDisplayName = $derived(authStore.user?.displayName || "User");
 </script>
 
 <button
@@ -31,7 +70,25 @@
   aria-current={isActive ? "page" : undefined}
   style="--module-color: {moduleColor || '#a855f7'};"
 >
-  <span class="module-icon">{@html module.icon}</span>
+  <div class="icon-wrapper">
+    {#if showProfilePicture}
+      <img
+        src={profilePictureUrl}
+        alt={profileDisplayName}
+        class="profile-avatar"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      />
+    {:else}
+      <span class="module-icon">{@html module.icon}</span>
+    {/if}
+
+    <!-- Notification Badge for Dashboard Module -->
+    {#if module.id === "dashboard" && notificationState}
+      <NotificationBadge count={notificationState.unreadCount} />
+    {/if}
+  </div>
+
   <!-- Hover Label -->
   <span class="hover-label">{module.label}</span>
 </button>
@@ -85,6 +142,14 @@
     cursor: not-allowed;
   }
 
+  /* Icon wrapper - for badge positioning */
+  .icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .module-icon {
     font-size: 22px; /* Slightly larger icon */
     display: flex;
@@ -92,6 +157,26 @@
     justify-content: center;
     flex-shrink: 0;
     transition: transform 0.2s ease;
+  }
+
+  /* Profile Avatar for Dashboard */
+  .profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(16, 185, 129, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .collapsed-module-button:hover:not(.disabled) .profile-avatar {
+    transform: scale(1.08);
+    border-color: rgba(16, 185, 129, 0.7);
+  }
+
+  .collapsed-module-button.active .profile-avatar {
+    border-color: rgba(16, 185, 129, 0.8);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
   }
 
   .collapsed-module-button:hover:not(.disabled) .module-icon {

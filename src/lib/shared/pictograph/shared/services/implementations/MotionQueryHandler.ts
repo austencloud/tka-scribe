@@ -5,20 +5,19 @@
  * Uses shared services for CSV loading, parsing, and transformation.
  */
 
-import type { CSVRow, Orientation } from "$shared";
-import {
-  GridMode,
-  MotionColor,
-  createMotionData,
-  type MotionData,
-  type PictographData,
-  type ICSVPictographParser,
-} from "$shared";
+import type { Orientation } from "../../domain/enums/pictograph-enums";
+import { MotionColor } from "../../domain/enums/pictograph-enums";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../domain/models/MotionData";
+import { createMotionData } from "../../domain/models/MotionData";
+import type { PictographData } from "../../domain/models/PictographData";
+import type { ICSVPictographParser as ICSVPictographParser } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
+import type { CSVRow } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
 import { inject, injectable } from "inversify";
-import type { ParsedCsvRow } from "../../../../../modules/create/generate/shared/domain";
-import type { ICSVLoader } from "../../../../foundation";
-import type { IMotionQueryHandler } from "../../../../foundation";
-import { TYPES } from "../../../../inversify";
+import type { ParsedCsvRow } from "$lib/features/create/generate/shared/domain/csv-handling/CsvModels";
+import type { ICSVLoader } from "../../../../foundation/services/contracts/data/ICSVLoader";
+import type { IMotionQueryHandler } from "../../../../foundation/services/contracts/data/data-contracts";
+import { TYPES } from "../../../../inversify/types";
 import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
 // Temporary interface definition
 interface ICSVParser {
@@ -38,9 +37,9 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     private csvLoader: ICSVLoader,
     @inject(TYPES.ICSVParser)
     private CSVParser: ICSVParser,
-    @inject(TYPES.ICSVPictographParserService)
+    @inject(TYPES.ICSVPictographParser)
     private csvPictographParser: ICSVPictographParser,
-    @inject(TYPES.IOrientationCalculationService)
+    @inject(TYPES.IOrientationCalculator)
     private orientationCalculationService: IOrientationCalculator
   ) {}
 
@@ -194,7 +193,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     gridMode: GridMode
   ): Promise<PictographData[]> {
     try {
-      await this.ensureInitialized();
+      await this.ensureInitialized(); 
 
       if (!this.parsedData) {
         console.error("❌ No parsed CSV data available");
@@ -258,11 +257,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
       for (let i = 0; i < allPictographs.length; i++) {
         const pictograph = allPictographs[i];
-        if (
-          !pictograph ||
-          !pictograph.motions.blue ||
-          !pictograph.motions.red
-        ) {
+        if (!pictograph?.motions.blue || !pictograph.motions.red) {
           continue;
         }
 
@@ -450,10 +445,20 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     };
 
     // Determine if we need to try alternative motion types for floats
-    const blueIsFloatWithoutPrefloat = blueMotion.motionType.toLowerCase() === "float" && !blueMotion.prefloatMotionType;
-    const redIsFloatWithoutPrefloat = redMotion.motionType.toLowerCase() === "float" && !redMotion.prefloatMotionType;
-    const blueAlternativeTypes = blueIsFloatWithoutPrefloat && blueSearchMotion.motionType === "pro" ? ["pro", "anti"] : [blueSearchMotion.motionType];
-    const redAlternativeTypes = redIsFloatWithoutPrefloat && redSearchMotion.motionType === "pro" ? ["pro", "anti"] : [redSearchMotion.motionType];
+    const blueIsFloatWithoutPrefloat =
+      blueMotion.motionType.toLowerCase() === "float" &&
+      !blueMotion.prefloatMotionType;
+    const redIsFloatWithoutPrefloat =
+      redMotion.motionType.toLowerCase() === "float" &&
+      !redMotion.prefloatMotionType;
+    const blueAlternativeTypes =
+      blueIsFloatWithoutPrefloat && blueSearchMotion.motionType === "pro"
+        ? ["pro", "anti"]
+        : [blueSearchMotion.motionType];
+    const redAlternativeTypes =
+      redIsFloatWithoutPrefloat && redSearchMotion.motionType === "pro"
+        ? ["pro", "anti"]
+        : [redSearchMotion.motionType];
 
     // Search for a matching pictograph in the CSV data
     for (const blueType of blueAlternativeTypes) {

@@ -1,4 +1,4 @@
-import type { UIPerformanceMetrics } from "../../foundation";
+import type { UIPerformanceMetrics } from "../../foundation/ui/UITypes";
 
 export interface IPerformanceMetricsState {
   // State getters

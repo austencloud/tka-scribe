@@ -5,15 +5,18 @@
  * Uses the render module for image generation.
  */
 
-import type { ISequenceRenderService } from "$render";
-import type { SequenceData } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { ISequenceRenderService } from "../../../render/services/contracts/ISequenceRenderService";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { ShareOptions } from "../../domain";
-import type { IShareService } from "../contracts";
+import type { ShareOptions } from "../../domain/models/ShareOptions";
+import type { IShareService } from "../contracts/IShareService";
+import { PreviewCacheService } from "./PreviewCacheService";
 
 @injectable()
 export class ShareService implements IShareService {
+  private previewCache = new PreviewCacheService();
+
   constructor(
     @inject(TYPES.ISequenceRenderService)
     private renderService: ISequenceRenderService
@@ -21,14 +24,40 @@ export class ShareService implements IShareService {
 
   async generatePreview(
     sequence: SequenceData,
-    options: ShareOptions
+    options: ShareOptions,
+    forceRegenerate = false
   ): Promise<string> {
+    // Check IndexedDB cache first (unless forcing regeneration)
+    if (!forceRegenerate) {
+      const cachedUrl = await this.previewCache.getCachedPreview(
+        sequence,
+        options
+      );
+      if (cachedUrl) {
+        return cachedUrl;
+      }
+    }
+
     // Convert ShareOptions to SequenceExportOptions for render service
     // Use much smaller scale for thumbnail preview (faster loading)
     const renderOptions = this.convertToPreviewOptions(options);
 
-    // Use render service to generate preview
-    return await this.renderService.generatePreview(sequence, renderOptions);
+    // Generate new preview
+    const previewUrl = await this.renderService.generatePreview(
+      sequence,
+      renderOptions
+    );
+
+    // Convert data URL to blob and cache it
+    try {
+      const blob = await this.dataUrlToBlob(previewUrl);
+      await this.previewCache.setCachedPreview(sequence, options, blob);
+    } catch (error) {
+      console.warn("Failed to cache preview:", error);
+      // Continue anyway - preview generation succeeded
+    }
+
+    return previewUrl;
   }
 
   async downloadImage(
@@ -249,4 +278,9 @@ export class ShareService implements IShareService {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
+
+  private dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
+    const response = await fetch(dataUrl);
+    return await response.blob();
+  };
 }

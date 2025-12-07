@@ -5,17 +5,18 @@
   Supports: Facebook, Google, Email/Password
 -->
 <script lang="ts">
-  import { Drawer } from "$shared";
-  import {
-    SocialAuthCompact,
-    AuthHeader,
-    AuthFooter,
-    EmailPasswordAuth,
-  } from "$shared/auth/components";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import type { IAuthService } from "$shared/auth";
-  import { authStore } from "$shared/auth";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
+  import AuthFooter from "../../auth/components/AuthFooter.svelte";
+  import AuthHeader from "../../auth/components/AuthHeader.svelte";
+  import EmailPasswordAuth from "../../auth/components/EmailPasswordAuth.svelte";
+  import SocialAuthCompact from "../../auth/components/SocialAuthCompact.svelte";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import type { IAuthService } from "../../auth/services/contracts/IAuthService";
 
   // Props
   let { isOpen = false, onClose } = $props<{
@@ -30,12 +31,12 @@
   // Track auth mode to update UI accordingly
   let authMode = $state<"signin" | "signup">("signin");
 
-  onMount(() => {
+  onMount(async () => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
+      hapticService = await resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
-      authService = resolve<IAuthService>(TYPES.IAuthService);
+      authService = await resolve<IAuthService>(TYPES.IAuthService);
     } catch (error) {
       console.error("❌ [AuthSheet] Failed to resolve services:", error);
     }

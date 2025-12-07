@@ -60,8 +60,9 @@ const dictionaryPlugin = () => ({
 
 /**
  * 🚀 2025 OPTIMIZATION: Smart caching for development
- * - No cache for CSS/JS (prevents hard refresh issues)
+ * - No cache for CSS/JS/HMR (prevents HMR breakage)
  * - Aggressive caching only for static SVG assets
+ * - Skip WebSocket connections (don't interfere with HMR handshake)
  */
 const devCachePlugin = () => ({
   name: "dev-cache-headers",
@@ -73,6 +74,12 @@ const devCachePlugin = () => ({
         next: (err?: unknown) => void
       ) => {
         const url = req.url || "";
+
+        // Skip WebSocket upgrade requests - critical for HMR
+        if (req.headers.upgrade === 'websocket') {
+          next();
+          return;
+        }
 
         // Disable caching for CSS, JS, and HMR to prevent hard refresh issues
         if (
@@ -153,7 +160,7 @@ const webpStaticCopyPlugin = () => {
     targets: [
       {
         src: webpEncoderWasmRelative,
-        dest: "assets",
+        dest: ".", // Copy to root - webp-encoder expects /a.out.wasm
       },
     ],
   });
@@ -210,12 +217,11 @@ export default defineConfig({
             if (id.includes("pdfjs-dist")) return "vendor-pdf";
             if (id.includes("firebase")) return "vendor-firebase";
             if (id.includes("dexie")) return "vendor-dexie";
+            // pixi.js is heavy (~500KB) - keep it in its own chunk
+            if (id.includes("pixi.js") || id.includes("pixi")) return "vendor-pixi";
             return "vendor";
           }
         },
-        // 2025: Better cache busting
-        chunkFileNames: "chunks/[name]-[hash].js",
-        assetFileNames: "assets/[name]-[hash][extname]",
       },
     },
     chunkSizeWarningLimit: 1000, // Warn for 1MB+ chunks

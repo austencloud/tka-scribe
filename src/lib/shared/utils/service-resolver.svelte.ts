@@ -14,7 +14,7 @@
  */
 
 import { browser } from "$app/environment";
-import { resolve } from "$shared/inversify";
+import { resolve } from "../inversify/di";
 
 /**
  * Service resolver state for a specific service type
@@ -72,7 +72,7 @@ export function createServiceResolver<T>(
   /**
    * Attempts to resolve the service from the container
    */
-  async function attemptResolve(): Promise<void> {
+  function attemptResolve(): void {
     if (!browser || isResolving) return;
 
     isResolving = true;
@@ -92,10 +92,6 @@ export function createServiceResolver<T>(
       service = resolvedService;
       retryCount = 0;
       isResolving = false;
-
-      console.log(
-        `✅ ServiceResolver: Successfully resolved service ${serviceSymbol.toString()}`
-      );
     } catch (err) {
       const resolveError = err instanceof Error ? err : new Error(String(err));
 
@@ -107,9 +103,6 @@ export function createServiceResolver<T>(
       if (isContainerError && retryCount < maxRetries) {
         // Schedule retry for container initialization errors
         retryCount++;
-        console.warn(
-          `⚠️ ServiceResolver: Container not ready for ${serviceSymbol.toString()}, retrying (${retryCount}/${maxRetries})...`
-        );
 
         retryTimeout = window.setTimeout(() => {
           void attemptResolve();
@@ -119,17 +112,10 @@ export function createServiceResolver<T>(
         error = resolveError;
         isResolving = false;
 
-        if (retryCount >= maxRetries) {
-          console.error(
-            `❌ ServiceResolver: Failed to resolve ${serviceSymbol.toString()} after ${maxRetries} retries:`,
-            resolveError
-          );
-        } else {
-          console.error(
-            `❌ ServiceResolver: Failed to resolve ${serviceSymbol.toString()}:`,
-            resolveError
-          );
-        }
+        console.error(
+          `ServiceResolver: Failed to resolve service after ${retryCount >= maxRetries ? `${maxRetries} retries` : "error"}:`,
+          resolveError
+        );
       }
     }
   }

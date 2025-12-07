@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
-import { BACKGROUND_GRADIENTS } from "../../domain";
-import type { BackgroundType } from "../../domain/enums/background-enums";
+import { BACKGROUND_GRADIENTS } from "../../domain/constants/BackgroundGradients";
+import { BackgroundType } from "../../domain/enums/background-enums";
 import type { IBackgroundPreloader } from "../contracts/IBackgroundPreloader";
 
 let isTransitioning = false;
@@ -11,6 +11,8 @@ const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
   snowfall: "snow-fall",
   nightSky: "star-twinkle",
   deepOcean: "deep-ocean-flow",
+  emberGlow: "ember-glow",
+  sakuraDrift: "sakura-drift",
   solidColor: "", // No animation for solid colors
   linearGradient: "", // No animation for gradients
 };
@@ -33,14 +35,12 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
     }
 
     try {
-      const newGradient =
-        BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS["nightSky"];
-      const newAnimation =
-        BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS["nightSky"];
+      const newGradient = BACKGROUND_GRADIENTS[backgroundType];
+      const newAnimation = BACKGROUND_ANIMATIONS[backgroundType];
 
       console.log(
         "🎨 [Service] New gradient:",
-        (newGradient || "").substring(0, 50) + "..."
+        newGradient.substring(0, 50) + "..."
       );
       console.log("🎨 [Service] New animation:", newAnimation);
 
@@ -50,7 +50,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
       console.log(
         "🎨 [Service] Current gradient:",
-        (currentGradient || "").substring(0, 50) + "..."
+        currentGradient.substring(0, 50) + "..."
       );
 
       // Skip if already set to this gradient
@@ -85,7 +85,7 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       console.log("📝 [Service] Step 1: Setting --gradient-next");
       document.documentElement.style.setProperty(
         "--gradient-next",
-        newGradient || ""
+        newGradient
       );
 
       // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
@@ -99,17 +99,17 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
 
       // Step 3: After transition completes, swap the gradients
       setTimeout(() => {
-        console.log("📝 [Service] Step 3: Swapping gradients after 1.5s");
+        console.log("📝 [Service] Step 3: Swapping gradients after 1s");
         document.documentElement.style.setProperty(
           "--gradient-cosmic",
-          newGradient || ""
+          newGradient
         );
         body.classList.remove("background-transitioning");
         isTransitioning = false;
         console.log(
           `🎨 [Service] Body background transitioned to: ${backgroundType}`
         );
-      }, 1500);
+      }, 1000); // Match the CSS transition duration (1s)
     } catch (error) {
       console.warn("[Service] Failed to update body background:", error);
       isTransitioning = false;
@@ -130,9 +130,9 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
       const stored = localStorage.getItem(settingsKey);
 
       if (stored) {
-        const settings = JSON.parse(stored);
-        const backgroundType = settings.backgroundType || "nightSky";
-        this.updateBodyBackground(backgroundType as BackgroundType);
+        const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+        const backgroundType = settings.backgroundType ?? BackgroundType.NIGHT_SKY;
+        this.updateBodyBackground(backgroundType);
       }
     } catch (error) {
       console.warn("Failed to preload background:", error);

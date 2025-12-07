@@ -2,7 +2,10 @@
   PrivacySheet.svelte - Privacy Policy Bottom Sheet
 -->
 <script lang="ts">
-  import { Drawer, resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import Drawer from "../../foundation/ui/Drawer.svelte";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   // Props
@@ -14,8 +17,8 @@
   // Services
   let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -256,10 +259,10 @@
   }
 
   .privacy-sheet__close {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.08);

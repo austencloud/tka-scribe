@@ -6,14 +6,12 @@
  * of Dexie and provides simple methods for your components to use.
  */
 
-import type {
-  AppSettings,
-  CompleteExploreState,
-  PictographData,
-  SequenceData,
-  TabId,
-} from "$shared";
-import type { UserProject } from "../../domain/models";
+import type { AppSettings } from "../../../settings/domain/AppSettings";
+import type { CompleteExploreState } from "../../../../features/discover/shared/domain/models/discover-models";
+import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
+import type { TabId } from "../../../foundation/ui/UITypes";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import type { UserProject } from "../../domain/models/UserProject";
 
 // ============================================================================
 // MAIN PERSISTENCE SERVICE
@@ -117,7 +115,7 @@ export interface IPersistenceService {
   loadTabState<T = unknown>(tabId: TabId): Promise<T | null>;
 
   // ============================================================================
-  // Explore STATE PERSISTENCE
+  // Discover STATE PERSISTENCE
   // ============================================================================
 
   /**

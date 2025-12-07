@@ -10,19 +10,18 @@
    * - Render SpotlightViewer component
    */
   import { onMount } from "svelte";
-  import SpotlightViewer from "../../modules/explore/gallery/spotlight/components/SpotlightViewer.svelte";
+  import SpotlightViewer from "../../features/discover/gallery/spotlight/components/SpotlightViewer.svelte";
   import {
     closeSpotlightViewer,
     getShowSpotlight,
     getSpotlightSequence,
     getSpotlightThumbnailService,
-  } from "../application/state/app-state.svelte";
-  import type { RouteState } from "../navigation/utils/sheet-router";
-  import {
-    closeSpotlight,
-    getCurrentSpotlight,
-    onRouteChange,
-  } from "../navigation/utils/sheet-router";
+  } from "../application/state/ui/ui-state.svelte";
+  import type {
+    ISheetRouterService,
+    RouteState,
+  } from "../navigation/services/contracts/ISheetRouterService";
+  import { resolve, TYPES } from "../inversify/di";
 
   // Legacy spotlight state (from global app state)
   let showSpotlight = $derived(getShowSpotlight());
@@ -31,16 +30,25 @@
 
   // Route-based spotlight state
   let spotlightSequenceId = $state<string | null>(null);
+  let sheetRouterService: ISheetRouterService | null = null;
 
   onMount(() => {
     if (typeof window === "undefined") {
       return;
     }
 
+    // Resolve sheet router service
+    try {
+      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+    } catch (error) {
+      console.error("Failed to resolve SheetRouterService:", error);
+      return;
+    }
+
     const cleanupFns: Array<() => void> = [];
 
     // Listen for route changes (spotlight, etc.)
-    const cleanupRouteListener = onRouteChange((state: RouteState) => {
+    const cleanupRouteListener = sheetRouterService.onRouteChange((state: RouteState) => {
       spotlightSequenceId = state.spotlight || null;
 
       // Sync with legacy spotlight state if needed
@@ -54,7 +62,7 @@
     cleanupFns.push(cleanupRouteListener);
 
     // Initialize spotlight from URL on mount
-    const initialSpotlight = getCurrentSpotlight();
+    const initialSpotlight = sheetRouterService.getCurrentSpotlight();
     if (initialSpotlight) {
       spotlightSequenceId = initialSpotlight;
     }
@@ -73,7 +81,7 @@
   function handleClose() {
     closeSpotlightViewer();
     if (spotlightSequenceId) {
-      closeSpotlight();
+      sheetRouterService?.closeSpotlight();
     }
   }
 </script>

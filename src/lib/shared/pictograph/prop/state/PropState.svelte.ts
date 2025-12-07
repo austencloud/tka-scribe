@@ -5,8 +5,11 @@
  * Independent sub-state - no dependencies on arrow state.
  */
 
-import type { PictographData, PropType, MotionData } from "$shared";
-import type { PropAssets, PropPosition } from "../domain/models";
+import type { PictographData } from "../../shared/domain/models/PictographData"
+import type { MotionData } from "../../shared/domain/models/MotionData";
+import type { PropType } from "../domain/enums/PropType";
+import type { PropAssets } from '../domain/models/PropAssets';
+import type { PropPosition } from '../domain/models/PropPosition';
 import type { IPropPlacementService } from "../services/contracts/IPropPlacementService";
 import type { IPropSvgLoader } from "../services/contracts/IPropSvgLoader";
 import type { IPropTypeConfigurationService } from "../services/contracts/IPropTypeConfigurationService";
@@ -35,7 +38,7 @@ export function createPropState(
     pictographData: PictographData | null,
     userPropType: string
   ): Promise<void> {
-    if (!pictographData || !pictographData.motions) {
+    if (!pictographData?.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       propPositions = {};
       propAssets = {};
@@ -88,8 +91,12 @@ export function createPropState(
               gridMode: motionData.gridMode,
               arrowPlacementData: motionData.arrowPlacementData,
               propPlacementData: motionData.propPlacementData,
-              ...(motionData.prefloatMotionType !== undefined && { prefloatMotionType: motionData.prefloatMotionType }),
-              ...(motionData.prefloatRotationDirection !== undefined && { prefloatRotationDirection: motionData.prefloatRotationDirection }),
+              ...(motionData.prefloatMotionType !== undefined && {
+                prefloatMotionType: motionData.prefloatMotionType,
+              }),
+              ...(motionData.prefloatRotationDirection !== undefined && {
+                prefloatRotationDirection: motionData.prefloatRotationDirection,
+              }),
             };
 
             // Load assets and calculate position in parallel

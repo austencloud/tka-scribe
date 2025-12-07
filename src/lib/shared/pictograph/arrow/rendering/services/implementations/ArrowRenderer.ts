@@ -5,26 +5,20 @@
  *
  */
 
-import type { MotionColor } from "$shared";
-import type {
-  IArrowPathResolver,
-  IArrowSvgLoader,
-  IArrowSvgParser,
-  ISvgColorTransformer,
-} from "$shared";
-import {} from "$shared";
-import {
-  createMotionData,
-  GridLocation,
-  MotionType,
-  Orientation,
-  RotationDirection,
-  type ArrowPlacementData,
-  type ArrowPosition,
-  type MotionData,
-} from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { MotionColor} from "../../../../shared/domain/enums/pictograph-enums";
+import { MotionType, Orientation, RotationDirection } from "../../../../shared/domain/enums/pictograph-enums";
+import type { IArrowPathResolver } from '../contracts/IArrowPathResolver';
+import type { IArrowSvgLoader } from '../contracts/IArrowSvgLoader';
+import type { IArrowSvgParser } from '../contracts/IArrowSvgParser';
+import type { ISvgColorTransformer } from '../contracts/IArrowSvgColorTransformer';
+
+import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";
+import { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import { createMotionData } from "../../../../shared/domain/models/MotionData";
+import type { ArrowPosition } from "../../../orchestration/domain/arrow-models";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 
 export interface IArrowRenderer {
   renderArrowAtPosition(
@@ -79,7 +73,7 @@ export class ArrowRenderer implements IArrowRenderer {
   ): Promise<void> {
     // Handle undefined motionData by creating a default one with the provided color
     const safeMotionData: MotionData =
-      motionData ||
+      motionData ??
       createMotionData({
         color: color,
         motionType: MotionType.STATIC,
@@ -160,14 +154,12 @@ export class ArrowRenderer implements IArrowRenderer {
     let viewBox = { width: 100, height: 100 };
     if (typeof parsed.viewBox === "string") {
       const [width, height] = parsed.viewBox.split(" ").map(Number);
-      viewBox = { width: width || 100, height: height || 100 };
-    } else if (parsed.viewBox) {
-      viewBox = parsed.viewBox;
+      viewBox = { width: width ?? 100, height: height ?? 100 };
     }
 
     return {
       viewBox,
-      center: parsed.center || { x: 50, y: 50 },
+      center: parsed.center ?? { x: 50, y: 50 },
     };
   }
 
@@ -198,15 +190,13 @@ export class ArrowRenderer implements IArrowRenderer {
     let viewBox = { width: 100, height: 100 };
     if (typeof svgData.viewBox === "string") {
       const [width, height] = svgData.viewBox.split(" ").map(Number);
-      viewBox = { width: width || 100, height: height || 100 };
-    } else if (svgData.viewBox) {
-      viewBox = svgData.viewBox;
+      viewBox = { width: width ?? 100, height: height ?? 100 };
     }
 
     return {
-      imageSrc: svgData.imageSrc || "",
+      imageSrc: svgData.imageSrc ?? "",
       viewBox,
-      center: svgData.center || { x: 50, y: 50 },
+      center: svgData.center ?? { x: 50, y: 50 },
     };
   }
 }

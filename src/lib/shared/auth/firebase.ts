@@ -20,7 +20,12 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
-import { getStorage, type FirebaseStorage } from "firebase/storage";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("Firebase");
+
+// Firebase Storage is lazily loaded - only imported where actually needed
+// See: src/routes/api/instagram/upload-media/+server.ts
 
 /**
  * Firebase configuration object
@@ -57,7 +62,8 @@ export const auth: Auth = getAuth(app);
 /**
  * Firestore instance
  * Use this for all database operations (gamification, user data, etc.)
- * Configured with persistent local cache for multi-tab offline support
+ * Configured with persistent local cache for offline support with multi-tab sync
+ * Multi-tab mode avoids IndexedDB ownership errors when multiple tabs are open
  */
 export const firestore: Firestore = initializeFirestore(app, {
   localCache: persistentLocalCache({
@@ -66,14 +72,22 @@ export const firestore: Firestore = initializeFirestore(app, {
 });
 
 /**
- * Firebase Storage instance
+ * Get Firebase Storage instance (lazy loaded)
  * Use this for file uploads (profile photos, sequence thumbnails, etc.)
+ * Storage is loaded on-demand to reduce initial bundle size (~84KB saved)
  */
-export const storage: FirebaseStorage = getStorage(app);
+export async function getStorageInstance(): Promise<import("firebase/storage").FirebaseStorage> {
+  const { getStorage } = await import("firebase/storage");
+  return getStorage(app);
+}
 
 /**
  * Firebase Analytics instance
- * Only initialized in browser environments where analytics is supported
+ * Provides: user demographics, device info, geography, sessions, page views,
+ * screen time, crash reporting, funnel analysis, retention reports,
+ * A/B testing integration, Google Ads integration, and real-time monitoring.
+ *
+ * View dashboards at: https://console.firebase.google.com/project/the-kinetic-alphabet/analytics
  */
 let analytics: Analytics | null = null;
 
@@ -82,10 +96,11 @@ if (typeof window !== "undefined") {
     .then((supported) => {
       if (supported) {
         analytics = getAnalytics(app);
+        debug.success("Firebase Analytics initialized");
       }
     })
     .catch((error) => {
-      console.error("❌ [Firebase] Failed to initialize analytics:", error);
+      debug.warn("Firebase Analytics not supported:", error);
     });
 }
 

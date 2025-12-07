@@ -1,19 +1,11 @@
 // src/lib/services/implementations/background/BackgroundFactory.ts
-// Background Factory - Creates background animation systems
+// Background Factory - Creates background animation systems with LAZY LOADING
 
-import type {
-  AccessibilitySettings,
-  BackgroundSystem,
-  QualityLevel,
-} from "../../domain";
+import type { AccessibilitySettings, BackgroundSystem } from "../../domain/models/background-models";
+import type { QualityLevel } from "../../domain/types/background-types";
 import { BackgroundType } from "../../domain/enums/background-enums";
-
-import { AuroraBackgroundSystem } from "../../../aurora/services/AuroraBackgroundSystem";
-import { DeepOceanBackgroundOrchestrator } from "../../../deep-ocean/services/DeepOceanBackgroundOrchestrator";
-import { NightSkyBackgroundSystem } from "../../../night-sky";
-import { SimpleBackgroundSystem } from "../../../simple/services/SimpleBackgroundSystem";
-import { SnowfallBackgroundSystem } from "../../../snowfall/services/SnowfallBackgroundSystem";
-import { resolve, TYPES } from "$shared";
+import { getContainerInstance, resolve } from "../../../../inversify/di";
+import { TYPES } from "../../../../inversify/types";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {
@@ -21,7 +13,6 @@ interface BackgroundFactoryParams {
   quality: QualityLevel;
   initialQuality: QualityLevel;
   accessibility?: Record<string, unknown>;
-  settings?: Record<string, unknown>;
   thumbnailMode?: boolean;
   // Simple background settings
   backgroundColor?: string;
@@ -34,6 +25,21 @@ function detectAppropriateQuality(): QualityLevel {
   return "medium";
 }
 
+// Lazy loaders for background systems
+const backgroundLoaders = {
+  aurora: () => import("../../../aurora/services/AuroraBackgroundSystem"),
+  snowfall: () => import("../../../snowfall/services/SnowfallBackgroundSystem"),
+  nightSky: () => import("../../../night-sky/services/NightSkyBackgroundSystem"),
+  deepOcean: () => import("../../../deep-ocean/services/DeepOceanBackgroundOrchestrator"),
+  emberGlow: () => import("../../../ember-glow/services/EmberGlowBackgroundSystem"),
+  sakuraDrift: () => import("../../../sakura-drift/services/SakuraDriftBackgroundSystem"),
+  simple: () => import("../../../simple/services/SimpleBackgroundSystem"),
+};
+
+// Track if DI modules are loaded
+let deepOceanModuleLoaded = false;
+let nightSkyModuleLoaded = false;
+
 export class BackgroundFactory {
   // Default accessibility settings
   private static readonly defaultAccessibility: AccessibilitySettings = {
@@ -42,21 +48,50 @@ export class BackgroundFactory {
     visibleParticleSize: 2,
   };
 
+  /**
+   * Load Night Sky DI module on-demand (only when Night Sky background is needed)
+   */
+  private static async loadNightSkyModule(): Promise<void> {
+    // Use container.isBound() as the source of truth (survives code-splitting)
+    const container = await getContainerInstance();
+    if (container.isBound(TYPES.INightSkyCalculationService)) {
+      return; // Already loaded
+    }
+
+    const { nightSkyBackgroundModule } = await import("../../../night-sky/inversify/NightSkyModule");
+    await container.load(nightSkyBackgroundModule);
+    nightSkyModuleLoaded = true;
+  }
+
+  /**
+   * Load Deep Ocean DI module on-demand (only when Deep Ocean background is needed)
+   */
+  private static async loadDeepOceanModule(): Promise<void> {
+    // Use container.isBound() as the source of truth (survives code-splitting)
+    const container = await getContainerInstance();
+    if (container.isBound(TYPES.IBubblePhysics)) {
+      return; // Already loaded
+    }
+
+    const { deepOceanBackgroundModule } = await import("../../../deep-ocean/inversify/DeepOceanModule");
+    await container.load(deepOceanBackgroundModule);
+    deepOceanModuleLoaded = true;
+  }
+
   public static async createBackgroundSystem(
     options: BackgroundFactoryParams
   ): Promise<BackgroundSystem> {
     // Quality detection logic
-    const quality: QualityLevel =
-      options.initialQuality ?? detectAppropriateQuality();
+    const quality: QualityLevel = options.initialQuality;
 
     // Accessibility detection for window environments
     const accessibility: AccessibilitySettings = {
       ...this.defaultAccessibility,
-      ...(options.accessibility || {}),
+      ...(options.accessibility ?? {}),
     };
 
     // Check for reduced motion preference
-    if (typeof window !== "undefined" && window.matchMedia) {
+    if (typeof window !== "undefined") {
       try {
         const prefersReducedMotion = window.matchMedia(
           "(prefers-reduced-motion: reduce)"
@@ -71,19 +106,32 @@ export class BackgroundFactory {
 
     let backgroundSystem: BackgroundSystem;
 
-    // Switch statement for background types
+    // Switch statement for background types - now with lazy loading
     switch (options.type) {
-      case BackgroundType.AURORA:
+      case BackgroundType.AURORA: {
+        const { AuroraBackgroundSystem } = await backgroundLoaders.aurora();
         backgroundSystem = new AuroraBackgroundSystem();
         break;
-      case BackgroundType.SNOWFALL:
+      }
+      case BackgroundType.SNOWFALL: {
+        const { SnowfallBackgroundSystem } = await backgroundLoaders.snowfall();
         backgroundSystem = new SnowfallBackgroundSystem();
         break;
-      case BackgroundType.NIGHT_SKY:
-        backgroundSystem = await NightSkyBackgroundSystem.create();
+      }
+      case BackgroundType.NIGHT_SKY: {
+        // Load Night Sky DI module on-demand (services only loaded when needed)
+        await this.loadNightSkyModule();
+
+        const { NightSkyBackgroundSystem } = await backgroundLoaders.nightSky();
+        backgroundSystem = NightSkyBackgroundSystem.create();
         break;
-      case BackgroundType.DEEP_OCEAN:
-        // Use the refactored orchestrator
+      }
+      case BackgroundType.DEEP_OCEAN: {
+        // Load Deep Ocean DI module on-demand (6 services only loaded when needed)
+        await this.loadDeepOceanModule();
+        
+        const { DeepOceanBackgroundOrchestrator } = await backgroundLoaders.deepOcean();
+        // Use the refactored orchestrator with resolved services
         backgroundSystem = new DeepOceanBackgroundOrchestrator(
           resolve(TYPES.IBubblePhysics),
           resolve(TYPES.IMarineLifeAnimator),
@@ -92,24 +140,41 @@ export class BackgroundFactory {
           resolve(TYPES.ILightRayCalculator)
         );
         break;
-      case BackgroundType.SOLID_COLOR:
+      }
+      case BackgroundType.EMBER_GLOW: {
+        const { EmberGlowBackgroundSystem } = await backgroundLoaders.emberGlow();
+        backgroundSystem = new EmberGlowBackgroundSystem();
+        break;
+      }
+      case BackgroundType.SAKURA_DRIFT: {
+        const { SakuraDriftBackgroundSystem } = await backgroundLoaders.sakuraDrift();
+        backgroundSystem = new SakuraDriftBackgroundSystem();
+        break;
+      }
+      case BackgroundType.SOLID_COLOR: {
+        const { SimpleBackgroundSystem } = await backgroundLoaders.simple();
         backgroundSystem = new SimpleBackgroundSystem({
           type: "solid",
-          color: options.backgroundColor || "#1a1a2e",
+          color: options.backgroundColor ?? "#1a1a2e",
         });
         break;
-      case BackgroundType.LINEAR_GRADIENT:
+      }
+      case BackgroundType.LINEAR_GRADIENT: {
+        const { SimpleBackgroundSystem } = await backgroundLoaders.simple();
         backgroundSystem = new SimpleBackgroundSystem({
           type: "gradient",
-          colors: options.gradientColors || ["#667eea", "#764ba2"],
-          direction: options.gradientDirection || 135,
+          colors: options.gradientColors ?? ["#667eea", "#764ba2"],
+          direction: options.gradientDirection ?? 135,
         });
         break;
-      default:
+      }
+      default: {
         console.warn(
-          `Background type "${options.type}" not implemented. Defaulting to Aurora.`
+          `Background type "${String(options.type)}" not implemented. Defaulting to Aurora.`
         );
+        const { AuroraBackgroundSystem } = await backgroundLoaders.aurora();
         backgroundSystem = new AuroraBackgroundSystem();
+      }
     }
 
     // Apply accessibility settings if the background system supports them
@@ -119,7 +184,7 @@ export class BackgroundFactory {
 
     // Apply thumbnail mode if specified and supported
     if (options.thumbnailMode && "setThumbnailMode" in backgroundSystem) {
-      (backgroundSystem as any).setThumbnailMode(true);
+      (backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }).setThumbnailMode(true);
     }
 
     // Set initial quality
@@ -132,14 +197,14 @@ export class BackgroundFactory {
     const quality = detectAppropriateQuality();
 
     // Default to nightSky as the preferred background
-    return this.createBackgroundSystem({
+    return await this.createBackgroundSystem({
       type: BackgroundType.NIGHT_SKY,
       quality,
       initialQuality: quality,
     });
   }
 
-  public static isBackgroundSupported(type: string): boolean {
+  public static isBackgroundSupported(type: BackgroundType): boolean {
     const quality = detectAppropriateQuality();
 
     switch (type) {
@@ -147,6 +212,8 @@ export class BackgroundFactory {
       case BackgroundType.NIGHT_SKY:
       case BackgroundType.AURORA:
       case BackgroundType.DEEP_OCEAN:
+      case BackgroundType.EMBER_GLOW:
+      case BackgroundType.SAKURA_DRIFT:
         return quality !== "minimal";
       default:
         return false;
@@ -159,6 +226,8 @@ export class BackgroundFactory {
       BackgroundType.SNOWFALL,
       BackgroundType.AURORA,
       BackgroundType.DEEP_OCEAN,
+      BackgroundType.EMBER_GLOW,
+      BackgroundType.SAKURA_DRIFT,
       BackgroundType.SOLID_COLOR,
       BackgroundType.LINEAR_GRADIENT,
     ];

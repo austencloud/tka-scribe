@@ -12,10 +12,10 @@
  */
 
 import { describe, it, expect, beforeAll } from "vitest";
-import { container } from "$shared/inversify/container";
-import { TYPES } from "$shared/inversify/types";
+import { container } from "$lib/shared/inversify/container";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { ISequenceRenderService } from "$render";
-import type { SequenceData } from "$shared";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 // Test sequence data (16-beat circular sequence)
 const TEST_SEQUENCE: SequenceData = {

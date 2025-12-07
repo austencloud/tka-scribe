@@ -136,7 +136,7 @@ To make stories more interactive, you can create mock service implementations:
 
 ```typescript
 // Example decorator for mocking services
-import { resolve, TYPES } from "$shared";
+import { resolve, TYPES } from "$shared/inversify";
 
 const withMockServices = () => {
   // Setup mock services

@@ -1,63 +1,81 @@
 <!--
-  VisibilityTab.svelte - Pictograph Visibility Settings
+  VisibilityTab.svelte - Visibility Settings
 
-  Allows users to control which elements are visible in pictographs:
-  - Glyphs (TKA, VTG, Elemental, Positions, Reversals)
-  - Grid elements (Non-radial points)
+  Desktop: Side-by-side panels for Pictograph, Animation, and Image settings
+  Mobile: Segmented control to switch between modes
 
-  Features:
-  - Interactive preview pictograph
-  - Click-to-toggle on preview elements
-  - Toggle buttons for each element type
+  Uses PictographWithVisibility for interactive preview where clicking
+  elements toggles their visibility, and disabled elements show at 50% opacity.
+
+  Note: Blue/Red motion toggles removed - those are contextual controls
+  that belong in Sequence Viewers, Animation Player, and Export dialogs.
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
-  import {
-    MotionColor,
-    MotionType,
-    RotationDirection,
-    GridLocation,
-    Orientation,
-    createMotionData,
-  } from "$shared";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { ElementVisibilityControls, PreviewSection } from "./visibility";
+  import { GridLocation, GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import PictographWithVisibility from "$lib/shared/pictograph/shared/components/PictographWithVisibility.svelte";
+  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+  import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   interface Props {
-    currentSettings: Record<string, unknown>;
+    currentSettings: unknown;
     onSettingUpdate: (event: { key: string; value: unknown }) => void;
   }
 
   let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
 
-  // Visibility state manager
+  // State managers
   const visibilityManager = getVisibilityStateManager();
+  const animationVisibilityManager = getAnimationVisibilityManager();
+  const imageCompositionManager = getImageCompositionManager();
 
-  // Local reactive state for UI
-  let tkaVisible = $state(true);
-  let vtgVisible = $state(false);
-  let elementalVisible = $state(false);
-  let positionsVisible = $state(false);
-  let reversalsVisible = $state(true);
+  // Mobile mode selection (only used on small screens)
+  let mobileMode = $state<'pictograph' | 'animation' | 'image'>('pictograph');
+  let isVisible = $state(false);
+
+  // Image composition visibility
+  let imgAddWord = $state(true);
+  let imgAddBeatNumbers = $state(true);
+  let imgAddDifficultyLevel = $state(false);
+  let imgIncludeStartPosition = $state(true);
+  let imgAddUserInfo = $state(false);
+
+  // Pictograph visibility
+  let tkaGlyphVisible = $state(true);
+  let vtgGlyphVisible = $state(false);
+  let elementalGlyphVisible = $state(false);
+  let positionsGlyphVisible = $state(false);
+  let reversalIndicatorsVisible = $state(true);
   let turnNumbersVisible = $state(true);
   let nonRadialVisible = $state(false);
-  let blueMotionVisible = $state(true);
-  let redMotionVisible = $state(true);
 
-  // Preview visibility toggle for small screens
-  let showPreview = $state(false);
+  // Animation visibility
+  let animGridVisible = $state(true);
+  let animBeatNumbersVisible = $state(true);
+  let animTrailsVisible = $state(true);
+  let animTkaGlyphVisible = $state(true);
+  let animReversalIndicatorsVisible = $state(false);
+  let animTurnNumbersVisible = $state(true);
 
-  // Example pictograph data for preview - Letter A with turns to demonstrate turn numbers
-  // Each motion has 1 turn, starting IN and ending OUT
+  let hapticService: IHapticFeedbackService | null = null;
+  const triggerHaptic = () => hapticService?.trigger("selection");
+
+  // Example pictograph data for preview
   const examplePictographData = {
     id: "visibility-preview",
     letter: Letter.A,
     startPosition: GridPosition.ALPHA1,
     endPosition: GridPosition.ALPHA3,
     gridMode: GridMode.DIAMOND,
+    blueReversal: true,
+    redReversal: true,
     motions: {
       blue: createMotionData({
         motionType: MotionType.PRO,
@@ -89,387 +107,670 @@
   };
 
   onMount(() => {
-    // Load initial state from visibility manager
-    tkaVisible = visibilityManager.getRawGlyphVisibility("TKA");
-    vtgVisible = visibilityManager.getRawGlyphVisibility("VTG");
-    elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
-    positionsVisible = visibilityManager.getRawGlyphVisibility("Positions");
-    reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
-    turnNumbersVisible = visibilityManager.getRawGlyphVisibility("TurnNumbers");
-    nonRadialVisible = visibilityManager.getNonRadialVisibility();
-    blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
-    redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
-    // Register observer for external changes
-    const observer = () => {
-      tkaVisible = visibilityManager.getRawGlyphVisibility("TKA");
-      vtgVisible = visibilityManager.getRawGlyphVisibility("VTG");
-      elementalVisible = visibilityManager.getRawGlyphVisibility("Elemental");
-      positionsVisible = visibilityManager.getRawGlyphVisibility("Positions");
-      reversalsVisible = visibilityManager.getRawGlyphVisibility("Reversals");
-      turnNumbersVisible =
-        visibilityManager.getRawGlyphVisibility("TurnNumbers");
+    // Load pictograph visibility
+    tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
+    vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
+    elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
+    positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
+    reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+    turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
+    nonRadialVisible = visibilityManager.getNonRadialVisibility();
+
+    // Load animation visibility
+    animGridVisible = animationVisibilityManager.getVisibility("grid");
+    animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+    animTrailsVisible = animationVisibilityManager.getVisibility("trails");
+    animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
+    animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
+    animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+
+    // Load image composition settings
+    imgAddWord = imageCompositionManager.addWord;
+    imgAddBeatNumbers = imageCompositionManager.addBeatNumbers;
+    imgAddDifficultyLevel = imageCompositionManager.addDifficultyLevel;
+    imgIncludeStartPosition = imageCompositionManager.includeStartPosition;
+    imgAddUserInfo = imageCompositionManager.addUserInfo;
+
+    const pictographObserver = () => {
+      tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
+      vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
+      elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
+      positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
+      reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+      turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
-      blueMotionVisible = visibilityManager.getMotionVisibility(MotionColor.BLUE);
-      redMotionVisible = visibilityManager.getMotionVisibility(MotionColor.RED);
     };
 
-    visibilityManager.registerObserver(observer, ["all"]);
+    const animationObserver = () => {
+      animGridVisible = animationVisibilityManager.getVisibility("grid");
+      animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+      animTrailsVisible = animationVisibilityManager.getVisibility("trails");
+      animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
+      animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
+      animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+    };
+
+    const imageCompositionObserver = () => {
+      imgAddWord = imageCompositionManager.addWord;
+      imgAddBeatNumbers = imageCompositionManager.addBeatNumbers;
+      imgAddDifficultyLevel = imageCompositionManager.addDifficultyLevel;
+      imgIncludeStartPosition = imageCompositionManager.includeStartPosition;
+      imgAddUserInfo = imageCompositionManager.addUserInfo;
+    };
+
+    visibilityManager.registerObserver(pictographObserver, ["all"]);
+    animationVisibilityManager.registerObserver(animationObserver);
+    imageCompositionManager.registerObserver(imageCompositionObserver);
+
+    // Entry animation
+    setTimeout(() => isVisible = true, 30);
 
     return () => {
-      visibilityManager.unregisterObserver(observer);
+      visibilityManager.unregisterObserver(pictographObserver);
+      animationVisibilityManager.unregisterObserver(animationObserver);
+      imageCompositionManager.unregisterObserver(imageCompositionObserver);
     };
   });
 
-  function toggleTKA() {
-    tkaVisible = !tkaVisible;
-    visibilityManager.setGlyphVisibility("TKA", tkaVisible);
+  // Toggle functions - Pictograph
+  function togglePicto(key: string) {
+    triggerHaptic();
+    switch (key) {
+      case 'tka': tkaGlyphVisible = !tkaGlyphVisible; visibilityManager.setGlyphVisibility("tkaGlyph", tkaGlyphVisible); break;
+      case 'vtg': vtgGlyphVisible = !vtgGlyphVisible; visibilityManager.setGlyphVisibility("vtgGlyph", vtgGlyphVisible); break;
+      case 'elemental': elementalGlyphVisible = !elementalGlyphVisible; visibilityManager.setGlyphVisibility("elementalGlyph", elementalGlyphVisible); break;
+      case 'positions': positionsGlyphVisible = !positionsGlyphVisible; visibilityManager.setGlyphVisibility("positionsGlyph", positionsGlyphVisible); break;
+      case 'reversals': reversalIndicatorsVisible = !reversalIndicatorsVisible; visibilityManager.setGlyphVisibility("reversalIndicators", reversalIndicatorsVisible); break;
+      case 'turnNumbers': turnNumbersVisible = !turnNumbersVisible; visibilityManager.setGlyphVisibility("turnNumbers", turnNumbersVisible); break;
+      case 'nonRadial': nonRadialVisible = !nonRadialVisible; visibilityManager.setNonRadialVisibility(nonRadialVisible); break;
+    }
   }
 
-  function toggleVTG() {
-    vtgVisible = !vtgVisible;
-    visibilityManager.setGlyphVisibility("VTG", vtgVisible);
+  // Toggle functions - Animation
+  function toggleAnim(key: string) {
+    triggerHaptic();
+    switch (key) {
+      case 'grid': animGridVisible = !animGridVisible; animationVisibilityManager.setVisibility("grid", animGridVisible); break;
+      case 'beatNumbers': animBeatNumbersVisible = !animBeatNumbersVisible; animationVisibilityManager.setVisibility("beatNumbers", animBeatNumbersVisible); break;
+      case 'trails': animTrailsVisible = !animTrailsVisible; animationVisibilityManager.setVisibility("trails", animTrailsVisible); break;
+      case 'tka': animTkaGlyphVisible = !animTkaGlyphVisible; animationVisibilityManager.setVisibility("tkaGlyph", animTkaGlyphVisible); break;
+      case 'reversals': animReversalIndicatorsVisible = !animReversalIndicatorsVisible; animationVisibilityManager.setVisibility("reversalIndicators", animReversalIndicatorsVisible); break;
+      case 'turnNumbers': animTurnNumbersVisible = !animTurnNumbersVisible; animationVisibilityManager.setVisibility("turnNumbers", animTurnNumbersVisible); break;
+    }
   }
 
-  function toggleElemental() {
-    elementalVisible = !elementalVisible;
-    visibilityManager.setGlyphVisibility("Elemental", elementalVisible);
+  // Toggle functions - Image Composition
+  function toggleImage(key: string) {
+    triggerHaptic();
+    switch (key) {
+      case 'word': imgAddWord = !imgAddWord; imageCompositionManager.setAddWord(imgAddWord); break;
+      case 'beatNumbers': imgAddBeatNumbers = !imgAddBeatNumbers; imageCompositionManager.setAddBeatNumbers(imgAddBeatNumbers); break;
+      case 'difficulty': imgAddDifficultyLevel = !imgAddDifficultyLevel; imageCompositionManager.setAddDifficultyLevel(imgAddDifficultyLevel); break;
+      case 'startPosition': imgIncludeStartPosition = !imgIncludeStartPosition; imageCompositionManager.setIncludeStartPosition(imgIncludeStartPosition); break;
+      case 'userInfo': imgAddUserInfo = !imgAddUserInfo; imageCompositionManager.setAddUserInfo(imgAddUserInfo); break;
+    }
   }
 
-  function togglePositions() {
-    positionsVisible = !positionsVisible;
-    visibilityManager.setGlyphVisibility("Positions", positionsVisible);
-  }
-
-  function toggleReversals() {
-    reversalsVisible = !reversalsVisible;
-    visibilityManager.setGlyphVisibility("Reversals", reversalsVisible);
-  }
-
-  function toggleNonRadial() {
-    nonRadialVisible = !nonRadialVisible;
-    visibilityManager.setNonRadialVisibility(nonRadialVisible);
-  }
-
-  function toggleTurnNumbers() {
-    turnNumbersVisible = !turnNumbersVisible;
-    visibilityManager.setGlyphVisibility("TurnNumbers", turnNumbersVisible);
-  }
-
-  function toggleBlueMotion() {
-    blueMotionVisible = !blueMotionVisible;
-    visibilityManager.setMotionVisibility(MotionColor.BLUE, blueMotionVisible);
-  }
-
-  function toggleRedMotion() {
-    redMotionVisible = !redMotionVisible;
-    visibilityManager.setMotionVisibility(MotionColor.RED, redMotionVisible);
+  function setMobileMode(mode: 'pictograph' | 'animation' | 'image') {
+    triggerHaptic();
+    mobileMode = mode;
   }
 </script>
 
-<div class="visibility-tab">
-  <!-- Title and Description -->
-  <div class="header">
-    <h3 class="title">Visibility Settings</h3>
-    <p class="description">Control which elements are visible in pictographs</p>
-
-    <!-- Preview Toggle Button (only visible on small containers) -->
+<div class="visibility-tab" class:visible={isVisible}>
+  <!-- Mobile: Segmented Control (hidden on desktop) -->
+  <div class="mobile-segment-control">
     <button
-      class="preview-toggle-btn"
-      onclick={() => (showPreview = !showPreview)}
-      aria-expanded={showPreview}
-      aria-controls="preview-section"
+      class="segment-btn"
+      class:active={mobileMode === 'pictograph'}
+      onclick={() => setMobileMode('pictograph')}
     >
-      <span class="toggle-icon" class:expanded={showPreview}>▼</span>
-      {showPreview ? "Hide" : "Show"} Preview
+      <i class="fas fa-image"></i>
+      <span>Pictograph</span>
+    </button>
+    <button
+      class="segment-btn"
+      class:active={mobileMode === 'animation'}
+      onclick={() => setMobileMode('animation')}
+    >
+      <i class="fas fa-film"></i>
+      <span>Animation</span>
+    </button>
+    <button
+      class="segment-btn"
+      class:active={mobileMode === 'image'}
+      onclick={() => setMobileMode('image')}
+    >
+      <i class="fas fa-download"></i>
+      <span>Image</span>
     </button>
   </div>
 
-  <!-- Main Content - 50/50 Split -->
-  <div class="content">
-    <!-- Left Side: Controls (hidden on small screens when preview is shown) -->
-    <div class="controls-section" class:hidden-mobile={showPreview}>
-      <ElementVisibilityControls
-        {tkaVisible}
-        {vtgVisible}
-        {elementalVisible}
-        {positionsVisible}
-        {reversalsVisible}
-        {turnNumbersVisible}
-        {nonRadialVisible}
-        {blueMotionVisible}
-        {redMotionVisible}
-        onToggleTKA={toggleTKA}
-        onToggleVTG={toggleVTG}
-        onToggleElemental={toggleElemental}
-        onTogglePositions={togglePositions}
-        onToggleReversals={toggleReversals}
-        onToggleTurnNumbers={toggleTurnNumbers}
-        onToggleNonRadial={toggleNonRadial}
-        onToggleBlueMotion={toggleBlueMotion}
-        onToggleRedMotion={toggleRedMotion}
-      />
-    </div>
-
-    <!-- Right Side: Interactive Preview (only shown on small screens when toggled) -->
-    <div
-      id="preview-section"
-      class="preview-wrapper"
-      class:visible-mobile={showPreview}
+  <!-- Desktop: Side-by-side panels / Mobile: Single panel based on segment -->
+  <div class="visibility-panels-container">
+    <!-- Pictograph Panel -->
+    <section
+      class="settings-panel pictograph-panel"
+      class:mobile-hidden={mobileMode !== 'pictograph'}
     >
-      <PreviewSection
-        pictographData={examplePictographData}
-        onToggleTKA={toggleTKA}
-        onToggleVTG={toggleVTG}
-        onToggleElemental={toggleElemental}
-        onTogglePositions={togglePositions}
-        onToggleReversals={toggleReversals}
-        onToggleNonRadial={toggleNonRadial}
-      />
-    </div>
+      <header class="panel-header">
+        <span class="panel-icon pictograph-icon"><i class="fas fa-image"></i></span>
+        <h3 class="panel-title">Pictograph</h3>
+      </header>
+
+      <!-- Pictograph Preview - Interactive: click elements to toggle -->
+      <div class="preview-frame">
+        <PictographWithVisibility
+          pictographData={examplePictographData}
+          forceShowAll={true}
+          previewMode={true}
+          onToggleTKA={() => togglePicto('tka')}
+          onToggleVTG={() => togglePicto('vtg')}
+          onToggleElemental={() => togglePicto('elemental')}
+          onTogglePositions={() => togglePicto('positions')}
+          onToggleReversals={() => togglePicto('reversals')}
+          onToggleNonRadial={() => togglePicto('nonRadial')}
+        />
+      </div>
+
+      <div class="panel-controls">
+        <div class="control-group">
+          <span class="group-label">Glyphs</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={tkaGlyphVisible} onclick={() => togglePicto('tka')}>TKA</button>
+            <button class="toggle-btn" class:active={vtgGlyphVisible} onclick={() => togglePicto('vtg')}>VTG</button>
+            <button class="toggle-btn" class:active={elementalGlyphVisible} onclick={() => togglePicto('elemental')}>Elemental</button>
+            <button class="toggle-btn" class:active={positionsGlyphVisible} onclick={() => togglePicto('positions')}>Positions</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="group-label">Details</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={reversalIndicatorsVisible} onclick={() => togglePicto('reversals')}>Reversals</button>
+            <button class="toggle-btn" class:active={turnNumbersVisible} onclick={() => togglePicto('turnNumbers')}>Turn #s</button>
+            <button class="toggle-btn" class:active={nonRadialVisible} onclick={() => togglePicto('nonRadial')}>Non-Radial</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Animation Panel -->
+    <section
+      class="settings-panel animation-panel"
+      class:mobile-hidden={mobileMode !== 'animation'}
+    >
+      <header class="panel-header">
+        <span class="panel-icon animation-icon"><i class="fas fa-film"></i></span>
+        <h3 class="panel-title">Animation</h3>
+      </header>
+
+      <!-- Animation Preview -->
+      <div class="preview-frame animation-preview">
+        <div class="animation-placeholder">
+          <i class="fas fa-play-circle"></i>
+          <span>Animation Preview</span>
+        </div>
+      </div>
+
+      <div class="panel-controls">
+        <div class="control-group">
+          <span class="group-label">Canvas</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={animGridVisible} onclick={() => toggleAnim('grid')}>Grid</button>
+            <button class="toggle-btn" class:active={animBeatNumbersVisible} onclick={() => toggleAnim('beatNumbers')}>Beat #s</button>
+            <button class="toggle-btn" class:active={animTrailsVisible} onclick={() => toggleAnim('trails')}>Trails</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <span class="group-label">Overlays</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={animTkaGlyphVisible} onclick={() => toggleAnim('tka')}>TKA Glyph</button>
+            <button class="toggle-btn" class:active={animReversalIndicatorsVisible} onclick={() => toggleAnim('reversals')}>Reversals</button>
+            <button class="toggle-btn" class:active={animTurnNumbersVisible} onclick={() => toggleAnim('turnNumbers')}>Turn #s</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Image Export Panel -->
+    <section
+      class="settings-panel image-panel"
+      class:mobile-hidden={mobileMode !== 'image'}
+    >
+      <header class="panel-header">
+        <span class="panel-icon image-icon"><i class="fas fa-download"></i></span>
+        <h3 class="panel-title">Image Export</h3>
+      </header>
+
+      <!-- Export Preview -->
+      <div class="preview-frame image-preview">
+        <div class="image-placeholder">
+          <i class="fas fa-file-image"></i>
+          <span>Export Preview</span>
+        </div>
+      </div>
+
+      <div class="panel-controls">
+        <div class="control-group">
+          <span class="group-label">Include in Image</span>
+          <div class="toggle-grid">
+            <button class="toggle-btn" class:active={imgAddWord} onclick={() => toggleImage('word')}>Word</button>
+            <button class="toggle-btn" class:active={imgAddBeatNumbers} onclick={() => toggleImage('beatNumbers')}>Beat #s</button>
+            <button class="toggle-btn" class:active={imgIncludeStartPosition} onclick={() => toggleImage('startPosition')}>Start Pos</button>
+            <button class="toggle-btn" class:active={imgAddDifficultyLevel} onclick={() => toggleImage('difficulty')}>Difficulty</button>
+            <button class="toggle-btn" class:active={imgAddUserInfo} onclick={() => toggleImage('userInfo')}>User Info</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
 <style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     CONTAINER-QUERY BASED FLUID LAYOUT
+     Centers content vertically & horizontally for intentional appearance
+     ═══════════════════════════════════════════════════════════════════════════ */
   .visibility-tab {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(6px, 1.5cqi, 12px); /* Tighter gap to maximize content area */
-    max-width: 1200px; /* Constrain on large screens */
-    width: 100%;
-    margin: 0 auto; /* Center on large screens */
-    height: 100%; /* Use full height of parent */
-    flex: 1; /* Fill available height using flex */
-    min-height: 0; /* Allow proper flex shrinking */
-    padding: 0 clamp(8px, 2cqi, 16px);
+    /* Establish as container for width queries only (inline-size avoids height collapse) */
     container-type: inline-size;
-  }
+    container-name: visibility-tab;
 
-  /* Header - iOS Typography */
-  .header {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 1cqi, 8px); /* Tighter spacing to maximize content area */
-    text-align: center;
-    flex-shrink: 0; /* Prevent header from shrinking */
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+    /* Fluid padding */
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
 
-  .title {
-    font-size: clamp(20px, 4cqi, 24px); /* iOS title3 */
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.45px; /* iOS title3 tracking */
-    line-height: 1.25; /* iOS title3 ratio */
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0;
-    /* iOS uses SF Pro Display for text ≥20px */
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-      system-ui, sans-serif;
+  .visibility-tab.visible {
+    opacity: 1;
   }
 
-  .description {
-    font-size: clamp(13px, 2.5cqi, 15px); /* iOS footnote to body */
-    font-weight: 400;
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 1.38; /* iOS footnote ratio */
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-
-  /* Main Content - iOS Glass Morphism */
-  .content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(12px, 3cqi, 32px);
-    background: rgba(255, 255, 255, 0.04);
-    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
-    border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(
-      6px,
-      1.5cqi,
-      16px
-    ); /* Minimal padding to maximize preview space */
-    align-items: stretch; /* Allow items to stretch */
-    flex: 1; /* Fill remaining space */
-    min-height: 0; /* Allow flex shrinking */
-    height: 100%; /* Ensure content takes full available height */
-    box-shadow:
-      0 3px 12px rgba(0, 0, 0, 0.12),
-      0 1px 3px rgba(0, 0, 0, 0.08);
-  }
-
-  /* Controls Section */
-  .controls-section {
+  /* ========================================
+     MOBILE SEGMENTED CONTROL
+     ======================================== */
+  .mobile-segment-control {
     display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1; /* Grow to fill available space but allow shrinking */
-    min-height: 0; /* Allow flex shrinking to prevent overflow */
+    flex-shrink: 0;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(20, 22, 35, 0.8);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    margin-bottom: 12px;
   }
 
-  /* Hide controls on small screens when preview is active */
-  .controls-section.hidden-mobile {
-    display: none;
-  }
-
-  /* Preview Toggle Button - iOS System Blue */
-  .preview-toggle-btn {
+  .segment-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px; /* Reduced from 8px to 6px */
-    width: 100%;
-    max-width: 320px;
-    margin: 0 auto;
-    padding: clamp(
-      8px,
-      2cqi,
-      14px
-    ); /* Reduced from 10px to 8px for compact fit */
-    background: #007aff; /* iOS system blue - exact hex */
-    color: white;
+    gap: 8px;
+    min-height: 52px;
+    padding: 12px 14px;
+    background: transparent;
     border: none;
-    border-radius: 12px; /* iOS medium corner radius */
-    font-size: clamp(13px, 2.5cqi, 15px);
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 1.38;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
-    box-shadow:
-      0 3px 12px rgba(0, 122, 255, 0.3),
-      0 1px 3px rgba(0, 122, 255, 0.2);
-    min-height: 44px; /* iOS minimum touch target */
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .preview-toggle-btn:hover {
-    background: #0051d5; /* iOS system blue hover - darker */
-    box-shadow:
-      0 6px 18px rgba(0, 122, 255, 0.4),
-      0 2px 4px rgba(0, 122, 255, 0.25);
-    transform: translateY(-1px);
+  .segment-btn i {
+    font-size: 15px;
   }
 
-  .preview-toggle-btn:active {
-    transform: scale(0.98);
-    transition-duration: 0.1s; /* iOS immediate feedback */
+  .segment-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
   }
 
-  .preview-toggle-btn:focus-visible {
-    outline: 3px solid #007aff; /* iOS 15+ thicker focus ring */
-    outline-offset: 2px;
-    box-shadow:
-      0 6px 18px rgba(0, 122, 255, 0.4),
-      0 2px 4px rgba(0, 122, 255, 0.25),
-      0 0 0 4px rgba(0, 122, 255, 0.2); /* iOS glow effect */
+  .segment-btn.active {
+    background: rgba(99, 102, 241, 0.3);
+    color: #e0e7ff;
   }
 
-  .toggle-icon {
-    display: inline-block;
-    transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
-    font-size: 0.75em;
-  }
-
-  .toggle-icon.expanded {
-    transform: rotate(180deg);
-  }
-
-  /* Preview Wrapper - Hidden by default on small screens, shows when toggled */
-  .preview-wrapper {
-    display: none;
-    flex: 1; /* Fill available height using flex */
-    min-height: 0; /* Allow flex shrinking */
-  }
-
-  .preview-wrapper.visible-mobile {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Container Query - Two Column Layout for Wider Containers (iPad portrait) */
-  @container (min-width: 768px) {
-    .content {
-      grid-template-columns: minmax(min(100%, 20rem), 1fr) minmax(
-          min(100%, 25rem),
-          2fr
-        );
-      gap: clamp(24px, 4cqi, 40px);
-    }
-
-    /* Hide toggle button on larger containers */
-    .preview-toggle-btn {
+  /* Hide segment control on desktop (>=700px container width) */
+  @container visibility-tab (min-width: 700px) {
+    .mobile-segment-control {
       display: none;
     }
+  }
 
-    /* Always show both sections on larger containers */
-    .controls-section,
-    .controls-section.hidden-mobile {
+  /* ========================================
+     PANELS CONTAINER - Centered, constrained width
+     ======================================== */
+  .visibility-panels-container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(12px, 2cqi, 20px);
+    width: 100%;
+    max-height: 100%;
+  }
+  
+  /* Desktop: Side by side with wider constraint */
+  @container visibility-tab (min-width: 700px) {
+    .visibility-panels-container {
+      flex-direction: row;
+      max-width: 1200px;
+      align-items: stretch;
+    }
+  }
+
+  /* Mobile: Hide inactive panel */
+  .settings-panel.mobile-hidden {
+    display: none;
+  }
+
+  @container visibility-tab (min-width: 700px) {
+    .settings-panel.mobile-hidden {
       display: flex;
     }
+  }
 
-    .preview-wrapper,
-    .preview-wrapper.visible-mobile {
-      display: flex;
-      flex-direction: column;
-      overflow: visible;
+  /* ========================================
+     SETTINGS PANEL - Centered content
+     ======================================== */
+  .settings-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(12px, 2cqi, 20px);
+    background: rgba(25, 28, 40, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ========================================
+     PANEL HEADER
+     ======================================== */
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    align-self: flex-start;
+  }
+
+  .panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .panel-icon.pictograph-icon {
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+  }
+
+  .panel-icon.animation-icon {
+    background: rgba(236, 72, 153, 0.2);
+    color: #f472b6;
+  }
+
+  .panel-icon.image-icon {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+  }
+
+  .panel-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    white-space: nowrap;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  /* ========================================
+     PREVIEW FRAME - Square, centered
+     ======================================== */
+  .preview-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    /* Square aspect ratio, scales with container width */
+    width: 100%;
+    aspect-ratio: 1;
+    flex-shrink: 0;
+  }
+
+  /* Scale pictograph SVG to fill the preview */
+  .preview-frame :global(.pictograph-with-visibility),
+  .preview-frame :global(.pictograph) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .preview-frame :global(svg.pictograph) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Animation placeholder */
+  .animation-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .animation-placeholder i {
+    font-size: 32px;
+    color: rgba(236, 72, 153, 0.5);
+  }
+
+  .animation-placeholder span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* Image export placeholder */
+  .image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .image-placeholder i {
+    font-size: 32px;
+    color: rgba(16, 185, 129, 0.5);
+  }
+
+  .image-placeholder span {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* ========================================
+     PANEL CONTROLS - Full width within panel
+     ======================================== */
+  .panel-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    width: 100%;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.5);
+    padding-left: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  /* ========================================
+     TOGGLE GRID & BUTTONS
+     ======================================== */
+  .toggle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  /* 3 columns when panel is wide enough */
+  @container visibility-tab (min-width: 900px) {
+    .toggle-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  /* Container Query - Balanced Layout for Very Wide Containers */
-  @container (min-width: 1000px) {
-    .content {
-      grid-template-columns: minmax(22rem, 1fr) minmax(30rem, 2.5fr);
-    }
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 12px 10px;
+    background: rgba(30, 32, 45, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Desktop: Better spacing and layout */
-  @media (min-width: 769px) {
-    .visibility-tab {
-      gap: clamp(12px, 2vh, 16px);
-      padding: 0 clamp(12px, 2vw, 24px);
-    }
-
-    .header {
-      gap: clamp(8px, 1.5vh, 12px);
-    }
-
-    .content {
-      padding: clamp(16px, 2vw, 24px);
-    }
+  .toggle-btn:hover {
+    background: rgba(45, 48, 65, 0.9);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.95);
   }
 
-  /* Very large screens: even more spacing */
-  @media (min-width: 1400px) {
-    .visibility-tab {
-      max-width: 1000px;
-    }
+  .toggle-btn:active {
+    transform: scale(0.97);
+    transition-duration: 50ms;
   }
 
-  /* Accessibility */
+  /* Active state - indigo accent */
+  .toggle-btn.active {
+    background: rgba(99, 102, 241, 0.35);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #e0e7ff;
+  }
+
+  .toggle-btn.active:hover {
+    background: rgba(99, 102, 241, 0.45);
+    border-color: rgba(99, 102, 241, 0.6);
+    color: #fff;
+  }
+
+  /* Animation panel uses pink accent */
+  .animation-panel .toggle-btn.active {
+    background: rgba(236, 72, 153, 0.3);
+    border-color: rgba(236, 72, 153, 0.5);
+    color: #fbcfe8;
+  }
+
+  .animation-panel .toggle-btn.active:hover {
+    background: rgba(236, 72, 153, 0.4);
+    border-color: rgba(236, 72, 153, 0.6);
+    color: #fff;
+  }
+
+  /* Image panel uses green/emerald accent */
+  .image-panel .toggle-btn.active {
+    background: rgba(16, 185, 129, 0.3);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #a7f3d0;
+  }
+
+  .image-panel .toggle-btn.active:hover {
+    background: rgba(16, 185, 129, 0.4);
+    border-color: rgba(16, 185, 129, 0.6);
+    color: #fff;
+  }
+
+  /* ========================================
+     SCROLLBAR
+     ======================================== */
+  .visibility-tab::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .visibility-tab::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .visibility-tab::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+  }
+
+  /* ========================================
+     FOCUS STATES
+     ======================================== */
+  .toggle-btn:focus-visible,
+  .segment-btn:focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.6);
+    outline-offset: 2px;
+  }
+
+  /* ========================================
+     REDUCED MOTION
+     ======================================== */
   @media (prefers-reduced-motion: reduce) {
-    .preview-toggle-btn,
-    .toggle-icon,
-    .preview-wrapper {
+    .visibility-tab,
+    .toggle-btn,
+    .segment-btn {
       transition: none;
     }
-
-    .preview-toggle-btn:hover {
-      transform: none;
-    }
   }
 
+  /* ========================================
+     HIGH CONTRAST
+     ======================================== */
   @media (prefers-contrast: high) {
-    .content {
+    .toggle-btn,
+    .segment-btn,
+    .settings-panel {
       border-width: 2px;
-      border-color: rgba(255, 255, 255, 0.3);
     }
 
-    .preview-toggle-btn {
-      border: 2px solid #007aff;
+    .toggle-btn.active {
+      border-color: #6366f1;
     }
   }
 </style>

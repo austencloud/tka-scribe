@@ -1,7 +1,8 @@
 <!-- IOSSegmentedControl.svelte - iOS-native segmented control (UISegmentedControl) -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   interface Segment {
@@ -18,8 +19,8 @@
 
   let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -77,7 +78,8 @@
     background: rgba(118, 118, 128, 0.24); /* iOS fill tertiary dark */
     border-radius: 9px; /* iOS standard corner radius */
     padding: 2px;
-    height: 32px; /* iOS standard segmented control height */
+    height: 52px; /* 50px minimum for accessibility */
+    min-height: 52px;
     width: fit-content;
     min-width: 240px;
     max-width: 100%;

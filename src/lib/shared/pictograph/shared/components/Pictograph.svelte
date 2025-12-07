@@ -1,27 +1,26 @@
 <script lang="ts">
-  import {
-    BeatNumber,
-    EmptyStateIndicator,
-    GridMode,
-    ReversalIndicators,
-    type BeatData,
-    type IAnimationService,
-    type ITurnsTupleGeneratorService,
-    type PictographData,
-  } from "$shared";
   import ElementalGlyph from "./ElementalGlyph.svelte";
   import PositionGlyph from "./PositionGlyph.svelte";
   import VTGGlyph from "./VTGGlyph.svelte";
   import { calculateVTGFromPictograph } from "../domain/utils/vtg-calculator";
   import { onMount, onDestroy } from "svelte";
-  import { resolve, tryResolve, TYPES } from "../../../inversify";
+  import { resolve, tryResolve, TYPES } from "../../../inversify/di";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
+  import { getSettings } from "../../../application/state/app-state.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
-  import type { IGridModeDeriver } from "../../grid/services/contracts";
+  import type { IGridModeDeriver } from "../../grid/services/contracts/IGridModeDeriver";
   import PropSvg from "../../prop/components/PropSvg.svelte";
-  import { TKAGlyph } from "../../tka-glyph";
+  import TKAGlyph from "../../tka-glyph/components/TKAGlyph.svelte";
   import { createPictographState } from "../state/pictograph-state.svelte";
+  import BeatNumber from "./BeatNumber.svelte";
+  import ReversalIndicators from "./ReversalIndicators.svelte";
+  import EmptyStateIndicator from "./EmptyStateIndicator.svelte";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+  import type { IAnimationService } from "../../../application/services/contracts/IAnimationService";
+  import type { ITurnsTupleGeneratorService } from "../../arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import { GridMode } from "../../grid/domain/enums/grid-enums";
+  import type { PictographData } from "../domain/models/PictographData";
 
   // Simplified Props interface - accepts either BeatData (with beat context) or PictographData (without)
   let {
@@ -30,6 +29,8 @@
     arrowsClickable = false,
     visibleHand = null,
     gridMode: overrideGridMode = null,
+    shouldOrbitAroundCenter = false,
+    previewMode = false,
     showTKA = undefined,
     showVTG = undefined,
     showElemental = undefined,
@@ -48,6 +49,8 @@
     arrowsClickable?: boolean; // Enable arrow selection for adjustment
     visibleHand?: "blue" | "red" | null; // Show only one hand's prop/arrow (for Guided Construct mode)
     gridMode?: GridMode | null; // Override grid mode (useful for single-motion start positions)
+    shouldOrbitAroundCenter?: boolean; // Enable arc-based rotation for sequence transform animations
+    previewMode?: boolean; // Preview mode: show "off" elements at 50% opacity instead of hidden
     // Visibility controls (if undefined, will use global visibility settings)
     showTKA?: boolean;
     showVTG?: boolean;
@@ -98,35 +101,35 @@
     visibilityUpdateCount; // Force reactivity
     return showTKA !== undefined
       ? showTKA
-      : visibilityManager.getGlyphVisibility("TKA");
+      : visibilityManager.getGlyphVisibility("tkaGlyph");
   });
 
   const effectiveShowVTG = $derived.by(() => {
     visibilityUpdateCount;
     return showVTG !== undefined
       ? showVTG
-      : visibilityManager.getGlyphVisibility("VTG");
+      : visibilityManager.getGlyphVisibility("vtgGlyph");
   });
 
   const effectiveShowElemental = $derived.by(() => {
     visibilityUpdateCount;
     return showElemental !== undefined
       ? showElemental
-      : visibilityManager.getGlyphVisibility("Elemental");
+      : visibilityManager.getGlyphVisibility("elementalGlyph");
   });
 
   const effectiveShowPositions = $derived.by(() => {
     visibilityUpdateCount;
     return showPositions !== undefined
       ? showPositions
-      : visibilityManager.getGlyphVisibility("Positions");
+      : visibilityManager.getGlyphVisibility("positionsGlyph");
   });
 
   const effectiveShowReversals = $derived.by(() => {
     visibilityUpdateCount;
     return showReversals !== undefined
       ? showReversals
-      : visibilityManager.getGlyphVisibility("Reversals");
+      : visibilityManager.getGlyphVisibility("reversalIndicators");
   });
 
   const effectiveShowNonRadialPoints = $derived.by(() => {
@@ -195,9 +198,14 @@
     pictographState.updatePictographData(pictographData);
   });
 
-  // Recalculate prop and arrow positions when pictograph data changes
+  // Recalculate prop and arrow positions when pictograph data OR settings change
   // Only after component is mounted and services are initialized
   $effect(() => {
+    // Watch for settings changes that affect prop rendering
+    const settings = getSettings();
+    settings.bluePropType;
+    settings.redPropType;
+
     if (pictographData && isMounted) {
       pictographState.calculatePropPositions();
       pictographState.calculateArrowPositions();
@@ -334,6 +342,8 @@
     // Force reactivity to global visibility changes
     visibilityUpdateCount;
 
+    // Force reactivity to prop type settings changes (triggers motionsToRender re-computation)
+    // Access motionsToRender which internally watches settingsUpdateCounter
     let motions = pictographState.motionsToRender;
 
     // Filter by visibleHand prop if specified (for Guided Construct mode)
@@ -493,6 +503,7 @@
               {turnsTuple}
               pictographData={pictographState.effectivePictographData}
               visible={effectiveShowTKA}
+              {previewMode}
               onToggle={onToggleTKA}
             />
           {/if}
@@ -511,6 +522,7 @@
             redReversal={delayedRedReversal}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowReversals}
+            {previewMode}
             onToggle={onToggleReversals}
           />
 
@@ -520,6 +532,7 @@
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowElemental}
+            {previewMode}
             onToggle={onToggleElemental}
           />
 
@@ -529,6 +542,7 @@
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowVTG}
+            {previewMode}
             onToggle={onToggleVTG}
           />
 
@@ -539,6 +553,7 @@
             letter={pictographData?.letter}
             hasValidData={pictographState.hasValidData}
             visible={effectiveShowPositions}
+            {previewMode}
             onToggle={onTogglePositions}
           />
         </g>
@@ -585,6 +600,7 @@
                 {turnsTuple}
                 pictographData={pictographState.effectivePictographData}
                 visible={effectiveShowTKA}
+                {previewMode}
                 onToggle={onToggleTKA}
               />
             {/if}
@@ -603,6 +619,7 @@
               redReversal={delayedRedReversal}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowReversals}
+              {previewMode}
               onToggle={onToggleReversals}
             />
 
@@ -612,6 +629,7 @@
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowElemental}
+              {previewMode}
               onToggle={onToggleElemental}
             />
 
@@ -621,6 +639,7 @@
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowVTG}
+              {previewMode}
               onToggle={onToggleVTG}
             />
 
@@ -631,6 +650,7 @@
               letter={pictographData?.letter}
               hasValidData={pictographState.hasValidData}
               visible={effectiveShowPositions}
+              {previewMode}
               onToggle={onTogglePositions}
             />
           </g>

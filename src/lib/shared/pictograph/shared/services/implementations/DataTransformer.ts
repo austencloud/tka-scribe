@@ -6,14 +6,15 @@
  */
 
 import { injectable } from "inversify";
-import type { BeatData } from "../../../../../modules/create/shared/domain/models/BeatData";
+import type { BeatData } from "../../../../../features/create/shared/domain/models/BeatData";
 import type { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type {
   GridData,
   GridPointData as RawGridData,
 } from "../../../grid/domain/models/grid-models";
 import { createPictographData } from "../../domain/factories/createPictographData";
-import type { MotionData, PictographData } from "../../domain/models";
+import type { MotionData } from "../../domain/models/MotionData";
+import type { PictographData } from "../../domain/models/PictographData";
 import type { IDataTransformer } from "../contracts/IDataTransformer";
 
 // Interface moved to contracts/IDataTransformer.ts

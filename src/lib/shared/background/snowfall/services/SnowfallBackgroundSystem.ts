@@ -1,20 +1,22 @@
-import { resolve, TYPES } from "../../../inversify";
+import { resolve } from "../../../inversify/di";
+import { TYPES } from "../../../inversify/types";
 import type {
   Dimensions,
   QualityLevel,
-} from "../../shared/domain/types/background-types";
-import type { IBackgroundConfigurationService } from "../../shared/services/contracts/IBackgroundConfigurationService";
-import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
-import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
-import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
+} from "$lib/shared/background/shared/domain/types/background-types";
+import type { IBackgroundConfigurationService } from "$lib/shared/background/shared/services/contracts/IBackgroundConfigurationService";
+import type { IBackgroundRenderingService } from "$lib/shared/background/shared/services/contracts/IBackgroundRenderingService";
+import type { IBackgroundSystem } from "$lib/shared/background/shared/services/contracts/IBackgroundSystem";
+import { createShootingStarSystem } from "$lib/shared/background/shared/services/implementations/ShootingStarSystem";
 import type {
   ShootingStarState,
   Snowflake,
 } from "../domain/models/snowfall-models";
 import { createSnowflakeSystem } from "./SnowflakeSystem";
+import type { GradientStop } from "$lib/shared/background/shared/domain/models/background-models";
 
 export class SnowfallBackgroundSystem implements IBackgroundSystem {
-  private snowflakeSystem = createSnowflakeSystem();
+  private snowflakeSystem: ReturnType<typeof createSnowflakeSystem>;
   private shootingStarSystem = createShootingStarSystem();
 
   // Services
@@ -26,8 +28,8 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
 
   private quality: QualityLevel = "medium";
   private isInitialized: boolean = false;
-
   constructor() {
+    this.snowflakeSystem = createSnowflakeSystem();
     // Inject services
     this.renderingService = resolve<IBackgroundRenderingService>(
       TYPES.IBackgroundRenderingService
@@ -58,7 +60,7 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
   }
 
   public update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
-    if (dimensions && dimensions.width > 0 && dimensions.height > 0) {
+    if (dimensions.width > 0 && dimensions.height > 0) {
       // If not initialized, or if initialized but snowflakes are unexpectedly empty (e.g. after temporary invalid dimensions)
       // and we have valid dimensions, (re-)initialize.
       if (!this.isInitialized || this.snowflakes.length === 0) {
@@ -88,11 +90,14 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
   public draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
     const { config, qualitySettings } =
       this.configurationService.getOptimizedConfig(this.quality);
+    const gradientStops = [
+      ...config.core.background.gradientStops,
+    ] as GradientStop[];
 
     this.renderingService.drawGradient(
       ctx,
       dimensions,
-      config.core.background.gradientStops
+      gradientStops
     );
 
     if (this.isInitialized) {
@@ -105,9 +110,7 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
 
   public setQuality(quality: QualityLevel): void {
     this.quality = quality;
-    if (this.snowflakeSystem.setQuality) {
-      this.snowflakeSystem.setQuality(quality);
-    }
+    this.snowflakeSystem.setQuality(quality);
   }
 
   public setAccessibility(_settings: {

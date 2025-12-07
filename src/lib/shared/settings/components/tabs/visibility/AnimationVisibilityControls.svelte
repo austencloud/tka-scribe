@@ -1,0 +1,344 @@
+<!--
+  AnimationVisibilityControls.svelte - Animation-specific visibility controls
+
+  Controls for animation playback visibility settings.
+-->
+<script lang="ts">
+  let {
+    gridVisible = true,
+    beatNumbersVisible = true,
+    propsVisible = true,
+    trailsVisible = true,
+    tkaGlyphVisible = true,
+    reversalIndicatorsVisible = false,
+    turnNumbersVisible = true,
+    blueMotionVisible = true,
+    redMotionVisible = true,
+    onToggleGrid,
+    onToggleBeatNumbers,
+    onToggleProps,
+    onToggleTrails,
+    onToggleTKA,
+    onToggleReversals,
+    onToggleTurnNumbers,
+    onToggleBlueMotion,
+    onToggleRedMotion,
+  }: {
+    gridVisible: boolean;
+    beatNumbersVisible: boolean;
+    propsVisible: boolean;
+    trailsVisible: boolean;
+    tkaGlyphVisible: boolean;
+    reversalIndicatorsVisible: boolean;
+    turnNumbersVisible: boolean;
+    blueMotionVisible: boolean;
+    redMotionVisible: boolean;
+    onToggleGrid: () => void;
+    onToggleBeatNumbers: () => void;
+    onToggleProps: () => void;
+    onToggleTrails: () => void;
+    onToggleTKA: () => void;
+    onToggleReversals: () => void;
+    onToggleTurnNumbers: () => void;
+    onToggleBlueMotion: () => void;
+    onToggleRedMotion: () => void;
+  } = $props();
+</script>
+
+<div class="animation-controls">
+  <!-- Animation-Specific Section -->
+  <section class="control-section">
+    <h4 class="section-title">Animation Elements</h4>
+    <div class="controls-grid">
+      <button
+        class="control-btn"
+        class:active={gridVisible}
+        onclick={onToggleGrid}
+      >
+        <i class="fas fa-th"></i>
+        <span>Grid</span>
+      </button>
+
+      <button
+        class="control-btn"
+        class:active={beatNumbersVisible}
+        onclick={onToggleBeatNumbers}
+      >
+        <i class="fas fa-hashtag"></i>
+        <span>Beat #s</span>
+      </button>
+
+      <button
+        class="control-btn"
+        class:active={propsVisible}
+        onclick={onToggleProps}
+      >
+        <i class="fas fa-circle"></i>
+        <span>Props</span>
+      </button>
+
+      <button
+        class="control-btn"
+        class:active={trailsVisible}
+        onclick={onToggleTrails}
+      >
+        <i class="fas fa-route"></i>
+        <span>Trails</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Shared Elements Section -->
+  <section class="control-section">
+    <h4 class="section-title">Glyphs & Motion</h4>
+    <div class="controls-grid">
+      <button
+        class="control-btn"
+        class:active={tkaGlyphVisible}
+        onclick={onToggleTKA}
+      >
+        <span class="icon-letter">A</span>
+        <span>TKA</span>
+      </button>
+
+      <button
+        class="control-btn"
+        class:active={turnNumbersVisible}
+        onclick={onToggleTurnNumbers}
+      >
+        <i class="fas fa-sort-numeric-down"></i>
+        <span>Turns</span>
+      </button>
+
+      <button
+        class="control-btn"
+        class:active={reversalIndicatorsVisible}
+        onclick={onToggleReversals}
+      >
+        <span class="icon-letter">R</span>
+        <span>Reversals</span>
+      </button>
+
+      <button
+        class="control-btn motion-blue"
+        class:active={blueMotionVisible}
+        onclick={onToggleBlueMotion}
+      >
+        <i class="fas fa-circle"></i>
+        <span>Blue</span>
+      </button>
+
+      <button
+        class="control-btn motion-red"
+        class:active={redMotionVisible}
+        onclick={onToggleRedMotion}
+      >
+        <i class="fas fa-circle"></i>
+        <span>Red</span>
+      </button>
+    </div>
+  </section>
+</div>
+
+<style>
+  .animation-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    padding: 0 4px;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+  }
+
+  /* Bento Box Glass Card Style */
+  .control-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    min-height: 70px;
+    /* Bento box frosted glass background */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    /* Smooth Bento box transition */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    /* Subtle inset glow */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .control-btn i {
+    font-size: 20px;
+  }
+
+  .control-btn .icon-letter {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Georgia, serif;
+  }
+
+  .control-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    /* Subtle lift effect */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+
+  /* Active State - Blue Accent (Bento box system) */
+  .control-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 0 1px rgba(59, 130, 246, 0.2);
+  }
+
+  .control-btn.active:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 0 0 1px rgba(59, 130, 246, 0.3),
+      0 4px 12px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Motion Color Variants - Subtle color hints within blue system */
+  .control-btn.motion-blue.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 0 1px rgba(59, 130, 246, 0.2);
+  }
+
+  .control-btn.motion-blue.active i {
+    color: #60a5fa;
+  }
+
+  .control-btn.motion-blue.active:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+  }
+
+  .control-btn.motion-red.active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #60a5fa;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 0 1px rgba(59, 130, 246, 0.2);
+  }
+
+  .control-btn.motion-red.active i {
+    color: #ef4444;
+  }
+
+  .control-btn.motion-red.active:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #93c5fd;
+  }
+
+  .control-btn:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.1s;
+  }
+
+  /* Compact for small containers */
+  @container settings-content (max-height: 552px) {
+    .controls-grid {
+      gap: 6px;
+    }
+
+    .control-btn {
+      min-height: 64px;
+      padding: 10px 6px;
+    }
+
+    .section-title {
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .controls-grid {
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 6px;
+    }
+
+    .control-btn {
+      min-height: 60px;
+      padding: 10px 6px;
+      font-size: 11px;
+      border-radius: 10px;
+    }
+
+    .control-btn i {
+      font-size: 18px;
+    }
+
+    .control-btn .icon-letter {
+      font-size: 20px;
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .control-btn {
+      transition: none;
+    }
+
+    .control-btn:hover {
+      transform: none;
+    }
+  }
+
+  @media (prefers-contrast: high) {
+    .control-btn {
+      border-width: 2px;
+    }
+
+    .control-btn.active {
+      border-color: rgba(59, 130, 246, 0.8);
+    }
+  }
+</style>

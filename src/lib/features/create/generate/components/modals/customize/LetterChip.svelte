@@ -1,0 +1,26 @@
+<!--
+LetterChip.svelte - Re-exports from shared for backwards compatibility
+-->
+<script lang="ts">
+  import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { LetterChip as SharedLetterChip } from "$lib/shared/components/letter-constraints";
+
+  let {
+    letter,
+    isSelected = false,
+    mode = "include",
+    onClick
+  } = $props<{
+    letter: Letter;
+    isSelected?: boolean;
+    mode?: "include" | "exclude";
+    onClick: () => void;
+  }>();
+</script>
+
+<SharedLetterChip
+  {letter}
+  {isSelected}
+  {mode}
+  {onClick}
+/>

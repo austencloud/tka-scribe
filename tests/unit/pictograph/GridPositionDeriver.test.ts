@@ -25,7 +25,7 @@ describe("GridPositionDeriver", () => {
   });
 
   // ============================================================================
-  // ALPHA POSITIONS - Opposite/Complementary Directions (8 positions)
+  // ALPHA POSITIONS - Opposite/Inverted Directions (8 positions)
   // ============================================================================
 
   describe("Alpha Positions - Bidirectional Mapping", () => {

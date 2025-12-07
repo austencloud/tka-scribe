@@ -1,13 +1,14 @@
 import { injectable } from "inversify";
-import type { IBackgroundRenderingService } from "../contracts";
-import type { Dimensions, GradientStop } from "../../domain";
+import type { IBackgroundRenderingService } from "../contracts/IBackgroundRenderingService";
+import type { Dimensions } from "../../domain/types/background-types";
+import type { GradientStop } from "../../domain/models/background-models";
 
 @injectable()
 export class BackgroundRenderingService implements IBackgroundRenderingService {
   drawGradient(
     ctx: CanvasRenderingContext2D,
     dimensions: Dimensions,
-    gradientStops: GradientStop[]
+    gradientStops: readonly GradientStop[]
   ): void {
     const gradient = ctx.createLinearGradient(0, 0, 0, dimensions.height);
 

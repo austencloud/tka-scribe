@@ -5,7 +5,7 @@
  * within complex UI components like Pictograph.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
 
 export interface ComponentLoadingState {
   /** Map of component names to their loading status */

@@ -5,16 +5,15 @@
  * No download/sharing logic - only creates images from sequence data.
  */
 
-import type { SequenceData } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { SequenceExportOptions } from "../../domain/models";
-import type {
-  IImageCompositionService,
-  IImageFormatConverterService,
-} from "../contracts";
+
 import type { ISequenceRenderService } from "../contracts/ISequenceRenderService";
 import { LayoutCalculationService } from "./LayoutCalculationService";
+import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
+import type { IImageCompositionService } from "../contracts/IImageCompositionService";
+import type { IImageFormatConverterService } from "../contracts/IImageFormatConverterService";
 
 @injectable()
 export class SequenceRenderService implements ISequenceRenderService {
@@ -201,7 +200,7 @@ export class SequenceRenderService implements ISequenceRenderService {
 
       // Scaling and sizing
       beatScale: 1.0,
-      beatSize: LayoutCalculationService.getBaseBeatSize(), // Use desktop-compatible BASE_BEAT_SIZE (144px)
+      beatSize: LayoutCalculationService.getBaseBeatSize(), // Use desktop-compatible BASE_BEAT_SIZE (150px)
       margin: 0, // No margin - beats are directly adjacent like BeatGrid
 
       // Visibility settings

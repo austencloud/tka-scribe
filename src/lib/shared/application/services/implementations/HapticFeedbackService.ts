@@ -3,6 +3,11 @@
  *
  * Provides haptic feedback capabilities for mobile devices with proper
  * accessibility considerations, browser compatibility, and performance optimization.
+ *
+ * Supports:
+ * - Android: Standard Vibration API (navigator.vibrate)
+ * - iOS 17.4+: Checkbox switch hack (Safari-specific)
+ * - Graceful degradation on unsupported platforms
  */
 
 import { browser } from "$app/environment";
@@ -10,25 +15,34 @@ import type {
   HapticFeedbackConfig,
   HapticFeedbackType,
   IHapticFeedbackService,
-} from "$shared";
+} from "../contracts/IHapticFeedbackService";
 import { injectable } from "inversify";
 
-// Feedback patterns (in milliseconds)
+// Feedback patterns (in milliseconds for Vibration API)
+// For iOS, these map to number of haptic pulses
 const FEEDBACK_PATTERNS: Record<
   Exclude<HapticFeedbackType, "custom">,
   number[]
 > = {
-  selection: [70], // Standard haptic for all interactive elements
-  success: [100, 30, 50], // Triple pulse for successful actions
-  warning: [60, 0, 60], // Double tap for warnings
-  error: [100, 0, 100, 0, 100], // Triple tap for errors
+  selection: [70], // Single pulse
+  success: [100, 30, 50], // Double pulse
+  warning: [60, 0, 60], // Double pulse
+  error: [100, 0, 100, 0, 100], // Triple pulse
+};
+
+// iOS pulse counts for each feedback type
+const IOS_PULSE_COUNTS: Record<Exclude<HapticFeedbackType, "custom">, number> = {
+  selection: 1,
+  success: 2,
+  warning: 2,
+  error: 3,
 };
 
 // Default configuration
 const DEFAULT_CONFIG: HapticFeedbackConfig = {
   enabled: true,
   respectReducedMotion: true,
-  throttleTime: 100,
+  throttleTime: 50, // Reduced for snappier iOS response
   customPatterns: {},
 };
 
@@ -36,7 +50,13 @@ const DEFAULT_CONFIG: HapticFeedbackConfig = {
 export class HapticFeedbackService implements IHapticFeedbackService {
   private lastFeedbackTime: number = 0;
   private config: HapticFeedbackConfig = { ...DEFAULT_CONFIG };
-  private deviceSupportsVibration: boolean = false;
+
+  // Platform support flags
+  private supportsVibrationAPI: boolean = false;
+  private supportsIOSHaptic: boolean = false;
+
+  // Cached iOS haptic element (reused for performance)
+  private iosHapticInput: HTMLInputElement | null = null;
 
   constructor() {
     this.initializeService();
@@ -51,13 +71,23 @@ export class HapticFeedbackService implements IHapticFeedbackService {
       return false;
     }
 
-    // Get the pattern based on the type
-    const pattern =
-      type === "custom"
-        ? [] // Custom patterns are handled via triggerCustom
-        : FEEDBACK_PATTERNS[type];
+    // Update throttle time
+    this.lastFeedbackTime = Date.now();
 
-    return this.vibrate(pattern);
+    // iOS Safari: Use checkbox hack
+    if (this.supportsIOSHaptic) {
+      const pulseCount = type === "custom" ? 1 : IOS_PULSE_COUNTS[type];
+      return this.triggerIOSHaptic(pulseCount);
+    }
+
+    // Android/Other: Use Vibration API
+    if (this.supportsVibrationAPI) {
+      const pattern =
+        type === "custom" ? [] : FEEDBACK_PATTERNS[type];
+      return this.vibrate(pattern);
+    }
+
+    return false;
   }
 
   public setCustomPattern(name: string, pattern: number[]): void {
@@ -75,11 +105,25 @@ export class HapticFeedbackService implements IHapticFeedbackService {
       return false;
     }
 
-    return this.vibrate(pattern);
+    // Update throttle time
+    this.lastFeedbackTime = Date.now();
+
+    // iOS: Count the pulses in the pattern (number of non-zero values)
+    if (this.supportsIOSHaptic) {
+      const pulseCount = pattern.filter((v) => v > 0).length || 1;
+      return this.triggerIOSHaptic(pulseCount);
+    }
+
+    // Android: Use the pattern directly
+    if (this.supportsVibrationAPI) {
+      return this.vibrate(pattern);
+    }
+
+    return false;
   }
 
   public isSupported(): boolean {
-    return this.deviceSupportsVibration;
+    return this.supportsVibrationAPI || this.supportsIOSHaptic;
   }
 
   public setEnabled(enabled: boolean): void {
@@ -99,31 +143,76 @@ export class HapticFeedbackService implements IHapticFeedbackService {
   }
 
   // ============================================================================
-  // PRIVATE METHODS
+  // PRIVATE METHODS - INITIALIZATION
   // ============================================================================
 
   private initializeService(): void {
-    this.detectBrowserSupport();
+    this.detectPlatformSupport();
     this.setupReducedMotionListener();
+
+    // Pre-create iOS haptic element if supported
+    if (this.supportsIOSHaptic) {
+      this.createIOSHapticElement();
+    }
   }
 
   /**
-   * Detect if the device supports haptic feedback
+   * Detect platform-specific haptic support
    */
-  private detectBrowserSupport(): void {
+  private detectPlatformSupport(): void {
     if (!browser) {
-      this.deviceSupportsVibration = false;
       return;
     }
 
+    // Check standard Vibration API (Android Chrome, Firefox, etc.)
     try {
-      this.deviceSupportsVibration =
-        "vibrate" in navigator ||
-        "mozVibrate" in navigator ||
-        "webkitVibrate" in navigator;
-    } catch (error) {
-      console.warn("Error detecting haptic feedback support:", error);
-      this.deviceSupportsVibration = false;
+      this.supportsVibrationAPI =
+        "vibrate" in navigator &&
+        typeof navigator.vibrate === "function";
+    } catch {
+      this.supportsVibrationAPI = false;
+    }
+
+    // Check iOS Safari 17.4+ support
+    this.supportsIOSHaptic = this.detectIOSSafariSupport();
+
+
+  }
+
+  /**
+   * Detect if running on iOS Safari 17.4+ which supports the checkbox haptic hack
+   */
+  private detectIOSSafariSupport(): boolean {
+    if (!browser) return false;
+
+    try {
+      const ua = navigator.userAgent;
+
+      // Must be iOS (iPhone, iPad, iPod)
+      const isIOS = /iPhone|iPad|iPod/.test(ua);
+      if (!isIOS) return false;
+
+      // Extract iOS version
+      const iosVersionMatch = ua.match(/OS (\d+)_(\d+)/);
+      if (!iosVersionMatch) return false;
+
+      const majorVersion = parseInt(iosVersionMatch[1] ?? "0", 10);
+      const minorVersion = parseInt(iosVersionMatch[2] ?? "0", 10);
+
+      // Need iOS 17.4 or higher
+      if (majorVersion < 17) return false;
+      if (majorVersion === 17 && minorVersion < 4) return false;
+
+      // Check if it's actually Safari (not Chrome/Firefox wrapper that might not support it)
+      // Safari on iOS includes "Safari" but not "CriOS" (Chrome) or "FxiOS" (Firefox)
+      const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS/.test(ua);
+
+      // Also support WKWebView-based browsers and PWAs
+      const isWebKit = /AppleWebKit/.test(ua);
+
+      return isSafari || isWebKit;
+    } catch {
+      return false;
     }
   }
 
@@ -167,6 +256,78 @@ export class HapticFeedbackService implements IHapticFeedbackService {
     }
   }
 
+  // ============================================================================
+  // PRIVATE METHODS - iOS HAPTIC (Checkbox Hack)
+  // ============================================================================
+
+  /**
+   * Create the hidden checkbox element used to trigger iOS haptics
+   */
+  private createIOSHapticElement(): void {
+    if (!browser || this.iosHapticInput) return;
+
+    try {
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.setAttribute("switch", ""); // Safari's magic attribute
+      input.setAttribute("aria-hidden", "true");
+      input.tabIndex = -1;
+
+      // Hide it completely
+      input.style.cssText = `
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+      `;
+
+      document.body.appendChild(input);
+      this.iosHapticInput = input;
+    } catch (error) {
+      console.warn("[HapticFeedback] Failed to create iOS haptic element:", error);
+      this.supportsIOSHaptic = false;
+    }
+  }
+
+  /**
+   * Trigger iOS haptic feedback by toggling the checkbox
+   * @param pulseCount Number of haptic pulses to trigger
+   */
+  private triggerIOSHaptic(pulseCount: number = 1): boolean {
+    if (!this.iosHapticInput) {
+      // Try to create it if it doesn't exist
+      this.createIOSHapticElement();
+      if (!this.iosHapticInput) return false;
+    }
+
+    try {
+      // Toggle the checkbox for each pulse
+      // Small delay between pulses for distinct feedback
+      for (let i = 0; i < pulseCount; i++) {
+        if (i === 0) {
+          this.iosHapticInput.click();
+        } else {
+          // Stagger subsequent pulses
+          setTimeout(() => {
+            this.iosHapticInput?.click();
+          }, i * 60); // 60ms between pulses
+        }
+      }
+      return true;
+    } catch (error) {
+      console.warn("[HapticFeedback] iOS haptic trigger failed:", error);
+      return false;
+    }
+  }
+
+  // ============================================================================
+  // PRIVATE METHODS - Vibration API (Android)
+  // ============================================================================
+
   /**
    * Check if feedback can be triggered (all conditions met)
    */
@@ -176,8 +337,8 @@ export class HapticFeedbackService implements IHapticFeedbackService {
       return false;
     }
 
-    // Skip if not supported
-    if (!this.deviceSupportsVibration) {
+    // Skip if no platform support
+    if (!this.supportsVibrationAPI && !this.supportsIOSHaptic) {
       return false;
     }
 
@@ -196,19 +357,14 @@ export class HapticFeedbackService implements IHapticFeedbackService {
   }
 
   /**
-   * Execute the vibration with error handling
+   * Execute the vibration with error handling (Android)
    */
   private vibrate(pattern: number[]): boolean {
     try {
-      // Update throttle time
-      this.lastFeedbackTime = Date.now();
-
-      // Trigger vibration
       navigator.vibrate(pattern);
-
       return true;
     } catch (error) {
-      console.warn("Haptic feedback failed:", error);
+      console.warn("[HapticFeedback] Vibration failed:", error);
       return false;
     }
   }

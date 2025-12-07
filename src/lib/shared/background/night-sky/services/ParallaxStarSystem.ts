@@ -1,14 +1,8 @@
-import type {
-  AccessibilitySettings,
-  Dimensions,
-  ParallaxConfig,
-  ParallaxLayer,
-  QualitySettings,
-  Star,
-  StarConfig,
-} from "$shared";
+import type { AccessibilitySettings, QualitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
+import type { ParallaxConfig, ParallaxLayer, Star, StarConfig } from "../domain/models/night-sky-models";
 // Removed resolve import - calculation service now injected via constructor
-import type { INightSkyCalculationService } from "../services";
+import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
 export class ParallaxStarSystem {
   private layers: Record<"far" | "mid" | "near", ParallaxLayer> = {
@@ -89,19 +83,17 @@ export class ParallaxStarSystem {
     (["far", "mid", "near"] as Array<keyof typeof this.layers>).forEach(
       (key) => {
         const L = this.layers[key];
-        if (L && L.stars && Array.isArray(L.stars)) {
-          L.stars.forEach((star: Star) => {
-            // Random twinkle phase (0 to 2π)
-            star.twinklePhase = Math.random() * Math.PI * 2;
-            // Set current opacity based on random phase
-            if (star.isTwinkling) {
-              star.currentOpacity =
-                star.baseOpacity * (0.7 + 0.3 * Math.sin(star.twinklePhase));
-            } else {
-              star.currentOpacity = star.baseOpacity;
-            }
-          });
-        }
+        L.stars.forEach((star: Star) => {
+          // Random twinkle phase (0 to 2π)
+          star.twinklePhase = Math.random() * Math.PI * 2;
+          // Set current opacity based on random phase
+          if (star.isTwinkling) {
+            star.currentOpacity =
+              star.baseOpacity * (0.7 + 0.3 * Math.sin(star.twinklePhase));
+          } else {
+            star.currentOpacity = star.baseOpacity;
+          }
+        });
       }
     );
 
@@ -114,7 +106,7 @@ export class ParallaxStarSystem {
     a11y: AccessibilitySettings,
     frameMultiplier: number = 1.0
   ) {
-    if (!this.layers || Object.keys(this.layers).length === 0) {
+    if (Object.keys(this.layers).length === 0) {
       this.initialize(dim, a11y);
       return;
     }
@@ -134,58 +126,54 @@ export class ParallaxStarSystem {
     (["far", "mid", "near"] as Array<keyof typeof this.layers>).forEach(
       (key) => {
         const L = this.layers[key];
-        if (L && L.stars && Array.isArray(L.stars)) {
-          // Update drift values for current dimensions
-          const pCfg = this.config[key];
-          L.driftX = pCfg.drift * dim.width;
-          L.driftY = pCfg.drift * dim.height;
+        // Update drift values for current dimensions
+        const pCfg = this.config[key];
+        L.driftX = pCfg.drift * dim.width;
+        L.driftY = pCfg.drift * dim.height;
 
-          L.stars.forEach((s: Star) => {
-            // Apply frame multiplier to drift for consistent animation speed
-            const effectiveDrift =
-              frameMultiplier * (a11y.reducedMotion ? 0.3 : 1);
-            s.x = (s.x + L.driftX * effectiveDrift + dim.width) % dim.width;
-            s.y = (s.y + L.driftY * effectiveDrift + dim.height) % dim.height;
+        L.stars.forEach((s: Star) => {
+          // Apply frame multiplier to drift for consistent animation speed
+          const effectiveDrift =
+            frameMultiplier * (a11y.reducedMotion ? 0.3 : 1);
+          s.x = (s.x + L.driftX * effectiveDrift + dim.width) % dim.width;
+          s.y = (s.y + L.driftY * effectiveDrift + dim.height) % dim.height;
 
-            if (s.isTwinkling) {
-              // Apply frame multiplier to twinkle speed for consistent animation speed
-              const effectiveTwinkleSpeed = s.twinkleSpeed * effectiveDrift;
-              s.twinklePhase += effectiveTwinkleSpeed;
-              s.currentOpacity =
-                s.baseOpacity * (0.7 + 0.3 * Math.sin(s.twinklePhase));
-            } else {
-              s.currentOpacity = s.baseOpacity;
-            }
-          });
-        }
+          if (s.isTwinkling) {
+            // Apply frame multiplier to twinkle speed for consistent animation speed
+            const effectiveTwinkleSpeed = s.twinkleSpeed * effectiveDrift;
+            s.twinklePhase += effectiveTwinkleSpeed;
+            s.currentOpacity =
+              s.baseOpacity * (0.7 + 0.3 * Math.sin(s.twinklePhase));
+          } else {
+            s.currentOpacity = s.baseOpacity;
+          }
+        });
       }
     );
   }
 
   draw(ctx: CanvasRenderingContext2D, a11y: AccessibilitySettings) {
-    if (!this.layers || Object.keys(this.layers).length === 0) return;
+    if (Object.keys(this.layers).length === 0) return;
 
     (["far", "mid", "near"] as Array<keyof typeof this.layers>).forEach(
       (key) => {
         const L = this.layers[key];
-        if (L && L.stars && Array.isArray(L.stars)) {
-          const alphaMult = key === "far" ? 0.5 : key === "mid" ? 0.8 : 1;
-          L.stars.forEach((star: Star) => {
-            ctx.globalAlpha =
-              star.currentOpacity * alphaMult * (a11y.reducedMotion ? 0.7 : 1);
-            ctx.fillStyle = star.color;
+        const alphaMult = key === "far" ? 0.5 : key === "mid" ? 0.8 : 1;
+        L.stars.forEach((star: Star) => {
+          ctx.globalAlpha =
+            star.currentOpacity * alphaMult * (a11y.reducedMotion ? 0.7 : 1);
+          ctx.fillStyle = star.color;
 
-            // Draw sparkle shape for stars marked as sparkles
-            if (star.isSparkle) {
-              this.drawSparkle(ctx, star.x, star.y, star.radius);
-            } else {
-              // Regular circular stars
-              ctx.beginPath();
-              ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-              ctx.fill();
-            }
-          });
-        }
+          // Draw sparkle shape for stars marked as sparkles
+          if (star.isSparkle) {
+            this.drawSparkle(ctx, star.x, star.y, star.radius);
+          } else {
+            // Regular circular stars
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        });
       }
     );
     ctx.globalAlpha = 1;
@@ -277,44 +265,42 @@ export class ParallaxStarSystem {
         const layer = this.layers[key];
         const pCfg = this.config[key];
 
-        if (layer && layer.stars && Array.isArray(layer.stars)) {
-          // Calculate optimal star count for new dimensions
-          const density = pCfg.density * this.qualitySettings.densityMultiplier;
-          const optimalCount = Math.floor(
-            newDim.width * newDim.height * density
+        // Calculate optimal star count for new dimensions
+        const density = pCfg.density * this.qualitySettings.densityMultiplier;
+        const optimalCount = Math.floor(
+          newDim.width * newDim.height * density
+        );
+        const currentCount = layer.stars.length;
+
+        // Adjust star count based on new viewport area
+        if (areaRatio > 1.2 && currentCount < optimalCount) {
+          // Viewport got significantly larger - add more stars
+          const starsToAdd = Math.min(
+            optimalCount - currentCount,
+            Math.floor(currentCount * 0.5)
           );
-          const currentCount = layer.stars.length;
 
-          // Adjust star count based on new viewport area
-          if (areaRatio > 1.2 && currentCount < optimalCount) {
-            // Viewport got significantly larger - add more stars
-            const starsToAdd = Math.min(
-              optimalCount - currentCount,
-              Math.floor(currentCount * 0.5)
+          for (let i = 0; i < starsToAdd; i++) {
+            layer.stars.push(
+              this.calculationService.makeStar(newDim, this.starConfig, a11y)
             );
-
-            for (let i = 0; i < starsToAdd; i++) {
-              layer.stars.push(
-                this.calculationService.makeStar(newDim, this.starConfig, a11y)
-              );
-            }
-          } else if (areaRatio < 0.8 && currentCount > optimalCount) {
-            // Viewport got significantly smaller - remove excess stars
-            const starsToRemove = Math.min(
-              currentCount - optimalCount,
-              Math.floor(currentCount * 0.3)
-            );
-
-            layer.stars.splice(0, starsToRemove);
           }
+        } else if (areaRatio < 0.8 && currentCount > optimalCount) {
+          // Viewport got significantly smaller - remove excess stars
+          const starsToRemove = Math.min(
+            currentCount - optimalCount,
+            Math.floor(currentCount * 0.3)
+          );
 
-          // Redistribute remaining stars to new dimensions
-          this.redistributeStars(layer.stars, newDim, scaleX, scaleY);
-
-          // Update drift values for new dimensions
-          layer.driftX = pCfg.drift * newDim.width;
-          layer.driftY = pCfg.drift * newDim.height;
+          layer.stars.splice(0, starsToRemove);
         }
+
+        // Redistribute remaining stars to new dimensions
+        this.redistributeStars(layer.stars, newDim, scaleX, scaleY);
+
+        // Update drift values for new dimensions
+        layer.driftX = pCfg.drift * newDim.width;
+        layer.driftY = pCfg.drift * newDim.height;
       }
     );
   }
@@ -351,7 +337,7 @@ export class ParallaxStarSystem {
   }
 
   getNearStars(): Star[] {
-    return this.layers.near.stars || [];
+    return this.layers.near.stars;
   }
 
   cleanup() {

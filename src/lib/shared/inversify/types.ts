@@ -11,7 +11,6 @@ export const TYPES = {
   ISequenceService: Symbol.for("ISequenceService"),
   ISequenceDomainService: Symbol.for("ISequenceDomainService"),
   ISequenceAnalysisService: Symbol.for("ISequenceAnalysisService"),
-  IBeatNumberingService: Symbol.for("IBeatNumberingService"),
   ISequenceValidationService: Symbol.for("ISequenceValidationService"),
   ISequenceStatisticsService: Symbol.for("ISequenceStatisticsService"),
   ISequenceTransformationService: Symbol.for("ISequenceTransformationService"),
@@ -24,7 +23,8 @@ export const TYPES = {
   IPersistenceInitializationService: Symbol.for(
     "IPersistenceInitializationService"
   ),
-  ISettingsService: Symbol.for("ISettingsService"),
+  ISettingsState: Symbol.for("ISettingsState"),
+  ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
   IDeviceDetector: Symbol.for("IDeviceDetector"),
   IResourceTracker: Symbol.for("IResourceTracker"),
   IPanelManagementService: Symbol.for("IPanelManagementService"),
@@ -57,7 +57,13 @@ export const TYPES = {
   IViewportService: Symbol.for("IViewportService"),
   IModuleSelectionService: Symbol.for("IModuleSelectionService"),
   IKeyboardNavigationService: Symbol.for("IKeyboardNavigationService"),
-  INavigationLabelService: Symbol.for("INavigationLabelService"),
+  ISheetRouterService: Symbol.for("ISheetRouterService"),
+  ISequenceEncoderService: Symbol.for("ISequenceEncoderService"),
+  ISequenceViewerService: Symbol.for("ISequenceViewerService"),
+  IURLSyncService: Symbol.for("IURLSyncService"),
+  IDeepLinkService: Symbol.for("IDeepLinkService"),
+  ILetterDeriverService: Symbol.for("ILetterDeriverService"),
+  IPositionDeriverService: Symbol.for("IPositionDeriverService"),
 
   // === KEYBOARD SHORTCUT SERVICES ===
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
@@ -74,6 +80,7 @@ export const TYPES = {
   ICreationMethodPersistenceService: Symbol.for(
     "ICreationMethodPersistenceService"
   ),
+  IDeepLinkSequenceService: Symbol.for("IDeepLinkSequenceService"),
   ICreateModuleLayoutService: Symbol.for("ICreateModuleLayoutService"),
   IResponsiveLayoutService: Symbol.for("IResponsiveLayoutService"),
   INavigationSyncService: Symbol.for("INavigationSyncService"),
@@ -83,10 +90,7 @@ export const TYPES = {
   ),
   IUndoService: Symbol.for("IUndoService"),
   IQuizSessionService: Symbol.for("IQuizSessionService"),
-  IQuizGradingService: Symbol.for("IQuizGradingService"),
-  IQuizFeedbackService: Symbol.for("IQuizFeedbackService"),
-  IQuizAchievementService: Symbol.for("IQuizAchievementService"),
-  IQuizFormatterService: Symbol.for("IQuizFormatterService"),
+  IQuizResultsAnalyzer: Symbol.for("IQuizResultsAnalyzer"),
   ITurnControlService: Symbol.for("ITurnControlService"),
   // === WRITE TAB SERVICES ===
   IActService: Symbol.for("IActService"),
@@ -133,7 +137,7 @@ export const TYPES = {
   IArrowAdjustmentCalculator: Symbol.for("IArrowAdjustmentCalculator"),
   IGridPositionDeriver: Symbol.for("IGridPositionDeriver"),
   IPositionCalculatorService: Symbol.for("IPositionCalculatorService"),
-  IOrientationCalculationService: Symbol.for("IOrientationCalculationService"),
+  IOrientationCalculator: Symbol.for("IOrientationCalculator"),
 
   // === MOVEMENT SERVICES ===
   IPositionPatternService: Symbol.for("IPositionPatternService"),
@@ -142,27 +146,27 @@ export const TYPES = {
 
   // === BROWSE SERVICES ===
   // Specialized Explore services (no orchestration layer - use directly!)
-  IExploreThumbnailService: Symbol.for("IExploreThumbnailService"),
-  IExploreCacheService: Symbol.for("IExploreCacheService"),
-  IExploreFilterService: Symbol.for("IExploreFilterService"),
-  IExploreLoader: Symbol.for("IExploreLoader"),
-  IExploreMetadataExtractor: Symbol.for("IExploreMetadataExtractor"),
-  IExploreSortService: Symbol.for("IExploreSortService"),
-  IOptimizedExploreService: Symbol.for("IOptimizedExploreService"),
+  IDiscoverThumbnailService: Symbol.for("IDiscoverThumbnailService"),
+  IDiscoverCacheService: Symbol.for("IDiscoverCacheService"),
+  IDiscoverFilterService: Symbol.for("IDiscoverFilterService"),
+  IDiscoverLoader: Symbol.for("IDiscoverLoader"),
+  IDiscoverMetadataExtractor: Symbol.for("IDiscoverMetadataExtractor"),
+  IDiscoverSortService: Symbol.for("IDiscoverSortService"),
+  IOptimizedDiscoverService: Symbol.for("IOptimizedDiscoverService"),
   INavigationService: Symbol.for("INavigationService"),
   IFavoritesService: Symbol.for("IFavoritesService"),
   IDeleteService: Symbol.for("IDeleteService"),
-  IExploreEventHandlerService: Symbol.for("IExploreEventHandlerService"),
+  IDiscoverEventHandlerService: Symbol.for("IDiscoverEventHandlerService"),
   ISectionService: Symbol.for("ISectionService"),
   ISequenceIndexService: Symbol.for("ISequenceIndexService"),
-  IExplorePanelManager: Symbol.for("IExplorePanelManager"),
+  IDiscoverPanelManager: Symbol.for("IDiscoverPanelManager"),
   IFilterPersistenceService: Symbol.for("IFilterPersistenceService"),
   ISequenceDifficultyCalculator: Symbol.for("ISequenceDifficultyCalculator"),
 
   // === COMMUNITY SERVICES ===
   ILeaderboardService: Symbol.for("ILeaderboardService"),
   ICommunityStatsService: Symbol.for("ICommunityStatsService"),
-  IEnhancedUserService: Symbol.for("IEnhancedUserService"),
+  IUserService: Symbol.for("IUserService"),
 
   // === WORKBENCH SERVICES ===
   IWorkbenchService: Symbol.for("IWorkbenchService"),
@@ -226,38 +230,45 @@ export const TYPES = {
   IPictographFilterService: Symbol.for("IPictographFilterService"),
   IBeatConverterService: Symbol.for("IBeatConverterService"),
   ITurnManagementService: Symbol.for("ITurnManagementService"),
-  ITurnIntensityManagerService: Symbol.for("ITurnIntensityManagerService"),
   ISequenceMetadataService: Symbol.for("ISequenceMetadataService"),
   // New Focused Generation Services (replaced monolithic SequenceGenerationService)
   IStartPositionSelector: Symbol.for("IStartPositionSelector"),
-  IRotationDirectionService: Symbol.for("IRotationDirectionService"),
   ITurnAllocationCalculator: Symbol.for("ITurnAllocationCalculator"),
   IBeatGenerationOrchestrator: Symbol.for("IBeatGenerationOrchestrator"),
   IPartialSequenceGenerator: Symbol.for("IPartialSequenceGenerator"),
   // Circular Generation (CAP) Services
-  IComplementaryLetterService: Symbol.for("IComplementaryLetterService"),
+  ICAPParameterProvider: Symbol.for("ICAPParameterProvider"), // NEW: Consolidated CAP parameter service
   IRotatedEndPositionSelector: Symbol.for("IRotatedEndPositionSelector"),
   ICAPEndPositionSelector: Symbol.for("ICAPEndPositionSelector"),
   IStrictRotatedCAPExecutor: Symbol.for("IStrictRotatedCAPExecutor"),
   IStrictMirroredCAPExecutor: Symbol.for("IStrictMirroredCAPExecutor"),
   IStrictSwappedCAPExecutor: Symbol.for("IStrictSwappedCAPExecutor"),
-  IStrictComplementaryCAPExecutor: Symbol.for(
-    "IStrictComplementaryCAPExecutor"
+  IStrictInvertedCAPExecutor: Symbol.for(
+    "IStrictInvertedCAPExecutor"
   ),
   IMirroredSwappedCAPExecutor: Symbol.for("IMirroredSwappedCAPExecutor"),
-  ISwappedComplementaryCAPExecutor: Symbol.for(
-    "ISwappedComplementaryCAPExecutor"
+  ISwappedInvertedCAPExecutor: Symbol.for(
+    "ISwappedInvertedCAPExecutor"
   ),
-  IMirroredComplementaryCAPExecutor: Symbol.for(
-    "IMirroredComplementaryCAPExecutor"
+  IMirroredInvertedCAPExecutor: Symbol.for(
+    "IMirroredInvertedCAPExecutor"
   ),
   IRotatedSwappedCAPExecutor: Symbol.for("IRotatedSwappedCAPExecutor"),
-  IRotatedComplementaryCAPExecutor: Symbol.for(
-    "IRotatedComplementaryCAPExecutor"
+  IRotatedInvertedCAPExecutor: Symbol.for(
+    "IRotatedInvertedCAPExecutor"
+  ),
+  IMirroredRotatedCAPExecutor: Symbol.for("IMirroredRotatedCAPExecutor"),
+  IMirroredRotatedInvertedCAPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedCAPExecutor"
+  ),
+  IMirroredSwappedInvertedCAPExecutor: Symbol.for(
+    "IMirroredSwappedInvertedCAPExecutor"
+  ),
+  IMirroredRotatedInvertedSwappedCAPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedSwappedCAPExecutor"
   ),
   ICAPExecutorSelector: Symbol.for("ICAPExecutorSelector"),
   // Generation UI Services (SRP Refactoring - Dec 2024)
-  ILevelConversionService: Symbol.for("ILevelConversionService"),
   IResponsiveTypographyService: Symbol.for("IResponsiveTypographyService"),
   ICardConfigurationService: Symbol.for("ICardConfigurationService"),
   ICAPTypeService: Symbol.for("ICAPTypeService"),
@@ -281,6 +292,7 @@ export const TYPES = {
   IBeatCalculationService: Symbol.for("IBeatCalculationService"),
   IPropInterpolationService: Symbol.for("IPropInterpolationService"),
   ISequenceLoopabilityChecker: Symbol.for("ISequenceLoopabilityChecker"),
+  IAnimationStorageService: Symbol.for("IAnimationStorageService"),
 
   // Animator Calculation Services
   IAngleCalculator: Symbol.for("IAngleCalculator"),
@@ -295,6 +307,13 @@ export const TYPES = {
   IGifExportService: Symbol.for("IGifExportService"),
   IAnimatedImageTranscoder: Symbol.for("IAnimatedImageTranscoder"),
   IGifExportOrchestrator: Symbol.for("IGifExportOrchestrator"),
+
+  // Animator Trail Services
+  ITrailCaptureService: Symbol.for("ITrailCaptureService"),
+
+  // Animator Mode-Specific Services
+  ISequenceNormalizationService: Symbol.for("ISequenceNormalizationService"),
+  ITunnelModeSequenceManager: Symbol.for("ITunnelModeSequenceManager"),
 
   // === APPLICATION SERVICES ===
   IApplicationInitializer: Symbol.for("IApplicationInitializer"),
@@ -320,7 +339,6 @@ export const TYPES = {
   ICoordinateUpdateService: Symbol.for("ICoordinateUpdateService"),
 
   IAnimatedPictographDataService: Symbol.for("IAnimatedPictographDataService"),
-  IBackgroundService: Symbol.for("IBackgroundService"),
   IBackgroundManager: Symbol.for("IBackgroundManager"),
   IBackgroundRenderingService: Symbol.for("IBackgroundRenderingService"),
   IBackgroundPreloader: Symbol.for("IBackgroundPreloader"),
@@ -346,7 +364,7 @@ export const TYPES = {
     "IMotionLetterIdentificationService"
   ),
   ICSVPictographLoader: Symbol.for("ICSVPictographLoader"),
-  ICSVPictographParserService: Symbol.for("ICSVPictographParserService"),
+  ICSVPictographParser: Symbol.for("ICSVPictographParser"),
   IArrowLocationService: Symbol.for("IArrowLocationService"),
   IArrowPlacementKeyService: Symbol.for("IArrowPlacementKeyService"),
   IPropPlacementService: Symbol.for("IPropPlacementService"),
@@ -409,16 +427,55 @@ export const TYPES = {
   // === GAMIFICATION SERVICES ===
   IAchievementService: Symbol.for("IAchievementService"),
   IDailyChallengeService: Symbol.for("IDailyChallengeService"),
+  IWeeklyChallengeService: Symbol.for("IWeeklyChallengeService"),
+  ISkillProgressionService: Symbol.for("ISkillProgressionService"),
+  IChallengeCoordinator: Symbol.for("IChallengeCoordinator"),
   INotificationService: Symbol.for("INotificationService"),
   IStreakService: Symbol.for("IStreakService"),
 
   // === ADMIN SERVICES ===
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
+  IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
+  IAnnouncementService: Symbol.for("IAnnouncementService"),
+
+  // === ANALYTICS SERVICES ===
+  IActivityLogService: Symbol.for("IActivityLogService"),
+
+  // === LIBRARY SERVICES ===
+  ILibraryService: Symbol.for("ILibraryService"),
+  ICollectionService: Symbol.for("ICollectionService"),
+  ILibraryActService: Symbol.for("ILibraryActService"),
+  ILibraryQueryService: Symbol.for("ILibraryQueryService"),
+  IForkService: Symbol.for("IForkService"),
+  ILibraryMigrationService: Symbol.for("ILibraryMigrationService"),
 
   // === GESTURAL PATH BUILDER SERVICES ===
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),
   ISwipeDetectionService: Symbol.for("ISwipeDetectionService"),
   IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
+
+  // === TRAIN MODULE SERVICES ===
+  IPositionDetectionService: Symbol.for("IPositionDetectionService"),
+  IOrientationTracker: Symbol.for("IOrientationTracker"),
+  ICameraService: Symbol.for("ICameraService"),
+  IPerformanceScoringService: Symbol.for("IPerformanceScoringService"),
+  IPerformanceRecordingService: Symbol.for("IPerformanceRecordingService"),
+  ITrainPersistenceService: Symbol.for("ITrainPersistenceService"),
+
+  // === TRAIN MODULE - HAND DETECTION SERVICES ===
+  IHandLandmarkerService: Symbol.for("IHandLandmarkerService"),
+  IHandednessAnalyzer: Symbol.for("IHandednessAnalyzer"),
+  IHandStateAnalyzer: Symbol.for("IHandStateAnalyzer"),
+  IHandTrackingStabilizer: Symbol.for("IHandTrackingStabilizer"),
+  IHandAssignmentService: Symbol.for("IHandAssignmentService"),
+
+  // === TRAIN MODULE - PRACTICE SERVICES ===
+  IVoiceCommandService: Symbol.for("IVoiceCommandService"),
+
+  // === TRAIN MODULE - CHALLENGES & PROGRESS ===
+  ITrainChallengeService: Symbol.for("ITrainChallengeService"),
+  IPerformanceHistoryService: Symbol.for("IPerformanceHistoryService"),
+
 } as const;
 
 // Type helper for getting service types
@@ -428,12 +485,11 @@ export type ServiceType = (typeof TYPES)[keyof typeof TYPES];
 export const CoreTypes = {
   ISequenceService: TYPES.ISequenceService,
   ISequenceDomainService: TYPES.ISequenceDomainService,
-  IBeatNumberingService: TYPES.IBeatNumberingService,
   ISequenceValidationService: TYPES.ISequenceValidationService,
   ISequenceStatisticsService: TYPES.ISequenceStatisticsService,
   ISequenceTransformationService: TYPES.ISequenceTransformationService,
   IPersistenceService: TYPES.IPersistenceService,
-  ISettingsService: TYPES.ISettingsService,
+  ISettingsState: TYPES.ISettingsState,
 } as const;
 
 export const RenderingTypes = {
@@ -450,7 +506,6 @@ export const PositioningTypes = {
 } as const;
 
 export const BackgroundTypes = {
-  IBackgroundService: TYPES.IBackgroundService,
   IBackgroundManager: TYPES.IBackgroundManager,
   IBackgroundRenderingService: TYPES.IBackgroundRenderingService,
   IBackgroundPreloader: TYPES.IBackgroundPreloader,

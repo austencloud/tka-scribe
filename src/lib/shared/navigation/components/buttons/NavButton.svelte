@@ -1,11 +1,8 @@
 <!-- NavButton - Reusable Navigation Button Component -->
 <script lang="ts">
-  import {
-    resolve,
-    TYPES,
-    type IHapticFeedbackService,
-    type INavigationLabelService,
-  } from "$shared";
+import { resolve } from "../../../inversify/di";
+import { TYPES } from "../../../inversify/types";
+import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   let {
@@ -32,11 +29,10 @@
 
   // Services
   let hapticService: IHapticFeedbackService | undefined;
-  let labelService: INavigationLabelService | undefined;
 
-  // Derived label values
-  let compactLabel = $derived(labelService?.getCompactLabel(label) || label);
-  let fullLabel = $derived(labelService?.getFullLabel(label) || label);
+  // Label values (NavigationLabelService was a no-op, removed)
+  let compactLabel = $derived(label);
+  let fullLabel = $derived(label);
 
   function handleClick() {
     if (!disabled) {
@@ -48,9 +44,6 @@
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
-    );
-    labelService = resolve<INavigationLabelService>(
-      TYPES.INavigationLabelService
     );
   });
 </script>
@@ -81,10 +74,13 @@
     gap: 2px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: hsl(0 0% 100% / 0.6);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
 
   /* Section buttons - rounded rectangles */
@@ -92,27 +88,39 @@
     border-radius: 12px;
   }
 
-  /* Special buttons (Menu/Settings) - circular */
+  /* Special buttons (Menu/Settings) - rounded rectangle */
   .nav-button.special {
-    border-radius: 50%;
+    border-radius: 12px;
     flex: 0 0 auto;
   }
 
-  .nav-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.15);
-    transform: scale(1.05);
+  /* Special buttons don't get the top border indicator when active */
+  .nav-button.special.active {
+    border-top: none;
+    padding-top: 0;
   }
 
-  .nav-button:active {
-    transform: scale(0.95);
+  .nav-button:hover:not(.disabled) {
+    background: hsl(0 0% 100% / 0.12);
+  }
+
+  .nav-button:active:not(.disabled) {
+    transform: scale(0.97);
+    background: hsl(0 0% 100% / 0.08);
+  }
+
+  /* Focus state for keyboard navigation */
+  .nav-button:focus-visible {
+    outline: 2px solid hsl(210 100% 60%);
+    outline-offset: 2px;
   }
 
   .nav-button.active {
-    color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.1);
+    color: hsl(0 0% 100%);
+    background: hsl(0 0% 100% / 0.1);
     /* Colored top border indicator */
-    border-top: 3px solid var(--section-color, rgba(255, 255, 255, 0.5));
-    padding-top: calc(var(--spacing-xs, 8px) - 3px); /* Compensate for border */
+    border-top: 3px solid var(--section-color, hsl(0 0% 100% / 0.5));
+    padding-top: calc(var(--spacing-xs, 8px) - 3px);
   }
 
   .nav-button.disabled {
@@ -125,13 +133,13 @@
   }
 
   .nav-icon {
-    /* Container-aware icon sizing */
-    font-size: clamp(18px, 4cqi, 22px);
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all var(--transition-fast);
+    transition: opacity 0.15s ease, filter 0.15s ease;
+    pointer-events: none;
   }
 
   /* Style Font Awesome icons with gradient colors */
@@ -140,7 +148,7 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 0 6px hsl(0 0% 0% / 0.15));
   }
 
   /* Fallback for browsers that don't support background-clip */
@@ -157,15 +165,15 @@
     opacity: 0.6;
   }
 
-  .nav-button:hover .nav-icon :global(i) {
+  .nav-button:hover:not(.disabled) .nav-icon :global(i) {
     opacity: 1;
-    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 0 8px hsl(0 0% 0% / 0.2));
   }
 
-  /* Active button has full color and glow */
+  /* Active button has full color and subtle glow */
   .nav-button.active .nav-icon :global(i) {
     opacity: 1;
-    filter: drop-shadow(0 0 16px var(--section-color)) brightness(1.1);
+    filter: drop-shadow(0 0 10px var(--section-color)) brightness(1.05);
   }
 
   /* Disabled buttons remain grayed out */
@@ -179,18 +187,31 @@
   }
 
   .nav-label {
-    /* Container-aware label sizing */
-    font-size: clamp(9px, 2cqi, 11px);
+    font-size: 10px;
     font-weight: 500;
     text-align: center;
     white-space: nowrap;
     line-height: 1.2;
+    pointer-events: none;
   }
 
   /* Labels hidden by default - parent layout controls visibility */
   .nav-label-full,
   .nav-label-compact {
     display: none;
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .nav-button:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 2px;
+    }
+
+    .nav-button.active {
+      background: hsl(0 0% 100% / 0.2);
+      border-top-width: 4px;
+    }
   }
 
   /* Reduced motion */
@@ -201,6 +222,10 @@
 
     .nav-button:active {
       transform: none;
+    }
+
+    .nav-icon {
+      transition: none;
     }
   }
 </style>

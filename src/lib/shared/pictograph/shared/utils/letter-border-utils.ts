@@ -5,8 +5,8 @@
  * PictographBorderManager dual border system.
  */
 
-import type { Letter } from "$shared";
-import { getLetterType } from "$shared";
+
+import { getLetterType, type Letter } from "../../../foundation/domain/models/Letter";
 import { LETTER_TYPE_COLORS } from "../domain/constants/pictograph-constants";
 
 /**

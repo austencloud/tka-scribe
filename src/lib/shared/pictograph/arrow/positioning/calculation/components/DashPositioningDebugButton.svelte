@@ -11,7 +11,7 @@ Usage:
 />
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared";
+import type { PictographData } from "../../../../shared/domain/models/PictographData";
   // TODO: Restore when useDashPositioningDebug.svelte is implemented
   // import { useDashPositioningDebug } from "../services/implementations/useDashPositioningDebug.svelte";
 

@@ -1,0 +1,308 @@
+/**
+ * Hand Path Assemble State
+ *
+ * Svelte 5 reactive state management for the simplified tap-based hand path assembly.
+ * Manages the three-phase construction flow:
+ * 1. Blue hand construction (tap positions)
+ * 2. Red hand construction (tap positions)
+ * 3. Rotation selection (choose CW or CCW for SHIFT motions)
+ */
+
+import type {
+  GridLocation,
+  GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  RotationDirection,
+  MotionColor,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
+import { HandPathMotionCalculator } from "../services/HandPathMotionCalculator";
+
+export type HandPathPhase = "blue" | "red" | "rotation-selection" | "complete";
+
+export interface HandPathAssembleConfig {
+  gridMode: GridMode;
+  startingPosition?: GridLocation; // Optional: first tap sets this
+  // Note: PropType is always HAND in hand path assembly mode
+}
+
+/**
+ * Create hand path assemble state
+ */
+export function createHandPathAssembleState(config: HandPathAssembleConfig) {
+  // Services
+  const converter = new HandPathSequenceConverter();
+  const calculator = new HandPathMotionCalculator();
+
+  // Reactive state
+  let currentPhase = $state<HandPathPhase>("blue");
+  let currentPosition = $state<GridLocation | null>(null);
+  let blueHandPath = $state<GridLocation[]>([]);
+  let redHandPath = $state<GridLocation[]>([]);
+  let selectedRotation = $state<RotationDirection | null>(null);
+  let gridMode = $state<GridMode>(config.gridMode);
+  // PropType is always HAND in hand path assembly mode (forced in converter)
+
+  // Derived state
+  const currentBeatNumber = $derived(
+    currentPhase === "blue" ? blueHandPath.length : redHandPath.length
+  );
+
+  const hasBlueHand = $derived(blueHandPath.length > 0);
+  const hasRedHand = $derived(redHandPath.length > 0);
+  const canSelectRotation = $derived(hasBlueHand && hasRedHand);
+  const isComplete = $derived(currentPhase === "complete");
+
+  const activePositions = $derived(calculator.getActivePositions(gridMode));
+
+  /**
+   * Add a position to the current hand path
+   */
+  function addPosition(position: GridLocation): void {
+    // Validate position is enabled for current grid mode
+    if (!calculator.isPositionEnabled(position, gridMode)) {
+      throw new Error(
+        `Position ${position} is not enabled in ${gridMode} mode`
+      );
+    }
+
+    if (currentPhase === "blue") {
+      blueHandPath = [...blueHandPath, position];
+      currentPosition = position;
+    } else if (currentPhase === "red") {
+      redHandPath = [...redHandPath, position];
+      currentPosition = position;
+    } else {
+      throw new Error(`Cannot add position in phase: ${currentPhase}`);
+    }
+  }
+
+  /**
+   * Complete the blue hand and move to red hand phase
+   */
+  function completeBlueHand(): void {
+    if (blueHandPath.length < 2) {
+      throw new Error(
+        "Blue hand must have at least 2 positions (start + 1 move)"
+      );
+    }
+
+    currentPhase = "red";
+    currentPosition = null; // Reset for red hand
+  }
+
+  /**
+   * Complete the red hand and move to rotation selection
+   */
+  function completeRedHand(): void {
+    if (redHandPath.length < 2) {
+      throw new Error(
+        "Red hand must have at least 2 positions (start + 1 move)"
+      );
+    }
+
+    // Validate both hands are same length
+    if (blueHandPath.length !== redHandPath.length) {
+      throw new Error(
+        `Both hands must be the same length. Blue: ${blueHandPath.length}, Red: ${redHandPath.length}`
+      );
+    }
+
+    currentPhase = "rotation-selection";
+  }
+
+  /**
+   * Select rotation direction and complete the sequence
+   */
+  function selectRotation(rotation: RotationDirection): void {
+    if (currentPhase !== "rotation-selection") {
+      throw new Error("Can only select rotation in rotation-selection phase");
+    }
+
+    if (
+      rotation !== RotationDirection.CLOCKWISE &&
+      rotation !== RotationDirection.COUNTER_CLOCKWISE
+    ) {
+      throw new Error("Must select CLOCKWISE or COUNTER_CLOCKWISE rotation");
+    }
+
+    selectedRotation = rotation;
+    currentPhase = "complete";
+  }
+
+  /**
+   * Get the final merged sequence (only available when complete)
+   */
+  function getFinalSequence(): PictographData[] {
+    if (!selectedRotation) {
+      throw new Error("Must select rotation before getting final sequence");
+    }
+
+    if (blueHandPath.length === 0 || redHandPath.length === 0) {
+      throw new Error("Both blue and red hands must be built");
+    }
+
+    return converter.mergeToDualPropSequence(
+      blueHandPath,
+      redHandPath,
+      selectedRotation,
+      gridMode
+    );
+  }
+
+  /**
+   * Get preview of current hand as pictographs
+   * IMPORTANT: When in red phase, overlays red hand on top of blue hand progressively
+   */
+  function getCurrentHandPreview(): PictographData[] {
+    if (currentPhase === "blue" && blueHandPath.length >= 2) {
+      // Show only blue hand during blue phase
+      return converter.convertHandPathToPictographs(
+        blueHandPath,
+        MotionColor.BLUE,
+        RotationDirection.CLOCKWISE, // Temporary rotation for preview
+        gridMode
+      );
+    } else if (currentPhase === "red") {
+      // Overlay red hand on top of blue hand progressively
+      if (redHandPath.length >= 2 && blueHandPath.length >= 2) {
+        // Get the length to merge (min of both paths, up to current red hand progress)
+        const mergeLength = Math.min(blueHandPath.length, redHandPath.length);
+
+        // Truncate paths to merge length
+        const bluePath = blueHandPath.slice(0, mergeLength);
+        const redPath = redHandPath.slice(0, mergeLength);
+
+        // Merge and return dual-prop sequence
+        return converter.mergeToDualPropSequence(
+          bluePath,
+          redPath,
+          RotationDirection.CLOCKWISE, // Temporary rotation for preview
+          gridMode
+        );
+      } else if (blueHandPath.length >= 2) {
+        // Show only blue hand if red hand isn't ready yet
+        return converter.convertHandPathToPictographs(
+          blueHandPath,
+          MotionColor.BLUE,
+          RotationDirection.CLOCKWISE,
+          gridMode
+        );
+      }
+    }
+
+    return [];
+  }
+
+  /**
+   * Remove last position from current hand (undo)
+   */
+  function undoLastPosition(): void {
+    if (currentPhase === "blue" && blueHandPath.length > 0) {
+      blueHandPath = blueHandPath.slice(0, -1);
+      currentPosition = blueHandPath[blueHandPath.length - 1] || null;
+    } else if (currentPhase === "red" && redHandPath.length > 0) {
+      redHandPath = redHandPath.slice(0, -1);
+      currentPosition = redHandPath[redHandPath.length - 1] || null;
+    }
+  }
+
+  /**
+   * Reset to initial state
+   */
+  function reset(): void {
+    currentPhase = "blue";
+    currentPosition = null;
+    blueHandPath = [];
+    redHandPath = [];
+    selectedRotation = null;
+  }
+
+  /**
+   * Update grid mode (resets state)
+   */
+  function updateGridMode(newGridMode: GridMode): void {
+    gridMode = newGridMode;
+    reset();
+  }
+
+  /**
+   * Go back to previous phase
+   */
+  function goBackPhase(): void {
+    if (currentPhase === "red") {
+      currentPhase = "blue";
+      currentPosition = blueHandPath[blueHandPath.length - 1] || null;
+      // Clear red hand when going back
+      redHandPath = [];
+    } else if (currentPhase === "rotation-selection") {
+      currentPhase = "red";
+      currentPosition = redHandPath[redHandPath.length - 1] || null;
+      selectedRotation = null;
+    } else if (currentPhase === "complete") {
+      currentPhase = "rotation-selection";
+      selectedRotation = null;
+    }
+  }
+
+  // Return reactive state object
+  return {
+    // Getters for reactive state
+    get currentPhase() {
+      return currentPhase;
+    },
+    get currentPosition() {
+      return currentPosition;
+    },
+    get blueHandPath() {
+      return blueHandPath;
+    },
+    get redHandPath() {
+      return redHandPath;
+    },
+    get selectedRotation() {
+      return selectedRotation;
+    },
+    get gridMode() {
+      return gridMode;
+    },
+
+    // Derived state
+    get currentBeatNumber() {
+      return currentBeatNumber;
+    },
+    get hasBlueHand() {
+      return hasBlueHand;
+    },
+    get hasRedHand() {
+      return hasRedHand;
+    },
+    get canSelectRotation() {
+      return canSelectRotation;
+    },
+    get isComplete() {
+      return isComplete;
+    },
+    get activePositions() {
+      return activePositions;
+    },
+
+    // Actions
+    addPosition,
+    completeBlueHand,
+    completeRedHand,
+    selectRotation,
+    getFinalSequence,
+    getCurrentHandPreview,
+    undoLastPosition,
+    reset,
+    updateGridMode,
+    goBackPhase,
+  };
+}
+
+export type HandPathAssembleState = ReturnType<
+  typeof createHandPathAssembleState
+>;

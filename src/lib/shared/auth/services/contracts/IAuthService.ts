@@ -50,4 +50,65 @@ export interface IAuthService {
    * @throws Error if persistence cannot be set
    */
   setPersistence(): Promise<void>;
+
+  // ============================================================================
+  // ACCOUNT LINKING
+  // ============================================================================
+
+  /**
+   * Link Google account to the currently signed-in user
+   * @throws Error if user is not signed in or linking fails
+   */
+  linkGoogleAccount(): Promise<void>;
+
+  /**
+   * Link Facebook account to the currently signed-in user
+   * @throws Error if user is not signed in or linking fails
+   */
+  linkFacebookAccount(): Promise<void>;
+
+  /**
+   * Get list of provider IDs linked to the current user
+   * @returns Array of provider IDs (e.g., 'google.com', 'facebook.com', 'password')
+   */
+  getLinkedProviders(): string[];
+
+  /**
+   * Unlink a provider from the current user
+   * @param providerId The provider to unlink (e.g., 'google.com', 'facebook.com')
+   * @throws Error if user is not signed in, provider not linked, or unlinking fails
+   */
+  unlinkProvider(providerId: string): Promise<void>;
+
+  /**
+   * Link email/password to the currently signed-in user
+   * Allows users who signed up with social auth to add a password
+   * @param email Email address (must match current user's email or be new)
+   * @param password Password to set
+   * @throws Error if user is not signed in, email already in use, or linking fails
+   */
+  linkEmailPassword(email: string, password: string): Promise<void>;
+
+  // ============================================================================
+  // EMAIL VERIFICATION
+  // ============================================================================
+
+  /**
+   * Resend email verification to the current user
+   * @throws Error if user is not signed in or sending fails
+   */
+  resendVerificationEmail(): Promise<void>;
+
+  /**
+   * Reload the current user to get fresh data (including emailVerified status)
+   * @returns true if email is verified, false otherwise
+   * @throws Error if user is not signed in
+   */
+  reloadUser(): Promise<boolean>;
+
+  /**
+   * Check if the current user's email is verified
+   * @returns true if verified, false otherwise
+   */
+  isEmailVerified(): boolean;
 }

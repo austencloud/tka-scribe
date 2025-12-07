@@ -5,22 +5,22 @@ class CAPType(Enum):
     STRICT_ROTATED = "strict_rotated"
     STRICT_MIRRORED = "strict_mirrored"
     STRICT_SWAPPED = "strict_swapped"
-    STRICT_COMPLEMENTARY = "strict_complementary"
+    STRICT_INVERTED = "strict_inverted"
 
-    SWAPPED_COMPLEMENTARY = "swapped_complementary"
+    SWAPPED_INVERTED = "swapped_inverted"
 
-    ROTATED_COMPLEMENTARY = "rotated_complementary"
+    ROTATED_INVERTED = "rotated_inverted"
     MIRRORED_SWAPPED = "mirrored_swapped"
 
-    MIRRORED_COMPLEMENTARY = "mirrored_complementary"
+    MIRRORED_INVERTED = "mirrored_inverted"
     ROTATED_SWAPPED = "rotated_swapped"
 
     MIRRORED_ROTATED = "mirrored_rotated"
-    MIRRORED_COMPLEMENTARY_ROTATED = "mirrored_complementary_rotated"
-    # ROTATED_SWAPPED_COMPLEMENTARY = "rotated_swapped_complementary"
-    # MIRRORED_SWAPPED_COMPLEMENTARY = "mirrored_swapped_complementary"
+    MIRRORED_INVERTED_ROTATED = "mirrored_inverted_rotated"
+    # ROTATED_SWAPPED_INVERTED = "rotated_swapped_inverted"
+    # MIRRORED_SWAPPED_INVERTED = "mirrored_swapped_inverted"
     # MIRRORED_ROTATED_SWAPPED = "mirrored_rotated_swapped"
-    # MIRRORED_ROTATED_COMPLEMENTARY_SWAPPED = "mirrored_rotated_complementary_swapped"
+    # MIRRORED_ROTATED_INVERTED_SWAPPED = "mirrored_rotated_inverted_swapped"
     # TIME REVERSAL = "time_reversal"
 
     @staticmethod

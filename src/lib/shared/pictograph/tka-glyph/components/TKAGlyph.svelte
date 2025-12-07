@@ -4,9 +4,17 @@ TKAGlyph.svelte - Modern Rune-Based TKA Glyph Component
 Renders letters, turn indicators, and other TKA notation elements.
 Uses pure runes instead of stores for reactivity.
 -->
+<script lang="ts" module>
+  // Module-level cache shared across ALL TKAGlyph instances
+  // This prevents redundant fetches when multiple glyphs render the same letter
+  const globalDimensionsCache = new Map<string, { width: number; height: number }>();
+  const globalLoadingPromises = new Map<string, Promise<{ width: number; height: number }>>();
+</script>
+
 <script lang="ts">
-  import { Letter, type PictographData } from "$shared";
-  import { getLetterImagePath } from "../utils";
+import type { PictographData } from "../../shared/domain/models/PictographData";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { getLetterImagePath } from "../utils/letter-image-getter";
   import TurnsColumn from "./TurnsColumn.svelte";
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { onMount } from "svelte";
@@ -19,6 +27,7 @@ Uses pure runes instead of stores for reactivity.
     pictographData = undefined,
     scale = 1, // Match legacy default scale
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** The letter to display */
@@ -35,6 +44,8 @@ Uses pure runes instead of stores for reactivity.
     scale?: number;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -42,51 +53,63 @@ Uses pure runes instead of stores for reactivity.
   // Letter dimensions state - match legacy behavior
   let letterDimensions = $state({ width: 0, height: 0 });
 
-  // Cache for SVG dimensions (simple in-memory cache)
-  const dimensionsCache = new Map<string, { width: number; height: number }>();
-
   // Load letter dimensions using SVG viewBox like legacy version
+  // Uses global cache to prevent duplicate fetches across all TKAGlyph instances
   async function loadLetterDimensions(currentLetter: Letter) {
     if (!currentLetter) return;
 
-    // Check cache first
     const cacheKey = currentLetter;
-    if (dimensionsCache.has(cacheKey)) {
-      letterDimensions = dimensionsCache.get(cacheKey)!;
+
+    // Check global cache first (fastest path)
+    if (globalDimensionsCache.has(cacheKey)) {
+      letterDimensions = globalDimensionsCache.get(cacheKey)!;
       return;
     }
 
-    try {
-      // Use correct path based on letter type and safe filename
-      const svgPath = getLetterImagePath(currentLetter as Letter);
-      const response = await fetch(svgPath);
-      if (!response.ok)
-        throw new Error(`Failed to fetch ${svgPath}: ${response.status}`);
-
-      const svgText = await response.text();
-      const viewBoxMatch = svgText.match(
-        /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
-      );
-
-      if (!viewBoxMatch) {
-        console.warn(`SVG at ${svgPath} has no valid viewBox, using defaults`);
-        letterDimensions = { width: 100, height: 100 };
-      } else {
-        letterDimensions = {
-          width: parseFloat(viewBoxMatch[1] || "100"),
-          height: parseFloat(viewBoxMatch[2] || "100"),
-        };
-      }
-
-      dimensionsCache.set(cacheKey, letterDimensions);
-    } catch (error) {
-      console.error(
-        `Failed to load letter dimensions for ${currentLetter}:`,
-        error
-      );
-      // Fallback dimensions
-      letterDimensions = { width: 50, height: 50 };
+    // Check if already loading (prevents duplicate concurrent fetches)
+    if (globalLoadingPromises.has(cacheKey)) {
+      letterDimensions = await globalLoadingPromises.get(cacheKey)!;
+      return;
     }
+
+    // Create loading promise for deduplication
+    const loadPromise = (async () => {
+      try {
+        const svgPath = getLetterImagePath(currentLetter as Letter);
+        const response = await fetch(svgPath);
+        if (!response.ok)
+          throw new Error(`Failed to fetch ${svgPath}: ${response.status}`);
+
+        const svgText = await response.text();
+        const viewBoxMatch = svgText.match(
+          /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
+        );
+
+        let dims: { width: number; height: number };
+        if (!viewBoxMatch) {
+          dims = { width: 100, height: 100 };
+        } else {
+          dims = {
+            width: parseFloat(viewBoxMatch[1] || "100"),
+            height: parseFloat(viewBoxMatch[2] || "100"),
+          };
+        }
+
+        globalDimensionsCache.set(cacheKey, dims);
+        return dims;
+      } catch (error) {
+        console.error(
+          `Failed to load letter dimensions for ${currentLetter}:`,
+          error
+        );
+        return { width: 50, height: 50 };
+      } finally {
+        globalLoadingPromises.delete(cacheKey);
+      }
+    })();
+
+    globalLoadingPromises.set(cacheKey, loadPromise);
+    letterDimensions = await loadPromise;
   }
 
   // Load dimensions when letter changes
@@ -111,13 +134,13 @@ Uses pure runes instead of stores for reactivity.
 
   // Check if turn numbers should be visible
   let turnNumbersVisible = $state(
-    visibilityManager.getGlyphVisibility("TurnNumbers")
+    visibilityManager.getGlyphVisibility("turnNumbers")
   );
 
   // Register observer to update turn numbers visibility when it changes
   onMount(() => {
     const observer = () => {
-      turnNumbersVisible = visibilityManager.getGlyphVisibility("TurnNumbers");
+      turnNumbersVisible = visibilityManager.getGlyphVisibility("turnNumbers");
     };
 
     visibilityManager.registerObserver(observer, ["glyph"]);
@@ -128,11 +151,12 @@ Uses pure runes instead of stores for reactivity.
   });
 </script>
 
-<!-- TKA Glyph Group -->
-{#if hasLetter}
+<!-- TKA Glyph Group - only render when dimensions are loaded to prevent flash -->
+{#if hasLetter && dimensionsLoaded}
   <g
     class="tka-glyph"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     data-letter={letter}
     data-turns={turnsTuple}
@@ -158,15 +182,14 @@ Uses pure runes instead of stores for reactivity.
     />
 
     <!-- Turns Column - displays turn numbers to the right of the letter -->
-    {#if dimensionsLoaded}
-      <TurnsColumn
-        {turnsTuple}
-        {letter}
-        {letterDimensions}
-        {pictographData}
-        visible={turnNumbersVisible}
-      />
-    {/if}
+    <TurnsColumn
+      {turnsTuple}
+      {letter}
+      {letterDimensions}
+      {pictographData}
+      visible={turnNumbersVisible}
+      {previewMode}
+    />
   </g>
 {/if}
 
@@ -183,12 +206,22 @@ Uses pure runes instead of stores for reactivity.
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .tka-glyph.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .tka-glyph.interactive {
     cursor: pointer;
   }
 
   .tka-glyph.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .tka-glyph.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 
   .letter-image {

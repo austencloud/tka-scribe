@@ -1,127 +1,157 @@
 <!--
-  AccountSettingsButton.svelte - Unified Profile & Settings Button
+  AccountSettingsButton.svelte - Profile Button
 
-  Combines profile and settings into one intuitive button:
-  - When signed in: Shows profile picture + "Account & Settings"
-  - When signed out: Shows gear icon + "Settings"
-  - Opens Settings sheet with Profile tab when signed in
+  Shows user profile info and provides access to sign in/out:
+  - When signed in: Shows profile picture + user name, opens profile popover
+  - When signed out: Shows user icon + "Sign In", triggers sign-in flow
   - 44px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
+  import { openAuthDialog } from "$lib/shared/auth/state/auth-ui-state.svelte";
 
   // Props
-  let { isCollapsed = false, isActive = false } = $props<{
+  let { isCollapsed = false } = $props<{
     isCollapsed?: boolean;
-    isActive?: boolean;
   }>();
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
 
+  // Popover state
+  let showPopover = $state(false);
+  let buttonRef = $state<HTMLButtonElement | null>(null);
+
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    try {
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.error("Failed to resolve haptic service", error);
+      hapticService = null;
+    }
+
+    // Close popover on outside click
+    function handleClickOutside(event: MouseEvent) {
+      if (buttonRef && !buttonRef.contains(event.target as Node)) {
+        showPopover = false;
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   });
 
   function handleClick() {
     hapticService?.trigger("selection");
 
-    // If signed in, open Settings with Profile tab active
-    // If signed out, just open Settings normally
     if (authStore.isAuthenticated) {
-      import("../../settings/utils/tab-persistence.svelte").then(
-        ({ saveActiveTab }) => {
-          saveActiveTab("Profile");
-          import("../utils/sheet-router").then(({ openSheet }) => {
-            openSheet("settings");
-          });
-        }
-      );
+      // Toggle profile popover
+      showPopover = !showPopover;
     } else {
-      import("../utils/sheet-router").then(({ openSheet }) => {
-        openSheet("settings");
-      });
+      // Open sign-in dialog
+      openAuthDialog();
     }
+  }
+
+  async function handleSignOut() {
+    hapticService?.trigger("selection");
+    showPopover = false;
+    await authStore.signOut();
   }
 
   // Derive button label based on auth state
   const buttonLabel = $derived(
     authStore.isAuthenticated
-      ? authStore.user?.displayName || "Account & Settings"
-      : "Settings"
+      ? authStore.user?.displayName || "Profile"
+      : "Sign In"
   );
 
   const ariaLabel = $derived(
-    authStore.isAuthenticated ? "Account and Settings" : "Settings"
+    authStore.isAuthenticated ? "Open profile menu" : "Sign in"
   );
 </script>
 
-<button
-  class="account-settings-button"
-  class:active={isActive}
-  class:collapsed={isCollapsed}
-  class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
-  onclick={handleClick}
-  aria-label={ariaLabel}
->
-  <!-- Icon/Avatar Section -->
-  <div class="icon-wrapper">
-    {#if authStore.isAuthenticated && authStore.user?.photoURL}
-      <!-- Profile Picture -->
-      <img
-        src={authStore.user.photoURL}
-        alt={authStore.user.displayName || "User"}
-        class="profile-avatar"
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-        onerror={(e) => {
-          // Fallback to initial on error
-          const wrapper = e.currentTarget.parentElement;
-          if (wrapper) {
-            e.currentTarget.remove();
-            const initial = document.createElement("div");
-            initial.className = "profile-initial";
-            initial.textContent = (
-              authStore.user?.displayName ||
-              authStore.user?.email ||
-              "?"
-            )
-              .charAt(0)
-              .toUpperCase();
-            wrapper.appendChild(initial);
-          }
-        }}
-      />
-      <!-- Settings Gear Badge -->
-      <div class="settings-badge">
-        <i class="fas fa-cog"></i>
-      </div>
-    {:else if authStore.isAuthenticated && authStore.user}
-      <!-- Profile Initial -->
-      <div class="profile-initial">
-        {(authStore.user.displayName || authStore.user.email || "?")
-          .charAt(0)
-          .toUpperCase()}
-      </div>
-      <!-- Settings Gear Badge -->
-      <div class="settings-badge">
-        <i class="fas fa-cog"></i>
-      </div>
-    {:else}
-      <!-- Settings Gear Icon (signed out) -->
-      <i class="fas fa-cog"></i>
-    {/if}
-  </div>
+<div class="profile-button-container">
+  <button
+    bind:this={buttonRef}
+    class="account-settings-button"
+    class:collapsed={isCollapsed}
+    class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
+    onclick={handleClick}
+    aria-label={ariaLabel}
+    aria-expanded={showPopover}
+    aria-haspopup="true"
+  >
+    <!-- Icon/Avatar Section -->
+    <div class="icon-wrapper">
+      {#if authStore.isAuthenticated && authStore.user?.photoURL}
+        <!-- Profile Picture -->
+        <img
+          src={authStore.user.photoURL}
+          alt={authStore.user.displayName || "User"}
+          class="profile-avatar"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+          onerror={(e) => {
+            // Fallback to initial on error
+            const wrapper = e.currentTarget.parentElement;
+            if (wrapper) {
+              e.currentTarget.remove();
+              const initial = document.createElement("div");
+              initial.className = "profile-initial";
+              initial.textContent = (
+                authStore.user?.displayName ||
+                authStore.user?.email ||
+                "?"
+              )
+                .charAt(0)
+                .toUpperCase();
+              wrapper.appendChild(initial);
+            }
+          }}
+        />
+      {:else if authStore.isAuthenticated && authStore.user}
+        <!-- Profile Initial -->
+        <div class="profile-initial">
+          {(authStore.user.displayName || authStore.user.email || "?")
+            .charAt(0)
+            .toUpperCase()}
+        </div>
+      {:else}
+        <!-- User Icon (signed out) -->
+        <i class="fas fa-user-circle"></i>
+      {/if}
+    </div>
 
-  <!-- Label (hidden when collapsed) -->
-  {#if !isCollapsed}
-    <span class="button-label">{buttonLabel}</span>
+    <!-- Label (hidden when collapsed) -->
+    {#if !isCollapsed}
+      <span class="button-label">{buttonLabel}</span>
+    {/if}
+  </button>
+
+  <!-- Profile Popover (shown when signed in and clicked) -->
+  {#if showPopover && authStore.isAuthenticated}
+    <div class="profile-popover">
+      <div class="popover-header">
+        <div class="user-info">
+          <span class="user-name">{authStore.user?.displayName || "User"}</span>
+          <span class="user-email">{authStore.user?.email}</span>
+        </div>
+      </div>
+      <div class="popover-divider"></div>
+      <button class="popover-action sign-out" onclick={handleSignOut}>
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sign Out</span>
+      </button>
+    </div>
   {/if}
-</button>
+</div>
 
 <style>
   /* ============================================================================
@@ -159,11 +189,6 @@
 
   .account-settings-button:active {
     transform: scale(0.98);
-  }
-
-  .account-settings-button.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 1);
   }
 
   /* ============================================================================
@@ -223,38 +248,7 @@
     border-radius: 50%;
   }
 
-  /* Settings Gear Badge - appears on profile picture */
-  .settings-badge {
-    position: absolute;
-    bottom: -2px;
-    right: -2px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 2px solid rgba(20, 25, 35, 0.95); /* Match sidebar dark background */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .settings-badge i {
-    font-size: 9px;
-    color: white;
-    transition: all 0.25s ease;
-  }
-
-  .account-settings-button:hover .settings-badge {
-    transform: scale(1.1);
-  }
-
-  .account-settings-button:hover .settings-badge i {
-    transform: rotate(90deg);
-  }
-
-  /* Gear icon styling (when signed out) */
+  /* User icon styling (when signed out) */
   .icon-wrapper > i {
     color: rgba(255, 255, 255, 0.7);
     transition: all 0.25s ease;
@@ -262,7 +256,7 @@
 
   .account-settings-button:hover .icon-wrapper > i {
     color: rgba(255, 255, 255, 0.95);
-    transform: rotate(45deg);
+    transform: scale(1.1);
   }
 
   /* ============================================================================
@@ -287,18 +281,14 @@
     .account-settings-button,
     .icon-wrapper,
     .icon-wrapper i,
-    .icon-wrapper > i,
-    .settings-badge,
-    .settings-badge i {
+    .icon-wrapper > i {
       transition: none;
     }
 
     .account-settings-button:hover,
     .account-settings-button:active,
     .account-settings-button:hover .icon-wrapper,
-    .account-settings-button:hover .icon-wrapper > i,
-    .account-settings-button:hover .settings-badge,
-    .account-settings-button:hover .settings-badge i {
+    .account-settings-button:hover .icon-wrapper > i {
       transform: none;
     }
   }
@@ -306,10 +296,6 @@
   @media (prefers-contrast: high) {
     .account-settings-button {
       border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .account-settings-button.active {
-      border-color: white;
     }
   }
 </style>

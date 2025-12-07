@@ -8,15 +8,17 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { ArrowAdjustmentCalculator } from "$shared/pictograph/arrow/positioning/calculation/services/implementations";
-import { SpecialPlacementService } from "$shared/pictograph/arrow/positioning/placement/services/implementations";
-import { SpecialPlacementDataService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
-import { LetterClassificationService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
-import { TurnsTupleGeneratorService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
-import { SpecialPlacementLookupService } from "$shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
-import { AttributeKeyGenerator } from "$shared/pictograph/arrow/positioning/key-generation/services/implementations";
-import type { MotionData, PictographData } from "$shared";
-import { GridLocation, GridMode, MotionType } from "$shared";
+import { ArrowAdjustmentCalculator } from "$lib/shared/pictograph/arrow/positioning/calculation/services/implementations/ArrowAdjustmentCalculator";
+import { SpecialPlacementService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementService";
+import { SpecialPlacementDataService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementDataService";
+import { LetterClassificationService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/LetterClassificationService";
+import { TurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/TurnsTupleGeneratorService";
+import { SpecialPlacementLookupService } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/SpecialPlacementLookupService";
+import { AttributeKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/AttributeKeyGenerator";
+import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { GridLocation, MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 describe("Special Placement Attribute Key Integration", () => {
   it("should generate and use attribute key for special placement lookup", () => {

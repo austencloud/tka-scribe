@@ -5,13 +5,13 @@
   Features centered layout matching PersonalTab with descriptive hints.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     hasPasswordProvider,
     isCompactMode,
     isVeryCompactMode,
   } from "../../state/profile-settings-state.svelte";
-  import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
+  import UnifiedHeader from "../../../settings/components/UnifiedHeader.svelte";
   import ConnectedAccounts from "./ConnectedAccounts.svelte";
   import DangerZone from "./DangerZone.svelte";
   import PasswordSection from "./PasswordSection.svelte";
@@ -70,7 +70,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 48px); /* Fluid padding */
+    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 50px); /* Fluid padding */
     min-height: 0;
     transition: padding 0.2s ease;
     display: flex;

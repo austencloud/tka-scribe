@@ -4,7 +4,7 @@ import type {
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
-} from "../domain/types";
+} from "../domain/types/background-types";
 
 /**
  * Background state management using Svelte 5 runes

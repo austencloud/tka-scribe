@@ -1,14 +1,12 @@
 /**
  * Background Preloader Utility
  *
- * Handles immediate body background updates when background settings change.
- * Uses CSS ::before pseudo-element with opacity transition for smooth gradient changes.
+ * Handles immediate body background CSS variable updates when background settings change.
+ * The BackgroundCanvas component handles the visual crossfade transition.
  */
 
-import { BACKGROUND_GRADIENTS } from "./domain";
-import type { BackgroundType } from "./domain/enums/background-enums";
-
-let isTransitioning = false;
+import { BACKGROUND_GRADIENTS } from "./domain/constants/BackgroundGradients";
+import { BackgroundType } from "./domain/enums/background-enums";
 
 // Background animation mapping - same as app.html
 const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
@@ -16,73 +14,91 @@ const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
   snowfall: "snow-fall",
   nightSky: "star-twinkle",
   deepOcean: "deep-ocean-flow",
+  emberGlow: "ember-glow",
+  sakuraDrift: "sakura-drift",
   solidColor: "", // No animation for solid colors
   linearGradient: "", // No animation for gradients
 };
 
+export interface CustomBackgroundOptions {
+  color?: string;
+  colors?: string[];
+  direction?: number;
+}
+
 /**
- * Updates the body background with smooth transition using ::before overlay technique
- * This works because CSS CAN transition opacity, even though gradients cannot be transitioned directly
+ * Build a CSS gradient string from custom options
  */
-export function updateBodyBackground(backgroundType: BackgroundType): void {
+function buildGradientString(options: CustomBackgroundOptions): string {
+  if (options.color) {
+    // Solid color - use a solid background
+    return options.color;
+  }
+  if (options.colors && options.colors.length > 0) {
+    // Custom gradient
+    const direction = options.direction ?? 135;
+    return `linear-gradient(${direction}deg, ${options.colors.join(", ")})`;
+  }
+  return "";
+}
+
+/**
+ * Apply the background immediately (no transition - canvas handles visual crossfade)
+ */
+function applyBackground(newGradient: string, newAnimation: string): void {
+  const body = document.body;
+
+  // Update body animation class immediately
+  body.classList.remove(
+    "aurora-flow",
+    "snow-fall",
+    "star-twinkle",
+    "deep-ocean-flow",
+    "ember-glow",
+    "sakura-drift"
+  );
+  if (newAnimation) {
+    body.classList.add(newAnimation);
+  }
+
+  // Set the CSS variable immediately (canvas handles the visual transition)
+  document.documentElement.style.setProperty("--gradient-cosmic", newGradient);
+}
+
+/**
+ * Updates the body background CSS variables immediately
+ * The BackgroundCanvas component handles the visual crossfade transition
+ */
+export function updateBodyBackground(
+  backgroundType: BackgroundType,
+  customOptions?: CustomBackgroundOptions
+): void {
   if (typeof window === "undefined" || typeof document === "undefined") {
     return; // SSR safety
   }
 
   try {
-    const newGradient =
-      BACKGROUND_GRADIENTS[backgroundType] || BACKGROUND_GRADIENTS["nightSky"];
-    const newAnimation =
-      BACKGROUND_ANIMATIONS[backgroundType] || BACKGROUND_ANIMATIONS["nightSky"];
-
-    // Get current gradient
-    const currentGradient =
-      document.documentElement.style.getPropertyValue("--gradient-cosmic");
-
-    // Skip if already set to this gradient
-    if (currentGradient === newGradient) {
+    // Determine the gradient to apply
+    let newGradient: string;
+    
+    if (backgroundType === BackgroundType.SOLID_COLOR && customOptions?.color) {
+      newGradient = customOptions.color;
+    } else if (backgroundType === BackgroundType.LINEAR_GRADIENT && customOptions?.colors) {
+      newGradient = buildGradientString(customOptions);
+    } else {
+      // Predefined background type
+      newGradient = BACKGROUND_GRADIENTS[backgroundType];
+    }
+    
+    if (!newGradient) {
+      console.warn("Empty gradient for background type:", backgroundType);
       return;
     }
-
-    if (isTransitioning) {
-      return;
-    }
-
-    isTransitioning = true;
-    const body = document.body;
-
-    // Update body animation class immediately
-    body.classList.remove(
-      "aurora-flow",
-      "snow-fall",
-      "star-twinkle",
-      "deep-ocean-flow"
-    );
-    body.classList.add(newAnimation);
-
-    // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
-    document.documentElement.style.setProperty(
-      "--gradient-next",
-      newGradient || ""
-    );
-
-    // Step 2: Fade in the ::before overlay (showing NEW gradient on top of OLD)
-    requestAnimationFrame(() => {
-      body.classList.add("background-transitioning");
-    });
-
-    // Step 3: After transition completes, swap the gradients
-    setTimeout(() => {
-      document.documentElement.style.setProperty(
-        "--gradient-cosmic",
-        newGradient || ""
-      );
-      body.classList.remove("background-transitioning");
-      isTransitioning = false;
-    }, 1500);
+    
+    const newAnimation = BACKGROUND_ANIMATIONS[backgroundType];
+    applyBackground(newGradient, newAnimation);
   } catch (error) {
     console.warn("Failed to update body background:", error);
-    isTransitioning = false;
   }
 }
 
@@ -100,9 +116,10 @@ export function preloadBackgroundFromStorage(): void {
     const stored = localStorage.getItem(settingsKey);
 
     if (stored) {
-      const settings = JSON.parse(stored);
-      const backgroundType = settings.backgroundType || "nightSky";
-      updateBodyBackground(backgroundType as BackgroundType);
+      const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+      const backgroundType = (settings.backgroundType ??
+        BackgroundType.NIGHT_SKY) as BackgroundType;
+      updateBodyBackground(backgroundType);
     }
   } catch (error) {
     console.warn("Failed to preload background:", error);

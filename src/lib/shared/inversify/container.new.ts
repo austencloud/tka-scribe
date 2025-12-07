@@ -1,15 +1,13 @@
 import { Container } from "inversify";
-import {
-  animatorModule,
-  createModule,
-  coreModule,
-  dataModule,
-  exploreModule,
-  learnModule,
-  pictographModule,
-  wordCardModule,
-  writeModule,
-} from "./modules";
+import { animatorModule } from "./modules/animator.module";
+import { createModule } from "./modules/build.module";
+import { coreModule } from "./modules/core.module";
+import { dataModule } from "./modules/data.module";
+import { exploreModule } from "./modules/discover.module";
+import { learnModule } from "./modules/learn.module";
+import { pictographModule } from "./modules/pictograph.module";
+import { wordCardModule } from "./modules/word-card.module";
+import { writeModule } from "./modules/write.module";
 
 // Create container
 const container = new Container();
@@ -21,9 +19,9 @@ async function initializeContainer() {
       coreModule,
       dataModule,
       pictographModule,
+      createModule, // Load before animator - animator depends on create's services
       animatorModule,
       exploreModule,
-      createModule,
       learnModule,
       wordCardModule,
       writeModule

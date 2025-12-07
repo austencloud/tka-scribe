@@ -1,16 +1,20 @@
 <!-- BackgroundTab.svelte - Background settings and configuration -->
 <script lang="ts">
-  import type { AppSettings, IDeviceDetector, IViewportService } from "$shared";
-  import { BackgroundType, resolve, TYPES } from "$shared";
+  import type { AppSettings } from "../../../domain/AppSettings";
+  import { resolve } from "../../../../inversify/di";
+  import { TYPES } from "../../../../inversify/types";
+  import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
+  import type { IDeviceDetector } from "../../../../device/services/contracts/IDeviceDetector";
+  import type { IViewportService } from "../../../../device/services/contracts/IViewportService";
   import { onMount } from "svelte";
-  import IOSSegmentedControl from "../../IOSSegmentedControl.svelte";
   import IOSBackgroundCardGrid from "./IOSBackgroundCardGrid.svelte";
-  import IOSSimpleBackgroundCardGrid from "./IOSSimpleBackgroundCardGrid.svelte";
+  import { backgroundsConfig } from "./background-config";
   import {
     calculateGradientLuminance,
     calculateLuminance,
     extractAccentColor,
     generateGlassMorphismTheme,
+    generateMatteTheme,
     getThemeMode,
   } from "../../../utils/background-theme-calculator";
 
@@ -29,11 +33,14 @@
   // Background settings state
   let backgroundSettings = $state({
     backgroundEnabled: settings?.backgroundEnabled ?? true,
-    backgroundCategory: settings?.backgroundCategory || "animated",
     backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
     backgroundQuality: settings?.backgroundQuality || "medium",
-    backgroundColor: settings?.backgroundColor || "#1a1a2e",
-    gradientColors: settings?.gradientColors || ["#667eea", "#764ba2"],
+    backgroundColor: settings?.backgroundColor || "#000000",
+    gradientColors: settings?.gradientColors || [
+      "#0d1117",
+      "#161b22",
+      "#21262d",
+    ],
     gradientDirection: settings?.gradientDirection || 135,
   });
 
@@ -75,49 +82,28 @@
     onUpdate?.({ key, value });
   }
 
-  function handleCategorySelect(category: string) {
-    const validCategory = category as "animated" | "simple";
-    updateBackgroundSetting("backgroundCategory", validCategory);
-
-    // Set default background type for the category
-    if (validCategory === "animated") {
-      updateBackgroundSetting("backgroundType", BackgroundType.NIGHT_SKY);
-    } else {
-      updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
-    }
-  }
-
   function handleBackgroundSelect(selectedType: BackgroundType) {
-    updateBackgroundSetting("backgroundType", selectedType);
-  }
+    // Find the background config to get color/gradient info for simple backgrounds
+    const bgConfig = backgroundsConfig.find((bg) => bg.type === selectedType);
 
-  function handleSimpleBackgroundUpdate(settings: {
-    type: "solid" | "gradient";
-    color?: string;
-    colors?: string[];
-    direction?: number;
-  }) {
-    if (settings.type === "solid") {
-      updateBackgroundSetting("backgroundType", BackgroundType.SOLID_COLOR);
-      updateBackgroundSetting("backgroundColor", settings.color || "#1a1a2e");
-
-      // Apply theme-aware glass morphism for solid colors
-      if (settings.color) {
-        applyDynamicGlassMorphism(settings.color);
-      }
-    } else {
-      updateBackgroundSetting("backgroundType", BackgroundType.LINEAR_GRADIENT);
-      updateBackgroundSetting(
-        "gradientColors",
-        settings.colors || ["#667eea", "#764ba2"]
-      );
-      updateBackgroundSetting("gradientDirection", settings.direction || 135);
-
-      // Apply theme-aware glass morphism for gradients
-      if (settings.colors && settings.colors.length > 0) {
-        applyDynamicGlassMorphism(undefined, settings.colors);
+    // IMPORTANT: Update colors/gradient FIRST before updating type
+    // This ensures the crossfade transition has access to the custom options
+    if (bgConfig) {
+      if (selectedType === BackgroundType.SOLID_COLOR && bgConfig.color) {
+        updateBackgroundSetting("backgroundColor", bgConfig.color);
+        applyDynamicGlassMorphism(bgConfig.color);
+      } else if (
+        selectedType === BackgroundType.LINEAR_GRADIENT &&
+        bgConfig.colors
+      ) {
+        updateBackgroundSetting("gradientColors", bgConfig.colors);
+        updateBackgroundSetting("gradientDirection", bgConfig.direction || 135);
+        applyDynamicGlassMorphism(undefined, bgConfig.colors);
       }
     }
+
+    // Update the background type LAST to trigger the crossfade with custom options
+    updateBackgroundSetting("backgroundType", selectedType);
   }
 
   /**
@@ -144,10 +130,11 @@
       ? extractAccentColor(gradientColors)
       : solidColor;
 
-    // Generate theme
+    // Generate themes
     const theme = generateGlassMorphismTheme(mode, accentColor);
+    const matteTheme = generateMatteTheme(mode, accentColor);
 
-    // Apply CSS variables
+    // Apply legacy glass variables
     const root = document.documentElement;
     root.style.setProperty("--panel-bg-current", theme.panelBg);
     root.style.setProperty("--panel-border-current", theme.panelBorder);
@@ -162,85 +149,38 @@
     root.style.setProperty("--input-focus-current", theme.inputFocus);
     root.style.setProperty("--button-active-current", theme.buttonActive);
     root.style.setProperty("--glass-backdrop", theme.backdropBlur);
+
+    // Apply matte 2026 bento theme variables
+    root.style.setProperty("--theme-panel-bg", matteTheme.panelBg);
+    root.style.setProperty("--theme-panel-elevated-bg", matteTheme.panelElevatedBg);
+    root.style.setProperty("--theme-card-bg", matteTheme.cardBg);
+    root.style.setProperty("--theme-card-hover-bg", matteTheme.cardHoverBg);
+    root.style.setProperty("--theme-accent", matteTheme.accent);
+    root.style.setProperty("--theme-accent-strong", matteTheme.accentStrong);
+    root.style.setProperty("--theme-stroke", matteTheme.stroke);
+    root.style.setProperty("--theme-stroke-strong", matteTheme.strokeStrong);
+    root.style.setProperty("--theme-text", matteTheme.text);
+    root.style.setProperty("--theme-text-dim", matteTheme.textDim);
+    root.style.setProperty("--theme-shadow", matteTheme.shadow);
+    root.style.setProperty("--theme-panel-shadow", matteTheme.panelShadow);
   }
 </script>
 
-<div class="tab-content">
+<div class="background-tab-content">
   {#if backgroundSettings.backgroundEnabled}
-    <!-- iOS Segmented Control for category selection -->
-    <div class="category-selector-container">
-      <IOSSegmentedControl
-        segments={[
-          {
-            id: "animated",
-            label: "Animated",
-            icon: '<i class="fas fa-film"></i>',
-          },
-          {
-            id: "simple",
-            label: "Simple",
-            icon: '<i class="fas fa-palette"></i>',
-          },
-        ]}
-        selectedId={backgroundSettings.backgroundCategory}
-        onSegmentSelect={handleCategorySelect}
-      />
-    </div>
-
-    <!-- Animated backgrounds -->
-    {#if backgroundSettings.backgroundCategory === "animated"}
-      <IOSBackgroundCardGrid
-        selectedBackground={backgroundSettings.backgroundType}
-        onBackgroundSelect={handleBackgroundSelect}
-        {orientation}
-      />
-    {:else}
-      <!-- Simple backgrounds -->
-      <IOSSimpleBackgroundCardGrid
-        selectedType={backgroundSettings.backgroundType ===
-        BackgroundType.SOLID_COLOR
-          ? "solid"
-          : "gradient"}
-        backgroundColor={backgroundSettings.backgroundColor}
-        gradientColors={backgroundSettings.gradientColors}
-        gradientDirection={backgroundSettings.gradientDirection}
-        onUpdate={handleSimpleBackgroundUpdate}
-      />
-    {/if}
+    <IOSBackgroundCardGrid
+      selectedBackground={backgroundSettings.backgroundType}
+      onBackgroundSelect={handleBackgroundSelect}
+      {orientation}
+    />
   {/if}
 </div>
 
 <style>
-  .tab-content {
+  .background-tab-content {
     width: 100%;
-    height: 100%;
-    max-width: 1200px; /* Constrain on large screens */
-    margin: 0 auto;
-    container-type: size; /* Enable both width and height container queries */
-    container-name: tab-content;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* iOS segmented control container - Pixel Perfect */
-  .category-selector-container {
-    width: 100%;
-    max-width: 600px; /* Prevent segmented control from getting too wide */
-    margin: 0 auto;
-    padding: clamp(12px, 2cqh, 16px) clamp(16px, 3cqw, 20px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* Desktop: Better spacing */
-  @media (min-width: 769px) {
-    .tab-content {
-      padding: clamp(8px, 2vw, 16px);
-    }
-
-    .category-selector-container {
-      padding: clamp(16px, 2vh, 20px) 0;
-    }
+    display: block;
+    padding: 12px 6px 6px;
+    box-sizing: border-box;
   }
 </style>

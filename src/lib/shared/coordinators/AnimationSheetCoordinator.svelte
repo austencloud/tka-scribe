@@ -19,32 +19,30 @@
     />
 -->
 <script lang="ts">
-  import AnimationPanel from "$lib/modules/animate/components/AnimationPanel.svelte";
-  import type {
-    AnimationExportFormat,
-    GifExportProgress,
-    IAnimationPlaybackController,
-    IGifExportOrchestrator,
-  } from "$lib/modules/animate/services/contracts";
-  import { createAnimationPanelState } from "$lib/modules/animate/state/animation-panel-state.svelte";
-  import { loadSequenceForAnimation } from "$lib/modules/animate/utils/sequence-loader";
-  import type { ISequenceService } from "$create/shared";
-  import { resolve, TYPES, type SequenceData } from "$shared";
-  import type { IHapticFeedbackService } from "$shared/application/services/contracts";
-  import { onMount } from "svelte";
+  import AnimationShareDrawer from "../animation-engine/components/AnimationShareDrawer.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
+  import type { IGifExportOrchestrator } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
+  import type { AnimationExportFormat } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
+  import type { GifExportProgress } from "$lib/features/compose/services/contracts/IGifExportService";
+  import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
+  import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
+  import { resolve, loadFeatureModule } from "../inversify/di";
+  import { TYPES } from "../inversify/types";
+  import type { SequenceData } from "../foundation/domain/models/SequenceData";
+  import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
+  import { onMount, onDestroy } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
     GIF_EXPORT_SUCCESS_DELAY_MS,
-  } from "$lib/modules/animate/constants/timing";
-  import {
-    openAnimationPanel,
-    updateAnimationPanelState,
-    onRouteChange,
-    closeSheet,
-    getCurrentAnimationPanelState,
-    type AnimationPanelState,
-  } from "$shared/navigation/utils/sheet-router";
+  } from "$lib/features/compose/shared/domain/constants/timing";
+  import type {
+    ISheetRouterService,
+    AnimationPanelState,
+  } from "../navigation/services/contracts/ISheetRouterService";
+  import { createComponentLogger } from "../utils/debug-logger";
+
+  const debug = createComponentLogger("AnimationSheetCoordinator");
 
   // Props - decoupled from any specific module state
   let {
@@ -64,10 +62,32 @@
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedbackService | null = null;
   let gifExportOrchestrator: IGifExportOrchestrator | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
+
+  // State to track service readiness
+  let servicesReady = $state(false);
 
   // Animation state
   const animationPanelState = createAnimationPanelState();
+
+  // Local reactive state that syncs with animationPanelState
+  // Using $state + $effect pattern because the factory's getter pattern breaks fine-grained reactivity
+  let isPlayingLocal = $state(false);
+
+  // Sync isPlaying from state factory - this $effect subscribes to state changes
+  // Polling workaround: The state factory's getter pattern breaks Svelte 5 fine-grained reactivity
+  $effect(() => {
+    const checkPlaying = () => {
+      const current = animationPanelState.isPlaying;
+      if (current !== isPlayingLocal) {
+        isPlayingLocal = current;
+      }
+    };
+    checkPlaying();
+    const interval = setInterval(checkPlaying, 50);
+    return () => clearInterval(interval);
+  });
 
   // GIF Export state
   let _showExportDialog = $state(false);
@@ -141,75 +161,134 @@
     return null;
   });
 
+  // Resolved grid mode: prefer animation state's gridMode, fallback to sequence's gridMode
+  let resolvedGridMode = $derived(
+    animationPanelState.sequenceData?.gridMode ?? sequence?.gridMode
+  );
+
+  // Track route listener cleanup at module level
+  let cleanupRouteListener: (() => void) | undefined;
+
+  // Cleanup on destroy
+  onDestroy(() => {
+    cleanupRouteListener?.();
+  });
+
   // Resolve services on mount
   onMount(() => {
-    try {
-      sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
-      playbackController = resolve<IAnimationPlaybackController>(
-        TYPES.IAnimationPlaybackController
-      );
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
-      );
-      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-        TYPES.IGifExportOrchestrator
-      );
-    } catch (error) {
-      console.error("Failed to resolve animation services:", error);
-      animationPanelState.setError("Failed to initialize animation services");
-    }
+    debug.log("Resolving services...");
 
-    // Listen for route changes to restore animation panel from URL
-    const cleanupRouteListener = onRouteChange((state) => {
-      console.log('🎯 Route change received:', state);
-      isRespondingToRouteChange = true;
-
-      const sheetType = state.sheet;
-      if (sheetType === "animation") {
-        console.log('📂 Route change: Opening animation panel');
-        // Open animation panel if it's not already open
-        if (!isOpen) {
-          isOpen = true;
-        }
-
-        // Restore animation state from URL if available
-        if (state.animationPanel) {
-          restoreAnimationState(state.animationPanel);
-        }
-      } else if (isOpen && sheetType && sheetType !== null) {
-        console.log('🔄 Route change: Different sheet opened, closing animation');
-        // Close animation panel if a different sheet is opened (not animation, not null)
-        const otherSheets: readonly string[] = ["settings", "auth", "terms", "privacy"];
-        if (otherSheets.includes(sheetType)) {
-          isOpen = false;
-        }
-      } else if (isOpen && !sheetType) {
-        console.log('🚪 Route change: No sheet in URL, closing animation panel');
-        // Close animation panel if no sheet is in URL (user swiped away or pressed back)
-        isOpen = false;
+    // Use an async IIFE to handle async initialization
+    (async () => {
+      // Resolve core services immediately (Tier 1 - navigation module)
+      try {
+        sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
+        hapticService = resolve<IHapticFeedbackService>(
+          TYPES.IHapticFeedbackService
+        );
+        sheetRouterService = resolve<ISheetRouterService>(
+          TYPES.ISheetRouterService
+        );
+        debug.success("Core services resolved");
+      } catch (error) {
+        console.error("❌ Failed to resolve core services:", error);
       }
 
-      // Reset flag after a tick to allow effects to run
-      setTimeout(() => {
-        console.log('✅ Resetting isRespondingToRouteChange flag');
-        isRespondingToRouteChange = false;
-      }, 0);
-    });
+      // Load animator module and resolve animation-specific services
+      try {
+        await loadFeatureModule("animate");
+        debug.success("Animator module loaded");
 
-    // Check if animation panel should be open on initial load
-    const initialState = getCurrentAnimationPanelState();
-    if (initialState) {
-      isOpen = true;
-    }
+        playbackController = resolve<IAnimationPlaybackController>(
+          TYPES.IAnimationPlaybackController
+        );
+        gifExportOrchestrator = resolve<IGifExportOrchestrator>(
+          TYPES.IGifExportOrchestrator
+        );
 
-    return () => {
-      cleanupRouteListener();
-    };
+        servicesReady = true;
+        debug.success(
+          "Animation services resolved, ready to initialize playback"
+        );
+      } catch (error) {
+        console.error(
+          "❌ Failed to load animator module or resolve services:",
+          error
+        );
+        animationPanelState.setError("Failed to initialize animation services");
+      }
+
+      // Listen for route changes to restore animation panel from URL
+      cleanupRouteListener = sheetRouterService?.onRouteChange((state) => {
+        isRespondingToRouteChange = true;
+
+        const sheetType = state.sheet;
+        if (sheetType === "animation") {
+          // Open animation panel if it's not already open
+          if (!isOpen) {
+            isOpen = true;
+          }
+
+          // Restore animation state from URL if available
+          if (state.animationPanel) {
+            restoreAnimationState(state.animationPanel);
+          }
+        } else if (isOpen && sheetType && sheetType !== null) {
+          // Close animation panel if a different sheet is opened (not animation, not null)
+          const otherSheets: readonly string[] = [
+            "settings",
+            "auth",
+            "terms",
+            "privacy",
+          ];
+          if (otherSheets.includes(sheetType)) {
+            isOpen = false;
+          }
+        } else if (isOpen && !sheetType) {
+          // Close animation panel if no sheet is in URL (user swiped away or pressed back)
+          isOpen = false;
+        }
+
+        // Reset flag after a tick to allow effects to run
+        setTimeout(() => {
+          isRespondingToRouteChange = false;
+        }, 0);
+      });
+
+      // Check if animation panel should be open on initial load
+      const initialState = sheetRouterService?.getCurrentAnimationPanelState();
+      if (initialState) {
+        isOpen = true;
+      }
+    })();
   });
 
   // Load and auto-start animation when panel becomes visible
+  // Also reloads when sequence changes (e.g., after rotation) while panel is open
   $effect(() => {
-    if (isOpen && sequence && sequenceService && playbackController) {
+    debug.log("Animation effect triggered:", {
+      isOpen,
+      servicesReady,
+      hasSequence: !!sequence,
+      sequenceId: sequence?.id,
+      sequenceWord: sequence?.word,
+      beatCount: sequence?.beats?.length,
+      hasMotionData: sequence?.beats?.some(
+        (b) => b?.motions?.blue && b?.motions?.red
+      ),
+      hasPlaybackController: !!playbackController,
+      hasSequenceService: !!sequenceService,
+    });
+
+    // Wait for services to be ready AND panel to be open AND sequence to exist
+    if (
+      isOpen &&
+      servicesReady &&
+      sequence &&
+      sequenceService &&
+      playbackController
+    ) {
+      debug.success("All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);
 
@@ -218,6 +297,8 @@
       }, ANIMATION_LOAD_DELAY_MS);
 
       return () => clearTimeout(loadTimeout);
+    } else if (isOpen && sequence && !servicesReady) {
+      debug.info("Waiting for animation services to be ready...");
     }
     return undefined;
   });
@@ -229,17 +310,17 @@
     animationPanelState.setError(null);
 
     try {
-      // Load sequence
-      const result = await loadSequenceForAnimation(seq, sequenceService);
+      // Inline sequence loading
+      const loadedSequence = await loadSequenceData(seq, sequenceService);
 
-      if (!result.success || !result.sequence) {
-        throw new Error(result.error || "Failed to load sequence");
+      if (!loadedSequence) {
+        throw new Error("Failed to load sequence");
       }
 
       // Initialize playback controller
       animationPanelState.setShouldLoop(true);
       const success = playbackController.initialize(
-        result.sequence,
+        loadedSequence,
         animationPanelState
       );
 
@@ -247,7 +328,7 @@
         throw new Error("Failed to initialize animation playback");
       }
 
-      animationPanelState.setSequenceData(result.sequence);
+      animationPanelState.setSequenceData(loadedSequence);
 
       // Auto-start animation
       setTimeout(() => {
@@ -264,18 +345,101 @@
   }
 
   /**
+   * Load and hydrate sequence data for animation
+   */
+  async function loadSequenceData(
+    sequence: SequenceData | null,
+    service: ISequenceService
+  ): Promise<SequenceData | null> {
+    if (!sequence) return null;
+
+    const hasMotionData = (s: SequenceData) =>
+      Array.isArray(s.beats) &&
+      s.beats.length > 0 &&
+      s.beats.some((beat) => beat?.motions?.blue && beat?.motions?.red);
+
+    // Check if identifier looks like a UUID (user-created sequence)
+    // UUIDs: 8-4-4-4-12 hex pattern, gallery words are letters like "DKIIEJII"
+    const isUUID = (id: string) =>
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        id
+      );
+
+    // Get a valid gallery-compatible identifier (word preferred, or non-UUID id)
+    const getGalleryIdentifier = (s: SequenceData): string | null => {
+      if (s.word && s.word.trim()) return s.word;
+      if (s.name && s.name.trim() && !isUUID(s.name)) return s.name;
+      if (s.id && !isUUID(s.id)) return s.id;
+      return null; // No gallery-compatible identifier available
+    };
+
+    let fullSequence = sequence;
+
+    // If sequence already has motion data, use it directly
+    if (hasMotionData(sequence)) {
+      fullSequence = sequence;
+    }
+    // Load from database/gallery if needed (empty beats)
+    else if (sequence.id && (!sequence.beats || sequence.beats.length === 0)) {
+      const galleryId = getGalleryIdentifier(sequence);
+      if (galleryId) {
+        const loaded = await service.getSequence(galleryId);
+        if (loaded) {
+          fullSequence = loaded;
+        } else {
+          console.warn(`⚠️ Could not load sequence from gallery: ${galleryId}`);
+        }
+      } else {
+        console.log(
+          `ℹ️ User-created sequence ${sequence.id} has no gallery entry`
+        );
+      }
+    }
+    // Hydrate if missing motion data (try gallery lookup)
+    else if (fullSequence && !hasMotionData(fullSequence)) {
+      const galleryId = getGalleryIdentifier(fullSequence);
+      if (galleryId) {
+        const hydrated = await service.getSequence(galleryId);
+        if (hydrated && hasMotionData(hydrated)) {
+          fullSequence = hydrated;
+        }
+      }
+    }
+
+    // Normalize startPosition
+    const withStarting = fullSequence as unknown as {
+      startingPositionBeat?: unknown;
+    };
+    if (!fullSequence.startPosition && withStarting.startingPositionBeat) {
+      fullSequence = {
+        ...fullSequence,
+        startPosition:
+          withStarting.startingPositionBeat as SequenceData["startPosition"],
+      };
+    }
+
+    return fullSequence;
+  }
+
+  /**
    * Restore animation state from URL parameters
    */
   function restoreAnimationState(urlState: AnimationPanelState) {
     if (!playbackController) return;
 
     // Restore speed if specified
-    if (urlState.speed !== undefined && urlState.speed !== animationPanelState.speed) {
+    if (
+      urlState.speed !== undefined &&
+      urlState.speed !== animationPanelState.speed
+    ) {
       playbackController.setSpeed(urlState.speed);
     }
 
     // Restore current beat if specified
-    if (urlState.currentBeat !== undefined && urlState.currentBeat !== animationPanelState.currentBeat) {
+    if (
+      urlState.currentBeat !== undefined &&
+      urlState.currentBeat !== animationPanelState.currentBeat
+    ) {
       animationPanelState.setCurrentBeat(urlState.currentBeat);
     }
 
@@ -286,18 +450,10 @@
   // Sync isOpen state with URL (both open and close)
   let previousIsOpen = isOpen;
   $effect(() => {
-    console.log('🔍 AnimationSheetCoordinator effect:', {
-      isOpen,
-      previousIsOpen,
-      isRespondingToRouteChange,
-      sequence: sequence?.id
-    });
-
     if (!isRespondingToRouteChange) {
       if (isOpen && !previousIsOpen && sequence) {
-        console.log('📂 Opening animation panel - updating URL');
         // Opening: Push new history entry with animation panel
-        openAnimationPanel({
+        sheetRouterService?.openAnimationPanel({
           sequenceId: sequence.id,
           speed: animationPanelState.speed,
           isPlaying: animationPanelState.isPlaying,
@@ -305,26 +461,20 @@
           gridVisible: true,
         });
       } else if (!isOpen && previousIsOpen) {
-        console.log('🚪 Closing animation panel - clearing URL');
         // Closing: Clear URL parameters by replacing state (more reliable than history.back())
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           const url = new URL(window.location.href);
-          console.log('📍 URL before clear:', url.toString());
-          url.searchParams.delete('sheet');
-          url.searchParams.delete('animSeqId');
-          url.searchParams.delete('animSpeed');
-          url.searchParams.delete('animPlaying');
-          url.searchParams.delete('animBeat');
-          url.searchParams.delete('animGrid');
-          window.history.replaceState({}, '', url);
-          console.log('📍 URL after clear:', url.toString());
+          url.searchParams.delete("sheet");
+          url.searchParams.delete("animSeqId");
+          url.searchParams.delete("animSpeed");
+          url.searchParams.delete("animPlaying");
+          url.searchParams.delete("animBeat");
+          url.searchParams.delete("animGrid");
+          window.history.replaceState({}, "", url);
           // Dispatch route change event
-          console.log('📢 Dispatching route-change event with empty detail');
-          window.dispatchEvent(new CustomEvent('route-change', { detail: {} }));
+          window.dispatchEvent(new CustomEvent("route-change", { detail: {} }));
         }
       }
-    } else {
-      console.log('⏭️ Skipping URL update - responding to route change');
     }
     previousIsOpen = isOpen;
   });
@@ -349,9 +499,10 @@
       ) {
         // Double-check that the current route is actually showing animation sheet
         // This prevents "Cannot update animation panel state when animation sheet is not open" errors
-        const currentState = getCurrentAnimationPanelState();
+        const currentState =
+          sheetRouterService?.getCurrentAnimationPanelState();
         if (currentState !== null) {
-          updateAnimationPanelState({
+          sheetRouterService?.updateAnimationPanelState({
             speed: currentSpeed,
             currentBeat: Math.floor(currentBeat),
             isPlaying: currentPlaying,
@@ -391,7 +542,7 @@
     }
 
     // Close the sheet route (this will trigger the route change listener which will set isOpen = false)
-    closeSheet();
+    sheetRouterService?.closeSheet();
     _animatingBeatNumber = null;
   }
 
@@ -459,22 +610,32 @@
   function handleCanvasReady(canvas: HTMLCanvasElement | null) {
     animationCanvas = canvas;
   }
+
+  function handleExportGif() {
+    console.log("🎬 AnimationSheetCoordinator: handleExportGif called");
+    _handleExport("gif");
+  }
 </script>
 
-<AnimationPanel
+<AnimationShareDrawer
   show={isOpen ?? false}
   {combinedPanelHeight}
   loading={animationPanelState.loading}
   error={animationPanelState.error}
   speed={animationPanelState.speed}
+  isPlaying={isPlayingLocal}
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
-  gridMode={animationPanelState.sequenceData?.gridMode}
+  gridMode={resolvedGridMode}
   letter={currentLetter}
   beatData={currentBeatData}
   sequenceData={animationPanelState.sequenceData}
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
+  onPlaybackToggle={() => playbackController?.togglePlayback()}
   onCanvasReady={handleCanvasReady}
+  onExportGif={handleExportGif}
+  {isExporting}
+  exportProgress={_exportProgress}
 />

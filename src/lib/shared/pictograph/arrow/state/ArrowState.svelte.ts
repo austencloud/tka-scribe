@@ -5,7 +5,7 @@
  * Independent sub-state - no dependencies on prop state.
  */
 
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../shared/domain/models/PictographData";
 import type { ArrowAssets } from "../orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../orchestration/services/contracts/IArrowLifecycleManager";
 
@@ -34,7 +34,7 @@ export function createArrowState(
   async function calculateArrowPositions(
     pictographData: PictographData | null
   ): Promise<void> {
-    if (!pictographData || !pictographData.motions) {
+    if (!pictographData?.motions) {
       // Only clear if we don't have valid data - don't clear during transitions
       arrowPositions = {};
       arrowMirroring = {};

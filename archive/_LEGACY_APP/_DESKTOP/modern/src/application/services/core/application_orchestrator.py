@@ -2,7 +2,7 @@
 Application Orchestrator
 
 Orchestrates application startup using focused services.
-Replaces the monolithic KineticConstructorModern with clean architecture.
+Replaces the monolithic TKAStudioModern with clean architecture.
 
 PROVIDES:
 - Complete application initialization pipeline coordination

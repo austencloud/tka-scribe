@@ -10,53 +10,61 @@
    VIEW TRANSITION ROOT
    ============================================================================ */
 ::view-transition {
+  /* Prevent white flash - match the app's dark background */
+  background: #0a0a0a;
+
   /* Slightly slower for smoother feel */
   --transition-duration: 400ms;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================================================
-   OLD AND NEW VIEW STATES
-   Base styles for transitioning views
+   DISABLE ROOT TRANSITIONS
+   Only transition specific named elements, not the entire page
+   This keeps navigation completely static
    ============================================================================ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: var(--transition-duration);
-  animation-timing-function: var(--transition-easing);
+  animation: none;
 }
 
 /* ============================================================================
-   DEFAULT FADE TRANSITION (Neutral direction)
-   Clean crossfade with slight scale for depth
+   COMMUNITY PANEL TRANSITIONS
+   Smooth slide-fade for community tab switching
    ============================================================================ */
-::view-transition-old(root) {
-  animation-name: fade-out-scale;
+::view-transition-old(community-panel),
+::view-transition-new(community-panel) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-::view-transition-new(root) {
-  animation-name: fade-in-scale;
-  animation-delay: 50ms; /* Slight delay for cleaner transition */
+::view-transition-old(community-panel) {
+  animation-name: slide-out-left;
 }
 
-@keyframes fade-out-scale {
+::view-transition-new(community-panel) {
+  animation-name: slide-in-right;
+}
+
+@keyframes slide-out-left {
   from {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
   }
   to {
     opacity: 0;
-    transform: scale(0.98);
+    transform: translateX(-20px);
   }
 }
 
-@keyframes fade-in-scale {
+@keyframes slide-in-right {
   from {
     opacity: 0;
-    transform: scale(1.02);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(0);
   }
 }
 
@@ -217,4 +225,95 @@
 .module-transition-view.active {
   z-index: 1;
   position: relative;
+}
+
+/* ============================================================================
+   SETTINGS ZOOM TRANSITION
+   Dive-in/pull-out effect - same feel as dashboard module transitions
+   ============================================================================ */
+
+/* CSS custom properties for zoom origin (set via JS from button position) */
+:root {
+  --settings-portal-x: 90%;
+  --settings-portal-y: 95%;
+}
+
+/* ENTERING SETTINGS - Dive in (zoom from button) */
+.settings-portal-enter::view-transition-old(root) {
+  animation: settings-zoom-out 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: var(--settings-portal-x) var(--settings-portal-y);
+  z-index: 1;
+}
+
+.settings-portal-enter::view-transition-new(root) {
+  animation: settings-zoom-in 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: var(--settings-portal-x) var(--settings-portal-y);
+  z-index: 2;
+}
+
+@keyframes settings-zoom-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes settings-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* EXITING SETTINGS - Pull out (reverse zoom back to button) */
+.settings-portal-exit::view-transition-old(root) {
+  animation: settings-pull-out-old 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: var(--settings-portal-x) var(--settings-portal-y);
+  z-index: 2;
+}
+
+.settings-portal-exit::view-transition-new(root) {
+  animation: settings-pull-out-new 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: var(--settings-portal-x) var(--settings-portal-y);
+  z-index: 1;
+}
+
+@keyframes settings-pull-out-old {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes settings-pull-out-new {
+  from {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Accessibility - instant transition for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .settings-portal-enter::view-transition-old(root),
+  .settings-portal-enter::view-transition-new(root),
+  .settings-portal-exit::view-transition-old(root),
+  .settings-portal-exit::view-transition-new(root) {
+    animation: none !important;
+  }
 }

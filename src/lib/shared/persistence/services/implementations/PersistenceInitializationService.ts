@@ -6,9 +6,9 @@
  */
 
 import { injectable, inject } from "inversify";
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "../../../inversify/types";
 import type { IPersistenceService } from "../contracts/IPersistenceService";
-import type { IPersistenceInitializationService } from "../contracts";
+import type { IPersistenceInitializationService } from "../contracts/IPersistenceInitializationService";
 
 @injectable()
 export class PersistenceInitializationService

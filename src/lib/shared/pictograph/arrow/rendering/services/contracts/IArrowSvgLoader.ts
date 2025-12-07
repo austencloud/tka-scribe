@@ -2,7 +2,9 @@
  * SVG Loader Interface
  */
 
-import type { ArrowPlacementData, ArrowSvgData, MotionData } from "$shared";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
+import type { ArrowSvgData } from "../../../../shared/domain/models/svg-models";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
 
 export interface IArrowSvgLoader {
   /**

@@ -1,12 +1,11 @@
 <!-- AccessibilityTab.svelte - Modern User Experience Settings -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
-  import { nuclearCacheClear } from "$shared/auth";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IMobileFullscreenService } from "../../../mobile/services/contracts/IMobileFullscreenService";
+  import { resolve } from "../../../inversify/di";
+  import { TYPES } from "../../../inversify/types";
+  import { nuclearCacheClear } from "../../../auth/utils/nuclearCacheClear";
   import { onMount } from "svelte";
   import EnhancedPWAInstallGuide from "$lib/shared/mobile/components/EnhancedPWAInstallGuide.svelte";
 
@@ -62,9 +61,11 @@
       isFullscreen = fullscreenService.isFullscreen();
 
       // Listen for fullscreen changes
-      const unsubscribe = fullscreenService.onFullscreenChange((fullscreen) => {
-        isFullscreen = fullscreen;
-      });
+      const unsubscribe = fullscreenService.onFullscreenChange(
+        (fullscreen: boolean) => {
+          isFullscreen = fullscreen;
+        }
+      );
 
       return () => {
         unsubscribe?.();
@@ -197,7 +198,7 @@
           <span class="unavailable">(unavailable)</span>
         {/if}
       </div>
-      <label class="toggle-switch">
+      <label class="accessibility-setting-toggle">
         <input
           type="checkbox"
           checked={hapticEnabled && isHapticSupported}
@@ -214,7 +215,7 @@
       <div class="setting-label">
         <span>Reduce Motion</span>
       </div>
-      <label class="toggle-switch">
+      <label class="accessibility-setting-toggle">
         <input
           type="checkbox"
           checked={reducedMotion}
@@ -234,7 +235,7 @@
             <span class="unavailable">(unavailable)</span>
           {/if}
         </div>
-        <label class="toggle-switch">
+        <label class="accessibility-setting-toggle">
           <input
             type="checkbox"
             checked={isFullscreen && isFullscreenSupported}
@@ -271,18 +272,29 @@
   .experience-tab {
     display: flex;
     flex-direction: column;
-    gap: clamp(
-      10px,
-      2.5cqi,
-      16px
-    ); /* Container query units for responsive spacing */
+    gap: 2cqh; /* Use container height for gaps */
     max-width: 600px;
     width: 100%;
     height: 100%;
     margin: 0 auto;
-    padding: 0 clamp(8px, 2cqi, 12px);
+    padding: 2cqh 3cqw;
     container-type: inline-size;
     justify-content: center; /* Center content vertically */
+  }
+
+  /* Compact layout when parent container height is limited */
+  @container settings-content (max-height: 600px) {
+    .experience-tab {
+      gap: 1.5cqh;
+      padding: 1.5cqh 2cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .experience-tab {
+      gap: 1cqh;
+      padding: 1cqh 1.5cqw;
+    }
   }
 
   /* Settings List Container - iOS Glass Morphism */
@@ -301,9 +313,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: clamp(12px, 2.5cqi, 14px) clamp(12px, 3cqi, 16px);
+    padding: 2cqh 3cqw;
     border-bottom: 0.33px solid rgba(255, 255, 255, 0.08); /* iOS hairline */
     transition: background 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+  }
+
+  /* Compact rows when height is limited */
+  @container settings-content (max-height: 600px) {
+    .setting-row {
+      padding: 1.5cqh 2.5cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .setting-row {
+      padding: 1.2cqh 2cqw;
+    }
   }
 
   .setting-row:last-child {
@@ -326,8 +351,8 @@
   .setting-label {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: clamp(15px, 3cqi, 17px); /* iOS body text */
+    gap: 1cqw;
+    font-size: clamp(14px, 2.5cqw, 17px); /* iOS body text */
     font-weight: 400; /* iOS regular */
     letter-spacing: -0.41px; /* iOS body tracking - exact spec */
     line-height: 1.29; /* iOS body ratio */
@@ -337,7 +362,7 @@
   }
 
   .setting-label .unavailable {
-    font-size: clamp(12px, 2.5cqi, 13px); /* iOS footnote */
+    font-size: clamp(11px, 2cqw, 13px); /* iOS footnote */
     font-weight: 400;
     letter-spacing: -0.08px; /* iOS footnote tracking */
     line-height: 1.38; /* iOS footnote ratio */
@@ -347,7 +372,7 @@
   }
 
   /* iOS Toggle Switch - Exact Dimensions */
-  .toggle-switch {
+  .accessibility-setting-toggle {
     flex-shrink: 0;
     position: relative;
     display: inline-block;
@@ -356,7 +381,7 @@
     cursor: pointer;
   }
 
-  .toggle-switch input {
+  .accessibility-setting-toggle input {
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -413,23 +438,31 @@
 
   /* Clear Cache Button - iOS System Red */
   .clear-cache-btn {
-    padding: clamp(10px, 2cqi, 12px) clamp(16px, 3cqi, 20px);
+    padding: 1.5cqh 3cqw;
     border-radius: 10px; /* iOS button radius */
     border: none;
-    font-size: clamp(13px, 2.5cqi, 15px); /* iOS footnote to body */
+    font-size: clamp(12px, 2cqw, 15px); /* iOS footnote to body */
     font-weight: 600; /* iOS semibold */
     letter-spacing: -0.08px; /* iOS footnote tracking */
     line-height: 1.38;
     cursor: pointer;
     background: #ff3b30; /* iOS system red - exact hex */
     color: white;
-    min-height: 44px; /* iOS minimum touch target */
+    min-height: 52px; /* iOS minimum touch target */
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
     box-shadow:
       0 3px 12px rgba(255, 59, 48, 0.3),
       0 1px 3px rgba(255, 59, 48, 0.2);
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+
+  /* Compact button when height is limited */
+  @container settings-content (max-height: 500px) {
+    .clear-cache-btn {
+      padding: 1cqh 2cqw;
+      min-height: 52px;
+    }
   }
 
   .clear-cache-btn:hover:not(:disabled) {
@@ -465,10 +498,6 @@
       gap: clamp(20px, 4vh, 24px);
       padding: clamp(20px, 3vw, 32px);
       max-width: 560px; /* Better width for desktop readability */
-    }
-
-    .settings-list {
-      /* Add more padding on desktop */
     }
 
     .setting-row {

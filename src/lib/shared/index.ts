@@ -1,46 +1,35 @@
 /**
  * Shared Library Exports
  *
- * Clean barrel exports for all shared functionality.
- * This is the main entry point for importing shared types, services, and utilities.
+ * Centralized exports for commonly used shared utilities, UI primitives,
+ * and cross-module types. Keep these exports aligned with real entrypoints
+ * to avoid broken barrel references.
  */
 
-// === SHARED INFRASTRUCTURE ===
-export * from "./animation";
-export * from "./application";
-export * from "./background";
-export * from "./coordinators";
-// Export device module explicitly to avoid any re-export ambiguities
-export * from "./device/domain";
-export * from "./device/services";
-export * from "./foundation";
-// Modern Swipe Components (Embla-based) + Drawer + Dialog Components
-export {
-  ConfirmDialog,
-  Drawer,
-  FontAwesomeIcon,
-  HorizontalSwipeContainer,
-} from "./foundation/ui";
-export * from "./inversify";
-export * from "./navigation";
-export * from "./persistence";
-export * from "./pictograph";
-export * from "./settings";
-export * from "./theme";
-export * from "./utils";
-export { createComponentLogger, debugLogger } from "./utils/debug-logger";
-export * from "./validation";
+// === SHARED UI PRIMITIVES ===
+export { default as ConfirmDialog } from "./foundation/ui/ConfirmDialog.svelte";
+export { default as Drawer } from "./foundation/ui/Drawer.svelte";
+export { default as FontAwesomeIcon } from "./foundation/ui/FontAwesomeIcon.svelte";
+export { default as HorizontalSwipeContainer } from "./foundation/ui/HorizontalSwipeContainer.svelte";
+export { default as SheetDragHandle } from "./foundation/ui/SheetDragHandle.svelte";
+export { default as SkeletonLoader } from "./foundation/ui/SkeletonLoader.svelte";
+export { default as SimpleGlassScroll } from "./foundation/ui/SimpleGlassScroll.svelte";
 
-// === MODULE EXPORTS ===
-export * from "../modules/animate/domain";
-export * from "../modules/create/generate/circular/domain";
-export * from "../modules/create/generate/shared/domain";
-export * from "../modules/create/shared/domain/factories";
-export * from "../modules/create/shared/domain/models";
-export * from "../modules/explore/shared/domain";
-export * from "../modules/learn/codex/domain";
-export * from "../modules/learn/quiz/domain";
-export * from "../modules/word-card/domain";
+// Panel Components - Shared building blocks for panel UIs
+export { default as PanelAvatar } from "./components/panel/PanelAvatar.svelte";
+export { default as PanelButton } from "./components/panel/PanelButton.svelte";
+export { default as PanelCard } from "./components/panel/PanelCard.svelte";
+export { default as PanelContent } from "./components/panel/PanelContent.svelte";
+export { default as PanelGrid } from "./components/panel/PanelGrid.svelte";
+export { default as PanelHeader } from "./components/panel/PanelHeader.svelte";
+export { default as PanelSearch } from "./components/panel/PanelSearch.svelte";
+export { default as PanelSpinner } from "./components/panel/PanelSpinner.svelte";
+export { default as PanelState } from "./components/panel/PanelState.svelte";
+export { default as PanelTabs } from "./components/panel/PanelTabs.svelte";
+
+// DI helpers
+export * from "./inversify";
+export { createComponentLogger, debugLogger } from "./utils/debug-logger";
 
 // === SPECIFIC EXPORTS FOR CROSS-MODULE DEPENDENCIES ===
 
@@ -69,16 +58,16 @@ export const safeSessionStorageRemove = (key: string): void => {
 export { PngMetadataExtractor } from "./pictograph/shared/utils/png-metadata-extractor";
 
 // CSV parser interface (needed by modules)
-export type { ICSVPictographParserService as ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParserService";
+export type { ICSVPictographParser } from "./foundation/services/contracts/data/ICSVPictographParser";
 
 // CAP Type service (needed by CAPCard component)
-export type { ICAPTypeService } from "../modules/create/generate/shared/services/contracts/ICAPTypeService";
+export type { ICAPTypeService } from "../features/create/generate/shared/services/contracts/ICAPTypeService";
 
 // Generation orchestration service (needed by generate-actions state)
-export type { IGenerationOrchestrationService } from "../modules/create/generate/shared/services/contracts/IGenerationOrchestrationService";
+export type { IGenerationOrchestrationService } from "../features/create/generate/shared/services/contracts/IGenerationOrchestrationService";
 
 // Sequence export service (needed by button components)
-export type { ISequenceExportService } from "../modules/create/shared/services/contracts/ISequenceExportService";
+export type { ISequenceExportService } from "../features/create/shared/services/contracts/ISequenceExportService";
 
 // Turns tuple generator service (needed by Pictograph component for TKA glyph)
 export type { ITurnsTupleGeneratorService } from "./pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
@@ -93,4 +82,4 @@ export type {
   BeatGridConfig,
   ContainerDimensions,
   LayoutInfo,
-} from "../modules/create/shared/workspace-panel/sequence-display/domain/models/beat-grid-models";
+} from "../features/create/shared/workspace-panel/sequence-display/domain/models/beat-grid-models";

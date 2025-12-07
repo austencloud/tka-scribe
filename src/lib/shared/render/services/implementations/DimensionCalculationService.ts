@@ -9,8 +9,8 @@
  */
 
 import { injectable } from "inversify";
-import type { SequenceExportOptions } from "../../domain/models";
-import type { IDimensionCalculationService } from "../contracts";
+import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
+import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
 
 @injectable()
 export class DimensionCalculationService

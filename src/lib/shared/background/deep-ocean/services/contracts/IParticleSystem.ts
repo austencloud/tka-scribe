@@ -1,4 +1,4 @@
-import type { Dimensions } from "$shared";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
 import type { OceanParticle } from "../../domain/models/DeepOceanModels";
 
 /**

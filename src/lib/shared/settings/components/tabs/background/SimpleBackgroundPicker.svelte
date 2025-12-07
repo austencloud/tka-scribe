@@ -5,8 +5,10 @@
   No custom builder - just click and select. Zero scrolling required.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../../inversify/di";
+  import { TYPES } from "../../../../inversify/types";
+  import { onMount } from "svelte";
 
   const {
     selectedType,
@@ -28,9 +30,13 @@
   }>();
 
   // Services
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
-  );
+  let hapticService: IHapticFeedbackService | null = null;
+
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
 
   // Beautiful preset backgrounds (6 gradients + 2 solid colors = 8 total)
   interface PresetBackground {
@@ -320,15 +326,15 @@
   }
 
   .card-icon {
-    /* Use clamp for intelligent sizing: min 24px, preferred 12cqi, max 56px */
-    font-size: clamp(24px, 12cqi, 56px);
+    /* Use clamp for intelligent sizing: min 24px, preferred 12cqi, max 52px */
+    font-size: clamp(24px, 12cqi, 52px);
     color: white;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
   }
 
   /* Responsive icon sizing based on container dimensions */
-  @container (min-width: 150px) and (min-height: 100px) {
+  @container (min-width: 152px) and (min-height: 100px) {
     .card-icon {
       font-size: clamp(28px, 14cqi, 64px);
     }
@@ -360,7 +366,7 @@
   }
 
   /* Responsive text sizing based on container dimensions */
-  @container (min-width: 150px) and (min-height: 100px) {
+  @container (min-width: 152px) and (min-height: 100px) {
     .card-name {
       font-size: clamp(12px, 6cqi, 22px);
     }
@@ -387,7 +393,7 @@
   }
 
   /* Responsive selection indicator sizing */
-  @container (min-width: 150px) and (min-height: 100px) {
+  @container (min-width: 152px) and (min-height: 100px) {
     .selection-indicator svg {
       width: clamp(22px, 10cqi, 36px);
       height: clamp(22px, 10cqi, 36px);

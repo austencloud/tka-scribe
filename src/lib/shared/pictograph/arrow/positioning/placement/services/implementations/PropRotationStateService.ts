@@ -10,7 +10,8 @@
  * - lambda_dash_turns_tuple_generator.py
  */
 
-import { GridLocation, RotationDirection } from "$shared";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import { RotationDirection } from "../../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 
 export const OPENING = "op";

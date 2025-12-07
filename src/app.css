@@ -1,5 +1,8 @@
 /* TKA V2 Modern - Base Styles */
 
+/* Import Settings Design Tokens */
+@import './lib/shared/settings/design-tokens/settings-tokens.css';
+
 /* Import Desktop Theme for Learn Tab Compatibility */
 
 /* Import Enhanced Panel System Variables - TEMPORARILY DISABLED FOR DEBUGGING */
@@ -20,6 +23,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Prevent browser back navigation on horizontal swipe gestures (PWA) */
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -32,6 +37,8 @@ body {
     "Segoe UI",
     Roboto,
     sans-serif;
+  /* Additional PWA gesture prevention */
+  touch-action: pan-y pinch-zoom;
 }
 
 img,
@@ -48,6 +55,21 @@ button,
 textarea,
 select {
   font: inherit;
+}
+
+/* Minimum touch target for primary interactive elements */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a.button,
+a[role="button"],
+[role="tab"],
+[role="switch"],
+[role="checkbox"] {
+  min-width: var(--min-touch-target);
+  min-height: var(--min-touch-target);
 }
 
 p,
@@ -90,11 +112,9 @@ h6 {
   );
   --gradient-cosmic: linear-gradient(
     135deg,
-    #1e3c72 0%,
-    #2a5298 25%,
-    #667eea 50%,
-    #764ba2 75%,
-    #f093fb 100%
+    #0a0e2c 0%,
+    #1a2040 50%,
+    #2a3060 100%
   );
 
   /* Surface Colors with Transparency */
@@ -112,6 +132,7 @@ h6 {
   /* Border System */
   --glass-border: 1px solid rgba(255, 255, 255, 0.1);
   --glass-border-hover: 1px solid rgba(255, 255, 255, 0.25);
+  --min-touch-target: 52px;
 
   /* Enhanced Shadow System */
   --shadow-glass:
@@ -121,17 +142,74 @@ h6 {
     0 12px 40px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --shadow-modal:
-    0 25px 50px rgba(0, 0, 0, 0.25), 0 12px 24px rgba(0, 0, 0, 0.15),
+    0 25px 52px rgba(0, 0, 0, 0.25), 0 12px 24px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --shadow-elevated:
     0 20px 40px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 
-  /* Transition System */
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  /* ============================================================================
+     2026 UNIFIED TRANSITION SYSTEM
+     Modern, physics-based transitions with consistent timing
+     ============================================================================ */
+
+  /* Duration Tiers - Progressively longer for different contexts */
+  --duration-instant: 100ms;    /* Micro-feedback (hover states, toggles) */
+  --duration-fast: 150ms;       /* Quick UI responses (buttons, inputs) */
+  --duration-normal: 200ms;     /* Standard transitions (panels, tabs) */
+  --duration-emphasis: 280ms;   /* Emphasized changes (module switches) */
+  --duration-dramatic: 350ms;   /* Major transitions (drawers, modals) */
+
+  /* Easing Curves - Physics-based for natural motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);           /* Decelerate (entering) */
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);            /* Accelerate (exiting) */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);         /* Symmetric (standard) */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);    /* Overshoot (playful) */
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);     /* Subtle (refined) */
+
+  /* Composite Transitions - Ready-to-use presets */
+  --transition-micro: var(--duration-instant) var(--ease-out);
+  --transition-fast: var(--duration-fast) var(--ease-out);
+  --transition-normal: var(--duration-normal) var(--ease-out);
+  --transition-emphasis: var(--duration-emphasis) var(--ease-in-out);
+  --transition-spring: var(--duration-normal) var(--ease-spring);
+  --transition-dramatic: var(--duration-dramatic) var(--ease-out);
+
+  /* Stagger Timing - Consistent delays for sequences */
+  --stagger-micro: 30ms;        /* Tight sequences (list items) */
+  --stagger-normal: 50ms;       /* Standard sequences (cards) */
+  --stagger-relaxed: 80ms;      /* Spread out (major sections) */
+
+  /* Transform Values - Consistent motion distances */
+  --slide-distance-sm: 8px;     /* Subtle slides (tabs) */
+  --slide-distance-md: 12px;    /* Standard slides (cards, panels) */
+  --slide-distance-lg: 20px;    /* Prominent slides (modals) */
+  --scale-subtle: 0.98;         /* Barely noticeable */
+  --scale-normal: 0.95;         /* Standard pop effect */
+  --scale-dramatic: 0.85;       /* Major zoom transitions */
+
+  /* Legacy aliases for backwards compatibility */
+  --transition-slow: var(--duration-dramatic) var(--ease-in-out);
+  --transition-bounce: var(--duration-emphasis) var(--ease-spring);
+
+  /* ============================================================================
+     MICRO-INTERACTION VALUES
+     Subtle, refined hover/active states for 2026 design
+     ============================================================================ */
+
+  /* Hover lifts - subtle, not dramatic */
+  --hover-lift-sm: -1px;        /* Cards, buttons - barely perceptible */
+  --hover-lift-md: -2px;        /* Interactive cards - slightly more */
+  --hover-lift-none: 0px;       /* Prefer border/color changes instead */
+
+  /* Hover scales - very subtle */
+  --hover-scale-sm: 1.01;       /* Buttons - barely perceptible */
+  --hover-scale-md: 1.02;       /* Cards - subtle grow */
+  --hover-scale-lg: 1.03;       /* Featured items only */
+
+  /* Active states - press feedback */
+  --active-scale: 0.98;         /* Slight press-in feel */
+  --active-scale-sm: 0.99;      /* Very subtle press */
 
   /* Typography */
   --font-size-xs: 0.75rem;
@@ -149,6 +227,12 @@ h6 {
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
+
+  /* Interactive Element Sizing */
+  --touch-target-min: 52px; /* WCAG 2.5.5 AAA compliant minimum touch target */
+  --icon-size-sm: 16px;
+  --icon-size-md: 20px;
+  --icon-size-lg: 24px;
 
   /* Device Detection Service Variables */
   --element-spacing: 16px;
@@ -372,16 +456,79 @@ h6 {
   /* Close Button Styles */
   --sheet-close-bg: rgba(255, 255, 255, 0.08);
   --sheet-close-bg-hover: rgba(255, 255, 255, 0.16);
-  --sheet-close-size-default: 48px;
-  --sheet-close-size-small: 44px; /* iOS/Android minimum touch target */
+  --sheet-close-size-default: 52px;
+  --sheet-close-size-small: 52px; /* iOS/Android minimum touch target */
 
   /* Unified Drag Handle Styles */
-  --sheet-handle-width: 48px;
+  --sheet-handle-width: 52px;
   --sheet-handle-height: 5px;
   --sheet-handle-bg: rgba(255, 255, 255, 0.3);
   --sheet-handle-bg-hover: rgba(255, 255, 255, 0.5);
   --sheet-handle-radius: 999px;
   --sheet-handle-spacing: 12px;
+
+  /* ========================================
+     2026 REFINED MINIMALISM DESIGN TOKENS
+     Cleaner surfaces, subtle interactions, platform-optimized
+     ======================================== */
+
+  /* Surface Colors - Lighter, less glassy */
+  --surface-2026: rgba(255, 255, 255, 0.03);
+  --surface-2026-hover: rgba(255, 255, 255, 0.06);
+  --surface-2026-active: rgba(255, 255, 255, 0.08);
+
+  /* Border Colors - More subtle */
+  --border-2026: rgba(255, 255, 255, 0.06);
+  --border-2026-hover: rgba(255, 255, 255, 0.12);
+  --border-2026-active: rgba(255, 255, 255, 0.18);
+
+  /* Simplified Shadows - Single layer, not stacked */
+  --shadow-2026-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-2026-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-2026-lg: 0 4px 16px rgba(0, 0, 0, 0.10);
+
+  /* Refined Border Radius - Slightly less rounded */
+  --radius-2026-xs: 6px;
+  --radius-2026-sm: 10px;
+  --radius-2026-md: 14px;
+  --radius-2026-lg: 18px;
+  --radius-2026-full: 100px;
+
+  /* Spacing Scale - More generous */
+  --space-2026-xs: 6px;
+  --space-2026-sm: 12px;
+  --space-2026-md: 20px;
+  --space-2026-lg: 28px;
+  --space-2026-xl: 40px;
+  --space-2026-2xl: 52px;
+
+  /* Transition Timing - Faster, more direct */
+  --duration-2026-instant: 100ms;
+  --duration-2026-fast: 150ms;
+  --duration-2026-normal: 250ms;
+  --duration-2026-slow: 400ms;
+  --ease-2026: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-2026-out: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* Typography Scale - Clearer hierarchy */
+  --text-2026-display: 2rem;
+  --text-2026-headline: 1.5rem;
+  --text-2026-title: 1.125rem;
+  --text-2026-body: 1rem;
+  --text-2026-caption: 0.875rem;
+  --text-2026-micro: 0.75rem;
+
+  /* Accent Colors - Refined versions of existing palette */
+  --accent-2026-indigo: #6366f1;
+  --accent-2026-indigo-soft: rgba(99, 102, 241, 0.12);
+  --accent-2026-pink: #ec4899;
+  --accent-2026-pink-soft: rgba(236, 72, 153, 0.12);
+  --accent-2026-cyan: #06b6d4;
+  --accent-2026-cyan-soft: rgba(6, 182, 212, 0.12);
+  --accent-2026-emerald: #10b981;
+  --accent-2026-emerald-soft: rgba(16, 185, 129, 0.12);
+  --accent-2026-amber: #f59e0b;
+  --accent-2026-amber-soft: rgba(245, 158, 11, 0.12);
 }
 
 /* Light theme support */
@@ -402,29 +549,28 @@ body {
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   color: var(--foreground);
-  z-index: 1;
 }
 
-/* ::before pseudo-element for smooth gradient transitions */
-body::before {
+/* ::after pseudo-element for smooth gradient transitions (using ::after to avoid conflicts with animation ::before effects) */
+body::after {
   content: "";
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--gradient-next);
+  background: var(--gradient-next, transparent);
   background-attachment: fixed;
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   opacity: 0;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
-  transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 1s ease-in-out;
 }
 
 /* Trigger transition by toggling this class on body when gradient changes */
-body.background-transitioning::before {
+body.background-transitioning::after {
   opacity: 1;
 }
 
@@ -454,13 +600,13 @@ body.star-twinkle::before {
   bottom: 0;
   background:
     radial-gradient(1px 1px at 25px 25px, #ffffff, transparent),
-    radial-gradient(2px 2px at 75px 50px, #ffeb3b, transparent),
+    radial-gradient(2px 2px at 75px 52px, #ffeb3b, transparent),
     radial-gradient(1px 1px at 125px 75px, #ffffff, transparent),
     radial-gradient(1px 1px at 175px 25px, #81c784, transparent),
     radial-gradient(2px 2px at 200px 100px, #ffffff, transparent),
-    radial-gradient(1px 1px at 50px 120px, #ffcdd2, transparent),
-    radial-gradient(1px 1px at 150px 140px, #ffffff, transparent),
-    radial-gradient(2px 2px at 250px 60px, #e1bee7, transparent);
+    radial-gradient(1px 1px at 52px 120px, #ffcdd2, transparent),
+    radial-gradient(1px 1px at 152px 140px, #ffffff, transparent),
+    radial-gradient(2px 2px at 252px 60px, #e1bee7, transparent);
   background-repeat: repeat;
   background-size: 280px 180px;
   animation: star-twinkle-animation 3s ease-in-out infinite;
@@ -472,15 +618,7 @@ body.star-twinkle::before {
 /* Removed moon/sun from body.star-twinkle::after - it was appearing on all backgrounds */
 
 body.aurora-flow {
-  background: linear-gradient(
-    45deg,
-    #667eea,
-    #764ba2,
-    #f093fb,
-    #f5576c,
-    #4facfe,
-    #00f2fe
-  );
+  /* Aurora uses the --gradient-cosmic variable, no hardcoded gradient here */
   background-size: 400% 400%;
   animation: aurora-animation 8s ease-in-out infinite;
 }
@@ -516,11 +654,21 @@ body.deep-ocean-flow::before {
       rgba(0, 150, 255, 0.08) 0%,
       transparent 50%
     );
-  background-size: 250px 200px;
+  background-size: 252px 200px;
   animation: bubble-rise 8s ease-in-out infinite;
   opacity: 0.8;
   pointer-events: none;
   z-index: -1;
+}
+
+/* Ember Glow - Canvas handles all embers */
+body.ember-glow {
+  position: relative;
+}
+
+/* Sakura Drift - Canvas handles all petals */
+body.sakura-drift {
+  position: relative;
 }
 
 /* Glass Surface Utilities */
@@ -638,4 +786,204 @@ body.deep-ocean-flow::before {
 :focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+/* ========================================
+   TOUCH TARGET ACCESSIBILITY
+   Best Practice: 52px minimum (Material Design, iOS guidelines)
+   WCAG 2.1 Level AAA (2.5.5): 52px minimum (exceeded)
+   ======================================== */
+
+/* Accessible touch target utility
+   Expands clickable/touchable area to 52px minimum
+   while preserving visual appearance */
+.accessible-touch-target {
+  position: relative;
+}
+
+.accessible-touch-target::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 52px;
+  min-height: 52px;
+  /* Ensure it covers at least the full element */
+  width: max(100%, 52px);
+  height: max(100%, 52px);
+}
+
+/* ========================================
+   DRAWER OVERLAY - Desktop Sidebar Support
+   Constrain drawer overlays to not cover the
+   navigation sidebar when it's visible
+   ======================================== */
+.has-desktop-sidebar .drawer-overlay {
+  left: var(--desktop-sidebar-width, 220px);
+}
+
+/* Also constrain drawer content on desktop to not overlap sidebar */
+.has-desktop-sidebar .drawer-content[data-placement="left"] {
+  left: var(--desktop-sidebar-width, 220px);
+}
+
+/* ========================================
+   VIEW TRANSITIONS - Persistent Elements (don't animate)
+   ======================================== */
+
+/* Sidebar stays completely static during all transitions */
+::view-transition-old(sidebar),
+::view-transition-new(sidebar) {
+  animation: none;
+}
+
+::view-transition-group(sidebar) {
+  animation: none;
+}
+
+/* ========================================
+   VIEW TRANSITIONS - Module-to-Module Navigation
+   Emphasized horizontal slide with depth for major navigation
+   ======================================== */
+
+/* Slide LEFT - Going to a module on the right */
+.module-slide-left::view-transition-old(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-out-left;
+}
+
+.module-slide-left::view-transition-new(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-in-left;
+}
+
+@keyframes module-slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-10%) scale(0.96);
+  }
+}
+
+@keyframes module-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(10%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Slide RIGHT - Going to a module on the left */
+.module-slide-right::view-transition-old(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-out-right;
+}
+
+.module-slide-right::view-transition-new(root) {
+  animation: var(--duration-emphasis) var(--ease-out) both module-slide-in-right;
+}
+
+@keyframes module-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(10%) scale(0.96);
+  }
+}
+
+@keyframes module-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-10%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .module-slide-left::view-transition-old(root),
+  .module-slide-left::view-transition-new(root),
+  .module-slide-right::view-transition-old(root),
+  .module-slide-right::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* ========================================
+   TAB VIEW TRANSITIONS (within modules)
+   ======================================== */
+
+/* Tab content gets a transition name for View Transitions API to target */
+.tab-panel,
+.mode-panel,
+.view-container,
+.section-panel {
+  view-transition-name: tab-content;
+}
+
+/* Disable root animation during tab transitions (prevents page-level zoom) */
+.tab-slide-left::view-transition-old(root),
+.tab-slide-left::view-transition-new(root),
+.tab-slide-right::view-transition-old(root),
+.tab-slide-right::view-transition-new(root) {
+  animation: none;
+}
+
+/* Slide LEFT - Going to a tab on the right */
+.tab-slide-left::view-transition-old(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-out-left;
+}
+
+.tab-slide-left::view-transition-new(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-in-left;
+}
+
+/* Slide RIGHT - Going to a tab on the left */
+.tab-slide-right::view-transition-old(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-out-right;
+}
+
+.tab-slide-right::view-transition-new(tab-content) {
+  animation: var(--duration-normal) var(--ease-out) both tab-slide-in-right;
+}
+
+/* Tab slide keyframes - gentle fade with subtle directional hint */
+@keyframes tab-slide-out-left {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-20px); }
+}
+
+@keyframes tab-slide-in-left {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes tab-slide-out-right {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(20px); }
+}
+
+@keyframes tab-slide-in-right {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Reduced motion - instant switch for tabs */
+@media (prefers-reduced-motion: reduce) {
+  .tab-slide-left::view-transition-old(tab-content),
+  .tab-slide-left::view-transition-new(tab-content),
+  .tab-slide-right::view-transition-old(tab-content),
+  .tab-slide-right::view-transition-new(tab-content) {
+    animation: none !important;
+  }
 }

@@ -1,7 +1,9 @@
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import type { InfoPanelContent, Resource } from "../domain";
+  import type { InfoPanelContent, Resource } from "../domain/types";
 
   let {
     panelId,
@@ -20,8 +22,8 @@
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -138,8 +140,8 @@
   }
 
   .resource-icon {
-    width: clamp(50px, 10cqh, 80px);
-    height: clamp(50px, 10cqh, 80px);
+    width: clamp(52px, 10cqh, 80px);
+    height: clamp(52px, 10cqh, 80px);
     background: rgba(255, 255, 255, 0.95);
     border-radius: clamp(0.375rem, 1.25cqh, 0.625rem);
     display: flex;

@@ -14,13 +14,11 @@ interface LetterDerivationResult {
   matchedParameters: string[];
 }
 
-import {
-  GridMode,
-  Letter,
-  MotionType,
-  type MotionData,
-  type PictographData,
-} from "$shared";
+import { Letter } from "../../../../foundation/domain/models/Letter";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import { MotionType } from "../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
 import { injectable } from "inversify";
 
 @injectable()

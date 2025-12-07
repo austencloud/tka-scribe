@@ -24,12 +24,8 @@ import {
   getUserAchievementsPath,
   getUserXPPath,
 } from "../../../data/firestore-collections";
-import { ALL_ACHIEVEMENTS } from "../../../domain/constants";
-import type {
-  Achievement,
-  UserAchievement,
-  UserXP,
-} from "../../../domain/models";
+import { ALL_ACHIEVEMENTS } from '../../../domain/constants/achievement-definitions';
+import type { Achievement, UserAchievement, UserXP } from '../../../domain/models/achievement-models';
 
 export class AchievementPersistence {
   /**
@@ -73,43 +69,56 @@ export class AchievementPersistence {
 
   /**
    * Initialize user achievement progress for all achievements
+   * Uses a single batch query instead of individual reads for each achievement
    */
   async initializeUserAchievements(userId: string): Promise<void> {
     const achievementsPath = getUserAchievementsPath(userId);
+    const achievementsCollectionRef = collection(firestore, achievementsPath);
 
-    for (const achievement of ALL_ACHIEVEMENTS) {
+    // Fetch ALL existing achievements in a single query (1 DB call instead of 22+)
+    const existingSnapshot = await getDocs(achievementsCollectionRef);
+    const existingAchievementIds = new Set(
+      existingSnapshot.docs.map((d) => d.id)
+    );
+
+    // Only create achievements that don't exist yet
+    const missingAchievements = ALL_ACHIEVEMENTS.filter(
+      (a) => !existingAchievementIds.has(a.id)
+    );
+
+    // Batch create missing achievements
+    for (const achievement of missingAchievements) {
       const achievementDocRef = doc(
         firestore,
         `${achievementsPath}/${achievement.id}`
       );
-      const achievementDoc = await getDoc(achievementDocRef);
 
-      if (!achievementDoc.exists()) {
-        const userAchievement: Omit<UserAchievement, "id"> = {
-          achievementId: achievement.id,
-          userId,
-          unlockedAt: new Date(),
-          progress: 0,
-          isCompleted: false,
-          notificationShown: false,
-        };
+      const userAchievement: Omit<UserAchievement, "id"> = {
+        achievementId: achievement.id,
+        userId,
+        unlockedAt: new Date(),
+        progress: 0,
+        isCompleted: false,
+        notificationShown: false,
+      };
 
-        await setDoc(achievementDocRef, {
-          ...userAchievement,
-          unlockedAt: serverTimestamp(),
-        });
+      await setDoc(achievementDocRef, {
+        ...userAchievement,
+        unlockedAt: serverTimestamp(),
+      });
 
-        // Cache locally
-        await db.userAchievements.add({
-          id: achievement.id,
-          ...userAchievement,
-        });
-      }
+      // Cache locally
+      await db.userAchievements.add({
+        id: achievement.id,
+        ...userAchievement,
+      });
     }
 
-    console.log(
-      `✅ Initialized ${ALL_ACHIEVEMENTS.length} achievement progress records`
-    );
+    if (missingAchievements.length > 0) {
+      console.log(
+        `✅ Initialized ${missingAchievements.length} new achievement records`
+      );
+    }
   }
 
   /**
@@ -167,7 +176,7 @@ export class AchievementPersistence {
 
     return ALL_ACHIEVEMENTS.map((achievement) => ({
       ...achievement,
-      userProgress: userProgressMap.get(achievement.id) || null,
+      userProgress: userProgressMap.get(achievement.id) ?? null,
     }));
   }
 

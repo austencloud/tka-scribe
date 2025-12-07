@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import type { IKeyboardNavigationService } from "./contracts";
+import type { IKeyboardNavigationService } from "./contracts/IKeyboardNavigationService";
 
 @injectable()
 export class KeyboardNavigationService implements IKeyboardNavigationService {

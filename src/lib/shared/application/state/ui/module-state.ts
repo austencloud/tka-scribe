@@ -1,34 +1,36 @@
 import { browser } from "$app/environment";
-import type { ModuleId } from "$shared";
-import { authStore } from "../../../auth";
-import { loadFeatureModule } from "../../../inversify/container";
+import type { ModuleId } from "../../../navigation/domain/types";
+import { featureFlagService } from "../../../auth/services/FeatureFlagService.svelte";
+import { navigationState } from "../../../navigation/state/navigation-state.svelte";
 import { getPersistenceService } from "../services.svelte";
 import {
   getActiveModule,
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
+import { loadFeatureModule, ensureContainerInitialized } from "../../../inversify/di";
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;
 
 /**
+ * Sync both UI state and navigation state to the same module.
+ * This ensures the navigation bar and content display are always in agreement.
+ */
+function syncBothStateSystems(moduleId: ModuleId): void {
+  setActiveModule(moduleId);
+  // Also sync navigationState to prevent navigation bar showing different module than content
+  navigationState.setCurrentModule(moduleId);
+}
+
+/**
  * Check if a module is accessible to the current user
+ * Uses the feature flag service for role-based access control
  */
 function isModuleAccessible(moduleId: ModuleId): boolean {
-  // Admin module requires admin permissions
-  if (moduleId === "admin") {
-    return authStore.isAdmin;
-  }
-
-  // For non-admin users, Create and Community modules are accessible
-  // All other modules are disabled/coming soon
-  if (!authStore.isAdmin && moduleId !== "create" && moduleId !== "community") {
-    return false;
-  }
-
-  // Admin users have access to all modules
-  return true;
+  // Use the feature flag service for access control
+  // This checks the user's role against the module's minimum required role
+  return featureFlagService.canAccessModule(moduleId);
 }
 
 /**
@@ -37,10 +39,13 @@ function isModuleAccessible(moduleId: ModuleId): boolean {
  * Also validates that current section is accessible (e.g., guided mode requires admin)
  */
 export async function revalidateCurrentModule(): Promise<void> {
+  // Ensure container is initialized before resolving any services
+  await ensureContainerInitialized();
+
   const currentModule = getActiveModule();
 
   // Try to restore any cached module that user now has access to
-  if (authStore.isAdmin) {
+  if (featureFlagService.isTester || featureFlagService.isAdmin) {
     try {
       // Check localStorage FIRST (most recent user intent, survives even if Firestore was overwritten)
       const cached = browser ? localStorage.getItem(LOCAL_STORAGE_KEY) : null;
@@ -62,7 +67,8 @@ export async function revalidateCurrentModule(): Promise<void> {
             // Load feature module BEFORE setting active module to ensure services are available
             await loadFeatureModule(cachedModuleId);
 
-            setActiveModule(cachedModuleId);
+            // Sync BOTH ui state and navigation state to ensure nav bar matches content
+            syncBothStateSystems(cachedModuleId);
             // Sync Firestore to match localStorage
             const persistence = getPersistenceService();
             await persistence.saveActiveTab(cachedModuleId);
@@ -90,7 +96,8 @@ export async function revalidateCurrentModule(): Promise<void> {
         // Load feature module BEFORE setting active module to ensure services are available
         await loadFeatureModule(savedFromFirestore);
 
-        setActiveModule(savedFromFirestore as ModuleId);
+        // Sync BOTH ui state and navigation state to ensure nav bar matches content
+        syncBothStateSystems(savedFromFirestore as ModuleId);
         // Update localStorage to match
         if (browser) {
           localStorage.setItem(
@@ -100,13 +107,13 @@ export async function revalidateCurrentModule(): Promise<void> {
         }
         return;
       }
-    } catch (error) {
-      console.warn(`⚠️ [module-state] Failed to revalidate module:`, error);
+    } catch (_error) {
+      console.warn(`⚠️ [module-state] Failed to revalidate module:`, _error);
     }
   }
 
-  // Validate current section accessibility (e.g., guided mode requires admin)
-  if (currentModule === "create" && !authStore.isAdmin) {
+  // Validate current section accessibility (e.g., assembler mode requires admin)
+  if (currentModule === "create") {
     try {
       // Dynamic import to avoid circular dependency
       const { navigationState } = await import(
@@ -114,15 +121,15 @@ export async function revalidateCurrentModule(): Promise<void> {
       );
       const currentSection = navigationState.activeTab;
 
-      // If non-admin user is on assembler mode, redirect to constructor
-      if (currentSection === "assembler") {
+      // Check if user has access to the current section via feature flags
+      if (currentSection && !featureFlagService.canAccessTab("create", currentSection)) {
         console.warn(
-          "⚠️ [module-state] Non-admin user on assembler mode. Redirecting to constructor."
+          `⚠️ [module-state] User does not have access to ${currentSection} tab. Redirecting to constructor.`
         );
         navigationState.setActiveTab("constructor");
       }
-    } catch (error) {
-      console.warn(`⚠️ [module-state] Failed to validate section:`, error);
+    } catch (_error) {
+      console.warn(`⚠️ [module-state] Failed to validate section:`, _error);
     }
   }
 }
@@ -143,8 +150,8 @@ export function getInitialModuleFromCache(): ModuleId {
         return moduleId;
       }
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to pre-load saved module from cache:", error);
+  } catch (_error) {
+    console.warn("⚠️ Failed to pre-load saved module from cache:", _error);
   }
 
   return "create";
@@ -169,16 +176,16 @@ export function preloadCachedModuleServices(): void {
 
         // Start loading feature module immediately (non-blocking)
         // This prevents the UI flicker where it shows "create" first
-        loadFeatureModule(moduleId).catch((error) => {
+        loadFeatureModule(moduleId).catch((_error) => {
           console.warn(
             `⚠️ Failed to preload module services for "${moduleId}":`,
-            error
+            _error
           );
         });
       }
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to preload cached module services:", error);
+  } catch (_error) {
+    console.warn("⚠️ Failed to preload cached module services:", _error);
   }
 }
 
@@ -190,7 +197,7 @@ export async function switchModule(module: ModuleId): Promise<void> {
   // Check if user has access to the module
   if (!isModuleAccessible(module)) {
     console.warn(
-      `⚠️ switchModule: User does not have access to module "${module}"`
+      `⚠️ switchTab: User does not have access to module "${module}"`
     );
     setIsTransitioning(false);
     return;
@@ -214,10 +221,10 @@ export async function switchModule(module: ModuleId): Promise<void> {
         JSON.stringify({ moduleId: module })
       );
     }
-  } catch (error) {
+  } catch (_error) {
     console.warn(
-      "⚠️ switchModule: Failed to save module to persistence:",
-      error
+      "⚠️ switchTab: Failed to save module to persistence:",
+      _error
     );
   }
 
@@ -264,7 +271,8 @@ export async function initializeModulePersistence(): Promise<void> {
       // This prevents the UI from trying to render before services are ready
       await loadFeatureModule(moduleId);
 
-      setActiveModule(moduleId);
+      // Sync BOTH ui state and navigation state to ensure nav bar matches content
+      syncBothStateSystems(moduleId);
 
       if (browser) {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ moduleId }));
@@ -276,7 +284,8 @@ export async function initializeModulePersistence(): Promise<void> {
       // Load default module's DI services
       await loadFeatureModule(defaultModule);
 
-      setActiveModule(defaultModule);
+      // Sync BOTH ui state and navigation state to ensure nav bar matches content
+      syncBothStateSystems(defaultModule);
 
       const persistence = getPersistenceService();
       await persistence.initialize();
@@ -288,14 +297,15 @@ export async function initializeModulePersistence(): Promise<void> {
         );
       }
     }
-  } catch (error) {
-    console.warn("⚠️ Failed to initialize module persistence:", error);
+  } catch (_error) {
+    console.warn("⚠️ Failed to initialize module persistence:", _error);
     // Fallback to create module on error
     try {
       await loadFeatureModule("create");
-      setActiveModule("create");
-    } catch (fallbackError) {
-      console.error("❌ Failed to load fallback create module:", fallbackError);
+      // Sync BOTH ui state and navigation state to ensure nav bar matches content
+      syncBothStateSystems("create");
+    } catch (_fallbackError) {
+      console.error("❌ Failed to load fallback create module:", _fallbackError);
     }
   }
 }

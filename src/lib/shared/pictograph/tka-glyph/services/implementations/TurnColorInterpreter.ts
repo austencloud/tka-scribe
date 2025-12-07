@@ -8,7 +8,8 @@
  */
 
 import { injectable } from "inversify";
-import type { PictographData } from "$shared";
+import type { PictographData } from "../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 
 export type TurnNumberColor = "#2E3192" | "#ED1C24"; // Blue or Red (matches arrow colors)
 
@@ -158,21 +159,27 @@ export class TurnColorInterpreter {
   /**
    * Get the actual motion type, considering prefloat motion type for float motions
    */
-  private getActualMotionType(motion: any): string {
-    const motionType = motion.motionType?.toLowerCase();
+  private getActualMotionType(motion: MotionData): string {
+    const motionType = (motion as unknown as Record<string, unknown>).motionType;
+    const motionTypeStr = typeof motionType === 'string' ? motionType.toLowerCase() : '';
+
     // If it's a float motion, use the prefloatMotionType instead
-    if (motionType === "float" && motion.prefloatMotionType) {
-      return motion.prefloatMotionType.toLowerCase();
+    if (motionTypeStr === "float") {
+      const prefloatType = (motion as unknown as Record<string, unknown>).prefloatMotionType;
+      if (typeof prefloatType === 'string') {
+        return prefloatType.toLowerCase();
+      }
     }
-    return motionType || "";
+    return motionTypeStr;
   }
 
   /**
    * Check if a motion is a shift motion (pro/anti/float)
    */
-  private isShiftMotion(motion: any): boolean {
-    const motionType = motion.motionType?.toLowerCase();
-    return ["pro", "anti", "float"].includes(motionType || "");
+  private isShiftMotion(motion: MotionData): boolean {
+    const motionType = (motion as unknown as Record<string, unknown>).motionType;
+    const motionTypeStr = typeof motionType === 'string' ? motionType.toLowerCase() : '';
+    return ["pro", "anti", "float"].includes(motionTypeStr);
   }
 
   /**

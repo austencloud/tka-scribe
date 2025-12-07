@@ -1,5 +1,6 @@
-import type { ImageRenderOptions, SequenceData } from "../../../../shared";
-import type { CompositionOptions, LayoutData } from "../../domain";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import type { CompositionOptions, LayoutData } from "../../domain/models/SequenceExportOptions";
+import type { ImageRenderOptions } from "./IDimensionCalculationService";
 
 /**
  * Image composition service for assembling final images
@@ -36,4 +37,19 @@ export interface IImageCompositionService {
    * Optimize canvas for export
    */
   optimizeForExport(canvas: HTMLCanvasElement): HTMLCanvasElement;
+
+  /**
+   * Get cache statistics for debugging/monitoring
+   */
+  getCacheStats(): {
+    cacheSize: number;
+    cacheHits: number;
+    cacheMisses: number;
+    hitRate: string;
+  };
+
+  /**
+   * Clear the rendered image cache
+   */
+  clearCache(): void;
 }

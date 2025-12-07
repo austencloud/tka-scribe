@@ -1,12 +1,11 @@
 <!--
   ElementVisibilityControls.svelte - Element Visibility Controls
 
-  Controls for toggling visibility of various pictograph elements:
-  - Glyphs (TKA, VTG, Elemental, Positions, Reversals)
-  - Grid elements (Non-radial Points)
+  Two-column grid layout that uses horizontal space efficiently.
+  Adapts to available height using container queries.
 -->
 <script lang="ts">
-  import ToggleRow from "./ToggleRow.svelte";
+  import ChipRow from "./ChipRow.svelte";
 
   interface Props {
     tkaVisible: boolean;
@@ -52,147 +51,156 @@
 </script>
 
 <div class="element-controls">
-  <h4 class="group-title">Element Visibility</h4>
-
-  <!-- Glyphs -->
-  <ToggleRow
-    label="TKA"
-    checked={tkaVisible}
-    onChange={onToggleTKA}
-    ariaLabel="Toggle TKA glyph visibility"
-  />
-
-  <!-- TKA Sub-elements (indented to show hierarchy) -->
-  <div class="sub-element-group">
-    <ToggleRow
-      label="Turn Numbers"
+  <!-- Element Visibility Section -->
+  <h4 class="section-title">Elements</h4>
+  <div class="chips-grid">
+    <ChipRow
+      label="TKA"
+      checked={tkaVisible}
+      onChange={onToggleTKA}
+      ariaLabel="Toggle TKA glyph visibility"
+    />
+    <ChipRow
+      label="Turn #s"
       checked={turnNumbersVisible}
       disabled={!tkaVisible}
-      badgeText={!tkaVisible ? "Requires TKA" : undefined}
+      badgeText={!tkaVisible ? "Needs TKA" : undefined}
       onChange={onToggleTurnNumbers}
       ariaLabel="Toggle turn numbers visibility"
     />
+    <ChipRow
+      label="VTG"
+      checked={vtgVisible}
+      onChange={onToggleVTG}
+      ariaLabel="Toggle VTG glyph visibility"
+    />
+    <ChipRow
+      label="Elemental"
+      checked={elementalVisible}
+      onChange={onToggleElemental}
+      ariaLabel="Toggle elemental glyph visibility"
+    />
+    <ChipRow
+      label="Positions"
+      checked={positionsVisible}
+      onChange={onTogglePositions}
+      ariaLabel="Toggle position glyph visibility"
+    />
+    <ChipRow
+      label="Reversals"
+      checked={reversalsVisible}
+      onChange={onToggleReversals}
+      ariaLabel="Toggle reversal indicators visibility"
+    />
   </div>
 
-  <ToggleRow
-    label="VTG"
-    checked={vtgVisible}
-    onChange={onToggleVTG}
-    ariaLabel="Toggle VTG glyph visibility"
-  />
-
-  <ToggleRow
-    label="Elemental"
-    checked={elementalVisible}
-    onChange={onToggleElemental}
-    ariaLabel="Toggle elemental glyph visibility"
-  />
-
-  <ToggleRow
-    label="Positions"
-    checked={positionsVisible}
-    onChange={onTogglePositions}
-    ariaLabel="Toggle position glyph visibility"
-  />
-
-  <ToggleRow
-    label="Reversals"
-    checked={reversalsVisible}
-    onChange={onToggleReversals}
-    ariaLabel="Toggle reversal indicators visibility"
-  />
-
-  <!-- Motion Visibility Section -->
-  <div class="section-divider"></div>
-  <h4 class="group-title">Motion Visibility</h4>
-
-  <ToggleRow
-    label="Blue Motion"
-    checked={blueMotionVisible}
-    onChange={onToggleBlueMotion}
-    ariaLabel="Toggle blue motion visibility"
-  />
-
-  <ToggleRow
-    label="Red Motion"
-    checked={redMotionVisible}
-    onChange={onToggleRedMotion}
-    ariaLabel="Toggle red motion visibility"
-  />
-
-  <!-- Grid Elements -->
-  <div class="section-divider"></div>
-  <h4 class="group-title">Grid Elements</h4>
-
-  <ToggleRow
-    label="Non-radial Points"
-    checked={nonRadialVisible}
-    onChange={onToggleNonRadial}
-    ariaLabel="Toggle non-radial points visibility"
-  />
+  <!-- Motion & Grid Section -->
+  <h4 class="section-title">Motion & Grid</h4>
+  <div class="chips-grid">
+    <ChipRow
+      label="Blue Motion"
+      checked={blueMotionVisible}
+      onChange={onToggleBlueMotion}
+      ariaLabel="Toggle blue motion visibility"
+    />
+    <ChipRow
+      label="Red Motion"
+      checked={redMotionVisible}
+      onChange={onToggleRedMotion}
+      ariaLabel="Toggle red motion visibility"
+    />
+    <ChipRow
+      label="Non-radial"
+      checked={nonRadialVisible}
+      onChange={onToggleNonRadial}
+      ariaLabel="Toggle non-radial points visibility"
+    />
+  </div>
 </div>
 
 <style>
-  /* iOS Glass Morphism Card */
   .element-controls {
     display: flex;
     flex-direction: column;
-    flex: 1; /* Grow to fill available space */
-    min-height: 0; /* Allow shrinking to prevent overflow */
-    background: rgba(255, 255, 255, 0.05);
-    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
-    border-radius: 12px; /* iOS medium corner radius */
-    padding: clamp(12px, 3cqi, 24px);
-    box-shadow:
-      0 3px 12px rgba(0, 0, 0, 0.12),
-      0 1px 3px rgba(0, 0, 0, 0.08); /* iOS Photos.app shadow */
+    gap: 12px;
+    height: 100%;
+    overflow: hidden; /* Ensure content is contained */
   }
 
-  .group-title {
-    font-size: clamp(15px, 3cqi, 18px); /* iOS body to title3 */
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.41px; /* iOS body tracking */
-    line-height: 1.29; /* iOS body ratio */
-    color: rgba(255, 255, 255, 0.95);
-    margin: 0 0 clamp(10px, 2.5cqi, 20px) 0; /* Responsive spacing that grows with available space */
-    flex-shrink: 0; /* Prevent title from shrinking */
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+    padding: 0 4px;
+    flex-shrink: 0;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  /* Sub-element group - indented to show hierarchy */
-  .sub-element-group {
-    padding-left: clamp(12px, 3cqi, 20px);
-    border-left: 2px solid rgba(255, 255, 255, 0.1);
-    margin-left: clamp(8px, 2cqi, 12px);
-    margin-bottom: clamp(
-      8px,
-      2cqi,
-      12px
-    ); /* Add space below to separate from next element */
+  /* Two-column grid for chips */
+  .chips-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    align-content: start; /* Align to top, don't stretch */
   }
 
-  /* Section divider */
-  .section-divider {
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      rgba(255, 255, 255, 0.15),
-      transparent
-    );
-    margin: clamp(16px, 4cqi, 24px) 0 clamp(12px, 3cqi, 16px) 0;
+  /* Compact mode when height is very limited */
+  @container visibility-tab (max-height: 552px) {
+    .element-controls {
+      gap: 8px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      margin-bottom: -2px;
+    }
+
+    .chips-grid {
+      gap: 6px;
+    }
+  }
+
+  /* Ultra-compact mode */
+  @container visibility-tab (max-height: 480px) {
+    .element-controls {
+      gap: 6px;
+    }
+
+    .section-title {
+      font-size: 10px;
+    }
+
+    .chips-grid {
+      gap: 4px;
+    }
+  }
+
+  /* On wider containers in side-by-side mode, keep 2 columns for controls */
+  /* 3 columns only when we have more horizontal space in the controls area */
+  @container visibility-tab (min-width: 700px) and (min-height: 400px) {
+    .chips-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+  }
+
+  /* Very wide: can afford 3 columns in controls */
+  @container visibility-tab (min-width: 900px) and (min-height: 452px) {
+    .chips-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   /* Accessibility */
   @media (prefers-contrast: high) {
-    .element-controls {
-      border-width: 2px;
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .sub-element-group {
-      border-left-color: rgba(255, 255, 255, 0.3);
+    .section-title {
+      color: rgba(255, 255, 255, 0.9);
     }
   }
 </style>

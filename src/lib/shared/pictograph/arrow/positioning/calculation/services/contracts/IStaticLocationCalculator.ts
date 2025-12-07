@@ -5,7 +5,8 @@
  * Returns the arrow location for motions that don't change position.
  */
 
-import type { GridLocation, MotionData } from "$shared";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 
 export interface IStaticLocationCalculator {
   /**

@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
-import InstallPromptButton from "../../lib/shared/navigation/components/InstallPromptButton.svelte";
+import type { ComponentProps } from "svelte";
+import InstallPromptButton from "$lib/shared/navigation/components/InstallPromptButton.svelte";
+
+type InstallPromptButtonProps = ComponentProps<typeof InstallPromptButton>;
 
 const meta = {
   title: "PWA/InstallPromptButton",
-  component: InstallPromptButton as any,
+  component: InstallPromptButton,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
@@ -29,7 +32,7 @@ const meta = {
     },
     onInstall: { action: "install" },
   },
-} satisfies Meta<InstallPromptButton>;
+} satisfies Meta<InstallPromptButtonProps>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

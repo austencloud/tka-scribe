@@ -5,7 +5,8 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type { IArrowSvgParser, SVGDimensions } from "$shared";
+import type { IArrowSvgParser } from "../contracts/IArrowSvgParser";
+import type { SVGDimensions } from "../../../../shared/domain/models/svg-models";
 import { injectable } from "inversify";
 
 @injectable()
@@ -103,7 +104,7 @@ export class ArrowSvgParser implements IArrowSvgParser {
     // Extract SVG content (everything inside the <svg> tags)
     // Arrows are already correctly sized for 950x950 coordinate system
     const svgContentMatch = svgText.match(/<svg[^>]*>([\s\S]*)<\/svg>/);
-    if (!svgContentMatch || !svgContentMatch[1]) {
+    if (!svgContentMatch?.[1]) {
       console.warn("Could not extract SVG content from non-static arrow");
       return svgText;
     }

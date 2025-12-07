@@ -251,7 +251,7 @@ class LayoutStyler:
             padding: {spacing_sm}px {spacing_lg}px;
             font-size: {body_size}px;
             font-weight: 500;
-            min-height: 36px;
+            min-height: 52px;
             min-width: 80px;
         }}
 

@@ -5,8 +5,9 @@
   Uses native iOS patterns: list items, color previews, and checkmarks.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../../inversify/di";
+  import { TYPES } from "../../../../inversify/types";
   import { onMount } from "svelte";
   import IOSList from "../../IOSList.svelte";
 
@@ -31,8 +32,8 @@
 
   let hapticService: IHapticFeedbackService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

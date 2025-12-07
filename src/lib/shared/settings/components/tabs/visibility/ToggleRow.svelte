@@ -31,7 +31,7 @@
       <span class="disabled-badge">{badgeText}</span>
     {/if}
   </span>
-  <label class="toggle-switch">
+  <label class="visibility-row-toggle">
     <input
       type="checkbox"
       {checked}
@@ -49,7 +49,8 @@
     align-items: center;
     justify-content: space-between;
     gap: clamp(8px, 2cqi, 16px);
-    padding: clamp(9px, 2.5cqi, 16px) 0; /* Balanced padding that expands when space is available */
+    min-height: 52px;
+    padding: clamp(10px, 2.5cqi, 16px) 0; /* Balanced padding that expands when space is available */
     border-bottom: 0.33px solid rgba(255, 255, 255, 0.08); /* iOS hairline */
     transition: opacity 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
@@ -93,16 +94,16 @@
   }
 
   /* Toggle Switch - iOS Exact Dimensions */
-  .toggle-switch {
+  .visibility-row-toggle {
     flex-shrink: 0;
     position: relative;
     display: inline-block;
-    width: 51px; /* iOS exact toggle width */
-    height: 31px; /* iOS exact toggle height */
+    width: 72px; /* Ensure 50px minimum height while keeping proportionally wider track */
+    height: 52px;
     cursor: pointer;
   }
 
-  .toggle-switch input {
+  .visibility-row-toggle input {
     position: absolute;
     opacity: 0;
     width: 100%;
@@ -131,10 +132,10 @@
   .toggle-slider:before {
     content: "";
     position: absolute;
-    height: 27px; /* iOS exact knob size */
-    width: 27px;
-    left: 2px; /* iOS exact offset */
-    top: 2px;
+    height: 40px;
+    width: 40px;
+    left: 4px; /* Maintain even inset within 50px height */
+    top: 4px;
     background: white;
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -149,7 +150,9 @@
   }
 
   input:checked + .toggle-slider:before {
-    left: 22px; /* iOS exact checked position (51px - 27px - 2px) */
+    left: calc(
+      72px - 40px - 4px
+    ); /* Track width minus thumb width minus inset */
   }
 
   input:disabled + .toggle-slider {

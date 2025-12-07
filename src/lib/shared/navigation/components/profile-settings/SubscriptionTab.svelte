@@ -5,12 +5,12 @@
   Features centered layout matching other tabs with card-style sections.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     isCompactMode,
     isVeryCompactMode,
   } from "../../state/profile-settings-state.svelte";
-  import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
+  import UnifiedHeader from "../../../settings/components/UnifiedHeader.svelte";
 
   let { hapticService } = $props<{
     hapticService: IHapticFeedbackService | null;
@@ -119,7 +119,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 48px);
+    padding: clamp(16px, 3vh, 32px) clamp(20px, 4vw, 50px);
     padding-bottom: clamp(10px, 1.5vh, 16px);
     min-height: 0;
     transition: padding 0.2s ease;
@@ -327,7 +327,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(10px, 1.5vh, 14px) clamp(18px, 2.5vw, 24px);
-    min-height: 48px; /* WCAG minimum */
+    min-height: 52px; /* WCAG minimum */
     border-radius: 8px;
     font-size: clamp(13px, 1.7vh, 16px);
     font-weight: 600;
@@ -338,14 +338,14 @@
 
   .section.compact .button {
     padding: 10px 18px;
-    min-height: 44px;
+    min-height: 52px;
     font-size: 13px;
     gap: 8px;
   }
 
   .section.very-compact .button {
     padding: 8px 16px;
-    min-height: 44px;
+    min-height: 52px;
     font-size: 13px;
     gap: 6px;
   }

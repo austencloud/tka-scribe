@@ -7,7 +7,7 @@
    */
 
   import { onMount } from "svelte";
-  import type { AchievementNotification } from "../domain/models";
+  import type { AchievementNotification } from "../domain/models/achievement-models";
   import {
     notificationQueue,
     removeNotification,
@@ -187,8 +187,8 @@
   }
 
   .toast-close {
-    width: 28px;
-    height: 28px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);

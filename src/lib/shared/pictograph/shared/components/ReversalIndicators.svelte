@@ -7,7 +7,7 @@ colored according to the motion that is reversing between pictographs.
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
-  import { MotionColor } from "$shared";
+  import { MotionColor } from "../domain/enums/pictograph-enums";
   import { onMount } from "svelte";
 
   let {
@@ -15,6 +15,7 @@ colored according to the motion that is reversing between pictographs.
     redReversal = false,
     hasValidData = true,
     visible = true,
+    previewMode = false,
     onToggle = undefined,
   } = $props<{
     /** Whether to show blue reversal indicator */
@@ -25,6 +26,8 @@ colored according to the motion that is reversing between pictographs.
     hasValidData?: boolean;
     /** Visibility control for fade effect */
     visible?: boolean;
+    /** Preview mode: show at 50% opacity when off instead of hidden */
+    previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
   }>();
@@ -50,17 +53,22 @@ colored according to the motion that is reversing between pictographs.
   // Filter reversals based on global motion visibility
   const effectiveBlueReversal = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity
-    return blueReversal && visibilityManager.getMotionVisibility(MotionColor.BLUE);
+    return (
+      blueReversal && visibilityManager.getMotionVisibility(MotionColor.BLUE)
+    );
   });
 
   const effectiveRedReversal = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity
-    return redReversal && visibilityManager.getMotionVisibility(MotionColor.RED);
+    return (
+      redReversal && visibilityManager.getMotionVisibility(MotionColor.RED)
+    );
   });
 
   // Only render if we have valid data and at least one reversal (after visibility filtering)
   const shouldRender = $derived(() => {
-    const render = hasValidData && (effectiveBlueReversal || effectiveRedReversal);
+    const render =
+      hasValidData && (effectiveBlueReversal || effectiveRedReversal);
     return render;
   });
 
@@ -110,6 +118,7 @@ colored according to the motion that is reversing between pictographs.
   <g
     class="reversal-indicators"
     class:visible
+    class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     onclick={onToggle}
     {...onToggle
@@ -162,11 +171,21 @@ colored according to the motion that is reversing between pictographs.
     opacity: 1;
   }
 
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .reversal-indicators.preview-mode:not(.visible) {
+    opacity: 0.4;
+  }
+
   .reversal-indicators.interactive {
     cursor: pointer;
   }
 
   .reversal-indicators.interactive:hover {
     opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .reversal-indicators.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 </style>

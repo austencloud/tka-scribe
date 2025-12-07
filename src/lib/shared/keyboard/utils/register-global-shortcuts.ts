@@ -6,13 +6,14 @@
  * Domain: Keyboard Shortcuts - Registration
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts";
+import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import {
   handleModuleChange,
   getModuleDefinitions,
-} from "$shared/navigation-coordinator/navigation-coordinator.svelte";
-import { authStore } from "$shared/auth";
+} from "../../navigation-coordinator/navigation-coordinator.svelte";
+import { authStore } from "../../auth/stores/authStore.svelte";
+import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutService,
@@ -109,8 +110,29 @@ export function registerGlobalShortcuts(
         return state.settings.enableSingleKeyShortcuts;
       },
       action: async () => {
-        await handleModuleChange(module.id as any);
+        await handleModuleChange(module.id);
       },
     });
+  });
+
+  // ==================== Quick Actions ====================
+
+  // f - Quick Feedback (opens feedback drawer)
+  service.register({
+    id: "global.quick-feedback",
+    label: "Quick Feedback",
+    description: "Open the quick feedback panel (press f)",
+    key: "f",
+    modifiers: [],
+    context: "global",
+    scope: "action",
+    priority: "high",
+    condition: () => {
+      // Only enable if settings allow single-key shortcuts
+      return state.settings.enableSingleKeyShortcuts;
+    },
+    action: () => {
+      quickFeedbackState.toggle();
+    },
   });
 }

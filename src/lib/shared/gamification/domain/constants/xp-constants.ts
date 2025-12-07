@@ -12,6 +12,7 @@ export const XP_REWARDS = {
   // Creation actions
   SEQUENCE_CREATED: 10,
   SEQUENCE_GENERATED: 5,
+  SEQUENCE_PUBLISHED: 50,
 
   // Learning actions
   CONCEPT_LEARNED: 20,
@@ -29,6 +30,22 @@ export const XP_REWARDS = {
   ACHIEVEMENT_UNLOCKED_SILVER: 50,
   ACHIEVEMENT_UNLOCKED_GOLD: 100,
   ACHIEVEMENT_UNLOCKED_PLATINUM: 250,
+
+  // Weekly challenges
+  WEEKLY_CHALLENGE_COMPLETED: 200,
+  WEEKLY_CHALLENGE_BONUS: 100, // Early completion bonus
+
+  // Skill progressions
+  SKILL_LEVEL_COMPLETED: 75,
+  SKILL_MASTERY_ACHIEVED: 250, // Completing all levels of a skill
+
+  // Train module
+  TRAINING_SESSION_COMPLETED: 10, // Base XP for completing any training session
+  TRAINING_PERFECT_RUN: 25, // Bonus for 100% accuracy
+  TRAINING_HIGH_ACCURACY: 15, // Bonus for 85%+ accuracy
+  TRAINING_GOOD_ACCURACY: 5, // Bonus for 70%+ accuracy
+  TRAINING_COMBO_BONUS: 2, // XP per combo point achieved
+  TRAIN_CHALLENGE_COMPLETED: 0, // Challenges have their own XP rewards
 } as const;
 
 // ============================================================================
@@ -78,7 +95,7 @@ export function calculateLevelFromXP(totalXP: number): {
   let cumulativeXP = 0;
 
   // Find the highest level the user has reached
-  // eslint-disable-next-line no-constant-condition
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
   while (true) {
     const xpForNextLevel = calculateXPForLevel(currentLevel + 1);
     if (cumulativeXP + xpForNextLevel > totalXP) {

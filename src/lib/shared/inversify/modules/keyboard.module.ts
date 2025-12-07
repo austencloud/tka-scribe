@@ -8,19 +8,15 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import {
-  KeyboardShortcutService,
-  ShortcutRegistryService,
-  CommandPaletteService,
-} from "$shared/keyboard/services";
-import type {
-  IKeyboardShortcutService,
-  IShortcutRegistryService,
-  ICommandPaletteService,
-} from "$shared/keyboard/services/contracts";
+import { KeyboardShortcutService } from '../../keyboard/services/implementations/KeyboardShortcutService';
+import { ShortcutRegistryService } from '../../keyboard/services/implementations/ShortcutRegistryService';
+import { CommandPaletteService } from '../../keyboard/services/implementations/CommandPaletteService';
+import type { IKeyboardShortcutService } from '../../keyboard/services/contracts/IKeyboardShortcutService';
+import type { IShortcutRegistryService } from '../../keyboard/services/contracts/IShortcutRegistryService';
+import type { ICommandPaletteService } from '../../keyboard/services/contracts/ICommandPaletteService';
 
 export const keyboardModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // Registry (Singleton - shared across the app)
     options
       .bind<IShortcutRegistryService>(TYPES.IShortcutRegistryService)

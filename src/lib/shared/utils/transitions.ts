@@ -155,7 +155,7 @@ export function flyTransition(
  * DEPRECATED: springScaleTransition has been replaced by the unified animation system
  *
  * The old springScaleTransition used hardcoded spring physics approximations (40+ lines).
- * It has been migrated to use PresenceAnimation from $shared/animation which provides:
+ * It has been migrated to use PresenceAnimation from $lib/shared/ui-animation which provides:
  * - Real spring physics via Svelte 5's native Spring class
  * - Consistent animation behavior across the app
  * - Configurable spring presets (gentle, snappy, wobbly, etc.)
@@ -167,7 +167,7 @@ export function flyTransition(
  * <div transition:springScaleTransition>...</div>
  *
  * // New:
- * import { PresenceAnimation } from "$shared/animation";
+ * import { PresenceAnimation } from "../animation";
  * function presenceTransition(node, { duration = 550, delay = 0 } = {}) {
  *   const animation = new PresenceAnimation('snappy');
  *   animation.enter();
@@ -176,6 +176,6 @@ export function flyTransition(
  * <div transition:presenceTransition>...</div>
  * ```
  *
- * See: src/lib/shared/animation/ for the unified animation system
+ * See: src/lib/shared/ui-animation/ for the unified animation system
  * See: ANIMATION_SYSTEM.md for migration guide
  */

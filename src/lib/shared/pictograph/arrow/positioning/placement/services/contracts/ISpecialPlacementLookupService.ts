@@ -4,7 +4,8 @@
  * Performs lookups in special placement data with fallback strategies.
  */
 
-import type { MotionData, PictographData } from "$shared";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { Point } from "fabric";
 
 export interface ISpecialPlacementLookupService {

@@ -63,7 +63,7 @@ export interface CompositionOptions extends SequenceExportOptions {
   additionalHeightBottom: number;
 }
 
-export interface UserInfo {
+export interface UserExportInfo {
   userName: string;
   notes: string;
   exportDate: string;

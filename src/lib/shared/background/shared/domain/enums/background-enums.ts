@@ -5,6 +5,8 @@ export enum BackgroundType {
   NIGHT_SKY = "nightSky",
   AURORA = "aurora",
   DEEP_OCEAN = "deepOcean",
+  EMBER_GLOW = "emberGlow",
+  SAKURA_DRIFT = "sakuraDrift",
 
   // Simple backgrounds
   SOLID_COLOR = "solidColor",

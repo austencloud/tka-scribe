@@ -5,22 +5,20 @@
  * This replaces the PictographRenderingService with explicit composition.
  */
 
-import type { MotionColor } from "$shared";
-import {
-  GridMode,
-  resolve,
-  type IArrowPositioningOrchestrator,
-  type IGridModeDeriver,
-  type PictographData,
-} from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { MotionColor } from "../domain/enums/pictograph-enums";
+import { GridMode } from "../../grid/domain/enums/grid-enums";
+import { resolve } from '../../../inversify/bootstrap';
+import { TYPES } from "../../../inversify/types";
+import type { IArrowPositioningOrchestrator } from "../../arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
+import type { IGridModeDeriver } from "../../grid/services/contracts/IGridModeDeriver";
+import type { PictographData } from "../domain/models/PictographData";
 import { Point } from "fabric";
 // TODO: These services have been archived - need to refactor this file
-// import type { IOverlayRenderer } from "../../../../modules/animator/services/contracts/IOverlayRenderer";
-// import type { ISvgUtilityService } from "../../../../modules/animator/services/implementations/SvgUtilityService";
-import type { ArrowPosition } from "../../arrow";
-import type { IArrowRenderer } from "../../arrow/rendering/services/contracts";
-import type { IGridRenderingService } from "../../grid";
+// import type { IOverlayRenderer } from "../../../../features/animator/services/contracts/IOverlayRenderer";
+// import type { ISvgUtilityService } from "../../../../features/animator/services/implementations/SvgUtilityService";
+import type { ArrowPosition } from "../../arrow/orchestration/domain/arrow-models";
+import type { IArrowRenderer } from '../../arrow/rendering/services/contracts/IArrowRenderer';
+import type { IGridRenderingService } from "../../grid/services/contracts/IGridRenderingService";
 
 // TODO: These services are archived - defining minimal interfaces for compilation
 interface ISvgUtilityService {

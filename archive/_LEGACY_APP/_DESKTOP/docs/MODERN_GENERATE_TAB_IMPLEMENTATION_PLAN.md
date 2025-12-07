@@ -199,7 +199,7 @@ class GenerationResult:
 **Problem**: User configuration needs to persist across sessions
 **Solution**:
 
-- Use `ISettingsService` for configuration persistence
+- Use `ISettingsState` for configuration persistence
 - Create `GenerationConfigurationService` for config management
 - Implement preset system for user-defined configurations
 

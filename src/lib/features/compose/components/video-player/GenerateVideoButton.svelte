@@ -1,0 +1,42 @@
+<!--
+  GenerateVideoButton.svelte
+
+  CTA button that initiates video generation process.
+  Displayed when no video has been generated yet.
+-->
+<script lang="ts">
+  let {
+    onGenerate,
+  }: {
+    onGenerate: () => void;
+  } = $props();
+</script>
+
+<button class="generate-video-btn" onclick={onGenerate}>
+  Generate Video
+</button>
+
+<style>
+  .generate-video-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 14px 20px;
+    min-height: 52px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 20;
+    transition: all 0.2s ease;
+  }
+
+  .generate-video-btn:hover {
+    background: rgba(0, 0, 0, 0.85);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+</style>

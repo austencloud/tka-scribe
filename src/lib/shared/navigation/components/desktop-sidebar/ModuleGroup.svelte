@@ -1,6 +1,7 @@
 <!-- Module Group Component -->
 <!-- Combines a module button with its expandable sections list -->
 <script lang="ts">
+  import { tick } from "svelte";
   import type { ModuleDefinition, Section } from "../../domain/types";
   import ModuleButton from "./ModuleButton.svelte";
   import SectionsList from "./SectionsList.svelte";
@@ -27,12 +28,32 @@
     onSectionClick: (moduleId: string, section: Section) => void;
   }>();
 
+  // Reference to the module group element
+  let moduleGroupElement = $state<HTMLDivElement | null>(null);
+
   const isActive = $derived(currentModule === module.id);
   const isDisabled = $derived(module.disabled ?? false);
   const hasSections = $derived(isExpanded && module.sections.length > 0);
+
+  // Scroll the expanded module into view when it expands
+  $effect(() => {
+    if (isExpanded && hasSections && !isCollapsed && moduleGroupElement) {
+      // Wait for DOM update and slide transition to start
+      tick().then(() => {
+        // Small delay to let the slide animation begin
+        setTimeout(() => {
+          moduleGroupElement?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+        }, 100);
+      });
+    }
+  });
 </script>
 
 <div
+  bind:this={moduleGroupElement}
   class="module-group"
   class:active={isActive}
   class:has-sections={hasSections}

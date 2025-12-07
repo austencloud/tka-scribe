@@ -63,6 +63,7 @@ test-results/
 .Trashes
 ehthumbs.db
 Thumbs.db
+nul
 
 # Temporary files
 *.tmp
@@ -98,4 +99,11 @@ tsc-output*.txt
 filtered-errors.txt
 remaining-create-errors.txt
 parse-errors.py
-\n# Motion primitives (generated, do not commit)\nsrc/lib/data/motion-primitives.json
+
+# Motion primitives (generated, do not commit)
+src/lib/data/motion-primitives.json
+
+# Feedback images (downloaded for review, not committed)
+feedback-images/
+test-image.png
+find-image-feedback.js

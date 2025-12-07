@@ -4,13 +4,11 @@
  * Interfaces for various arrow calculation services.
  */
 
-import type {
-  ArrowPlacementData,
-  GridLocation,
-  MotionData,
-  MotionType,
-  PictographData,
-} from "$shared";
+import type { ArrowPlacementData } from "../../../placement/domain/ArrowPlacementData";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 
 export interface IArrowPointCalculator {
   calculatePoint(

@@ -11,7 +11,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app } from "$shared/auth/firebase";
+import { app } from "$lib/shared/auth/firebase";
 
 // Initialize Firebase Storage
 const storage = getStorage(app);
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate file exists
     if (!file || !(file instanceof File)) {
-      throw error(400, "No file provided");
+      return error(400, "No file provided");
     }
 
     // Validate file type
@@ -53,20 +53,21 @@ export const POST: RequestHandler = async ({ request }) => {
     const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type);
 
     if (!isImage && !isVideo) {
-      throw error(400, `Unsupported file type: ${file.type}`);
+      return error(400, `Unsupported file type: ${file.type}`);
     }
 
     // Validate file size
     const maxSize = isImage ? MAX_IMAGE_SIZE : MAX_VIDEO_SIZE;
     if (file.size > maxSize) {
       const maxSizeMB = maxSize / (1024 * 1024);
-      throw error(400, `File too large. Max size: ${maxSizeMB}MB`);
+
+      return error(400, `File too large. Max size: ${maxSizeMB}MB`);
     }
 
     // Generate unique filename with timestamp
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(7);
-    const fileExtension = file.name.split(".").pop() || "jpg";
+    const fileExtension = file.name.split(".").pop() ?? "jpg";
     const filename = `${timestamp}-${randomString}.${fileExtension}`;
 
     // Create storage path (files will be in instagram-uploads folder)
@@ -103,16 +104,18 @@ export const POST: RequestHandler = async ({ request }) => {
       size: file.size,
       type: file.type,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Instagram media upload error:", err);
 
     // Handle known errors
-    if (err.status) {
+    if (err && typeof err === "object" && "status" in err) {
       throw err; // Re-throw SvelteKit errors
     }
 
     // Generic error
-    throw error(500, `Upload failed: ${err.message}`);
+    const message = err instanceof Error ? err.message : "Unknown error";
+
+    return error(500, `Upload failed: ${message}`);
   }
 };
 
@@ -129,15 +132,16 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const { path } = await request.json();
+    const body = await request.json() as { path?: unknown };
+    const { path } = body;
 
     if (!path || typeof path !== "string") {
-      throw error(400, "Storage path is required");
+      return error(400, "Storage path is required");
     }
 
     // Only allow deletion of files in instagram-uploads folder
     if (!path.startsWith("instagram-uploads/")) {
-      throw error(403, "Can only delete files from instagram-uploads folder");
+      return error(403, "Can only delete files from instagram-uploads folder");
     }
 
     const storageRef = ref(storage, path);
@@ -150,13 +154,15 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       path,
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Instagram media deletion error:", err);
 
-    if (err.status) {
+    if (err && typeof err === "object" && "status" in err) {
       throw err;
     }
 
-    throw error(500, `Deletion failed: ${err.message}`);
+    const message = err instanceof Error ? err.message : "Unknown error";
+
+    return error(500, `Deletion failed: ${message}`);
   }
 };

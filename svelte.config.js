@@ -29,34 +29,6 @@ const config = {
       $lib: "./src/lib",
       "$lib/*": "./src/lib/*",
 
-      // Shared resources (cross-domain access)
-      $shared: "./src/lib/shared",
-      "$shared/*": "./src/lib/shared/*",
-
-      // Module aliases (for cross-domain barrel imports)
-      $create: "./src/lib/modules/create",
-      "$create/*": "./src/lib/modules/create/*",
-
-      $learn: "./src/lib/modules/learn",
-      "$learn/*": "./src/lib/modules/learn/*",
-
-      $Explore: "./src/lib/modules/Explore",
-      "$Explore/*": "./src/lib/modules/explore/*",
-
-      $animator: "./src/lib/modules/create/animate",
-      "$animator/*": "./src/lib/modules/create/animate/*",
-
-      $wordcard: "./src/lib/modules/word-card",
-      "$wordcard/*": "./src/lib/modules/word-card/*",
-
-      $collect: "./src/lib/modules/collect",
-      "$collect/*": "./src/lib/modules/collect/*",
-
-      $write: "./src/lib/modules/write",
-      "$write/*": "./src/lib/modules/write/*",
-
-      $render: "./src/lib/shared/render",
-      "$render/*": "./src/lib/shared/render/*",
     },
 
     // ============================================================================

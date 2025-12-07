@@ -11,7 +11,7 @@ Props:
 - pictographData: Full pictograph data (for color interpretation)
 -->
 <script lang="ts">
-  import type { PictographData } from "$shared";
+import type { PictographData } from "../../shared/domain/models/PictographData";
   import type { Dimensions } from "../utils/turn-position-calculator";
   import {
     parseTurnsTuple,
@@ -28,12 +28,15 @@ Props:
     letterDimensions,
     pictographData = undefined,
     visible = true,
+    previewMode = false,
   } = $props<{
     turnsTuple: string;
     letter: string | null | undefined;
     letterDimensions: Dimensions;
     pictographData?: PictographData | null;
     visible?: boolean;
+    /** Preview mode: show at 40% opacity when off instead of hidden */
+    previewMode?: boolean;
   }>();
 
   // Service instance for color interpretation
@@ -77,7 +80,7 @@ Props:
 </script>
 
 <!-- Turns Column Group -->
-<g class="turns-column" class:visible data-letter={letter}>
+<g class="turns-column" class:visible class:preview-mode={previewMode} data-letter={letter}>
   <!-- SVG Recoloring Filter Definitions -->
   <defs>
     <!-- Blue color filter - matches arrow color #2E3192 -->
@@ -162,6 +165,11 @@ Props:
 
   .turns-column.visible {
     opacity: 1;
+  }
+
+  /* Preview mode: show "off" state at 40% opacity instead of hidden */
+  .turns-column.preview-mode:not(.visible) {
+    opacity: 0.4;
   }
 
   .turn-number image {

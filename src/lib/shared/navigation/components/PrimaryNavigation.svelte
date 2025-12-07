@@ -1,12 +1,14 @@
 <!-- Primary Navigation - Responsive Bottom/Side Navigation Orchestrator -->
 <!-- Automatically adapts between bottom (portrait) and side (landscape) layouts -->
 <script lang="ts">
-  import { resolve, TYPES, type IDeviceDetector } from "$shared";
-  import type { ResponsiveSettings } from "$shared/device/domain/models/device-models";
+import { resolve } from "../../inversify/di";
+import { TYPES } from "../../inversify/types";
+  import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
+  import type { ResponsiveSettings } from "../../device/domain/models/device-models";
   import { onMount } from "svelte";
-  import { toggleSettingsDialog } from "../../application/state/app-state.svelte";
-  import { uiState } from "../../application/state/ui/ui-state.svelte";
-  import type { Section } from "../domain/types";
+  import type { Section, ModuleId } from "../domain/types";
+  import { navigationState } from "../state/navigation-state.svelte";
+  import { handleModuleChange } from "../../navigation-coordinator/navigation-coordinator.svelte";
   import BottomNavigation from "./layouts/BottomNavigation.svelte";
   import SideNavigation from "./layouts/SideNavigation.svelte";
 
@@ -43,11 +45,17 @@
   // Layout state - use DeviceDetector instead of duplicating logic
   let isLandscape = $derived(responsiveSettings?.isLandscapeMobile ?? false);
 
-  // Reactive state for settings dialog visibility
-  let isSettingsActive = $derived(uiState.showSettings);
+  // Settings module active state
+  let isSettingsActive = $derived(navigationState.currentModule === "settings");
 
-  function handleSettingsTap() {
-    toggleSettingsDialog();
+  async function handleSettingsTap() {
+    // Toggle behavior: if in settings, go back to previous module
+    if (navigationState.currentModule === "settings") {
+      const previousModule = navigationState.previousModule || "dashboard";
+      await handleModuleChange(previousModule as ModuleId);
+    } else {
+      await handleModuleChange("settings" as ModuleId);
+    }
   }
 
   // Notify parent when layout changes (reactive to isLandscape derived value)

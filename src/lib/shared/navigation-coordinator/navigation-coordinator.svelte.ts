@@ -14,13 +14,64 @@ import {
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
 import { switchModule } from "../application/state/ui/module-state";
-import { authStore } from "../auth";
+import { authStore } from "../auth/stores/authStore.svelte";
+import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
+
+// Session storage key for persisting navigation history across HMR
+const PREVIOUS_MODULE_KEY = "tka-previous-module-before-settings";
+
+// Load persisted previous module from sessionStorage (survives HMR)
+function loadPreviousModule(): ModuleId | null {
+  if (typeof sessionStorage === "undefined") return null;
+  const saved = sessionStorage.getItem(PREVIOUS_MODULE_KEY);
+  if (saved && MODULE_DEFINITIONS.some((m) => m.id === saved)) {
+    return saved as ModuleId;
+  }
+  return null;
+}
+
+// Persist previous module to sessionStorage
+function savePreviousModule(moduleId: ModuleId | null) {
+  if (typeof sessionStorage === "undefined") return;
+  if (moduleId) {
+    sessionStorage.setItem(PREVIOUS_MODULE_KEY, moduleId);
+  } else {
+    sessionStorage.removeItem(PREVIOUS_MODULE_KEY);
+  }
+}
 
 // Reactive state object using Svelte 5 $state rune
 export const navigationCoordinator = $state({
   // Note: Edit and Export are slide-out panels, not navigation sections
   canAccessEditAndExportPanels: false,
+  // Track the module we came from when entering Settings (for return animation)
+  // Initialized from sessionStorage to survive HMR
+  previousModuleBeforeSettings: loadPreviousModule(),
+  // Store the entry point for consistent exit animation
+  settingsEntryOrigin: { x: 90, y: 95 } as { x: number; y: number },
 });
+
+// Set the portal origin position for Settings transition
+// Called when settings button is clicked, before navigation
+export function setSettingsPortalOrigin(x: number, y: number) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  // Convert to percentage for responsive positioning
+  const xPercent = (x / vw) * 100;
+  const yPercent = (y / vh) * 100;
+  // Store for reuse on exit
+  navigationCoordinator.settingsEntryOrigin = { x: xPercent, y: yPercent };
+  document.documentElement.style.setProperty('--settings-portal-x', `${xPercent}%`);
+  document.documentElement.style.setProperty('--settings-portal-y', `${yPercent}%`);
+}
+
+// Restore the original entry origin for exit animation
+// Creates consistent "dive in / pull out from same spot" experience
+export function restoreSettingsPortalOrigin() {
+  const { x, y } = navigationCoordinator.settingsEntryOrigin;
+  document.documentElement.style.setProperty('--settings-portal-x', `${x}%`);
+  document.documentElement.style.setProperty('--settings-portal-y', `${y}%`);
+}
 
 // Derived state as functions (Svelte 5 doesn't allow exporting $derived directly)
 export function currentModule() {
@@ -43,10 +94,10 @@ export function currentModuleName() {
 // Create module: Construct and Generate sections are shown when no sequence exists.
 // When a sequence exists (canAccessEditAndExportPanels = true), all sections are shown.
 // When creation method selector is visible, hide all tabs (user must pick via selector).
+// Settings module: AI tab is admin-only.
 export function moduleSections() {
   const baseSections = currentModuleDefinition()?.sections || [];
   const module = currentModule();
-  const isAdmin = authStore.isAdmin;
 
   // Create module section filtering
   if (module === "create") {
@@ -55,14 +106,10 @@ export function moduleSections() {
       return [];
     }
 
-    // Filter out assembler mode for non-admin users
-    let availableSections = baseSections;
-    if (!isAdmin) {
-      availableSections = baseSections.filter((section: { id: string }) => {
-        // Only show constructor (Construct) and generator (Generate) for non-admin users
-        return section.id === "constructor" || section.id === "generator";
-      });
-    }
+    // Filter sections based on user's feature access (role-based)
+    const availableSections = baseSections.filter((section: { id: string }) => {
+      return featureFlagService.canAccessTab("create", section.id);
+    });
 
     if (!navigationCoordinator.canAccessEditAndExportPanels) {
       return availableSections.filter((section: { id: string }) => {
@@ -79,55 +126,234 @@ export function moduleSections() {
     return availableSections;
   }
 
+  // Settings module: Filter AI tab for non-admin users
+  if (module === "settings") {
+    return baseSections.filter((section: { id: string }) => {
+      // AI tab is admin-only
+      if (section.id === "ai") {
+        return featureFlagService.isAdmin;
+      }
+      return true;
+    });
+  }
+
+  // Feedback module: Filter manage tab for non-admin users
+  if (module === "feedback") {
+    return baseSections.filter((section: { id: string }) => {
+      return featureFlagService.canAccessTab("feedback", section.id);
+    });
+  }
+
   return baseSections;
 }
 
-// Module change handler
-export async function handleModuleChange(moduleId: ModuleId) {
-  navigationState.setCurrentModule(moduleId);
-  // Switch module with proper persistence (saves to localStorage + Firestore)
-  await switchModule(moduleId);
-}
+// Module order for determining slide direction
+// Settings is included for transition support but accessed via footer gear icon
+const MODULE_ORDER = ['dashboard', 'create', 'discover', 'learn', 'compose', 'train', 'feedback', 'admin', 'settings'];
 
-// Section change handler
-export function handleSectionChange(sectionId: string) {
-  const module = currentModule();
-  const isAdmin = authStore.isAdmin;
+// Module change handler with View Transitions
+// targetTab: Optional tab to navigate to (used when clicking a section in a different module)
+export async function handleModuleChange(moduleId: ModuleId, targetTab?: string) {
+  const currentMod = currentModule();
 
-  // Validate section accessibility for Create module
-  if (module === "create" && sectionId === "assembler" && !isAdmin) {
-    navigationState.setActiveTab("constructor");
+  // Skip transition logic if same module
+  if (moduleId === currentMod) {
+    navigationState.setCurrentModule(moduleId, targetTab);
     return;
   }
 
-  if (module === "learn") {
-    navigationState.setLearnMode(sectionId);
+  // Determine direction based on module order
+  const currentIndex = MODULE_ORDER.indexOf(currentMod);
+  const newIndex = MODULE_ORDER.indexOf(moduleId);
+  const goingRight = newIndex > currentIndex;
+
+  const doc = document as any;
+
+  // Coming FROM dashboard - skip (Dashboard.svelte handles dive-in animation)
+  const isLeavingDashboard = currentMod === 'dashboard';
+
+  // Going TO dashboard - use pull-out animation
+  const isGoingToDashboard = moduleId === 'dashboard';
+
+  // Settings portal transitions - special "dimension" feel
+  const isEnteringSettings = moduleId === 'settings';
+  const isExitingSettings = currentMod === 'settings';
+
+  if (typeof doc.startViewTransition === 'function' && !isLeavingDashboard) {
+    if (isEnteringSettings) {
+      // ENTERING SETTINGS - Portal expand animation
+      // Store where we came from for the return journey (persist to survive HMR)
+      navigationCoordinator.previousModuleBeforeSettings = currentMod;
+      savePreviousModule(currentMod);
+
+      document.documentElement.classList.add('settings-portal-enter');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('settings-portal-enter');
+      });
+    } else if (isExitingSettings) {
+      // EXITING SETTINGS - Portal collapse animation
+      // Restore original entry point for consistent "pull out" to same spot
+      restoreSettingsPortalOrigin();
+      document.documentElement.classList.add('settings-portal-exit');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('settings-portal-exit');
+        navigationCoordinator.previousModuleBeforeSettings = null;
+        savePreviousModule(null);
+      });
+    } else if (isGoingToDashboard) {
+      // Pull-out effect when going back to dashboard
+      document.documentElement.classList.add('back-transition');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('back-transition');
+      });
+    } else {
+      // Module-to-module: horizontal slide
+      document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
+      document.documentElement.classList.add(goingRight ? 'module-slide-left' : 'module-slide-right');
+
+      const transition = doc.startViewTransition(async () => {
+        navigationState.setCurrentModule(moduleId, targetTab);
+        await switchModule(moduleId);
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
+      });
+    }
   } else {
-    // All other modules use the new navigation system
-    navigationState.setActiveTab(sectionId);
+    // Fallback or leaving dashboard (Dashboard handles its own animation)
+    navigationState.setCurrentModule(moduleId, targetTab);
+    await switchModule(moduleId);
   }
 }
 
-// Export as a getter function that reads authStore.isAdmin reactively
-// This ensures the module list updates when admin status changes
+// Tab order for determining slide direction (per module)
+// Note: Compose module playback is an overlay, not a tab
+const TAB_ORDERS: Record<string, string[]> = {
+  create: ['assembler', 'constructor', 'generator', 'editor', 'export'],
+  discover: ['sequences', 'collections', 'creators', 'library'],
+  learn: ['concepts', 'play', 'codex'],
+  compose: ['arrange', 'browse'],
+  train: ['drills', 'challenges', 'progress'],
+  collect: ['achievements', 'badges', 'stats'],
+  feedback: ['submit', 'manage'],
+};
+
+// Section change handler with View Transitions
+// Now that Svelte transitions are removed from #key blocks, View Transitions work smoothly
+export function handleSectionChange(sectionId: string) {
+  const module = currentModule();
+  const currentSectionId = currentSection();
+
+  // Validate section accessibility via feature flags
+  if (!featureFlagService.canAccessTab(module, sectionId)) {
+    console.warn(`⚠️ User does not have access to ${module}:${sectionId} tab`);
+    // Redirect to a default accessible section
+    if (module === "create") {
+      navigationState.setActiveTab("constructor");
+    }
+    return;
+  }
+
+  // Don't switch if same section
+  if (sectionId === currentSectionId) return;
+
+  const doc = document as any;
+  const tabOrder = TAB_ORDERS[module] || [];
+  const currentIndex = tabOrder.indexOf(currentSectionId);
+  const newIndex = tabOrder.indexOf(sectionId);
+  const goingRight = newIndex > currentIndex;
+
+  // Helper to update the navigation state
+  const updateState = () => {
+    if (module === "learn") {
+      navigationState.setLearnMode(sectionId);
+    } else {
+      navigationState.setActiveTab(sectionId);
+    }
+  };
+
+  // Use View Transitions if available
+  if (typeof doc.startViewTransition === 'function') {
+    // Add direction class for CSS to target
+    document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
+    document.documentElement.classList.add(goingRight ? 'tab-slide-left' : 'tab-slide-right');
+
+    const transition = doc.startViewTransition(() => {
+      updateState();
+    });
+
+    transition.finished.finally(() => {
+      document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
+    });
+  } else {
+    // Fallback: instant switch for browsers without View Transitions
+    updateState();
+  }
+}
+
+// Export as a getter function that reads feature flags reactively
+// This ensures the module list updates when user role or feature flags change
 export function getModuleDefinitions() {
-  // Read authStore.isAdmin directly in the getter so it's reactive
-  const isAdmin = authStore.isAdmin;
+  // Read auth state directly in the getter so it's reactive
+  const isAuthInitialized = authStore.isInitialized;
+  const isFeatureFlagsInitialized = featureFlagService.isInitialized;
+
+  // Read role-based flags BEFORE the filter to establish Svelte reactivity
+  // This ensures $derived recalculates when these values change
+  const isAdmin = featureFlagService.isAdmin;
+  const isTester = featureFlagService.isTester;
 
   return MODULE_DEFINITIONS.filter((module) => {
-    // Admin module only visible to admin users
+    // Settings module is accessed via sidebar footer gear icon, not main module list
+    if (module.id === "settings") {
+      return false;
+    }
+    // Admin module only visible to admin users (hide until we know they're admin)
     if (module.id === "admin") {
       return isAdmin;
     }
+    // Feedback module only visible to testers and admins
+    if (module.id === "feedback") {
+      return isTester;
+    }
+    // ML Training module only visible to testers and admins
+    if (module.id === "ml-training") {
+      return isTester;
+    }
     return true;
   }).map((module) => {
-    // For non-admin users, disable all modules except Create
-    if (!isAdmin && module.id !== "create") {
-      return {
-        ...module,
-        disabled: true,
-        disabledMessage: "Coming Soon",
-      };
+    // Optimistic rendering: show modules as enabled until auth/feature flags confirm access
+    // This prevents the flash of disabled modules while loading
+    // - If not initialized yet: show enabled (optimistic)
+    // - If initialized: check feature flag access
+    if (isAuthInitialized && isFeatureFlagsInitialized) {
+      const hasAccess = featureFlagService.canAccessModule(module.id);
+      if (!hasAccess) {
+        return {
+          ...module,
+          disabled: true,
+          disabledMessage: "Coming Soon",
+        };
+      }
     }
     return module;
   });

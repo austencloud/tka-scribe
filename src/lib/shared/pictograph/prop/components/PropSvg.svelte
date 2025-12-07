@@ -3,8 +3,11 @@ Simple Prop Component - Just renders a prop with provided data
 Now with smooth transitions when position or orientation changes!
 -->
 <script lang="ts">
-  import { Orientation, RotationDirection, type MotionData } from "$shared";
-  import type { PropAssets, PropPosition } from "../domain/models";
+import { Orientation, MotionColor, RotationDirection } from "../../shared/domain/enums/pictograph-enums";
+import { PropType } from "../domain/enums/PropType";
+import type { MotionData } from "../../shared/domain/models/MotionData";
+  import type { PropAssets } from "../domain/models/PropAssets";
+  import type { PropPosition } from "../domain/models/PropPosition";
 
   let {
     motionData,
@@ -36,6 +39,22 @@ Now with smooth transitions when position or orientation changes!
   let displayedRotation = $state<number>(propPosition?.rotation ?? 0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
+
+
+  // Check if this is a red hand that should be mirrored
+  // Use the motion's actual propType field
+  const shouldMirror = $derived(
+    motionData.propType === PropType.HAND && motionData.color === MotionColor.RED
+  );
+
+  // Build the complete transform string
+  const transformString = $derived(
+    `translate(${propPosition.x}px, ${propPosition.y}px) ` +
+    `rotate(${displayedRotation}deg) ` +
+    (shouldMirror ? 'scaleX(-1) ' : '') +
+    `translate(${-propAssets.center.x}px, ${-propAssets.center.y}px)`
+  );
+
 
   $effect(() => {
     const targetRotation = propPosition?.rotation ?? 0;
@@ -182,11 +201,7 @@ Now with smooth transitions when position or orientation changes!
   <g
     class="prop-svg {motionData.color}-prop-svg"
     data-prop-type={motionData?.propType}
-    style="
-      transform: translate({propPosition.x}px, {propPosition.y}px)
-                 rotate({displayedRotation}deg)
-                 translate({-propAssets.center.x}px, {-propAssets.center.y}px);
-    "
+    style="transform: {transformString};"
   >
     {@html propAssets.imageSrc}
   </g>
@@ -195,8 +210,8 @@ Now with smooth transitions when position or orientation changes!
 <style>
   .prop-svg {
     pointer-events: none;
-    /* Smooth transition for position and rotation changes - matches arrow behavior */
+    /* Smooth transition for position and rotation changes - matches arrow and grid behavior */
     /* IMPORTANT: transform must be a CSS property (not SVG attribute) for transitions to work */
-    transition: transform 0.2s linear;
+    transition: transform 0.2s ease;
   }
 </style>

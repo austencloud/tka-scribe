@@ -4,12 +4,10 @@
  * Interfaces for arrow placement calculations and key generation.
  */
 
-import type {
-  GridMode,
-  MotionData,
-  MotionType,
-  PictographData,
-} from "$shared";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { GridMode } from "../../../../../grid/domain/enums/grid-enums";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { Point } from "fabric";
 
 export interface IArrowPlacementService {
@@ -25,8 +23,13 @@ export interface IArrowPlacementService {
     gridMode: GridMode
   ): Promise<string[]>;
 
-  isLoaded(): boolean;
+  isLoaded(gridMode?: GridMode): boolean;
+
+  /** @deprecated Use ensureGridModeLoaded for lazy loading */
   loadPlacementData(): Promise<void>;
+
+  /** Lazy load placement data for a specific grid mode only */
+  ensureGridModeLoaded(gridMode: GridMode): Promise<void>;
 }
 
 export interface ISpecialPlacementService {

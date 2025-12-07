@@ -8,10 +8,13 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared/inversify";
-  import type { IKeyboardShortcutService } from "../services/contracts";
-  import { keyboardShortcutState } from "../state";
-  import type { ShortcutRegistrationOptions, ShortcutScope } from "../domain";
+  import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+  import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
+  import type {
+    ShortcutRegistrationOptions,
+    ShortcutScope,
+  } from "../domain/types/keyboard-types";
+  import { resolve, TYPES } from "../../inversify/di";
 
   // Service
   let shortcutService: IKeyboardShortcutService | null = null;
@@ -279,17 +282,18 @@
   }
 
   .shortcuts-help__close {
-    width: 2rem;
-    height: 2rem;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--text-secondary, #888);
     cursor: pointer;
     transition: all 0.2s;
+    margin: -8px -8px 0 0; /* Compensate for larger touch target */
   }
 
   .shortcuts-help__close:hover {

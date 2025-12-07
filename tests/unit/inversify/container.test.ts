@@ -5,7 +5,7 @@
  * If the container fails, the entire app is dead - these tests catch that early.
  */
 
-import type { IPersistenceService } from "$shared";
+import type { IPersistenceService } from "$lib/shared/persistence/services/contracts/IPersistenceService";
 import {
   getContainerStatus,
   initializeContainer,
@@ -13,7 +13,7 @@ import {
   resolve,
   tryResolve,
   TYPES,
-} from "$shared/inversify/container";
+} from "$lib/shared/inversify/container";
 import { describe, expect, it } from "vitest";
 
 describe("Inversify Container", () => {

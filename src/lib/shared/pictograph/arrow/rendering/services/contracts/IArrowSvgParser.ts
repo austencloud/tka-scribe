@@ -2,7 +2,7 @@
  * SVG Parser Interface
  */
 
-import type { SVGDimensions } from "$shared";
+import type { SVGDimensions } from "../../../../shared/domain/models/svg-models";
 
 export interface IArrowSvgParser {
   /**

@@ -6,7 +6,8 @@
  */
 
 import { injectable } from "inversify";
-import type { MotionData, PictographData } from "$shared";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import { PropRotationStateService } from "./PropRotationStateService";
 
@@ -41,8 +42,8 @@ export class TurnsTupleGeneratorService implements ITurnsTupleGeneratorService {
    */
   generateTurnsTuple(pictographData: PictographData): string {
     try {
-      const blueMotion = pictographData.motions?.blue;
-      const redMotion = pictographData.motions?.red;
+      const blueMotion = pictographData.motions.blue;
+      const redMotion = pictographData.motions.red;
 
       // console.log("🔍 TurnsTupleGenerator - Input:", {
       //   letter: pictographData.letter,

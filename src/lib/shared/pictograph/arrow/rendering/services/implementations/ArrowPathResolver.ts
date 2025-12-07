@@ -5,12 +5,11 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type {
-  ArrowPlacementData,
-  IArrowPathResolver,
-  MotionData,
-} from "$shared";
+import type { IArrowPathResolver } from '../contracts/IArrowPathResolver';
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import { MotionType, Orientation } from "../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
+import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 
 @injectable()
 export class ArrowPathResolver implements IArrowPathResolver {
@@ -21,25 +20,22 @@ export class ArrowPathResolver implements IArrowPathResolver {
     arrowData: ArrowPlacementData,
     motionData: MotionData
   ): string | null {
-    if (!arrowData || !motionData) {
-      console.warn(
-        "🚫 ArrowPathResolutionService: Missing arrowData or motionData, cannot determine arrow path"
-      );
-      return null;
-    }
-
     const { motionType, turns } = motionData;
     const baseDir = `/images/arrows/${motionType}`;
 
     // For motion types that have turn-based subdirectories (pro, anti, static, dash)
-    if (["pro", "anti", "static", "dash"].includes(motionType)) {
+    if (
+      motionType === MotionType.PRO ||
+      motionType === MotionType.ANTI ||
+      motionType === MotionType.STATIC ||
+      motionType === MotionType.DASH
+    ) {
       // Determine if we should use radial vs non-radial arrows based on START orientation only
       // "from_radial" = arrow starts from radial orientation (in/out)
       // "from_nonradial" = arrow starts from non-radial orientation (clock/counter)
-      const startOrientation = motionData.startOrientation || "in";
-
       const isNonRadial =
-        startOrientation === "clock" || startOrientation === "counter";
+        motionData.startOrientation === Orientation.CLOCK ||
+        motionData.startOrientation === Orientation.COUNTER;
 
       const subDir = isNonRadial ? "from_nonradial" : "from_radial";
       const turnValue = typeof turns === "number" ? turns.toFixed(1) : "0.0";
@@ -65,13 +61,13 @@ export class ArrowPathResolver implements IArrowPathResolver {
     const turnsVal = motionData.turns;
     const startOrientation = motionData.startOrientation;
 
-    if (motionType === "float") {
+    if (motionType === MotionType.FLOAT) {
       return "/images/arrows/float.svg";
     }
 
     // Folder is based on START orientation only ("from_radial" = starts from radial)
     const radialPath =
-      startOrientation === "in" || startOrientation === "out"
+      startOrientation === Orientation.IN || startOrientation === Orientation.OUT
         ? "from_radial"
         : "from_nonradial";
 

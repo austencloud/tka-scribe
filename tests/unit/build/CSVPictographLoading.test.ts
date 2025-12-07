@@ -18,8 +18,8 @@ import { describe, expect, it, beforeAll } from "vitest";
 import { Letter } from "../../../src/lib/shared/foundation/domain/models/Letter";
 import { GridMode } from "../../../src/lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { MotionColor } from "../../../src/lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { PictographData } from "$shared";
-import { initializeContainer } from "$shared/inversify/container";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import { initializeContainer } from "$lib/shared/inversify/container";
 import {
   getValidPictograph,
   getAllLetterVariants,

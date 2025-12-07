@@ -111,7 +111,7 @@ class ThumbnailBox(QWidget):
             usable_width = scroll_widget_width - scrollbar_width - total_margins
 
             # Divide by 3 for 3 columns, ensuring minimum width
-            width = max(150, int(usable_width // 3))  # Minimum 150px per thumbnail
+            width = max(150, int(usable_width // 3))  # Minimum 152px per thumbnail
 
             # SMART FIX: Use size hint instead of fixed width to avoid forcing parent expansion
             self._preferred_width = width

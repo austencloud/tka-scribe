@@ -7,9 +7,9 @@
  */
 
 import { injectable } from "inversify";
-import type { IShortcutRegistryService } from "../contracts";
+import type { IShortcutRegistryService } from '../contracts/IShortcutRegistryService';
 import type { Shortcut } from "../../domain/models/Shortcut";
-import type { KeyModifier, ShortcutContext } from "../../domain";
+import type { KeyModifier, ShortcutContext } from '../../domain/types/keyboard-types';
 
 @injectable()
 export class ShortcutRegistryService implements IShortcutRegistryService {

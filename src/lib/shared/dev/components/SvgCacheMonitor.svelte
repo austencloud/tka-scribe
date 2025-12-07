@@ -13,7 +13,7 @@
    */
 
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$shared/inversify";
+  import { resolve, TYPES } from "../../inversify/di";
 
   let arrowStats = $state({
     rawCacheSize: 0,

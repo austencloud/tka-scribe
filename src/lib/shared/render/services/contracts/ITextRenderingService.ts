@@ -1,11 +1,12 @@
-import type { TextRenderOptions, UserInfo } from "../../domain";
+import type { TextRenderOptions, UserExportInfo as UserInfo } from "../../domain/models/SequenceExportOptions";
 /**
  * Text rendering service for titles, user info, and overlays
  * Equivalent to desktop WordDrawer, UserInfoDrawer, DifficultyLevelDrawer
  */
 export interface ITextRenderingService {
   /**
-   * Render sequence word/title text
+   * Render sequence word/title text at the top
+   * @deprecated Use renderWordFooter for Explorer Gallery style
    */
   renderWordText(
     canvas: HTMLCanvasElement,
@@ -15,12 +16,41 @@ export interface ITextRenderingService {
   ): void;
 
   /**
+   * Render word in a footer at the bottom of the canvas
+   * Uses Explorer Gallery style: color-coded gradient background based on difficulty level
+   */
+  renderWordFooter(
+    canvas: HTMLCanvasElement,
+    word: string,
+    options: TextRenderOptions,
+    footerHeight: number,
+    difficultyLevel?: number
+  ): void;
+
+  /**
+   * Render word in a header at the top of the canvas
+   * Simple background with optional level badge indicator
+   */
+  renderWordHeader(
+    canvas: HTMLCanvasElement,
+    word: string,
+    options: TextRenderOptions,
+    headerHeight: number,
+    difficultyLevel?: number,
+    showDifficultyBadge?: boolean
+  ): void;
+
+  /**
    * Render user information (name, date, notes)
+   * @param footerHeight - Height of the footer area for proper text positioning
+   * @param beatCount - Number of beats for legacy-matching font sizing
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
     userInfo: UserInfo,
-    options: TextRenderOptions
+    options: TextRenderOptions,
+    footerHeight?: number,
+    beatCount?: number
   ): void;
 
   /**

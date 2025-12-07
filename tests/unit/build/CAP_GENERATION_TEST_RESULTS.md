@@ -290,14 +290,14 @@ After validating Strict Rotated works, implement the other CAP types:
 
 - Strict Mirrored
 - Strict Swapped
-- Strict Complementary
-- Swapped Complementary
-- Rotated Complementary
+- Strict Inverted
+- Swapped Inverted
+- Rotated Inverted
 - Mirrored Swapped
-- Mirrored Complementary
+- Mirrored Inverted
 - Rotated Swapped
 - Mirrored Rotated
-- Mirrored Complementary Rotated
+- Mirrored Inverted Rotated
 
 ## Summary
 

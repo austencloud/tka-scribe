@@ -5,8 +5,8 @@
   Features horizontal layout with photo preview and upload button.
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import type { IHapticFeedbackService } from "$shared";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     isCompactMode,
     isVeryCompactMode,
@@ -52,6 +52,8 @@
         src={authStore.user.photoURL}
         alt={authStore.user.displayName || "User"}
         class="photo"
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
       />
     {:else}
       <div class="photo-placeholder">

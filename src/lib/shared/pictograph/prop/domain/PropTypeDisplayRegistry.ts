@@ -1,0 +1,329 @@
+import { PropType } from "./enums/PropType";
+
+/**
+ * Display metadata for a prop type
+ */
+export interface PropTypeDisplayInfo {
+  /** Display label for the prop type */
+  label: string;
+  /** Path to the prop's SVG image */
+  image: string;
+}
+
+/**
+ * Registry mapping PropType enum values to their display metadata.
+ * This is the single source of truth for prop type UI display information.
+ */
+export const PROP_TYPE_DISPLAY_REGISTRY: Record<PropType, PropTypeDisplayInfo> =
+  {
+    // === STAFF FAMILY ===
+    [PropType.STAFF]: { label: "Staff", image: "/images/props/staff.svg" },
+    [PropType.SIMPLESTAFF]: {
+      label: "Simple Staff",
+      image: "/images/props/simple_staff.svg",
+    },
+    [PropType.BIGSTAFF]: {
+      label: "Big Staff",
+      image: "/images/props/bigstaff.svg",
+    },
+    [PropType.STAFF2]: {
+      label: "Staff V2",
+      image: "/images/props/staff_v2.svg",
+    },
+
+    // === CLUB ===
+    [PropType.CLUB]: { label: "Club", image: "/images/props/club.svg" },
+
+    // === FAN FAMILY ===
+    [PropType.FAN]: { label: "Fan", image: "/images/props/fan.svg" },
+    [PropType.BIGFAN]: { label: "Big Fan", image: "/images/props/bigfan.svg" },
+
+    // === TRIAD FAMILY ===
+    [PropType.TRIAD]: { label: "Triad", image: "/images/props/triad.svg" },
+    [PropType.BIGTRIAD]: {
+      label: "Big Triad",
+      image: "/images/props/bigtriad.svg",
+    },
+
+    // === HOOP FAMILY ===
+    [PropType.MINIHOOP]: {
+      label: "Mini Hoop",
+      image: "/images/props/minihoop.svg",
+    },
+    [PropType.BIGHOOP]: {
+      label: "Big Hoop",
+      image: "/images/props/bighoop.svg",
+    },
+
+    // === BUUGENG FAMILY ===
+    [PropType.BUUGENG]: {
+      label: "Buugeng",
+      image: "/images/props/buugeng.svg",
+    },
+    [PropType.BIGBUUGENG]: {
+      label: "Big Buugeng",
+      image: "/images/props/bigbuugeng.svg",
+    },
+    [PropType.FRACTALGENG]: {
+      label: "Fractalgeng",
+      image: "/images/props/fractalgeng.svg",
+    },
+
+    // === HAND ===
+    [PropType.HAND]: { label: "Hand", image: "/images/props/hand.svg" },
+
+    // === TRIQUETRA FAMILY ===
+    [PropType.TRIQUETRA]: {
+      label: "Triquetra",
+      image: "/images/props/triquetra.svg",
+    },
+    [PropType.TRIQUETRA2]: {
+      label: "Triquetra 2",
+      image: "/images/props/triquetra2.svg",
+    },
+
+    // === SWORD ===
+    [PropType.SWORD]: { label: "Sword", image: "/images/props/sword.svg" },
+
+    // === CHICKEN FAMILY ===
+    [PropType.CHICKEN]: {
+      label: "Chicken",
+      image: "/images/props/chicken.svg",
+    },
+    [PropType.BIGCHICKEN]: {
+      label: "Big Chicken",
+      image: "/images/props/bigchicken.svg",
+    },
+
+    // === GUITAR FAMILY ===
+    [PropType.GUITAR]: { label: "Guitar", image: "/images/props/guitar.svg" },
+    [PropType.UKULELE]: {
+      label: "Ukulele",
+      image: "/images/props/ukulele.svg",
+    },
+
+    // === DOUBLESTAR FAMILY ===
+    [PropType.DOUBLESTAR]: {
+      label: "Double Star",
+      image: "/images/props/doublestar.svg",
+    },
+    [PropType.BIGDOUBLESTAR]: {
+      label: "Big Double Star",
+      image: "/images/props/bigdoublestar.svg",
+    },
+
+    // === EIGHTRINGS FAMILY ===
+    [PropType.EIGHTRINGS]: {
+      label: "Eight Rings",
+      image: "/images/props/eightrings.svg",
+    },
+    [PropType.BIGEIGHTRINGS]: {
+      label: "Big Eight Rings",
+      image: "/images/props/bigeightrings.svg",
+    },
+
+    // === QUIAD ===
+    [PropType.QUIAD]: { label: "Quiad", image: "/images/props/quiad.svg" },
+  } as const;
+
+/**
+ * Gets all available prop types in display order.
+ */
+export function getAllPropTypes(): PropType[] {
+  return Object.keys(PROP_TYPE_DISPLAY_REGISTRY) as PropType[];
+}
+
+/**
+ * Gets display information for a specific prop type.
+ */
+export function getPropTypeDisplayInfo(
+  propType: PropType
+): PropTypeDisplayInfo {
+  return PROP_TYPE_DISPLAY_REGISTRY[propType];
+}
+
+/**
+ * Finds a prop type by its string value (case-insensitive).
+ * Useful for parsing user input or legacy data.
+ */
+export function findPropTypeByValue(value: string): PropType | undefined {
+  const normalized = value.toLowerCase();
+  return getAllPropTypes().find((pt) => pt.toLowerCase() === normalized);
+}
+
+/**
+ * Prop types that are variations of a base prop type.
+ * These are displayed as toggle options on the base prop card.
+ * When selecting a base prop, variations are hidden from the main grid.
+ */
+export const VARIANT_PROP_TYPES: PropType[] = [
+  // Staff family
+  PropType.SIMPLESTAFF,
+  PropType.BIGSTAFF,
+  PropType.STAFF2,
+  // Fan family
+  PropType.BIGFAN,
+  // Triad family
+  PropType.BIGTRIAD,
+  // Hoop family
+  PropType.BIGHOOP,
+  // Buugeng family
+  PropType.BIGBUUGENG,
+  PropType.FRACTALGENG,
+  // Triquetra family
+  PropType.TRIQUETRA2,
+  // Chicken family
+  PropType.BIGCHICKEN,
+  // Guitar family
+  PropType.UKULELE,
+  // Doublestar family
+  PropType.BIGDOUBLESTAR,
+  // Eightrings family
+  PropType.BIGEIGHTRINGS,
+];
+
+/**
+ * Mapping from variant prop types to their base prop types.
+ */
+const VARIANT_TO_BASE: Partial<Record<PropType, PropType>> = {
+  // Staff variations
+  [PropType.SIMPLESTAFF]: PropType.STAFF,
+  [PropType.BIGSTAFF]: PropType.STAFF,
+  [PropType.STAFF2]: PropType.STAFF,
+  // Fan variations
+  [PropType.BIGFAN]: PropType.FAN,
+  // Triad variations
+  [PropType.BIGTRIAD]: PropType.TRIAD,
+  // Hoop variations
+  [PropType.BIGHOOP]: PropType.MINIHOOP,
+  // Buugeng variations
+  [PropType.BIGBUUGENG]: PropType.BUUGENG,
+  [PropType.FRACTALGENG]: PropType.BUUGENG,
+  // Triquetra variations
+  [PropType.TRIQUETRA2]: PropType.TRIQUETRA,
+  // Chicken variations
+  [PropType.BIGCHICKEN]: PropType.CHICKEN,
+  // Guitar variations
+  [PropType.UKULELE]: PropType.GUITAR,
+  // Doublestar variations
+  [PropType.BIGDOUBLESTAR]: PropType.DOUBLESTAR,
+  // Eightrings variations
+  [PropType.BIGEIGHTRINGS]: PropType.EIGHTRINGS,
+};
+
+/**
+ * Mapping from base prop types to their variant prop types.
+ * Order matters - this determines the cycle order when toggling.
+ */
+const BASE_TO_VARIANTS: Partial<Record<PropType, PropType[]>> = {
+  [PropType.STAFF]: [PropType.SIMPLESTAFF, PropType.BIGSTAFF, PropType.STAFF2],
+  [PropType.FAN]: [PropType.BIGFAN],
+  [PropType.TRIAD]: [PropType.BIGTRIAD],
+  [PropType.MINIHOOP]: [PropType.BIGHOOP],
+  [PropType.BUUGENG]: [PropType.BIGBUUGENG, PropType.FRACTALGENG],
+  [PropType.TRIQUETRA]: [PropType.TRIQUETRA2],
+  [PropType.CHICKEN]: [PropType.BIGCHICKEN],
+  [PropType.GUITAR]: [PropType.UKULELE],
+  [PropType.DOUBLESTAR]: [PropType.BIGDOUBLESTAR],
+  [PropType.EIGHTRINGS]: [PropType.BIGEIGHTRINGS],
+};
+
+/**
+ * Checks if a prop type has variations available.
+ */
+export function hasVariations(propType: PropType): boolean {
+  return (
+    BASE_TO_VARIANTS[propType] !== undefined ||
+    VARIANT_TO_BASE[propType] !== undefined
+  );
+}
+
+/**
+ * Gets the base prop type for a variant (or returns itself if not a variant).
+ */
+export function getBasePropType(propType: PropType): PropType {
+  return VARIANT_TO_BASE[propType] ?? propType;
+}
+
+/**
+ * Gets all variations for a prop type (including the base).
+ */
+export function getAllVariations(propType: PropType): PropType[] {
+  const base = getBasePropType(propType);
+  const variants = BASE_TO_VARIANTS[base];
+  return variants ? [base, ...variants] : [base];
+}
+
+/**
+ * Gets the next variation for a prop type (cycles through variants).
+ */
+export function getNextVariation(propType: PropType): PropType {
+  const base = getBasePropType(propType);
+  const variants = BASE_TO_VARIANTS[base];
+
+  if (!variants || variants.length === 0) {
+    return propType;
+  }
+
+  // If current is the base, return first variant
+  if (propType === base) {
+    return variants[0] ?? base;
+  }
+
+  // Find current in variants and return next (or cycle back to base)
+  const currentIndex = variants.indexOf(propType);
+  if (currentIndex === variants.length - 1) {
+    return base;
+  }
+  const nextVariant = variants[currentIndex + 1];
+  return nextVariant ?? base;
+}
+
+/**
+ * Gets a display label for the variation (e.g., "Ver 1", "Ver 2").
+ */
+export function getVariationLabel(propType: PropType): string {
+  const base = getBasePropType(propType);
+  const variants = BASE_TO_VARIANTS[base];
+  
+  if (!variants || variants.length === 0) {
+    return "";
+  }
+  
+  // Base is version 1
+  if (propType === base) {
+    return "Ver 1";
+  }
+  
+  // Find index in variants
+  const index = variants.indexOf(propType);
+  if (index >= 0) {
+    return `Ver ${index + 2}`;
+  }
+  
+  return "";
+}
+
+/**
+ * Gets the variation index (0-based) for a prop type within its variation group.
+ */
+export function getVariationIndex(propType: PropType): number {
+  const base = getBasePropType(propType);
+  if (propType === base) return 0;
+  
+  const variants = BASE_TO_VARIANTS[base];
+  if (!variants) return 0;
+  
+  const index = variants.indexOf(propType);
+  return index >= 0 ? index + 1 : 0;
+}
+
+/**
+ * Gets the triquetra variation number (1 or 2).
+ * @deprecated Use getVariationIndex instead for generic variation support.
+ */
+export function getTriquetraVariation(propType: PropType): number {
+  if (propType === PropType.TRIQUETRA) return 1;
+  if (propType === PropType.TRIQUETRA2) return 2;
+  return 1;
+}

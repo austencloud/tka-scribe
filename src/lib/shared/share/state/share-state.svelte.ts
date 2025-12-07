@@ -4,10 +4,12 @@
  * Reactive state for the share interface using Svelte 5 runes.
  */
 
-import type { SequenceData } from "$shared";
-import type { ShareOptions } from "../domain";
-import { SHARE_PRESETS } from "../domain";
-import type { IShareService } from "../services/contracts";
+import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+import type { ShareOptions } from '../domain/models/ShareOptions';
+import { SHARE_PRESETS } from '../domain/models/ShareOptions';
+import type { IShareService } from '../services/contracts/IShareService';
+import { tryResolve, TYPES } from '../../inversify/di';
+import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 export interface ShareState {
   // Current options
@@ -27,9 +29,12 @@ export interface ShareState {
   // Actions
   updateOptions: (newOptions: Partial<ShareOptions>) => void;
   selectPreset: (presetName: string) => void;
-  generatePreview: (sequence: SequenceData) => Promise<void>;
+  generatePreview: (sequence: SequenceData, forceRegenerate?: boolean) => Promise<void>;
   downloadImage: (sequence: SequenceData, filename?: string) => Promise<void>;
   resetErrors: () => void;
+
+  // Cache access - for instant preview switching
+  tryLoadFromCache: (sequence: SequenceData) => boolean;
 }
 
 export function createShareState(shareService: IShareService): ShareState {
@@ -54,9 +59,10 @@ export function createShareState(shareService: IShareService): ShareState {
 
   /**
    * Generate cache key from sequence ID and relevant options
+   * IMPORTANT: All toggle options must be included to avoid stale cache
    */
   function getCacheKey(sequenceId: string, opts: ShareOptions): string {
-    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}`;
+    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}-${opts.addUserInfo}`;
   }
 
   return {
@@ -96,7 +102,7 @@ export function createShareState(shareService: IShareService): ShareState {
     },
 
     selectPreset: (presetName: string) => {
-      const preset = SHARE_PRESETS[presetName as keyof typeof SHARE_PRESETS];
+      const preset = SHARE_PRESETS[presetName];
       if (preset) {
         options = { ...preset.options };
         selectedPreset = presetName;
@@ -104,17 +110,19 @@ export function createShareState(shareService: IShareService): ShareState {
       }
     },
 
-    generatePreview: async (sequence: SequenceData) => {
+    generatePreview: async (sequence: SequenceData, forceRegenerate = false) => {
       if (!sequence) return;
 
-      // Check cache first
-      const cacheKey = getCacheKey(sequence.id, options);
-      const cachedPreview = previewCache.get(cacheKey);
+      // Check cache first (unless forcing regeneration)
+      if (!forceRegenerate) {
+        const cacheKey = getCacheKey(sequence.id, options);
+        const cachedPreview = previewCache.get(cacheKey);
 
-      if (cachedPreview) {
-        previewUrl = cachedPreview;
-        previewError = null;
-        return; // Return immediately with cached preview
+        if (cachedPreview) {
+          previewUrl = cachedPreview;
+          previewError = null;
+          return; // Return immediately with cached preview
+        }
       }
 
       isGeneratingPreview = true;
@@ -127,13 +135,15 @@ export function createShareState(shareService: IShareService): ShareState {
           throw new Error(`Invalid options: ${validation.errors.join(", ")}`);
         }
 
-        // Generate preview
+        // Generate preview (passing forceRegenerate to bypass IndexedDB cache)
         const newPreviewUrl = await shareService.generatePreview(
           sequence,
-          options
+          options,
+          forceRegenerate
         );
 
         // Cache the preview for future use
+        const cacheKey = getCacheKey(sequence.id, options);
         previewCache.set(cacheKey, newPreviewUrl);
 
         // Clean up old preview URL (but not if it's cached)
@@ -173,6 +183,20 @@ export function createShareState(shareService: IShareService): ShareState {
         // Track successful download
         lastDownloadedFile =
           filename || shareService.generateFilename(sequence, options);
+
+        // Log share/download action for analytics (non-blocking)
+        try {
+          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          if (activityService) {
+            void activityService.logShareAction("sequence_export", {
+              sequenceId: sequence.id,
+              format: options.format,
+              sequenceWord: sequence.word,
+            });
+          }
+        } catch {
+          // Silently fail - activity logging is non-critical
+        }
       } catch (error) {
         downloadError =
           error instanceof Error ? error.message : "Failed to download image";
@@ -185,6 +209,22 @@ export function createShareState(shareService: IShareService): ShareState {
     resetErrors: () => {
       previewError = null;
       downloadError = null;
+    },
+
+    // Synchronous cache check - returns true if cache hit and preview was updated
+    tryLoadFromCache: (sequence: SequenceData): boolean => {
+      if (!sequence) return false;
+
+      const cacheKey = getCacheKey(sequence.id, options);
+      const cachedPreview = previewCache.get(cacheKey);
+
+      if (cachedPreview) {
+        previewUrl = cachedPreview;
+        previewError = null;
+        return true; // Cache hit - preview updated instantly
+      }
+
+      return false; // Cache miss - caller should generate
     },
   };
 }

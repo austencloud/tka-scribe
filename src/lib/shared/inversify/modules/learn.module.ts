@@ -1,22 +1,15 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import {
-  CodexService,
-  CodexLetterMappingRepo,
-  CodexPictographUpdater,
-} from "../../../modules/learn/codex/services/implementations";
-import {
-  QuizRepoManager,
-  QuizSessionService,
-} from "../../../modules/learn/quiz/services/implementations";
-import { QuizGradingService } from "../../../modules/learn/quiz/services/QuizGradingService";
-import { QuizFeedbackService } from "../../../modules/learn/quiz/services/QuizFeedbackService";
-import { QuizAchievementService } from "../../../modules/learn/quiz/services/QuizAchievementService";
-import { QuizFormatterService } from "../../../modules/learn/quiz/services/QuizFormatterService";
+import { CodexService } from '../../../features/learn/codex/services/implementations/CodexService';
+import { CodexLetterMappingRepo } from '../../../features/learn/codex/services/implementations/CodexLetterMappingRepo';
+import { CodexPictographUpdater } from '../../../features/learn/codex/services/implementations/CodexPictographUpdater';
+import { QuizRepoManager } from '../../../features/learn/quiz/services/implementations/QuizRepoManager';
+import { QuizSessionService } from '../../../features/learn/quiz/services/implementations/QuizSessionService';
+import { QuizResultsAnalyzer } from "../../../features/learn/quiz/QuizResultsAnalyzer";
 import { TYPES } from "../types";
 
 export const learnModule = new ContainerModule(
-  async (options: ContainerModuleLoadOptions) => {
+  (options: ContainerModuleLoadOptions) => {
     // === CODEX SERVICES ===
     // CodexLetterMappingRepo is Codex-specific (Learn module)
     // LetterQueryHandler (Tier 2) makes it optional so Generate doesn't need Learn module
@@ -27,9 +20,6 @@ export const learnModule = new ContainerModule(
     // === QUIZ SERVICES ===
     options.bind(TYPES.IQuizRepoManager).to(QuizRepoManager);
     options.bind(TYPES.IQuizSessionService).to(QuizSessionService);
-    options.bind(TYPES.IQuizGradingService).to(QuizGradingService);
-    options.bind(TYPES.IQuizFeedbackService).to(QuizFeedbackService);
-    options.bind(TYPES.IQuizAchievementService).to(QuizAchievementService);
-    options.bind(TYPES.IQuizFormatterService).to(QuizFormatterService);
+    options.bind(TYPES.IQuizResultsAnalyzer).to(QuizResultsAnalyzer);
   }
 );

@@ -5,7 +5,7 @@
  * tab states, preferences, and other temporary user data.
  */
 
-import type { UserWorkType } from "../enums";
+import type { UserWorkType } from "../enums/UserWorkType";
 
 /**
  * User's work-in-progress data
@@ -88,7 +88,7 @@ export function createUserWorkData(
     data,
     ...(options.tabId !== undefined && { tabId: options.tabId }),
     ...(options.userId !== undefined && { userId: options.userId }),
-    version: options.version || 1,
+    version: options.version ?? 1,
     lastModified: new Date(),
   };
 }

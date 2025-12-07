@@ -13,7 +13,8 @@ export type AchievementCategory =
   | "scholar" // Learning concepts
   | "practitioner" // Daily streaks & practice
   | "explorer" // Browsing gallery
-  | "performer"; // Video submissions (Phase 3)
+  | "performer" // Video submissions (Phase 3)
+  | "trainer"; // Training challenges
 
 export type AchievementTier = "bronze" | "silver" | "gold" | "platinum";
 
@@ -28,18 +29,33 @@ export interface Achievement {
   requirement: AchievementRequirement;
 }
 
+/**
+ * Metadata for achievement requirements
+ */
+export interface AchievementMetadata {
+  // For letter_usage type
+  requiredLetters?: string[];
+  // For specific_action type
+  conceptId?: string;
+  // For generation_count type
+  generationCriteria?: string;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface AchievementRequirement {
   type:
     | "sequence_count" // Create X sequences
     | "concept_completion" // Complete X concepts
     | "daily_streak" // Login/practice X days in a row
-    | "gallery_exploration" // Explore X sequences
+    | "gallery_exploration" // Discover X sequences
     | "letter_usage" // Create sequence with specific letters
     | "sequence_length" // Create sequence of X beats
     | "generation_count" // Generate X sequences
+    | "challenge_count" // Complete training challenges
     | "specific_action"; // Complete specific action once
   target: number; // How many to complete (1 for one-time achievements)
-  metadata?: Record<string, any>; // Additional data (e.g., required letters, specific concept ID)
+  metadata?: AchievementMetadata; // Additional data (e.g., required letters, specific concept ID)
 }
 
 export interface UserAchievement {
@@ -65,23 +81,75 @@ export interface UserXP {
   lastUpdated: Date;
 }
 
+/**
+ * Metadata for XP gain events
+ */
+export interface XPEventMetadata {
+  // For sequence_created
+  beatCount?: number;
+  letters?: string[];
+  // For achievement_unlocked
+  achievementId?: string;
+  tier?: AchievementTier;
+  // For drill_completed
+  drillId?: string;
+  score?: number;
+  // For daily_challenge_completed
+  challengeId?: string;
+  challengeType?: ChallengeType | "train";
+  // For concept_learned
+  conceptId?: string;
+  // For daily_login
+  currentStreak?: number;
+  // For weekly_challenge_completed / weekly_challenge_bonus
+  weekNumber?: number;
+  year?: number;
+  bonusEarned?: boolean;
+  // For skill_level_completed / skill_mastery_achieved
+  skillId?: string;
+  skillLevel?: number;
+  skillCategory?: string;
+  // For training_session_completed / training_combo_20
+  accuracy?: number;
+  combo?: number;
+  // Generic timestamp
+  timestamp?: number;
+  // Generic reason
+  reason?: string;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface XPGainEvent {
   id: string;
   action: XPActionType;
   xpGained: number;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: XPEventMetadata;
 }
 
 export type XPActionType =
   | "sequence_created"
   | "sequence_generated"
+  | "sequence_published"
   | "concept_learned"
   | "drill_completed"
   | "sequence_explored"
   | "daily_challenge_completed"
   | "achievement_unlocked"
-  | "daily_login";
+  | "daily_login"
+  // Weekly challenges
+  | "weekly_challenge_completed"
+  | "weekly_challenge_bonus"
+  // Training
+  | "training_session_completed"
+  | "perfect_training_run"
+  | "training_combo_20"
+  | "timed_150bpm"
+  | "train_challenge_completed"
+  // Skill progressions
+  | "skill_level_completed"
+  | "skill_mastery_achieved";
 
 // ============================================================================
 // DAILY CHALLENGE MODELS
@@ -92,10 +160,41 @@ export type ChallengeType =
   | "use_letters" // Use specific letters
   | "sequence_length" // Create X-beat sequence
   | "complete_concept" // Complete specific concept
-  | "explore_gallery" // Explore X sequences
+  | "explore_gallery" // Discover X sequences
   | "generation_challenge"; // Generate sequences with criteria
 
-export type ChallengeDifficulty = "beginner" | "intermediate" | "advanced";
+export type ChallengeDifficulty =
+  | "beginner"
+  | "intermediate"
+  | "advanced"
+  | "easy"
+  | "medium"
+  | "hard"
+  | "expert";
+
+/**
+ * Canonical difficulty ordering from easiest to hardest.
+ * Use this array for consistent sorting across the application.
+ * Maps both naming conventions (easy/medium/hard and beginner/intermediate/advanced)
+ */
+export const DIFFICULTY_ORDER: ChallengeDifficulty[] = [
+  "easy",
+  "beginner",
+  "medium",
+  "intermediate",
+  "hard",
+  "advanced",
+  "expert",
+];
+
+/**
+ * Get the sort index for a difficulty level.
+ * Lower index = easier difficulty.
+ */
+export function getDifficultySortIndex(difficulty: ChallengeDifficulty): number {
+  const index = DIFFICULTY_ORDER.indexOf(difficulty);
+  return index >= 0 ? index : DIFFICULTY_ORDER.length;
+}
 
 export interface DailyChallenge {
   id: string; // Date-based: e.g., "challenge_2025-11-01"
@@ -109,10 +208,26 @@ export interface DailyChallenge {
   expiresAt: Date; // End of day
 }
 
+/**
+ * Metadata for challenge requirements
+ */
+export interface ChallengeMetadata {
+  // For build_sequence type
+  requiredSequence?: string;
+  // For use_letters type
+  requiredLetters?: string[];
+  // For complete_concept type
+  conceptId?: string;
+  // For generation_challenge type
+  generationCriteria?: string;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface ChallengeRequirement {
   type: ChallengeType;
   target: number;
-  metadata?: Record<string, any>; // Challenge-specific data
+  metadata?: ChallengeMetadata; // Challenge-specific data
 }
 
 export interface UserChallengeProgress {
@@ -142,6 +257,24 @@ export interface UserStreak {
 // NOTIFICATION MODELS
 // ============================================================================
 
+/**
+ * Metadata for achievement notifications
+ */
+export interface NotificationData {
+  // For achievement type
+  achievementId?: string;
+  xpGained?: number;
+  // For level_up type
+  newLevel?: number;
+  milestoneTitle?: string;
+  // For challenge_complete type
+  challengeTitle?: string;
+  // For streak_milestone type
+  streakDays?: number;
+  // Generic additional properties
+  [key: string]: unknown;
+}
+
 export interface AchievementNotification {
   id: string;
   type: "achievement" | "level_up" | "challenge_complete" | "streak_milestone";
@@ -150,5 +283,5 @@ export interface AchievementNotification {
   icon?: string;
   timestamp: Date;
   isRead: boolean;
-  data?: Record<string, any>; // Additional notification data
+  data?: NotificationData; // Additional notification data
 }

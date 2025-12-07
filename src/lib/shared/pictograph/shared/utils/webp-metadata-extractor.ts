@@ -42,8 +42,9 @@ export class WebpMetadataExtractor {
       }
 
       // Parse and return the complete metadata structure
-      const parsed = JSON.parse(metadataJson);
-      return parsed.sequence || parsed;
+      const parsed = JSON.parse(metadataJson) as Record<string, unknown>;
+      const sequence = parsed["sequence"] as Record<string, unknown>[] | undefined;
+      return sequence ?? [parsed];
     } catch (error) {
       console.error("Error extracting WebP metadata:", error);
       throw error;
@@ -309,12 +310,23 @@ export class WebpMetadataExtractor {
   }> {
     try {
       const metadata = await this.extractMetadata(webpPath);
-      const firstMetadata = metadata[0] || {};
+      const firstMetadata = metadata[0];
+
+      if (!firstMetadata) {
+        return {
+          sequenceName,
+          beats: [],
+          sequenceLength: 0,
+        };
+      }
+
+      const beats = firstMetadata["beats"] as Record<string, unknown>[] | undefined;
+      const sequenceLength = firstMetadata["sequenceLength"] as number | undefined;
 
       return {
         sequenceName,
-        beats: (firstMetadata["beats"] as Record<string, unknown>[]) || [],
-        sequenceLength: (firstMetadata["sequenceLength"] as number) || 0,
+        beats: beats ?? [],
+        sequenceLength: sequenceLength ?? 0,
         ...firstMetadata, // Include all other metadata fields
       };
     } catch (error) {

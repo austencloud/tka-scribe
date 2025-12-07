@@ -19,8 +19,9 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade, fly } from "svelte/transition";
-  import { resolve, TYPES } from "$shared";
-  import type { IPlatformDetectionService } from "../services/contracts";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IPlatformDetectionService } from "../services/contracts/IPlatformDetectionService";
   import type { Platform, Browser } from "../config/pwa-install-instructions";
   import { getInstallInstructions } from "../config/pwa-install-instructions";
   import { createViewportMeasurement } from "../utils/viewport-measurement.svelte";
@@ -154,7 +155,7 @@
 
   /* Handle bar for swipe affordance */
   .sheet-handle {
-    width: 48px;
+    width: 52px;
     height: 5px;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 3px;
@@ -209,8 +210,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;

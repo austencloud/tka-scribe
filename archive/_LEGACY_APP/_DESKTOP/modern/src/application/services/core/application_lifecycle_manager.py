@@ -2,7 +2,7 @@
 Application Lifecycle Manager
 
 Pure service for managing application lifecycle and startup sequence.
-Extracted from KineticConstructorModern to follow single responsibility principle.
+Extracted from TKAStudioModern to follow single responsibility principle.
 
 PROVIDES:
 - Application initialization sequence
@@ -11,6 +11,7 @@ PROVIDES:
 - Screen detection and multi-monitor support
 - API server startup coordination
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

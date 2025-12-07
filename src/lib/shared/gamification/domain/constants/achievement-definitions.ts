@@ -5,7 +5,7 @@
  * These are the "templates" that users can unlock.
  */
 
-import type { Achievement } from "../models";
+import type { Achievement } from '../models/achievement-models';
 
 // ============================================================================
 // CREATOR ACHIEVEMENTS (Building Sequences)
@@ -225,6 +225,111 @@ const PRACTITIONER_ACHIEVEMENTS: Achievement[] = [
 ];
 
 // ============================================================================
+// TRAINER ACHIEVEMENTS (Training Challenges)
+// ============================================================================
+
+const TRAINER_ACHIEVEMENTS: Achievement[] = [
+  {
+    id: "first_challenge",
+    title: "Challenge Accepted",
+    description: "Complete your first training challenge",
+    category: "trainer",
+    tier: "bronze",
+    xpReward: 50,
+    icon: "fa-dumbbell",
+    requirement: {
+      type: "challenge_count",
+      target: 1,
+      metadata: { challengeType: "train" },
+    },
+  },
+  {
+    id: "challenge_5",
+    title: "Rising Trainee",
+    description: "Complete 5 training challenges",
+    category: "trainer",
+    tier: "silver",
+    xpReward: 125,
+    icon: "fa-fire",
+    requirement: {
+      type: "challenge_count",
+      target: 5,
+      metadata: { challengeType: "train" },
+    },
+  },
+  {
+    id: "challenge_15",
+    title: "Dedicated Trainer",
+    description: "Complete 15 training challenges",
+    category: "trainer",
+    tier: "gold",
+    xpReward: 300,
+    icon: "fa-trophy",
+    requirement: {
+      type: "challenge_count",
+      target: 15,
+      metadata: { challengeType: "train" },
+    },
+  },
+  {
+    id: "perfect_practice",
+    title: "Perfectionist",
+    description: "Complete a training session with 100% accuracy",
+    category: "trainer",
+    tier: "silver",
+    xpReward: 100,
+    icon: "fa-star",
+    requirement: {
+      type: "specific_action",
+      target: 1,
+      metadata: { action: "perfect_training_run" },
+    },
+  },
+  {
+    id: "combo_king",
+    title: "Combo King",
+    description: "Achieve a combo of 20 or more",
+    category: "trainer",
+    tier: "gold",
+    xpReward: 200,
+    icon: "fa-bolt",
+    requirement: {
+      type: "specific_action",
+      target: 1,
+      metadata: { action: "training_combo_20" },
+    },
+  },
+  {
+    id: "speed_demon",
+    title: "Speed Demon",
+    description: "Complete 5 sequences in Timed mode at 150 BPM",
+    category: "trainer",
+    tier: "gold",
+    xpReward: 250,
+    icon: "fa-stopwatch",
+    requirement: {
+      type: "specific_action",
+      target: 5,
+      metadata: { action: "timed_150bpm" },
+    },
+  },
+  {
+    id: "challenge_master",
+    title: "Challenge Master",
+    description: "Complete all available training challenges",
+    category: "trainer",
+    tier: "platinum",
+    xpReward: 500,
+    icon: "fa-crown",
+    requirement: {
+      type: "specific_action",
+      target: 1,
+      metadata: { action: "all_train_challenges_complete" },
+    },
+  },
+];
+
+// ============================================================================
 // EXPLORER ACHIEVEMENTS (Browsing Gallery)
 // ============================================================================
 
@@ -232,7 +337,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
   {
     id: "explore_10",
     title: "Window Shopping",
-    description: "Explore 10 sequences",
+    description: "Discover 10 sequences",
     category: "explorer",
     tier: "bronze",
     xpReward: 50,
@@ -245,7 +350,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
   {
     id: "explore_50",
     title: "Gallery Enthusiast",
-    description: "Explore 50 sequences",
+    description: "Discover 50 sequences",
     category: "explorer",
     tier: "silver",
     xpReward: 100,
@@ -258,7 +363,7 @@ const EXPLORER_ACHIEVEMENTS: Achievement[] = [
   {
     id: "explore_100",
     title: "Sequence Connoisseur",
-    description: "Explore 100 sequences",
+    description: "Discover 100 sequences",
     category: "explorer",
     tier: "gold",
     xpReward: 200,
@@ -324,6 +429,7 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   ...CREATOR_ACHIEVEMENTS,
   ...SCHOLAR_ACHIEVEMENTS,
   ...PRACTITIONER_ACHIEVEMENTS,
+  ...TRAINER_ACHIEVEMENTS,
   ...EXPLORER_ACHIEVEMENTS,
   ...GENERATION_ACHIEVEMENTS,
 ];

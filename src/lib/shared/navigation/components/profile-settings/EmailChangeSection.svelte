@@ -6,7 +6,7 @@
   Sends verification email to new address.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$shared";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     emailChangeState,
     uiState,
@@ -25,7 +25,8 @@
   let passwordError = $state("");
 
   function validateEmail() {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Email validation - requires valid format with proper TLD
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailChangeState.newEmail) {
       emailError = "Email is required";
       return false;
@@ -334,7 +335,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(12px, 1.8vh, 16px) clamp(20px, 3vw, 28px);
-    min-height: 48px;
+    min-height: 52px;
     border-radius: 10px;
     font-size: clamp(14px, 1.9vh, 17px);
     font-weight: 600;
@@ -345,7 +346,7 @@
 
   .email-change-section.compact .button {
     padding: 11px 20px;
-    min-height: 44px;
+    min-height: 52px;
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -353,7 +354,7 @@
 
   .email-change-section.very-compact .button {
     padding: 11px 18px;
-    min-height: 44px;
+    min-height: 52px;
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;

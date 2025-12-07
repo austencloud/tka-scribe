@@ -1,0 +1,139 @@
+<script lang="ts">
+  /**
+   * TransferConfirmDialog - Confirmation dialog for sequence transfer
+   * Renders as bottom sheet on mobile, modal dialog on desktop
+   */
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
+
+  let {
+    isOpen = $bindable(false),
+    isMobile = false,
+    onConfirm,
+    onCancel,
+  }: {
+    isOpen: boolean;
+    isMobile: boolean;
+    onConfirm: () => void;
+    onCancel: () => void;
+  } = $props();
+
+  function handleConfirm() {
+    onConfirm();
+    isOpen = false;
+  }
+
+  function handleCancel() {
+    onCancel();
+    isOpen = false;
+  }
+</script>
+
+{#if isMobile}
+  <!-- Mobile: Bottom Sheet -->
+  <Drawer {isOpen} onclose={handleCancel} ariaLabel="Replace Constructor Content?">
+    {#snippet children()}
+      <div class="transfer-confirmation-content">
+        <h3 class="confirmation-title">Replace Constructor Content?</h3>
+        <p class="confirmation-message">
+          The Constructor workspace already has content. Transferring this
+          sequence will replace it.
+        </p>
+        <div class="confirmation-actions">
+          <button class="cancel-button" onclick={handleCancel}>Cancel</button>
+          <button class="confirm-button" onclick={handleConfirm}>
+            Replace & Transfer
+          </button>
+        </div>
+      </div>
+    {/snippet}
+  </Drawer>
+{:else}
+  <!-- Desktop: Confirm Dialog -->
+  <ConfirmDialog
+    bind:isOpen
+    title="Replace Constructor Content?"
+    message="The Constructor workspace already has content. Transferring this sequence will replace it."
+    confirmText="Replace & Transfer"
+    cancelText="Cancel"
+    variant="warning"
+    onConfirm={handleConfirm}
+    onCancel={handleCancel}
+  />
+{/if}
+
+<style>
+  .transfer-confirmation-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+  }
+
+  .confirmation-title {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .confirmation-message {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .confirmation-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .confirmation-actions button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    min-width: 120px;
+  }
+
+  .cancel-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .cancel-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .confirm-button {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .confirm-button:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .confirmation-actions {
+      flex-direction: column;
+    }
+
+    .confirmation-actions button {
+      width: 100%;
+    }
+  }
+</style>

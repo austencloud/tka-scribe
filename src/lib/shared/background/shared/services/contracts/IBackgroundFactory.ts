@@ -5,7 +5,8 @@
  * Provides static methods for creating and managing background systems.
  */
 
-import type { BackgroundSystem, BackgroundType } from "$shared";
+import type { BackgroundSystem } from "../../domain/models/background-models";
+import type { BackgroundType } from "../../domain/enums/background-enums";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {
@@ -20,12 +21,12 @@ export interface IBackgroundFactory {
   /**
    * Create a background system with the specified parameters
    */
-  createBackgroundSystem(options: BackgroundFactoryParams): BackgroundSystem;
+  createBackgroundSystem(options: BackgroundFactoryParams): Promise<BackgroundSystem>;
 
   /**
    * Create an optimal background system with auto-detected quality
    */
-  createOptimalBackgroundSystem(): BackgroundSystem;
+  createOptimalBackgroundSystem(): Promise<BackgroundSystem>;
 
   /**
    * Check if a background type is supported on the current device

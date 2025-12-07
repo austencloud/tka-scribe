@@ -15,6 +15,7 @@ export enum ExploreFilterType {
   AUTHOR = "author",
   GRID_MODE = "gridMode",
   STARTING_POSITION = "startPosition",
+  END_POSITION = "endPosition",
   RECENT = "recent",
   FAVORITES = "favorites",
   ALL_SEQUENCES = "all_sequences",

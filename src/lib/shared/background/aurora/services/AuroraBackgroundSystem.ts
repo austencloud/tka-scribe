@@ -1,11 +1,11 @@
-import type { AccessibilitySettings } from "../../shared/domain/models/background-models";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
 import type {
   Dimensions,
   PerformanceMetrics,
   QualityLevel,
-} from "../../shared/domain/types/background-types";
-import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
-import type { LensFlare, Sparkle } from "../domain";
+} from "$lib/shared/background/shared/domain/types/background-types";
+import type { IBackgroundSystem } from "$lib/shared/background/shared/services/contracts/IBackgroundSystem";
+import type { LensFlare, Sparkle } from "../domain/models/aurora-models";
 
 export class AuroraBackgroundSystem implements IBackgroundSystem {
   private quality: QualityLevel = "medium";

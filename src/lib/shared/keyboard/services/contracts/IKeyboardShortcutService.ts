@@ -7,10 +7,7 @@
  * Domain: Keyboard Shortcuts
  */
 
-import type {
-  ShortcutContext,
-  ShortcutRegistrationOptions,
-} from "../../domain";
+import type { ShortcutContext, ShortcutRegistrationOptions } from '../../domain/types/keyboard-types';
 
 export interface IKeyboardShortcutService {
   /**
@@ -49,7 +46,7 @@ export interface IKeyboardShortcutService {
   disable(id: string): void;
 
   /**
-   * Set the current context (e.g., "create", "explore", etc.)
+   * Set the current context (e.g., "create", "discover", etc.)
    * @param context Current context
    */
   setContext(context: ShortcutContext): void;

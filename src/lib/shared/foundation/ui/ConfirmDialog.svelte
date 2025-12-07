@@ -13,8 +13,9 @@
 -->
 <script lang="ts">
   import { Dialog as DialogPrimitive } from "bits-ui";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   let {
@@ -40,8 +41,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -170,7 +171,7 @@
   }
 
   .icon {
-    font-size: 48px;
+    font-size: 50px;
     line-height: 1;
   }
 
@@ -184,8 +185,13 @@
     font-size: 24px;
     font-weight: 600;
     color: var(--text-color, #ffffff);
-    font-family: "Monotype Corsiva", cursive, serif;
-    font-style: italic;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
   }
 
   :global(.dialog-message) {

@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type {
-    IHapticFeedbackService,
-    IMobileFullscreenService,
-  } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
+  import type { IMobileFullscreenService } from "../mobile/services/contracts/IMobileFullscreenService";
+  import { resolve } from "../inversify/di";
+  import { TYPES } from "../inversify/types";
   import { onMount } from "svelte";
 
   let isFullscreen = $state(false);
@@ -159,8 +158,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 52px;
+    height: 52px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -210,8 +209,8 @@
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .fullscreen-button {
-      width: 44px;
-      height: 44px;
+      width: 52px;
+      height: 52px;
     }
   }
 
@@ -219,8 +218,10 @@
     .fullscreen-button {
       top: 12px;
       right: 12px;
-      width: 40px;
-      height: 40px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 
@@ -229,8 +230,10 @@
     .fullscreen-button {
       top: 8px;
       right: 8px;
-      width: 36px;
-      height: 36px;
+      width: 52px;
+      height: 52px;
+      min-width: 52px;
+      min-height: 52px;
     }
   }
 </style>

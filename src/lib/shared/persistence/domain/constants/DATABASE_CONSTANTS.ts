@@ -17,8 +17,10 @@ export const DATABASE_NAME = "TKADatabase";
 /**
  * Current database schema version
  * Version 2: Added gamification tables (achievements, XP, challenges, streaks, notifications)
+ * Version 3: Added weekly challenges and skill progressions
+ * Version 4: Added train module tables (performances, calibration profiles)
  */
-export const DATABASE_VERSION = 2;
+export const DATABASE_VERSION = 4;
 
 // ============================================================================
 // TABLE NAMES
@@ -38,6 +40,14 @@ export const TABLE_NAMES = {
   USER_CHALLENGE_PROGRESS: "userChallengeProgress",
   USER_STREAKS: "userStreaks",
   ACHIEVEMENT_NOTIFICATIONS: "achievementNotifications",
+  // Challenge extension tables (v3)
+  WEEKLY_CHALLENGES: "weeklyChallenges",
+  USER_WEEKLY_PROGRESS: "userWeeklyProgress",
+  SKILL_PROGRESSIONS: "skillProgressions",
+  USER_SKILL_PROGRESS: "userSkillProgress",
+  // Train module tables (v4)
+  TRAIN_PERFORMANCES: "trainPerformances",
+  TRAIN_CALIBRATION_PROFILES: "trainCalibrationProfiles",
 } as const;
 
 // ============================================================================
@@ -67,6 +77,20 @@ export const TABLE_INDEXES = {
     "++id, challengeId, userId, isCompleted, completedAt",
   [TABLE_NAMES.USER_STREAKS]: "++id, userId, currentStreak, longestStreak",
   [TABLE_NAMES.ACHIEVEMENT_NOTIFICATIONS]: "++id, type, timestamp, isRead",
+  // Challenge extension tables (v3)
+  [TABLE_NAMES.WEEKLY_CHALLENGES]:
+    "++id, weekNumber, year, [year+weekNumber], isActive, startDate, endDate",
+  [TABLE_NAMES.USER_WEEKLY_PROGRESS]:
+    "++id, challengeId, userId, [year+weekNumber], isCompleted, completedAt",
+  [TABLE_NAMES.SKILL_PROGRESSIONS]:
+    "++id, skillId, skillCategory, isActive, order",
+  [TABLE_NAMES.USER_SKILL_PROGRESS]:
+    "++id, skillId, userId, currentLevel, isCompleted, lastProgressAt",
+  // Train module tables (v4)
+  [TABLE_NAMES.TRAIN_PERFORMANCES]:
+    "++id, sequenceId, performedAt, grade, [sequenceId+performedAt], score.percentage",
+  [TABLE_NAMES.TRAIN_CALIBRATION_PROFILES]:
+    "++id, name, createdAt, isDefault",
 } as const;
 
 // ============================================================================

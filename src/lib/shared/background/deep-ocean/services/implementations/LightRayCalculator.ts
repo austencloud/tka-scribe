@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
-import type { Dimensions } from "$shared";
-import type { ILightRayCalculator } from "../contracts";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
+import type { ILightRayCalculator } from '../contracts/ILightRayCalculator';
 
 @injectable()
 export class LightRayCalculator implements ILightRayCalculator {

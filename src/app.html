@@ -4,6 +4,18 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%sveltekit.assets%/favicon.png" />
 
+    <!-- 🚀 GOLD STANDARD: Preconnect to external origins for faster requests -->
+    <link rel="preconnect" href="https://firebaseapp.com" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://www.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://accounts.google.com" crossorigin />
+    <link rel="preconnect" href="https://apis.google.com" crossorigin />
+
+    <!-- DNS prefetch for additional Google services -->
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com" />
+
     <!-- Viewport Configuration -->
     <meta
       name="viewport"
@@ -404,7 +416,8 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="%sveltekit.assets%/manifest.webmanifest" />
 
-    <!-- Font Awesome CSS -->
+    <!-- Font Awesome CSS with preload for critical font -->
+    <link rel="preload" href="/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/fontawesome/all.min.css" />
 
     <!-- Google Identity Services -->

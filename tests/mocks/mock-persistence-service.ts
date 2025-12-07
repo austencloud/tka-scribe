@@ -5,15 +5,13 @@
  * without actual IndexedDB dependencies.
  */
 
-import type {
-  AppSettings,
-  CompleteExploreState,
-  IPersistenceService,
-  PictographData,
-  SequenceData,
-  TabId,
-  UserProject,
-} from "$shared";
+import type { AppSettings } from "$lib/shared/settings/domain/models/app-settings-models";
+import type { CompleteExploreState } from "$lib/features/discover/shared/domain/models/discover-models";
+import type { IPersistenceService } from "$lib/shared/persistence/services/contracts/IPersistenceService";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { TabId } from "$lib/shared/navigation/domain/models/navigation-types";
+import type { UserProject } from "$lib/features/account/domain/models/library-models";
 import { injectable } from "inversify";
 
 @injectable()
@@ -141,7 +139,7 @@ export class MockPersistenceService implements IPersistenceService {
   }
 
   // ============================================================================
-  // Explore STATE PERSISTENCE
+  // Discover STATE PERSISTENCE
   // ============================================================================
 
   saveExploreState(state: CompleteExploreState): Promise<void> {

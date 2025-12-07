@@ -1,5 +1,6 @@
-import type { GridLocation, GridMode } from "$shared";
-import { type GridPointData, createGridPointData } from "$shared";
+import type { GridLocation, GridMode } from "../../../grid/domain/enums/grid-enums";
+import type { GridPointData } from "../../../grid/domain/models/grid-models";
+import { createGridPointData } from "../../../grid/utils/grid-coordinate-utils";
 
 /**
  * DefaultPropPositioner - Calculates default prop positions using grid coordinates
@@ -42,7 +43,7 @@ export class DefaultPropPositioner {
     const pointName = `${normalizedLocation}_${this.gridMode.valueOf()}_hand_point`;
     const gridPoint = this.getGridPoint(pointName);
 
-    if (gridPoint && gridPoint.coordinates) {
+    if (gridPoint?.coordinates) {
       return gridPoint.coordinates;
     } else {
       const fallback = this.getFallbackCoordinates(normalizedLocation);

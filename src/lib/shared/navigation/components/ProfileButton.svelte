@@ -5,11 +5,15 @@
   - Profile picture display or initial fallback
   - Opens profile settings sheet directly via route-based navigation
   - Haptic feedback on interaction
-  - 44px minimum touch target (WCAG AAA)
+  - 50px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+  import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
   import { onMount } from "svelte";
 
   // Props
@@ -25,11 +29,19 @@
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+    try {
+      sheetRouterService = await resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
+    } catch {
+      // Service not available
+    }
 
     // Debug auth state
     console.log("[ProfileButton] Auth state:", {
@@ -45,15 +57,8 @@
 
     // All variants now open Settings with Profile tab
     // Set the active tab to Profile before opening settings
-    import("../../settings/utils/tab-persistence.svelte").then(
-      ({ saveActiveTab }) => {
-        saveActiveTab("Profile");
-        // Then open the settings sheet
-        import("../utils/sheet-router").then(({ openSheet }) => {
-          openSheet("settings");
-        });
-      }
-    );
+    saveActiveTab("Profile");
+    sheetRouterService?.openSheet("settings");
   }
 </script>
 
@@ -117,13 +122,13 @@
 
 <style>
   /* ============================================================================
-     PROFILE BUTTON - 44px minimum (WCAG AAA)
+     PROFILE BUTTON - 50px minimum (WCAG AAA)
      ============================================================================ */
   .profile-button {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);
@@ -148,7 +153,7 @@
   }
 
   .profile-button.with-label.sidebar-collapsed {
-    width: 44px;
+    width: 52px;
     justify-content: center;
     padding: 0;
   }
@@ -169,10 +174,10 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -190,6 +195,18 @@
     min-width: 28px;
     min-height: 28px;
     font-size: 16px; /* Slightly smaller icon for compact layout */
+    position: relative;
+  }
+
+  /* Expand touch target while maintaining visual size */
+  .profile-button.with-label .profile-icon-wrapper::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 52px;
+    min-height: 52px;
   }
 
   /* Profile avatar image - minimal, no border for cleaner look */
@@ -280,7 +297,7 @@
 
   /* Collapsed sidebar - center icon only */
   .profile-button.variant-sidebar.sidebar-collapsed {
-    width: 44px;
+    width: 52px;
     justify-content: center;
     padding: 0;
   }
@@ -288,7 +305,7 @@
   /* ============================================================================
      RESPONSIVE DESIGN
      ============================================================================ */
-  /* Note: Button size stays 44px on all devices for accessibility (WCAG AAA) */
+  /* Note: Button size stays 50px on all devices for accessibility (WCAG AAA) */
 
   /* ============================================================================
      ACCESSIBILITY

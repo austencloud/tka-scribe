@@ -5,7 +5,8 @@
  * and device configuration management for the option picker component.
  */
 
-import { ContainerAspect, DeviceType, type DeviceConfig } from "$shared";
+import { ContainerAspect, DeviceType } from "../domain/enums/device-enums";
+import type { DeviceConfig } from "../domain/models/device-models";
 
 /**
  * Determines the device type based on container width and user agent

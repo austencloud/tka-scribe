@@ -6,7 +6,7 @@
  * Returns PropPlacementData that can be attached to PropPlacementData.
  */
 
-import { TYPES } from "$shared/inversify/types";
+import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";
 import { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";

@@ -1,19 +1,19 @@
 <!--
-Simple Background Canvas - No Context Dependencies
+Background Canvas with True Crossfade
 
-A simplified background canvas component that works directly with BackgroundFactory
-without the complex BackgroundContext system.
+Uses two canvas layers to achieve a real crossfade effect where both
+backgrounds are visible simultaneously during the transition.
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onDestroy, onMount } from "svelte";
   import type {
     BackgroundSystem,
-    BackgroundType,
     PerformanceMetrics,
-    QualityLevel,
-  } from "../domain";
-  import { BackgroundFactory } from "../services/implementations";
+  } from "../domain/models/background-models";
+  import type { BackgroundType } from "../domain/enums/background-enums";
+  import type { QualityLevel } from "../domain/types/background-types";
+  import { BackgroundFactory } from "../services/implementations/BackgroundFactory";
 
   // Props
   const {
@@ -36,53 +36,182 @@ without the complex BackgroundContext system.
     onPerformanceReport?: (metrics: PerformanceMetrics) => void;
   }>();
 
+  // Dual canvas system for true crossfade
+  let canvasA: HTMLCanvasElement;
+  let canvasB: HTMLCanvasElement;
+  let activeCanvas = $state<"A" | "B">("A");
+
+  // Background systems for each canvas
+  let systemA: BackgroundSystem | null = null;
+  let systemB: BackgroundSystem | null = null;
+  let animationIdA: number | null = null;
+  let animationIdB: number | null = null;
+
   // State
-  let canvas: HTMLCanvasElement;
   let isInitialized = $state(false);
-  let currentBackgroundSystem: BackgroundSystem | null = null;
-  let animationId: number | null = null;
+  let isTransitioning = $state(false);
   let resizeObserver: ResizeObserver | null = null;
+
+  // Track background types
+  let currentBackgroundType: BackgroundType | null = null;
+  let targetBackgroundType: BackgroundType | null = null;
 
   // Create background system when props change
   $effect(() => {
-    if (!browser || !canvas) {
+    if (!browser || !canvasA || !canvasB) {
       return;
     }
 
-    // Cleanup previous system
-    if (currentBackgroundSystem) {
-      stopAnimation(); // Stop animation before cleanup
-      currentBackgroundSystem.cleanup();
-      currentBackgroundSystem = null; // Clear reference immediately
+    const isFirstLoad = currentBackgroundType === null;
+    const typeChanged = currentBackgroundType !== backgroundType;
+    const alreadyTransitioningToThis = targetBackgroundType === backgroundType;
+
+    // Skip if we're already transitioning to this type or same type
+    if (alreadyTransitioningToThis || !typeChanged) {
+      return;
     }
 
-    // Clear the canvas immediately to remove any previous background elements
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // If currently transitioning, update target but don't interrupt
+    if (isTransitioning) {
+      targetBackgroundType = backgroundType;
+      return;
     }
 
-    // Create background system using BackgroundFactory (async)
-    BackgroundFactory.createBackgroundSystem({
-      type: backgroundType,
-      quality: quality,
-      initialQuality: quality,
+    // First load - initialize directly on canvas A
+    if (isFirstLoad) {
+      initializeFirstBackground(backgroundType, quality);
+      return;
+    }
+
+    // Type changed - do a true crossfade
+    console.log(
+      "🎨 [Canvas] Crossfade:",
+      currentBackgroundType,
+      "→",
+      backgroundType
+    );
+    targetBackgroundType = backgroundType;
+    performCrossfade(backgroundType, quality);
+  });
+
+  // Initialize the first background (no transition needed)
+  async function initializeFirstBackground(
+    type: BackgroundType,
+    bgQuality: QualityLevel
+  ) {
+    const canvas = canvasA;
+    const system = await BackgroundFactory.createBackgroundSystem({
+      type,
+      quality: bgQuality,
+      initialQuality: bgQuality,
       thumbnailMode,
       backgroundColor,
       gradientColors,
       gradientDirection,
-    }).then((system) => {
-      currentBackgroundSystem = system;
-      // Set up canvas dimensions properly
-      setupCanvasDimensions();
-      // Start animation with new system
-      startAnimation();
     });
-  });
 
-  // Animation loop
-  function startAnimation() {
-    if (!canvas || !currentBackgroundSystem) return;
+    systemA = system;
+    currentBackgroundType = type;
+    activeCanvas = "A";
+
+    setupCanvasDimensions(canvas);
+    system.initialize(
+      { width: canvas.width, height: canvas.height },
+      bgQuality
+    );
+    startAnimation("A");
+  }
+
+  // True crossfade: new background fades in on top of old
+  async function performCrossfade(
+    newType: BackgroundType,
+    bgQuality: QualityLevel
+  ) {
+    isTransitioning = true;
+
+    // Determine which canvas to use for the new background
+    const incomingCanvas = activeCanvas === "A" ? "B" : "A";
+    const canvas = incomingCanvas === "A" ? canvasA : canvasB;
+
+    // Create new background system on the inactive canvas
+    const newSystem = await BackgroundFactory.createBackgroundSystem({
+      type: newType,
+      quality: bgQuality,
+      initialQuality: bgQuality,
+      thumbnailMode,
+      backgroundColor,
+      gradientColors,
+      gradientDirection,
+    });
+
+    // Set up the new canvas and initialize the system
+    setupCanvasDimensions(canvas);
+    newSystem.initialize(
+      { width: canvas.width, height: canvas.height },
+      bgQuality
+    );
+
+    // Store the new system
+    if (incomingCanvas === "A") {
+      systemA = newSystem;
+    } else {
+      systemB = newSystem;
+    }
+
+    // Start the animation on the new canvas
+    startAnimation(incomingCanvas);
+
+    // CRITICAL: Wait for the new background to render at least one frame
+    // before starting the crossfade. This ensures both backgrounds are
+    // fully visible during the transition.
+    await new Promise((resolve) =>
+      requestAnimationFrame(() => {
+        requestAnimationFrame(resolve);
+      })
+    );
+
+    // NOW trigger the crossfade (both canvases animating simultaneously)
+    activeCanvas = incomingCanvas;
+
+    // Wait for CSS transition to complete (500ms)
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Cleanup the old system
+    if (incomingCanvas === "A") {
+      // We're now on A, so cleanup B
+      stopAnimation("B");
+      if (systemB) {
+        systemB.cleanup();
+        systemB = null;
+      }
+    } else {
+      // We're now on B, so cleanup A
+      stopAnimation("A");
+      if (systemA) {
+        systemA.cleanup();
+        systemA = null;
+      }
+    }
+
+    currentBackgroundType = newType;
+    isTransitioning = false;
+
+    // Check if target changed during transition
+    if (targetBackgroundType && targetBackgroundType !== newType) {
+      const nextType = targetBackgroundType;
+      targetBackgroundType = null;
+      performCrossfade(nextType, bgQuality);
+    } else {
+      targetBackgroundType = null;
+    }
+  }
+
+  // Animation loop for a specific canvas
+  function startAnimation(which: "A" | "B") {
+    const canvas = which === "A" ? canvasA : canvasB;
+    const system = which === "A" ? systemA : systemB;
+
+    if (!canvas || !system) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -90,154 +219,127 @@ without the complex BackgroundContext system.
     let lastTimestamp = 0;
 
     const animate = (timestamp: number) => {
-      if (!currentBackgroundSystem || !canvas) return;
+      const currentSystem = which === "A" ? systemA : systemB;
+      if (!currentSystem || !canvas) return;
 
-      // Calculate delta time and frame multiplier
       const deltaTime = timestamp - lastTimestamp;
       lastTimestamp = timestamp;
 
-      // Calculate frame multiplier to normalize animation speed across different refresh rates
-      // Target 60fps as baseline: frameMultiplier = actualFrameTime / targetFrameTime
-      // At 60fps: deltaTime ≈ 16.67ms, frameMultiplier ≈ 1.0
-      // At 144fps: deltaTime ≈ 6.94ms, frameMultiplier ≈ 0.42
-      // At 240fps: deltaTime ≈ 4.17ms, frameMultiplier ≈ 0.25
-      const targetFrameTime = 1000 / 60; // 16.67ms for 60fps
+      const targetFrameTime = 1000 / 60;
       const frameMultiplier = deltaTime > 0 ? deltaTime / targetFrameTime : 1.0;
 
-      // Use canvas internal dimensions, not getBoundingClientRect
       const dimensions = { width: canvas.width, height: canvas.height };
 
-      // Update and draw with frame multiplier for consistent animation speed
-      currentBackgroundSystem.update(dimensions, frameMultiplier);
+      currentSystem.update(dimensions, frameMultiplier);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      currentBackgroundSystem.draw(ctx, dimensions);
+      currentSystem.draw(ctx, dimensions);
 
-      // Report performance with actual FPS
-      if (onPerformanceReport) {
+      if (onPerformanceReport && which === activeCanvas) {
         const actualFPS = deltaTime > 0 ? Math.round(1000 / deltaTime) : 60;
         onPerformanceReport({ fps: actualFPS, warnings: [] });
       }
 
-      animationId = requestAnimationFrame(animate);
+      if (which === "A") {
+        animationIdA = requestAnimationFrame(animate);
+      } else {
+        animationIdB = requestAnimationFrame(animate);
+      }
     };
 
-    animationId = requestAnimationFrame(animate);
+    if (which === "A") {
+      animationIdA = requestAnimationFrame(animate);
+    } else {
+      animationIdB = requestAnimationFrame(animate);
+    }
   }
 
-  function stopAnimation() {
-    if (animationId) {
-      cancelAnimationFrame(animationId);
-      animationId = null;
+  function stopAnimation(which: "A" | "B") {
+    if (which === "A" && animationIdA) {
+      cancelAnimationFrame(animationIdA);
+      animationIdA = null;
+    } else if (which === "B" && animationIdB) {
+      cancelAnimationFrame(animationIdB);
+      animationIdB = null;
     }
   }
 
   // Mount lifecycle
   onMount(() => {
-    if (!browser || !canvas) return;
+    if (!browser || !canvasA || !canvasB) return;
 
-    // Set up ResizeObserver for smooth resize handling
+    // Set up ResizeObserver
     if (typeof ResizeObserver !== "undefined") {
-      resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          if (entry.target === canvas) {
-            handleResize();
-          }
-        }
+      resizeObserver = new ResizeObserver(() => {
+        handleResize();
       });
-      resizeObserver.observe(canvas);
+      resizeObserver.observe(canvasA);
     }
 
     isInitialized = true;
-    // Animation will be started by $effect after background system is created
     onReady?.();
   });
 
   // Cleanup
   onDestroy(() => {
-    stopAnimation();
-    if (currentBackgroundSystem) {
-      currentBackgroundSystem.cleanup();
-    }
-    if (resizeObserver) {
-      resizeObserver.disconnect();
-      resizeObserver = null;
-    }
+    stopAnimation("A");
+    stopAnimation("B");
+    systemA?.cleanup();
+    systemB?.cleanup();
+    resizeObserver?.disconnect();
   });
 
-  // Set up canvas dimensions to match display size
-  function setupCanvasDimensions() {
+  // Set up canvas dimensions
+  function setupCanvasDimensions(canvas: HTMLCanvasElement) {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const dimensions = { width: rect.width, height: rect.height };
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+  }
 
-    // Set canvas internal dimensions to match display dimensions
-    canvas.width = dimensions.width;
-    canvas.height = dimensions.height;
+  // Handle resize for both canvases
+  function handleResize() {
+    if (canvasA) {
+      const rect = canvasA.getBoundingClientRect();
+      const newDimensions = { width: rect.width, height: rect.height };
 
-    // Initialize background system with correct dimensions
-    if (currentBackgroundSystem) {
-      currentBackgroundSystem.initialize(dimensions, quality);
+      if (
+        canvasA.width !== newDimensions.width ||
+        canvasA.height !== newDimensions.height
+      ) {
+        canvasA.width = newDimensions.width;
+        canvasA.height = newDimensions.height;
+        canvasB.width = newDimensions.width;
+        canvasB.height = newDimensions.height;
 
-      // Immediately draw one frame to ensure background is visible
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        currentBackgroundSystem.draw(ctx, dimensions);
+        if (systemA) {
+          systemA.handleResize?.({ width: 0, height: 0 }, newDimensions);
+        }
+        if (systemB) {
+          systemB.handleResize?.({ width: 0, height: 0 }, newDimensions);
+        }
       }
     }
   }
-
-  // Handle resize - preserve existing content and smoothly adapt
-  function handleResize() {
-    if (!currentBackgroundSystem || !canvas) {
-      return;
-    }
-
-    const rect = canvas.getBoundingClientRect();
-    const newDimensions = { width: rect.width, height: rect.height };
-    const oldDimensions = { width: canvas.width, height: canvas.height };
-
-    // Only resize if dimensions actually changed
-    if (
-      newDimensions.width === oldDimensions.width &&
-      newDimensions.height === oldDimensions.height
-    ) {
-      return;
-    }
-
-    // Store current canvas content if we need to preserve it
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Update canvas size (this will clear the canvas)
-    canvas.width = newDimensions.width;
-    canvas.height = newDimensions.height;
-
-    // Use handleResize method if available, otherwise just update
-    if (currentBackgroundSystem.handleResize) {
-      currentBackgroundSystem.handleResize(oldDimensions, newDimensions);
-    } else {
-      // Fallback to update method
-      currentBackgroundSystem.update(newDimensions);
-    }
-
-    // Immediately draw one frame to prevent showing blank/fallback content
-    currentBackgroundSystem.draw(ctx, newDimensions);
-  }
 </script>
 
-<canvas
-  bind:this={canvas}
-  class="background-canvas"
-  class:initialized={isInitialized}
-  aria-label="Background animation"
->
-  <!-- Fallback for non-canvas browsers -->
-  <p>Background animation not supported</p>
-</canvas>
+<div class="background-container" class:initialized={isInitialized}>
+  <canvas
+    bind:this={canvasA}
+    class="background-canvas canvas-a"
+    class:active={activeCanvas === "A"}
+    aria-hidden="true"
+  ></canvas>
+  <canvas
+    bind:this={canvasB}
+    class="background-canvas canvas-b"
+    class:active={activeCanvas === "B"}
+    aria-hidden="true"
+  ></canvas>
+</div>
 
 <style>
-  .background-canvas {
+  .background-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -245,15 +347,30 @@ without the complex BackgroundContext system.
     height: 100%;
     z-index: -1;
     opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .background-container.initialized {
+    opacity: 1;
+  }
+
+  .background-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
     transition: opacity 0.5s ease-in-out;
   }
 
-  .background-canvas.initialized {
+  .background-canvas.active {
     opacity: 1;
   }
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
+    .background-container,
     .background-canvas {
       transition: none;
     }

@@ -1,4 +1,4 @@
-import type { GridLocation } from "$shared";
+import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import {
   allClockwisePairs,

@@ -6,23 +6,14 @@
  */
 
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../../../../inversify";
-import type { MotionData, PictographData } from "../../../../shared";
-import type { IArrowPositioningOrchestrator } from "../../../positioning/services";
-import type { IArrowRenderer } from "../../../rendering";
-import type {
-  ArrowAssets,
-  ArrowLifecycleResult,
-  ArrowPosition,
-  ArrowState,
-} from "../../domain";
-import {
-  createArrowAssets,
-  createArrowLifecycleResult,
-  createArrowPosition,
-  createArrowState,
-} from "../../domain";
-import type { IArrowLifecycleManager } from "../contracts";
+import { TYPES } from '../../../../../inversify/bootstrap';
+import type { PictographData } from "../../../../shared/domain/models/PictographData"
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import type { IArrowPositioningOrchestrator } from '../../../positioning/services/contracts/IArrowPositioningOrchestrator';
+import type { IArrowRenderer } from "../../../rendering/services/contracts/IArrowRenderer";
+import type { ArrowAssets, ArrowLifecycleResult, ArrowPosition, ArrowState } from '../../domain/arrow-models';
+import { createArrowAssets, createArrowLifecycleResult, createArrowPosition, createArrowState } from '../../domain/arrow-factories';
+import type { IArrowLifecycleManager } from '../contracts/IArrowLifecycleManager';
 
 @injectable()
 export class ArrowLifecycleManager implements IArrowLifecycleManager {

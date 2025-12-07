@@ -7,13 +7,13 @@
 
 import { Point } from "fabric";
 import { injectable, inject } from "inversify";
-import { TYPES } from "../../../../../inversify";
-import type { GridLocation } from "../../../../grid";
-import type { MotionData } from "../../../../shared";
-import { MotionType } from "../../../../shared";
-import type { IArrowLocationCalculator } from "../../../positioning";
-import type { IArrowQuadrantCalculator } from "../contracts";
-import type { IArrowAdjustmentProcessor } from "../contracts";
+import { TYPES } from '../../../../../inversify/bootstrap';
+import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import { MotionType } from "../../../../shared/domain/enums/pictograph-enums";
+import type { IArrowLocationCalculator } from "../../../positioning/calculation/services/contracts/IArrowLocationCalculator";
+import type { IArrowQuadrantCalculator } from '../contracts/IArrowQuadrantCalculator';
+import type { IArrowAdjustmentProcessor } from '../contracts/IArrowAdjustmentProcessor';
 
 @injectable()
 export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {
@@ -95,7 +95,7 @@ export class ArrowAdjustmentProcessor implements IArrowAdjustmentProcessor {
 
     const typeAdjustments = adjustmentMappings[motionType];
     if (typeAdjustments?.[turnsStr]) {
-      return typeAdjustments[turnsStr]!;
+      return typeAdjustments[turnsStr];
     }
 
     return new Point(0, 0);

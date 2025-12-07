@@ -5,11 +5,15 @@
  * Ports the exact functionality from desktop DefaultPlacementService.
  */
 
-import { GridMode, type MotionType } from "$shared";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
-import { jsonCache } from "../../../../../shared/services/implementations/SimpleJsonCache";
-import type { AllPlacementData, JsonPlacementData } from "../../domain";
-import type { IArrowPlacementService } from "../contracts";
+import { jsonCache } from "$lib/shared/pictograph/shared/services/implementations/SimpleJsonCache";
+import type { AllPlacementData, JsonPlacementData } from "../../domain/models/PlacementDataTypes";
+import type { IArrowPlacementService } from "../contracts/IArrowPlacementService";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const debug = createComponentLogger("ArrowPlacementService");
 
 @injectable()
 export class ArrowPlacementService implements IArrowPlacementService {
@@ -18,7 +22,8 @@ export class ArrowPlacementService implements IArrowPlacementService {
     [GridMode.BOX]: {},
   };
 
-  private isDataLoaded = false;
+  // Track which grid modes have been loaded (lazy loading by grid mode)
+  private loadedGridModes = new Set<GridMode>();
 
   // File mapping for placement data
   private readonly placementFiles: Record<string, Record<string, string>> = {
@@ -45,22 +50,48 @@ export class ArrowPlacementService implements IArrowPlacementService {
 
   /**
    * Load all placement data from JSON files
+   * @deprecated Use ensureGridModeLoaded() for lazy loading by grid mode
    */
   async loadPlacementData(): Promise<void> {
-    if (this.isDataLoaded) {
+    // Load both grid modes for backwards compatibility
+    await this.ensureGridModeLoaded(GridMode.DIAMOND);
+    await this.ensureGridModeLoaded(GridMode.BOX);
+  }
+
+  /**
+   * Ensure placement data is loaded for a specific grid mode (lazy loading)
+   * Only loads 5 files for the requested grid mode instead of all 10
+   */
+  async ensureGridModeLoaded(gridMode: GridMode): Promise<void> {
+    // For SKEWED mode, use diamond files
+    const actualGridMode =
+      gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
+
+    // Skip if already loaded
+    if (this.loadedGridModes.has(actualGridMode)) {
       return;
     }
 
+    // Log when we're loading a new grid mode (helps trace startup issues)
+    // Include stack trace to help identify what triggered the load
+    debug.log(`Loading ${actualGridMode} mode placement data (lazy load triggered)`);
+    if (actualGridMode === GridMode.BOX) {
+      debug.log(`BOX mode placement load triggered from:`, new Error().stack);
+    }
+
     try {
-      // Load diamond placements
-      await this.loadGridPlacements(GridMode.DIAMOND);
+      await this.loadGridPlacements(actualGridMode);
+      this.loadedGridModes.add(actualGridMode);
 
-      // Load box placements (may not exist yet)
-      await this.loadGridPlacements(GridMode.BOX);
-
-      this.isDataLoaded = true;
+      // Also mark SKEWED as loaded if we loaded DIAMOND
+      if (actualGridMode === GridMode.DIAMOND) {
+        this.loadedGridModes.add(GridMode.SKEWED);
+      }
     } catch (error) {
-      console.error("❌ Failed to load arrow placement data:", error);
+      console.error(
+        `❌ Failed to load ${actualGridMode} placement data:`,
+        error
+      );
       throw new Error(
         `Placement data loading failed: ${error instanceof Error ? error.message : "Unknown error"}`
       );
@@ -135,7 +166,7 @@ export class ArrowPlacementService implements IArrowPlacementService {
     turns: number | string,
     gridMode: GridMode = GridMode.DIAMOND
   ): Promise<{ x: number; y: number }> {
-    await this.ensureDataLoaded();
+    await this.ensureDataLoaded(gridMode);
 
     const gridPlacements = this.allPlacements[gridMode];
     if (!gridPlacements) {
@@ -171,7 +202,7 @@ export class ArrowPlacementService implements IArrowPlacementService {
     motionType: MotionType,
     gridMode: GridMode = GridMode.DIAMOND
   ): Promise<string[]> {
-    await this.ensureDataLoaded();
+    await this.ensureDataLoaded(gridMode);
 
     const motionPlacements = this.allPlacements[gridMode]?.[motionType];
     if (!motionPlacements) {
@@ -182,19 +213,25 @@ export class ArrowPlacementService implements IArrowPlacementService {
   }
 
   /**
-   * Check if data is loaded
+   * Check if data is loaded for a grid mode (or any grid mode if not specified)
    */
-  isLoaded(): boolean {
-    return this.isDataLoaded;
+  isLoaded(gridMode?: GridMode): boolean {
+    if (gridMode) {
+      const actualMode =
+        gridMode === GridMode.SKEWED ? GridMode.DIAMOND : gridMode;
+      return this.loadedGridModes.has(actualMode);
+    }
+    // For backwards compatibility, check if at least diamond is loaded
+    return this.loadedGridModes.has(GridMode.DIAMOND);
   }
 
   /**
-   * Ensure data is loaded before operations
+   * Ensure data is loaded for a specific grid mode (lazy loading)
    */
-  private async ensureDataLoaded(): Promise<void> {
-    if (!this.isDataLoaded) {
-      await this.loadPlacementData();
-    }
+  private async ensureDataLoaded(
+    gridMode: GridMode = GridMode.DIAMOND
+  ): Promise<void> {
+    await this.ensureGridModeLoaded(gridMode);
   }
 
   /**
@@ -236,7 +273,7 @@ export class ArrowPlacementService implements IArrowPlacementService {
     placementKey: string,
     gridMode: GridMode = GridMode.DIAMOND
   ): Promise<{ [turns: string]: [number, number] }> {
-    await this.ensureDataLoaded();
+    await this.ensureDataLoaded(gridMode);
 
     const motionPlacements = this.allPlacements[gridMode]?.[motionType];
     return motionPlacements?.[placementKey] || {};

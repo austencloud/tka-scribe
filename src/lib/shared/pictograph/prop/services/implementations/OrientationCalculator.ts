@@ -9,19 +9,19 @@
  */
 
 import {
-  createMotionData,
-  GridLocation,
   HandPath,
   MotionColor,
   MotionType,
   Orientation,
-  PropType,
   RotationDirection,
-  type BeatData,
-  type MotionData,
-} from "$shared";
+} from "../../../shared/domain/enums/pictograph-enums";
+import { createMotionData, type MotionData } from "../../../shared/domain/models/MotionData";
+import type { BeatData } from "../../../../../features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../../../features/create/shared/domain/models/StartPositionData";
 import { injectable } from "inversify";
 import type { IOrientationCalculator } from "../contracts/IOrientationCalculationService";
+import { GridLocation } from "../../../grid/domain/enums/grid-enums";
+import { PropType } from "../../domain/enums/PropType";
 
 @injectable()
 export class OrientationCalculator implements IOrientationCalculator {
@@ -240,8 +240,8 @@ export class OrientationCalculator implements IOrientationCalculator {
   /**
    * Update start orientations - returns updated beat data
    */
-  updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData): BeatData {
-    if (nextBeat.isBlank || lastBeat.isBlank) {
+  updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData | StartPositionData): BeatData {
+    if (nextBeat.isBlank || ('isBlank' in lastBeat && lastBeat.isBlank)) {
       throw new Error("Both beats must have motion data (not be blank)");
     }
 

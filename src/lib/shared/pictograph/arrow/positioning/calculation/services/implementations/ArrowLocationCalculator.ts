@@ -12,10 +12,12 @@
  * No UI dependencies, completely testable in isolation.
  */
 
-import type { IArrowLocationCalculator } from "$shared";
-import type { MotionData, PictographData } from "$shared";
-import { GridLocation, MotionType } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { IArrowLocationCalculator } from '../contracts/IArrowLocationCalculator';
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
+import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
+import { TYPES } from "../../../../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { DashLocationCalculator } from "./DashLocationCalculator";
 
@@ -91,22 +93,15 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Throws:
      *     Error: If dash motion requires pictograph data but none provided
      */
-    const motionType = motion.motionType.toLowerCase();
-
-    switch (motionType) {
-      case "static":
+    switch (motion.motionType) {
+      case MotionType.STATIC:
         return this.calculateStaticLocation(motion);
-      case "pro":
-      case "anti":
-      case "float":
+      case MotionType.PRO:
+      case MotionType.ANTI:
+      case MotionType.FLOAT:
         return this.calculateShiftLocation(motion);
-      case "dash":
+      case MotionType.DASH:
         return this.calculateDashLocation(motion, pictographData);
-      default:
-        console.warn(
-          `Unknown motion type: ${motionType}, using start location`
-        );
-        return motion.startLocation || GridLocation.NORTH;
     }
   }
 
@@ -122,7 +117,7 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Returns:
      *     The start location of the motion
      */
-    return motion.startLocation || GridLocation.NORTH;
+    return motion.startLocation;
   }
 
   private calculateShiftLocation(motion: MotionData): GridLocation {
@@ -138,19 +133,12 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Returns:
      *     Calculated location based on start/end pair mapping
      */
-    if (!motion.startLocation || !motion.endLocation) {
-      console.warn(
-        "Shift motion missing startLocation or endLocation, using startLocation"
-      );
-      return motion.startLocation || GridLocation.NORTH;
-    }
-
     const locationPairKey = this.createLocationPairKey([
       motion.startLocation,
       motion.endLocation,
     ]);
     const calculatedLocation =
-      this.shiftDirectionPairs[locationPairKey] || motion.startLocation;
+      this.shiftDirectionPairs[locationPairKey] ?? motion.startLocation;
 
     return calculatedLocation;
   }
@@ -175,13 +163,6 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Throws:
      *     Error: If pictograph data is required but not provided
      */
-    if (!pictographData) {
-      console.warn(
-        "No pictograph data provided for dash location calculation, using start location"
-      );
-      return motion.startLocation || GridLocation.NORTH;
-    }
-
     const isBlueArrow = this.isBlueArrowMotion(motion, pictographData);
 
     return this.dashLocationService.calculateDashLocationFromPictographData(
@@ -216,25 +197,11 @@ export class ArrowLocationCalculator implements IArrowLocationCalculator {
      * Returns:
      *     True if motion data is valid for location calculation
      */
-    if (!motion) {
+    if (!this.getSupportedMotionTypes().includes(motion.motionType)) {
       return false;
     }
 
-    const motionType = motion.motionType.toLowerCase();
-    if (!this.getSupportedMotionTypes().includes(motionType as MotionType)) {
-      return false;
-    }
-
-    // Validate required fields based on motion type
-    if (["pro", "anti", "float"].includes(motionType || "")) {
-      // Shift motions require both start and end locations
-      return motion.startLocation != null && motion.endLocation != null;
-    }
-    if (["static", "dash"].includes(motionType || "")) {
-      // Static and dash motions require at least start location
-      return motion.startLocation != null;
-    }
-
+    // All motion data fields are required per the MotionData interface
     return true;
   }
 

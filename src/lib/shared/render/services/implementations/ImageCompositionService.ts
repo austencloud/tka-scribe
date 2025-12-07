@@ -1,25 +1,37 @@
-/**
+ /**
  * Simple Image Composition Service
  *
  * Dead-simple approach: Render pictographs directly onto a single canvas.
  * No intermediate canvases, no complex calculations, just straightforward rendering.
  */
 
-import type { BeatData, PictographData, SequenceData } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
+import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
+import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import type { SequenceExportOptions } from "../../domain/models";
 import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
-import type {
-  IDimensionCalculationService,
-  ILayoutCalculationService,
-  ITextRenderingService,
-} from "../contracts";
-import {} from "../contracts";
-import type { IImageCompositionService } from "../contracts";
+import { simplifyRepeatedWord } from "../../utils/word-simplifier";
+
+import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
+import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
+import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
+import type { IImageCompositionService } from "../contracts/IImageCompositionService";
+import type { ILayoutCalculationService } from "../contracts/ILayoutCalculationService";
+import type { ITextRenderingService } from "../contracts/ITextRenderingService";
 
 @injectable()
 export class ImageCompositionService implements IImageCompositionService {
+  // Create instance directly to avoid DI module loading order issues
+  private readonly difficultyCalculator = new SequenceDifficultyCalculator();
+
+  // 🚀 PERF: Cache rendered pictograph images to avoid re-rendering identical pictographs
+  // Key: hash of pictograph data + size + beatNumber
+  // Value: rendered HTMLImageElement ready for canvas drawing
+  private readonly renderedImageCache = new Map<string, HTMLImageElement>();
+  private cacheHits = 0;
+  private cacheMisses = 0;
+
   constructor(
     @inject(TYPES.ILayoutCalculationService)
     private readonly layoutService: ILayoutCalculationService,
@@ -48,15 +60,37 @@ export class ImageCompositionService implements IImageCompositionService {
     );
 
     // Step 2: Calculate canvas dimensions including title space
-    const beatSize = options.beatSize || 120;
+    // Scale beatSize by beatScale to maintain proportions between grid and title areas
+    const baseBeatSize = options.beatSize || 120;
+    const beatSize = Math.floor(baseBeatSize * (options.beatScale || 1));
     const canvasWidth = columns * beatSize;
 
-    // Calculate title height if word should be included (using desktop-compatible logic)
-    const titleHeight =
-      options.addWord && sequence.word
-        ? this.calculateTitleHeight(beatCount, options.beatScale || 1)
+    // Derive word from beat letters if sequence.word is empty
+    // This ensures the word displays even when built dynamically in the create module
+    const rawWord =
+      sequence.word ||
+      sequence.beats
+        .filter((beat) => beat.letter)
+        .map((beat) => beat.letter)
+        .join("");
+
+    // Simplify repeated patterns (e.g., "ABCABCABC" → "ABC")
+    // This matches the behavior of the WordLabel component in the workspace
+    const derivedWord = simplifyRepeatedWord(rawWord);
+
+    // Calculate header height if word should be included
+    // Header is at the TOP of the image
+    const headerHeight =
+      options.addWord && derivedWord
+        ? this.calculateHeaderHeight(beatCount, options.beatScale || 1)
         : 0;
-    const canvasHeight = rows * beatSize + titleHeight;
+
+    // Calculate footer height if user info should be included
+    const footerHeight = options.addUserInfo
+      ? this.calculateFooterHeight(beatCount, options.beatScale || 1)
+      : 0;
+
+    const canvasHeight = rows * beatSize + headerHeight + footerHeight;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasWidth;
@@ -67,43 +101,28 @@ export class ImageCompositionService implements IImageCompositionService {
       throw new Error("Failed to get 2D context");
     }
 
-    // Step 3: Fill white background
+    // Step 3: Fill white background for the grid area (offset by header height)
+    // Note: Footer background is drawn by renderUserInfo with gray matching header style
     ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
 
-    // Step 4: Render title if enabled
-    if (options.addWord && sequence.word && titleHeight > 0) {
-      this.textRenderingService.renderWordText(
-        canvas,
-        sequence.word,
-        {
-          margin: options.margin || 0,
-          beatScale: options.beatScale || 1,
-        },
-        beatCount
-      ); // Pass beat count for proper font scaling
-    }
-
-    // Step 4.5: Render difficulty badge if enabled and title area exists
-    if (options.addDifficultyLevel && titleHeight > 0) {
-      this.renderDifficultyBadge(canvas, sequence, titleHeight);
-    }
-
-    // Step 5: Render each pictograph directly onto the canvas (offset by title height)
+    // Step 4: Render each pictograph directly onto the canvas (offset by header height)
     // Render start position if needed (always at column 0, row 0)
     if (options.includeStartPosition && sequence.startPosition) {
+      // Only pass beat number 0 if addBeatNumbers is true (shows "Start" text)
+      const startBeatNumber = options.addBeatNumbers ? 0 : undefined;
       await this.renderPictographAt(
         ctx,
         sequence.startPosition,
         0,
         0,
         beatSize,
-        0,
-        titleHeight
-      ); // beatNumber = 0 for start position
+        startBeatNumber,
+        headerHeight // Offset grid below header
+      );
     }
 
-    // Step 6: Render all beats in the grid (offset by title height)
+    // Step 5: Render all beats in the grid
     // Calculate how many beats per row based on the layout
     const startColumn = options.includeStartPosition ? 1 : 0;
     const beatsPerRow = columns - startColumn; // Available columns for beats
@@ -114,7 +133,8 @@ export class ImageCompositionService implements IImageCompositionService {
       // Calculate position: beats fill remaining columns, then wrap to next row
       const col = startColumn + (i % beatsPerRow);
       const row = Math.floor(i / beatsPerRow);
-      const beatNumber = i + 1; // Beat numbers start from 1
+      // Only pass beat number if addBeatNumbers is true
+      const beatNumber = options.addBeatNumbers ? i + 1 : undefined;
       await this.renderPictographAt(
         ctx,
         beat,
@@ -122,11 +142,11 @@ export class ImageCompositionService implements IImageCompositionService {
         row,
         beatSize,
         beatNumber,
-        titleHeight
+        headerHeight // Offset grid below header
       );
     }
 
-    // Step 7: Draw cell borders only between occupied cells (offset by title)
+    // Step 6: Draw cell borders only between occupied cells
     this.drawSmartCellBorders(
       ctx,
       columns,
@@ -134,14 +154,50 @@ export class ImageCompositionService implements IImageCompositionService {
       beatSize,
       sequence,
       options,
-      titleHeight
+      headerHeight // Offset grid below header
     );
+
+    // Step 7: Render header with word at the top
+    // The header has a level badge indicator (only if addDifficultyLevel is true)
+    if (options.addWord && derivedWord && headerHeight > 0) {
+      const difficultyLevel = this.getDifficultyLevel(sequence);
+      this.textRenderingService.renderWordHeader(
+        canvas,
+        derivedWord,
+        {
+          margin: options.margin || 0,
+          beatScale: options.beatScale || 1,
+        },
+        headerHeight,
+        difficultyLevel,
+        options.addDifficultyLevel // Only show badge if toggle is on
+      );
+    }
+
+    // Step 8: Render user info footer at the bottom
+    if (options.addUserInfo && footerHeight > 0) {
+      this.textRenderingService.renderUserInfo(
+        canvas,
+        {
+          userName: options.userName || "",
+          exportDate: options.exportDate || new Date().toISOString(),
+          notes: options.notes || "",
+        },
+        {
+          margin: options.margin || 10,
+          beatScale: options.beatScale || 1,
+        },
+        footerHeight, // Pass footer height for proper text positioning
+        beatCount     // Pass beat count for legacy-matching font sizing
+      );
+    }
 
     return canvas;
   }
 
   /**
    * Render a single pictograph directly onto the canvas at the specified grid position
+   * 🚀 PERF: Uses cache to avoid re-rendering identical pictographs
    */
   private async renderPictographAt(
     ctx: CanvasRenderingContext2D,
@@ -153,15 +209,35 @@ export class ImageCompositionService implements IImageCompositionService {
     titleOffset: number = 0
   ): Promise<void> {
     try {
-      // Generate SVG with beat number
-      const svgString = await renderPictographToSVG(
+      // 🚀 PERF: Generate cache key and check cache first
+      const cacheKey = this.generatePictographCacheKey(
         pictographData,
         beatSize,
         beatNumber
       );
 
-      // Convert SVG to image
-      const img = await this.svgStringToImage(svgString);
+      let img = this.renderedImageCache.get(cacheKey);
+
+      if (img) {
+        // Cache hit - use cached image directly (skip SVG rendering!)
+        this.cacheHits++;
+      } else {
+        // Cache miss - render SVG and cache the result
+        this.cacheMisses++;
+
+        // Generate SVG with beat number
+        const svgString = await renderPictographToSVG(
+          pictographData,
+          beatSize,
+          beatNumber
+        );
+
+        // Convert SVG to image
+        img = await this.svgStringToImage(svgString);
+
+        // Store in cache for future use
+        this.renderedImageCache.set(cacheKey, img);
+      }
 
       // Draw directly onto the canvas at the correct position (offset by title)
       const x = column * beatSize;
@@ -180,6 +256,75 @@ export class ImageCompositionService implements IImageCompositionService {
       ctx.textAlign = "center";
       ctx.fillText("Error", x + beatSize / 2, y + beatSize / 2);
     }
+  }
+
+  /**
+   * 🚀 PERF: Generate a unique cache key for a pictograph based on its visual content
+   * This allows identical pictographs to be rendered once and reused
+   */
+  private generatePictographCacheKey(
+    data: BeatData | PictographData,
+    beatSize: number,
+    beatNumber?: number
+  ): string {
+    // Extract the key visual properties that affect rendering
+    const keyParts: string[] = [];
+
+    // Size and beat number affect layout
+    keyParts.push(`size:${beatSize}`);
+    keyParts.push(`beat:${beatNumber ?? "none"}`);
+
+    // Letter/glyph
+    keyParts.push(`letter:${data.letter ?? "none"}`);
+
+    // Blue motion data (including propType and gridMode which affect rendering)
+    if (data.motions.blue) {
+      const blue = data.motions.blue;
+      keyParts.push(
+        `blue:${blue.motionType ?? ""}|${blue.startLocation ?? ""}|${blue.endLocation ?? ""}|${blue.turns ?? 0}|${blue.startOrientation ?? ""}|${blue.endOrientation ?? ""}|${blue.rotationDirection ?? ""}|${blue.propType ?? "staff"}|${blue.gridMode ?? "diamond"}`
+      );
+    } else {
+      keyParts.push("blue:none");
+    }
+
+    // Red motion data (including propType and gridMode which affect rendering)
+    if (data.motions.red) {
+      const red = data.motions.red;
+      keyParts.push(
+        `red:${red.motionType ?? ""}|${red.startLocation ?? ""}|${red.endLocation ?? ""}|${red.turns ?? 0}|${red.startOrientation ?? ""}|${red.endOrientation ?? ""}|${red.rotationDirection ?? ""}|${red.propType ?? "staff"}|${red.gridMode ?? "diamond"}`
+      );
+    } else {
+      keyParts.push("red:none");
+    }
+
+    return keyParts.join(":");
+  }
+
+  /**
+   * 🚀 PERF: Get cache statistics for debugging/monitoring
+   */
+  getCacheStats() {
+    return {
+      cacheSize: this.renderedImageCache.size,
+      cacheHits: this.cacheHits,
+      cacheMisses: this.cacheMisses,
+      hitRate:
+        this.cacheHits + this.cacheMisses > 0
+          ? (
+              (this.cacheHits / (this.cacheHits + this.cacheMisses)) *
+              100
+            ).toFixed(2) + "%"
+          : "0%",
+    };
+  }
+
+  /**
+   * 🚀 PERF: Clear the rendered image cache (useful for memory management)
+   */
+  clearCache(): void {
+    this.renderedImageCache.clear();
+    this.cacheHits = 0;
+    this.cacheMisses = 0;
   }
 
   /**
@@ -251,7 +396,7 @@ export class ImageCompositionService implements IImageCompositionService {
     const startColumn = options.includeStartPosition ? 1 : 0;
     const beatsPerRow = columns - startColumn;
 
-    for (let i = 0; i < (sequence.beats?.length || 0); i++) {
+    for (let i = 0; i < (sequence.beats.length || 0); i++) {
       const col = startColumn + (i % beatsPerRow);
       const row = Math.floor(i / beatsPerRow);
       occupied.add(`${col},${row}`);
@@ -298,13 +443,13 @@ export class ImageCompositionService implements IImageCompositionService {
   }
 
   /**
-   * Calculate title height based on beat count (matches desktop logic)
-   * This must match the calculation in TextRenderingService
+   * Calculate header height based on beat count
+   * Header is at the top of the image
+   * Matches legacy HeightDeterminer.determine_additional_heights()
    */
-  private calculateTitleHeight(beatCount: number, beatScale: number): number {
+  private calculateHeaderHeight(beatCount: number, beatScale: number): number {
     let baseHeight = 0;
 
-    // Match desktop logic exactly based on beat count
     if (beatCount === 0) {
       baseHeight = 0;
     } else if (beatCount === 1) {
@@ -316,72 +461,45 @@ export class ImageCompositionService implements IImageCompositionService {
       baseHeight = 300;
     }
 
-    // Apply beat scale
+    // Apply beat scale (matches legacy: int(additional_height_top * beat_scale))
     return Math.floor(baseHeight * beatScale);
   }
 
   /**
-   * Render difficulty badge in the title area
-   * Positioned in the top-right corner of the title area
+   * Calculate footer height for user info based on beat count
+   * Footer is at the bottom of the image - sized for legacy font sizes
+   * Legacy uses 50pt base font with 52px margin, so footer = font + margin + padding
    */
-  private renderDifficultyBadge(
-    canvas: HTMLCanvasElement,
-    sequence: SequenceData,
-    titleHeight: number
-  ): void {
-    // Get difficulty level from sequence
-    const difficultyLevel = this.getDifficultyLevel(sequence);
-    if (difficultyLevel === 0) {
-      return;
+  private calculateFooterHeight(beatCount: number, beatScale: number): number {
+    // Legacy sizing: margin + font height + some padding
+    // For 3+ beats: margin=50, font=50pt (~52px), so footer ≈ 100-110px
+    let baseHeight = 110; // For 50pt font + 52px margin (3+ beats)
+    if (beatCount <= 1) {
+      baseHeight = 50;    // For ~22pt font + 17px margin
+    } else if (beatCount === 2) {
+      baseHeight = 75;    // For ~33pt font + 25px margin
     }
 
-    // Calculate badge dimensions using desktop logic
-    const badgeArea =
-      this.dimensionCalculationService.calculateDifficultyBadgeArea(
-        titleHeight
-      );
-    if (!badgeArea.available) {
-      return;
-    }
-
-    // Position badge in top-right corner of title area
-    const x = canvas.width - badgeArea.size - badgeArea.inset;
-    const y = badgeArea.inset;
-
-    // Render the badge using TextRenderingService
-    this.textRenderingService.renderDifficultyBadge(
-      canvas,
-      difficultyLevel,
-      [x, y],
-      badgeArea.size
-    );
+    return Math.floor(baseHeight * beatScale);
   }
 
   /**
-   * Extract difficulty level from sequence data
-   * Returns numeric level (1-7) for badge rendering
+   * Calculate difficulty level from sequence beats
+   * Uses the SequenceDifficultyCalculator to analyze turns and orientations
    */
   private getDifficultyLevel(sequence: SequenceData): number {
-    // First try the numeric level property
+    // Use the difficulty calculator to analyze beats dynamically
+    if (sequence.beats && sequence.beats.length > 0) {
+      // Copy to mutable array for the calculator
+      return this.difficultyCalculator.calculateDifficultyLevel([...sequence.beats]);
+    }
+
+    // Fallback to stored level if no beats
     if (typeof sequence.level === "number" && sequence.level > 0) {
       return sequence.level;
     }
 
-    // Fall back to string difficultyLevel property
-    if (typeof sequence.difficultyLevel === "string") {
-      switch (sequence.difficultyLevel.toLowerCase()) {
-        case "beginner":
-          return 1;
-        case "intermediate":
-          return 3;
-        case "advanced":
-          return 5;
-        default:
-          return 1;
-      }
-    }
-
     // Default fallback
-    return 0; // No badge
+    return 1;
   }
 }

@@ -24,6 +24,9 @@ declare global {
       diamondData: string;
       boxData: string;
     };
+    // Web Speech API
+    SpeechRecognition?: typeof SpeechRecognition;
+    webkitSpeechRecognition?: typeof SpeechRecognition;
   }
 
   // Custom events
@@ -114,7 +117,8 @@ declare module "*.json" {
 
 // Svelte component types
 declare module "*.svelte" {
-  const component: import("svelte").ComponentType;
+  import type { ComponentType } from "svelte";
+  const component: ComponentType;
   export default component;
 }
 

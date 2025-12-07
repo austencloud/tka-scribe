@@ -1,13 +1,14 @@
 <!-- ShareActions.svelte - Share and download actions -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { SequenceData } from "$shared";
-  import type { IHapticFeedbackService } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import InstagramButton from "./InstagramButton.svelte";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
-  import { getInstagramLink } from "../domain";
-  import type { InstagramLink } from "../domain";
+  import { getInstagramLink } from "../domain/models/InstagramLink";
+  import type { InstagramLink } from "../domain/models/InstagramLink";
 
   let {
     currentSequence,
@@ -28,8 +29,8 @@
   // Instagram modal state
   let showInstagramModal = $state(false);
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });

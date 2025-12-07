@@ -7,28 +7,28 @@
  * USE THIS to fix cached difficulty levels after implementing the calculator!
  */
 
-import { resolve } from "$shared";
-import { TYPES } from "$shared/inversify/types";
-import type { IExploreCacheService } from "../../modules/explore/gallery/display/services/contracts/IExploreCacheService";
-import type { IOptimizedExploreService } from "../../modules/explore/shared/services/contracts/IOptimizedExploreService";
+import { resolve } from "../inversify/di";
+import { TYPES } from "../inversify/types";
+import type { IDiscoverCacheService } from "../../features/discover/gallery/display/services/contracts/IDiscoverCacheService";
+import type { IOptimizedDiscoverService } from "../../features/discover/shared/services/contracts/IOptimizedDiscoverService";
 
 export async function clearAllGalleryCaches(): Promise<void> {
   console.log("🧹 Clearing ALL gallery caches...");
 
   try {
-    // 1. Clear ExploreCacheService
-    const exploreCacheService = resolve<IExploreCacheService>(
-      TYPES.IExploreCacheService
+    // 1. Clear DiscoverCacheService
+    const exploreCacheService = resolve<IDiscoverCacheService>(
+      TYPES.IDiscoverCacheService
     );
     exploreCacheService.clearCache();
-    console.log("✅ Cleared ExploreCacheService");
+    console.log("✅ Cleared DiscoverCacheService");
 
-    // 2. Clear OptimizedExploreService
-    const optimizedService = resolve<IOptimizedExploreService>(
-      TYPES.IOptimizedExploreService
+    // 2. Clear OptimizedDiscoverService
+    const optimizedService = resolve<IOptimizedDiscoverService>(
+      TYPES.IOptimizedDiscoverService
     );
     optimizedService.clearCache();
-    console.log("✅ Cleared OptimizedExploreService");
+    console.log("✅ Cleared OptimizedDiscoverService");
 
     // 3. Clear IndexedDB/Dexie cache if it exists
     if ("indexedDB" in window) {
@@ -51,7 +51,7 @@ export async function clearAllGalleryCaches(): Promise<void> {
     const galleryKeys = Object.keys(localStorage).filter(
       (key) =>
         key.includes("gallery") ||
-        key.includes("explore") ||
+        key.includes("discover") ||
         key.includes("sequence")
     );
     galleryKeys.forEach((key) => localStorage.removeItem(key));
@@ -83,5 +83,5 @@ export async function clearAllGalleryCaches(): Promise<void> {
 
 // Make it available globally for easy console access
 if (typeof window !== "undefined") {
-  (window as any).__clearGalleryCache = clearAllGalleryCaches;
+  (window as unknown as Record<string, unknown>).__clearGalleryCache = clearAllGalleryCaches;
 }

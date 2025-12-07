@@ -6,9 +6,10 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { GoogleIcon, FacebookIcon } from "./icons";
-  import { GoogleIdentityService } from "$shared/auth";
+  import { GoogleIdentityService } from "../services/implementations/GoogleIdentityService";
   import { env } from "$env/dynamic/public";
+  import FacebookIcon from "./icons/FacebookIcon.svelte";
+  import GoogleIcon from "./icons/GoogleIcon.svelte";
 
   // Get Google OAuth Client ID from environment (runtime)
   const PUBLIC_GOOGLE_OAUTH_CLIENT_ID = env.PUBLIC_GOOGLE_OAUTH_CLIENT_ID;
@@ -139,7 +140,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 44px; /* WCAG minimum */
+    min-height: 52px; /* WCAG minimum */
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;
@@ -216,7 +217,7 @@
     }
 
     .social-compact-button {
-      min-height: 44px;
+      min-height: 52px;
       padding: 9px 12px;
       font-size: 13px;
       gap: 6px;

@@ -134,6 +134,67 @@ export function generateGlassMorphismTheme(
 }
 
 /**
+ * Matte (non-glass) theme tokens for 2026 bento style.
+ */
+export interface MatteTheme {
+  panelBg: string;
+  panelElevatedBg: string;
+  cardBg: string;
+  cardHoverBg: string;
+  accent: string;
+  accentStrong: string;
+  stroke: string;
+  strokeStrong: string;
+  text: string;
+  textDim: string;
+  shadow: string;
+  panelShadow: string;
+}
+
+function fallbackAccent(mode: ThemeMode, accentColor?: string): string {
+  if (accentColor) return accentColor;
+  return mode === "light" ? "#2563eb" : "#38bdf8";
+}
+
+export function generateMatteTheme(
+  mode: ThemeMode,
+  accentColor?: string
+): MatteTheme {
+  const accent = fallbackAccent(mode, accentColor);
+  if (mode === "light") {
+    return {
+      panelBg: "#f5f7fb",
+      panelElevatedBg: "#ffffff",
+      cardBg: "#ffffff",
+      cardHoverBg: "#f3f6fb",
+      accent,
+      accentStrong: accent,
+      stroke: "rgba(15, 23, 42, 0.08)",
+      strokeStrong: "rgba(15, 23, 42, 0.14)",
+      text: "#0f172a",
+      textDim: "rgba(15, 23, 42, 0.7)",
+      shadow: "0 12px 28px rgba(15, 23, 42, 0.12)",
+      panelShadow: "0 12px 28px rgba(15, 23, 42, 0.12)",
+    };
+  }
+
+  return {
+    panelBg: "#0b1021",
+    panelElevatedBg: "#0d1324",
+    cardBg: "#0f172a",
+    cardHoverBg: "#131c33",
+    accent,
+    accentStrong: mode === "dark" ? "#34d399" : accent,
+    stroke: "rgba(255, 255, 255, 0.08)",
+    strokeStrong: "rgba(255, 255, 255, 0.14)",
+    text: "rgba(255, 255, 255, 0.92)",
+    textDim: "rgba(255, 255, 255, 0.65)",
+    shadow: "0 14px 36px rgba(0, 0, 0, 0.4)",
+    panelShadow: "0 12px 28px rgba(0, 0, 0, 0.35)",
+  };
+}
+
+/**
  * Convert hex color to RGB string (for use in rgba())
  */
 function hexToRgb(hex: string): string {

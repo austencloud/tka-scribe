@@ -4,6 +4,7 @@ Modern generation control components for Modern Generate Tab.
 These components provide clean, modern UI controls for sequence generation
 parameters, following Modern's architecture patterns.
 """
+
 from __future__ import annotations
 
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -678,14 +679,14 @@ class ModernCAPTypeSelector(ModernControlBase):
             ("Strict Rotated", CAPType.STRICT_ROTATED),
             ("Strict Mirrored", CAPType.STRICT_MIRRORED),
             ("Strict Swapped", CAPType.STRICT_SWAPPED),
-            ("Strict Complementary", CAPType.STRICT_COMPLEMENTARY),
-            ("Swapped Complementary", CAPType.SWAPPED_COMPLEMENTARY),
-            ("Rotated Complementary", CAPType.ROTATED_COMPLEMENTARY),
+            ("Strict Complementary", CAPType.STRICT_INVERTED),
+            ("Swapped Complementary", CAPType.SWAPPED_INVERTED),
+            ("Rotated Complementary", CAPType.ROTATED_INVERTED),
             ("Mirrored Swapped", CAPType.MIRRORED_SWAPPED),
-            ("Mirrored Complementary", CAPType.MIRRORED_COMPLEMENTARY),
+            ("Mirrored Complementary", CAPType.MIRRORED_INVERTED),
             ("Rotated Swapped", CAPType.ROTATED_SWAPPED),
             ("Mirrored Rotated", CAPType.MIRRORED_ROTATED),
-            ("Mirrored Complementary Rotated", CAPType.MIRRORED_COMPLEMENTARY_ROTATED),
+            ("Mirrored Complementary Rotated", CAPType.MIRRORED_INVERTED_ROTATED),
         ]
 
         for name, cap_type in cap_types:

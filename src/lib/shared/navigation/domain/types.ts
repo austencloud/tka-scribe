@@ -4,6 +4,9 @@
  * Core types for the navigation system.
  */
 
+// Re-export TabId from foundation UI types for convenience
+export type { TabId } from "../../foundation/ui/UITypes";
+
 /**
  * Tab within a module
  * Represents a navigation tab within a specific module (e.g., "Construct" tab in Create module)
@@ -19,18 +22,19 @@ export interface Section {
 }
 
 // Module-based navigation types
+// Should match MODULE_DEFINITIONS in navigation-state.svelte.ts
 export type ModuleId =
+  | "dashboard"
   | "create"
-  | "explore"
-  | "community"
+  | "discover"
   | "learn"
-  | "collect"
-  | "animate"
-  | "about"
+  | "compose"
+  | "train"
   | "library"
-  | "write"
-  | "word_card"
-  | "admin";
+  | "feedback"
+  | "ml-training"
+  | "admin"
+  | "settings";
 
 /**
  * Module Definition
@@ -40,6 +44,7 @@ export interface ModuleDefinition {
   id: ModuleId;
   label: string;
   icon: string;
+  color?: string; // Module theme color (e.g., "#f59e0b" for amber)
   description?: string;
   isMain: boolean;
   sections: Section[]; // Sections within this module

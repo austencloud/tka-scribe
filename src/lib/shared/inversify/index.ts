@@ -259,3 +259,10 @@ export const resolveSyncUnsafe = <T>(serviceIdentifier: symbol): T => {
 
 // DEPRECATED: Use resolve() instead - kept for backward compatibility
 export const resolveAsync = resolve;
+
+// Re-export feature module loading functions and container from container
+export {
+  loadFeatureModule,
+  preloadFeatureModule,
+  container,
+} from "./container";

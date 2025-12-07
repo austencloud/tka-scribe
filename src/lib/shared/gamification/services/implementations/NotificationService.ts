@@ -22,9 +22,9 @@ import {
 import { auth, firestore } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserNotificationsPath } from "../../data/firestore-collections";
-import type { AchievementNotification } from "../../domain/models";
-import type { INotificationService } from "../contracts";
-import { getMilestoneForLevel } from "../../domain/constants";
+import type { AchievementNotification } from '../../domain/models/achievement-models';
+import type { INotificationService } from "../contracts/INotificationService";
+import { getMilestoneForLevel } from '../../domain/constants/xp-constants';
 import {
   addNotification,
   clearNotifications,
@@ -46,7 +46,7 @@ export class NotificationService implements INotificationService {
       id: `achievement_${achievementId}_${Date.now()}`,
       type: "achievement",
       title: "Achievement Unlocked!",
-      message: `${icon} ${title} (+${xpGained} XP)`,
+      message: `${title} (+${xpGained} XP)`,
       icon,
       timestamp: new Date(),
       isRead: false,
@@ -64,16 +64,16 @@ export class NotificationService implements INotificationService {
   async showLevelUp(newLevel: number, milestoneTitle?: string): Promise<void> {
     // Check for milestone rewards
     const milestone = getMilestoneForLevel(newLevel);
-    const title = milestone?.title || milestoneTitle;
+    const title = milestone?.title ?? milestoneTitle;
 
     const notification: AchievementNotification = {
       id: `level_${newLevel}_${Date.now()}`,
       type: "level_up",
       title: "Level Up!",
       message: title
-        ? `${milestone?.icon || "⭐"} Level ${newLevel}: ${title}`
+        ? `${milestone?.icon ?? "⭐"} Level ${newLevel}: ${title}`
         : `⭐ You've reached Level ${newLevel}!`,
-      icon: milestone?.icon || "⭐",
+      icon: milestone?.icon ?? "⭐",
       timestamp: new Date(),
       isRead: false,
       data: {

@@ -6,10 +6,10 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { ILeaderboardService } from "../../../modules/community/services/contracts/ILeaderboardService";
-import type { IEnhancedUserService } from "../../../modules/community/services/contracts/IEnhancedUserService";
-import { LeaderboardService } from "../../../modules/community/services/implementations/LeaderboardService";
-import { EnhancedUserService } from "../../../modules/community/services/implementations/EnhancedUserService";
+import type { ILeaderboardService } from "../../community/services/contracts/ILeaderboardService";
+import type { IUserService } from "../../community/services/contracts/IUserService";
+import { LeaderboardService } from "../../community/services/implementations/LeaderboardService";
+import { UserService } from "../../community/services/implementations/UserService";
 
 export const communityModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -19,10 +19,10 @@ export const communityModule = new ContainerModule(
       .to(LeaderboardService)
       .inSingletonScope();
 
-    // Enhanced User Service
+    // User Service (with follow functionality)
     options
-      .bind<IEnhancedUserService>(TYPES.IEnhancedUserService)
-      .to(EnhancedUserService)
+      .bind<IUserService>(TYPES.IUserService)
+      .to(UserService)
       .inSingletonScope();
 
     // TODO: Add CommunityStatsService when implemented

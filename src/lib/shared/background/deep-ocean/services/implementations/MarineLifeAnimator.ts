@@ -1,14 +1,14 @@
 import { inject, injectable } from "inversify";
-import type { Dimensions } from "$shared";
-import { TYPES } from "$shared/inversify/types";
+import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
+import { TYPES } from "../../../../inversify/types";
 import type {
   MarineLife,
   MarineLifeType,
   FishMarineLife,
   JellyfishMarineLife,
 } from "../../domain/models/DeepOceanModels";
-import type { IFishSpriteManager } from "../contracts";
-import type { IMarineLifeAnimator } from "../contracts";
+import type { IFishSpriteManager } from '../contracts/IFishSpriteManager';
+import type { IMarineLifeAnimator } from '../contracts/IMarineLifeAnimator';
 
 @injectable()
 export class MarineLifeAnimator implements IMarineLifeAnimator {
@@ -93,7 +93,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
     // Mark fish that need sprite update (created before sprites loaded)
     if (!image || sprite.name === "Default") {
-      (fish as any)._needsSpriteUpdate = true;
+      (fish as FishMarineLife & { _needsSpriteUpdate?: boolean })._needsSpriteUpdate = true;
     }
 
     return fish;
@@ -141,21 +141,21 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
 
       switch (marine.type) {
         case "fish": {
-          const fish = marine;
+          const fish = marine as FishMarineLife & { _needsSpriteUpdate?: boolean };
 
           // Update sprite if it wasn't loaded when fish was created
-          if ((fish as any)._needsSpriteUpdate) {
+          if (fish._needsSpriteUpdate) {
             const entry = this.fishSpriteManager.getAnyLoadedSpriteEntry();
             if (entry) {
               fish.image = entry.image;
               fish.sprite = entry.sprite;
               // Recalculate size based on actual sprite dimensions
-              const baseWidth = entry.image?.naturalWidth ?? 96;
-              const baseHeight = entry.image?.naturalHeight ?? 64;
+              const baseWidth = entry.image.naturalWidth;
+              const baseHeight = entry.image.naturalHeight;
               const scale = 0.35 + Math.random() * 0.25;
               fish.width = baseWidth * scale;
               fish.height = baseHeight * scale;
-              delete (fish as any)._needsSpriteUpdate;
+              delete fish._needsSpriteUpdate;
             }
           }
 
@@ -245,7 +245,7 @@ export class MarineLifeAnimator implements IMarineLifeAnimator {
         // Create new marine life
         if (spawn.type === "fish") {
           newMarineLife.push(this.createFish(dimensions));
-        } else if (spawn.type === "jellyfish") {
+        } else {
           newMarineLife.push(this.createJellyfish(dimensions));
         }
         // Remove processed spawn

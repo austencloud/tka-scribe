@@ -57,7 +57,7 @@ describe("Navigation Tabs Visibility Logic", () => {
     });
 
     it("should show creation method selector for first-time users NOT on creation tabs", () => {
-      const activeTab: string = "explore";
+      const activeTab: string = "discover";
       const hasSelectedCreationMethod = false;
 
       const isOnCreationMethodTab =
@@ -91,7 +91,7 @@ describe("Navigation Tabs Visibility Logic", () => {
 
     it("should not change flag when not on creation tab", () => {
       let hasSelectedCreationMethod = false;
-      const activeTab: string = "explore";
+      const activeTab: string = "discover";
 
       const isOnCreationMethodTab =
         activeTab === "guided" ||

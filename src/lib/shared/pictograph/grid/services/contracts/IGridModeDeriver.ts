@@ -4,7 +4,9 @@
  * Derives grid mode from motion data and computes grid data.
  */
 
-import type { GridData, GridMode, MotionData } from "$shared";
+import type { GridMode } from "../../domain/enums/grid-enums";
+import type { GridData } from "../../domain/models/grid-models";
+import type { MotionData } from "../../../shared/domain/models/MotionData";
 
 export interface IGridModeDeriver {
   /**

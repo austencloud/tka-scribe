@@ -1,0 +1,154 @@
+/**
+ * Create Module Type Definitions
+ *
+ * Centralized type definitions for CreateModule components and state.
+ * Extracted from inline types in ToolPanel.svelte for better maintainability.
+ */
+
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+import type { BeatData } from "../domain/models/BeatData";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
+import type {
+  UndoHistoryEntry,
+  UndoMetadata,
+} from "../services/contracts/IUndoService";
+import type { createCreateModuleState } from "../state/create-module-state.svelte";
+
+/**
+ * Create Module State type (actual state object from factory)
+ * We keep it flexible with an index signature for legacy accessors.
+ */
+export type ICreateModuleState = ReturnType<typeof createCreateModuleState> & {
+  setShowStartPositionPickerCallback?: (callback: () => void) => void;
+  setSyncPickerStateCallback?: (callback: () => void) => void;
+  setOnUndoingOptionCallback?: (callback: (isUndoing: boolean) => void) => void;
+  [key: string]: unknown;
+};
+
+// Legacy type alias for backward compatibility
+/** @deprecated Use ICreateModuleState instead */
+export type IBuildTabState = ICreateModuleState;
+
+/**
+ * Construct Tab State Interface
+ *
+ * State specific to the Construct sub-tab functionality.
+ */
+export interface IConstructTabState {
+  // Loading and error state
+  readonly isLoading: boolean;
+  readonly error: string | null;
+  readonly isTransitioning: boolean;
+  readonly hasError: boolean;
+
+  // Picker state
+  readonly canSelectOptions: boolean;
+  readonly showStartPositionPicker: boolean | null;
+  readonly shouldShowStartPositionPicker: () => boolean | null;
+  readonly isPickerStateLoading: boolean;
+
+  // Initialization state
+  readonly isInitialized: boolean;
+  readonly isPersistenceInitialized: boolean;
+
+  // Sequence state - each tab has its own independent sequence state
+  readonly sequenceState: import('../state/SequenceStateOrchestrator.svelte').SequenceState | null;
+
+  // Selection state
+  readonly selectedStartPosition: PictographData | null;
+
+  // Filter state
+  readonly isContinuousOnly: boolean;
+
+  // Services
+  readonly startPositionStateService: SimplifiedStartPositionState;
+
+  // State mutations
+  setLoading: (loading: boolean) => void;
+  setTransitioning: (transitioning: boolean) => void;
+  setError: (errorMessage: string | null) => void;
+  clearError: () => void;
+  setShowStartPositionPicker: (show: boolean | null) => void;
+  setSelectedStartPosition: (position: PictographData | null) => void;
+  setContinuousOnly: (continuous: boolean) => void;
+  clearSequenceCompletely: () => Promise<void>;
+  restorePickerStateAfterUndo: () => void;
+  syncPickerStateWithSequence: () => void;
+
+  // Event handlers
+  handleStartPositionSelected: (
+    pictographData: PictographData | null,
+    source?: "user" | "sync"
+  ) => void;
+
+  // Initialization
+  initializeConstructTab: () => Promise<void>;
+}
+
+/**
+ * Animation Panel State Interface
+ *
+ * State for animation panel collapse/expand and visibility.
+ */
+export interface IAnimationPanelState {
+  readonly isAnimationVisible: boolean;
+  readonly isAnimationCollapsed: boolean;
+  toggleAnimationCollapse: () => void;
+  setAnimationVisible: (visible: boolean) => void;
+}
+
+/**
+ * Animation State Reference Interface
+ *
+ * Shared reference between AnimationPanel and AnimateControls.
+ */
+export interface IAnimationStateRef {
+  isPlaying: boolean;
+  currentBeat: number;
+  totalBeats: number;
+  speed: number;
+  shouldLoop: boolean;
+  play: () => void;
+  stop: () => void;
+  jumpToBeat: (beat: number) => void;
+  setSpeed: (speed: number) => void;
+  setShouldLoop: (loop: boolean) => void;
+  nextBeat: () => void;
+  previousBeat: () => void;
+}
+
+/**
+ * Tool Panel Props Interface
+ *
+ * Props passed to ToolPanel component from parent CreateModule.
+ */
+export interface IToolPanelProps {
+  createModuleState: ICreateModuleState;
+  constructTabState: IConstructTabState;
+  onOptionSelected: (option: PictographData) => Promise<void>;
+  onPracticeBeatIndexChange?: (index: number | null) => void;
+  isSideBySideLayout?: () => boolean;
+  activeTab?: BuildModeId | null;
+  onTabChange?: (tab: BuildModeId) => void;
+  onOpenFilters?: () => void;
+  onCloseFilters?: () => void;
+  isFilterPanelOpen?: boolean;
+}
+
+/**
+ * Tool Panel Methods Interface
+ *
+ * Public methods exposed by ToolPanel component via ref binding.
+ */
+export interface IToolPanelMethods {
+  getAnimationStateRef: () => IAnimationStateRef;
+}
+
+/**
+ * Batch Edit Changes Interface
+ *
+ * Partial beat data changes that can be applied to multiple beats at once.
+ */
+export type BatchEditChanges = Partial<BeatData>;
+

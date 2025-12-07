@@ -7,79 +7,18 @@
  * This replaces the 460-line monolith with a clean, focused architecture.
  */
 
+import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
+import type { PerformanceSnapshot } from "../../foundation/ui/UITypes";
+import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
+import type { AppSettings } from "../../settings/domain/AppSettings";
+import { getIsInitialized, getIsInitializing, getInitializationError, resetInitializationState } from "./initialization-state.svelte";
+import { areServicesInitialized, getSettingsServiceSync } from "./services.svelte";
+import { initializeModulePersistence, preloadCachedModuleServices } from "./ui/module-state";
+import { getShowSettings, getIsFullScreen, getIsTransitioning, resetUIState } from "./ui/ui-state.svelte";
+
 // HMR Test Comment - This should trigger a full reload
 
-import type { AppSettings, PerformanceSnapshot } from "$shared";
-import { BackgroundType } from "../../background";
-import { GridMode } from "../../pictograph";
-import {
-  areServicesInitialized,
-  getSettingsServiceSync,
-} from "./services.svelte";
 
-export {
-  getInitializationComplete,
-  getInitializationError,
-  getInitializationProgress,
-  getIsInitialized,
-  getIsInitializing,
-  initializeAppState,
-  setInitializationError,
-  setInitializationProgress,
-  setInitializationState,
-} from "./initialization-state.svelte";
-
-export {
-  // Primary module API
-  getActiveModule,
-  getActiveModuleOrDefault,
-  isModuleActive,
-  setActiveModule,
-  // Legacy tab API (deprecated)
-  getActiveTab,
-  getActiveTabOrDefault,
-  isTabActive,
-  setActiveTab,
-  // UI state
-  getIsFullScreen,
-  getIsTransitioning,
-  getShowSettings,
-  getShowSpotlight,
-  getSpotlightSequence,
-  getSpotlightThumbnailService,
-  hideSettingsDialog,
-  closeSpotlightViewer,
-  setFullScreen,
-  showSettingsDialog,
-  openSpotlightViewer,
-  toggleSettingsDialog,
-} from "./ui/ui-state.svelte";
-
-export {
-  getInitialModuleFromCache,
-  initializeModulePersistence,
-  preloadCachedModuleServices,
-  switchModule,
-  // Legacy tab API (backwards compatibility)
-  switchModule as switchTab,
-} from "./ui/module-state";
-
-import {
-  getInitializationError,
-  getIsInitialized,
-  getIsInitializing,
-  resetInitializationState,
-} from "./initialization-state.svelte";
-import {
-  initializeModulePersistence as initializeModulePersistenceInternal,
-  preloadCachedModuleServices,
-} from "./ui/module-state";
-import {
-  getIsFullScreen,
-  getIsTransitioning,
-  getShowSettings,
-  resetUIState,
-} from "./ui/ui-state.svelte";
 
 // ============================================================================
 // SETTINGS
@@ -176,7 +115,7 @@ export async function restoreApplicationState(): Promise<void> {
     preloadCachedModuleServices();
 
     // Initialize module persistence and restore saved module
-    await initializeModulePersistenceInternal();
+    await initializeModulePersistence();
   } catch (error) {
     console.warn("⚠️ Failed to restore application state:", error);
     // Don't throw - app should work even if persistence fails
@@ -235,8 +174,8 @@ export function resetAppState(): void {
   resetMetrics();
 
   // Reset settings
-  // TODO: Implement resetToDefaults in ISettingsService interface
-  console.warn("resetToDefaults not implemented in ISettingsService");
+  // TODO: Implement resetToDefaults in ISettingsState interface
+  console.warn("resetToDefaults not implemented in ISettingsState");
 }
 
 // ============================================================================

@@ -4,32 +4,39 @@
   Footer with Terms of Service and Privacy Policy links
 -->
 <script lang="ts">
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
   import { onMount } from "svelte";
 
   // Services
   let hapticService: IHapticFeedbackService | null = null;
+  let sheetRouterService: ISheetRouterService | null = null;
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+    try {
+      sheetRouterService = resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
+    } catch {
+      // Service not available
+    }
   });
 
   function openTerms(e: Event) {
     e.preventDefault();
     hapticService?.trigger("selection");
-    import("../../navigation/utils/sheet-router").then(({ openSheet }) => {
-      openSheet("terms");
-    });
+    sheetRouterService?.openSheet("terms");
   }
 
   function openPrivacy(e: Event) {
     e.preventDefault();
     hapticService?.trigger("selection");
-    import("../../navigation/utils/sheet-router").then(({ openSheet }) => {
-      openSheet("privacy");
-    });
+    sheetRouterService?.openSheet("privacy");
   }
 </script>
 

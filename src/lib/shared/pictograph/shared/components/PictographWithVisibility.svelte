@@ -5,7 +5,8 @@ Extends the basic Pictograph component with sophisticated visibility controls
 matching the legacy desktop app's behavior.
 -->
 <script lang="ts">
-  import type { BeatData, PictographData } from "$shared";
+  import type { PictographData } from "../domain/models/PictographData";
+  import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
   import { onMount } from "svelte";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import Pictograph from "./Pictograph.svelte";
@@ -15,6 +16,7 @@ matching the legacy desktop app's behavior.
     beatData = null,
     enableVisibility = true,
     forceShowAll = false,
+    previewMode = false,
     onToggleTKA = undefined,
     onToggleVTG = undefined,
     onToggleElemental = undefined,
@@ -40,6 +42,8 @@ matching the legacy desktop app's behavior.
     enableVisibility?: boolean;
     /** Force show all elements (for visibility preview) */
     forceShowAll?: boolean;
+    /** Preview mode: show "off" elements at 50% opacity instead of hidden */
+    previewMode?: boolean;
     /** Toggle callbacks for interactive visibility */
     onToggleTKA?: () => void;
     onToggleVTG?: () => void;
@@ -70,37 +74,45 @@ matching the legacy desktop app's behavior.
     return undefined;
   });
 
-  // Compute visibility flags based on forceShowAll or global settings
-  // When forceShowAll is true (preview mode), show everything
-  // Otherwise, let Pictograph use global settings by passing undefined
+  // Compute visibility flags based on forceShowAll and previewMode
+  // - forceShowAll + previewMode: pass undefined to let Pictograph use global state
+  //   (previewMode handles showing "off" elements at 40% opacity)
+  // - forceShowAll + !previewMode: force everything visible
+  // - !forceShowAll: pass undefined to use global settings
   const showTKA = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined; // Let Pictograph use global visibility state
   });
 
   const showVTG = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showElemental = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showPositions = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showReversals = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   const showNonRadialPoints = $derived.by(() => {
     visibilityUpdateCount;
-    return forceShowAll ? true : undefined;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
   });
 
   // Use original pictograph data without mutation
@@ -119,18 +131,19 @@ matching the legacy desktop app's behavior.
   <!-- Base Pictograph Component with Visibility Props -->
   <Pictograph
     pictographData={effectivePictographData}
-    {...(showTKA !== undefined && { showTKA })}
-    {...(showVTG !== undefined && { showVTG })}
-    {...(showElemental !== undefined && { showElemental })}
-    {...(showPositions !== undefined && { showPositions })}
-    {...(showReversals !== undefined && { showReversals })}
-    {...(showNonRadialPoints !== undefined && { showNonRadialPoints })}
-    {...(onToggleTKA && { onToggleTKA })}
-    {...(onToggleVTG && { onToggleVTG })}
-    {...(onToggleElemental && { onToggleElemental })}
-    {...(onTogglePositions && { onTogglePositions })}
-    {...(onToggleReversals && { onToggleReversals })}
-    {...(onToggleNonRadial && { onToggleNonRadial })}
+    {previewMode}
+    {...showTKA !== undefined && { showTKA }}
+    {...showVTG !== undefined && { showVTG }}
+    {...showElemental !== undefined && { showElemental }}
+    {...showPositions !== undefined && { showPositions }}
+    {...showReversals !== undefined && { showReversals }}
+    {...showNonRadialPoints !== undefined && { showNonRadialPoints }}
+    {...onToggleTKA && { onToggleTKA }}
+    {...onToggleVTG && { onToggleVTG }}
+    {...onToggleElemental && { onToggleElemental }}
+    {...onTogglePositions && { onTogglePositions }}
+    {...onToggleReversals && { onToggleReversals }}
+    {...onToggleNonRadial && { onToggleNonRadial }}
   />
 </div>
 

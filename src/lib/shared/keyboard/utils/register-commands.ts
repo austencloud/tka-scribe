@@ -6,14 +6,15 @@
  * Domain: Keyboard Shortcuts - Command Registration
  */
 
-import type { ICommandPaletteService } from "../services/contracts";
+import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
-import { showSettingsDialog } from "$shared/application/state/ui/ui-state.svelte";
 import {
   handleModuleChange,
   getModuleDefinitions,
-} from "$shared/navigation-coordinator/navigation-coordinator.svelte";
-import { authStore } from "$shared/auth";
+} from "../../navigation-coordinator/navigation-coordinator.svelte";
+import { navigationState } from "../../navigation/state/navigation-state.svelte";
+import type { ModuleId } from "../../navigation/domain/types";
+import { authStore } from "../../auth/stores/authStore.svelte";
 
 export function registerCommandPaletteCommands(
   service: ICommandPaletteService,
@@ -55,7 +56,7 @@ export function registerCommandPaletteCommands(
       keywords: [module.label.toLowerCase(), module.id],
       available: true,
       action: async () => {
-        await handleModuleChange(module.id as any);
+        await handleModuleChange(module.id);
         state.closeCommandPalette();
       },
     });
@@ -64,16 +65,22 @@ export function registerCommandPaletteCommands(
   // ==================== Settings Commands ====================
 
   service.registerCommand({
-    id: "settings.open",
-    label: "Open Settings",
-    description: "Configure application settings",
+    id: "settings.toggle",
+    label: "Toggle Settings",
+    description: "Open settings or return to previous module",
     icon: "fa-cog",
     category: "Settings",
-    shortcut: state.isMac ? "⌘," : "Ctrl+Shift+,",
+    shortcut: state.isMac ? "⌘," : "Ctrl+,",
     keywords: ["settings", "preferences", "config", "options"],
     available: true,
-    action: () => {
-      showSettingsDialog();
+    action: async () => {
+      // Toggle behavior: if in settings, go back to previous module
+      if (navigationState.currentModule === "settings") {
+        const previousModule = navigationState.previousModule || "dashboard";
+        await handleModuleChange(previousModule as ModuleId);
+      } else {
+        await handleModuleChange("settings" as ModuleId);
+      }
       state.closeCommandPalette();
     },
   });

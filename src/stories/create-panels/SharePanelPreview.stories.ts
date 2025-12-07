@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/svelte";
 import SharePanelPreview from "./SharePanelPreview.svelte";
 
 const meta = {
-  title: "Create/Panels/SharePanel Preview",
+  title: "Create/Panels/ImageSharePanel Preview",
   component: SharePanelPreview as any,
   tags: ["autodocs"],
   parameters: {

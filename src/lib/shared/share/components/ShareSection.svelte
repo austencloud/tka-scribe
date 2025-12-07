@@ -1,7 +1,9 @@
 <!-- ShareSection.svelte - Share button component -->
 <script lang="ts">
-  import type { IHapticFeedbackService, SequenceData } from "$shared";
-  import { resolve, TYPES } from "$shared";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
 
   let {
@@ -25,8 +27,8 @@
   // Services
   let hapticService: IHapticFeedbackService;
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
+  onMount(async () => {
+    hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
   });
@@ -41,14 +43,14 @@
     if (navigator.share && navigator.canShare) {
       try {
         // Get the actual image blob from the share service
-        const shareService = resolve<any>(TYPES.IShareService);
+        const shareService = await resolve<any>(TYPES.IShareService);
         const blob = await shareService.getImageBlob(
           currentSequence,
           shareState.options
         );
 
         // Create a File object with optimal metadata for Android sharing
-        const filename = shareService.generateFilename(
+        const filename = await shareService.generateFilename(
           currentSequence,
           shareState.options
         );

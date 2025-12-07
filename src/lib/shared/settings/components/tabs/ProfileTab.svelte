@@ -1,28 +1,31 @@
 <!-- ProfileTab.svelte - User Profile & Account Settings -->
 <script lang="ts">
-  import { authStore } from "$shared/auth";
-  import { resolve, TYPES, type IHapticFeedbackService } from "$shared";
-  import type { IAuthService } from "$shared/auth";
+  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import { resolve, TYPES } from "../../../inversify/di";
+  import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
     uiState,
   } from "../../../navigation/state/profile-settings-state.svelte";
-  import UnifiedHeader from "$shared/settings/components/UnifiedHeader.svelte";
+  import UnifiedHeader from "../UnifiedHeader.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
-  import {
-    SocialAuthCompact,
-    EmailPasswordAuth,
-  } from "$shared/auth/components";
+
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
+  import EmailPasswordAuth from "../../../auth/components/EmailPasswordAuth.svelte";
 
   interface Props {
-    currentSettings?: Record<string, unknown>;
+    currentSettings?: unknown;
     onSettingUpdate?: (event: { key: string; value: unknown }) => void;
   }
 
-  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
+  let {
+    currentSettings: _currentSettings,
+    onSettingUpdate: _onSettingUpdate,
+  }: Props = $props();
 
   // Services
   let hapticService = $state<IHapticFeedbackService | null>(null);
@@ -113,31 +116,40 @@
     <div class="profile-section">
       <!-- Profile Card -->
       <div class="profile-card">
-        <!-- Profile Picture -->
-        <div class="profile-avatar">
-          {#if authStore.user.photoURL}
-            <img
-              src={authStore.user.photoURL}
-              alt={authStore.user.displayName || "User"}
-              class="avatar-image"
-            />
-          {:else}
-            <div class="avatar-placeholder">
-              {(authStore.user.displayName || authStore.user.email || "?")
-                .charAt(0)
-                .toUpperCase()}
-            </div>
-          {/if}
-        </div>
+        <div class="profile-top">
+          <!-- Profile Picture -->
+          <div class="profile-avatar">
+            {#if authStore.user.photoURL}
+              <img
+                src={authStore.user.photoURL}
+                alt={authStore.user.displayName || "User"}
+                class="avatar-image"
+                crossorigin="anonymous"
+                referrerpolicy="no-referrer"
+              />
+            {:else}
+              <div class="avatar-placeholder">
+                {(authStore.user.displayName || authStore.user.email || "?")
+                  .charAt(0)
+                  .toUpperCase()}
+              </div>
+            {/if}
+          </div>
 
-        <!-- User Info -->
-        <div class="profile-info">
-          {#if authStore.user.displayName}
-            <h3 class="profile-name">{authStore.user.displayName}</h3>
-          {/if}
-          {#if authStore.user.email}
-            <p class="profile-email">{authStore.user.email}</p>
-          {/if}
+          <!-- User Info -->
+          <div class="profile-info">
+            {#if authStore.user.displayName}
+              <h3 class="profile-name">{authStore.user.displayName}</h3>
+            {/if}
+            {#if authStore.user.email}
+              <p class="profile-email">{authStore.user.email}</p>
+            {/if}
+          </div>
+
+          <button class="sign-out-chip" onclick={handleSignOut}>
+            <i class="fas fa-sign-out-alt"></i>
+            Sign Out
+          </button>
         </div>
       </div>
 
@@ -169,12 +181,6 @@
         {/if}
       </div>
 
-      <!-- Sign Out Button -->
-      <button class="sign-out-button" onclick={handleSignOut}>
-        <i class="fas fa-sign-out-alt"></i>
-        Sign Out
-      </button>
-
       <!-- Account Deletion -->
       <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
     </div>
@@ -186,16 +192,23 @@
           <i class="fas fa-user-circle"></i>
         </div>
         <h3>Sign In to TKA Studio</h3>
-        <p>Save your progress, sync across devices, and access your creations.</p>
+        <p>
+          Save your progress, sync across devices, and access your creations.
+        </p>
       </div>
 
       <!-- Social Auth Buttons - Compact side-by-side layout -->
       <div class="auth-content">
-        <SocialAuthCompact mode={authMode} onFacebookAuth={handleFacebookAuth} />
+        <SocialAuthCompact
+          mode={authMode}
+          onFacebookAuth={handleFacebookAuth}
+        />
 
         <!-- Divider -->
         <div class="auth-divider">
-          <span>or {authMode === "signin" ? "sign in" : "sign up"} with email</span>
+          <span
+            >or {authMode === "signin" ? "sign in" : "sign up"} with email</span
+          >
         </div>
 
         <!-- Email/Password Auth -->
@@ -207,32 +220,98 @@
 
 <style>
   .profile-tab {
-    padding: 24px 16px;
+    padding: 3cqh 3cqw;
     max-width: 900px;
     margin: 0 auto;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  /* Compact layout when parent container height is limited */
+  @container settings-content (max-height: 600px) {
+    .profile-tab {
+      padding: 2cqh 2cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .profile-tab {
+      padding: 1.5cqh 1.5cqw;
+    }
   }
 
   .profile-section {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 3cqh;
+  }
+
+  @container settings-content (max-height: 600px) {
+    .profile-section {
+      gap: 2cqh;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .profile-section {
+      gap: 1.5cqh;
+    }
   }
 
   /* Profile Card */
   .profile-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    padding: 32px 24px;
+    gap: 2cqh;
+    padding: 3cqh 3cqw;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
+  @container settings-content (max-height: 600px) {
+    .profile-card {
+      gap: 1.5cqh;
+      padding: 2cqh 2cqw;
+    }
+
+    .profile-top {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: start;
+    }
+
+    .sign-out-chip {
+      grid-column: 2;
+      justify-self: start;
+      margin-top: 6px;
+    }
+  }
+
+  /* Mobile: Stack profile card elements on narrow screens */
+  @container settings-content (max-width: 452px) {
+    .profile-top {
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    .sign-out-chip {
+      grid-column: 1 / -1;
+      justify-self: center;
+      margin-top: 1.5cqh;
+    }
+  }
+
+  .profile-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1.5cqw;
+    align-items: center;
+  }
+
   .profile-avatar {
-    width: 96px;
-    height: 96px;
+    width: min(96px, 15cqh);
+    height: min(96px, 15cqh);
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid rgba(255, 255, 255, 0.2);
@@ -257,27 +336,59 @@
   }
 
   .profile-info {
-    text-align: center;
+    text-align: left;
   }
 
   .profile-name {
-    font-size: 24px;
+    font-size: clamp(18px, 3cqw, 24px);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     margin: 0 0 4px 0;
   }
 
   .profile-email {
-    font-size: 14px;
+    font-size: clamp(12px, 2cqw, 14px);
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
+  }
+
+  .sign-out-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6cqw;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      border-color 0.15s ease;
+    justify-self: end;
+  }
+
+  .sign-out-chip i {
+    font-size: 14px;
+  }
+
+  .sign-out-chip:hover {
+    transform: translateY(-1px);
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.15);
+  }
+
+  .sign-out-chip:active {
+    transform: translateY(0) scale(0.98);
   }
 
   /* Account Sections */
   .account-sections {
     display: flex;
     flex-direction: column;
-    gap: clamp(18px, 3vh, 24px);
+    gap: 2cqh;
   }
 
   /* Security Cards */
@@ -285,9 +396,15 @@
     width: 100%;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: clamp(12px, 2vh, 16px);
-    padding: clamp(18px, 3vh, 24px);
+    border-radius: 12px;
+    padding: 2cqh 2cqw;
     transition: all 0.2s ease;
+  }
+
+  @container settings-content (max-height: 600px) {
+    .security-card {
+      padding: 1.5cqh 1.5cqw;
+    }
   }
 
   .security-card:hover {
@@ -295,57 +412,41 @@
     border-color: rgba(255, 255, 255, 0.15);
   }
 
-  /* Sign Out Button */
-  .sign-out-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 14px 24px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 12px;
-    color: #ef4444;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .sign-out-button:hover {
-    background: rgba(239, 68, 68, 0.25);
-    border-color: rgba(239, 68, 68, 0.5);
-    transform: translateY(-1px);
-  }
-
-  .sign-out-button:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  .sign-out-button i {
-    font-size: 18px;
-  }
-
   /* Auth Section - Inline Auth */
   .auth-section {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding: 24px 16px;
+    gap: 3cqh;
+    padding: 3cqh 3cqw;
+    height: 100%;
+    justify-content: center;
+  }
+
+  @container settings-content (max-height: 600px) {
+    .auth-section {
+      gap: 2cqh;
+      padding: 2cqh 2cqw;
+    }
+  }
+
+  @container settings-content (max-height: 500px) {
+    .auth-section {
+      gap: 1.5cqh;
+      padding: 1cqh 1.5cqw;
+    }
   }
 
   .auth-header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 1.5cqh;
     text-align: center;
   }
 
   .prompt-icon {
-    width: 64px;
-    height: 64px;
+    width: min(64px, 10cqh);
+    height: min(64px, 10cqh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -359,19 +460,19 @@
   }
 
   .prompt-icon i {
-    font-size: 32px;
+    font-size: min(32px, 5cqh);
     color: rgba(99, 102, 241, 0.9);
   }
 
   .auth-header h3 {
-    font-size: 20px;
+    font-size: clamp(16px, 3cqw, 20px);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
   }
 
   .auth-header p {
-    font-size: 14px;
+    font-size: clamp(12px, 2cqw, 14px);
     color: rgba(255, 255, 255, 0.6);
     margin: 0;
     max-width: 400px;
@@ -382,10 +483,16 @@
   .auth-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    max-width: 400px;
+    gap: 2cqh;
+    max-width: min(400px, 90cqw);
     margin: 0 auto;
     width: 100%;
+  }
+
+  @container settings-content (max-height: 500px) {
+    .auth-content {
+      gap: 1.5cqh;
+    }
   }
 
   /* Auth Divider */
@@ -393,7 +500,7 @@
     display: flex;
     align-items: center;
     text-align: center;
-    margin: 4px 0;
+    margin: 0.5cqh 0;
   }
 
   .auth-divider::before,
@@ -404,34 +511,14 @@
   }
 
   .auth-divider span {
-    padding: 0 16px;
+    padding: 0 2cqw;
     color: rgba(255, 255, 255, 0.5);
-    font-size: 13px;
+    font-size: clamp(11px, 1.8cqw, 13px);
     font-weight: 500;
   }
 
-  /* Mobile Responsive */
-  @media (max-width: 480px) {
-    .profile-tab {
-      padding: 16px;
-    }
-
-    .security-card {
-      padding: 16px;
-    }
-  }
-
-  /* Desktop: Better sizing and spacing */
-  @media (min-width: 769px) {
-    .profile-tab {
-      padding: clamp(24px, 3vw, 32px) clamp(16px, 2vw, 24px);
-    }
-
-    .sign-out-button {
-      max-width: 280px;
-      margin: 0 auto;
-    }
-
+  /* Desktop: Constrain content width */
+  @container settings-content (min-width: 600px) {
     .auth-content {
       max-width: 440px;
     }
@@ -439,20 +526,14 @@
 
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .security-card,
-    .sign-out-button {
+    .security-card {
       transition: none;
-    }
-
-    .sign-out-button:hover {
-      transform: none;
     }
   }
 
   @media (prefers-contrast: high) {
     .profile-card,
-    .security-card,
-    .sign-out-button {
+    .security-card {
       border-width: 2px;
     }
 

@@ -15,12 +15,8 @@ import {
 import { firestore } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import { getUserAchievementsPath } from "../../../data/firestore-collections";
-import { ALL_ACHIEVEMENTS } from "../../../domain/constants";
-import type {
-  Achievement,
-  UserAchievement,
-  XPActionType,
-} from "../../../domain/models";
+import { ALL_ACHIEVEMENTS } from '../../../domain/constants/achievement-definitions';
+import type { Achievement, UserAchievement, XPActionType, XPEventMetadata } from '../../../domain/models/achievement-models';
 
 export class AchievementProgressManager {
   /**
@@ -33,15 +29,26 @@ export class AchievementProgressManager {
     > = {
       sequence_created: ["sequence_count", "letter_usage", "sequence_length"],
       sequence_generated: ["generation_count"],
+      sequence_published: ["specific_action"],
       concept_learned: ["concept_completion"],
       drill_completed: ["specific_action"],
       sequence_explored: ["gallery_exploration"],
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
+      training_session_completed: ["specific_action"],
+      perfect_training_run: ["specific_action"],
+      training_combo_20: ["specific_action"],
+      timed_150bpm: ["specific_action"],
+      train_challenge_completed: ["challenge_count", "specific_action"],
+      // Weekly challenges and skill progressions
+      weekly_challenge_completed: ["specific_action"],
+      weekly_challenge_bonus: ["specific_action"],
+      skill_level_completed: ["specific_action"],
+      skill_mastery_achieved: ["specific_action"],
     };
 
-    const relevantTypes = typeMapping[action] || [];
+    const relevantTypes = typeMapping[action];
 
     return ALL_ACHIEVEMENTS.filter((achievement) =>
       relevantTypes.includes(achievement.requirement.type)
@@ -54,7 +61,7 @@ export class AchievementProgressManager {
   calculateProgressDelta(
     achievement: Achievement,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): number {
     const req = achievement.requirement;
 
@@ -73,26 +80,34 @@ export class AchievementProgressManager {
 
       case "daily_streak":
         // Handled by StreakService, check metadata
-        return metadata?.["currentStreak"] === req.target ? req.target : 0;
+        return metadata?.currentStreak === req.target ? req.target : 0;
 
       case "letter_usage":
         // Check if sequence contains unique letters
-        if (action === "sequence_created" && metadata?.["letters"]) {
-          const uniqueLetters = new Set(metadata["letters"] as string[]);
+        if (action === "sequence_created" && metadata?.letters) {
+          const uniqueLetters = new Set(metadata.letters);
           return uniqueLetters.size >= req.target ? 1 : 0;
         }
         return 0;
 
       case "sequence_length":
         // Check if sequence meets length requirement
-        if (action === "sequence_created" && metadata?.["beatCount"]) {
-          return (metadata["beatCount"] as number) >= req.target ? 1 : 0;
+        if (action === "sequence_created" && metadata?.beatCount) {
+          return metadata.beatCount >= req.target ? 1 : 0;
         }
         return 0;
 
       case "specific_action":
-        // One-time achievements, triggered by specific metadata
-        return metadata?.["achievementId"] === achievement.id ? 1 : 0;
+        // One-time achievements, triggered by specific metadata or action
+        if (metadata?.achievementId === achievement.id) return 1;
+        if (req.metadata?.action && action === req.metadata.action) return 1;
+        return 0;
+
+      case "challenge_count":
+        if (action !== "train_challenge_completed") return 0;
+        const requiredType = req.metadata?.challengeType;
+        if (!requiredType) return 1;
+        return metadata?.challengeType === requiredType ? 1 : 0;
 
       default:
         return 0;
@@ -107,7 +122,7 @@ export class AchievementProgressManager {
     userId: string,
     achievement: Achievement,
     action: XPActionType,
-    metadata?: Record<string, any>
+    metadata?: XPEventMetadata
   ): Promise<boolean> {
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementDocRef = doc(
@@ -117,9 +132,7 @@ export class AchievementProgressManager {
 
     const achievementDoc = await getDoc(achievementDocRef);
     if (!achievementDoc.exists()) {
-      console.warn(
-        `⚠️ Achievement progress not found: ${achievement.id}`
-      );
+      console.warn(`⚠️ Achievement progress not found: ${achievement.id}`);
       return false;
     }
 

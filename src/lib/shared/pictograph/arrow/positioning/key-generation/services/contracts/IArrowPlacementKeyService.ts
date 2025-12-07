@@ -5,8 +5,9 @@
  * Simplified version of the desktop PlacementKeyGenerator logic.
  */
 
-import type { MotionType } from "$shared";
-import { type MotionData, type PictographData } from "$shared";
+import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
+import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 
 export interface IArrowPlacementKeyService {
   generatePlacementKey(

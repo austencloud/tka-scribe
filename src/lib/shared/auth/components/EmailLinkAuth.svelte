@@ -285,7 +285,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 44px;
+    min-height: 52px;
     box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
   }
 

@@ -1,0 +1,187 @@
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { IDiscoverThumbnailService } from "../../gallery/display/services/contracts/IDiscoverThumbnailService";
+import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
+import type { createExploreState } from "../state/discover-state-factory.svelte";
+import { openSpotlightViewer } from "../../../../shared/application/state/ui/ui-state.svelte";
+
+type ExploreState = ReturnType<typeof createExploreState>;
+
+interface ExploreHandlersParams {
+  galleryState: ExploreState;
+  setSelectedSequence: (sequence: SequenceData | null) => void;
+  setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
+  setError: (error: string | null) => void;
+  thumbnailService: IDiscoverThumbnailService;
+  sheetRouterService?: ISheetRouterService | null;
+}
+
+export function useDiscoverHandlers({
+  galleryState,
+  setSelectedSequence,
+  setDeleteConfirmationData,
+  setError,
+  thumbnailService,
+  sheetRouterService,
+}: ExploreHandlersParams) {
+  function handleSequenceSelect(sequence: SequenceData) {
+    setSelectedSequence(sequence);
+    galleryState.selectSequence(sequence);
+  }
+
+  async function handleSequenceAction(action: string, sequence: SequenceData) {
+    try {
+      switch (action) {
+        case "select":
+          handleSequenceSelect(sequence);
+          break;
+        case "view-detail":
+          handleViewDetail(sequence);
+          break;
+        case "delete":
+          handleSequenceDelete(sequence);
+          break;
+        case "favorite":
+          await galleryState.toggleFavorite(sequence.id);
+          break;
+        case "fullscreen":
+          handleSpotlightView(sequence);
+          break;
+        case "animate":
+          galleryState.openAnimationModal(sequence);
+          break;
+        default:
+          console.warn("⚠️ Unknown action:", action);
+      }
+    } catch (err: unknown) {
+      console.error("❌ Action failed:", err);
+      setError(
+        err instanceof Error ? err.message : `Failed to ${action} sequence`
+      );
+    }
+  }
+
+  function handleViewDetail(sequence: SequenceData) {
+    galleryPanelManager.openDetail(sequence);
+  }
+
+  function handleCloseDetailPanel() {
+    galleryPanelManager.close();
+  }
+
+  function handleEditSequence(sequence: SequenceData) {
+    try {
+      // Store the sequence data in localStorage for the Create module to pick up
+      localStorage.setItem(
+        "tka-pending-edit-sequence",
+        JSON.stringify(sequence)
+      );
+
+      // Close the detail panel if open
+      handleCloseDetailPanel();
+
+      // Navigate to Create module's construct tab
+      navigationState.setCurrentModule("create");
+      navigationState.setCurrentSection("construct");
+
+      console.log("🖊️ Navigating to edit sequence:", sequence.id);
+    } catch (err: unknown) {
+      console.error("❌ Failed to initiate edit:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to open sequence for editing"
+      );
+    }
+  }
+
+  async function handleDetailPanelAction(
+    action: string,
+    sequence: SequenceData
+  ) {
+    // Handle actions from the detail panel
+    switch (action) {
+      case "play":
+      case "animate":
+        galleryState.openAnimationModal(sequence);
+        break;
+      case "fullscreen":
+        handleSpotlightView(sequence);
+        break;
+      case "favorite":
+        await galleryState.toggleFavorite(sequence.id);
+        break;
+      case "edit":
+        handleEditSequence(sequence);
+        break;
+      case "delete":
+        handleSequenceDelete(sequence);
+        handleCloseDetailPanel(); // Close panel before showing delete dialog
+        break;
+      default:
+        console.warn("⚠️ Unknown detail panel action:", action);
+    }
+  }
+
+  function handleSequenceDelete(sequence: SequenceData) {
+    setDeleteConfirmationData({
+      sequence: sequence,
+      relatedSequences: [],
+      totalCount: 1,
+    });
+  }
+
+  function handleSpotlightView(sequence: SequenceData) {
+    openSpotlightViewer(sequence, thumbnailService);
+
+    // Also update URL for sharing/bookmarking
+    sheetRouterService?.openSpotlight(sequence.id);
+  }
+
+  async function handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null) {
+    if (!deleteConfirmationData?.sequence) return;
+
+    try {
+      // TODO: Implement actual delete logic
+      const sequence = deleteConfirmationData.sequence as Record<string, unknown>;
+      console.log("🗑️ Deleting sequence:", sequence.id);
+      setDeleteConfirmationData(null);
+      // Refresh the sequence list
+      await galleryState.loadAllSequences();
+    } catch (err: unknown) {
+      console.error("❌ Delete failed:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to delete sequence"
+      );
+    }
+  }
+
+  function handleDeleteCancel() {
+    setDeleteConfirmationData(null);
+  }
+
+  function handleErrorDismiss() {
+    setError(null);
+  }
+
+  function handleRetry() {
+    setError(null);
+    galleryState.loadAllSequences();
+  }
+
+  return {
+    handleSequenceSelect,
+    handleSequenceAction,
+    handleViewDetail,
+    handleCloseDetailPanel,
+    handleEditSequence,
+    handleDetailPanelAction,
+    handleSequenceDelete,
+    handleSpotlightView,
+    handleDeleteConfirm,
+    handleDeleteCancel,
+    handleErrorDismiss,
+    handleRetry,
+  };
+}

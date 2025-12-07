@@ -5,6 +5,7 @@
   This wrapper intercepts dependency injection calls and returns mock services.
 -->
 <script lang="ts">
+import type { IHapticFeedbackService } from "../../lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount, setContext } from "svelte";
 
   // Mock services for PWA components

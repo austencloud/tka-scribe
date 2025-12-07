@@ -5,7 +5,7 @@
   Displays upload progress, status messages, and success/error states.
 -->
 <script lang="ts">
-  import type { InstagramPostStatus } from "../domain";
+  import type { InstagramPostStatus } from "../domain/models/InstagramMedia";
 
   let {
     status,
@@ -353,8 +353,8 @@
     }
 
     .status-icon {
-      width: 56px;
-      height: 56px;
+      width: 52px;
+      height: 52px;
     }
 
     .status-icon i {

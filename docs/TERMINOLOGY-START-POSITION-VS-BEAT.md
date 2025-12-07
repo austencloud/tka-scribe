@@ -15,6 +15,7 @@ Throughout the codebase, there's confusion between **start positions** and **bea
 ```
 
 **Start Position**:
+
 - Where the performer begins
 - Shows initial prop locations and orientations
 - NOT part of the sequence
@@ -23,6 +24,7 @@ Throughout the codebase, there's confusion between **start positions** and **bea
 - Sometimes called "start tile" or "start position tile" (CORRECT!)
 
 **Beats**:
+
 - The actual movements in the sequence
 - Numbered 1, 2, 3, ...
 - What gets counted when you say "this is a 10-beat sequence"
@@ -39,13 +41,14 @@ export interface SequenceData {
   readonly beats: readonly BeatData[];
 
   // THREE different fields for start position! 😱
-  readonly startingPositionBeat?: BeatData;     // "beat" is wrong term
+  readonly startingPositionBeat?: BeatData; // "beat" is wrong term
   readonly startingPositionGroup?: GridPositionGroup;
-  readonly startPosition?: BeatData;            // Also calls it "beat"
+  readonly startPosition?: BeatData; // Also calls it "beat"
 }
 ```
 
 **Issues**:
+
 - Uses `BeatData` type for start position (should be different type)
 - Three different optional fields - unclear which to use
 - Field names use both "beat" and "position" inconsistently
@@ -71,16 +74,17 @@ In `sequence-url-encoder.ts:120-126`:
 
 ```typescript
 // Check if beat 0 exists in the beats array (Generator puts start position at beats[0])
-const beat0 = sequence.beats.find(b => b.beatNumber === 0);
+const beat0 = sequence.beats.find((b) => b.beatNumber === 0);
 
 if (beat0) {
   // Generator format: start position is in beats array at index 0
   startPositionBeat = beat0;
-  actualBeats = sequence.beats.filter(b => b.beatNumber !== 0);
+  actualBeats = sequence.beats.filter((b) => b.beatNumber !== 0);
 }
 ```
 
 **Issues**:
+
 - beatNumber=0 is used to represent start position
 - Start position gets mixed into beats array
 - Have to filter it out: "actual beats" vs "beats including start position"
@@ -113,7 +117,7 @@ export interface BeatGridConfig {
   columns: number;
 
   /** Whether to reserve the first column for the Start Position tile */
-  hasStartTile: boolean;  // ← Good! Uses "tile" not "beat"
+  hasStartTile: boolean; // ← Good! Uses "tile" not "beat"
 }
 ```
 
@@ -195,14 +199,14 @@ for (let i = 0; i < beats.length; i++) {
 
 ### 5. Terminology Standards
 
-| Concept | ✅ CORRECT Terms | ❌ AVOID |
-|---------|-----------------|----------|
-| Where user starts | "start position", "start tile", "starting position" | "beat 0", "start beat", "first beat" |
-| Motion in sequence | "beat", "sequence beat" | N/A |
-| All beats in sequence | "sequence beats", "beats" | "all beats including start" |
-| Count of beats | "10 beats", "sequence length: 10" | "10 beats + start position" |
-| Start position display | "start position tile", "start tile" | "beat 0 tile" |
-| Beat numbering | "beats 1-10" | "beats 0-9" |
+| Concept                | ✅ CORRECT Terms                                    | ❌ AVOID                             |
+| ---------------------- | --------------------------------------------------- | ------------------------------------ |
+| Where user starts      | "start position", "start tile", "starting position" | "beat 0", "start beat", "first beat" |
+| Motion in sequence     | "beat", "sequence beat"                             | N/A                                  |
+| All beats in sequence  | "sequence beats", "beats"                           | "all beats including start"          |
+| Count of beats         | "10 beats", "sequence length: 10"                   | "10 beats + start position"          |
+| Start position display | "start position tile", "start tile"                 | "beat 0 tile"                        |
+| Beat numbering         | "beats 1-10"                                        | "beats 0-9"                          |
 
 ## Files That Need Updates
 
@@ -242,16 +246,19 @@ for (let i = 0; i < beats.length; i++) {
 Since this touches core data structures, we should migrate gradually:
 
 ### Phase 1: Documentation & Comments (Safe - Do Now)
+
 - Update all comments and documentation
 - Fix test output messages
 - Create this terminology guide
 
 ### Phase 2: Non-Breaking Code Changes (Safe - Do Soon)
+
 - Add `StartPositionData` type alongside existing fields
 - Add helper functions that use correct terminology
 - Deprecate old field names with JSDoc `@deprecated` tags
 
 ### Phase 3: Breaking Changes (Requires Migration - Do Later)
+
 - Remove duplicate start position fields
 - Make `startPosition` required (not optional)
 - Enforce beatNumber >= 1 (never 0)

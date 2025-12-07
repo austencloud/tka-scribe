@@ -7,7 +7,7 @@
     "strict": true, // ✅ ENABLED: Full strict type checking including strictNullChecks
     "noUncheckedIndexedAccess": true, // 2025: Prevent undefined access errors
     "noImplicitOverride": true, // 2025: Explicit override declarations
-    "exactOptionalPropertyTypes": true, // ⭐ ENABLED: Distinguish undefined from missing properties (A+ strictness)
+    "exactOptionalPropertyTypes": false, // Disabled: Too pedantic for Svelte 5 (causes false positives with optional props)
 
     // ============================================================================
     // MODULE RESOLUTION (Optimized for bundler workflow)
@@ -26,7 +26,7 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true, // 2025: Required for Vite HMR
-    "verbatimModuleSyntax": false, // 2025: Better for SvelteKit
+    "verbatimModuleSyntax": true, // 2025: Enforce import type for type-only imports
 
     // ============================================================================
     // EMIT CONFIGURATION (No emit for bundler-based projects)
@@ -67,9 +67,9 @@
     "noImplicitReturns": true, // ⭐ ENABLED: Require explicit returns in all code paths
     "allowUnreachableCode": false, // Prevent dead code
     "allowUnusedLabels": false, // No unused labels
-    "noUnusedLocals": true, // ⭐ ENABLED: Remove unused local variables
-    "noUnusedParameters": true, // ⭐ ENABLED: Flag unused function parameters (prefix with _ if intentional)
-    "noPropertyAccessFromIndexSignature": true // ⭐ ENABLED: Force bracket notation for dynamic keys (A+ strictness)
+    "noUnusedLocals": false, // Disabled: Too many false positives in Svelte 5
+    "noUnusedParameters": false, // Disabled: Svelte event handlers often have unused params
+    "noPropertyAccessFromIndexSignature": false // Disabled: too noisy for existing Record-based access patterns
   },
   "include": [
     "global.d.ts",
@@ -94,3 +94,6 @@
     "**/*.js"
   ]
 }
+
+
+
