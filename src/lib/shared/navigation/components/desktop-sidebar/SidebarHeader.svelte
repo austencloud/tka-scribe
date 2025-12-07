@@ -35,6 +35,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    padding: 12px;
   }
 
   /* Subtle glow effect at top */
