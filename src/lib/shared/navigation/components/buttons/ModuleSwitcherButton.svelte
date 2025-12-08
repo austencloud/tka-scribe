@@ -17,7 +17,50 @@
     );
   });
 
-  function handleClick() {
+  function handleClick(event: MouseEvent | TouchEvent) {
+    const target = event.target as HTMLElement;
+    const button = event.currentTarget as HTMLElement;
+    const rect = button.getBoundingClientRect();
+
+    let clickX: number, clickY: number;
+
+    if (event instanceof MouseEvent) {
+      clickX = event.clientX - rect.left;
+      clickY = event.clientY - rect.top;
+    } else if (event instanceof TouchEvent && event.changedTouches[0]) {
+      clickX = event.changedTouches[0].clientX - rect.left;
+      clickY = event.changedTouches[0].clientY - rect.top;
+    } else {
+      clickX = rect.width / 2;
+      clickY = rect.height / 2;
+    }
+
+    console.log("🖱️ [ModuleSwitcherButton] Click detected:", {
+      eventType: event instanceof MouseEvent ? "mouse" : "touch",
+      clickedElement:
+        target.tagName + (target.className ? "." + target.className : ""),
+      isButton: target === button,
+      clickPosition: { x: clickX, y: clickY },
+      buttonSize: { width: rect.width, height: rect.height },
+      clickRelative: {
+        xPercent: ((clickX / rect.width) * 100).toFixed(1) + "%",
+        yPercent: ((clickY / rect.height) * 100).toFixed(1) + "%",
+      },
+    });
+
+    if (target !== button) {
+      console.warn(
+        "⚠️ [ModuleSwitcherButton] Click intercepted by child element:",
+        target.tagName,
+        target.className
+      );
+    }
+
+    // Prevent double-firing on devices that support both touch and mouse
+    if (event instanceof TouchEvent) {
+      event.preventDefault();
+    }
+
     hapticService?.trigger("selection");
     onClick();
   }
@@ -27,7 +70,12 @@
   const isAuthenticated = $derived(authStore.isAuthenticated);
 </script>
 
-<button class="home-button" onclick={handleClick} aria-label="Go to Dashboard">
+<button
+  class="home-button"
+  onclick={handleClick}
+  ontouchend={handleClick}
+  aria-label="Go to Dashboard"
+>
   <div class="avatar-container">
     {#if isAuthenticated && userPhoto}
       <img
@@ -66,6 +114,23 @@
       opacity 0.15s ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    /* Expand touch target area - make entire left section clickable */
+    position: relative;
+  }
+
+  /* Expanded invisible touch target - square area matching button size */
+  .home-button::before {
+    content: "";
+    position: absolute;
+    /* Square touch target matching button dimensions */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0; /* Square instead of circle */
+    cursor: pointer;
+    /* Debug: uncomment to see touch area */
+    /* background: rgba(255, 0, 0, 0.2); */
   }
 
   .home-button:hover {
@@ -89,12 +154,16 @@
     overflow: hidden;
     border: 1px solid var(--module-color, #667eea);
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
+    /* Prevent container from blocking button clicks */
+    pointer-events: none;
   }
 
   .avatar-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Prevent image from blocking button clicks */
+    pointer-events: none;
   }
 
   .avatar-placeholder {
@@ -110,6 +179,8 @@
     );
     color: white;
     font-size: 20px;
+    /* Prevent placeholder from blocking button clicks */
+    pointer-events: none;
   }
 
   .home-label {

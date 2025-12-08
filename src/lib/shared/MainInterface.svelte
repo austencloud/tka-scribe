@@ -24,6 +24,7 @@
     currentSection,
     handleModuleChange,
     handleSectionChange,
+    initializeNavigationHistory,
     getModuleDefinitions,
     moduleSections,
     navigationCoordinator,
@@ -130,6 +131,9 @@
   onMount(() => {
     if (typeof window === "undefined") return;
     // handleHMRInit(); // Disabled - causing HMR verification loops
+
+    // Enable native back/forward by wiring navigation state to history
+    initializeNavigationHistory();
 
     // Initialize deep linking for shareable sequence URLs
     try {

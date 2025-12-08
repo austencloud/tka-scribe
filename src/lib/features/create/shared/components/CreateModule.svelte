@@ -7,11 +7,18 @@
    */
 
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import { ensureContainerInitialized, resolve, TYPES } from "$lib/shared/inversify/di";
+  import {
+    ensureContainerInitialized,
+    resolve,
+    TYPES,
+  } from "$lib/shared/inversify/di";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { setAnyPanelOpen, setSideBySideLayout } from "$lib/shared/application/state/animation-visibility-state.svelte";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import {
+    setAnyPanelOpen,
+    setSideBySideLayout,
+  } from "$lib/shared/application/state/animation-visibility-state.svelte";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
   import { onMount, setContext, tick } from "svelte";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
@@ -38,6 +45,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
   import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
   import VideoRecordCoordinator from "./coordinators/VideoRecordCoordinator.svelte";
+  import { SessionManager } from "../services/SessionManager.svelte";
+  import { AutosaveService } from "../services/AutosaveService";
+  import { SequencePersistenceService } from "../services/SequencePersistenceService";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -65,6 +75,12 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   let effectCoordinator: ICreateModuleEffectCoordinator | null = $state(null);
   let CreateModuleState: CreateModuleState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
+
+  // Session management services
+  let sessionManager: SessionManager | null = $state(null);
+  let autosaveService: AutosaveService | null = $state(null);
+  let sequencePersistenceService: SequencePersistenceService | null =
+    $state(null);
 
   // ============================================================================
   // COMPONENT STATE
@@ -121,6 +137,15 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         throw new Error("Services not yet initialized");
       }
       return services;
+    },
+    get sessionManager() {
+      return sessionManager;
+    },
+    get autosaveService() {
+      return autosaveService;
+    },
+    get sequencePersistenceService() {
+      return sequencePersistenceService;
     },
     get assemblyTabKey() {
       return assemblyTabKey;
@@ -217,15 +242,19 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     if (panelState.isAnimationPanelOpen) currentPanelOpen = "animation";
     else if (panelState.isEditPanelOpen) currentPanelOpen = "edit";
     else if (panelState.isSharePanelOpen) currentPanelOpen = "share";
-    else if (panelState.isVideoRecordPanelOpen) currentPanelOpen = "videoRecord";
+    else if (panelState.isVideoRecordPanelOpen)
+      currentPanelOpen = "videoRecord";
     else if (panelState.isFilterPanelOpen) currentPanelOpen = "filter";
-    else if (panelState.isSequenceActionsPanelOpen) currentPanelOpen = "sequenceActions";
+    else if (panelState.isSequenceActionsPanelOpen)
+      currentPanelOpen = "sequenceActions";
     else if (panelState.isCAPPanelOpen) currentPanelOpen = "cap";
     else if (panelState.isCustomizePanelOpen) currentPanelOpen = "customize";
 
     // If a panel was open and is now closed (user closed it), clear the saved state
     if (previousPanelOpen !== null && currentPanelOpen === null) {
-      logger.log(`Panel "${previousPanelOpen}" was closed by user, clearing saved state for tab`);
+      logger.log(
+        `Panel "${previousPanelOpen}" was closed by user, clearing saved state for tab`
+      );
       navigationState.clearPanelForTab(); // Clears for current module:tab
     }
 
@@ -239,12 +268,20 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     const currentTab = navigationState.activeTab;
 
     // Only act when module or tab actually changes (not on initial render)
-    const moduleChanged = previousModule !== null && currentModule !== previousModule;
-    const tabChanged = previousTab !== null && currentTab !== previousTab && currentModule === "create";
+    const moduleChanged =
+      previousModule !== null && currentModule !== previousModule;
+    const tabChanged =
+      previousTab !== null &&
+      currentTab !== previousTab &&
+      currentModule === "create";
 
     if (moduleChanged || tabChanged) {
       // Save which panel was open before closing (for panel persistence)
-      if (panelState.isAnyPanelOpen && previousModule === "create" && previousTab) {
+      if (
+        panelState.isAnyPanelOpen &&
+        previousModule === "create" &&
+        previousTab
+      ) {
         // Determine which panel is currently open and save it
         let openPanelId: string | null = null;
         if (panelState.isAnimationPanelOpen) openPanelId = "animation";
@@ -252,22 +289,33 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         else if (panelState.isSharePanelOpen) openPanelId = "share";
         else if (panelState.isVideoRecordPanelOpen) openPanelId = "videoRecord";
         else if (panelState.isFilterPanelOpen) openPanelId = "filter";
-        else if (panelState.isSequenceActionsPanelOpen) openPanelId = "sequenceActions";
+        else if (panelState.isSequenceActionsPanelOpen)
+          openPanelId = "sequenceActions";
         else if (panelState.isCAPPanelOpen) openPanelId = "cap";
         else if (panelState.isCustomizePanelOpen) openPanelId = "customize";
 
         if (openPanelId) {
-          logger.log(`Saving open panel "${openPanelId}" for tab "${previousModule}:${previousTab}"`);
-          navigationState.setLastPanelForTab(openPanelId, previousModule as any, previousTab);
+          logger.log(
+            `Saving open panel "${openPanelId}" for tab "${previousModule}:${previousTab}"`
+          );
+          navigationState.setLastPanelForTab(
+            openPanelId,
+            previousModule as any,
+            previousTab
+          );
         }
       }
 
       // Close all panels when navigating away or switching tabs
       if (panelState.isAnyPanelOpen) {
         if (moduleChanged) {
-          logger.log(`Module changed from ${previousModule} to ${currentModule}, closing all panels`);
+          logger.log(
+            `Module changed from ${previousModule} to ${currentModule}, closing all panels`
+          );
         } else {
-          logger.log(`Tab changed from ${previousTab} to ${currentTab}, closing all panels`);
+          logger.log(
+            `Tab changed from ${previousTab} to ${currentTab}, closing all panels`
+          );
         }
         panelState.closeEditPanel();
         panelState.closeAnimationPanel();
@@ -281,10 +329,19 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 
       // Restore panel for the new tab (if returning to create module or switching tabs within it)
       // Only restore if there's actually a sequence to work with (canAccessEditTab)
-      if (currentModule === "create" && !panelState.isAnyPanelOpen && CreateModuleState?.canAccessEditTab) {
-        const savedPanel = navigationState.getLastPanelForTab("create", currentTab);
+      if (
+        currentModule === "create" &&
+        !panelState.isAnyPanelOpen &&
+        CreateModuleState?.canAccessEditTab
+      ) {
+        const savedPanel = navigationState.getLastPanelForTab(
+          "create",
+          currentTab
+        );
         if (savedPanel) {
-          logger.log(`Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`);
+          logger.log(
+            `Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`
+          );
           // Use setTimeout to allow panel close animation to complete first
           setTimeout(() => {
             switch (savedPanel) {
@@ -372,18 +429,45 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     const newRedPropType = settings.redPropType;
 
     // Update blue prop type if changed
-    if (newBluePropType && newBluePropType !== previousBluePropType && previousBluePropType !== undefined) {
-      logger.log(`Blue prop type changed to ${newBluePropType}, bulk updating sequence`);
-      services.beatOperationsService.bulkUpdatePropType("blue", newBluePropType, CreateModuleState);
+    if (
+      newBluePropType &&
+      newBluePropType !== previousBluePropType &&
+      previousBluePropType !== undefined
+    ) {
+      logger.log(
+        `Blue prop type changed to ${newBluePropType}, bulk updating sequence`
+      );
+      services.beatOperationsService.bulkUpdatePropType(
+        "blue",
+        newBluePropType,
+        CreateModuleState
+      );
     }
     previousBluePropType = newBluePropType;
 
     // Update red prop type if changed
-    if (newRedPropType && newRedPropType !== previousRedPropType && previousRedPropType !== undefined) {
-      logger.log(`Red prop type changed to ${newRedPropType}, bulk updating sequence`);
-      services.beatOperationsService.bulkUpdatePropType("red", newRedPropType, CreateModuleState);
+    if (
+      newRedPropType &&
+      newRedPropType !== previousRedPropType &&
+      previousRedPropType !== undefined
+    ) {
+      logger.log(
+        `Red prop type changed to ${newRedPropType}, bulk updating sequence`
+      );
+      services.beatOperationsService.bulkUpdatePropType(
+        "red",
+        newRedPropType,
+        CreateModuleState
+      );
     }
     previousRedPropType = newRedPropType;
+  });
+
+  // Mark autosave as dirty when sequence changes
+  $effect(() => {
+    if (CreateModuleState?.sequenceState.currentSequence && autosaveService) {
+      autosaveService.markDirty();
+    }
   });
 
   // ============================================================================
@@ -449,6 +533,23 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 
         initService.configureEventCallbacks(CreateModuleState, panelState);
 
+        // Initialize session management
+        sessionManager = new SessionManager();
+        autosaveService = new AutosaveService();
+        sequencePersistenceService = new SequencePersistenceService();
+
+        // Create a new session for this editing session
+        await sessionManager.createSession();
+
+        // Start autosave interval (every 30 seconds)
+        autosaveService.startAutosave(
+          () => CreateModuleState?.sequenceState.currentSequence || null,
+          sessionManager.getCurrentSession()?.sessionId || "",
+          30000
+        );
+
+        logger.success("Session management initialized");
+
         // Auto-detect if method was already selected (handles page refreshes)
         const detectedSelection = initService.detectCreationMethodSelection(
           navigationState.activeTab,
@@ -464,14 +565,19 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 
         // Load sequence from deep link or pending edit, then initialize persistence
         await tick(); // Ensure DOM is ready
-        const loadResult = await initService.loadSequenceAndInitializePersistence(
-          (sequence) => CreateModuleState!.sequenceState.setCurrentSequence(sequence),
-          () => CreateModuleState!.initializeWithPersistence()
-        );
+        const loadResult =
+          await initService.loadSequenceAndInitializePersistence(
+            (sequence) =>
+              CreateModuleState!.sequenceState.setCurrentSequence(sequence),
+            () => CreateModuleState!.initializeWithPersistence()
+          );
 
         if (loadResult.sequenceLoaded) {
           // Mark that a creation method has been selected
-          if (loadResult.shouldMarkMethodSelected && !hasSelectedCreationMethod) {
+          if (
+            loadResult.shouldMarkMethodSelected &&
+            !hasSelectedCreationMethod
+          ) {
             hasSelectedCreationMethod = true;
             creationMethodPersistence.markMethodSelected();
           }
@@ -495,11 +601,20 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         // Only restore if no deep link was processed (deep link takes priority)
         // AND no share deep link is waiting (share coordinator will handle it)
         // AND there's actually a sequence to work with (canAccessEditTab)
-        if (!hasDeepLink && !hasShareDeepLink && CreateModuleState.canAccessEditTab) {
+        if (
+          !hasDeepLink &&
+          !hasShareDeepLink &&
+          CreateModuleState.canAccessEditTab
+        ) {
           const currentTab = navigationState.activeTab;
-          const savedPanel = navigationState.getLastPanelForTab("create", currentTab);
+          const savedPanel = navigationState.getLastPanelForTab(
+            "create",
+            currentTab
+          );
           if (savedPanel) {
-            logger.log(`Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`);
+            logger.log(
+              `Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`
+            );
             // Use tick to ensure UI is ready before opening panel
             await tick();
             switch (savedPanel) {
@@ -545,6 +660,10 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         window.removeEventListener("resize", checkIsMobile);
       }
       setCreateModuleStateRef(null);
+
+      // Cleanup session management
+      autosaveService?.stopAutosave();
+      sessionManager?.abandonSession();
     };
   });
 

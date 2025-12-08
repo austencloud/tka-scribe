@@ -1,6 +1,6 @@
 <!-- NotificationBell - Shows unread notification count with dropdown -->
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   import { notificationService } from "../../services/implementations/NotificationService";
   import { NOTIFICATION_TYPE_CONFIG } from "../../domain/models/notification-models";
   import type {
@@ -9,6 +9,7 @@
   } from "../../domain/models/notification-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { testPreviewState } from "$lib/shared/debug/state/test-preview-state.svelte";
 
   // Local component state
   let showDropdown = $state(false);
@@ -16,6 +17,7 @@
   let unreadCount = $state(0);
   let isLoading = $state(false);
   let unsubscribe: (() => void) | null = null;
+  let activePopup = $state<UserNotification | null>(null);
 
   // Type guard for feedback notifications
   function isFeedbackNotification(
@@ -40,19 +42,43 @@
     return null;
   }
 
-  onMount(() => {
+  $effect(() => {
+    const isPreview = testPreviewState.isActive;
     const user = authStore.user;
+
+    // If preview is active, use preview data and ensure no live subscription
+    if (isPreview) {
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
+      notifications = testPreviewState.notifications as unknown as UserNotification[];
+      unreadCount = notifications.filter((n) => !n.read).length;
+      isLoading = testPreviewState.isLoading;
+      activePopup = notifications.find(
+        (n) => n.type === "feedback-resolved" && !n.read
+      ) as UserNotification | null;
+      return;
+    }
+
+    // Normal path: ensure subscription exists
     if (!user) return;
+    if (unsubscribe) return; // already subscribed
 
     isLoading = true;
-
-    // Subscribe to real-time updates
     unsubscribe = notificationService.subscribeToNotifications(
       user.uid,
       (updated) => {
         notifications = updated;
         unreadCount = updated.filter((n) => !n.read).length;
         isLoading = false;
+
+        const candidate = updated.find(
+          (n) => n.type === "feedback-resolved" && !n.read
+        );
+        if (candidate && candidate.id !== activePopup?.id) {
+          activePopup = candidate;
+        }
       }
     );
   });
@@ -79,25 +105,57 @@
 
   async function handleNotificationClick(
     actionId: string | null,
-    notificationId: string
+    notificationId: string,
+    options: { navigate?: boolean } = { navigate: true }
   ) {
-    const user = authStore.user;
-    if (!user) return;
+    const isPreview = testPreviewState.isActive;
 
-    // Mark as read
-    await notificationService.markAsRead(user.uid, notificationId);
+    if (!isPreview) {
+      const user = authStore.user;
+      if (user) {
+        await notificationService.markAsRead(user.uid, notificationId);
+      }
 
-    // Optimistic update
-    notifications = notifications.map((n) =>
-      n.id === notificationId ? { ...n, read: true, readAt: new Date() } : n
-    );
-    unreadCount = notifications.filter((n) => !n.read).length;
+      // Optimistic update
+      notifications = notifications.map((n) =>
+        n.id === notificationId ? { ...n, read: true, readAt: new Date() } : n
+      );
+      unreadCount = notifications.filter((n) => !n.read).length;
+      if (activePopup?.id === notificationId) {
+        activePopup = null;
+      }
+    }
 
-    // Navigate to my-feedback tab
-    handleModuleChange("feedback", "my-feedback");
+    if (options.navigate) {
+      // Navigate to my-feedback tab
+      handleModuleChange("feedback", "my-feedback");
+      // Close dropdown
+      showDropdown = false;
+    }
+  }
 
-    // Close dropdown
-    showDropdown = false;
+  async function handlePopupAction(action: "view" | "dismiss" | "later") {
+    const current = activePopup;
+    if (!current) return;
+
+    if (action === "view") {
+      await handleNotificationClick(getNotificationActionId(current), current.id, {
+        navigate: true,
+      });
+      activePopup = null;
+      return;
+    }
+
+    if (action === "dismiss") {
+      await handleNotificationClick(getNotificationActionId(current), current.id, {
+        navigate: false,
+      });
+      activePopup = null;
+      return;
+    }
+
+    // action === "later": keep unread, hide popup
+    activePopup = null;
   }
 
   async function handleMarkAllAsRead() {
@@ -196,6 +254,32 @@
             </button>
           {/each}
         {/if}
+      </div>
+    </div>
+  {/if}
+
+  {#if activePopup}
+    <div class="notification-popup-backdrop">
+      <div class="notification-popup">
+        <div class="popup-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="popup-content">
+          <p class="popup-label">Feedback resolved</p>
+          <h4>{getNotificationTitle(activePopup)}</h4>
+          <p class="popup-message">{activePopup.message}</p>
+        </div>
+        <div class="popup-actions">
+          <button class="ghost" type="button" onclick={() => handlePopupAction("later")}>
+            Later
+          </button>
+          <button class="secondary" type="button" onclick={() => handlePopupAction("dismiss")}>
+            Dismiss
+          </button>
+          <button class="primary" type="button" onclick={() => handlePopupAction("view")}>
+            View
+          </button>
+        </div>
       </div>
     </div>
   {/if}
@@ -417,5 +501,103 @@
   .notification-list::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
+  }
+
+  /* Popup styles */
+  .notification-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    background: hsla(0, 0%, 0%, 0.45);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1300;
+    padding: 16px;
+  }
+
+  .notification-popup {
+    width: min(420px, 100%);
+    background: hsl(230 15% 6%);
+    border: 1px solid hsl(0 0% 100% / 0.06);
+    border-radius: 16px;
+    box-shadow: 0 18px 48px hsl(0 0% 0% / 0.45);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+  }
+
+  .popup-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981 0%, #16a34a 100%);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .popup-content h4 {
+    margin: 4px 0;
+    font-size: 16px;
+    color: white;
+  }
+
+  .popup-content .popup-label {
+    margin: 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: hsl(155 68% 60%);
+  }
+
+  .popup-message {
+    margin: 4px 0 0;
+    color: hsl(0 0% 90%);
+    font-size: 14px;
+  }
+
+  .popup-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .popup-actions button {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s ease;
+  }
+
+  .popup-actions .ghost {
+    background: transparent;
+    color: hsl(0 0% 80%);
+  }
+
+  .popup-actions .secondary {
+    background: hsl(230 15% 12%);
+    color: hsl(0 0% 95%);
+    border: 1px solid hsl(0 0% 100% / 0.08);
+  }
+
+  .popup-actions .primary {
+    background: linear-gradient(135deg, #10b981 0%, #16a34a 100%);
+    color: white;
+  }
+
+  .popup-actions button:hover {
+    transform: translateY(-1px);
+  }
+
+  .popup-actions button:active {
+    transform: translateY(0);
   }
 </style>

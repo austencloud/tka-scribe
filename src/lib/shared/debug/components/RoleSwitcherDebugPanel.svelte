@@ -15,15 +15,24 @@
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import {
+    testPreviewState,
+    loadPreviewNotifications,
+    clearPreview,
+    searchPreviewUsers,
+  } from "$lib/shared/debug/state/test-preview-state.svelte";
 
   // State
   let isOpen = $state(false);
+  let previewInput = $state("");
+  let previewSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Get values from service
   const actualRole = $derived(featureFlagService.userRole);
   const effectiveRole = $derived(featureFlagService.effectiveRole);
   const debugOverride = $derived(featureFlagService.debugRoleOverride);
   const isAdmin = $derived(authStore.isAdmin);
+  const isPreview = $derived(testPreviewState.isActive);
 
   // Role options
   const roles: {
@@ -55,6 +64,30 @@
     featureFlagService.clearDebugRoleOverride();
   }
 
+  async function handleLoadPreview() {
+    const trimmed = previewInput.trim();
+    if (!trimmed) return;
+    await loadPreviewNotifications(trimmed, trimmed);
+  }
+
+  function handleClearPreview() {
+    clearPreview();
+  }
+
+  function handlePreviewInputChange(value: string) {
+    previewInput = value;
+    if (previewSearchTimer) {
+      clearTimeout(previewSearchTimer);
+    }
+    if (value.trim().length < 2) {
+      testPreviewState.suggestions = [];
+      return;
+    }
+    previewSearchTimer = setTimeout(() => {
+      searchPreviewUsers(value.trim());
+    }, 200);
+  }
+
   // Keyboard shortcut: F9 (easy single-key access for debug tool)
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "F9") {
@@ -73,14 +106,20 @@
 </script>
 
 <!-- Only show for admins -->
-{#if isAdmin}
-  <!-- Floating indicator when override is active -->
-  {#if debugOverride}
-    <div class="override-indicator" onclick={togglePanel}>
-      <i class="fas fa-user-secret"></i>
-      <span>Viewing as {debugOverride}</span>
-    </div>
-  {/if}
+  {#if isAdmin}
+    <!-- Floating indicator when override is active -->
+    {#if debugOverride}
+      <div class="override-indicator" onclick={togglePanel}>
+        <i class="fas fa-user-secret"></i>
+        <span>Viewing as {debugOverride}</span>
+      </div>
+    {/if}
+    {#if isPreview}
+      <div class="override-indicator preview" onclick={togglePanel}>
+        <i class="fas fa-eye"></i>
+        <span>Preview: {testPreviewState.userLabel || testPreviewState.userId}</span>
+      </div>
+    {/if}
 
   <!-- Debug panel -->
   {#if isOpen}
@@ -138,6 +177,72 @@
           </button>
         {/if}
 
+        <div class="preview-section">
+          <div class="preview-header">
+            <div class="panel-title">
+              <i class="fas fa-eye"></i>
+              <span>Preview user (read-only)</span>
+            </div>
+            {#if isPreview}
+              <span class="preview-pill">
+                {testPreviewState.userLabel || testPreviewState.userId}
+              </span>
+            {/if}
+          </div>
+          <div class="preview-row">
+            <input
+              type="text"
+              placeholder="User ID or email"
+              value={previewInput}
+              oninput={(e) => handlePreviewInputChange((e.target as HTMLInputElement).value)}
+            />
+            <button
+              class="primary"
+              type="button"
+              onclick={handleLoadPreview}
+              disabled={testPreviewState.isLoading}
+            >
+              {testPreviewState.isLoading ? "Loading..." : "Load"}
+            </button>
+          </div>
+          {#if testPreviewState.suggestions.length > 0}
+            <div class="preview-suggestions">
+              {#each testPreviewState.suggestions as s}
+                <button
+                  type="button"
+                  class="suggestion"
+                  onclick={() => {
+                    previewInput = s.email || s.displayName || s.id;
+                    handleLoadPreview();
+                  }}
+                >
+                  <span class="suggestion-name">{s.displayName || "Unnamed"}</span>
+                  {#if s.email}
+                    <span class="suggestion-email">{s.email}</span>
+                  {/if}
+                  <span class="suggestion-id">{s.id}</span>
+                </button>
+              {/each}
+            </div>
+          {/if}
+          <div class="preview-actions">
+            <button
+              type="button"
+              class="ghost"
+              onclick={handleClearPreview}
+              disabled={!isPreview}
+            >
+              Clear preview
+            </button>
+            {#if testPreviewState.error}
+              <span class="error-text">{testPreviewState.error}</span>
+            {/if}
+          </div>
+          <p class="preview-hint">
+            Read-only: does not mark notifications read or alter user state.
+          </p>
+        </div>
+
         <div class="hint">
           Press <kbd>F9</kbd> to toggle
         </div>
@@ -172,6 +277,12 @@
   .override-indicator:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+  }
+
+  .override-indicator.preview {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.45);
   }
 
   @keyframes pulse {
@@ -405,5 +516,127 @@
     font-family: monospace;
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
+  }
+
+  .preview-section {
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .preview-pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #bfdbfe;
+    font-size: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  .preview-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+
+  .preview-row input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: white;
+  }
+
+  .preview-row button.primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .preview-row button.primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .preview-suggestions {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .suggestion {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .suggestion:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(59, 130, 246, 0.08);
+  }
+
+  .suggestion-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .suggestion-email,
+  .suggestion-id {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .preview-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .preview-actions .ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+
+  .preview-actions .ghost:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .error-text {
+    color: #f87171;
+    font-size: 12px;
+  }
+
+  .preview-hint {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
   }
 </style>

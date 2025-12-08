@@ -27,6 +27,14 @@ import type { GallerySource } from "../state/gallery-source-state.svelte";
 import type { IFavoritesService } from "../services/contracts/IFavoritesService";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
+const STORAGE_KEY = "tka-discover-gallery-controls";
+
+interface PersistedControlsState {
+  sortMethod: ExploreSortMethod;
+  sortDirection: "asc" | "desc";
+  filter: { type: string; value: ExploreFilterValue };
+}
+
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
   const loaderService = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
@@ -49,6 +57,34 @@ export function createExploreState() {
     return libraryService;
   }
 
+  // Load persisted controls state
+  function loadPersistedControls(): PersistedControlsState | null {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return null;
+      return JSON.parse(stored);
+    } catch (error) {
+      console.warn("[DiscoverState] Failed to load persisted controls:", error);
+      return null;
+    }
+  }
+
+  // Persist controls state
+  function persistControls(): void {
+    try {
+      const state: PersistedControlsState = {
+        sortMethod: currentSortMethod,
+        sortDirection,
+        filter: currentFilter,
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (error) {
+      console.warn("[DiscoverState] Failed to persist controls:", error);
+    }
+  }
+
+  const persisted = loadPersistedControls();
+
   // State
   let isLoading = $state(false);
   let currentSource = $state<GallerySource>("community");
@@ -59,14 +95,16 @@ export function createExploreState() {
   let navigationSections = $state<ExploreNavigationConfig[]>([]);
   let sequenceSections = $state<SequenceSection[]>([]);
   let currentSortMethod = $state<ExploreSortMethod>(
-    ExploreSortMethod.ALPHABETICAL
+    persisted?.sortMethod || ExploreSortMethod.ALPHABETICAL
   );
-  let sortDirection = $state<"asc" | "desc">("asc");
+  let sortDirection = $state<"asc" | "desc">(persisted?.sortDirection || "asc");
   const showSections = $state<boolean>(true);
-  let currentFilter = $state<{ type: string; value: ExploreFilterValue }>({
-    type: "all",
-    value: null,
-  });
+  let currentFilter = $state<{ type: string; value: ExploreFilterValue }>(
+    persisted?.filter || {
+      type: "all",
+      value: null,
+    }
+  );
   let filteredSequences = $state<SequenceData[]>([]);
   let isFilterModalOpen = $state<boolean>(false);
 
@@ -331,6 +369,7 @@ export function createExploreState() {
     value?: ExploreFilterValue
   ): Promise<void> {
     currentFilter = { type, value: value || null };
+    persistControls();
     await applyFilterAndSort();
     await generateSequenceSections();
   }
@@ -342,6 +381,7 @@ export function createExploreState() {
   ): Promise<void> {
     currentSortMethod = method;
     sortDirection = direction;
+    persistControls();
     await applyFilterAndSort();
     await generateSequenceSections();
   }

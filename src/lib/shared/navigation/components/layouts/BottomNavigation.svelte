@@ -208,9 +208,6 @@
     flex-direction: row;
     align-items: center;
     gap: var(--nav-gap);
-    padding: var(--nav-padding);
-    padding-bottom: max(var(--nav-padding), env(safe-area-inset-bottom));
-    max-height: 56px;
 
     /* 2026 design: Solid confident surface with subtle module tint */
     background: linear-gradient(

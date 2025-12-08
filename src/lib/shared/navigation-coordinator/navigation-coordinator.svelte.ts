@@ -153,12 +153,20 @@ const MODULE_ORDER = ['dashboard', 'create', 'discover', 'learn', 'compose', 'tr
 
 // Module change handler with View Transitions
 // targetTab: Optional tab to navigate to (used when clicking a section in a different module)
-export async function handleModuleChange(moduleId: ModuleId, targetTab?: string) {
+export async function handleModuleChange(
+  moduleId: ModuleId,
+  targetTab?: string,
+  options?: { skipHistory?: boolean; initiatedByHistory?: boolean }
+) {
   const currentMod = currentModule();
+  const shouldSkipHistory = options?.skipHistory === true;
 
   // Skip transition logic if same module
   if (moduleId === currentMod) {
     navigationState.setCurrentModule(moduleId, targetTab);
+    if (!shouldSkipHistory) {
+      pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
+    }
     return;
   }
 
@@ -195,6 +203,9 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
 
       transition.finished.finally(() => {
         document.documentElement.classList.remove('settings-portal-enter');
+        if (!shouldSkipHistory) {
+          pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
+        }
       });
     } else if (isExitingSettings) {
       // EXITING SETTINGS - Portal collapse animation
@@ -211,6 +222,9 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
         document.documentElement.classList.remove('settings-portal-exit');
         navigationCoordinator.previousModuleBeforeSettings = null;
         savePreviousModule(null);
+        if (!shouldSkipHistory) {
+          pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
+        }
       });
     } else if (isGoingToDashboard) {
       // Pull-out effect when going back to dashboard
@@ -223,6 +237,9 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
 
       transition.finished.finally(() => {
         document.documentElement.classList.remove('back-transition');
+        if (!shouldSkipHistory) {
+          pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
+        }
       });
     } else {
       // Module-to-module: horizontal slide
@@ -236,12 +253,18 @@ export async function handleModuleChange(moduleId: ModuleId, targetTab?: string)
 
       transition.finished.finally(() => {
         document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
+        if (!shouldSkipHistory) {
+          pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
+        }
       });
     }
   } else {
     // Fallback or leaving dashboard (Dashboard handles its own animation)
     navigationState.setCurrentModule(moduleId, targetTab);
     await switchModule(moduleId);
+    if (!shouldSkipHistory) {
+      pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
+    }
   }
 }
 
@@ -259,9 +282,13 @@ const TAB_ORDERS: Record<string, string[]> = {
 
 // Section change handler with View Transitions
 // Now that Svelte transitions are removed from #key blocks, View Transitions work smoothly
-export function handleSectionChange(sectionId: string) {
+export function handleSectionChange(
+  sectionId: string,
+  options?: { skipHistory?: boolean; initiatedByHistory?: boolean }
+) {
   const module = currentModule();
   const currentSectionId = currentSection();
+  const shouldSkipHistory = options?.skipHistory === true;
 
   // Validate section accessibility via feature flags
   if (!featureFlagService.canAccessTab(module, sectionId)) {
@@ -303,10 +330,16 @@ export function handleSectionChange(sectionId: string) {
 
     transition.finished.finally(() => {
       document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
+      if (!shouldSkipHistory) {
+        pushHistoryState(module as ModuleId, sectionId);
+      }
     });
   } else {
     // Fallback: instant switch for browsers without View Transitions
     updateState();
+    if (!shouldSkipHistory) {
+      pushHistoryState(module as ModuleId, sectionId);
+    }
   }
 }
 
@@ -356,5 +389,56 @@ export function getModuleDefinitions() {
       }
     }
     return module;
+  });
+}
+
+// ---------------------------------------------------------------------------
+// History integration (native back/forward without route-per-tab)
+// ---------------------------------------------------------------------------
+
+type HistoryState = { moduleId: ModuleId; sectionId?: string };
+
+function buildHash(moduleId: ModuleId, sectionId?: string) {
+  return sectionId ? `${moduleId}/${sectionId}` : moduleId;
+}
+
+function replaceHistoryState(moduleId: ModuleId, sectionId?: string) {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  url.hash = buildHash(moduleId, sectionId);
+  window.history.replaceState({ moduleId, sectionId }, "", url);
+}
+
+function pushHistoryState(moduleId: ModuleId, sectionId?: string) {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  url.hash = buildHash(moduleId, sectionId);
+  window.history.pushState({ moduleId, sectionId }, "", url);
+}
+
+let historyInitialized = false;
+
+export function initializeNavigationHistory() {
+  if (historyInitialized || typeof window === "undefined") return;
+  historyInitialized = true;
+
+  // Seed initial state so back/forward has a valid entry
+  replaceHistoryState(navigationState.currentModule, navigationState.activeTab);
+
+  window.addEventListener("popstate", async (event: PopStateEvent) => {
+    const state = event.state as HistoryState | null;
+    if (!state?.moduleId) return;
+
+    const targetModule = state.moduleId;
+    const targetSection = state.sectionId;
+
+    if (targetModule !== navigationState.currentModule) {
+      await handleModuleChange(targetModule, targetSection, { skipHistory: true, initiatedByHistory: true });
+    } else if (targetSection && targetSection !== navigationState.activeTab) {
+      handleSectionChange(targetSection, { skipHistory: true, initiatedByHistory: true });
+    } else if (!targetSection && navigationState.activeTab) {
+      // Module with no stored tab; clear any lingering tab state
+      navigationState.setActiveTab("");
+    }
   });
 }

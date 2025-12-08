@@ -51,132 +51,7 @@
     // Register cache clear shortcut (Ctrl+Shift+Delete)
     registerCacheClearShortcut();
 
-    // ==================================================================================
-    // ⚡ PWA: NUCLEAR OPTION - COMPLETELY DISABLE BROWSER BACK NAVIGATION
-    // ==================================================================================
-
-    // 1. HISTORY MANIPULATION - Prevent back button navigation entirely
-    // Push an initial state and prevent going back past it
-    let isHistoryLocked = false;
-
-    const lockHistory = () => {
-      if (isHistoryLocked) return;
-
-      // Push a dummy state to prevent going back
-      window.history.pushState({ preventBack: true }, "", window.location.href);
-      isHistoryLocked = true;
-    };
-
-    const handlePopState = (e: PopStateEvent) => {
-      // Always push forward to prevent back navigation
-      window.history.pushState({ preventBack: true }, "", window.location.href);
-    };
-
-    // Lock history on page load
-    lockHistory();
-
-    // Listen for popstate (back/forward navigation attempts)
-    window.addEventListener("popstate", handlePopState);
-
-    // 2. SMART GESTURE PREVENTION - Block browser navigation, allow drawer/carousel gestures
-    let gestureStartX = 0;
-    let gestureStartY = 0;
-    let gestureStartedInAllowedZone = false;
-
-    const isInsideAllowedSwipeZone = (element: HTMLElement | null): boolean => {
-      if (!element) return false;
-      // Check if element or any parent is:
-      // - drawer content (for swipe to dismiss)
-      // - Embla carousel (horizontal swipe container)
-      // - Kanban board (for drag-and-drop between columns)
-      // - any element with draggable="true" (generic drag support)
-      // - settings swipe zone (for swipe-left to exit settings)
-      return (
-        element.closest(".drawer-content") !== null ||
-        element.closest(".embla") !== null ||
-        element.closest(".kanban-board") !== null ||
-        element.closest("[draggable='true']") !== null ||
-        element.closest(".settings-swipe-zone") !== null
-      );
-    };
-
-    const handleGestureStart = (e: TouchEvent | MouseEvent): void => {
-      const target = e.target as HTMLElement;
-      gestureStartedInAllowedZone = isInsideAllowedSwipeZone(target);
-
-      gestureStartX =
-        e instanceof TouchEvent ? e.touches[0]?.clientX || 0 : e.clientX;
-      gestureStartY =
-        e instanceof TouchEvent ? e.touches[0]?.clientY || 0 : e.clientY;
-
-      // Allow drawer/carousel gestures to pass through
-      if (gestureStartedInAllowedZone) {
-        return; // Let drawer or carousel handle it
-      }
-
-      // For non-drawer gestures, only prevent if starting near screen edge (navigation zone)
-      if (gestureStartX < 30 || gestureStartX > window.innerWidth - 30) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      return;
-    };
-
-    const handleGestureMove = (e: TouchEvent | MouseEvent): void => {
-      // Allow drawer/carousel gestures completely
-      if (gestureStartedInAllowedZone) {
-        return; // Let drawer or carousel handle its own gestures
-      }
-
-      const clientX =
-        e instanceof TouchEvent ? e.touches[0]?.clientX : e.clientX;
-      const clientY =
-        e instanceof TouchEvent ? e.touches[0]?.clientY : e.clientY;
-
-      if (!clientX || !clientY) return;
-
-      const deltaX = clientX - gestureStartX;
-      const deltaY = clientY - gestureStartY;
-      const isHorizontalGesture = Math.abs(deltaX) > Math.abs(deltaY);
-
-      // Only block horizontal gestures that look like navigation attempts
-      // (significant horizontal movement from edge or across whole screen)
-      if (isHorizontalGesture && Math.abs(deltaX) > 10) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      return;
-    };
-
-    // 3. WHEEL EVENT PREVENTION - Block trackpad swipes (except in drawers/carousels)
-    const handleWheel = (e: WheelEvent): void => {
-      const target = e.target as HTMLElement;
-      const inAllowedZone = isInsideAllowedSwipeZone(target);
-
-      // Allow wheel events inside drawers and carousels
-      if (inAllowedZone) {
-        return;
-      }
-
-      // Block horizontal wheel/trackpad gestures outside allowed zones
-      if (Math.abs(e.deltaX) > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      return;
-    };
-
-    // Attach ALL event listeners with {passive: false} at capture phase
-    const options = { passive: false, capture: true };
-
-    document.addEventListener("touchstart", handleGestureStart, options);
-    document.addEventListener("touchmove", handleGestureMove, options);
-    document.addEventListener("mousedown", handleGestureStart, options);
-    document.addEventListener("mousemove", handleGestureMove, options);
-    document.addEventListener("wheel", handleWheel, options);
+    // Browser navigation is handled in navigation-coordinator; allow native back/forward.
 
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
@@ -219,14 +94,6 @@
       }
       window.removeEventListener("resize", updateViewportHeight);
 
-      // Clean up back navigation prevention
-      window.removeEventListener("popstate", handlePopState);
-      document.removeEventListener("touchstart", handleGestureStart, options);
-      document.removeEventListener("touchmove", handleGestureMove, options);
-      document.removeEventListener("mousedown", handleGestureStart, options);
-      document.removeEventListener("mousemove", handleGestureMove, options);
-      document.removeEventListener("wheel", handleWheel, options);
-      console.log("🗑️ PWA: Navigation prevention removed");
     };
   });
 </script>

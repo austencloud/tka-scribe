@@ -9,6 +9,8 @@ import { ContainerModule } from "inversify";
 import { ShareService } from '../../share/services/implementations/ShareService';
 import { InstagramLinkService } from '../../share/services/implementations/InstagramLinkService';
 import { MediaBundlerService } from '../../share/services/implementations/MediaBundlerService';
+import { FirebaseVideoUploadService } from '../../share/services/implementations/FirebaseVideoUploadService';
+import { RecordingPersistenceService } from '../../video-record/services/implementations/RecordingPersistenceService';
 import { TYPES } from "../types";
 
 export const shareModule = new ContainerModule(
@@ -17,8 +19,7 @@ export const shareModule = new ContainerModule(
     options.bind(TYPES.IShareService).to(ShareService);
     options.bind(TYPES.IInstagramLinkService).to(InstagramLinkService);
     options.bind(TYPES.IMediaBundlerService).to(MediaBundlerService);
-    // TODO: Add when ready:
-    // options.bind(TYPES.IFirebaseVideoUploadService).to(FirebaseVideoUploadService);
-    // options.bind(TYPES.IShareToInstagramService).to(ShareToInstagramService);
+    options.bind(TYPES.IFirebaseVideoUploadService).to(FirebaseVideoUploadService);
+    options.bind(TYPES.IRecordingPersistenceService).to(RecordingPersistenceService);
   }
 );

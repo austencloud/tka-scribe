@@ -16,6 +16,9 @@ import type { createCreateModuleState as CreateModuleStateType } from "../state/
 import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
 import type { CreateModuleServices } from "../services/ServiceInitializer";
+import type { SessionManager } from "../services/SessionManager.svelte";
+import type { AutosaveService } from "../services/AutosaveService";
+import type { SequencePersistenceService } from "../services/SequencePersistenceService";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
@@ -32,6 +35,11 @@ export interface CreateModuleContext {
 
   // Services
   services: CreateModuleServices;
+
+  // Session management services
+  sessionManager: SessionManager | null;
+  autosaveService: AutosaveService | null;
+  sequencePersistenceService: SequencePersistenceService | null;
 
   // Layout state
   layout: {

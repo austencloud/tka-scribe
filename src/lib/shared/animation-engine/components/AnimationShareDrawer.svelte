@@ -592,16 +592,26 @@
      LANDSCAPE LAYOUT - Side-by-side
      =========================== */
 
-  @container animator-canvas (min-aspect-ratio: 1.2/1) {
+  @container animator-canvas (min-aspect-ratio: 1.5/1) {
     .content-wrapper {
       flex-direction: row;
       gap: 1.5cqw;
+      align-items: stretch;
     }
 
     .content-wrapper :global(.canvas-area) {
-      flex: 1 1 auto;
+      flex: 1 1 50%;
+      min-width: 0;
       width: auto;
       height: 100%;
+    }
+
+    .content-wrapper :global(.controls-panel) {
+      flex: 0 0 auto;
+      min-width: 280px;
+      max-width: 400px;
+      height: 100%;
+      overflow-y: auto;
     }
   }
 

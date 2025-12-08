@@ -53,6 +53,39 @@ interface LibraryStateData {
 
 class LibraryStateManager {
 	private state = $state<LibraryStateData>(this.getInitialState());
+	private readonly STORAGE_KEY = "tka-library-state";
+
+	// ============================================================
+	// PERSISTENCE
+	// ============================================================
+
+	private loadPersistedState(): Partial<LibraryStateData> | null {
+		try {
+			const stored = localStorage.getItem(this.STORAGE_KEY);
+			if (!stored) return null;
+
+			const parsed = JSON.parse(stored);
+			return {
+				activeSection: parsed.activeSection || "sequences",
+				filters: parsed.filters || undefined,
+			};
+		} catch (error) {
+			console.warn("[LibraryState] Failed to load persisted state:", error);
+			return null;
+		}
+	}
+
+	private persistState(): void {
+		try {
+			const stateToPersist = {
+				activeSection: this.state.activeSection,
+				filters: this.state.filters,
+			};
+			localStorage.setItem(this.STORAGE_KEY, JSON.stringify(stateToPersist));
+		} catch (error) {
+			console.warn("[LibraryState] Failed to persist state:", error);
+		}
+	}
 
 	// ============================================================
 	// HMR SUPPORT
@@ -64,14 +97,17 @@ class LibraryStateManager {
 			return import.meta.hot.data.libraryState;
 		}
 
+		// Load persisted state from localStorage
+		const persisted = this.loadPersistedState();
+
 		return {
-			activeSection: "sequences",
+			activeSection: persisted?.activeSection || "sequences",
 			sequences: [],
 			isLoading: false,
 			error: null,
 			selectedIds: new Set(),
 			isSelectMode: false,
-			filters: {
+			filters: persisted?.filters || {
 				searchQuery: "",
 				visibility: "all",
 				source: "all",
@@ -220,6 +256,7 @@ class LibraryStateManager {
 	setActiveSection(section: LibraryViewSection) {
 		this.state.activeSection = section;
 		this.state.viewingSequenceId = null;
+		this.persistState();
 	}
 
 	viewSequence(sequenceId: string) {
@@ -469,31 +506,38 @@ class LibraryStateManager {
 
 	setSearchQuery(query: string) {
 		this.state.filters.searchQuery = query;
+		this.persistState();
 	}
 
 	setVisibilityFilter(visibility: SequenceVisibility | "all") {
 		this.state.filters.visibility = visibility;
+		this.persistState();
 	}
 
 	setSourceFilter(source: "created" | "forked" | "all") {
 		this.state.filters.source = source;
+		this.persistState();
 	}
 
 	setCollectionFilter(collectionId: string | null) {
 		this.state.filters.collectionId = collectionId;
+		this.persistState();
 	}
 
 	setSortBy(field: LibrarySortField) {
 		this.state.filters.sortBy = field;
+		this.persistState();
 	}
 
 	setSortDirection(direction: LibrarySortDirection) {
 		this.state.filters.sortDirection = direction;
+		this.persistState();
 	}
 
 	toggleSortDirection() {
 		this.state.filters.sortDirection =
 			this.state.filters.sortDirection === "asc" ? "desc" : "asc";
+		this.persistState();
 	}
 
 	resetFilters() {
@@ -505,6 +549,7 @@ class LibraryStateManager {
 			sortBy: "updatedAt",
 			sortDirection: "desc",
 		};
+		this.persistState();
 	}
 
 	// ============================================================

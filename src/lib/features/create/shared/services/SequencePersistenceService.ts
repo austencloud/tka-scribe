@@ -1,0 +1,199 @@
+/**
+ * Sequence Persistence Service
+ *
+ * Handles permanent saving of sequences to user's library.
+ * This is distinct from draft autosaving - these are explicitly saved sequences.
+ *
+ * Domain: Create module - Sequence library persistence
+ */
+
+import {
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp,
+  type Timestamp,
+} from "firebase/firestore";
+import { firestore, auth } from "$lib/shared/auth/firebase";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+
+/**
+ * Metadata for saving a sequence to library
+ */
+export interface SaveSequenceMetadata {
+  name: string;
+  description?: string;
+  tags?: string[];
+  notes?: string;
+  visibility?: "private" | "public" | "unlisted";
+  thumbnailUrl?: string;
+  videoUrl?: string;
+}
+
+/**
+ * Saved sequence with metadata in Firestore
+ */
+export interface SavedSequence {
+  id: string;
+  userId: string;
+  sequenceData: SequenceData;
+  metadata: SaveSequenceMetadata;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  beatCount: number;
+  thumbnailUrl?: string;
+}
+
+export class SequencePersistenceService {
+  /**
+   * Save a sequence to user's library
+   */
+  async saveSequence(
+    sequenceData: SequenceData,
+    metadata: SaveSequenceMetadata
+  ): Promise<string> {
+    console.log("[SequencePersistenceService] saveSequence called", {
+      beatCount: sequenceData.beats.length,
+      metadata
+    });
+    
+    const user = auth.currentUser;
+    if (!user) {
+      console.error("[SequencePersistenceService] No authenticated user");
+      throw new Error("User must be authenticated to save sequence");
+    }
+
+    const sequenceId = sequenceData.id || crypto.randomUUID();
+    console.log("[SequencePersistenceService] Generated sequence ID:", sequenceId);
+
+    // Flatten structure to match LibrarySequence format
+    const savedSequence = {
+      id: sequenceId,
+      userId: user.uid,
+      name: metadata.name,
+      word: sequenceData.word,
+      beats: sequenceData.beats,
+      visibility: metadata.visibility,
+      description: metadata.description,
+      tags: metadata.tags || [],
+      thumbnailUrl: metadata.thumbnailUrl,
+      videoUrl: metadata.videoUrl,
+    };
+
+    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
+    console.log("[SequencePersistenceService] Writing to Firestore path:", sequenceRef.path);
+    
+    // Filter out undefined fields
+    const sequenceToSave = Object.fromEntries(
+      Object.entries({
+        ...savedSequence,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      }).filter(([_, value]) => value !== undefined)
+    );
+    
+    await setDoc(sequenceRef, sequenceToSave);
+
+    console.log("[SequencePersistenceService] ✅ Sequence saved successfully to Firestore");
+    return sequenceId;
+  }
+
+  /**
+   * Update an existing saved sequence
+   */
+  async updateSequence(
+    sequenceId: string,
+    sequenceData: SequenceData,
+    metadata: Partial<SaveSequenceMetadata>
+  ): Promise<void> {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error("User must be authenticated");
+    }
+
+    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
+    
+    // Flatten structure to match LibrarySequence format
+    const updates: Record<string, unknown> = {
+      updatedAt: serverTimestamp(),
+    };
+    
+    if (metadata.name !== undefined) updates.name = metadata.name;
+    if (metadata.description !== undefined) updates.description = metadata.description;
+    if (metadata.visibility !== undefined) updates.visibility = metadata.visibility;
+    if (metadata.tags !== undefined) updates.tags = metadata.tags;
+    if (metadata.thumbnailUrl !== undefined) updates.thumbnailUrl = metadata.thumbnailUrl;
+    if (metadata.videoUrl !== undefined) updates.videoUrl = metadata.videoUrl;
+    
+    if (sequenceData) {
+      updates.word = sequenceData.word;
+      updates.beats = sequenceData.beats;
+    }
+    
+    await setDoc(sequenceRef, updates, { merge: true });
+  }
+
+  /**
+   * Load a saved sequence by ID
+   */
+  async loadSequence(sequenceId: string): Promise<SavedSequence | null> {
+    const user = auth.currentUser;
+    if (!user) return null;
+
+    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
+    const snapshot = await getDoc(sequenceRef);
+
+    if (!snapshot.exists()) return null;
+
+    return snapshot.data() as SavedSequence;
+  }
+
+  /**
+   * Get recent saved sequences
+   */
+  async getRecentSequences(limitCount = 10): Promise<SavedSequence[]> {
+    const user = auth.currentUser;
+    if (!user) return [];
+
+    const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
+    const q = query(
+      sequencesRef,
+      orderBy("updatedAt", "desc"),
+      limit(limitCount)
+    );
+
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => doc.data() as SavedSequence);
+  }
+
+  /**
+   * Get all saved sequences for current user
+   */
+  async getAllSequences(): Promise<SavedSequence[]> {
+    const user = auth.currentUser;
+    if (!user) return [];
+
+    const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
+    const snapshot = await getDocs(sequencesRef);
+
+    return snapshot.docs.map((doc) => doc.data() as SavedSequence);
+  }
+
+  /**
+   * Check if a sequence is already saved
+   */
+  async isSequenceSaved(sequenceId: string): Promise<boolean> {
+    const user = auth.currentUser;
+    if (!user) return false;
+
+    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
+    const snapshot = await getDoc(sequenceRef);
+
+    return snapshot.exists();
+  }
+}

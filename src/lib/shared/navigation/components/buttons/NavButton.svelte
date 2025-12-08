@@ -1,8 +1,8 @@
 <!-- NavButton - Reusable Navigation Button Component -->
 <script lang="ts">
-import { resolve } from "../../../inversify/di";
-import { TYPES } from "../../../inversify/types";
-import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "../../../inversify/di";
+  import { TYPES } from "../../../inversify/types";
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
 
   let {
@@ -34,8 +34,12 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
   let compactLabel = $derived(label);
   let fullLabel = $derived(label);
 
-  function handleClick() {
+  function handleClick(event: MouseEvent | TouchEvent) {
     if (!disabled) {
+      // Prevent double-firing on devices that support both touch and mouse
+      if (event instanceof TouchEvent) {
+        event.preventDefault();
+      }
       hapticService?.trigger("selection");
       onClick();
     }
@@ -55,6 +59,7 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
   class:section={type === "section"}
   class:special={type === "special"}
   onclick={handleClick}
+  ontouchend={handleClick}
   {disabled}
   aria-label={ariaLabel || label}
   style="--section-color: {color}; --section-gradient: {gradient};"
@@ -81,6 +86,21 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+  }
+
+  /* Expanded invisible touch target for settings button in corner */
+  .nav-button.special::before {
+    content: "";
+    position: absolute;
+    /* Square touch target matching button dimensions */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0; /* Square instead of circle */
+    cursor: pointer;
+    /* Debug: uncomment to see touch area */
+    /* background: rgba(0, 255, 0, 0.2); */
   }
 
   /* Section buttons - rounded rectangles */
@@ -138,7 +158,10 @@ import type { IHapticFeedbackService } from "../../../application/services/contr
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: opacity 0.15s ease, filter 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      filter 0.15s ease;
+    /* Prevent icon from blocking button clicks */
     pointer-events: none;
   }
 

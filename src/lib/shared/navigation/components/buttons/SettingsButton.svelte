@@ -18,10 +18,28 @@
   let longPressTimer: ReturnType<typeof setTimeout> | null = null;
   let suppressNextClick = false;
 
-  function handleClick(event: MouseEvent) {
+  function handleClick(event: MouseEvent | TouchEvent) {
+    // Prevent double-firing on devices that support both touch and mouse
+    if (event instanceof TouchEvent) {
+      event.preventDefault();
+    }
+
     // Capture click position for portal animation origin
-    // Use the click coordinates directly - most accurate
-    setSettingsPortalOrigin(event.clientX, event.clientY);
+    let clientX: number, clientY: number;
+
+    if (event instanceof MouseEvent) {
+      clientX = event.clientX;
+      clientY = event.clientY;
+    } else if (event instanceof TouchEvent && event.changedTouches[0]) {
+      clientX = event.changedTouches[0].clientX;
+      clientY = event.changedTouches[0].clientY;
+    } else {
+      // Fallback to screen center if no coordinates available
+      clientX = window.innerWidth / 2;
+      clientY = window.innerHeight / 2;
+    }
+
+    setSettingsPortalOrigin(clientX, clientY);
     onClick();
   }
 
@@ -46,7 +64,7 @@
     clearLongPress();
   }
 
-  function handleWrapperClick(event: MouseEvent) {
+  function handleWrapperClick(event: MouseEvent | TouchEvent) {
     if (suppressNextClick) {
       suppressNextClick = false;
       return;
@@ -59,6 +77,7 @@
 <div
   class="settings-button-wrapper"
   onclick={handleWrapperClick}
+  ontouchend={handleWrapperClick}
   onpointerdown={startLongPress}
   onpointerup={handlePointerUp}
   onpointerleave={clearLongPress}
