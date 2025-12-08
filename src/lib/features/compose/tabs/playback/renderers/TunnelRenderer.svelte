@@ -13,6 +13,7 @@
     loadFeatureModule,
   } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
   import type { IPixiAnimationRenderer } from "../../../services/contracts/IPixiAnimationRenderer";
@@ -77,6 +78,12 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
   let secondaryTexturesLoaded = $state(false);
+
+  // Trail settings - must track the settings object directly to get reactivity
+  let trailSettings = $derived.by(() => {
+    const settings = animationSettings.settings;
+    return settings.trail;
+  });
 
   // Initialize services
   onMount(() => {
@@ -345,6 +352,7 @@
       ] || null}
       currentBeat={primaryAnimationState.currentBeat}
       sequenceData={primaryAnimationState.sequenceData}
+      {trailSettings}
     />
   {:else}
     <div class="empty-message">

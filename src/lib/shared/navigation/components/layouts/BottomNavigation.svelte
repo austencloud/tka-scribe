@@ -125,8 +125,8 @@
   bind:this={navElement}
   style="--module-color: {moduleColor}"
 >
-  <!-- Module Switcher Button (Left) - Settings handles its own back button in header -->
-  {#if showModuleSwitcher && !isSettingsActive}
+  <!-- Module Switcher Button (Left) - now shown even in settings for consistent home/back affordance -->
+  {#if showModuleSwitcher}
     <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
   {/if}
 
@@ -141,11 +141,7 @@
       />
     </div>
   {:else}
-    <div
-      class="sections"
-      class:hidden={shouldHideNav}
-      class:full-width={isSettingsActive}
-    >
+    <div class="sections" class:hidden={shouldHideNav}>
       {#each sections as section}
         <NavButton
           icon={section.icon}
@@ -271,11 +267,6 @@
   .sections.hidden {
     opacity: 0;
     pointer-events: none;
-  }
-
-  /* When in settings, no side buttons - sections can use full width */
-  .sections.full-width {
-    max-width: 100%;
   }
 
   /* ============================================================================

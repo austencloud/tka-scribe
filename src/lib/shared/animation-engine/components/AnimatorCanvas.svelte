@@ -486,18 +486,25 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       }
     }
 
-    saveTrailSettings(trailSettings);
-    if (externalTrailSettings !== undefined) {
-      externalTrailSettings = trailSettings;
+    // Only save to localStorage if NOT using external settings
+    if (externalTrailSettings === undefined) {
+      saveTrailSettings(trailSettings);
     }
+
     needsRender = true;
     startRenderLoop();
   });
 
-  // Sync external trail settings
+  // Sync external trail settings (one-way: external → local)
   $effect(() => {
     if (externalTrailSettings !== undefined) {
-      trailSettings = externalTrailSettings;
+      console.log("🎬 AnimatorCanvas received external trail settings:", {
+        mode: externalTrailSettings.mode,
+        enabled: externalTrailSettings.enabled,
+        lineWidth: externalTrailSettings.lineWidth,
+        maxOpacity: externalTrailSettings.maxOpacity,
+      });
+      trailSettings = { ...externalTrailSettings };
     }
   });
 
@@ -825,21 +832,20 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     const now = currentTime ?? performance.now();
 
-    // DISABLED: Real-time capture - now using pre-computed cache for perfect smooth trails
-    // The AnimationPathCache provides gap-free trails at 120 FPS regardless of device performance
-    // if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
-    //   const currentBeat = beatData?.beatNumber;
-    //   trailCaptureService.captureFrame(
-    //     {
-    //       blueProp,
-    //       redProp,
-    //       secondaryBlueProp,
-    //       secondaryRedProp,
-    //     },
-    //     currentBeat,
-    //     now
-    //   );
-    // }
+    // Real-time capture - re-enabled per user feedback
+    if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
+      const currentBeat = beatData?.beatNumber;
+      trailCaptureService.captureFrame(
+        {
+          blueProp,
+          redProp,
+          secondaryBlueProp,
+          secondaryRedProp,
+        },
+        currentBeat,
+        now
+      );
+    }
 
     if (
       needsRender ||

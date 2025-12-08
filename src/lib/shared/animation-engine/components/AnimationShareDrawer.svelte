@@ -29,70 +29,13 @@
   // Types
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import type { PropState } from "$lib/features/compose/shared/domain/types/PropState";
-  import type { TrailSettings as TrailSettingsType } from "$lib/features/compose/shared/domain/types/TrailTypes";
-  import {
-    DEFAULT_TRAIL_SETTINGS,
-    TRAIL_SETTINGS_STORAGE_KEY,
-    TrackingMode,
-    TrailMode,
-  } from "$lib/features/compose/shared/domain/types/TrailTypes";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-
-  // ============================================================================
-  // TRAIL SETTINGS PERSISTENCE (inlined)
-  // ============================================================================
-
-  function loadTrailSettings(): TrailSettingsType {
-    if (!browser) return { ...DEFAULT_TRAIL_SETTINGS };
-    try {
-      const stored = localStorage.getItem(TRAIL_SETTINGS_STORAGE_KEY);
-      if (!stored) return { ...DEFAULT_TRAIL_SETTINGS };
-      const parsed = JSON.parse(stored);
-
-      // Migration: convert old trackBothEnds boolean to new trackingMode enum
-      if ("trackBothEnds" in parsed && !("trackingMode" in parsed)) {
-        parsed.trackingMode = parsed.trackBothEnds
-          ? TrackingMode.BOTH_ENDS
-          : TrackingMode.RIGHT_END;
-        delete parsed.trackBothEnds;
-      }
-
-      // Migration: Auto-enable trails if path caching is enabled
-      if (parsed.usePathCache && !parsed.enabled) {
-        parsed.enabled = true;
-        if (parsed.mode === TrailMode.OFF) {
-          parsed.mode = TrailMode.FADE;
-        }
-      }
-
-      // Migration: Add previewMode if not present
-      if (!("previewMode" in parsed)) {
-        parsed.previewMode = false;
-      }
-
-      return { ...DEFAULT_TRAIL_SETTINGS, ...parsed };
-    } catch (error) {
-      console.error("❌ Failed to load trail settings:", error);
-      return { ...DEFAULT_TRAIL_SETTINGS };
-    }
-  }
-
-  function saveTrailSettings(settings: TrailSettingsType): void {
-    if (!browser) return;
-    try {
-      localStorage.setItem(
-        TRAIL_SETTINGS_STORAGE_KEY,
-        JSON.stringify(settings)
-      );
-    } catch (error) {
-      console.error("❌ Failed to save trail settings:", error);
-    }
-  }
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   // ============================================================================
   // MOBILE SCROLL HANDLER STATE (inlined)
@@ -309,23 +252,8 @@
   // Get visibility state manager
   const visibilityManager = getVisibilityStateManager();
 
-  // Trail settings with auto-persistence
-  let trailSettings = $state<TrailSettingsType>(loadTrailSettings());
-
-  // Auto-save trail settings whenever they change
-  $effect(() => {
-    // Access all properties to track changes (reactivity)
-    void trailSettings.mode;
-    void trailSettings.fadeDurationMs;
-    void trailSettings.lineWidth;
-    void trailSettings.glowEnabled;
-    void trailSettings.trackingMode;
-    void trailSettings.hideProps;
-    void trailSettings.enabled;
-
-    // Save to localStorage
-    saveTrailSettings(trailSettings);
-  });
+  // Trail settings from global animation settings (derived for reactivity)
+  let trailSettings = $derived(animationSettings.settings.trail);
 
   // Motion visibility state - reactive to visibility manager
   let blueMotionVisible = $state(
@@ -452,7 +380,7 @@
             {onCanvasReady}
             {onVideoBeatChange}
             {onPlaybackToggle}
-            bind:trailSettings
+            {trailSettings}
           />
 
           <!-- Unified Controls Panel -->

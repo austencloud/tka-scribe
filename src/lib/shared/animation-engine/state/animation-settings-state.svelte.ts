@@ -92,6 +92,21 @@ function loadSettings(): AnimationSettings {
 		if (!stored) return { ...DEFAULT_ANIMATION_SETTINGS };
 
 		const parsed = JSON.parse(stored);
+		
+		// Migration: Re-enable trails with vivid preset if they were disabled
+		// (Trails were temporarily broken, now restored - default to vivid preset)
+		if (parsed.trail) {
+			if (parsed.trail.mode === TrailMode.OFF || !parsed.trail.enabled) {
+				// Apply vivid preset: enabled with fade mode
+				parsed.trail.enabled = true;
+				parsed.trail.mode = TrailMode.FADE;
+				parsed.trail.lineWidth = 4;
+				parsed.trail.maxOpacity = 0.95;
+				parsed.trail.glowEnabled = true;
+				parsed.trail.fadeDurationMs = 2500;
+			}
+		}
+		
 		// Merge with defaults to handle missing fields from older versions
 		return {
 			...DEFAULT_ANIMATION_SETTINGS,

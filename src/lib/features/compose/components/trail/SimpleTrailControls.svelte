@@ -21,6 +21,7 @@
   });
 
   function setPreset(preset: TrailPreset) {
+    console.log("🎨 Setting trail preset:", preset);
     switch (preset) {
       case "none":
         animationSettings.setTrailMode(TrailMode.OFF);
@@ -44,6 +45,7 @@
         });
         break;
     }
+    console.log("🎨 Trail settings after preset:", animationSettings.trail);
   }
 </script>
 

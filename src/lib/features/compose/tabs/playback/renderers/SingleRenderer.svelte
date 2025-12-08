@@ -13,6 +13,7 @@
     loadFeatureModule,
   } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
   import type { IPixiAnimationRenderer } from "../../../services/contracts/IPixiAnimationRenderer";
@@ -51,7 +52,13 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
 
-  // Initialize services
+  // Trail settings - use $state and sync with $effect
+  let trailSettings = $state(animationSettings.settings.trail);
+
+  // Sync trail settings whenever animationSettings changes
+  $effect(() => {
+    trailSettings = animationSettings.settings.trail;
+  }); // Initialize services
   onMount(() => {
     const initialize = async () => {
       try {
@@ -193,6 +200,7 @@
       ] || null}
       currentBeat={animationState.currentBeat}
       sequenceData={animationState.sequenceData}
+      {trailSettings}
     />
   {:else}
     <div class="empty-message">
