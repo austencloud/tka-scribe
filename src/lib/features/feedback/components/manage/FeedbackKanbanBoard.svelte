@@ -396,7 +396,7 @@
           }
         }}
         onkeydown={(e) => {
-          if ((e.key === 'Enter' || e.key === ' ') && draggedItem === null) {
+          if ((e.key === "Enter" || e.key === " ") && draggedItem === null) {
             e.preventDefault();
             onopenArchive?.();
           }

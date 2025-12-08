@@ -61,7 +61,7 @@
             <div class="archive-header">
               <button
                 class="back-button"
-                onclick={() => showArchive = false}
+                onclick={() => (showArchive = false)}
                 aria-label="Back to Kanban"
               >
                 <i class="fas fa-arrow-left"></i>
@@ -70,14 +70,14 @@
             </div>
             <FeedbackArchiveView
               {versionState}
-              onBack={() => showArchive = false}
+              onBack={() => (showArchive = false)}
             />
           </div>
         {:else}
           <div class="kanban-container">
             <FeedbackKanbanBoard
               {manageState}
-              onopenArchive={() => showArchive = true}
+              onopenArchive={() => (showArchive = true)}
             />
           </div>
         {/if}

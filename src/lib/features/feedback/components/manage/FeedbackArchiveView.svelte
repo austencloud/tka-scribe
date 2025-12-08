@@ -7,7 +7,13 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
   import { firestore } from "$lib/shared/auth/firebase";
-  import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
+  import {
+    collection,
+    query,
+    where,
+    getDocs,
+    orderBy,
+  } from "firebase/firestore";
 
   const { versionState, onBack } = $props<{
     versionState: VersionState;
@@ -63,9 +69,9 @@
         where("status", "==", "archived"),
         orderBy("archivedAt", "desc")
       );
-      
+
       const snapshot = await getDocs(q);
-      
+
       allArchivedItems = snapshot.docs.map((doc) => {
         const data = doc.data();
         return {
@@ -77,7 +83,7 @@
           deferredUntil: data.deferredUntil?.toDate?.() || undefined,
         } as FeedbackItem;
       });
-      
+
       console.log(`Loaded ${allArchivedItems.length} archived items`);
     } catch (e) {
       console.error("Failed to load archived items:", e);
@@ -119,10 +125,10 @@
   // Sorted archived items
   const sortedArchivedItems = $derived.by(() => {
     const items = [...allArchivedItems];
-    
+
     items.sort((a, b) => {
       let comparison = 0;
-      
+
       if (sortBy === "date") {
         const aTime = a.archivedAt?.getTime() || a.createdAt?.getTime() || 0;
         const bTime = b.archivedAt?.getTime() || b.createdAt?.getTime() || 0;
@@ -132,10 +138,10 @@
       } else if (sortBy === "title") {
         comparison = a.title.localeCompare(b.title);
       }
-      
+
       return sortOrder === "asc" ? comparison : -comparison;
     });
-    
+
     return items;
   });
 </script>
@@ -147,13 +153,13 @@
         <i class="fas fa-arrow-left"></i>
         <span>Back to Kanban</span>
       </button>
-      
+
       <div class="view-toggle">
         <button
           type="button"
           class="toggle-btn"
           class:active={viewMode === "releases"}
-          onclick={() => viewMode = "releases"}
+          onclick={() => (viewMode = "releases")}
         >
           <i class="fas fa-tags"></i>
           By Release
@@ -162,26 +168,26 @@
           type="button"
           class="toggle-btn"
           class:active={viewMode === "all"}
-          onclick={() => viewMode = "all"}
+          onclick={() => (viewMode = "all")}
         >
           <i class="fas fa-list"></i>
           All Items
         </button>
       </div>
     </div>
-    
+
     <div class="header-content">
       <h2>
         <i class="fas fa-archive"></i>
         {viewMode === "releases" ? "Release Archive" : "All Archived Feedback"}
       </h2>
       <p class="subtitle">
-        {viewMode === "releases" 
-          ? "Feedback resolved in past releases" 
+        {viewMode === "releases"
+          ? "Feedback resolved in past releases"
           : `${allArchivedItems.length} archived items`}
       </p>
     </div>
-    
+
     {#if viewMode === "all"}
       <div class="sort-controls">
         <label>
@@ -195,10 +201,13 @@
         <button
           type="button"
           class="sort-order-btn"
-          onclick={() => sortOrder = sortOrder === "asc" ? "desc" : "asc"}
-          aria-label={sortOrder === "asc" ? "Sort ascending" : "Sort descending"}
+          onclick={() => (sortOrder = sortOrder === "asc" ? "desc" : "asc")}
+          aria-label={sortOrder === "asc"
+            ? "Sort ascending"
+            : "Sort descending"}
         >
-          <i class="fas fa-sort-amount-{sortOrder === "asc" ? "up" : "down"}"></i>
+          <i class="fas fa-sort-amount-{sortOrder === 'asc' ? 'up' : 'down'}"
+          ></i>
         </button>
       </div>
     {/if}
@@ -221,7 +230,8 @@
       {:else}
         <div class="all-items-list">
           {#each sortedArchivedItems as item (item.id)}
-            {@const typeConfig = TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
+            {@const typeConfig =
+              TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
             <button
               type="button"
               class="feedback-item-card"
@@ -253,7 +263,7 @@
                     {item.archivedAt.toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                      year: "numeric"
+                      year: "numeric",
                     })}
                   {:else}
                     Unknown date
