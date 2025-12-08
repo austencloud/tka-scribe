@@ -5,10 +5,60 @@ Renders letters, turn indicators, and other TKA notation elements.
 Uses pure runes instead of stores for reactivity.
 -->
 <script lang="ts" module>
+  import { getLetterImagePath as getPath } from "../utils/letter-image-getter";
+  import { Letter as LetterType } from "$lib/shared/foundation/domain/models/Letter";
+
   // Module-level cache shared across ALL TKAGlyph instances
   // This prevents redundant fetches when multiple glyphs render the same letter
   const globalDimensionsCache = new Map<string, { width: number; height: number }>();
   const globalLoadingPromises = new Map<string, Promise<{ width: number; height: number }>>();
+
+  /**
+   * Preload letter dimensions for a list of letters.
+   * Call this before animation starts to prevent flash on first render.
+   * Returns a promise that resolves when all letters are cached.
+   */
+  export async function preloadLetterDimensions(letters: (string | null | undefined)[]): Promise<void> {
+    const uniqueLetters = [...new Set(letters.filter((l): l is string => l != null && l.trim() !== ""))];
+
+    await Promise.all(uniqueLetters.map(async (letter) => {
+      // Already cached - skip
+      if (globalDimensionsCache.has(letter)) return;
+
+      // Already loading - wait for it
+      if (globalLoadingPromises.has(letter)) {
+        await globalLoadingPromises.get(letter);
+        return;
+      }
+
+      // Load and cache
+      const loadPromise = (async () => {
+        try {
+          const svgPath = getPath(letter as LetterType);
+          const response = await fetch(svgPath);
+          if (!response.ok) throw new Error(`Failed to fetch ${svgPath}`);
+
+          const svgText = await response.text();
+          const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
+
+          const dims = viewBoxMatch
+            ? { width: parseFloat(viewBoxMatch[1] || "100"), height: parseFloat(viewBoxMatch[2] || "100") }
+            : { width: 100, height: 100 };
+
+          globalDimensionsCache.set(letter, dims);
+          return dims;
+        } catch (error) {
+          console.error(`Failed to preload letter dimensions for ${letter}:`, error);
+          return { width: 50, height: 50 };
+        } finally {
+          globalLoadingPromises.delete(letter);
+        }
+      })();
+
+      globalLoadingPromises.set(letter, loadPromise);
+      await loadPromise;
+    }));
+  }
 </script>
 
 <script lang="ts">

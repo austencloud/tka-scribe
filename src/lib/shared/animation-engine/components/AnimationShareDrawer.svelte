@@ -38,10 +38,17 @@
   import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   // ============================================================================
-  // MOBILE SCROLL HANDLER STATE (inlined)
+  // MOBILE STATE
   // ============================================================================
 
-  let mobileIsExpanded = $state(false);
+  // Mobile is always full-height now (no half-height state)
+  // The expand toggle now shows/hides additional controls within the tool area
+  let mobileIsExpanded = $state(false); // Whether the drawer is expanded to full height on mobile
+  let mobileToolsExpanded = $state(true); // Whether to show full controls or just toolbar
+  let mobileToolView = $state<"controls" | "beat-grid">("controls"); // Toggle between views
+  let currentAnimationBeat = $state(0); // Track current beat for BeatGrid sync
+
+  // Legacy scroll handling state (kept for desktop compatibility)
   let mobileLastScrollTop = $state(0);
   let mobileTouchStartY = $state(0);
   let mobileTouchStartX = $state(0);
@@ -62,20 +69,14 @@
     const touch = e.touches[0];
     if (!touch) return;
 
-    const currentY = touch.pageY;
     const currentX = touch.pageX;
-    const deltaY = mobileTouchStartY - currentY;
     const deltaX = currentX - mobileTouchStartX;
+    const deltaY = mobileTouchStartY - touch.pageY;
     const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
 
+    // Prevent horizontal swipes from triggering back navigation
     if (isHorizontalSwipe && Math.abs(deltaX) > 5) {
       e.preventDefault();
-    }
-
-    if (!sideBySide && !mobileIsExpanded && mobileScrollContainerRef) {
-      if (!isHorizontalSwipe && deltaY > 30) {
-        mobileIsExpanded = true;
-      }
     }
   }
 

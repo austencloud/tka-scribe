@@ -322,7 +322,7 @@
     <div class="card-footer">
       <div class="card-meta">
         <span class="meta-user">
-          {item.userDisplayName.split(" ")[0]}
+          {item.userDisplayName?.split(" ")[0] || "Unknown"}
         </span>
         <span class="meta-time">{formatRelativeTime(item.createdAt)}</span>
       </div>

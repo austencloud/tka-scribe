@@ -6,15 +6,33 @@
   import { feedbackService } from "../../services/implementations/FeedbackService";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
+  import { firestore } from "$lib/shared/auth/firebase";
+  import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 
   const { versionState, onBack } = $props<{
     versionState: VersionState;
     onBack: () => void;
   }>();
 
+  // View mode: "releases" or "all"
+  let viewMode = $state<"releases" | "all">("releases");
+
+  // All archived items (for "all" view)
+  let allArchivedItems = $state<FeedbackItem[]>([]);
+  let isLoadingAll = $state(false);
+  let sortBy = $state<"date" | "type" | "title">("date");
+  let sortOrder = $state<"asc" | "desc">("desc");
+
   // Load versions on mount
   $effect(() => {
     versionState.loadVersions();
+  });
+
+  // Load all archived items when switching to "all" view
+  $effect(() => {
+    if (viewMode === "all" && allArchivedItems.length === 0) {
+      loadAllArchivedItems();
+    }
   });
 
   // Selected version for expanded view
@@ -35,6 +53,39 @@
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   });
+
+  async function loadAllArchivedItems() {
+    isLoadingAll = true;
+    try {
+      // Query Firestore directly for all archived items
+      const q = query(
+        collection(firestore, "feedback"),
+        where("status", "==", "archived"),
+        orderBy("archivedAt", "desc")
+      );
+      
+      const snapshot = await getDocs(q);
+      
+      allArchivedItems = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate?.() || new Date(),
+          updatedAt: data.updatedAt?.toDate?.() || new Date(),
+          archivedAt: data.archivedAt?.toDate?.() || undefined,
+          deferredUntil: data.deferredUntil?.toDate?.() || undefined,
+        } as FeedbackItem;
+      });
+      
+      console.log(`Loaded ${allArchivedItems.length} archived items`);
+    } catch (e) {
+      console.error("Failed to load archived items:", e);
+      allArchivedItems = [];
+    } finally {
+      isLoadingAll = false;
+    }
+  }
 
   function toggleVersion(version: string) {
     if (expandedVersion === version) {
@@ -64,23 +115,163 @@
     isDetailOpen = false;
     selectedItem = null;
   }
+
+  // Sorted archived items
+  const sortedArchivedItems = $derived.by(() => {
+    const items = [...allArchivedItems];
+    
+    items.sort((a, b) => {
+      let comparison = 0;
+      
+      if (sortBy === "date") {
+        const aTime = a.archivedAt?.getTime() || a.createdAt?.getTime() || 0;
+        const bTime = b.archivedAt?.getTime() || b.createdAt?.getTime() || 0;
+        comparison = bTime - aTime;
+      } else if (sortBy === "type") {
+        comparison = a.type.localeCompare(b.type);
+      } else if (sortBy === "title") {
+        comparison = a.title.localeCompare(b.title);
+      }
+      
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+    
+    return items;
+  });
 </script>
 
 <div class="archive-view">
   <header class="archive-header">
-    <button type="button" class="back-btn" onclick={onBack}>
-      <i class="fas fa-arrow-left"></i>
-      <span>Back to Kanban</span>
-    </button>
-    <h2>
-      <i class="fas fa-archive"></i>
-      Release Archive
-    </h2>
-    <p class="subtitle">Feedback resolved in past releases</p>
+    <div class="header-top">
+      <button type="button" class="back-btn" onclick={onBack}>
+        <i class="fas fa-arrow-left"></i>
+        <span>Back to Kanban</span>
+      </button>
+      
+      <div class="view-toggle">
+        <button
+          type="button"
+          class="toggle-btn"
+          class:active={viewMode === "releases"}
+          onclick={() => viewMode = "releases"}
+        >
+          <i class="fas fa-tags"></i>
+          By Release
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          class:active={viewMode === "all"}
+          onclick={() => viewMode = "all"}
+        >
+          <i class="fas fa-list"></i>
+          All Items
+        </button>
+      </div>
+    </div>
+    
+    <div class="header-content">
+      <h2>
+        <i class="fas fa-archive"></i>
+        {viewMode === "releases" ? "Release Archive" : "All Archived Feedback"}
+      </h2>
+      <p class="subtitle">
+        {viewMode === "releases" 
+          ? "Feedback resolved in past releases" 
+          : `${allArchivedItems.length} archived items`}
+      </p>
+    </div>
+    
+    {#if viewMode === "all"}
+      <div class="sort-controls">
+        <label>
+          <span>Sort by:</span>
+          <select bind:value={sortBy}>
+            <option value="date">Date Archived</option>
+            <option value="type">Type</option>
+            <option value="title">Title</option>
+          </select>
+        </label>
+        <button
+          type="button"
+          class="sort-order-btn"
+          onclick={() => sortOrder = sortOrder === "asc" ? "desc" : "asc"}
+          aria-label={sortOrder === "asc" ? "Sort ascending" : "Sort descending"}
+        >
+          <i class="fas fa-sort-amount-{sortOrder === "asc" ? "up" : "down"}"></i>
+        </button>
+      </div>
+    {/if}
   </header>
 
   <div class="archive-content">
-    {#if versionState.isLoading && versionState.versions.length === 0}
+    {#if viewMode === "all"}
+      {#if isLoadingAll}
+        <div class="loading-state">
+          <div class="skeleton-version"></div>
+          <div class="skeleton-version"></div>
+          <div class="skeleton-version"></div>
+        </div>
+      {:else if sortedArchivedItems.length === 0}
+        <div class="empty-state">
+          <i class="fas fa-box-open"></i>
+          <h3>No Archived Items</h3>
+          <p>Archived feedback will appear here.</p>
+        </div>
+      {:else}
+        <div class="all-items-list">
+          {#each sortedArchivedItems as item (item.id)}
+            {@const typeConfig = TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
+            <button
+              type="button"
+              class="feedback-item-card"
+              onclick={() => openFeedbackDetail(item.id)}
+            >
+              <div class="item-header">
+                <div class="item-icon" style="--type-color: {typeConfig.color}">
+                  <i class="fas {typeConfig.icon}"></i>
+                </div>
+                <div class="item-meta">
+                  <span class="item-type" style="color: {typeConfig.color}">
+                    {typeConfig.label}
+                  </span>
+                  {#if item.priority}
+                    <span class="item-priority priority-{item.priority}">
+                      {item.priority}
+                    </span>
+                  {/if}
+                </div>
+              </div>
+              <div class="item-content">
+                <h3 class="item-title">{item.title}</h3>
+                <p class="item-description">{item.description}</p>
+              </div>
+              <div class="item-footer">
+                <span class="item-date">
+                  <i class="fas fa-archive"></i>
+                  {#if item.archivedAt}
+                    {item.archivedAt.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric"
+                    })}
+                  {:else}
+                    Unknown date
+                  {/if}
+                </span>
+                {#if item.fixedInVersion}
+                  <span class="item-version">
+                    <i class="fas fa-tag"></i>
+                    v{item.fixedInVersion}
+                  </span>
+                {/if}
+              </div>
+              <i class="fas fa-chevron-right item-arrow"></i>
+            </button>
+          {/each}
+        </div>
+      {/if}
+    {:else if versionState.isLoading && versionState.versions.length === 0}
       <div class="loading-state">
         <div class="skeleton-version"></div>
         <div class="skeleton-version"></div>
@@ -217,10 +408,109 @@
   .archive-header {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
     padding: 16px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(0, 0, 0, 0.3);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .toggle-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .toggle-btn i {
+    font-size: 12px;
+  }
+
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sort-controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .sort-controls select {
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .sort-controls select:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .sort-order-btn {
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sort-order-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .back-btn {
@@ -455,6 +745,136 @@
     transform: translateX(2px);
   }
 
+  /* All items list */
+  .all-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .feedback-item-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .feedback-item-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .feedback-item-card .item-arrow {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+
+  .item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .item-type {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .item-priority {
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .item-priority.priority-high {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+  }
+
+  .item-priority.priority-medium {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+  }
+
+  .item-priority.priority-low {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+  }
+
+  .feedback-item-card .item-content {
+    gap: 6px;
+    padding-right: 24px;
+  }
+
+  .feedback-item-card .item-title {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.4;
+  }
+
+  .feedback-item-card .item-description {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .item-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .item-date,
+  .item-version {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .item-version {
+    padding: 2px 8px;
+    background: rgba(107, 114, 128, 0.2);
+    border-radius: 4px;
+    color: #9ca3af;
+  }
+
   /* Loading state */
   .loading-state {
     display: flex;
@@ -554,5 +974,45 @@
 
   .detail-error button:hover {
     background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .header-top {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .view-toggle {
+      width: 100%;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .sort-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .sort-controls label {
+      width: 100%;
+    }
+
+    .sort-controls select {
+      flex: 1;
+    }
+
+    .all-items-list {
+      gap: 8px;
+    }
+
+    .feedback-item-card {
+      padding: 12px;
+    }
   }
 </style>

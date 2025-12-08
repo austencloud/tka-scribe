@@ -4,16 +4,19 @@
  * @param size - Size in pixels (default: 64)
  * @returns SVG data URL
  */
-export function generateAvatarUrl(name: string, size: number = 64): string {
+export function generateAvatarUrl(name: string | undefined | null, size: number = 64): string {
+  // Handle undefined/null names
+  const displayName = name || 'Anonymous';
+  
   // Extract initials (first letter of first two words)
-  const initials = name
+  const initials = displayName
     .split(' ')
     .slice(0, 2)
     .map((word) => word[0]?.toUpperCase() || '')
     .join('');
 
   // Generate consistent color from name
-  const backgroundColor = generateColorFromString(name);
+  const backgroundColor = generateColorFromString(displayName);
   const textColor = '#ffffff';
 
   // Create SVG

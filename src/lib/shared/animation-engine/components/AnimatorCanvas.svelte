@@ -22,7 +22,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
   import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
   import GlyphRenderer from "./GlyphRenderer.svelte";
-  import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
+  import TKAGlyph, { preloadLetterDimensions } from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
   import BeatNumber from "$lib/shared/pictograph/shared/components/BeatNumber.svelte";
   import {
     type TrailPoint,
@@ -118,7 +118,13 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   const beatNumber = $derived.by(() => {
     if (!sequenceData || !beatData) return 0;
 
-    // Find the index of the current beatData in the sequence
+    // Use the beat's own beatNumber if available
+    // This correctly handles start position (beatNumber: 0) vs actual beats (beatNumber: 1, 2, 3...)
+    if (typeof beatData.beatNumber === "number") {
+      return beatData.beatNumber;
+    }
+
+    // Fallback: Find the index of the current beatData in the sequence
     const beatIndex = sequenceData.beats?.findIndex((b) => b === beatData);
     if (beatIndex !== undefined && beatIndex >= 0) {
       return beatIndex + 1; // Beat numbers are 1-indexed
@@ -549,6 +555,20 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
 
     previousSequenceId = newSequenceId;
+  });
+
+  // Preload TKA glyph letter dimensions to prevent flash on first animation loop
+  // This ensures all letter SVGs are fetched and cached before animation starts
+  $effect(() => {
+    if (!sequenceData?.beats?.length) return;
+
+    // Collect all letters from the sequence
+    const letters = sequenceData.beats.map((beat) => beat.letter);
+
+    // Preload dimensions for all letters (async, but completes before first render typically)
+    preloadLetterDimensions(letters).then(() => {
+      debug.log(`✅ Preloaded ${letters.length} letter dimensions for smooth animation`);
+    });
   });
 
   // CRITICAL: Clear caches when playback stops to free memory

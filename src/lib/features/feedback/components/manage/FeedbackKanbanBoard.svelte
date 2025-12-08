@@ -1,6 +1,6 @@
 <!-- FeedbackKanbanBoard - Kanban board layout for feedback management -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import type {
     FeedbackItem,
@@ -13,9 +13,12 @@
 
   const STORAGE_KEY = "tka-feedback-manage-active-status";
 
-  const { manageState } = $props<{
+  const { manageState, onopenArchive } = $props<{
     manageState: FeedbackManageState;
+    onopenArchive?: () => void;
   }>();
+
+  const dispatch = createEventDispatcher();
 
   // 4 Kanban columns + archived drop zone
   const KANBAN_STATUSES: FeedbackStatus[] = [
@@ -374,6 +377,7 @@
         class="archive-drop-zone"
         class:drop-target={dragOverColumn === ARCHIVE_STATUS}
         class:drag-active={draggedItem !== null}
+        class:clickable={draggedItem === null}
         style="--column-color: {STATUS_CONFIG[ARCHIVE_STATUS].color}"
         ondragover={(e) => {
           e.preventDefault();
@@ -386,12 +390,27 @@
           e.preventDefault();
           handleDrop(ARCHIVE_STATUS);
         }}
-        role="region"
-        aria-label="Archive drop zone"
+        onclick={() => {
+          if (draggedItem === null) {
+            onopenArchive?.();
+          }
+        }}
+        onkeydown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && draggedItem === null) {
+            e.preventDefault();
+            onopenArchive?.();
+          }
+        }}
+        role="button"
+        tabindex="0"
+        aria-label="View archived feedback"
       >
         <div class="archive-label">
           <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}"></i>
           <span>Archived</span>
+          {#if draggedItem === null}
+            <i class="fas fa-chevron-right view-icon"></i>
+          {/if}
         </div>
 
         {#if dragOverColumn === ARCHIVE_STATUS}
@@ -836,6 +855,22 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
+  .archive-drop-zone.clickable {
+    cursor: pointer;
+  }
+
+  .archive-drop-zone.clickable:hover {
+    border-color: color-mix(in srgb, var(--column-color) 40%, transparent);
+    box-shadow:
+      0 8px 28px color-mix(in srgb, var(--column-color) 25%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .archive-drop-zone.clickable:active {
+    transform: scale(0.98);
+  }
+
   .archive-drop-zone:hover {
     border-color: color-mix(in srgb, var(--column-color) 30%, transparent);
     box-shadow:
@@ -888,6 +923,18 @@
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+  }
+
+  .archive-label .view-icon {
+    margin-top: 8px;
+    font-size: 0.875rem;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+  }
+
+  .archive-drop-zone.clickable:hover .view-icon {
+    opacity: 1;
+    transform: translateY(2px);
   }
 
   .archive-drop-zone .drop-indicator {

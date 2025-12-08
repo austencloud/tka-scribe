@@ -7,6 +7,7 @@
  *   node fetch-feedback.js <id>         - View specific feedback
  *   node fetch-feedback.js <id> <status> "notes" - Update status
  *   node fetch-feedback.js <id> title "new title" - Update title
+ *   node fetch-feedback.js <id> priority <low|medium|high> - Update priority
  *   node fetch-feedback.js <id> resolution "notes" - Add resolution notes (summary of how it was fixed)
  *   node fetch-feedback.js <id> subtask add "title" "description" - Add subtask
  *   node fetch-feedback.js <id> subtask <subtaskId> <status> - Update subtask status
@@ -769,6 +770,47 @@ async function deferFeedback(docId, deferUntilDate, reason) {
 }
 
 /**
+ * Update feedback priority
+ */
+async function updateFeedbackPriority(docId, priority) {
+  const validPriorities = ['low', 'medium', 'high'];
+  if (!validPriorities.includes(priority)) {
+    console.log(`\n  ⚠️ Invalid priority "${priority}". Valid: ${validPriorities.join(', ')}\n`);
+    return null;
+  }
+
+  try {
+    const docRef = db.collection('feedback').doc(docId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      console.log(`\n  ❌ Feedback not found: ${docId}\n`);
+      return null;
+    }
+
+    await docRef.update({
+      priority: priority,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    const item = doc.data();
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  ✅ PRIORITY UPDATED\n`);
+    console.log('─'.repeat(70));
+    console.log(`  ID: ${docId}`);
+    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Priority: ${priority.toUpperCase()}`);
+    console.log('\n' + '='.repeat(70) + '\n');
+
+    return { id: docId, priority };
+
+  } catch (error) {
+    console.error('\n  Error updating priority:', error.message);
+    throw error;
+  }
+}
+
+/**
  * Mark feedback as internal-only (excluded from user-facing changelog)
  */
 async function setInternalOnly(docId, isInternalOnly) {
@@ -836,6 +878,9 @@ async function main() {
   } else if (args[1] === 'title') {
     // Update title: <id> title "new title"
     await updateFeedbackTitle(args[0], args[2]);
+  } else if (args[1] === 'priority') {
+    // Update priority: <id> priority <low|medium|high>
+    await updateFeedbackPriority(args[0], args[2]);
   } else if (args[1] === 'resolution') {
     // Update resolution notes: <id> resolution "resolution notes"
     await updateResolutionNotes(args[0], args[2]);
