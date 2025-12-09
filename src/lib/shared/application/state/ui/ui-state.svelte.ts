@@ -18,6 +18,7 @@ export const uiState = $state({
   showSpotlight: false,
   spotlightSequence: null as SequenceData | null,
   spotlightThumbnailService: null as IDiscoverThumbnailService | null,
+  spotlightImageUrl: null as string | null, // Direct image URL (for Create module spotlight)
   showDebugPanel: false, // Admin-only debug console
 });
 
@@ -188,12 +189,28 @@ export function getSpotlightThumbnailService(): IDiscoverThumbnailService | null
   return uiState.spotlightThumbnailService;
 }
 
+export function getSpotlightImageUrl(): string | null {
+  return uiState.spotlightImageUrl;
+}
+
 export function openSpotlightViewer(
   sequence: SequenceData,
   thumbnailService: IDiscoverThumbnailService
 ): void {
   uiState.spotlightSequence = sequence;
   uiState.spotlightThumbnailService = thumbnailService;
+  uiState.spotlightImageUrl = null; // Clear direct URL when using thumbnailService
+  uiState.showSpotlight = true;
+}
+
+/**
+ * Open spotlight viewer with a direct image URL (for Create module)
+ * This bypasses the need for a thumbnailService by providing a pre-rendered image
+ */
+export function openSpotlightWithImage(imageUrl: string, sequence?: SequenceData): void {
+  uiState.spotlightImageUrl = imageUrl;
+  uiState.spotlightSequence = sequence || null;
+  uiState.spotlightThumbnailService = null;
   uiState.showSpotlight = true;
 }
 
@@ -201,6 +218,7 @@ export function closeSpotlightViewer(): void {
   uiState.showSpotlight = false;
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
+  uiState.spotlightImageUrl = null;
 }
 
 // ============================================================================
@@ -240,5 +258,6 @@ export function resetUIState(): void {
   uiState.showSpotlight = false;
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
+  uiState.spotlightImageUrl = null;
   uiState.showDebugPanel = false;
 }

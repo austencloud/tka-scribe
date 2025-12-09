@@ -8,11 +8,13 @@
     show = false,
     sequence,
     thumbnailService,
+    directImageUrl, // Direct image URL (bypasses thumbnailService, used by Create module)
     onClose = () => {},
   } = $props<{
     show?: boolean;
     sequence?: SequenceData;
     thumbnailService?: IDiscoverThumbnailService;
+    directImageUrl?: string;
     onClose?: () => void;
   }>();
 
@@ -29,7 +31,11 @@
 
   // Show/hide logic
   $effect(() => {
-    if (show && sequence && thumbnailService) {
+    // Support both direct image URL (Create module) and thumbnailService (Discover module)
+    const hasDirectImage = show && directImageUrl;
+    const hasThumbnailSource = show && sequence && thumbnailService;
+
+    if (hasDirectImage || hasThumbnailSource) {
       console.log("✨ Spotlight viewer opened");
       isVisible = true;
       isClosing = false;
@@ -39,13 +45,18 @@
         document.documentElement.classList.add("tka-no-select");
       } catch {}
 
-      // Get first variation thumbnail
-      const thumbnail = sequence.thumbnails?.[0];
-      if (thumbnail) {
-        try {
-          imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
-        } catch (error) {
-          console.warn("Failed to resolve thumbnail", error);
+      // Use direct image URL if provided (Create module spotlight)
+      if (directImageUrl) {
+        imageUrl = directImageUrl;
+      } else if (sequence && thumbnailService) {
+        // Get first variation thumbnail (Discover module)
+        const thumbnail = sequence.thumbnails?.[0];
+        if (thumbnail) {
+          try {
+            imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
+          } catch (error) {
+            console.warn("Failed to resolve thumbnail", error);
+          }
         }
       }
     }

@@ -19,9 +19,9 @@
   import CreatePanelDrawer from "./CreatePanelDrawer.svelte";
   import PanelHeader from "$lib/features/create/shared/components/PanelHeader.svelte";
   import { getCreateModuleContext } from "../context/create-module-context";
-  import { goto } from "$app/navigation";
-  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IImageCompositionService } from "$lib/shared/render/services/contracts/IImageCompositionService";
+  import { openSpotlightWithImage } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
 
@@ -66,10 +66,12 @@
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
+  let imageCompositionService: IImageCompositionService | null = $state(null);
 
   // Local state
   let currentMode = $state<EditMode>("transforms");
   let isTransforming = $state(false);
+  let isRenderingPreview = $state(false);
   let showConfirmDialog = $state(false);
   let pendingSequenceTransfer = $state<any>(null);
 
@@ -85,6 +87,17 @@
     } catch (error) {
       console.warn(
         "FullscreenEditorPanel: Failed to resolve IHapticFeedbackService:",
+        error
+      );
+    }
+
+    try {
+      imageCompositionService = resolve<IImageCompositionService>(
+        TYPES.IImageCompositionService
+      );
+    } catch (error) {
+      console.warn(
+        "FullscreenEditorPanel: Failed to resolve IImageCompositionService:",
         error
       );
     }
@@ -250,21 +263,35 @@
     }
   }
 
-  function handlePreview() {
-    if (!sequence) return;
+  async function handlePreview() {
+    if (!sequence || !imageCompositionService || isRenderingPreview) return;
+
     hapticService?.trigger("selection");
-    handleClose();
+    isRenderingPreview = true;
+
     try {
-      const encoderService = resolve<ISequenceEncoderService>(
-        TYPES.ISequenceEncoderService
-      );
-      const { url } = encoderService.generateViewerURL(sequence, {
-        compress: true,
+      // Render the sequence as an image using ImageCompositionService
+      // For spotlight preview: clean view without header/footer, just the sequence grid
+      const canvas = await imageCompositionService.composeSequenceImage(sequence, {
+        includeStartPosition: true,
+        addWord: false, // No word header for clean preview
+        addBeatNumbers: true,
+        addDifficultyLevel: false, // No difficulty badge
+        addUserInfo: false, // No footer
+        beatSize: 150, // Good balance of quality and size
+        beatScale: 1,
       });
-      const urlObj = new URL(url);
-      goto(urlObj.pathname);
+
+      // Convert canvas to data URL
+      const imageUrl = canvas.toDataURL("image/png");
+
+      // Close the panel and open spotlight viewer with the rendered image
+      handleClose();
+      openSpotlightWithImage(imageUrl, sequence);
     } catch (err) {
-      console.error("Failed to generate preview URL:", err);
+      console.error("Failed to render preview image:", err);
+    } finally {
+      isRenderingPreview = false;
     }
   }
 
@@ -655,10 +682,10 @@
           <button
             class="action-btn"
             onclick={handlePreview}
-            disabled={!hasSequence}
+            disabled={!hasSequence || isRenderingPreview}
           >
-            <i class="fas fa-eye"></i>
-            <span>Preview</span>
+            <i class="fas {isRenderingPreview ? 'fa-spinner fa-spin' : 'fa-eye'}"></i>
+            <span>{isRenderingPreview ? 'Loading...' : 'Preview'}</span>
           </button>
           {#if !isInConstructTab}
             <button

@@ -41,11 +41,13 @@
   // MOBILE STATE
   // ============================================================================
 
-  // Mobile is always full-height now (no half-height state)
-  // The expand toggle now shows/hides additional controls within the tool area
-  let mobileIsExpanded = $state(false); // Whether the drawer is expanded to full height on mobile
-  let mobileToolsExpanded = $state(true); // Whether to show full controls or just toolbar
+  // Mobile is always full-height (no half-height state)
+  // The view toggle switches between beat-grid and controls at the bottom
+  let mobileIsExpanded = $state(true); // Always full height on mobile
   let mobileToolView = $state<"controls" | "beat-grid">("controls"); // Toggle between views
+
+  // Track current beat for beat grid sync
+  let currentBeatIndex = $state(0);
 
   // Toggle mobile tool view between controls and beat-grid
   function toggleMobileToolView() {
@@ -155,10 +157,6 @@
 
   function setMobileScrollContainer(element: HTMLDivElement | null) {
     mobileScrollContainerRef = element;
-  }
-
-  function toggleMobileExpanded() {
-    mobileIsExpanded = !mobileIsExpanded;
   }
 
   // Props - ALL state comes from parent
@@ -336,13 +334,18 @@
   function toggleRedMotion() {
     visibilityManager.setMotionVisibility(MotionColor.RED, !redMotionVisible);
   }
+
+  function handleBeatChange(beat: number) {
+    currentBeatIndex = beat;
+    onVideoBeatChange(beat);
+  }
 </script>
 
 <CreatePanelDrawer
   isOpen={show}
   panelName="animation"
   {combinedPanelHeight}
-  fullHeightOnMobile={mobileIsExpanded && !isSideBySideLayout}
+  fullHeightOnMobile={!isSideBySideLayout}
   showHandle={true}
   closeOnBackdrop={false}
   focusTrap={false}
@@ -383,7 +386,7 @@
             {isPlaying}
             {speed}
             {onCanvasReady}
-            {onVideoBeatChange}
+            onVideoBeatChange={handleBeatChange}
             {onPlaybackToggle}
             {trailSettings}
           />
@@ -395,17 +398,15 @@
             {blueMotionVisible}
             {redMotionVisible}
             {isSideBySideLayout}
-            isExpanded={mobileIsExpanded}
             bind:scrollContainerRef
             {mobileToolView}
             {sequenceData}
-            currentBeat={beatData && "beatNumber" in beatData ? beatData.beatNumber : 0}
+            currentBeat={currentBeatIndex}
             {onSpeedChange}
             {onPlaybackStart}
             {onPlaybackToggle}
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
-            onToggleExpanded={toggleMobileExpanded}
             onToggleToolView={toggleMobileToolView}
             {onExportGif}
             {isExporting}

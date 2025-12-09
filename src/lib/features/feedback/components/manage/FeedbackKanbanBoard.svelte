@@ -343,6 +343,17 @@
         {/if}
       </button>
     {/each}
+    <!-- Archive tab for mobile access -->
+    <button
+      type="button"
+      class="status-tab archive-tab"
+      style="--tab-color: {STATUS_CONFIG[ARCHIVE_STATUS].color}"
+      onclick={() => onopenArchive?.()}
+      aria-label="View archived feedback"
+    >
+      <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}"></i>
+      <span class="tab-label">Archive</span>
+    </button>
   </div>
 
   <div class="columns-container">
@@ -724,6 +735,18 @@
   .status-tab.active .tab-count {
     background: rgba(0, 0, 0, 0.25);
     color: rgba(0, 0, 0, 0.9);
+  }
+
+  /* Archive tab - slightly different styling to indicate it's a navigation action */
+  .status-tab.archive-tab {
+    flex: 0.6; /* Smaller than status tabs */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+
+  .status-tab.archive-tab:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-style: solid;
   }
 
   /* ===== COLUMNS CONTAINER ===== */

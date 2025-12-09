@@ -16,6 +16,7 @@
     getShowSpotlight,
     getSpotlightSequence,
     getSpotlightThumbnailService,
+    getSpotlightImageUrl,
   } from "../application/state/ui/ui-state.svelte";
   import type {
     ISheetRouterService,
@@ -27,6 +28,7 @@
   let showSpotlight = $derived(getShowSpotlight());
   let spotlightSequence = $derived(getSpotlightSequence());
   let spotlightThumbnailService = $derived(getSpotlightThumbnailService());
+  let spotlightImageUrl = $derived(getSpotlightImageUrl());
 
   // Route-based spotlight state
   let spotlightSequenceId = $state<string | null>(null);
@@ -87,14 +89,15 @@
 </script>
 
 <!-- Spotlight Viewer - rendered at root level for proper z-index -->
-<!-- Route-aware: Opens via ?spotlight={id} or legacy showSpotlight state -->
-{#if (showSpotlight && spotlightSequence && spotlightThumbnailService) || spotlightSequenceId}
+<!-- Route-aware: Opens via ?spotlight={id}, legacy showSpotlight state, or direct image URL -->
+{#if (showSpotlight && (spotlightSequence && spotlightThumbnailService || spotlightImageUrl)) || spotlightSequenceId}
   <SpotlightViewer
     show={showSpotlight || !!spotlightSequenceId}
     {...spotlightSequence ? { sequence: spotlightSequence } : {}}
     {...spotlightThumbnailService
       ? { thumbnailService: spotlightThumbnailService }
       : {}}
+    {...spotlightImageUrl ? { directImageUrl: spotlightImageUrl } : {}}
     onClose={handleClose}
   />
 {/if}

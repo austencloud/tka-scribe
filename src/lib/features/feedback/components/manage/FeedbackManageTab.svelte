@@ -57,22 +57,10 @@
     >
       {#snippet list()}
         {#if showArchive}
-          <div class="archive-container">
-            <div class="archive-header">
-              <button
-                class="back-button"
-                onclick={() => (showArchive = false)}
-                aria-label="Back to Kanban"
-              >
-                <i class="fas fa-arrow-left"></i>
-                <span>Back to Kanban</span>
-              </button>
-            </div>
-            <FeedbackArchiveView
-              {versionState}
-              onBack={() => (showArchive = false)}
-            />
-          </div>
+          <FeedbackArchiveView
+            {versionState}
+            onBack={() => (showArchive = false)}
+          />
         {:else}
           <div class="kanban-container">
             <FeedbackKanbanBoard
@@ -109,47 +97,6 @@
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-  }
-
-  .archive-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .archive-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
-  }
-
-  .back-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .back-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .back-button:active {
-    transform: scale(0.98);
-  }
-
-  .back-button i {
-    font-size: 12px;
   }
 
   .access-denied {
