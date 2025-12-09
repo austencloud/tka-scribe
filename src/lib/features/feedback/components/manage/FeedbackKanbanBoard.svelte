@@ -20,8 +20,11 @@
 
   const dispatch = createEventDispatcher();
 
+  // Kanban-specific status type (excludes 'archived')
+  type KanbanStatus = "new" | "in-progress" | "in-review" | "completed";
+
   // 4 Kanban columns + archived drop zone
-  const KANBAN_STATUSES: FeedbackStatus[] = [
+  const KANBAN_STATUSES: KanbanStatus[] = [
     "new",
     "in-progress",
     "in-review",
@@ -114,10 +117,10 @@
 
     // Sort each column by priority
     return {
-      new: sortByPriority(grouped.new),
-      "in-progress": sortByPriority(grouped["in-progress"]),
-      "in-review": sortByPriority(grouped["in-review"]),
-      completed: sortByPriority(grouped.completed),
+      new: sortByPriority(grouped.new ?? []),
+      "in-progress": sortByPriority(grouped["in-progress"] ?? []),
+      "in-review": sortByPriority(grouped["in-review"] ?? []),
+      completed: sortByPriority(grouped.completed ?? []),
     };
   });
 

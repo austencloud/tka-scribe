@@ -3,6 +3,9 @@
  *
  * Usage:
  *   node fetch-feedback.js              - Auto-claim next "new" item (by priority)
+ *   node fetch-feedback.js low          - Claim next LOW priority item only
+ *   node fetch-feedback.js medium       - Claim next MEDIUM priority item only
+ *   node fetch-feedback.js high         - Claim next HIGH priority item only
  *   node fetch-feedback.js list         - List all feedback with status
  *   node fetch-feedback.js prioritize   - Auto-prioritize all unprioritized items
  *   node fetch-feedback.js prioritize --dry-run - Preview prioritization without changes
@@ -176,25 +179,29 @@ async function listAllFeedback() {
 /**
  * Claim the next available feedback item
  * Returns the item details for the agent to work on
+ * @param {string|null} priorityFilter - Optional priority to filter by ('low', 'medium', 'high')
  */
-async function claimNextFeedback() {
+async function claimNextFeedback(priorityFilter = null) {
   try {
     // First check if there's a stale in-progress item we should reclaim
-    const staleSnapshot = await db.collection('feedback')
-      .where('status', '==', 'in-progress')
-      .get();
-
+    // (only if not filtering by priority)
     let itemToClaim = null;
     let isReclaim = false;
 
-    for (const doc of staleSnapshot.docs) {
-      const data = doc.data();
-      if (data.claimedAt?.toDate?.()) {
-        const claimAge = Date.now() - data.claimedAt.toDate().getTime();
-        if (claimAge > STALE_CLAIM_MS) {
-          itemToClaim = { id: doc.id, ...data };
-          isReclaim = true;
-          break;
+    if (!priorityFilter) {
+      const staleSnapshot = await db.collection('feedback')
+        .where('status', '==', 'in-progress')
+        .get();
+
+      for (const doc of staleSnapshot.docs) {
+        const data = doc.data();
+        if (data.claimedAt?.toDate?.()) {
+          const claimAge = Date.now() - data.claimedAt.toDate().getTime();
+          if (claimAge > STALE_CLAIM_MS) {
+            itemToClaim = { id: doc.id, ...data };
+            isReclaim = true;
+            break;
+          }
         }
       }
     }
@@ -208,27 +215,39 @@ async function claimNextFeedback() {
         .get();
 
       if (!newSnapshot.empty) {
+        let items = newSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        // Filter by priority if specified
+        if (priorityFilter) {
+          items = items.filter(item => item.priority === priorityFilter);
+          if (items.length === 0) {
+            console.log('\n' + '='.repeat(70));
+            console.log(`\n  ✨ No ${priorityFilter.toUpperCase()} priority items in queue!\n`);
+            console.log('  Run `node fetch-feedback.js list` to see all items.');
+            console.log('\n' + '='.repeat(70) + '\n');
+            return null;
+          }
+        }
+
         // Sort by priority order, then by createdAt
         const priorityOrder = { '': 0, 'high': 1, 'medium': 2, 'low': 3 };
-        const sortedItems = newSnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .sort((a, b) => {
-            const priorityA = priorityOrder[a.priority || ''] ?? 4;
-            const priorityB = priorityOrder[b.priority || ''] ?? 4;
-            if (priorityA !== priorityB) {
-              return priorityA - priorityB;
-            }
-            // Within same priority, oldest first
-            const timeA = a.createdAt?.toDate?.()?.getTime() || 0;
-            const timeB = b.createdAt?.toDate?.()?.getTime() || 0;
-            return timeA - timeB;
-          });
+        const sortedItems = items.sort((a, b) => {
+          const priorityA = priorityOrder[a.priority || ''] ?? 4;
+          const priorityB = priorityOrder[b.priority || ''] ?? 4;
+          if (priorityA !== priorityB) {
+            return priorityA - priorityB;
+          }
+          // Within same priority, oldest first
+          const timeA = a.createdAt?.toDate?.()?.getTime() || 0;
+          const timeB = b.createdAt?.toDate?.()?.getTime() || 0;
+          return timeA - timeB;
+        });
 
         if (sortedItems.length > 0) {
           itemToClaim = sortedItems[0];
         }
-      } else {
-        // Also check items with no status field (legacy)
+      } else if (!priorityFilter) {
+        // Also check items with no status field (legacy) - only when not filtering
         const legacySnapshot = await db.collection('feedback')
           .orderBy('createdAt', 'asc')
           .get();
@@ -977,9 +996,14 @@ async function setInternalOnly(docId, isInternalOnly) {
 const args = process.argv.slice(2);
 
 async function main() {
+  const validPriorities = ['low', 'medium', 'high'];
+
   if (args.length === 0) {
     // No args: claim next item
     await claimNextFeedback();
+  } else if (validPriorities.includes(args[0])) {
+    // Priority filter: claim next item with specified priority
+    await claimNextFeedback(args[0]);
   } else if (args[0] === 'list') {
     // List all feedback
     await listAllFeedback();

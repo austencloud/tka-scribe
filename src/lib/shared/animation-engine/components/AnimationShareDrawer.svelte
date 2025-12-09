@@ -399,7 +399,7 @@
             bind:scrollContainerRef
             {mobileToolView}
             {sequenceData}
-            currentBeat={sharedAnimationState.currentBeat}
+            currentBeat={beatData && "beatNumber" in beatData ? beatData.beatNumber : 0}
             {onSpeedChange}
             {onPlaybackStart}
             {onPlaybackToggle}

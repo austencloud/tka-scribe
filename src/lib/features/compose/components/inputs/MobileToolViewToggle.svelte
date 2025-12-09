@@ -4,9 +4,11 @@
   Toggle button for switching between Beat Grid and Controls view
   on mobile animation panel. Shows icon for non-active view.
 -->
-<script lang="ts">
+<script lang="ts" module>
   export type MobileToolView = "controls" | "beat-grid";
+</script>
 
+<script lang="ts">
   let {
     activeView = "controls",
     onToggle = () => {},

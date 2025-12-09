@@ -120,6 +120,14 @@ export class NotificationService {
         title: data["title"] as string,
         actionUrl: data["actionUrl"] as string | undefined,
       } as UserNotification;
+    } else if (type === "admin-new-user-signup") {
+      return {
+        ...baseNotification,
+        type: type as UserNotification["type"],
+        newUserId: data["newUserId"] as string,
+        newUserEmail: data["newUserEmail"] as string | null,
+        newUserDisplayName: data["newUserDisplayName"] as string,
+      } as UserNotification;
     }
 
     // Fallback for unknown types - treat as base notification

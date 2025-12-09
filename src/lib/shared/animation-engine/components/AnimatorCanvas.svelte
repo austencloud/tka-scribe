@@ -118,9 +118,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   const beatNumber = $derived.by(() => {
     if (!sequenceData || !beatData) return 0;
 
-    // Use the beat's own beatNumber if available
+    // Use the beat's own beatNumber if available (BeatData has it, StartPositionData doesn't)
     // This correctly handles start position (beatNumber: 0) vs actual beats (beatNumber: 1, 2, 3...)
-    if (typeof beatData.beatNumber === "number") {
+    if ("beatNumber" in beatData && typeof beatData.beatNumber === "number") {
       return beatData.beatNumber;
     }
 
@@ -853,8 +853,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     // Real-time capture - re-enabled per user feedback
     if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
-      const currentBeat = beatData?.beatNumber;
-      trailCaptureService.captureFrame(
+      const currentBeat = beatData && "beatNumber" in beatData ? beatData.beatNumber : 0;
+      trailCaptureService?.captureFrame(
         {
           blueProp,
           redProp,

@@ -324,10 +324,10 @@
       style="--badge-color: {typeConfig.color}"
       onclick={() => {
         if (readOnly) return;
-        const types: FeedbackType[] = ['bug', 'feature', 'enhancement', 'general'];
+        const types: FeedbackType[] = ['bug', 'feature', 'general'];
         const currentIndex = types.indexOf(editType);
         const nextIndex = (currentIndex + 1) % types.length;
-        editType = types[nextIndex];
+        editType = types[nextIndex] ?? 'general';
         void saveChanges();
       }}
       disabled={readOnly}

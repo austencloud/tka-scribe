@@ -67,7 +67,7 @@ export function createRecordingMetadata(
     mimeType: string;
   }
 ): RecordingMetadata {
-  const metadata: RecordingMetadata = {
+  return {
     id: data.id ?? crypto.randomUUID(),
     userId: data.userId,
     sequenceId: data.sequenceId,
@@ -78,18 +78,10 @@ export function createRecordingMetadata(
     mimeType: data.mimeType,
     recordedAt: data.recordedAt ?? new Date(),
     deviceType: data.deviceType,
+    thumbnailUrl: data.thumbnailUrl,
+    notes: data.notes,
     metadata: data.metadata ?? {},
   };
-
-  // Only include optional fields if they have defined values
-  if (data.thumbnailUrl !== undefined) {
-    metadata.thumbnailUrl = data.thumbnailUrl;
-  }
-  if (data.notes !== undefined) {
-    metadata.notes = data.notes;
-  }
-
-  return metadata;
 }
 
 /**

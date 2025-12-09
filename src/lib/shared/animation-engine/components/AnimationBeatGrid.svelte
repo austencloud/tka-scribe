@@ -64,8 +64,7 @@
           <div class="beat-content">
             <TKAGlyph
               pictographData={beat}
-              size={56}
-              showGrid={false}
+              letter={beat?.letter}
             />
           </div>
           <span class="beat-number">{beatNumber}</span>

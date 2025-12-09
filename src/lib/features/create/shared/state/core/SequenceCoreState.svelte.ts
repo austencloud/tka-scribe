@@ -32,18 +32,24 @@ export function createSequenceCoreState() {
     selectedSequenceId: null,
   });
 
+  // 🐛 FIX: Use $derived to create a stable reference that only updates when
+  // state.currentSequence or state.gridMode actually change.
+  // Previously, the getter created a new object on every access, causing infinite loops
+  // in $effects that depended on currentSequence.
+  const currentSequenceWithGridMode = $derived.by(() => {
+    if (state.currentSequence) {
+      return {
+        ...state.currentSequence,
+        gridMode: state.gridMode,
+      };
+    }
+    return state.currentSequence;
+  });
+
   return {
     // Getters
     get currentSequence() {
-      // Ensure currentSequence always has the correct gridMode from state
-      // This fixes synchronization issues where sequence.gridMode was undefined
-      if (state.currentSequence) {
-        return {
-          ...state.currentSequence,
-          gridMode: state.gridMode,
-        };
-      }
-      return state.currentSequence;
+      return currentSequenceWithGridMode;
     },
     get sequences() {
       return state.sequences;
