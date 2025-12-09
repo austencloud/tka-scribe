@@ -101,7 +101,9 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   }>();
 
   // Letter dimensions state - match legacy behavior
-  let letterDimensions = $state({ width: 0, height: 0 });
+  // Initialize with sensible defaults to prevent flash on first render
+  // The actual dimensions will be loaded async and update if different
+  let letterDimensions = $state({ width: 100, height: 100 });
 
   // Load letter dimensions using SVG viewBox like legacy version
   // Uses global cache to prevent duplicate fetches across all TKAGlyph instances

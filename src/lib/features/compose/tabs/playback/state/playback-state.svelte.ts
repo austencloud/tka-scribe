@@ -36,7 +36,11 @@ export interface CanvasSettings {
 const STORAGE_KEYS = {
   SPEED: "playback-speed",
   SHOULD_LOOP: "playback-should-loop",
+  MOBILE_TOOL_VIEW: "playback-mobile-tool-view",
 } as const;
+
+// Mobile tool view type
+export type MobileToolView = "controls" | "beat-grid";
 
 export type PlaybackState = {
   // Playback controls
@@ -44,6 +48,9 @@ export type PlaybackState = {
   readonly speed: number;
   readonly shouldLoop: boolean;
   readonly currentBeat: number;
+
+  // Mobile UI state
+  readonly mobileToolView: MobileToolView;
 
   // Current mode
   readonly currentMode: ComposeMode;
@@ -70,6 +77,10 @@ export type PlaybackState = {
   // Mutators - Canvas Settings
   updateCanvasSettings: (canvasId: string, settings: Partial<CanvasSettings>) => void;
   updateTrailSettings: (canvasId: string, trailSettings: Partial<TrailSettings>) => void;
+
+  // Mutators - Mobile UI
+  setMobileToolView: (view: MobileToolView) => void;
+  toggleMobileToolView: () => void;
 
   // Reset
   reset: () => void;
@@ -107,6 +118,11 @@ export function createPlaybackState(): PlaybackState {
   let shouldLoop = $state(loadFromStorage(STORAGE_KEYS.SHOULD_LOOP, false));
   let currentBeat = $state(0);
 
+  // Mobile UI state
+  let mobileToolView = $state<MobileToolView>(
+    loadFromStorage(STORAGE_KEYS.MOBILE_TOOL_VIEW, "controls")
+  );
+
   // Current mode
   let currentMode = $state<ComposeMode>("single");
 
@@ -134,6 +150,9 @@ export function createPlaybackState(): PlaybackState {
     },
     get currentBeat() {
       return currentBeat;
+    },
+    get mobileToolView() {
+      return mobileToolView;
     },
     get currentMode() {
       return currentMode;
@@ -236,6 +255,20 @@ export function createPlaybackState(): PlaybackState {
         };
         console.log(`🎨 Playback: Trail settings updated for ${canvasId}`, trailSettings);
       }
+    },
+
+    // Mobile UI
+    setMobileToolView(view: MobileToolView) {
+      mobileToolView = view;
+      saveToStorage(STORAGE_KEYS.MOBILE_TOOL_VIEW, view);
+      debug.log(`Mobile tool view set to ${view}`);
+    },
+
+    toggleMobileToolView() {
+      const newView = mobileToolView === "controls" ? "beat-grid" : "controls";
+      mobileToolView = newView;
+      saveToStorage(STORAGE_KEYS.MOBILE_TOOL_VIEW, newView);
+      debug.log(`Mobile tool view toggled to ${newView}`);
     },
 
     // Reset

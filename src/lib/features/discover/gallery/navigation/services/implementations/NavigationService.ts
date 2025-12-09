@@ -209,6 +209,7 @@ export class NavigationService implements INavigationService {
     sequences.forEach((seq) => {
       // Calculate correct sequence length: beats.length - 2
       // Subtract 2 for metadata beat and start position beat
+      if (!seq.beats) return;
       const length = seq.beats.length - 2;
       if (!lengthGroups.has(length)) {
         lengthGroups.set(length, []);

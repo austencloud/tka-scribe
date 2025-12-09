@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import type { ITrainChallengeService } from "$lib/features/train/services/contracts/ITrainChallengeService";
   import type { TrainChallenge } from "$lib/features/train/domain/models/TrainChallengeModels";
   import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
@@ -41,6 +41,9 @@
   });
 
   onMount(async () => {
+    // Ensure train module is loaded before resolving services
+    // This is needed for HMR recovery and initial load scenarios
+    await loadFeatureModule("train");
     challengeService = resolve<ITrainChallengeService>(
       TYPES.ITrainChallengeService
     );

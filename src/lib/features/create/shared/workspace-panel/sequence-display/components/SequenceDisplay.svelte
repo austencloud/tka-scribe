@@ -5,9 +5,10 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../state/SequenceStateOrchestrator.svelte";
+  import { getCreateModuleContext } from "../../../context/create-module-context";
   import BeatGrid from "./BeatGrid.svelte";
   import WordLabel from "./WordLabel.svelte";
-  // import WorkspaceHeader from "./WorkspaceHeader.svelte"; // Moved to TopBar
+  import UndoButton from "../../shared/components/buttons/UndoButton.svelte";
 
   let {
     sequenceState,
@@ -43,6 +44,9 @@
 
   // Services
   let hapticService: IHapticFeedbackService;
+
+  // Get CreateModuleState from context for UndoButton
+  const { CreateModuleState } = getCreateModuleContext();
 
   // Initialize haptic service on mount
   onMount(() => {
@@ -86,9 +90,17 @@
 <div class="sequence-container">
   <div class="content-wrapper">
     <div class="label-and-beatframe-unit">
-      <!-- Current word label above beat grid -->
-      <div class="word-label-area">
-        <WordLabel word={currentDisplayWord} scrollMode={false} />
+      <!-- Top bar: Undo button (left) + Word label (center) -->
+      <div class="top-bar">
+        <div class="top-left-zone">
+          <UndoButton {CreateModuleState} />
+        </div>
+        <div class="word-label-area">
+          <WordLabel word={currentDisplayWord} scrollMode={false} />
+        </div>
+        <div class="top-right-zone">
+          <!-- Empty for balance, could add future controls -->
+        </div>
       </div>
 
       <div class="beat-grid-wrapper">
@@ -153,12 +165,35 @@
     transition: all 0.3s ease-out;
   }
 
+  /* Top bar with 3-column layout: Undo (left) | WordLabel (center) | Empty (right) */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    flex-shrink: 0;
+  }
+
+  .top-left-zone {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 60px; /* Reserve space for undo button */
+  }
+
+  .top-right-zone {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 60px; /* Balance with left zone */
+  }
+
   .word-label-area {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    flex-shrink: 0;
+    flex: 1;
   }
 
   .beat-grid-wrapper {

@@ -194,8 +194,8 @@
     overflow: hidden;
     gap: 0;
 
-    /* View Transitions API target for tab switching */
-    view-transition-name: tab-content;
+    /* View Transitions API - use unique name to avoid duplicates */
+    view-transition-name: create-workspace-layout;
 
     /* Single smooth transition for ALL layout changes */
     transition:

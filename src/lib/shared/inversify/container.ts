@@ -438,6 +438,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "about":
       case "dashboard":
+      case "feedback":
         // These modules use no additional DI services
         break;
 

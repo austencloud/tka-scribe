@@ -15,7 +15,12 @@
   import MotionVisibilityButtons from "../trail/MotionVisibilityButtons.svelte";
   import ExpandToggleButton from "../inputs/ExpandToggleButton.svelte";
   import ExportActionsPanel from "./ExportActionsPanel.svelte";
+  import MobileToolViewToggle from "../inputs/MobileToolViewToggle.svelte";
+  import AnimationBeatGrid from "$lib/shared/animation-engine/components/AnimationBeatGrid.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+  type MobileToolView = "controls" | "beat-grid";
 
   const debug = createComponentLogger("AnimationControlsPanel");
   const DEFAULT_BPM = 60;
@@ -30,12 +35,17 @@
     scrollContainerRef = $bindable(null),
     isExporting = false,
     exportProgress = null,
+    // Mobile tool view props
+    mobileToolView = "controls" as MobileToolView,
+    sequenceData = null,
+    currentBeat = 0,
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
     onToggleBlue = () => {},
     onToggleRed = () => {},
     onToggleExpanded = () => {},
+    onToggleToolView = () => {},
     onExportGif = () => {},
     preventBackNavAction = () => {},
     onScroll = () => {},
@@ -49,12 +59,17 @@
     scrollContainerRef?: HTMLDivElement | null;
     isExporting?: boolean;
     exportProgress?: { progress: number; stage: string } | null;
+    // Mobile tool view props
+    mobileToolView?: MobileToolView;
+    sequenceData?: SequenceData | null;
+    currentBeat?: number;
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
     onToggleExpanded?: () => void;
+    onToggleToolView?: () => void;
     onExportGif?: () => void;
     preventBackNavAction?: (
       node: HTMLElement,
@@ -89,11 +104,18 @@
   use:preventBackNavAction={isSideBySideLayout}
   onscroll={onScroll}
 >
-  <!-- Compact Mode: Play + Quick Presets + Expand Toggle -->
+  <!-- Compact Mode: View Toggle (left) + Play (center) + Expand Toggle (right) -->
   {#if !isSideBySideLayout && !isExpanded}
     <div class="control-row compact-row">
+      <!-- Left: View Toggle -->
+      <MobileToolViewToggle
+        activeView={mobileToolView}
+        onToggle={onToggleToolView}
+      />
+
+      <!-- Center: Play button -->
       <button
-        class="play-pause-btn"
+        class="play-pause-btn center-play"
         class:playing={isPlaying}
         onclick={onPlaybackToggle}
         aria-label={isPlaying ? "Pause animation" : "Play animation"}
@@ -102,22 +124,36 @@
         <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
       </button>
 
-      <div class="quick-presets">
-        {#each [30, 60, 90, 120] as presetBpm}
-          <button
-            class="quick-preset-btn"
-            class:active={bpm === presetBpm}
-            onclick={() => handleBpmChange(presetBpm)}
-            type="button"
-            aria-label="Set BPM to {presetBpm}"
-          >
-            {presetBpm}
-          </button>
-        {/each}
-      </div>
-
+      <!-- Right: Expand Toggle -->
       <ExpandToggleButton {isExpanded} onToggle={onToggleExpanded} />
     </div>
+
+    <!-- Tool Area: Beat Grid or Quick Presets based on view -->
+    {#if mobileToolView === "beat-grid"}
+      <div class="beat-grid-area">
+        <AnimationBeatGrid
+          {sequenceData}
+          {currentBeat}
+          {isPlaying}
+        />
+      </div>
+    {:else}
+      <div class="control-row quick-presets-row">
+        <div class="quick-presets">
+          {#each [30, 60, 90, 120] as presetBpm}
+            <button
+              class="quick-preset-btn"
+              class:active={bpm === presetBpm}
+              onclick={() => handleBpmChange(presetBpm)}
+              type="button"
+              aria-label="Set BPM to {presetBpm}"
+            >
+              {presetBpm}
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
   {/if}
 
   <!-- Expanded Mode: Separate rows for better hierarchy -->
@@ -265,9 +301,31 @@
     gap: 8px;
   }
 
-  /* Compact mode row */
+  /* Compact mode row - new layout: toggle (left), play (center), expand (right) */
   .compact-row {
     flex-wrap: nowrap;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .compact-row .center-play {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Quick presets row (when in controls view) */
+  .quick-presets-row {
+    justify-content: center;
+  }
+
+  /* Beat grid area (when in beat-grid view) */
+  .beat-grid-area {
+    min-height: 100px;
+    max-height: 160px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
   }
 
   /* Expanded mode rows */

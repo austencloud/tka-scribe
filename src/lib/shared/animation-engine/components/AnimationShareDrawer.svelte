@@ -46,7 +46,11 @@
   let mobileIsExpanded = $state(false); // Whether the drawer is expanded to full height on mobile
   let mobileToolsExpanded = $state(true); // Whether to show full controls or just toolbar
   let mobileToolView = $state<"controls" | "beat-grid">("controls"); // Toggle between views
-  let currentAnimationBeat = $state(0); // Track current beat for BeatGrid sync
+
+  // Toggle mobile tool view between controls and beat-grid
+  function toggleMobileToolView() {
+    mobileToolView = mobileToolView === "controls" ? "beat-grid" : "controls";
+  }
 
   // Legacy scroll handling state (kept for desktop compatibility)
   let mobileLastScrollTop = $state(0);
@@ -393,12 +397,16 @@
             {isSideBySideLayout}
             isExpanded={mobileIsExpanded}
             bind:scrollContainerRef
+            {mobileToolView}
+            {sequenceData}
+            currentBeat={sharedAnimationState.currentBeat}
             {onSpeedChange}
             {onPlaybackStart}
             {onPlaybackToggle}
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
             onToggleExpanded={toggleMobileExpanded}
+            onToggleToolView={toggleMobileToolView}
             {onExportGif}
             {isExporting}
             {exportProgress}
