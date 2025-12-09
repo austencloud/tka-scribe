@@ -5,6 +5,14 @@ allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, mcp__playwright__brows
 
 # Feedback Queue Command
 
+**Arguments:** `$ARGUMENTS`
+
+Supports optional priority filter:
+- `/fb` - claim next item (highest priority first)
+- `/fb low` - claim next LOW priority item (quick wins)
+- `/fb medium` - claim next MEDIUM priority item
+- `/fb high` - claim next HIGH priority item
+
 ## TKA Domain Context
 
 Users may use vague or incorrect terminology. Here's the actual structure:
@@ -30,7 +38,7 @@ Users may use vague or incorrect terminology. Here's the actual structure:
 
 ## Workflow
 
-Run `node fetch-feedback.js` to auto-claim the next unclaimed feedback item.
+Run `node fetch-feedback.js $ARGUMENTS` to auto-claim the next unclaimed feedback item.
 
 The script will:
 1. Find the oldest feedback with status "new"

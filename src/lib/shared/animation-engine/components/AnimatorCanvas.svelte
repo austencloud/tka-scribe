@@ -118,9 +118,9 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   const beatNumber = $derived.by(() => {
     if (!sequenceData || !beatData) return 0;
 
-    // Use the beat's own beatNumber if available
+    // Use the beat's own beatNumber if available (BeatData has it, StartPositionData doesn't)
     // This correctly handles start position (beatNumber: 0) vs actual beats (beatNumber: 1, 2, 3...)
-    if (typeof beatData.beatNumber === "number") {
+    if ("beatNumber" in beatData && typeof beatData.beatNumber === "number") {
       return beatData.beatNumber;
     }
 
@@ -610,22 +610,21 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     }
   });
 
-  // DISABLED: Cache-based trail pre-computation
-  // This approach has persistent issues with coordinate transformations
-  // TODO: Replace with video-based pre-rendering for reliable playback
-  // $effect(() => {
-  //   const hasSequenceData = sequenceData !== null;
-  //   const cacheEnabled = trailSettings.usePathCache;
-  //   if (!hasSequenceData || !cacheEnabled) return;
-  //   const word = sequenceData.word || sequenceData.name || "unknown";
-  //   const totalBeats = sequenceData.beats?.length || 0;
-  //   const sequenceId = `${word}-${totalBeats}`;
-  //   if (sequenceId !== cacheSequenceId && totalBeats > 0) {
-  //     cacheSequenceId = sequenceId;
-  //     const beatDurationMs = 1000;
-  //     precomputeAnimationPaths(sequenceData, totalBeats, beatDurationMs);
-  //   }
-  // });
+  // Cache-based trail pre-computation for smooth, gap-free trails
+  // Re-enabled: Using aggressive cache backfill (threshold lowered to 0.05 beats)
+  $effect(() => {
+    const hasSequenceData = sequenceData !== null;
+    const cacheEnabled = trailSettings.usePathCache;
+    if (!hasSequenceData || !cacheEnabled) return;
+    const word = sequenceData!.word || sequenceData!.name || "unknown";
+    const totalBeats = sequenceData!.beats?.length || 0;
+    const sequenceId = `${word}-${totalBeats}`;
+    if (sequenceId !== cacheSequenceId && totalBeats > 0) {
+      cacheSequenceId = sequenceId;
+      const beatDurationMs = 1000;
+      precomputeAnimationPaths(sequenceData!, totalBeats, beatDurationMs);
+    }
+  });
 
   // Initialize PixiJS renderer (runs only once when container becomes available)
   $effect(() => {
@@ -854,8 +853,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
     // Real-time capture - re-enabled per user feedback
     if (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF) {
-      const currentBeat = beatData?.beatNumber;
-      trailCaptureService.captureFrame(
+      const currentBeat = beatData && "beatNumber" in beatData ? beatData.beatNumber : 0;
+      trailCaptureService?.captureFrame(
         {
           blueProp,
           redProp,

@@ -21,6 +21,8 @@ export type NotificationType =
   // Social notifications
   | "user-followed"          // Someone followed you
   | "achievement-unlocked"   // User unlocked an achievement
+  // Admin notifications
+  | "admin-new-user-signup"  // A new user signed up (admin-only)
   // System notifications
   | "system-announcement";   // Important system announcements
 
@@ -89,13 +91,24 @@ export interface SystemNotification extends BaseNotification {
 }
 
 /**
+ * Admin notification (for admin-only events)
+ */
+export interface AdminNotification extends BaseNotification {
+  type: "admin-new-user-signup";
+  newUserId: string;
+  newUserEmail: string | null;
+  newUserDisplayName: string;
+}
+
+/**
  * Union type for all notifications
  */
 export type UserNotification =
   | FeedbackNotification
   | SequenceNotification
   | SocialNotification
-  | SystemNotification;
+  | SystemNotification
+  | AdminNotification;
 
 /**
  * Legacy alias for backward compatibility
@@ -124,6 +137,9 @@ export interface NotificationPreferences {
   userFollowed: boolean;
   achievementUnlocked: boolean;
 
+  // Admin notifications (only relevant for admin users)
+  adminNewUserSignup: boolean;
+
   // System notifications (cannot be disabled)
   // systemAnnouncement is always enabled
 }
@@ -142,6 +158,7 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
   sequenceCommented: true,
   userFollowed: true,
   achievementUnlocked: true,
+  adminNewUserSignup: true,
 };
 
 /**
@@ -159,6 +176,7 @@ export function getPreferenceKeyForType(type: NotificationType): keyof Notificat
     "sequence-commented": "sequenceCommented",
     "user-followed": "userFollowed",
     "achievement-unlocked": "achievementUnlocked",
+    "admin-new-user-signup": "adminNewUserSignup",
   };
 
   return typeToKey[type] || null;
@@ -233,6 +251,13 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     color: "#f59e0b",
     icon: "fa-trophy",
     actionLabel: "View Achievement",
+  },
+  // Admin notifications
+  "admin-new-user-signup": {
+    label: "New User Signup",
+    color: "#10b981",
+    icon: "fa-user-plus",
+    actionLabel: "View User",
   },
   // System notifications
   "system-announcement": {

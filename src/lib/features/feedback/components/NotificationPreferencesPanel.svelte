@@ -17,8 +17,8 @@
     DEFAULT_NOTIFICATION_PREFERENCES
   );
   let isLoading = $state(true);
-  let bulkBusy: "enable" | "disable" | null = null;
-  let bulkPressed: "enable" | "disable" | null = null;
+  let bulkBusy = $state<"enable" | "disable" | null>(null);
+  let bulkPressed = $state<"enable" | "disable" | null>(null);
   let pendingKeys = $state<Set<keyof NotificationPreferences>>(new Set());
 
   // Load preferences on mount

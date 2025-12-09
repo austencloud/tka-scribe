@@ -178,7 +178,7 @@ export class TrailCaptureService implements ITrailCaptureService {
   private readonly GRID_HALFWAY_POINT_OFFSET = 150; // Matches strict grid points
   private readonly INWARD_FACTOR = 1.0; // No inward adjustment for animation mode
   private readonly INITIALIZATION_DELAY_MS = 500; // Wait for panel open and textures
-  private readonly LARGE_BEAT_GAP_THRESHOLD = 3.0; // >3 beats = seeking/major stutter
+  private readonly LARGE_BEAT_GAP_THRESHOLD = 0.05; // >0.05 beats = use cache (aggressive backfill for smooth trails)
   private readonly INITIAL_JUMP_DISTANCE_THRESHOLD = 200; // Skip trails for huge jumps
 
   initialize(config: TrailCaptureConfig): void {

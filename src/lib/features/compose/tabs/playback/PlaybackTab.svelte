@@ -7,8 +7,13 @@
 <script lang="ts">
   import { getPlaybackState } from "./state/playback-state.svelte";
   import { getComposeModuleState } from "../../shared/state/compose-module-state.svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import { onMount } from "svelte";
   import PlaybackHeader from "./components/PlaybackHeader.svelte";
   import PlaybackControls from "./components/PlaybackControls.svelte";
+  import MobilePlaybackToolbar from "./components/MobilePlaybackToolbar.svelte";
+  import MobilePlaybackBeatGrid from "./components/MobilePlaybackBeatGrid.svelte";
   import TrailSettingsSheet from "./components/TrailSettingsSheet.svelte";
   import SingleRenderer from "./renderers/SingleRenderer.svelte";
   import TunnelRenderer from "./renderers/TunnelRenderer.svelte";
@@ -19,6 +24,23 @@
   // Get state instances
   const playbackState = getPlaybackState();
   const moduleState = getComposeModuleState();
+
+  // Device detection for mobile layout
+  let deviceDetector: IDeviceDetector | null = $state(null);
+  let isMobile = $state(false);
+
+  onMount(() => {
+    deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
+    // Check initial state
+    isMobile = deviceDetector?.isMobile() ?? false;
+
+    // Listen for viewport changes
+    const handleResize = () => {
+      isMobile = deviceDetector?.isMobile() ?? false;
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  });
 
   // Trail settings sheet
   let isTrailSettingsOpen = $state(false);
@@ -44,6 +66,18 @@
   function handleClose() {
     console.log("🎬 Closing playback overlay");
     moduleState.closePlayback();
+  }
+
+  function handlePlayPause() {
+    if (playbackState.isPlaying) {
+      playbackState.pause();
+    } else {
+      playbackState.play();
+    }
+  }
+
+  function handleToggleMobileView() {
+    playbackState.toggleMobileToolView();
   }
 
   function handleSave() {
@@ -108,14 +142,25 @@
   });
 </script>
 
-<div class="playback-tab">
-  <!-- Header with close button -->
-  <PlaybackHeader
-    currentMode={playbackState.currentMode}
-    onSave={handleSave}
-    onShare={handleShare}
-    onClose={handleClose}
-  />
+<div class="playback-tab" class:mobile={isMobile}>
+  {#if isMobile}
+    <!-- Mobile Layout: Toolbar at top, canvas, then tool area -->
+    <MobilePlaybackToolbar
+      isPlaying={playbackState.isPlaying}
+      activeView={playbackState.mobileToolView}
+      onPlayPause={handlePlayPause}
+      onToggleView={handleToggleMobileView}
+      onClose={handleClose}
+    />
+  {:else}
+    <!-- Desktop Layout: Header with mode/actions -->
+    <PlaybackHeader
+      currentMode={playbackState.currentMode}
+      onSave={handleSave}
+      onShare={handleShare}
+      onClose={handleClose}
+    />
+  {/if}
 
   <!-- Renderer Area -->
   <div class="renderer-area">
@@ -165,17 +210,41 @@
     {/if}
   </div>
 
-  <!-- Playback Controls -->
-  <PlaybackControls
-    isPlaying={playbackState.isPlaying}
-    speed={playbackState.speed}
-    shouldLoop={playbackState.shouldLoop}
-    onPlay={() => playbackState.play()}
-    onPause={() => playbackState.pause()}
-    onStop={() => playbackState.stop()}
-    onSpeedChange={(speed) => playbackState.setSpeed(speed)}
-    onLoopToggle={(loop) => playbackState.setLoop(loop)}
-  />
+  <!-- Tool Area: Beat Grid or Controls -->
+  {#if isMobile}
+    <div class="mobile-tool-area">
+      {#if playbackState.mobileToolView === "beat-grid"}
+        <MobilePlaybackBeatGrid
+          sequence={singleSequence()}
+          currentBeat={playbackState.currentBeat}
+          isPlaying={playbackState.isPlaying}
+        />
+      {:else}
+        <PlaybackControls
+          isPlaying={playbackState.isPlaying}
+          speed={playbackState.speed}
+          shouldLoop={playbackState.shouldLoop}
+          onPlay={() => playbackState.play()}
+          onPause={() => playbackState.pause()}
+          onStop={() => playbackState.stop()}
+          onSpeedChange={(speed) => playbackState.setSpeed(speed)}
+          onLoopToggle={(loop) => playbackState.setLoop(loop)}
+        />
+      {/if}
+    </div>
+  {:else}
+    <!-- Desktop: Always show controls -->
+    <PlaybackControls
+      isPlaying={playbackState.isPlaying}
+      speed={playbackState.speed}
+      shouldLoop={playbackState.shouldLoop}
+      onPlay={() => playbackState.play()}
+      onPause={() => playbackState.pause()}
+      onStop={() => playbackState.stop()}
+      onSpeedChange={(speed) => playbackState.setSpeed(speed)}
+      onLoopToggle={(loop) => playbackState.setLoop(loop)}
+    />
+  {/if}
 
   <!-- Trail Settings Sheet -->
   {#if currentCanvasSettings()}
@@ -209,5 +278,27 @@
     position: relative;
     overflow: hidden;
     min-height: 0;
+  }
+
+  /* Mobile tool area */
+  .mobile-tool-area {
+    flex-shrink: 0;
+    min-height: 140px;
+    max-height: 200px;
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Mobile: Give more space to canvas */
+  .playback-tab.mobile .renderer-area {
+    flex: 1;
+    min-height: 50%;
+  }
+
+  /* Safe area for mobile tool area */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .mobile-tool-area {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
   }
 </style>

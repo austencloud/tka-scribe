@@ -2,8 +2,13 @@
  * Feedback Queue Manager
  *
  * Usage:
- *   node fetch-feedback.js              - Auto-claim next "new" item
+ *   node fetch-feedback.js              - Auto-claim next "new" item (by priority)
+ *   node fetch-feedback.js low          - Claim next LOW priority item only
+ *   node fetch-feedback.js medium       - Claim next MEDIUM priority item only
+ *   node fetch-feedback.js high         - Claim next HIGH priority item only
  *   node fetch-feedback.js list         - List all feedback with status
+ *   node fetch-feedback.js prioritize   - Auto-prioritize all unprioritized items
+ *   node fetch-feedback.js prioritize --dry-run - Preview prioritization without changes
  *   node fetch-feedback.js <id>         - View specific feedback
  *   node fetch-feedback.js <id> <status> "notes" - Update status
  *   node fetch-feedback.js <id> title "new title" - Update title
@@ -17,7 +22,7 @@
  *   node fetch-feedback.js delete <id>  - Delete feedback item
  *
  * Workflow:
- *   1. Agent runs with no args → claims next unclaimed feedback
+ *   1. Agent runs with no args → claims next unclaimed feedback (prioritized: no priority > high > medium > low)
  *   2. If complex, agent adds subtasks to break it down
  *   3. Future agents see subtasks and can work on prerequisites first
  *   4. Agent resolves when all subtasks complete
@@ -174,39 +179,75 @@ async function listAllFeedback() {
 /**
  * Claim the next available feedback item
  * Returns the item details for the agent to work on
+ * @param {string|null} priorityFilter - Optional priority to filter by ('low', 'medium', 'high')
  */
-async function claimNextFeedback() {
+async function claimNextFeedback(priorityFilter = null) {
   try {
     // First check if there's a stale in-progress item we should reclaim
-    const staleSnapshot = await db.collection('feedback')
-      .where('status', '==', 'in-progress')
-      .get();
-
+    // (only if not filtering by priority)
     let itemToClaim = null;
     let isReclaim = false;
 
-    for (const doc of staleSnapshot.docs) {
-      const data = doc.data();
-      if (data.claimedAt?.toDate?.()) {
-        const claimAge = Date.now() - data.claimedAt.toDate().getTime();
-        if (claimAge > STALE_CLAIM_MS) {
-          itemToClaim = { id: doc.id, ...data };
-          isReclaim = true;
-          break;
+    if (!priorityFilter) {
+      const staleSnapshot = await db.collection('feedback')
+        .where('status', '==', 'in-progress')
+        .get();
+
+      for (const doc of staleSnapshot.docs) {
+        const data = doc.data();
+        if (data.claimedAt?.toDate?.()) {
+          const claimAge = Date.now() - data.claimedAt.toDate().getTime();
+          if (claimAge > STALE_CLAIM_MS) {
+            itemToClaim = { id: doc.id, ...data };
+            isReclaim = true;
+            break;
+          }
         }
       }
     }
 
-    // If no stale items, get the oldest "new" item
+    // If no stale items, get the highest priority "new" item
+    // Priority order: no priority first (needs triage), then high, medium, low
+    // Within same priority, oldest first
     if (!itemToClaim) {
       const newSnapshot = await db.collection('feedback')
         .where('status', '==', 'new')
-        .orderBy('createdAt', 'asc')  // Oldest first (FIFO queue)
-        .limit(1)
         .get();
 
-      if (newSnapshot.empty) {
-        // Also check items with no status field (legacy)
+      if (!newSnapshot.empty) {
+        let items = newSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+        // Filter by priority if specified
+        if (priorityFilter) {
+          items = items.filter(item => item.priority === priorityFilter);
+          if (items.length === 0) {
+            console.log('\n' + '='.repeat(70));
+            console.log(`\n  ✨ No ${priorityFilter.toUpperCase()} priority items in queue!\n`);
+            console.log('  Run `node fetch-feedback.js list` to see all items.');
+            console.log('\n' + '='.repeat(70) + '\n');
+            return null;
+          }
+        }
+
+        // Sort by priority order, then by createdAt
+        const priorityOrder = { '': 0, 'high': 1, 'medium': 2, 'low': 3 };
+        const sortedItems = items.sort((a, b) => {
+          const priorityA = priorityOrder[a.priority || ''] ?? 4;
+          const priorityB = priorityOrder[b.priority || ''] ?? 4;
+          if (priorityA !== priorityB) {
+            return priorityA - priorityB;
+          }
+          // Within same priority, oldest first
+          const timeA = a.createdAt?.toDate?.()?.getTime() || 0;
+          const timeB = b.createdAt?.toDate?.()?.getTime() || 0;
+          return timeA - timeB;
+        });
+
+        if (sortedItems.length > 0) {
+          itemToClaim = sortedItems[0];
+        }
+      } else if (!priorityFilter) {
+        // Also check items with no status field (legacy) - only when not filtering
         const legacySnapshot = await db.collection('feedback')
           .orderBy('createdAt', 'asc')
           .get();
@@ -219,9 +260,6 @@ async function claimNextFeedback() {
         if (legacyItem) {
           itemToClaim = { id: legacyItem.id, ...legacyItem.data() };
         }
-      } else {
-        const doc = newSnapshot.docs[0];
-        itemToClaim = { id: doc.id, ...doc.data() };
       }
     }
 
@@ -811,6 +849,118 @@ async function updateFeedbackPriority(docId, priority) {
 }
 
 /**
+ * Auto-prioritize feedback items based on type and description keywords
+ * Priority rules:
+ * - HIGH: bugs, crashes, data loss, security, blocking issues, "can't", "broken", "error"
+ * - MEDIUM: core features, important UX issues, "should", "need", "want"
+ * - LOW: polish, cosmetic, nice-to-haves, "could", "maybe", "minor"
+ */
+async function prioritizeFeedback(dryRun = false) {
+  try {
+    // Fetch all "new" items without a priority
+    const snapshot = await db.collection('feedback')
+      .where('status', '==', 'new')
+      .get();
+
+    const unprioritized = snapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(item => !item.priority);
+
+    if (unprioritized.length === 0) {
+      console.log('\n' + '='.repeat(70));
+      console.log('\n  ✨ All feedback items already have priorities!\n');
+      console.log('='.repeat(70) + '\n');
+      return;
+    }
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  🎯 AUTO-PRIORITIZING ${unprioritized.length} FEEDBACK ITEMS\n`);
+    console.log('─'.repeat(70));
+
+    // Keywords for priority detection
+    const highKeywords = [
+      'crash', 'broken', 'error', 'bug', 'fail', 'can\'t', 'cannot', 'doesn\'t work',
+      'won\'t', 'stuck', 'freeze', 'hang', 'data loss', 'security', 'blocking',
+      'urgent', 'critical', 'severe', 'major', 'unusable', 'impossible'
+    ];
+    const lowKeywords = [
+      'could', 'maybe', 'minor', 'small', 'cosmetic', 'polish', 'nice to have',
+      'nitpick', 'suggestion', 'idea', 'would be nice', 'eventually', 'someday',
+      'tweak', 'slightly', 'little'
+    ];
+
+    const results = { high: [], medium: [], low: [] };
+
+    for (const item of unprioritized) {
+      const text = `${item.description || ''} ${item.title || ''}`.toLowerCase();
+      const type = item.type || 'general';
+
+      let priority = 'medium'; // Default
+
+      // Type-based priority
+      if (type === 'bug') {
+        priority = 'high'; // Bugs start as high
+      }
+
+      // Keyword overrides
+      const hasHighKeyword = highKeywords.some(kw => text.includes(kw));
+      const hasLowKeyword = lowKeywords.some(kw => text.includes(kw));
+
+      if (hasHighKeyword) {
+        priority = 'high';
+      } else if (hasLowKeyword && type !== 'bug') {
+        priority = 'low';
+      }
+
+      // Feature requests without urgency keywords are medium
+      if (type === 'feature' && !hasHighKeyword && !hasLowKeyword) {
+        priority = 'medium';
+      }
+
+      // Enhancements are typically medium-low
+      if (type === 'enhancement' && !hasHighKeyword) {
+        priority = hasLowKeyword ? 'low' : 'medium';
+      }
+
+      // General feedback without keywords is low
+      if (type === 'general' && !hasHighKeyword) {
+        priority = 'low';
+      }
+
+      results[priority].push(item);
+
+      const title = (item.title || item.description?.substring(0, 40) || 'Untitled').substring(0, 45);
+      const icon = priority === 'high' ? '🔴' : priority === 'medium' ? '🟡' : '🟢';
+      console.log(`  ${icon} ${priority.toUpperCase().padEnd(6)} | ${item.type?.padEnd(11) || 'general    '} | ${title}${title.length >= 45 ? '...' : ''}`);
+
+      if (!dryRun) {
+        await db.collection('feedback').doc(item.id).update({
+          priority,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    }
+
+    console.log('\n' + '─'.repeat(70));
+    console.log(`\n  Summary: ${results.high.length} high | ${results.medium.length} medium | ${results.low.length} low`);
+
+    if (dryRun) {
+      console.log('\n  ⚠️  DRY RUN - No changes made. Run without --dry-run to apply.');
+    } else {
+      console.log('\n  ✅ All items prioritized!');
+    }
+
+    console.log('\n' + '='.repeat(70) + '\n');
+
+    return results;
+
+  } catch (error) {
+    console.error('\n  Error prioritizing feedback:', error.message);
+    throw error;
+  }
+}
+
+/**
  * Mark feedback as internal-only (excluded from user-facing changelog)
  */
 async function setInternalOnly(docId, isInternalOnly) {
@@ -846,9 +996,14 @@ async function setInternalOnly(docId, isInternalOnly) {
 const args = process.argv.slice(2);
 
 async function main() {
+  const validPriorities = ['low', 'medium', 'high'];
+
   if (args.length === 0) {
     // No args: claim next item
     await claimNextFeedback();
+  } else if (validPriorities.includes(args[0])) {
+    // Priority filter: claim next item with specified priority
+    await claimNextFeedback(args[0]);
   } else if (args[0] === 'list') {
     // List all feedback
     await listAllFeedback();
@@ -859,6 +1014,45 @@ async function main() {
       return;
     }
     await deleteFeedback(args[1]);
+  } else if (args[0] === 'prioritize') {
+    // Auto-prioritize all unprioritized feedback
+    const dryRun = args.includes('--dry-run');
+    await prioritizeFeedback(dryRun);
+  } else if (args[0] === 'create') {
+    // Create new feedback: create "title" "description" [type] [module] [tab]
+    const title = args[1];
+    const description = args[2];
+    const type = args[3] || 'enhancement';
+    const module = args[4] || 'Unknown';
+    const tab = args[5] || 'Unknown';
+
+    if (!title || !description) {
+      console.log('\n  Usage: node fetch-feedback.js create "title" "description" [type] [module] [tab]');
+      console.log('  Types: bug, feature, enhancement, general');
+      console.log('  Example: node fetch-feedback.js create "Fix trail jank" "Trails appear janky..." enhancement compose playback\n');
+      return;
+    }
+
+    const docRef = await db.collection('feedback').add({
+      title,
+      content: description,
+      type,
+      module,
+      tab,
+      status: 'new',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      userName: 'Claude Agent',
+      userId: 'claude-agent'
+    });
+
+    console.log('\n======================================================================');
+    console.log('\n  ✅ FEEDBACK CREATED\n');
+    console.log('──────────────────────────────────────────────────────────────────────');
+    console.log(`  ID: ${docRef.id}`);
+    console.log(`  Title: ${title}`);
+    console.log(`  Type: ${type}`);
+    console.log(`  Module: ${module} / ${tab}`);
+    console.log('\n======================================================================\n');
   } else if (args[1] === 'defer') {
     // Defer: <id> defer "YYYY-MM-DD" "Reason"
     if (!args[2]) {

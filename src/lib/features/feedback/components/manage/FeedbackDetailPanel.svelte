@@ -317,10 +317,28 @@
 <div class="detail-panel">
   <!-- Header with restore/save/close buttons -->
   <header class="panel-header">
-    <div class="header-badge" style="--badge-color: {typeConfig.color}">
+    <!-- Clickable type badge - cycles through types -->
+    <button
+      type="button"
+      class="header-badge clickable"
+      style="--badge-color: {typeConfig.color}"
+      onclick={() => {
+        if (readOnly) return;
+        const types: FeedbackType[] = ['bug', 'feature', 'general'];
+        const currentIndex = types.indexOf(editType);
+        const nextIndex = (currentIndex + 1) % types.length;
+        editType = types[nextIndex] ?? 'general';
+        void saveChanges();
+      }}
+      disabled={readOnly}
+      title={readOnly ? typeConfig.label : "Click to change type"}
+    >
       <i class="fas {typeConfig.icon}"></i>
       <span>{typeConfig.label}</span>
-    </div>
+      {#if !readOnly}
+        <i class="fas fa-exchange-alt type-switcher-icon"></i>
+      {/if}
+    </button>
     <div class="header-actions">
       {#if hasChanges || isSaving}
         <button
@@ -433,31 +451,7 @@
       </div>
     </section>
 
-    <!-- Type & Priority Section (always visible for quick changes) -->
-    <section class="section">
-      <h3 class="section-title">
-        <i class="fas fa-tag"></i>
-        Type
-      </h3>
-      <div class="type-grid">
-        {#each Object.entries(TYPE_CONFIG) as [type, config]}
-          <button
-            type="button"
-            class="type-btn"
-            class:active={editType === type}
-            style="--type-color: {config.color}"
-            onclick={() => {
-              editType = type as FeedbackType;
-              void saveChanges();
-            }}
-          >
-            <i class="fas {config.icon}"></i>
-            <span>{config.label}</span>
-          </button>
-        {/each}
-      </div>
-    </section>
-
+    <!-- Priority Section (always visible for quick changes) -->
     <section class="section">
       <h3 class="section-title">
         <i class="fas fa-exclamation-circle"></i>
@@ -491,56 +485,6 @@
             <span>{config.label}</span>
           </button>
         {/each}
-      </div>
-    </section>
-
-    <!-- Context Section (inline editable) -->
-    <section class="section">
-      <h3 class="section-title">Context</h3>
-      <div class="context-edit-card">
-        <div class="context-edit-row">
-          <span class="context-edit-label">
-            <i class="fas fa-crosshairs"></i>
-            Captured
-          </span>
-          <span class="context-edit-value">
-            {item.capturedModule} › {item.capturedTab || "—"}
-          </span>
-        </div>
-        <div class="context-edit-row">
-          <span class="context-edit-label">
-            <i class="fas fa-edit"></i>
-            Reported
-          </span>
-          <div class="context-selects">
-            <select
-              class="context-select"
-              bind:value={editReportedModule}
-              onchange={() => {
-                editReportedTab = "";
-                void saveChanges();
-              }}
-            >
-              <option value="">Select module...</option>
-              {#each MODULE_DEFINITIONS.filter((m) => m.isMain) as mod}
-                <option value={mod.id}>{mod.label}</option>
-              {/each}
-            </select>
-            <select
-              class="context-select"
-              bind:value={editReportedTab}
-              disabled={!editReportedModule || availableTabs().length === 0}
-              onchange={() => void saveChanges()}
-            >
-              <option value="">
-                {availableTabs().length === 0 ? "No tabs" : "Select tab..."}
-              </option>
-              {#each availableTabs() as tab}
-                <option value={tab.id}>{tab.label}</option>
-              {/each}
-            </select>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -881,10 +825,40 @@
     gap: var(--fb-space-xs);
     padding: var(--fb-space-xs) var(--fb-space-sm);
     background: color-mix(in srgb, var(--badge-color) 15%, transparent);
+    border: 1px solid transparent;
     border-radius: var(--fb-radius-sm);
     font-size: var(--fb-text-sm);
     font-weight: 600;
     color: var(--badge-color);
+    transition: all 0.2s ease;
+  }
+
+  .header-badge.clickable {
+    cursor: pointer;
+  }
+
+  .header-badge.clickable:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--badge-color) 25%, transparent);
+    border-color: var(--badge-color);
+    transform: scale(1.02);
+  }
+
+  .header-badge.clickable:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .header-badge:disabled {
+    cursor: default;
+  }
+
+  .type-switcher-icon {
+    font-size: 0.75em;
+    opacity: 0.6;
+    margin-left: var(--fb-space-2xs);
+  }
+
+  .header-badge.clickable:hover .type-switcher-icon {
+    opacity: 1;
   }
 
   .close-btn {

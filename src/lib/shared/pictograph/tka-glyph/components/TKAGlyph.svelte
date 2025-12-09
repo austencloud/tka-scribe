@@ -8,14 +8,23 @@ Uses pure runes instead of stores for reactivity.
   import { getLetterImagePath as getPath } from "../utils/letter-image-getter";
   import { Letter as LetterType } from "$lib/shared/foundation/domain/models/Letter";
 
-  // Module-level cache shared across ALL TKAGlyph instances
+  // Module-level caches shared across ALL TKAGlyph instances
   // This prevents redundant fetches when multiple glyphs render the same letter
   const globalDimensionsCache = new Map<string, { width: number; height: number }>();
+  const globalSvgDataUrlCache = new Map<string, string>(); // Cache SVG as data URL for instant rendering
   const globalLoadingPromises = new Map<string, Promise<{ width: number; height: number }>>();
 
   /**
-   * Preload letter dimensions for a list of letters.
+   * Get cached data URL for a letter, or null if not cached.
+   */
+  export function getCachedSvgDataUrl(letter: string): string | null {
+    return globalSvgDataUrlCache.get(letter) ?? null;
+  }
+
+  /**
+   * Preload letter SVGs for a list of letters.
    * Call this before animation starts to prevent flash on first render.
+   * Caches both dimensions AND the SVG as a data URL for instant rendering.
    * Returns a promise that resolves when all letters are cached.
    */
   export async function preloadLetterDimensions(letters: (string | null | undefined)[]): Promise<void> {
@@ -23,7 +32,7 @@ Uses pure runes instead of stores for reactivity.
 
     await Promise.all(uniqueLetters.map(async (letter) => {
       // Already cached - skip
-      if (globalDimensionsCache.has(letter)) return;
+      if (globalDimensionsCache.has(letter) && globalSvgDataUrlCache.has(letter)) return;
 
       // Already loading - wait for it
       if (globalLoadingPromises.has(letter)) {
@@ -45,7 +54,13 @@ Uses pure runes instead of stores for reactivity.
             ? { width: parseFloat(viewBoxMatch[1] || "100"), height: parseFloat(viewBoxMatch[2] || "100") }
             : { width: 100, height: 100 };
 
+          // Cache dimensions
           globalDimensionsCache.set(letter, dims);
+
+          // Cache SVG as data URL for instant rendering (no network request needed)
+          const dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgText)))}`;
+          globalSvgDataUrlCache.set(letter, dataUrl);
+
           return dims;
         } catch (error) {
           console.error(`Failed to preload letter dimensions for ${letter}:`, error);
@@ -101,24 +116,50 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   }>();
 
   // Letter dimensions state - match legacy behavior
-  let letterDimensions = $state({ width: 0, height: 0 });
+  // Initialize with sensible defaults to prevent flash on first render
+  // The actual dimensions will be loaded async and update if different
+  let letterDimensions = $state({ width: 100, height: 100 });
 
-  // Load letter dimensions using SVG viewBox like legacy version
+  // Local SVG data URL for this component instance (avoids global state reactivity issues)
+  let localSvgDataUrl = $state<string | null>(null);
+
+  // Image source - uses local cached URL if available
+  const imageSrc = $derived.by(() => {
+    if (!letter) return "";
+    // Use local cached URL if available, otherwise fall back to file path
+    return localSvgDataUrl ?? getLetterImagePath(letter as Letter);
+  });
+
+  // Check if image is ready (has cached data URL)
+  const imageReady = $derived(localSvgDataUrl !== null);
+
+  // Load letter dimensions and SVG data URL using cache
   // Uses global cache to prevent duplicate fetches across all TKAGlyph instances
-  async function loadLetterDimensions(currentLetter: Letter) {
+  async function loadLetterData(currentLetter: Letter) {
     if (!currentLetter) return;
 
     const cacheKey = currentLetter;
 
-    // Check global cache first (fastest path)
+    // Check global cache first (fastest path) - sync access for instant render
     if (globalDimensionsCache.has(cacheKey)) {
       letterDimensions = globalDimensionsCache.get(cacheKey)!;
+    }
+    if (globalSvgDataUrlCache.has(cacheKey)) {
+      // Already cached - set local state
+      localSvgDataUrl = globalSvgDataUrlCache.get(cacheKey)!;
       return;
     }
 
     // Check if already loading (prevents duplicate concurrent fetches)
     if (globalLoadingPromises.has(cacheKey)) {
-      letterDimensions = await globalLoadingPromises.get(cacheKey)!;
+      await globalLoadingPromises.get(cacheKey);
+      // After loading completes, grab from cache
+      if (globalDimensionsCache.has(cacheKey)) {
+        letterDimensions = globalDimensionsCache.get(cacheKey)!;
+      }
+      if (globalSvgDataUrlCache.has(cacheKey)) {
+        localSvgDataUrl = globalSvgDataUrlCache.get(cacheKey)!;
+      }
       return;
     }
 
@@ -145,11 +186,17 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
           };
         }
 
+        // Cache dimensions
         globalDimensionsCache.set(cacheKey, dims);
+
+        // Cache SVG as data URL for instant rendering
+        const dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgText)))}`;
+        globalSvgDataUrlCache.set(cacheKey, dataUrl);
+
         return dims;
       } catch (error) {
         console.error(
-          `Failed to load letter dimensions for ${currentLetter}:`,
+          `Failed to load letter data for ${currentLetter}:`,
           error
         );
         return { width: 50, height: 50 };
@@ -160,12 +207,27 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 
     globalLoadingPromises.set(cacheKey, loadPromise);
     letterDimensions = await loadPromise;
+
+    // Update local state with cached URL
+    if (globalSvgDataUrlCache.has(cacheKey)) {
+      localSvgDataUrl = globalSvgDataUrlCache.get(cacheKey)!;
+    }
   }
 
-  // Load dimensions when letter changes
+  // Load data when letter changes - reset local cache first
   $effect(() => {
     if (letter) {
-      loadLetterDimensions(letter as Letter);
+      // Reset local URL when letter changes to avoid showing wrong letter briefly
+      localSvgDataUrl = globalSvgDataUrlCache.get(letter) ?? null;
+      // Then load if not already cached
+      if (!localSvgDataUrl) {
+        loadLetterData(letter as Letter);
+      } else {
+        // Also update dimensions from cache
+        if (globalDimensionsCache.has(letter)) {
+          letterDimensions = globalDimensionsCache.get(letter)!;
+        }
+      }
     }
   });
 
@@ -205,7 +267,7 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 {#if hasLetter && dimensionsLoaded}
   <g
     class="tka-glyph"
-    class:visible
+    class:visible={visible && imageReady}
     class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     data-letter={letter}
@@ -221,10 +283,11 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
       : {}}
   >
     <!-- Main letter with exact legacy dimensions -->
+    <!-- Uses cached data URL if available for instant rendering, otherwise falls back to file path -->
     <image
       x="0"
       y="0"
-      href={letter ? getLetterImagePath(letter as Letter) : ""}
+      href={imageSrc}
       width={letterDimensions.width}
       height={letterDimensions.height}
       preserveAspectRatio="xMinYMin meet"

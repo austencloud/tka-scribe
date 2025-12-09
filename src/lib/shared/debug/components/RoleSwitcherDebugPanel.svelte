@@ -109,21 +109,21 @@
   {#if isAdmin}
     <!-- Floating indicator when override is active -->
     {#if debugOverride}
-      <div class="override-indicator" onclick={togglePanel}>
+      <button type="button" class="override-indicator" onclick={togglePanel}>
         <i class="fas fa-user-secret"></i>
         <span>Viewing as {debugOverride}</span>
-      </div>
+      </button>
     {/if}
     {#if isPreview}
-      <div class="override-indicator preview" onclick={togglePanel}>
+      <button type="button" class="override-indicator preview" onclick={togglePanel}>
         <i class="fas fa-eye"></i>
         <span>Preview: {testPreviewState.userLabel || testPreviewState.userId}</span>
-      </div>
+      </button>
     {/if}
 
   <!-- Debug panel -->
   {#if isOpen}
-    <div class="debug-panel-backdrop" onclick={togglePanel}></div>
+    <button type="button" class="debug-panel-backdrop" onclick={togglePanel} aria-label="Close debug panel"></button>
     <div class="debug-panel">
       <div class="panel-header">
         <div class="panel-title">

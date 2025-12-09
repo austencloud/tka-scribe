@@ -20,8 +20,11 @@
 
   const dispatch = createEventDispatcher();
 
+  // Kanban-specific status type (excludes 'archived')
+  type KanbanStatus = "new" | "in-progress" | "in-review" | "completed";
+
   // 4 Kanban columns + archived drop zone
-  const KANBAN_STATUSES: FeedbackStatus[] = [
+  const KANBAN_STATUSES: KanbanStatus[] = [
     "new",
     "in-progress",
     "in-review",
@@ -67,7 +70,27 @@
   // Get active status color for background gradient
   const activeStatusColor = $derived(STATUS_CONFIG[activeStatus].color);
 
-  // Group items by status (4 columns)
+  // Priority sort order: no priority first (so you see it and assign priority), then high, medium, low
+  const PRIORITY_ORDER: Record<string, number> = {
+    "": 0, // No priority - highest sort priority (appears first)
+    high: 1,
+    medium: 2,
+    low: 3,
+  };
+
+  function sortByPriority(items: FeedbackItem[]): FeedbackItem[] {
+    return [...items].sort((a, b) => {
+      const priorityA = PRIORITY_ORDER[a.priority || ""] ?? 4;
+      const priorityB = PRIORITY_ORDER[b.priority || ""] ?? 4;
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      // Secondary sort: oldest first within same priority
+      return (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0);
+    });
+  }
+
+  // Group items by status (4 columns), sorted by priority
   // Uses allItems (unfiltered) to show all feedback in their respective status columns
   const itemsByStatus = $derived.by(() => {
     const grouped: Record<string, FeedbackItem[]> = {
@@ -92,7 +115,13 @@
       // Note: No fallback - unknown statuses are ignored
     }
 
-    return grouped;
+    // Sort each column by priority
+    return {
+      new: sortByPriority(grouped.new ?? []),
+      "in-progress": sortByPriority(grouped["in-progress"] ?? []),
+      "in-review": sortByPriority(grouped["in-review"] ?? []),
+      completed: sortByPriority(grouped.completed ?? []),
+    };
   });
 
   // Deferred items (archived items with deferredUntil timestamp)

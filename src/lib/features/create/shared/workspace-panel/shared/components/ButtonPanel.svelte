@@ -4,6 +4,13 @@
   Unified action button panel for workbench layout.
   Pure orchestration component - composes individual button components.
 
+  Layout:
+  - LEFT ZONE: Sequence Actions (tools menu)
+  - CENTER ZONE: Play, Share, Record Video (3 main export/preview actions)
+  - RIGHT ZONE: Clear Sequence
+
+  Note: Undo button moved to workspace top-left (near WordLabel) for better UX.
+
   Architecture:
   - Uses CreateModuleContext for state access
   - Derives all boolean flags locally from context
@@ -20,7 +27,6 @@
   import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
   import ShareButton from "./buttons/ShareButton.svelte";
   import RecordVideoButton from "./buttons/RecordVideoButton.svelte";
-  import UndoButton from "./buttons/UndoButton.svelte";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
   const { CreateModuleState, panelState } = getCreateModuleContext();
@@ -58,13 +64,12 @@
   const isRecordVideoOpen = false;
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
+  // Note: SequenceActions is now in left zone, not center
   const centerZoneButtonCount = $derived(() => {
     let count = 0;
     if (showPlayButton) count++;
-    if (showSequenceActions) count++;
     if (showShareButton) count++;
     if (showRecordVideoButton) count++;
-    // Note: Clear button moved to right zone
     return count;
   });
 
@@ -98,14 +103,16 @@
 
 {#if visible}
   <div class="button-panel" transition:fade={{ duration: 200 }}>
-    <!-- LEFT ZONE: Undo button (always left edge) -->
+    <!-- LEFT ZONE: Sequence Actions button (tools/menu) -->
     <div class="left-zone">
-      <div transition:presenceTransition>
-        <UndoButton {CreateModuleState} />
-      </div>
+      {#if showSequenceActions && onSequenceActionsClick}
+        <div transition:presenceTransition>
+          <SequenceActionsButton onclick={onSequenceActionsClick} />
+        </div>
+      {/if}
     </div>
 
-    <!-- CENTER ZONE: Contextual action buttons (centered in available space) -->
+    <!-- CENTER ZONE: Main action buttons (Play, Share, Record Video) -->
     <!-- Wrapper maintains layout space during transitions -->
     <div class="center-zone-wrapper">
       {#key centerZoneButtonCount()}
@@ -114,13 +121,6 @@
           out:fade={{ duration: 150 }}
           in:fade={{ duration: 150, delay: 150 }}
         >
-          <!-- Sequence Actions Button -->
-          {#if showSequenceActions && onSequenceActionsClick}
-            <div>
-              <SequenceActionsButton onclick={onSequenceActionsClick} />
-            </div>
-          {/if}
-
           <!-- Play Button -->
           {#if showPlayButton && onPlayAnimation}
             <div>

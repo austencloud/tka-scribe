@@ -77,8 +77,8 @@ export class DiscoverSortService implements IDiscoverSortService {
 
   private sortByDateAdded(sequences: SequenceData[]): SequenceData[] {
     return sequences.sort((a, b) => {
-      const dateA = a.dateAdded ?? new Date(0);
-      const dateB = b.dateAdded ?? new Date(0);
+      const dateA = a.dateAdded ? new Date(a.dateAdded) : new Date(0);
+      const dateB = b.dateAdded ? new Date(b.dateAdded) : new Date(0);
       return dateB.getTime() - dateA.getTime(); // Newest first
     });
   }

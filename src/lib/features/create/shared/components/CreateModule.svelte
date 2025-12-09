@@ -48,6 +48,7 @@
   import { SessionManager } from "../services/SessionManager.svelte";
   import { AutosaveService } from "../services/AutosaveService";
   import { SequencePersistenceService } from "../services/SequencePersistenceService";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -538,17 +539,37 @@
         autosaveService = new AutosaveService();
         sequencePersistenceService = new SequencePersistenceService();
 
-        // Create a new session for this editing session
-        await sessionManager.createSession();
+        // Wait for auth to be initialized before creating session
+        // This prevents race condition where CreateModule initializes before Firebase auth
+        if (!authStore.isInitialized) {
+          logger.info("Waiting for auth to initialize...");
+          // Poll for auth initialization (max 5 seconds)
+          let waited = 0;
+          while (!authStore.isInitialized && waited < 5000) {
+            await new Promise((r) => setTimeout(r, 100));
+            waited += 100;
+          }
+        }
 
-        // Start autosave interval (every 30 seconds)
-        autosaveService.startAutosave(
-          () => CreateModuleState?.sequenceState.currentSequence || null,
-          sessionManager.getCurrentSession()?.sessionId || "",
-          30000
-        );
+        // Only create session if user is authenticated
+        if (authStore.isAuthenticated) {
+          try {
+            await sessionManager.createSession();
 
-        logger.success("Session management initialized");
+            // Start autosave interval (every 30 seconds)
+            autosaveService.startAutosave(
+              () => CreateModuleState?.sequenceState.currentSequence || null,
+              sessionManager.getCurrentSession()?.sessionId || "",
+              30000
+            );
+
+            logger.success("Session management initialized");
+          } catch (sessionError) {
+            logger.warn("Session creation failed:", sessionError);
+          }
+        } else {
+          logger.info("Session management skipped (user not authenticated)");
+        }
 
         // Auto-detect if method was already selected (handles page refreshes)
         const detectedSelection = initService.detectCreationMethodSelection(
