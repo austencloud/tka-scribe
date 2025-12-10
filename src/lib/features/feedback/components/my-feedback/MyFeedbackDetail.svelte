@@ -169,18 +169,18 @@
     {/if}
 
     <!-- Context info -->
-    {#if item.capturedModule || item.reportedModule}
+    {#if item.capturedModule}
       <div class="context-section">
         <h3>Context</h3>
         <div class="context-tags">
           <span class="context-tag">
             <i class="fas fa-cube"></i>
-            {item.reportedModule || item.capturedModule}
+            {item.capturedModule}
           </span>
-          {#if item.reportedTab || item.capturedTab}
+          {#if item.capturedTab}
             <span class="context-tag">
               <i class="fas fa-folder"></i>
-              {item.reportedTab || item.capturedTab}
+              {item.capturedTab}
             </span>
           {/if}
         </div>

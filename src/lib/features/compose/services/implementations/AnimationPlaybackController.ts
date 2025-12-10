@@ -199,22 +199,77 @@ export class AnimationPlaybackController
     }
   }
 
-  nextBeat(): void {
+  /**
+   * Calculate animation duration based on speed multiplier and step size
+   * Speed is a multiplier where 1.0 = 60 BPM, 2.0 = 120 BPM, etc.
+   * @param stepSize Size of step in beats (0.5 or 1.0)
+   */
+  private getStepDuration(stepSize: number): number {
+    const speedMultiplier = this.state?.speed ?? 1.0;
+    // At speed=1.0 (60 BPM): 1000ms per beat
+    // At speed=2.0 (120 BPM): 500ms per beat
+    const msPerBeat = 1000 / speedMultiplier;
+    return msPerBeat * stepSize;
+  }
+
+  stepHalfBeatForward(): void {
     if (!this.state) return;
 
-    const nextBeat = this.state.currentBeat + 1;
-    if (nextBeat < this.state.totalBeats) {
-      this.jumpToBeat(nextBeat);
+    const currentBeat = this.state.currentBeat;
+    // Find next half-beat position (0, 0.5, 1, 1.5, 2, etc.)
+    // Add small epsilon to handle exact positions (e.g., at 2.0, go to 2.5 not stay at 2.0)
+    const nextHalfBeat = Math.ceil((currentBeat + 0.001) * 2) / 2;
+
+    if (nextHalfBeat <= this.state.totalBeats) {
+      this.animateToBeat(nextHalfBeat, this.getStepDuration(0.5), true);
     }
   }
 
-  previousBeat(): void {
+  stepHalfBeatBackward(): void {
     if (!this.state) return;
 
-    const prevBeat = this.state.currentBeat - 1;
-    if (prevBeat >= 0) {
-      this.jumpToBeat(prevBeat);
+    const currentBeat = this.state.currentBeat;
+    // Find previous half-beat position (0, 0.5, 1, 1.5, 2, etc.)
+    // Subtract small epsilon to handle exact positions (e.g., at 2.0, go to 1.5 not stay at 2.0)
+    const prevHalfBeat = Math.floor((currentBeat - 0.001) * 2) / 2;
+
+    if (prevHalfBeat >= 0) {
+      this.animateToBeat(prevHalfBeat, this.getStepDuration(0.5), true);
     }
+  }
+
+  stepFullBeatForward(): void {
+    if (!this.state) return;
+
+    const currentBeat = this.state.currentBeat;
+    // Find next full-beat position (0, 1, 2, 3, etc.)
+    const nextFullBeat = Math.ceil(currentBeat + 0.001);
+
+    if (nextFullBeat <= this.state.totalBeats) {
+      this.animateToBeat(nextFullBeat, this.getStepDuration(1.0), true);
+    }
+  }
+
+  stepFullBeatBackward(): void {
+    if (!this.state) return;
+
+    const currentBeat = this.state.currentBeat;
+    // Find previous full-beat position (0, 1, 2, 3, etc.)
+    const prevFullBeat = Math.floor(currentBeat - 0.001);
+
+    if (prevFullBeat >= 0) {
+      this.animateToBeat(prevFullBeat, this.getStepDuration(1.0), true);
+    }
+  }
+
+  // Deprecated - use stepHalfBeatForward() instead
+  nextBeat(): void {
+    this.stepHalfBeatForward();
+  }
+
+  // Deprecated - use stepHalfBeatBackward() instead
+  previousBeat(): void {
+    this.stepHalfBeatBackward();
   }
 
   setSpeed(speed: number): void {

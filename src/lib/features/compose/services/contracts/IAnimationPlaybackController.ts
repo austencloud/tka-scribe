@@ -42,12 +42,32 @@ export interface IAnimationPlaybackController {
   animateToBeat(beat: number, duration?: number, linear?: boolean): void;
 
   /**
-   * Move to next beat
+   * Step forward by half a beat (0.5) with BPM-timed animation
+   */
+  stepHalfBeatForward(): void;
+
+  /**
+   * Step backward by half a beat (0.5) with BPM-timed animation
+   */
+  stepHalfBeatBackward(): void;
+
+  /**
+   * Step forward by a full beat (1.0) with BPM-timed animation
+   */
+  stepFullBeatForward(): void;
+
+  /**
+   * Step backward by a full beat (1.0) with BPM-timed animation
+   */
+  stepFullBeatBackward(): void;
+
+  /**
+   * @deprecated Use stepHalfBeatForward() or stepFullBeatForward() instead
    */
   nextBeat(): void;
 
   /**
-   * Move to previous beat
+   * @deprecated Use stepHalfBeatBackward() or stepFullBeatBackward() instead
    */
   previousBeat(): void;
 

@@ -25,8 +25,6 @@ export class FeedbackEditingService implements IFeedbackEditingService {
       priority: item.priority || "",
       title: item.title,
       description: item.description,
-      reportedModule: item.reportedModule || "",
-      reportedTab: item.reportedTab || "",
     };
   }
 
@@ -38,9 +36,7 @@ export class FeedbackEditingService implements IFeedbackEditingService {
       current.type !== snapshot.type ||
       current.priority !== snapshot.priority ||
       current.title !== snapshot.title ||
-      current.description !== snapshot.description ||
-      current.reportedModule !== snapshot.reportedModule ||
-      current.reportedTab !== snapshot.reportedTab
+      current.description !== snapshot.description
     );
   }
 
@@ -53,8 +49,6 @@ export class FeedbackEditingService implements IFeedbackEditingService {
       priority: snapshot.priority,
       title: snapshot.title,
       description: snapshot.description,
-      reportedModule: snapshot.reportedModule,
-      reportedTab: snapshot.reportedTab,
     };
   }
 

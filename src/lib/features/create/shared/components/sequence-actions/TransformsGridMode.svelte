@@ -101,9 +101,10 @@
   .transforms-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
     gap: 8px;
     height: 100%;
-    align-content: start;
+    align-content: stretch;
   }
 
   .transforms-grid.disabled {
@@ -121,7 +122,10 @@
     cursor: pointer;
     transition: all 0.15s ease;
     text-align: left;
+    width: 100%;
+    height: 100%;
     min-height: 52px;
+    container-type: size;
   }
 
   .grid-btn:disabled {
@@ -171,6 +175,74 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* ===== RESPONSIVE LAYOUTS BASED ON BUTTON SIZE ===== */
+
+  /* Tall buttons (120px+): Vertical layout for better space usage */
+  @container (min-height: 120px) {
+    .grid-btn {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+    }
+
+    .btn-text {
+      gap: 4px;
+      width: 100%;
+    }
+
+    .btn-label {
+      font-size: 0.9rem;
+    }
+
+    .btn-desc {
+      font-size: 0.75rem;
+      white-space: normal;
+    }
+  }
+
+  /* Medium buttons (90px+): Horizontal with bigger text */
+  @container (min-height: 90px) and (max-height: 119px) {
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+
+    .btn-label {
+      font-size: 0.9rem;
+    }
+
+    .btn-desc {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Extra small (< 70px): Hide descriptions */
+  @container (max-height: 69px) {
+    .btn-desc {
+      display: none;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+
+    .btn-label {
+      font-size: 0.8rem;
+    }
   }
 
   /* Mirror - Purple */
@@ -245,36 +317,10 @@
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
   }
 
-  /* Hide descriptions on narrow screens */
-  @media (max-width: 500px) {
-    .btn-desc {
-      display: none;
-    }
-
-    .grid-btn {
-      padding: 8px 10px;
-      min-height: 44px;
-    }
-
-    .btn-icon {
-      width: 32px;
-      height: 32px;
-      font-size: 14px;
-    }
-
-    .btn-label {
-      font-size: 0.8rem;
-    }
-  }
-
+  /* Extra narrow: Reduce gaps */
   @media (max-width: 360px) {
     .transforms-grid {
       gap: 6px;
-    }
-
-    .grid-btn {
-      gap: 8px;
-      padding: 6px 8px;
     }
   }
 

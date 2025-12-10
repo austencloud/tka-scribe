@@ -205,8 +205,6 @@ export function createFeedbackManageState() {
       title: string;
       description: string;
       priority: FeedbackPriority | undefined;
-      reportedModule: string;
-      reportedTab: string;
     }>
   ) {
     try {

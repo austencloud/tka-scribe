@@ -2,7 +2,6 @@
  * Scroll State Factory
  *
  * Svelte 5 runes-based state management for scroll detection and auto-scroll behavior.
- * Handles vertical scrollbar detection and automatic scrolling when beats are added.
  */
 
 /**
@@ -25,11 +24,6 @@ export function createScrollState() {
 
     if (hasScrollbar !== hasVerticalScrollbar) {
       hasVerticalScrollbar = hasScrollbar;
-      console.log(
-        `📏 ScrollState: Scrollbar detection - hasScrollbar: ${hasScrollbar}, ` +
-          `scrollHeight: ${scrollContainerRef.scrollHeight}, ` +
-          `clientHeight: ${scrollContainerRef.clientHeight}`
-      );
     }
   }
 

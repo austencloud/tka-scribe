@@ -10,6 +10,7 @@
 
   interface Props {
     item: TransformHelpItem;
+    isDesktopLayout: boolean;
     expanded?: boolean;
     onToggle?: () => void;
     onApply?: () => void;
@@ -18,6 +19,7 @@
 
   let {
     item,
+    isDesktopLayout,
     expanded = false,
     onToggle,
     onApply,
@@ -30,6 +32,7 @@
   class="transform-action"
   class:expanded
   class:is-rotate={item.id === "rotate"}
+  class:desktop={isDesktopLayout}
   onclick={() => {
     if (item.id === "rotate") return;
     onApply?.();
@@ -50,7 +53,7 @@
     <i class="fas {item.icon}"></i>
   </div>
 
-  <!-- Content area: name + short desc -->
+  <!-- Content area: name + short desc (mobile: flex 1, desktop: full width centered) -->
   <div class="content">
     <h4 class="name">{item.name}</h4>
     <p class="short-desc">{item.shortDesc}</p>
@@ -119,6 +122,8 @@
     text-align: left;
     width: 100%;
     color: inherit;
+    height: 52px;
+    flex-shrink: 0;
   }
 
   .transform-action:hover {
@@ -166,8 +171,8 @@
   /* Expand toggle button (mobile only) */
   .expand-btn {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.08);
     border: none;
@@ -228,56 +233,52 @@
     transform: scale(0.97);
   }
 
-  /* ===== DESKTOP: Vertical Grid Card Layout ===== */
-  @container (min-width: 600px) {
-    .transform-action {
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 10px;
-      padding: 16px 14px;
-      border-radius: 12px;
-      min-height: 160px;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--color) 20%, transparent) 0%, color-mix(in srgb, var(--color) 8%, transparent) 100%);
-      border: 1px solid color-mix(in srgb, var(--color) 35%, transparent);
-      text-align: center;
-    }
+  /* ===== DESKTOP: Vertical Grid Card Layout (2×2 grid) ===== */
+  .transform-action.desktop {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px 14px;
+    border-radius: 12px;
+    min-height: auto;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color) 20%, transparent) 0%, color-mix(in srgb, var(--color) 8%, transparent) 100%);
+    border: 1px solid color-mix(in srgb, var(--color) 35%, transparent);
+    text-align: center;
+  }
 
-    .transform-action:hover:not(.is-rotate) {
-      background: linear-gradient(135deg, color-mix(in srgb, var(--color) 30%, transparent) 0%, color-mix(in srgb, var(--color) 15%, transparent) 100%);
-      border-color: color-mix(in srgb, var(--color) 50%, transparent);
-      box-shadow: 0 4px 16px color-mix(in srgb, var(--color) 25%, transparent);
-    }
+  .transform-action.desktop:not(.is-rotate):hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color) 30%, transparent) 0%, color-mix(in srgb, var(--color) 15%, transparent) 100%);
+    border-color: color-mix(in srgb, var(--color) 50%, transparent);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color) 25%, transparent);
+  }
 
-    /* Larger icon on desktop */
-    .icon-box {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      font-size: 20px;
-    }
+  .transform-action.desktop .icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    font-size: 20px;
+  }
 
-    /* Center text content */
-    .content {
-      width: 100%;
-    }
+  .transform-action.desktop .content {
+    width: 100%;
+  }
 
-    .name {
-      font-size: 15px;
-    }
+  .transform-action.desktop .name {
+    font-size: 15px;
+    font-weight: 600;
+  }
 
-    .short-desc {
-      margin: 4px 0 0 0;
-      font-size: 12px;
-    }
+  .transform-action.desktop .short-desc {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+  }
 
-    /* Hide expand button on desktop */
-    .expand-btn {
-      display: none;
-    }
-
-    /* Show description panel inline on desktop */
-    /* (will be repositioned via the expanded state in desktop context) */
+  .transform-action.desktop .expand-btn {
+    display: none;
   }
 
   /* ===== ACCESSIBILITY ===== */

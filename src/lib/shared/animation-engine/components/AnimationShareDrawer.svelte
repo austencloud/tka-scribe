@@ -13,18 +13,21 @@
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   // Extracted components (from animate module)
   import AnimationPanelHeader from "$lib/features/compose/components/canvas/AnimationPanelHeader.svelte";
   import AnimationCanvas from "$lib/features/compose/components/canvas/AnimationCanvas.svelte";
   import AnimationControlsPanel from "$lib/features/compose/components/canvas/AnimationControlsPanel.svelte";
   import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
+  import AnimationViewerHelpSheet from "./AnimationViewerHelpSheet.svelte";
 
   // Services
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
+  import type { IKeyboardShortcutService } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutService";
+  import { registerAnimationShortcuts } from "../utils/register-animation-shortcuts";
 
   // Types
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
@@ -41,9 +44,7 @@
   // MOBILE STATE
   // ============================================================================
 
-  // Mobile is always full-height now (no half-height state)
-  // The expand toggle now shows/hides additional controls within the tool area
-  let mobileIsExpanded = $state(false); // Whether the drawer is expanded to full height on mobile
+  // Mobile tool view state
   let mobileToolsExpanded = $state(true); // Whether to show full controls or just toolbar
   let mobileToolView = $state<"controls" | "beat-grid">("controls"); // Toggle between views
 
@@ -52,12 +53,9 @@
     mobileToolView = mobileToolView === "controls" ? "beat-grid" : "controls";
   }
 
-  // Legacy scroll handling state (kept for desktop compatibility)
-  let mobileLastScrollTop = $state(0);
+  // Touch handling state for preventing back navigation
   let mobileTouchStartY = $state(0);
   let mobileTouchStartX = $state(0);
-  let mobileScrollContainerRef: HTMLDivElement | null = null;
-  let mobileRafId: number | null = null;
 
   function handleMobileTouchStart(e: TouchEvent, _isSideBySideLayout: boolean) {
     const touch = e.touches[0];
@@ -127,40 +125,6 @@
     };
   }
 
-  function handleMobileScroll(e: Event, sideBySide: boolean) {
-    if (!sideBySide && mobileIsExpanded && mobileScrollContainerRef) {
-      if (mobileRafId !== null) {
-        cancelAnimationFrame(mobileRafId);
-      }
-      mobileRafId = requestAnimationFrame(() => {
-        const target = e.target as HTMLDivElement;
-        const { scrollTop } = target;
-        const scrollingUp = scrollTop < mobileLastScrollTop;
-
-        if (scrollTop === 0 && scrollingUp) {
-          mobileIsExpanded = false;
-          target.scrollTop = 0;
-        }
-
-        mobileLastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        mobileRafId = null;
-      });
-    }
-  }
-
-  function resetMobileScroll() {
-    mobileIsExpanded = false;
-    mobileLastScrollTop = 0;
-  }
-
-  function setMobileScrollContainer(element: HTMLDivElement | null) {
-    mobileScrollContainerRef = element;
-  }
-
-  function toggleMobileExpanded() {
-    mobileIsExpanded = !mobileIsExpanded;
-  }
-
   // Props - ALL state comes from parent
   let {
     show = false,
@@ -183,6 +147,10 @@
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
+    onStepHalfBeatBackward = () => {},
+    onStepHalfBeatForward = () => {},
+    onStepFullBeatBackward = () => {},
+    onStepFullBeatForward = () => {},
     onCanvasReady = () => {},
     onVideoBeatChange = () => {},
     onExportGif = () => {},
@@ -207,10 +175,75 @@
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
+    onStepHalfBeatBackward?: () => void;
+    onStepHalfBeatForward?: () => void;
+    onStepFullBeatBackward?: () => void;
+    onStepFullBeatForward?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
     onExportGif?: () => void;
   } = $props();
+
+  // ============================================================================
+  // HELP SHEET STATE
+  // ============================================================================
+
+  let showHelpSheet = $state(false);
+
+  function handleShowHelp() {
+    showHelpSheet = true;
+  }
+
+  // ============================================================================
+  // KEYBOARD SHORTCUTS
+  // ============================================================================
+
+  let shortcutService: IKeyboardShortcutService | null = null;
+  let unregisterShortcuts: (() => void) | null = null;
+
+  function setupKeyboardShortcuts() {
+    if (!shortcutService || !show) return;
+
+    // Set context to animation-panel
+    shortcutService.setContext("animation-panel");
+
+    // Register shortcuts
+    unregisterShortcuts = registerAnimationShortcuts(shortcutService, {
+      onPlaybackToggle,
+      onStepHalfBeatForward,
+      onStepHalfBeatBackward,
+      onStepFullBeatForward,
+      onStepFullBeatBackward,
+      onClose: handleClose,
+      onToggleBlue: toggleBlueMotion,
+      onToggleRed: toggleRedMotion,
+      onShowHelp: handleShowHelp,
+    });
+  }
+
+  function cleanupKeyboardShortcuts() {
+    if (unregisterShortcuts) {
+      unregisterShortcuts();
+      unregisterShortcuts = null;
+    }
+    // Reset context to global when closing
+    if (shortcutService) {
+      shortcutService.setContext("global");
+    }
+  }
+
+  // Register/unregister shortcuts when panel opens/closes
+  $effect(() => {
+    if (show && shortcutService) {
+      setupKeyboardShortcuts();
+    } else {
+      cleanupKeyboardShortcuts();
+    }
+  });
+
+  onDestroy(() => {
+    cleanupKeyboardShortcuts();
+  });
 
   // ============================================================================
   // LAYOUT DETECTION
@@ -227,6 +260,11 @@
     if (layoutService) {
       detectedSideBySide = layoutService.shouldUseSideBySideLayout();
     }
+
+    // Try to resolve keyboard shortcut service
+    shortcutService = tryResolve<IKeyboardShortcutService>(
+      TYPES.IKeyboardShortcutService
+    );
   });
 
   // Update on resize
@@ -299,24 +337,6 @@
   const visibleRedProp = $derived(redMotionVisible ? redProp : null);
 
   // ============================================================================
-  // MOBILE SCROLL HANDLER EFFECTS
-  // ============================================================================
-
-  let scrollContainerRef = $state<HTMLDivElement | null>(null);
-
-  // Sync scroll container ref
-  $effect(() => {
-    setMobileScrollContainer(scrollContainerRef);
-  });
-
-  // Reset when panel closes or layout changes
-  $effect(() => {
-    if (!show || isSideBySideLayout) {
-      resetMobileScroll();
-    }
-  });
-
-  // ============================================================================
   // EVENT HANDLERS
   // ============================================================================
 
@@ -342,7 +362,7 @@
   isOpen={show}
   panelName="animation"
   {combinedPanelHeight}
-  fullHeightOnMobile={mobileIsExpanded && !isSideBySideLayout}
+  fullHeightOnMobile={!isSideBySideLayout}
   showHandle={true}
   closeOnBackdrop={false}
   focusTrap={false}
@@ -356,7 +376,7 @@
     aria-labelledby="animation-panel-title"
   >
     <!-- Header (Mobile/Desktop adaptive) -->
-    <AnimationPanelHeader {isSideBySideLayout} onClose={handleClose} />
+    <AnimationPanelHeader {isSideBySideLayout} onClose={handleClose} onShowHelp={handleShowHelp} />
 
     <h2 id="animation-panel-title" class="sr-only">Animation Viewer</h2>
 
@@ -369,7 +389,7 @@
       <div class="canvas-container">
         <div
           class="content-wrapper"
-          class:mobile-expanded={mobileIsExpanded && !isSideBySideLayout}
+          class:mobile-expanded={!isSideBySideLayout}
         >
           <!-- Canvas Area -->
           <AnimationCanvas
@@ -395,29 +415,33 @@
             {blueMotionVisible}
             {redMotionVisible}
             {isSideBySideLayout}
-            isExpanded={mobileIsExpanded}
-            bind:scrollContainerRef
+            isExpanded={!isSideBySideLayout}
             {mobileToolView}
             {sequenceData}
             currentBeat={beatData && "beatNumber" in beatData ? beatData.beatNumber : 0}
             {onSpeedChange}
             {onPlaybackStart}
             {onPlaybackToggle}
+            {onStepHalfBeatBackward}
+            {onStepHalfBeatForward}
+            {onStepFullBeatBackward}
+            {onStepFullBeatForward}
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
-            onToggleExpanded={toggleMobileExpanded}
             onToggleToolView={toggleMobileToolView}
             {onExportGif}
             {isExporting}
             {exportProgress}
             preventBackNavAction={preventBackNavigation}
-            onScroll={(e) => handleMobileScroll(e, isSideBySideLayout)}
           />
         </div>
       </div>
     {/if}
   </div>
 </CreatePanelDrawer>
+
+<!-- Help Sheet -->
+<AnimationViewerHelpSheet bind:isOpen={showHelpSheet} />
 
 <style>
   /* ===========================
@@ -488,8 +512,6 @@
   /* Small devices (iPhone SE, small phones): Fixed compact canvas */
   @media (max-width: 430px) and (max-height: 752px) {
     .content-wrapper.mobile-expanded :global(.canvas-area) {
-      flex: 0 0 152px;
-      min-height: 140px;
     }
 
     .content-wrapper.mobile-expanded :global(.controls-panel) {

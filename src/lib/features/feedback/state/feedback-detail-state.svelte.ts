@@ -42,8 +42,6 @@ export function createFeedbackDetailState(
   let editPriority = $state<FeedbackPriority | "">(item.priority || "");
   let editTitle = $state(item.title);
   let editDescription = $state(item.description);
-  let editReportedModule = $state(item.reportedModule || "");
-  let editReportedTab = $state(item.reportedTab || "");
 
   // Snapshot for change detection
   let originalSnapshot = $state(editing.createSnapshot(item));
@@ -90,8 +88,6 @@ export function createFeedbackDetailState(
         priority: editPriority,
         title: editTitle,
         description: editDescription,
-        reportedModule: editReportedModule,
-        reportedTab: editReportedTab,
       },
       originalSnapshot
     )
@@ -111,8 +107,6 @@ export function createFeedbackDetailState(
       editPriority = item.priority || "";
       editTitle = item.title;
       editDescription = item.description;
-      editReportedModule = item.reportedModule || "";
-      editReportedTab = item.reportedTab || "";
 
       // Sync admin fields
       adminNotes = item.adminNotes || "";
@@ -132,8 +126,6 @@ export function createFeedbackDetailState(
     editPriority = restored.priority;
     editTitle = restored.title;
     editDescription = restored.description;
-    editReportedModule = restored.reportedModule;
-    editReportedTab = restored.reportedTab;
   }
 
   async function saveChanges() {
@@ -146,8 +138,6 @@ export function createFeedbackDetailState(
         priority: editPriority || undefined,
         title: editTitle,
         description: editDescription,
-        reportedModule: editReportedModule,
-        reportedTab: editReportedTab,
       });
 
       // Update snapshot after successful save
@@ -157,8 +147,6 @@ export function createFeedbackDetailState(
         priority: editPriority || undefined,
         title: editTitle,
         description: editDescription,
-        reportedModule: editReportedModule,
-        reportedTab: editReportedTab,
       } as FeedbackItem);
     } catch (err) {
       console.error("Failed to save changes:", err);
@@ -250,18 +238,6 @@ export function createFeedbackDetailState(
     },
     set editDescription(v: string) {
       editDescription = v;
-    },
-    get editReportedModule() {
-      return editReportedModule;
-    },
-    set editReportedModule(v: string) {
-      editReportedModule = v;
-    },
-    get editReportedTab() {
-      return editReportedTab;
-    },
-    set editReportedTab(v: string) {
-      editReportedTab = v;
     },
 
     // Admin state

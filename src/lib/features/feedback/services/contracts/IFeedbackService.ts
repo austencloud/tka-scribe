@@ -63,7 +63,7 @@ export interface IFeedbackService {
 
   /**
    * Update editable feedback fields (admin)
-   * Used for correcting context, type, priority, title, description
+   * Used for correcting type, priority, title, description
    */
   updateFeedback(
     feedbackId: string,
@@ -72,8 +72,6 @@ export interface IFeedbackService {
       | "title"
       | "description"
       | "priority"
-      | "reportedModule"
-      | "reportedTab"
     >>
   ): Promise<void>;
 

@@ -19,17 +19,32 @@
   let { color, turns, rotationDirection, showRotation, onTurnsChange, onRotationChange }: Props = $props();
 
   const displayTurns = $derived(turns === "fl" ? "fl" : turns);
+
+  // Handle turns increment/decrement
+  function handleTurnsChange(delta: number) {
+    onTurnsChange(delta);
+  }
+
+  // Handle rotation direction change with proper validation
+  // Only allow rotation when turns is numeric (not "fl" - float motions don't have rotation)
+  function handleRotationClick(direction: RotationDirection) {
+    // Same validation logic as TurnPanel - prevent rotation for float turns
+    if (turns === "fl") {
+      return; // Float motions don't support rotation direction
+    }
+    onRotationChange(direction);
+  }
 </script>
 
 <div class="prop-controls" class:blue={color === "blue"} class:red={color === "red"}>
   <span class="prop-label">{color === "blue" ? "Blue" : "Red"}</span>
 
   <div class="turns-row">
-    <button class="ctrl-btn" aria-label="Decrease {color} turns" onclick={() => onTurnsChange(-0.5)}>
+    <button class="ctrl-btn" aria-label="Decrease {color} turns" onclick={() => handleTurnsChange(-0.5)}>
       <i class="fas fa-minus"></i>
     </button>
     <span class="turns-value">{displayTurns}</span>
-    <button class="ctrl-btn" aria-label="Increase {color} turns" onclick={() => onTurnsChange(0.5)}>
+    <button class="ctrl-btn" aria-label="Increase {color} turns" onclick={() => handleTurnsChange(0.5)}>
       <i class="fas fa-plus"></i>
     </button>
   </div>
@@ -39,7 +54,7 @@
       class="rot-btn"
       class:active={showRotation && rotationDirection === RotationDirection.CLOCKWISE}
       aria-label="Rotate {color} clockwise"
-      onclick={() => onRotationChange(RotationDirection.CLOCKWISE)}
+      onclick={() => handleRotationClick(RotationDirection.CLOCKWISE)}
       disabled={!showRotation}
     >
       <i class="fas fa-rotate-right"></i>
@@ -48,7 +63,7 @@
       class="rot-btn"
       class:active={showRotation && rotationDirection === RotationDirection.COUNTER_CLOCKWISE}
       aria-label="Rotate {color} counter clockwise"
-      onclick={() => onRotationChange(RotationDirection.COUNTER_CLOCKWISE)}
+      onclick={() => handleRotationClick(RotationDirection.COUNTER_CLOCKWISE)}
       disabled={!showRotation}
     >
       <i class="fas fa-rotate-left"></i>
@@ -57,6 +72,11 @@
 </div>
 
 <style>
+  /* ============================================================================
+     PROP CONTROLS - Glass-morphism colored panels matching design system
+     Using same gradient pattern as transform buttons (Mirror/Rotate/Swap/etc)
+     ============================================================================ */
+
   .prop-controls {
     flex: 1;
     display: flex;
@@ -65,23 +85,40 @@
     gap: 10px;
     padding: 14px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid;
+    transition: all 0.15s ease;
   }
 
+  /* Blue - Indigo glass pane */
   .prop-controls.blue {
-    border-left: 3px solid #3b82f6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-color: rgba(59, 130, 246, 0.35);
   }
 
+  .prop-controls.blue:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Red - Rose glass pane */
   .prop-controls.red {
-    border-left: 3px solid #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+    border-color: rgba(239, 68, 68, 0.35);
+  }
+
+  .prop-controls.red:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.2);
   }
 
   .prop-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.75px;
   }
 
   .turns-row {
@@ -90,26 +127,45 @@
     gap: 14px;
   }
 
+  /* Control buttons - match color theme */
+  .prop-controls.blue .ctrl-btn {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: #3b82f6;
+  }
+
+  .prop-controls.blue .ctrl-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+  }
+
+  .prop-controls.red .ctrl-btn {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+  }
+
+  .prop-controls.red .ctrl-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+  }
+
   .ctrl-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 52px;
     height: 52px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    border: 1px solid;
     cursor: pointer;
     font-size: 1.1rem;
     transition: all 0.15s ease;
   }
 
-  .ctrl-btn:hover {
-    background: rgba(6, 182, 212, 0.3);
-  }
-
-  .ctrl-btn:active {
+  .ctrl-btn:active:not(:disabled) {
     transform: scale(0.95);
   }
 
@@ -126,6 +182,45 @@
     gap: 8px;
   }
 
+  /* Rotation buttons - match color theme */
+  .prop-controls.blue .rot-btn {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: rgba(59, 130, 246, 0.7);
+  }
+
+  .prop-controls.blue .rot-btn:hover:not(:disabled) {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #3b82f6;
+  }
+
+  .prop-controls.blue .rot-btn.active {
+    background: rgba(59, 130, 246, 0.3);
+    border-color: rgba(59, 130, 246, 0.6);
+    color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+  }
+
+  .prop-controls.red .rot-btn {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: rgba(239, 68, 68, 0.7);
+  }
+
+  .prop-controls.red .rot-btn:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+  }
+
+  .prop-controls.red .rot-btn.active {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #ef4444;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+  }
+
   .rot-btn {
     display: flex;
     align-items: center;
@@ -133,35 +228,24 @@
     width: 52px;
     height: 52px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid;
     cursor: pointer;
     font-size: 1.1rem;
     transition: all 0.15s ease;
   }
 
-  .rot-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .rot-btn.active {
-    background: rgba(6, 182, 212, 0.25);
-    border-color: #06b6d4;
-    color: #06b6d4;
-  }
-
   .rot-btn:disabled {
-    opacity: 0.3;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .ctrl-btn,
-    .rot-btn {
+    .rot-btn,
+    .prop-controls {
       transition: none;
     }
-    .ctrl-btn:active {
+    .ctrl-btn:active:not(:disabled) {
       transform: none;
     }
   }

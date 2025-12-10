@@ -8,10 +8,11 @@
 import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
 import { setPendingGenerationAnimation } from "$lib/features/create/shared/workspace-panel/sequence-display/state/beat-grid-display-state.svelte";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { resolve } from "$lib/shared/inversify/di";
+import { resolve, tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { GenerationOptions } from "../shared/domain/models/generate-models";
 import type { IGenerationOrchestrationService } from "../shared/services/contracts/IGenerationOrchestrationService";
+import type { IErrorHandlingService } from "$lib/shared/application/services/contracts/IErrorHandlingService";
 
 export function createGenerationActionsState(
   sequenceState?: SequenceState,
@@ -42,7 +43,30 @@ export function createGenerationActionsState(
     } catch (error) {
       generationError =
         error instanceof Error ? error.message : "Unknown generation error";
-      console.error("❌ Generation failed:", error);
+
+      // Show user-facing error with bug report option
+      const errorService = tryResolve<IErrorHandlingService>(TYPES.IErrorHandlingService);
+      if (errorService) {
+        errorService.showUserError({
+          message: "Sequence generation failed",
+          technicalDetails: generationError,
+          error: error instanceof Error ? error : new Error(generationError),
+          severity: "error",
+          context: {
+            module: "create",
+            tab: "generate",
+            action: "generateSequence",
+            additionalData: {
+              mode: options.mode,
+              length: options.length,
+              gridMode: options.gridMode,
+              capType: options.capType,
+            },
+          },
+        });
+      }
+
+      console.error("Generation failed:", error);
     } finally {
       isGenerating = false;
     }

@@ -47,7 +47,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 10px 12px;
+    padding: 0 12px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid transparent;
@@ -56,7 +56,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.15s ease;
-    min-height: 52px;
+    height: 52px;
     min-width: 52px;
   }
 
@@ -74,8 +74,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);

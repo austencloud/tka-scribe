@@ -24,6 +24,7 @@
   import ProfileStatsGrid from "./profile/ProfileStatsGrid.svelte";
   import ProfileRankings from "./profile/ProfileRankings.svelte";
   import ProfileTabs from "./profile/ProfileTabs.svelte";
+  import ProfileAdminSection from "./profile/ProfileAdminSection.svelte";
 
   interface Props {
     userId: string;
@@ -83,6 +84,16 @@
 
   // Check if viewing own profile
   const isOwnProfile = $derived(currentUserId === userId);
+
+  // Check if current user is admin (for admin controls)
+  const isAdmin = $derived(authStore.isAdmin);
+
+  // Handler for admin updates
+  function handleAdminUpdate(updates: Partial<EnhancedUserProfile>) {
+    if (userProfile) {
+      userProfile = { ...userProfile, ...updates };
+    }
+  }
 
   onMount(async () => {
     try {
@@ -313,6 +324,14 @@
         onSequenceClick={handleSequenceClick}
         onUserClick={handleUserCardClick}
       />
+
+      <!-- Admin Controls (only visible to admins, not on own profile) -->
+      {#if isAdmin && !isOwnProfile}
+        <ProfileAdminSection
+          {userProfile}
+          onUserUpdated={handleAdminUpdate}
+        />
+      {/if}
     </div>
   {/if}
 </div>

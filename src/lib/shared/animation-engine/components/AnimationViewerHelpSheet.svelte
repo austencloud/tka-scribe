@@ -1,0 +1,267 @@
+<!--
+  AnimationViewerHelpSheet.svelte
+
+  Bottom sheet showing animation viewer keyboard shortcuts and usage tips.
+-->
+<script lang="ts">
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import { ANIMATION_SHORTCUTS } from "../utils/register-animation-shortcuts";
+
+  let {
+    isOpen = $bindable(false),
+    onClose = () => {},
+  }: {
+    isOpen?: boolean;
+    onClose?: () => void;
+  } = $props();
+
+  function handleClose() {
+    isOpen = false;
+    onClose();
+  }
+</script>
+
+<Drawer
+  bind:isOpen
+  placement="bottom"
+  snapPoints={["65%", "90%"]}
+  closeOnBackdrop={true}
+  closeOnEscape={true}
+  ariaLabel="Animation Viewer Help"
+  showHandle={true}
+>
+  <div class="help-content">
+    <header class="help-header">
+      <div class="header-info">
+        <h3 class="help-title">Animation Viewer</h3>
+        <p class="help-subtitle">Keyboard shortcuts & tips</p>
+      </div>
+      <button
+        class="close-btn"
+        onclick={handleClose}
+        aria-label="Close help"
+        type="button"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+
+    <div class="help-body">
+      <!-- Keyboard Shortcuts Section -->
+      <section class="help-section">
+        <h4 class="section-title">
+          <i class="fas fa-keyboard"></i>
+          Keyboard Shortcuts
+        </h4>
+        <div class="shortcuts-list">
+          {#each ANIMATION_SHORTCUTS as shortcut}
+            <div class="shortcut-item">
+              <div class="shortcut-info">
+                <span class="shortcut-label">{shortcut.label}</span>
+                <span class="shortcut-desc">{shortcut.description}</span>
+              </div>
+              <kbd class="shortcut-key">{shortcut.key}</kbd>
+            </div>
+          {/each}
+        </div>
+      </section>
+
+      <!-- Usage Tips Section -->
+      <section class="help-section">
+        <h4 class="section-title">
+          <i class="fas fa-lightbulb"></i>
+          Tips
+        </h4>
+        <ul class="tips-list">
+          <li>Use the step buttons to analyze specific positions in the animation</li>
+          <li>Toggle motion visibility to focus on one prop at a time</li>
+          <li>Adjust BPM to slow down complex sequences for study</li>
+          <li>Enable trails to visualize the motion path over time</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</Drawer>
+
+<style>
+  .help-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px 20px;
+    min-width: 280px;
+    max-height: 100%;
+  }
+
+  .help-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 16px;
+    flex-shrink: 0;
+  }
+
+  .header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .help-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+  }
+
+  .help-subtitle {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+  }
+
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .help-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .help-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+  }
+
+  .section-title i {
+    font-size: 0.85rem;
+    color: rgba(139, 92, 246, 0.8);
+  }
+
+  /* Shortcuts List */
+  .shortcuts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .shortcut-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    gap: 12px;
+  }
+
+  .shortcut-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .shortcut-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .shortcut-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .shortcut-key {
+    font-size: 0.75rem;
+    font-family: "SF Mono", "Monaco", "Inconsolata", "Roboto Mono", monospace;
+    padding: 4px 8px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 4px;
+    color: rgba(167, 139, 250, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Tips List */
+  .tips-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tips-list li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+  }
+
+  .tips-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    background: rgba(139, 92, 246, 0.6);
+    border-radius: 50%;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .help-content {
+      padding: 0 16px 16px;
+    }
+
+    .shortcut-item {
+      padding: 8px 10px;
+    }
+
+    .shortcut-desc {
+      display: none;
+    }
+  }
+</style>

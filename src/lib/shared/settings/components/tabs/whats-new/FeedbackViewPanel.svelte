@@ -131,13 +131,13 @@
           <div class="context-item">
             <span class="context-label">Module</span>
             <span class="context-value">
-              {feedback.reportedModule || feedback.capturedModule}
+              {feedback.capturedModule}
             </span>
           </div>
           <div class="context-item">
             <span class="context-label">Tab</span>
             <span class="context-value">
-              {feedback.reportedTab || feedback.capturedTab}
+              {feedback.capturedTab}
             </span>
           </div>
         </div>

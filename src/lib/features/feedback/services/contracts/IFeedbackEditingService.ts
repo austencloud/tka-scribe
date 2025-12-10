@@ -15,8 +15,6 @@ export interface EditSnapshot {
   priority: FeedbackPriority | "";
   title: string;
   description: string;
-  reportedModule: string;
-  reportedTab: string;
 }
 
 /**
@@ -27,8 +25,6 @@ export interface EditableFields {
   priority: FeedbackPriority | "";
   title: string;
   description: string;
-  reportedModule: string;
-  reportedTab: string;
 }
 
 /**

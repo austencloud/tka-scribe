@@ -329,8 +329,8 @@ async function claimNextFeedback(priorityFilter = null) {
     console.log(`  Description:\n`);
     console.log(`  ${itemToClaim.description || 'No description'}`);
     console.log('─'.repeat(70));
-    console.log(`  Module: ${itemToClaim.capturedModule || itemToClaim.reportedModule || 'Unknown'}`);
-    console.log(`  Tab: ${itemToClaim.capturedTab || itemToClaim.reportedTab || 'Unknown'}`);
+    console.log(`  Module: ${itemToClaim.capturedModule || 'Unknown'}`);
+    console.log(`  Tab: ${itemToClaim.capturedTab || 'Unknown'}`);
     if (itemToClaim.adminNotes) {
       console.log('─'.repeat(70));
       console.log(`  Previous Notes: ${itemToClaim.adminNotes}`);
@@ -761,8 +761,8 @@ async function getFeedbackById(docId) {
     console.log(`  Description:\n`);
     console.log(`  ${item.description || 'No description'}`);
     console.log('─'.repeat(70));
-    console.log(`  Module: ${item.capturedModule || item.reportedModule || 'Unknown'}`);
-    console.log(`  Tab: ${item.capturedTab || item.reportedTab || 'Unknown'}`);
+    console.log(`  Module: ${item.capturedModule || 'Unknown'}`);
+    console.log(`  Tab: ${item.capturedTab || 'Unknown'}`);
     if (item.adminNotes) {
       console.log('─'.repeat(70));
       console.log(`  Admin Notes: ${item.adminNotes}`);

@@ -12,6 +12,7 @@
 
   interface Props {
     expandedTransformId: "mirror" | "rotate" | "swap" | "rewind";
+    isDesktopLayout: boolean;
     onToggleExpand?: (id: "mirror" | "rotate" | "swap" | "rewind") => void;
     onApplyTransform?: (transformId: string) => void;
     onApplyRotate?: (direction: "cw" | "ccw") => void;
@@ -19,6 +20,7 @@
 
   let {
     expandedTransformId,
+    isDesktopLayout,
     onToggleExpand,
     onApplyTransform,
     onApplyRotate,
@@ -33,10 +35,11 @@
   }
 </script>
 
-<div class="transforms-panel">
+<div class="transforms-panel" class:desktop={isDesktopLayout}>
   {#each transformHelpContent as item (item.id)}
     <TransformDescription
       {item}
+      {isDesktopLayout}
       expanded={isExpanded(item.id)}
       onToggle={() => handleToggle(item.id as "mirror" | "rotate" | "swap" | "rewind")}
       onApply={() => {
@@ -57,17 +60,18 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    container-type: inline-size;
+    flex: 1;
+    min-height: 0;
   }
 
-  /* Desktop: 2-column grid when container is wide enough */
-  @container (min-width: 600px) {
-    .transforms-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
+  /* Desktop: 2-column grid that expands to fill available space */
+  .transforms-panel.desktop {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    height: 100%;
+    flex: 1;
   }
 </style>

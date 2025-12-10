@@ -70,6 +70,19 @@
   // Track which transform is expanded on mobile
   let expandedTransformId = $state<"mirror" | "rotate" | "swap" | "rewind">("mirror");
 
+  // Layout detection: desktop (side panel) vs mobile (bottom sheet)
+  let viewportWidth = $state(window.innerWidth);
+  let isDesktopLayout = $derived(viewportWidth >= 1024);
+
+  // Listen to window resize for responsive layout changes
+  $effect(() => {
+    const handleResize = () => {
+      viewportWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  });
+
   // Load initial pictograph when sheet opens
   $effect(() => {
     if (show && isLoading) {
@@ -149,6 +162,7 @@
         />
         <TransformDescriptionPanel
           {expandedTransformId}
+          {isDesktopLayout}
           onToggleExpand={(id: "mirror" | "rotate" | "swap" | "rewind") => (expandedTransformId = id)}
           onApplyTransform={applyTransform}
           onApplyRotate={applyRotateTransform}
@@ -277,7 +291,7 @@
     flex: 1;
   }
 
-  /* Desktop: Vertical layout with pictograph centered on top */
+  /* Desktop: Vertical layout with pictograph on top, transforms filling height below */
   @media (min-width: 768px) {
     .help-content {
       flex-direction: column;

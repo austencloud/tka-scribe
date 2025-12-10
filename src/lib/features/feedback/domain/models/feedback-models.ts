@@ -74,10 +74,6 @@ export interface FeedbackItem {
   capturedModule: string;
   capturedTab: string;
 
-  // User-specified context (may differ from captured)
-  reportedModule?: string;
-  reportedTab?: string;
-
   // Admin management
   status: FeedbackStatus;
   adminNotes?: string;

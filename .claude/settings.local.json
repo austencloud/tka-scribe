@@ -387,7 +387,8 @@
       "Bash(src/lib/features/discover/gallery/display/components/SequenceDetailPanel.svelte )",
       "Bash(src/lib/shared/share/services/contracts/IFirebaseVideoUploadService.ts )",
       "Bash(src/lib/shared/share/services/implementations/FirebaseVideoUploadService.ts )",
-      "Bash(src/lib/features/discover/gallery/display/components/mobile/)"
+      "Bash(src/lib/features/discover/gallery/display/components/mobile/)",
+      "SlashCommand(/commit)"
     ],
     "deny": [],
     "ask": []

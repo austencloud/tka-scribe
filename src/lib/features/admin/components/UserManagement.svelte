@@ -22,6 +22,10 @@
   import ConfirmActionModal from "./user-management/ConfirmActionModal.svelte";
   import UserSearchBar from "./user-management/UserSearchBar.svelte";
   import UserFilterButtons from "./user-management/UserFilterButtons.svelte";
+  import {
+    extractDominantColor,
+    getCachedOrFallbackColor,
+  } from "$lib/shared/foundation/utils/color-extractor";
   import type {
     UserData,
     UserFilterType,
@@ -50,7 +54,38 @@
   let hasMore = $state(true);
   let confirmAction = $state<ConfirmActionData | null>(null);
 
+  // Avatar color extraction
+  let userColors = $state<Map<string, string>>(new Map());
+
   const PAGE_SIZE = 20;
+
+  // Color extraction helpers
+  function getUserColor(user: UserData): string {
+    const extracted = userColors.get(user.id);
+    if (extracted) return extracted;
+    return getCachedOrFallbackColor(user.photoURL, user.displayName);
+  }
+
+  async function handleAvatarLoad(user: UserData, img: HTMLImageElement) {
+    if (userColors.has(user.id)) return;
+    try {
+      const color = await extractDominantColor(user.photoURL, user.displayName);
+      userColors = new Map(userColors).set(user.id, color);
+    } catch {
+      // Use fallback
+    }
+  }
+
+  function handleAvatarError(user: UserData, img: HTMLImageElement) {
+    img.style.display = "none";
+    const fallback = img.nextElementSibling as HTMLElement;
+    if (fallback) fallback.style.display = "flex";
+
+    if (!userColors.has(user.id)) {
+      const fallbackColor = getCachedOrFallbackColor(undefined, user.displayName);
+      userColors = new Map(userColors).set(user.id, fallbackColor);
+    }
+  }
 
   // Load users from Firestore
   async function loadUsers(append = false) {
@@ -342,11 +377,14 @@
             {#each filteredUsers() as user}
               <UserCard
                 {user}
+                accentColor={getUserColor(user)}
                 isSelected={selectedUser?.id === user.id}
                 onclick={() => {
                   selectedUser = user;
                   loadUserContext(user.id);
                 }}
+                onAvatarLoad={(img) => handleAvatarLoad(user, img)}
+                onAvatarError={(img) => handleAvatarError(user, img)}
               />
             {/each}
 

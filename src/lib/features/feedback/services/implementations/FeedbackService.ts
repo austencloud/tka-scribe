@@ -264,8 +264,6 @@ export class FeedbackService implements IFeedbackService {
       | "title"
       | "description"
       | "priority"
-      | "reportedModule"
-      | "reportedTab"
     >>
   ): Promise<void> {
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
@@ -279,8 +277,6 @@ export class FeedbackService implements IFeedbackService {
     if (updates.title !== undefined) updateData["title"] = updates.title;
     if (updates.description !== undefined) updateData["description"] = updates.description;
     if (updates.priority !== undefined) updateData["priority"] = updates.priority || null;
-    if (updates.reportedModule !== undefined) updateData["reportedModule"] = updates.reportedModule || null;
-    if (updates.reportedTab !== undefined) updateData["reportedTab"] = updates.reportedTab || null;
 
     await updateDoc(docRef, updateData);
   }
@@ -662,8 +658,6 @@ export class FeedbackService implements IFeedbackService {
       imageUrls: data["imageUrls"] as string[] | undefined,
       capturedModule: data["capturedModule"] as string,
       capturedTab: data["capturedTab"] as string,
-      reportedModule: data["reportedModule"] as string | undefined,
-      reportedTab: data["reportedTab"] as string | undefined,
       status: (data["status"] as FeedbackStatus) || "new",
       adminNotes: data["adminNotes"] as string | undefined,
       adminResponse,
