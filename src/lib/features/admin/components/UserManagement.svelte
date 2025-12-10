@@ -342,7 +342,10 @@
               <UserCard
                 {user}
                 isSelected={selectedUser?.id === user.id}
-                onclick={() => (selectedUser = user)}
+                onclick={() => {
+                  selectedUser = user;
+                  loadUserContext(user.id);
+                }}
               />
             {/each}
 
@@ -360,6 +363,7 @@
         {#if selectedUser}
           <UserDetailPanel
             user={selectedUser}
+            context={userContext}
             {isActionPending}
             onRoleChange={handleRoleChangeRequest}
             onAction={handleActionRequest}
@@ -375,7 +379,9 @@
       action={confirmAction}
       {isActionPending}
       onConfirm={handleConfirmedAction}
-      onCancel={() => (confirmAction = null)}
+      onCancel={() => {
+        confirmAction = null;
+      }}
     />
   {/if}
 </div>
