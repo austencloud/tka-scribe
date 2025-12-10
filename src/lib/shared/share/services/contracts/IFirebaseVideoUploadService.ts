@@ -78,4 +78,20 @@ export interface IFirebaseVideoUploadService {
    * Needed for displaying videos in the app
    */
   getPublicUrl(storagePath: string): Promise<string>;
+
+  /**
+   * Upload a video thumbnail to Firebase Storage
+   *
+   * @param sequenceId - The sequence this thumbnail belongs to
+   * @param thumbnailBlob - The thumbnail image blob (JPEG)
+   * @param videoTimestamp - Timestamp of the video this thumbnail belongs to
+   * @returns Promise resolving to upload result with URL and storage path
+   *
+   * Storage path: users/{userId}/recordings/{sequenceId}/{videoTimestamp}_thumb.jpg
+   */
+  uploadVideoThumbnail(
+    sequenceId: string,
+    thumbnailBlob: Blob,
+    videoTimestamp: number
+  ): Promise<VideoUploadResult>;
 }

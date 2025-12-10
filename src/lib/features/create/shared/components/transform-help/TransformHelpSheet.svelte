@@ -109,6 +109,7 @@
 {/if}
 
 <style>
+  /* ===== OVERLAY ===== */
   .help-overlay {
     position: fixed;
     inset: 0;
@@ -116,7 +117,7 @@
     backdrop-filter: blur(4px);
     z-index: 1000;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-end; /* Mobile: bottom sheet */
     justify-content: center;
     animation: fadeIn 0.2s ease;
   }
@@ -126,15 +127,17 @@
     to { opacity: 1; }
   }
 
+  /* ===== SHEET (Mobile: Bottom Sheet) ===== */
   .help-sheet {
     width: 100%;
     max-width: 500px;
-    max-height: 90vh;
+    max-height: 85vh;
     background: linear-gradient(180deg, rgba(30, 34, 53, 0.98) 0%, rgba(20, 24, 40, 0.98) 100%);
-    border-radius: 20px 20px 0 0;
+    border-radius: 20px 20px 0 0; /* Mobile: rounded top only */
     display: flex;
     flex-direction: column;
     animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.4);
   }
 
   @keyframes slideUp {
@@ -142,6 +145,36 @@
     to { transform: translateY(0); }
   }
 
+  /* ===== DESKTOP: Centered Modal ===== */
+  @media (min-width: 768px) {
+    .help-overlay {
+      align-items: center; /* Desktop: vertically centered */
+    }
+
+    .help-sheet {
+      max-width: 580px;
+      max-height: 80vh;
+      border-radius: 16px; /* Rounded all corners */
+      animation: scaleIn 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.5),
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+
+  /* ===== HEADER ===== */
   .help-header {
     display: flex;
     align-items: center;
@@ -178,6 +211,7 @@
     color: white;
   }
 
+  /* ===== CONTENT ===== */
   .help-content {
     padding: 16px 20px 24px;
     overflow-y: auto;
@@ -186,6 +220,7 @@
     gap: 16px;
   }
 
+  /* ===== ACCESSIBILITY ===== */
   @media (prefers-reduced-motion: reduce) {
     .help-overlay,
     .help-sheet {

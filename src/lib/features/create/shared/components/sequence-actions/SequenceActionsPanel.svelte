@@ -275,11 +275,13 @@
           onPreview={handlePreview}
           onEditInConstructor={handleEditInConstructor}
         />
-        <TransformHelpSheet show={showHelpSheet} onClose={() => (showHelpSheet = false)} />
       {/if}
     </div>
   </div>
 </CreatePanelDrawer>
+
+<!-- Render help sheet outside drawer so it can be a true full-viewport overlay -->
+<TransformHelpSheet show={showHelpSheet} onClose={() => (showHelpSheet = false)} />
 
 <ConfirmDialog
   bind:isOpen={showConfirmDialog}
