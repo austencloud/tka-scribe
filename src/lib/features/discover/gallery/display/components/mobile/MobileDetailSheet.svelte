@@ -16,12 +16,12 @@
 
   const {
     sequence,
-    state = "peek",
+    sheetState = "peek",
     onStateChange,
     onAction,
   }: {
     sequence: SequenceData;
-    state?: "peek" | "expanded";
+    sheetState?: "peek" | "expanded";
     onStateChange?: (state: "peek" | "expanded") => void;
     onAction?: (action: string) => void;
   } = $props();
@@ -54,25 +54,29 @@
   const expandedTranslateY = $derived(viewportHeight - expandedHeight);
 
   // Current position based on state
-  const targetTranslateY = $derived(state === "peek" ? peekTranslateY : expandedTranslateY);
+  const targetTranslateY = $derived(sheetState === "peek" ? peekTranslateY : expandedTranslateY);
 
   // Handle touch start
   function handleTouchStart(e: TouchEvent) {
+    const touch = e.touches[0];
+    if (!touch) return;
     isDragging = true;
-    dragStartY = e.touches[0].clientY;
+    dragStartY = touch.clientY;
     currentTranslateY = targetTranslateY;
   }
 
   // Handle touch move
   function handleTouchMove(e: TouchEvent) {
     if (!isDragging) return;
+    const touch = e.touches[0];
+    if (!touch) return;
 
-    const currentY = e.touches[0].clientY;
+    const currentY = touch.clientY;
     const deltaY = currentY - dragStartY;
     dragDeltaY = deltaY;
 
     // Prevent overscroll at top when expanded
-    if (state === "expanded" && sheetEl) {
+    if (sheetState === "expanded" && sheetEl) {
       const scrollTop = sheetEl.scrollTop;
       if (scrollTop <= 0 && deltaY > 0) {
         // Allow dragging down when at top
@@ -94,7 +98,7 @@
     const velocity = dragDeltaY;
     const threshold = 50;
 
-    if (state === "peek") {
+    if (sheetState === "peek") {
       // Swipe up to expand
       if (velocity < -threshold) {
         onStateChange?.("expanded");
@@ -111,7 +115,7 @@
 
   // Click handler for drag handle area
   function handleDragHandleClick() {
-    onStateChange?.(state === "peek" ? "expanded" : "peek");
+    onStateChange?.(sheetState === "peek" ? "expanded" : "peek");
   }
 
   // Calculate transform
@@ -127,7 +131,7 @@
   const hasCreatorInfo = $derived(Boolean(sequence.ownerId));
 
   // Video state
-  let showVideoPlayer = $state<CollaborativeVideo | null>(null);
+  let showVideoPlayer: CollaborativeVideo | null = $state(null);
   let videosKey = $state(0);
 
   function handleVideoClick(video: CollaborativeVideo) {
@@ -141,7 +145,7 @@
 
 <div
   class="sheet"
-  class:expanded={state === "expanded"}
+  class:expanded={sheetState === "expanded"}
   class:dragging={isDragging}
   style:transform={sheetTransform}
   bind:this={sheetEl}
@@ -167,7 +171,7 @@
   </div>
 
   <!-- Expanded content -->
-  {#if state === "expanded"}
+  {#if sheetState === "expanded"}
     <div class="expanded-content">
       <!-- Creator section -->
       {#if hasCreatorInfo}

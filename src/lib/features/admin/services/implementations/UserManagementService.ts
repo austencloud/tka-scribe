@@ -173,6 +173,3 @@ export class UserManagementService implements IUserManagementService {
     );
   }
 }
-
-// Export singleton instance
-export const userManagementService = new UserManagementService();

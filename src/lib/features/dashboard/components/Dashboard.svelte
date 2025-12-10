@@ -1,128 +1,42 @@
 <script lang="ts">
   /**
    * Dashboard - 2026 Bento Box Design
-   * Full-width grid layout with rich colored module cards
-   * Accessibility-first: 50px min touch targets, proper contrast
+   * Composition-based widget dashboard with modular state management
    */
 
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-
-  // 2026 Unified Transition Constants (align with app.css tokens)
-  const DURATION = { normal: 200, emphasis: 280 };
-  const STAGGER = { normal: 50 };
-  const SLIDE = { sm: 8, md: 12 };
-  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
-  import type { ModuleId } from "$lib/shared/navigation/domain/types";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
-  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
-  import { libraryState } from "$lib/features/library/state/library-state.svelte";
+  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
+  import type { ModuleId } from "$lib/shared/navigation/domain/types";
 
-  // Widgets
+  // Components
+  import DashboardHeader from "./DashboardHeader.svelte";
+  import DashboardGrid from "./DashboardGrid.svelte";
+  import DashboardMobileDrawers from "./DashboardMobileDrawers.svelte";
+  import DashboardSignInToast from "./DashboardSignInToast.svelte";
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
   import SupportWidget from "./widgets/SupportWidget.svelte";
   import NotificationCenterWidget from "./widgets/NotificationCenterWidget.svelte";
-  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import { createDashboard } from "../state/dashboard-state.svelte";
 
-  let isVisible = $state(false);
-
-  // Device detection
+  // Services
   let deviceDetector: IDeviceDetector | null = null;
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
+  let hapticService: IHapticFeedbackService | undefined;
+
+  // State
+  const dashboardState = createDashboard();
+
+  // Derived
   const isMobile = $derived(
     responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
   );
-
-  // Mobile drawer states
-  let challengeDrawerOpen = $state(false);
-  let supportDrawerOpen = $state(false);
-
-  // Sign-in required toast state
-  let signInToastMessage = $state("");
-  let showSignInToast = $state(false);
-  let signInToastTimeout: ReturnType<typeof setTimeout> | null = null;
-
-  // Haptic feedback
-  let hapticService: IHapticFeedbackService | undefined;
-
-  // Auth state
-  const isAuthenticated = $derived(authStore.isAuthenticated);
-  const user = $derived(authStore.user);
-  const sequenceCount = $derived(libraryState.sequences.length);
-  const favoriteCount = $derived(
-    libraryState.sequences.filter((s) => s.isFavorite).length
-  );
-
-  // Personalized greeting
-  const greeting = $derived(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  });
-
-  const welcomeMessage = $derived(() => {
-    if (isAuthenticated && user?.displayName) {
-      const firstName = user.displayName.split(" ")[0];
-      return `${greeting()}, ${firstName}`;
-    }
-    return "Welcome to TKA Studio";
-  });
-
-  // Module cards with rich colors and access status
-  const moduleCards = $derived(
-    navigationState.moduleDefinitions
-      .filter((m) => {
-        // Only show main modules (exclude dashboard and settings)
-        if (!m.isMain || m.id === "dashboard") return false;
-
-        // Filter out modules the user cannot access
-        const canAccess = featureFlagService.canAccessModule(m.id);
-        return canAccess;
-      })
-      .map((m) => ({
-        ...m,
-        gradient: getModuleGradient(m.id),
-        isLocked: false, // All visible modules are accessible
-      }))
-  );
-
-  function getModuleGradient(id: string): string {
-    const gradients: Record<string, string> = {
-      create: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-      discover: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
-      learn: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-      animate: "linear-gradient(135deg, #ec4899 0%, #db2777 100%)",
-      train: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-      feedback: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-      admin: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)", // Gold gradient for admin
-      "ml-training": "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)", // Purple for ML
-      settings: "linear-gradient(135deg, #64748b 0%, #475569 100%)", // Slate gradient for settings
-    };
-    return gradients[id] || "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)";
-  }
-
-  // Load library data when auth state changes
-  $effect(() => {
-    const userId = authStore.effectiveUserId;
-    if (userId) {
-      // Ensure library module is loaded before accessing libraryState
-      loadFeatureModule("library")
-        .then(() => {
-          libraryState.loadSequences();
-        })
-        .catch((error) => {
-          console.error("[Dashboard] Failed to load library module:", error);
-        });
-    }
-  });
 
   onMount(() => {
     let cleanup: (() => void) | undefined;
@@ -141,30 +55,14 @@
     }
 
     setTimeout(() => {
-      isVisible = true;
+      dashboardState.isVisible = true;
     }, 30);
 
     return () => {
       cleanup?.();
-      if (signInToastTimeout) {
-        clearTimeout(signInToastTimeout);
-      }
+      dashboardState.clearToast();
     };
   });
-
-  function showSignInRequiredToast(moduleName: string) {
-    // Clear any existing timeout
-    if (signInToastTimeout) {
-      clearTimeout(signInToastTimeout);
-    }
-
-    signInToastMessage = `Sign in to unlock ${moduleName}`;
-    showSignInToast = true;
-
-    signInToastTimeout = setTimeout(() => {
-      showSignInToast = false;
-    }, 3000);
-  }
 
   function navigateToModule(
     moduleId: string,
@@ -174,9 +72,8 @@
   ) {
     hapticService?.trigger("selection");
 
-    // If module is locked, show toast and redirect to settings
     if (isLocked) {
-      showSignInRequiredToast(moduleLabel);
+      dashboardState.showSignInRequiredToast(moduleLabel);
       openSettings();
       return;
     }
@@ -185,12 +82,10 @@
     const doc = document as any;
 
     if (typeof doc.startViewTransition === "function") {
-      // Get card position for custom animation origin
       const rect = card.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
-      // Set CSS custom properties for animation origin
       document.documentElement.style.setProperty(
         "--transition-origin-x",
         `${centerX}px`
@@ -200,7 +95,6 @@
         `${centerY}px`
       );
 
-      // Add a quick scale-up on the card for visual feedback
       card.style.transform = "scale(1.05)";
       card.style.zIndex = "100";
 
@@ -229,145 +123,36 @@
 
   function openChallengeDrawer() {
     hapticService?.trigger("selection");
-    challengeDrawerOpen = true;
+    dashboardState.challengeDrawerOpen = true;
   }
 
   function openSupportDrawer() {
     hapticService?.trigger("selection");
-    supportDrawerOpen = true;
+    dashboardState.supportDrawerOpen = true;
   }
 </script>
 
-<div class="dashboard" class:visible={isVisible}>
-  <!-- Welcome Header (compact) -->
-  {#if isVisible}
-    <header
-      class="welcome-header"
-      transition:fly={{
-        y: -SLIDE.sm,
-        duration: DURATION.normal,
-        easing: cubicOut,
-      }}
-    >
-      <h1>{welcomeMessage()}</h1>
-      <p>Where would you like to go?</p>
-    </header>
-  {/if}
+<div class="dashboard" class:visible={dashboardState.isVisible}>
+  <DashboardHeader
+    welcomeMessage={dashboardState.welcomeMessage}
+    isVisible={dashboardState.isVisible}
+  />
 
-  <!-- MODULE GRID - THE MAIN ATTRACTION -->
-  {#if isVisible}
-    <section
-      class="modules-section"
-      transition:fly={{
-        y: SLIDE.md,
-        duration: DURATION.normal,
-        delay: STAGGER.normal,
-        easing: cubicOut,
-      }}
-    >
-      <div class="modules-grid">
-        {#each moduleCards as module, i (module.id)}
-          <button
-            class="module-card"
-            class:locked={module.isLocked}
-            style="--module-gradient: {module.gradient}; --module-color: {module.color}"
-            onclick={(e) =>
-              navigateToModule(module.id, e, module.isLocked, module.label)}
-            transition:fly={{
-              y: SLIDE.md,
-              duration: DURATION.normal,
-              delay: 100 + i * STAGGER.normal,
-              easing: cubicOut,
-            }}
-          >
-            {#if module.isLocked}
-              <div class="lock-badge" aria-label="Sign in required">
-                <i class="fas fa-lock"></i>
-              </div>
-            {/if}
-            <div class="module-icon">
-              {@html module.icon}
-            </div>
-            <div class="module-text">
-              <span class="module-label">{module.label}</span>
-              <span class="module-desc">{module.description}</span>
-            </div>
-          </button>
-        {/each}
-      </div>
-    </section>
-  {/if}
+  <DashboardGrid
+    moduleCards={dashboardState.moduleCards}
+    isVisible={dashboardState.isVisible}
+    onModuleClick={navigateToModule}
+  />
 
-  <!-- SECONDARY CONTENT - Profile, Challenge, Support -->
+  <!-- SECONDARY CONTENT - Challenge, Support, Notifications -->
   <div class="secondary-grid" class:mobile={isMobile}>
-    <!-- Profile Card -->
-    {#if isVisible}
-      <section
-        class="bento-profile"
-        transition:fly={{
-          y: SLIDE.md,
-          duration: DURATION.normal,
-          delay: 250,
-          easing: cubicOut,
-        }}
-      >
-        <div class="profile-header">
-          <div class="profile-avatar">
-            {#if isAuthenticated && user?.photoURL}
-              <img
-                src={user.photoURL}
-                alt={user.displayName || "User"}
-                crossorigin="anonymous"
-                referrerpolicy="no-referrer"
-              />
-            {:else}
-              <div class="avatar-placeholder">
-                <i class="fas fa-user"></i>
-              </div>
-            {/if}
-          </div>
-          <div class="profile-info">
-            {#if isAuthenticated && user}
-              <span class="profile-name"
-                >{user.displayName || "Flow Artist"}</span
-              >
-              <span class="profile-email">{user.email}</span>
-            {:else}
-              <button class="guest-sign-in-cta" onclick={openSettings}>
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Sign in to sync your data</span>
-                <i class="fas fa-chevron-right"></i>
-              </button>
-            {/if}
-          </div>
-        </div>
-
-        <div class="profile-stats">
-          <button class="stat-card" onclick={navigateToLibrary}>
-            <span class="stat-value">{sequenceCount}</span>
-            <span class="stat-label">Sequences</span>
-          </button>
-          <button class="stat-card favorites" onclick={navigateToLibrary}>
-            <span class="stat-value">{favoriteCount}</span>
-            <span class="stat-label">Favorites</span>
-          </button>
-        </div>
-
-        <button class="library-btn" onclick={navigateToLibrary}>
-          <i class="fas fa-book"></i>
-          <span>Open Library</span>
-          <i class="fas fa-arrow-right"></i>
-        </button>
-      </section>
-    {/if}
-
     <!-- Challenge Card -->
-    {#if isVisible}
+    {#if dashboardState.isVisible}
       <section
         class="bento-challenge"
         transition:fly={{
-          y: SLIDE.md,
-          duration: DURATION.normal,
+          y: 12,
+          duration: 200,
           delay: 300,
           easing: cubicOut,
         }}
@@ -390,12 +175,12 @@
     {/if}
 
     <!-- Support Card -->
-    {#if isVisible}
+    {#if dashboardState.isVisible}
       <section
         class="bento-support"
         transition:fly={{
-          y: SLIDE.md,
-          duration: DURATION.normal,
+          y: 12,
+          duration: 200,
           delay: 350,
           easing: cubicOut,
         }}
@@ -418,12 +203,12 @@
     {/if}
 
     <!-- Notification Center Card -->
-    {#if isVisible && isAuthenticated}
+    {#if dashboardState.isVisible}
       <section
         class="bento-notifications"
         transition:fly={{
-          y: SLIDE.md,
-          duration: DURATION.normal,
+          y: 12,
+          duration: 200,
           delay: 375,
           easing: cubicOut,
         }}
@@ -431,37 +216,19 @@
         <NotificationCenterWidget />
       </section>
     {/if}
-
   </div>
 
-  <!-- Mobile Drawers -->
-  <Drawer
-    bind:isOpen={challengeDrawerOpen}
-    placement="bottom"
-    ariaLabel="Today's Challenge"
-  >
-    <div class="drawer-body">
-      <TodayChallengeWidget />
-    </div>
-  </Drawer>
+  <DashboardMobileDrawers
+    challengeDrawerOpen={dashboardState.challengeDrawerOpen}
+    supportDrawerOpen={dashboardState.supportDrawerOpen}
+    onChallengeDrawerChange={(open: boolean) => (dashboardState.challengeDrawerOpen = open)}
+    onSupportDrawerChange={(open: boolean) => (dashboardState.supportDrawerOpen = open)}
+  />
 
-  <Drawer
-    bind:isOpen={supportDrawerOpen}
-    placement="bottom"
-    ariaLabel="Support TKA"
-  >
-    <div class="drawer-body">
-      <SupportWidget />
-    </div>
-  </Drawer>
-
-  <!-- Sign-in Required Toast -->
-  {#if showSignInToast}
-    <div class="sign-in-toast" role="alert" aria-live="assertive">
-      <i class="fas fa-lock"></i>
-      <span>{signInToastMessage}</span>
-    </div>
-  {/if}
+  <DashboardSignInToast
+    message={dashboardState.signInToastMessage}
+    visible={dashboardState.showSignInToast}
+  />
 </div>
 
 <style>
@@ -573,251 +340,6 @@
 
   .dashboard.visible {
     opacity: 1;
-  }
-
-  /* ========================================
-     WELCOME HEADER - Compact greeting
-     ======================================== */
-
-  .welcome-header {
-    text-align: center;
-    padding: 16px 0 8px;
-  }
-
-  .welcome-header h1 {
-    margin: 0;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    letter-spacing: -0.02em;
-  }
-
-  .welcome-header p {
-    margin: 6px 0 0;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* ========================================
-     MODULES SECTION - THE MAIN ATTRACTION
-     Smart grid that adapts to screen size
-     ======================================== */
-
-  .modules-section {
-    width: 100%;
-  }
-
-  /* Smart grid: 9 modules in clean 3x3 layout
-     Responsive: 2 columns (mobile) → 3 columns (tablet+) */
-  .modules-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    width: 100%;
-  }
-
-  /* Medium screens: 3 columns (good for 6, 9 modules) */
-  @media (min-width: 640px) {
-    .modules-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-  }
-
-  /* Large screens: 3 columns - perfect 3x3 for 9 modules
-     Parent dashboard container caps at 1200px, so cards max ~370px wide */
-  @media (min-width: 900px) {
-    .modules-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-  }
-
-  /* ========================================
-     MODULE CARDS - RICH COLORED
-     ======================================== */
-
-  .module-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    min-height: 140px;
-    padding: 20px;
-    background: var(--module-gradient);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition:
-      transform var(--duration-fast, 150ms)
-        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
-      box-shadow var(--duration-fast, 150ms)
-        var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .module-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.15) 0%,
-      transparent 50%
-    );
-    pointer-events: none;
-  }
-
-  /* 2026 refined hover - subtle lift with scale */
-  .module-card:hover {
-    transform: translateY(var(--hover-lift-md, -2px))
-      scale(var(--hover-scale-sm, 1.01));
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Active press - subtle feedback */
-  .module-card:active {
-    transform: scale(var(--active-scale, 0.98));
-    transition-duration: 50ms;
-  }
-
-  .module-card:focus {
-    outline: 3px solid white;
-    outline-offset: 2px;
-  }
-
-  .module-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 14px;
-    font-size: 24px;
-    color: white;
-  }
-
-  .module-icon :global(i) {
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-  }
-
-  .module-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .module-label {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: white;
-  }
-
-  .module-desc {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.85);
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* ========================================
-     LOCKED MODULE CARD STATE
-     ======================================== */
-
-  .module-card.locked {
-    opacity: 0.7;
-  }
-
-  .module-card.locked::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.15);
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .lock-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 8px;
-    z-index: 2;
-  }
-
-  .lock-badge i {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  /* ========================================
-     SIGN-IN REQUIRED TOAST
-     ======================================== */
-
-  .sign-in-toast {
-    position: fixed;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 20px;
-    background: rgba(99, 102, 241, 0.95);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-radius: 14px;
-    color: white;
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 20px;
-    letter-spacing: -0.24px;
-    box-shadow:
-      0 8px 24px rgba(99, 102, 241, 0.35),
-      0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 10000;
-    animation: toast-enter 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
-  }
-
-  .sign-in-toast i {
-    font-size: 14px;
-    opacity: 0.9;
-  }
-
-  @keyframes toast-enter {
-    0% {
-      opacity: 0;
-      transform: translateX(-50%) translateY(20px) scale(0.95);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0) scale(1);
-    }
-  }
-
-  /* Desktop positioning for toast */
-  @media (min-width: 769px) {
-    .sign-in-toast {
-      bottom: 32px;
-    }
   }
 
   /* ========================================
@@ -1108,8 +630,6 @@
     .secondary-grid {
       grid-template-columns: 1fr 1fr;
     }
-
-    /* 4 cards in 2x2 grid - no spanning needed */
   }
 
   @media (max-width: 768px) {
@@ -1118,29 +638,8 @@
       gap: 20px;
     }
 
-    .welcome-header h1 {
-      font-size: 1.5rem;
-    }
-
     .secondary-grid {
       grid-template-columns: 1fr;
-    }
-
-    .module-card {
-      min-height: 120px;
-      padding: 16px;
-      border-radius: 16px;
-    }
-
-    .module-icon {
-      width: 44px;
-      height: 44px;
-      font-size: 20px;
-      border-radius: 12px;
-    }
-
-    .module-label {
-      font-size: 1.125rem;
     }
 
     .bento-profile {
@@ -1153,45 +652,6 @@
     .dashboard {
       padding: 12px;
       gap: 16px;
-    }
-
-    .welcome-header {
-      padding: 12px 0 4px;
-    }
-
-    .welcome-header h1 {
-      font-size: 1.25rem;
-    }
-
-    .welcome-header p {
-      font-size: 0.875rem;
-    }
-
-    .modules-grid {
-      gap: 12px;
-    }
-
-    .module-card {
-      min-height: 100px;
-      padding: 14px;
-      gap: 10px;
-    }
-
-    .module-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 18px;
-      border-radius: 10px;
-    }
-
-    .module-label {
-      font-size: 1rem;
-    }
-
-    .module-desc {
-      font-size: 0.75rem;
-      -webkit-line-clamp: 1;
-      line-clamp: 1;
     }
 
     .profile-stats {
@@ -1217,18 +677,6 @@
   @media (prefers-reduced-motion: reduce) {
     .dashboard {
       transition: none;
-    }
-
-    .module-card {
-      transition: none;
-    }
-
-    .module-card:hover {
-      transform: none;
-    }
-
-    .sign-in-toast {
-      animation: none;
     }
 
     /* Disable view transition animations for reduced motion */

@@ -2,6 +2,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { createMyFeedbackState } from "../../state/my-feedback-state.svelte";
+  import { takeNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
   import MyFeedbackList from "./MyFeedbackList.svelte";
   import MyFeedbackDetail from "./MyFeedbackDetail.svelte";
@@ -16,6 +17,22 @@
   onMount(() => {
     state.loadMyFeedback(true);
     lastPreviewUserId = preview.profile?.uid ?? null;
+
+    // Check if a specific feedback should be opened (from notification)
+    const targetFeedbackId = takeNotificationTargetFeedback();
+    if (targetFeedbackId) {
+      // Wait for items to load, then find and select the target
+      const checkAndSelect = setInterval(() => {
+        const targetItem = state.items.find((item) => item.id === targetFeedbackId);
+        if (targetItem) {
+          state.selectItem(targetItem);
+          clearInterval(checkAndSelect);
+        }
+      }, 100);
+
+      // Cleanup interval after 5 seconds if not found
+      setTimeout(() => clearInterval(checkAndSelect), 5000);
+    }
   });
 
   // Reload when preview user changes

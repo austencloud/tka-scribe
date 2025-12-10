@@ -13,6 +13,7 @@ import type {
   SequenceSection,
 } from "$lib/features/discover/shared/domain/models/discover-models";
 import type { IDiscoverSectionService } from "../contracts/IDiscoverSectionService";
+import { sortSequencesByKineticAlphabet } from "$lib/features/discover/shared/utils/kinetic-alphabet-sort";
 
 @injectable()
 export class DiscoverSectionService implements IDiscoverSectionService {
@@ -118,11 +119,37 @@ export class DiscoverSectionService implements IDiscoverSectionService {
       case "letter": {
         // Sub-group by letter AND beat count for consistent row heights
         // Handle letter types: "W" vs "W-" (type 3 letters)
-        const firstChar = sequence.word.charAt(0).toUpperCase();
+        // Type 6 letters should be lowercase (α, β, γ, θ, ζ, η, τ, ⊕)
+        const firstChar = sequence.word.charAt(0);
+        const TYPE6_UPPERCASE_TO_LOWERCASE: { [key: string]: string } = {
+          "Α": "α",
+          "Β": "β",
+          "Γ": "γ",
+          "Θ": "θ",
+          "Ζ": "ζ",
+          "Η": "η",
+          "Τ": "τ",
+        };
+        const TYPE6_LOWERCASE = ["α", "β", "γ", "θ", "ζ", "η", "τ", "⊕"];
+
+        // Handle both uppercase Type 6 (convert to lowercase) and already-lowercase Type 6
+        let char: string;
+        if (TYPE6_UPPERCASE_TO_LOWERCASE[firstChar]) {
+          // Uppercase Type 6 letter - convert to lowercase
+          char = TYPE6_UPPERCASE_TO_LOWERCASE[firstChar];
+        } else if (TYPE6_LOWERCASE.includes(firstChar)) {
+          // Already lowercase Type 6 letter - keep as-is
+          char = firstChar;
+        } else {
+          // Not Type 6, so uppercase it (Type 1-5)
+          char = firstChar.toUpperCase();
+        }
+
         const secondChar = sequence.word.charAt(1);
-        const letter = secondChar === "-" ? `${firstChar}-` : firstChar;
+        const letter = secondChar === "-" ? `${char}-` : char;
         const beatCount = sequence.sequenceLength ?? 0;
-        return `${letter}-${beatCount}`;
+        // Use pipe separator to avoid conflict with dash in letter names
+        return `${letter}|${beatCount}`;
       }
 
       case "length": {
@@ -189,13 +216,11 @@ export class DiscoverSectionService implements IDiscoverSectionService {
 
     switch (groupBy) {
       case "letter": {
-        // Key format: "A-4" or "W--4" (letter-beatcount, where letter might be "W-")
-        // Split and handle both "W-4" and "W--4" formats
-        const lastDashIndex = key.lastIndexOf("-");
-        const letter = key.substring(0, lastDashIndex);
-        const beatCount = key.substring(lastDashIndex + 1);
-        const beats = parseInt(beatCount) || 0;
-        return `${letter} - ${beats} beats (${countText})`;
+        // Key format: "A|4" or "W-|4" (letter|beatcount, where letter might be "W-")
+        const [letter = "", beatCountStr = "0"] = key.split("|");
+        const beats = parseInt(beatCountStr) || 0;
+        // Use parentheses to avoid double dash with letters like "W-"
+        return `${letter} (${beats} beats) (${countText})`;
       }
 
       case "length":
@@ -231,15 +256,7 @@ export class DiscoverSectionService implements IDiscoverSectionService {
 
     switch (sortMethod) {
       case "alphabetical":
-        return sorted.sort((a, b) => {
-          // First sort by sequence length (ascending) within the section
-          const lengthDiff = (a.sequenceLength ?? 0) - (b.sequenceLength ?? 0);
-          // If same length, sort alphabetically by word
-          if (lengthDiff === 0) {
-            return a.word.localeCompare(b.word);
-          }
-          return lengthDiff;
-        });
+        return sortSequencesByKineticAlphabet(sorted);
 
       case ExploreSortMethod.DIFFICULTY_LEVEL:
         return sorted.sort((a, b) => {
@@ -304,20 +321,34 @@ export class DiscoverSectionService implements IDiscoverSectionService {
     key: string,
     groupBy: SectionConfig["groupBy"]
   ): number {
+    // Kinetic alphabet order - Uppercase for Type 1-5, lowercase for Type 6
+    const KINETIC_ALPHABET_ORDER = [
+      // Type 1
+      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+      "N", "O", "P", "Q", "R", "S", "T", "U", "V", "Γ",
+      // Type 2
+      "W", "X", "Y", "Z", "Σ", "Δ", "Ω", "Μ", "Ν",
+      // Type 3
+      "W-", "X-", "Y-", "Z-", "Σ-", "Δ-", "Ω-",
+      // Type 4
+      "Φ", "Ψ", "Λ",
+      // Type 5
+      "Φ-", "Ψ-", "Λ-",
+      // Type 6 (lowercase)
+      "α", "β", "γ", "θ", "ζ", "η", "τ", "⊕",
+    ];
+
     switch (groupBy) {
       case "letter": {
-        // Key format: "A-4" or "W--4" (letter-beatcount, where letter might be "W-")
-        // Sort by letter first, then by beat count
-        const lastDashIndex = key.lastIndexOf("-");
-        const letter = key.substring(0, lastDashIndex);
-        const beatCount = key.substring(lastDashIndex + 1);
+        // Key format: "A|4" or "W-|4" (letter|beatcount, where letter might be "W-")
+        // Sort by letter position in kinetic alphabet, then by beat count
+        const [letter = "", beatCountStr = "0"] = key.split("|");
+        const letterIndex = KINETIC_ALPHABET_ORDER.indexOf(letter);
+        const beatOrder = parseInt(beatCountStr) || 0;
 
-        // Sort order: base letter, then with dash (W before W-)
-        const baseChar = letter.charAt(0);
-        const hasDash = letter.endsWith("-") ? 1 : 0;
-        const letterOrder = baseChar.charCodeAt(0) * 1000 + hasDash * 100;
-        const beatOrder = parseInt(beatCount) || 0; // Beat count as tertiary
-        return letterOrder + beatOrder;
+        // Return: (letter position * 10000) + beat count
+        // This ensures A comes before B, W comes before W-, etc.
+        return (letterIndex + 1) * 10000 + beatOrder;
       }
 
       case "length": {

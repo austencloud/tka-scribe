@@ -169,19 +169,19 @@ export function createSequenceTransformOperations(
       }
     },
 
-    async reverseSequence() {
+    async rewindSequence() {
       if (!coreState.currentSequence || !sequenceTransformationService) return;
 
       try {
-        const reversedSequence =
-          await sequenceTransformationService.reverseSequence(
+        const rewindSequence =
+          await sequenceTransformationService.rewindSequence(
             coreState.currentSequence
           );
-        coreState.setCurrentSequence(reversedSequence);
+        coreState.setCurrentSequence(rewindSequence);
 
         // Update selection state with new start position so UI re-renders
-        if (reversedSequence.startPosition) {
-          selectionState.setStartPosition(reversedSequence.startPosition);
+        if (rewindSequence.startPosition) {
+          selectionState.setStartPosition(rewindSequence.startPosition);
         }
 
         coreState.clearError();
@@ -189,7 +189,7 @@ export function createSequenceTransformOperations(
         // Persist the transformed sequence
         await onSave?.();
       } catch (error) {
-        handleError("Failed to reverse sequence", error);
+        handleError("Failed to rewind sequence", error);
       }
     },
 

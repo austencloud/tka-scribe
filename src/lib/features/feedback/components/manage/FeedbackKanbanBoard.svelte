@@ -2,57 +2,63 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
-  import type { KanbanBoardState, createKanbanBoardState } from "../../state/kanban-board-state.svelte";
+  import type { KanbanBoardState } from "../../state/kanban-board-state.svelte";
   import { createKanbanBoardState } from "../../state/kanban-board-state.svelte";
   import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
   import type { IFeedbackSortingService } from "../../services/contracts/IFeedbackSortingService";
-  import { tryResolve, TYPES, ensureContainerInitialized } from "$lib/shared/inversify/di";
+  import { tryResolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import KanbanMobileView from "./KanbanMobileView.svelte";
   import KanbanDesktopView from "./KanbanDesktopView.svelte";
 
-  const { manageState, onOpenArchive } = $props<{
+  interface Props {
     manageState: FeedbackManageState;
     onOpenArchive?: () => void;
-  }>();
+  }
+
+  const { manageState, onOpenArchive }: Props = $props();
 
   // Resolve services
   let boardState = $state<KanbanBoardState | null>(null);
   let sortingService: IFeedbackSortingService | null = null;
   let storageService: IStorageService | null = null;
 
-  onMount(async () => {
+  onMount(() => {
     let resizeObserver: ResizeObserver | null = null;
 
-    try {
-      // Wait for the DI container to be fully initialized (including async tier2 modules)
-      await ensureContainerInitialized();
+    async function initializeBoard() {
+      try {
+        // Ensure feedback module is loaded (handles Tier 2 race condition)
+        await loadFeatureModule("feedback");
 
-      // Now resolve services - container is ready
-      sortingService = tryResolve<IFeedbackSortingService>(TYPES.IFeedbackSortingService);
-      storageService = tryResolve<IStorageService>(TYPES.IStorageService);
+        // Now resolve services - feedback module is ready
+        sortingService = tryResolve<IFeedbackSortingService>(TYPES.IFeedbackSortingService);
+        storageService = tryResolve<IStorageService>(TYPES.IStorageService);
 
-      if (!sortingService) {
-        console.error(`[FeedbackKanbanBoard] Failed to resolve IFeedbackSortingService after container init`);
-        return;
-      }
-
-      boardState = createKanbanBoardState(manageState, sortingService, storageService);
-
-      // Set up ResizeObserver to detect mobile view (< 652px container width)
-      const boardElement = document.querySelector(".kanban-board");
-      if (!boardElement) return;
-
-      resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const width = entry.contentRect.width;
-          boardState?.setIsMobileView(width < 652);
+        if (!sortingService) {
+          console.error(`[FeedbackKanbanBoard] Failed to resolve IFeedbackSortingService after feedback module load`);
+          return;
         }
-      });
 
-      resizeObserver.observe(boardElement);
-    } catch (err) {
-      console.error(`[FeedbackKanbanBoard] Error initializing board:`, err);
+        boardState = createKanbanBoardState(manageState, sortingService, storageService);
+
+        // Set up ResizeObserver to detect mobile view (< 652px container width)
+        const boardElement = document.querySelector(".kanban-board");
+        if (!boardElement) return;
+
+        resizeObserver = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const width = entry.contentRect.width;
+            boardState?.setIsMobileView(width < 652);
+          }
+        });
+
+        resizeObserver.observe(boardElement);
+      } catch (err) {
+        console.error(`[FeedbackKanbanBoard] Error initializing board:`, err);
+      }
     }
+
+    initializeBoard();
 
     return () => {
       resizeObserver?.disconnect();
@@ -163,7 +169,7 @@
                 type="date"
                 class="date-input"
                 value={boardState.deferDate}
-                onchange={(e) => boardState.setDeferDate(e.currentTarget.value)}
+                onchange={(e) => boardState?.setDeferDate(e.currentTarget.value)}
                 min={new Date().toISOString().split("T")[0]}
                 required
               />
@@ -178,7 +184,7 @@
                 id="defer-notes"
                 class="notes-input"
                 value={boardState.deferNotes}
-                onchange={(e) => boardState.setDeferNotes(e.currentTarget.value)}
+                onchange={(e) => boardState?.setDeferNotes(e.currentTarget.value)}
                 placeholder="Why are you deferring this? (e.g., 'Wait for Svelte 6', 'Revisit after Q1')"
                 rows="3"
               ></textarea>

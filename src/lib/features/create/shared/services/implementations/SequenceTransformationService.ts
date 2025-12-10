@@ -633,15 +633,15 @@ export class SequenceTransformationService
   }
 
   /**
-   * Reverse sequence (NOT just reverse beat order!)
+   * Rewind sequence (NOT just rewind beat order!)
    * - Creates new start position from final beat's end position/orientations
-   * - Reverses beat order
+   * - Rewinds beat order
    * - Each beat: swaps positions/locations/orientations, flips rotation direction
    * - Letter is looked up from dataset based on new motion configuration
    *
    * This is a complex transformation that requires pictograph dataset lookup.
    */
-  async reverseSequence(sequence: SequenceData): Promise<SequenceData> {
+  async rewindSequence(sequence: SequenceData): Promise<SequenceData> {
     if (sequence.beats.length === 0) {
       return sequence;
     }
@@ -650,22 +650,22 @@ export class SequenceTransformationService
     const finalBeat = sequence.beats[sequence.beats.length - 1]!;
     const newStartPosition = this.createStartPositionFromBeatEnd(finalBeat);
 
-    // Step 2: Reverse and transform each beat with letter lookup
-    const reversedBeats: BeatData[] = [];
-    const reversedBeatArray = [...sequence.beats].reverse();
+    // Step 2: Rewind and transform each beat with letter lookup
+    const rewindBeats: BeatData[] = [];
+    const rewindBeatArray = [...sequence.beats].reverse();
     const gridMode = sequence.gridMode ?? GridMode.DIAMOND; // Default to DIAMOND if undefined
 
-    for (let index = 0; index < reversedBeatArray.length; index++) {
-      const beat = reversedBeatArray[index]!;
-      const reversedBeat = await this.reverseBeat(beat, index + 1, gridMode);
-      reversedBeats.push(reversedBeat);
+    for (let index = 0; index < rewindBeatArray.length; index++) {
+      const beat = rewindBeatArray[index]!;
+      const rewindBeat = await this.rewindBeat(beat, index + 1, gridMode);
+      rewindBeats.push(rewindBeat);
     }
 
     return updateSequenceData(sequence, {
-      beats: reversedBeats,
+      beats: rewindBeats,
       startPosition: newStartPosition,
       startingPositionBeat: newStartPosition,
-      name: `${sequence.name} (Reversed)`,
+      name: `${sequence.name} (Rewound)`,
     });
   }
 
@@ -718,7 +718,7 @@ export class SequenceTransformationService
   }
 
   /**
-   * Reverse a single beat (for playing sequence backward)
+   * Rewind a single beat (for playing sequence backward)
    * - Swaps start/end positions
    * - Swaps start/end locations
    * - Swaps start/end orientations
@@ -726,7 +726,7 @@ export class SequenceTransformationService
    * - Keeps motionType and turns the same
    * - Looks up correct letter from pictograph dataset based on new motion configuration
    */
-  private async reverseBeat(
+  private async rewindBeat(
     beat: BeatData,
     newBeatNumber: number,
     gridMode: GridMode
@@ -739,13 +739,13 @@ export class SequenceTransformationService
     const swappedStartPosition = beat.endPosition ?? null;
     const swappedEndPosition = beat.startPosition ?? null;
 
-    // Reverse motions
-    const reversedMotions = { ...beat.motions };
+    // Rewind motions
+    const rewindMotions = { ...beat.motions };
 
-    // Reverse blue motion
+    // Rewind blue motion
     if (beat.motions[MotionColor.BLUE]) {
       const blueMotion = beat.motions[MotionColor.BLUE];
-      reversedMotions[MotionColor.BLUE] = {
+      rewindMotions[MotionColor.BLUE] = {
         ...blueMotion,
         startLocation: blueMotion.endLocation,
         endLocation: blueMotion.startLocation,
@@ -758,10 +758,10 @@ export class SequenceTransformationService
       };
     }
 
-    // Reverse red motion
+    // Rewind red motion
     if (beat.motions[MotionColor.RED]) {
       const redMotion = beat.motions[MotionColor.RED];
-      reversedMotions[MotionColor.RED] = {
+      rewindMotions[MotionColor.RED] = {
         ...redMotion,
         startLocation: redMotion.endLocation,
         endLocation: redMotion.startLocation,
@@ -776,27 +776,27 @@ export class SequenceTransformationService
 
     // Look up the correct letter from the pictograph dataset
     let correctLetter: Letter | null = beat.letter ?? null; // Default to original letter as fallback
-    if (reversedMotions[MotionColor.BLUE] && reversedMotions[MotionColor.RED]) {
+    if (rewindMotions[MotionColor.BLUE] && rewindMotions[MotionColor.RED]) {
       try {
         const foundLetter =
           await this.motionQueryHandler.findLetterByMotionConfiguration(
-            reversedMotions[MotionColor.BLUE],
-            reversedMotions[MotionColor.RED],
+            rewindMotions[MotionColor.BLUE],
+            rewindMotions[MotionColor.RED],
             gridMode
           );
         if (foundLetter) {
           correctLetter = foundLetter as Letter;
           console.log(
-            `✅ Reverse: Found letter "${correctLetter}" for reversed beat (was "${beat.letter}")`
+            `✅ Rewind: Found letter "${correctLetter}" for rewound beat (was "${beat.letter}")`
           );
         } else {
           console.warn(
-            `⚠️ Reverse: No letter found for reversed beat, keeping original letter "${beat.letter}"`
+            `⚠️ Rewind: No letter found for rewound beat, keeping original letter "${beat.letter}"`
           );
         }
       } catch (error) {
         console.error(
-          `❌ Reverse: Error looking up letter for reversed beat:`,
+          `❌ Rewind: Error looking up letter for rewound beat:`,
           error
         );
       }
@@ -807,7 +807,7 @@ export class SequenceTransformationService
       beatNumber: newBeatNumber,
       startPosition: swappedStartPosition,
       endPosition: swappedEndPosition,
-      motions: reversedMotions,
+      motions: rewindMotions,
       letter: correctLetter,
     });
   }

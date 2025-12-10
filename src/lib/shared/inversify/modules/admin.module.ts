@@ -8,11 +8,13 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
 import type { ISystemStateService } from "../../../features/admin/services/contracts/ISystemStateService";
 import type { IAuditLogService } from "../../../features/admin/services/contracts/IAuditLogService";
+import type { IUserManagementService } from "../../../features/admin/services/contracts/IUserManagementService";
 import type { IAdminChallengeService } from "../../../features/admin/services/contracts/IAdminChallengeService";
 import type { IAnalyticsDataService } from "../../../features/admin/services/contracts/IAnalyticsDataService";
 import type { IAnnouncementService } from "../../../features/admin/services/contracts/IAnnouncementService";
 import { SystemStateService } from "../../../features/admin/services/implementations/SystemStateService";
 import { AuditLogService } from "../../../features/admin/services/implementations/AuditLogService";
+import { UserManagementService } from "../../../features/admin/services/implementations/UserManagementService";
 import { AdminChallengeService } from "../../../features/admin/services/implementations/AdminChallengeService";
 import { AnalyticsDataService } from "../../../features/admin/services/implementations/AnalyticsDataService";
 import { AnnouncementService } from "../../../features/admin/services/implementations/AnnouncementService";
@@ -29,6 +31,12 @@ export const adminModule = new ContainerModule(
     options
       .bind<IAuditLogService>(TYPES.IAuditLogService)
       .to(AuditLogService)
+      .inSingletonScope();
+
+    // User Management Service (admin user operations with audit logging)
+    options
+      .bind<IUserManagementService>(TYPES.IUserManagementService)
+      .to(UserManagementService)
       .inSingletonScope();
 
     // Admin Challenge Service

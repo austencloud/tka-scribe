@@ -12,6 +12,7 @@ import {
   getDocs,
   doc,
   updateDoc,
+  deleteDoc,
   where,
   onSnapshot,
   Timestamp,
@@ -174,17 +175,24 @@ export class NotificationService {
   }
 
   /**
-   * Subscribe to real-time notification updates
+   * Delete a single notification
    */
-  subscribeToNotifications(
-    userId: string,
-    callback: (notifications: UserNotification[]) => void
-  ): () => void {
-    // Clean up previous subscription
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
+  async deleteNotification(userId: string, notificationId: string): Promise<void> {
+    const notificationRef = doc(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION,
+      notificationId
+    );
 
+    await deleteDoc(notificationRef);
+  }
+
+  /**
+   * Delete all read notifications
+   */
+  async deleteAllReadNotifications(userId: string): Promise<void> {
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -192,28 +200,22 @@ export class NotificationService {
       NOTIFICATIONS_SUBCOLLECTION
     );
 
-    const q = query(notificationsRef, orderBy("createdAt", "desc"), limit(20));
+    const q = query(notificationsRef, where("read", "==", true));
+    const snapshot = await getDocs(q);
 
-    this.unsubscribe = onSnapshot(q, (snapshot) => {
-      const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
-        this.mapDocToNotification(docSnap.id, docSnap.data())
-      );
-      callback(notifications);
-    });
+    const deletes = snapshot.docs.map((docSnap) =>
+      deleteDoc(docSnap.ref)
+    );
 
-    return this.unsubscribe;
+    await Promise.all(deletes);
   }
 
   /**
-   * Clean up subscriptions
+   * Delete all notifications
    */
-  cleanup(): void {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-      this.unsubscribe = null;
-    }
-  }
-}
-
-// Export singleton instance
-export const notificationService = new NotificationService();
+  async deleteAllNotifications(userId: string): Promise<void> {
+    const notificationsRef = collection(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATION

@@ -46,9 +46,9 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
       requiresConfirmation: false,
       category: "transform",
     },
-    [ToolOperationType.REVERSE]: {
-      type: ToolOperationType.REVERSE,
-      name: "Reverse",
+    [ToolOperationType.REWIND]: {
+      type: ToolOperationType.REWIND,
+      name: "Rewind",
       description: "Retrace your steps — creates a sequence that returns you to the starting position by inverting each movement.",
       icon: "↩️",
       isDestructive: false,

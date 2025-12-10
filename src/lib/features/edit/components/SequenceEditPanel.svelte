@@ -23,10 +23,10 @@
     handleMirror: () => SequenceData | null;
     handleRotate: (direction: "cw" | "ccw") => SequenceData | null;
     handleSwapColors: () => SequenceData | null;
-    handleReverse: () => Promise<SequenceData | null>;
+    handleRewind: () => Promise<SequenceData | null>;
   }
 
-  let { sequence, onTransform, handleMirror, handleRotate, handleSwapColors, handleReverse }: Props = $props();
+  let { sequence, onTransform, handleMirror, handleRotate, handleSwapColors, handleRewind }: Props = $props();
 
   let isTransforming = $state(false);
   let expandedAction = $state<string | null>(null);
@@ -65,8 +65,8 @@
     if (result) onTransform(result);
   }
 
-  async function doReverse() {
-    const result = await handleReverse();
+  async function doRewind() {
+    const result = await handleRewind();
     if (result) onTransform(result);
   }
 
@@ -108,13 +108,13 @@
       action: doSwapColors,
     },
     {
-      id: "reverse",
+      id: "rewind",
       icon: "fa-backward",
-      name: "Reverse",
+      name: "Rewind",
       shortDesc: "Retrace to start",
       fullDesc: "Creates a sequence that returns you to where you started. Each movement is inverted so you physically wind back.",
       color: "#f43f5e",
-      action: doReverse,
+      action: doRewind,
     },
   ];
 </script>

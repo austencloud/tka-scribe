@@ -88,8 +88,8 @@ export function applySwap(data: PictographData): PictographData {
   return { ...data, id: `${data.id}-swapped`, motions: newMotions };
 }
 
-/** Apply reverse transform to pictograph */
-export function applyReverse(data: PictographData): PictographData {
+/** Apply rewind transform to pictograph */
+export function applyRewind(data: PictographData): PictographData {
   const newMotions: Partial<Record<MotionColor, MotionData>> = {};
   for (const [color, motion] of Object.entries(data.motions)) {
     if (motion) {
@@ -103,5 +103,5 @@ export function applyReverse(data: PictographData): PictographData {
       });
     }
   }
-  return { ...data, id: `${data.id}-reversed`, motions: newMotions };
+  return { ...data, id: `${data.id}-rewound`, motions: newMotions };
 }

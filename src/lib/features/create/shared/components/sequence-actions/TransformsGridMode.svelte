@@ -12,7 +12,7 @@
     onRotateCW: () => void;
     onRotateCCW: () => void;
     onSwap: () => void;
-    onReverse: () => void;
+    onRewind: () => void;
     onPreview: () => void;
     onEditInConstructor: () => void;
   }
@@ -25,7 +25,7 @@
     onRotateCW,
     onRotateCCW,
     onSwap,
-    onReverse,
+    onRewind,
     onPreview,
     onEditInConstructor,
   }: Props = $props();
@@ -60,10 +60,10 @@
     <span class="btn-desc">Pivot 45°</span>
   </button>
 
-  <!-- Row 3: Reverse | Preview -->
-  <button class="grid-btn reverse" onclick={onReverse} {disabled}>
+  <!-- Row 3: Rewind | Preview -->
+  <button class="grid-btn rewind" onclick={onRewind} {disabled}>
     <div class="btn-icon"><i class="fas fa-backward"></i></div>
-    <span class="btn-label">Reverse</span>
+    <span class="btn-label">Rewind</span>
     <span class="btn-desc">Rewind backwards</span>
   </button>
 
@@ -182,13 +182,13 @@
     box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
   }
 
-  /* Reverse - Rose */
-  .grid-btn.reverse {
+  /* Rewind - Rose */
+  .grid-btn.rewind {
     background: linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(244, 63, 94, 0.08) 100%);
     border: 1px solid rgba(244, 63, 94, 0.35);
   }
-  .grid-btn.reverse .btn-icon { background: #f43f5e; color: white; }
-  .grid-btn.reverse:hover:not(:disabled) {
+  .grid-btn.rewind .btn-icon { background: #f43f5e; color: white; }
+  .grid-btn.rewind:hover:not(:disabled) {
     background: linear-gradient(135deg, rgba(244, 63, 94, 0.3) 0%, rgba(244, 63, 94, 0.15) 100%);
     border-color: rgba(244, 63, 94, 0.5);
     box-shadow: 0 4px 16px rgba(244, 63, 94, 0.25);

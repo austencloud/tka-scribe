@@ -53,6 +53,20 @@
 
     // Browser navigation is handled in navigation-coordinator; allow native back/forward.
 
+    // 🍪 Clean up old deployment cookies BEFORE auth initializes
+    // This prevents stale cookies from breaking the login flow
+    (async () => {
+      try {
+        const { cleanupOldCookies } = await import(
+          "$lib/shared/auth/utils/cookieCleanup"
+        );
+        await cleanupOldCookies();
+      } catch (error) {
+        console.error("❌ [App Init] Cookie cleanup failed:", error);
+        // Non-fatal error - continue with auth init anyway
+      }
+    })();
+
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
     authStore.initialize();

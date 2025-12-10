@@ -162,11 +162,11 @@
     finally { isTransforming = false; }
   }
 
-  async function handleReverse() {
+  async function handleRewind() {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
-    try { await activeSequenceState.reverseSequence(); }
+    try { await activeSequenceState.rewindSequence(); }
     finally { isTransforming = false; }
   }
 
@@ -271,7 +271,7 @@
           onRotateCW={handleRotateCW}
           onRotateCCW={handleRotateCCW}
           onSwap={handleSwap}
-          onReverse={handleReverse}
+          onRewind={handleRewind}
           onPreview={handlePreview}
           onEditInConstructor={handleEditInConstructor}
         />

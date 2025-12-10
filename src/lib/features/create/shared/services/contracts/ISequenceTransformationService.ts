@@ -33,11 +33,11 @@ export interface ISequenceTransformationService {
   rotateSequence(sequence: SequenceData, rotationAmount: number): SequenceData;
 
   /**
-   * Reverse sequence (play backwards)
+   * Rewind sequence (play backwards)
    * - Creates new start position from final beat's end state
-   * - Reverses beat order and transforms each beat
+   * - Rewinds beat order and transforms each beat
    * - Swaps positions, locations, orientations; flips rotation direction
-   * - Looks up correct letters from pictograph dataset based on reversed motion configuration
+   * - Looks up correct letters from pictograph dataset based on rewound motion configuration
    */
-  reverseSequence(sequence: SequenceData): Promise<SequenceData>;
+  rewindSequence(sequence: SequenceData): Promise<SequenceData>;
 }

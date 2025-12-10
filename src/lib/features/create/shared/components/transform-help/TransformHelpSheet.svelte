@@ -1,16 +1,17 @@
 <!--
   TransformHelpSheet.svelte
 
-  Slide-up sheet explaining sequence transforms with interactive examples.
-  Loads real pictographs from the dataframe for demonstrations.
+  Single pictograph with toggleable transform effects.
+  - Desktop: All 4 transforms visible with descriptions
+  - Mobile: Accordion with Mirror expanded by default
 -->
 <script lang="ts">
   import { transformHelpContent } from "../../domain/transforms/transform-help-content";
   import { getRandomPictograph } from "../../domain/transforms/pictograph-example-loader";
-  import { applyMirror, applyRotate, applySwap, applyReverse } from "../../domain/transforms/transform-functions";
+  import { applyMirror, applyRotate, applySwap, applyRewind } from "../../domain/transforms/transform-functions";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import TransformHelpCard from "./TransformHelpCard.svelte";
-  import TransformExample from "./TransformExample.svelte";
+  import PictographDisplay from "./PictographDisplay.svelte";
+  import TransformDescriptionPanel from "./TransformDescriptionPanel.svelte";
 
   interface Props {
     show: boolean;
@@ -62,63 +63,53 @@
     }
   });
 
-  // Example pictograph state for each transform
-  let examples = $state<Record<string, PictographData | null>>({
-    mirror: null,
-    rotate: null,
-    swap: null,
-    reverse: null,
-  });
-
+  // Single pictograph state
+  let currentPictograph = $state<PictographData | null>(null);
   let isLoading = $state(true);
 
-  // Load initial pictographs when sheet opens
+  // Track which transform is expanded on mobile
+  let expandedTransformId = $state<"mirror" | "rotate" | "swap" | "rewind">("mirror");
+
+  // Load initial pictograph when sheet opens
   $effect(() => {
     if (show && isLoading) {
-      loadAllExamples();
+      loadPictograph();
     }
   });
 
-  async function loadAllExamples() {
+  async function loadPictograph() {
     isLoading = true;
-    const [mirror, rotate, swap, reverse] = await Promise.all([
-      getRandomPictograph(),
-      getRandomPictograph(),
-      getRandomPictograph(),
-      getRandomPictograph(),
-    ]);
-    examples = { mirror, rotate, swap, reverse };
+    currentPictograph = await getRandomPictograph();
     isLoading = false;
   }
 
-  // Transform handlers - apply in place
-  function handleTransform(id: string) {
-    const current = examples[id];
-    if (!current) return;
+  // Apply transform to current pictograph
+  function applyTransform(transformId: string) {
+    if (!currentPictograph) return;
 
-    switch (id) {
+    switch (transformId) {
       case "mirror":
-        examples.mirror = applyMirror(current);
+        currentPictograph = applyMirror(currentPictograph);
         break;
       case "swap":
-        examples.swap = applySwap(current);
+        currentPictograph = applySwap(currentPictograph);
         break;
-      case "reverse":
-        examples.reverse = applyReverse(current);
+      case "rewind":
+        currentPictograph = applyRewind(currentPictograph);
         break;
     }
   }
 
-  function handleRotate(direction: "cw" | "ccw") {
-    const current = examples.rotate;
-    if (!current) return;
-    examples.rotate = applyRotate(current, direction);
+  function applyRotateTransform(direction: "cw" | "ccw") {
+    if (!currentPictograph) return;
+    currentPictograph = applyRotate(currentPictograph, direction);
   }
 
-  // Shuffle handler - get new random pictograph
-  async function handleShuffle(id: string) {
-    const newPictograph = await getRandomPictograph();
-    examples[id] = newPictograph;
+  // Shuffle to new pictograph (keeps transforms applied)
+  async function handleShuffle() {
+    isLoading = true;
+    currentPictograph = await getRandomPictograph();
+    isLoading = false;
   }
 </script>
 
@@ -149,19 +140,17 @@
         </button>
       </div>
       <div class="help-content">
-        {#each transformHelpContent as item}
-          <TransformHelpCard {item}>
-            <TransformExample
-              pictograph={examples[item.id]}
-              color={item.color}
-              isRotate={item.id === "rotate"}
-              {isLoading}
-              onTransform={() => handleTransform(item.id)}
-              onRotate={handleRotate}
-              onShuffle={() => handleShuffle(item.id)}
-            />
-          </TransformHelpCard>
-        {/each}
+        <PictographDisplay
+          pictograph={currentPictograph}
+          {isLoading}
+          onShuffle={handleShuffle}
+        />
+        <TransformDescriptionPanel
+          {expandedTransformId}
+          onToggleExpand={(id: "mirror" | "rotate" | "swap" | "rewind") => (expandedTransformId = id)}
+          onApplyTransform={applyTransform}
+          onApplyRotate={applyRotateTransform}
+        />
       </div>
     </div>
   </div>
@@ -211,8 +200,9 @@
     }
 
     .help-sheet {
-      max-width: 580px;
-      max-height: 80vh;
+      width: 90%;
+      max-width: 1200px;
+      max-height: 85vh;
       border-radius: 16px; /* Rounded all corners */
       animation: scaleIn 0.25s cubic-bezier(0.32, 0.72, 0, 1);
       box-shadow:
@@ -281,7 +271,32 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
+    flex: 1;
+  }
+
+  /* Desktop: Vertical layout with pictograph centered on top */
+  @media (min-width: 768px) {
+    .help-content {
+      flex-direction: column;
+      gap: 24px;
+      padding: 24px;
+      align-items: center;
+      overflow: visible;
+    }
+
+    .help-content > :first-child {
+      flex-shrink: 0;
+      width: 280px;
+    }
+
+    .help-content > :last-child {
+      width: 100%;
+      flex-shrink: 0;
+      overflow: visible;
+      max-height: none;
+      padding-right: 0;
+    }
   }
 
   /* ===== ACCESSIBILITY ===== */

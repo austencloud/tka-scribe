@@ -256,6 +256,14 @@ export const ML_TRAINING_TABS: Section[] = [
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
   {
+    id: "health",
+    label: "Health",
+    icon: '<i class="fas fa-heartbeat"></i>',
+    description: "System health and operations",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+  },
+  {
     id: "challenges",
     label: "Challenges",
     icon: '<i class="fas fa-calendar-day"></i>',

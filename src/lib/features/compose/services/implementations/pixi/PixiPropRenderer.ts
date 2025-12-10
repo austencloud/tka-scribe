@@ -20,6 +20,7 @@ const INWARD_FACTOR = 1.0; // No inward adjustment - use exact grid coordinates
 
 export class PixiPropRenderer {
   private currentSize: number;
+  private hasLoggedFirstTransform = false;
 
   constructor(currentSize: number) {
     this.currentSize = currentSize;
@@ -77,6 +78,21 @@ export class PixiPropRenderer {
     // const rightEndY = y + Math.sin(propState.staffRotationAngle) * staffHalfWidth;
     // console.log(`🎯 PROP ENDPOINTS: Left=(${leftEndX.toFixed(1)}, ${leftEndY.toFixed(1)}), Right=(${rightEndX.toFixed(1)}, ${rightEndY.toFixed(1)}), Rotation=${(propState.staffRotationAngle * 180 / Math.PI).toFixed(1)}°`);
 
+    // Debug: Log first transform calculation
+    if (!this.hasLoggedFirstTransform) {
+      console.log(`[PixiPropRenderer] calculatePropTransform:`, {
+        currentSize: this.currentSize,
+        gridScaleFactor,
+        scaledHalfwayRadius,
+        inputPropDims: { width: propDimensions.width, height: propDimensions.height },
+        outputPropDims: { width: propWidth, height: propHeight },
+        position: { x, y },
+        VIEWBOX_SIZE,
+        GRID_HALFWAY_POINT_OFFSET
+      });
+      this.hasLoggedFirstTransform = true;
+    }
+
     return {
       x,
       y,
@@ -113,6 +129,14 @@ export class PixiPropRenderer {
    * Update canvas size for position calculations
    */
   updateSize(newSize: number): void {
+    console.log(`[PixiPropRenderer] updateSize: ${this.currentSize} -> ${newSize}`);
     this.currentSize = newSize;
+  }
+
+  /**
+   * Get current size for debugging
+   */
+  getCurrentSize(): number {
+    return this.currentSize;
   }
 }

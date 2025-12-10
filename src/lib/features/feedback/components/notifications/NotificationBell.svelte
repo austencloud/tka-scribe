@@ -103,6 +103,106 @@
     return `${days}d ago`;
   }
 
+  // Mark notification as read without navigation (dismiss)
+  async function handleDismiss(notificationId: string) {
+    const isPreview = testPreviewState.isActive;
+
+    if (!isPreview) {
+      const user = authStore.user;
+      if (user) {
+        await notificationService.markAsRead(user.uid, notificationId);
+      }
+
+      // Optimistic update
+      notifications = notifications.map((n) =>
+        n.id === notificationId ? { ...n, read: true, readAt: new Date() } : n
+      );
+      unreadCount = notifications.filter((n) => !n.read).length;
+      if (activePopup?.id === notificationId) {
+        activePopup = null;
+      }
+    }
+  }
+
+  // Navigate to context-specific location based on notification type
+  async function navigateToNotificationContext(notification: UserNotification) {
+    const { type } = notification;
+
+    try {
+      switch (type) {
+        case "feedback-resolved":
+        case "feedback-in-progress":
+          // Navigate to my-feedback tab, focus on that item
+          await handleModuleChange("feedback", "my-feedback");
+          // TODO: Scroll to/highlight notification.feedbackId
+          break;
+
+        case "feedback-needs-info":
+        case "feedback-response":
+          // Navigate to my-feedback, open reply UI
+          await handleModuleChange("feedback", "my-feedback");
+          // TODO: Open feedback item + focus reply form
+          break;
+
+        case "sequence-liked":
+          // Open sequence in gallery viewer
+          await handleModuleChange("discover", "gallery");
+          // TODO: Load notification.sequenceId in viewer
+          break;
+
+        case "user-followed":
+          // Navigate to creator profile
+          await handleModuleChange("discover", "creators");
+          // TODO: Load notification.fromUserId profile
+          break;
+
+        case "admin-new-user-signup":
+          // Navigate to admin user view
+          // TODO: Implement admin user management navigation
+          break;
+
+        case "system-announcement":
+          // Use custom link from notification if available
+          if ("actionUrl" in notification && notification.actionUrl) {
+            window.location.href = notification.actionUrl;
+          }
+          break;
+
+        default:
+          console.warn(`No action defined for notification type: ${type}`);
+      }
+    } catch (error) {
+      console.error("Error navigating to notification context:", error);
+    }
+  }
+
+  // Handle notification action button click
+  async function handleNotificationAction(notification: UserNotification) {
+    const isPreview = testPreviewState.isActive;
+
+    if (!isPreview) {
+      const user = authStore.user;
+      if (user) {
+        await notificationService.markAsRead(user.uid, notification.id);
+      }
+
+      // Optimistic update
+      notifications = notifications.map((n) =>
+        n.id === notification.id ? { ...n, read: true, readAt: new Date() } : n
+      );
+      unreadCount = notifications.filter((n) => !n.read).length;
+      if (activePopup?.id === notification.id) {
+        activePopup = null;
+      }
+    }
+
+    // Navigate to context
+    await navigateToNotificationContext(notification);
+
+    // Close dropdown
+    showDropdown = false;
+  }
+
   async function handleNotificationClick(
     actionId: string | null,
     notificationId: string,
@@ -223,35 +323,41 @@
         {:else}
           {#each notifications as notification (notification.id)}
             {@const config = NOTIFICATION_TYPE_CONFIG[notification.type]}
-            <button
-              class="notification-item"
-              class:unread={!notification.read}
-              onclick={() =>
-                handleNotificationClick(
-                  getNotificationActionId(notification),
-                  notification.id
-                )}
-              type="button"
-            >
-              <div
-                class="notification-icon"
-                style="--icon-color: {config.color}"
+            <div class="notification-item" class:unread={!notification.read}>
+              <button
+                class="notification-card"
+                onclick={() => handleDismiss(notification.id)}
+                type="button"
+                title="Click to dismiss"
               >
-                <i class="fas {config.icon}"></i>
-              </div>
-              <div class="notification-content">
-                <span class="notification-title"
-                  >{getNotificationTitle(notification)}</span
+                <div
+                  class="notification-icon"
+                  style="--icon-color: {config.color}"
                 >
-                <span class="notification-message">{notification.message}</span>
-                <span class="notification-time"
-                  >{formatDate(notification.createdAt)}</span
-                >
-              </div>
-              {#if !notification.read}
-                <div class="unread-dot"></div>
-              {/if}
-            </button>
+                  <i class="fas {config.icon}"></i>
+                </div>
+                <div class="notification-content">
+                  <span class="notification-title"
+                    >{getNotificationTitle(notification)}</span
+                  >
+                  <span class="notification-message">{notification.message}</span>
+                  <span class="notification-time"
+                    >{formatDate(notification.createdAt)}</span
+                  >
+                </div>
+                {#if !notification.read}
+                  <div class="unread-dot"></div>
+                {/if}
+              </button>
+              <button
+                class="notification-action"
+                onclick={() => handleNotificationAction(notification)}
+                type="button"
+                title={config.actionLabel}
+              >
+                {config.actionLabel}
+              </button>
+            </div>
           {/each}
         {/if}
       </div>
@@ -416,23 +522,53 @@
 
   .notification-item {
     display: flex;
-    gap: 12px;
-    width: 100%;
+    flex-direction: column;
+    gap: 8px;
     padding: 12px 16px;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    position: relative;
-  }
-
-  .notification-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .notification-item.unread {
     background: rgba(59, 130, 246, 0.05);
+  }
+
+  .notification-card {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    position: relative;
+  }
+
+  .notification-card:hover {
+    opacity: 0.8;
+  }
+
+  .notification-action {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .notification-action:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+  }
+
+  .notification-action:active {
+    transform: translateY(0);
   }
 
   .notification-icon {

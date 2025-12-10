@@ -344,3 +344,6 @@ export const container = {
     return _cachedContainer !== null;
   }
 };
+
+// Alias for convenience in components
+export const di = container;

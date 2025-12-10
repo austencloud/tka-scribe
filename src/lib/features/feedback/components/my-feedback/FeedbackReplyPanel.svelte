@@ -1,0 +1,324 @@
+<!-- FeedbackReplyPanel - Inline reply form for feedback-needs-info -->
+<script lang="ts">
+  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
+  import { STATUS_CONFIG } from "../../domain/models/feedback-models";
+
+  interface Props {
+    item: FeedbackItem;
+    onSubmit: (reply: string) => Promise<void>;
+    isLoading?: boolean;
+  }
+
+  let { item, onSubmit, isLoading = false }: Props = $props();
+
+  let reply = $state("");
+  let error = $state<string | null>(null);
+  let showSuccess = $state(false);
+
+  const statusConfig = $derived(STATUS_CONFIG[item.status as FeedbackStatus]);
+  const isValidReply = $derived(reply.trim().length >= 5);
+  const hasMinChars = $derived(reply.trim().length >= 5);
+
+  async function handleSubmit() {
+    if (!isValidReply || isLoading) return;
+
+    error = null;
+    try {
+      await onSubmit(reply.trim());
+      reply = "";
+      showSuccess = true;
+
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        showSuccess = false;
+      }, 3000);
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to submit reply";
+    }
+  }
+
+  function handleCancel() {
+    reply = "";
+    error = null;
+  }
+</script>
+
+<div class="reply-panel">
+  <div class="reply-header">
+    <div class="header-icon" style="--status-color: {statusConfig.color}">
+      <i class="fas fa-reply"></i>
+    </div>
+    <div class="header-content">
+      <h3>
+        {#if (item.status as string) === "feedback-needs-info"}
+          Share More Details
+        {:else if (item.status as string) === "feedback-response"}
+          Admin Response
+        {/if}
+      </h3>
+      <p class="header-hint">
+        {#if (item.status as string) === "feedback-needs-info"}
+          The team needs more information to resolve this. Add clarification or details below.
+        {:else if (item.status as string) === "feedback-response"}
+          The team sent a response. You can reply with additional information.
+        {/if}
+      </p>
+    </div>
+  </div>
+
+  <div class="reply-form">
+    {#if showSuccess}
+      <div class="success-message">
+        <i class="fas fa-check-circle"></i>
+        <span>Reply sent successfully!</span>
+      </div>
+    {/if}
+
+    {#if error}
+      <div class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>{error}</span>
+      </div>
+    {/if}
+
+    <div class="form-group">
+      <label for="reply-textarea" class="field-label">Your Reply</label>
+      <div class="textarea-wrapper">
+        <textarea
+          id="reply-textarea"
+          class="reply-textarea"
+          bind:value={reply}
+          placeholder="Please provide additional details or information..."
+          rows="4"
+          disabled={isLoading}
+        ></textarea>
+      </div>
+      <div class="field-hint">
+        <span class="char-count" class:met={hasMinChars}>
+          {#if reply.trim().length < 5}
+            {5 - reply.trim().length} more needed
+          {:else}
+            <i class="fas fa-check"></i>
+          {/if}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="cancel-btn"
+        onclick={handleCancel}
+        disabled={isLoading || reply.length === 0}
+      >
+        Clear
+      </button>
+      <button
+        type="button"
+        class="submit-btn"
+        onclick={handleSubmit}
+        disabled={!isValidReply || isLoading}
+      >
+        {#if isLoading}
+          <i class="fas fa-circle-notch fa-spin"></i>
+          <span>Sending...</span>
+        {:else}
+          <i class="fas fa-send"></i>
+          <span>Send Reply</span>
+        {/if}
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .reply-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(59, 130, 246, 0.1) 100%
+    );
+    border: 1.5px solid rgba(59, 130, 246, 0.4);
+    border-radius: 12px;
+    margin: 20px 0;
+  }
+
+  .reply-header {
+    display: flex;
+    gap: 12px;
+  }
+
+  .header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: color-mix(in srgb, var(--status-color) 20%, transparent);
+    border-radius: 8px;
+    color: var(--status-color);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .header-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header-content h3 {
+    margin: 0 0 4px 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .header-hint {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+  }
+
+  .reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .success-message,
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .success-message {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    color: #10b981;
+  }
+
+  .error-message {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .textarea-wrapper {
+    position: relative;
+  }
+
+  .reply-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    resize: vertical;
+    transition: all 0.2s ease;
+  }
+
+  .reply-textarea:focus {
+    outline: none;
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .reply-textarea:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .field-hint {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .char-count {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    transition: color 0.2s ease;
+  }
+
+  .char-count.met {
+    color: #10b981;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .cancel-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .cancel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+  }
+
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  }
+
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>

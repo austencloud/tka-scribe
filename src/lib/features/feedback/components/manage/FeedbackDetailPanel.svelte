@@ -1,6 +1,6 @@
 <!-- FeedbackDetailPanel - Refactored with service-based architecture and Svelte 5 runes -->
 <script lang="ts">
-  import type { FeedbackItem } from "../../domain/models/feedback-models";
+  import type { FeedbackItem, TesterConfirmationStatus } from "../../domain/models/feedback-models";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { createFeedbackDetailState } from "../../state/feedback-detail-state.svelte";
   import { PRIORITY_CONFIG, CONFIRMATION_STATUS_CONFIG } from "../../domain/models/feedback-models";
@@ -11,17 +11,19 @@
   import FeedbackStatusGrid from "./detail/FeedbackStatusGrid.svelte";
   import FeedbackActionBar from "./detail/FeedbackActionBar.svelte";
 
+  interface Props {
+    item: FeedbackItem;
+    manageState?: FeedbackManageState | null;
+    onClose: () => void;
+    readOnly?: boolean;
+  }
+
   const {
     item,
     manageState = null,
     onClose,
     readOnly = false,
-  } = $props<{
-    item: FeedbackItem;
-    manageState?: FeedbackManageState | null;
-    onClose: () => void;
-    readOnly?: boolean;
-  }>();
+  }: Props = $props();
 
   // Create state wrapper - orchestrates services and reactive state
   const detailState = createFeedbackDetailState(item, manageState, readOnly);
@@ -72,15 +74,11 @@
 
   async function handleMarkResolved() {
     if (readOnly || !manageState || detailState.isUpdatingStatus) return;
-    try {
-      await manageState.updateStatus(item.id, "resolved");
-      await feedbackService.notifyTesterResolved(
-        item.id,
-        detailState.adminResponseMessage.trim() || undefined
-      );
-    } finally {
-      detailState.isUpdatingStatus = false;
-    }
+    await manageState.updateStatus(item.id, "in-review");
+    await feedbackService.notifyTesterResolved(
+      item.id,
+      detailState.adminResponseMessage.trim() || undefined
+    );
   }
 </script>
 
@@ -249,7 +247,7 @@
                   Send Response
                 </button>
 
-                {#if item.status !== "resolved"}
+                {#if item.status !== "in-review" && item.status !== "completed"}
                   <button
                     type="button"
                     class="resolve-notify-btn"
@@ -280,7 +278,7 @@
 
         <!-- Tester confirmation status -->
         {#if item.testerConfirmation}
-          {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status]}
+          {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status as TesterConfirmationStatus]}
           <div
             class="tester-confirmation"
             style="--conf-color: {confConfig.color}"

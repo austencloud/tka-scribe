@@ -77,7 +77,7 @@
   <!-- Bottom sheet with swipe-up for more -->
   <MobileDetailSheet
     {sequence}
-    state={sheetState}
+    sheetState={sheetState}
     onStateChange={handleSheetStateChange}
     onAction={handleAction}
   />

@@ -133,10 +133,10 @@
     return transformService.swapColors(sequence);
   }
 
-  async function handleReverse(): Promise<SequenceData | null> {
+  async function handleRewind(): Promise<SequenceData | null> {
     const sequence = editState.editingSequence;
     if (!sequence || !transformService) return null;
-    return await transformService.reverseSequence(sequence);
+    return await transformService.rewindSequence(sequence);
   }
 
   // Derived state
@@ -219,7 +219,7 @@
               {handleMirror}
               {handleRotate}
               {handleSwapColors}
-              {handleReverse}
+              {handleRewind}
             />
           {/if}
         </div>

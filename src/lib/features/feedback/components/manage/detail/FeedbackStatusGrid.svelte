@@ -3,13 +3,12 @@
   import { STATUS_CONFIG } from "../../../domain/models/feedback-models";
   import type { FeedbackDetailState } from "../../../state/feedback-detail-state.svelte";
 
-  const {
-    detailState,
-    readOnly = false,
-  } = $props<{
+  interface Props {
     detailState: FeedbackDetailState;
     readOnly?: boolean;
-  }>();
+  }
+
+  const { detailState, readOnly = false }: Props = $props();
 </script>
 
 <section class="section">
@@ -18,7 +17,7 @@
     Status
   </h3>
   {#if readOnly}
-    {@const statusConfig = STATUS_CONFIG[detailState.item.status]}
+    {@const statusConfig = STATUS_CONFIG[detailState.item.status as FeedbackStatus]}
     <div
       class="status-display"
       style="--status-color: {statusConfig.color}"

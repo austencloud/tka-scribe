@@ -113,10 +113,10 @@ function sampleImageColors(img: HTMLImageElement): string {
   const colorBuckets: Map<string, { count: number; r: number; g: number; b: number; saturation: number }> = new Map();
 
   for (let i = 0; i < pixels.length; i += 4) {
-    const r = pixels[i];
-    const g = pixels[i + 1];
-    const b = pixels[i + 2];
-    const a = pixels[i + 3];
+    const r = pixels[i]!;
+    const g = pixels[i + 1]!;
+    const b = pixels[i + 2]!;
+    const a = pixels[i + 3]!;
 
     // Skip transparent pixels
     if (a < 128) continue;

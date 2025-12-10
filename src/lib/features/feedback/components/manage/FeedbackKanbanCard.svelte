@@ -15,6 +15,7 @@
     onDragStart,
     onDragEnd,
     onTouchDrag,
+    onTouchEnd,
     onClick,
   } = $props<{
     item: FeedbackItem;
@@ -23,6 +24,7 @@
     onDragStart: (item: FeedbackItem) => void;
     onDragEnd: () => void;
     onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
+    onTouchEnd?: (x: number, y: number) => void;
     onClick: () => void;
   }>();
 
@@ -232,6 +234,13 @@
       // End drag - prevent the subsequent click event (only if cancelable)
       if (e.cancelable) e.preventDefault();
       justDragged = true;
+
+      // Get the final touch position for drop handling
+      const touch = e.changedTouches[0];
+      if (touch && onTouchEnd) {
+        onTouchEnd(touch.clientX, touch.clientY);
+      }
+
       removeDragGhost();
       isTouchDragging = false;
       isDragging = false;

@@ -7,8 +7,8 @@
   import { onMount } from "svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import { notificationPreferencesService } from "../services/implementations/NotificationPreferencesService";
-  import type { NotificationPreferences } from "../domain/models/notification-models";
-  import { DEFAULT_NOTIFICATION_PREFERENCES } from "../domain/models/notification-models";
+  import type { NotificationPreferences, NotificationType } from "../domain/models/notification-models";
+  import { DEFAULT_NOTIFICATION_PREFERENCES, NOTIFICATION_TYPE_CONFIG, getPreferenceKeyForType } from "../domain/models/notification-models";
   import PreferenceGroup from "./notifications/PreferenceGroup.svelte";
   import type { PreferenceItem } from "./notifications/PreferenceItem";
 
@@ -102,81 +102,95 @@
     }
   }
 
-  // Preference groups for organization
-  const preferenceGroups: {
+  // Preference descriptions (keyed by notification type for clarity)
+  const typeDescriptions: Record<NotificationType, string> = {
+    "feedback-resolved": "When your feedback is marked as resolved",
+    "feedback-in-progress": "When work starts on your feedback",
+    "feedback-needs-info": "When admin needs more details from you",
+    "feedback-response": "When admin sends you a message",
+    "sequence-liked": "When someone likes your sequence",
+    "user-followed": "When someone follows you",
+    "achievement-unlocked": "When you unlock an achievement",
+    "admin-new-user-signup": "When a new user signs up",
+    "system-announcement": "Important system announcements",
+  };
+
+  // Dynamically generate preference groups from NOTIFICATION_TYPE_CONFIG
+  function generatePreferenceGroups(): {
     title: string;
     description: string;
     items: PreferenceItem[];
-  }[] = [
-    {
-      title: "Feedback Notifications",
-      description: "Get notified when your feedback is addressed",
-      items: [
-        {
-          key: "feedbackResolved" as const,
-          label: "Feedback Resolved",
-          description: "When your feedback is marked as resolved",
-        },
-        {
-          key: "feedbackInProgress" as const,
-          label: "Being Worked On",
-          description: "When work starts on your feedback",
-        },
-        {
-          key: "feedbackNeedsInfo" as const,
-          label: "More Info Needed",
-          description: "When admin needs more details from you",
-        },
-        {
-          key: "feedbackResponse" as const,
-          label: "Admin Response",
-          description: "When admin sends you a message",
-        },
-      ],
-    },
-    {
-      title: "Sequence Engagement",
-      description: "Get notified when others interact with your sequences",
-      items: [
-        {
-          key: "sequenceSaved" as const,
-          label: "Sequence Saved",
-          description: "When someone saves your sequence",
-        },
-        {
-          key: "sequenceVideoSubmitted" as const,
-          label: "Video Submitted",
-          description: "When someone submits a video of your sequence",
-        },
-        {
-          key: "sequenceLiked" as const,
-          label: "Sequence Liked",
-          description: "When someone likes your sequence",
-        },
-        {
-          key: "sequenceCommented" as const,
-          label: "New Comment",
-          description: "When someone comments on your sequence",
-        },
-      ],
-    },
-    {
-      title: "Social & Achievements",
-      description: "Get notified about followers and milestones",
-      items: [
-        {
-          key: "userFollowed" as const,
-          label: "New Follower",
-          description: "When someone follows you",
-        },
-        {
-          key: "achievementUnlocked" as const,
-          label: "Achievement Unlocked",
-          description: "When you unlock an achievement",
-        },
-      ],
-    },
-  ];
+  }[] {
+    const groups: {
+      title: string;
+      description: string;
+      items: PreferenceItem[];
+    }[] = [];
+
+    // Group by category
+    const feedback: PreferenceItem[] = [];
+    const sequence: PreferenceItem[] = [];
+    const social: PreferenceItem[] = [];
+    const admin: PreferenceItem[] = [];
+
+    for (const [type, config] of Object.entries(NOTIFICATION_TYPE_CONFIG)) {
+      const prefKey = getPreferenceKeyForType(type as NotificationType);
+      if (!prefKey) continue; // Skip types without preferences (system-announcement)
+
+      const item: PreferenceItem = {
+        key: prefKey,
+        label: config.label,
+        description: typeDescriptions[type as NotificationType] || config.label,
+      };
+
+      // Categorize
+      if (type.startsWith("feedback-")) {
+        feedback.push(item);
+      } else if (type.startsWith("sequence-")) {
+        sequence.push(item);
+      } else if (type === "user-followed" || type === "achievement-unlocked") {
+        social.push(item);
+      } else if (type === "admin-new-user-signup") {
+        admin.push(item);
+      }
+    }
+
+    if (feedback.length > 0) {
+      groups.push({
+        title: "Feedback Notifications",
+        description: "Get notified when your feedback is addressed",
+        items: feedback,
+      });
+    }
+
+    if (sequence.length > 0) {
+      groups.push({
+        title: "Sequence Engagement",
+        description: "Get notified when others interact with your sequences",
+        items: sequence,
+      });
+    }
+
+    if (social.length > 0) {
+      groups.push({
+        title: "Social & Achievements",
+        description: "Get notified about followers and milestones",
+        items: social,
+      });
+    }
+
+    if (admin.length > 0) {
+      groups.push({
+        title: "Admin Notifications",
+        description: "Get notified about important admin events",
+        items: admin,
+      });
+    }
+
+    return groups;
+  }
+
+  const preferenceGroups = $derived(generatePreferenceGroups());
 </script>
 
 <div class="notification-preferences-panel">

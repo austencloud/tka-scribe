@@ -14,6 +14,7 @@
     CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
   import FeedbackEditDrawer from "./FeedbackEditDrawer.svelte";
+  import FeedbackReplyPanel from "./FeedbackReplyPanel.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
 
   const { item, onClose, onUpdate } = $props<{
@@ -44,6 +45,13 @@
   // Full edit mode only for "new" status, otherwise append mode
   const isAppendMode = $derived(item.status !== "new");
 
+  // Check if should show reply panel (for feedback-needs-info or feedback-response statuses)
+  const shouldShowReplyPanel = $derived(
+    ["feedback-needs-info", "feedback-response"].includes(item.status)
+  );
+
+  let isReplySubmitting = $state(false);
+
   function formatDate(date: Date): string {
     return date.toLocaleDateString("en-US", {
       month: "short",
@@ -56,6 +64,15 @@
 
   async function handleSave(updates: { type?: FeedbackType; description: string }, appendMode: boolean) {
     await onUpdate(item.id, updates, appendMode);
+  }
+
+  async function handleReplySubmit(reply: string) {
+    isReplySubmitting = true;
+    try {
+      await onUpdate(item.id, { description: reply }, true);
+    } finally {
+      isReplySubmitting = false;
+    }
   }
 </script>
 
@@ -199,6 +216,15 @@
           {/if}
         </div>
       </div>
+    {/if}
+
+    <!-- Reply Panel (for feedback-needs-info and feedback-response) -->
+    {#if shouldShowReplyPanel && !isPreviewMode}
+      <FeedbackReplyPanel
+        {item}
+        onSubmit={handleReplySubmit}
+        isLoading={isReplySubmitting}
+      />
     {/if}
   </div>
 

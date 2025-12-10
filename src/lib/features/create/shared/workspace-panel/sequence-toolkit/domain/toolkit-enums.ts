@@ -7,7 +7,7 @@ export enum ToolOperationType {
   ROTATE_CLOCKWISE = "rotate_clockwise",
   ROTATE_COUNTERCLOCKWISE = "rotate_counterclockwise",
   SWAP_COLORS = "swap_colors",
-  REVERSE = "reverse",
+  REWIND = "rewind",
   CLEAR = "clear",
   DUPLICATE = "duplicate",
 

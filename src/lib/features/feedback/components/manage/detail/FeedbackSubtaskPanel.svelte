@@ -4,11 +4,11 @@
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
-  const {
-    subtasks,
-  } = $props<{
+  interface Props {
     subtasks: FeedbackSubtask[];
-  }>();
+  }
+
+  const { subtasks }: Props = $props();
 
   const subtaskService = tryResolve<IFeedbackSubtaskService>(TYPES.IFeedbackSubtaskService);
 
@@ -17,7 +17,7 @@
     return subtaskService.isSubtaskBlocked(subtask, subtasks);
   }
 
-  const completedCount = $derived(subtasks.filter(s => s.status === "completed").length);
+  const completedCount = $derived(subtasks.filter((s: FeedbackSubtask) => s.status === "completed").length);
 </script>
 
 {#if subtasks.length > 0}
@@ -59,7 +59,7 @@
               <span class="subtask-deps">
                 <i class="fas fa-link"></i>
                 Depends on: {subtask.dependsOn
-                  .map(id => `#${id}`)
+                  .map((id: string) => `#${id}`)
                   .join(", ")}
               </span>
             {/if}

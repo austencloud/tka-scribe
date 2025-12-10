@@ -1,0 +1,127 @@
+<!-- FilterButton - Reusable filter button with optional badge -->
+<script lang="ts">
+  interface Props {
+    label: string;
+    icon?: string;
+    badgeCount?: number;
+    onClick: () => void;
+    isActive?: boolean;
+    isPanel?: boolean;
+  }
+
+  const {
+    label,
+    icon,
+    badgeCount,
+    onClick,
+    isActive = false,
+    isPanel = false,
+  }: Props = $props();
+</script>
+
+<button
+  type="button"
+  class="filter-button"
+  class:active={isActive}
+  class:panel={isPanel}
+  onclick={onClick}
+  aria-expanded={isActive}
+>
+  {#if icon}
+    <i class="fas {icon}"></i>
+  {/if}
+  <span>{label}</span>
+  {#if isPanel}
+    <i class="fas fa-chevron-right panel-arrow"></i>
+  {/if}
+  {#if badgeCount !== undefined && badgeCount > 0}
+    <span class="filter-count">{badgeCount}</span>
+  {/if}
+</button>
+
+<style>
+  .filter-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 21px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+  }
+
+  .filter-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .filter-button:active {
+    transform: scale(0.98);
+  }
+
+  .filter-button.active {
+    background: color-mix(in srgb, #10b981 15%, transparent);
+    border-color: #10b981;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .filter-button.active i:not(.panel-arrow) {
+    color: #10b981;
+  }
+
+  .filter-button i {
+    font-size: 0.85em;
+  }
+
+  .filter-button.panel .panel-arrow {
+    font-size: 0.7em;
+    margin-left: 6px;
+    color: rgba(255, 255, 255, 0.4);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .filter-button.panel:hover .panel-arrow {
+    transform: translateX(2px);
+  }
+
+  .filter-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    background: #10b981;
+    border-radius: 999px;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .filter-count {
+      animation: none;
+    }
+  }
+</style>

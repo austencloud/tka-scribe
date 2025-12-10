@@ -13,10 +13,10 @@
   import { onMount } from "svelte";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
-  import { userManagementService } from "../services/implementations/UserManagementService";
   import { di } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ISystemStateService } from "../services/contracts/ISystemStateService";
+  import type { IUserManagementService } from "../services/contracts/IUserManagementService";
   import UserCard from "./user-management/UserCard.svelte";
   import UserDetailPanel from "./user-management/UserDetailPanel.svelte";
   import ConfirmActionModal from "./user-management/ConfirmActionModal.svelte";
@@ -35,6 +35,7 @@
   }
 
   const systemStateService = di.get<ISystemStateService>(TYPES.ISystemStateService);
+  const userManagementService = di.get<IUserManagementService>(TYPES.IUserManagementService);
 
   // State
   let users = $state<UserData[]>([]);
@@ -363,7 +364,6 @@
         {#if selectedUser}
           <UserDetailPanel
             user={selectedUser}
-            context={userContext}
             {isActionPending}
             onRoleChange={handleRoleChangeRequest}
             onAction={handleActionRequest}

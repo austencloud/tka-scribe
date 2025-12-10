@@ -59,10 +59,10 @@ const dictionaryPlugin = () => ({
 });
 
 /**
- * 🚀 2025 OPTIMIZATION: Smart caching for development
- * - No cache for CSS/JS/HMR (prevents HMR breakage)
- * - Aggressive caching only for static SVG assets
- * - Skip WebSocket connections (don't interfere with HMR handshake)
+ * 🚀 2025 OPTIMIZATION: Aggressive no-cache during development
+ * - Disables ALL caching for development files
+ * - Works with browser cache and service workers
+ * - Ensures every change is immediately visible
  */
 const devCachePlugin = () => ({
   name: "dev-cache-headers",
@@ -81,36 +81,27 @@ const devCachePlugin = () => ({
           return;
         }
 
-        // Disable caching for CSS, JS, and HMR to prevent hard refresh issues
+        // Disable caching for ALL HTML, CSS, JS files during dev (aggressive approach)
         if (
           url.includes(".css") ||
           url.includes(".js") ||
+          url.includes(".svelte") ||
+          url.includes(".html") ||
           url.includes("@vite") ||
-          url.includes("@fs")
+          url.includes("@fs") ||
+          url.includes("/")
         ) {
           const originalWriteHead = res.writeHead;
           res.writeHead = function (...args: any[]) {
-            res.setHeader(
-              "Cache-Control",
-              "no-store, no-cache, must-revalidate, max-age=0"
-            );
+            res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
             res.setHeader("Pragma", "no-cache");
             res.setHeader("Expires", "0");
+            res.setHeader("Surrogate-Control", "no-store");
+            res.setHeader("ETag", `"${Date.now()}"`); // Force cache miss
             return originalWriteHead.apply(res, args);
           };
         }
-        // Apply aggressive caching only to static SVG files in /images/
-        else if (url.startsWith("/images/") && url.endsWith(".svg")) {
-          const originalWriteHead = res.writeHead;
-          res.writeHead = function (...args: any[]) {
-            res.setHeader(
-              "Cache-Control",
-              "public, max-age=31536000, immutable"
-            );
-            res.setHeader("Vary", "Accept-Encoding");
-            return originalWriteHead.apply(res, args);
-          };
-        }
+
         next();
       }
     );

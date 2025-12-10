@@ -1,7 +1,9 @@
 <!--
   NotificationItem - Single Notification Card
 
-  Displays a notification with icon, message, and action button.
+  Displays a notification with icon, message, and two actions:
+  - Click card: Mark as read (dismiss)
+  - Click action button: Mark as read + navigate to context
 -->
 <script lang="ts">
   import type {
@@ -12,14 +14,33 @@
   import { notificationService } from "../services/implementations/NotificationService";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 
-  let { notification, onAction } = $props<{
+  let { notification, onAction, onDismiss } = $props<{
     notification: UserNotification;
     onAction?: (notification: UserNotification) => void;
+    onDismiss?: (notificationId: string) => void;
   }>();
 
   const config = $derived(
     NOTIFICATION_TYPE_CONFIG[notification.type as NotificationType]
   );
+
+  // Generate subtle background color from the notification type's color
+  const bgColor = $derived.by(() => {
+    const color = config.color;
+    // Convert hex to rgb and add transparency
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, 0.08)`;
+  });
+
+  const borderColor = $derived.by(() => {
+    const color = config.color;
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, 0.2)`;
+  });
 
   // Format timestamp
   const timeAgo = $derived(() => {
@@ -43,8 +64,18 @@
     });
   });
 
-  async function handleClick() {
-    // Mark as read
+  async function handleDismiss() {
+    // Mark as read without navigation
+    const user = authStore.user;
+    if (user && !notification.read) {
+      await notificationService.markAsRead(user.uid, notification.id);
+    }
+
+    onDismiss?.(notification.id);
+  }
+
+  async function handleAction() {
+    // Mark as read and trigger action (navigate)
     const user = authStore.user;
     if (user && !notification.read) {
       await notificationService.markAsRead(user.uid, notification.id);
@@ -55,56 +86,84 @@
   }
 </script>
 
-<button
-  class="notification-item"
-  class:unread={!notification.read}
-  onclick={handleClick}
-  aria-label="View notification: {notification.message}"
->
-  <div class="notification-icon" style="background: {config.color};">
-    <i class="fas {config.icon}"></i>
-  </div>
-
-  <div class="notification-content">
-    <div class="notification-header">
-      <span class="notification-label">{config.label}</span>
-      <span class="notification-time">{timeAgo()}</span>
+<div class="notification-item" class:unread={!notification.read} style="background: {bgColor}; border-color: {borderColor};">
+  <button
+    class="notification-card"
+    onclick={handleDismiss}
+    type="button"
+    title="Click to dismiss"
+    aria-label="Dismiss notification: {notification.message}"
+  >
+    <div class="notification-icon" style="background: {config.color};">
+      <i class="fas {config.icon}"></i>
     </div>
-    <p class="notification-message">{notification.message}</p>
-    {#if notification.fromUserName}
-      <span class="notification-from">from {notification.fromUserName}</span>
-    {/if}
-  </div>
 
-  {#if !notification.read}
-    <div class="unread-indicator"></div>
-  {/if}
-</button>
+    <div class="notification-content">
+      <div class="notification-header">
+        <span class="notification-label">{config.label}</span>
+        <span class="notification-time">{timeAgo()}</span>
+      </div>
+      <p class="notification-message">{notification.message}</p>
+      {#if notification.fromUserName}
+        <span class="notification-from">from {notification.fromUserName}</span>
+      {/if}
+    </div>
+
+    {#if !notification.read}
+      <div class="unread-indicator"></div>
+    {/if}
+  </button>
+
+  <button
+    class="notification-action"
+    onclick={handleAction}
+    type="button"
+    title={config.actionLabel}
+    aria-label={config.actionLabel}
+  >
+    {config.actionLabel}
+  </button>
+</div>
 
 <style>
   .notification-item {
     width: 100%;
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: left;
+    border: 1px solid;
+    border-radius: var(--radius-2026-md);
+    transition: all var(--duration-normal) var(--ease-out);
     position: relative;
   }
 
   .notification-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
+    filter: brightness(1.15);
   }
 
   .notification-item.unread {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 1px inset rgba(99, 102, 241, 0.3);
+  }
+
+  /* ============================================================================
+     NOTIFICATION CARD (dismiss area)
+     ============================================================================ */
+  .notification-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .notification-card:hover {
+    opacity: 0.85;
   }
 
   /* ============================================================================
@@ -185,15 +244,52 @@
   }
 
   /* ============================================================================
+     ACTION BUTTON (navigate)
+     ============================================================================ */
+  .notification-action {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+  }
+
+  .notification-action:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+  }
+
+  .notification-action:active {
+    transform: translateY(-1px);
+  }
+
+  /* ============================================================================
      ACCESSIBILITY
      ============================================================================ */
-  .notification-item:focus-visible {
+  .notification-item:focus-within {
     outline: 2px solid rgba(99, 102, 241, 0.7);
     outline-offset: 2px;
   }
 
+  .notification-card:focus-visible {
+    outline: none; /* Handled by parent */
+  }
+
+  .notification-action:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.7);
+    outline-offset: 2px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .notification-item {
+    .notification-item,
+    .notification-action {
       transition: none;
     }
   }

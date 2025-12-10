@@ -1,23 +1,25 @@
 <!-- FeedbackEditDrawer - Drawer for editing user's own feedback -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import type { FeedbackItem, FeedbackType } from "../../domain/models/feedback-models";
+  import type { FeedbackItem, FeedbackType, FeedbackStatus } from "../../domain/models/feedback-models";
   import { TYPE_CONFIG, STATUS_CONFIG } from "../../domain/models/feedback-models";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
   import { onMount } from "svelte";
+
+  interface Props {
+    isOpen: boolean;
+    item: FeedbackItem;
+    appendMode?: boolean;
+    onSave: (updates: { type?: FeedbackType; description: string }, appendMode: boolean) => Promise<void>;
+  }
 
   let {
     isOpen = $bindable(false),
     item,
     appendMode = false,
     onSave,
-  } = $props<{
-    isOpen: boolean;
-    item: FeedbackItem;
-    appendMode?: boolean;
-    onSave: (updates: { type?: FeedbackType; description: string }, appendMode: boolean) => Promise<void>;
-  }>();
+  }: Props = $props();
 
   // Responsive layout
   let layoutService: IResponsiveLayoutService | null = $state(null);
@@ -33,6 +35,7 @@
       });
       return unsubscribe;
     }
+    return undefined;
   });
 
   const drawerPlacement = $derived(isSideBySide ? "right" : "bottom");
@@ -96,7 +99,7 @@
   }
 
   const currentTypeConfig = $derived(TYPE_CONFIG[editType]);
-  const statusConfig = $derived(STATUS_CONFIG[item.status]);
+  const statusConfig = $derived(STATUS_CONFIG[item.status as FeedbackStatus]);
 </script>
 
 <Drawer

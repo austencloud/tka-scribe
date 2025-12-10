@@ -29,8 +29,8 @@
     },
   };
 
-  function getConfig(type: string) {
-    return typeConfig[type] || typeConfig.info;
+  function getConfig(type: string): { icon: string; color: string; bg: string } {
+    return typeConfig[type] ?? typeConfig.info!;
   }
 </script>
 

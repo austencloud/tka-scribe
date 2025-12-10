@@ -75,8 +75,8 @@
 
     videosLoading = true;
     try {
-      const library = await videoService.getUserVideoLibrary(authStore.effectiveUserId);
-      videos = [...library.myVideos, ...library.collaborations]
+      const library = await videoService.getUserVideoLibrary();
+      videos = [...library.created, ...library.collaborations]
         .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     } catch (e) {
       console.error("Failed to load videos:", e);
@@ -273,7 +273,7 @@
               {#each recentVideos() as video (video.id)}
                 <CollaborativeVideoCard
                   {video}
-                  onClick={() => handleVideoClick(video)}
+                  onclick={() => handleVideoClick(video)}
                 />
               {/each}
             </div>
