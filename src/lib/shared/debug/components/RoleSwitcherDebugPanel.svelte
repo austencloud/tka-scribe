@@ -1,13 +1,13 @@
 <!--
   Role Switcher Debug Panel
-  
-  Admin-only tool for testing different permission levels.
+
+  Admin-only tool for testing different permission levels and previewing user data.
   Press F9 to toggle.
-  
+
   Features:
   - Quick role switching (admin, tester, premium, user)
-  - Visual indicator when in override mode
-  - Shows current actual role vs override
+  - Full user preview with comprehensive data access
+  - Visual indicator when in override/preview mode
   - Keyboard shortcut to toggle
 -->
 <script lang="ts">
@@ -15,24 +15,23 @@
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import { UserSearchInput } from "$lib/shared/user-search";
   import {
-    testPreviewState,
-    loadPreviewNotifications,
-    clearPreview,
-    searchPreviewUsers,
-  } from "$lib/shared/debug/state/test-preview-state.svelte";
+    userPreviewState,
+    loadUserPreview,
+    clearUserPreview,
+  } from "$lib/shared/debug/state/user-preview-state.svelte";
 
   // State
   let isOpen = $state(false);
-  let previewInput = $state("");
-  let previewSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
   // Get values from service
   const actualRole = $derived(featureFlagService.userRole);
   const effectiveRole = $derived(featureFlagService.effectiveRole);
   const debugOverride = $derived(featureFlagService.debugRoleOverride);
   const isAdmin = $derived(authStore.isAdmin);
-  const isPreview = $derived(testPreviewState.isActive);
+  const isPreview = $derived(userPreviewState.isActive);
+  const previewProfile = $derived(userPreviewState.data.profile);
 
   // Role options
   const roles: {
@@ -64,28 +63,13 @@
     featureFlagService.clearDebugRoleOverride();
   }
 
-  async function handleLoadPreview() {
-    const trimmed = previewInput.trim();
-    if (!trimmed) return;
-    await loadPreviewNotifications(trimmed, trimmed);
+  async function handleUserSelect(user: { uid: string; displayName: string; email: string }) {
+    // Use eager=true to load all data upfront (for banner stats and Library view)
+    await loadUserPreview(user.uid, true);
   }
 
   function handleClearPreview() {
-    clearPreview();
-  }
-
-  function handlePreviewInputChange(value: string) {
-    previewInput = value;
-    if (previewSearchTimer) {
-      clearTimeout(previewSearchTimer);
-    }
-    if (value.trim().length < 2) {
-      testPreviewState.suggestions = [];
-      return;
-    }
-    previewSearchTimer = setTimeout(() => {
-      searchPreviewUsers(value.trim());
-    }, 200);
+    clearUserPreview();
   }
 
   // Keyboard shortcut: F9 (easy single-key access for debug tool)
@@ -106,20 +90,8 @@
 </script>
 
 <!-- Only show for admins -->
-  {#if isAdmin}
-    <!-- Floating indicator when override is active -->
-    {#if debugOverride}
-      <button type="button" class="override-indicator" onclick={togglePanel}>
-        <i class="fas fa-user-secret"></i>
-        <span>Viewing as {debugOverride}</span>
-      </button>
-    {/if}
-    {#if isPreview}
-      <button type="button" class="override-indicator preview" onclick={togglePanel}>
-        <i class="fas fa-eye"></i>
-        <span>Preview: {testPreviewState.userLabel || testPreviewState.userId}</span>
-      </button>
-    {/if}
+{#if isAdmin}
+  <!-- Note: Role override indicator now handled by PreviewModeBanner -->
 
   <!-- Debug panel -->
   {#if isOpen}
@@ -181,50 +153,72 @@
           <div class="preview-header">
             <div class="panel-title">
               <i class="fas fa-eye"></i>
-              <span>Preview user (read-only)</span>
+              <span>Preview User Data</span>
             </div>
-            {#if isPreview}
+            {#if isPreview && previewProfile}
               <span class="preview-pill">
-                {testPreviewState.userLabel || testPreviewState.userId}
+                {previewProfile.displayName || previewProfile.email || previewProfile.uid}
               </span>
             {/if}
           </div>
-          <div class="preview-row">
-            <input
-              type="text"
-              placeholder="User ID or email"
-              value={previewInput}
-              oninput={(e) => handlePreviewInputChange((e.target as HTMLInputElement).value)}
-            />
-            <button
-              class="primary"
-              type="button"
-              onclick={handleLoadPreview}
-              disabled={testPreviewState.isLoading}
-            >
-              {testPreviewState.isLoading ? "Loading..." : "Load"}
-            </button>
-          </div>
-          {#if testPreviewState.suggestions.length > 0}
-            <div class="preview-suggestions">
-              {#each testPreviewState.suggestions as s}
-                <button
-                  type="button"
-                  class="suggestion"
-                  onclick={() => {
-                    previewInput = s.email || s.displayName || s.id;
-                    handleLoadPreview();
-                  }}
-                >
-                  <span class="suggestion-name">{s.displayName || "Unnamed"}</span>
-                  {#if s.email}
-                    <span class="suggestion-email">{s.email}</span>
-                  {/if}
-                  <span class="suggestion-id">{s.id}</span>
-                </button>
-              {/each}
+
+          <UserSearchInput
+            onSelect={handleUserSelect}
+            selectedUserId={previewProfile?.uid || ""}
+            selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
+            placeholder="Search users by name or email..."
+            disabled={userPreviewState.isLoading}
+          />
+
+          {#if userPreviewState.isLoading}
+            <div class="loading-state">
+              <i class="fas fa-spinner fa-spin"></i>
+              <span>Loading {userPreviewState.loadingSection || "user data"}...</span>
             </div>
           {/if}
+
+          {#if isPreview && previewProfile}
+            <div class="preview-user-card">
+              {#if previewProfile.photoURL}
+                <img src={previewProfile.photoURL} alt="" class="preview-avatar" />
+              {:else}
+                <div class="preview-avatar-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              {/if}
+              <div class="preview-user-info">
+                <span class="preview-name">{previewProfile.displayName || "No name"}</span>
+                <span class="preview-email">{previewProfile.email}</span>
+                <span class="preview-role">{previewProfile.role || "user"}</span>
+              </div>
+            </div>
+
+            <div class="preview-stats">
+              {#if userPreviewState.data.gamification}
+                <div class="stat-item">
+                  <i class="fas fa-star"></i>
+                  <span>{userPreviewState.data.gamification.totalXP} XP</span>
+                </div>
+                <div class="stat-item">
+                  <i class="fas fa-trophy"></i>
+                  <span>Level {userPreviewState.data.gamification.currentLevel}</span>
+                </div>
+              {/if}
+              <div class="stat-item">
+                <i class="fas fa-layer-group"></i>
+                <span>{userPreviewState.data.sequences.length} sequences</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-folder"></i>
+                <span>{userPreviewState.data.collections.length} collections</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-medal"></i>
+                <span>{userPreviewState.data.achievements.length} achievements</span>
+              </div>
+            </div>
+          {/if}
+
           <div class="preview-actions">
             <button
               type="button"
@@ -232,14 +226,16 @@
               onclick={handleClearPreview}
               disabled={!isPreview}
             >
-              Clear preview
+              <i class="fas fa-times"></i>
+              Clear Preview
             </button>
-            {#if testPreviewState.error}
-              <span class="error-text">{testPreviewState.error}</span>
+            {#if userPreviewState.error}
+              <span class="error-text">{userPreviewState.error}</span>
             {/if}
           </div>
           <p class="preview-hint">
-            Read-only: does not mark notifications read or alter user state.
+            <i class="fas fa-info-circle"></i>
+            Read-only mode: View user data throughout the app without modifying anything.
           </p>
         </div>
 
@@ -252,49 +248,6 @@
 {/if}
 
 <style>
-  /* Override Indicator - Floating Badge */
-  .override-indicator {
-    position: fixed;
-    top: 12px;
-    right: 12px;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    border-radius: 20px;
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-    transition: all 0.2s;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  .override-indicator:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
-  }
-
-  .override-indicator.preview {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    border-color: rgba(59, 130, 246, 0.3);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.45);
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.85;
-    }
-  }
-
   /* Debug Panel */
   .debug-panel-backdrop {
     position: fixed;
@@ -530,7 +483,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .preview-pill {
@@ -540,88 +493,137 @@
     color: #bfdbfe;
     font-size: 12px;
     border: 1px solid rgba(59, 130, 246, 0.3);
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .preview-row {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-  }
-
-  .preview-row input {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 10px;
-    padding: 10px 12px;
-    color: white;
-  }
-
-  .preview-row button.primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 14px;
-    cursor: pointer;
-    font-weight: 700;
-  }
-
-  .preview-row button.primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .preview-suggestions {
-    margin-top: 8px;
+  .loading-state {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .suggestion {
-    width: 100%;
-    text-align: left;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-    color: white;
-    cursor: pointer;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2px;
-  }
-
-  .suggestion:hover {
-    border-color: rgba(59, 130, 246, 0.4);
-    background: rgba(59, 130, 246, 0.08);
-  }
-
-  .suggestion-name {
-    font-weight: 600;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
   }
 
-  .suggestion-email,
-  .suggestion-id {
-    font-size: 12px;
+  .preview-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+  }
+
+  .preview-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .preview-avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .preview-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .preview-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .preview-email {
+    font-size: 13px;
     color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .preview-role {
+    font-size: 11px;
+    font-weight: 600;
+    color: #60a5fa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .preview-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .stat-item i {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    width: 16px;
+    text-align: center;
   }
 
   .preview-actions {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   .preview-actions .ghost {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 8px 12px;
     cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+
+  .preview-actions .ghost:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .preview-actions .ghost:disabled {
@@ -635,8 +637,18 @@
   }
 
   .preview-hint {
-    margin: 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 0;
+    padding: 10px;
+    background: rgba(59, 130, 246, 0.08);
+    border-radius: 8px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
+  }
+
+  .preview-hint i {
+    color: #60a5fa;
   }
 </style>
