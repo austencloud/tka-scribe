@@ -14,7 +14,8 @@ export type AchievementCategory =
   | "practitioner" // Daily streaks & practice
   | "explorer" // Browsing gallery
   | "performer" // Video submissions (Phase 3)
-  | "trainer"; // Training challenges
+  | "trainer" // Training challenges
+  | "contributor"; // Feedback submission
 
 export type AchievementTier = "bronze" | "silver" | "gold" | "platinum";
 
@@ -53,6 +54,7 @@ export interface AchievementRequirement {
     | "sequence_length" // Create sequence of X beats
     | "generation_count" // Generate X sequences
     | "challenge_count" // Complete training challenges
+    | "feedback_count" // Submit X feedback items
     | "specific_action"; // Complete specific action once
   target: number; // How many to complete (1 for one-time achievements)
   metadata?: AchievementMetadata; // Additional data (e.g., required letters, specific concept ID)
@@ -149,7 +151,9 @@ export type XPActionType =
   | "train_challenge_completed"
   // Skill progressions
   | "skill_level_completed"
-  | "skill_mastery_achieved";
+  | "skill_mastery_achieved"
+  // Feedback
+  | "feedback_submitted";
 
 // ============================================================================
 // DAILY CHALLENGE MODELS
@@ -277,7 +281,7 @@ export interface NotificationData {
 
 export interface AchievementNotification {
   id: string;
-  type: "achievement" | "level_up" | "challenge_complete" | "streak_milestone";
+  type: "achievement" | "level_up" | "challenge_complete" | "streak_milestone" | "xp_gain";
   title: string;
   message: string;
   icon?: string;

@@ -213,6 +213,11 @@ export class AchievementService implements IAchievementService {
         metadata
       );
 
+      // Show quick XP toast (non-blocking)
+      if (this._notificationService) {
+        this._notificationService.showXPGain(xpGained);
+      }
+
       // Check for achievement progress
       const achievementsUnlocked = await this.checkAchievementProgress(
         action,
@@ -315,6 +320,8 @@ export class AchievementService implements IAchievementService {
         return XP_REWARDS.SKILL_LEVEL_COMPLETED ?? 100;
       case "skill_mastery_achieved":
         return XP_REWARDS.SKILL_MASTERY_ACHIEVED ?? 250;
+      case "feedback_submitted":
+        return XP_REWARDS.FEEDBACK_SUBMITTED ?? 25;
       default:
         return 0;
     }
@@ -512,6 +519,8 @@ export class AchievementService implements IAchievementService {
       weekly_challenge_bonus: ["specific_action"],
       skill_level_completed: ["specific_action"],
       skill_mastery_achieved: ["specific_action"],
+      // Feedback
+      feedback_submitted: ["feedback_count"],
     };
 
     const relevantTypes = typeMapping[action];
@@ -664,6 +673,9 @@ export class AchievementService implements IAchievementService {
         const requiredType = req.metadata?.challengeType;
         if (!requiredType) return 1;
         return metadata?.challengeType === requiredType ? 1 : 0;
+
+      case "feedback_count":
+        return action === "feedback_submitted" ? 1 : 0;
 
       default:
         return 0;

@@ -29,6 +29,7 @@ import {
   addNotification,
   clearNotifications,
 } from "../../state/notification-state.svelte";
+import { addXPToast } from "../../state/xp-toast-state.svelte";
 
 @injectable()
 export class NotificationService implements INotificationService {
@@ -141,6 +142,12 @@ export class NotificationService implements INotificationService {
     await this.saveAndQueueNotification(notification);
 
     console.log(`🔥 Streak milestone notification: ${streakDays} days`);
+  }
+
+  showXPGain(amount: number, reason?: string): void {
+    // Quick, lightweight notification - no persistence needed
+    addXPToast(amount, reason);
+    console.log(`✨ XP gained: +${amount}${reason ? ` (${reason})` : ""}`);
   }
 
   /**

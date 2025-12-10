@@ -46,6 +46,8 @@ export class AchievementProgressManager {
       weekly_challenge_bonus: ["specific_action"],
       skill_level_completed: ["specific_action"],
       skill_mastery_achieved: ["specific_action"],
+      // Feedback
+      feedback_submitted: ["feedback_count"],
     };
 
     const relevantTypes = typeMapping[action];
@@ -108,6 +110,9 @@ export class AchievementProgressManager {
         const requiredType = req.metadata?.challengeType;
         if (!requiredType) return 1;
         return metadata?.challengeType === requiredType ? 1 : 0;
+
+      case "feedback_count":
+        return action === "feedback_submitted" ? 1 : 0;
 
       default:
         return 0;
