@@ -1,9 +1,9 @@
 <!--
   TransformDescription.svelte
 
-  Individual transform card with:
-  - Desktop: Icon + name + description in expandable card (matches SequenceActions style)
-  - Mobile: Horizontal layout with toggle to expand, show description on demand
+  Color-coded transform action card
+  - Mobile: Horizontal scannable card with expand/collapse
+  - Desktop: Vertical grid card with full info visible
 -->
 <script lang="ts">
   import type { TransformHelpItem } from "../../domain/transforms/transform-help-content";
@@ -25,17 +25,17 @@
   }: Props = $props();
 </script>
 
-<!-- Mobile: Horizontal layout with toggle, Desktop: Vertical card (clickable) -->
+<!-- Mobile: Horizontal layout, Desktop: Vertical grid card -->
 <div
-  class="transform-card"
+  class="transform-action"
   class:expanded
-  class:clickable={item.id !== "rotate"}
+  class:is-rotate={item.id === "rotate"}
   onclick={() => {
     if (item.id === "rotate") return;
     onApply?.();
   }}
-  role={item.id !== "rotate" ? "button" : undefined}
-  tabindex={item.id !== "rotate" ? 0 : undefined}
+  role="button"
+  tabindex={item.id === "rotate" ? -1 : 0}
   onkeydown={(e) => {
     if (item.id !== "rotate" && (e.key === "Enter" || e.key === " ")) {
       e.preventDefault();
@@ -43,47 +43,47 @@
     }
   }}
   style="--color: {item.color}"
+  aria-expanded={expanded}
 >
-  <!-- Mobile: Horizontal header with toggle -->
-  <div class="card-header">
-    <div class="transform-info">
-      <div class="icon-wrapper">
-        <i class="fas {item.icon}"></i>
-      </div>
-      <div class="text-content">
-        <h4>{item.name}</h4>
-        <p class="short-desc">{item.shortDesc}</p>
-      </div>
-    </div>
-
-    <!-- Mobile toggle button -->
-    <button
-      class="mobile-toggle"
-      onclick={(e) => {
-        e.stopPropagation();
-        onToggle?.();
-      }}
-      aria-label={expanded ? `Collapse ${item.name}` : `Expand ${item.name}`}
-      aria-expanded={expanded}
-      type="button"
-    >
-      <i class="fas {expanded ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
-    </button>
+  <!-- Icon box (always visible) -->
+  <div class="icon-box">
+    <i class="fas {item.icon}"></i>
   </div>
 
-  <!-- Mobile expanded: description + actions -->
-  <div class="card-content">
+  <!-- Content area: name + short desc -->
+  <div class="content">
+    <h4 class="name">{item.name}</h4>
+    <p class="short-desc">{item.shortDesc}</p>
+  </div>
+
+  <!-- Mobile expand button, Desktop hidden -->
+  <button
+    class="expand-btn"
+    onclick={(e) => {
+      e.stopPropagation();
+      onToggle?.();
+    }}
+    aria-label={expanded ? `Collapse ${item.name}` : `Expand ${item.name}`}
+    type="button"
+  >
+    <i class="fas {expanded ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
+  </button>
+</div>
+
+<!-- Mobile expanded: Full description + actions -->
+{#if expanded}
+  <div class="description-panel">
     <p class="full-desc">{item.fullDesc}</p>
 
     {#if item.id === "rotate"}
-      <div class="action-buttons">
+      <div class="rotate-controls">
         <button
           class="rotate-btn"
           onclick={(e) => {
             e.stopPropagation();
             onRotate?.("ccw");
           }}
-          aria-label="Rotate counter-clockwise"
+          title="Rotate counter-clockwise"
           type="button"
         >
           <i class="fas fa-rotate-left"></i>
@@ -94,7 +94,7 @@
             e.stopPropagation();
             onRotate?.("cw");
           }}
-          aria-label="Rotate clockwise"
+          title="Rotate clockwise"
           type="button"
         >
           <i class="fas fa-rotate-right"></i>
@@ -102,66 +102,55 @@
       </div>
     {/if}
   </div>
-</div>
+{/if}
 
 <style>
-  /* ===== MOBILE: Horizontal Layout ===== */
-  .transform-card {
+  /* ===== MOBILE: Horizontal Card Layout ===== */
+  .transform-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.15s ease;
-  }
-
-  .transform-card.clickable {
     cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    width: 100%;
+    color: inherit;
   }
 
-  .transform-card.clickable:active {
-    transform: scale(0.97);
+  .transform-action:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
-  .transform-card:focus-visible {
-    outline: 2px solid white;
-    outline-offset: 2px;
+  .transform-action:active {
+    transform: scale(0.98);
   }
 
-  /* Card header - horizontal on mobile */
-  .card-header {
+  /* Icon box: solid color background */
+  .icon-box {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color);
+    color: white;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 12px;
-    gap: 12px;
+    justify-content: center;
+    font-size: 16px;
   }
 
-  .transform-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  /* Text content area */
+  .content {
     flex: 1;
     min-width: 0;
   }
 
-  .icon-wrapper {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: var(--color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 18px;
-  }
-
-  .text-content {
-    min-width: 0;
-  }
-
-  h4 {
+  .name {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
@@ -174,11 +163,11 @@
     color: rgba(255, 255, 255, 0.6);
   }
 
-  /* Mobile toggle button */
-  .mobile-toggle {
+  /* Expand toggle button (mobile only) */
+  .expand-btn {
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.08);
     border: none;
@@ -188,38 +177,31 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    font-size: 14px;
   }
 
-  .mobile-toggle:hover {
+  .expand-btn:hover {
     background: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.8);
   }
 
-  .mobile-toggle:focus-visible {
-    outline: 2px solid white;
-    outline-offset: 2px;
-  }
-
-  /* Content: hidden by default on mobile */
-  .card-content {
-    padding: 0 12px 12px 12px;
-    display: none;
-  }
-
-  /* Mobile expanded state */
-  .transform-card.expanded .card-content {
-    display: block;
+  /* Expanded content panel (mobile only) */
+  .description-panel {
+    padding: 12px 12px 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .full-desc {
-    margin: 0 0 12px 0;
+    margin: 0;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.75);
     line-height: 1.5;
   }
 
-  /* Action buttons */
-  .action-buttons {
+  /* Rotate controls */
+  .rotate-controls {
     display: flex;
     gap: 8px;
     justify-content: flex-end;
@@ -232,9 +214,8 @@
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.8);
     font-size: 12px;
-    font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.15s;
     white-space: nowrap;
   }
 
@@ -243,115 +224,68 @@
     border-color: rgba(255, 255, 255, 0.3);
   }
 
-  .rotate-btn:focus-visible {
-    outline: 2px solid white;
-    outline-offset: 2px;
-  }
-
   .rotate-btn:active {
     transform: scale(0.97);
   }
 
-  /* ===== DESKTOP: Vertical Button Layout (SequenceActions style) ===== */
-  @media (min-width: 768px) {
-    .transform-card {
-      display: flex;
+  /* ===== DESKTOP: Vertical Grid Card Layout ===== */
+  @container (min-width: 600px) {
+    .transform-action {
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 16px 12px;
-      border-radius: 14px;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 16px 14px;
+      border-radius: 12px;
+      min-height: 160px;
       background: linear-gradient(135deg, color-mix(in srgb, var(--color) 20%, transparent) 0%, color-mix(in srgb, var(--color) 8%, transparent) 100%);
       border: 1px solid color-mix(in srgb, var(--color) 35%, transparent);
       text-align: center;
-      min-height: 160px;
     }
 
-    .transform-card.clickable:hover {
+    .transform-action:hover:not(.is-rotate) {
       background: linear-gradient(135deg, color-mix(in srgb, var(--color) 30%, transparent) 0%, color-mix(in srgb, var(--color) 15%, transparent) 100%);
       border-color: color-mix(in srgb, var(--color) 50%, transparent);
       box-shadow: 0 4px 16px color-mix(in srgb, var(--color) 25%, transparent);
     }
 
-    /* Header - centered vertically */
-    .card-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .transform-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      flex: none;
-      width: 100%;
-    }
-
-    .icon-wrapper {
+    /* Larger icon on desktop */
+    .icon-box {
       width: 44px;
       height: 44px;
-      border-radius: 12px;
-      background: var(--color);
+      border-radius: 10px;
       font-size: 20px;
-      flex-shrink: 0;
     }
 
-    h4 {
-      font-size: 14px;
-      font-weight: 600;
+    /* Center text content */
+    .content {
+      width: 100%;
+    }
+
+    .name {
+      font-size: 15px;
     }
 
     .short-desc {
-      margin: 0;
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.65);
-    }
-
-    /* Hide mobile toggle on desktop */
-    .mobile-toggle {
-      display: none;
-    }
-
-    /* Show content on desktop (description + rotate buttons) */
-    .card-content {
-      display: block;
-      padding: 0;
-      width: 100%;
-    }
-
-    .full-desc {
-      display: none;
-    }
-
-    /* Rotate buttons shown horizontally on desktop */
-    .action-buttons {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      width: 100%;
-    }
-
-    .rotate-btn {
-      padding: 6px 10px;
-      background: color-mix(in srgb, var(--color) 30%, transparent);
-      border: 1px solid color-mix(in srgb, var(--color) 50%, transparent);
-      border-radius: 6px;
-      color: var(--color);
+      margin: 4px 0 0 0;
       font-size: 12px;
-      font-weight: 600;
     }
 
-    .rotate-btn:hover {
-      background: color-mix(in srgb, var(--color) 40%, transparent);
-      border-color: var(--color);
+    /* Hide expand button on desktop */
+    .expand-btn {
+      display: none;
+    }
+
+    /* Show description panel inline on desktop */
+    /* (will be repositioned via the expanded state in desktop context) */
+  }
+
+  /* ===== ACCESSIBILITY ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .transform-action,
+    .expand-btn,
+    .rotate-btn {
+      transition: none;
     }
   }
 </style>

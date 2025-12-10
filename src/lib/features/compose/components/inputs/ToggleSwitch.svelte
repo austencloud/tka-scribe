@@ -8,9 +8,10 @@
     checked: boolean;
     onToggle: (checked: boolean) => void;
     disabled?: boolean;
+    label?: string;
   }
 
-  const { checked, onToggle, disabled = false }: Props = $props();
+  const { checked, onToggle, disabled = false, label = "Toggle" }: Props = $props();
 </script>
 
 <button
@@ -22,6 +23,7 @@
   onclick={() => !disabled && onToggle(!checked)}
   role="switch"
   aria-checked={checked}
+  aria-label={label}
 >
   <span class="toggle-track">
     <span class="toggle-thumb"></span>

@@ -83,7 +83,7 @@
           <button
             class="remove-btn"
             onclick={() => onRemoveCollaborator?.(collaborator.userId)}
-            title={collaborator.userId === currentUserId ? "Leave collaboration" : "Remove collaborator"}
+            aria-label={collaborator.userId === currentUserId ? "Leave collaboration" : "Remove collaborator"}
           >
             <i class="fas fa-times"></i>
           </button>

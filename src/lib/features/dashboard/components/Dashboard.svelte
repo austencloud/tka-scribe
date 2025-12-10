@@ -359,191 +359,6 @@
   }
 
   /* ========================================
-     PROFILE CARD
-     ======================================== */
-
-  .bento-profile {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.15);
-    border-radius: 20px;
-  }
-
-  .profile-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .profile-avatar {
-    width: 52px;
-    height: 52px;
-    border-radius: 16px;
-    overflow: hidden;
-    background: rgba(99, 102, 241, 0.2);
-    flex-shrink: 0;
-  }
-
-  .profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .avatar-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: #6366f1;
-  }
-
-  .profile-info {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .profile-name {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .profile-email {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .guest-sign-in-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 52px;
-    padding: 0 14px;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-      filter var(--duration-fast, 150ms) var(--ease-out),
-      transform var(--duration-fast, 150ms) var(--ease-out);
-    white-space: nowrap;
-  }
-
-  .guest-sign-in-cta:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-  }
-
-  .guest-sign-in-cta:active {
-    transform: scale(0.98);
-  }
-
-  .guest-sign-in-cta:focus {
-    outline: 2px solid rgba(99, 102, 241, 0.5);
-    outline-offset: 2px;
-  }
-
-  .guest-sign-in-cta i:first-child {
-    font-size: 14px;
-  }
-
-  .guest-sign-in-cta i:last-child {
-    font-size: 12px;
-    opacity: 0.7;
-    margin-left: auto;
-  }
-
-  .profile-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .stat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 80px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    cursor: pointer;
-    transition:
-      background var(--duration-fast, 150ms) var(--ease-out),
-      border-color var(--duration-fast, 150ms) var(--ease-out);
-  }
-
-  .stat-card:hover {
-    background: rgba(99, 102, 241, 0.12);
-    border-color: rgba(99, 102, 241, 0.25);
-  }
-
-  .stat-card.favorites:hover {
-    background: rgba(245, 158, 11, 0.12);
-    border-color: rgba(245, 158, 11, 0.25);
-  }
-
-  .stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-  }
-
-  .stat-label {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin-top: 4px;
-  }
-
-  .library-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-height: 52px;
-    padding: 14px 20px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    border: none;
-    border-radius: 14px;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-      filter var(--duration-fast, 150ms) var(--ease-out),
-      transform var(--duration-fast, 150ms) var(--ease-out);
-    margin-top: auto;
-  }
-
-  .library-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(var(--hover-lift-sm, -1px));
-  }
-
-  .library-btn i:last-child {
-    margin-left: auto;
-    font-size: 14px;
-  }
-
-  /* ========================================
      CHALLENGE & SUPPORT CARDS
      ======================================== */
 
@@ -617,11 +432,6 @@
     font-size: 14px;
   }
 
-  /* Drawer Body */
-  .drawer-body {
-    padding: 20px;
-  }
-
   /* ========================================
      RESPONSIVE BREAKPOINTS
      ======================================== */
@@ -641,36 +451,12 @@
     .secondary-grid {
       grid-template-columns: 1fr;
     }
-
-    .bento-profile {
-      padding: 16px;
-      border-radius: 16px;
-    }
   }
 
   @media (max-width: 480px) {
     .dashboard {
       padding: 12px;
       gap: 16px;
-    }
-
-    .profile-stats {
-      gap: 10px;
-    }
-
-    .stat-card {
-      min-height: 70px;
-      padding: 12px;
-    }
-
-    .stat-value {
-      font-size: 1.25rem;
-    }
-
-    .library-btn {
-      min-height: 52px;
-      padding: 12px 16px;
-      font-size: 0.875rem;
     }
   }
 

@@ -16,9 +16,7 @@
   import { getCreateModuleContext } from "../../context/create-module-context";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
-  import PanelHeader from "../PanelHeader.svelte";
   import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
-  import SequenceActionsHeader from "./SequenceActionsHeader.svelte";
   import TurnsEditMode from "./TurnsEditMode.svelte";
   import TransformsGridMode from "./TransformsGridMode.svelte";
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
@@ -237,17 +235,42 @@
   onClose={handleClose}
 >
   <div class="editor-panel">
-    <PanelHeader
-      title={currentMode === "turns" && hasSelection ? beatLabel : "Sequence Actions"}
-      isMobile={true}
-      onClose={handleClose}
-    />
+    <!-- Compact header: mode toggle + beat label + actions in one row -->
+    <div class="compact-header">
+      <div class="mode-toggle">
+        <button
+          class="mode-btn"
+          class:active={currentMode === "turns"}
+          onclick={() => (currentMode = "turns")}
+        >
+          <i class="fas fa-sliders-h"></i>
+          <span class="mode-label">Turns</span>
+        </button>
+        <button
+          class="mode-btn"
+          class:active={currentMode === "transforms"}
+          onclick={() => (currentMode = "transforms")}
+        >
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <span class="mode-label">Transforms</span>
+        </button>
+      </div>
 
-    <SequenceActionsHeader
-      {currentMode}
-      onModeChange={(m) => (currentMode = m)}
-      onShowHelp={() => (showHelpSheet = true)}
-    />
+      {#if currentMode === "turns" && hasSelection}
+        <span class="beat-label">{beatLabel}</span>
+      {/if}
+
+      <div class="header-actions">
+        {#if currentMode === "transforms"}
+          <button class="icon-btn help" onclick={() => (showHelpSheet = true)} aria-label="Help">
+            <i class="fas fa-circle-question"></i>
+          </button>
+        {/if}
+        <button class="icon-btn close" onclick={handleClose} aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
 
     <div class="controls-content">
       {#if currentMode === "turns"}
@@ -302,6 +325,128 @@
     overflow: hidden;
   }
 
+  /* Compact header - saves ~60px vs separate header rows */
+  .compact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(15, 20, 30, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 52px;
+    flex-shrink: 0;
+  }
+
+  .mode-toggle {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    min-height: 40px;
+  }
+
+  .mode-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .mode-btn.active {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: rgba(6, 182, 212, 0.5);
+    color: #06b6d4;
+  }
+
+  .mode-btn i {
+    font-size: 14px;
+  }
+
+  .beat-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.15s ease;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .icon-btn.help {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .icon-btn.help:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .icon-btn.close {
+    background: linear-gradient(135deg, rgba(100, 100, 120, 0.85), rgba(70, 70, 90, 0.85));
+    color: white;
+  }
+
+  .icon-btn.close:hover {
+    background: linear-gradient(135deg, rgba(120, 120, 140, 0.95), rgba(90, 90, 110, 0.95));
+  }
+
+  /* Narrow screens: hide mode labels */
+  @media (max-width: 400px) {
+    .mode-label {
+      display: none;
+    }
+
+    .mode-btn {
+      padding: 8px 10px;
+    }
+
+    .compact-header {
+      padding: 6px 10px;
+      min-height: 48px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+    }
+  }
+
   .controls-content {
     flex: 1;
     min-height: 0;
@@ -309,5 +454,12 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mode-btn,
+    .icon-btn {
+      transition: none;
+    }
   }
 </style>

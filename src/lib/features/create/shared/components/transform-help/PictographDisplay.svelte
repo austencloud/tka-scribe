@@ -66,11 +66,6 @@
     overflow: hidden;
   }
 
-  .pictograph-placeholder {
-    text-align: center;
-    font-size: 14px;
-  }
-
   .loading-state,
   .empty-state {
     font-size: 24px;

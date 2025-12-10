@@ -218,4 +218,59 @@ export class NotificationService {
       firestore,
       USERS_COLLECTION,
       userId,
-      NOTIFICATION
+      NOTIFICATIONS_SUBCOLLECTION
+    );
+
+    const snapshot = await getDocs(notificationsRef);
+
+    const deletes = snapshot.docs.map((docSnap) =>
+      deleteDoc(docSnap.ref)
+    );
+
+    await Promise.all(deletes);
+  }
+
+  /**
+   * Subscribe to real-time notification updates
+   */
+  subscribeToNotifications(
+    userId: string,
+    callback: (notifications: UserNotification[]) => void
+  ): () => void {
+    // Clean up previous subscription
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+
+    const notificationsRef = collection(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION
+    );
+
+    const q = query(notificationsRef, orderBy("createdAt", "desc"), limit(20));
+
+    this.unsubscribe = onSnapshot(q, (snapshot) => {
+      const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
+        this.mapDocToNotification(docSnap.id, docSnap.data())
+      );
+      callback(notifications);
+    });
+
+    return this.unsubscribe;
+  }
+
+  /**
+   * Clean up subscriptions
+   */
+  cleanup(): void {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+    }
+  }
+}
+
+// Export singleton instance
+export const notificationService = new NotificationService();

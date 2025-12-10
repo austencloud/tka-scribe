@@ -1,8 +1,10 @@
 <!--
   TransformDescriptionPanel.svelte
 
-  Desktop: Shows all 4 transforms with descriptions
-  Mobile: Accordion with one expanded at a time (Mirror by default)
+  Container for transform action cards
+  - Mobile: Vertical stack (accordion pattern)
+  - Desktop: 2-column grid
+  Uses container queries for smart responsive layout
 -->
 <script lang="ts">
   import { transformHelpContent } from "../../domain/transforms/transform-help-content";
@@ -54,17 +56,18 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    flex: 1;
+    width: 100%;
+    container-type: inline-size;
   }
 
-  /* Desktop: 2-column grid */
-  @media (min-width: 768px) {
+  /* Desktop: 2-column grid when container is wide enough */
+  @container (min-width: 600px) {
     .transforms-panel {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-      width: 100%;
       max-width: 900px;
+      margin: 0 auto;
     }
   }
 </style>

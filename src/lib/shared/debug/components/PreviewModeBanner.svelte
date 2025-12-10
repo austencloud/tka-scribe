@@ -364,14 +364,6 @@
   }
 
   @media (max-width: 480px) {
-    .read-only-badge span {
-      display: none;
-    }
-
-    .clear-btn span {
-      display: none;
-    }
-
     .clear-btn {
       padding: 8px;
     }

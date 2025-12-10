@@ -132,7 +132,7 @@
 
         <!-- Original Description (read-only) -->
         <div class="field">
-          <label class="field-label">Original Feedback</label>
+          <span class="field-label">Original Feedback</span>
           <div class="original-description">
             <span class="type-indicator" style="--type-color: {currentTypeConfig.color}">
               <i class="fas {currentTypeConfig.icon}"></i>

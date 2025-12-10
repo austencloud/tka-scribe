@@ -64,15 +64,15 @@
     // Just need to update our local state if needed
   }
 
-  async function handleMarkAllAsRead() {
+  async function handleClearAll() {
     const user = authStore.user;
     if (!user) return;
 
-    // Call service to mark all as read
+    // Call service to delete all notifications
     const { notificationService } = await import(
       "$lib/features/feedback/services/implementations/NotificationService"
     );
-    await notificationService.markAllAsRead(user.uid);
+    await notificationService.deleteAllNotifications(user.uid);
   }
 
   function viewAllNotifications() {
@@ -88,14 +88,14 @@
       <h3>Notifications</h3>
     </div>
     <div class="header-right">
-      {#if notificationState.unreadCount > 0}
+      {#if notificationState.notifications.length > 0}
         <button
-          class="mark-all-btn"
-          onclick={() => handleMarkAllAsRead()}
+          class="clear-all-btn"
+          onclick={() => handleClearAll()}
           type="button"
-          title="Mark all notifications as read"
+          title="Clear all notifications"
         >
-          Mark all read
+          Clear all
         </button>
       {/if}
       {#if notificationState.unreadCount > 0}
@@ -196,22 +196,22 @@
     margin: 0;
   }
 
-  .mark-all-btn {
+  .clear-all-btn {
     padding: 4px 8px;
     background: transparent;
     border: none;
     font-size: 0.75rem;
-    color: #3b82f6;
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: color var(--duration-fast) var(--ease-out);
     border-radius: 4px;
   }
 
-  .mark-all-btn:hover {
-    color: #60a5fa;
+  .clear-all-btn:hover {
+    color: #ef4444;
   }
 
-  .mark-all-btn:active {
+  .clear-all-btn:active {
     opacity: 0.8;
   }
 
@@ -348,7 +348,7 @@
   @media (prefers-reduced-motion: reduce) {
     .notification-center-widget,
     .widget-header,
-    .mark-all-btn,
+    .clear-all-btn,
     .view-all-button,
     .view-all-button i {
       transition: none;

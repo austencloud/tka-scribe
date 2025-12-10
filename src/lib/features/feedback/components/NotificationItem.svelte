@@ -65,10 +65,18 @@
   });
 
   async function handleDismiss() {
-    // Mark as read without navigation
+    // Delete the notification
     const user = authStore.user;
-    if (user && !notification.read) {
-      await notificationService.markAsRead(user.uid, notification.id);
+    if (user) {
+      try {
+        // Dynamically import to avoid circular dependencies
+        const { notificationService } = await import(
+          "$lib/features/feedback/services/implementations/NotificationService"
+        );
+        await notificationService.deleteNotification(user.uid, notification.id);
+      } catch (error) {
+        console.error("Failed to delete notification:", error);
+      }
     }
 
     onDismiss?.(notification.id);
@@ -91,7 +99,7 @@
     class="notification-card"
     onclick={handleDismiss}
     type="button"
-    title="Click to dismiss"
+    title="Click to dismiss and remove"
     aria-label="Dismiss notification: {notification.message}"
   >
     <div class="notification-icon" style="background: {config.color};">

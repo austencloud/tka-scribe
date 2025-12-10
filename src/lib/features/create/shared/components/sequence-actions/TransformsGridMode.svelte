@@ -37,48 +37,62 @@
   <!-- Row 1: Mirror | Swap Hands -->
   <button class="grid-btn mirror" onclick={onMirror} {disabled}>
     <div class="btn-icon"><i class="fas fa-left-right"></i></div>
-    <span class="btn-label">Mirror</span>
-    <span class="btn-desc">Flip left & right</span>
+    <div class="btn-text">
+      <span class="btn-label">Mirror</span>
+      <span class="btn-desc">Flip left & right</span>
+    </div>
   </button>
 
   <button class="grid-btn swap" onclick={onSwap} {disabled}>
     <div class="btn-icon"><i class="fas fa-arrows-rotate"></i></div>
-    <span class="btn-label">Swap Hands</span>
-    <span class="btn-desc">Switch movements</span>
+    <div class="btn-text">
+      <span class="btn-label">Swap Hands</span>
+      <span class="btn-desc">Switch movements</span>
+    </div>
   </button>
 
   <!-- Row 2: Rotate Left | Rotate Right -->
   <button class="grid-btn rotate" onclick={onRotateCCW} {disabled}>
     <div class="btn-icon"><i class="fas fa-rotate-left"></i></div>
-    <span class="btn-label">Rotate Left</span>
-    <span class="btn-desc">Pivot 45°</span>
+    <div class="btn-text">
+      <span class="btn-label">Rotate Left</span>
+      <span class="btn-desc">Pivot 45°</span>
+    </div>
   </button>
 
   <button class="grid-btn rotate" onclick={onRotateCW} {disabled}>
     <div class="btn-icon"><i class="fas fa-rotate-right"></i></div>
-    <span class="btn-label">Rotate Right</span>
-    <span class="btn-desc">Pivot 45°</span>
+    <div class="btn-text">
+      <span class="btn-label">Rotate Right</span>
+      <span class="btn-desc">Pivot 45°</span>
+    </div>
   </button>
 
   <!-- Row 3: Rewind | Preview -->
   <button class="grid-btn rewind" onclick={onRewind} {disabled}>
     <div class="btn-icon"><i class="fas fa-backward"></i></div>
-    <span class="btn-label">Rewind</span>
-    <span class="btn-desc">Rewind backwards</span>
+    <div class="btn-text">
+      <span class="btn-label">Rewind</span>
+      <span class="btn-desc">Play backwards</span>
+    </div>
   </button>
 
   <button class="grid-btn preview" onclick={onPreview} disabled={!hasSequence}>
     <div class="btn-icon"><i class="fas fa-eye"></i></div>
-    <span class="btn-label">Preview</span>
-    <span class="btn-desc">View fullscreen</span>
+    <div class="btn-text">
+      <span class="btn-label">Preview</span>
+      <span class="btn-desc">View fullscreen</span>
+    </div>
   </button>
 
   <!-- Row 4: Edit in Constructor (full width) -->
   {#if showEditInConstructor}
     <button class="grid-btn edit full-width" onclick={onEditInConstructor} disabled={!hasSequence}>
       <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
-      <span class="btn-label">Edit in Constructor</span>
-      <span class="btn-desc">Open in full editor</span>
+      <div class="btn-text">
+        <span class="btn-label">Edit in Constructor</span>
+        <span class="btn-desc">Open in full editor</span>
+      </div>
     </button>
   {/if}
 </div>
@@ -87,9 +101,9 @@
   .transforms-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 8px;
     height: 100%;
-    align-content: stretch;
+    align-content: start;
   }
 
   .transforms-grid.disabled {
@@ -99,16 +113,15 @@
 
   .grid-btn {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px 12px;
-    border-radius: 14px;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.15s ease;
-    text-align: center;
-    min-height: 0;
+    text-align: left;
+    min-height: 52px;
   }
 
   .grid-btn:disabled {
@@ -128,22 +141,36 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
   }
 
   .btn-label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .btn-desc {
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.5);
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Mirror - Purple */
@@ -218,12 +245,37 @@
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
   }
 
-  @media (max-width: 400px) {
-    .transforms-grid { gap: 8px; }
-    .grid-btn { padding: 12px 10px; gap: 6px; }
-    .btn-icon { width: 36px; height: 36px; font-size: 15px; border-radius: 10px; }
-    .btn-label { font-size: 0.8rem; }
-    .btn-desc { font-size: 0.65rem; }
+  /* Hide descriptions on narrow screens */
+  @media (max-width: 500px) {
+    .btn-desc {
+      display: none;
+    }
+
+    .grid-btn {
+      padding: 8px 10px;
+      min-height: 44px;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+
+    .btn-label {
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .transforms-grid {
+      gap: 6px;
+    }
+
+    .grid-btn {
+      gap: 8px;
+      padding: 6px 8px;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

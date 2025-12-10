@@ -120,9 +120,11 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="transform-help-title"
+    tabindex="-1"
     onclick={onClose}
     onkeydown={handleKeydown}
   >
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="help-sheet"
       bind:this={sheetElement}
@@ -283,19 +285,6 @@
       padding: 24px;
       align-items: center;
       overflow: visible;
-    }
-
-    .help-content > :first-child {
-      flex-shrink: 0;
-      width: 280px;
-    }
-
-    .help-content > :last-child {
-      width: 100%;
-      flex-shrink: 0;
-      overflow: visible;
-      max-height: none;
-      padding-right: 0;
     }
   }
 

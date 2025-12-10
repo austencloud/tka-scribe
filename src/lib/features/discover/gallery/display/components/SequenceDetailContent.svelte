@@ -283,7 +283,7 @@ Used by both desktop side panel and mobile slide-up overlay.
 <!-- Video Player Modal -->
 {#if selectedVideo}
   <div class="video-player-overlay" role="dialog" aria-label="Video player">
-    <button class="video-player-backdrop" onclick={closeVideoPlayer}></button>
+    <button class="video-player-backdrop" onclick={closeVideoPlayer} aria-label="Close video player"></button>
     <div class="video-player-container">
       <header class="video-player-header">
         <div class="video-player-title">

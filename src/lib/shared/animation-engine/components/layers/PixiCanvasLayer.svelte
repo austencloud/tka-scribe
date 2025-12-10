@@ -13,6 +13,7 @@ Handles canvas initialization, render loop, resize observer, and cleanup.
 	import { DEFAULT_TRAIL_SETTINGS } from "$lib/features/compose/shared/domain/types/TrailTypes";
 
 	const DEFAULT_CANVAS_SIZE = 500;
+	const VIEWBOX_SIZE = 950; // Standard viewBox size - internal rendering coordinate system
 
 	// Props
 	let {
@@ -67,7 +68,7 @@ Handles canvas initialization, render loop, resize observer, and cleanup.
 	let isInitialized = $state(false);
 	let hasLoggedFirstRender = $state(false);
 	let localNeedsRender = $state(true); // Local render trigger state
-	let currentRendererSize = DEFAULT_CANVAS_SIZE; // Track actual renderer size locally
+	let currentRendererSize = VIEWBOX_SIZE; // Renderer stays at viewBox size - CSS handles display scaling
 
 	// ============================================================================
 	// INITIALIZE PIXIJS RENDERER
@@ -79,10 +80,11 @@ Handles canvas initialization, render loop, resize observer, and cleanup.
 
 		const initialize = async () => {
 			try {
-				// Initialize PixiJS renderer into our LOCAL container div
+				// Initialize PixiJS renderer at VIEWBOX_SIZE (950) for correct proportions
+				// CSS will scale to fit container - this preserves grid/prop relationships
 				await pixiRenderer?.initialize(
 					localContainerElement,
-					DEFAULT_CANVAS_SIZE,
+					VIEWBOX_SIZE,
 					backgroundAlpha
 				);
 
@@ -97,12 +99,11 @@ Handles canvas initialization, render loop, resize observer, and cleanup.
 				const canvas = pixiRenderer?.getCanvas();
 				onCanvasReady?.(canvas);
 
-				// Set up resize observer
+				// Set up resize observer (for triggering re-renders on container size changes)
 				setupResizeObserver();
 
-				// CRITICAL: Perform initial resize to match container size
-				// ResizeObserver may not fire immediately if layout isn't complete
-				await resizeCanvas();
+				// Notify parent of renderer size (VIEWBOX_SIZE for consistent calculations)
+				onResize?.(VIEWBOX_SIZE);
 
 				// Start render loop
 				startRenderLoop();
@@ -171,33 +172,21 @@ Handles canvas initialization, render loop, resize observer, and cleanup.
 	}
 
 	async function resizeCanvas() {
+		// Renderer stays at VIEWBOX_SIZE (950) - CSS handles display scaling
+		// This preserves correct grid/prop proportions
+		// No need to actually resize the PixiJS renderer
 		if (!localContainerElement || !pixiRenderer) return;
 
 		const rect = localContainerElement.getBoundingClientRect();
-		const newSize =
-			(Math.min(
-				rect.width || DEFAULT_CANVAS_SIZE,
-				rect.height || DEFAULT_CANVAS_SIZE
-			) || DEFAULT_CANVAS_SIZE);
-
-		console.log(`[PixiCanvasLayer] resizeCanvas called:`, {
+		console.log(`[PixiCanvasLayer] resizeCanvas called (CSS scaling):`, {
 			rectWidth: rect.width,
 			rectHeight: rect.height,
-			newSize,
-			currentRendererSize,
-			canvasSizeProp: canvasSize,
-			willResize: newSize !== currentRendererSize && newSize > 0
+			rendererSize: VIEWBOX_SIZE,
+			note: "Renderer stays at 950, CSS scales to fit"
 		});
 
-		// Compare against local renderer size, not the prop
-		// This ensures resize happens even if prop hasn't updated yet
-		if (newSize !== currentRendererSize && newSize > 0) {
-			currentRendererSize = newSize;
-			await pixiRenderer.resize(newSize);
-			console.log(`[PixiCanvasLayer] Resized to ${newSize}`);
-			onResize?.(newSize);
-			startRenderLoop();
-		}
+		// Just trigger a render, no actual resize needed
+		startRenderLoop();
 	}
 
 	// ============================================================================

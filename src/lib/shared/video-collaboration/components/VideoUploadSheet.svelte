@@ -329,8 +329,8 @@
         <div class="options">
           <!-- Visibility -->
           <div class="option-group">
-            <label class="option-label">Visibility</label>
-            <div class="visibility-options">
+            <span class="option-label" id="visibility-label">Visibility</span>
+            <div class="visibility-options" role="group" aria-labelledby="visibility-label">
               <button
                 class="visibility-btn"
                 class:active={visibility === "public"}

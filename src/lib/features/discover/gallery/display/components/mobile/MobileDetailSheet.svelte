@@ -240,7 +240,7 @@
 <!-- Video Player Modal -->
 {#if showVideoPlayer}
   <div class="video-modal" role="dialog" aria-label="Video player">
-    <button class="video-backdrop" onclick={() => (showVideoPlayer = null)}></button>
+    <button class="video-backdrop" onclick={() => (showVideoPlayer = null)} aria-label="Close video player"></button>
     <div class="video-container">
       <button class="video-close" onclick={() => (showVideoPlayer = null)} aria-label="Close video">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
