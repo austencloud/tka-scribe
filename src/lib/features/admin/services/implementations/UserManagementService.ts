@@ -1,9 +1,10 @@
 /**
  * UserManagementService
  *
- * Firestore operations for user management
+ * Firestore operations for user management with audit logging
  */
 
+import { injectable, inject } from "inversify";
 import {
   collection,
   query,
@@ -18,11 +19,18 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 import type { UserData } from "../../components/user-management/types";
 import type { IUserManagementService } from "../contracts/IUserManagementService";
+import type { IAuditLogService } from "../contracts/IAuditLogService";
 
+@injectable()
 export class UserManagementService implements IUserManagementService {
+  constructor(
+    @inject(TYPES.IAuditLogService)
+    private readonly auditLogService: IAuditLogService
+  ) {}
   async loadUsers(
     pageSize: number,
     lastDocId?: string
@@ -96,13 +104,29 @@ export class UserManagementService implements IUserManagementService {
       // Keep isAdmin in sync for backwards compatibility
       isAdmin: newRole === "admin",
     });
+
+    // Log the action
+    await this.auditLogService.logAction(
+      'role_changed',
+      `User role changed to ${newRole}`,
+      userId,
+      { newRole }
+    );
   }
 
   async toggleDisabled(userId: string, currentlyDisabled: boolean): Promise<void> {
     const userRef = doc(firestore, "users", userId);
+    const newState = !currentlyDisabled;
     await updateDoc(userRef, {
-      isDisabled: !currentlyDisabled,
+      isDisabled: newState,
     });
+
+    // Log the action
+    await this.auditLogService.logAction(
+      newState ? 'account_disabled' : 'account_enabled',
+      `Account ${newState ? 'disabled' : 'enabled'}`,
+      userId
+    );
   }
 
   async resetUserData(userId: string): Promise<void> {
@@ -127,12 +151,26 @@ export class UserManagementService implements IUserManagementService {
     batch.delete(streakRef);
 
     await batch.commit();
+
+    // Log the action
+    await this.auditLogService.logAction(
+      'user_data_reset',
+      'User progression data reset (XP, level, achievements, streaks)',
+      userId
+    );
   }
 
   async deleteUser(userId: string): Promise<void> {
     // Just delete the Firestore document
     // Note: This doesn't delete the Firebase Auth user
     await deleteDoc(doc(firestore, "users", userId));
+
+    // Log the action
+    await this.auditLogService.logAction(
+      'user_deleted',
+      'User deleted from system',
+      userId
+    );
   }
 }
 
