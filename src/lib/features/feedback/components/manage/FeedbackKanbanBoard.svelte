@@ -6,7 +6,7 @@
   import { createKanbanBoardState } from "../../state/kanban-board-state.svelte";
   import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
   import type { IFeedbackSortingService } from "../../services/contracts/IFeedbackSortingService";
-  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
+  import { tryResolve, TYPES, ensureContainerInitialized } from "$lib/shared/inversify/di";
   import KanbanMobileView from "./KanbanMobileView.svelte";
   import KanbanDesktopView from "./KanbanDesktopView.svelte";
 
@@ -16,27 +16,43 @@
   }>();
 
   // Resolve services
-  let boardState: KanbanBoardState | null = null;
+  let boardState = $state<KanbanBoardState | null>(null);
   let sortingService: IFeedbackSortingService | null = null;
   let storageService: IStorageService | null = null;
 
-  onMount(() => {
-    sortingService = tryResolve<IFeedbackSortingService>(TYPES.IFeedbackSortingService);
-    storageService = tryResolve<IStorageService>(TYPES.IStorageService);
-    boardState = createKanbanBoardState(manageState, sortingService!, storageService);
+  onMount(async () => {
+    let resizeObserver: ResizeObserver | null = null;
 
-    // Set up ResizeObserver to detect mobile view (< 652px container width)
-    const boardElement = document.querySelector(".kanban-board");
-    if (!boardElement) return;
+    try {
+      // Wait for the DI container to be fully initialized (including async tier2 modules)
+      await ensureContainerInitialized();
 
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const width = entry.contentRect.width;
-        boardState?.setIsMobileView(width < 652);
+      // Now resolve services - container is ready
+      sortingService = tryResolve<IFeedbackSortingService>(TYPES.IFeedbackSortingService);
+      storageService = tryResolve<IStorageService>(TYPES.IStorageService);
+
+      if (!sortingService) {
+        console.error(`[FeedbackKanbanBoard] Failed to resolve IFeedbackSortingService after container init`);
+        return;
       }
-    });
 
-    resizeObserver.observe(boardElement);
+      boardState = createKanbanBoardState(manageState, sortingService, storageService);
+
+      // Set up ResizeObserver to detect mobile view (< 652px container width)
+      const boardElement = document.querySelector(".kanban-board");
+      if (!boardElement) return;
+
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const width = entry.contentRect.width;
+          boardState?.setIsMobileView(width < 652);
+        }
+      });
+
+      resizeObserver.observe(boardElement);
+    } catch (err) {
+      console.error(`[FeedbackKanbanBoard] Error initializing board:`, err);
+    }
 
     return () => {
       resizeObserver?.disconnect();
