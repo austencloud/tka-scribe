@@ -13,17 +13,36 @@
     PRIORITY_CONFIG,
     CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
+  import FeedbackEditDrawer from "./FeedbackEditDrawer.svelte";
+  import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
 
-  const { item, onClose } = $props<{
+  const { item, onClose, onUpdate } = $props<{
     item: FeedbackItem;
     onClose: () => void;
+    onUpdate: (feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>;
   }>();
 
-  const typeConfig = TYPE_CONFIG[item.type as FeedbackType];
-  const statusConfig = STATUS_CONFIG[item.status as FeedbackStatus];
-  const priorityConfig = item.priority
+  // Get preview context for read-only checks
+  const preview = useUserPreview();
+
+  let isEditDrawerOpen = $state(false);
+
+  const typeConfig = $derived(TYPE_CONFIG[item.type as FeedbackType]);
+  const statusConfig = $derived(STATUS_CONFIG[item.status as FeedbackStatus]);
+  const priorityConfig = $derived(item.priority
     ? PRIORITY_CONFIG[item.priority as FeedbackPriority]
-    : null;
+    : null);
+
+  // Preview mode = read-only, no editing allowed
+  const isPreviewMode = $derived(preview.isReadOnly);
+
+  // Can edit if new, in-progress, or in-review (not completed/archived) AND not in preview mode
+  const canEdit = $derived(
+    !isPreviewMode && ["new", "in-progress", "in-review"].includes(item.status)
+  );
+
+  // Full edit mode only for "new" status, otherwise append mode
+  const isAppendMode = $derived(item.status !== "new");
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString("en-US", {
@@ -34,19 +53,35 @@
       minute: "2-digit",
     });
   }
+
+  async function handleSave(updates: { type?: FeedbackType; description: string }, appendMode: boolean) {
+    await onUpdate(item.id, updates, appendMode);
+  }
 </script>
 
 <div class="detail-panel">
   <!-- Header -->
   <header class="panel-header">
-    <button
-      class="close-button"
-      onclick={onClose}
-      type="button"
-      aria-label="Close detail panel"
-    >
-      <i class="fas fa-times"></i>
-    </button>
+    <div class="header-actions">
+      {#if canEdit}
+        <button
+          class="edit-button"
+          onclick={() => (isEditDrawerOpen = true)}
+          type="button"
+          aria-label="Edit feedback"
+        >
+          <i class="fas fa-pen"></i>
+        </button>
+      {/if}
+      <button
+        class="close-button"
+        onclick={onClose}
+        type="button"
+        aria-label="Close detail panel"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
     <div class="header-meta">
       <span class="type-badge" style="--badge-color: {typeConfig.color}">
         <i class="fas {typeConfig.icon}"></i>
@@ -166,6 +201,14 @@
       </div>
     {/if}
   </div>
+
+  <!-- Edit Drawer -->
+  <FeedbackEditDrawer
+    bind:isOpen={isEditDrawerOpen}
+    {item}
+    appendMode={isAppendMode}
+    onSave={handleSave}
+  />
 </div>
 
 <style>
@@ -191,8 +234,15 @@
     flex-shrink: 0;
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .edit-button,
   .close-button {
-    align-self: flex-end;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -211,6 +261,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
+  .edit-button:hover,
   .close-button:hover {
     background: linear-gradient(
       135deg,
@@ -221,6 +272,11 @@
     color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
+  }
+
+  .edit-button:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #3b82f6;
   }
 
   .header-meta {

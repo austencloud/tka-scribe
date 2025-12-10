@@ -229,8 +229,8 @@
     }
 
     if (isTouchDragging) {
-      // End drag - prevent the subsequent click event
-      e.preventDefault();
+      // End drag - prevent the subsequent click event (only if cancelable)
+      if (e.cancelable) e.preventDefault();
       justDragged = true;
       removeDragGhost();
       isTouchDragging = false;

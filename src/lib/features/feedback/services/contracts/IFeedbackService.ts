@@ -121,4 +121,15 @@ export interface IFeedbackService {
     onUpdate: (items: FeedbackItem[]) => void,
     onError?: (error: Error) => void
   ): () => void;
+
+  /**
+   * Update user's own feedback (validates ownership)
+   * - For "new" status: full edit (type and description)
+   * - For "in-progress"/"in-review": append notes only (appendMode=true)
+   */
+  updateUserFeedback(
+    feedbackId: string,
+    updates: Partial<Pick<FeedbackItem, "type" | "description">>,
+    appendMode?: boolean
+  ): Promise<FeedbackItem>;
 }

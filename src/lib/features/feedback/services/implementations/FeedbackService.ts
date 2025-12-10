@@ -24,6 +24,7 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { firestore, getStorageInstance } from "$lib/shared/auth/firebase";
+import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
 import type { FirebaseStorage } from "firebase/storage";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 import type { IFeedbackService } from "../contracts/IFeedbackService";
@@ -143,6 +144,12 @@ export class FeedbackService implements IFeedbackService {
         imageUrls,
       });
     }
+
+    // Award XP for submitting feedback (don't await - non-blocking)
+    trackXP("feedback_submitted", {
+      feedbackId: docRef.id,
+      feedbackType: formData.type,
+    }).catch((err) => console.warn("Failed to track feedback XP:", err));
 
     return docRef.id;
   }
@@ -546,6 +553,76 @@ export class FeedbackService implements IFeedbackService {
       unsubscribed = true;
       unsubscribe();
     };
+  }
+
+  async updateUserFeedback(
+    feedbackId: string,
+    updates: Partial<Pick<FeedbackItem, "type" | "description">>,
+    appendMode: boolean = false
+  ): Promise<FeedbackItem> {
+    const user = authStore.user;
+    if (!user) {
+      throw new Error("User must be authenticated to update feedback");
+    }
+
+    // Get the feedback item to verify ownership
+    const feedback = await this.getFeedback(feedbackId);
+    if (!feedback) {
+      throw new Error("Feedback not found");
+    }
+
+    // Verify the user owns this feedback
+    if (feedback.userId !== user.uid) {
+      throw new Error("You can only edit your own feedback");
+    }
+
+    // Only allow editing for certain statuses
+    const editableStatuses = ["new", "in-progress", "in-review"];
+    if (!editableStatuses.includes(feedback.status)) {
+      throw new Error("Cannot edit feedback that has been completed or archived");
+    }
+
+    // If not "new", only allow appending (not full replacement)
+    if (feedback.status !== "new" && !appendMode) {
+      throw new Error("Can only add notes to feedback that is already being processed");
+    }
+
+    // Build update object
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+    const updateData: Record<string, unknown> = {
+      updatedAt: serverTimestamp(),
+    };
+
+    if (feedback.status === "new") {
+      // Full edit mode - can change type and replace description
+      if (updates.type !== undefined) {
+        updateData["type"] = updates.type;
+      }
+      if (updates.description !== undefined) {
+        updateData["description"] = updates.description;
+        // Also regenerate title from description
+        updateData["title"] = this.generateTitleFromDescription(updates.description);
+      }
+    } else {
+      // Append mode - can only add notes to the end
+      if (updates.description !== undefined && updates.description.trim()) {
+        const timestamp = new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        });
+        const appendedNote = `\n\n---\n**User update (${timestamp}):**\n${updates.description.trim()}`;
+        updateData["description"] = feedback.description + appendedNote;
+      }
+      // Type changes not allowed in append mode
+    }
+
+    await updateDoc(docRef, updateData);
+
+    // Return the updated item
+    const updatedDoc = await getDoc(docRef);
+    return this.mapDocToFeedbackItem(updatedDoc.id, updatedDoc.data()!);
   }
 
   private mapDocToFeedbackItem(

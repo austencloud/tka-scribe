@@ -2,32 +2,65 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { createMyFeedbackState } from "../../state/my-feedback-state.svelte";
+  import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
   import MyFeedbackList from "./MyFeedbackList.svelte";
   import MyFeedbackDetail from "./MyFeedbackDetail.svelte";
 
   const state = createMyFeedbackState();
+  const preview = useUserPreview();
+
+  // Track preview user to reload when it changes
+  let lastPreviewUserId: string | null = null;
 
   // Load on mount (not in $effect to avoid loops)
   onMount(() => {
     state.loadMyFeedback(true);
+    lastPreviewUserId = preview.profile?.uid ?? null;
+  });
+
+  // Reload when preview user changes
+  $effect(() => {
+    const currentPreviewUserId = preview.isActive
+      ? preview.profile?.uid ?? null
+      : null;
+
+    if (currentPreviewUserId !== lastPreviewUserId) {
+      lastPreviewUserId = currentPreviewUserId;
+      state.cleanup();
+      state.loadMyFeedback(true);
+    }
   });
 
   onDestroy(() => {
     state.cleanup();
   });
+
+  // Show preview indicator
+  const isPreviewMode = $derived(preview.isActive);
+  const previewUserName = $derived(
+    preview.profile?.displayName ||
+    preview.profile?.email ||
+    "User"
+  );
 </script>
 
 <div class="my-feedback-tab">
   <div class="tab-layout">
     <!-- Header with pending count -->
-    <header class="tab-header">
+    <header class="tab-header" class:preview-mode={isPreviewMode}>
+      {#if isPreviewMode}
+        <div class="preview-banner">
+          <i class="fas fa-eye"></i>
+          <span>Viewing feedback for: <strong>{previewUserName}</strong></span>
+        </div>
+      {/if}
       <div class="header-content">
         <div class="header-icon">
           <i class="fas fa-list-check"></i>
         </div>
         <div class="header-text">
-          <h1>My Feedback</h1>
-          <p>View your submissions and their resolution status</p>
+          <h1>{isPreviewMode ? `${previewUserName}'s Feedback` : "My Feedback"}</h1>
+          <p>{isPreviewMode ? "Viewing this user's submitted feedback" : "View your submissions and their resolution status"}</p>
         </div>
       </div>
     </header>
@@ -69,6 +102,7 @@
             <MyFeedbackDetail
               item={state.selectedItem}
               onClose={() => state.selectItem(null)}
+              onUpdate={state.updateItem}
             />
           {/if}
         </div>
@@ -96,12 +130,36 @@
   /* Header */
   .tab-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    flex-direction: column;
+    gap: 12px;
     padding: clamp(12px, 3cqi, 20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     flex-shrink: 0;
+  }
+
+  .tab-header.preview-mode {
+    background: rgba(59, 130, 246, 0.05);
+    border-bottom-color: rgba(59, 130, 246, 0.2);
+  }
+
+  .preview-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    color: #60a5fa;
+  }
+
+  .preview-banner i {
+    font-size: 12px;
+  }
+
+  .preview-banner strong {
+    color: #93c5fd;
   }
 
   .header-content {
