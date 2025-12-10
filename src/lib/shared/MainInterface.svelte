@@ -60,10 +60,24 @@
 
   // Debug tools
   import RoleSwitcherDebugPanel from "./debug/components/RoleSwitcherDebugPanel.svelte";
+  import PreviewModeBanner from "./debug/components/PreviewModeBanner.svelte";
+  import { initUserPreviewContext } from "./debug/context/user-preview-context";
+  import { userPreviewState } from "./debug/state/user-preview-state.svelte";
+  import { featureFlagService } from "./auth/services/FeatureFlagService.svelte";
+
+  // Toast notifications
+  import { ToastContainer } from "./toast";
+
+  // Initialize user preview context for app-wide access
+  initUserPreviewContext();
 
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
   const isModuleLoading = $derived(activeModule === null);
+  // Show banner offset when user preview OR role override is active
+  const isPreviewMode = $derived(
+    userPreviewState.isActive || !!featureFlagService.debugRoleOverride
+  );
 
   // Desktop sidebar visibility management
   let desktopSidebarVisibility: ReturnType<
@@ -169,10 +183,14 @@
   });
 </script>
 
+<!-- Global Preview Banner -->
+<PreviewModeBanner />
+
 <div
   class="main-interface"
   class:nav-landscape={layoutState.isPrimaryNavLandscape}
   class:has-desktop-sidebar={showDesktopSidebar}
+  class:has-preview-banner={isPreviewMode}
   style="--primary-nav-height: {layoutState.primaryNavHeight}px; --desktop-sidebar-width: {desktopSidebarState.width}px;"
 >
   <!-- Desktop Navigation Sidebar (only on desktop in side-by-side layout) -->
@@ -244,6 +262,8 @@
   <ShortcutsHelp />
   <!-- Debug Tools -->
   <RoleSwitcherDebugPanel />
+  <!-- Toast Notifications -->
+  <ToastContainer />
 </div>
 
 <style>
@@ -257,12 +277,32 @@
     overflow: hidden;
     position: relative;
     background: transparent;
-    transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      padding-top 0.2s ease;
   }
 
   /* Desktop sidebar support */
   .main-interface.has-desktop-sidebar {
     padding-left: var(--desktop-sidebar-width, 280px);
+  }
+
+  /* Debug banner support (user preview OR role override) - push content down */
+  /* Banner height: 56px content + 2px border = 58px total */
+  .main-interface.has-preview-banner {
+    padding-top: 58px;
+  }
+
+  /* Push desktop sidebar down when banner is shown */
+  .main-interface.has-preview-banner :global(.desktop-navigation-sidebar) {
+    top: 58px;
+  }
+
+  @media (max-width: 768px) {
+    /* Mobile banner: 48px content + 2px border = 50px total */
+    .main-interface.has-preview-banner {
+      padding-top: 50px;
+    }
   }
 
   /* Content + Navigation Wrapper - flex container for content and nav */

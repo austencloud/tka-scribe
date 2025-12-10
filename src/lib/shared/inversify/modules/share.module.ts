@@ -11,6 +11,7 @@ import { InstagramLinkService } from '../../share/services/implementations/Insta
 import { MediaBundlerService } from '../../share/services/implementations/MediaBundlerService';
 import { FirebaseVideoUploadService } from '../../share/services/implementations/FirebaseVideoUploadService';
 import { RecordingPersistenceService } from '../../video-record/services/implementations/RecordingPersistenceService';
+import { CollaborativeVideoService } from '../../video-collaboration/services/implementations/CollaborativeVideoService';
 import { TYPES } from "../types";
 
 export const shareModule = new ContainerModule(
@@ -21,5 +22,6 @@ export const shareModule = new ContainerModule(
     options.bind(TYPES.IMediaBundlerService).to(MediaBundlerService);
     options.bind(TYPES.IFirebaseVideoUploadService).to(FirebaseVideoUploadService);
     options.bind(TYPES.IRecordingPersistenceService).to(RecordingPersistenceService);
+    options.bind(TYPES.ICollaborativeVideoService).to(CollaborativeVideoService);
   }
 );

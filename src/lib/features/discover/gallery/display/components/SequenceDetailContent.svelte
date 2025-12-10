@@ -2,10 +2,9 @@
 SequenceDetailContent - Shared content for sequence detail view
 
 Displays:
-- Large sequence preview image
+- Media viewer (images, animation, videos)
 - Sequence metadata (word, difficulty, length, author)
-- Navigation controls (previous/next variation)
-- Action buttons (Play, Favorite, Edit, Delete, Maximize)
+- Action buttons (Favorite, Edit, Delete, Maximize)
 
 Used by both desktop side panel and mobile slide-up overlay.
 -->
@@ -19,8 +18,17 @@ Used by both desktop side panel and mobile slide-up overlay.
   import AvatarImage from "../../../creators/components/profile/AvatarImage.svelte";
   import { discoverNavigationState } from "../../../shared/state/discover-navigation-state.svelte";
   import { galleryPanelManager } from "../../../shared/state/gallery-panel-state.svelte";
+  import SequenceMediaViewer from "./media-viewer/SequenceMediaViewer.svelte";
+  import SequenceVideosSection from "$lib/shared/video-collaboration/components/SequenceVideosSection.svelte";
+  import VideoUploadSheet from "$lib/shared/video-collaboration/components/VideoUploadSheet.svelte";
+  import type { CollaborativeVideo } from "$lib/shared/video-collaboration/domain/CollaborativeVideo";
 
   let hapticService: IHapticFeedbackService | null = null;
+
+  // Video state
+  let showUploadSheet = $state(false);
+  let videosKey = $state(0); // For refreshing videos section
+  let selectedVideo = $state<CollaborativeVideo | null>(null);
 
   const {
     sequence,
@@ -44,77 +52,31 @@ Used by both desktop side panel and mobile slide-up overlay.
     );
   });
 
-  // State
-  let currentVariationIndex = $state(0);
-
-  // Crossfade state
-  let currentImageUrl = $state<string | undefined>(undefined);
-  let previousImageUrl = $state<string | undefined>(undefined);
-  let isTransitioning = $state<boolean>(false);
-
-  // Derived
-  const coverUrl = $derived.by(() => {
-    const thumbnail = sequence?.thumbnails?.[currentVariationIndex];
-    if (!thumbnail || !thumbnailService) return undefined;
-    try {
-      return thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
-    } catch (error) {
-      console.warn("Failed to resolve thumbnail", error);
-      return undefined;
-    }
-  });
-
-  const totalVariations = $derived(sequence?.thumbnails?.length || 1);
-  const canGoBack = $derived(currentVariationIndex > 0);
-  const canGoForward = $derived(currentVariationIndex < totalVariations - 1);
-
-  // Reset variation index when sequence changes
-  $effect(() => {
-    if (sequence) {
-      currentVariationIndex = 0;
-    }
-  });
-
-  // Watch for coverUrl changes and trigger scale + fade transition
-  $effect(() => {
-    const newUrl = coverUrl;
-    if (newUrl && newUrl !== currentImageUrl) {
-      // Only animate if we're switching from one image to another
-      // Skip animation on initial load for immediate display
-      const shouldAnimate = currentImageUrl !== undefined;
-
-      previousImageUrl = shouldAnimate ? currentImageUrl : undefined;
-      currentImageUrl = newUrl;
-      isTransitioning = shouldAnimate;
-
-      // End transition after animation completes
-      if (shouldAnimate) {
-        setTimeout(() => {
-          isTransitioning = false;
-          previousImageUrl = undefined;
-        }, 200); // Match the CSS transition duration
-      }
-    }
-  });
-
   // Handlers
-  function handlePrevious() {
-    if (canGoBack) {
-      hapticService?.trigger("selection");
-      currentVariationIndex--;
-    }
-  }
-
-  function handleNext() {
-    if (canGoForward) {
-      hapticService?.trigger("selection");
-      currentVariationIndex++;
-    }
-  }
-
   function handleAction(action: string) {
     hapticService?.trigger("selection");
+
+    // Handle video-specific actions locally
+    if (action === "upload-video") {
+      showUploadSheet = true;
+      return;
+    }
+
     onAction(action, sequence);
+  }
+
+  function handleVideoUploaded() {
+    // Refresh the videos section
+    videosKey++;
+  }
+
+  function handleVideoClick(video: CollaborativeVideo) {
+    hapticService?.trigger("selection");
+    selectedVideo = video;
+  }
+
+  function closeVideoPlayer() {
+    selectedVideo = null;
   }
 
   function handleMaximize() {
@@ -157,8 +119,8 @@ Used by both desktop side panel and mobile slide-up overlay.
     </button>
   </header>
 
-  <!-- Sequence Preview -->
-  <div class="preview-container">
+  <!-- Media Viewer (Images, Animation, Video) -->
+  <div class="media-container">
     <!-- Creator avatar badge (upper left) -->
     {#if hasCreatorInfo}
       <button
@@ -174,62 +136,12 @@ Used by both desktop side panel and mobile slide-up overlay.
       </button>
     {/if}
 
-    {#if currentImageUrl || previousImageUrl}
-      <div class="image-crossfade-container">
-        <!-- Previous image (fading out) -->
-        {#if isTransitioning && previousImageUrl}
-          <img
-            src={previousImageUrl}
-            alt="Previous sequence"
-            class="preview-image previous-image"
-          />
-        {/if}
-
-        <!-- Current image (fading in) -->
-        {#if currentImageUrl}
-          <img
-            src={currentImageUrl}
-            alt={sequence.name}
-            class="preview-image current-image"
-            class:transitioning={isTransitioning}
-          />
-        {/if}
-      </div>
-    {:else}
-      <div class="preview-placeholder">No preview available</div>
-    {/if}
+    <SequenceMediaViewer
+      {sequence}
+      {thumbnailService}
+      onCreatorClick={handleCreatorClick}
+    />
   </div>
-
-  <!-- Variation Navigation -->
-  {#if totalVariations > 1}
-    <div class="variation-nav">
-      <button
-        class="nav-btn"
-        onclick={handlePrevious}
-        disabled={!canGoBack}
-        aria-label="Previous variation"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-        </svg>
-      </button>
-
-      <span class="variation-counter">
-        {currentVariationIndex + 1} / {totalVariations}
-      </span>
-
-      <button
-        class="nav-btn"
-        onclick={handleNext}
-        disabled={!canGoForward}
-        aria-label="Next variation"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-        </svg>
-      </button>
-    </div>
-  {/if}
 
   <!-- Metadata -->
   <div class="metadata">
@@ -266,20 +178,19 @@ Used by both desktop side panel and mobile slide-up overlay.
     {/if}
   </div>
 
+  <!-- Videos Section -->
+  {#key videosKey}
+    <SequenceVideosSection
+      sequenceId={sequence.id}
+      onVideoClick={handleVideoClick}
+      onUploadClick={() => handleAction("upload-video")}
+    />
+  {/key}
+
   <!-- Action Buttons -->
   <div class="action-buttons">
     <button
       class="action-btn action-btn-primary"
-      onclick={() => handleAction("play")}
-    >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M8 5v14l11-7z" />
-      </svg>
-      <span>Play</span>
-    </button>
-
-    <button
-      class="action-btn"
       class:favorited={sequence.isFavorite}
       onclick={() => handleAction("favorite")}
       aria-label={sequence.isFavorite
@@ -298,6 +209,7 @@ Used by both desktop side panel and mobile slide-up overlay.
           d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
         />
       </svg>
+      <span>{sequence.isFavorite ? "Saved" : "Save"}</span>
     </button>
 
     <button
@@ -360,6 +272,48 @@ Used by both desktop side panel and mobile slide-up overlay.
   </div>
 </div>
 
+<!-- Video Upload Sheet -->
+<VideoUploadSheet
+  show={showUploadSheet}
+  {sequence}
+  onClose={() => (showUploadSheet = false)}
+  onUploaded={handleVideoUploaded}
+/>
+
+<!-- Video Player Modal -->
+{#if selectedVideo}
+  <div class="video-player-overlay" role="dialog" aria-label="Video player">
+    <button class="video-player-backdrop" onclick={closeVideoPlayer}></button>
+    <div class="video-player-container">
+      <header class="video-player-header">
+        <div class="video-player-title">
+          <i class="fas fa-video"></i>
+          <span>Performance Video</span>
+        </div>
+        <button class="video-player-close" onclick={closeVideoPlayer} aria-label="Close video">
+          <i class="fas fa-times"></i>
+        </button>
+      </header>
+      <div class="video-player-content">
+        <video
+          src={selectedVideo.videoUrl}
+          controls
+          autoplay
+          playsinline
+          class="video-player-video"
+        >
+          <track kind="captions" />
+        </video>
+      </div>
+      {#if selectedVideo.description}
+        <div class="video-player-description">
+          {selectedVideo.description}
+        </div>
+      {/if}
+    </div>
+  </div>
+{/if}
+
 <style>
   .detail-content {
     display: flex;
@@ -419,19 +373,17 @@ Used by both desktop side panel and mobile slide-up overlay.
     transform: scale(0.95);
   }
 
-  /* Preview - Space Maximization Algorithm (from legacy Sequence Viewer) */
-  .preview-container {
+  /* Media Container - holds the unified media viewer */
+  .media-container {
     flex: 1;
-    min-height: clamp(152px, 40cqi, 252px);
-    max-height: 65%;
-    width: 95%;
+    min-height: clamp(200px, 45cqi, 350px);
+    max-height: 70%;
+    width: 100%;
     max-width: 100%;
-    margin: 0 auto;
     border-radius: clamp(8px, 2cqi, 12px);
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     position: relative;
   }
 
@@ -464,117 +416,6 @@ Used by both desktop side panel and mobile slide-up overlay.
   /* Style the avatar inside the badge */
   .creator-badge :global(.avatar-image) {
     display: block;
-  }
-
-  .image-crossfade-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-  }
-
-  .preview-image {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-  }
-
-  .preview-image.previous-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 1;
-    animation: fadeOut 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    z-index: 1;
-  }
-
-  .preview-image.current-image {
-    position: relative;
-    opacity: 1;
-    z-index: 2;
-  }
-
-  .preview-image.current-image.transitioning {
-    animation: fadeIn 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  .preview-placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: clamp(12px, 3cqi, 14px);
-  }
-
-  /* Variation Navigation */
-  .variation-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 4cqi, 20px);
-    padding: clamp(6px, 2cqi, 10px);
-  }
-
-  /* Nav buttons - uses global touch target token */
-  .nav-btn {
-    width: var(--touch-target-min);
-    height: var(--touch-target-min);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .nav-btn svg {
-    width: var(--icon-size-md);
-    height: var(--icon-size-md);
-  }
-
-  .nav-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .nav-btn:not(:disabled):hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .nav-btn:not(:disabled):active {
-    transform: scale(0.95);
-  }
-
-  .variation-counter {
-    font-size: clamp(12px, 3.5cqi, 15px);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    min-width: clamp(52px, 15cqi, 70px);
-    text-align: center;
   }
 
   /* Metadata */
@@ -709,6 +550,17 @@ Used by both desktop side panel and mobile slide-up overlay.
     border-color: #f87171;
   }
 
+  /* Primary button favorited state - pink/red gradient */
+  .action-btn-primary.favorited {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    border-color: transparent;
+    color: white;
+  }
+
+  .action-btn-primary.favorited:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+
   /* Compact layout for smaller containers */
   @container detail-panel (max-width: 320px) {
     .action-btn span {
@@ -725,15 +577,126 @@ Used by both desktop side panel and mobile slide-up overlay.
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .close-button,
-    .nav-btn,
-    .action-btn {
+    .action-btn,
+    .creator-badge {
       transition: none;
     }
 
     .close-button:active,
-    .nav-btn:not(:disabled):active,
-    .action-btn:active {
+    .action-btn:active,
+    .creator-badge:active {
       transform: none;
     }
+  }
+
+  /* Video Player Modal */
+  .video-player-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .video-player-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    border: none;
+    cursor: pointer;
+  }
+
+  .video-player-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    background: linear-gradient(
+      135deg,
+      rgba(20, 20, 30, 0.98) 0%,
+      rgba(30, 30, 45, 0.98) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: videoPlayerIn 0.2s ease-out;
+  }
+
+  @keyframes videoPlayerIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .video-player-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .video-player-title {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary, white);
+  }
+
+  .video-player-title i {
+    color: #3b82f6;
+  }
+
+  .video-player-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    border-radius: 8px;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .video-player-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .video-player-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: black;
+  }
+
+  .video-player-video {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+
+  .video-player-description {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
   }
 </style>

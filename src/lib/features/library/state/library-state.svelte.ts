@@ -8,11 +8,13 @@
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { userPreviewState, type PreviewSequence } from "$lib/shared/debug/state/user-preview-state.svelte";
+import { toast } from "$lib/shared/toast";
 import type { ILibraryService, LibraryQueryOptions, LibraryStats } from '../services/contracts/ILibraryService';
 import type { LibrarySequence, SequenceVisibility } from "../domain/models/LibrarySequence";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
-export type LibraryViewSection = "sequences" | "collections" | "acts" | "favorites";
+export type LibraryViewSection = "sequences" | "collections" | "acts" | "favorites" | "videos";
 export type LibrarySortField = "updatedAt" | "createdAt" | "name" | "word";
 export type LibrarySortDirection = "asc" | "desc";
 
@@ -129,8 +131,53 @@ class LibraryStateManager {
 		return this.state.activeSection;
 	}
 
-	get sequences() {
+	get sequences(): LibrarySequence[] {
+		// In preview mode, show the previewed user's sequences
+		if (this.isPreviewMode && userPreviewState.data.sequences.length > 0) {
+			return this.convertPreviewSequences(userPreviewState.data.sequences);
+		}
 		return this.state.sequences;
+	}
+
+	/**
+	 * Convert preview sequences to LibrarySequence format
+	 * Note: Some fields are stubbed since preview data is limited
+	 */
+	private convertPreviewSequences(previewSeqs: PreviewSequence[]): LibrarySequence[] {
+		const ownerId = userPreviewState.data.profile?.uid || "";
+
+		return previewSeqs.map((seq) => ({
+			// SequenceData base fields (required)
+			id: seq.id,
+			name: seq.name || "Untitled",
+			word: seq.word || "",
+			beats: [],
+			thumbnails: seq.thumbnailUrl ? [seq.thumbnailUrl] : [],
+			isFavorite: false,
+			isCircular: false,
+			tags: [],
+			metadata: {},
+
+			// LibrarySequence ownership fields
+			ownerId,
+			source: "created" as const,
+
+			// Visibility
+			visibility: (seq.isPublic ? "public" : "private") as SequenceVisibility,
+
+			// Organization
+			collectionIds: [] as readonly string[],
+			tagIds: [] as readonly string[],
+
+			// Engagement metrics
+			forkCount: 0,
+			viewCount: 0,
+			starCount: seq.favoriteCount || 0,
+
+			// Timestamps
+			createdAt: seq.createdAt ? new Date(seq.createdAt) : new Date(),
+			updatedAt: seq.createdAt ? new Date(seq.createdAt) : new Date(),
+		} as LibrarySequence));
 	}
 
 	get isLoading() {
@@ -341,7 +388,20 @@ class LibraryStateManager {
 	// CRUD OPERATIONS
 	// ============================================================
 
+	/**
+	 * Check if we're in preview mode (read-only)
+	 */
+	get isPreviewMode(): boolean {
+		return userPreviewState.isActive;
+	}
+
 	async saveSequence(sequence: SequenceData): Promise<LibrarySequence | null> {
+		// Block writes in preview mode
+		if (this.isPreviewMode) {
+			toast.warning("Cannot save sequences in preview mode");
+			return null;
+		}
+
 		const service = this.getService();
 		if (!service) return null;
 
@@ -357,6 +417,12 @@ class LibraryStateManager {
 	}
 
 	async deleteSequence(sequenceId: string): Promise<boolean> {
+		// Block writes in preview mode
+		if (this.isPreviewMode) {
+			toast.warning("Cannot delete sequences in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service) return false;
 
@@ -372,6 +438,11 @@ class LibraryStateManager {
 	}
 
 	async toggleFavorite(sequenceId: string): Promise<boolean> {
+		if (this.isPreviewMode) {
+			toast.warning("Cannot modify favorites in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service) return false;
 
@@ -388,6 +459,11 @@ class LibraryStateManager {
 		sequenceId: string,
 		visibility: SequenceVisibility
 	): Promise<boolean> {
+		if (this.isPreviewMode) {
+			toast.warning("Cannot change visibility in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service) return false;
 
@@ -401,6 +477,11 @@ class LibraryStateManager {
 	}
 
 	async publishSequence(sequenceId: string): Promise<boolean> {
+		if (this.isPreviewMode) {
+			toast.warning("Cannot publish sequences in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service) return false;
 
@@ -414,6 +495,11 @@ class LibraryStateManager {
 	}
 
 	async unpublishSequence(sequenceId: string): Promise<boolean> {
+		if (this.isPreviewMode) {
+			toast.warning("Cannot unpublish sequences in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service) return false;
 
@@ -467,6 +553,11 @@ class LibraryStateManager {
 	// ============================================================
 
 	async deleteSelected(): Promise<boolean> {
+		if (this.isPreviewMode) {
+			toast.warning("Cannot delete sequences in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service || this.state.selectedIds.size === 0) return false;
 
@@ -482,6 +573,11 @@ class LibraryStateManager {
 	}
 
 	async setVisibilityBatch(visibility: SequenceVisibility): Promise<boolean> {
+		if (this.isPreviewMode) {
+			toast.warning("Cannot change visibility in preview mode");
+			return false;
+		}
+
 		const service = this.getService();
 		if (!service || this.state.selectedIds.size === 0) return false;
 

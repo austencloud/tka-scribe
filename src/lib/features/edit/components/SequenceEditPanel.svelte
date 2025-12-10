@@ -2,10 +2,20 @@
   SequenceEditPanel.svelte
 
   Panel for applying transformations to entire sequences.
-  Provides mirror, rotate, swap colors, and reverse operations.
+  Responsive design: full descriptions on desktop, expandable on mobile.
 -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+
+  interface TransformAction {
+    id: string;
+    icon: string;
+    name: string;
+    shortDesc: string;
+    fullDesc: string;
+    color: string;
+    action: () => void;
+  }
 
   interface Props {
     sequence: SequenceData | null;
@@ -18,80 +28,95 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 
   let { sequence, onTransform, handleMirror, handleRotate, handleSwapColors, handleReverse }: Props = $props();
 
-  // Track which transformations are in progress
   let isTransforming = $state(false);
+  let expandedAction = $state<string | null>(null);
 
-  /**
-   * Mirror the sequence vertically
-   */
-  async function onMirrorClick() {
+  function toggleExpand(id: string) {
+    expandedAction = expandedAction === id ? null : id;
+  }
+
+  async function executeAction(action: TransformAction) {
     if (!sequence || isTransforming) return;
     isTransforming = true;
-
     try {
-      const result = handleMirror();
-      if (result) {
-        onTransform(result);
-        console.log("Mirror transformation applied");
-      }
+      action.action();
     } finally {
       isTransforming = false;
     }
   }
 
-  /**
-   * Rotate the sequence 45 degrees
-   */
-  async function onRotateClick(direction: "cw" | "ccw") {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-
-    try {
-      const result = handleRotate(direction);
-      if (result) {
-        onTransform(result);
-        console.log(`Rotate ${direction} transformation applied`);
-      }
-    } finally {
-      isTransforming = false;
-    }
+  async function doMirror() {
+    const result = handleMirror();
+    if (result) onTransform(result);
   }
 
-  /**
-   * Swap blue and red colors
-   */
-  async function onSwapColorsClick() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-
-    try {
-      const result = handleSwapColors();
-      if (result) {
-        onTransform(result);
-        console.log("Swap colors transformation applied");
-      }
-    } finally {
-      isTransforming = false;
-    }
+  async function doRotateCW() {
+    const result = handleRotate("cw");
+    if (result) onTransform(result);
   }
 
-  /**
-   * Reverse the sequence order
-   */
-  async function onReverseClick() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-
-    try {
-      const result = await handleReverse();
-      if (result) {
-        onTransform(result);
-        console.log("Reverse transformation applied");
-      }
-    } finally {
-      isTransforming = false;
-    }
+  async function doRotateCCW() {
+    const result = handleRotate("ccw");
+    if (result) onTransform(result);
   }
+
+  async function doSwapColors() {
+    const result = handleSwapColors();
+    if (result) onTransform(result);
+  }
+
+  async function doReverse() {
+    const result = await handleReverse();
+    if (result) onTransform(result);
+  }
+
+  const actions: TransformAction[] = [
+    {
+      id: "mirror",
+      icon: "fa-left-right",
+      name: "Mirror",
+      shortDesc: "Flip left & right",
+      fullDesc: "Creates a mirror image as if reflected in a vertical mirror in front of you. Clockwise spins become counter-clockwise.",
+      color: "#a855f7",
+      action: doMirror,
+    },
+    {
+      id: "rotate-cw",
+      icon: "fa-rotate-right",
+      name: "Rotate Right",
+      shortDesc: "Pivot 45° clockwise",
+      fullDesc: "Rotates the entire sequence 45° as if you turned your body to the right. Repeat 4 times for a full 180° turn.",
+      color: "#f59e0b",
+      action: doRotateCW,
+    },
+    {
+      id: "rotate-ccw",
+      icon: "fa-rotate-left",
+      name: "Rotate Left",
+      shortDesc: "Pivot 45° counter-clockwise",
+      fullDesc: "Rotates the entire sequence 45° as if you turned your body to the left. Repeat 4 times for a full 180° turn.",
+      color: "#f59e0b",
+      action: doRotateCCW,
+    },
+    {
+      id: "swap-colors",
+      icon: "fa-arrows-rotate",
+      name: "Swap Hands",
+      shortDesc: "Switch hand movements",
+      fullDesc: "Exchanges which hand does each movement. Your left hand's moves become your right hand's, and vice versa.",
+      color: "#10b981",
+      action: doSwapColors,
+    },
+    {
+      id: "reverse",
+      icon: "fa-backward",
+      name: "Reverse",
+      shortDesc: "Retrace to start",
+      fullDesc: "Creates a sequence that returns you to where you started. Each movement is inverted so you physically wind back.",
+      color: "#f43f5e",
+      action: doReverse,
+    },
+  ];
 </script>
 
 <div class="sequence-edit-panel">
@@ -102,73 +127,23 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
       <p>No sequence loaded</p>
     </div>
   {:else}
-    <div class="transform-grid">
-      <!-- Mirror -->
-      <button
-        class="transform-btn"
-        onclick={onMirrorClick}
-        disabled={isTransforming}
-      >
-        <div class="btn-icon">
-          <i class="fas fa-left-right"></i>
-        </div>
-        <span class="btn-label">Mirror</span>
-        <span class="btn-description">Flip vertically</span>
-      </button>
-
-      <!-- Rotate Clockwise -->
-      <button
-        class="transform-btn"
-        onclick={() => onRotateClick("cw")}
-        disabled={isTransforming}
-      >
-        <div class="btn-icon">
-          <i class="fas fa-rotate-right"></i>
-        </div>
-        <span class="btn-label">Rotate CW</span>
-        <span class="btn-description">45° clockwise</span>
-      </button>
-
-      <!-- Rotate Counter-Clockwise -->
-      <button
-        class="transform-btn"
-        onclick={() => onRotateClick("ccw")}
-        disabled={isTransforming}
-      >
-        <div class="btn-icon">
-          <i class="fas fa-rotate-left"></i>
-        </div>
-        <span class="btn-label">Rotate CCW</span>
-        <span class="btn-description">45° counter-clockwise</span>
-      </button>
-
-      <!-- Swap Colors -->
-      <button
-        class="transform-btn"
-        onclick={onSwapColorsClick}
-        disabled={isTransforming}
-      >
-        <div class="btn-icon swap-icon">
-          <span class="color-dot blue"></span>
-          <i class="fas fa-arrows-rotate"></i>
-          <span class="color-dot red"></span>
-        </div>
-        <span class="btn-label">Swap Colors</span>
-        <span class="btn-description">Exchange blue & red</span>
-      </button>
-
-      <!-- Reverse -->
-      <button
-        class="transform-btn"
-        onclick={onReverseClick}
-        disabled={isTransforming}
-      >
-        <div class="btn-icon">
-          <i class="fas fa-backward"></i>
-        </div>
-        <span class="btn-label">Reverse</span>
-        <span class="btn-description">Play backwards</span>
-      </button>
+    <div class="actions-list">
+      {#each actions as action (action.id)}
+        <button
+          class="action-button"
+          onclick={() => executeAction(action)}
+          disabled={isTransforming}
+          style="--action-color: {action.color}"
+        >
+          <div class="action-icon-box">
+            <i class="fas {action.icon}"></i>
+          </div>
+          <div class="action-text">
+            <span class="action-name">{action.name}</span>
+            <span class="action-desc">{action.shortDesc}</span>
+          </div>
+        </button>
+      {/each}
     </div>
 
     {#if isTransforming}
@@ -188,6 +163,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     padding: 16px;
     background: rgba(255, 255, 255, 0.02);
     border-radius: 8px;
+    overflow-y: auto;
   }
 
   .panel-title {
@@ -207,81 +183,90 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     color: rgba(255, 255, 255, 0.5);
   }
 
-  .transform-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    flex: 1;
-  }
-
-  .transform-btn {
+  .actions-list {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Soft Gradient Fill Style */
+  .action-button {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 16px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    gap: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--action-color) 15%, transparent) 0%,
+      color-mix(in srgb, var(--action-color) 8%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--action-color) 25%, transparent);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.95);
     cursor: pointer;
-    transition: all 0.2s ease;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s ease;
   }
 
-  .transform-btn:hover:not(:disabled) {
-    background: rgba(6, 182, 212, 0.1);
-    border-color: rgba(6, 182, 212, 0.3);
-    transform: translateY(-2px);
+  .action-button:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--action-color) 25%, transparent) 0%,
+      color-mix(in srgb, var(--action-color) 15%, transparent) 100%
+    );
+    border-color: color-mix(in srgb, var(--action-color) 40%, transparent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--action-color) 20%, transparent);
   }
 
-  .transform-btn:active:not(:disabled) {
+  .action-button:active:not(:disabled) {
     transform: translateY(0);
+    transition: all 0.08s ease;
   }
 
-  .transform-btn:disabled {
+  .action-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .btn-icon {
+  .action-button:focus-visible {
+    outline: 2px solid var(--action-color);
+    outline-offset: 2px;
+  }
+
+  /* Icon box - solid colored */
+  .action-icon-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    color: #06b6d4;
+    width: 40px;
     height: 40px;
-  }
-
-  .swap-icon {
-    gap: 8px;
-  }
-
-  .swap-icon i {
+    background: var(--action-color);
+    border-radius: 10px;
+    flex-shrink: 0;
+    color: white;
     font-size: 16px;
   }
 
-  .color-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+  /* Text container */
+  .action-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
   }
 
-  .color-dot.blue {
-    background: #3b82f6;
-  }
-
-  .color-dot.red {
-    background: #ef4444;
-  }
-
-  .btn-label {
+  .action-name {
     font-size: 0.95rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
   }
 
-  .btn-description {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+  .action-desc {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .transforming-indicator {
@@ -310,9 +295,29 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     to { transform: rotate(360deg); }
   }
 
-  @media (max-width: 400px) {
-    .transform-grid {
-      grid-template-columns: 1fr;
+  /* Small mobile */
+  @media (max-width: 480px) {
+    .sequence-edit-panel {
+      padding: 12px;
+    }
+
+    .action-button {
+      padding: 12px 14px;
+      gap: 12px;
+    }
+
+    .action-icon-box {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+    }
+
+    .action-name {
+      font-size: 0.9rem;
+    }
+
+    .action-desc {
+      font-size: 0.75rem;
     }
   }
 </style>

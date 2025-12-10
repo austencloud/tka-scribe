@@ -2,6 +2,7 @@
   /**
    * UserProfileWidget
    * Shows user profile summary with quick access to library and auth
+   * Supports preview mode for admin user viewing
    */
 
   import { onMount } from "svelte";
@@ -12,16 +13,39 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IAuthService } from "$lib/shared/auth/services/contracts/IAuthService";
+  import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
 
   let hapticService: IHapticFeedbackService | null = $state(null);
   let authService: IAuthService | null = $state(null);
   let showAuthOptions = $state(false);
 
+  // Get preview context
+  const preview = useUserPreview();
+
   const isAuthenticated = $derived(authStore.isAuthenticated);
   const user = $derived(authStore.user);
-  const sequenceCount = $derived(libraryState.sequences.length);
+
+  // Effective values (use preview data when active)
+  const effectiveDisplayName = $derived(
+    preview.getEffectiveDisplayName(user?.displayName ?? null)
+  );
+  const effectiveEmail = $derived(
+    preview.getEffectiveEmail(user?.email ?? null)
+  );
+  const effectivePhotoURL = $derived(
+    preview.getEffectivePhotoURL(user?.photoURL ?? null)
+  );
+
+  // Stats - use preview data when active
+  const sequenceCount = $derived(
+    preview.isActive
+      ? preview.sequences.length
+      : libraryState.sequences.length
+  );
   const favoriteCount = $derived(
-    libraryState.sequences.filter((s) => s.isFavorite).length
+    preview.isActive
+      ? 0 // Preview doesn't track favorites yet
+      : libraryState.sequences.filter((s) => s.isFavorite).length
   );
 
   onMount(async () => {
@@ -82,33 +106,42 @@
   }
 </script>
 
-<div class="profile-widget">
+<div class="profile-widget" class:preview-mode={preview.isActive}>
+  {#if preview.isActive}
+    <div class="preview-badge">
+      <i class="fas fa-eye"></i>
+      Viewing as {effectiveDisplayName || effectiveEmail || "User"}
+    </div>
+  {/if}
+
   {#if isAuthenticated && user}
     <!-- Signed In State -->
     <div class="user-profile">
       <button class="profile-header" onclick={toggleAuthOptions}>
         <div class="profile-avatar">
-          {#if user.photoURL}
+          {#if effectivePhotoURL}
             <img
-              src={user.photoURL}
-              alt={user.displayName || "User"}
+              src={effectivePhotoURL}
+              alt={effectiveDisplayName || "User"}
               class="avatar-image"
               crossorigin="anonymous"
               referrerpolicy="no-referrer"
             />
           {:else}
             <div class="avatar-placeholder">
-              {(user.displayName || user.email || "?").charAt(0).toUpperCase()}
+              {(effectiveDisplayName || effectiveEmail || "?").charAt(0).toUpperCase()}
             </div>
           {/if}
         </div>
         <div class="profile-info">
-          {#if user.displayName}
-            <span class="profile-name">{user.displayName}</span>
+          {#if effectiveDisplayName}
+            <span class="profile-name">{effectiveDisplayName}</span>
           {/if}
-          <span class="profile-email">{user.email || "Signed In"}</span>
+          <span class="profile-email">{effectiveEmail || "Signed In"}</span>
         </div>
-        <i class="fas fa-chevron-down dropdown-icon" class:open={showAuthOptions}></i>
+        {#if !preview.isActive}
+          <i class="fas fa-chevron-down dropdown-icon" class:open={showAuthOptions}></i>
+        {/if}
       </button>
 
       {#if showAuthOptions}
@@ -196,6 +229,30 @@
     border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
     border-radius: var(--radius-2026-lg, 18px);
     height: 100%;
+  }
+
+  /* Preview Mode Styling */
+  .profile-widget.preview-mode {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.05);
+  }
+
+  .preview-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: var(--space-2026-sm, 12px);
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: var(--radius-2026-sm, 10px);
+    font-size: var(--text-2026-micro, 0.75rem);
+    font-weight: 600;
+    color: #60a5fa;
+  }
+
+  .preview-badge i {
+    font-size: 12px;
   }
 
   /* User Profile (Signed In) */

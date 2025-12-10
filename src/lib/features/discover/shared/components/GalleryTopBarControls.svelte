@@ -151,11 +151,16 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
 
 <style>
   .gallery-topbar-controls {
+    --control-height: 52px;
+    --padding-vertical: 10px;
+
     display: flex;
     align-items: center;
-    padding: 10px 16px;
+    padding: var(--padding-vertical) 16px;
     background: #12121a;
     width: 100%;
+    /* Prevent collapse when filter panel is open and sections are empty */
+    min-height: calc(var(--control-height) + var(--padding-vertical) * 2);
   }
 
   /* Three-section layout: left (nav) - center (chips) - right (filter) */
@@ -204,7 +209,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     justify-content: center;
     gap: 6px;
     padding: 0 14px;
-    min-height: 52px;
+    min-height: var(--control-height);
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 100px;
@@ -237,7 +242,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     align-items: center;
     gap: 8px;
     padding: 0 12px 0 16px;
-    min-height: 52px;
+    min-height: var(--control-height);
     background: rgba(59, 130, 246, 0.15);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 100px;
@@ -264,8 +269,8 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--control-height);
+    height: var(--control-height);
     background: #252532;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;

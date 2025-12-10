@@ -180,6 +180,7 @@ export const TYPES = {
   IMediaBundlerService: Symbol.for("IMediaBundlerService"),
   IFirebaseVideoUploadService: Symbol.for("IFirebaseVideoUploadService"),
   IRecordingPersistenceService: Symbol.for("IRecordingPersistenceService"),
+  ICollaborativeVideoService: Symbol.for("ICollaborativeVideoService"),
   IPageImageExportService: Symbol.for("IPageImageExportService"),
   IPageFactoryService: Symbol.for("IPageFactoryService"),
   IPrintablePageLayoutService: Symbol.for("IPrintablePageLayoutService"),

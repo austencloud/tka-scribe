@@ -5,18 +5,31 @@ Uses 4x4 pictograph grid with all 16 variations
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import PositionPickerGrid from "./PositionPickerGrid.svelte";
 
-  let { title, description, currentPosition, onPositionChange } = $props<{
+  let {
+    title,
+    description,
+    currentPosition,
+    onPositionChange,
+    gridMode = GridMode.DIAMOND,
+    disabled = false,
+    disabledReason = "",
+  } = $props<{
     title: string;
     description: string;
     currentPosition: PictographData | null;
     onPositionChange: (position: PictographData | null) => void;
+    gridMode?: GridMode;
+    disabled?: boolean;
+    disabledReason?: string;
   }>();
 
   let isExpanded = $state(false);
 
   function toggleExpanded() {
+    if (disabled) return;
     isExpanded = !isExpanded;
   }
 
@@ -30,40 +43,56 @@ Uses 4x4 pictograph grid with all 16 variations
   const hasSelection = $derived(currentPosition !== null);
 </script>
 
-<section class="position-section">
+<section class="position-section" class:disabled>
   <button
     class="section-header"
     onclick={toggleExpanded}
     aria-expanded={isExpanded}
+    aria-disabled={disabled}
     type="button"
+    {disabled}
   >
     <div class="header-content">
       <h3 class="section-title">{title}</h3>
-      <p class="section-description">{description}</p>
+      <p class="section-description">
+        {#if disabled && disabledReason}
+          {disabledReason}
+        {:else}
+          {description}
+        {/if}
+      </p>
     </div>
     <div class="header-value">
-      {#if hasSelection}
+      {#if disabled}
+        <span class="value-locked">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 17a2 2 0 002-2v-2a2 2 0 00-4 0v2a2 2 0 002 2zm6-9h-1V6a5 5 0 00-10 0v2H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V10a2 2 0 00-2-2zM8.9 6a3.1 3.1 0 016.2 0v2H8.9V6z" />
+          </svg>
+        </span>
+      {:else if hasSelection}
         <span class="value-badge">{displayValue}</span>
       {:else}
         <span class="value-any">Any</span>
       {/if}
-      <svg
-        class="chevron"
-        class:expanded={isExpanded}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        aria-hidden="true"
-      >
-        <path d="M6 9l6 6 6-6" />
-      </svg>
+      {#if !disabled}
+        <svg
+          class="chevron"
+          class:expanded={isExpanded}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      {/if}
     </div>
   </button>
 
-  {#if isExpanded}
+  {#if isExpanded && !disabled}
     <div class="section-content">
-      <PositionPickerGrid {currentPosition} {onPositionChange} />
+      <PositionPickerGrid {currentPosition} {onPositionChange} {gridMode} />
     </div>
   {/if}
 </section>
@@ -71,6 +100,10 @@ Uses 4x4 pictograph grid with all 16 variations
 <style>
   .position-section {
     background: rgba(255, 255, 255, 0.08);
+  }
+
+  .position-section.disabled {
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .section-header {
@@ -88,12 +121,17 @@ Uses 4x4 pictograph grid with all 16 variations
     text-align: left;
   }
 
-  .section-header:hover {
+  .section-header:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.05);
   }
 
-  .section-header:active {
+  .section-header:active:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
+  }
+
+  .section-header:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   .header-content {
@@ -132,6 +170,22 @@ Uses 4x4 pictograph grid with all 16 variations
   .value-any {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.6);
+  }
+
+  .value-locked {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .value-locked svg {
+    width: 18px;
+    height: 18px;
   }
 
   .chevron {

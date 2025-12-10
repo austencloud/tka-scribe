@@ -5,6 +5,7 @@
    * Displays user profiles with their contributions and stats.
    *
    * Uses singleton data state for caching - data persists across tab switches.
+   * Each creator card color is extracted from their avatar for a personalized look.
    */
 
   import { onMount } from "svelte";
@@ -23,6 +24,10 @@
   import DiscoverNavButtons from "../../shared/components/DiscoverNavButtons.svelte";
   import { getContext } from "svelte";
   import type { DiscoverLocation } from "../../shared/state/discover-navigation-state.svelte";
+  import {
+    extractDominantColor,
+    getCachedOrFallbackColor,
+  } from "$lib/shared/foundation/utils/color-extractor";
 
   // Get navigation handler from context (provided by DiscoverModule)
   const navContext = getContext<{
@@ -33,6 +38,9 @@
 
   let searchQuery = $state("");
   let followingInProgress = $state<Set<string>>(new Set());
+
+  // Track extracted colors per user ID
+  let userColors = $state<Map<string, string>>(new Map());
 
   // Service instances
   let userService: IUserService;
@@ -83,6 +91,51 @@
     discoverNavigationState.viewCreatorProfile(user.id, user.displayName);
   }
 
+  /**
+   * Get the accent color for a user card
+   * Uses extracted color if available, falls back to name-based color
+   */
+  function getUserColor(user: UserProfile): string {
+    // Check if we've already extracted this user's color
+    const extracted = userColors.get(user.id);
+    if (extracted) return extracted;
+
+    // Use cached or generate fallback from name
+    return getCachedOrFallbackColor(user.avatar, user.displayName);
+  }
+
+  /**
+   * Handle successful avatar image load - extract color
+   */
+  async function handleAvatarLoad(user: UserProfile, imgElement: HTMLImageElement) {
+    // Skip if already have color for this user
+    if (userColors.has(user.id)) return;
+
+    try {
+      const color = await extractDominantColor(user.avatar, user.displayName);
+      // Update state to trigger re-render with new color
+      userColors = new Map(userColors).set(user.id, color);
+    } catch {
+      // Extraction failed, use fallback (already handled by getCachedOrFallbackColor)
+    }
+  }
+
+  /**
+   * Handle avatar load error - ensure fallback color is set
+   */
+  function handleAvatarError(user: UserProfile, imgElement: HTMLImageElement) {
+    // Hide broken image, show placeholder
+    imgElement.style.display = "none";
+    const fallback = imgElement.nextElementSibling as HTMLElement;
+    if (fallback) fallback.style.display = "flex";
+
+    // Set fallback color based on name
+    if (!userColors.has(user.id)) {
+      const fallbackColor = getCachedOrFallbackColor(undefined, user.displayName);
+      userColors = new Map(userColors).set(user.id, fallbackColor);
+    }
+  }
+
   async function handleFollowToggle(user: UserProfile) {
     if (!currentUserId) {
       return;
@@ -128,43 +181,45 @@
 </script>
 
 <div class="creators-panel">
-  <!-- Top bar with navigation -->
-  <div class="creators-topbar">
-    <div class="nav-section">
-      <DiscoverNavButtons {onNavigate} />
+  <div class="content-container">
+    <!-- Top bar with navigation -->
+    <div class="creators-topbar">
+      <div class="nav-section">
+        <DiscoverNavButtons {onNavigate} />
+      </div>
+      <div class="header-section">
+        <h2 class="panel-title">
+          <i class="fas fa-users"></i>
+          Discover Creators
+        </h2>
+      </div>
+      <div class="spacer"></div>
     </div>
-    <div class="header-section">
-      <h2 class="panel-title">
-        <i class="fas fa-users"></i>
-        Discover Creators
-      </h2>
-    </div>
-    <div class="spacer"></div>
-  </div>
 
-  <PanelSearch placeholder="Search creators..." bind:value={searchQuery} />
+    <PanelSearch placeholder="Search creators..." bind:value={searchQuery} />
 
-  <PanelContent>
-    {#if error}
-      <PanelState type="error" title="Error" message={error} />
-    {:else if isLoading}
-      <PanelState type="loading" message="Loading creators..." />
-    {:else if filteredUsers.length === 0}
-      <PanelState
-        type="empty"
-        icon="fa-users"
-        title="No Creators Found"
-        message={searchQuery
-          ? "No creators match your search"
-          : "No members found"}
-      />
-    {:else}
-      <PanelGrid columns={3} gap="16px">
-        {#each filteredUsers as user (user.id)}
+    <PanelContent>
+      {#if error}
+        <PanelState type="error" title="Error" message={error} />
+      {:else if isLoading}
+        <PanelState type="loading" message="Loading creators..." />
+      {:else if filteredUsers.length === 0}
+        <PanelState
+          type="empty"
+          icon="fa-users"
+          title="No Creators Found"
+          message={searchQuery
+            ? "No creators match your search"
+            : "No members found"}
+        />
+      {:else}
+        <PanelGrid minCardWidth="240px" gap="20px">
+          {#each filteredUsers as user (user.id)}
           <!-- svelte-ignore a11y_no_static_element_interactions -->
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <div
             class="user-card"
+            style="--card-accent: {getUserColor(user)}"
             onclick={() => handleUserClick(user)}
             role="button"
             tabindex="0"
@@ -183,13 +238,8 @@
                   alt={user.displayName}
                   crossorigin="anonymous"
                   referrerpolicy="no-referrer"
-                  onerror={(e) => {
-                    // Silently handle avatar load failures - this is expected for some Google URLs
-                    const img = e.currentTarget as HTMLElement;
-                    const fallback = img.nextElementSibling as HTMLElement;
-                    img.style.display = "none";
-                    if (fallback) fallback.style.display = "flex";
-                  }}
+                  onload={(e) => handleAvatarLoad(user, e.currentTarget as HTMLImageElement)}
+                  onerror={(e) => handleAvatarError(user, e.currentTarget as HTMLImageElement)}
                 />
                 <!-- Fallback placeholder (shown if image fails to load) -->
                 <div class="avatar-placeholder" style="display: none;">
@@ -246,28 +296,40 @@
               </div>
             {/if}
           </div>
-        {/each}
-      </PanelGrid>
-    {/if}
-  </PanelContent>
+          {/each}
+        </PanelGrid>
+      {/if}
+    </PanelContent>
+  </div>
 </div>
 
 <style>
   .creators-panel {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    padding: 0 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Generous responsive padding */
+    padding: 0 clamp(16px, 4vw, 48px);
+  }
+
+  /* 2026 Centered content container - everything aligns to same width */
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 1100px;
+    padding-bottom: 48px;
   }
 
   /* Top bar with navigation */
   .creators-topbar {
     display: flex;
     align-items: center;
-    padding: 10px 0;
+    padding: 16px 0 8px;
     background: transparent;
     width: 100%;
     min-height: 52px;
@@ -275,7 +337,7 @@
 
   .nav-section {
     flex-shrink: 0;
-    min-width: 104px; /* Space for nav buttons */
+    min-width: 104px;
   }
 
   .header-section {
@@ -289,53 +351,87 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .panel-title i {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .spacer {
     flex-shrink: 0;
-    min-width: 104px; /* Match nav section for centering */
+    min-width: 104px;
   }
 
   /* ============================================================================
-     USER CARD
+     USER CARD - Dynamic Avatar-Based Color Theming
+     --card-accent is set dynamically per card via inline style
      ============================================================================ */
   .user-card {
+    /* Fallback if no color extracted yet */
+    --card-accent: #8b5cf6;
+    /* Derive lighter variant using color-mix */
+    --card-accent-light: color-mix(in srgb, var(--card-accent) 80%, #fff);
+    --card-accent-glow: color-mix(in srgb, var(--card-accent) 25%, transparent);
+
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 20px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
-    border-radius: 16px;
-    transition: all 0.2s ease;
+    gap: 10px;
+    padding: 16px;
+    /* Soft gradient fill using extracted color */
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-accent) 10%, rgba(255, 255, 255, 0.03)) 0%,
+      color-mix(in srgb, var(--card-accent) 5%, rgba(255, 255, 255, 0.02)) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--card-accent) 18%, transparent);
+    border-radius: 14px;
+    transition:
+      background 0.3s var(--ease-out, ease),
+      border-color 0.3s var(--ease-out, ease),
+      box-shadow 0.2s var(--ease-out, ease),
+      transform 0.2s var(--ease-out, ease);
     cursor: pointer;
   }
 
   .user-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: rgba(255, 255, 255, 0.12);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-accent) 16%, rgba(255, 255, 255, 0.05)) 0%,
+      color-mix(in srgb, var(--card-accent) 10%, rgba(255, 255, 255, 0.03)) 100%
+    );
+    border-color: color-mix(in srgb, var(--card-accent) 40%, transparent);
+    transform: translateY(var(--hover-lift-md, -2px));
+    /* Dynamic color glow on hover */
+    box-shadow:
+      0 8px 24px var(--card-accent-glow),
+      0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .user-card:focus {
-    outline: 2px solid #a855f7;
+    outline: 2px solid var(--card-accent);
     outline-offset: 2px;
   }
 
-  /* Avatar */
+  /* Avatar with dynamic color ring */
   .user-avatar {
-    width: 80px;
-    height: 80px;
+    position: relative;
+    width: 56px;
+    height: 56px;
     margin: 0 auto;
+    flex-shrink: 0;
+    /* Gradient ring using extracted color */
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      var(--card-accent) 0%,
+      var(--card-accent-light) 100%
+    );
+    border-radius: 50%;
+    transition: background 0.3s var(--ease-out, ease);
   }
 
   .user-avatar img,
@@ -344,90 +440,114 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+    /* Inner background to create ring effect */
+    background: #1a1a2e;
   }
 
   .avatar-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-accent) 20%, #1a1a2e) 0%,
+      #1a1a2e 100%
+    );
   }
 
   .avatar-placeholder i {
-    font-size: 32px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    font-size: 22px;
+    color: var(--card-accent-light);
+    transition: color 0.3s var(--ease-out, ease);
   }
 
   /* User info */
   .user-info {
     text-align: center;
+    min-width: 0;
   }
 
   .display-name {
     margin: 0;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .username {
-    margin: 4px 0 0 0;
-    font-size: 14px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    margin: 2px 0 0 0;
+    font-size: 12px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* User stats */
   .user-stats {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-top: 12px;
+    gap: 12px;
+    margin-top: 6px;
   }
 
   .stat {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.65));
   }
 
   .stat i {
-    font-size: 12px;
+    font-size: 10px;
+    /* Dynamic color tinted icons */
+    color: var(--card-accent);
+    opacity: 0.75;
+    transition: opacity 0.2s ease, color 0.3s ease;
+  }
+
+  .user-card:hover .stat i {
+    opacity: 1;
   }
 
   /* Actions */
   .user-actions {
     display: flex;
+    margin-top: 4px;
   }
 
   .follow-button {
     width: 100%;
-    padding: 10px 16px;
-    border: 1px solid #a855f7;
-    border-radius: 8px;
-    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid var(--card-accent);
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-    background: #a855f7;
+    transition: all 0.3s var(--ease-out, ease);
+    background: var(--card-accent);
     color: white;
   }
 
   .follow-button:hover {
-    filter: brightness(0.9);
+    filter: brightness(1.15);
+    box-shadow: 0 2px 8px var(--card-accent-glow);
   }
 
   .follow-button.following {
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.08));
-    border-color: var(--card-border-current, rgba(255, 255, 255, 0.2));
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
+    background: transparent;
+    border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
+    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
   }
 
   .follow-button.following:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.12));
-    border-color: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--card-accent) 10%, transparent);
+    border-color: color-mix(in srgb, var(--card-accent) 50%, transparent);
+    color: var(--card-accent-light);
   }
 
   .follow-button.loading {
@@ -444,8 +564,16 @@
      ============================================================================ */
   @media (max-width: 640px) {
     .creators-panel {
-      gap: 16px;
       padding: 0 12px;
+    }
+
+    .content-container {
+      gap: 16px;
+      padding-bottom: 24px;
+    }
+
+    .creators-topbar {
+      padding: 12px 0 4px;
     }
 
     .panel-title {
@@ -453,42 +581,53 @@
     }
 
     .user-card {
-      padding: 16px;
-      gap: 10px;
+      padding: 12px;
+      gap: 8px;
+      border-radius: 12px;
     }
 
     .user-avatar {
-      width: 70px;
-      height: 70px;
+      width: 48px;
+      height: 48px;
+      padding: 2px;
+    }
+
+    .avatar-placeholder i {
+      font-size: 18px;
     }
 
     .display-name {
-      font-size: 16px;
-    }
-
-    .username {
       font-size: 13px;
     }
 
+    .username {
+      font-size: 11px;
+    }
+
     .user-stats {
-      margin-top: 10px;
-      gap: 12px;
+      margin-top: 4px;
+      gap: 10px;
     }
 
     .stat {
-      font-size: 12px;
+      font-size: 10px;
+      gap: 3px;
+    }
+
+    .stat i {
+      font-size: 9px;
     }
 
     .follow-button {
-      padding: 8px 12px;
-      font-size: 12px;
+      padding: 6px 12px;
+      font-size: 11px;
     }
   }
 
   @media (max-width: 360px) {
     .user-avatar {
-      width: 64px;
-      height: 64px;
+      width: 44px;
+      height: 44px;
     }
   }
 

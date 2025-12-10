@@ -18,6 +18,7 @@
   } from "./state/library-state.svelte";
   import LibraryDashboard from "./components/LibraryDashboard.svelte";
   import SequencesView from "./components/SequencesView.svelte";
+  import UserVideoLibraryView from "$lib/shared/video-collaboration/components/UserVideoLibraryView.svelte";
   // Navigation state
   let currentView = $state<"dashboard" | LibraryViewSection>("dashboard");
   let viewStack = $state<string[]>([]);
@@ -69,6 +70,7 @@
     collections: "Collections",
     acts: "Acts",
     favorites: "Favorites",
+    videos: "My Videos",
   };
 
   // View icons for header
@@ -78,6 +80,7 @@
     collections: "fa-folder",
     acts: "fa-film",
     favorites: "fa-star",
+    videos: "fa-video",
   };
 </script>
 
@@ -102,6 +105,8 @@
       <div class="view-container">
         {#if currentView === "dashboard"}
           <LibraryDashboard onNavigate={navigateTo} />
+        {:else if currentView === "videos"}
+          <UserVideoLibraryView />
         {:else if currentView === "sequences" || currentView === "favorites" || currentView === "collections" || currentView === "acts"}
           <SequencesView />
         {/if}
