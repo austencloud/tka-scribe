@@ -4,6 +4,9 @@
  * Reactive state management for toggle card behavior.
  * Handles service resolution, event handling, and responsive state.
  * Follows TKA architecture: services handle business logic, runes handle reactivity.
+ *
+ * Touch tolerance: Allows clicks with small finger movements (lazy tapping)
+ * by tracking pointer position and using a generous movement threshold.
  */
 
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
@@ -11,6 +14,11 @@ import type { IHapticFeedbackService } from "$lib/shared/application/services/co
 import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
+
+// Touch tolerance constants
+// 75px is very generous for lazy/casual taps on mobile
+const MOVEMENT_THRESHOLD = 75; // px - generous tolerance for lazy taps
+const TAP_DURATION_THRESHOLD = 500; // ms - max duration for a tap
 
 /**
  * Creates reactive state for toggle card behavior
@@ -30,6 +38,15 @@ export function createToggleCardState<T>(props: {
   let isLandscapeMobile = $state(false);
   let cardElement = $state<HTMLButtonElement | null>(null);
   let optionsAreSideBySide = $state(false); // Track if options are in horizontal layout
+
+  // Touch tracking for lazy tap tolerance
+  let touchState = {
+    isTracking: false,
+    startX: 0,
+    startY: 0,
+    startTime: 0,
+    handledByTouch: false, // Prevents double-firing between touch and click
+  };
 
   /**
    * Initialize services and setup listeners
@@ -129,6 +146,80 @@ export function createToggleCardState<T>(props: {
     }
   }
 
+  /**
+   * Handle touch start - start tracking for lazy tap tolerance
+   */
+  function handleTouchStart(event: TouchEvent) {
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    touchState.isTracking = true;
+    touchState.startX = touch.clientX;
+    touchState.startY = touch.clientY;
+    touchState.startTime = Date.now();
+    touchState.handledByTouch = false;
+  }
+
+  /**
+   * Handle touch end - check if it's a valid tap (within tolerance)
+   * Fires the toggle even if there was small movement during the tap
+   */
+  function handleTouchEnd(event: TouchEvent) {
+    if (!touchState.isTracking) return;
+
+    const touch = event.changedTouches[0];
+    if (!touch) {
+      touchState.isTracking = false;
+      return;
+    }
+
+    const deltaX = Math.abs(touch.clientX - touchState.startX);
+    const deltaY = Math.abs(touch.clientY - touchState.startY);
+    const duration = Date.now() - touchState.startTime;
+
+    // Reset tracking
+    touchState.isTracking = false;
+
+    // If movement is within tolerance and duration is short enough, treat as tap
+    const withinTolerance =
+      deltaX <= MOVEMENT_THRESHOLD &&
+      deltaY <= MOVEMENT_THRESHOLD &&
+      duration <= TAP_DURATION_THRESHOLD;
+
+    if (withinTolerance) {
+      // Mark that we handled this touch - prevents double-firing with onclick
+      touchState.handledByTouch = true;
+
+      // Fire the toggle action
+      handleCardClick();
+
+      // Reset the flag after a short delay (allows onclick to check it)
+      setTimeout(() => {
+        touchState.handledByTouch = false;
+      }, 100);
+    }
+  }
+
+  /**
+   * Handle touch cancel - reset tracking state
+   */
+  function handleTouchCancel() {
+    touchState.isTracking = false;
+    touchState.handledByTouch = false;
+  }
+
+  /**
+   * Handle click - fires for mouse clicks and as fallback
+   * Checks if touch already handled this to prevent double-firing
+   */
+  function handleClick() {
+    // If touch already handled this interaction, skip
+    if (touchState.handledByTouch) {
+      return;
+    }
+    handleCardClick();
+  }
+
   return {
     // State getters/setters
     get cardElement() {
@@ -148,6 +239,11 @@ export function createToggleCardState<T>(props: {
     handleToggle,
     handleCardClick,
     handleKeydown,
+    handleClick,
+    // Touch events for lazy tap tolerance (allows taps with small movement)
+    handleTouchStart,
+    handleTouchEnd,
+    handleTouchCancel,
 
     // Initialization
     initialize,

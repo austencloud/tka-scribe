@@ -14,5 +14,10 @@ export interface IPictographFilterService {
   ): PictographData[];
   filterStartPositions(options: PictographData[]): PictographData[];
   filterStaticType6(options: PictographData[], level: number): PictographData[];
+  /** Filter pictographs by required end position (for freeform end position constraint) */
+  filterByEndPosition(
+    options: PictographData[],
+    requiredEndPosition: string
+  ): PictographData[];
   selectRandom<T>(array: T[]): T;
 }

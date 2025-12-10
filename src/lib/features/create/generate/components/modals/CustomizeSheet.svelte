@@ -7,6 +7,7 @@ Follows modern 2026 Material Design patterns with 52px touch targets
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
@@ -22,12 +23,14 @@ Follows modern 2026 Material Design patterns with 52px touch targets
     onChange,
     onClose,
     isFreeformMode = true,
+    gridMode = GridMode.DIAMOND,
   } = $props<{
     isOpen: boolean;
     options: CustomizeOptions | null;
     onChange: (options: CustomizeOptions) => void;
     onClose: () => void;
     isFreeformMode?: boolean;
+    gridMode?: GridMode;
   }>();
 
   let hapticService: IHapticFeedbackService;
@@ -158,16 +161,18 @@ Follows modern 2026 Material Design patterns with 52px touch targets
         description="Where the sequence begins"
         currentPosition={pendingOptions.startPosition}
         onPositionChange={handleStartPositionChange}
+        {gridMode}
       />
 
-      {#if isFreeformMode}
-        <PositionSection
-          title="End Position"
-          description="Where the sequence ends"
-          currentPosition={pendingOptions.endPosition}
-          onPositionChange={handleEndPositionChange}
-        />
-      {/if}
+      <PositionSection
+        title="End Position"
+        description="Where the sequence ends"
+        currentPosition={isFreeformMode ? pendingOptions.endPosition : null}
+        onPositionChange={handleEndPositionChange}
+        {gridMode}
+        disabled={!isFreeformMode}
+        disabledReason="In circular mode, the end position matches the start position"
+      />
 
       <!-- Letter constraints removed - too complex given generation constraints -->
       <!-- <LetterConstraintsSection

@@ -61,6 +61,7 @@ Delegates ALL logic to services (SRP compliant)
 
   // State
   let headerFontSize = $state("9px");
+  let positionsResetTrigger = $state(0); // Increment to trigger reset animation
 
   // Derived values - now safe because services are reactive $state
   let currentLevel = $derived(
@@ -120,6 +121,21 @@ Delegates ALL logic to services (SRP compliant)
 
   function handleGridModeChange(gridMode: GridMode) {
     updateConfig({ gridMode });
+
+    // Check if we have positions to clear
+    const hasPositions = customizeState?.options?.startPosition !== null ||
+                         customizeState?.options?.endPosition !== null;
+
+    if (hasPositions) {
+      // Trigger animation FIRST
+      positionsResetTrigger++;
+
+      // Clear positions at animation midpoint (150ms into 300ms animation)
+      // This makes the text change happen while it's invisible
+      setTimeout(() => {
+        customizeState?.clearPositions();
+      }, 150);
+    }
   }
 
   function handleGenerationModeChange(mode: GenerationMode) {
@@ -160,6 +176,8 @@ Delegates ALL logic to services (SRP compliant)
           ? handleCustomizeChange
           : undefined,
         customizeOptions: customizeState?.options,
+        positionsResetTrigger,
+        currentGridMode: config.gridMode,
         handleGenerateClick: onGenerateClicked,
       },
       headerFontSize,
