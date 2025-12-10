@@ -107,3 +107,6 @@ src/lib/data/motion-primitives.json
 feedback-images/
 test-image.png
 find-image-feedback.js
+
+# Local mobile dev config (contains network info)
+mobile-dev.ps1

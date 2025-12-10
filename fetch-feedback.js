@@ -50,6 +50,39 @@ const db = admin.firestore();
 const STALE_CLAIM_MS = 2 * 60 * 60 * 1000;
 
 /**
+ * Send notification to user when their feedback is resolved/completed
+ */
+async function notifyUserFeedbackResolved(userId, feedbackId, feedbackTitle, message) {
+  if (!userId) {
+    console.log('  ⚠️  No userId - skipping notification');
+    return null;
+  }
+
+  try {
+    const notificationRef = db.collection('users').doc(userId).collection('notifications');
+
+    const notification = {
+      userId,
+      type: 'feedback-resolved',
+      feedbackId,
+      feedbackTitle: feedbackTitle || 'Your feedback',
+      message: message || 'Your feedback has been addressed! Check it out.',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      read: false,
+      fromUserId: 'system',
+      fromUserName: 'TKA Studio'
+    };
+
+    const docRef = await notificationRef.add(notification);
+    console.log(`  📬 Notification sent to user`);
+    return docRef.id;
+  } catch (error) {
+    console.error('  ⚠️  Failed to send notification:', error.message);
+    return null;
+  }
+}
+
+/**
  * Download images from Firebase Storage for a feedback item
  * Returns array of local file paths
  */
@@ -484,6 +517,18 @@ async function updateFeedbackById(docId, status, adminNotes) {
     if (adminNotes) {
       console.log(`  Admin Notes: ${adminNotes}`);
     }
+
+    // Send notification to user when marking as completed
+    if (normalizedStatus === 'completed' && item.userId) {
+      console.log('─'.repeat(70));
+      await notifyUserFeedbackResolved(
+        item.userId,
+        docId,
+        item.title,
+        adminNotes || 'Your feedback has been addressed and is ready for the next release!'
+      );
+    }
+
     console.log('\n' + '='.repeat(70) + '\n');
 
     return { id: docId, ...item };

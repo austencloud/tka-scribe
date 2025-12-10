@@ -289,6 +289,11 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     strictPort: false, // ⚡ Auto-increment port if taken (faster dev workflow)
+    headers: {
+      // Enable OAuth popups to communicate with parent window
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+      "Cross-Origin-Embedder-Policy": "unsafe-none",
+    },
     fs: {
       allow: [".", "../animator", "../desktop"],
       strict: true, // 2025: Security best practice
