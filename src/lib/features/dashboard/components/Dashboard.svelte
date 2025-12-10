@@ -104,6 +104,7 @@
       feedback: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
       admin: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)", // Gold gradient for admin
       "ml-training": "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)", // Purple for ML
+      settings: "linear-gradient(135deg, #64748b 0%, #475569 100%)", // Slate gradient for settings
     };
     return gradients[id] || "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)";
   }
@@ -431,29 +432,6 @@
       </section>
     {/if}
 
-    <!-- Settings Card -->
-    {#if isVisible}
-      <section
-        class="bento-settings"
-        transition:fly={{
-          y: SLIDE.md,
-          duration: DURATION.normal,
-          delay: 400,
-          easing: cubicOut,
-        }}
-      >
-        <button class="settings-card" onclick={openSettings}>
-          <div class="settings-icon">
-            <i class="fas fa-cog"></i>
-          </div>
-          <div class="settings-content">
-            <span class="settings-title">Settings</span>
-            <span class="settings-subtitle">Customize your experience</span>
-          </div>
-          <i class="fas fa-chevron-right settings-arrow"></i>
-        </button>
-      </section>
-    {/if}
   </div>
 
   <!-- Mobile Drawers -->
@@ -583,6 +561,14 @@
     gap: 24px;
     max-width: 1200px;
     margin: 0 auto;
+
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .dashboard::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
 
   .dashboard.visible {
@@ -621,8 +607,8 @@
     width: 100%;
   }
 
-  /* Smart grid: balanced columns that avoid orphan cards
-     Responsive layout: 2 → 3 → 4 columns */
+  /* Smart grid: 9 modules in clean 3x3 layout
+     Responsive: 2 columns (mobile) → 3 columns (tablet+) */
   .modules-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -638,18 +624,11 @@
     }
   }
 
-  /* Large screens: 3 columns with larger cards */
+  /* Large screens: 3 columns - perfect 3x3 for 9 modules
+     Parent dashboard container caps at 1200px, so cards max ~370px wide */
   @media (min-width: 900px) {
     .modules-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-  }
-
-  /* Very wide screens: 4 columns (perfect for 8 modules: 4×2) */
-  @media (min-width: 1400px) {
-    .modules-grid {
-      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
   }
@@ -1112,78 +1091,6 @@
   }
 
   .teaser-arrow {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
-  }
-
-  /* ========================================
-     SETTINGS CARD
-     ======================================== */
-
-  .bento-settings {
-    min-height: auto;
-  }
-
-  .settings-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-    height: 100%;
-    min-height: 72px;
-    padding: 16px 20px;
-    background: rgba(107, 114, 128, 0.1);
-    border: 1px solid rgba(107, 114, 128, 0.2);
-    border-radius: 18px;
-    cursor: pointer;
-    transition:
-      background var(--duration-fast, 150ms) var(--ease-out),
-      border-color var(--duration-fast, 150ms) var(--ease-out);
-    text-align: left;
-  }
-
-  .settings-card:hover {
-    background: rgba(107, 114, 128, 0.18);
-    border-color: rgba(107, 114, 128, 0.3);
-  }
-
-  .settings-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    background: rgba(107, 114, 128, 0.2);
-    border-radius: 14px;
-    font-size: 20px;
-    color: #9ca3af;
-    flex-shrink: 0;
-    transition: transform var(--duration-normal, 200ms) var(--ease-spring);
-  }
-
-  .settings-card:hover .settings-icon {
-    transform: rotate(45deg);
-  }
-
-  .settings-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .settings-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-  }
-
-  .settings-subtitle {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  .settings-arrow {
     color: rgba(255, 255, 255, 0.3);
     font-size: 14px;
   }

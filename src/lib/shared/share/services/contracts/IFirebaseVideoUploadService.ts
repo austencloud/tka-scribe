@@ -1,13 +1,11 @@
 /**
  * Firebase Video Upload Service
  *
- * STUB INTERFACE - Not yet implemented
- *
  * Purpose: Upload user performance videos and animated sequences to Firebase Storage.
- * When ready to implement, this service will handle:
+ * Handles:
  * - Uploading performance videos from user's device to Firebase Storage
  * - Uploading animated WebP/GIF sequences generated from notation data
- * - Managing storage paths: sequences/{userId}/{sequenceId}/video|animation
+ * - Managing storage paths: users/{userId}/recordings|animations/{sequenceId}/
  * - Progress callbacks for upload UI
  * - Cleanup of orphaned files
  *
@@ -23,6 +21,16 @@
  * - Referenced in SequenceData.performanceVideoUrl / animatedSequenceUrl
  */
 
+/**
+ * Result of a video upload operation
+ */
+export interface VideoUploadResult {
+  /** Public download URL for the video */
+  url: string;
+  /** Firebase Storage path (for deletion) */
+  storagePath: string;
+}
+
 export interface IFirebaseVideoUploadService {
   /**
    * Upload a user's performance video to Firebase Storage
@@ -30,21 +38,15 @@ export interface IFirebaseVideoUploadService {
    * @param sequenceId - The sequence this video belongs to
    * @param videoFile - The video file from user's device (via input[type=file])
    * @param onProgress - Optional callback for upload progress (0-100)
-   * @returns Promise resolving to Firebase Storage URL
+   * @returns Promise resolving to upload result with URL and storage path
    *
-   * Storage path: sequences/{userId}/{sequenceId}/video/performance.mp4
-   *
-   * TODO: Implement with:
-   * - Firebase Storage SDK: uploadBytesResumable()
-   * - Video validation: format, size limits, duration
-   * - Compression if needed (consider client-side with ffmpeg.wasm)
-   * - Thumbnail extraction for preview
+   * Storage path: users/{userId}/recordings/{sequenceId}/{timestamp}.mp4
    */
   uploadPerformanceVideo(
     sequenceId: string,
-    videoFile: File,
+    videoFile: File | Blob,
     onProgress?: (percent: number) => void
-  ): Promise<string>;
+  ): Promise<VideoUploadResult>;
 
   /**
    * Upload animated sequence (WebP or GIF) to Firebase Storage
@@ -52,20 +54,15 @@ export interface IFirebaseVideoUploadService {
    * @param sequenceId - The sequence ID
    * @param animationBlob - The rendered animation blob (from canvas.toBlob)
    * @param format - 'webp' or 'gif'
-   * @returns Promise resolving to Firebase Storage URL
+   * @returns Promise resolving to upload result with URL and storage path
    *
-   * Storage path: sequences/{userId}/{sequenceId}/animation/sequence.{format}
-   *
-   * TODO: Integrate with existing render services:
-   * - SequenceRenderService already renders sequences
-   * - Canvas already exports to WebP
-   * - Just need to upload the blob
+   * Storage path: users/{userId}/animations/{sequenceId}/sequence.{format}
    */
   uploadAnimatedSequence(
     sequenceId: string,
     animationBlob: Blob,
     format: "webp" | "gif"
-  ): Promise<string>;
+  ): Promise<VideoUploadResult>;
 
   /**
    * Delete all assets for a sequence (cleanup when sequence is deleted)

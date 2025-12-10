@@ -378,7 +378,7 @@
         <div class="toast-content">
           <p class="toast-title">Recording stopped</p>
           <p class="toast-message">
-            2 minute silence limit reached. Click the mic to continue.
+            30 second silence limit reached. Click the mic to continue.
           </p>
         </div>
       </div>

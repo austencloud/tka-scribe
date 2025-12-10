@@ -480,7 +480,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',
     color: "#64748b", // Slate - neutral settings color
     description: "Configure app preferences",
-    isMain: false, // Accessed via footer gear icon, but shows tabs when active
+    isMain: true, // Main module button on dashboard
     sections: SETTINGS_TABS, // Profile, Props, Background, Visibility, Misc, AI tabs
   },
 ];

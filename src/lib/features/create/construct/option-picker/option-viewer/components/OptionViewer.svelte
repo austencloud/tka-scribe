@@ -190,6 +190,18 @@ Orchestrates specialized components and services:
   });
 
   /**
+   * On mobile with continuous filter, fit all options in viewport without scrolling.
+   * This applies when:
+   * - On mobile (width < 800px)
+   * - Continuous filter is active
+   * - We have 2+ beats (meaningful filtering)
+   */
+  const shouldFitToViewport = $derived(() => {
+    const isMobile = containerDimensions.width < 800;
+    return isMobile && isContinuousOnly && currentSequence.length >= 2;
+  });
+
+  /**
    * Determine if header should be compact (when space is tight)
    *
    * Uses the same conditions that previously triggered the floating button:
@@ -589,6 +601,7 @@ ${JSON.stringify(debugInfo, null, 2)}
             layoutConfig={layoutConfig()}
             {currentSequence}
             {isFadingOut}
+            fitToViewport={shouldFitToViewport()}
           />
         {/if}
       {/if}

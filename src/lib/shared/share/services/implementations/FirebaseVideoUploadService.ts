@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import type { IFirebaseVideoUploadService } from "../contracts/IFirebaseVideoUploadService";
+import type { IFirebaseVideoUploadService, VideoUploadResult } from "../contracts/IFirebaseVideoUploadService";
 import { getStorageInstance } from "$lib/shared/auth/firebase";
 import { auth } from "$lib/shared/auth/firebase";
 
@@ -30,7 +30,7 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     sequenceId: string,
     videoFile: File | Blob,
     onProgress?: (percent: number) => void
-  ): Promise<string> {
+  ): Promise<VideoUploadResult> {
     const {
       ref,
       uploadBytesResumable,
@@ -41,8 +41,8 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
 
     // Generate storage path: users/{userId}/recordings/{sequenceId}/{timestamp}.mp4
     const timestamp = Date.now();
-    const extension = videoFile instanceof File 
-      ? videoFile.name.split(".").pop() || "mp4" 
+    const extension = videoFile instanceof File
+      ? videoFile.name.split(".").pop() || "mp4"
       : "mp4";
     const storagePath = `users/${userId}/recordings/${sequenceId}/${timestamp}.${extension}`;
 
@@ -78,9 +78,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
         async () => {
           // Upload completed successfully
           try {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            console.log("✅ Upload complete:", downloadURL);
-            resolve(downloadURL);
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log("✅ Upload complete:", url);
+            resolve({ url, storagePath });
           } catch (error) {
             reject(error);
           }
@@ -96,7 +96,7 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     sequenceId: string,
     animationBlob: Blob,
     format: "webp" | "gif"
-  ): Promise<string> {
+  ): Promise<VideoUploadResult> {
     const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
     const storage = await getStorageInstance();
     const userId = this.getUserId();
@@ -116,9 +116,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
       },
     });
 
-    const downloadURL = await getDownloadURL(storageRef);
-    console.log("✅ Animation upload complete:", downloadURL);
-    return downloadURL;
+    const url = await getDownloadURL(storageRef);
+    console.log("✅ Animation upload complete:", url);
+    return { url, storagePath };
   }
 
   /**

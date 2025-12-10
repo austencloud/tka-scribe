@@ -1,4 +1,4 @@
-<!-- CatDogToggle.svelte - iOS-style toggle for CatDog mode -->
+<!-- CatDogToggle.svelte - Chip toggle for CatDog mode (different props per hand) -->
 <script lang="ts">
   let {
     catDogMode = false,
@@ -9,88 +9,70 @@
   } = $props();
 </script>
 
-<div class="catdog-toggle-minimal">
-  <span class="toggle-label-text">
-    Cat Dog Mode
-    <span class="toggle-subtitle">(Different props per hand)</span>
-  </span>
-  <button
-    class="ios-switch"
-    class:active={catDogMode}
-    onclick={onToggle}
-    role="switch"
-    aria-checked={catDogMode}
-    aria-label="Toggle CatDog Mode"
-  >
-    <span class="switch-thumb"></span>
-  </button>
-</div>
+<button
+  class="catdog-chip"
+  class:active={catDogMode}
+  onclick={onToggle}
+  role="switch"
+  aria-checked={catDogMode}
+  aria-label="Toggle CatDog Mode - different props per hand"
+>
+  <span class="chip-icon">🐱🐶</span>
+  <span class="chip-label">Cat Dog</span>
+</button>
 
 <style>
-  .catdog-toggle-minimal {
-    display: flex;
+  .catdog-chip {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 0.33px solid rgba(255, 255, 255, 0.16);
-    border-radius: 12px;
-    flex-shrink: 0;
-  }
-
-  .toggle-label-text {
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 100px;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 15px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-
-  .toggle-subtitle {
-    font-size: 13px;
-    font-weight: 400;
-    font-style: italic;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
-  /* iOS-style switch - 50px minimum touch target */
-  .ios-switch {
-    position: relative;
-    width: 51px;
-    height: 31px;
-    background: rgba(120, 120, 128, 0.32);
-    border: none;
-    border-radius: 15.5px;
     cursor: pointer;
-    transition: background-color 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
-    padding: 8px 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+    align-self: flex-start;
   }
 
-  .ios-switch.active {
-    background: #34c759; /* iOS green */
+  .catdog-chip:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.8);
   }
 
-  .switch-thumb {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 27px;
-    height: 27px;
-    background: white;
-    border-radius: 50%;
+  .catdog-chip:active {
+    transform: scale(0.97);
+  }
+
+  .catdog-chip.active {
+    background: rgba(52, 199, 89, 0.2);
+    border-color: rgba(52, 199, 89, 0.4);
+    color: rgba(255, 255, 255, 0.95);
     box-shadow:
-      0 3px 8px rgba(0, 0, 0, 0.15),
-      0 1px 1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+      0 0 12px rgba(52, 199, 89, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .ios-switch.active .switch-thumb {
-    transform: translateX(20px);
+  .chip-icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .chip-label {
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: -0.2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ios-switch,
-    .switch-thumb {
+    .catdog-chip {
       transition: none;
     }
   }

@@ -16,6 +16,7 @@
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
   import EmailPasswordAuth from "../../../auth/components/EmailPasswordAuth.svelte";
+  import { nuclearCacheClear } from "../../../auth/utils/nuclearCacheClear";
 
   interface Props {
     currentSettings?: unknown;
@@ -33,6 +34,9 @@
 
   // Auth mode for inline auth
   let authMode = $state<"signin" | "signup">("signin");
+
+  // Cache clearing state
+  let clearingCache = $state(false);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -108,6 +112,33 @@
       alert("Failed to delete account. Please try again.");
     }
   }
+
+  async function handleClearCache() {
+    if (
+      !confirm(
+        "Clear all cached data?\n\n" +
+          "This will remove locally stored data and reload the page. " +
+          "Your account and saved sequences are not affected."
+      )
+    ) {
+      return;
+    }
+
+    hapticService?.trigger("selection");
+    clearingCache = true;
+
+    try {
+      await nuclearCacheClear();
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (error) {
+      console.error("Failed to clear cache:", error);
+      hapticService?.trigger("error");
+      alert("Failed to clear cache. Please try again.");
+      clearingCache = false;
+    }
+  }
 </script>
 
 <div class="profile-tab">
@@ -180,6 +211,29 @@
           </div>
         {/if}
       </div>
+
+      <!-- Storage Section -->
+      <div class="security-card storage-section">
+          <UnifiedHeader
+            title="Storage"
+            icon="fas fa-database"
+            description="Clear locally cached data to fix issues or free up space"
+          />
+          <div class="storage-actions">
+            <button
+              class="clear-cache-btn"
+              onclick={handleClearCache}
+              disabled={clearingCache}
+            >
+              <i class="fas fa-broom"></i>
+              {clearingCache ? "Clearing..." : "Clear Cache"}
+            </button>
+            <p class="storage-hint">
+              Clears IndexedDB, localStorage, and cookies. Your account data is
+              stored in the cloud and won't be affected.
+            </p>
+          </div>
+        </div>
 
       <!-- Account Deletion -->
       <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
@@ -524,9 +578,66 @@
     }
   }
 
+  /* Storage Section */
+  .storage-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .clear-cache-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.12);
+    color: #818cf8;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      border-color 0.15s ease,
+      background 0.15s ease;
+    align-self: flex-start;
+  }
+
+  .clear-cache-btn i {
+    font-size: 14px;
+  }
+
+  .clear-cache-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    border-color: rgba(99, 102, 241, 0.6);
+    background: rgba(99, 102, 241, 0.18);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  }
+
+  .clear-cache-btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .clear-cache-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .storage-hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    line-height: 1.5;
+  }
+
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .security-card {
+    .security-card,
+    .clear-cache-btn {
       transition: none;
     }
   }

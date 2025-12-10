@@ -31,6 +31,7 @@ Renders a section with:
     contentAreaBounds = null,
     forcedPictographSize,
     showHeader = true,
+    fitToViewport = false,
   } = $props<{
     letterType: string;
     pictographs?: PictographData[];
@@ -49,6 +50,7 @@ Renders a section with:
     contentAreaBounds?: { left: number; right: number; width: number } | null;
     forcedPictographSize?: number;
     showHeader?: boolean;
+    fitToViewport?: boolean;
   }>();
 
   // Services
@@ -216,6 +218,36 @@ Renders a section with:
     const basePictographSize = layoutConfig?.pictographSize || 144;
     const gridGapValue = parseInt(layoutConfig?.gridGap || "8px");
     const targetSize = forcedPictographSize ?? basePictographSize;
+
+    // When fitToViewport is true (mobile + continuous filter), calculate size
+    // to ensure all options fit within the container without scrolling
+    if (fitToViewport && layoutConfig?.containerHeight && layoutConfig?.containerWidth) {
+      const containerWidth = layoutConfig.containerWidth;
+      const containerHeight = layoutConfig.containerHeight;
+
+      // Account for header (~50px) and padding (~16px)
+      const headerSpace = showHeader ? 50 : 0;
+      const padding = 16;
+      const effectiveHeight = containerHeight - headerSpace - padding;
+      const effectiveWidth = containerWidth - padding;
+
+      const rows = Math.ceil(rawItemCount / columns) || 1;
+      const totalWidthGapSpace = (columns - 1) * gridGapValue;
+      const totalHeightGapSpace = (rows - 1) * gridGapValue;
+
+      const maxWidthBasedSize = Math.floor((effectiveWidth - totalWidthGapSpace) / columns);
+      const maxHeightBasedSize = Math.floor((effectiveHeight - totalHeightGapSpace) / rows);
+
+      // Use the smaller of width/height constraints to ensure fit
+      const fitSize = Math.min(maxWidthBasedSize, maxHeightBasedSize, basePictographSize);
+      const finalSize = Math.max(fitSize, 40);
+
+      return {
+        columns,
+        pictographSize: finalSize,
+        gridColumns: `repeat(${columns}, ${finalSize}px)`,
+      };
+    }
 
     if (forcedPictographSize !== undefined) {
       return {

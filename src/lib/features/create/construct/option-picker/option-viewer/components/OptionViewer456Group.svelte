@@ -49,6 +49,7 @@ Matches the desktop version exactly:
     pictographs = [],
     onPictographSelected = () => {},
     containerWidth = 800,
+    containerHeight = 600,
     pictographSize = 144,
     gridGap = "8px",
     typeFilter,
@@ -56,10 +57,12 @@ Matches the desktop version exactly:
     isFadingOut = false,
     contentAreaBounds = null,
     forcedPictographSize,
+    fitToViewport = false,
   } = $props<{
     pictographs?: PictographData[];
     onPictographSelected?: (pictograph: PictographData) => void;
     containerWidth?: number;
+    containerHeight?: number;
     pictographSize?: number;
     gridGap?: string;
     typeFilter?: TypeFilter;
@@ -67,6 +70,7 @@ Matches the desktop version exactly:
     isFadingOut?: boolean;
     contentAreaBounds?: { left: number; right: number; width: number } | null;
     forcedPictographSize?: number;
+    fitToViewport?: boolean;
   }>();
 
   const effectivePictographSize = $derived(
@@ -143,6 +147,10 @@ Matches the desktop version exactly:
   });
 
   const effectiveContainerHeight = $derived(() => {
+    // When fitToViewport is active, use the passed-in containerHeight (per-section allocation)
+    if (fitToViewport && containerHeight > 0) {
+      return containerHeight;
+    }
     return actualContainerHeight > 0 ? actualContainerHeight : 600;
   });
 
@@ -359,7 +367,8 @@ Matches the desktop version exactly:
     sectionWidth: number,
     _letterType: string,
     _numPictographs: number,
-    targetSize: number
+    targetSize: number,
+    containerHeight: number
   ) => {
     const gap = parseInt(gridGap.replace("px", "")) || 8;
 
@@ -381,7 +390,7 @@ Matches the desktop version exactly:
       pictographSize: effectiveSize,
       spacing: gap,
       containerWidth: sectionWidth,
-      containerHeight: 600, // Default height
+      containerHeight,
       gridColumns,
       gridGap,
     };
@@ -409,7 +418,8 @@ Matches the desktop version exactly:
           sectionWidth,
           letterType,
           sectionPictographs.length,
-          effectivePictographSize()
+          effectivePictographSize(),
+          effectiveContainerHeight()
         )}
         {#if sectionPictographs && sectionPictographs.length > 0}
           <div
@@ -428,6 +438,7 @@ Matches the desktop version exactly:
               {contentAreaBounds}
               {forcedPictographSize}
               showHeader={false}
+              {fitToViewport}
             />
           </div>
         {/if}
