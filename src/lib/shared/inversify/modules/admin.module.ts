@@ -6,15 +6,23 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
+import type { ISystemStateService } from "../../../features/admin/services/contracts/ISystemStateService";
 import type { IAdminChallengeService } from "../../../features/admin/services/contracts/IAdminChallengeService";
 import type { IAnalyticsDataService } from "../../../features/admin/services/contracts/IAnalyticsDataService";
 import type { IAnnouncementService } from "../../../features/admin/services/contracts/IAnnouncementService";
+import { SystemStateService } from "../../../features/admin/services/implementations/SystemStateService";
 import { AdminChallengeService } from "../../../features/admin/services/implementations/AdminChallengeService";
 import { AnalyticsDataService } from "../../../features/admin/services/implementations/AnalyticsDataService";
 import { AnnouncementService } from "../../../features/admin/services/implementations/AnnouncementService";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
+    // System State Service (foundation for all admin views)
+    options
+      .bind<ISystemStateService>(TYPES.ISystemStateService)
+      .to(SystemStateService)
+      .inSingletonScope();
+
     // Admin Challenge Service
     options
       .bind<IAdminChallengeService>(TYPES.IAdminChallengeService)

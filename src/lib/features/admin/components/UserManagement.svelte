@@ -14,6 +14,9 @@
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import AdminTwoPanelLayout from "$lib/shared/admin/components/AdminTwoPanelLayout.svelte";
   import { userManagementService } from "../services/implementations/UserManagementService";
+  import { di } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ISystemStateService } from "../services/contracts/ISystemStateService";
   import UserCard from "./user-management/UserCard.svelte";
   import UserDetailPanel from "./user-management/UserDetailPanel.svelte";
   import ConfirmActionModal from "./user-management/ConfirmActionModal.svelte";
@@ -26,12 +29,20 @@
     UserActionType,
   } from "./user-management/types";
 
+  interface UserRelationalContext {
+    challengeCount: number;
+    announcementCount: number;
+  }
+
+  const systemStateService = di.get<ISystemStateService>(TYPES.ISystemStateService);
+
   // State
   let users = $state<UserData[]>([]);
   let isLoading = $state(true);
   let searchQuery = $state("");
   let filterBy = $state<UserFilterType>("all");
   let selectedUser = $state<UserData | null>(null);
+  let userContext = $state<UserRelationalContext | null>(null);
   let isActionPending = $state(false);
   let actionError = $state<string | null>(null);
   let lastDocId = $state<string | null>(null);
@@ -66,6 +77,31 @@
       actionError = "Failed to load users. Please try again.";
     } finally {
       isLoading = false;
+    }
+  }
+
+  // Load relational context for selected user
+  async function loadUserContext(userId: string) {
+    try {
+      const systemState = await systemStateService.getSystemState();
+
+      // Count challenges (all challenges for now - in future can be more specific)
+      const userChallenges = systemState.challenges;
+
+      // Count announcements targeting this user
+      const userAnnouncements = systemState.announcements.filter(a => {
+        const allUsers = a.audiences.includes("all");
+        const specificUser = a.audiences.includes(`user:${userId}`);
+        return allUsers || specificUser;
+      });
+
+      userContext = {
+        challengeCount: userChallenges.length,
+        announcementCount: userAnnouncements.length,
+      };
+    } catch (error) {
+      console.error("Failed to load user context:", error);
+      userContext = null;
     }
   }
 
