@@ -436,6 +436,7 @@ export const TYPES = {
   // === ADMIN SERVICES ===
   ISystemStateService: Symbol.for("ISystemStateService"),
   IAuditLogService: Symbol.for("IAuditLogService"),
+  IUserManagementService: Symbol.for("IUserManagementService"),
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
   IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
   IAnnouncementService: Symbol.for("IAnnouncementService"),
@@ -450,6 +451,12 @@ export const TYPES = {
   ILibraryQueryService: Symbol.for("ILibraryQueryService"),
   IForkService: Symbol.for("IForkService"),
   ILibraryMigrationService: Symbol.for("ILibraryMigrationService"),
+
+  // === FEEDBACK SERVICES ===
+  IFeedbackSortingService: Symbol.for("IFeedbackSortingService"),
+  IFeedbackEditingService: Symbol.for("IFeedbackEditingService"),
+  IFeedbackSubtaskService: Symbol.for("IFeedbackSubtaskService"),
+  IFeedbackFormattingService: Symbol.for("IFeedbackFormattingService"),
 
   // === GESTURAL PATH BUILDER SERVICES ===
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),

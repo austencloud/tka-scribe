@@ -1,0 +1,80 @@
+/**
+ * FeedbackEditingService
+ *
+ * Implements snapshot-based change detection and field validation for feedback items.
+ * Used by FeedbackDetailState to track edits and restore from snapshots.
+ */
+
+import { injectable } from "inversify";
+import type {
+  IFeedbackEditingService,
+  EditSnapshot,
+  EditableFields,
+  ValidationResult,
+} from "../contracts/IFeedbackEditingService";
+import type { FeedbackItem } from "../../domain/models/feedback-models";
+
+@injectable()
+export class FeedbackEditingService implements IFeedbackEditingService {
+  /**
+   * Create a snapshot of current feedback state for change tracking
+   */
+  createSnapshot(item: FeedbackItem): EditSnapshot {
+    return {
+      type: item.type,
+      priority: item.priority || "",
+      title: item.title,
+      description: item.description,
+      reportedModule: item.reportedModule || "",
+      reportedTab: item.reportedTab || "",
+    };
+  }
+
+  /**
+   * Check if current values differ from snapshot
+   */
+  hasChanges(current: EditableFields, snapshot: EditSnapshot): boolean {
+    return (
+      current.type !== snapshot.type ||
+      current.priority !== snapshot.priority ||
+      current.title !== snapshot.title ||
+      current.description !== snapshot.description ||
+      current.reportedModule !== snapshot.reportedModule ||
+      current.reportedTab !== snapshot.reportedTab
+    );
+  }
+
+  /**
+   * Restore fields from snapshot (creates immutable copy)
+   */
+  restoreFromSnapshot(snapshot: EditSnapshot): EditableFields {
+    return {
+      type: snapshot.type,
+      priority: snapshot.priority,
+      title: snapshot.title,
+      description: snapshot.description,
+      reportedModule: snapshot.reportedModule,
+      reportedTab: snapshot.reportedTab,
+    };
+  }
+
+  /**
+   * Validate editable fields
+   */
+  validateFields(fields: EditableFields): ValidationResult {
+    const errors: Record<string, string> = {};
+
+    if (!fields.title.trim()) {
+      errors.title = "Title is required";
+    }
+
+    if (!fields.description.trim()) {
+      errors.description = "Description is required";
+    }
+
+    return {
+      isValid: Object.keys(errors).length === 0,
+      errors,
+    };
+  }
+}
