@@ -1,0 +1,290 @@
+<!--
+  PendingInviteCard.svelte
+
+  Card displaying a pending collaboration invite with accept/decline actions.
+  Used in notifications or a dedicated invites list.
+-->
+<script lang="ts">
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
+  import { onMount } from "svelte";
+
+  const {
+    video,
+    onAccepted,
+    onDeclined,
+  }: {
+    video: CollaborativeVideo;
+    onAccepted?: () => void;
+    onDeclined?: () => void;
+  } = $props();
+
+  let videoService = $state<ICollaborativeVideoService>();
+  let hapticService = $state<IHapticFeedbackService>();
+
+  onMount(() => {
+    videoService = resolve(TYPES.ICollaborativeVideoService) as ICollaborativeVideoService;
+    hapticService = resolve(TYPES.IHapticFeedbackService) as IHapticFeedbackService;
+  });
+
+  let isProcessing = $state(false);
+  let error = $state<string | null>(null);
+
+  // Get the creator info
+  const creator = $derived(video.collaborators.find((c) => c.role === "creator"));
+
+  async function handleAccept() {
+    if (!videoService || isProcessing) return;
+
+    isProcessing = true;
+    error = null;
+    hapticService?.trigger("selection");
+
+    try {
+      await videoService.acceptInvite(video.id);
+      hapticService?.trigger("success");
+      onAccepted?.();
+    } catch (e) {
+      console.error("Failed to accept invite:", e);
+      error = e instanceof Error ? e.message : "Failed to accept";
+      hapticService?.trigger("error");
+    } finally {
+      isProcessing = false;
+    }
+  }
+
+  async function handleDecline() {
+    if (!videoService || isProcessing) return;
+
+    isProcessing = true;
+    error = null;
+    hapticService?.trigger("selection");
+
+    try {
+      await videoService.declineInvite(video.id);
+      hapticService?.trigger("warning");
+      onDeclined?.();
+    } catch (e) {
+      console.error("Failed to decline invite:", e);
+      error = e instanceof Error ? e.message : "Failed to decline";
+      hapticService?.trigger("error");
+    } finally {
+      isProcessing = false;
+    }
+  }
+</script>
+
+<div class="invite-card">
+  <!-- Video Thumbnail -->
+  <div class="thumbnail">
+    {#if video.thumbnailUrl}
+      <img src={video.thumbnailUrl} alt="Video thumbnail" />
+    {:else}
+      <div class="thumbnail-placeholder">
+        <i class="fas fa-video"></i>
+      </div>
+    {/if}
+  </div>
+
+  <!-- Info -->
+  <div class="info">
+    <div class="invite-header">
+      <i class="fas fa-user-plus invite-icon"></i>
+      <span class="invite-label">Collaboration Invite</span>
+    </div>
+
+    <p class="invite-message">
+      <strong>{creator?.displayName || "Someone"}</strong> invited you to collaborate on a video
+      {#if video.sequenceName}
+        for <strong>"{video.sequenceName}"</strong>
+      {/if}
+    </p>
+
+    {#if error}
+      <p class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        {error}
+      </p>
+    {/if}
+
+    <!-- Actions -->
+    <div class="actions">
+      <button
+        class="btn btn-accept"
+        onclick={handleAccept}
+        disabled={isProcessing}
+      >
+        {#if isProcessing}
+          <i class="fas fa-spinner fa-spin"></i>
+        {:else}
+          <i class="fas fa-check"></i>
+          Accept
+        {/if}
+      </button>
+      <button
+        class="btn btn-decline"
+        onclick={handleDecline}
+        disabled={isProcessing}
+      >
+        <i class="fas fa-times"></i>
+        Decline
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .invite-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .invite-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+  }
+
+  .info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+
+  .invite-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .invite-icon {
+    color: #3b82f6;
+    font-size: 0.9rem;
+  }
+
+  .invite-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3b82f6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .invite-message {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .invite-message strong {
+    color: var(--text-primary);
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0;
+    font-size: 0.8rem;
+    color: #ef4444;
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-accept {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+
+  .btn-accept:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-decline {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-decline:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  @media (max-width: 480px) {
+    .invite-card {
+      flex-direction: column;
+    }
+
+    .thumbnail {
+      width: 100%;
+      height: 120px;
+    }
+
+    .actions {
+      flex-direction: column;
+    }
+
+    .btn {
+      justify-content: center;
+    }
+  }
+</style>
