@@ -2,14 +2,12 @@
   /**
    * ProfileAdminSection - Admin controls for user profile
    *
-   * Only visible to admins. Provides:
-   * - Role management
-   * - Account actions (disable, reset, delete)
+   * Self-contained admin actions that call Firestore directly.
+   * Only visible to admins viewing another user's profile.
    */
 
-  import { di } from "$lib/shared/inversify/di";
-  import { TYPES } from "$lib/shared/inversify/types";
-  import type { IUserManagementService } from "$lib/features/admin/services/contracts/IUserManagementService";
+  import { doc, updateDoc, writeBatch } from "firebase/firestore";
+  import { firestore } from "$lib/shared/auth/firebase";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import { ROLE_DISPLAY, ROLE_HIERARCHY } from "$lib/shared/auth/domain/models/UserRole";
   import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
@@ -26,26 +24,18 @@
   let actionError = $state<string | null>(null);
   let confirmAction = $state<{ type: string; message: string } | null>(null);
 
-  // Service
-  let userManagementService: IUserManagementService | null = null;
-
-  // Try to get service (may not be available if admin module not loaded)
-  $effect(() => {
-    try {
-      userManagementService = di.get<IUserManagementService>(TYPES.IUserManagementService);
-    } catch {
-      // Admin module not loaded - that's fine, controls will be disabled
-    }
-  });
-
   async function changeRole(newRole: UserRole) {
-    if (!userManagementService || isActionPending) return;
+    if (isActionPending || userProfile.role === newRole) return;
 
     isActionPending = true;
     actionError = null;
 
     try {
-      await userManagementService.changeRole(userProfile.id, newRole);
+      const userRef = doc(firestore, "users", userProfile.id);
+      await updateDoc(userRef, {
+        role: newRole,
+        isAdmin: newRole === "admin",
+      });
       onUserUpdated?.({ role: newRole });
     } catch (err) {
       console.error("[ProfileAdminSection] Failed to change role:", err);
@@ -56,14 +46,17 @@
   }
 
   async function toggleDisabled() {
-    if (!userManagementService || isActionPending) return;
+    if (isActionPending) return;
 
     isActionPending = true;
     actionError = null;
 
     try {
       const currentlyDisabled = userProfile.isDisabled ?? false;
-      await userManagementService.toggleDisabled(userProfile.id, currentlyDisabled);
+      const userRef = doc(firestore, "users", userProfile.id);
+      await updateDoc(userRef, {
+        isDisabled: !currentlyDisabled,
+      });
       onUserUpdated?.({ isDisabled: !currentlyDisabled });
     } catch (err) {
       console.error("[ProfileAdminSection] Failed to toggle disabled:", err);
@@ -75,13 +68,34 @@
   }
 
   async function resetUserData() {
-    if (!userManagementService || isActionPending) return;
+    if (isActionPending) return;
 
     isActionPending = true;
     actionError = null;
 
     try {
-      await userManagementService.resetUserData(userProfile.id);
+      const batch = writeBatch(firestore);
+
+      // Reset user stats
+      const userRef = doc(firestore, "users", userProfile.id);
+      batch.update(userRef, {
+        totalXP: 0,
+        currentLevel: 1,
+        achievementCount: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+      });
+
+      // Delete XP document
+      const xpRef = doc(firestore, `users/${userProfile.id}/xp/current`);
+      batch.delete(xpRef);
+
+      // Delete streak document
+      const streakRef = doc(firestore, `users/${userProfile.id}/streak/current`);
+      batch.delete(streakRef);
+
+      await batch.commit();
+
       onUserUpdated?.({
         totalXP: 0,
         currentLevel: 1,
@@ -133,7 +147,7 @@
         <button
           class="role-btn"
           class:active={userProfile.role === role}
-          disabled={isActionPending || !userManagementService}
+          disabled={isActionPending}
           onclick={() => changeRole(role)}
           style="--role-color: {ROLE_DISPLAY[role].color}"
         >
@@ -152,7 +166,7 @@
         class="action-btn"
         class:danger={!userProfile.isDisabled}
         class:success={userProfile.isDisabled}
-        disabled={isActionPending || !userManagementService}
+        disabled={isActionPending}
         onclick={() => {
           confirmAction = {
             type: "disable",
@@ -168,7 +182,7 @@
 
       <button
         class="action-btn danger"
-        disabled={isActionPending || !userManagementService}
+        disabled={isActionPending}
         onclick={() => {
           confirmAction = {
             type: "reset",
@@ -185,6 +199,8 @@
 
 <!-- Confirmation Modal -->
 {#if confirmAction}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div class="modal-backdrop" onclick={() => (confirmAction = null)}>
     <div class="modal" onclick={(e) => e.stopPropagation()}>
       <p class="modal-message">{confirmAction.message}</p>
@@ -302,8 +318,8 @@
   }
 
   .role-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    opacity: 0.6;
+    cursor: wait;
   }
 
   .action-buttons {
@@ -343,8 +359,8 @@
   }
 
   .action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    opacity: 0.6;
+    cursor: wait;
   }
 
   /* Modal */

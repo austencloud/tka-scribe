@@ -25,6 +25,12 @@
     onTurnsChange(delta);
   }
 
+  // Prevent button clicks from bubbling up and closing the panel
+  function handleTurnsChangeClick(e: MouseEvent, delta: number) {
+    e.stopPropagation();
+    handleTurnsChange(delta);
+  }
+
   // Handle rotation direction change with proper validation
   // Only allow rotation when turns is numeric (not "fl" - float motions don't have rotation)
   function handleRotationClick(direction: RotationDirection) {
@@ -40,11 +46,11 @@
   <span class="prop-label">{color === "blue" ? "Blue" : "Red"}</span>
 
   <div class="turns-row">
-    <button class="ctrl-btn" aria-label="Decrease {color} turns" onclick={() => handleTurnsChange(-0.5)}>
+    <button class="ctrl-btn" aria-label="Decrease {color} turns" onclick={(e) => handleTurnsChangeClick(e, -0.5)}>
       <i class="fas fa-minus"></i>
     </button>
     <span class="turns-value">{displayTurns}</span>
-    <button class="ctrl-btn" aria-label="Increase {color} turns" onclick={() => handleTurnsChange(0.5)}>
+    <button class="ctrl-btn" aria-label="Increase {color} turns" onclick={(e) => handleTurnsChangeClick(e, 0.5)}>
       <i class="fas fa-plus"></i>
     </button>
   </div>
@@ -54,7 +60,7 @@
       class="rot-btn"
       class:active={showRotation && rotationDirection === RotationDirection.CLOCKWISE}
       aria-label="Rotate {color} clockwise"
-      onclick={() => handleRotationClick(RotationDirection.CLOCKWISE)}
+      onclick={(e) => { e.stopPropagation(); handleRotationClick(RotationDirection.CLOCKWISE); }}
       disabled={!showRotation}
     >
       <i class="fas fa-rotate-right"></i>
@@ -63,7 +69,7 @@
       class="rot-btn"
       class:active={showRotation && rotationDirection === RotationDirection.COUNTER_CLOCKWISE}
       aria-label="Rotate {color} counter clockwise"
-      onclick={() => handleRotationClick(RotationDirection.COUNTER_CLOCKWISE)}
+      onclick={(e) => { e.stopPropagation(); handleRotationClick(RotationDirection.COUNTER_CLOCKWISE); }}
       disabled={!showRotation}
     >
       <i class="fas fa-rotate-left"></i>

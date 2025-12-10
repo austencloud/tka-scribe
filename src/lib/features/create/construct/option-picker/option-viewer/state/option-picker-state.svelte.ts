@@ -198,6 +198,34 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
    * Get debug info for troubleshooting empty options
    */
   function getDebugInfo() {
+    // Extract motion data for debugging - this is critical for diagnosing option loading issues
+    const getMotionDebugData = (p: PictographData) => ({
+      hasBlueMotion: !!p.motions?.blue,
+      hasRedMotion: !!p.motions?.red,
+      blueMotion: p.motions?.blue
+        ? {
+            startLocation: p.motions.blue.startLocation,
+            endLocation: p.motions.blue.endLocation,
+            startOrientation: p.motions.blue.startOrientation,
+            endOrientation: p.motions.blue.endOrientation,
+            motionType: p.motions.blue.motionType,
+          }
+        : null,
+      redMotion: p.motions?.red
+        ? {
+            startLocation: p.motions.red.startLocation,
+            endLocation: p.motions.red.endLocation,
+            startOrientation: p.motions.red.startOrientation,
+            endOrientation: p.motions.red.endOrientation,
+            motionType: p.motions.red.motionType,
+          }
+        : null,
+    });
+
+    // Get last beat's motion data separately for quick diagnosis
+    const lastBeat = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : null;
+    const lastBeatMotionData = lastBeat ? getMotionDebugData(lastBeat) : null;
+
     return {
       timestamp: new Date().toISOString(),
       state,
@@ -205,12 +233,19 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
       filteredOptionsCount: filteredOptions().length,
       lastSequenceId,
       currentSequenceLength: currentSequence.length,
+      // Quick diagnosis: last beat motion status
+      lastBeatHasMotions: lastBeatMotionData
+        ? lastBeatMotionData.hasBlueMotion && lastBeatMotionData.hasRedMotion
+        : false,
+      lastBeatMotionData,
+      // Full sequence with motion data
       currentSequence: currentSequence.map((p, i) => ({
         index: i,
         id: p.id,
         letter: p.letter,
         startPosition: p.startPosition,
         endPosition: p.endPosition,
+        ...getMotionDebugData(p),
       })),
       isContinuousOnly,
       sortMethod,

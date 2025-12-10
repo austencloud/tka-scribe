@@ -12,7 +12,6 @@
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import TrainChallengeManager from "./TrainChallengeManager.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
-  import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import AnnouncementManagement from "./AnnouncementManagement.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -83,10 +82,6 @@
           aria-labelledby="analytics-tab"
         >
           <AnalyticsDashboard />
-        </div>
-      {:else if activeSection === "users"}
-        <div id="users-panel" role="tabpanel" aria-labelledby="users-tab">
-          <UserManagement />
         </div>
       {:else if activeSection === "flags"}
         <div id="flags-panel" role="tabpanel" aria-labelledby="flags-tab">

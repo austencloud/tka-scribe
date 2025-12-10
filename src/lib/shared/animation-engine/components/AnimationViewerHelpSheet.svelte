@@ -1,7 +1,9 @@
 <!--
   AnimationViewerHelpSheet.svelte
 
-  Bottom sheet showing animation viewer keyboard shortcuts and usage tips.
+  Responsive help panel showing animation viewer keyboard shortcuts and usage tips.
+  - Desktop: Slides from right as a side panel
+  - Mobile: Slides from bottom as a sheet
 -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
@@ -9,9 +11,11 @@
 
   let {
     isOpen = $bindable(false),
+    isSideBySideLayout = false,
     onClose = () => {},
   }: {
     isOpen?: boolean;
+    isSideBySideLayout?: boolean;
     onClose?: () => void;
   } = $props();
 
@@ -19,16 +23,23 @@
     isOpen = false;
     onClose();
   }
+
+  // Responsive placement - right panel on desktop, bottom sheet on mobile
+  const placement = $derived(isSideBySideLayout ? "right" : "bottom");
+
+  // Snap points only apply to bottom placement
+  const snapPoints = $derived(isSideBySideLayout ? undefined : ["65%", "90%"]);
 </script>
 
 <Drawer
   bind:isOpen
-  placement="bottom"
-  snapPoints={["65%", "90%"]}
+  {placement}
+  {snapPoints}
   closeOnBackdrop={true}
   closeOnEscape={true}
   ariaLabel="Animation Viewer Help"
-  showHandle={true}
+  showHandle={!isSideBySideLayout}
+  class="help-sheet-drawer {isSideBySideLayout ? 'side-panel' : 'bottom-sheet'}"
 >
   <div class="help-content">
     <header class="help-header">
@@ -84,12 +95,19 @@
 </Drawer>
 
 <style>
+  /* Side panel (desktop) specific styles */
+  :global(.help-sheet-drawer.side-panel[data-placement="right"]) {
+    width: min(380px, 90vw);
+    height: 100%;
+  }
+
   .help-content {
     display: flex;
     flex-direction: column;
     padding: 0 20px 20px;
     min-width: 280px;
     max-height: 100%;
+    height: 100%;
   }
 
   .help-header {

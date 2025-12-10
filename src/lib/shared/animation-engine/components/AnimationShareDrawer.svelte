@@ -441,7 +441,7 @@
 </CreatePanelDrawer>
 
 <!-- Help Sheet -->
-<AnimationViewerHelpSheet bind:isOpen={showHelpSheet} />
+<AnimationViewerHelpSheet bind:isOpen={showHelpSheet} {isSideBySideLayout} />
 
 <style>
   /* ===========================

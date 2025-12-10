@@ -414,6 +414,34 @@ Orchestrates specialized components and services:
   async function copyDebugInfo() {
     if (!optionPickerState) return;
 
+    // Helper to extract motion debug data from prop sequence
+    const getMotionDebugData = (p: PictographData) => ({
+      hasBlueMotion: !!p.motions?.blue,
+      hasRedMotion: !!p.motions?.red,
+      blueMotion: p.motions?.blue
+        ? {
+            startLocation: p.motions.blue.startLocation,
+            endLocation: p.motions.blue.endLocation,
+            startOrientation: p.motions.blue.startOrientation,
+            endOrientation: p.motions.blue.endOrientation,
+            motionType: p.motions.blue.motionType,
+          }
+        : null,
+      redMotion: p.motions?.red
+        ? {
+            startLocation: p.motions.red.startLocation,
+            endLocation: p.motions.red.endLocation,
+            startOrientation: p.motions.red.startOrientation,
+            endOrientation: p.motions.red.endOrientation,
+            motionType: p.motions.red.motionType,
+          }
+        : null,
+    });
+
+    // Get last beat from prop for comparison
+    const lastPropBeat = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : null;
+    const lastPropBeatMotionData = lastPropBeat ? getMotionDebugData(lastPropBeat) : null;
+
     const debugInfo = {
       ...optionPickerState.getDebugInfo(),
       // Additional context from component
@@ -424,8 +452,13 @@ Orchestrates specialized components and services:
           letter: p.letter,
           startPosition: p.startPosition,
           endPosition: p.endPosition,
+          ...getMotionDebugData(p),
         })),
         currentSequencePropLength: currentSequence.length,
+        lastPropBeatHasMotions: lastPropBeatMotionData
+          ? lastPropBeatMotionData.hasBlueMotion && lastPropBeatMotionData.hasRedMotion
+          : false,
+        lastPropBeatMotionData,
         currentGridMode,
         isUndoingOption,
         isTransitioning,
@@ -440,6 +473,14 @@ Orchestrates specialized components and services:
       },
     };
 
+    // Format motion data for readable output
+    const formatMotion = (motion: typeof debugInfo.lastBeatMotionData) => {
+      if (!motion) return "  No motion data";
+      return `  Has Blue: ${motion.hasBlueMotion}, Has Red: ${motion.hasRedMotion}
+  Blue: ${motion.blueMotion ? `${motion.blueMotion.startLocation} → ${motion.blueMotion.endLocation} (${motion.blueMotion.motionType})` : "MISSING"}
+  Red: ${motion.redMotion ? `${motion.redMotion.startLocation} → ${motion.redMotion.endLocation} (${motion.redMotion.motionType})` : "MISSING"}`;
+    };
+
     const debugText = `=== OPTION VIEWER DEBUG INFO ===
 Timestamp: ${debugInfo.timestamp}
 Issue: "No options available" shown when sequence should have options
@@ -451,15 +492,23 @@ Filtered options: ${debugInfo.filteredOptionsCount}
 Last sequence ID: ${debugInfo.lastSequenceId}
 Error: ${debugInfo.error || "none"}
 
+--- CRITICAL: Last Beat Motion Data (STATE - used for option loading) ---
+Last beat has valid motions: ${debugInfo.lastBeatHasMotions ? "YES ✓" : "NO ✗ (This is likely the problem!)"}
+${formatMotion(debugInfo.lastBeatMotionData)}
+
+--- Last Beat Motion Data (PROP - from component) ---
+Last prop beat has valid motions: ${debugInfo.componentContext.lastPropBeatHasMotions ? "YES ✓" : "NO ✗"}
+${formatMotion(debugInfo.componentContext.lastPropBeatMotionData)}
+
 --- Sequence Info ---
 Current sequence length (state): ${debugInfo.currentSequenceLength}
 Current sequence length (prop): ${debugInfo.componentContext.currentSequencePropLength}
 Grid mode: ${debugInfo.componentContext.currentGridMode}
 
---- Sequence Details (state) ---
+--- Sequence Details (state) - with motion data ---
 ${JSON.stringify(debugInfo.currentSequence, null, 2)}
 
---- Sequence Details (prop) ---
+--- Sequence Details (prop) - with motion data ---
 ${JSON.stringify(debugInfo.componentContext.currentSequenceProp, null, 2)}
 
 --- Filter Settings ---

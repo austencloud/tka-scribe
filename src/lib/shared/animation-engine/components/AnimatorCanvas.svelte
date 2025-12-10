@@ -58,7 +58,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import { TrailSettingsSyncService } from "../services/implementations/TrailSettingsSyncService";
   import { PropTypeChangeService } from "../services/implementations/PropTypeChangeService";
   import { AnimatorCanvasInitializer } from "../services/implementations/AnimatorCanvasInitializer";
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
 
   const debug = createComponentLogger("AnimatorCanvas");
 
@@ -250,8 +250,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // Prop type change service
   let propTypeChangeService: PropTypeChangeService | null = null;
 
-  // Canvas initializer service
-  let canvasInitializer: AnimatorCanvasInitializer | null = null;
+  // Canvas initializer service - created immediately (not in onMount)
+  const canvasInitializer = new AnimatorCanvasInitializer();
 
   onMount(() => {
     // Initialize visibility sync
@@ -295,9 +295,6 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       isInitialized = false;
       loadPropTextures();
     });
-
-    // Initialize canvas initializer
-    canvasInitializer = new AnimatorCanvasInitializer();
 
     return () => {
       unsubscribeVisibility();
@@ -428,14 +425,20 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   });
 
   // Initialize PixiJS renderer (orchestrated by canvasInitializer service)
+  // Only containerElement is a tracked dependency - backgroundAlpha and gridMode
+  // are read with untrack to prevent re-initialization on prop changes
   $effect(() => {
-    if (!containerElement || !canvasInitializer) return;
+    if (!containerElement) return;
+
+    // Read these values without tracking to prevent re-runs
+    const initialBackgroundAlpha = untrack(() => backgroundAlpha);
+    const initialGridMode = untrack(() => gridMode);
 
     canvasInitializer.initialize(
       {
         containerElement,
-        backgroundAlpha,
-        gridMode,
+        backgroundAlpha: initialBackgroundAlpha,
+        gridMode: initialGridMode,
         loadAnimatorServices,
         initializePrecomputationService: () => {
           initializePrecomputationService();
@@ -463,7 +466,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     return () => {
       renderLoopService?.stop();
       canvasResizeService?.teardown();
-      canvasInitializer?.destroy({
+      canvasInitializer.destroy({
         onCanvasReady: (canvas) => { onCanvasReady?.(canvas); },
         onInitialized: (initialized) => { isInitialized = initialized; },
       });
