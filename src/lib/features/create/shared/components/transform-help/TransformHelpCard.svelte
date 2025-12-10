@@ -18,7 +18,7 @@
 
 <div class="help-card" style="--help-color: {item.color}">
   <div class="help-card-header">
-    <div class="help-card-icon">
+    <div class="help-card-icon" aria-hidden="true">
       <i class="fas {item.icon}"></i>
     </div>
     <div class="help-card-text">
@@ -30,8 +30,8 @@
   <p class="help-full">{item.fullDesc}</p>
 
   {#if item.warning}
-    <p class="help-warning">
-      <i class="fas fa-triangle-exclamation"></i>
+    <p class="help-warning" role="alert">
+      <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
       {item.warning}
     </p>
   {/if}

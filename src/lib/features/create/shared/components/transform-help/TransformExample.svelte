@@ -22,39 +22,60 @@
 </script>
 
 <div class="example-section" style="--help-color: {color}">
-  <div class="example-label">Try it:</div>
-  <div class="example-content">
+  <div class="example-label" id="example-label">Try it:</div>
+  <div class="example-content" aria-labelledby="example-label">
     <div class="pictograph-box">
       {#if isLoading}
-        <div class="pictograph-loading">
-          <i class="fas fa-spinner fa-spin"></i>
+        <div class="pictograph-loading" role="status" aria-live="polite">
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+          <span class="sr-only">Loading pictograph example...</span>
         </div>
       {:else if pictograph}
         <div class="pictograph-wrapper">
           <Pictograph pictographData={pictograph} />
         </div>
       {:else}
-        <div class="pictograph-empty">
+        <div class="pictograph-empty" aria-hidden="true">
           <i class="fas fa-image"></i>
         </div>
       {/if}
     </div>
 
-    <div class="action-buttons">
+    <div class="action-buttons" role="group" aria-label="Transform controls">
       {#if isRotate && onRotate}
-        <button class="transform-btn" onclick={() => onRotate("ccw")} disabled={!pictograph || isLoading} title="Rotate left">
-          <i class="fas fa-rotate-left"></i>
+        <button
+          class="transform-btn"
+          onclick={() => onRotate("ccw")}
+          disabled={!pictograph || isLoading}
+          aria-label="Rotate counter-clockwise"
+        >
+          <i class="fas fa-rotate-left" aria-hidden="true"></i>
         </button>
-        <button class="transform-btn" onclick={() => onRotate("cw")} disabled={!pictograph || isLoading} title="Rotate right">
-          <i class="fas fa-rotate-right"></i>
+        <button
+          class="transform-btn"
+          onclick={() => onRotate("cw")}
+          disabled={!pictograph || isLoading}
+          aria-label="Rotate clockwise"
+        >
+          <i class="fas fa-rotate-right" aria-hidden="true"></i>
         </button>
       {:else}
-        <button class="transform-btn" onclick={onTransform} disabled={!pictograph || isLoading} title="Apply transform">
-          <i class="fas fa-play"></i>
+        <button
+          class="transform-btn"
+          onclick={onTransform}
+          disabled={!pictograph || isLoading}
+          aria-label="Apply transform"
+        >
+          <i class="fas fa-play" aria-hidden="true"></i>
         </button>
       {/if}
-      <button class="shuffle-btn" onclick={onShuffle} disabled={isLoading} title="New pictograph">
-        <i class="fas fa-shuffle"></i>
+      <button
+        class="shuffle-btn"
+        onclick={onShuffle}
+        disabled={isLoading}
+        aria-label="Get new random pictograph"
+      >
+        <i class="fas fa-shuffle" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -62,6 +83,19 @@
 </div>
 
 <style>
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .example-section {
     margin-top: 8px;
     padding-top: 10px;
@@ -70,7 +104,7 @@
 
   .example-label {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6); /* WCAG AA: increased from 0.4 */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -159,6 +193,11 @@
     cursor: not-allowed;
   }
 
+  .transform-btn:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
   .shuffle-btn {
     display: flex;
     align-items: center;
@@ -184,10 +223,15 @@
     cursor: not-allowed;
   }
 
+  .shuffle-btn:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
+  }
+
   .example-hint {
     margin: 8px 0 0;
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6); /* WCAG AA: increased from 0.35 */
     text-align: center;
   }
 

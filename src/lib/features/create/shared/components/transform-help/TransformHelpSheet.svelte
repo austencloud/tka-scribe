@@ -5,7 +5,6 @@
   Loads real pictographs from the dataframe for demonstrations.
 -->
 <script lang="ts">
-  import { onMount } from "svelte";
   import { transformHelpContent } from "../../domain/transforms/transform-help-content";
   import { getRandomPictograph } from "../../domain/transforms/pictograph-example-loader";
   import { applyMirror, applyRotate, applySwap, applyReverse } from "../../domain/transforms/transform-functions";
@@ -19,6 +18,49 @@
   }
 
   let { show, onClose }: Props = $props();
+
+  // Focus management refs
+  let sheetElement: HTMLDivElement | null = $state(null);
+  let previouslyFocusedElement: HTMLElement | null = null;
+
+  // Handle Escape key
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onClose();
+    }
+    // Focus trap: Tab and Shift+Tab stay within modal
+    if (event.key === "Tab" && sheetElement) {
+      const focusableElements = sheetElement.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement?.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement?.focus();
+      }
+    }
+  }
+
+  // Focus management when modal opens/closes
+  $effect(() => {
+    if (show) {
+      previouslyFocusedElement = document.activeElement as HTMLElement;
+      // Focus the close button after render
+      requestAnimationFrame(() => {
+        const closeBtn = sheetElement?.querySelector<HTMLButtonElement>('.help-close');
+        closeBtn?.focus();
+      });
+    } else if (previouslyFocusedElement) {
+      previouslyFocusedElement.focus();
+      previouslyFocusedElement = null;
+    }
+  });
 
   // Example pictograph state for each transform
   let examples = $state<Record<string, PictographData | null>>({
@@ -81,12 +123,29 @@
 </script>
 
 {#if show}
-  <div class="help-overlay" onclick={onClose}>
-    <div class="help-sheet" onclick={(e) => e.stopPropagation()}>
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <div
+    class="help-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="transform-help-title"
+    onclick={onClose}
+    onkeydown={handleKeydown}
+  >
+    <div
+      class="help-sheet"
+      bind:this={sheetElement}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
+    >
       <div class="help-header">
-        <h3>Transform Actions</h3>
-        <button class="help-close" onclick={onClose}>
-          <i class="fas fa-times"></i>
+        <h3 id="transform-help-title">Transform Actions</h3>
+        <button
+          class="help-close"
+          onclick={onClose}
+          aria-label="Close transform help"
+        >
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
       <div class="help-content">
@@ -209,6 +268,11 @@
   .help-close:hover {
     background: rgba(255, 255, 255, 0.15);
     color: white;
+  }
+
+  .help-close:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 2px;
   }
 
   /* ===== CONTENT ===== */
