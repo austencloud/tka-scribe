@@ -18,6 +18,7 @@ import type { CAPType } from "../../generate/circular/domain/models/circular-mod
 import type { CAPComponent } from "../../generate/shared/domain/models/generate-models";
 import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
 import type { Letter } from "../../../../shared/foundation/domain/models/Letter";
+import { GridMode } from "../../../../shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * Customize generation options - passed to the customize options sheet
@@ -125,11 +126,13 @@ export interface PanelCoordinationState {
   get customizeOptions(): CustomizeOptions | null;
   get customizeOnChange(): ((options: CustomizeOptions) => void) | null;
   get customizeIsFreeformMode(): boolean;
+  get customizeGridMode(): GridMode;
 
   openCustomizePanel(
     currentOptions: CustomizeOptions,
     onChange: (options: CustomizeOptions) => void,
-    isFreeformMode?: boolean
+    isFreeformMode?: boolean,
+    gridMode?: GridMode
   ): void;
   closeCustomizePanel(): void;
 
@@ -191,6 +194,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let customizeOptions = $state<CustomizeOptions | null>(null);
   let customizeOnChange = $state<((options: CustomizeOptions) => void) | null>(null);
   let customizeIsFreeformMode = $state(true); // Default to freeform (shows end position)
+  let customizeGridMode = $state<GridMode>(GridMode.DIAMOND); // Grid mode for position picker
 
   /**
    * CRITICAL: Close all panels to enforce mutual exclusivity
@@ -222,6 +226,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     customizeOptions = null;
     customizeOnChange = null;
     customizeIsFreeformMode = true;
+    customizeGridMode = GridMode.DIAMOND;
   }
 
   return {
@@ -480,16 +485,21 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     get customizeIsFreeformMode() {
       return customizeIsFreeformMode;
     },
+    get customizeGridMode() {
+      return customizeGridMode;
+    },
 
     openCustomizePanel(
       currentOptions: CustomizeOptions,
       onChange: (options: CustomizeOptions) => void,
-      isFreeformMode: boolean = true
+      isFreeformMode: boolean = true,
+      gridMode: GridMode = GridMode.DIAMOND
     ) {
       closeAllPanels();
       customizeOptions = currentOptions;
       customizeOnChange = onChange;
       customizeIsFreeformMode = isFreeformMode;
+      customizeGridMode = gridMode;
       isCustomizePanelOpen = true;
     },
 
@@ -498,6 +508,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       customizeOptions = null;
       customizeOnChange = null;
       customizeIsFreeformMode = true;
+      customizeGridMode = GridMode.DIAMOND;
     },
 
     // Derived: Check if any modal/slide panel is open

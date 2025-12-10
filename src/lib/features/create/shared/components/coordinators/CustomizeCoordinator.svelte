@@ -58,4 +58,5 @@
   onChange={handleChange}
   onClose={handleClose}
   isFreeformMode={panelState.customizeIsFreeformMode}
+  gridMode={panelState.customizeGridMode}
 />

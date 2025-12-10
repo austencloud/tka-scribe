@@ -13,7 +13,7 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.MIRROR]: {
       type: ToolOperationType.MIRROR,
       name: "Mirror",
-      description: "Mirror the sequence horizontally",
+      description: "Flip left and right — creates a mirror image as if reflected in a vertical mirror. Clockwise spins become counter-clockwise.",
       icon: "🪞",
       isDestructive: false,
       requiresConfirmation: false,
@@ -22,7 +22,7 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.ROTATE_CLOCKWISE]: {
       type: ToolOperationType.ROTATE_CLOCKWISE,
       name: "Rotate Clockwise",
-      description: "Rotate the sequence clockwise",
+      description: "Rotate 45° clockwise — turns the entire sequence as if you pivoted your body to the right.",
       icon: "🔄",
       isDestructive: false,
       requiresConfirmation: false,
@@ -31,7 +31,7 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.ROTATE_COUNTERCLOCKWISE]: {
       type: ToolOperationType.ROTATE_COUNTERCLOCKWISE,
       name: "Rotate Counterclockwise",
-      description: "Rotate the sequence counterclockwise",
+      description: "Rotate 45° counter-clockwise — turns the entire sequence as if you pivoted your body to the left.",
       icon: "🔄",
       isDestructive: false,
       requiresConfirmation: false,
@@ -40,8 +40,17 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.SWAP_COLORS]: {
       type: ToolOperationType.SWAP_COLORS,
       name: "Swap Colors",
-      description: "Swap red and blue colors",
+      description: "Switch hands — your left hand's movements become your right hand's, and vice versa.",
       icon: "🎨",
+      isDestructive: false,
+      requiresConfirmation: false,
+      category: "transform",
+    },
+    [ToolOperationType.REVERSE]: {
+      type: ToolOperationType.REVERSE,
+      name: "Reverse",
+      description: "Retrace your steps — creates a sequence that returns you to the starting position by inverting each movement.",
+      icon: "↩️",
       isDestructive: false,
       requiresConfirmation: false,
       category: "transform",

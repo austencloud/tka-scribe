@@ -63,13 +63,13 @@
 
   let activeTab = $state<ActionCategory>("transforms");
 
-  // Action definitions - Save removed, mirror icon updated
+  // Action definitions with clear user-friendly descriptions
   const actions: Action[] = [
     {
       id: "preview",
       label: "Preview",
       icon: '<i class="fas fa-eye"></i>',
-      description: "View in fullscreen",
+      description: "View fullscreen",
       color: "#3b82f6",
       requiresSequence: true,
       category: "transforms",
@@ -78,41 +78,29 @@
     {
       id: "mirror",
       label: "Mirror",
-      icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="action-svg">
-        <path d="M11 2v20H9V2h2zm5 3v14c-2.5 0-4.5-2-4.5-4.5v-5C11.5 7 13.5 5 16 5zm0 2c-1.4 0-2.5.9-2.5 2.5v5c0 1.6 1.1 2.5 2.5 2.5V7zM8 5v14c-2.5 0-4.5-2-4.5-4.5v-5C3.5 7 5.5 5 8 5zm0 2c-1.4 0-2.5.9-2.5 2.5v5C5.5 16.1 6.6 17 8 17V7zm12-2v14c2.5 0 4.5-2 4.5-4.5v-5C24.5 7 22.5 5 20 5zm0 2c1.4 0 2.5.9 2.5 2.5v5c0 1.6-1.1 2.5-2.5 2.5V7zm-4-2v14c2.5 0 4.5-2 4.5-4.5v-5C20.5 7 18.5 5 16 5zm0 2c1.4 0 2.5.9 2.5 2.5v5c0 1.6-1.1 2.5-2.5 2.5V7z"/>
-      </svg>`,
-      description: "Flip horizontally",
-      color: "#8b5cf6",
+      icon: '<i class="fas fa-left-right"></i>',
+      description: "Flip left & right",
+      color: "#a855f7",
       requiresSequence: true,
       category: "transforms",
       handler: onMirror,
     },
     {
       id: "rotate",
-      label: "Rotate CW",
-      icon: '<i class="fas fa-redo"></i>',
-      description: "Rotate clockwise",
-      color: "#ec4899",
-      requiresSequence: true,
-      category: "transforms",
-      handler: onRotate,
-    },
-    {
-      id: "rotateCCW",
-      label: "Rotate CCW",
-      icon: '<i class="fas fa-undo"></i>',
-      description: "Rotate counter-clockwise",
-      color: "#ec4899",
+      label: "Rotate",
+      icon: '<i class="fas fa-rotate-right"></i>',
+      description: "Pivot 45°",
+      color: "#f59e0b",
       requiresSequence: true,
       category: "transforms",
       handler: onRotate,
     },
     {
       id: "colorSwap",
-      label: "Swap Colors",
-      icon: '<i class="fas fa-palette"></i>',
-      description: "Swap blue/red",
-      color: "#f59e0b",
+      label: "Swap Hands",
+      icon: '<i class="fas fa-arrows-rotate"></i>',
+      description: "Switch movements",
+      color: "#10b981",
       requiresSequence: true,
       category: "transforms",
       handler: onColorSwap,
@@ -121,8 +109,8 @@
       id: "reverse",
       label: "Reverse",
       icon: '<i class="fas fa-backward"></i>',
-      description: "Play backwards",
-      color: "#10b981",
+      description: "Retrace to start",
+      color: "#f43f5e",
       requiresSequence: true,
       category: "transforms",
       handler: onReverse,
@@ -236,11 +224,15 @@
               class="action-button"
               onclick={() => handleActionClick(action)}
               style="--action-color: {action.color}"
-              title={action.description}
               aria-label={`${action.label}: ${action.description}`}
             >
-              <span class="action-icon">{@html action.icon}</span>
-              <span class="action-label">{action.label}</span>
+              <div class="action-icon-box">
+                <span class="action-icon">{@html action.icon}</span>
+              </div>
+              <div class="action-text">
+                <span class="action-label">{action.label}</span>
+                <span class="action-desc">{action.description}</span>
+              </div>
             </button>
           {/each}
         </div>
@@ -424,10 +416,7 @@
   .actions-panel__content {
     padding: 16px;
     padding-bottom: 24px;
-    flex: 1;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
 
     /* Prevent pull-to-refresh when scrolling content */
     overscroll-behavior: contain;
@@ -455,134 +444,101 @@
     text-align: center;
   }
 
-  /* Actions grid - equal sized buttons that fill space */
+  /* Actions grid - vertical list layout */
   .actions-grid {
-    display: grid;
-    gap: 16px;
-    width: 100%;
-    height: 100%;
-    /* 2 columns on mobile, 3 on wider screens */
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 1fr; /* All rows same height */
-  }
-
-  /* Wide screens: 3 columns */
-  @container (min-width: 600px) {
-    .actions-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-  }
-
-  /* Action buttons - 2026 Level Brain Candy Effects */
-  .action-button {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 20px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--sheet-radius-small);
-    color: rgba(255, 255, 255, 0.9);
-    cursor: pointer;
-
-    /* Fill grid cell completely - no aspect ratio constraints */
+    gap: 8px;
     width: 100%;
-    height: 100%;
-    min-height: 0; /* Allow grid to control height */
-
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-
-    /* Smooth spring animation like BeatCell */
-    transition: all var(--sheet-transition-spring);
-
-    /* Subtle initial shadow */
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 
-  /* Gradient overlay that appears on hover */
-  .action-button::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  /* Action buttons - Soft Gradient Fill Style (always visible) */
+  .action-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
     background: linear-gradient(
       135deg,
-      var(--action-color, rgba(255, 255, 255, 0.1)) 0%,
-      transparent 50%,
-      var(--action-color, rgba(255, 255, 255, 0.1)) 100%
+      color-mix(in srgb, var(--action-color) 18%, transparent) 0%,
+      color-mix(in srgb, var(--action-color) 10%, transparent) 100%
     );
-    opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
+    border: 1px solid color-mix(in srgb, var(--action-color) 30%, transparent);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s ease;
+    /* Reasonable size constraints */
+    min-height: 56px;
+    max-height: 72px;
   }
 
   .action-button:hover {
-    /* Elevated state with color-coded glow */
-    background: rgba(255, 255, 255, 0.12);
-    border-color: var(--action-color, rgba(255, 255, 255, 0.4));
-
-    /* Spring pop transform - signature 2026 effect */
-    transform: scale(1.05) translateY(-3px);
-
-    /* Layered luxury shadows with action color glow */
-    box-shadow:
-      0 0 20px color-mix(in srgb, var(--action-color) 40%, transparent),
-      0 8px 24px rgba(0, 0, 0, 0.25),
-      0 4px 12px color-mix(in srgb, var(--action-color) 25%, transparent),
-      0 0 0 1px var(--action-color, rgba(255, 255, 255, 0.3));
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--action-color) 28%, transparent) 0%,
+      color-mix(in srgb, var(--action-color) 18%, transparent) 100%
+    );
+    border-color: color-mix(in srgb, var(--action-color) 45%, transparent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--action-color) 25%, transparent);
   }
 
-  .action-button:hover::before {
-    opacity: 0.15;
-  }
-
-  /* Active/press state - satisfying feedback */
   .action-button:active {
-    transform: scale(0.97) translateY(0);
-    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Intensify on press */
-    box-shadow:
-      0 0 15px color-mix(in srgb, var(--action-color) 50%, transparent),
-      0 2px 8px rgba(0, 0, 0, 0.3),
-      0 0 0 2px var(--action-color, rgba(255, 255, 255, 0.4));
+    transform: translateY(0);
+    transition: all 0.08s ease;
   }
 
   .action-button:focus-visible {
-    outline: 3px solid rgba(191, 219, 254, 0.7);
-    outline-offset: 3px;
+    outline: 2px solid var(--action-color);
+    outline-offset: 2px;
   }
 
-  /* Action icon - consistent size */
-  .action-icon {
-    font-size: 28px;
+  /* Icon box - solid colored */
+  .action-icon-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--action-color, rgba(255, 255, 255, 0.9));
+    width: 36px;
+    height: 36px;
+    background: var(--action-color);
+    border-radius: 9px;
     flex-shrink: 0;
   }
 
-  .action-icon :global(.action-svg) {
-    width: 28px;
-    height: 28px;
+  .action-icon {
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
   }
 
-  /* Action label - consistent size */
+  .action-icon :global(.action-svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Text container */
+  .action-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+  }
+
   .action-label {
-    font-size: 15px;
-    font-weight: 500;
-    text-align: center;
-    line-height: 1.3;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .action-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
   }
 
   /* High contrast mode */
@@ -623,7 +579,6 @@
   }
 
   /* Mobile responsiveness for very small viewport screens */
-  /* Note: Container queries handle button sizing, these are viewport-level adjustments */
   @media (max-width: 380px) {
     .close-button {
       width: 48px;
@@ -649,6 +604,28 @@
     .actions-panel__content {
       padding: 12px;
       padding-bottom: 20px;
+    }
+
+    .action-button {
+      padding: 12px 14px;
+      gap: 12px;
+    }
+
+    .action-icon-box {
+      width: 36px;
+      height: 36px;
+    }
+
+    .action-icon {
+      font-size: 14px;
+    }
+
+    .action-label {
+      font-size: 0.9rem;
+    }
+
+    .action-desc {
+      font-size: 0.75rem;
     }
   }
 
