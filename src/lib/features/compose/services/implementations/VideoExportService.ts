@@ -1,0 +1,143 @@
+/**
+ * Video Export Service Implementation
+ *
+ * Uses WebCodecs API for hardware-accelerated video encoding with explicit
+ * frame timestamps. This ensures correct BPM timing regardless of export speed.
+ *
+ * Falls back to WASM-based h264-mp4-encoder for browsers without WebCodecs (Firefox).
+ */
+
+import { injectable } from "inversify";
+import type {
+  IVideoExportService,
+  VideoExportOptions,
+  VideoFormat,
+} from "../contracts/IVideoExportService";
+import { GIF_EXPORT_FPS } from "../../shared/domain/constants/timing";
+import { WebCodecsVideoEncoder } from "./WebCodecsVideoEncoder";
+import { WasmVideoEncoder } from "./WasmVideoEncoder";
+
+@injectable()
+export class VideoExportService implements IVideoExportService {
+  private isCurrentlyExporting = false;
+  private shouldCancel = false;
+  private activeEncoder: WebCodecsVideoEncoder | WasmVideoEncoder | null = null;
+
+  /**
+   * Check if WebCodecs API is available (Chrome, Safari, Edge)
+   */
+  private hasWebCodecs(): boolean {
+    return WebCodecsVideoEncoder.isSupported();
+  }
+
+  isFormatSupported(_format: VideoFormat): boolean {
+    // With WebCodecs or WASM fallback, we always support MP4
+    // WebM would require different codec configuration
+    return true;
+  }
+
+  getBestFormat(): VideoFormat {
+    // Always return MP4 - it's universally supported and we encode to H.264
+    return "mp4";
+  }
+
+  async createManualExporter(
+    width: number,
+    height: number,
+    options: VideoExportOptions = {}
+  ): Promise<{
+    addFrame: (canvas: HTMLCanvasElement) => Promise<void>;
+    finish: () => Promise<Blob>;
+    cancel: () => void;
+  }> {
+    if (this.isCurrentlyExporting) {
+      throw new Error("Export already in progress");
+    }
+
+    const {
+      bitrate = 5_000_000,
+      fps = GIF_EXPORT_FPS,
+    } = options;
+
+    this.isCurrentlyExporting = true;
+    this.shouldCancel = false;
+
+    // Choose encoder based on browser support
+    const useWebCodecs = this.hasWebCodecs();
+    console.log(`🎬 Using ${useWebCodecs ? "WebCodecs" : "WASM"} encoder for video export`);
+
+    if (useWebCodecs) {
+      this.activeEncoder = new WebCodecsVideoEncoder({
+        width,
+        height,
+        fps,
+        bitrate,
+      });
+    } else {
+      this.activeEncoder = new WasmVideoEncoder({
+        width,
+        height,
+        fps,
+        bitrate,
+      });
+    }
+
+    try {
+      await this.activeEncoder.initialize();
+    } catch (error) {
+      // Reset state on initialization error
+      this.isCurrentlyExporting = false;
+      this.activeEncoder = null;
+      throw error;
+    }
+
+    const addFrame = async (canvas: HTMLCanvasElement): Promise<void> => {
+      if (this.shouldCancel || !this.activeEncoder) return;
+      try {
+        await this.activeEncoder.addFrame(canvas);
+      } catch (error) {
+        // Reset state on frame error
+        this.cancelExport();
+        throw error;
+      }
+    };
+
+    const finish = async (): Promise<Blob> => {
+      if (!this.activeEncoder) {
+        throw new Error("Encoder not initialized");
+      }
+
+      try {
+        const blob = await this.activeEncoder.finish();
+        this.isCurrentlyExporting = false;
+        this.activeEncoder = null;
+        return blob;
+      } catch (error) {
+        // Reset state on finish error
+        this.cancelExport();
+        throw error;
+      }
+    };
+
+    const cancel = () => {
+      this.cancelExport();
+    };
+
+    return { addFrame, finish, cancel };
+  }
+
+  cancelExport(): void {
+    this.shouldCancel = true;
+
+    if (this.activeEncoder) {
+      this.activeEncoder.cancel();
+      this.activeEncoder = null;
+    }
+
+    this.isCurrentlyExporting = false;
+  }
+
+  isExporting(): boolean {
+    return this.isCurrentlyExporting;
+  }
+}
