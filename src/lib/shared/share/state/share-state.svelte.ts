@@ -6,10 +6,33 @@
 
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import type { ShareOptions } from '../domain/models/ShareOptions';
-import { SHARE_PRESETS } from '../domain/models/ShareOptions';
+import { SHARE_PRESETS, DEFAULT_SHARE_OPTIONS } from '../domain/models/ShareOptions';
 import type { IShareService } from '../services/contracts/IShareService';
 import { tryResolve, TYPES } from '../../inversify/di';
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
+import { createPersistenceHelper } from '../../state/utils/persistent-state';
+
+// Persisted content options (the toggleable chips in the share panel)
+interface PersistedShareOptions {
+  addWord: boolean;
+  addBeatNumbers: boolean;
+  addDifficultyLevel: boolean;
+  includeStartPosition: boolean;
+  addUserInfo: boolean;
+}
+
+const DEFAULT_PERSISTED_OPTIONS: PersistedShareOptions = {
+  addWord: DEFAULT_SHARE_OPTIONS.addWord,
+  addBeatNumbers: DEFAULT_SHARE_OPTIONS.addBeatNumbers,
+  addDifficultyLevel: DEFAULT_SHARE_OPTIONS.addDifficultyLevel,
+  includeStartPosition: DEFAULT_SHARE_OPTIONS.includeStartPosition,
+  addUserInfo: DEFAULT_SHARE_OPTIONS.addUserInfo,
+};
+
+const shareOptionsPersistence = createPersistenceHelper({
+  key: 'tka_share_prefs',
+  defaultValue: DEFAULT_PERSISTED_OPTIONS,
+});
 
 export interface ShareState {
   // Current options
@@ -38,13 +61,21 @@ export interface ShareState {
 }
 
 export function createShareState(shareService: IShareService): ShareState {
+  // Load persisted content options
+  const persistedOptions = shareOptionsPersistence.load();
+
   // Reactive state using Svelte 5 runes
   const socialPreset = SHARE_PRESETS["social"];
   if (!socialPreset) {
     throw new Error("Social preset not found in SHARE_PRESETS");
   }
-  let options = $state<ShareOptions>({ ...socialPreset.options });
-  let selectedPreset = $state<string>("social");
+
+  // Merge persisted content options with the base preset
+  let options = $state<ShareOptions>({
+    ...socialPreset.options,
+    ...persistedOptions,
+  });
+  let selectedPreset = $state<string>("custom"); // Start as custom since we loaded persisted options
 
   let previewUrl = $state<string | null>(null);
   let isGeneratingPreview = $state<boolean>(false);
@@ -99,6 +130,15 @@ export function createShareState(shareService: IShareService): ShareState {
       previewError = null; // Clear preview error when options change
       // Note: We don't clear the cache here - it will simply miss on the next generatePreview call
       // This allows switching between presets without losing cached previews
+
+      // Persist the content options (the toggleable chips)
+      shareOptionsPersistence.save({
+        addWord: options.addWord,
+        addBeatNumbers: options.addBeatNumbers,
+        addDifficultyLevel: options.addDifficultyLevel,
+        includeStartPosition: options.includeStartPosition,
+        addUserInfo: options.addUserInfo,
+      });
     },
 
     selectPreset: (presetName: string) => {
@@ -107,6 +147,15 @@ export function createShareState(shareService: IShareService): ShareState {
         options = { ...preset.options };
         selectedPreset = presetName;
         previewError = null;
+
+        // Persist the content options (the toggleable chips)
+        shareOptionsPersistence.save({
+          addWord: options.addWord,
+          addBeatNumbers: options.addBeatNumbers,
+          addDifficultyLevel: options.addDifficultyLevel,
+          includeStartPosition: options.includeStartPosition,
+          addUserInfo: options.addUserInfo,
+        });
       }
     },
 

@@ -99,12 +99,12 @@ function mergeWithDefaults<T>(current: T, defaults: T): T {
   if (typeof current === "object" && current !== null && !Array.isArray(current)) {
     for (const key in current) {
       if (key in defaults && typeof defaults[key as keyof T] === "object" && !Array.isArray(defaults[key as keyof T])) {
-        result[key as keyof T] = mergeWithDefaults(
+        (result as Record<string, unknown>)[key] = mergeWithDefaults(
           current[key],
           defaults[key as keyof T]
-        ) as T[keyof T];
+        );
       } else {
-        result[key as keyof T] = current[key];
+        (result as Record<string, unknown>)[key] = current[key];
       }
     }
   }
