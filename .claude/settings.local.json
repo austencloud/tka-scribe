@@ -403,7 +403,9 @@
       "Bash(src/lib/features/compose/components/canvas/ExportActionsPanel.svelte )",
       "Bash(src/lib/features/create/shared/components/coordinators/AnimationCoordinator.svelte )",
       "Bash(src/lib/shared/animation-engine/components/AnimationShareDrawer.svelte )",
-      "Bash(src/lib/shared/share/components/ImageSharePanel.svelte)"
+      "Bash(src/lib/shared/share/components/ImageSharePanel.svelte)",
+      "WebFetch(domain:mazeez.dev)",
+      "WebFetch(domain:graph.facebook.com)"
     ],
     "deny": [],
     "ask": []
