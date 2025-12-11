@@ -33,12 +33,9 @@
   import { getTrainPracticeState } from "../state/train-practice-state.svelte";
   import ModeSettingsSheet from "./practice/ModeSettingsSheet.svelte";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
-  import PracticeViewContainer from "./practice/PracticeViewContainer.svelte";
-  import FloatingControlGroup from "./practice/FloatingControlGroup.svelte";
-  import GridSettingsPopover from "./practice/GridSettingsPopover.svelte";
-  import StatusPanel from "./practice/StatusPanel.svelte";
-  import SequenceInfoPanel from "./practice/SequenceInfoPanel.svelte";
-  import ControlBar from "./practice/ControlBar.svelte";
+  import PracticeBentoLayout from "./practice/PracticeBentoLayout.svelte";
+  import ModePickerSheet from "./practice/ModePickerSheet.svelte";
+  import GridSettingsSheet from "./practice/GridSettingsSheet.svelte";
 
   interface Props {
     sequence?: SequenceData | null;
@@ -548,23 +545,10 @@
 </script>
 
 <div class="train-mode-panel">
-  <!-- Top bar (mobile only) -->
-  <div class="top-bar mobile-only">
-    <SequenceInfoPanel
-      sequence={trainState.sequence}
-      totalBeats={trainState.totalBeats}
-      onBrowseSequences={handleOpenSequenceBrowser}
-    />
-    <StatusPanel
-      isCameraReady={trainState.isCameraReady}
-      {isDetectionReady}
-      isDetectionActive={trainState.isDetectionActive}
-    />
-  </div>
 
-  <!-- Main Content: Visualization Panels -->
+  <!-- Unified Bento Layout - Everything in flow, no floaters! -->
   <div class="panel-content">
-    <PracticeViewContainer
+    <PracticeBentoLayout
       sequence={trainState.sequence}
       currentBeatIndex={displayBeatIndex}
       isPlaying={trainState.isPerforming}
@@ -576,6 +560,7 @@
       currentFrame={trainState.currentFrame}
       expectedPositions={trainState.expectedPositions}
       mode={trainState.mode}
+      practiceMode={practiceState.currentMode}
       countdownValue={trainState.countdownValue}
       currentScore={trainState.currentScore}
       currentCombo={trainState.currentCombo}
@@ -584,14 +569,24 @@
       gridScale={practiceState.gridScale}
       gridMode={practiceState.gridMode}
       propsVisible={practiceState.propsVisible}
+      canStartPerformance={trainState.canStartPerformance}
       onCameraReady={handleCameraReady}
       onCameraError={handleCameraError}
       onFrame={handleFrame}
       onBeatSelect={handleBeatSelect}
       onBrowseSequences={handleOpenSequenceBrowser}
-      onGridSettingsClick={() => {
-        showGridSettings = true;
+      onPlayStop={trainState.mode === TrainMode.PERFORMING
+        ? handleBackToSetup
+        : handleStartCountdown}
+      onModeClick={() => {
+        showModePicker = true;
       }}
+      onSettingsClick={() => {
+        showSettingsSheet = true;
+      }}
+      onGridScaleChange={(scale) => practiceState.setGridScale(scale)}
+      onGridModeChange={(mode) => practiceState.setGridMode(mode)}
+      onPropsVisibilityChange={(visible) => practiceState.setPropsVisible(visible)}
     />
 
     <!-- Results Screen Overlay -->
@@ -611,77 +606,6 @@
           onSequenceClear?.();
         }}
       />
-    {/if}
-  </div>
-
-  <!-- Bottom control bar (mobile only) -->
-  <div class="bottom-bar mobile-only">
-    <ControlBar
-      mode={trainState.mode}
-      practiceMode={practiceState.currentMode}
-      hasSequence={!!trainState.sequence}
-      canStartPerformance={trainState.canStartPerformance}
-      isCameraReady={trainState.isCameraReady}
-      onPlayStop={trainState.mode === TrainMode.PERFORMING
-        ? handleBackToSetup
-        : handleStartCountdown}
-      onModeClick={() => {
-        showModePicker = true;
-      }}
-      onSequenceClick={handleOpenSequenceBrowser}
-      onSettingsClick={() => {
-        showSettingsSheet = true;
-      }}
-    />
-  </div>
-
-  <!-- Desktop: Floating Controls (bottom-right) -->
-  <div class="desktop-only">
-    <FloatingControlGroup
-      displayView={practiceState.displayView}
-      practiceMode={practiceState.currentMode}
-      hasSequence={!!trainState.sequence}
-      onSequenceClick={handleOpenSequenceBrowser}
-      onViewCycle={() => practiceState.cycleDisplayView()}
-      onModeClick={() => {
-        showModePicker = true;
-      }}
-      onSettingsClick={() => {
-        showSettingsSheet = true;
-      }}
-    />
-
-    <!-- Floating Start/Stop Button -->
-    <div class="floating-action">
-      {#if trainState.mode === TrainMode.SETUP}
-        <button
-          class="start-button"
-          disabled={!trainState.canStartPerformance}
-          onclick={handleStartCountdown}
-        >
-          {#if !trainState.isCameraReady}
-            <i class="fas fa-spinner fa-spin"></i>
-          {:else}
-            <i class="fas fa-play"></i>
-            <span>Start</span>
-          {/if}
-        </button>
-      {:else if trainState.mode === TrainMode.PERFORMING}
-        <button class="stop-button" onclick={handleBackToSetup}>
-          <i class="fas fa-stop"></i>
-          <span>Stop</span>
-        </button>
-      {/if}
-    </div>
-
-    <!-- Sequence Info Badge (top-left when sequence is loaded) -->
-    {#if trainState.sequence}
-      <div class="sequence-badge">
-        <span class="badge-name"
-          >{trainState.sequence?.word || trainState.sequence?.name}</span
-        >
-        <span class="badge-beats">{trainState.totalBeats} beats</span>
-      </div>
     {/if}
   </div>
 
@@ -712,9 +636,9 @@
     onTimedConfigUpdate={(config) => practiceState.updateTimedConfig(config)}
   />
 
-  <!-- Grid Settings Popover -->
-  <GridSettingsPopover
-    isOpen={showGridSettings}
+  <!-- Grid Settings Sheet (bottom sheet on mobile, side drawer on desktop) -->
+  <GridSettingsSheet
+    bind:isOpen={showGridSettings}
     gridScale={practiceState.gridScale}
     gridMode={practiceState.gridMode}
     propsVisible={practiceState.propsVisible}
@@ -724,6 +648,16 @@
       practiceState.setPropsVisible(visible)}
     onClose={() => {
       showGridSettings = false;
+    }}
+  />
+
+  <!-- Mode Picker Sheet -->
+  <ModePickerSheet
+    bind:isOpen={showModePicker}
+    currentMode={practiceState.currentMode}
+    onModeChange={(mode) => practiceState.setMode(mode)}
+    onClose={() => {
+      showModePicker = false;
     }}
   />
 
@@ -738,8 +672,8 @@
 
 <style>
   /* ============================================
-	   TRAIN MODE PANEL - Mobile Bento + Desktop Floating
-	   ============================================ */
+     TRAIN MODE PANEL - Unified Bento Layout
+     ============================================ */
   .train-mode-panel {
     position: relative;
     display: flex;
@@ -760,172 +694,8 @@
   }
 
   /* ============================================
-	   MOBILE BENTO LAYOUT (<768px)
-	   ============================================ */
-  .top-bar {
-    display: flex;
-    gap: var(--space-2026-sm, 12px);
-    padding: var(--space-2026-sm, 12px);
-    padding-bottom: 0;
-    flex-wrap: wrap;
-  }
-
-  .top-bar > :global(:first-child) {
-    flex: 1 1 60%;
-    min-width: 200px;
-  }
-
-  .top-bar > :global(:last-child) {
-    flex: 1 1 35%;
-    min-width: 152px;
-  }
-
-  .bottom-bar {
-    padding: var(--space-2026-sm, 12px);
-    padding-top: 0;
-  }
-
-  /* Mobile: Show mobile-only, hide desktop-only */
-  @media (max-width: 767px) {
-    .mobile-only {
-      display: flex;
-    }
-
-    .desktop-only {
-      display: none;
-    }
-  }
-
-  /* Desktop: Show desktop-only, hide mobile-only */
-  @media (min-width: 768px) {
-    .mobile-only {
-      display: none;
-    }
-
-    .desktop-only {
-      display: block;
-    }
-  }
-
-  /* ============================================
-	   FLOATING ACTION BUTTON (Start/Stop)
-	   ============================================ */
-  .floating-action {
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-    z-index: 100;
-  }
-
-  .start-button,
-  .stop-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    min-width: 52px;
-    min-height: 52px;
-    padding: 0.875rem 1.25rem;
-    border-radius: 28px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .start-button {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.9) 0%,
-      rgba(22, 163, 74, 0.9) 100%
-    );
-    border: 1px solid rgba(74, 222, 128, 0.4);
-    color: white;
-  }
-
-  .start-button:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 1) 0%,
-      rgba(22, 163, 74, 1) 100%
-    );
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 24px rgba(34, 197, 94, 0.4);
-  }
-
-  .start-button:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
-  }
-
-  .start-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .stop-button {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.9) 0%,
-      rgba(220, 38, 38, 0.9) 100%
-    );
-    border: 1px solid rgba(248, 113, 113, 0.4);
-    color: white;
-  }
-
-  .stop-button:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 1) 0%,
-      rgba(220, 38, 38, 1) 100%
-    );
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 24px rgba(239, 68, 68, 0.4);
-  }
-
-  .stop-button:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  /* ============================================
-	   DESKTOP: SEQUENCE BADGE (Top-left info)
-	   ============================================ */
-  .sequence-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    padding: 0.5rem 0.75rem;
-    background: #252532;
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
-    border-radius: var(--radius-2026-md, 14px);
-    box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
-    z-index: 50;
-    pointer-events: none;
-  }
-
-  .badge-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    white-space: nowrap;
-    max-width: 152px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .badge-beats {
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* ============================================
-	   ERROR TOAST
-	   ============================================ */
+     ERROR TOAST
+     ============================================ */
   .error-toast {
     position: absolute;
     bottom: 80px;
@@ -970,52 +740,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     background: rgba(255, 255, 255, 0.15);
     border: none;
-    border-radius: 12px;
+    border-radius: 8px;
     color: white;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s;
   }
 
   .error-toast button:hover {
     background: rgba(255, 255, 255, 0.25);
-  }
-
-  /* ============================================
-	   RESPONSIVE ADJUSTMENTS
-	   ============================================ */
-  @media (min-width: 768px) {
-    .sequence-badge {
-      padding: 0.625rem 1rem;
-    }
-
-    .badge-name {
-      font-size: 0.9375rem;
-      max-width: 200px;
-    }
-
-    .badge-beats {
-      font-size: 0.75rem;
-    }
-  }
-
-  /* Hide text labels on very small screens for action buttons */
-  @media (max-width: 400px) {
-    .start-button span,
-    .stop-button span {
-      display: none;
-    }
-
-    .start-button,
-    .stop-button {
-      min-width: 52px;
-      padding: 0.875rem;
-    }
   }
 </style>

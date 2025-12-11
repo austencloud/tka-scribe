@@ -79,155 +79,158 @@
 
 <div class="results-screen">
 	<div class="results-container">
-		<!-- Header -->
-		<div class="results-header">
-			<h1>Training Complete!</h1>
-			{#if sequenceName}
-				<p class="sequence-name">{sequenceName}</p>
+		<!-- Scrollable content area -->
+		<div class="scrollable-content">
+			<!-- Header -->
+			<div class="results-header">
+				<h1>Training Complete!</h1>
+				{#if sequenceName}
+					<p class="sequence-name">{sequenceName}</p>
+				{/if}
+			</div>
+
+			<!-- Grade Display -->
+			<div class="grade-display" style="--grade-color: {gradeColor}">
+				<div class="grade-circle">
+					<span class="grade-letter">{grade}</span>
+				</div>
+				<div class="accuracy-text">
+					{accuracy.toFixed(1)}% Accuracy
+				</div>
+			</div>
+
+			<!-- Stats Grid -->
+			<div class="stats-grid">
+				<div class="stat-card">
+					<div class="stat-icon score">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+						</svg>
+					</div>
+					<div class="stat-value">{finalScore.toLocaleString()}</div>
+					<div class="stat-label">Score</div>
+				</div>
+
+				<div class="stat-card">
+					<div class="stat-icon hits">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M20 6L9 17l-5-5"/>
+						</svg>
+					</div>
+					<div class="stat-value">{hits}</div>
+					<div class="stat-label">Hits</div>
+				</div>
+
+				<div class="stat-card">
+					<div class="stat-icon misses">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M18 6L6 18M6 6l12 12"/>
+						</svg>
+					</div>
+					<div class="stat-value">{misses}</div>
+					<div class="stat-label">Misses</div>
+				</div>
+
+				<div class="stat-card">
+					<div class="stat-icon combo">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+						</svg>
+					</div>
+					<div class="stat-value">{maxCombo}x</div>
+					<div class="stat-label">Max Combo</div>
+				</div>
+			</div>
+
+			<!-- Detailed Stats -->
+			<div class="detailed-stats">
+				<div class="detail-row">
+					<span class="detail-label">Total Beats</span>
+					<span class="detail-value">{totalBeats}</span>
+				</div>
+				<div class="detail-row">
+					<span class="detail-label">Hit Rate</span>
+					<span class="detail-value">{accuracy.toFixed(1)}%</span>
+				</div>
+				<div class="detail-row">
+					<span class="detail-label">Perfect Combo</span>
+					<span class="detail-value">{maxCombo === totalBeats ? "Yes! 🎉" : "No"}</span>
+				</div>
+			</div>
+
+			<!-- XP Breakdown -->
+			{#if xpBreakdown}
+				<div class="xp-section">
+					<div class="xp-header">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+						</svg>
+						<h3>XP Earned</h3>
+					</div>
+					<div class="xp-breakdown">
+						<div class="xp-row">
+							<span class="xp-label">Base XP</span>
+							<span class="xp-value">+{xpBreakdown.baseXP}</span>
+						</div>
+						{#if xpBreakdown.accuracyBonus > 0}
+							<div class="xp-row bonus">
+								<span class="xp-label">Accuracy Bonus</span>
+								<span class="xp-value">+{xpBreakdown.accuracyBonus}</span>
+							</div>
+						{/if}
+						{#if xpBreakdown.comboBonus > 0}
+							<div class="xp-row bonus">
+								<span class="xp-label">Combo Bonus</span>
+								<span class="xp-value">+{xpBreakdown.comboBonus}</span>
+							</div>
+						{/if}
+						<div class="xp-total">
+							<span class="xp-total-label">Total XP</span>
+							<span class="xp-total-value">+{xpBreakdown.totalXP}</span>
+						</div>
+					</div>
+				</div>
+			{/if}
+
+			<!-- Challenge Progress -->
+			{#if challengeProgress}
+				<div class="challenge-section" class:complete={challengeProgress.isComplete}>
+					<div class="challenge-header">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+							<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+							<path d="M4 22h16"/>
+							<path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+							<path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+							<path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+						</svg>
+						<h3>{challengeProgress.isComplete ? "Challenge Completed!" : "Challenge Progress"}</h3>
+					</div>
+					<div class="challenge-info">
+						<div class="challenge-title">{challengeProgress.challenge.title}</div>
+						<div class="challenge-progress-bar">
+							<div class="progress-track">
+								<div
+									class="progress-fill"
+									style="width: {Math.min((challengeProgress.currentProgress / challengeProgress.challenge.requirement.target) * 100, 100)}%"
+								></div>
+							</div>
+							<div class="progress-text">
+								{challengeProgress.currentProgress} / {challengeProgress.challenge.requirement.target}
+							</div>
+						</div>
+						{#if challengeProgress.isComplete}
+							<div class="challenge-reward">
+								<span class="reward-label">Reward:</span>
+								<span class="reward-value">+{challengeProgress.challenge.xpReward} XP</span>
+							</div>
+						{/if}
+					</div>
+				</div>
 			{/if}
 		</div>
 
-		<!-- Grade Display -->
-		<div class="grade-display" style="--grade-color: {gradeColor}">
-			<div class="grade-circle">
-				<span class="grade-letter">{grade}</span>
-			</div>
-			<div class="accuracy-text">
-				{accuracy.toFixed(1)}% Accuracy
-			</div>
-		</div>
-
-		<!-- Stats Grid -->
-		<div class="stats-grid">
-			<div class="stat-card">
-				<div class="stat-icon score">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-					</svg>
-				</div>
-				<div class="stat-value">{finalScore.toLocaleString()}</div>
-				<div class="stat-label">Score</div>
-			</div>
-
-			<div class="stat-card">
-				<div class="stat-icon hits">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M20 6L9 17l-5-5"/>
-					</svg>
-				</div>
-				<div class="stat-value">{hits}</div>
-				<div class="stat-label">Hits</div>
-			</div>
-
-			<div class="stat-card">
-				<div class="stat-icon misses">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M18 6L6 18M6 6l12 12"/>
-					</svg>
-				</div>
-				<div class="stat-value">{misses}</div>
-				<div class="stat-label">Misses</div>
-			</div>
-
-			<div class="stat-card">
-				<div class="stat-icon combo">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-					</svg>
-				</div>
-				<div class="stat-value">{maxCombo}x</div>
-				<div class="stat-label">Max Combo</div>
-			</div>
-		</div>
-
-		<!-- Detailed Stats -->
-		<div class="detailed-stats">
-			<div class="detail-row">
-				<span class="detail-label">Total Beats</span>
-				<span class="detail-value">{totalBeats}</span>
-			</div>
-			<div class="detail-row">
-				<span class="detail-label">Hit Rate</span>
-				<span class="detail-value">{accuracy.toFixed(1)}%</span>
-			</div>
-			<div class="detail-row">
-				<span class="detail-label">Perfect Combo</span>
-				<span class="detail-value">{maxCombo === totalBeats ? "Yes! 🎉" : "No"}</span>
-			</div>
-		</div>
-
-		<!-- XP Breakdown -->
-		{#if xpBreakdown}
-			<div class="xp-section">
-				<div class="xp-header">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-					</svg>
-					<h3>XP Earned</h3>
-				</div>
-				<div class="xp-breakdown">
-					<div class="xp-row">
-						<span class="xp-label">Base XP</span>
-						<span class="xp-value">+{xpBreakdown.baseXP}</span>
-					</div>
-					{#if xpBreakdown.accuracyBonus > 0}
-						<div class="xp-row bonus">
-							<span class="xp-label">Accuracy Bonus</span>
-							<span class="xp-value">+{xpBreakdown.accuracyBonus}</span>
-						</div>
-					{/if}
-					{#if xpBreakdown.comboBonus > 0}
-						<div class="xp-row bonus">
-							<span class="xp-label">Combo Bonus</span>
-							<span class="xp-value">+{xpBreakdown.comboBonus}</span>
-						</div>
-					{/if}
-					<div class="xp-total">
-						<span class="xp-total-label">Total XP</span>
-						<span class="xp-total-value">+{xpBreakdown.totalXP}</span>
-					</div>
-				</div>
-			</div>
-		{/if}
-
-		<!-- Challenge Progress -->
-		{#if challengeProgress}
-			<div class="challenge-section" class:complete={challengeProgress.isComplete}>
-				<div class="challenge-header">
-					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-						<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-						<path d="M4 22h16"/>
-						<path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-						<path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-						<path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-					</svg>
-					<h3>{challengeProgress.isComplete ? "Challenge Completed!" : "Challenge Progress"}</h3>
-				</div>
-				<div class="challenge-info">
-					<div class="challenge-title">{challengeProgress.challenge.title}</div>
-					<div class="challenge-progress-bar">
-						<div class="progress-track">
-							<div
-								class="progress-fill"
-								style="width: {Math.min((challengeProgress.currentProgress / challengeProgress.challenge.requirement.target) * 100, 100)}%"
-							></div>
-						</div>
-						<div class="progress-text">
-							{challengeProgress.currentProgress} / {challengeProgress.challenge.requirement.target}
-						</div>
-					</div>
-					{#if challengeProgress.isComplete}
-						<div class="challenge-reward">
-							<span class="reward-label">Reward:</span>
-							<span class="reward-value">+{challengeProgress.challenge.xpReward} XP</span>
-						</div>
-					{/if}
-				</div>
-			</div>
-		{/if}
-
-		<!-- Action buttons -->
+		<!-- Action buttons - always visible at bottom -->
 		<div class="action-buttons">
 			{#if onPlayAgain}
 				<button class="primary-button" onclick={onPlayAgain}>
@@ -272,18 +275,29 @@
 		max-width: 500px;
 		width: 90%;
 		max-height: 90vh;
+		display: flex;
+		flex-direction: column;
+		animation: slideUp 0.5s ease-out;
+	}
+
+	/* Scrollable content area */
+	.scrollable-content {
+		flex: 1;
+		overflow-y: auto;
 		padding: 1.25rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		animation: slideUp 0.5s ease-out;
-		overflow-y: auto;
+		min-height: 0; /* Allow shrinking in flexbox */
 	}
 
 	@media (max-width: 768px) {
 		.results-container {
 			width: 100%;
-			max-height: 100vh;
+			max-height: 100dvh; /* Use dynamic viewport height on mobile */
+		}
+
+		.scrollable-content {
 			padding: 1rem;
 			gap: 0.75rem;
 		}
@@ -517,7 +531,18 @@
 		display: flex;
 		gap: 0.75rem;
 		justify-content: center;
-		margin-top: 0.5rem;
+		padding: 1rem 1.25rem;
+		flex-shrink: 0; /* Never shrink - always visible */
+		background: rgba(0, 0, 0, 0.8);
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	@media (max-width: 768px) {
+		.action-buttons {
+			padding: 1rem;
+			/* Safe area for phones with home indicator */
+			padding-bottom: max(1rem, env(safe-area-inset-bottom));
+		}
 	}
 
 	.primary-button,

@@ -1,0 +1,405 @@
+<!--
+  PracticeBentoLayout.svelte - Unified bento box layout for Practice tab
+
+  Everything is in the layout flow - no floating elements!
+
+  Mobile (stacked):
+  ┌─────────────────┐
+  │   Camera Feed   │
+  ├─────────────────┤
+  │   Beat Grid     │
+  ├─────────────────┤
+  │  Control Bar    │
+  └─────────────────┘
+
+  Desktop (side-by-side):
+  ┌──────────┬──────────┐
+  │          │ Sequence │
+  │  Camera  ├──────────┤
+  │   Feed   │Beat Grid │
+  │          ├──────────┤
+  │          │ Controls │
+  └──────────┴──────────┘
+-->
+<script lang="ts">
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { DetectionFrame } from "../../domain/models/DetectionFrame";
+  import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { TrainMode, PracticeMode } from "../../domain/enums/TrainEnums";
+  import CameraSection from "./CameraSection.svelte";
+  import GridSection from "./GridSection.svelte";
+  import ControlBar from "./ControlBar.svelte";
+  import GridSettingsInline from "./GridSettingsInline.svelte";
+
+  interface Props {
+    sequence: SequenceData | null;
+    currentBeatIndex?: number;
+    isPlaying?: boolean;
+    bpm?: number;
+    // Camera props
+    isCameraReady?: boolean;
+    isDetectionReady?: boolean;
+    isDetectionActive?: boolean;
+    isPerforming?: boolean;
+    currentFrame?: DetectionFrame | null;
+    expectedPositions?: {
+      blue: GridLocation | null;
+      red: GridLocation | null;
+    } | null;
+    mode?: TrainMode;
+    practiceMode?: PracticeMode;
+    countdownValue?: number | null;
+    currentScore?: number;
+    currentCombo?: number;
+    lastHitResult?: boolean | null;
+    lastHitPoints?: number;
+    gridScale?: number;
+    gridMode?: GridMode;
+    propsVisible?: boolean;
+    canStartPerformance?: boolean;
+    // Callbacks
+    onCameraReady?: () => void;
+    onCameraError?: (error: string) => void;
+    onFrame?: (video: HTMLVideoElement) => void;
+    onBeatSelect?: (beatIndex: number) => void;
+    onBrowseSequences?: () => void;
+    onPlayStop?: () => void;
+    onModeClick?: () => void;
+    onSettingsClick?: () => void;
+    onGridScaleChange?: (scale: number) => void;
+    onGridModeChange?: (mode: GridMode) => void;
+    onPropsVisibilityChange?: (visible: boolean) => void;
+  }
+
+  let {
+    sequence = null,
+    currentBeatIndex = 0,
+    isPlaying = false,
+    bpm = 60,
+    isCameraReady = false,
+    isDetectionReady = false,
+    isDetectionActive = false,
+    isPerforming = false,
+    currentFrame = null,
+    expectedPositions = null,
+    mode = TrainMode.SETUP,
+    practiceMode = PracticeMode.TIMED,
+    countdownValue = null,
+    currentScore = 0,
+    currentCombo = 0,
+    lastHitResult = null,
+    lastHitPoints = 0,
+    gridScale = 1.0,
+    gridMode = GridMode.DIAMOND,
+    propsVisible = true,
+    canStartPerformance = false,
+    onCameraReady,
+    onCameraError,
+    onFrame,
+    onBeatSelect,
+    onBrowseSequences,
+    onPlayStop,
+    onModeClick,
+    onSettingsClick,
+    onGridScaleChange,
+    onGridModeChange,
+    onPropsVisibilityChange,
+  }: Props = $props();
+
+  // Track if grid settings panel is expanded
+  let showGridSettings = $state(false);
+
+  // Extract propType from sequence
+  const propType = $derived(sequence?.propType ?? null);
+</script>
+
+<div class="bento-layout">
+  <!-- Camera Section -->
+  <section class="camera-cell">
+    <CameraSection
+      {isCameraReady}
+      {isDetectionReady}
+      {isDetectionActive}
+      {isPerforming}
+      {currentFrame}
+      {expectedPositions}
+      {mode}
+      {countdownValue}
+      {currentScore}
+      {currentCombo}
+      {lastHitResult}
+      {lastHitPoints}
+      {bpm}
+      {gridScale}
+      {gridMode}
+      {propsVisible}
+      {propType}
+      {sequence}
+      {currentBeatIndex}
+      {onCameraReady}
+      {onCameraError}
+      {onFrame}
+    />
+  </section>
+
+  <!-- Right Column (desktop) / Bottom Stack (mobile) -->
+  <div class="content-column">
+    <!-- Sequence Info (when loaded) -->
+    {#if sequence}
+      <section class="sequence-cell">
+        <button class="sequence-info" onclick={onBrowseSequences}>
+          <span class="seq-name">{sequence.word || sequence.name}</span>
+          <span class="seq-meta">{sequence.beats?.length || 0} beats</span>
+          <i class="fas fa-exchange-alt"></i>
+        </button>
+      </section>
+    {/if}
+
+    <!-- Beat Grid -->
+    <section class="grid-cell">
+      <GridSection
+        {sequence}
+        {currentBeatIndex}
+        {onBeatSelect}
+        {onBrowseSequences}
+      />
+    </section>
+
+    <!-- Grid Settings (collapsible) -->
+    <section class="settings-cell" class:expanded={showGridSettings}>
+      <button
+        class="settings-toggle"
+        onclick={() => showGridSettings = !showGridSettings}
+        aria-expanded={showGridSettings}
+      >
+        <i class="fas fa-sliders-h"></i>
+        <span>Grid Settings</span>
+        <i class="fas fa-chevron-{showGridSettings ? 'up' : 'down'} toggle-icon"></i>
+      </button>
+
+      {#if showGridSettings}
+        <div class="settings-content">
+          <GridSettingsInline
+            {gridScale}
+            {gridMode}
+            {propsVisible}
+            {onGridScaleChange}
+            {onGridModeChange}
+            {onPropsVisibilityChange}
+          />
+        </div>
+      {/if}
+    </section>
+
+    <!-- Control Bar -->
+    <section class="controls-cell">
+      <ControlBar
+        {mode}
+        {practiceMode}
+        hasSequence={!!sequence}
+        {canStartPerformance}
+        {isCameraReady}
+        {onPlayStop}
+        {onModeClick}
+        onSequenceClick={onBrowseSequences}
+        {onSettingsClick}
+      />
+    </section>
+  </div>
+</div>
+
+<style>
+  .bento-layout {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    container-type: size;
+    overflow: hidden;
+  }
+
+  /* Cells share common styling */
+  .camera-cell,
+  .sequence-cell,
+  .grid-cell,
+  .settings-cell,
+  .controls-cell {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .camera-cell {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a24;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .content-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .sequence-cell {
+    flex-shrink: 0;
+  }
+
+  .sequence-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sequence-info:hover {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.18), rgba(16, 185, 129, 0.12));
+    border-color: rgba(34, 197, 94, 0.4);
+  }
+
+  .seq-name {
+    font-weight: 600;
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .seq-meta {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .sequence-info i {
+    font-size: 0.8rem;
+    color: rgba(134, 239, 172, 0.8);
+  }
+
+  .grid-cell {
+    flex: 1 1 auto;
+    min-height: 120px;
+    display: flex;
+    background: #1a1a24;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .settings-cell {
+    flex-shrink: 0;
+    background: #1a1a24;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .settings-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .settings-toggle:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .settings-toggle span {
+    flex: 1;
+    text-align: left;
+  }
+
+  .toggle-icon {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+  }
+
+  .settings-content {
+    padding: 0 14px 14px;
+  }
+
+  .controls-cell {
+    flex-shrink: 0;
+  }
+
+  /* ============================================
+     TABLET / DESKTOP (side-by-side)
+     ============================================ */
+  @container (min-width: 600px) {
+    .bento-layout {
+      flex-direction: row;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .camera-cell {
+      flex: 1 1 55%;
+      max-width: 55%;
+    }
+
+    .content-column {
+      flex: 1 1 45%;
+      max-width: 45%;
+    }
+
+    .grid-cell {
+      flex: 1 1 auto;
+    }
+  }
+
+  /* ============================================
+     LARGE DESKTOP
+     ============================================ */
+  @container (min-width: 900px) {
+    .bento-layout {
+      gap: 16px;
+      padding: 16px;
+    }
+
+    .camera-cell {
+      flex: 1 1 50%;
+      max-width: 50%;
+    }
+
+    .content-column {
+      flex: 1 1 50%;
+      max-width: 50%;
+      gap: 12px;
+    }
+
+    .sequence-info {
+      padding: 12px 16px;
+      font-size: 0.9rem;
+    }
+
+    .settings-toggle {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+    }
+
+    .settings-content {
+      padding: 0 16px 16px;
+    }
+  }
+</style>

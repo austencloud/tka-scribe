@@ -113,9 +113,9 @@
     {/if}
   </button>
 
-  <!-- Mode Button -->
+  <!-- Mode Button (Purple/Violet) -->
   <button
-    class="control-btn"
+    class="control-btn mode-btn"
     onclick={handleMode}
     aria-label="Change practice mode: {modeLabel()}"
   >
@@ -123,9 +123,9 @@
     <span class="btn-label">{modeLabel()}</span>
   </button>
 
-  <!-- Sequence Button -->
+  <!-- Sequence Button (Blue) -->
   <button
-    class="control-btn"
+    class="control-btn sequence-btn"
     class:has-sequence={hasSequence}
     onclick={handleSequence}
     aria-label={hasSequence ? "Change sequence" : "Select sequence"}
@@ -134,9 +134,9 @@
     <span class="btn-label">Seq</span>
   </button>
 
-  <!-- Settings Button -->
+  <!-- Settings Button (Orange/Amber) -->
   <button
-    class="control-btn"
+    class="control-btn settings-btn"
     onclick={handleSettings}
     aria-label="Mode settings"
   >
@@ -262,24 +262,88 @@
     color: rgba(248, 113, 113, 1);
   }
 
-  /* Sequence button with sequence loaded */
-  .control-btn.has-sequence {
+  /* Mode button (Purple/Violet) - Brain/creativity vibe */
+  .mode-btn {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.12) 0%,
-      rgba(34, 197, 94, 0.08) 100%
+      rgba(139, 92, 246, 0.15) 0%,
+      rgba(124, 58, 237, 0.15) 100%
     );
-    border-color: rgba(34, 197, 94, 0.25);
-    color: rgba(134, 239, 172, 0.9);
+    border-color: rgba(139, 92, 246, 0.3);
+    color: rgba(196, 181, 253, 0.95);
   }
 
-  .control-btn.has-sequence:hover {
+  .mode-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.2) 0%,
-      rgba(34, 197, 94, 0.15) 100%
+      rgba(139, 92, 246, 0.25) 0%,
+      rgba(124, 58, 237, 0.25) 100%
     );
-    border-color: rgba(34, 197, 94, 0.4);
+    border-color: rgba(139, 92, 246, 0.5);
+    color: rgba(196, 181, 253, 1);
+  }
+
+  /* Sequence button (Blue) - Browse/explore vibe */
+  .sequence-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(37, 99, 235, 0.15) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.3);
+    color: rgba(147, 197, 253, 0.95);
+  }
+
+  .sequence-btn:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25) 0%,
+      rgba(37, 99, 235, 0.25) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.5);
+    color: rgba(147, 197, 253, 1);
+  }
+
+  /* Sequence button with sequence loaded - Green checkmark vibe */
+  .sequence-btn.has-sequence {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.15) 0%,
+      rgba(22, 163, 74, 0.15) 100%
+    );
+    border-color: rgba(34, 197, 94, 0.3);
+    color: rgba(134, 239, 172, 0.95);
+  }
+
+  .sequence-btn.has-sequence:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.25) 0%,
+      rgba(22, 163, 74, 0.25) 100%
+    );
+    border-color: rgba(34, 197, 94, 0.5);
+    color: rgba(134, 239, 172, 1);
+  }
+
+  /* Settings button (Orange/Amber) - Configuration vibe */
+  .settings-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(251, 191, 36, 0.15) 0%,
+      rgba(245, 158, 11, 0.15) 100%
+    );
+    border-color: rgba(251, 191, 36, 0.3);
+    color: rgba(253, 224, 71, 0.95);
+  }
+
+  .settings-btn:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      rgba(251, 191, 36, 0.25) 0%,
+      rgba(245, 158, 11, 0.25) 100%
+    );
+    border-color: rgba(251, 191, 36, 0.5);
+    color: rgba(253, 224, 71, 1);
   }
 
   /* ============================================

@@ -16,7 +16,6 @@ Features frame processing loop for pose estimation and overlay support.
     onCameraError?: (error: string) => void;
     onFrame?: (video: HTMLVideoElement) => void;
     mirrored?: boolean;
-    showControls?: boolean;
     children?: Snippet;
   }
 
@@ -25,7 +24,6 @@ Features frame processing loop for pose estimation and overlay support.
     onCameraError,
     onFrame,
     mirrored = true,
-    showControls = true,
     children,
   }: Props = $props();
 
@@ -77,16 +75,6 @@ Features frame processing loop for pose estimation and overlay support.
     }
   }
 
-  async function switchCamera() {
-    if (cameraService) {
-      try {
-        await cameraService.switchCamera();
-      } catch (error) {
-        console.error("Failed to switch camera:", error);
-      }
-    }
-  }
-
   function stopCamera() {
     isActive = false;
     if (cameraService) {
@@ -135,28 +123,6 @@ Features frame processing loop for pose estimation and overlay support.
     {/if}
   </div>
 
-  {#if showControls && isActive && !errorMessage}
-    <div class="controls">
-      <button
-        class="control-button"
-        onclick={switchCamera}
-        title="Switch Camera"
-        aria-label="Switch Camera"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
-          />
-          <circle cx="12" cy="13" r="4" />
-        </svg>
-      </button>
-    </div>
-  {/if}
 
   <!-- Render children for overlays (like GridOverlay) -->
   <div class="overlay-container">
@@ -249,43 +215,6 @@ Features frame processing loop for pose estimation and overlay support.
     transform: translateY(0);
   }
 
-  .controls {
-    position: absolute;
-    bottom: var(--spacing-md, 16px);
-    right: var(--spacing-md, 16px);
-    display: flex;
-    gap: var(--spacing-sm, 8px);
-    z-index: 20;
-  }
-
-  .control-button {
-    width: 52px;
-    height: 52px;
-    padding: 8px;
-    background: #252532;
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
-    border-radius: var(--radius-2026-md, 14px);
-    box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
-    color: var(--foreground, #ffffff);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .control-button:hover {
-    background: #2d2d3a;
-    border-color: var(--primary, #3b82f6);
-    transform: translateY(-2px);
-  }
-
-  .control-button:active {
-    transform: translateY(0);
-  }
-
-  .control-button svg {
-    width: 100%;
-    height: 100%;
-  }
-
   .overlay-container {
     position: absolute;
     inset: 0;
@@ -297,16 +226,4 @@ Features frame processing loop for pose estimation and overlay support.
     pointer-events: auto;
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .controls {
-      bottom: var(--spacing-sm, 8px);
-      right: var(--spacing-sm, 8px);
-    }
-
-    .control-button {
-      width: 36px;
-      height: 36px;
-    }
-  }
 </style>
