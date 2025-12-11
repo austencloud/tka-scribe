@@ -47,50 +47,14 @@ export function registerAnimationShortcuts(
     })
   );
 
-  // Right Arrow - Step half beat forward
+  // Right Arrow - Step full beat forward (most common action)
   unregisterFns.push(
     service.register({
       id: "animation.step-forward",
       label: "Step Forward",
-      description: "Move forward half a beat",
-      key: "ArrowRight",
-      modifiers: [],
-      context: "animation-panel",
-      scope: "animation",
-      priority: "high",
-      action: (e) => {
-        e.preventDefault();
-        handlers.onStepHalfBeatForward();
-      },
-    })
-  );
-
-  // Left Arrow - Step half beat backward
-  unregisterFns.push(
-    service.register({
-      id: "animation.step-backward",
-      label: "Step Backward",
-      description: "Move backward half a beat",
-      key: "ArrowLeft",
-      modifiers: [],
-      context: "animation-panel",
-      scope: "animation",
-      priority: "high",
-      action: (e) => {
-        e.preventDefault();
-        handlers.onStepHalfBeatBackward();
-      },
-    })
-  );
-
-  // Shift + Right Arrow - Step full beat forward
-  unregisterFns.push(
-    service.register({
-      id: "animation.step-full-forward",
-      label: "Step Full Beat Forward",
       description: "Move forward one full beat",
       key: "ArrowRight",
-      modifiers: ["shift"],
+      modifiers: [],
       context: "animation-panel",
       scope: "animation",
       priority: "high",
@@ -101,12 +65,48 @@ export function registerAnimationShortcuts(
     })
   );
 
-  // Shift + Left Arrow - Step full beat backward
+  // Left Arrow - Step full beat backward (most common action)
   unregisterFns.push(
     service.register({
-      id: "animation.step-full-backward",
-      label: "Step Full Beat Backward",
+      id: "animation.step-backward",
+      label: "Step Backward",
       description: "Move backward one full beat",
+      key: "ArrowLeft",
+      modifiers: [],
+      context: "animation-panel",
+      scope: "animation",
+      priority: "high",
+      action: (e) => {
+        e.preventDefault();
+        handlers.onStepFullBeatBackward();
+      },
+    })
+  );
+
+  // Shift + Right Arrow - Step half beat forward (fine control)
+  unregisterFns.push(
+    service.register({
+      id: "animation.step-half-forward",
+      label: "Step Half Beat Forward",
+      description: "Move forward half a beat",
+      key: "ArrowRight",
+      modifiers: ["shift"],
+      context: "animation-panel",
+      scope: "animation",
+      priority: "high",
+      action: (e) => {
+        e.preventDefault();
+        handlers.onStepHalfBeatForward();
+      },
+    })
+  );
+
+  // Shift + Left Arrow - Step half beat backward (fine control)
+  unregisterFns.push(
+    service.register({
+      id: "animation.step-half-backward",
+      label: "Step Half Beat Backward",
+      description: "Move backward half a beat",
       key: "ArrowLeft",
       modifiers: ["shift"],
       context: "animation-panel",
@@ -114,7 +114,7 @@ export function registerAnimationShortcuts(
       priority: "high",
       action: (e) => {
         e.preventDefault();
-        handlers.onStepFullBeatBackward();
+        handlers.onStepHalfBeatBackward();
       },
     })
   );
@@ -202,10 +202,10 @@ export function registerAnimationShortcuts(
  */
 export const ANIMATION_SHORTCUTS = [
   { key: "Space", label: "Play / Pause", description: "Toggle animation playback" },
-  { key: "←", label: "Step Backward", description: "Move backward half a beat" },
-  { key: "→", label: "Step Forward", description: "Move forward half a beat" },
-  { key: "Shift + ←", label: "Full Beat Back", description: "Move backward one full beat" },
-  { key: "Shift + →", label: "Full Beat Forward", description: "Move forward one full beat" },
+  { key: "←", label: "Previous Beat", description: "Move backward one full beat" },
+  { key: "→", label: "Next Beat", description: "Move forward one full beat" },
+  { key: "Shift + ←", label: "Half Beat Back", description: "Move backward half a beat" },
+  { key: "Shift + →", label: "Half Beat Forward", description: "Move forward half a beat" },
   { key: "B", label: "Toggle Blue", description: "Show/hide blue motion path" },
   { key: "R", label: "Toggle Red", description: "Show/hide red motion path" },
   { key: "Esc", label: "Close", description: "Close the animation viewer" },
