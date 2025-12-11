@@ -290,7 +290,7 @@
   <section class="actions-section">
     <div class="action-row">
       <button
-        class="action-btn download"
+        class="action-btn download-btn"
         disabled={!canShare()}
         onclick={handleDownload}
       >
@@ -299,36 +299,40 @@
         {:else}
           <i class="fas fa-download"></i>
         {/if}
-        <span>Download</span>
+        <span class="btn-label">Download</span>
+        <span class="btn-hint">Save to device</span>
       </button>
 
       <button
-        class="action-btn share"
+        class="action-btn share-btn"
         disabled={!canShare()}
         onclick={handleShareViaDevice}
       >
         <i class="fas fa-share-nodes"></i>
-        <span>Share</span>
+        <span class="btn-label">Share</span>
+        <span class="btn-hint">Send to others</span>
       </button>
     </div>
 
     <div class="action-row">
       <button
-        class="action-btn link"
+        class="action-btn link-btn"
         disabled={!canShare() || isCopyingLink}
         onclick={handleCopyLink}
       >
         <i class="fas {isCopyingLink ? 'fa-check' : 'fa-link'}"></i>
-        <span>{isCopyingLink ? "Copied!" : "Copy Link"}</span>
+        <span class="btn-label">{isCopyingLink ? "Copied!" : "Copy Link"}</span>
+        <span class="btn-hint">Share via URL</span>
       </button>
 
       <button
-        class="action-btn instagram"
+        class="action-btn instagram-btn"
         disabled={!canShare()}
         onclick={handleInstagramPost}
       >
         <i class="fab fa-instagram"></i>
-        <span>Instagram</span>
+        <span class="btn-label">Instagram</span>
+        <span class="btn-hint">Post to story</span>
       </button>
     </div>
   </section>
@@ -570,7 +574,7 @@
   }
 
   /* ============================================
-     ACTION BUTTONS - 2x2 Grid
+     ACTION BUTTONS - 2x2 Grid (Colored Glass Style)
      ============================================ */
   .actions-section {
     flex-shrink: 0;
@@ -584,67 +588,136 @@
     gap: 8px;
   }
 
+  /* Shared button styles - Colored Glass */
   .action-btn {
+    position: relative;
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 12px 10px;
-    border: none;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    color: white;
+    gap: 4px;
+    padding: 14px 12px;
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
   }
 
   .action-btn i {
-    font-size: 14px;
+    font-size: 22px;
+    transition: transform 0.2s ease;
   }
 
-  .action-btn.download {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    box-shadow: 0 3px 12px rgba(59, 130, 246, 0.35);
+  .btn-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: 0.3px;
   }
 
-  .action-btn.share {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-    box-shadow: 0 3px 12px rgba(139, 92, 246, 0.35);
+  .btn-hint {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.2px;
   }
 
-  .action-btn.link {
-    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
-    box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+  /* Download Button - Blue theme */
+  .download-btn {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.12) 100%);
+    border: 1.5px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12), 0 0 16px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  .action-btn.instagram {
-    background: linear-gradient(135deg, #f56040 0%, #c13584 50%, #833ab4 100%);
-    box-shadow: 0 3px 12px rgba(193, 53, 132, 0.35);
+  .download-btn i {
+    color: rgba(59, 130, 246, 1);
   }
 
-  .action-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
+  /* Share Button - Pink/Magenta theme */
+  .share-btn {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(219, 39, 119, 0.12) 100%);
+    border: 1.5px solid rgba(236, 72, 153, 0.3);
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.12), 0 0 16px rgba(236, 72, 153, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .share-btn i {
+    color: rgba(236, 72, 153, 1);
+  }
+
+  /* Link Button - Green theme */
+  .link-btn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.12) 100%);
+    border: 1.5px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12), 0 0 16px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .link-btn i {
+    color: rgba(16, 185, 129, 1);
+  }
+
+  /* Instagram Button - Gradient theme */
+  .instagram-btn {
+    background: linear-gradient(135deg, rgba(245, 96, 64, 0.15) 0%, rgba(193, 53, 132, 0.12) 50%, rgba(131, 58, 180, 0.12) 100%);
+    border: 1.5px solid rgba(193, 53, 132, 0.3);
+    box-shadow: 0 2px 8px rgba(193, 53, 132, 0.12), 0 0 16px rgba(193, 53, 132, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .instagram-btn i {
+    color: rgba(193, 53, 132, 1);
+  }
+
+  /* Hover states */
+  @media (hover: hover) and (pointer: fine) {
+    .download-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.2) 100%);
+      border-color: rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2), 0 0 24px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .share-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(219, 39, 119, 0.2) 100%);
+      border-color: rgba(236, 72, 153, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(236, 72, 153, 0.2), 0 0 24px rgba(236, 72, 153, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .link-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.2) 100%);
+      border-color: rgba(16, 185, 129, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2), 0 0 24px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .instagram-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(245, 96, 64, 0.25) 0%, rgba(193, 53, 132, 0.2) 50%, rgba(131, 58, 180, 0.2) 100%);
+      border-color: rgba(193, 53, 132, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(193, 53, 132, 0.2), 0 0 24px rgba(193, 53, 132, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .action-btn:hover i {
+      transform: scale(1.08);
+    }
   }
 
   .action-btn:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
+    transform: scale(0.98);
   }
 
   .action-btn:disabled {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
-    transform: none !important;
-    filter: grayscale(30%);
   }
 
   .btn-spinner {
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: white;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-top-color: rgba(59, 130, 246, 1);
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
   }

@@ -49,6 +49,9 @@
   let exportProgress = $state(0);
   let exportStage = $state<string>("");
 
+  // Share state
+  let isSharing = $state(false);
+
   // Animation state - use shared global state for beat grid synchronization
   const animationPanelState = sharedAnimationState;
 
@@ -498,6 +501,55 @@
       exportStage = "";
     }
   }
+
+  /**
+   * Handle sharing animation via native share API
+   * Shares a link to the animation (GIF file sharing requires blob generation to be added later)
+   */
+  async function handleShareAnimation() {
+    console.log("📤 Share animation handler called");
+    hapticService?.trigger("selection");
+
+    if (isSharing || isExporting) {
+      console.warn("⚠️ Export/share already in progress");
+      return;
+    }
+
+    // Check if Web Share API is available
+    if (!navigator.share) {
+      console.warn("⚠️ Web Share API not available");
+      // Could show a toast/alert here
+      return;
+    }
+
+    try {
+      isSharing = true;
+
+      const sequenceName = animationPanelState.sequenceData?.word ||
+        animationPanelState.sequenceData?.name ||
+        "animation";
+
+      // Share link to the animation
+      const shareData: ShareData = {
+        title: `TKA Animation: ${sequenceName}`,
+        text: `Check out this flow animation: ${sequenceName}`,
+        url: window.location.href,
+      };
+
+      await navigator.share(shareData);
+      console.log("✅ Animation link shared successfully");
+      hapticService?.trigger("success");
+    } catch (error) {
+      if ((error as Error).name === "AbortError") {
+        console.log("ℹ️ Share cancelled by user");
+      } else {
+        console.error("❌ Failed to share animation:", error);
+        hapticService?.trigger("error");
+      }
+    } finally {
+      isSharing = false;
+    }
+  }
 </script>
 
 <AnimationShareDrawer
@@ -523,4 +575,8 @@
   onCanvasReady={handleCanvasReady}
   onVideoBeatChange={handleVideoBeatChange}
   onExportGif={handleExportGif}
+  onShareAnimation={handleShareAnimation}
+  {isExporting}
+  exportProgress={{ progress: exportProgress, stage: exportStage }}
+  {isSharing}
 />

@@ -154,6 +154,8 @@
     onCanvasReady = () => {},
     onVideoBeatChange = () => {},
     onExportGif = () => {},
+    onShareAnimation = () => {},
+    isSharing = false,
   }: {
     show?: boolean;
     combinedPanelHeight?: number;
@@ -182,6 +184,8 @@
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
     onExportGif?: () => void;
+    onShareAnimation?: () => void;
+    isSharing?: boolean;
   } = $props();
 
   // ============================================================================
@@ -430,8 +434,10 @@
             onToggleRed={toggleRedMotion}
             onToggleToolView={toggleMobileToolView}
             {onExportGif}
+            {onShareAnimation}
             {isExporting}
             {exportProgress}
+            {isSharing}
             preventBackNavAction={preventBackNavigation}
           />
         </div>

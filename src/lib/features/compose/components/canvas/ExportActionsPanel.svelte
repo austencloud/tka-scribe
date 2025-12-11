@@ -1,26 +1,36 @@
 <!--
   ExportActionsPanel.svelte
 
-  2026 Bento Box Design - GIF export button
-  Animation Panel focuses on animated GIF export.
+  2026 Bento Box Design - GIF export and share buttons
+  Animation Panel focuses on animated GIF export and sharing.
   Static image export lives in Share Panel.
 -->
 <script lang="ts">
   let {
     onExportGif = () => {},
+    onShareAnimation = () => {},
     isExporting = false,
     exportProgress = null,
+    isSharing = false,
   }: {
     onExportGif?: () => void;
+    onShareAnimation?: () => void;
     isExporting?: boolean;
     exportProgress?: { progress: number; stage: string } | null;
+    isSharing?: boolean;
   } = $props();
 
-  function handleClick() {
+  function handleExportClick() {
     if (isExporting) return; // Prevent double-clicks
     console.log("🎬 ExportActionsPanel: Export GIF button clicked");
     console.log("🎬 onExportGif handler:", onExportGif);
     onExportGif();
+  }
+
+  function handleShareClick() {
+    if (isSharing || isExporting) return; // Prevent double-clicks
+    console.log("📤 ExportActionsPanel: Share animation button clicked");
+    onShareAnimation();
   }
 
   // Derive display text based on export state
@@ -49,16 +59,17 @@
 </script>
 
 <div class="export-actions-panel">
+  <!-- Export GIF Button -->
   <button
-    class="export-btn"
+    class="action-btn export-btn"
     class:exporting={isExporting}
     class:complete={exportProgress?.stage === "complete"}
-    onclick={handleClick}
+    onclick={handleExportClick}
     type="button"
     disabled={isExporting && exportProgress?.stage !== "complete"}
     aria-label={isExporting ? "Exporting GIF..." : "Export as GIF"}
   >
-    <i class="fas" class:fa-film={!isExporting} class:fa-spinner={isExporting && exportProgress?.stage !== "complete"} class:fa-spin={isExporting && exportProgress?.stage !== "complete"} class:fa-check={exportProgress?.stage === "complete"}></i>
+    <i class="fas" class:fa-download={!isExporting} class:fa-spinner={isExporting && exportProgress?.stage !== "complete"} class:fa-spin={isExporting && exportProgress?.stage !== "complete"} class:fa-check={exportProgress?.stage === "complete"}></i>
     <span class="btn-label">{buttonText()}</span>
     <span class="btn-hint">{buttonHint()}</span>
 
@@ -67,6 +78,20 @@
         <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
       </div>
     {/if}
+  </button>
+
+  <!-- Share Animation Button -->
+  <button
+    class="action-btn share-btn"
+    class:sharing={isSharing}
+    onclick={handleShareClick}
+    type="button"
+    disabled={isSharing || isExporting}
+    aria-label={isSharing ? "Sharing..." : "Share animation"}
+  >
+    <i class="fas" class:fa-share-nodes={!isSharing} class:fa-spinner={isSharing} class:fa-spin={isSharing}></i>
+    <span class="btn-label">{isSharing ? "Sharing..." : "Share"}</span>
+    <span class="btn-hint">{isSharing ? "Please wait..." : "Send to others"}</span>
   </button>
 </div>
 
@@ -78,30 +103,55 @@
 
   .export-actions-panel {
     display: flex;
+    gap: 8px;
     width: 100%;
   }
 
-  .export-btn {
+  /* Shared button styles */
+  .action-btn {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 18px;
-    width: 100%;
-    background: linear-gradient(
-      135deg,
-      rgba(168, 85, 247, 0.15) 0%,
-      rgba(147, 51, 234, 0.12) 100%
-    );
-    border: 1.5px solid rgba(168, 85, 247, 0.3);
+    padding: 14px 12px;
+    flex: 1;
     border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
+  }
+
+  .action-btn i {
+    font-size: 22px;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: 0.3px;
+  }
+
+  .btn-hint {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.2px;
+  }
+
+  /* Export GIF Button - Purple theme */
+  .export-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.15) 0%,
+      rgba(147, 51, 234, 0.12) 100%
+    );
+    border: 1.5px solid rgba(168, 85, 247, 0.3);
     box-shadow:
       0 2px 8px rgba(168, 85, 247, 0.12),
       0 0 16px rgba(168, 85, 247, 0.08),
@@ -109,23 +159,25 @@
   }
 
   .export-btn i {
-    font-size: 26px;
-    transition: transform 0.2s ease;
     color: rgba(168, 85, 247, 1);
   }
 
-  .btn-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    letter-spacing: 0.3px;
+  /* Share Button - Pink/Magenta theme */
+  .share-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(236, 72, 153, 0.15) 0%,
+      rgba(219, 39, 119, 0.12) 100%
+    );
+    border: 1.5px solid rgba(236, 72, 153, 0.3);
+    box-shadow:
+      0 2px 8px rgba(236, 72, 153, 0.12),
+      0 0 16px rgba(236, 72, 153, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
-  .btn-hint {
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 0.2px;
+  .share-btn i {
+    color: rgba(236, 72, 153, 1);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -143,18 +195,32 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
-    .export-btn:hover i {
+    .share-btn:hover:not(:disabled) {
+      background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.25) 0%,
+        rgba(219, 39, 119, 0.2) 100%
+      );
+      border-color: rgba(236, 72, 153, 0.5);
+      transform: translateY(-2px);
+      box-shadow:
+        0 4px 16px rgba(236, 72, 153, 0.2),
+        0 0 24px rgba(236, 72, 153, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .action-btn:hover i {
       transform: scale(1.08);
     }
   }
 
-  .export-btn:active:not(:disabled) {
+  .action-btn:active:not(:disabled) {
     transform: scale(0.98);
   }
 
-  .export-btn:disabled {
+  .action-btn:disabled {
     cursor: not-allowed;
-    opacity: 0.8;
+    opacity: 0.5;
   }
 
   .export-btn.exporting {
@@ -180,6 +246,14 @@
 
   .export-btn.complete i {
     color: rgba(34, 197, 94, 1);
+  }
+
+  .share-btn.sharing {
+    background: linear-gradient(
+      135deg,
+      rgba(236, 72, 153, 0.18) 0%,
+      rgba(219, 39, 119, 0.15) 100%
+    );
   }
 
   .progress-bar {
@@ -208,20 +282,20 @@
      =========================== */
 
   @media (max-width: 360px) {
-    .export-btn {
-      padding: 16px;
+    .action-btn {
+      padding: 12px 8px;
     }
 
-    .export-btn i {
-      font-size: 24px;
+    .action-btn i {
+      font-size: 20px;
     }
 
     .btn-label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .btn-hint {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
     }
   }
 
@@ -230,13 +304,13 @@
      =========================== */
 
   @media (prefers-reduced-motion: reduce) {
-    .export-btn,
-    .export-btn i {
+    .action-btn,
+    .action-btn i {
       transition: none;
     }
 
-    .export-btn:hover,
-    .export-btn:active {
+    .action-btn:hover,
+    .action-btn:active {
       transform: none;
     }
   }

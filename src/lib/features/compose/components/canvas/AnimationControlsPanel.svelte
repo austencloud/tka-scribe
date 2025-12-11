@@ -58,6 +58,8 @@
     onToggleExpanded = () => {},
     onToggleToolView = () => {},
     onExportGif = () => {},
+    onShareAnimation = () => {},
+    isSharing = false,
     preventBackNavAction = () => {},
     onScroll = () => {},
   }: {
@@ -86,6 +88,8 @@
     onToggleExpanded?: () => void;
     onToggleToolView?: () => void;
     onExportGif?: () => void;
+    onShareAnimation?: () => void;
+    isSharing?: boolean;
     preventBackNavAction?: (
       node: HTMLElement,
       isSideBySideLayout: boolean
@@ -327,7 +331,7 @@
 
   <!-- Export -->
   {#if isSideBySideLayout || isExpanded}
-    <ExportActionsPanel {onExportGif} {isExporting} {exportProgress} />
+    <ExportActionsPanel {onExportGif} {onShareAnimation} {isExporting} {exportProgress} {isSharing} />
   {/if}
 </div>
 
