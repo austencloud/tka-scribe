@@ -2,9 +2,7 @@
   VideoRecordPanel.svelte
 
   Camera recording panel with optional reference views (animation or grid).
-  Layout adapts based on mobile vs desktop:
-  - Desktop: Optional 50/50 split (camera / animation)
-  - Mobile: Always 50/50 split (camera / grid OR animation)
+  Clean layout focused on camera + media with settings in a sheet.
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
@@ -19,10 +17,9 @@
   } from "../services/contracts/IVideoRecordService";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { createVideoRecordSettings } from "../state/video-record-settings.svelte";
-  import type { ReferenceViewType } from "../state/video-record-settings.svelte";
-  import ReferenceViewToggle from "./ReferenceViewToggle.svelte";
-  import AnimationPreview from "./AnimationPreview.svelte";
+  import InlineAnimationPlayer from "$lib/features/discover/gallery/display/components/media-viewer/InlineAnimationPlayer.svelte";
   import GridPreview from "./GridPreview.svelte";
+  import VideoRecordSettingsSheet from "./VideoRecordSettingsSheet.svelte";
 
   let {
     sequence = null,
@@ -33,6 +30,10 @@
     onClose?: () => void;
     onSave?: (recording: RecordingResult) => void;
   } = $props();
+
+  // Share state
+  let isSharing = $state(false);
+  let settingsOpen = $state(false);
 
   // Services (lazy-loaded)
   let cameraService = $state<ICameraService | null>(null);
@@ -57,9 +58,7 @@
 
   // Recording state
   let recordingId = $state<string | null>(null);
-  let recordingState = $state<"idle" | "recording" | "paused" | "stopped">(
-    "idle"
-  );
+  let recordingState = $state<"idle" | "recording" | "paused" | "stopped">("idle");
   let recordingDuration = $state(0);
   let recordedVideo = $state<RecordingResult | null>(null);
   let playbackVideoElement = $state<HTMLVideoElement | null>(null);
@@ -73,13 +72,13 @@
   const activeReferenceView = $derived.by(() => {
     if (!showReferencePanel) return null;
     if (isMobile) {
-      // Mobile: user chooses grid or animation
       return settings.current.referenceView === "grid" ? "grid" : "animation";
     } else {
-      // Desktop: only animation when enabled
       return settings.current.referenceView === "animation"
         ? "animation"
-        : null;
+        : settings.current.referenceView === "grid"
+          ? "grid"
+          : null;
     }
   });
 
@@ -89,12 +88,10 @@
   async function initializeCamera() {
     if (!cameraService) {
       cameraError = "Camera service not loaded";
-      console.error("❌ Camera service not available");
       return;
     }
 
     try {
-      console.log("📷 Initializing camera...");
       await cameraService.initialize({
         facingMode: "user",
         width: 1280,
@@ -105,49 +102,33 @@
       const stream = await cameraService.start();
       cameraStream = stream;
       cameraInitialized = true;
-      console.log("✅ Camera initialized, stream ready");
     } catch (error) {
-      console.error("Failed to initialize camera:", error);
-      cameraError =
-        error instanceof Error ? error.message : "Failed to access camera";
+      cameraError = error instanceof Error ? error.message : "Failed to access camera";
     }
   }
 
-  // Attach stream to video element once both are ready
+  // Attach stream to video element
   $effect(() => {
     if (cameraStream && videoElement && !recordedVideo) {
-      console.log("📹 Attaching stream to video element");
       videoElement.srcObject = cameraStream;
-      videoElement.play().catch((error) => {
-        console.error("Failed to play video:", error);
-      });
+      videoElement.play().catch(() => {});
     }
   });
 
   /**
-   * Start recording
+   * Recording controls
    */
   async function startRecording() {
-    if (!videoElement?.srcObject) {
-      console.error("No camera stream available");
-      return;
-    }
+    if (!videoElement?.srcObject) return;
 
     try {
       const stream = videoElement.srcObject as MediaStream;
-
       recordingId = await recordService.startRecording(
         stream,
-        {
-          format: "webm",
-          quality: 0.9,
-          maxDuration: 120, // 2 minutes max
-        },
+        { format: "webm", quality: 0.9, maxDuration: 120 },
         handleProgress
       );
-
       recordingState = "recording";
-      console.log(`🔴 Recording started: ${recordingId}`);
     } catch (error) {
       console.error("Failed to start recording:", error);
     }
@@ -170,16 +151,10 @@
 
     try {
       const result = await recordService.stopRecording(recordingId);
-
       if (result.success) {
         recordedVideo = result;
         recordingState = "stopped";
-        console.log("✅ Recording stopped successfully");
-
-        // Pause camera stream during playback
-        if (videoElement) {
-          videoElement.pause();
-        }
+        if (videoElement) videoElement.pause();
       }
     } catch (error) {
       console.error("Failed to stop recording:", error);
@@ -198,21 +173,51 @@
     if (recordedVideo?.blobUrl) {
       URL.revokeObjectURL(recordedVideo.blobUrl);
     }
-
     recordedVideo = null;
     recordingId = null;
     recordingState = "idle";
     recordingDuration = 0;
-
-    // Resume camera preview
-    if (videoElement) {
-      videoElement.play();
-    }
+    if (videoElement) videoElement.play();
   }
 
   function saveRecording() {
     if (!recordedVideo) return;
     onSave(recordedVideo);
+  }
+
+  async function shareRecording() {
+    if (!recordedVideo || isSharing || !navigator.share) return;
+
+    try {
+      isSharing = true;
+      const sequenceName = sequence?.word || sequence?.name || "recording";
+
+      if (recordedVideo.blob && navigator.canShare) {
+        const filename = `tka-${sequenceName}-${Date.now()}.webm`;
+        const file = new File([recordedVideo.blob], filename, { type: "video/webm" });
+        const shareData: ShareData = {
+          title: `TKA Recording: ${sequenceName}`,
+          text: `Check out my flow recording: ${sequenceName}`,
+          files: [file],
+        };
+        if (navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          return;
+        }
+      }
+
+      await navigator.share({
+        title: `TKA Recording: ${sequenceName}`,
+        text: `Check out my flow recording: ${sequenceName}`,
+        url: window.location.href,
+      });
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
+        console.error("Failed to share:", error);
+      }
+    } finally {
+      isSharing = false;
+    }
   }
 
   function handleProgress(progress: RecordingProgress) {
@@ -225,10 +230,6 @@
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   }
 
-  function handleReferenceViewChange(view: ReferenceViewType) {
-    settings.setReferenceView(view);
-  }
-
   // Initialize
   onMount(async () => {
     detectLayout();
@@ -236,173 +237,163 @@
       window.addEventListener("resize", detectLayout);
     }
 
-    // Load train module to get camera service
     try {
-      console.log("📦 Loading train module for camera service...");
       await loadFeatureModule("train");
       cameraService = resolve<ICameraService>(TYPES.ICameraService);
-      console.log("✅ Camera service loaded");
       await initializeCamera();
     } catch (error) {
-      console.error("❌ Failed to load camera service:", error);
       cameraError = "Failed to load camera service";
     }
   });
 
   // Cleanup
   onDestroy(() => {
-    if (recordingId) {
-      recordService.cancelRecording(recordingId);
-    }
-    if (recordedVideo?.blobUrl) {
-      URL.revokeObjectURL(recordedVideo.blobUrl);
-    }
-    if (browser) {
-      window.removeEventListener("resize", detectLayout);
-    }
-    if (cameraService) {
-      cameraService.stop();
-    }
-    if (cameraStream) {
-      cameraStream.getTracks().forEach((track) => track.stop());
-    }
+    if (recordingId) recordService.cancelRecording(recordingId);
+    if (recordedVideo?.blobUrl) URL.revokeObjectURL(recordedVideo.blobUrl);
+    if (browser) window.removeEventListener("resize", detectLayout);
+    if (cameraService) cameraService.stop();
+    if (cameraStream) cameraStream.getTracks().forEach((track) => track.stop());
   });
 </script>
 
 <div class="video-record-panel">
   {#if cameraError}
-    <div class="error-message">
-      <p>⚠️ Camera Error</p>
-      <p>{cameraError}</p>
-      <button onclick={() => window.location.reload()}>Retry</button>
+    <div class="error-state">
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>Camera Error</p>
+      <p class="error-detail">{cameraError}</p>
+      <button class="retry-btn" onclick={() => window.location.reload()}>
+        <i class="fas fa-redo"></i> Retry
+      </button>
     </div>
   {:else if !cameraInitialized}
-    <div class="loading-message">
-      <p>📷 Initializing camera...</p>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Initializing camera...</p>
     </div>
   {:else}
-    <!-- Reference View Toggle -->
-    <div class="toggle-container">
-      <ReferenceViewToggle
-        {isMobile}
-        currentView={settings.current.referenceView}
-        onChange={handleReferenceViewChange}
-      />
-    </div>
+    <!-- Settings Button (Top Right) -->
+    <button class="settings-fab" onclick={() => settingsOpen = true} aria-label="Settings">
+      <i class="fas fa-cog"></i>
+    </button>
 
-    <!-- Split Layout Container -->
-    <div class="split-container" class:has-reference={showReferencePanel}>
+    <!-- Main Content: Split View -->
+    <div class="split-view" class:has-reference={showReferencePanel}>
       <!-- Camera Section -->
-      <div class="camera-section">
-        <div class="video-container">
-          {#if recordedVideo}
-            <!-- Playback Mode -->
-            <!-- svelte-ignore a11y_media_has_caption -->
-            <video
-              bind:this={playbackVideoElement}
-              src={recordedVideo.blobUrl}
-              controls
-              autoplay
-              loop
-              class="video-preview"
-            ></video>
-          {:else}
-            <!-- Camera Preview Mode -->
-            <!-- svelte-ignore a11y_media_has_caption -->
-            <video
-              bind:this={videoElement}
-              autoplay
-              playsinline
-              muted
-              class="video-preview mirror"
-            ></video>
-          {/if}
+      <div class="media-panel camera-panel">
+        <div class="panel-label">
+          <i class="fas fa-video"></i>
+          Camera
+        </div>
+        <div class="video-wrapper">
+          <div class="square-crop">
+            {#if recordedVideo}
+              <!-- svelte-ignore a11y_media_has_caption -->
+              <video
+                bind:this={playbackVideoElement}
+                src={recordedVideo.blobUrl}
+                controls
+                autoplay
+                loop
+                class="video-preview"
+              ></video>
+            {:else}
+              <!-- svelte-ignore a11y_media_has_caption -->
+              <video
+                bind:this={videoElement}
+                autoplay
+                playsinline
+                muted
+                class="video-preview mirror"
+              ></video>
+            {/if}
+          </div>
         </div>
       </div>
 
-      <!-- Reference Section (Animation or Grid) -->
-      {#if showReferencePanel && activeReferenceView}
-        <div class="reference-section">
-          {#if activeReferenceView === "animation"}
-            <AnimationPreview
-              {sequence}
-              settings={settings.current.animationSettings}
-              onSettingsChange={(newSettings) => {
-                settings.setAnimationSpeed(newSettings.speed);
-                settings.setShowTrails(newSettings.showTrails);
-                settings.setBlueMotionVisible(newSettings.blueMotionVisible);
-                settings.setRedMotionVisible(newSettings.redMotionVisible);
-              }}
-            />
-          {:else if activeReferenceView === "grid"}
-            <GridPreview
-              {sequence}
-              settings={settings.current.gridSettings}
-              onSettingsChange={(newSettings) => {
-                settings.setGridAnimated(newSettings.animated);
-                settings.setGridBpm(newSettings.bpm);
-              }}
-            />
-          {/if}
+      <!-- Reference Section -->
+      {#if showReferencePanel && activeReferenceView && sequence}
+        <div class="media-panel reference-panel">
+          <div class="panel-label">
+            <i class="fas {activeReferenceView === 'animation' ? 'fa-play-circle' : 'fa-th'}"></i>
+            {activeReferenceView === "animation" ? "Animation" : "Grid"}
+          </div>
+          <div class="reference-wrapper">
+            {#if activeReferenceView === "animation"}
+              <InlineAnimationPlayer {sequence} autoPlay={true} />
+            {:else if activeReferenceView === "grid"}
+              <GridPreview
+                {sequence}
+                settings={settings.current.gridSettings}
+                onSettingsChange={(s) => {
+                  settings.setGridAnimated(s.animated);
+                  settings.setGridBpm(s.bpm);
+                }}
+              />
+            {/if}
+          </div>
         </div>
       {/if}
     </div>
 
-    <!-- Recording Controls -->
-    <div class="controls">
+    <!-- Recording Controls (in layout flow) -->
+    <div class="controls-bar">
       {#if recordedVideo}
-        <!-- Playback Controls -->
-        <div class="playback-controls">
-          <p class="duration">
-            Duration: {formatDuration(recordedVideo.duration || 0)}
-          </p>
-          <div class="button-row">
-            <button class="btn-secondary" onclick={discardRecording}>
-              🔄 Record Again
+        <!-- Playback State -->
+        <div class="control-group">
+          <span class="duration-badge">{formatDuration(recordedVideo.duration || 0)}</span>
+          <div class="control-buttons">
+            <button class="control-btn secondary" onclick={discardRecording} aria-label="Record Again">
+              <i class="fas fa-redo"></i>
             </button>
-            <button class="btn-primary" onclick={saveRecording}>
-              💾 Save
+            <button class="control-btn primary" onclick={shareRecording} disabled={isSharing} aria-label="Share">
+              <i class="fas {isSharing ? 'fa-spinner fa-spin' : 'fa-share-nodes'}"></i>
+            </button>
+            <button class="control-btn success" onclick={saveRecording} aria-label="Save">
+              <i class="fas fa-download"></i>
             </button>
           </div>
         </div>
       {:else if recordingState === "idle"}
         <!-- Ready to Record -->
-        <button class="btn-record" onclick={startRecording}>
-          🔴 Start Recording
+        <button class="record-btn" onclick={startRecording} aria-label="Start Recording">
+          <span class="record-dot"></span>
         </button>
       {:else if recordingState === "recording"}
-        <!-- Recording Active -->
-        <div class="recording-controls">
-          <p class="duration recording-indicator">
-            🔴 {formatDuration(recordingDuration)}
-          </p>
-          <div class="button-row">
-            <button class="btn-secondary" onclick={pauseRecording}>
-              ⏸️ Pause
+        <!-- Recording -->
+        <div class="control-group">
+          <span class="duration-badge recording">
+            <i class="fas fa-circle pulse"></i>
+            {formatDuration(recordingDuration)}
+          </span>
+          <div class="control-buttons">
+            <button class="control-btn secondary" onclick={pauseRecording} aria-label="Pause">
+              <i class="fas fa-pause"></i>
             </button>
-            <button class="btn-primary" onclick={stopRecording}>
-              ⏹️ Stop
+            <button class="control-btn primary" onclick={stopRecording} aria-label="Stop">
+              <i class="fas fa-stop"></i>
             </button>
-            <button class="btn-danger" onclick={cancelRecording}>
-              ❌ Cancel
+            <button class="control-btn danger" onclick={cancelRecording} aria-label="Cancel">
+              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
       {:else if recordingState === "paused"}
-        <!-- Recording Paused -->
-        <div class="recording-controls">
-          <p class="duration paused-indicator">
-            ⏸️ {formatDuration(recordingDuration)}
-          </p>
-          <div class="button-row">
-            <button class="btn-secondary" onclick={resumeRecording}>
-              ▶️ Resume
+        <!-- Paused -->
+        <div class="control-group">
+          <span class="duration-badge paused">
+            <i class="fas fa-pause"></i>
+            {formatDuration(recordingDuration)}
+          </span>
+          <div class="control-buttons">
+            <button class="control-btn success" onclick={resumeRecording} aria-label="Resume">
+              <i class="fas fa-play"></i>
             </button>
-            <button class="btn-primary" onclick={stopRecording}>
-              ⏹️ Stop
+            <button class="control-btn primary" onclick={stopRecording} aria-label="Stop">
+              <i class="fas fa-stop"></i>
             </button>
-            <button class="btn-danger" onclick={cancelRecording}>
-              ❌ Cancel
+            <button class="control-btn danger" onclick={cancelRecording} aria-label="Cancel">
+              <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
@@ -411,232 +402,393 @@
   {/if}
 </div>
 
+<!-- Settings Sheet -->
+<VideoRecordSettingsSheet
+  isOpen={settingsOpen}
+  {isMobile}
+  referenceView={settings.current.referenceView}
+  animationSettings={settings.current.animationSettings}
+  gridSettings={settings.current.gridSettings}
+  onClose={() => settingsOpen = false}
+  onReferenceViewChange={(v) => settings.setReferenceView(v)}
+  onAnimationSettingsChange={(s) => {
+    settings.setAnimationSpeed(s.speed);
+    settings.setShowTrails(s.showTrails);
+    settings.setBlueMotionVisible(s.blueMotionVisible);
+    settings.setRedMotionVisible(s.redMotionVisible);
+  }}
+  onGridSettingsChange={(s) => {
+    settings.setGridAnimated(s.animated);
+    settings.setGridBpm(s.bpm);
+  }}
+/>
+
 <style>
   .video-record-panel {
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    gap: 12px;
-    padding: 16px;
     overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
   }
 
-  /* Toggle Container */
-  .toggle-container {
-    flex-shrink: 0;
-  }
-
-  /* Split Layout Container */
-  .split-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-height: 0;
-  }
-
-  /* Camera Section */
-  .camera-section {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .split-container.has-reference .camera-section {
-    flex: 1; /* 50% when reference panel shown */
-  }
-
-  /* Reference Section */
-  .reference-section {
-    flex: 1; /* 50% of split */
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Video Container */
-  .video-container {
-    flex: 1;
+  /* Settings FAB */
+  .settings-fab {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.5);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .video-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: black;
-  }
-
-  /* Mirror camera preview for natural viewing */
-  .video-preview.mirror {
-    transform: scaleX(-1);
-  }
-
-  /* Controls */
-  .controls {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .recording-controls,
-  .playback-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-    width: 100%;
-  }
-
-  .button-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  /* Duration Display */
-  .duration {
-    font-size: 18px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0;
-  }
-
-  .recording-indicator {
-    color: #ef4444;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-
-  .paused-indicator {
-    color: #f59e0b;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
-  }
-
-  /* Buttons */
-  button {
-    min-height: 52px;
-    padding: 12px 24px;
-    font-size: 15px;
-    font-weight: 600;
-    border-radius: 10px;
-    border: none;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
-  .btn-record {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  .settings-fab:hover {
+    background: rgba(0, 0, 0, 0.7);
     color: white;
-    min-width: 200px;
+    transform: rotate(45deg);
   }
 
-  .btn-record:hover {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  /* Split View */
+  .split-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    min-height: 0;
   }
 
-  .btn-primary {
+  .split-view.has-reference .media-panel {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .split-view:not(.has-reference) .camera-panel {
+    flex: 1;
+  }
+
+  /* Media Panels */
+  .media-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .panel-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .panel-label i {
+    font-size: 10px;
+  }
+
+  .video-wrapper,
+  .reference-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Square crop container for video */
+  .square-crop {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+    background: black;
+  }
+
+  .video-preview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    background: black;
+  }
+
+  .video-preview.mirror {
+    transform: translate(-50%, -50%) scaleX(-1);
+  }
+
+  /* Controls Bar (in layout flow) */
+  .controls-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+  }
+
+  .duration-badge {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .duration-badge.recording {
+    color: #ef4444;
+  }
+
+  .duration-badge.paused {
+    color: #f59e0b;
+  }
+
+  .duration-badge i.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .control-buttons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .control-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .control-btn.primary {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
   }
 
-  .btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-  }
-
-  .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .btn-secondary:hover {
+  .control-btn.secondary {
     background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
   }
 
-  .btn-danger {
+  .control-btn.success {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+  }
+
+  .control-btn.danger {
     background: rgba(239, 68, 68, 0.2);
     color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
   }
 
-  .btn-danger:hover {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: rgba(239, 68, 68, 0.4);
+  .control-btn:hover:not(:disabled) {
+    transform: scale(1.08);
   }
 
-  button:active {
-    transform: translateY(0);
+  .control-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Record Button */
+  .record-btn {
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .record-btn:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+  }
+
+  .record-btn:active {
+    transform: scale(0.95);
+  }
+
+  .record-dot {
+    width: 32px;
+    height: 32px;
+    background: #ef4444;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .record-btn:hover .record-dot {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
   }
 
   /* Loading/Error States */
-  .loading-message,
-  .error-message {
+  .loading-state,
+  .error-state {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    text-align: center;
     padding: 32px;
+    text-align: center;
   }
 
-  .loading-message p,
-  .error-message p {
+  .loading-state p,
+  .error-state p {
+    margin: 0;
     font-size: 16px;
     color: rgba(255, 255, 255, 0.8);
-    margin: 0;
   }
 
-  .error-message p:first-child {
-    font-size: 24px;
-    font-weight: 600;
+  .error-state i {
+    font-size: 48px;
+    color: #f59e0b;
+  }
+
+  .error-detail {
+    font-size: 14px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+
+  .retry-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .retry-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(59, 130, 246, 0.8);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 
   /* Responsive */
+  @media (min-width: 768px) {
+    .split-view.has-reference {
+      flex-direction: row;
+    }
+
+    .square-crop {
+      max-height: 100%;
+      width: auto;
+      height: 100%;
+    }
+  }
+
   @media (max-width: 640px) {
-    .video-record-panel {
-      padding: 12px;
+    .split-view {
+      gap: 6px;
+      padding: 6px;
+    }
+
+    .controls-bar {
+      padding: 8px;
+    }
+
+    .control-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+    }
+
+    .record-btn {
+      width: 56px;
+      height: 56px;
+    }
+
+    .record-dot {
+      width: 24px;
+      height: 24px;
+    }
+
+    .control-group {
       gap: 8px;
-    }
-
-    .button-row {
-      width: 100%;
-    }
-
-    button {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .btn-record {
-      min-width: 0;
-      width: 100%;
+      padding: 6px 12px;
     }
   }
 </style>
