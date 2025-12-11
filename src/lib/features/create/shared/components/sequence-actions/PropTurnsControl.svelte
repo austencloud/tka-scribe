@@ -27,7 +27,9 @@
 
   // Prevent button clicks from bubbling up and closing the panel
   function handleTurnsChangeClick(e: MouseEvent, delta: number) {
+    console.log(`[PropTurnsControl] Plus/minus button clicked, delta=${delta}, color=${color}`);
     e.stopPropagation();
+    console.log(`[PropTurnsControl] stopPropagation called`);
     handleTurnsChange(delta);
   }
 

@@ -18,6 +18,7 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 	private pixiRenderer: IPixiAnimationRenderer | null = null;
 	private initialized = false;
 	private isInitializing = false;
+	private destroyRequested = false;
 
 	async initialize(
 		deps: InitializerDependencies,
@@ -25,34 +26,36 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 	): Promise<InitializationResult> {
 		// Guard against concurrent initializations
 		if (this.isInitializing) {
-			console.log("[AnimatorCanvasInitializer] Skipping - already initializing");
 			return { success: false, error: "Initialization already in progress" };
 		}
 		if (this.initialized) {
-			console.log("[AnimatorCanvasInitializer] Skipping - already initialized");
 			return { success: true, canvas: this.pixiRenderer?.getCanvas() };
 		}
 
-		console.log("[AnimatorCanvasInitializer] Starting initialization...");
 		this.isInitializing = true;
+		this.destroyRequested = false;
 
 		try {
 			// Step 1: Load animator services (DI container services)
-			console.log("[AnimatorCanvasInitializer] Step 1: Loading animator services...");
 			const servicesLoaded = await deps.loadAnimatorServices();
-			if (!servicesLoaded) {
+			if (!servicesLoaded || this.destroyRequested) {
 				this.isInitializing = false;
-				return { success: false, error: "Failed to load animator services" };
+				return { success: false, error: this.destroyRequested ? "Destroyed during initialization" : "Failed to load animator services" };
 			}
 
 			// Step 2: Load PixiJS renderer (heavy ~500KB module)
 			if (!this.pixiRenderer) {
-				console.log("[AnimatorCanvasInitializer] Step 2: Loading PixiJS renderer...");
 				callbacks.onPixiLoading(true);
 				callbacks.onPixiError(null);
 
 				const pixiResult = await loadPixiRenderer();
 				callbacks.onPixiLoading(false);
+
+				// Check if destroyed during async operation
+				if (this.destroyRequested) {
+					this.isInitializing = false;
+					return { success: false, error: "Destroyed during initialization" };
+				}
 
 				if (!pixiResult.success) {
 					callbacks.onPixiError(pixiResult.error ?? "Unknown PixiJS error");
@@ -60,7 +63,6 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 					return { success: false, error: pixiResult.error };
 				}
 
-				console.log("[AnimatorCanvasInitializer] PixiJS loaded successfully");
 				this.pixiRenderer = pixiResult.renderer!;
 				callbacks.onPixiRendererReady(this.pixiRenderer);
 
@@ -68,33 +70,44 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 				deps.initializePrecomputationService();
 			}
 
-			// Step 3: Verify container is still valid
-			if (!deps.containerElement) {
+			// Step 3: Verify container is still valid and not destroyed
+			if (!deps.containerElement || this.destroyRequested) {
 				this.isInitializing = false;
-				return { success: false, error: "Container element became null during initialization" };
+				return { success: false, error: this.destroyRequested ? "Destroyed during initialization" : "Container element became null during initialization" };
 			}
 
 			// Step 4: Initialize PixiJS renderer
-			console.log("[AnimatorCanvasInitializer] Step 4: Initializing PixiJS renderer...");
 			await this.pixiRenderer.initialize(
 				deps.containerElement,
 				DEFAULT_CANVAS_SIZE,
 				deps.backgroundAlpha
 			);
-			console.log("[AnimatorCanvasInitializer] PixiJS renderer initialized");
+
+			// Check if destroyed during async operation
+			if (this.destroyRequested) {
+				this.pixiRenderer?.destroy();
+				this.pixiRenderer = null;
+				this.isInitializing = false;
+				return { success: false, error: "Destroyed during initialization" };
+			}
 
 			// Step 5: Initialize texture services
-			console.log("[AnimatorCanvasInitializer] Step 5: Initializing prop texture service...");
 			deps.initializePropTextureService();
 
 			// Step 6: Load initial textures
 			const initialGridMode = deps.gridMode?.toString() ?? "diamond";
-			console.log("[AnimatorCanvasInitializer] Step 6: Loading textures (grid: %s)...", initialGridMode);
 			await Promise.all([
 				this.pixiRenderer.loadGridTexture(initialGridMode),
 				deps.loadPropTextures(),
 			]);
-			console.log("[AnimatorCanvasInitializer] Textures loaded");
+
+			// Final check if destroyed during texture loading
+			if (this.destroyRequested) {
+				this.pixiRenderer?.destroy();
+				this.pixiRenderer = null;
+				this.isInitializing = false;
+				return { success: false, error: "Destroyed during initialization" };
+			}
 
 			// Step 7: Mark as initialized
 			this.initialized = true;
@@ -102,19 +115,15 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 
 			const canvas = this.pixiRenderer.getCanvas();
 			callbacks.onCanvasReady(canvas);
-			console.log("[AnimatorCanvasInitializer] Step 7: Marked as initialized, canvas ready");
 
 			// Step 8: Set up remaining services
-			console.log("[AnimatorCanvasInitializer] Step 8: Setting up remaining services...");
 			deps.initializeResizeService();
 			deps.initializeGlyphTextureService();
 			deps.initializeRenderLoopService();
 
 			// Step 9: Start render loop
-			console.log("[AnimatorCanvasInitializer] Step 9: Starting render loop...");
 			deps.startRenderLoop();
 
-			console.log("[AnimatorCanvasInitializer] Initialization complete!");
 			this.isInitializing = false;
 			return { success: true, canvas };
 		} catch (err) {
@@ -126,10 +135,16 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 	}
 
 	destroy(callbacks: Pick<InitializerCallbacks, 'onCanvasReady' | 'onInitialized'>): void {
-		this.pixiRenderer?.destroy();
-		this.pixiRenderer = null;
+		// Signal any in-progress initialization to abort
+		this.destroyRequested = true;
+
+		// Only destroy renderer if not currently initializing (let init handle its own cleanup)
+		if (!this.isInitializing && this.pixiRenderer) {
+			this.pixiRenderer.destroy();
+			this.pixiRenderer = null;
+		}
+
 		this.initialized = false;
-		this.isInitializing = false;
 		callbacks.onCanvasReady(null);
 		callbacks.onInitialized(false);
 	}

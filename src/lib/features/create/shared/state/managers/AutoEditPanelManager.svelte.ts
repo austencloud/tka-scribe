@@ -93,16 +93,20 @@ export function createAutoSequenceActionsEffect(
       const selectedBeatNumber =
         CreateModuleState.sequenceState.selectedBeatNumber;
 
+      console.log(`[AutoEditPanelManager] selectedBeatNumber changed: ${selectedBeatNumber}, lastSelectedBeat: ${lastSelectedBeat}`);
+
       // Only act when selection CHANGES (prevents fight with manual close)
       if (selectedBeatNumber !== lastSelectedBeat) {
         if (selectedBeatNumber !== null) {
           // New beat selected → auto-open panel
+          console.log(`[AutoEditPanelManager] Beat selected, auto-opening panel`);
           panelState.openSequenceActionsPanel();
           getLogger().log(
             `Auto-opening Sequence Actions panel for beat ${selectedBeatNumber}`
           );
         } else {
           // Beat deselected → auto-close panel
+          console.log(`[AutoEditPanelManager] Beat deselected, auto-closing panel`);
           panelState.closeSequenceActionsPanel();
           getLogger().log(
             `Auto-closing Sequence Actions panel (no beat selected)`

@@ -143,8 +143,15 @@
     hapticService?.trigger("selection");
     // Use unified navigation state to go back to previous location
     const location = discoverNavigationState.goBack();
-    if (!location) {
-      // Fallback if no history
+
+    if (!location || location.view === "list") {
+      // No history or going back to list view
+      creatorsViewState.goBack();
+    } else if (location.view === "profile" && location.contextId && location.contextId !== userId) {
+      // Going back to a different profile
+      creatorsViewState.viewUserProfile(location.contextId);
+    } else {
+      // Fallback: go back to list
       creatorsViewState.goBack();
     }
   }

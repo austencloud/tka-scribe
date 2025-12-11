@@ -361,14 +361,26 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // EFFECTS AND LIFECYCLE
   // ============================================================================
 
-  // Track prop changes to trigger re-renders
+  // Track prop and visibility changes to trigger re-renders
+  // Only run when initialized to prevent render triggers during initialization
   $effect(() => {
+    // Track dependencies
     blueProp;
     redProp;
     gridVisible;
     gridMode;
     letter;
-    renderLoopService?.triggerRender(getFrameParams);
+    // Also track visibility manager state changes
+    visibilityState.grid;
+    visibilityState.props;
+    visibilityState.trails;
+    visibilityState.blueMotion;
+    visibilityState.redMotion;
+
+    // Only trigger render if initialized (grid texture loaded)
+    if (isInitialized) {
+      renderLoopService?.triggerRender(getFrameParams);
+    }
   });
 
   // Track gridMode changes and reload grid texture when it changes

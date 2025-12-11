@@ -130,13 +130,18 @@
 
   // Beat editing handlers
   function handleTurnsChange(color: MotionColor, delta: number) {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
+    console.log(`[SequenceActionsPanel] handleTurnsChange called: color=${color}, delta=${delta}, selectedBeatNumber=${selectedBeatNumber}`);
+    if (selectedBeatNumber === null || !beatOperationsService) {
+      console.log(`[SequenceActionsPanel] Early return: selectedBeatNumber=${selectedBeatNumber}, beatOperationsService=${!!beatOperationsService}`);
+      return;
+    }
     hapticService?.trigger("selection");
 
     const currentTurns = color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
     const newNumericTurns = Math.max(-0.5, currentTurns + delta);
     const newTurns: number | "fl" = newNumericTurns === -0.5 ? "fl" : newNumericTurns;
 
+    console.log(`[SequenceActionsPanel] Calling beatOperationsService.updateBeatTurns: beatNumber=${selectedBeatNumber}, color=${color}, turns=${newTurns}`);
     // Use BeatOperationsService to handle motion type updates, float conversion, etc.
     beatOperationsService.updateBeatTurns(
       selectedBeatNumber,
@@ -145,6 +150,7 @@
       CreateModuleState,
       panelState
     );
+    console.log(`[SequenceActionsPanel] updateBeatTurns completed`);
   }
 
   function handleRotationChange(color: MotionColor, direction: RotationDirection) {

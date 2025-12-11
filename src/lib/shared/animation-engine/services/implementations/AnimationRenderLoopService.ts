@@ -134,6 +134,11 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
 		const effectiveBlueMotionVisible = visibility.blueMotionVisible;
 		const effectiveRedMotionVisible = visibility.redMotionVisible;
 
+		// Debug: log if grid should be visible but isn't showing
+		if (!effectiveGridVisible && (gridVisible || visibility.gridVisible)) {
+			console.log("[RenderLoop] Grid hidden - prop:", gridVisible, "manager:", visibility.gridVisible);
+		}
+
 		// Render scene using PixiJS
 		this.pixiRenderer.renderScene({
 			blueProp: effectivePropsVisible && effectiveBlueMotionVisible ? props.blueProp : null,
