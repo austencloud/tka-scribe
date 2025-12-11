@@ -16,6 +16,7 @@ import {
   RotationDirection,
   MotionColor,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { HandPathSequenceConverter } from "../services/HandPathSequenceConverter";
 import { HandPathMotionCalculator } from "../services/HandPathMotionCalculator";
@@ -134,8 +135,13 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
 
   /**
    * Get the final merged sequence (only available when complete)
+   * @param bluePropType - User's selected prop type for blue hand (defaults to HAND)
+   * @param redPropType - User's selected prop type for red hand (defaults to HAND)
    */
-  function getFinalSequence(): PictographData[] {
+  function getFinalSequence(
+    bluePropType: PropType = PropType.HAND,
+    redPropType: PropType = PropType.HAND
+  ): PictographData[] {
     if (!selectedRotation) {
       throw new Error("Must select rotation before getting final sequence");
     }
@@ -144,12 +150,16 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
       throw new Error("Both blue and red hands must be built");
     }
 
-    return converter.mergeToDualPropSequence(
+    // First create sequence with HAND prop type
+    const handSequence = converter.mergeToDualPropSequence(
       blueHandPath,
       redHandPath,
       selectedRotation,
       gridMode
     );
+
+    // Then apply user's selected prop types
+    return converter.applyUserPropTypes(handSequence, bluePropType, redPropType);
   }
 
   /**

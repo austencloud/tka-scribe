@@ -1,0 +1,333 @@
+<!--
+AssemblyWelcome.svelte - Welcome/onboarding screen for Assembly tab
+
+Explains what the Assembly mode does and guides user to start building.
+Shown when sequence is empty.
+-->
+<script lang="ts">
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+
+  const { gridMode, onStart, onGridModeChange } = $props<{
+    gridMode: GridMode;
+    onStart: () => void;
+    onGridModeChange: (mode: GridMode) => void;
+  }>();
+
+  const isDiamond = $derived(gridMode === GridMode.DIAMOND);
+</script>
+
+<div class="assembly-welcome">
+  <div class="welcome-content">
+    <!-- Icon -->
+    <div class="welcome-icon">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Grid dots -->
+        <circle cx="32" cy="12" r="4" fill="currentColor" opacity="0.8" />
+        <circle cx="52" cy="32" r="4" fill="currentColor" opacity="0.8" />
+        <circle cx="32" cy="52" r="4" fill="currentColor" opacity="0.8" />
+        <circle cx="12" cy="32" r="4" fill="currentColor" opacity="0.8" />
+        <!-- Path lines -->
+        <path
+          d="M32 12 L52 32 L32 52 L12 32 Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-dasharray="4 4"
+          fill="none"
+          opacity="0.4"
+        />
+        <!-- Hand indicator -->
+        <circle cx="32" cy="32" r="8" fill="rgba(59, 130, 246, 0.3)" />
+        <circle cx="32" cy="32" r="4" fill="#3b82f6" />
+      </svg>
+    </div>
+
+    <!-- Title -->
+    <h1 class="welcome-title">Hand Path Builder</h1>
+
+    <!-- Description -->
+    <p class="welcome-description">
+      Build sequences by tracing hand paths on a grid. Tap positions to create a
+      path for each hand, then combine them into a complete sequence.
+    </p>
+
+    <!-- How it works -->
+    <div class="how-it-works">
+      <h2 class="section-title">How it works</h2>
+      <ol class="steps-list">
+        <li>
+          <span class="step-number blue">1</span>
+          <span class="step-text">Tap grid positions to trace the <strong>blue hand</strong> path</span>
+        </li>
+        <li>
+          <span class="step-number red">2</span>
+          <span class="step-text">Then trace the <strong>red hand</strong> path</span>
+        </li>
+        <li>
+          <span class="step-number green">3</span>
+          <span class="step-text">Choose rotation direction to complete</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Grid Mode Toggle -->
+    <div class="grid-mode-section">
+      <span class="grid-mode-label">Grid Mode</span>
+      <div class="grid-mode-toggle">
+        <button
+          class="mode-button"
+          class:active={isDiamond}
+          onclick={() => onGridModeChange(GridMode.DIAMOND)}
+        >
+          <span class="mode-icon">◇</span>
+          Diamond
+        </button>
+        <button
+          class="mode-button"
+          class:active={!isDiamond}
+          onclick={() => onGridModeChange(GridMode.BOX)}
+        >
+          <span class="mode-icon">□</span>
+          Box
+        </button>
+      </div>
+    </div>
+
+    <!-- Start Button -->
+    <button class="start-button" onclick={onStart}>
+      <span class="button-text">Start Building</span>
+      <span class="button-icon">→</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .assembly-welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .welcome-icon {
+    width: 80px;
+    height: 80px;
+    color: rgba(139, 92, 246, 0.9);
+    margin-bottom: 8px;
+  }
+
+  .welcome-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .welcome-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .welcome-description {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+  }
+
+  /* How it works section */
+  .how-it-works {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 4px;
+  }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0 0 12px 0;
+  }
+
+  .steps-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .steps-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-number.blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+  }
+
+  .step-number.red {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+
+  .step-number.green {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+  }
+
+  .step-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .step-text strong {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* Grid mode toggle */
+  .grid-mode-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .grid-mode-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .grid-mode-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .mode-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mode-button.active {
+    background: rgba(139, 92, 246, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .mode-button:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .mode-icon {
+    font-size: 16px;
+  }
+
+  /* Start button */
+  .start-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 280px;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    margin-top: 8px;
+  }
+
+  .start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+  }
+
+  .start-button:active {
+    transform: translateY(0);
+  }
+
+  .button-icon {
+    font-size: 18px;
+    transition: transform 0.2s ease;
+  }
+
+  .start-button:hover .button-icon {
+    transform: translateX(4px);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 480px) {
+    .assembly-welcome {
+      padding: 16px;
+    }
+
+    .welcome-icon {
+      width: 64px;
+      height: 64px;
+    }
+
+    .welcome-title {
+      font-size: 24px;
+    }
+
+    .welcome-description {
+      font-size: 14px;
+    }
+  }
+</style>

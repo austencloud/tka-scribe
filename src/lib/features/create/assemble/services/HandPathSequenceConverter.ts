@@ -227,4 +227,40 @@ export class HandPathSequenceConverter {
 
     return true;
   }
+
+  /**
+   * Apply user's prop types to a finalized sequence
+   * Called after rotation selection to convert from HAND to user's preferred props
+   * @param sequence - The finalized sequence with PropType.HAND
+   * @param bluePropType - User's selected prop type for blue hand
+   * @param redPropType - User's selected prop type for red hand
+   */
+  applyUserPropTypes(
+    sequence: PictographData[],
+    bluePropType: PropType,
+    redPropType: PropType
+  ): PictographData[] {
+    return sequence.map((pictograph) => {
+      const newMotions: Partial<Record<MotionColor, MotionData>> = {};
+
+      if (pictograph.motions.blue) {
+        newMotions.blue = {
+          ...pictograph.motions.blue,
+          propType: bluePropType,
+        };
+      }
+
+      if (pictograph.motions.red) {
+        newMotions.red = {
+          ...pictograph.motions.red,
+          propType: redPropType,
+        };
+      }
+
+      return createPictographData({
+        ...pictograph,
+        motions: newMotions,
+      });
+    });
+  }
 }
