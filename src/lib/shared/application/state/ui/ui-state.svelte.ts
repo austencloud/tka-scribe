@@ -2,6 +2,9 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 import type { TabId } from "../../../navigation/domain/types";
 import type { IDiscoverThumbnailService } from "../../../../features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
 
+// Spotlight display modes
+export type SpotlightDisplayMode = "image" | "beatgrid";
+
 // Centralized UI state leveraging Svelte 5 runes.
 // Uses TabId (which includes both ModuleId and LegacyTabId) for backwards compatibility
 export const uiState = $state({
@@ -19,6 +22,7 @@ export const uiState = $state({
   spotlightSequence: null as SequenceData | null,
   spotlightThumbnailService: null as IDiscoverThumbnailService | null,
   spotlightImageUrl: null as string | null, // Direct image URL (for Create module spotlight)
+  spotlightDisplayMode: "image" as SpotlightDisplayMode, // "image" or "beatgrid"
   showDebugPanel: false, // Admin-only debug console
 });
 
@@ -193,6 +197,10 @@ export function getSpotlightImageUrl(): string | null {
   return uiState.spotlightImageUrl;
 }
 
+export function getSpotlightDisplayMode(): SpotlightDisplayMode {
+  return uiState.spotlightDisplayMode;
+}
+
 export function openSpotlightViewer(
   sequence: SequenceData,
   thumbnailService: IDiscoverThumbnailService
@@ -200,6 +208,7 @@ export function openSpotlightViewer(
   uiState.spotlightSequence = sequence;
   uiState.spotlightThumbnailService = thumbnailService;
   uiState.spotlightImageUrl = null; // Clear direct URL when using thumbnailService
+  uiState.spotlightDisplayMode = "image";
   uiState.showSpotlight = true;
 }
 
@@ -211,6 +220,19 @@ export function openSpotlightWithImage(imageUrl: string, sequence?: SequenceData
   uiState.spotlightImageUrl = imageUrl;
   uiState.spotlightSequence = sequence || null;
   uiState.spotlightThumbnailService = null;
+  uiState.spotlightDisplayMode = "image";
+  uiState.showSpotlight = true;
+}
+
+/**
+ * Open spotlight viewer with a beat grid (renders sequence data directly)
+ * Faster than image mode since it doesn't need to generate/fetch an image first
+ */
+export function openSpotlightWithBeatGrid(sequence: SequenceData): void {
+  uiState.spotlightSequence = sequence;
+  uiState.spotlightImageUrl = null;
+  uiState.spotlightThumbnailService = null;
+  uiState.spotlightDisplayMode = "beatgrid";
   uiState.showSpotlight = true;
 }
 
@@ -219,6 +241,7 @@ export function closeSpotlightViewer(): void {
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
   uiState.spotlightImageUrl = null;
+  uiState.spotlightDisplayMode = "image";
 }
 
 // ============================================================================
@@ -259,5 +282,6 @@ export function resetUIState(): void {
   uiState.spotlightSequence = null;
   uiState.spotlightThumbnailService = null;
   uiState.spotlightImageUrl = null;
+  uiState.spotlightDisplayMode = "image";
   uiState.showDebugPanel = false;
 }

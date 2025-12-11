@@ -16,6 +16,7 @@
     getShowSpotlight,
     getSpotlightSequence,
     getSpotlightThumbnailService,
+    getSpotlightDisplayMode,
   } from "../application/state/ui/ui-state.svelte";
   import type {
     ISheetRouterService,
@@ -27,6 +28,7 @@
   let showSpotlight = $derived(getShowSpotlight());
   let spotlightSequence = $derived(getSpotlightSequence());
   let spotlightThumbnailService = $derived(getSpotlightThumbnailService());
+  let spotlightDisplayMode = $derived(getSpotlightDisplayMode());
 
   // Route-based spotlight state
   let spotlightSequenceId = $state<string | null>(null);
@@ -92,6 +94,7 @@
 {#if (showSpotlight && spotlightSequence) || spotlightSequenceId}
   <SpotlightViewer
     show={showSpotlight || !!spotlightSequenceId}
+    displayMode={spotlightDisplayMode}
     {...spotlightSequence ? { sequence: spotlightSequence } : {}}
     {...spotlightThumbnailService
       ? { thumbnailService: spotlightThumbnailService }

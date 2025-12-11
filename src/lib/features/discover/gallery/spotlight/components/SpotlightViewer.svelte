@@ -1,18 +1,22 @@
-<!-- SpotlightViewer.svelte - Simplified fullscreen image viewer -->
+<!-- SpotlightViewer.svelte - Fullscreen viewer for images or beat grids -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IDiscoverThumbnailService } from "../../display/services/contracts/IDiscoverThumbnailService";
+  import type { SpotlightDisplayMode } from "$lib/shared/application/state/ui/ui-state.svelte";
+  import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
     show = false,
     sequence,
     thumbnailService,
+    displayMode = "image",
     onClose = () => {},
   } = $props<{
     show?: boolean;
     sequence?: SequenceData;
     thumbnailService?: IDiscoverThumbnailService;
+    displayMode?: SpotlightDisplayMode;
     onClose?: () => void;
   }>();
 
@@ -30,7 +34,7 @@
   // Show/hide logic
   $effect(() => {
     if (show && sequence) {
-      console.log("✨ Spotlight viewer opened");
+      console.log("✨ Spotlight viewer opened", { displayMode });
       isVisible = true;
       isClosing = false;
 
@@ -39,25 +43,28 @@
         document.documentElement.classList.add("tka-no-select");
       } catch {}
 
-      // Get first variation thumbnail
-      const thumbnail = sequence.thumbnails?.[0];
-      if (thumbnail) {
-        // Check if thumbnail is already a full URL (starts with http or /)
-        if (thumbnail.startsWith("http") || thumbnail.startsWith("/")) {
-          // Use the URL directly
-          imageUrl = thumbnail;
-        } else if (thumbnailService) {
-          // Use thumbnail service to construct the URL
-          try {
-            imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
-          } catch (error) {
-            console.warn("Failed to resolve thumbnail via service", error);
-            // Fallback: try using it as a relative path
+      // Only load image URL in image mode
+      if (displayMode === "image") {
+        // Get first variation thumbnail
+        const thumbnail = sequence.thumbnails?.[0];
+        if (thumbnail) {
+          // Check if thumbnail is already a full URL (starts with http or /)
+          if (thumbnail.startsWith("http") || thumbnail.startsWith("/")) {
+            // Use the URL directly
+            imageUrl = thumbnail;
+          } else if (thumbnailService) {
+            // Use thumbnail service to construct the URL
+            try {
+              imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
+            } catch (error) {
+              console.warn("Failed to resolve thumbnail via service", error);
+              // Fallback: try using it as a relative path
+              imageUrl = `/gallery/${thumbnail}`;
+            }
+          } else {
+            // No service available, assume it's a gallery path
             imageUrl = `/gallery/${thumbnail}`;
           }
-        } else {
-          // No service available, assume it's a gallery path
-          imageUrl = `/gallery/${thumbnail}`;
         }
       }
     }
@@ -139,7 +146,14 @@
   let resizeTimer: number | undefined;
 
   // Recalculate rotation on window resize (debounced for performance)
+  // Only applies to image mode - beatgrid mode locks rotation to user choice
   function handleResize() {
+    // In beatgrid mode, don't auto-change rotation - user is in control
+    if (displayMode === "beatgrid") return;
+
+    // In image mode with manual override, also don't change
+    if (manualRotationOverride !== null) return;
+
     // Clear existing timer
     if (resizeTimer) {
       clearTimeout(resizeTimer);
@@ -211,7 +225,7 @@
   onorientationchange={handleResize}
 />
 
-{#if isVisible && imageUrl}
+{#if isVisible && (imageUrl || displayMode === "beatgrid")}
   <!-- Fullscreen overlay - clicking anywhere closes -->
   <div
     bind:this={_spotlightElement}
@@ -224,36 +238,49 @@
     aria-label="Maximized sequence view"
     tabindex="-1"
   >
-    <!-- Image maximized to fill screen -->
-    <img
-      src={imageUrl}
-      alt={sequence?.name || sequence?.word || "Sequence"}
-      class="spotlight-image"
-      class:rotated={shouldRotate}
-      onload={handleImageLoad}
-    />
+    {#if displayMode === "beatgrid" && sequence}
+      <!-- Beat grid mode: render sequence directly, filling viewport -->
+      <!-- Tap anywhere to close - no buttons needed -->
+      <div class="spotlight-beatgrid">
+        <BeatGrid
+          beats={sequence.beats ?? []}
+          startPosition={sequence.startPosition ?? sequence.startingPositionBeat ?? null}
+          isSideBySideLayout={true}
+          isSpotlightMode={true}
+        />
+      </div>
+    {:else}
+      <!-- Image mode: show thumbnail, tap anywhere to close -->
+      <img
+        src={imageUrl}
+        alt={sequence?.name || sequence?.word || "Sequence"}
+        class="spotlight-image"
+        class:rotated={shouldRotate}
+        onload={handleImageLoad}
+      />
 
-    <!-- Rotate button - bottom right corner -->
-    <button
-      class="rotate-button"
-      onclick={toggleRotation}
-      aria-label="Rotate image"
-      title="Rotate image (R)"
-    >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+      <!-- Rotate button - bottom right corner (image mode only) -->
+      <button
+        class="rotate-button"
+        onclick={toggleRotation}
+        aria-label="Rotate view"
+        title="Rotate view (R)"
       >
-        <polyline points="23 4 23 10 17 10"></polyline>
-        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-      </svg>
-    </button>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
+    {/if}
   </div>
 {/if}
 
@@ -317,7 +344,23 @@
     max-height: 100vw;
   }
 
-  /* Rotate button */
+  /* Beat grid container - fills viewport, tap anywhere to close */
+  .spotlight-beatgrid {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Clicks pass through to parent spotlight for closing */
+    pointer-events: none;
+  }
+
+  /* Beat grid content also allows clicks through for closing */
+  .spotlight-beatgrid :global(.beat-grid-container) {
+    pointer-events: none;
+  }
+
+  /* Rotate button - image mode only */
   .rotate-button {
     position: fixed;
     bottom: 2rem;
@@ -358,6 +401,7 @@
   @media (prefers-reduced-motion: reduce) {
     .spotlight,
     .spotlight-image,
+    .spotlight-beatgrid,
     .rotate-button {
       animation: none;
       transition: none;
