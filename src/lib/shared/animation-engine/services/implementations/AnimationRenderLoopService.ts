@@ -131,8 +131,10 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
 		const effectiveGridVisible = gridVisible && visibility.gridVisible;
 		const effectivePropsVisible = visibility.propsVisible;
 		const effectiveTrailsVisible = visibility.trailsVisible && trailSettings.enabled;
-		const effectiveBlueMotionVisible = visibility.blueMotionVisible;
-		const effectiveRedMotionVisible = visibility.redMotionVisible;
+		// Derive motion visibility from both internal state AND whether prop is actually present
+		// (props may be filtered to null by parent component based on its own visibility state)
+		const effectiveBlueMotionVisible = visibility.blueMotionVisible && props.blueProp !== null;
+		const effectiveRedMotionVisible = visibility.redMotionVisible && props.redProp !== null;
 
 		// Debug: log if grid should be visible but isn't showing
 		if (!effectiveGridVisible && (gridVisible || visibility.gridVisible)) {
@@ -151,10 +153,10 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
 			turnsTuple,
 			bluePropDimensions: props.bluePropDimensions,
 			redPropDimensions: props.redPropDimensions,
-			blueTrailPoints: effectiveTrailsVisible ? trailPoints.blue : [],
-			redTrailPoints: effectiveTrailsVisible ? trailPoints.red : [],
-			secondaryBlueTrailPoints: effectiveTrailsVisible ? trailPoints.secondaryBlue : [],
-			secondaryRedTrailPoints: effectiveTrailsVisible ? trailPoints.secondaryRed : [],
+			blueTrailPoints: effectiveTrailsVisible && effectiveBlueMotionVisible ? trailPoints.blue : [],
+			redTrailPoints: effectiveTrailsVisible && effectiveRedMotionVisible ? trailPoints.red : [],
+			secondaryBlueTrailPoints: effectiveTrailsVisible && effectiveBlueMotionVisible ? trailPoints.secondaryBlue : [],
+			secondaryRedTrailPoints: effectiveTrailsVisible && effectiveRedMotionVisible ? trailPoints.secondaryRed : [],
 			trailSettings,
 			currentTime,
 		});

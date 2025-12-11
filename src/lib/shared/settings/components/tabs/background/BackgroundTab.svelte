@@ -9,14 +9,7 @@
   import { onMount } from "svelte";
   import IOSBackgroundCardGrid from "./IOSBackgroundCardGrid.svelte";
   import { backgroundsConfig } from "./background-config";
-  import {
-    calculateGradientLuminance,
-    calculateLuminance,
-    extractAccentColor,
-    generateGlassMorphismTheme,
-    generateMatteTheme,
-    getThemeMode,
-  } from "../../../utils/background-theme-calculator";
+  import { applyThemeFromColors } from "../../../utils/background-theme-calculator";
 
   let { settings, onUpdate } = $props<{
     settings: AppSettings;
@@ -83,7 +76,7 @@
   }
 
   function handleBackgroundSelect(selectedType: BackgroundType) {
-    // Find the background config to get color/gradient info for simple backgrounds
+    // Find the background config to get color/gradient info
     const bgConfig = backgroundsConfig.find((bg) => bg.type === selectedType);
 
     // IMPORTANT: Update colors/gradient FIRST before updating type
@@ -91,78 +84,22 @@
     if (bgConfig) {
       if (selectedType === BackgroundType.SOLID_COLOR && bgConfig.color) {
         updateBackgroundSetting("backgroundColor", bgConfig.color);
-        applyDynamicGlassMorphism(bgConfig.color);
+        applyThemeFromColors(bgConfig.color);
       } else if (
         selectedType === BackgroundType.LINEAR_GRADIENT &&
         bgConfig.colors
       ) {
         updateBackgroundSetting("gradientColors", bgConfig.colors);
         updateBackgroundSetting("gradientDirection", bgConfig.direction || 135);
-        applyDynamicGlassMorphism(undefined, bgConfig.colors);
+        applyThemeFromColors(undefined, bgConfig.colors);
+      } else if (bgConfig.themeColors) {
+        // Animated backgrounds: use themeColors for UI theming
+        applyThemeFromColors(undefined, bgConfig.themeColors);
       }
     }
 
     // Update the background type LAST to trigger the crossfade with custom options
     updateBackgroundSetting("backgroundType", selectedType);
-  }
-
-  /**
-   * Apply dynamic glass morphism based on background luminance
-   */
-  function applyDynamicGlassMorphism(
-    solidColor?: string,
-    gradientColors?: string[]
-  ) {
-    if (typeof document === "undefined") return;
-
-    // Calculate luminance
-    const luminance = solidColor
-      ? calculateLuminance(solidColor)
-      : gradientColors
-        ? calculateGradientLuminance(gradientColors)
-        : 0;
-
-    // Determine theme mode
-    const mode = getThemeMode(luminance);
-
-    // Extract accent color for borders (if gradient)
-    const accentColor = gradientColors
-      ? extractAccentColor(gradientColors)
-      : solidColor;
-
-    // Generate themes
-    const theme = generateGlassMorphismTheme(mode, accentColor);
-    const matteTheme = generateMatteTheme(mode, accentColor);
-
-    // Apply legacy glass variables
-    const root = document.documentElement;
-    root.style.setProperty("--panel-bg-current", theme.panelBg);
-    root.style.setProperty("--panel-border-current", theme.panelBorder);
-    root.style.setProperty("--panel-hover-current", theme.panelHover);
-    root.style.setProperty("--card-bg-current", theme.cardBg);
-    root.style.setProperty("--card-border-current", theme.cardBorder);
-    root.style.setProperty("--card-hover-current", theme.cardHover);
-    root.style.setProperty("--text-primary-current", theme.textPrimary);
-    root.style.setProperty("--text-secondary-current", theme.textSecondary);
-    root.style.setProperty("--input-bg-current", theme.inputBg);
-    root.style.setProperty("--input-border-current", theme.inputBorder);
-    root.style.setProperty("--input-focus-current", theme.inputFocus);
-    root.style.setProperty("--button-active-current", theme.buttonActive);
-    root.style.setProperty("--glass-backdrop", theme.backdropBlur);
-
-    // Apply matte 2026 bento theme variables
-    root.style.setProperty("--theme-panel-bg", matteTheme.panelBg);
-    root.style.setProperty("--theme-panel-elevated-bg", matteTheme.panelElevatedBg);
-    root.style.setProperty("--theme-card-bg", matteTheme.cardBg);
-    root.style.setProperty("--theme-card-hover-bg", matteTheme.cardHoverBg);
-    root.style.setProperty("--theme-accent", matteTheme.accent);
-    root.style.setProperty("--theme-accent-strong", matteTheme.accentStrong);
-    root.style.setProperty("--theme-stroke", matteTheme.stroke);
-    root.style.setProperty("--theme-stroke-strong", matteTheme.strokeStrong);
-    root.style.setProperty("--theme-text", matteTheme.text);
-    root.style.setProperty("--theme-text-dim", matteTheme.textDim);
-    root.style.setProperty("--theme-shadow", matteTheme.shadow);
-    root.style.setProperty("--theme-panel-shadow", matteTheme.panelShadow);
   }
 </script>
 

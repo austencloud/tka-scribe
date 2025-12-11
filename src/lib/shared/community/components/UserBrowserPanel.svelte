@@ -106,7 +106,7 @@
     isLoading = true;
     error = null;
     try {
-      users = await userService.getAllUsers(currentUserId);
+      users = await userService.getUsers(undefined, currentUserId);
     } catch (err) {
       console.error("[UserBrowserPanel] Error loading users:", err);
       error = "Failed to load users";

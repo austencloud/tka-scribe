@@ -109,33 +109,36 @@
       // ⚡ PERFORMANCE: Run cache cleanup asynchronously to not block page load
       setTimeout(function () {
         try {
-          // Always clear cache-related items on startup to prevent quota issues
+          // Clear specific cache keys to prevent quota issues
+          // IMPORTANT: Be specific! Broad patterns like "options" will break user preferences
+          const cacheKeyPatterns = [
+            "preloaded_options",        // Pictograph preload cache
+            "all_preloaded_options",    // Full preload cache
+            "preloaded_options_meta",   // Preload metadata
+            "_cache",                   // Keys ending in _cache
+            "-cache",                   // Keys with -cache
+          ];
+
           const keysToRemove = [];
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (
-              key &&
-              (key.includes("preload") ||
-                key.includes("options") ||
-                key.includes("cache") ||
-                key.includes("all_preloaded_options") ||
-                key.includes("preloaded_options_meta"))
-            ) {
-              keysToRemove.push(key);
+            if (key) {
+              // Only clear if key matches a specific cache pattern
+              const isCache = cacheKeyPatterns.some(pattern =>
+                key === pattern ||
+                key.endsWith(pattern) ||
+                key.includes("_cache_") ||
+                key.includes("-cache-")
+              );
+              if (isCache) {
+                keysToRemove.push(key);
+              }
             }
           }
 
           keysToRemove.forEach((key) => {
             localStorage.removeItem(key);
           });
-
-          // Double-check total size after clearing
-          let totalSize = 0;
-          for (let key in localStorage) {
-            if (localStorage.hasOwnProperty(key)) {
-              totalSize += localStorage[key].length + key.length;
-            }
-          }
         } catch (error) {
           console.warn("Failed to check/clear cache on startup:", error);
         }

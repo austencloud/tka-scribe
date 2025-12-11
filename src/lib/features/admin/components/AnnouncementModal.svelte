@@ -40,7 +40,7 @@
     // Parse the URL to extract module and tab
     // Expected format: /settings?tab=whats-new or /module?tab=tabname
     const [path, queryString] = url.split('?');
-    const moduleId = path.replace('/', '') as ModuleId;
+    const moduleId = (path ?? '').replace('/', '') as ModuleId;
 
     // Parse query params
     const params = new URLSearchParams(queryString || '');

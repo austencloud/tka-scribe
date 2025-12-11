@@ -192,9 +192,9 @@
       isSharing = true;
       const sequenceName = sequence?.word || sequence?.name || "recording";
 
-      if (recordedVideo.blob && navigator.canShare) {
+      if (recordedVideo.videoBlob && navigator.canShare) {
         const filename = `tka-${sequenceName}-${Date.now()}.webm`;
-        const file = new File([recordedVideo.blob], filename, { type: "video/webm" });
+        const file = new File([recordedVideo.videoBlob], filename, { type: "video/webm" });
         const shareData: ShareData = {
           title: `TKA Recording: ${sequenceName}`,
           text: `Check out my flow recording: ${sequenceName}`,

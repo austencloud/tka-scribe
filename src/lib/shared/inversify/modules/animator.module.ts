@@ -11,6 +11,7 @@ import { CoordinateUpdater } from "../../../features/compose/services/implementa
 import { EndpointCalculator } from "../../../features/compose/services/implementations/EndpointCalculator";
 import { GifExportService } from "../../../features/compose/services/implementations/GifExportService";
 import { GifExportOrchestrator } from "../../../features/compose/services/implementations/GifExportOrchestrator";
+import { VideoExportService } from "../../../features/compose/services/implementations/VideoExportService";
 import { MotionCalculator } from "../../../features/compose/services/implementations/MotionCalculator";
 // PixiAnimationRenderer moved to on-demand loading in PixiModule (pixi.js ~500KB)
 import { PropInterpolator as PropInterpolationService } from "../../../features/compose/services/implementations/PropInterpolator";
@@ -53,6 +54,7 @@ export const animatorModule = new ContainerModule(
     // IPixiAnimationRenderer loaded on-demand via PixiModule when animation canvas is used
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IGifExportService).to(GifExportService);
+    options.bind(TYPES.IVideoExportService).to(VideoExportService);
     options.bind(TYPES.IAnimatedImageTranscoder).to(AnimatedImageTranscoder);
     options.bind(TYPES.IGifExportOrchestrator).to(GifExportOrchestrator);
 

@@ -5,6 +5,23 @@
  * for background colors and gradients to ensure accessibility and visual consistency.
  */
 
+import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
+
+/**
+ * Theme colors for each background type
+ * These represent the dominant visual palette for deriving UI accents
+ */
+export const BACKGROUND_THEME_COLORS: Record<BackgroundType, string[]> = {
+  [BackgroundType.AURORA]: ["#064e3b", "#0d9488", "#06b6d4", "#a855f7"],
+  [BackgroundType.SNOWFALL]: ["#1e3a5f", "#3b82f6", "#93c5fd"],
+  [BackgroundType.NIGHT_SKY]: ["#1e1b4b", "#4338ca", "#818cf8"],
+  [BackgroundType.DEEP_OCEAN]: ["#0c4a6e", "#0891b2", "#22d3ee"],
+  [BackgroundType.EMBER_GLOW]: ["#7c2d12", "#ea580c", "#fb923c"],
+  [BackgroundType.SAKURA_DRIFT]: ["#831843", "#db2777", "#f9a8d4"],
+  [BackgroundType.SOLID_COLOR]: ["#18181b", "#3f3f46", "#71717a"],
+  [BackgroundType.LINEAR_GRADIENT]: ["#0d1117", "#161b22", "#21262d"],
+};
+
 /**
  * Calculate relative luminance of a color using WCAG formula
  * https://www.w3.org/TR/WCAG20/#relativeluminancedef
@@ -218,4 +235,77 @@ export function extractAccentColor(colors: string[]): string | undefined {
 
   // For 2-color gradients, use the second color
   return colors[1];
+}
+
+/**
+ * Apply theme CSS variables to document root based on colors
+ * Can be called with solid color OR gradient/theme colors
+ */
+export function applyThemeFromColors(
+  solidColor?: string,
+  gradientColors?: string[]
+): void {
+  if (typeof document === "undefined") return;
+
+  // Calculate luminance
+  const luminance = solidColor
+    ? calculateLuminance(solidColor)
+    : gradientColors
+      ? calculateGradientLuminance(gradientColors)
+      : 0;
+
+  // Determine theme mode
+  const mode = getThemeMode(luminance);
+
+  // Extract accent color
+  const accentColor = gradientColors
+    ? extractAccentColor(gradientColors)
+    : solidColor;
+
+  // Generate themes
+  const theme = generateGlassMorphismTheme(mode, accentColor);
+  const matteTheme = generateMatteTheme(mode, accentColor);
+
+  // Apply to document root
+  const root = document.documentElement;
+
+  // Legacy glass variables
+  root.style.setProperty("--panel-bg-current", theme.panelBg);
+  root.style.setProperty("--panel-border-current", theme.panelBorder);
+  root.style.setProperty("--panel-hover-current", theme.panelHover);
+  root.style.setProperty("--card-bg-current", theme.cardBg);
+  root.style.setProperty("--card-border-current", theme.cardBorder);
+  root.style.setProperty("--card-hover-current", theme.cardHover);
+  root.style.setProperty("--text-primary-current", theme.textPrimary);
+  root.style.setProperty("--text-secondary-current", theme.textSecondary);
+  root.style.setProperty("--input-bg-current", theme.inputBg);
+  root.style.setProperty("--input-border-current", theme.inputBorder);
+  root.style.setProperty("--input-focus-current", theme.inputFocus);
+  root.style.setProperty("--button-active-current", theme.buttonActive);
+  root.style.setProperty("--glass-backdrop", theme.backdropBlur);
+
+  // Matte 2026 bento theme variables
+  root.style.setProperty("--theme-panel-bg", matteTheme.panelBg);
+  root.style.setProperty("--theme-panel-elevated-bg", matteTheme.panelElevatedBg);
+  root.style.setProperty("--theme-card-bg", matteTheme.cardBg);
+  root.style.setProperty("--theme-card-hover-bg", matteTheme.cardHoverBg);
+  root.style.setProperty("--theme-accent", matteTheme.accent);
+  root.style.setProperty("--theme-accent-strong", matteTheme.accentStrong);
+  root.style.setProperty("--theme-stroke", matteTheme.stroke);
+  root.style.setProperty("--theme-stroke-strong", matteTheme.strokeStrong);
+  root.style.setProperty("--theme-text", matteTheme.text);
+  root.style.setProperty("--theme-text-dim", matteTheme.textDim);
+  root.style.setProperty("--theme-shadow", matteTheme.shadow);
+  root.style.setProperty("--theme-panel-shadow", matteTheme.panelShadow);
+}
+
+/**
+ * Apply theme based on BackgroundType
+ * Convenience function that looks up theme colors and applies them
+ */
+export function applyThemeForBackground(backgroundType: BackgroundType): void {
+  const themeColors = BACKGROUND_THEME_COLORS[backgroundType];
+  if (themeColors) {
+    applyThemeFromColors(undefined, themeColors);
+  }
 }

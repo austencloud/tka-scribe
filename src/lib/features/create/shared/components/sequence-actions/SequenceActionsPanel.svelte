@@ -10,12 +10,11 @@
   import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import type { BeatData } from "../../domain/models/BeatData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
   import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
-  import { goto } from "$app/navigation";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
+  import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
   import SequencePreviewDialog from "./SequencePreviewDialog.svelte";
@@ -214,13 +213,8 @@
     if (!sequence) return;
     hapticService?.trigger("selection");
     handleClose();
-    try {
-      const encoderService = resolve<ISequenceEncoderService>(TYPES.ISequenceEncoderService);
-      const { url } = encoderService.generateViewerURL(sequence, { compress: true });
-      goto(new URL(url).pathname);
-    } catch (err) {
-      console.error("Failed to generate preview URL:", err);
-    }
+    // Open spotlight with beat grid - renders sequence directly without generating an image
+    openSpotlightWithBeatGrid(sequence);
   }
 
   function handleEditInConstructor() {

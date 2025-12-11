@@ -28,7 +28,7 @@ Responsive design:
     onMirror,
     onSwapColors,
     onRotate,
-    onReverse,
+    onRewind,
     renderExtra,
   } = $props<{
     disabled?: boolean;
@@ -36,7 +36,7 @@ Responsive design:
     onMirror?: () => void;
     onSwapColors?: () => void;
     onRotate?: () => void;
-    onReverse?: () => void;
+    onRewind?: () => void;
     renderExtra?: Snippet;
   }>();
 

@@ -446,7 +446,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "feedback":
-        await loadIfNeeded("feedback", () => import("./modules/feedback.module"));
+        // Feedback is loaded in Tier 2, just wait for it
+        if (tier2Promise) {
+          await tier2Promise;
+        }
         break;
 
       case "word_card":

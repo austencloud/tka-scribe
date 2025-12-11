@@ -134,11 +134,13 @@
     align-items: center;
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 12px);
-    padding: clamp(14px, 3.5cqi, 24px);
+    padding: clamp(8px, 2cqi, 14px);
     color: rgba(255, 255, 255, 0.7);
     text-align: center;
     writing-mode: vertical-rl;
     text-orientation: mixed;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .archive-label i {

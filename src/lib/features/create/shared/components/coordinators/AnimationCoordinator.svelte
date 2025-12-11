@@ -574,7 +574,7 @@
   onPlaybackToggle={handlePlaybackToggle}
   onCanvasReady={handleCanvasReady}
   onVideoBeatChange={handleVideoBeatChange}
-  onExportGif={handleExportGif}
+  onExportVideo={handleExportGif}
   onShareAnimation={handleShareAnimation}
   {isExporting}
   exportProgress={{ progress: exportProgress, stage: exportStage }}

@@ -6,6 +6,8 @@ export interface BackgroundMetadata {
   name: string;
   description: string;
   icon: string;
+  // Theme colors for animated backgrounds (used to derive UI accent)
+  themeColors?: string[];
   // For simple backgrounds
   color?: string;
   colors?: string[];
@@ -14,6 +16,8 @@ export interface BackgroundMetadata {
 
 /**
  * Available backgrounds with their metadata and animation configurations
+ * themeColors represent the dominant visual palette of each background
+ * for deriving consistent UI theming
  */
 export const backgroundsConfig: BackgroundMetadata[] = [
   {
@@ -21,18 +25,24 @@ export const backgroundsConfig: BackgroundMetadata[] = [
     name: "Aurora",
     description: "Colorful flowing aurora with lens flare",
     icon: '<i class="fas fa-star"></i>',
+    // Aurora: greens, cyans, and magentas
+    themeColors: ["#064e3b", "#0d9488", "#06b6d4", "#a855f7"],
   },
   {
     type: BackgroundType.SNOWFALL,
     name: "Snowfall",
     description: "Gentle falling snowflakes with shooting stars",
     icon: '<i class="fas fa-snowflake"></i>',
+    // Snowfall: cool blues and icy whites
+    themeColors: ["#1e3a5f", "#3b82f6", "#93c5fd"],
   },
   {
     type: BackgroundType.NIGHT_SKY,
     name: "Night Sky",
     description: "Starry night with twinkling celestial bodies",
     icon: '<i class="fas fa-moon"></i>',
+    // Night sky: deep purples and indigos
+    themeColors: ["#1e1b4b", "#4338ca", "#818cf8"],
   },
   {
     type: BackgroundType.DEEP_OCEAN,
@@ -40,18 +50,24 @@ export const backgroundsConfig: BackgroundMetadata[] = [
     description:
       "Immersive underwater scene with marine life and floating bubbles",
     icon: '<i class="fas fa-water"></i>',
+    // Deep ocean: teals and deep blues
+    themeColors: ["#0c4a6e", "#0891b2", "#22d3ee"],
   },
   {
     type: BackgroundType.EMBER_GLOW,
     name: "Ember Glow",
     description: "Warm dark amber with rising glowing embers",
     icon: "🔥",
+    // Ember: warm oranges and ambers
+    themeColors: ["#7c2d12", "#ea580c", "#fb923c"],
   },
   {
     type: BackgroundType.SAKURA_DRIFT,
     name: "Sakura Drift",
     description: "Soft twilight with gently falling cherry blossoms",
     icon: "🌸",
+    // Sakura: soft pinks and magentas
+    themeColors: ["#831843", "#db2777", "#f9a8d4"],
   },
   {
     type: BackgroundType.SOLID_COLOR,
@@ -59,6 +75,8 @@ export const backgroundsConfig: BackgroundMetadata[] = [
     description: "Classic solid black background",
     icon: '<i class="fas fa-circle"></i>',
     color: "#000000",
+    // Pure black: neutral with subtle blue accent
+    themeColors: ["#18181b", "#3f3f46", "#71717a"],
   },
   {
     type: BackgroundType.LINEAR_GRADIENT,

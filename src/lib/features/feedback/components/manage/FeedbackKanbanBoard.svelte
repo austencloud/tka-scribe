@@ -6,7 +6,7 @@
   import { createKanbanBoardState } from "../../state/kanban-board-state.svelte";
   import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
   import type { IFeedbackSortingService } from "../../services/contracts/IFeedbackSortingService";
-  import { tryResolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
+  import { tryResolve, TYPES, loadFeatureModule, ensureContainerInitialized } from "$lib/shared/inversify/di";
   import KanbanMobileView from "./KanbanMobileView.svelte";
   import KanbanDesktopView from "./KanbanDesktopView.svelte";
 
@@ -27,7 +27,10 @@
 
     async function initializeBoard() {
       try {
-        // Ensure feedback module is loaded (handles Tier 2 race condition)
+        // Ensure container is initialized before loading modules
+        await ensureContainerInitialized();
+
+        // Ensure feedback module is loaded (waits for Tier 2)
         await loadFeatureModule("feedback");
 
         // Now resolve services - feedback module is ready

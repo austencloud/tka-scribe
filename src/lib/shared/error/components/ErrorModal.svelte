@@ -44,8 +44,8 @@
     },
   };
 
-  function getConfig(severity: string) {
-    return severityConfig[severity] ?? severityConfig.error;
+  function getConfig(severity: string): { icon: string; color: string; bg: string; title: string } {
+    return severityConfig[severity] ?? severityConfig.error!;
   }
 
   function handleDismiss() {
@@ -105,6 +105,7 @@
       aria-modal="true"
       aria-labelledby="error-title"
       aria-describedby="error-message"
+      tabindex="-1"
     >
       <div class="error-header">
         <div class="error-icon-wrapper">

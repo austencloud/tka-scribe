@@ -87,6 +87,7 @@
             onRotate?.("ccw");
           }}
           title="Rotate counter-clockwise"
+          aria-label="Rotate counter-clockwise"
           type="button"
         >
           <i class="fas fa-rotate-left"></i>
@@ -98,6 +99,7 @@
             onRotate?.("cw");
           }}
           title="Rotate clockwise"
+          aria-label="Rotate clockwise"
           type="button"
         >
           <i class="fas fa-rotate-right"></i>

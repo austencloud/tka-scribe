@@ -178,6 +178,15 @@
         updateSettings(settingsService.currentSettings);
         ThemeService.initialize();
 
+        // Apply background-based theme colors on startup
+        const { applyThemeForBackground } = await import(
+          "../../settings/utils/background-theme-calculator"
+        );
+        const bgType = settingsService.currentSettings?.backgroundType;
+        if (bgType) {
+          applyThemeForBackground(bgType);
+        }
+
         // Initialize gamification system
         try {
           const { initializeGamification } = await import(

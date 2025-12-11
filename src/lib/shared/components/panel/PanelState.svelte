@@ -7,7 +7,7 @@
 
   import PanelSpinner from "./PanelSpinner.svelte";
 
-  type StateType = "loading" | "error" | "empty";
+  type StateType = "loading" | "error" | "empty" | "info";
 
   interface Props {
     /** Type of state to display */
@@ -28,12 +28,14 @@
     loading: "",
     error: "fa-exclamation-triangle",
     empty: "fa-inbox",
+    info: "fa-info-circle",
   };
 
   const defaultTitles: Record<StateType, string> = {
     loading: "",
     error: "Something went wrong",
     empty: "Nothing here yet",
+    info: "Information",
   };
 
   const resolvedIcon = $derived(icon ?? defaultIcons[type]);

@@ -45,8 +45,8 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen}
-  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-  <div class="sheet-backdrop" onclick={handleBackdropClick}>
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div class="sheet-backdrop" onclick={handleBackdropClick} role="presentation">
     <div class="sheet-content" role="dialog" aria-modal="true">
       <div class="sheet-header">
         <h3>Recording Settings</h3>
@@ -97,36 +97,39 @@
             <h4>Animation Settings</h4>
 
             <div class="toggle-row">
-              <span>Show Trails</span>
+              <span id="trails-label">Show Trails</span>
               <button
                 class="toggle-switch"
                 class:on={animationSettings.showTrails}
                 onclick={() => onAnimationSettingsChange({ ...animationSettings, showTrails: !animationSettings.showTrails })}
                 aria-pressed={animationSettings.showTrails}
+                aria-labelledby="trails-label"
               >
                 <span class="toggle-knob"></span>
               </button>
             </div>
 
             <div class="toggle-row">
-              <span>Blue Motion Visible</span>
+              <span id="blue-motion-label">Blue Motion Visible</span>
               <button
                 class="toggle-switch"
                 class:on={animationSettings.blueMotionVisible}
                 onclick={() => onAnimationSettingsChange({ ...animationSettings, blueMotionVisible: !animationSettings.blueMotionVisible })}
                 aria-pressed={animationSettings.blueMotionVisible}
+                aria-labelledby="blue-motion-label"
               >
                 <span class="toggle-knob"></span>
               </button>
             </div>
 
             <div class="toggle-row">
-              <span>Red Motion Visible</span>
+              <span id="red-motion-label">Red Motion Visible</span>
               <button
                 class="toggle-switch"
                 class:on={animationSettings.redMotionVisible}
                 onclick={() => onAnimationSettingsChange({ ...animationSettings, redMotionVisible: !animationSettings.redMotionVisible })}
                 aria-pressed={animationSettings.redMotionVisible}
+                aria-labelledby="red-motion-label"
               >
                 <span class="toggle-knob"></span>
               </button>
@@ -140,12 +143,13 @@
             <h4>Grid Settings</h4>
 
             <div class="toggle-row">
-              <span>Animate Grid</span>
+              <span id="animate-grid-label">Animate Grid</span>
               <button
                 class="toggle-switch"
                 class:on={gridSettings.animated}
                 onclick={() => onGridSettingsChange({ ...gridSettings, animated: !gridSettings.animated })}
                 aria-pressed={gridSettings.animated}
+                aria-labelledby="animate-grid-label"
               >
                 <span class="toggle-knob"></span>
               </button>

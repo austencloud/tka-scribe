@@ -153,9 +153,12 @@
     onStepFullBeatForward = () => {},
     onCanvasReady = () => {},
     onVideoBeatChange = () => {},
-    onExportGif = () => {},
+    onExportVideo = () => {},
     onShareAnimation = () => {},
     isSharing = false,
+    isCircular = false,
+    loopCount = 1,
+    onLoopCountChange = () => {},
   }: {
     show?: boolean;
     combinedPanelHeight?: number;
@@ -183,9 +186,12 @@
     onStepFullBeatForward?: () => void;
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
-    onExportGif?: () => void;
+    onExportVideo?: () => void;
     onShareAnimation?: () => void;
     isSharing?: boolean;
+    isCircular?: boolean;
+    loopCount?: number;
+    onLoopCountChange?: (count: number) => void;
   } = $props();
 
   // ============================================================================
@@ -433,11 +439,12 @@
             onToggleBlue={toggleBlueMotion}
             onToggleRed={toggleRedMotion}
             onToggleToolView={toggleMobileToolView}
-            {onExportGif}
-            {onShareAnimation}
+            {onExportVideo}
             {isExporting}
             {exportProgress}
-            {isSharing}
+            {isCircular}
+            {loopCount}
+            {onLoopCountChange}
             preventBackNavAction={preventBackNavigation}
           />
         </div>
@@ -517,9 +524,6 @@
 
   /* Small devices (iPhone SE, small phones): Fixed compact canvas */
   @media (max-width: 430px) and (max-height: 752px) {
-    .content-wrapper.mobile-expanded :global(.canvas-area) {
-    }
-
     .content-wrapper.mobile-expanded :global(.controls-panel) {
       flex: 1 1 0;
       overflow-y: auto;

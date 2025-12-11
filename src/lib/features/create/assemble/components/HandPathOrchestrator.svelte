@@ -26,7 +26,7 @@ Integrates all Assembly components and manages state transitions.
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
-  import { createHandPathAssembleState } from "../state/handpath-assemble-state.svelte";
+  import { createHandPathAssembleState, type HandPathAssembleState } from "../state/handpath-assemble-state.svelte";
   import AssemblyWelcome from "./AssemblyWelcome.svelte";
   import AssemblyPhaseHeader from "./AssemblyPhaseHeader.svelte";
   import AssemblyControls from "./AssemblyControls.svelte";
@@ -50,16 +50,17 @@ Integrates all Assembly components and manages state transitions.
 
   // Local state for welcome screen
   let hasStarted = $state(false);
-  let localGridMode = $state(initialGridMode);
+  let localGridMode = $state<GridMode>(initialGridMode);
 
   // Create state manager (recreated when grid mode changes)
-  let state = $state(createHandPathAssembleState({ gridMode: localGridMode }));
+  // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
+  let assemblyState: HandPathAssembleState = $state(createHandPathAssembleState({ gridMode: initialGridMode }));
 
   // Derived values for UI
   const showWelcome = $derived(!hasStarted);
-  const currentPhase = $derived(state.currentPhase);
-  const bluePathLength = $derived(state.blueHandPath.length);
-  const redPathLength = $derived(state.redHandPath.length);
+  const currentPhase = $derived(assemblyState.currentPhase);
+  const bluePathLength = $derived(assemblyState.blueHandPath.length);
+  const redPathLength = $derived(assemblyState.redHandPath.length);
 
   // Can proceed to red hand? Need at least 2 positions
   const canProceedToRed = $derived(bluePathLength >= 2);
@@ -102,7 +103,7 @@ Integrates all Assembly components and manages state transitions.
   // Handle grid mode change (from welcome screen)
   function handleGridModeChange(mode: GridMode) {
     localGridMode = mode;
-    state = createHandPathAssembleState({ gridMode: mode });
+    assemblyState = createHandPathAssembleState({ gridMode: mode });
   }
 
   // Handle position selection on grid
@@ -110,22 +111,22 @@ Integrates all Assembly components and manages state transitions.
     try {
       // Check if this is the first position (start position)
       const isFirstPosition =
-        state.blueHandPath.length === 0 && state.currentPhase === "blue";
+        assemblyState.blueHandPath.length === 0 && assemblyState.currentPhase === "blue";
 
-      state.addPosition(position);
+      assemblyState.addPosition(position);
 
       // If this was the first position, create and send the start position pictograph
       if (isFirstPosition && onStartPositionSet) {
         const startPositionPictograph = createStartPositionPictograph(
           position,
           MotionColor.BLUE,
-          state.gridMode
+          assemblyState.gridMode
         );
         onStartPositionSet(startPositionPictograph);
       }
 
       // Update workspace with current progress
-      const preview = state.getCurrentHandPreview();
+      const preview = assemblyState.getCurrentHandPreview();
       if (preview.length > 0) {
         onSequenceUpdate?.(preview);
       }
@@ -164,17 +165,17 @@ Integrates all Assembly components and manages state transitions.
 
   // Handle undo
   function handleUndo() {
-    state.undoLastPosition();
+    assemblyState.undoLastPosition();
 
     // Update workspace
-    const preview = state.getCurrentHandPreview();
+    const preview = assemblyState.getCurrentHandPreview();
     onSequenceUpdate?.(preview);
   }
 
   // Handle proceeding to red hand phase
   function handleNextHand() {
     try {
-      state.completeBlueHand();
+      assemblyState.completeBlueHand();
     } catch (error) {
       console.error("Error completing blue hand:", error);
     }
@@ -183,7 +184,7 @@ Integrates all Assembly components and manages state transitions.
   // Handle proceeding to rotation selection
   function handleProceedToRotation() {
     try {
-      state.completeRedHand();
+      assemblyState.completeRedHand();
     } catch (error) {
       console.error("Error completing red hand:", error);
     }
@@ -192,7 +193,7 @@ Integrates all Assembly components and manages state transitions.
   // Handle rotation selection
   function handleRotationSelect(rotation: RotationDirection) {
     try {
-      state.selectRotation(rotation);
+      assemblyState.selectRotation(rotation);
 
       // Get user's preferred prop types from settings
       const settings = getSettings();
@@ -200,7 +201,7 @@ Integrates all Assembly components and manages state transitions.
       const redPropType = settings.redPropType || settings.propType || PropType.STAFF;
 
       // Get final merged sequence with user's prop types applied
-      const finalSequence = state.getFinalSequence(bluePropType, redPropType);
+      const finalSequence = assemblyState.getFinalSequence(bluePropType, redPropType);
 
       // Notify parent
       onSequenceComplete?.(finalSequence);
@@ -212,23 +213,23 @@ Integrates all Assembly components and manages state transitions.
 
   // Handle going back to previous phase
   function handleBack() {
-    state.goBackPhase();
+    assemblyState.goBackPhase();
 
     // Update workspace preview
-    const preview = state.getCurrentHandPreview();
+    const preview = assemblyState.getCurrentHandPreview();
     onSequenceUpdate?.(preview);
   }
 
   // Handle reset (build another)
   function handleReset() {
-    state.reset();
+    assemblyState.reset();
     onSequenceUpdate?.([]);
   }
 
   // Full reset (back to welcome screen)
   function handleFullReset() {
     hasStarted = false;
-    state.reset();
+    assemblyState.reset();
     onSequenceUpdate?.([]);
   }
 </script>
@@ -263,8 +264,8 @@ Integrates all Assembly components and manages state transitions.
           <div class="grid-phase">
             <div class="grid-container">
               <HandPathGrid
-                gridMode={state.gridMode}
-                currentPosition={state.currentPosition}
+                gridMode={assemblyState.gridMode}
+                currentPosition={assemblyState.currentPosition}
                 onPositionSelect={handlePositionSelect}
               />
             </div>
@@ -273,7 +274,7 @@ Integrates all Assembly components and manages state transitions.
             <div class="path-indicator">
               {#if currentPhase === "blue"}
                 <div class="path-dots blue">
-                  {#each state.blueHandPath as pos, i}
+                  {#each assemblyState.blueHandPath as pos, i}
                     <span class="path-dot" title={pos}>{i + 1}</span>
                   {/each}
                   {#if bluePathLength === 0}
@@ -282,7 +283,7 @@ Integrates all Assembly components and manages state transitions.
                 </div>
               {:else}
                 <div class="path-dots red">
-                  {#each state.redHandPath as pos, i}
+                  {#each assemblyState.redHandPath as pos, i}
                     <span class="path-dot" title={pos}>{i + 1}</span>
                   {/each}
                   {#if redPathLength === 0}

@@ -409,9 +409,10 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     trailSettingsSyncService?.handleExternalSettingsSync(externalTrailSettings);
   });
 
-  // Clear trails when props are hidden
+  // Clear trails when BOTH props are hidden (sequence not loaded or all visibility off)
+  // Individual prop visibility is handled by the render loop filtering trail points
   $effect(() => {
-    if (!blueProp || !redProp) {
+    if (!blueProp && !redProp) {
       trailCaptureService?.clearTrails();
       renderLoopService?.triggerRender(getFrameParams);
     }

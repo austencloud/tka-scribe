@@ -31,8 +31,7 @@
 
     try {
       collectionService = resolve<ICollectionService>(TYPES.ICollectionService);
-      const userId = authStore.user!.uid;
-      collections = await collectionService.getCollections(userId);
+      collections = await collectionService.getCollections();
       isLoading = false;
     } catch (err) {
       console.error("[CollectionsView] Failed to load collections:", err);

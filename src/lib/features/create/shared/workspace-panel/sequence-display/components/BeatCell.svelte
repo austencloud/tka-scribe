@@ -208,7 +208,7 @@
     onClick?.();
   }
 
-  function handleKeyPress(event: KeyboardEvent) {
+  function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       // Trigger haptic feedback for keyboard interaction
@@ -239,7 +239,7 @@
   class:anim-microFade={currentAnimationName === "microFade"}
   class:anim-glassBlur={currentAnimationName === "glassBlur"}
   onclick={handleClick}
-  onkeypress={handleKeyPress}
+  onkeydown={handleKeyDown}
   onpointerdown={handlePointerDown}
   onpointerup={handlePointerUp}
   onpointercancel={handlePointerCancel}

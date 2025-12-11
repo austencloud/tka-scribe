@@ -140,8 +140,8 @@
   {/if}
 
   <!-- Role Management -->
-  <div class="control-group">
-    <label class="control-label">User Role</label>
+  <div class="control-group" role="group" aria-labelledby="role-label">
+    <span id="role-label" class="control-label">User Role</span>
     <div class="role-buttons">
       {#each ROLE_HIERARCHY as role}
         <button
@@ -159,8 +159,8 @@
   </div>
 
   <!-- Account Actions -->
-  <div class="control-group">
-    <label class="control-label">Account Actions</label>
+  <div class="control-group" role="group" aria-labelledby="actions-label">
+    <span id="actions-label" class="control-label">Account Actions</span>
     <div class="action-buttons">
       <button
         class="action-btn"

@@ -51,15 +51,15 @@
         showUndoMessage("Entry restored");
       } else if (action.type === "edit") {
         // Restore the old text
-        if (version.changelogEntries && version.changelogEntries[action.absoluteIndex]) {
-          const entry = version.changelogEntries[action.absoluteIndex];
+        const entry = version.changelogEntries?.[action.absoluteIndex];
+        if (entry) {
           const restoredEntry: ChangelogEntry = {
             category: entry.category,
             text: action.oldText,
             ...(entry.feedbackId && { feedbackId: entry.feedbackId }),
           };
-          version.changelogEntries[action.absoluteIndex] = restoredEntry;
-          version.changelogEntries = [...version.changelogEntries];
+          version.changelogEntries![action.absoluteIndex] = restoredEntry;
+          version.changelogEntries = [...version.changelogEntries!];
           await versionService.updateChangelogEntry(version.version, action.absoluteIndex, restoredEntry);
           showUndoMessage("Edit reverted");
         }

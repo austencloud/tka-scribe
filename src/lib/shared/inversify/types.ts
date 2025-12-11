@@ -306,6 +306,7 @@ export const TYPES = {
   IPixiAnimationRenderer: Symbol.for("IPixiAnimationRenderer"),
   ISVGGenerator: Symbol.for("ISVGGenerator"),
   IGifExportService: Symbol.for("IGifExportService"),
+  IVideoExportService: Symbol.for("IVideoExportService"),
   IAnimatedImageTranscoder: Symbol.for("IAnimatedImageTranscoder"),
   IGifExportOrchestrator: Symbol.for("IGifExportOrchestrator"),
 

@@ -43,6 +43,8 @@
     onBeatLongPress,
     onStartLongPress,
     activeMode = null,
+    // Spotlight mode: maximize cell size to fill viewport
+    isSpotlightMode = false,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
     startPosition?: StartPositionData | BeatData | null;
@@ -62,6 +64,8 @@
     onBeatLongPress?: (beatNumber: number) => void;
     activeMode?: BuildModeId | null;
     onStartLongPress?: () => void;
+    // Spotlight mode: maximize cell size to fill viewport (no max constraint)
+    isSpotlightMode?: boolean;
   }>();
 
   const placeholderBeat = createBeatData({
@@ -88,7 +92,14 @@
       containerWidth,
       containerHeight,
       deviceDetector,
-      { isSideBySideLayout }
+      {
+        isSideBySideLayout,
+        // Spotlight mode: remove max cell size constraint to fill viewport
+        maxCellSize: isSpotlightMode ? 9999 : undefined,
+        // Use full container in spotlight mode
+        widthPaddingRatio: isSpotlightMode ? 0.98 : undefined,
+        heightPaddingRatio: isSpotlightMode ? 0.98 : undefined,
+      }
     );
   });
 

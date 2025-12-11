@@ -285,7 +285,7 @@ export class BeatOperationsService implements IBeatOperationsService {
   ): BeatData[] {
     if (!currentSequence?.beats || currentSequence.beats.length === 0) {
       this.logger.log("No sequence beats to propagate through");
-      return currentSequence.beats;
+      return [...currentSequence.beats];
     }
 
     const orientationCalculator = resolve<IOrientationCalculator>(
@@ -322,7 +322,7 @@ export class BeatOperationsService implements IBeatOperationsService {
       this.logger.warn(
         `Cannot propagate - no endOrientation found for beat ${startingBeatNumber} ${color}`
       );
-      return currentSequence.beats;
+      return [...currentSequence.beats];
     }
 
     // Propagate through subsequent beats
@@ -926,10 +926,11 @@ export class BeatOperationsService implements IBeatOperationsService {
                 const currentSeq = CreateModuleState.sequenceState.currentSequence;
                 if (currentSeq) {
                   const beatsWithLetter = [...currentSeq.beats];
+                  const existingBeat = beatsWithLetter[arrayIndex];
                   beatsWithLetter[arrayIndex] = {
-                    ...beatsWithLetter[arrayIndex],
+                    ...existingBeat,
                     letter: newLetter as Letter,
-                  };
+                  } as BeatData;
                   // Also update the word
                   const word = beatsWithLetter
                     .map((beat) => beat.letter ?? "")

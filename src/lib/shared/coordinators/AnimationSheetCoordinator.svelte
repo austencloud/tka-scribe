@@ -24,6 +24,8 @@
   import type { IGifExportOrchestrator } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
   import type { AnimationExportFormat } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
   import type { GifExportProgress } from "$lib/features/compose/services/contracts/IGifExportService";
+  import type { IVideoExportService } from "$lib/features/compose/services/contracts/IVideoExportService";
+  import type { ISequenceLoopabilityChecker } from "$lib/features/compose/services/contracts/ISequenceLoopabilityChecker";
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
   import { resolve, loadFeatureModule } from "../inversify/di";
@@ -62,7 +64,9 @@
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedbackService | null = null;
   let gifExportOrchestrator: IGifExportOrchestrator | null = null;
+  let videoExportService: IVideoExportService | null = null;
   let sheetRouterService: ISheetRouterService | null = null;
+  let loopabilityChecker: ISequenceLoopabilityChecker | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
   // State to track service readiness
@@ -166,6 +170,20 @@
     animationPanelState.sequenceData?.gridMode ?? sequence?.gridMode
   );
 
+  // Check if sequence is seamlessly loopable (for loop count selector)
+  let isCircular = $derived.by(() => {
+    const seq = animationPanelState.sequenceData;
+    if (!seq || !loopabilityChecker) return false;
+    return loopabilityChecker.isSeamlesslyLoopable(seq);
+  });
+
+  // Export loop count from state
+  let exportLoopCount = $derived(animationPanelState.exportLoopCount);
+
+  function handleLoopCountChange(count: number) {
+    animationPanelState.setExportLoopCount(count);
+  }
+
   // Track route listener cleanup at module level
   let cleanupRouteListener: (() => void) | undefined;
 
@@ -204,6 +222,12 @@
         );
         gifExportOrchestrator = resolve<IGifExportOrchestrator>(
           TYPES.IGifExportOrchestrator
+        );
+        videoExportService = resolve<IVideoExportService>(
+          TYPES.IVideoExportService
+        );
+        loopabilityChecker = resolve<ISequenceLoopabilityChecker>(
+          TYPES.ISequenceLoopabilityChecker
         );
 
         servicesReady = true;
@@ -611,9 +635,11 @@
     animationCanvas = canvas;
   }
 
-  function handleExportGif() {
-    console.log("🎬 AnimationSheetCoordinator: handleExportGif called");
-    _handleExport("gif");
+  function handleExportVideo() {
+    // Use the best available video format (MP4 preferred for universal compatibility)
+    const bestFormat = videoExportService?.getBestFormat() ?? "webm";
+    console.log(`🎬 AnimationSheetCoordinator: handleExportVideo called, using ${bestFormat}`);
+    _handleExport(bestFormat);
   }
 </script>
 
@@ -639,7 +665,10 @@
   onStepFullBeatBackward={() => playbackController?.stepFullBeatBackward()}
   onStepFullBeatForward={() => playbackController?.stepFullBeatForward()}
   onCanvasReady={handleCanvasReady}
-  onExportGif={handleExportGif}
+  onExportVideo={handleExportVideo}
   {isExporting}
   exportProgress={_exportProgress}
+  {isCircular}
+  loopCount={exportLoopCount}
+  onLoopCountChange={handleLoopCountChange}
 />
