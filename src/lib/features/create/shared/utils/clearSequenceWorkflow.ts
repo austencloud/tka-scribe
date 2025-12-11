@@ -101,9 +101,8 @@ export async function executeClearSequenceWorkflow(
       activeTabSequenceState.clearError();
     }
 
-    // 5. Close related panels
-    panelState.closeAnimationPanel();
-    panelState.closeSharePanel();
+    // 5. Close all sequence-related panels
+    panelState.closeAllPanels();
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Failed to clear sequence";

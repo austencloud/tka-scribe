@@ -36,6 +36,11 @@ export interface INotificationService {
   showStreakMilestone(streakDays: number): Promise<void>;
 
   /**
+   * Show a quick XP gain notification (lightweight, brief)
+   */
+  showXPGain(amount: number, reason?: string): void;
+
+  /**
    * Get unread notifications
    */
   getUnreadNotifications(): Promise<AchievementNotification[]>;

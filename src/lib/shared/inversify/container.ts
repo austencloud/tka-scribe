@@ -298,22 +298,26 @@ export async function loadSharedModules(): Promise<void> {
       const [
         { renderModule },
         { pictographModule },
-        { adminModule }
+        { adminModule },
+        { feedbackModule }
       ] = await Promise.all([
         import("./modules/render.module"),
         import("./modules/pictograph.module"),
-        import("./modules/admin.module")
+        import("./modules/admin.module"),
+        import("./modules/feedback.module")
       ]);
 
       await container.load(
         renderModule,
         pictographModule,
-        adminModule
+        adminModule,
+        feedbackModule
       );
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
       loadedModules.add("admin");
+      loadedModules.add("feedback");
       tier2Loaded = true;
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
@@ -438,8 +442,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "about":
       case "dashboard":
-      case "feedback":
         // These modules use no additional DI services
+        break;
+
+      case "feedback":
+        await loadIfNeeded("feedback", () => import("./modules/feedback.module"));
         break;
 
       case "word_card":

@@ -3,17 +3,26 @@
  *
  * Manages all reactive state for the animation panel using Svelte 5 runes pattern.
  * Provides clean getters/setters following TKA state management conventions.
+ * Uses unified persistence utility for localStorage auto-save.
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { PropState } from "../shared/domain/types/PropState";
+import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
 
 // ============================================================================
-// PERSISTENCE CONSTANTS
+// PERSISTENCE
 // ============================================================================
 
-const ANIMATION_LOOP_STATE_KEY = "tka_animation_loop_state";
-const ANIMATION_SPEED_KEY = "tka_animation_speed";
+const speedPersistence = createPersistenceHelper({
+  key: "tka_animation_speed",
+  defaultValue: 1.0,
+});
+
+const loopPersistence = createPersistenceHelper({
+  key: "tka_animation_loop_state",
+  defaultValue: false,
+});
 
 export type AnimationPanelState = {
   // Playback state
@@ -59,51 +68,24 @@ const DEFAULT_PROP_STATE: PropState = {
 };
 
 export function createAnimationPanelState(): AnimationPanelState {
-  // Load persisted loop state
-  const loadLoopState = (): boolean => {
-    try {
-      const stored = localStorage.getItem(ANIMATION_LOOP_STATE_KEY);
-      return stored ? JSON.parse(stored) : false;
-    } catch (error) {
-      console.error("❌ Failed to load loop state:", error);
-      return false;
-    }
-  };
-
-  // Save loop state to localStorage
-  const saveLoopState = (loop: boolean): void => {
-    try {
-      localStorage.setItem(ANIMATION_LOOP_STATE_KEY, JSON.stringify(loop));
-    } catch (error) {
-      console.error("❌ Failed to save loop state:", error);
-    }
-  };
-
-  // Load persisted speed
-  const loadSpeed = (): number => {
-    try {
-      const stored = localStorage.getItem(ANIMATION_SPEED_KEY);
-      return stored ? JSON.parse(stored) : 1.0;
-    } catch (error) {
-      console.error("❌ Failed to load speed:", error);
-      return 1.0;
-    }
-  };
-
-  // Save speed to localStorage
-  const saveSpeed = (speed: number): void => {
-    try {
-      localStorage.setItem(ANIMATION_SPEED_KEY, JSON.stringify(speed));
-    } catch (error) {
-      console.error("❌ Failed to save speed:", error);
-    }
-  };
-
   // Playback state
   let currentBeat = $state(0);
   let isPlaying = $state(false);
-  let speed = $state(loadSpeed());
-  let shouldLoop = $state(loadLoopState());
+  let speed = $state(speedPersistence.load());
+  let shouldLoop = $state(loopPersistence.load());
+
+  // Auto-save speed and loop state
+  $effect.root(() => {
+    $effect(() => {
+      void speed;
+      speedPersistence.setupAutoSave(speed);
+    });
+
+    $effect(() => {
+      void shouldLoop;
+      loopPersistence.setupAutoSave(shouldLoop);
+    });
+  });
 
   // Sequence metadata
   let totalBeats = $state(0);
@@ -169,12 +151,10 @@ export function createAnimationPanelState(): AnimationPanelState {
 
     setSpeed: (newSpeed: number) => {
       speed = Math.max(0.1, Math.min(3.0, newSpeed));
-      saveSpeed(speed);
     },
 
     setShouldLoop: (loop: boolean) => {
       shouldLoop = loop;
-      saveLoopState(loop);
     },
 
     setTotalBeats: (beats: number) => {

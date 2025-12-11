@@ -1,0 +1,202 @@
+<!-- Desktop view: 4 columns + archive/defer stack -->
+<script lang="ts">
+  import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
+  import type { KanbanBoardState } from "../../state/kanban-board-state.svelte";
+  import type { FeedbackItem } from "../../domain/models/feedback-models";
+  import { STATUS_CONFIG } from "../../domain/models/feedback-models";
+  import FeedbackKanbanColumn from "./FeedbackKanbanColumn.svelte";
+  import KanbanArchiveDropZone from "./KanbanArchiveDropZone.svelte";
+  import KanbanDeferDropZone from "./KanbanDeferDropZone.svelte";
+
+  interface Props {
+    boardState: KanbanBoardState;
+    manageState: FeedbackManageState;
+    onOpenArchive?: () => void;
+  }
+
+  const { boardState, manageState, onOpenArchive }: Props = $props();
+
+  const KANBAN_STATUSES = ["new", "in-progress", "in-review", "completed"] as const;
+  const ARCHIVE_STATUS = "archived" as const;
+
+  function handleDragStart(item: FeedbackItem) {
+    boardState.setDraggedItem(item);
+  }
+
+  function handleDragEnd() {
+    boardState.setDraggedItem(null);
+    boardState.setDragOverColumn(null);
+    boardState.setTouchDragPosition(null);
+  }
+
+  function handleTouchDrag(item: FeedbackItem, x: number, y: number) {
+    boardState.setTouchDragPosition({ x, y });
+    const targetColumn = boardState.getColumnAtPosition(x, y);
+    if (targetColumn && targetColumn !== item.status) {
+      boardState.setDragOverColumn(targetColumn);
+    } else {
+      boardState.setDragOverColumn(null);
+    }
+  }
+
+  function handleDragOver(status: any) {
+    if (boardState.draggedItem) {
+      if (status === "deferred" || boardState.draggedItem.status !== status) {
+        boardState.setDragOverColumn(status);
+      }
+    }
+  }
+
+  function handleDragLeave() {
+    boardState.setDragOverColumn(null);
+  }
+
+  async function handleDrop(status: any) {
+    console.log("[KanbanDesktopView] Drop handler called", { status, draggedItem: boardState.draggedItem?.id });
+
+    if (!boardState.draggedItem) {
+      console.log("[KanbanDesktopView] No dragged item, returning");
+      return;
+    }
+
+    if (status === "deferred") {
+      console.log("[KanbanDesktopView] Moving to deferred");
+      boardState.setItemToDefer(boardState.draggedItem);
+      boardState.setShowDeferDialog(true);
+      boardState.setDraggedItem(null);
+      boardState.setDragOverColumn(null);
+      return;
+    }
+
+    if (boardState.draggedItem.status !== status) {
+      console.log("[KanbanDesktopView] Updating status", {
+        id: boardState.draggedItem.id,
+        from: boardState.draggedItem.status,
+        to: status
+      });
+      try {
+        await manageState.updateStatus(boardState.draggedItem.id, status);
+        console.log("[KanbanDesktopView] Status updated successfully");
+      } catch (err) {
+        console.error("[KanbanDesktopView] Failed to update status:", err);
+      }
+    } else {
+      console.log("[KanbanDesktopView] Item already in target status");
+    }
+    boardState.setDraggedItem(null);
+    boardState.setDragOverColumn(null);
+  }
+
+  // Handle touch drop - find column at touch position and process drop
+  async function handleTouchEnd(x: number, y: number) {
+    console.log("[KanbanDesktopView] Touch end at position", { x, y });
+
+    if (!boardState.draggedItem) {
+      console.log("[KanbanDesktopView] No dragged item for touch end");
+      return;
+    }
+
+    const targetStatus = boardState.getColumnAtPosition(x, y);
+    console.log("[KanbanDesktopView] Target status from touch position:", targetStatus);
+
+    if (targetStatus) {
+      await handleDrop(targetStatus);
+    } else {
+      console.log("[KanbanDesktopView] No valid drop target at touch position, clearing drag state");
+      boardState.setDraggedItem(null);
+      boardState.setDragOverColumn(null);
+    }
+  }
+
+  function handleCardClick(item: FeedbackItem) {
+    manageState.selectItem(item);
+  }
+</script>
+
+<div class="columns-container">
+  {#each KANBAN_STATUSES as status}
+    <FeedbackKanbanColumn
+      {status}
+      config={STATUS_CONFIG[status]}
+      items={boardState.itemsByStatus[status] ?? []}
+      isDropTarget={boardState.dragOverColumn === status}
+      isDragActive={boardState.draggedItem !== null}
+      isActiveTab={true}
+      selectedItemId={manageState.selectedItem?.id ?? null}
+      disableDrag={false}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onTouchDrag={handleTouchDrag}
+      onTouchEnd={handleTouchEnd}
+      onDragOver={() => handleDragOver(status)}
+      onDragLeave={handleDragLeave}
+      onDrop={() => handleDrop(status)}
+      onCardClick={handleCardClick}
+    />
+  {/each}
+
+  <!-- Archive/Defer Stack - Thin bar on the right with stacked zones -->
+  <div class="archive-defer-stack">
+    <!-- Deferred Drop Zone -->
+    <KanbanDeferDropZone
+      isDropTarget={boardState.dragOverColumn === "deferred"}
+      isDragActive={boardState.draggedItem !== null}
+      deferredCount={boardState.deferredItems.length}
+      onDragOver={() => handleDragOver("deferred")}
+      onDragLeave={handleDragLeave}
+      onDrop={() => handleDrop("deferred")}
+    />
+
+    <!-- Archived Drop Zone -->
+    <KanbanArchiveDropZone
+      isDropTarget={boardState.dragOverColumn === ARCHIVE_STATUS}
+      isDragActive={boardState.draggedItem !== null}
+      onDragOver={() => handleDragOver(ARCHIVE_STATUS)}
+      onDragLeave={handleDragLeave}
+      onDrop={() => handleDrop(ARCHIVE_STATUS)}
+      onOpenArchive={() => onOpenArchive?.()}
+    />
+  </div>
+</div>
+
+<style>
+  /* ===== COLUMNS CONTAINER ===== */
+  .columns-container {
+    display: flex;
+    gap: clamp(16px, 1cqi, 32px);
+    flex: 1;
+    width: 100%;
+    margin: 0 auto;
+    padding: clamp(16px, 1cqi, 32px);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .columns-container::-webkit-scrollbar {
+    height: clamp(4px, 1cqi, 8px);
+  }
+
+  .columns-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .columns-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: clamp(6px, 1.5cqi, 10px);
+  }
+
+  .columns-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* ===== ARCHIVE/DEFER STACK ===== */
+  .archive-defer-stack {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2cqi, 16px);
+    width: clamp(60px, 8cqi, 80px);
+    min-width: clamp(60px, 8cqi, 80px);
+    flex-shrink: 0;
+    align-self: stretch;
+  }
+</style>

@@ -152,8 +152,8 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
           transformed = this.transformationService.swapColors(sequence);
           break;
 
-        case "reverse":
-          transformed = await this.transformationService.reverseSequence(
+        case "rewind":
+          transformed = await this.transformationService.rewindSequence(
             sequence
           );
           break;

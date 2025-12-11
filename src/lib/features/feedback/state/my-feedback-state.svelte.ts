@@ -3,11 +3,14 @@
  *
  * State management for the tester's personal feedback view.
  * Shows their submitted feedback and pending confirmations.
+ * Supports preview mode for admin user viewing.
  */
 
-import type { FeedbackItem } from "../domain/models/feedback-models";
+import type { FeedbackItem, FeedbackType } from "../domain/models/feedback-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+import { toast } from "$lib/shared/toast";
 
 const PAGE_SIZE = 20;
 
@@ -42,8 +45,12 @@ export function createMyFeedbackState() {
 
   // Actions
   async function loadMyFeedback(reset = false) {
-    const user = authStore.user;
-    if (!user) return;
+    // Use previewed user ID when preview mode is active, otherwise use actual user
+    const effectiveUserId = userPreviewState.isActive && userPreviewState.data.profile
+      ? userPreviewState.data.profile.uid
+      : authStore.user?.uid;
+
+    if (!effectiveUserId) return;
     if (isLoading) return;
     if (!reset && !hasMore) return;
 
@@ -52,7 +59,7 @@ export function createMyFeedbackState() {
 
     try {
       const result = await feedbackService.loadUserFeedback(
-        user.uid,
+        effectiveUserId,
         PAGE_SIZE,
         reset ? undefined : lastDocId ?? undefined
       );
@@ -75,6 +82,34 @@ export function createMyFeedbackState() {
 
   function selectItem(item: FeedbackItem | null) {
     selectedItem = item;
+  }
+
+  // Update an item (user editing their own feedback)
+  async function updateItem(
+    feedbackId: string,
+    updates: { type?: FeedbackType; description?: string },
+    appendMode: boolean = false
+  ): Promise<FeedbackItem> {
+    // Block writes in preview mode
+    if (userPreviewState.isActive) {
+      toast.warning("Cannot edit feedback in preview mode");
+      throw new Error("Cannot edit in preview mode");
+    }
+
+    const updatedItem = await feedbackService.updateUserFeedback(feedbackId, updates, appendMode);
+
+    // Update in local state
+    const index = items.findIndex((i) => i.id === feedbackId);
+    if (index !== -1) {
+      items = [...items.slice(0, index), updatedItem, ...items.slice(index + 1)];
+    }
+
+    // Update selected item if it's the one being edited
+    if (selectedItem?.id === feedbackId) {
+      selectedItem = updatedItem;
+    }
+
+    return updatedItem;
   }
 
   // Cleanup function
@@ -101,6 +136,7 @@ export function createMyFeedbackState() {
     // Actions
     loadMyFeedback,
     selectItem,
+    updateItem,
     cleanup,
   };
 }

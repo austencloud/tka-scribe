@@ -162,6 +162,7 @@
     explorer: "fa-magnifying-glass",
     performer: "fa-video",
     trainer: "fa-stopwatch",
+    contributor: "fa-comment",
   };
 
   // Category names
@@ -172,6 +173,7 @@
     explorer: "Explorer",
     performer: "Performer",
     trainer: "Trainer",
+    contributor: "Contributor",
   };
 </script>
 

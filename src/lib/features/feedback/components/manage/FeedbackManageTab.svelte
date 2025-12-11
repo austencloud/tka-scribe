@@ -65,7 +65,7 @@
           <div class="kanban-container">
             <FeedbackKanbanBoard
               {manageState}
-              onopenArchive={() => (showArchive = true)}
+              onOpenArchive={() => (showArchive = true)}
             />
           </div>
         {/if}

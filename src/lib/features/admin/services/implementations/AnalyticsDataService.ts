@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { firestore, auth } from "$lib/shared/auth/firebase";
 import { TYPES } from "$lib/shared/inversify/types";
+import type { ISystemStateService } from "../contracts/ISystemStateService";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
 import type {
   IAnalyticsDataService,
@@ -33,9 +34,6 @@ import type {
 // Timeout for Firebase queries (10 seconds)
 const QUERY_TIMEOUT_MS = 10000;
 
-// Cache duration for users collection (30 seconds)
-const USERS_CACHE_TTL_MS = 30000;
-
 /**
  * Wrap a promise with a timeout
  */
@@ -48,32 +46,11 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Pr
   ]);
 }
 
-/**
- * Cached user data to avoid repeated Firestore fetches
- */
-interface CachedUserData {
-  id: string;
-  sequenceCount: number;
-  publicSequenceCount: number;
-  totalViews: number;
-  shareCount: number;
-  challengesCompleted: number;
-  achievementCount: number;
-  currentStreak: number;
-  totalXP: number;
-  lastActivityDate: Date | null;
-}
-
-interface UsersCache {
-  data: CachedUserData[];
-  fetchedAt: number;
-}
-
 @injectable()
 export class AnalyticsDataService implements IAnalyticsDataService {
-  private usersCache: UsersCache | null = null;
-
   constructor(
+    @inject(TYPES.ISystemStateService)
+    private readonly systemStateService: ISystemStateService,
     @inject(TYPES.IActivityLogService)
     private readonly activityLogService: IActivityLogService
   ) {}
@@ -86,75 +63,13 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     return firestore !== null && firestore !== undefined && auth.currentUser !== null;
   }
 
-  /**
-   * Get cached users data, fetching fresh if cache is stale
-   * This dramatically reduces Firestore reads by reusing the same data
-   */
-  private async getCachedUsers(): Promise<CachedUserData[]> {
-    const now = Date.now();
-
-    // Return cached data if still valid
-    if (this.usersCache && (now - this.usersCache.fetchedAt) < USERS_CACHE_TTL_MS) {
-      return this.usersCache.data;
-    }
-
-    if (!this.isFirestoreAvailable()) {
-      return [];
-    }
-
-    try {
-      const usersRef = collection(firestore, "users");
-      const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
-
-      if (!snapshot) {
-        return [];
-      }
-
-      const users: CachedUserData[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const lastActivity = data["lastActivityDate"];
-        let lastActivityDate: Date | null = null;
-        if (lastActivity) {
-          lastActivityDate = lastActivity.toDate ? lastActivity.toDate() : new Date(lastActivity);
-        }
-
-        users.push({
-          id: doc.id,
-          sequenceCount: (data["sequenceCount"] as number) ?? 0,
-          publicSequenceCount: (data["publicSequenceCount"] as number) ?? 0,
-          totalViews: (data["totalViews"] as number) ?? 0,
-          shareCount: (data["shareCount"] as number) ?? 0,
-          challengesCompleted: (data["challengesCompleted"] as number) ?? 0,
-          achievementCount: (data["achievementCount"] as number) ?? 0,
-          currentStreak: (data["currentStreak"] as number) ?? 0,
-          totalXP: (data["totalXP"] as number) ?? 0,
-          lastActivityDate,
-        });
-      });
-
-      // Update cache
-      this.usersCache = { data: users, fetchedAt: now };
-      return users;
-    } catch (error) {
-      console.error("Failed to fetch users for cache:", error);
-      return [];
-    }
-  }
-
-  /**
-   * Invalidate the users cache (call when data might have changed)
-   */
-  public invalidateCache(): void {
-    this.usersCache = null;
-  }
 
   /**
    * Get summary metrics
    * Note: Only "Active Today" is time-based. Other metrics are all-time totals
    * since we don't have per-period tracking without Firebase indexes.
    *
-   * OPTIMIZED: Uses cached users data to avoid multiple Firestore reads
+   * OPTIMIZED: Uses SystemStateService for unified data hub
    */
   async getSummaryMetrics(_timeRange: AnalyticsTimeRange): Promise<SummaryMetrics> {
     // Return empty metrics if Firebase is not available
@@ -162,8 +77,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
       return this.getEmptySummaryMetrics();
     }
 
-    // Get all user data from cache (single Firestore read)
-    const users = await this.getCachedUsers();
+    // Get all user data from unified system state
+    const systemState = await this.systemStateService.getSystemState();
+    const users = systemState.users;
     const totalUsers = users.length;
 
     // Calculate active users today/yesterday from cached data
@@ -326,14 +242,15 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
   /**
    * Get content statistics
-   * OPTIMIZED: Uses cached users data
+   * OPTIMIZED: Uses SystemStateService for unified data hub
    */
   async getContentStatistics(): Promise<ContentStatistics> {
     if (!this.isFirestoreAvailable()) {
       return { totalSequences: 0, publicSequences: 0, totalViews: 0, totalShares: 0 };
     }
 
-    const users = await this.getCachedUsers();
+    const systemState = await this.systemStateService.getSystemState();
+    const users = systemState.users;
 
     let totalSequences = 0;
     let publicSequences = 0;
@@ -397,7 +314,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
   /**
    * Get engagement metrics
-   * OPTIMIZED: Uses cached users data
+   * OPTIMIZED: Uses SystemStateService for unified data hub
    */
   async getEngagementMetrics(): Promise<EngagementMetrics> {
     if (!this.isFirestoreAvailable()) {
@@ -411,7 +328,8 @@ export class AnalyticsDataService implements IAnalyticsDataService {
       };
     }
 
-    const users = await this.getCachedUsers();
+    const systemState = await this.systemStateService.getSystemState();
+    const users = systemState.users;
     const totalUsers = users.length;
 
     let challengeParticipants = 0;

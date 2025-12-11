@@ -1,0 +1,216 @@
+import type { FeedbackManageState } from "./feedback-manage-state.svelte";
+import type { FeedbackItem, FeedbackStatus } from "../domain/models/feedback-models";
+import { STATUS_CONFIG } from "../domain/models/feedback-models";
+import type { IFeedbackSortingService } from "../services/contracts/IFeedbackSortingService";
+import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
+
+type KanbanStatus = "new" | "in-progress" | "in-review" | "completed";
+
+const STORAGE_KEY = "tka-feedback-manage-active-status";
+const KANBAN_STATUSES: KanbanStatus[] = ["new", "in-progress", "in-review", "completed"];
+
+export interface KanbanBoardState {
+  activeStatus: FeedbackStatus;
+  activeStatusColor: string;
+  itemsByStatus: Record<KanbanStatus, FeedbackItem[]>;
+  deferredItems: FeedbackItem[];
+  draggedItem: FeedbackItem | null;
+  dragOverColumn: FeedbackStatus | "deferred" | null;
+  touchDragPosition: { x: number; y: number } | null;
+  isMobileView: boolean;
+  showDeferDialog: boolean;
+  itemToDefer: FeedbackItem | null;
+  deferDate: string;
+  deferNotes: string;
+  isSubmittingDefer: boolean;
+
+  // Actions
+  setActiveStatus(status: FeedbackStatus): void;
+  setDraggedItem(item: FeedbackItem | null): void;
+  setDragOverColumn(status: FeedbackStatus | "deferred" | null): void;
+  setTouchDragPosition(pos: { x: number; y: number } | null): void;
+  setIsMobileView(isMobile: boolean): void;
+  setShowDeferDialog(show: boolean): void;
+  setItemToDefer(item: FeedbackItem | null): void;
+  setDeferDate(date: string): void;
+  setDeferNotes(notes: string): void;
+  setIsSubmittingDefer(isSubmitting: boolean): void;
+  resetDeferDialog(): void;
+  getColumnAtPosition(x: number, y: number): FeedbackStatus | "deferred" | null;
+}
+
+export function createKanbanBoardState(
+  manageState: FeedbackManageState,
+  sortingService: IFeedbackSortingService,
+  storageService: IStorageService | null
+): KanbanBoardState {
+  // Load saved active status or default to "new"
+  const loadSavedStatus = (): FeedbackStatus => {
+    const saved = storageService?.safeLocalStorageGet<FeedbackStatus>(
+      STORAGE_KEY,
+      "new"
+    );
+    const validStatuses: FeedbackStatus[] = [
+      "new",
+      "in-progress",
+      "in-review",
+      "completed",
+    ];
+    return saved && validStatuses.includes(saved) ? saved : "new";
+  };
+
+  let activeStatus = $state<FeedbackStatus>(loadSavedStatus());
+
+  // Note: Persistence is handled manually via setActiveStatus to avoid $effect in factory
+  // (runes like $effect can only be called during component initialization)
+
+  // Derived: active status color
+  const activeStatusColor = $derived(STATUS_CONFIG[activeStatus].color);
+
+  // Derived: group items by status
+  const itemsByStatus = $derived.by(() => {
+    return sortingService.groupByStatus(manageState.allItems);
+  });
+
+  // Derived: deferred items
+  const deferredItems = $derived.by(() => {
+    return sortingService.getDeferredItems(manageState.allItems);
+  });
+
+  // Drag state
+  let draggedItem = $state<FeedbackItem | null>(null);
+  let dragOverColumn = $state<FeedbackStatus | "deferred" | null>(null);
+  let touchDragPosition = $state<{ x: number; y: number } | null>(null);
+
+  // Mobile view detection
+  let isMobileView = $state(false);
+
+  // Defer dialog state
+  let showDeferDialog = $state(false);
+  let itemToDefer = $state<FeedbackItem | null>(null);
+  let deferDate = $state("");
+  let deferNotes = $state("");
+  let isSubmittingDefer = $state(false);
+
+  // Detect column at a screen position
+  function getColumnAtPosition(
+    x: number,
+    y: number
+  ): FeedbackStatus | "deferred" | null {
+    const element = document.elementFromPoint(x, y);
+    if (!element) return null;
+
+    let current: Element | null = element;
+    while (current) {
+      // Check for defer drop zone
+      if (current.classList?.contains("defer-drop-zone")) {
+        return "deferred";
+      }
+
+      // Check for archive drop zone
+      if (current.classList?.contains("archive-drop-zone")) {
+        return "archived";
+      }
+
+      if (current.classList?.contains("kanban-column")) {
+        const ariaLabel = current.getAttribute("aria-label");
+        if (ariaLabel) {
+          const statusLabel = ariaLabel.replace(" column", "").toLowerCase();
+          const statusMap: Record<string, FeedbackStatus> = {
+            new: "new",
+            "in progress": "in-progress",
+            "in review": "in-review",
+            completed: "completed",
+          };
+          return statusMap[statusLabel] || null;
+        }
+      }
+      current = current.parentElement;
+    }
+    return null;
+  }
+
+  function resetDeferDialog() {
+    showDeferDialog = false;
+    itemToDefer = null;
+    deferDate = "";
+    deferNotes = "";
+  }
+
+  return {
+    get activeStatus() {
+      return activeStatus;
+    },
+    get activeStatusColor() {
+      return activeStatusColor;
+    },
+    get itemsByStatus() {
+      return itemsByStatus;
+    },
+    get deferredItems() {
+      return deferredItems;
+    },
+    get draggedItem() {
+      return draggedItem;
+    },
+    get dragOverColumn() {
+      return dragOverColumn;
+    },
+    get touchDragPosition() {
+      return touchDragPosition;
+    },
+    get isMobileView() {
+      return isMobileView;
+    },
+    get showDeferDialog() {
+      return showDeferDialog;
+    },
+    get itemToDefer() {
+      return itemToDefer;
+    },
+    get deferDate() {
+      return deferDate;
+    },
+    get deferNotes() {
+      return deferNotes;
+    },
+    get isSubmittingDefer() {
+      return isSubmittingDefer;
+    },
+
+    setActiveStatus(status: FeedbackStatus) {
+      activeStatus = status;
+      // Persist immediately (since we can't use $effect in factory functions)
+      storageService?.safeLocalStorageSet(STORAGE_KEY, status);
+    },
+    setDraggedItem(item: FeedbackItem | null) {
+      draggedItem = item;
+    },
+    setDragOverColumn(status: FeedbackStatus | "deferred" | null) {
+      dragOverColumn = status;
+    },
+    setTouchDragPosition(pos: { x: number; y: number } | null) {
+      touchDragPosition = pos;
+    },
+    setIsMobileView(isMobile: boolean) {
+      isMobileView = isMobile;
+    },
+    setShowDeferDialog(show: boolean) {
+      showDeferDialog = show;
+    },
+    setItemToDefer(item: FeedbackItem | null) {
+      itemToDefer = item;
+    },
+    setDeferDate(date: string) {
+      deferDate = date;
+    },
+    setDeferNotes(notes: string) {
+      deferNotes = notes;
+    },
+    setIsSubmittingDefer(isSubmitting: boolean) {
+      isSubmittingDefer = isSubmitting;
+    },
+    resetDeferDialog,
+    getColumnAtPosition,
+  };
+}

@@ -16,6 +16,7 @@
 
 import type { AnimationMode } from "../domain/AnimationMode";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
 
 const debug = createComponentLogger("ComposeModuleState");
 
@@ -83,47 +84,40 @@ export type ComposeModuleState = {
   reset: () => void;
 };
 
-// Helper functions for localStorage
-function loadFromStorage<T>(key: string, defaultValue: T): T {
-  if (typeof window === "undefined") return defaultValue;
+// Persistence helpers
+const tabPersistence = createPersistenceHelper({
+  key: STORAGE_KEYS.CURRENT_TAB,
+  defaultValue: "arrange" as ComposeTab,
+});
 
-  try {
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      return JSON.parse(stored) as T;
-    }
-  } catch (err) {
-    console.warn(`Failed to load ${key} from localStorage:`, err);
-  }
-  return defaultValue;
-}
-
-function saveToStorage<T>(key: string, value: T): void {
-  if (typeof window === "undefined") return;
-
-  try {
-    if (value === null || value === undefined) {
-      localStorage.removeItem(key);
-    } else {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-  } catch (err) {
-    console.warn(`Failed to save ${key} to localStorage:`, err);
-  }
-}
+const modePersistence = createPersistenceHelper({
+  key: STORAGE_KEYS.CURRENT_MODE,
+  defaultValue: "single" as ComposeMode,
+});
 
 export function createComposeModuleState(): ComposeModuleState {
   // Migrate old "compose" tab value to "arrange"
-  const storedTab = loadFromStorage<string>(STORAGE_KEYS.CURRENT_TAB, "arrange");
-  const migratedTab: ComposeTab = storedTab === "compose" || storedTab === "playback" ? "arrange" : (storedTab as ComposeTab);
+  const storedTab = tabPersistence.load();
+  const migratedTab: ComposeTab = storedTab === "compose" || storedTab === "playback" ? "arrange" : storedTab;
 
   // Current tab (persisted)
   let currentTab = $state<ComposeTab>(migratedTab);
 
   // Current animation mode (persisted) - used for playback configuration
-  let currentMode = $state<ComposeMode>(
-    loadFromStorage(STORAGE_KEYS.CURRENT_MODE, "single")
-  );
+  let currentMode = $state<ComposeMode>(modePersistence.load());
+
+  // Auto-save tab and mode changes
+  $effect.root(() => {
+    $effect(() => {
+      void currentTab;
+      tabPersistence.setupAutoSave(currentTab);
+    });
+
+    $effect(() => {
+      void currentMode;
+      modePersistence.setupAutoSave(currentMode);
+    });
+  });
 
   // Sequence browser panel (not persisted - always starts closed)
   let isSequenceBrowserOpen = $state<boolean>(false);
@@ -157,14 +151,12 @@ export function createComposeModuleState(): ComposeModuleState {
     // Tab switching
     setCurrentTab(tab: ComposeTab) {
       currentTab = tab;
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, tab);
       debug.log("Tab changed to", tab);
     },
 
     // Mode switching (for playback configuration)
     setCurrentMode(mode: ComposeMode) {
       currentMode = mode;
-      saveToStorage(STORAGE_KEYS.CURRENT_MODE, mode);
       debug.log("Mode changed to", mode);
     },
 
@@ -200,13 +192,11 @@ export function createComposeModuleState(): ComposeModuleState {
     // Navigation helpers
     goToArrange() {
       currentTab = "arrange";
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "arrange");
       debug.log("Navigating to Arrange");
     },
 
     goToBrowse() {
       currentTab = "browse";
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "browse");
       debug.log("Navigating to Browse");
     },
 

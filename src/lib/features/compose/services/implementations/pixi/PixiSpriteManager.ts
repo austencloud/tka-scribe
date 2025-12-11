@@ -57,6 +57,9 @@ export class PixiSpriteManager {
   setGridVisibility(visible: boolean): void {
     if (this.gridSprite) {
       this.gridSprite.visible = visible;
+    } else if (visible) {
+      // Only warn if trying to show grid but sprite doesn't exist
+      console.warn("[PixiSpriteManager] setGridVisibility(true) called but gridSprite is null");
     }
   }
 

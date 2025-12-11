@@ -161,6 +161,16 @@ export function createCustomizeOptionsState(
     clearOptions();
   }
 
+  // Clear only position constraints (when grid mode changes)
+  // Returns true if any positions were actually cleared
+  function clearPositions(): boolean {
+    const hadPositions = options.startPosition !== null || options.endPosition !== null;
+    if (hadPositions) {
+      updateOptions({ startPosition: null, endPosition: null });
+    }
+    return hadPositions;
+  }
+
   // Individual field setters
   function setStartPosition(position: PictographData | null) {
     updateOptions({ startPosition: position });
@@ -194,6 +204,7 @@ export function createCustomizeOptionsState(
     updateOptions,
     setOptions,
     resetOptions,
+    clearPositions,
     clearSavedOptions: clearOptions,
 
     // Field-level setters

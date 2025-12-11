@@ -9,6 +9,7 @@ import type { TrailSettings } from "../shared/domain/types/TrailTypes";
 import type { PreRenderProgress } from "../services/implementations/SequenceFramePreRenderer";
 import type { AnimationPathCacheData } from "../services/implementations/AnimationPathCache";
 import { loadTrailSettings, saveTrailSettings } from "../utils/animation-panel-persistence";
+import { AnimationVisibilityStateManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
 // ============================================================================
 // CONSTANTS
@@ -56,6 +57,24 @@ export type AnimatorCanvasState = {
 	// Grid mode tracking
 	readonly previousGridMode: string | null;
 
+	// Service lifecycle
+	readonly servicesReady: boolean;
+	readonly pixiLoading: boolean;
+	readonly pixiError: string | null;
+
+	// Visibility state (synced from AnimationVisibilityStateManager)
+	readonly gridVisible: boolean;
+	readonly beatNumbersVisible: boolean;
+	readonly propsVisible: boolean;
+	readonly trailsVisible: boolean;
+	readonly tkaGlyphVisible: boolean;
+	readonly turnNumbersVisible: boolean;
+	readonly blueMotionVisible: boolean;
+	readonly redMotionVisible: boolean;
+
+	// Container reference (mutable for bind:this)
+	containerElement: HTMLDivElement | null;
+
 	// Mutators
 	setCanvasSize: (size: number) => void;
 	setBluePropDimensions: (dims: { width: number; height: number }) => void;
@@ -78,7 +97,25 @@ export type AnimatorCanvasState = {
 	setPreRenderProgress: (progress: PreRenderProgress | null) => void;
 	setPreRenderedFramesReady: (ready: boolean) => void;
 	setPreviousGridMode: (mode: string | null) => void;
+	setServicesReady: (ready: boolean) => void;
+	setPixiLoading: (loading: boolean) => void;
+	setPixiError: (error: string | null) => void;
+	updateVisibility: (key: keyof AnimationVisibilitySettings, visible: boolean) => void;
+	syncVisibilityFromManager: (manager: AnimationVisibilityStateManager) => void;
+	setContainerElement: (element: HTMLDivElement | null) => void;
 	reset: () => void;
+};
+
+export type AnimationVisibilitySettings = {
+	grid: boolean;
+	beatNumbers: boolean;
+	props: boolean;
+	trails: boolean;
+	tkaGlyph: boolean;
+	reversalIndicators: boolean;
+	turnNumbers: boolean;
+	blueMotion: boolean;
+	redMotion: boolean;
 };
 
 // ============================================================================
@@ -86,7 +123,8 @@ export type AnimatorCanvasState = {
 // ============================================================================
 
 export function createAnimatorCanvasState(
-	externalTrailSettings?: TrailSettings
+	externalTrailSettings?: TrailSettings,
+	visibilityManager?: AnimationVisibilityStateManager
 ): AnimatorCanvasState {
 	// Canvas dimensions
 	let canvasSize = $state(DEFAULT_CANVAS_SIZE);
@@ -119,6 +157,24 @@ export function createAnimatorCanvasState(
 
 	// Grid mode tracking
 	let previousGridMode = $state<string | null>(null);
+
+	// Service lifecycle
+	let servicesReady = $state(false);
+	let pixiLoading = $state(false);
+	let pixiError = $state<string | null>(null);
+
+	// Visibility state (initialized from manager if provided, otherwise defaults)
+	let gridVisible = $state(visibilityManager?.getVisibility("grid") ?? true);
+	let beatNumbersVisible = $state(visibilityManager?.getVisibility("beatNumbers") ?? true);
+	let propsVisible = $state(visibilityManager?.getVisibility("props") ?? true);
+	let trailsVisible = $state(visibilityManager?.getVisibility("trails") ?? true);
+	let tkaGlyphVisible = $state(visibilityManager?.getVisibility("tkaGlyph") ?? true);
+	let turnNumbersVisible = $state(visibilityManager?.getVisibility("turnNumbers") ?? true);
+	let blueMotionVisible = $state(visibilityManager?.getVisibility("blueMotion") ?? true);
+	let redMotionVisible = $state(visibilityManager?.getVisibility("redMotion") ?? true);
+
+	// Container reference
+	let containerElement = $state<HTMLDivElement | null>(null);
 
 	return {
 		// Getters
@@ -169,6 +225,45 @@ export function createAnimatorCanvasState(
 		},
 		get previousGridMode() {
 			return previousGridMode;
+		},
+		get servicesReady() {
+			return servicesReady;
+		},
+		get pixiLoading() {
+			return pixiLoading;
+		},
+		get pixiError() {
+			return pixiError;
+		},
+		get gridVisible() {
+			return gridVisible;
+		},
+		get beatNumbersVisible() {
+			return beatNumbersVisible;
+		},
+		get propsVisible() {
+			return propsVisible;
+		},
+		get trailsVisible() {
+			return trailsVisible;
+		},
+		get tkaGlyphVisible() {
+			return tkaGlyphVisible;
+		},
+		get turnNumbersVisible() {
+			return turnNumbersVisible;
+		},
+		get blueMotionVisible() {
+			return blueMotionVisible;
+		},
+		get redMotionVisible() {
+			return redMotionVisible;
+		},
+		get containerElement() {
+			return containerElement;
+		},
+		set containerElement(element: HTMLDivElement | null) {
+			containerElement = element;
 		},
 
 		// Mutators
@@ -252,6 +347,44 @@ export function createAnimatorCanvasState(
 			previousGridMode = mode;
 		},
 
+		setServicesReady(ready: boolean) {
+			servicesReady = ready;
+		},
+
+		setPixiLoading(loading: boolean) {
+			pixiLoading = loading;
+		},
+
+		setPixiError(error: string | null) {
+			pixiError = error;
+		},
+
+		updateVisibility(key: keyof AnimationVisibilitySettings, visible: boolean) {
+			if (key === "grid") gridVisible = visible;
+			if (key === "beatNumbers") beatNumbersVisible = visible;
+			if (key === "props") propsVisible = visible;
+			if (key === "trails") trailsVisible = visible;
+			if (key === "tkaGlyph") tkaGlyphVisible = visible;
+			if (key === "turnNumbers") turnNumbersVisible = visible;
+			if (key === "blueMotion") blueMotionVisible = visible;
+			if (key === "redMotion") redMotionVisible = visible;
+		},
+
+		syncVisibilityFromManager(manager: AnimationVisibilityStateManager) {
+			gridVisible = manager.getVisibility("grid");
+			beatNumbersVisible = manager.getVisibility("beatNumbers");
+			propsVisible = manager.getVisibility("props");
+			trailsVisible = manager.getVisibility("trails");
+			tkaGlyphVisible = manager.getVisibility("tkaGlyph");
+			turnNumbersVisible = manager.getVisibility("turnNumbers");
+			blueMotionVisible = manager.getVisibility("blueMotion");
+			redMotionVisible = manager.getVisibility("redMotion");
+		},
+
+		setContainerElement(element: HTMLDivElement | null) {
+			containerElement = element;
+		},
+
 		reset() {
 			canvasSize = DEFAULT_CANVAS_SIZE;
 			bluePropDimensions = { ...DEFAULT_PROP_DIMENSIONS };
@@ -269,6 +402,18 @@ export function createAnimatorCanvasState(
 			preRenderProgress = null;
 			preRenderedFramesReady = false;
 			previousGridMode = null;
+			servicesReady = false;
+			pixiLoading = false;
+			pixiError = null;
+			gridVisible = true;
+			beatNumbersVisible = true;
+			propsVisible = true;
+			trailsVisible = true;
+			tkaGlyphVisible = true;
+			turnNumbersVisible = true;
+			blueMotionVisible = true;
+			redMotionVisible = true;
+			containerElement = null;
 		},
 	};
 }

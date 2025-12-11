@@ -7,29 +7,30 @@
   - Trail settings
   - Export actions
 
-  Mobile: Compact layout with advanced controls in bottom sheet
-  Desktop: All controls visible in side panel
+  Organizes all controls in a clean grid layout.
 -->
 <script lang="ts">
+  import { browser } from "$app/environment";
+  import { onMount } from "svelte";
   import BpmControl from "../controls/BpmControl.svelte";
   import SimpleTrailControls from "../trail/SimpleTrailControls.svelte";
-  import MotionVisibilityButtons from "../trail/MotionVisibilityButtons.svelte";
+  import ExpandToggleButton from "../inputs/ExpandToggleButton.svelte";
   import ExportActionsPanel from "./ExportActionsPanel.svelte";
   import MobileToolViewToggle from "../inputs/MobileToolViewToggle.svelte";
   import AnimationBeatGrid from "$lib/shared/animation-engine/components/AnimationBeatGrid.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+  import {
+    animationSettings,
+    TrailMode,
+  } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   type MobileToolView = "controls" | "beat-grid";
 
   const debug = createComponentLogger("AnimationControlsPanel");
   const DEFAULT_BPM = 60;
-
-  // Mobile menu and sheet states
-  let isMenuOpen = $state(false);
-  let isBpmSheetOpen = $state(false);
-  let isTrailSheetOpen = $state(false);
+  const SMALL_SCREEN_HEIGHT = 700; // iPhone SE is 667px
 
   let {
     speed = 1,
@@ -37,6 +38,7 @@
     blueMotionVisible = true,
     redMotionVisible = true,
     isSideBySideLayout = false,
+    isExpanded = false,
     scrollContainerRef = $bindable(null),
     isExporting = false,
     exportProgress = null,
@@ -47,8 +49,13 @@
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
+    onStepHalfBeatBackward = () => {},
+    onStepHalfBeatForward = () => {},
+    onStepFullBeatBackward = () => {},
+    onStepFullBeatForward = () => {},
     onToggleBlue = () => {},
     onToggleRed = () => {},
+    onToggleExpanded = () => {},
     onToggleToolView = () => {},
     onExportGif = () => {},
     preventBackNavAction = () => {},
@@ -59,6 +66,7 @@
     blueMotionVisible?: boolean;
     redMotionVisible?: boolean;
     isSideBySideLayout?: boolean;
+    isExpanded?: boolean;
     scrollContainerRef?: HTMLDivElement | null;
     isExporting?: boolean;
     exportProgress?: { progress: number; stage: string } | null;
@@ -69,8 +77,13 @@
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
+    onStepHalfBeatBackward?: () => void;
+    onStepHalfBeatForward?: () => void;
+    onStepFullBeatBackward?: () => void;
+    onStepFullBeatForward?: () => void;
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
+    onToggleExpanded?: () => void;
     onToggleToolView?: () => void;
     onExportGif?: () => void;
     preventBackNavAction?: (
@@ -95,29 +108,59 @@
     const newSpeed = newBpm / DEFAULT_BPM;
     onSpeedChange(newSpeed);
   }
+
+  // Small screen detection for compact mode
+  let isSmallScreen = $state(false);
+
+  onMount(() => {
+    if (!browser) return;
+
+    const checkHeight = () => {
+      isSmallScreen = window.innerHeight <= SMALL_SCREEN_HEIGHT;
+    };
+
+    checkHeight();
+    window.addEventListener("resize", checkHeight);
+    return () => window.removeEventListener("resize", checkHeight);
+  });
+
+  // Sheet states
+  let isBpmSheetOpen = $state(false);
+  let isTrailsSheetOpen = $state(false);
+
+  // Derive current trail preset for display
+  const currentTrailPreset = $derived.by(() => {
+    const trail = animationSettings.trail;
+    if (!trail.enabled || trail.mode === TrailMode.OFF) return "Off";
+    if (trail.lineWidth <= 2.5 && trail.maxOpacity <= 0.7) return "Subtle";
+    return "Vivid";
+  });
+
+  // Use compact controls when on small screen AND in mobile expanded mode
+  const useCompactControls = $derived(isSmallScreen && !isSideBySideLayout && isExpanded);
 </script>
 
 <div
   class="controls-panel"
-  class:mobile={!isSideBySideLayout}
+  class:mobile-compact={!isExpanded && !isSideBySideLayout}
+  class:mobile-expanded={isExpanded && !isSideBySideLayout}
   class:desktop={isSideBySideLayout}
   bind:this={scrollContainerRef}
   use:preventBackNavAction={isSideBySideLayout}
   onscroll={onScroll}
 >
-  <!-- Mobile Compact Mode: Optimized for small screens like iPhone SE -->
-  {#if !isSideBySideLayout}
-    <div class="control-row mobile-toolbar">
+  <!-- Compact Mode: View Toggle (left) + Play (center) + Expand Toggle (right) -->
+  {#if !isSideBySideLayout && !isExpanded}
+    <div class="control-row compact-row">
       <!-- Left: View Toggle -->
       <MobileToolViewToggle
         activeView={mobileToolView}
         onToggle={onToggleToolView}
       />
 
-      <!-- Center: Play button (using flex spacer approach) -->
-      <div class="toolbar-spacer"></div>
+      <!-- Center: Play button -->
       <button
-        class="play-pause-btn"
+        class="play-pause-btn center-play"
         class:playing={isPlaying}
         onclick={onPlaybackToggle}
         aria-label={isPlaying ? "Pause animation" : "Play animation"}
@@ -125,111 +168,12 @@
       >
         <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
       </button>
-      <div class="toolbar-spacer"></div>
 
-      <!-- Right: Menu button -->
-      <div class="menu-container">
-        <button
-          class="menu-btn"
-          onclick={() => { console.log('Menu clicked!'); isMenuOpen = !isMenuOpen; }}
-          aria-label="Settings menu"
-          aria-expanded={isMenuOpen}
-          type="button"
-        >
-          <i class="fas fa-ellipsis-v"></i>
-        </button>
-
-        {#if isMenuOpen}
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <div
-            class="menu-backdrop"
-            onclick={() => isMenuOpen = false}
-            role="button"
-            tabindex="-1"
-          ></div>
-          <div class="menu-dropdown">
-            <!-- Visibility toggles -->
-            <button
-              class="menu-item"
-              class:active={blueMotionVisible}
-              onclick={() => { onToggleBlue(); }}
-              type="button"
-            >
-              <span class="menu-icon blue-icon">●</span>
-              <span class="menu-text">Blue Motion</span>
-              <span class="menu-toggle">{blueMotionVisible ? '✓' : ''}</span>
-            </button>
-            <button
-              class="menu-item"
-              class:active={redMotionVisible}
-              onclick={() => { onToggleRed(); }}
-              type="button"
-            >
-              <span class="menu-icon red-icon">●</span>
-              <span class="menu-text">Red Motion</span>
-              <span class="menu-toggle">{redMotionVisible ? '✓' : ''}</span>
-            </button>
-
-            <div class="menu-divider"></div>
-
-            <!-- Speed settings -->
-            <button
-              class="menu-item"
-              onclick={() => { isMenuOpen = false; isBpmSheetOpen = true; }}
-              type="button"
-            >
-              <span class="menu-icon"><i class="fas fa-tachometer-alt"></i></span>
-              <span class="menu-text">Speed Settings</span>
-              <span class="menu-value">{bpm} BPM</span>
-            </button>
-
-            <!-- Trail settings -->
-            <button
-              class="menu-item"
-              onclick={() => { isMenuOpen = false; isTrailSheetOpen = true; }}
-              type="button"
-            >
-              <span class="menu-icon"><i class="fas fa-paint-brush"></i></span>
-              <span class="menu-text">Trail Effects</span>
-              <span class="menu-chevron"><i class="fas fa-chevron-right"></i></span>
-            </button>
-
-            <div class="menu-divider"></div>
-
-            <!-- Export -->
-            <button
-              class="menu-item export-item"
-              onclick={() => { isMenuOpen = false; onExportGif(); }}
-              disabled={isExporting}
-              type="button"
-            >
-              <span class="menu-icon"><i class="fas fa-file-export"></i></span>
-              <span class="menu-text">{isExporting ? 'Exporting...' : 'Export GIF'}</span>
-            </button>
-          </div>
-        {/if}
-      </div>
+      <!-- Right: Expand Toggle -->
+      <ExpandToggleButton {isExpanded} onToggle={onToggleExpanded} />
     </div>
 
-    <!-- Quick BPM Presets (always visible on mobile) -->
-    <div class="control-row quick-presets-row">
-      <div class="quick-presets">
-        {#each [30, 60, 90, 120] as presetBpm}
-          <button
-            class="quick-preset-btn"
-            class:active={bpm === presetBpm}
-            onclick={() => handleBpmChange(presetBpm)}
-            type="button"
-            aria-label="Set BPM to {presetBpm}"
-          >
-            {presetBpm}
-          </button>
-        {/each}
-      </div>
-    </div>
-
-    <!-- Tool Area: Beat Grid only (controls in menu) -->
+    <!-- Tool Area: Beat Grid or Quick Presets based on view -->
     {#if mobileToolView === "beat-grid"}
       <div class="beat-grid-area">
         <AnimationBeatGrid
@@ -238,84 +182,178 @@
           {isPlaying}
         />
       </div>
+    {:else}
+      <div class="control-row quick-presets-row">
+        <div class="quick-presets">
+          {#each [30, 60, 90, 120] as presetBpm}
+            <button
+              class="quick-preset-btn"
+              class:active={bpm === presetBpm}
+              onclick={() => handleBpmChange(presetBpm)}
+              type="button"
+              aria-label="Set BPM to {presetBpm}"
+            >
+              {presetBpm}
+            </button>
+          {/each}
+        </div>
+      </div>
     {/if}
-
-    <!-- BPM Sheet (focused, no scroll) -->
-    <Drawer
-      bind:isOpen={isBpmSheetOpen}
-      placement="bottom"
-      showHandle={true}
-      closeOnBackdrop={true}
-      ariaLabel="Speed settings"
-    >
-      <div class="focused-sheet">
-        <div class="focused-sheet-header">
-          <h3>Speed</h3>
-          <button class="sheet-close" onclick={() => isBpmSheetOpen = false} type="button">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="focused-sheet-content">
-          <BpmControl
-            bind:bpm
-            min={15}
-            max={180}
-            step={1}
-            onBpmChange={handleBpmChange}
-          />
-        </div>
-      </div>
-    </Drawer>
-
-    <!-- Trail Sheet (focused, no scroll) -->
-    <Drawer
-      bind:isOpen={isTrailSheetOpen}
-      placement="bottom"
-      showHandle={true}
-      closeOnBackdrop={true}
-      ariaLabel="Trail settings"
-    >
-      <div class="focused-sheet">
-        <div class="focused-sheet-header">
-          <h3>Trail Effects</h3>
-          <button class="sheet-close" onclick={() => isTrailSheetOpen = false} type="button">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="focused-sheet-content">
-          <SimpleTrailControls />
-        </div>
-      </div>
-    </Drawer>
   {/if}
 
-  <!-- Desktop Mode: Side-by-side layout with all controls -->
-  {#if isSideBySideLayout}
-    <!-- Row 1: Play/Pause Button (Centered) -->
+  <!-- Expanded Mode: [Blue Eye] [◀] [▶❚❚] [▶] [Red Eye] -->
+  {#if isSideBySideLayout || isExpanded}
     <div class="control-row playback-row">
+      <!-- Blue Motion Visibility (left edge) -->
       <button
-        class="play-pause-btn large"
-        class:playing={isPlaying}
-        onclick={onPlaybackToggle}
-        aria-label={isPlaying ? "Pause animation" : "Play animation"}
+        class="vis-btn blue-vis-btn"
+        class:active={blueMotionVisible}
+        onclick={onToggleBlue}
         type="button"
+        aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
       >
-        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+      </button>
+
+      <!-- Center transport controls -->
+      <div class="transport-controls">
+        <!-- Full Beat Back -->
+        <button
+          class="step-btn step-full"
+          onclick={onStepFullBeatBackward}
+          disabled={isPlaying}
+          type="button"
+          aria-label="Previous full beat"
+        >
+          <i class="fas fa-angles-left" aria-hidden="true"></i>
+        </button>
+
+        <!-- Half Beat Back -->
+        <button
+          class="step-btn step-half"
+          onclick={onStepHalfBeatBackward}
+          disabled={isPlaying}
+          type="button"
+          aria-label="Previous half beat"
+        >
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+
+        <!-- Play/Pause -->
+        <button
+          class="play-pause-btn large"
+          class:playing={isPlaying}
+          onclick={onPlaybackToggle}
+          aria-label={isPlaying ? "Pause animation" : "Play animation"}
+          type="button"
+        >
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        </button>
+
+        <!-- Half Beat Forward -->
+        <button
+          class="step-btn step-half"
+          onclick={onStepHalfBeatForward}
+          disabled={isPlaying}
+          type="button"
+          aria-label="Next half beat"
+        >
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+
+        <!-- Full Beat Forward -->
+        <button
+          class="step-btn step-full"
+          onclick={onStepFullBeatForward}
+          disabled={isPlaying}
+          type="button"
+          aria-label="Next full beat"
+        >
+          <i class="fas fa-angles-right" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Red Motion Visibility (right edge) -->
+      <button
+        class="vis-btn red-vis-btn"
+        class:active={redMotionVisible}
+        onclick={onToggleRed}
+        type="button"
+        aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
+      >
+        <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
       </button>
     </div>
+  {/if}
 
-    <!-- Row 2: Motion Visibility Controls -->
-    <div class="control-row visibility-row">
-      <MotionVisibilityButtons
-        {blueMotionVisible}
-        {redMotionVisible}
-        {onToggleBlue}
-        {onToggleRed}
-      />
-    </div>
+  <!-- BPM & Trails: Compact buttons on small screens, full controls otherwise -->
+  {#if isSideBySideLayout || isExpanded}
+    {#if useCompactControls}
+      <!-- Compact mode: Two buttons that open sheets -->
+      <div class="control-row compact-settings-row">
+        <button
+          class="compact-setting-btn"
+          onclick={() => (isBpmSheetOpen = true)}
+          type="button"
+          aria-label="Open BPM settings"
+        >
+          <span class="setting-value">{bpm}</span>
+          <span class="setting-label">BPM</span>
+        </button>
+        <button
+          class="compact-setting-btn"
+          onclick={() => (isTrailsSheetOpen = true)}
+          type="button"
+          aria-label="Open trail settings"
+        >
+          <span class="setting-value">{currentTrailPreset}</span>
+          <span class="setting-label">Trails</span>
+        </button>
+      </div>
+    {:else}
+      <!-- Full controls for larger screens -->
+      <div class="control-row bpm-row">
+        <BpmControl
+          bind:bpm
+          min={15}
+          max={180}
+          step={1}
+          onBpmChange={handleBpmChange}
+        />
+      </div>
+      <SimpleTrailControls />
+    {/if}
+  {/if}
 
-    <!-- BPM Control Row -->
-    <div class="control-row bpm-row">
+  <!-- Export -->
+  {#if isSideBySideLayout || isExpanded}
+    <ExportActionsPanel {onExportGif} {isExporting} {exportProgress} />
+  {/if}
+</div>
+
+<!-- BPM Sheet -->
+<Drawer
+  bind:isOpen={isBpmSheetOpen}
+  placement="bottom"
+  snapPoints={["45%"]}
+  closeOnBackdrop={true}
+  closeOnEscape={true}
+  ariaLabel="BPM Settings"
+  showHandle={true}
+>
+  <div class="sheet-content">
+    <header class="sheet-header">
+      <h3 class="sheet-title">Speed (BPM)</h3>
+      <button
+        class="sheet-close-btn"
+        onclick={() => (isBpmSheetOpen = false)}
+        aria-label="Close"
+        type="button"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+    <div class="sheet-body">
       <BpmControl
         bind:bpm
         min={15}
@@ -324,16 +362,36 @@
         onBpmChange={handleBpmChange}
       />
     </div>
+  </div>
+</Drawer>
 
-    <!-- Trail Settings -->
-    <SimpleTrailControls />
-  {/if}
-
-  <!-- Export (Desktop only - mobile has it in controls view) -->
-  {#if isSideBySideLayout}
-    <ExportActionsPanel {onExportGif} {isExporting} {exportProgress} />
-  {/if}
-</div>
+<!-- Trails Sheet -->
+<Drawer
+  bind:isOpen={isTrailsSheetOpen}
+  placement="bottom"
+  snapPoints={["35%"]}
+  closeOnBackdrop={true}
+  closeOnEscape={true}
+  ariaLabel="Trail Settings"
+  showHandle={true}
+>
+  <div class="sheet-content">
+    <header class="sheet-header">
+      <h3 class="sheet-title">Trail Settings</h3>
+      <button
+        class="sheet-close-btn"
+        onclick={() => (isTrailsSheetOpen = false)}
+        aria-label="Close"
+        type="button"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+    <div class="sheet-body">
+      <SimpleTrailControls />
+    </div>
+  </div>
+</Drawer>
 
 <style>
   /* ===========================
@@ -365,16 +423,26 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Mobile Mode - Full-height with scrollable content */
-  .controls-panel.mobile {
-    overflow-y: auto;
+  /* Mobile Compact Mode - No scrolling, only primary row visible */
+  .controls-panel.mobile-compact {
+    overflow-y: hidden !important;
+    overflow-x: hidden;
+    flex: 0 0 auto;
+    max-height: none;
+    padding: 10px;
+    gap: 0;
+  }
+
+  /* Mobile Expanded Mode - Scrollable with all controls visible */
+  .controls-panel.mobile-expanded {
+    overflow-y: auto !important;
     overflow-x: hidden;
     overscroll-behavior: contain;
     flex: 1 1 0;
     min-height: 0;
     max-height: none;
-    padding: 10px;
-    gap: 8px;
+    padding: 12px;
+    gap: 10px;
   }
 
   /* Desktop Mode - Fixed, no scrolling */
@@ -415,164 +483,17 @@
     gap: 8px;
   }
 
-  /* Mobile toolbar - flexbox layout with spacers for centering */
-  .mobile-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .toolbar-spacer {
-    flex: 1;
-  }
-
-  /* Menu container */
-  .menu-container {
+  /* Compact mode row - new layout: toggle (left), play (center), expand (right) */
+  .compact-row {
+    flex-wrap: nowrap;
+    justify-content: space-between;
     position: relative;
   }
 
-  .menu-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-tap-highlight-color: transparent;
-    font-size: 16px;
-  }
-
-  .menu-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .menu-btn:active {
-    transform: scale(0.95);
-  }
-
-  .menu-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 99;
-  }
-
-  .menu-dropdown {
+  .compact-row .center-play {
     position: absolute;
-    right: 0;
-    bottom: calc(100% + 8px);
-    min-width: 200px;
-    background: rgba(20, 20, 25, 0.98);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    z-index: 100;
-    overflow: hidden;
-    animation: menuSlideUp 0.2s ease;
-    backdrop-filter: blur(16px);
-  }
-
-  @keyframes menuSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .menu-item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 12px 16px;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-    text-align: left;
-    gap: 12px;
-  }
-
-  .menu-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  .menu-item:active {
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  .menu-item:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .menu-icon {
-    width: 20px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.85rem;
-  }
-
-  .menu-icon.blue-icon {
-    color: #3b82f6;
-  }
-
-  .menu-icon.red-icon {
-    color: #ef4444;
-  }
-
-  .menu-text {
-    flex: 1;
-  }
-
-  .menu-toggle {
-    width: 20px;
-    text-align: center;
-    color: rgba(34, 197, 94, 0.9);
-    font-weight: 600;
-  }
-
-  .menu-value {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .menu-chevron {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.7rem;
-  }
-
-  .menu-item.active .menu-icon.blue-icon,
-  .menu-item.active .menu-icon.red-icon {
-    filter: brightness(1.2);
-  }
-
-  .menu-item.export-item {
-    color: rgba(139, 92, 246, 0.9);
-  }
-
-  .menu-item.export-item .menu-icon {
-    color: rgba(139, 92, 246, 0.7);
-  }
-
-  .menu-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.08);
-    margin: 4px 0;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   /* Quick presets row (when in controls view) */
@@ -591,16 +512,222 @@
 
   /* Expanded mode rows */
   .playback-row {
-    justify-content: center;
+    justify-content: space-between;
     gap: 12px;
   }
 
-  .visibility-row {
+  /* Transport controls - centered group */
+  .transport-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Step buttons */
+  .step-btn {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Full beat step buttons - slightly more prominent */
+  .step-btn.step-full {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .step-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.9);
+      transform: scale(1.05);
+    }
+  }
+
+  .step-btn:active:not(:disabled) {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .step-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   .bpm-row {
     width: 100%;
+  }
+
+  /* Compact Settings Row (small screens) */
+  .compact-settings-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .compact-setting-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 52px;
+    padding: 8px 12px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1.5px solid rgba(139, 92, 246, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .compact-setting-btn:active {
+    transform: scale(0.97);
+    background: rgba(139, 92, 246, 0.25);
+  }
+
+  .compact-setting-btn .setting-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1;
+  }
+
+  .compact-setting-btn .setting-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Sheet Styles */
+  .sheet-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 20px 20px;
+    min-width: 280px;
+  }
+
+  .sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 20px;
+  }
+
+  .sheet-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+  }
+
+  .sheet-close-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .sheet-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .sheet-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Visibility Buttons */
+  .vis-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    min-width: 52px;
+    width: 52px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    flex-shrink: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vis-btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: rgba(255, 255, 255, 0.6);
+      transform: translateY(-1px);
+    }
+  }
+
+  .vis-btn:active {
+    transform: scale(0.97);
+  }
+
+  .vis-btn.active.blue-vis-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25) 0%,
+      rgba(37, 99, 235, 0.2) 100%
+    );
+    border-color: rgba(59, 130, 246, 0.5);
+    color: rgba(191, 219, 254, 1);
+    box-shadow:
+      0 2px 12px rgba(59, 130, 246, 0.2),
+      0 0 16px rgba(59, 130, 246, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .vis-btn.active.red-vis-btn {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.25) 0%,
+      rgba(220, 38, 38, 0.2) 100%
+    );
+    border-color: rgba(239, 68, 68, 0.5);
+    color: rgba(254, 202, 202, 1);
+    box-shadow:
+      0 2px 12px rgba(239, 68, 68, 0.2),
+      0 0 16px rgba(239, 68, 68, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
   /* Play/Pause Button */
@@ -776,51 +903,5 @@
       padding: 10px;
       gap: 8px;
     }
-  }
-
-  /* ===========================
-     FOCUSED SHEETS (Mobile)
-     =========================== */
-
-  .focused-sheet {
-    padding: 8px 16px 24px;
-  }
-
-  .focused-sheet-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .focused-sheet-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .sheet-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .sheet-close:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .focused-sheet-content {
-    /* Content fills available space without scrolling */
   }
 </style>

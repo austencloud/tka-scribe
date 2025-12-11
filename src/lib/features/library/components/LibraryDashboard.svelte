@@ -19,6 +19,11 @@
   import type { LibrarySequence } from "../domain/models/LibrarySequence";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { goto } from "$app/navigation";
+  import { tryResolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ICollaborativeVideoService } from "$lib/shared/video-collaboration/services/contracts/ICollaborativeVideoService";
+  import type { CollaborativeVideo } from "$lib/shared/video-collaboration/domain/CollaborativeVideo";
+  import CollaborativeVideoCard from "$lib/shared/video-collaboration/components/CollaborativeVideoCard.svelte";
 
   interface Props {
     onNavigate?: (section: LibraryViewSection) => void;
@@ -54,6 +59,32 @@
     libraryState.sequences.filter((s) => s.isFavorite).length
   );
 
+  // Video state
+  let videoService = $state<ICollaborativeVideoService | null>(null);
+  let videos = $state<CollaborativeVideo[]>([]);
+  let videosLoading = $state(false);
+
+  const recentVideos = $derived(() => {
+    return videos.slice(0, 4);
+  });
+
+  const totalVideos = $derived(videos.length);
+
+  async function loadVideos() {
+    if (!videoService || !authStore.effectiveUserId) return;
+
+    videosLoading = true;
+    try {
+      const library = await videoService.getUserVideoLibrary();
+      videos = [...library.created, ...library.collaborations]
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    } catch (e) {
+      console.error("Failed to load videos:", e);
+    } finally {
+      videosLoading = false;
+    }
+  }
+
   // Navigation handlers
   function handleSeeAllSequences() {
     onNavigate?.("sequences");
@@ -61,6 +92,15 @@
 
   function handleSeeAllFavorites() {
     onNavigate?.("favorites");
+  }
+
+  function handleSeeAllVideos() {
+    onNavigate?.("videos");
+  }
+
+  function handleVideoClick(video: CollaborativeVideo) {
+    // TODO: Open video player or detail view
+    console.log("Video clicked:", video.id);
   }
 
   function handleSequenceClick(sequence: SequenceData) {
@@ -78,8 +118,10 @@
   // Initialize on mount
   onMount(() => {
     prevIsAuthenticated = isAuthenticated;
+    videoService = tryResolve<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
     if (isAuthenticated) {
       libraryState.initialize();
+      loadVideos();
     }
   });
 
@@ -99,8 +141,10 @@
       prevIsAuthenticated = currentAuth;
       if (currentAuth) {
         libraryState.initialize();
+        loadVideos();
       } else {
         libraryState.reset();
+        videos = [];
       }
     }
   });
@@ -140,6 +184,10 @@
         <div class="stat-item">
           <span class="stat-value">{totalFavorites}</span>
           <span class="stat-label">Favorites</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{totalVideos}</span>
+          <span class="stat-label">Videos</span>
         </div>
       </div>
 
@@ -197,6 +245,44 @@
               />
             {/each}
           </div>
+        </section>
+      {/if}
+
+      <!-- My Videos Section -->
+      {#if totalVideos > 0 || videosLoading}
+        <section class="dashboard-section">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="fas fa-video"></i>
+              <h2>My Videos</h2>
+            </div>
+            {#if totalVideos > 0}
+              <button class="see-all-btn" onclick={handleSeeAllVideos}>
+                See All <i class="fas fa-chevron-right"></i>
+              </button>
+            {/if}
+          </div>
+
+          {#if videosLoading}
+            <div class="videos-loading">
+              <div class="spinner small"></div>
+              <span>Loading videos...</span>
+            </div>
+          {:else if recentVideos().length > 0}
+            <div class="videos-grid">
+              {#each recentVideos() as video (video.id)}
+                <CollaborativeVideoCard
+                  {video}
+                  onclick={() => handleVideoClick(video)}
+                />
+              {/each}
+            </div>
+          {:else}
+            <div class="empty-section">
+              <i class="fas fa-video"></i>
+              <p>No videos yet. Record your first performance!</p>
+            </div>
+          {/if}
         </section>
       {/if}
 
@@ -426,6 +512,29 @@
 
   .sequences-grid.compact {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  /* Videos Grid */
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--spacing-md, 16px);
+  }
+
+  .videos-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm, 8px);
+    padding: var(--spacing-lg, 24px);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+  }
+
+  .spinner.small {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
   }
 
   /* Empty Section */

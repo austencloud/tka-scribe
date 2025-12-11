@@ -214,6 +214,12 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         throw new Error(`Missing rotation direction at index ${i}`);
       }
 
+      // Only avoid endPos on the LAST intermediate beat (penultimate beat of the sequence)
+      // This prevents situations where the only path to endPos is a Type 6 static move
+      // Earlier beats can land on endPos freely since there's still time to move away
+      const isPenultimateBeat = i === beatsToGenerate - 1;
+      const avoidPosition = isPenultimateBeat ? endPos : undefined;
+
       const nextBeat = await this._generateNextBeat(
         sequence,
         level,
@@ -222,7 +228,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         options.propContinuity ?? PropContinuity.CONTINUOUS,
         blueRotationDirection,
         redRotationDirection,
-        options.gridMode
+        options.gridMode,
+        avoidPosition
       );
       sequence.push(nextBeat);
     }
@@ -345,6 +352,10 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   /**
    * Generate next beat - orchestrates filtering and conversion
    * EXACT ORIGINAL LOGIC FROM SequenceGenerationService._generateNextBeat
+   *
+   * @param avoidEndPosition - Optional position to avoid landing on (used to prevent
+   *   landing on the required final position during intermediate beats, which would
+   *   force a Type 6 static move on the final beat)
    */
   private async _generateNextBeat(
     sequence: BeatData[],
@@ -354,7 +365,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     propContinuity: PropContinuity,
     blueRotationDirection: string,
     redRotationDirection: string,
-    gridMode: GridMode
+    gridMode: GridMode,
+    avoidEndPosition?: GridPosition
   ): Promise<BeatData> {
     // Get all options
     const allOptions =
@@ -383,6 +395,14 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         filteredOptions,
         blueRotationDirection,
         redRotationDirection
+      );
+    }
+
+    // Avoid landing on the required end position during intermediate beats
+    // This prevents situations where the only path to the end position is a Type 6 static move
+    if (avoidEndPosition) {
+      filteredOptions = filteredOptions.filter(
+        (p) => p.endPosition !== avoidEndPosition
       );
     }
 

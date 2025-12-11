@@ -44,9 +44,10 @@
   class:selected={isSelected}
   onclick={onClick}
   type="button"
+  style="--type-color: {typeConfig.color}"
 >
   <!-- Type icon -->
-  <div class="card-type" style="--type-color: {typeConfig.color}">
+  <div class="card-type">
     <i class="fas {typeConfig.icon}"></i>
   </div>
 
@@ -98,40 +99,46 @@
     gap: 12px;
     width: 100%;
     padding: 14px;
+    /* Type-colored gradient background (matches Kanban card styling) */
     background: linear-gradient(
       135deg,
-      rgba(25, 25, 35, 0.95) 0%,
-      rgba(30, 30, 40, 0.95) 100%
+      color-mix(in srgb, var(--type-color) 8%, rgba(30, 30, 40, 0.95)) 0%,
+      color-mix(in srgb, var(--type-color) 3%, rgba(25, 25, 35, 0.98)) 100%
     );
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border: 1.5px solid
+      color-mix(in srgb, var(--type-color) 20%, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .feedback-card:hover {
     background: linear-gradient(
       135deg,
-      rgba(30, 30, 40, 0.98) 0%,
-      rgba(35, 35, 45, 0.98) 100%
+      color-mix(in srgb, var(--type-color) 15%, rgba(35, 35, 45, 0.95)) 0%,
+      color-mix(in srgb, var(--type-color) 8%, rgba(30, 30, 40, 0.98)) 100%
     );
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    border-color: color-mix(
+      in srgb,
+      var(--type-color) 40%,
+      rgba(255, 255, 255, 0.1)
+    );
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.5),
+      0 0 20px color-mix(in srgb, var(--type-color) 15%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
     transform: translateY(-1px);
   }
 
   .feedback-card.selected {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.3) 0%,
-      rgba(59, 130, 246, 0.2) 100%
-    );
-    border-color: rgba(59, 130, 246, 0.6);
+    border-color: var(--type-color);
     box-shadow:
-      0 6px 20px rgba(59, 130, 246, 0.3),
-      0 0 0 1px rgba(59, 130, 246, 0.3);
+      0 0 0 2px color-mix(in srgb, var(--type-color) 30%, transparent),
+      0 4px 16px color-mix(in srgb, var(--type-color) 20%, transparent);
   }
 
   .feedback-card.needs-confirmation {
@@ -253,7 +260,7 @@
 
   .screenshot-indicator i {
     font-size: 0.625rem;
-    color: #6366f1;
+    color: var(--type-color);
   }
 
   .card-footer {

@@ -115,11 +115,52 @@ export class GenerationOrchestrationService
       gridMode: options.gridMode,
     };
 
-    const generatedBeats = await this.beatGenerationOrchestrator.generateBeats(
-      sequence,
-      options.length,
-      beatGenOptions
-    );
+    let generatedBeats: BeatData[];
+
+    // If end position is specified, we need to handle the last beat specially
+    const hasEndPositionConstraint = options.endPosition?.startPosition;
+
+    if (hasEndPositionConstraint && options.length > 0) {
+      // Generate all beats except the last one
+      if (options.length > 1) {
+        const allButLastBeats = await this.beatGenerationOrchestrator.generateBeats(
+          sequence,
+          options.length - 1,
+          beatGenOptions
+        );
+        generatedBeats = allButLastBeats;
+      } else {
+        generatedBeats = [];
+      }
+
+      // Generate the last beat with the end position constraint
+      const lastBeatOptions: BeatGenerationOptions = {
+        ...beatGenOptions,
+        requiredEndPosition: options.endPosition!.startPosition!,
+        // Create a turn allocation for just this beat
+        turnAllocation: {
+          blue: [turnAllocation.blue[options.length - 1]!],
+          red: [turnAllocation.red[options.length - 1]!],
+        },
+      };
+
+      const lastBeat = await this.beatGenerationOrchestrator.generateNextBeat(
+        sequence,
+        lastBeatOptions,
+        turnAllocation.blue[options.length - 1]!,
+        turnAllocation.red[options.length - 1]!
+      );
+
+      sequence.push(lastBeat);
+      generatedBeats.push(lastBeat);
+    } else {
+      // No end position constraint - generate all beats normally
+      generatedBeats = await this.beatGenerationOrchestrator.generateBeats(
+        sequence,
+        options.length,
+        beatGenOptions
+      );
+    }
 
     // Step 5: Build sequence data structure
     const word = this.metadataService.calculateWordFromBeats(generatedBeats);

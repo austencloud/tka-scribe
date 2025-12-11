@@ -100,6 +100,17 @@
       },
     },
     {
+      id: "Keyboard",
+      title: "Keyboard",
+      icon: '<i class="fas fa-keyboard"></i>',
+      color: "#8b5cf6",
+      gradient: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+      getStatusText: (s) => {
+        const singleKey = s.singleKeyShortcuts ?? true;
+        return singleKey ? "All shortcuts" : "Modifier only";
+      },
+    },
+    {
       id: "Accessibility",
       title: "Miscellaneous",
       icon: '<i class="fas fa-sliders-h"></i>',

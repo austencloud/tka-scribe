@@ -121,6 +121,16 @@
       creatorsViewState.viewingUserId &&
       !discoverNavigationState.isNavigating
     ) {
+      // Check if navigation state already shows this profile (avoid duplicate push)
+      const current = discoverNavigationState.currentLocation;
+      if (
+        current?.tab === "creators" &&
+        current?.view === "profile" &&
+        current?.contextId === creatorsViewState.viewingUserId
+      ) {
+        return; // Already at this location, don't push again
+      }
+
       discoverNavigationState.navigateTo({
         tab: "creators",
         view: "profile",

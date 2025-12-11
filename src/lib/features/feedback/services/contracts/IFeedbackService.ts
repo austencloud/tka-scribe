@@ -63,7 +63,7 @@ export interface IFeedbackService {
 
   /**
    * Update editable feedback fields (admin)
-   * Used for correcting context, type, priority, title, description
+   * Used for correcting type, priority, title, description
    */
   updateFeedback(
     feedbackId: string,
@@ -72,8 +72,6 @@ export interface IFeedbackService {
       | "title"
       | "description"
       | "priority"
-      | "reportedModule"
-      | "reportedTab"
     >>
   ): Promise<void>;
 
@@ -121,4 +119,15 @@ export interface IFeedbackService {
     onUpdate: (items: FeedbackItem[]) => void,
     onError?: (error: Error) => void
   ): () => void;
+
+  /**
+   * Update user's own feedback (validates ownership)
+   * - For "new" status: full edit (type and description)
+   * - For "in-progress"/"in-review": append notes only (appendMode=true)
+   */
+  updateUserFeedback(
+    feedbackId: string,
+    updates: Partial<Pick<FeedbackItem, "type" | "description">>,
+    appendMode?: boolean
+  ): Promise<FeedbackItem>;
 }

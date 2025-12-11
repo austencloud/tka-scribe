@@ -77,25 +77,57 @@ export function createAutoEditPanelEffect(
 }
 
 /**
- * Creates single-beat edit panel effect
+ * Creates auto-open/close effect for Sequence Actions panel on beat selection
+ * Uses selection-change tracking to prevent fighting with manual panel close
  * @returns Cleanup function
  */
-export function createSingleBeatEditEffect(
+export function createAutoSequenceActionsEffect(
   config: AutoEditPanelConfig
 ): () => void {
   const { CreateModuleState, panelState } = config;
+
+  let lastSelectedBeat: number | null = null;
 
   return $effect.root(() => {
     $effect(() => {
       const selectedBeatNumber =
         CreateModuleState.sequenceState.selectedBeatNumber;
-      const selectedData = CreateModuleState.sequenceState.selectedBeatData;
 
-      // If a beat is selected, open the edit panel
-      if (selectedBeatNumber !== null && selectedData) {
-        panelState.openEditPanel(selectedBeatNumber, selectedData);
-        getLogger().log(`Opening edit panel for beat ${selectedBeatNumber}`);
+      console.log(`[AutoEditPanelManager] selectedBeatNumber changed: ${selectedBeatNumber}, lastSelectedBeat: ${lastSelectedBeat}`);
+
+      // Only act when selection CHANGES (prevents fight with manual close)
+      if (selectedBeatNumber !== lastSelectedBeat) {
+        if (selectedBeatNumber !== null) {
+          // New beat selected → auto-open panel
+          console.log(`[AutoEditPanelManager] Beat selected, auto-opening panel`);
+          panelState.openSequenceActionsPanel();
+          getLogger().log(
+            `Auto-opening Sequence Actions panel for beat ${selectedBeatNumber}`
+          );
+        } else {
+          // Beat deselected → auto-close panel
+          console.log(`[AutoEditPanelManager] Beat deselected, auto-closing panel`);
+          panelState.closeSequenceActionsPanel();
+          getLogger().log(
+            `Auto-closing Sequence Actions panel (no beat selected)`
+          );
+        }
+        lastSelectedBeat = selectedBeatNumber;
       }
     });
   });
+}
+
+/**
+ * Deprecated: Use createAutoSequenceActionsEffect instead
+ * Kept for backward compatibility during migration
+ * @deprecated
+ */
+export function createSingleBeatEditEffect(
+  config: AutoEditPanelConfig
+): () => void {
+  getLogger().warn(
+    "createSingleBeatEditEffect is deprecated. Use createAutoSequenceActionsEffect instead."
+  );
+  return createAutoSequenceActionsEffect(config);
 }

@@ -149,16 +149,19 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 
 ## Project-Specific Notes
 
-*(To be filled in as patterns emerge)*
-
 - TKA-Studio is a Svelte 5 + TypeScript application
 - Uses inversify for dependency injection
 - Firebase for persistence and auth
 - Focus on animation and interactive pictograph rendering
 
+### User Identity
+- **Primary developer**: Austen Cloud (austencloud@gmail.com)
+- When submitting feedback via scripts, default to `--user austen`
+- When `/done` is called with no feedback item, auto-create one under Austen's profile
+
 ---
 
-*Last updated: 2025-12-03*
+*Last updated: 2025-12-10*
 
 ## Context Management
 When context usage exceeds 20%, proactively suggest running /compact before continuing with new tasks.

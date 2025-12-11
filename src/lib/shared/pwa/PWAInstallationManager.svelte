@@ -8,7 +8,7 @@
    * - Respond to app installation events
    */
   import { onMount } from "svelte";
-  import FullscreenHint from "../mobile/components/FullscreenHint.svelte";
+  // import FullscreenHint from "../mobile/components/FullscreenHint.svelte";
   import EnhancedPWAInstallGuide from "../mobile/components/EnhancedPWAInstallGuide.svelte";
 
   let showPWAInstallGuide = $state(false);
@@ -34,7 +34,7 @@
 </script>
 
 <!-- Subtle Fullscreen Hint (non-blocking) -->
-<FullscreenHint />
+<!-- <FullscreenHint /> -->
 
 <!-- Enhanced PWA Install Guide (modal with device-specific instructions) -->
 <EnhancedPWAInstallGuide bind:showGuide={showPWAInstallGuide} />

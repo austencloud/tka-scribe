@@ -1,0 +1,158 @@
+<!--
+  EmailLinkingSuccessStep Component
+
+  Success step showing confirmation that email has been linked and verified.
+  Includes animated checkmark and done button.
+-->
+<script lang="ts">
+	interface Props {
+		email: string;
+		onComplete: () => void;
+	}
+
+	let { email, onComplete }: Props = $props();
+</script>
+
+<div class="success-content">
+	<div class="success-animation">
+		<div class="success-checkmark">
+			<i class="fas fa-check"></i>
+		</div>
+	</div>
+
+	<div class="success-message">
+		<p>You can now sign in using:</p>
+		<div class="credential-display">
+			<i class="fas fa-envelope"></i>
+			<span>{email}</span>
+		</div>
+	</div>
+
+	<button class="done-btn" onclick={onComplete}>
+		<i class="fas fa-check"></i>
+		<span>Done</span>
+	</button>
+</div>
+
+<style>
+	.success-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 24px;
+		text-align: center;
+		padding: 8px 0;
+	}
+
+	.success-animation {
+		position: relative;
+	}
+
+	.success-checkmark {
+		width: 88px;
+		height: 88px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba(34, 197, 94, 0.15);
+		border-radius: 50%;
+		animation: success-pop 0.4s ease-out;
+	}
+
+	.success-checkmark i {
+		font-size: 40px;
+		color: #22c55e;
+	}
+
+	@keyframes success-pop {
+		0% {
+			transform: scale(0.5);
+			opacity: 0;
+		}
+		50% {
+			transform: scale(1.1);
+		}
+		100% {
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
+
+	.success-message {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+	}
+
+	.success-message p {
+		margin: 0;
+		font-size: 15px;
+		color: rgba(255, 255, 255, 0.7);
+	}
+
+	.credential-display {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		padding: 14px 24px;
+		background: rgba(139, 92, 246, 0.15);
+		border: 1px solid rgba(139, 92, 246, 0.3);
+		border-radius: 12px;
+	}
+
+	.credential-display i {
+		color: #8b5cf6;
+		font-size: 16px;
+	}
+
+	.credential-display span {
+		font-size: 15px;
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.95);
+	}
+
+	.done-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		width: 100%;
+		max-width: 220px;
+		padding: 14px 28px;
+		background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+		border: none;
+		border-radius: 12px;
+		color: white;
+		font-size: 15px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.done-btn:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+	}
+
+	.done-btn:active {
+		transform: translateY(0);
+	}
+
+	/* Focus States */
+	.done-btn:focus-visible {
+		outline: 2px solid rgba(139, 92, 246, 0.8);
+		outline-offset: 2px;
+	}
+
+	/* Reduced Motion */
+	@media (prefers-reduced-motion: reduce) {
+		.success-checkmark {
+			animation: none;
+		}
+
+		.done-btn:hover {
+			transform: none;
+		}
+	}
+</style>

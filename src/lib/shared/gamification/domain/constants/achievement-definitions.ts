@@ -422,6 +422,65 @@ const GENERATION_ACHIEVEMENTS: Achievement[] = [
 ];
 
 // ============================================================================
+// CONTRIBUTOR ACHIEVEMENTS (Feedback Submission)
+// ============================================================================
+
+const CONTRIBUTOR_ACHIEVEMENTS: Achievement[] = [
+  {
+    id: "first_feedback",
+    title: "Voice Heard",
+    description: "Submit your first feedback",
+    category: "contributor",
+    tier: "bronze",
+    xpReward: 50,
+    icon: "fa-comment",
+    requirement: {
+      type: "feedback_count",
+      target: 1,
+    },
+  },
+  {
+    id: "feedback_5",
+    title: "Active Contributor",
+    description: "Submit 5 feedback items",
+    category: "contributor",
+    tier: "silver",
+    xpReward: 100,
+    icon: "fa-comments",
+    requirement: {
+      type: "feedback_count",
+      target: 5,
+    },
+  },
+  {
+    id: "feedback_15",
+    title: "Community Champion",
+    description: "Submit 15 feedback items",
+    category: "contributor",
+    tier: "gold",
+    xpReward: 250,
+    icon: "fa-medal",
+    requirement: {
+      type: "feedback_count",
+      target: 15,
+    },
+  },
+  {
+    id: "feedback_50",
+    title: "Product Shaper",
+    description: "Submit 50 feedback items",
+    category: "contributor",
+    tier: "platinum",
+    xpReward: 500,
+    icon: "fa-crown",
+    requirement: {
+      type: "feedback_count",
+      target: 50,
+    },
+  },
+];
+
+// ============================================================================
 // ALL ACHIEVEMENTS
 // ============================================================================
 
@@ -432,6 +491,7 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   ...TRAINER_ACHIEVEMENTS,
   ...EXPLORER_ACHIEVEMENTS,
   ...GENERATION_ACHIEVEMENTS,
+  ...CONTRIBUTOR_ACHIEVEMENTS,
 ];
 
 // ============================================================================

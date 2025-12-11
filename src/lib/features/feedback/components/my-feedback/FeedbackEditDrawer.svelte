@@ -1,0 +1,594 @@
+<!-- FeedbackEditDrawer - Drawer for editing user's own feedback -->
+<script lang="ts">
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import type { FeedbackItem, FeedbackType, FeedbackStatus } from "../../domain/models/feedback-models";
+  import { TYPE_CONFIG, STATUS_CONFIG } from "../../domain/models/feedback-models";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
+  import { onMount } from "svelte";
+
+  interface Props {
+    isOpen: boolean;
+    item: FeedbackItem;
+    appendMode?: boolean;
+    onSave: (updates: { type?: FeedbackType; description: string }, appendMode: boolean) => Promise<void>;
+  }
+
+  let {
+    isOpen = $bindable(false),
+    item,
+    appendMode = false,
+    onSave,
+  }: Props = $props();
+
+  // Responsive layout
+  let layoutService: IResponsiveLayoutService | null = $state(null);
+  let isSideBySide = $state(false);
+
+  onMount(() => {
+    layoutService = tryResolve<IResponsiveLayoutService>(TYPES.IResponsiveLayoutService);
+    if (layoutService) {
+      isSideBySide = layoutService.shouldUseSideBySideLayout();
+      // Subscribe to layout changes
+      const unsubscribe = layoutService.onLayoutChange(() => {
+        isSideBySide = layoutService!.shouldUseSideBySideLayout();
+      });
+      return unsubscribe;
+    }
+    return undefined;
+  });
+
+  const drawerPlacement = $derived(isSideBySide ? "right" : "bottom");
+
+  // Local edit state
+  let editType = $state<FeedbackType>(item.type);
+  let editDescription = $state(item.description);
+  let additionalNotes = $state("");
+  let isSaving = $state(false);
+  let error = $state<string | null>(null);
+
+  // Reset edit state when drawer opens
+  $effect(() => {
+    if (isOpen) {
+      editType = item.type;
+      editDescription = item.description;
+      additionalNotes = "";
+      error = null;
+    }
+  });
+
+  // Validation for full edit mode
+  const isValidFullEdit = $derived(editDescription.trim().length >= 10);
+  const hasChangesFullEdit = $derived(
+    editType !== item.type || editDescription.trim() !== item.description.trim()
+  );
+
+  // Validation for append mode
+  const isValidAppend = $derived(additionalNotes.trim().length >= 5);
+
+  // Combined validation
+  const canSave = $derived(
+    appendMode ? isValidAppend : (isValidFullEdit && hasChangesFullEdit)
+  );
+
+  async function handleSave() {
+    if (!canSave || isSaving) return;
+
+    isSaving = true;
+    error = null;
+
+    try {
+      if (appendMode) {
+        await onSave({ description: additionalNotes.trim() }, true);
+      } else {
+        await onSave({
+          type: editType,
+          description: editDescription.trim(),
+        }, false);
+      }
+      isOpen = false;
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to save changes";
+    } finally {
+      isSaving = false;
+    }
+  }
+
+  function handleCancel() {
+    isOpen = false;
+  }
+
+  const currentTypeConfig = $derived(TYPE_CONFIG[editType]);
+  const statusConfig = $derived(STATUS_CONFIG[item.status as FeedbackStatus]);
+</script>
+
+<Drawer
+  bind:isOpen
+  placement={drawerPlacement}
+  ariaLabel={appendMode ? "Add notes to feedback" : "Edit feedback"}
+  class="feedback-edit-drawer {isSideBySide ? 'side-panel' : 'bottom-sheet'}"
+  showHandle={!isSideBySide}
+>
+  <div class="edit-drawer-content" style="--active-type-color: {currentTypeConfig.color}">
+    <header class="drawer-header">
+      <h2>{appendMode ? "Add Notes" : "Edit Feedback"}</h2>
+      <button
+        type="button"
+        class="close-btn"
+        onclick={handleCancel}
+        aria-label="Close"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+
+    <div class="edit-form">
+      {#if appendMode}
+        <!-- Append Mode: Show original + add notes -->
+        <div class="append-info">
+          <i class="fas fa-info-circle"></i>
+          <span>This feedback is <strong style="color: {statusConfig.color}">{statusConfig.label.toLowerCase()}</strong>. You can add additional notes below.</span>
+        </div>
+
+        <!-- Original Description (read-only) -->
+        <div class="field">
+          <span class="field-label">Original Feedback</span>
+          <div class="original-description">
+            <span class="type-indicator" style="--type-color: {currentTypeConfig.color}">
+              <i class="fas {currentTypeConfig.icon}"></i>
+              {currentTypeConfig.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}
+            </span>
+            <p>{item.description}</p>
+          </div>
+        </div>
+
+        <!-- Additional Notes -->
+        <div class="field">
+          <label for="additional-notes" class="field-label">Additional Notes</label>
+          <div class="textarea-wrapper">
+            <textarea
+              id="additional-notes"
+              class="field-textarea"
+              bind:value={additionalNotes}
+              placeholder="Add clarification, more details, or updates..."
+              rows="4"
+            ></textarea>
+          </div>
+          <div class="field-hint">
+            <span class="char-count" class:met={additionalNotes.trim().length >= 5}>
+              {#if additionalNotes.trim().length < 5}
+                {5 - additionalNotes.trim().length} more needed
+              {:else}
+                <i class="fas fa-check"></i>
+              {/if}
+            </span>
+          </div>
+        </div>
+      {:else}
+        <!-- Full Edit Mode -->
+        <!-- Type Selector -->
+        <fieldset class="type-selector">
+          <legend class="visually-hidden">Feedback Type</legend>
+          <div class="segment-control">
+            {#each Object.entries(TYPE_CONFIG) as [type, config]}
+              <button
+                type="button"
+                class="segment"
+                class:selected={editType === type}
+                onclick={() => (editType = type as FeedbackType)}
+                style="--type-color: {config.color}"
+                aria-pressed={editType === type}
+              >
+                <i class="fas {config.icon}"></i>
+                <span class="segment-label">
+                  {config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}
+                </span>
+              </button>
+            {/each}
+          </div>
+        </fieldset>
+
+        <!-- Description Field -->
+        <div class="field">
+          <label for="edit-description" class="field-label">Description</label>
+          <div class="textarea-wrapper">
+            <textarea
+              id="edit-description"
+              class="field-textarea"
+              bind:value={editDescription}
+              placeholder={currentTypeConfig.placeholder}
+              rows="6"
+            ></textarea>
+          </div>
+          <div class="field-hint">
+            <span class="char-count" class:met={editDescription.trim().length >= 10}>
+              {#if editDescription.trim().length < 10}
+                {10 - editDescription.trim().length} more needed
+              {:else}
+                <i class="fas fa-check"></i>
+              {/if}
+            </span>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Error message -->
+      {#if error}
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          {error}
+        </div>
+      {/if}
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="cancel-btn" onclick={handleCancel}>
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="save-btn"
+          onclick={handleSave}
+          disabled={!canSave || isSaving}
+        >
+          {#if isSaving}
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <span>Saving...</span>
+          {:else}
+            <i class="fas {appendMode ? 'fa-plus' : 'fa-check'}"></i>
+            <span>{appendMode ? "Add Notes" : "Save Changes"}</span>
+          {/if}
+        </button>
+      </div>
+    </div>
+  </div>
+</Drawer>
+
+<style>
+  /* Side panel (desktop) styling */
+  :global(.drawer-content.feedback-edit-drawer.side-panel) {
+    width: 400px;
+    max-width: 90vw;
+    height: 100%;
+    max-height: 100vh;
+    background: linear-gradient(
+      135deg,
+      rgba(20, 25, 35, 0.98) 0%,
+      rgba(15, 20, 30, 0.98) 100%
+    );
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Bottom sheet (mobile) styling */
+  :global(.drawer-content.feedback-edit-drawer.bottom-sheet) {
+    max-height: 85vh;
+    background: linear-gradient(
+      135deg,
+      rgba(20, 25, 35, 0.98) 0%,
+      rgba(15, 20, 30, 0.98) 100%
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .edit-drawer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Side panel: No scroll on content, let flex handle expansion */
+  :global(.drawer-content.feedback-edit-drawer.side-panel) .edit-drawer-content {
+    overflow: visible;
+    height: 100%;
+  }
+
+  /* Bottom sheet: Allow scroll for limited height */
+  :global(.drawer-content.feedback-edit-drawer.bottom-sheet) .edit-drawer-content {
+    overflow-y: auto;
+    max-height: calc(85vh - 40px);
+  }
+
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .drawer-header h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .close-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Append mode info banner */
+  .append-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.4;
+  }
+
+  .append-info i {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #3b82f6;
+  }
+
+  /* Original description display */
+  .original-description {
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+  }
+
+  .original-description .type-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--type-color) 30%, transparent);
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--type-color);
+  }
+
+  .original-description p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  /* Type Selector */
+  .type-selector {
+    border: none;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .segment-control {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .segment {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 8px 12px;
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .segment:hover:not(.selected) {
+    color: rgba(255, 255, 255, 0.7);
+    border-color: color-mix(in srgb, var(--type-color) 35%, transparent);
+  }
+
+  .segment:hover:not(.selected) i {
+    color: var(--type-color);
+  }
+
+  .segment.selected {
+    color: rgba(255, 255, 255, 0.95);
+    border-color: var(--type-color);
+    background: color-mix(in srgb, var(--type-color) 15%, transparent);
+  }
+
+  .segment.selected i {
+    color: var(--type-color);
+  }
+
+  .segment-label {
+    font-size: 0.8125rem;
+  }
+
+  /* Field */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Make description field expand to fill available space */
+  .field:has(.field-textarea) {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .field-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    flex-shrink: 0;
+  }
+
+  .textarea-wrapper {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 20%, rgba(255, 255, 255, 0.1));
+    border-radius: 10px;
+    transition: border-color 0.2s ease;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .textarea-wrapper:focus-within {
+    border-color: var(--active-type-color);
+  }
+
+  .field-textarea {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1rem;
+    font-family: inherit;
+    min-height: 120px;
+    resize: none;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .field-textarea:focus {
+    outline: none;
+  }
+
+  .field-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .field-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .char-count {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .char-count.met {
+    color: #10b981;
+  }
+
+  /* Error */
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #ef4444;
+    font-size: 0.875rem;
+  }
+
+  /* Actions */
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .cancel-btn,
+  .save-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .save-btn {
+    background: linear-gradient(135deg, var(--active-type-color), color-mix(in srgb, var(--active-type-color), black 10%));
+    border: none;
+    color: white;
+  }
+
+  .save-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--active-type-color) 30%, transparent);
+  }
+
+  .save-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+</style>

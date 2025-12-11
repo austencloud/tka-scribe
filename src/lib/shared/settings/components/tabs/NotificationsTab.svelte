@@ -128,10 +128,6 @@
     .content {
       grid-template-columns: 1fr;
     }
-
-    .hero {
-      padding: 16px;
-    }
   }
 
   @media (max-width: 640px) {

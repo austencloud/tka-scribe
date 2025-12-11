@@ -97,9 +97,10 @@
   let isPresetValue = $derived(BPM_PRESETS.includes(bpm));
 </script>
 
-<div class="bpm-control">
-  <!-- Current BPM Display with +/- controls -->
-  <div class="bpm-adjuster">
+<div class="bpm-control-container">
+  <div class="bpm-control">
+    <!-- Current BPM Display with +/- controls -->
+    <div class="bpm-adjuster">
     <button
       class="adjust-btn decrease-btn"
       onclick={decreaseBpm}
@@ -132,19 +133,20 @@
     </button>
   </div>
 
-  <!-- Preset chips -->
-  <div class="preset-chips">
-    {#each BPM_PRESETS as presetBpm}
-      <button
-        class="preset-chip"
-        class:active={bpm === presetBpm}
-        onclick={() => selectPreset(presetBpm)}
-        type="button"
-        aria-label="Set BPM to {presetBpm}"
-      >
-        {presetBpm}
-      </button>
-    {/each}
+    <!-- Preset chips -->
+    <div class="preset-chips">
+      {#each BPM_PRESETS as presetBpm}
+        <button
+          class="preset-chip"
+          class:active={bpm === presetBpm}
+          onclick={() => selectPreset(presetBpm)}
+          type="button"
+          aria-label="Set BPM to {presetBpm}"
+        >
+          {presetBpm}
+        </button>
+      {/each}
+    </div>
   </div>
 </div>
 
@@ -154,11 +156,40 @@
      2026 Bento Box Design
      =========================== */
 
+  .bpm-control-container {
+    container-type: inline-size;
+    container-name: bpm-control;
+    width: 100%;
+  }
+
   .bpm-control {
     display: flex;
     flex-direction: column;
     gap: 8px;
     width: 100%;
+  }
+
+  /* Wide layout: Single row when container is wide enough
+     Breakpoint calculation:
+     - Adjuster: 52 + 12 + 80 + 12 + 52 = 208px
+     - 6 chips @ 48px min = 288px
+     - Gaps: 12px + 5×6px = 42px
+     - Total: ~540px minimum */
+  @container bpm-control (min-width: 540px) {
+    .bpm-control {
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bpm-adjuster {
+      flex-shrink: 0;
+    }
+
+    .preset-chips {
+      flex: 1;
+      min-width: 0;
+    }
   }
 
   /* BPM Adjuster - Current value with +/- buttons */
@@ -282,7 +313,7 @@
 
   .preset-chip {
     flex: 1;
-    min-width: 0;
+    min-width: 48px;
     min-height: 52px;
     padding: 10px 8px;
     background: rgba(255, 255, 255, 0.05);

@@ -4,6 +4,7 @@
  */
 
 import type { Achievement } from "$lib/shared/gamification/domain/models/achievement-models";
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 
 /**
  * Base User Profile
@@ -20,6 +21,10 @@ export interface UserProfile {
   followerCount: number;
   joinedDate: Date;
   isFollowing?: boolean;
+
+  // Admin-related fields
+  role?: UserRole;
+  isDisabled?: boolean;
 }
 
 export interface EnhancedUserProfile extends UserProfile {

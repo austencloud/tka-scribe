@@ -85,7 +85,7 @@
       });
 
       console.log(`Loaded ${allArchivedItems.length} archived items`);
-    } catch (e) {
+    } catch (e) { 
       console.error("Failed to load archived items:", e);
       allArchivedItems = [];
     } finally {

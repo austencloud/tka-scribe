@@ -2,6 +2,7 @@
  * ShortcutRegistryService Implementation
  *
  * Registry for storing and managing keyboard shortcuts.
+ * Supports custom bindings from keyboard-shortcut-state.
  *
  * Domain: Keyboard Shortcuts
  */
@@ -10,6 +11,8 @@ import { injectable } from "inversify";
 import type { IShortcutRegistryService } from '../contracts/IShortcutRegistryService';
 import type { Shortcut } from "../../domain/models/Shortcut";
 import type { KeyModifier, ShortcutContext } from '../../domain/types/keyboard-types';
+import { keyboardShortcutState } from "../../state/keyboard-shortcut-state.svelte";
+import { keyComboEquals, parseKeyCombo, buildKeyCombo } from "../../utils/key-combo-utils";
 
 @injectable()
 export class ShortcutRegistryService implements IShortcutRegistryService {
@@ -42,18 +45,38 @@ export class ShortcutRegistryService implements IShortcutRegistryService {
     context: ShortcutContext
   ): Shortcut[] {
     const matches: Shortcut[] = [];
+    const customBindings = keyboardShortcutState.settings.customBindings;
+
+    // Build the incoming key combo for comparison
+    const incomingKeyCombo = buildKeyCombo(key, modifiers);
 
     for (const shortcut of this.shortcuts.values()) {
       // Check if shortcut is active in current context
       if (!shortcut.isActiveInContext(context)) continue;
 
-      // Check if shortcut matches the key and modifiers
-      if (!shortcut.matches(key, modifiers, ctrlOrMeta)) continue;
-
       // Check if condition is met
       if (!shortcut.isConditionMet()) continue;
 
-      matches.push(shortcut);
+      // Check for custom binding
+      const customBinding = customBindings[shortcut.id];
+
+      if (customBinding) {
+        // Shortcut has a custom binding
+        if (customBinding.disabled) {
+          // Skip disabled shortcuts
+          continue;
+        }
+
+        // Match against custom binding
+        if (keyComboEquals(incomingKeyCombo, customBinding.keyCombo)) {
+          matches.push(shortcut);
+        }
+      } else {
+        // No custom binding - use default matching
+        if (shortcut.matches(key, modifiers, ctrlOrMeta)) {
+          matches.push(shortcut);
+        }
+      }
     }
 
     // Sort by priority (highest first)

@@ -99,9 +99,33 @@ export const DISCOVER_TABS: Section[] = [
   },
 ];
 
-// Library tabs configuration - DEPRECATED: Library is now a scope toggle within Gallery
-// Kept for backward compatibility
-export const LIBRARY_TABS: Section[] = [];
+// Library tabs configuration - Personal content management
+export const LIBRARY_TABS: Section[] = [
+  {
+    id: "sequences",
+    label: "Sequences",
+    icon: '<i class="fas fa-layer-group"></i>',
+    description: "Your saved sequences",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+  {
+    id: "collections",
+    label: "Collections",
+    icon: '<i class="fas fa-folder"></i>',
+    description: "Organize content into folders",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "compositions",
+    label: "Compositions",
+    icon: '<i class="fas fa-film"></i>',
+    description: "Your saved compositions",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
+  },
+];
 
 // Community tabs configuration
 export const COMMUNITY_TABS: Section[] = [
@@ -256,6 +280,14 @@ export const ML_TRAINING_TABS: Section[] = [
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
   {
+    id: "health",
+    label: "Health",
+    icon: '<i class="fas fa-heartbeat"></i>',
+    description: "System health and operations",
+    color: "#ef4444",
+    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+  },
+  {
     id: "challenges",
     label: "Challenges",
     icon: '<i class="fas fa-calendar-day"></i>',
@@ -278,14 +310,6 @@ export const ADMIN_TABS: Section[] = [
     description: "View app usage and metrics",
     color: "#64748b",
     gradient: "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)",
-  },
-  {
-    id: "users",
-    label: "Users",
-    icon: '<i class="fas fa-users"></i>',
-    description: "Manage users and permissions",
-    color: "#10b981",
-    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
   },
   {
     id: "flags",
@@ -354,6 +378,14 @@ export const SETTINGS_TABS: Section[] = [
     description: "Element visibility controls",
     color: "#22c55e",
     gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
+  },
+  {
+    id: "keyboard",
+    label: "Keyboard",
+    icon: '<i class="fas fa-keyboard"></i>',
+    description: "Keyboard shortcuts and customization",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
 ];
 
@@ -442,7 +474,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true,
     sections: TRAIN_TABS,
   },
-  // Removed: library module (moved to Discover as a tab)
+  {
+    id: "library",
+    label: "Library",
+    icon: '<i class="fas fa-book" style="color: #0891b2;"></i>',
+    color: "#0891b2", // Cyan - personal collection
+    description: "Your sequences, collections, and compositions",
+    isMain: true,
+    sections: LIBRARY_TABS,
+  },
   // Removed: account module (merged into Dashboard - profile widget handles auth)
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)
@@ -480,7 +520,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',
     color: "#64748b", // Slate - neutral settings color
     description: "Configure app preferences",
-    isMain: false, // Accessed via footer gear icon, but shows tabs when active
+    isMain: true, // Main module button on dashboard
     sections: SETTINGS_TABS, // Profile, Props, Background, Visibility, Misc, AI tabs
   },
 ];
@@ -554,12 +594,6 @@ export function createNavigationState() {
       // Migration: community and account modules retired, redirect to dashboard
       currentModule = "dashboard";
       localStorage.setItem("tka-current-module", "dashboard");
-    } else if (savedModule === "library") {
-      // Migration: library module retired, now a scope toggle in Gallery
-      currentModule = "discover";
-      activeTab = "gallery";
-      localStorage.setItem("tka-current-module", "discover");
-      localStorage.setItem("tka-active-tab", "gallery");
     } else if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
       currentModule = savedModule as ModuleId;
     }

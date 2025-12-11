@@ -3,28 +3,36 @@
 
   Renders appropriate header for mobile vs desktop layouts.
   - Mobile (!isSideBySideLayout): Minimal close button in top-right (floating)
-  - Desktop (isSideBySideLayout): Header row with title and close button
+  - Desktop (isSideBySideLayout): Header row with title, info button, and close button
 -->
 <script lang="ts">
   let {
     isSideBySideLayout = false,
     onClose = () => {},
+    onShowHelp = () => {},
   }: {
     isSideBySideLayout?: boolean;
     onClose?: () => void;
+    onShowHelp?: () => void;
   } = $props();
 </script>
 
 {#if !isSideBySideLayout}
-  <!-- Minimal Mobile Header - floating close button -->
+  <!-- Minimal Mobile Header - info button on left, close button on right -->
   <div class="mobile-header">
+    <button class="mobile-info-btn" onclick={onShowHelp} aria-label="Show help and shortcuts">
+      <i class="fas fa-circle-info"></i>
+    </button>
     <button class="mobile-close-btn" onclick={onClose} aria-label="Close panel">
       <i class="fas fa-times"></i>
     </button>
   </div>
 {:else}
-  <!-- Desktop Header - centered title with top-right close button -->
+  <!-- Desktop Header - info button on left, title centered, close button on right -->
   <header class="desktop-header">
+    <button class="header-info-btn" onclick={onShowHelp} aria-label="Show help and shortcuts">
+      <i class="fas fa-circle-info"></i>
+    </button>
     <span class="header-title">Animation Viewer</span>
     <button class="header-close-btn" onclick={onClose} aria-label="Close panel">
       <i class="fas fa-times"></i>
@@ -34,18 +42,21 @@
 
 <style>
   /* ===========================
-     MOBILE HEADER - Floating close button
+     MOBILE HEADER - Floating buttons
      =========================== */
   .mobile-header {
     position: absolute;
     top: 4px;
+    left: 8px;
     right: 8px;
     z-index: 10;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
+    pointer-events: none;
   }
 
+  .mobile-info-btn,
   .mobile-close-btn {
     display: flex;
     align-items: center;
@@ -63,9 +74,15 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+  }
+
+  .mobile-info-btn {
+    color: rgba(167, 139, 250, 1);
   }
 
   @media (hover: hover) and (pointer: fine) {
+    .mobile-info-btn:hover,
     .mobile-close-btn:hover {
       background: rgba(120, 120, 140, 0.85);
       transform: scale(1.05);
@@ -73,6 +90,7 @@
     }
   }
 
+  .mobile-info-btn:active,
   .mobile-close-btn:active {
     transform: scale(0.95);
   }
@@ -100,10 +118,10 @@
     text-align: center;
   }
 
+  .header-info-btn,
   .header-close-btn {
     position: absolute;
     top: 50%;
-    right: clamp(16px, 4cqi, 24px);
     transform: translateY(-50%);
     display: flex;
     align-items: center;
@@ -120,6 +138,16 @@
     transition: all 0.2s ease;
   }
 
+  .header-info-btn {
+    left: clamp(16px, 4cqi, 24px);
+    color: rgba(167, 139, 250, 0.9);
+  }
+
+  .header-close-btn {
+    right: clamp(16px, 4cqi, 24px);
+  }
+
+  .header-info-btn:hover,
   .header-close-btn:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
@@ -127,6 +155,11 @@
     transform: translateY(-50%) scale(1.05);
   }
 
+  .header-info-btn:hover {
+    color: rgba(167, 139, 250, 1);
+  }
+
+  .header-info-btn:active,
   .header-close-btn:active {
     transform: translateY(-50%) scale(0.95);
   }

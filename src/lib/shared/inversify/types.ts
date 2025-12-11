@@ -69,6 +69,7 @@ export const TYPES = {
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
   IShortcutRegistryService: Symbol.for("IShortcutRegistryService"),
   ICommandPaletteService: Symbol.for("ICommandPaletteService"),
+  IShortcutCustomizationService: Symbol.for("IShortcutCustomizationService"),
 
   // === Create Module ServiceS ===
   ICreateModuleService: Symbol.for("ICreateModuleService"),
@@ -180,6 +181,7 @@ export const TYPES = {
   IMediaBundlerService: Symbol.for("IMediaBundlerService"),
   IFirebaseVideoUploadService: Symbol.for("IFirebaseVideoUploadService"),
   IRecordingPersistenceService: Symbol.for("IRecordingPersistenceService"),
+  ICollaborativeVideoService: Symbol.for("ICollaborativeVideoService"),
   IPageImageExportService: Symbol.for("IPageImageExportService"),
   IPageFactoryService: Symbol.for("IPageFactoryService"),
   IPrintablePageLayoutService: Symbol.for("IPrintablePageLayoutService"),
@@ -433,6 +435,8 @@ export const TYPES = {
   IStreakService: Symbol.for("IStreakService"),
 
   // === ADMIN SERVICES ===
+  ISystemStateService: Symbol.for("ISystemStateService"),
+  IAuditLogService: Symbol.for("IAuditLogService"),
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
   IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
   IAnnouncementService: Symbol.for("IAnnouncementService"),
@@ -447,6 +451,12 @@ export const TYPES = {
   ILibraryQueryService: Symbol.for("ILibraryQueryService"),
   IForkService: Symbol.for("IForkService"),
   ILibraryMigrationService: Symbol.for("ILibraryMigrationService"),
+
+  // === FEEDBACK SERVICES ===
+  IFeedbackSortingService: Symbol.for("IFeedbackSortingService"),
+  IFeedbackEditingService: Symbol.for("IFeedbackEditingService"),
+  IFeedbackSubtaskService: Symbol.for("IFeedbackSubtaskService"),
+  IFeedbackFormattingService: Symbol.for("IFeedbackFormattingService"),
 
   // === GESTURAL PATH BUILDER SERVICES ===
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),

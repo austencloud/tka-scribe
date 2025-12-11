@@ -2,19 +2,15 @@
   /**
    * Sequence Actions Coordinator Component
    *
-   * Manages the fullscreen sequence editor panel that combines:
-   * - Beat grid display with selection
+   * Manages the sequence actions panel that combines:
    * - Individual beat editing (turns, rotation)
    * - Sequence transformations (mirror, rotate, swap, reverse)
-   *
-   * Replaces the old partial-screen SequenceActionsPanel with a comprehensive
-   * fullscreen editing experience.
    *
    * Domain: Create module - Sequence Editing Coordination
    */
 
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import FullscreenEditorPanel from "../FullscreenEditorPanel.svelte";
+  import SequenceActionsPanel from "../sequence-actions/SequenceActionsPanel.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
 
   const logger = createComponentLogger("SequenceActionsCoordinator");
@@ -27,20 +23,20 @@
 
   // Event handlers
   function handleClose() {
-    logger.log("SequenceActionsCoordinator closing fullscreen editor panel");
+    logger.log("SequenceActionsCoordinator closing sequence actions panel");
     panelState.closeSequenceActionsPanel();
   }
 
   // Debug effect to track panel visibility
   $effect(() => {
     logger.log(
-      "SequenceActionsCoordinator editor panel state changed:",
+      "SequenceActionsCoordinator panel state changed:",
       panelState.isSequenceActionsPanelOpen
     );
   });
 </script>
 
-<FullscreenEditorPanel
+<SequenceActionsPanel
   show={isEditorOpen}
   onClose={handleClose}
 />

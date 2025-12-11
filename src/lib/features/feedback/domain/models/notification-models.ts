@@ -14,10 +14,7 @@ export type NotificationType =
   | "feedback-needs-info"    // Admin needs more info from tester
   | "feedback-response"      // Admin sent a message
   // Sequence engagement notifications
-  | "sequence-saved"         // Someone saved your sequence
-  | "sequence-video-submitted" // Someone submitted a video of your sequence
   | "sequence-liked"         // Someone liked your sequence
-  | "sequence-commented"     // Someone commented on your sequence
   // Social notifications
   | "user-followed"          // Someone followed you
   | "achievement-unlocked"   // User unlocked an achievement
@@ -59,14 +56,11 @@ export interface FeedbackNotification extends BaseNotification {
  * Sequence-related notification
  */
 export interface SequenceNotification extends BaseNotification {
-  type: "sequence-saved" | "sequence-video-submitted" | "sequence-liked" | "sequence-commented";
+  type: "sequence-liked";
   sequenceId: string;
   sequenceTitle: string;
   fromUserId: string;
   fromUserName: string;
-  // Optional fields for specific types
-  videoUrl?: string; // For sequence-video-submitted
-  commentText?: string; // For sequence-commented
 }
 
 /**
@@ -170,10 +164,7 @@ export function getPreferenceKeyForType(type: NotificationType): keyof Notificat
     "feedback-in-progress": "feedbackInProgress",
     "feedback-needs-info": "feedbackNeedsInfo",
     "feedback-response": "feedbackResponse",
-    "sequence-saved": "sequenceSaved",
-    "sequence-video-submitted": "sequenceVideoSubmitted",
     "sequence-liked": "sequenceLiked",
-    "sequence-commented": "sequenceCommented",
     "user-followed": "userFollowed",
     "achievement-unlocked": "achievementUnlocked",
     "admin-new-user-signup": "adminNewUserSignup",
@@ -194,7 +185,7 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     label: "Feedback Resolved",
     color: "#10b981",
     icon: "fa-check-circle",
-    actionLabel: "Review & Confirm",
+    actionLabel: "View Details",
   },
   "feedback-in-progress": {
     label: "Being Worked On",
@@ -215,29 +206,11 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     actionLabel: "View Message",
   },
   // Sequence notifications
-  "sequence-saved": {
-    label: "Sequence Saved",
-    color: "#10b981",
-    icon: "fa-bookmark",
-    actionLabel: "View Sequence",
-  },
-  "sequence-video-submitted": {
-    label: "Video Submitted",
-    color: "#8b5cf6",
-    icon: "fa-video",
-    actionLabel: "Watch Video",
-  },
   "sequence-liked": {
     label: "Sequence Liked",
     color: "#ec4899",
     icon: "fa-heart",
     actionLabel: "View Sequence",
-  },
-  "sequence-commented": {
-    label: "New Comment",
-    color: "#3b82f6",
-    icon: "fa-comment-dots",
-    actionLabel: "View Comment",
   },
   // Social notifications
   "user-followed": {

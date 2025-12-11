@@ -18,6 +18,7 @@
     onDragStart,
     onDragEnd,
     onTouchDrag,
+    onTouchEnd,
     onDragOver,
     onDragLeave,
     onDrop,
@@ -34,6 +35,7 @@
     onDragStart: (item: FeedbackItem) => void;
     onDragEnd: () => void;
     onTouchDrag?: (item: FeedbackItem, x: number, y: number) => void;
+    onTouchEnd?: (x: number, y: number) => void;
     onDragOver: () => void;
     onDragLeave: () => void;
     onDrop: () => void;
@@ -114,6 +116,7 @@
           {onDragStart}
           {onDragEnd}
           {onTouchDrag}
+          {onTouchEnd}
           onClick={() => onCardClick(item)}
         />
       {/each}

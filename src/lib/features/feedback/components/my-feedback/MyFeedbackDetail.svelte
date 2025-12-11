@@ -13,17 +13,44 @@
     PRIORITY_CONFIG,
     CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
+  import FeedbackEditDrawer from "./FeedbackEditDrawer.svelte";
+  import FeedbackReplyPanel from "./FeedbackReplyPanel.svelte";
+  import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
 
-  const { item, onClose } = $props<{
+  const { item, onClose, onUpdate } = $props<{
     item: FeedbackItem;
     onClose: () => void;
+    onUpdate: (feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>;
   }>();
 
-  const typeConfig = TYPE_CONFIG[item.type as FeedbackType];
-  const statusConfig = STATUS_CONFIG[item.status as FeedbackStatus];
-  const priorityConfig = item.priority
+  // Get preview context for read-only checks
+  const preview = useUserPreview();
+
+  let isEditDrawerOpen = $state(false);
+
+  const typeConfig = $derived(TYPE_CONFIG[item.type as FeedbackType]);
+  const statusConfig = $derived(STATUS_CONFIG[item.status as FeedbackStatus]);
+  const priorityConfig = $derived(item.priority
     ? PRIORITY_CONFIG[item.priority as FeedbackPriority]
-    : null;
+    : null);
+
+  // Preview mode = read-only, no editing allowed
+  const isPreviewMode = $derived(preview.isReadOnly);
+
+  // Can edit if new, in-progress, or in-review (not completed/archived) AND not in preview mode
+  const canEdit = $derived(
+    !isPreviewMode && ["new", "in-progress", "in-review"].includes(item.status)
+  );
+
+  // Full edit mode only for "new" status, otherwise append mode
+  const isAppendMode = $derived(item.status !== "new");
+
+  // Check if should show reply panel (for feedback-needs-info or feedback-response statuses)
+  const shouldShowReplyPanel = $derived(
+    ["feedback-needs-info", "feedback-response"].includes(item.status)
+  );
+
+  let isReplySubmitting = $state(false);
 
   function formatDate(date: Date): string {
     return date.toLocaleDateString("en-US", {
@@ -34,19 +61,44 @@
       minute: "2-digit",
     });
   }
+
+  async function handleSave(updates: { type?: FeedbackType; description: string }, appendMode: boolean) {
+    await onUpdate(item.id, updates, appendMode);
+  }
+
+  async function handleReplySubmit(reply: string) {
+    isReplySubmitting = true;
+    try {
+      await onUpdate(item.id, { description: reply }, true);
+    } finally {
+      isReplySubmitting = false;
+    }
+  }
 </script>
 
 <div class="detail-panel">
   <!-- Header -->
   <header class="panel-header">
-    <button
-      class="close-button"
-      onclick={onClose}
-      type="button"
-      aria-label="Close detail panel"
-    >
-      <i class="fas fa-times"></i>
-    </button>
+    <div class="header-actions">
+      {#if canEdit}
+        <button
+          class="edit-button"
+          onclick={() => (isEditDrawerOpen = true)}
+          type="button"
+          aria-label="Edit feedback"
+        >
+          <i class="fas fa-pen"></i>
+        </button>
+      {/if}
+      <button
+        class="close-button"
+        onclick={onClose}
+        type="button"
+        aria-label="Close detail panel"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
     <div class="header-meta">
       <span class="type-badge" style="--badge-color: {typeConfig.color}">
         <i class="fas {typeConfig.icon}"></i>
@@ -117,18 +169,18 @@
     {/if}
 
     <!-- Context info -->
-    {#if item.capturedModule || item.reportedModule}
+    {#if item.capturedModule}
       <div class="context-section">
         <h3>Context</h3>
         <div class="context-tags">
           <span class="context-tag">
             <i class="fas fa-cube"></i>
-            {item.reportedModule || item.capturedModule}
+            {item.capturedModule}
           </span>
-          {#if item.reportedTab || item.capturedTab}
+          {#if item.capturedTab}
             <span class="context-tag">
               <i class="fas fa-folder"></i>
-              {item.reportedTab || item.capturedTab}
+              {item.capturedTab}
             </span>
           {/if}
         </div>
@@ -165,7 +217,24 @@
         </div>
       </div>
     {/if}
+
+    <!-- Reply Panel (for feedback-needs-info and feedback-response) -->
+    {#if shouldShowReplyPanel && !isPreviewMode}
+      <FeedbackReplyPanel
+        {item}
+        onSubmit={handleReplySubmit}
+        isLoading={isReplySubmitting}
+      />
+    {/if}
   </div>
+
+  <!-- Edit Drawer -->
+  <FeedbackEditDrawer
+    bind:isOpen={isEditDrawerOpen}
+    {item}
+    appendMode={isAppendMode}
+    onSave={handleSave}
+  />
 </div>
 
 <style>
@@ -191,8 +260,15 @@
     flex-shrink: 0;
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .edit-button,
   .close-button {
-    align-self: flex-end;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -211,6 +287,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
+  .edit-button:hover,
   .close-button:hover {
     background: linear-gradient(
       135deg,
@@ -221,6 +298,11 @@
     color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
+  }
+
+  .edit-button:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #3b82f6;
   }
 
   .header-meta {

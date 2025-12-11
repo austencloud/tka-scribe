@@ -260,14 +260,16 @@ export class CreateModuleInitializationService
       beatsData: unknown[]
     ) => {
       if (beatsData && beatsData.length > 0) {
+        // Multi-select: open batch edit panel
         panelState.openBatchEditPanel(beatsData as BeatData[]);
       } else {
-        panelState.openEditPanel(beatIndex, beatData as BeatData);
+        // Single beat: open Sequence Actions panel (auto-open effect will handle it based on selection)
+        panelState.openSequenceActionsPanel();
       }
     };
 
     seqState.onEditPanelClose = () => {
-      panelState.closeEditPanel();
+      panelState.closeSequenceActionsPanel();
     };
 
     seqState.onAnimationStart = () => {

@@ -184,6 +184,8 @@ export class CardConfigurationService implements ICardConfigurationService {
             isFreeformMode: false, // Circular mode - hide end position selector
             cardIndex: cardIndex++,
             headerFontSize,
+            positionsResetTrigger: handlers.positionsResetTrigger,
+            gridMode: handlers.currentGridMode,
           },
           gridColumnSpan: 2, // Always 2 cols in circular mode row 3
         });
@@ -200,6 +202,8 @@ export class CardConfigurationService implements ICardConfigurationService {
           isFreeformMode: true, // Freeform mode - show end position selector
           cardIndex: cardIndex++,
           headerFontSize,
+          positionsResetTrigger: handlers.positionsResetTrigger,
+          gridMode: handlers.currentGridMode,
         },
         gridColumnSpan: 2, // 2 cols - shares row with Generate button (4 cols)
       });

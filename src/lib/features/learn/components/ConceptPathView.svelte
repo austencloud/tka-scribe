@@ -202,7 +202,6 @@ Shows:
     gap: 1rem;
     padding: 1.5rem;
     padding-bottom: 5rem;
-    background: rgb(20, 20, 28);
     min-height: 100%;
     overflow-y: auto;
     max-width: 600px;

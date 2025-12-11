@@ -5,6 +5,7 @@ Opens sheet with start/end position and letter constraint options
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount, getContext } from "svelte";
@@ -20,6 +21,8 @@ Opens sheet with start/end position and letter constraint options
     gridColumnSpan = 2,
     cardIndex = 0,
     headerFontSize = "9px",
+    positionsResetTrigger = 0,
+    gridMode = GridMode.DIAMOND,
   } = $props<{
     currentOptions: CustomizeOptions;
     onOptionsChange: (options: CustomizeOptions) => void;
@@ -29,7 +32,26 @@ Opens sheet with start/end position and letter constraint options
     gridColumnSpan?: number;
     cardIndex?: number;
     headerFontSize?: string;
+    positionsResetTrigger?: number;
+    gridMode?: GridMode;
   }>();
+
+  // Track reset animation state
+  let isResetting = $state(false);
+  let lastResetTrigger = $state(positionsResetTrigger);
+
+  // Watch for reset trigger changes and animate (use $effect.pre to sync with text update)
+  $effect.pre(() => {
+    if (positionsResetTrigger > lastResetTrigger) {
+      isResetting = true;
+      lastResetTrigger = positionsResetTrigger;
+
+      // Clear animation after it completes
+      setTimeout(() => {
+        isResetting = false;
+      }, 300);
+    }
+  });
 
   let hapticService: IHapticFeedbackService;
 
@@ -49,7 +71,8 @@ Opens sheet with start/end position and letter constraint options
     panelState?.openCustomizePanel?.(
       currentOptions,
       onOptionsChange,
-      isFreeformMode
+      isFreeformMode,
+      gridMode
     );
   }
 
@@ -84,13 +107,40 @@ Opens sheet with start/end position and letter constraint options
   });
 </script>
 
-<BaseCard
-  title="Customize"
-  currentValue={displayValue}
-  {color}
-  {shadowColor}
-  {gridColumnSpan}
-  {cardIndex}
-  {headerFontSize}
-  onClick={openExpanded}
-/>
+<div class="customize-card-wrapper" class:resetting={isResetting}>
+  <BaseCard
+    title="Customize"
+    currentValue={displayValue}
+    {color}
+    {shadowColor}
+    {gridColumnSpan}
+    {cardIndex}
+    {headerFontSize}
+    onClick={openExpanded}
+  />
+</div>
+
+<style>
+  .customize-card-wrapper {
+    display: contents;
+  }
+
+  /* Slide up animation when positions are reset */
+  .customize-card-wrapper.resetting :global(.card-value) {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    0% { transform: translateY(0); opacity: 1; }
+    40% { transform: translateY(-10px); opacity: 0; }
+    60% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Respect motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    .customize-card-wrapper.resetting :global(.card-value) {
+      animation: none;
+    }
+  }
+</style>

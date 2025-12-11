@@ -9,6 +9,11 @@
  * - Opening any panel automatically closes all other panels
  * - Panels: Edit, Animation, Share, Filter, CAP, CreationMethod
  *
+ * **PERSISTED PANEL STATES:**
+ * - Sequence Actions Panel: open/closed state and mode (turns/transforms)
+ * - Video Record Panel: open/closed state
+ * Other panels reset on page refresh for predictable UX.
+ *
  * Domain: Create module - Panel State Management for Sequence Construction
  * Extracted from CreateModule.svelte monolith to follow runes state management pattern.
  */
@@ -18,6 +23,22 @@ import type { CAPType } from "../../generate/circular/domain/models/circular-mod
 import type { CAPComponent } from "../../generate/shared/domain/models/generate-models";
 import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
 import type { Letter } from "../../../../shared/foundation/domain/models/Letter";
+import { GridMode } from "../../../../shared/pictograph/grid/domain/enums/grid-enums";
+import { createPersistenceHelper } from "../../../../shared/state/utils/persistent-state";
+
+// ============================================================================
+// PERSISTENCE HELPERS
+// ============================================================================
+
+const sequenceActionsPanelPersistence = createPersistenceHelper({
+  key: "tka_sequence_actions_panel_open",
+  defaultValue: false,
+});
+
+const videoRecordPanelPersistence = createPersistenceHelper({
+  key: "tka_video_record_panel_open",
+  defaultValue: false,
+});
 
 /**
  * Customize generation options - passed to the customize options sheet
@@ -125,13 +146,18 @@ export interface PanelCoordinationState {
   get customizeOptions(): CustomizeOptions | null;
   get customizeOnChange(): ((options: CustomizeOptions) => void) | null;
   get customizeIsFreeformMode(): boolean;
+  get customizeGridMode(): GridMode;
 
   openCustomizePanel(
     currentOptions: CustomizeOptions,
     onChange: (options: CustomizeOptions) => void,
-    isFreeformMode?: boolean
+    isFreeformMode?: boolean,
+    gridMode?: GridMode
   ): void;
   closeCustomizePanel(): void;
+
+  // Close all panels at once (for clear sequence, etc.)
+  closeAllPanels(): void;
 
   // Derived: Any Panel Open (for UI hiding coordination)
   get isAnyPanelOpen(): boolean;
@@ -155,14 +181,27 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Share panel state
   let isSharePanelOpen = $state(false);
 
-  // Video record panel state
-  let isVideoRecordPanelOpen = $state(false);
+  // Video record panel state (persisted)
+  let isVideoRecordPanelOpen = $state(videoRecordPanelPersistence.load());
 
   // Filter panel state
   let isFilterPanelOpen = $state(false);
 
-  // Sequence Actions panel state
-  let isSequenceActionsPanelOpen = $state(false);
+  // Sequence Actions panel state (persisted)
+  let isSequenceActionsPanelOpen = $state(sequenceActionsPanelPersistence.load());
+
+  // Auto-save panel open states
+  $effect.root(() => {
+    $effect(() => {
+      void isVideoRecordPanelOpen;
+      videoRecordPanelPersistence.setupAutoSave(isVideoRecordPanelOpen);
+    });
+
+    $effect(() => {
+      void isSequenceActionsPanelOpen;
+      sequenceActionsPanelPersistence.setupAutoSave(isSequenceActionsPanelOpen);
+    });
+  });
 
   // Tool panel dimensions tracking
   let toolPanelHeight = $state(0);
@@ -191,6 +230,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let customizeOptions = $state<CustomizeOptions | null>(null);
   let customizeOnChange = $state<((options: CustomizeOptions) => void) | null>(null);
   let customizeIsFreeformMode = $state(true); // Default to freeform (shows end position)
+  let customizeGridMode = $state<GridMode>(GridMode.DIAMOND); // Grid mode for position picker
 
   /**
    * CRITICAL: Close all panels to enforce mutual exclusivity
@@ -222,6 +262,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     customizeOptions = null;
     customizeOnChange = null;
     customizeIsFreeformMode = true;
+    customizeGridMode = GridMode.DIAMOND;
   }
 
   return {
@@ -362,11 +403,21 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openSequenceActionsPanel() {
-      closeAllPanels();
+      console.log(`[panel-coordination] openSequenceActionsPanel called, current state: ${isSequenceActionsPanelOpen}`);
+      // Only close other panels if this panel isn't already open
+      // This prevents the panel from closing when beat operations update state
+      if (!isSequenceActionsPanelOpen) {
+        console.log(`[panel-coordination] Panel not open, closing other panels`);
+        closeAllPanels();
+      } else {
+        console.log(`[panel-coordination] Panel already open, skipping closeAllPanels`);
+      }
       isSequenceActionsPanelOpen = true;
+      console.log(`[panel-coordination] Panel now open: ${isSequenceActionsPanelOpen}`);
     },
 
     closeSequenceActionsPanel() {
+      console.log(`[panel-coordination] closeSequenceActionsPanel called, stack:`, new Error().stack);
       isSequenceActionsPanelOpen = false;
     },
 
@@ -480,16 +531,21 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     get customizeIsFreeformMode() {
       return customizeIsFreeformMode;
     },
+    get customizeGridMode() {
+      return customizeGridMode;
+    },
 
     openCustomizePanel(
       currentOptions: CustomizeOptions,
       onChange: (options: CustomizeOptions) => void,
-      isFreeformMode: boolean = true
+      isFreeformMode: boolean = true,
+      gridMode: GridMode = GridMode.DIAMOND
     ) {
       closeAllPanels();
       customizeOptions = currentOptions;
       customizeOnChange = onChange;
       customizeIsFreeformMode = isFreeformMode;
+      customizeGridMode = gridMode;
       isCustomizePanelOpen = true;
     },
 
@@ -498,7 +554,11 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       customizeOptions = null;
       customizeOnChange = null;
       customizeIsFreeformMode = true;
+      customizeGridMode = GridMode.DIAMOND;
     },
+
+    // Close all panels at once
+    closeAllPanels,
 
     // Derived: Check if any modal/slide panel is open
     // NOTE: Creation Method Panel is NOT included here because it should not hide navigation tabs

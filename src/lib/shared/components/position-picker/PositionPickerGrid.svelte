@@ -7,7 +7,6 @@ Uses IStartPositionService to load variations and displays actual pictographs
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IStartPositionService } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionService";
-  import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -16,16 +15,37 @@ Uses IStartPositionService to load variations and displays actual pictographs
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
   import { createStartPositionVariations } from "./start-position-utils";
 
-  let { currentPosition = null, onPositionChange } = $props<{
+  let {
+    currentPosition = null,
+    onPositionChange,
+    gridMode: gridModeProp = GridMode.DIAMOND,
+  } = $props<{
     currentPosition: PictographData | null;
     onPositionChange: (position: PictographData | null) => void;
+    gridMode?: GridMode;
   }>();
 
   // State
   let variations = $state<PictographData[]>([]);
-  let gridMode = $state<GridMode>(GridMode.DIAMOND);
   let hapticService: IHapticFeedbackService | null = $state(null);
   let isLoading = $state(true);
+  let startPositionService: IStartPositionService | null = $state(null);
+
+  // Load variations based on grid mode (reactive to prop changes)
+  function loadVariations(mode: GridMode) {
+    if (startPositionService) {
+      variations = startPositionService.getAllStartPositionVariations(mode);
+    } else {
+      variations = createStartPositionVariations(mode);
+    }
+  }
+
+  // React to gridMode prop changes
+  $effect(() => {
+    if (!isLoading) {
+      loadVariations(gridModeProp);
+    }
+  });
 
   onMount(async () => {
     try {
@@ -34,28 +54,20 @@ Uses IStartPositionService to load variations and displays actual pictographs
         TYPES.IHapticFeedbackService
       );
 
-      // Try to get grid mode from settings
-      const settingsState = tryResolve<ISettingsState>(TYPES.ISettingsState);
-      gridMode = settingsState?.currentSettings?.gridMode || GridMode.DIAMOND;
-
       // Try to use StartPositionService if available (in Create module)
-      const startPositionService = tryResolve<IStartPositionService>(
+      startPositionService = tryResolve<IStartPositionService>(
         TYPES.IStartPositionService
       );
-      if (startPositionService) {
-        variations =
-          startPositionService.getAllStartPositionVariations(gridMode);
-      } else {
-        // Fallback: create variations directly (works outside Create module)
-        variations = createStartPositionVariations(gridMode);
-      }
+
+      // Load initial variations
+      loadVariations(gridModeProp);
     } catch (error) {
       console.warn(
         "PositionPickerGrid: Failed to load variations, using fallback:",
         error
       );
       // Fallback on any error
-      variations = createStartPositionVariations(gridMode);
+      variations = createStartPositionVariations(gridModeProp);
     } finally {
       isLoading = false;
     }

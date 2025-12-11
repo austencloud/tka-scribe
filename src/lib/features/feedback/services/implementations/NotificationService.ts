@@ -12,6 +12,7 @@ import {
   getDocs,
   doc,
   updateDoc,
+  deleteDoc,
   where,
   onSnapshot,
   Timestamp,
@@ -171,6 +172,62 @@ export class NotificationService {
     );
 
     await Promise.all(updates);
+  }
+
+  /**
+   * Delete a single notification
+   */
+  async deleteNotification(userId: string, notificationId: string): Promise<void> {
+    const notificationRef = doc(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION,
+      notificationId
+    );
+
+    await deleteDoc(notificationRef);
+  }
+
+  /**
+   * Delete all read notifications
+   */
+  async deleteAllReadNotifications(userId: string): Promise<void> {
+    const notificationsRef = collection(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION
+    );
+
+    const q = query(notificationsRef, where("read", "==", true));
+    const snapshot = await getDocs(q);
+
+    const deletes = snapshot.docs.map((docSnap) =>
+      deleteDoc(docSnap.ref)
+    );
+
+    await Promise.all(deletes);
+  }
+
+  /**
+   * Delete all notifications
+   */
+  async deleteAllNotifications(userId: string): Promise<void> {
+    const notificationsRef = collection(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION
+    );
+
+    const snapshot = await getDocs(notificationsRef);
+
+    const deletes = snapshot.docs.map((docSnap) =>
+      deleteDoc(docSnap.ref)
+    );
+
+    await Promise.all(deletes);
   }
 
   /**

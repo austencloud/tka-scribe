@@ -12,28 +12,35 @@
     children: Snippet;
     /** Minimum card width for auto-fill (default: 280px) */
     minCardWidth?: string;
+    /** Maximum card width for auto-fill (default: 1fr - fills available space) */
+    maxCardWidth?: string;
     /** Gap between items (default: 16px) */
     gap?: string;
     /** Number of columns (overrides auto-fill if set) */
     columns?: number;
+    /** Center items in grid when they don't fill full width */
+    centered?: boolean;
   }
 
   let {
     children,
     minCardWidth = "280px",
+    maxCardWidth = "1fr",
     gap = "16px",
     columns,
+    centered = false,
   }: Props = $props();
 
   const gridTemplateColumns = $derived(
     columns
       ? `repeat(${columns}, 1fr)`
-      : `repeat(auto-fill, minmax(${minCardWidth}, 1fr))`
+      : `repeat(auto-fill, minmax(${minCardWidth}, ${maxCardWidth}))`
   );
 </script>
 
 <div
   class="panel-grid"
+  class:centered
   style:grid-template-columns={gridTemplateColumns}
   style:gap={gap}
 >
@@ -44,6 +51,10 @@
   .panel-grid {
     display: grid;
     padding: 4px;
+  }
+
+  .panel-grid.centered {
+    justify-content: center;
   }
 
   @media (max-width: 640px) {

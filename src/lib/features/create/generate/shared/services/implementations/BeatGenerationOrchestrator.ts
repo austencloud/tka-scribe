@@ -102,6 +102,14 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
       );
     }
 
+    // Apply end position constraint if specified (for last beat in freeform mode)
+    if (options.requiredEndPosition) {
+      filteredOptions = this.pictographFilterService.filterByEndPosition(
+        filteredOptions,
+        options.requiredEndPosition
+      );
+    }
+
     if (filteredOptions.length === 0) {
       throw new Error("No valid options available after filtering");
     }

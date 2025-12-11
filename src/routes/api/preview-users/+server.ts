@@ -41,6 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
         id: u.uid,
         displayName: u.displayName || "",
         email: u.email || "",
+        photoURL: u.photoURL || "",
       }))
       .filter((u) => {
         const haystack = `${u.displayName} ${u.email}`.toLowerCase();

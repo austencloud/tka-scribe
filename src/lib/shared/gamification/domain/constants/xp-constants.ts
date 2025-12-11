@@ -25,6 +25,9 @@ export const XP_REWARDS = {
   DAILY_LOGIN: 15,
   DAILY_CHALLENGE_COMPLETED: 50,
 
+  // Feedback & contributions
+  FEEDBACK_SUBMITTED: 25,
+
   // Achievement unlocks (additional to achievement's own XP)
   ACHIEVEMENT_UNLOCKED_BRONZE: 25,
   ACHIEVEMENT_UNLOCKED_SILVER: 50,

@@ -8,10 +8,10 @@
   import { onMount } from "svelte";
   import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import type { IAdminChallengeService } from "../services/contracts/IAdminChallengeService";
+  import SystemHealthDashboard from "./SystemHealthDashboard.svelte";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import TrainChallengeManager from "./TrainChallengeManager.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
-  import UserManagement from "./UserManagement.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import AnnouncementManagement from "./AnnouncementManagement.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -51,7 +51,15 @@
   {:else}
     <!-- Content Area -->
     <main class="admin-content">
-      {#if activeSection === "challenges" && adminChallengeService}
+      {#if !activeSection || activeSection === "health"}
+        <div
+          id="health-panel"
+          role="tabpanel"
+          aria-labelledby="health-tab"
+        >
+          <SystemHealthDashboard />
+        </div>
+      {:else if activeSection === "challenges" && adminChallengeService}
         <div
           id="challenges-panel"
           role="tabpanel"
@@ -74,10 +82,6 @@
           aria-labelledby="analytics-tab"
         >
           <AnalyticsDashboard />
-        </div>
-      {:else if activeSection === "users"}
-        <div id="users-panel" role="tabpanel" aria-labelledby="users-tab">
-          <UserManagement />
         </div>
       {:else if activeSection === "flags"}
         <div id="flags-panel" role="tabpanel" aria-labelledby="flags-tab">

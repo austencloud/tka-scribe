@@ -251,8 +251,7 @@
   ) {
     top: var(--create-panel-top, 64px);
     bottom: var(--create-panel-bottom, 0);
-    height: auto;
-    max-height: calc(100vh - var(--create-panel-top, 64px));
+    /* top + bottom together will stretch element vertically */
     /* Use measured tool panel width for exact alignment */
     width: var(--measured-panel-width, clamp(360px, 44.44vw, 900px));
     max-width: 100%;

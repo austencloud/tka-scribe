@@ -49,12 +49,17 @@ export interface SequenceData {
   readonly ownerDisplayName?: string;
   readonly ownerAvatarUrl?: string;
 
-  // TODO: Add these fields when video upload infrastructure is ready:
-  // readonly performanceVideoUrl?: string;        // Firebase Storage URL to user's performance video
-  // readonly animatedSequenceUrl?: string;        // Firebase Storage URL to animated WebP/GIF
-  // readonly animationFormat?: 'webp' | 'gif';    // Format of the animated sequence
-  // readonly isPublished?: boolean;               // Whether published to public library
-  // readonly visibility?: 'private' | 'unlisted' | 'public'; // Visibility level
+  // Video/animation storage
+  /** Firebase Storage URL to user's performance video */
+  readonly performanceVideoUrl?: string;
+  /** Firebase Storage URL to animated WebP/GIF */
+  readonly animatedSequenceUrl?: string;
+  /** Format of the animated sequence */
+  readonly animationFormat?: "webp" | "gif";
+  /** Storage path for performance video (for deletion) */
+  readonly performanceVideoPath?: string;
+  /** Storage path for animated sequence (for deletion) */
+  readonly animatedSequencePath?: string;
 }
 
 export function createSequenceData(
@@ -97,6 +102,22 @@ export function createSequenceData(
     }),
     ...(data.ownerAvatarUrl !== undefined && {
       ownerAvatarUrl: data.ownerAvatarUrl,
+    }),
+    // Video/animation storage
+    ...(data.performanceVideoUrl !== undefined && {
+      performanceVideoUrl: data.performanceVideoUrl,
+    }),
+    ...(data.animatedSequenceUrl !== undefined && {
+      animatedSequenceUrl: data.animatedSequenceUrl,
+    }),
+    ...(data.animationFormat !== undefined && {
+      animationFormat: data.animationFormat,
+    }),
+    ...(data.performanceVideoPath !== undefined && {
+      performanceVideoPath: data.performanceVideoPath,
+    }),
+    ...(data.animatedSequencePath !== undefined && {
+      animatedSequencePath: data.animatedSequencePath,
     }),
   };
   return result;

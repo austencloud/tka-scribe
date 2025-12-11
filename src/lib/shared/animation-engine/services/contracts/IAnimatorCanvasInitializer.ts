@@ -1,0 +1,74 @@
+/**
+ * Animator Canvas Initializer Service Interface
+ *
+ * Orchestrates the complex async initialization sequence for AnimatorCanvas.
+ * Handles service loading, PixiJS setup, texture loading, and sub-service wiring.
+ */
+
+import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+
+/**
+ * Initialization result
+ */
+export interface InitializationResult {
+	success: boolean;
+	error?: string;
+	canvas?: HTMLCanvasElement | null;
+}
+
+/**
+ * Callbacks for initialization state updates
+ */
+export interface InitializerCallbacks {
+	onPixiLoading: (loading: boolean) => void;
+	onPixiError: (error: string | null) => void;
+	onPixiRendererReady: (renderer: IPixiAnimationRenderer) => void;
+	onInitialized: (initialized: boolean) => void;
+	onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
+}
+
+/**
+ * Dependencies required for initialization
+ */
+export interface InitializerDependencies {
+	containerElement: HTMLDivElement;
+	backgroundAlpha: number;
+	gridMode: GridMode | null;
+	loadAnimatorServices: () => Promise<boolean>;
+	initializePrecomputationService: () => void;
+	initializePropTextureService: () => void;
+	initializeResizeService: () => void;
+	initializeGlyphTextureService: () => void;
+	initializeRenderLoopService: () => void;
+	loadPropTextures: () => Promise<void>;
+	startRenderLoop: () => void;
+}
+
+/**
+ * Service for orchestrating AnimatorCanvas initialization
+ */
+export interface IAnimatorCanvasInitializer {
+	/**
+	 * Run the full initialization sequence
+	 */
+	initialize(
+		deps: InitializerDependencies,
+		callbacks: InitializerCallbacks
+	): Promise<InitializationResult>;
+
+	/**
+	 * Clean up and destroy resources
+	 */
+	destroy(callbacks: Pick<InitializerCallbacks, 'onCanvasReady' | 'onInitialized'>): void;
+
+	/**
+	 * Get the current PixiJS renderer (if initialized)
+	 */
+	getRenderer(): IPixiAnimationRenderer | null;
+
+	/**
+	 * Check if initialization is complete
+	 */
+	isReady(): boolean;
+}

@@ -665,6 +665,7 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
       training_combo_20: "daily_practice",
       timed_150bpm: "daily_practice",
       train_challenge_completed: "challenge_completed",
+      feedback_submitted: "challenge_completed",
     };
 
     return mappings[action] || "sequence_created";

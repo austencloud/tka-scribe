@@ -22,6 +22,7 @@
     PropType: () => import("./tabs/PropTypeTab.svelte"),
     Background: () => import("./tabs/background/BackgroundTab.svelte"),
     Visibility: () => import("./tabs/VisibilityTab.svelte"),
+    Keyboard: () => import("$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte"),
     Accessibility: () => import("./tabs/AccessibilityTab.svelte"),
   };
 
@@ -56,6 +57,8 @@
     {:else if activeTab === "Background"}
       <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
     {:else if activeTab === "Visibility"}
+      <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
+    {:else if activeTab === "Keyboard"}
       <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
     {:else if activeTab === "Accessibility"}
       <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />

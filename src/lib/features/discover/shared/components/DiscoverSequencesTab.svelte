@@ -3,10 +3,6 @@
   import DiscoverLayout from "./DiscoverLayout.svelte";
   import SequenceDrawers from "./SequenceDrawers.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-  import {
-    gallerySourceManager,
-    type GallerySource,
-  } from "../state/gallery-source-state.svelte";
   import SequenceDisplayPanel from "../../gallery/display/components/SequenceDisplayPanel.svelte";
 
   interface Props {
@@ -37,20 +33,6 @@
     onCloseDetailPanel,
     onContainerScroll,
   }: Props = $props();
-
-  // Reactive scope from gallerySourceManager - convert "my-library" to "library" for UI
-  const scope = $derived(
-    gallerySourceManager.current === "my-library" ? "library" : "community"
-  );
-
-  // Handle scope change from UI
-  function handleScopeChange(newScope: "community" | "library") {
-    const source: GallerySource =
-      newScope === "library" ? "my-library" : "community";
-    gallerySourceManager.setSource(source);
-    // Trigger galleryState to reload based on source
-    galleryState.setSource(source);
-  }
 </script>
 
 <DiscoverLayout>
@@ -83,10 +65,8 @@
   currentFilter={galleryState.currentFilter}
   currentSortMethod={galleryState.currentSortMethod}
   availableSections={galleryState.availableNavigationSections}
-  {scope}
   onFilterChange={galleryState.handleFilterChange}
   onSortMethodChange={(method) => galleryState.handleSortChange(method, "asc")}
-  onScopeChange={handleScopeChange}
   onSectionClick={(sectionId) => {
     galleryState.scrollToSection(sectionId);
     galleryPanelManager.close();

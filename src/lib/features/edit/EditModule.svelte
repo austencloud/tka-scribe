@@ -17,6 +17,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { onMount } from "svelte";
   import {
     createEditModuleState,
@@ -24,6 +25,10 @@
   } from "./state/edit-module-state.svelte";
   import type { ISequenceTransformationService } from "../create/shared/services/contracts/ISequenceTransformationService";
   import type { IDiscoverLoader } from "../discover/gallery/display/services/contracts/IDiscoverLoader";
+  import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+  import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
+  import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import BeatEditPanel from "./components/BeatEditPanel.svelte";
   import SequenceEditPanel from "./components/SequenceEditPanel.svelte";
   import EditWorkspace from "./components/EditWorkspace.svelte";
@@ -36,6 +41,8 @@
   // Services
   let transformService: ISequenceTransformationService | null = null;
   let exploreLoader: IDiscoverLoader | null = null;
+  let motionQueryHandler: IMotionQueryHandler | null = null;
+  let gridModeDeriver: IGridModeDeriver | null = null;
 
   // Sequence browser state
   let isSequenceBrowserOpen = $state(false);
@@ -106,9 +113,72 @@
       console.warn("Failed to resolve IDiscoverLoader:", error);
     }
 
+    try {
+      motionQueryHandler = resolve<IMotionQueryHandler>(TYPES.IMotionQueryHandler);
+      console.log("EditModule: Resolved motion query handler");
+    } catch (error) {
+      console.warn("Failed to resolve IMotionQueryHandler:", error);
+    }
+
+    try {
+      gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
+      console.log("EditModule: Resolved grid mode deriver");
+    } catch (error) {
+      console.warn("Failed to resolve IGridModeDeriver:", error);
+    }
+
     // Set the default tab for the edit module
     navigationState.setActiveTab("edit");
   });
+
+  /**
+   * Handle beat updates with letter derivation
+   * When motion properties change (rotation direction, turns, etc.), re-derive the letter
+   */
+  async function handleBeatUpdate(beatIndex: number, updates: Partial<BeatData>) {
+    const sequence = editState.editingSequence;
+    if (!sequence) return;
+
+    // Get the current beat data
+    const currentBeat = sequence.beats[beatIndex];
+    if (!currentBeat) return;
+
+    // Merge updates to get the new beat state
+    const updatedBeat = { ...currentBeat, ...updates };
+
+    // Check if motions were updated - if so, derive the new letter
+    if (updates.motions && motionQueryHandler && gridModeDeriver) {
+      const blueMotion = updatedBeat.motions?.[MotionColor.BLUE];
+      const redMotion = updatedBeat.motions?.[MotionColor.RED];
+
+      if (blueMotion && redMotion) {
+        try {
+          // Derive grid mode from motions
+          const gridMode = gridModeDeriver.deriveGridMode(blueMotion, redMotion);
+
+          // Find the correct letter for this motion configuration
+          const newLetter = await motionQueryHandler.findLetterByMotionConfiguration(
+            blueMotion,
+            redMotion,
+            gridMode
+          );
+
+          if (newLetter && newLetter !== updatedBeat.letter) {
+            console.log(
+              `EditModule: Derived new letter "${newLetter}" for beat ${beatIndex + 1} (was "${updatedBeat.letter}")`
+            );
+            // Include the new letter in the updates (cast string to Letter enum)
+            updates = { ...updates, letter: newLetter as Letter };
+          }
+        } catch (error) {
+          console.warn("EditModule: Failed to derive letter for beat update:", error);
+        }
+      }
+    }
+
+    // Update the beat with the (possibly augmented) updates
+    editState.updateBeat(beatIndex, updates);
+  }
 
   /**
    * Transformation handlers that use the resolved service
@@ -133,10 +203,10 @@
     return transformService.swapColors(sequence);
   }
 
-  async function handleReverse(): Promise<SequenceData | null> {
+  async function handleRewind(): Promise<SequenceData | null> {
     const sequence = editState.editingSequence;
     if (!sequence || !transformService) return null;
-    return await transformService.reverseSequence(sequence);
+    return await transformService.rewindSequence(sequence);
   }
 
   // Derived state
@@ -207,7 +277,7 @@
               selectedBeatNumbers={editState.selectedBeatNumbers}
               sequence={editState.editingSequence}
               onBeatUpdate={(index, updates) =>
-                editState.updateBeat(index, updates)}
+                handleBeatUpdate(index, updates)}
               onStartPositionUpdate={(updates) =>
                 editState.updateStartPosition(updates)}
             />
@@ -219,7 +289,7 @@
               {handleMirror}
               {handleRotate}
               {handleSwapColors}
-              {handleReverse}
+              {handleRewind}
             />
           {/if}
         </div>

@@ -95,9 +95,11 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     );
     this.trailRenderer = new PixiTrailRenderer(this.trailContainer);
     this.propRenderer = new PixiPropRenderer(size);
+    console.log(`[PixiAnimationRenderer] Initialized with size: ${size}`);
   }
 
   async resize(newSize: number): Promise<void> {
+    console.log(`[PixiAnimationRenderer] resize called with: ${newSize}`);
     this.appManager.resize(newSize);
     this.spriteManager?.resizeAllSprites(newSize);
     this.propRenderer?.updateSize(newSize);
@@ -156,6 +158,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     _width: number,
     _height: number
   ): Promise<void> {
+    // Guard: spriteManager must be initialized
+    if (!this.spriteManager) {
+      console.warn('[PixiAnimationRenderer] Cannot load glyph texture - not fully initialized');
+      return;
+    }
+
     const { current, previous } = await this.textureLoader.loadGlyphTexture(
       svgString,
       _width,

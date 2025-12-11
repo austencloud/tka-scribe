@@ -52,6 +52,15 @@ export interface IPictographFilterService {
   filterStaticType6(options: PictographData[], level: number): PictographData[];
 
   /**
+   * Filter pictographs by required end position
+   * Used for freeform mode when user specifies where the sequence should end
+   */
+  filterByEndPosition(
+    options: PictographData[],
+    requiredEndPosition: string
+  ): PictographData[];
+
+  /**
    * Select random item from array
    */
   selectRandom<T>(array: T[]): T;
@@ -181,6 +190,31 @@ export class PictographFilterService implements IPictographFilterService {
 
       return blueHasTurns || redHasTurns;
     });
+
+    return filtered;
+  }
+
+  /**
+   * Filter pictographs by required end position.
+   * Used for the final beat in freeform mode when user specifies an end position constraint.
+   */
+  filterByEndPosition(
+    options: PictographData[],
+    requiredEndPosition: string
+  ): PictographData[] {
+    const targetEndPos = requiredEndPosition.toLowerCase();
+
+    const filtered = options.filter((option: PictographData) => {
+      if (!option.endPosition) return false;
+      return option.endPosition.toLowerCase() === targetEndPos;
+    });
+
+    // If no options match, log warning but don't fall back (this is an explicit constraint)
+    if (filtered.length === 0) {
+      console.warn(
+        `⚠️ No pictographs end at position "${requiredEndPosition}". Cannot satisfy end position constraint.`
+      );
+    }
 
     return filtered;
   }

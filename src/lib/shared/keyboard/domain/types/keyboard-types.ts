@@ -41,7 +41,11 @@ export type ShortcutScope =
   | "help" // Help and information
   | "sequence-management" // Sequence management (save, add, delete beats)
   | "animation" // Animation control (play, pause, seek)
-  | "workspace"; // Workspace navigation and interaction
+  | "workspace" // Workspace navigation and interaction
+  | "playback" // Media playback controls
+  | "view" // View toggles and display options
+  | "selection" // Selection operations
+  | "special"; // Special/misc shortcuts
 
 /**
  * Shortcut priority - determines which shortcut takes precedence when multiple match
@@ -227,8 +231,55 @@ export interface ShortcutSettings {
   /** Whether to play sound on shortcut activation */
   playSoundOnActivation: boolean;
 
-  /** Custom key bindings (override defaults) */
-  customBindings: Record<string, string>;
+  /** Custom key bindings (override defaults) - maps shortcut ID to CustomBinding */
+  customBindings: Record<string, CustomBinding>;
+}
+
+/**
+ * Custom binding for a shortcut
+ * Allows users to override the default key combination
+ */
+export interface CustomBinding {
+  /** The custom key combo string (e.g., "ctrl+shift+k", "Space", "alt+ArrowUp") */
+  keyCombo: string;
+
+  /** Whether this binding is disabled (allows disabling without deleting) */
+  disabled?: boolean;
+}
+
+/**
+ * Conflict detection result when attempting to bind a key combo
+ */
+export interface ShortcutConflict {
+  /** ID of the shortcut that already uses this key combo */
+  existingShortcutId: string;
+
+  /** Human-readable label of the conflicting shortcut */
+  existingShortcutLabel: string;
+
+  /** The key combo that conflicts */
+  keyCombo: string;
+
+  /** Context where the conflict occurs */
+  context: ShortcutContext;
+
+  /**
+   * Severity of the conflict:
+   * - 'error': Same context, cannot bind without removing existing
+   * - 'warning': Overlapping contexts, may work in some situations
+   */
+  severity: "error" | "warning";
+}
+
+/**
+ * Parsed key combo representation
+ */
+export interface ParsedKeyCombo {
+  /** The main key (e.g., "k", "Space", "ArrowLeft") */
+  key: string;
+
+  /** Modifier keys */
+  modifiers: KeyModifier[];
 }
 
 /**

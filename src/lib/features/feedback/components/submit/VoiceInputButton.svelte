@@ -1,6 +1,6 @@
 <!-- VoiceInputButton - Web Speech API voice-to-text for feedback -->
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   // Web Speech API type declarations
   interface SpeechRecognitionResult {
@@ -41,16 +41,21 @@
     abort: () => void;
   }
 
+  // Constants
+  const MAX_RECORDING_DURATION_MS = 30 * 1000; // 30 seconds of silence
+
   // Props
   const {
     onTranscript,
     onInterimTranscript,
     onRecordingEnd,
+    onTimeout,
     disabled = false,
   } = $props<{
     onTranscript: (text: string, isFinal: boolean) => void;
     onInterimTranscript?: (text: string) => void;
     onRecordingEnd?: () => void;
+    onTimeout?: () => void;
     disabled?: boolean;
   }>();
 
@@ -59,9 +64,20 @@
   let isSupported = $state(false);
   let recognition: SpeechRecognitionInstance | null = $state(null);
   let baseTranscriptLength = 0; // Track where we started this recording session
+  let intentionalStop = false; // Track if user clicked stop vs silence timeout
+  let maxDurationTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  // Stop recording when tab becomes hidden (user switches away)
+  function handleVisibilityChange() {
+    if (document.hidden && isRecording) {
+      stopRecording();
+    }
+  }
 
   // Check browser support
   onMount(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const SpeechRecognitionCtor =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
@@ -74,6 +90,9 @@
       recognition.lang = "en-US";
 
       recognition.onresult = (event: SpeechRecognitionEventCustom) => {
+        // Reset timeout on any speech activity
+        resetMaxDurationTimeout();
+
         let interimTranscript = "";
         let finalTranscript = "";
 
@@ -109,6 +128,16 @@
       };
 
       recognition.onend = () => {
+        // Auto-restart if stopped due to silence (not user clicking stop)
+        if (!intentionalStop && isRecording) {
+          try {
+            recognition?.start();
+            return; // Don't clear state, keep recording
+          } catch {
+            // Failed to restart, fall through to cleanup
+          }
+        }
+
         isRecording = false;
         // Clear any lingering interim text
         if (onInterimTranscript) {
@@ -122,15 +151,51 @@
     }
   });
 
+  // Cleanup on unmount
+  onDestroy(() => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    clearMaxDurationTimeout();
+    if (recognition && isRecording) {
+      recognition.abort();
+    }
+  });
+
+  function clearMaxDurationTimeout() {
+    if (maxDurationTimeout) {
+      clearTimeout(maxDurationTimeout);
+      maxDurationTimeout = null;
+    }
+  }
+
+  function resetMaxDurationTimeout() {
+    clearMaxDurationTimeout();
+    maxDurationTimeout = setTimeout(() => {
+      stopRecording(true);
+    }, MAX_RECORDING_DURATION_MS);
+  }
+
+  function stopRecording(isTimeout = false) {
+    if (!recognition) return;
+    clearMaxDurationTimeout();
+    intentionalStop = true;
+    recognition.stop();
+    isRecording = false;
+    if (isTimeout && onTimeout) {
+      onTimeout();
+    }
+  }
+
   function toggleRecording() {
     if (!recognition || disabled) return;
 
     if (isRecording) {
-      recognition.stop();
-      isRecording = false;
+      stopRecording();
     } else {
+      intentionalStop = false; // Starting fresh session
       recognition.start();
       isRecording = true;
+      // Start max duration timer (resets on speech activity)
+      resetMaxDurationTimeout();
     }
   }
 </script>

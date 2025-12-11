@@ -24,6 +24,7 @@
   import ProfileStatsGrid from "./profile/ProfileStatsGrid.svelte";
   import ProfileRankings from "./profile/ProfileRankings.svelte";
   import ProfileTabs from "./profile/ProfileTabs.svelte";
+  import ProfileAdminSection from "./profile/ProfileAdminSection.svelte";
 
   interface Props {
     userId: string;
@@ -84,6 +85,16 @@
   // Check if viewing own profile
   const isOwnProfile = $derived(currentUserId === userId);
 
+  // Check if current user is admin (for admin controls)
+  const isAdmin = $derived(authStore.isAdmin);
+
+  // Handler for admin updates
+  function handleAdminUpdate(updates: Partial<EnhancedUserProfile>) {
+    if (userProfile) {
+      userProfile = { ...userProfile, ...updates };
+    }
+  }
+
   onMount(async () => {
     try {
       console.log(`[UserProfilePanel] Loading profile for user: ${userId}`);
@@ -132,8 +143,15 @@
     hapticService?.trigger("selection");
     // Use unified navigation state to go back to previous location
     const location = discoverNavigationState.goBack();
-    if (!location) {
-      // Fallback if no history
+
+    if (!location || location.view === "list") {
+      // No history or going back to list view
+      creatorsViewState.goBack();
+    } else if (location.view === "profile" && location.contextId && location.contextId !== userId) {
+      // Going back to a different profile
+      creatorsViewState.viewUserProfile(location.contextId);
+    } else {
+      // Fallback: go back to list
       creatorsViewState.goBack();
     }
   }
@@ -313,6 +331,14 @@
         onSequenceClick={handleSequenceClick}
         onUserClick={handleUserCardClick}
       />
+
+      <!-- Admin Controls (only visible to admins, not on own profile) -->
+      {#if isAdmin && !isOwnProfile}
+        <ProfileAdminSection
+          {userProfile}
+          onUserUpdated={handleAdminUpdate}
+        />
+      {/if}
     </div>
   {/if}
 </div>

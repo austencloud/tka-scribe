@@ -27,6 +27,8 @@ import type { Achievement, UserAchievement } from "$lib/shared/gamification/doma
 import type { IUserService } from "../contracts/IUserService";
 import type { EnhancedUserProfile, UserProfile, CreatorQueryOptions } from "../../domain/models/enhanced-user-profile";
 
+import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+
 /**
  * Type definition for Firestore user document data
  */
@@ -49,6 +51,9 @@ interface FirestoreUserData extends DocumentData {
   longestStreak?: number;
   isFeatured?: boolean;
   bio?: string;
+  // Admin-related fields
+  role?: UserRole;
+  isDisabled?: boolean;
 }
 
 /**
@@ -529,6 +534,10 @@ export class UserService implements IUserService {
       const isFeatured = data.isFeatured ?? false;
       const bio = data.bio ?? undefined;
 
+      // Admin-related fields
+      const role = data.role ?? "user";
+      const isDisabled = data.isDisabled ?? false;
+
       // Fetch user's actual achievements from subcollection
       const topAchievements = await this.fetchUserTopAchievements(userId);
 
@@ -552,6 +561,8 @@ export class UserService implements IUserService {
         topAchievements,
         isFeatured,
         bio,
+        role,
+        isDisabled,
       };
     } catch (error) {
       console.error(`[UserService] Error mapping user ${userId}:`, error);

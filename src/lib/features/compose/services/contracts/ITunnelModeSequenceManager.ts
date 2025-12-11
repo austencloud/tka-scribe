@@ -8,7 +8,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export type SequenceType = "primary" | "secondary";
-export type TransformOperation = "mirror" | "rotate" | "colorSwap" | "reverse";
+export type TransformOperation = "mirror" | "rotate" | "colorSwap" | "rewind";
 
 export interface ITunnelModeSequenceManager {
   /**

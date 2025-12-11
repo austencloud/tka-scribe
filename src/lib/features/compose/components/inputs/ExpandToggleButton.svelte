@@ -1,8 +1,7 @@
 <!--
   ExpandToggleButton.svelte
 
-  Mobile expand/collapse toggle button for animation controls.
-  Shows chevron icon to indicate expand/collapse state.
+  Simple button to toggle expanded state in animation controls
 -->
 <script lang="ts">
   let {
@@ -16,10 +15,10 @@
 
 <button
   class="expand-toggle-btn"
+  class:expanded={isExpanded}
   onclick={onToggle}
-  type="button"
-  title={isExpanded ? "Show less controls" : "Show more controls"}
   aria-label={isExpanded ? "Collapse controls" : "Expand controls"}
+  type="button"
 >
   <i class="fas {isExpanded ? 'fa-chevron-down' : 'fa-chevron-up'}"></i>
 </button>
@@ -29,38 +28,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(52px, 8.8vw, 52px);
-    padding: clamp(8px, 1.6vw, 10px);
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.3) 0%,
-      rgba(124, 58, 237, 0.3) 100%
-    );
-    border: 2px solid rgba(139, 92, 246, 0.5);
-    border-radius: clamp(8px, 1.6vw, 10px);
-    color: rgba(221, 214, 254, 1);
-    font-size: clamp(16px, 3.2vw, 18px);
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    min-width: 52px;
-    min-height: 52px;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .expand-toggle-btn:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(139, 92, 246, 0.4) 0%,
-        rgba(124, 58, 237, 0.4) 100%
-      );
-      border-color: rgba(139, 92, 246, 0.7);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 12px rgba(139, 92, 246, 0.3);
-    }
+  .expand-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .expand-toggle-btn:active {
-    transform: scale(0.98);
+    transform: scale(0.96);
+  }
+
+  .expand-toggle-btn.expanded {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: rgba(167, 139, 250, 1);
   }
 </style>

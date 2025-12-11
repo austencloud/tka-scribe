@@ -10,12 +10,27 @@
  *   --module <module>                Captured module (default: system)
  *   --tab <tab>                      Captured tab (default: general)
  *   --subtasks <json>                JSON array of subtasks
+ *   --user <austen|email>            User profile (default: austen)
  *
  * Examples:
  *   node scripts/submit-feedback.js "Fix login bug" "Users can't login with email"
  *   node scripts/submit-feedback.js "Add dark mode" "Support dark theme" --type feature --priority high
  *   node scripts/submit-feedback.js "Video drawer" "Implement video recording" --subtasks '[{"id":"1","title":"Create UI","description":"Build drawer UI","status":"pending"}]'
  */
+
+// Known user profiles
+const USER_PROFILES = {
+  austen: {
+    userId: 'austen-cloud',
+    userEmail: 'austencloud@gmail.com',
+    userDisplayName: 'Austen Cloud'
+  },
+  claude: {
+    userId: 'system',
+    userEmail: 'admin@thekineticalphabetapp.com',
+    userDisplayName: 'Claude Agent'
+  }
+};
 
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
@@ -39,6 +54,7 @@ function parseArgs() {
     console.error('  --module <module>                         Captured module (default: system)');
     console.error('  --tab <tab>                               Captured tab (default: general)');
     console.error('  --subtasks <json>                         JSON array of subtasks');
+    console.error('  --user <austen|claude|email>              User profile (default: austen)');
     console.error('');
     console.error('Examples:');
     console.error('  node scripts/submit-feedback.js "Fix login bug" "Users can\'t login"');
@@ -54,7 +70,8 @@ function parseArgs() {
     priority: 'medium',
     module: 'system',
     tab: 'general',
-    subtasks: null
+    subtasks: null,
+    user: 'austen' // Default to Austen's profile
   };
 
   // Parse options
@@ -78,6 +95,9 @@ function parseArgs() {
         console.error('❌ Error: Invalid JSON for subtasks');
         process.exit(1);
       }
+      i++;
+    } else if (args[i] === '--user' && args[i + 1]) {
+      options.user = args[i + 1].toLowerCase();
       i++;
     }
   }
@@ -113,12 +133,28 @@ async function submitFeedback(params) {
 
     const db = getFirestore();
 
+    // Resolve user profile
+    let userProfile;
+    if (USER_PROFILES[params.user]) {
+      userProfile = USER_PROFILES[params.user];
+    } else if (params.user.includes('@')) {
+      // Assume it's an email address
+      userProfile = {
+        userId: params.user.split('@')[0],
+        userEmail: params.user,
+        userDisplayName: params.user.split('@')[0]
+      };
+    } else {
+      console.error(`❌ Unknown user "${params.user}". Use: austen, claude, or an email address.`);
+      process.exit(1);
+    }
+
     // Create feedback item
     const feedbackData = {
-      // User info (using admin/system user)
-      userId: 'system',
-      userEmail: 'admin@thekineticalphabetapp.com',
-      userDisplayName: 'Claude Agent',
+      // User info
+      userId: userProfile.userId,
+      userEmail: userProfile.userEmail,
+      userDisplayName: userProfile.userDisplayName,
       userPhotoURL: null,
 
       // Feedback content
@@ -154,6 +190,7 @@ async function submitFeedback(params) {
     console.log(`   🏷️  Type: ${params.type}`);
     console.log(`   ⚡ Priority: ${params.priority}`);
     console.log(`   📍 Module: ${params.module} / ${params.tab}`);
+    console.log(`   👤 User: ${userProfile.userDisplayName} (${userProfile.userEmail})`);
 
     if (params.subtasks && params.subtasks.length > 0) {
       console.log('');

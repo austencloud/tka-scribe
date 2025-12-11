@@ -9,7 +9,9 @@
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
   import NotificationItem from "$lib/features/feedback/components/NotificationItem.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
-  import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import { setNotificationTargetFeedback } from "$lib/features/feedback/state/notification-action-state.svelte";
+  import type { UserNotification, FeedbackNotification, AdminNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import { discoverNavigationState } from "$lib/features/discover/shared/state/discover-navigation-state.svelte";
 
   const notificationState = createNotificationState();
 
@@ -39,11 +41,38 @@
   function handleNotificationAction(notification: UserNotification) {
     // Navigate based on notification type
     if (notification.type.startsWith("feedback-")) {
+      // For feedback notifications, set the target feedback ID so MyFeedbackTab can open it
+      const feedbackNotif = notification as FeedbackNotification;
+      setNotificationTargetFeedback(feedbackNotif.feedbackId);
       handleModuleChange("feedback", "my-feedback");
     } else if (notification.type.startsWith("sequence-")) {
       // Could navigate to specific sequence or discover module
       handleModuleChange("discover", "gallery");
+    } else if (notification.type === "admin-new-user-signup") {
+      // Navigate to the new user's profile
+      const adminNotif = notification as AdminNotification;
+      discoverNavigationState.viewCreatorProfile(
+        adminNotif.newUserId,
+        adminNotif.newUserDisplayName
+      );
+      handleModuleChange("discover", "creators");
     }
+  }
+
+  function handleNotificationDismiss(notificationId: string) {
+    // Optimistic update - notification already marked as read in NotificationItem
+    // Just need to update our local state if needed
+  }
+
+  async function handleClearAll() {
+    const user = authStore.user;
+    if (!user) return;
+
+    // Call service to delete all notifications
+    const { notificationService } = await import(
+      "$lib/features/feedback/services/implementations/NotificationService"
+    );
+    await notificationService.deleteAllNotifications(user.uid);
   }
 
   function viewAllNotifications() {
@@ -58,9 +87,21 @@
       <i class="fas fa-bell"></i>
       <h3>Notifications</h3>
     </div>
-    {#if notificationState.unreadCount > 0}
-      <span class="unread-badge">{notificationState.unreadCount}</span>
-    {/if}
+    <div class="header-right">
+      {#if notificationState.notifications.length > 0}
+        <button
+          class="clear-all-btn"
+          onclick={() => handleClearAll()}
+          type="button"
+          title="Clear all notifications"
+        >
+          Clear all
+        </button>
+      {/if}
+      {#if notificationState.unreadCount > 0}
+        <span class="unread-badge">{notificationState.unreadCount}</span>
+      {/if}
+    </div>
   </div>
 
   <div class="widget-content">
@@ -83,7 +124,11 @@
     {:else}
       <div class="notifications-list">
         {#each recentNotifications as notification (notification.id)}
-          <NotificationItem {notification} onAction={handleNotificationAction} />
+          <NotificationItem
+            {notification}
+            onAction={handleNotificationAction}
+            onDismiss={handleNotificationDismiss}
+          />
         {/each}
       </div>
 
@@ -103,10 +148,15 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-2026-md);
     overflow: hidden;
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .notification-center-widget:hover {
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   /* ============================================================================
@@ -117,10 +167,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 12px;
+    transition: border-color var(--duration-normal) var(--ease-out);
   }
 
   .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-right {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -138,6 +196,25 @@
     margin: 0;
   }
 
+  .clear-all-btn {
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+    border-radius: 4px;
+  }
+
+  .clear-all-btn:hover {
+    color: #ef4444;
+  }
+
+  .clear-all-btn:active {
+    opacity: 0.8;
+  }
+
   .unread-badge {
     display: flex;
     align-items: center;
@@ -150,6 +227,7 @@
     font-size: 12px;
     font-weight: 700;
     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
   }
 
   /* ============================================================================
@@ -212,25 +290,30 @@
     gap: 8px;
     padding: 12px;
     margin-top: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-2026-md);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--duration-normal) var(--ease-out);
   }
 
   .view-all-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+  }
+
+  .view-all-button:active {
+    transform: translateY(0);
   }
 
   .view-all-button i {
     font-size: 12px;
-    transition: transform 0.2s ease;
+    transition: transform var(--duration-normal) var(--ease-out);
   }
 
   .view-all-button:hover i {
@@ -245,23 +328,27 @@
   }
 
   .widget-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent;
     border-radius: 3px;
   }
 
   .widget-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
+    transition: background var(--duration-fast) var(--ease-out);
   }
 
   .widget-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
   }
 
   /* ============================================================================
      ACCESSIBILITY
      ============================================================================ */
   @media (prefers-reduced-motion: reduce) {
+    .notification-center-widget,
+    .widget-header,
+    .clear-all-btn,
     .view-all-button,
     .view-all-button i {
       transition: none;

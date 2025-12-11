@@ -37,6 +37,7 @@
     "Background",
     "Visibility",
     "Accessibility",
+    "Keyboard",
   ];
 
   // Props
@@ -135,6 +136,11 @@
       id: "Visibility",
       label: "Visibility",
       icon: '<i class="fas fa-eye"></i>',
+    },
+    {
+      id: "Keyboard",
+      label: "Keyboard",
+      icon: '<i class="fas fa-keyboard"></i>',
     },
     {
       id: "Accessibility",

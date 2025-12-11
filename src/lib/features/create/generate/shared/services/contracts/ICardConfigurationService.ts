@@ -34,6 +34,10 @@ export interface CardHandlers {
   handleGenerateClick?: () => Promise<void>;
   // Customize options (optional, for when customize card is shown)
   customizeOptions?: CustomizeOptions;
+  // Trigger value that increments when positions are reset due to grid mode change
+  positionsResetTrigger?: number;
+  // Current grid mode for position picker filtering
+  currentGridMode?: GridMode;
 }
 
 /**

@@ -163,6 +163,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     background: var(--card-color);
     border: none;
 
+    /* Touch optimization: eliminates 300ms tap delay, allows clicks with slight movement */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+
     /* Layered shadows with color-matching (Josh Comeau technique) */
     /* Base elevation - subtle, realistic depth with color-matched shadows */
     box-shadow:

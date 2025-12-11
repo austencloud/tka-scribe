@@ -1,0 +1,202 @@
+/**
+ * Type1ConceptState - Centralized state management for Type 1 concept lesson
+ * Manages page navigation and letter cycling for each motion type category
+ */
+
+import type { IHapticFeedbackService } from '$lib/shared/application/services/contracts/IHapticFeedbackService';
+import {
+	PROSPIN_LETTERS,
+	ANTISPIN_LETTERS,
+	HYBRID_LETTERS
+} from '../domain/type1-letter-data';
+
+export interface Type1ConceptStateOptions {
+	hapticService: IHapticFeedbackService | null;
+	onComplete?: () => void;
+}
+
+export interface Type1ConceptState {
+	// Page navigation
+	currentPage: number;
+	readonly totalPages: number;
+	readonly canGoNext: boolean;
+	readonly canGoPrevious: boolean;
+	readonly isQuizPage: boolean;
+
+	// Letter cycling indices
+	prospinIndex: number;
+	antispinIndex: number;
+	hybridIndex: number;
+
+	// Current displayed letters (derived)
+	readonly currentProspin: typeof PROSPIN_LETTERS[number] | undefined;
+	readonly currentAntispin: typeof ANTISPIN_LETTERS[number] | undefined;
+	readonly currentHybrid: typeof HYBRID_LETTERS[number] | undefined;
+
+	// Navigation methods
+	nextPage: () => void;
+	previousPage: () => void;
+	goToPage: (page: number) => void;
+	complete: () => void;
+
+	// Letter cycling methods
+	cycleProspin: (direction: 1 | -1) => void;
+	cycleAntispin: (direction: 1 | -1) => void;
+	cycleHybrid: (direction: 1 | -1) => void;
+	selectProspinLetter: (index: number) => void;
+	selectAntispinLetter: (index: number) => void;
+	selectHybridLetter: (index: number) => void;
+}
+
+export function createType1ConceptState(options: Type1ConceptStateOptions): Type1ConceptState {
+	const { hapticService, onComplete } = options;
+	const totalPages = 5;
+
+	// Core state
+	let currentPage = $state(1);
+	let prospinIndex = $state(0);
+	let antispinIndex = $state(0);
+	let hybridIndex = $state(0);
+
+	// Derived state
+	const canGoNext = $derived(currentPage < totalPages);
+	const canGoPrevious = $derived(currentPage > 1);
+	const isQuizPage = $derived(currentPage === 5);
+
+	const currentProspin = $derived(PROSPIN_LETTERS[prospinIndex]);
+	const currentAntispin = $derived(ANTISPIN_LETTERS[antispinIndex]);
+	const currentHybrid = $derived(HYBRID_LETTERS[hybridIndex]);
+
+	// Navigation methods
+	function nextPage() {
+		hapticService?.trigger('selection');
+		if (currentPage < totalPages) {
+			currentPage++;
+		} else {
+			onComplete?.();
+		}
+	}
+
+	function previousPage() {
+		hapticService?.trigger('selection');
+		if (currentPage > 1) {
+			currentPage--;
+		}
+	}
+
+	function goToPage(page: number) {
+		if (page >= 1 && page <= totalPages) {
+			hapticService?.trigger('selection');
+			currentPage = page;
+		}
+	}
+
+	function complete() {
+		hapticService?.trigger('success');
+		onComplete?.();
+	}
+
+	// Letter cycling methods
+	function cycleProspin(direction: 1 | -1) {
+		const newIndex = prospinIndex + direction;
+		if (newIndex >= 0 && newIndex < PROSPIN_LETTERS.length) {
+			prospinIndex = newIndex;
+			hapticService?.trigger('selection');
+		}
+	}
+
+	function cycleAntispin(direction: 1 | -1) {
+		const newIndex = antispinIndex + direction;
+		if (newIndex >= 0 && newIndex < ANTISPIN_LETTERS.length) {
+			antispinIndex = newIndex;
+			hapticService?.trigger('selection');
+		}
+	}
+
+	function cycleHybrid(direction: 1 | -1) {
+		const newIndex = hybridIndex + direction;
+		if (newIndex >= 0 && newIndex < HYBRID_LETTERS.length) {
+			hybridIndex = newIndex;
+			hapticService?.trigger('selection');
+		}
+	}
+
+	function selectProspinLetter(index: number) {
+		if (index >= 0 && index < PROSPIN_LETTERS.length) {
+			prospinIndex = index;
+			hapticService?.trigger('selection');
+		}
+	}
+
+	function selectAntispinLetter(index: number) {
+		if (index >= 0 && index < ANTISPIN_LETTERS.length) {
+			antispinIndex = index;
+			hapticService?.trigger('selection');
+		}
+	}
+
+	function selectHybridLetter(index: number) {
+		if (index >= 0 && index < HYBRID_LETTERS.length) {
+			hybridIndex = index;
+			hapticService?.trigger('selection');
+		}
+	}
+
+	return {
+		get currentPage() {
+			return currentPage;
+		},
+		set currentPage(value: number) {
+			currentPage = value;
+		},
+		get totalPages() {
+			return totalPages;
+		},
+		get canGoNext() {
+			return canGoNext;
+		},
+		get canGoPrevious() {
+			return canGoPrevious;
+		},
+		get isQuizPage() {
+			return isQuizPage;
+		},
+		get prospinIndex() {
+			return prospinIndex;
+		},
+		set prospinIndex(value: number) {
+			prospinIndex = value;
+		},
+		get antispinIndex() {
+			return antispinIndex;
+		},
+		set antispinIndex(value: number) {
+			antispinIndex = value;
+		},
+		get hybridIndex() {
+			return hybridIndex;
+		},
+		set hybridIndex(value: number) {
+			hybridIndex = value;
+		},
+		get currentProspin() {
+			return currentProspin;
+		},
+		get currentAntispin() {
+			return currentAntispin;
+		},
+		get currentHybrid() {
+			return currentHybrid;
+		},
+		nextPage,
+		previousPage,
+		goToPage,
+		complete,
+		cycleProspin,
+		cycleAntispin,
+		cycleHybrid,
+		selectProspinLetter,
+		selectAntispinLetter,
+		selectHybridLetter
+	};
+}

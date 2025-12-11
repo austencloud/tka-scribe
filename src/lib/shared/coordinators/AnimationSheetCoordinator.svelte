@@ -634,6 +634,10 @@
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
   onPlaybackToggle={() => playbackController?.togglePlayback()}
+  onStepHalfBeatBackward={() => playbackController?.stepHalfBeatBackward()}
+  onStepHalfBeatForward={() => playbackController?.stepHalfBeatForward()}
+  onStepFullBeatBackward={() => playbackController?.stepFullBeatBackward()}
+  onStepFullBeatForward={() => playbackController?.stepFullBeatForward()}
   onCanvasReady={handleCanvasReady}
   onExportGif={handleExportGif}
   {isExporting}

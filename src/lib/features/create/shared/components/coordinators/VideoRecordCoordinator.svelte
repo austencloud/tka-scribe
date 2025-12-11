@@ -161,19 +161,18 @@
       logger.log("📤 Uploading recording to Firebase...");
 
       // Upload video to Firebase Storage
-      const videoUrl = await uploadService.uploadPerformanceVideo(
+      const uploadResult = await uploadService.uploadPerformanceVideo(
         sequenceId,
         recording.videoBlob!,
         (progress) => logger.log(`Upload progress: ${progress}%`)
       );
 
-      // Create metadata
-      const storagePath = `users/{userId}/recordings/${sequenceId}/${Date.now()}.mp4`;
+      // Create metadata using upload result
       const metadata = createRecordingMetadata({
         userId: "", // Will be populated by service
         sequenceId,
-        videoUrl,
-        storagePath,
+        videoUrl: uploadResult.url,
+        storagePath: uploadResult.storagePath,
         duration: recording.duration ?? 0,
         fileSize: recording.videoBlob!.size,
         mimeType: recording.videoBlob!.type,

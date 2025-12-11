@@ -83,7 +83,8 @@ export async function trackXP(
     | "drill_completed"
     | "sequence_explored"
     | "daily_login"
-    | "daily_challenge_completed",
+    | "daily_challenge_completed"
+    | "feedback_submitted",
   metadata?: XPEventMetadata
 ): Promise<void> {
   try {

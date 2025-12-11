@@ -66,8 +66,11 @@ Hides header when card height is below 65px for space optimization
   class="toggle-card"
   class:landscape-mobile={state.isLandscapeMobile}
   style="--card-color: {color}; --shadow-color: {shadowColor}; --card-index: {cardIndex}; --header-font-size: {headerFontSize}; grid-column: span {gridColumnSpan};"
-  onclick={state.handleCardClick}
+  onclick={state.handleClick}
   onkeydown={state.handleKeydown}
+  ontouchstart={state.handleTouchStart}
+  ontouchend={state.handleTouchEnd}
+  ontouchcancel={state.handleTouchCancel}
   aria-label={`${title}: ${activeOption === option1.value ? option1.label : option2.label}. Click to toggle.`}
 >
   <div class="card-header-wrapper">
@@ -117,6 +120,10 @@ Hides header when card height is below 65px for space optimization
     border-radius: 16px;
     background: var(--card-color);
     border: none;
+
+    /* Touch optimization: eliminates 300ms tap delay, allows clicks with slight movement */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 
     /* Layered shadows matching BaseCard + inner highlight for 3D depth */
     box-shadow:

@@ -50,7 +50,7 @@
     if (!word || isContextualMessage) return;
 
     try {
-      await navigator.clipboard.writeText(word);
+      await navigator.clipboard.writeText(displayWord);
 
       // Show copied message
       showCopiedMessage = true;
@@ -88,7 +88,7 @@
 
     {#if showCopiedMessage}
       <div class="copied-message" role="status" aria-live="polite">
-        Copied "{word}"!
+        Copied "{displayWord}"!
       </div>
     {/if}
   </div>

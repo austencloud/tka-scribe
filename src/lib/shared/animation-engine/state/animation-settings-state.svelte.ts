@@ -80,56 +80,35 @@ export const DEFAULT_ANIMATION_SETTINGS: AnimationSettings = {
 // PERSISTENCE
 // ============================================================================
 
-const STORAGE_KEY = 'tka_animation_settings';
+import { createPersistenceHelper } from '$lib/shared/state/utils/persistent-state';
 
+const settingsPersistence = createPersistenceHelper({
+	key: 'tka_animation_settings',
+	defaultValue: DEFAULT_ANIMATION_SETTINGS
+});
+
+/**
+ * Load animation settings with migration logic
+ * Applies vivid trail preset if trails were previously disabled
+ */
 function loadSettings(): AnimationSettings {
-	if (typeof localStorage === 'undefined') {
-		return { ...DEFAULT_ANIMATION_SETTINGS };
-	}
+	const settings = settingsPersistence.load();
 
-	try {
-		const stored = localStorage.getItem(STORAGE_KEY);
-		if (!stored) return { ...DEFAULT_ANIMATION_SETTINGS };
-
-		const parsed = JSON.parse(stored);
-		
-		// Migration: Re-enable trails with vivid preset if they were disabled
-		// (Trails were temporarily broken, now restored - default to vivid preset)
-		if (parsed.trail) {
-			if (parsed.trail.mode === TrailMode.OFF || !parsed.trail.enabled) {
-				// Apply vivid preset: enabled with fade mode
-				parsed.trail.enabled = true;
-				parsed.trail.mode = TrailMode.FADE;
-				parsed.trail.lineWidth = 4;
-				parsed.trail.maxOpacity = 0.95;
-				parsed.trail.glowEnabled = true;
-				parsed.trail.fadeDurationMs = 2500;
-			}
+	// Migration: Re-enable trails with vivid preset if they were disabled
+	// (Trails were temporarily broken, now restored - default to vivid preset)
+	if (settings.trail) {
+		if (settings.trail.mode === TrailMode.OFF || !settings.trail.enabled) {
+			// Apply vivid preset: enabled with fade mode
+			settings.trail.enabled = true;
+			settings.trail.mode = TrailMode.FADE;
+			settings.trail.lineWidth = 4;
+			settings.trail.maxOpacity = 0.95;
+			settings.trail.glowEnabled = true;
+			settings.trail.fadeDurationMs = 2500;
 		}
-		
-		// Merge with defaults to handle missing fields from older versions
-		return {
-			...DEFAULT_ANIMATION_SETTINGS,
-			...parsed,
-			trail: {
-				...DEFAULT_TRAIL_SETTINGS,
-				...parsed.trail
-			}
-		};
-	} catch (error) {
-		console.warn('Failed to load animation settings:', error);
-		return { ...DEFAULT_ANIMATION_SETTINGS };
 	}
-}
 
-function saveSettings(settings: AnimationSettings): void {
-	if (typeof localStorage === 'undefined') return;
-
-	try {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-	} catch (error) {
-		console.warn('Failed to save animation settings:', error);
-	}
+	return settings;
 }
 
 // ============================================================================
@@ -167,10 +146,28 @@ export type AnimationSettingsState = {
 export function createAnimationSettingsState(): AnimationSettingsState {
 	let settings = $state<AnimationSettings>(loadSettings());
 
-	// Auto-save on changes
-	function persist() {
-		saveSettings(settings);
-	}
+	// Auto-save on any changes (using $effect.root for module-level usage)
+	$effect.root(() => {
+		$effect(() => {
+			// Access all properties to track changes
+			void settings.bpm;
+			void settings.shouldLoop;
+			void settings.trail.enabled;
+			void settings.trail.mode;
+			void settings.trail.trackingMode;
+			void settings.trail.lineWidth;
+			void settings.trail.maxOpacity;
+			void settings.trail.minOpacity;
+			void settings.trail.glowEnabled;
+			void settings.trail.glowBlur;
+			void settings.trail.blueColor;
+			void settings.trail.redColor;
+			void settings.trail.fadeDurationMs;
+			void settings.trail.hideProps;
+
+			settingsPersistence.setupAutoSave(settings);
+		});
+	});
 
 	return {
 		// Read-only getters
@@ -190,12 +187,10 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 		// Playback setters
 		setBpm: (bpm: number) => {
 			settings = { ...settings, bpm: Math.max(30, Math.min(300, bpm)) };
-			persist();
 		},
 
 		setShouldLoop: (loop: boolean) => {
 			settings = { ...settings, shouldLoop: loop };
-			persist();
 		},
 
 		// Trail setters
@@ -204,7 +199,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 				...settings,
 				trail: { ...settings.trail, enabled }
 			};
-			persist();
 		},
 
 		setTrailMode: (mode: TrailMode) => {
@@ -216,7 +210,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 					enabled: mode !== TrailMode.OFF
 				}
 			};
-			persist();
 		},
 
 		setTrackingMode: (mode: TrackingMode) => {
@@ -224,7 +217,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 				...settings,
 				trail: { ...settings.trail, trackingMode: mode }
 			};
-			persist();
 		},
 
 		setFadeDuration: (ms: number) => {
@@ -235,7 +227,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 					fadeDurationMs: Math.max(500, Math.min(10000, ms))
 				}
 			};
-			persist();
 		},
 
 		setTrailAppearance: (appearance: Partial<TrailAppearance>) => {
@@ -247,7 +238,6 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 					...appearance
 				}
 			};
-			persist();
 		},
 
 		setHideProps: (hide: boolean) => {
@@ -255,18 +245,15 @@ export function createAnimationSettingsState(): AnimationSettingsState {
 				...settings,
 				trail: { ...settings.trail, hideProps: hide }
 			};
-			persist();
 		},
 
 		// Bulk operations
 		updateSettings: (partial: Partial<AnimationSettings>) => {
 			settings = { ...settings, ...partial };
-			persist();
 		},
 
 		resetToDefaults: () => {
 			settings = { ...DEFAULT_ANIMATION_SETTINGS };
-			persist();
 		}
 	};
 }

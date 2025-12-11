@@ -29,6 +29,7 @@
   let draftSaveStatus = $state<"idle" | "saving" | "saved">("idle");
   let draftSaveTimer: ReturnType<typeof setTimeout> | null = null;
   let draftResetTimer: ReturnType<typeof setTimeout> | null = null;
+  let voiceTimeoutMessage = $state(false);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -154,6 +155,16 @@
     // Reset voice tracking when recording session ends
     // Each new recording session starts with a fresh transcript
     lastVoiceCommit = "";
+  }
+
+  function handleVoiceTimeout() {
+    // Show timeout notification
+    voiceTimeoutMessage = true;
+    hapticService?.trigger("warning");
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      voiceTimeoutMessage = false;
+    }, 5000);
   }
 
   // When user manually types, clear interim and reset voice tracking
@@ -288,6 +299,7 @@
             onTranscript={handleVoiceTranscript}
             onInterimTranscript={handleInterimTranscript}
             onRecordingEnd={handleRecordingEnd}
+            onTimeout={handleVoiceTimeout}
             disabled={formState.isSubmitting}
           />
         </div>
@@ -352,6 +364,21 @@
           <p class="toast-title">Submission failed</p>
           <p class="toast-message">
             Please check your connection and try again.
+          </p>
+        </div>
+      </div>
+    {/if}
+
+    <!-- Voice timeout notification -->
+    {#if voiceTimeoutMessage}
+      <div class="toast info" role="status">
+        <div class="toast-icon">
+          <i class="fas fa-microphone-slash"></i>
+        </div>
+        <div class="toast-content">
+          <p class="toast-title">Recording stopped</p>
+          <p class="toast-message">
+            30 second silence limit reached. Click the mic to continue.
           </p>
         </div>
       </div>
@@ -938,6 +965,20 @@
       rgba(239, 68, 68, 0.08) 100%
     );
     border: 1px solid rgba(239, 68, 68, 0.25);
+  }
+
+  .toast.info {
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.15) 0%,
+      rgba(99, 102, 241, 0.08) 100%
+    );
+    border: 1px solid rgba(99, 102, 241, 0.25);
+  }
+
+  .toast.info .toast-icon {
+    background: #6366f1;
+    color: white;
   }
 
   .toast-icon {

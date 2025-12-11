@@ -1,9 +1,9 @@
 <!--
-SequenceTransformTools.svelte - Sequence Transformation Tools for Edit Tab
+SequenceTransformTools.svelte - Sequence Transformation Tools
 
-Handles sequence-level transformations like mirror, rotate, and swap colors.
-Pure presentation component that delegates to sequence transform services.
-Moved from workbench to edit tab as these are editing functions.
+Responsive design:
+- Desktop: Full descriptions always visible
+- Mobile: Compact with expandable info buttons
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -12,12 +12,23 @@ Moved from workbench to edit tab as these are editing functions.
   import type { Snippet } from "svelte";
   import { onMount } from "svelte";
 
+  interface TransformAction {
+    id: string;
+    icon: string;
+    name: string;
+    shortDesc: string;
+    fullDesc: string;
+    color: string;
+    handler?: () => void;
+  }
+
   let {
     disabled = false,
     hasSequence = false,
     onMirror,
     onSwapColors,
     onRotate,
+    onReverse,
     renderExtra,
   } = $props<{
     disabled?: boolean;
@@ -25,10 +36,12 @@ Moved from workbench to edit tab as these are editing functions.
     onMirror?: () => void;
     onSwapColors?: () => void;
     onRotate?: () => void;
+    onReverse?: () => void;
     renderExtra?: Snippet;
   }>();
 
   let hapticService: IHapticFeedbackService;
+  let expandedAction = $state<string | null>(null);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -41,49 +54,76 @@ Moved from workbench to edit tab as these are editing functions.
     hapticService?.trigger("selection");
     fn?.();
   }
+
+  function toggleExpand(id: string, event: MouseEvent) {
+    event.stopPropagation();
+    expandedAction = expandedAction === id ? null : id;
+  }
+
+  const actions: TransformAction[] = [
+    {
+      id: "mirror",
+      icon: "fa-left-right",
+      name: "Mirror",
+      shortDesc: "Flip left & right",
+      fullDesc: "Creates a mirror image as if reflected in a vertical mirror. Clockwise spins become counter-clockwise.",
+      color: "#a855f7",
+      handler: onMirror,
+    },
+    {
+      id: "swap-colors",
+      icon: "fa-arrows-rotate",
+      name: "Swap Hands",
+      shortDesc: "Switch hand movements",
+      fullDesc: "Your left hand's moves become your right hand's, and vice versa. Same sequence, opposite hands leading.",
+      color: "#10b981",
+      handler: onSwapColors,
+    },
+    {
+      id: "rotate",
+      icon: "fa-rotate-right",
+      name: "Rotate",
+      shortDesc: "Pivot 45°",
+      fullDesc: "Rotates the entire sequence 45° as if you turned your body. Repeat 4 times for a full 180° turn.",
+      color: "#f59e0b",
+      handler: onRotate,
+    },
+    {
+      id: "reverse",
+      icon: "fa-backward",
+      name: "Reverse",
+      shortDesc: "Retrace to start",
+      fullDesc: "Creates a sequence that returns you to where you started. Each movement is inverted so you physically wind back.",
+      color: "#f43f5e",
+      handler: onReverse,
+    },
+  ];
 </script>
 
 <div class="sequence-transform-tools">
   <div class="tools-header">
     <h4>Sequence Transforms</h4>
-    <span class="tools-description"
-      >Apply transformations to the entire sequence</span
-    >
   </div>
 
-  <div class="tools-grid">
-    <button
-      type="button"
-      class="transform-btn"
-      title="Mirror Sequence"
-      disabled={!hasSequence || disabled}
-      onclick={() => handle(onMirror)}
-    >
-      <span class="btn-icon">🪞</span>
-      <span class="btn-label">Mirror</span>
-    </button>
-
-    <button
-      type="button"
-      class="transform-btn"
-      title="Swap Colors"
-      disabled={!hasSequence || disabled}
-      onclick={() => handle(onSwapColors)}
-    >
-      <span class="btn-icon">🎨</span>
-      <span class="btn-label">Swap Colors</span>
-    </button>
-
-    <button
-      type="button"
-      class="transform-btn"
-      title="Rotate Sequence"
-      disabled={!hasSequence || disabled}
-      onclick={() => handle(onRotate)}
-    >
-      <span class="btn-icon">🔄</span>
-      <span class="btn-label">Rotate</span>
-    </button>
+  <div class="actions-list">
+    {#each actions as action (action.id)}
+      <button
+        type="button"
+        class="action-button"
+        class:disabled={!hasSequence || disabled}
+        disabled={!hasSequence || disabled}
+        style="--action-color: {action.color}"
+        onclick={() => handle(action.handler)}
+      >
+        <div class="action-icon-box">
+          <i class="fas {action.icon}"></i>
+        </div>
+        <div class="action-text">
+          <span class="action-name">{action.name}</span>
+          <span class="action-desc">{action.shortDesc}</span>
+        </div>
+      </button>
+    {/each}
   </div>
 
   {#if renderExtra}
@@ -94,163 +134,157 @@ Moved from workbench to edit tab as these are editing functions.
 <style>
   .sequence-transform-tools {
     background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-md);
+    border-radius: var(--border-radius, 12px);
+    padding: var(--spacing-md, 16px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .tools-header {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-md, 16px);
   }
 
   .tools-header h4 {
-    margin: 0 0 var(--spacing-xs) 0;
-    color: var(--foreground);
-    font-size: var(--font-size-md);
+    margin: 0;
+    color: var(--foreground, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-md, 1rem);
     font-weight: 600;
   }
 
-  .tools-description {
-    color: var(--muted-foreground);
-    font-size: var(--font-size-sm);
-  }
-
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: var(--spacing-sm);
-  }
-
-  .transform-btn {
+  .actions-list {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Soft Gradient Fill Style */
+  .action-button {
+    display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    gap: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--action-color) 15%, transparent) 0%,
+      color-mix(in srgb, var(--action-color) 8%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--action-color) 25%, transparent);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.95);
     cursor: pointer;
-    transition: all var(--transition-normal);
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-    min-height: 80px;
-
-    /* Subtle inner shadow for depth */
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    text-align: left;
+    transition: all 0.15s ease;
   }
 
-  .btn-icon {
-    font-size: 24px;
-    line-height: 1;
-  }
-
-  .btn-label {
-    font-size: var(--font-size-sm);
-    text-align: center;
-    line-height: 1.2;
-  }
-
-  .transform-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+  .action-button:hover:not(.disabled) {
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--action-color) 25%, transparent) 0%,
+      color-mix(in srgb, var(--action-color) 15%, transparent) 100%
+    );
+    border-color: color-mix(in srgb, var(--action-color) 40%, transparent);
     transform: translateY(-1px);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
-      0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--action-color) 20%, transparent);
   }
 
-  .transform-btn:active:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
+  .action-button:active:not(.disabled) {
     transform: translateY(0);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-      0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.08s ease;
   }
 
-  .transform-btn:disabled {
-    background: rgba(200, 200, 200, 0.05);
-    border-color: rgba(200, 200, 200, 0.1);
-    color: rgba(255, 255, 255, 0.3);
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-
-  .transform-btn:disabled .btn-icon,
-  .transform-btn:disabled .btn-label {
+  .action-button.disabled {
     opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  /* Focus styles for accessibility */
-  .transform-btn:focus-visible {
-    outline: 2px solid #818cf8;
+  .action-button:focus-visible {
+    outline: 2px solid var(--action-color);
     outline-offset: 2px;
   }
 
-  /* Mobile responsive adjustments */
-  @media (max-width: 768px) {
-    .tools-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--spacing-xs);
-    }
-
-    .transform-btn {
-      padding: var(--spacing-sm);
-      min-height: 70px;
-    }
-
-    .btn-icon {
-      font-size: 20px;
-    }
-
-    .btn-label {
-      font-size: var(--font-size-xs);
-    }
+  /* Icon box - solid colored */
+  .action-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--action-color);
+    border-radius: 10px;
+    flex-shrink: 0;
+    color: white;
+    font-size: 16px;
   }
 
-  /* Ultra-narrow mobile optimization */
+  /* Text container */
+  .action-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .action-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .action-desc {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Small mobile */
   @media (max-width: 480px) {
     .sequence-transform-tools {
-      padding: var(--spacing-sm);
+      padding: 12px;
     }
 
-    .tools-grid {
-      gap: 4px;
+    .action-button {
+      padding: 12px 14px;
+      gap: 12px;
     }
 
-    .transform-btn {
-      padding: var(--spacing-xs);
-      min-height: 60px;
+    .action-icon-box {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
     }
 
-    .btn-icon {
-      font-size: 18px;
+    .action-name {
+      font-size: 0.9rem;
+    }
+
+    .action-desc {
+      font-size: 0.75rem;
     }
   }
 
-  /* Z Fold 6 cover screen optimization */
+  /* Z Fold cover screen */
   @media (max-width: 320px) {
-    .tools-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
+    .sequence-transform-tools {
+      padding: 10px;
     }
 
-    .transform-btn {
-      padding: 6px;
-      min-height: 52px;
-      border-radius: 6px;
+    .actions-list {
+      gap: 6px;
     }
 
-    .btn-icon {
-      font-size: 16px;
+    .action-button {
+      padding: 10px 12px;
+      gap: 10px;
     }
 
-    .btn-label {
-      font-size: 10px;
+    .action-icon-box {
+      width: 32px;
+      height: 32px;
+      font-size: 13px;
+    }
+
+    .action-name {
+      font-size: 0.85rem;
     }
   }
 </style>

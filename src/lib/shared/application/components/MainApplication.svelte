@@ -1,8 +1,10 @@
 <!-- Main Application Layout -->
 <script lang="ts">
   import AchievementNotificationToast from "../../gamification/components/AchievementNotificationToast.svelte";
+  import XPToast from "../../gamification/components/XPToast.svelte";
   import QuickFeedbackPanel from "$lib/features/feedback/components/quick/QuickFeedbackPanel.svelte";
   import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
+  import { ErrorModal } from "../../error";
 
   import { TYPES } from "../../inversify/types";
 
@@ -346,12 +348,16 @@
 
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />
+    <XPToast />
 
     <!-- Quick Feedback Panel (desktop hotkey: f) -->
     <QuickFeedbackPanel />
 
     <!-- System Announcements Modal -->
     <AnnouncementChecker />
+
+    <!-- Global Error Modal -->
+    <ErrorModal />
   {/if}
 </div>
 
