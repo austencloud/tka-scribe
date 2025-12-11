@@ -12,6 +12,7 @@
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
+  import RobustAvatar from "../../../components/avatar/RobustAvatar.svelte";
 
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
@@ -150,21 +151,12 @@
         <div class="profile-top">
           <!-- Profile Picture -->
           <div class="profile-avatar">
-            {#if authStore.user.photoURL}
-              <img
-                src={authStore.user.photoURL}
-                alt={authStore.user.displayName || "User"}
-                class="avatar-image"
-                crossorigin="anonymous"
-                referrerpolicy="no-referrer"
-              />
-            {:else}
-              <div class="avatar-placeholder">
-                {(authStore.user.displayName || authStore.user.email || "?")
-                  .charAt(0)
-                  .toUpperCase()}
-              </div>
-            {/if}
+            <RobustAvatar
+              src={authStore.user.photoURL}
+              name={authStore.user.displayName || authStore.user.email}
+              alt={authStore.user.displayName || "User"}
+              size="xl"
+            />
           </div>
 
           <!-- User Info -->
@@ -369,24 +361,6 @@
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .avatar-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
   }
 
   .profile-info {

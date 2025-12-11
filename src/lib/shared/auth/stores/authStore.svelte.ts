@@ -26,6 +26,10 @@ import type { IActivityLogService } from "../../analytics/services/contracts/IAc
 /**
  * Update Facebook profile picture to high resolution
  * Facebook Graph API provides higher resolution pictures than the default Firebase photoURL
+ *
+ * NOTE: We SKIP this if user has a Google account linked, because:
+ * 1. Google photos are more reliable (don't require access tokens)
+ * 2. Facebook Graph API often returns default silhouettes without proper auth
  */
 async function updateFacebookProfilePictureIfNeeded(user: User) {
   try {
@@ -38,10 +42,24 @@ async function updateFacebookProfilePictureIfNeeded(user: User) {
       return; // Not a Facebook user
     }
 
+    // IMPORTANT: If user also has Google linked, prefer Google's photo
+    // Google photos are more reliable and don't require access tokens
+    const hasGoogle = user.providerData.some(
+      (data) => data.providerId === "google.com"
+    );
+    if (hasGoogle) {
+      return; // Let Google handle the photo
+    }
+
     // Check if we need to update the profile picture
-    // If photoURL doesn't contain graph.facebook.com, it's the low-res default
+    // If photoURL already contains graph.facebook.com, skip
     if (user.photoURL && user.photoURL.includes("graph.facebook.com")) {
-      return; // Already using high-res picture
+      return; // Already using Facebook picture
+    }
+
+    // If user already has a Google photo URL, don't overwrite it
+    if (user.photoURL && user.photoURL.includes("googleusercontent.com")) {
+      return; // Keep the Google photo
     }
 
     // Facebook Graph API URL for high-resolution profile picture
@@ -67,6 +85,10 @@ async function updateFacebookProfilePictureIfNeeded(user: User) {
  * Instead of modifying the URL (which can break the signature), we use the
  * provider's photoURL directly which is refreshed on each authentication.
  *
+ * IMPORTANT: Google photos are preferred over Facebook because:
+ * 1. They don't require access tokens
+ * 2. Facebook Graph API often returns default silhouettes
+ *
  * Note: We no longer modify the URL size parameter (s96-c -> s400-c) because
  * this was causing stale/broken image URLs. The default 96px image is used
  * and CSS handles scaling.
@@ -82,22 +104,19 @@ async function updateGoogleProfilePictureIfNeeded(user: User) {
       return; // Not a Google user
     }
 
-    // If the user doesn't have a photoURL but their Google provider does,
-    // update the profile with the fresh Google photo URL
-    if (!user.photoURL && googleData.photoURL) {
-      await updateProfile(user, {
-        photoURL: googleData.photoURL,
-      });
-      return;
-    }
+    // If user has a Google photo, ALWAYS prefer it over other providers
+    // This fixes the issue where Facebook's broken silhouette overwrites Google photos
+    if (googleData.photoURL) {
+      // Check if current photoURL is NOT a Google URL (e.g., it's a Facebook URL)
+      const isCurrentlyGoogle = user.photoURL?.includes("googleusercontent.com");
+      const isSameAsProvider = user.photoURL === googleData.photoURL;
 
-    // If the current photoURL is stale or different from the provider's,
-    // update it with the fresh URL from the provider
-    if (googleData.photoURL && user.photoURL !== googleData.photoURL) {
-      // The providerData photoURL is always fresh from the OAuth token
-      await updateProfile(user, {
-        photoURL: googleData.photoURL,
-      });
+      // Update if: no photo, not Google, or different from fresh Google URL
+      if (!user.photoURL || !isCurrentlyGoogle || !isSameAsProvider) {
+        await updateProfile(user, {
+          photoURL: googleData.photoURL,
+        });
+      }
     }
   } catch (err) {
     console.error(
