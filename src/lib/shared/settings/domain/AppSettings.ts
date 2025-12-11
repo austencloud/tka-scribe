@@ -40,6 +40,10 @@ export interface AppSettings {
   hapticFeedback?: boolean;
   reducedMotion?: boolean;
 
+  // Keyboard shortcut settings
+  singleKeyShortcuts?: boolean;
+  showShortcutHints?: boolean;
+
   // Word Card Settings
   WordCard?: {
     defaultColumnCount?: number;

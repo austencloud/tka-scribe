@@ -175,13 +175,14 @@
     const target = event.target as HTMLInputElement;
     singleKeyEnabled = target.checked;
     onSettingUpdate({ key: "singleKeyShortcuts", value: target.checked });
-    keyboardShortcutState.setSingleKeyShortcutsEnabled(target.checked);
+    keyboardShortcutState.updateSettings({ enableSingleKeyShortcuts: target.checked });
   }
 
   function handleHintsToggle(event: Event) {
     const target = event.target as HTMLInputElement;
     hintsEnabled = target.checked;
     onSettingUpdate({ key: "showShortcutHints", value: target.checked });
+    keyboardShortcutState.updateSettings({ showShortcutHints: target.checked });
   }
 
   function toggleScope(scope: ShortcutScope) {

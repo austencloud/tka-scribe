@@ -253,8 +253,17 @@ export function createSequenceState(services: SequenceStateServices) {
   // ============================================================================
 
   function setCurrentSequence(sequence: SequenceData | null): void {
+    // Only clear selection when loading a NEW sequence, not when updating the current one
+    // This preserves beat selection during beat edits (turns, orientation changes, etc.)
+    const previousSequenceId = coreState.currentSequence?.id;
+    const newSequenceId = sequence?.id;
+    const isLoadingNewSequence = previousSequenceId !== newSequenceId;
+
     coreState.setCurrentSequence(sequence);
-    selectionState.clearSelection();
+
+    if (isLoadingNewSequence) {
+      selectionState.clearSelection();
+    }
 
     // Update start position from sequence
     if (sequence?.startingPositionBeat) {

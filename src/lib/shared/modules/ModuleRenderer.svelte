@@ -49,7 +49,7 @@
     learn: () => import("../../features/learn/LearnTab.svelte"),
     animate: () => import("../../features/compose/ComposeModule.svelte"),
     train: () => import("../../features/train/components/TrainModule.svelte"),
-    // library module retired - moved to Discover as a tab
+    library: () => import("../../features/library/LibraryModule.svelte"),
     edit: () => import("../../features/edit/EditModule.svelte"),
     word_card: () =>
       import("../../features/word-card/components/WordCardTab.svelte"),
