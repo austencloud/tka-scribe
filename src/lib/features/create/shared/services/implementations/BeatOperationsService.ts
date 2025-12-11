@@ -581,9 +581,7 @@ export class BeatOperationsService implements IBeatOperationsService {
     }
 
     // Call setCurrentSequence ONCE with the fully updated sequence
-    console.log(`[updateBeatTurns] Calling setCurrentSequence with fully updated sequence`);
     CreateModuleState.sequenceState.setCurrentSequence(updatedSequence);
-    console.log(`[updateBeatTurns] setCurrentSequence completed`);
   }
 
   updateBeatPropType(

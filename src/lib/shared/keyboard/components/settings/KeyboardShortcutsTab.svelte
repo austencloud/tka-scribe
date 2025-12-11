@@ -6,6 +6,8 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
+  import { fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IShortcutCustomizationService, ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizationService";
@@ -248,17 +250,22 @@
         {/if}
       </div>
     {:else}
-      {#each scopeConfig as { scope, label }}
+      {#each scopeConfig as { scope, label }, scopeIndex}
         {#if groupedByScope().has(scope)}
           {@const shortcuts = groupedByScope().get(scope)!}
-          <ShortcutScopeSection
-            {scope}
-            {label}
-            {shortcuts}
-            isExpanded={expandedScopes.has(scope)}
-            onEditShortcut={handleEditShortcut}
-            onResetShortcut={handleResetShortcut}
-          />
+          <div
+            class="scope-section-wrapper"
+            in:fly={{ y: 16, duration: 250, delay: scopeIndex * 50, easing: cubicOut }}
+          >
+            <ShortcutScopeSection
+              {scope}
+              {label}
+              {shortcuts}
+              isExpanded={expandedScopes.has(scope)}
+              onEditShortcut={handleEditShortcut}
+              onResetShortcut={handleResetShortcut}
+            />
+          </div>
         {/if}
       {/each}
     {/if}
@@ -437,11 +444,21 @@
     }
   }
 
+  /* Scope section animation wrapper */
+  .scope-section-wrapper {
+    /* Container for animation */
+  }
+
   /* Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
     .toggle-slider,
     .toggle-slider::before {
       transition: none;
+    }
+
+    .scope-section-wrapper {
+      animation: none !important;
+      transition: none !important;
     }
   }
 </style>
