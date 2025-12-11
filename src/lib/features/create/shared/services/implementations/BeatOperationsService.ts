@@ -827,37 +827,131 @@ export class BeatOperationsService implements IBeatOperationsService {
       },
     };
 
-    // Apply update based on beat number
+    // Get current sequence and start position for propagation calculation
+    const currentSequence: SequenceData | null = CreateModuleState.sequenceState.currentSequence;
+    const startPosition: BeatData | null = CreateModuleState.sequenceState
+      .selectedStartPosition as unknown as BeatData | null;
+
+    if (!currentSequence) {
+      this.logger.warn("Cannot update rotation direction - no current sequence");
+      return;
+    }
+
+    // Build the updated sequence with the beat update + propagated orientations
+    let updatedSequence = currentSequence;
+    let updatedStartPosition = startPosition;
+
     if (beatNumber === START_POSITION_BEAT_NUMBER) {
-      CreateModuleState.sequenceState.setStartPosition(updatedBeatData);
+      // Update start position
+      updatedStartPosition = updatedBeatData as BeatData;
       this.logger.log(
         `Updated start position ${color}: rotation=${newRotationDirection}, motionType=${newMotionType}, endOri=${newEndOrientation}`
       );
 
-      // Propagate orientation changes through the entire sequence
-      this.propagateOrientationsThroughSequence(
+      // Calculate propagated beats through the sequence
+      const propagatedBeats = this.calculatePropagatedBeats(
         beatNumber,
         color,
-        CreateModuleState
+        currentSequence,
+        updatedStartPosition
       );
+
+      updatedSequence = {
+        ...currentSequence,
+        beats: propagatedBeats,
+      };
+
+      // Update start position first
+      CreateModuleState.sequenceState.setStartPosition(updatedStartPosition);
     } else {
+      // Update beat in sequence
       const arrayIndex = beatNumber - 1;
-      CreateModuleState.sequenceState.updateBeat(arrayIndex, updatedBeatData);
+      const updatedBeats = [...currentSequence.beats];
+      updatedBeats[arrayIndex] = updatedBeatData;
+
       this.logger.log(
         `Updated beat ${beatNumber} ${color}: rotation=${newRotationDirection}, motionType=${newMotionType}, endOri=${newEndOrientation}`
       );
 
-      // Propagate orientation changes through the subsequent beats
-      this.propagateOrientationsThroughSequence(
+      // Calculate propagated beats through the sequence
+      const propagatedBeats = this.calculatePropagatedBeats(
         beatNumber,
         color,
-        CreateModuleState
+        { ...currentSequence, beats: updatedBeats },
+        startPosition
       );
+
+      updatedSequence = {
+        ...currentSequence,
+        beats: propagatedBeats,
+      };
     }
 
-    // CRITICAL: Recalculate letter after motion type change
+    // CRITICAL: Derive the new letter BEFORE setting the sequence
     // The PRO ↔ ANTI flip may change the pictograph's letter
-    void this.recalculateLetterForBeat(beatNumber, CreateModuleState);
+    // We do this synchronously to avoid race conditions with state updates
+    if (this.motionQueryHandler && this.gridModeDeriver) {
+      // Get the updated beat data that will be applied
+      const beatToCheck = beatNumber === START_POSITION_BEAT_NUMBER
+        ? updatedStartPosition
+        : updatedSequence.beats[beatNumber - 1];
+
+      if (beatToCheck) {
+        const blueMotion = beatToCheck.motions?.[MotionColor.BLUE];
+        const redMotion = beatToCheck.motions?.[MotionColor.RED];
+
+        if (blueMotion && redMotion) {
+          const gridMode = this.gridModeDeriver.deriveGridMode(blueMotion, redMotion);
+
+          // Use the async method but handle it properly
+          this.motionQueryHandler.findLetterByMotionConfiguration(
+            blueMotion,
+            redMotion,
+            gridMode
+          ).then((newLetter) => {
+            if (newLetter && newLetter !== beatToCheck.letter) {
+              this.logger.log(
+                `📝 Letter changed: "${beatToCheck.letter}" → "${newLetter}" for beat ${beatNumber}`
+              );
+
+              // Update the beat with the new letter
+              if (beatNumber === START_POSITION_BEAT_NUMBER) {
+                const updatedStart = {
+                  ...updatedStartPosition,
+                  letter: newLetter as Letter,
+                } as BeatData;
+                CreateModuleState.sequenceState.setStartPosition(updatedStart);
+              } else {
+                const arrayIndex = beatNumber - 1;
+                const currentSeq = CreateModuleState.sequenceState.currentSequence;
+                if (currentSeq) {
+                  const beatsWithLetter = [...currentSeq.beats];
+                  beatsWithLetter[arrayIndex] = {
+                    ...beatsWithLetter[arrayIndex],
+                    letter: newLetter as Letter,
+                  };
+                  // Also update the word
+                  const word = beatsWithLetter
+                    .map((beat) => beat.letter ?? "")
+                    .join("")
+                    .toUpperCase();
+                  CreateModuleState.sequenceState.setCurrentSequence({
+                    ...currentSeq,
+                    beats: beatsWithLetter,
+                    word,
+                  });
+                }
+              }
+            }
+          }).catch((error) => {
+            this.logger.error(`Failed to derive letter for beat ${beatNumber}:`, error);
+          });
+        }
+      }
+    }
+
+    // Call setCurrentSequence ONCE with the fully updated sequence (without letter yet - letter will be updated async)
+    CreateModuleState.sequenceState.setCurrentSequence(updatedSequence);
   }
 
   /**
