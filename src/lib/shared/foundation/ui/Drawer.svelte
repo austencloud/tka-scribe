@@ -175,6 +175,7 @@
   let swipeToDismiss = new SwipeToDismiss({
     placement,
     dismissible,
+    drawerId, // Pass drawer ID so only top drawer responds to swipe
     onDismiss: () => {
       isOpen = false;
     },
@@ -227,10 +228,14 @@
   });
 
   // Initialize snap handler dimensions when drawer element is available
+  // Use viewport dimensions for percentage-based snap points (not drawer's own size)
   $effect(() => {
     if (drawerElement && snapPointsInstance && isAnimatedOpen) {
-      const rect = drawerElement.getBoundingClientRect();
-      snapPointsInstance.initialize(rect.width, rect.height);
+      // For bottom/top placement, use viewport height for percentages
+      // For left/right placement, use viewport width for percentages
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      snapPointsInstance.initialize(viewportWidth, viewportHeight);
       snapPointOffset = snapPointsInstance.getTransformOffset();
     }
   });
@@ -383,6 +388,7 @@
     swipeToDismiss.updateOptions({
       placement,
       dismissible,
+      drawerId,
       onDragChange: handleInternalDragChange,
       onDragEnd: handleDragEnd,
     });

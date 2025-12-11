@@ -8,6 +8,7 @@
  */
 
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { isTopDrawer } from "./DrawerStack";
 
 const debug = createComponentLogger("SwipeToDismiss");
 
@@ -21,6 +22,8 @@ export interface SwipeToDismissOptions {
   onDragChange?: (offset: number, progress: number, isDragging: boolean) => void;
   /** Called when drag ends with offset, velocity (px/ms), and duration. Return true to prevent default dismiss. */
   onDragEnd?: (offset: number, velocity: number, duration: number) => boolean;
+  /** Drawer ID for stack management - only top drawer responds to swipe */
+  drawerId?: string;
 }
 
 export class SwipeToDismiss {
@@ -147,6 +150,11 @@ export class SwipeToDismiss {
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
     if (!this.options.dismissible) return;
+
+    // Only process if this drawer is the top drawer (prevents nested drawer conflicts)
+    if (this.options.drawerId && !isTopDrawer(this.options.drawerId)) {
+      return;
+    }
 
     // Track if we started on an interactive element
     const target = event.target as HTMLElement;
