@@ -45,7 +45,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
   }>();
 </script>
 
-<div class="construct-tab-content" data-testid="construct-tab-content">
+<div class="construct-tab-content" data-testid="construct-tab-content" data-picker-mode={shouldShowStartPositionPicker ? "start-position" : "options"}>
   <!-- Main Content (always visible) -->
   <div class="content-container">
     <div class="panel-content transparent-scroll">

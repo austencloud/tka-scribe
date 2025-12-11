@@ -14,6 +14,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import { createHMRState } from "$lib/shared/utils/hmr-state-backup";
 import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 const debug = createComponentLogger("ConstructTabState");
 import type { BeatData } from "../domain/models/BeatData";
@@ -389,10 +390,10 @@ export function createConstructTabState(
   }
 
   /**
-   * Sync picker state with sequence state's hasStartPosition
+   * Sync picker state with sequence state's hasStartPosition and grid mode
    * This replaces the $effect that was causing effect_orphan error
    * Call this method whenever sequence state changes that might affect picker visibility
-   * 
+   *
    * IMPORTANT: Uses the construct tab's OWN sequence state, not the shared createModuleState
    */
   function syncPickerStateWithSequence() {
@@ -416,6 +417,39 @@ export function createConstructTabState(
         "🔄 ConstructTabState: Syncing picker state - showing start position picker (hasStartPosition: false)"
       );
       setShowStartPositionPicker(true);
+    }
+
+    // Sync grid mode from the current sequence
+    const currentSequence = sequenceState.currentSequence;
+    if (currentSequence?.gridMode) {
+      const sequenceGridMode = currentSequence.gridMode;
+      const currentPickerGridMode = startPositionStateService.currentGridMode;
+
+      if (sequenceGridMode !== currentPickerGridMode) {
+        console.log(
+          `🔄 ConstructTabState: Syncing grid mode from sequence - ${currentPickerGridMode} → ${sequenceGridMode}`
+        );
+        // Update the start position state's grid mode to match the sequence
+        startPositionStateService.loadPositions(sequenceGridMode);
+      }
+    }
+  }
+
+  /**
+   * Sync grid mode from an imported sequence
+   * Call this after importing a sequence to ensure the option picker uses the correct grid mode
+   * Uses synchronous setGridMode to avoid async delays that cause UI flicker
+   */
+  function syncGridModeFromSequence(gridMode: GridMode | undefined) {
+    if (!gridMode) return;
+
+    const currentPickerGridMode = startPositionStateService.currentGridMode;
+    if (gridMode !== currentPickerGridMode) {
+      console.log(
+        `🔄 ConstructTabState: Syncing grid mode from imported sequence - ${currentPickerGridMode} → ${gridMode}`
+      );
+      // Use synchronous setter to avoid UI flicker from async loadPositions
+      startPositionStateService.setGridMode(gridMode);
     }
   }
 
@@ -517,6 +551,7 @@ export function createConstructTabState(
     clearSequenceCompletely,
     restorePickerStateAfterUndo,
     syncPickerStateWithSequence,
+    syncGridModeFromSequence,
 
     // Event handlers
     handleStartPositionSelected,

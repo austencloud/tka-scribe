@@ -82,6 +82,15 @@ export function createSimplifiedStartPositionState() {
     }
   }
 
+  // Set grid mode directly without loading positions
+  // Useful when importing a sequence where we just need the mode to match
+  function setGridMode(gridMode: GridMode) {
+    if (currentGridMode !== gridMode) {
+      console.log(`🔄 StartPositionState: Setting grid mode directly - ${currentGridMode} → ${gridMode}`);
+      currentGridMode = gridMode;
+    }
+  }
+
   // Load all 16 start position variations for the current grid mode
   async function loadAllVariations(gridMode: GridMode = currentGridMode) {
     currentGridMode = gridMode;
@@ -144,6 +153,7 @@ export function createSimplifiedStartPositionState() {
     clearSelectedPosition,
     loadPositions,
     loadAllVariations,
+    setGridMode,
     onSelectedPositionChange,
   };
 }

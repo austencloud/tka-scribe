@@ -585,7 +585,8 @@ ${JSON.stringify(debugInfo, null, 2)}
 <div
   class="option-picker-container"
   bind:this={containerElement}
-  data-testid="option-picker-container"
+  data-testid="option-picker"
+  data-grid-mode={currentGridMode}
 >
   {#if !optionPickerState}
     <div class="loading-state">

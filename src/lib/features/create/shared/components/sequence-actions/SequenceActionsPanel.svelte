@@ -18,7 +18,7 @@
   import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
-  import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
+  import SequencePreviewDialog from "./SequencePreviewDialog.svelte";
   import TurnsEditMode from "./TurnsEditMode.svelte";
   import TransformsGridMode from "./TransformsGridMode.svelte";
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
@@ -243,9 +243,12 @@
     if (!constructTabState?.sequenceState) return;
 
     const sequenceCopy = JSON.parse(JSON.stringify(sequenceToTransfer));
-    handleClose();
-    navigationState.setActiveTab("constructor");
-    await new Promise((r) => setTimeout(r, 600));
+
+    // Sync grid mode and sequence state IMMEDIATELY before tab switch
+    // This prevents the flicker of options disappearing and reappearing
+    if (sequenceCopy.gridMode) {
+      constructTabState.syncGridModeFromSequence?.(sequenceCopy.gridMode);
+    }
 
     constructTabState.sequenceState.setCurrentSequence(sequenceCopy);
 
@@ -257,6 +260,10 @@
     }
 
     constructTabState.syncPickerStateWithSequence?.();
+
+    // Close panel and switch tab AFTER state is already set
+    handleClose();
+    navigationState.setActiveTab("constructor");
   }
 
   function handleClose() {
@@ -367,13 +374,10 @@
 <!-- Render help sheet outside drawer so it can be a true full-viewport overlay -->
 <TransformHelpSheet show={showHelpSheet} onClose={() => (showHelpSheet = false)} />
 
-<ConfirmDialog
+<SequencePreviewDialog
   bind:isOpen={showConfirmDialog}
-  title="Replace Constructor Sequence?"
-  message="The Constructor tab has an active sequence. Replacing it will overwrite your current work."
-  confirmText="Replace & Edit"
-  cancelText="Keep Current"
-  variant="warning"
+  currentSequence={ctx.constructTabState?.sequenceState?.currentSequence}
+  incomingSequence={pendingSequenceTransfer}
   onConfirm={() => { performSequenceTransfer(pendingSequenceTransfer); pendingSequenceTransfer = null; }}
   onCancel={() => { pendingSequenceTransfer = null; }}
 />

@@ -363,6 +363,8 @@ Renders a section with:
           style:--border-primary={borderColors.primary}
           style:--border-secondary={borderColors.secondary}
           style:--pictograph-size="{optimalLayout().pictographSize}px"
+          data-testid="option-item"
+          data-letter={pictograph.letter}
         >
           <Pictograph
             pictographData={pictograph}

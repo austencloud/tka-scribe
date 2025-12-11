@@ -207,7 +207,6 @@
   /* When workspace has content - expand to 5:4 ratio */
   .layout-wrapper.workspace-visible {
     grid-template-rows: 5fr 4fr;
-    gap: 8px;
   }
 
   /* Side-by-side layout - horizontal instead of vertical */
@@ -217,7 +216,7 @@
   }
 
   .layout-wrapper.side-by-side.workspace-visible {
-    grid-template-columns: 5fr 4fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   /* Shared container styles */

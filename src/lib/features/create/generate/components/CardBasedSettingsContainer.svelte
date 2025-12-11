@@ -45,6 +45,7 @@ Delegates ALL logic to services (SRP compliant)
     isGenerating,
     onGenerateClicked,
     customizeState,
+    constrainSize = false,
   } = $props<{
     config: UIGenerationConfig;
     isFreeformMode: boolean;
@@ -52,6 +53,8 @@ Delegates ALL logic to services (SRP compliant)
     isGenerating: boolean;
     onGenerateClicked: (options: any) => Promise<void>;
     customizeState?: CustomizeOptionsState;
+    /** When true, constrain max dimensions (used when workspace is empty) */
+    constrainSize?: boolean;
   }>();
 
   // Services - use $state to make them reactive
@@ -187,7 +190,7 @@ Delegates ALL logic to services (SRP compliant)
   });
 </script>
 
-<div class="card-settings-container">
+<div class="card-settings-container" class:constrained={constrainSize}>
   {#each cards as card (card.id)}
     <div
       class="card-wrapper"
@@ -227,13 +230,11 @@ Delegates ALL logic to services (SRP compliant)
     /* No position property - allows modals to escape and position relative to tool-panel */
     container-type: size; /* Enable both inline and block size container queries */
     container-name: settings-grid; /* Name the container for explicit targeting */
-    flex: 1 1 auto; /* Grow to fill available space, allow shrink, auto basis */
     display: grid;
 
-    /* Constrain maximum size to prevent cards from becoming too large */
-    width: 100%; /* Take full available width before max-width constraint */
-    max-width: 900px;
-    max-height: 900px;
+    /* Fill available space - parent controls overall sizing */
+    flex: 1 1 auto;
+    width: 100%;
     margin: 0 auto; /* Center horizontally */
     align-self: center; /* Center vertically in flex container */
 
@@ -250,16 +251,34 @@ Delegates ALL logic to services (SRP compliant)
     min-height: 0; /* Allow flex to shrink */
     overflow: visible; /* Allow cards to pop over neighbors and modals to escape */
 
-    /* MOBILE APPROACH: Flexible heights that adapt to available space */
     /* 6-subcolumn grid for flexible last-row spanning
        - Normal cards span 2 subcolumns (2/6 = 1/3 width)
        - 1 card in last row spans 6 subcolumns (full width)
        - 2 cards in last row each span 3 subcolumns (half width each)
     */
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: 1fr; /* Pure fr units - rows divide space equally, NO minimums */
+    grid-auto-rows: 1fr; /* Rows divide available space equally */
     grid-auto-flow: row;
-    align-content: center; /* Center vertically - padding handles the square-ish shape */
+    align-content: center;
+
+    /* Smooth transition for size changes (syncs with workspace 450ms animation) */
+    transition:
+      max-width 450ms cubic-bezier(0.4, 0, 0.2, 1),
+      max-height 450ms cubic-bezier(0.4, 0, 0.2, 1),
+      padding 450ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /*
+   * CONSTRAINED MODE: When workspace is empty, limit card grid size
+   * so cards don't become enormous filling the full screen.
+   *
+   * The aspect-ratio constraints from container queries still apply,
+   * but we also cap absolute dimensions to prevent giant cards.
+   */
+  .card-settings-container.constrained {
+    /* Use aspect-ratio based height limit that matches non-constrained behavior
+       This prevents jarring jumps when transitioning between states */
+    max-height: min(85%, 550px, 120cqw);
   }
 
   .card-wrapper {
@@ -277,80 +296,48 @@ Delegates ALL logic to services (SRP compliant)
     min-width: 0;
   }
 
-  /* Container query for medium-width containers (tablets, landscape phones) */
-  @container (min-width: 400px) {
+  /*
+   * ASPECT RATIO CONSTRAINTS: Keep grid roughly square (max 1.2:1 portrait)
+   *
+   * When container is too portrait-oriented (taller than 1.2× its width),
+   * limit the grid's max-height to maintain roughly square cards.
+   * Use width-based calculation: max-height = width × 1.2
+   *
+   * The grid with 3 rows of cards looks best when aspect ratio is close to 1:1.
+   * Beyond 1.2:1 portrait, cards become uncomfortably tall rectangles.
+   */
+
+  /* Portrait containers: limit height to maintain card squareness */
+  /* max-aspect-ratio: 1/1.2 means "when height/width > 1.2" */
+  @container (max-aspect-ratio: 1 / 1.2) {
     .card-settings-container {
-      grid-template-columns: repeat(
-        4,
-        minmax(0, 1fr)
-      ); /* 4 subcolumns for 2-column layout */
-      grid-auto-rows: 1fr; /* Pure fr units - equal height rows */
-      /* Use programmatic element spacing */
-      gap: var(--element-spacing);
+      /* Limit height to 120% of container width */
+      max-height: 120cqw;
     }
   }
 
-  /* Container query for wide containers (desktop side-by-side) */
-  /* Use width query - height is guaranteed by parent flex layout */
-  @container (min-width: 600px) {
+  /* Tighter constraint for very small screens (iPhone SE width)
+     At <400px, every pixel matters - allow slightly more portrait ratio */
+  @container (max-width: 400px) and (max-aspect-ratio: 1 / 1.3) {
     .card-settings-container {
-      /* DESKTOP APPROACH: Flexible heights that fill space */
-      grid-template-columns: repeat(
-        6,
-        minmax(0, 1fr)
-      ); /* Back to 6 subcolumns for 3-column layout */
-      grid-auto-rows: 1fr; /* Pure fr units - equal height rows */
-      /* Use programmatic element spacing */
-      gap: var(--element-spacing);
+      /* Allow up to 130% on tiny screens */
+      max-height: 130cqw;
     }
   }
 
-  /* Container-based desktop optimization: Constrain card sizes on large screens */
-  /* Standard desktop (1280px+): Limit maximum row height */
-  @container settings-grid (min-width: 1280px) {
+  /* Larger screens (tablets, foldables) can afford tighter aspect constraints */
+  @container (min-width: 500px) and (max-aspect-ratio: 1 / 1.15) {
     .card-settings-container {
-      /* Limit row heights instead of letting them fill all space */
-      grid-auto-rows: minmax(auto, 140px);
-
-      /* Moderate spacing */
-      gap: calc(var(--element-spacing) * 0.75);
-
-      /* Center the grid instead of stretching */
-      align-content: center;
+      /* Tighter constraint: 115% of width */
+      max-height: 115cqw;
     }
   }
 
-  /* Large desktop (1600px+): Similar constraints */
-  @container settings-grid (min-width: 1600px) {
-    .card-settings-container {
-      grid-auto-rows: minmax(auto, 152px);
-      gap: calc(var(--element-spacing) * 0.8);
-      align-content: center;
-    }
-  }
-
-  /* Ultra-wide desktop (1920px+): Maximum constraints */
-  @container settings-grid (min-width: 1920px) {
-    .card-settings-container {
-      /* Keep 6 columns - don't change to 8! */
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      grid-auto-rows: minmax(auto, 160px);
-      gap: calc(var(--element-spacing) * 0.9);
-      align-content: center;
-    }
-  }
-
-  /* Fix for fullscreen desktop: prevent empty space below cards */
-  @media (min-width: 1280px) {
-    .card-settings-container {
-      /* Remove max-height constraint to allow filling available space */
-      max-height: none;
-
-      /* Let rows size based on content, but cap maximum height */
-      grid-auto-rows: minmax(auto, 200px);
-
-      /* Center the grid vertically within the container */
-      align-content: center;
+  /* Desktop constrained: Allow slightly larger limits */
+  @media (min-width: 1024px) {
+    .card-settings-container.constrained {
+      max-width: min(650px, 95%);
+      max-height: min(85%, 650px, 115cqw);
     }
   }
 

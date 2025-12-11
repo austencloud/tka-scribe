@@ -81,6 +81,7 @@
         aria-controls="construct-panel"
         id="tab-construct"
         title="Construct mode"
+        data-testid="tab-constructor"
       >
         {#if layout === "vertical"}
           🔨
@@ -101,6 +102,7 @@
         aria-controls="generate-panel"
         id="tab-generate"
         title="Generate mode"
+        data-testid="tab-generator"
       >
         {#if layout === "vertical"}
           ⚡

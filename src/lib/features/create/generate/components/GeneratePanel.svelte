@@ -7,19 +7,18 @@ Card-based architecture with integrated Generate button:
 - Config state: generateConfigState.svelte.ts
 - Generation actions: generateActionsState.svelte.ts
 - Device state: generateDeviceState.svelte.ts
-- Responsive padding: Modern CSS container queries with cqi/cqb units (automatic scaling)
+- Responsive padding: State-driven for sync with workspace animation
 -->
 <script lang="ts">
   import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import { onMount } from "svelte";
   import { createDeviceState } from "../state/generate-device.svelte";
   import { createGenerationActionsState } from "../state/generate-actions.svelte";
   import { createGenerationConfigState } from "../state/generate-config.svelte";
   import { createCustomizeOptionsState } from "../state/customize-options-state.svelte";
-  import { GeneratorPadder } from "$lib/features/create/generate/shared/services/implementations/GeneratorPadder";
   import CardBasedSettingsContainer from "./CardBasedSettingsContainer.svelte";
 
   // Props
@@ -43,15 +42,16 @@ import { TYPES } from "$lib/shared/inversify/types";
   const deviceState = createDeviceState();
   const customizeState = createCustomizeOptionsState();
 
-  // ===== Padding Service =====
-  const paddingService = new GeneratorPadder();
-
-  // Aspect-ratio-aware padding based on panel dimensions
-  let panelElement = $state<HTMLElement | null>(null);
-  let paddingTop = $state(12);
-  let paddingRight = $state(12);
-  let paddingBottom = $state(12);
-  let paddingLeft = $state(12);
+  // ===== Workspace Content Detection =====
+  // When empty: constrain card grid size so it doesn't fill entire screen
+  // When has content: use all available space since workspace is taking room
+  const hasWorkspaceContent = $derived.by(() => {
+    const sequence = sequenceState.currentSequence;
+    if (!sequence) return false;
+    const hasBeat = sequence.beats && sequence.beats.length > 0;
+    const hasStartPosition = sequence.startingPositionBeat || sequence.startPosition;
+    return hasBeat || hasStartPosition;
+  });
 
   // ===== Device Service Integration =====
   onMount(() => {
@@ -62,42 +62,14 @@ import { TYPES } from "$lib/shared/inversify/types";
       // Fallback handled in deviceState
     }
   });
-
-  // ===== Reactive ResizeObserver Setup =====
-  // Use $effect to set up ResizeObserver when panelElement becomes available
-  $effect(() => {
-    if (!panelElement) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-
-        // Calculate padding using service
-        const padding = paddingService.calculatePadding(width, height);
-
-        paddingTop = padding.top;
-        paddingRight = padding.right;
-        paddingBottom = padding.bottom;
-        paddingLeft = padding.left;
-      }
-    });
-
-    resizeObserver.observe(panelElement);
-
-    // Cleanup function
-    return () => {
-      resizeObserver.disconnect();
-    };
-  });
 </script>
 
 <div
   class="generate-panel"
-  bind:this={panelElement}
   data-layout={deviceState.layoutMode}
   data-allow-scroll={deviceState.shouldAllowScrolling}
   data-is-desktop={isDesktop}
-  style="--min-touch-target: {deviceState.minTouchTarget}px; --element-spacing: {deviceState.elementSpacing}px; --padding-top: {paddingTop}; --padding-right: {paddingRight}; --padding-bottom: {paddingBottom}; --padding-left: {paddingLeft};"
+  style="--min-touch-target: {deviceState.minTouchTarget}px; --element-spacing: {deviceState.elementSpacing}px;"
 >
   <div class="generate-panel-inner">
     <CardBasedSettingsContainer
@@ -107,35 +79,40 @@ import { TYPES } from "$lib/shared/inversify/types";
       isGenerating={actionsState.isGenerating}
       onGenerateClicked={actionsState.onGenerateClicked}
       customizeState={customizeState}
+      constrainSize={!hasWorkspaceContent}
     />
   </div>
 </div>
 
 <style>
   .generate-panel {
+    container-type: size;
+    container-name: generate-panel;
     position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
     width: 100%;
-    overflow: visible; /* Allow card hover effects to be fully visible */
+    overflow: visible;
     gap: 0;
   }
 
-  /* Inner wrapper with aspect-ratio-aware padding */
+
   .generate-panel-inner {
     flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     min-height: 0;
+  }
 
-    /* Aspect-ratio-aware padding: different values for portrait vs landscape */
-    /* Portrait: more top/bottom padding, less left/right */
-    /* Landscape: more left/right padding, less top/bottom */
-    padding-top: calc(var(--padding-top, 12) * 1px);
-    padding-right: calc(var(--padding-right, 12) * 1px);
-    padding-bottom: calc(var(--padding-bottom, 12) * 1px);
-    padding-left: calc(var(--padding-left, 12) * 1px);
+
+
+  @container generate-panel (min-aspect-ratio: 1.5) and (min-width: 800px) {
+    .generate-panel-inner {
+      padding: 6px min(5cqi, 48px);
+    }
   }
 
   /* Ensure no scrolling is forced when not appropriate */

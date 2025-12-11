@@ -87,7 +87,7 @@
 
   <!-- Row 4: Edit in Constructor (full width) -->
   {#if showEditInConstructor}
-    <button class="grid-btn edit full-width" onclick={onEditInConstructor} disabled={!hasSequence}>
+    <button class="grid-btn edit full-width" onclick={onEditInConstructor} disabled={!hasSequence} data-testid="edit-in-constructor">
       <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
       <div class="btn-text">
         <span class="btn-label">Edit in Constructor</span>
