@@ -44,6 +44,10 @@ export class PixiTextureLoader {
         svgGenerator.generateRedPropSvg(propType),
       ]);
 
+      // Destroy old textures before creating new ones to prevent memory leak
+      this.bluePropTexture?.destroy(true);
+      this.redPropTexture?.destroy(true);
+
       // Load textures from SVG strings
       this.bluePropTexture = await this.createTextureFromSVG(
         bluePropData.svg,
@@ -89,6 +93,10 @@ export class PixiTextureLoader {
         svgGenerator.generateRedPropSvg(redPropType),
       ]);
 
+      // Destroy old textures before creating new ones to prevent memory leak
+      this.bluePropTexture?.destroy(true);
+      this.redPropTexture?.destroy(true);
+
       // Load textures from SVG strings
       this.bluePropTexture = await this.createTextureFromSVG(
         bluePropData.svg,
@@ -130,6 +138,10 @@ export class PixiTextureLoader {
         svgGenerator.generatePropSvg(propType, blueColor),
         svgGenerator.generatePropSvg(propType, redColor),
       ]);
+
+      // Destroy old textures before creating new ones to prevent memory leak
+      this.secondaryBluePropTexture?.destroy(true);
+      this.secondaryRedPropTexture?.destroy(true);
 
       // Load textures from SVG strings
       this.secondaryBluePropTexture = await this.createTextureFromSVG(
@@ -176,6 +188,9 @@ export class PixiTextureLoader {
         GridMode.DIAMOND;
 
       const gridSvg = svgGenerator.generateGridSvg(gridModeEnum);
+
+      // Destroy old grid texture before creating new one to prevent memory leak
+      this.gridTexture?.destroy(true);
 
       // Load texture at current canvas size for optimal quality
       this.gridTexture = await this.createTextureFromSVG(

@@ -12,7 +12,7 @@
 
   import { getCompositionState } from "../../state/composition-state.svelte";
   import { LAYOUT_PRESETS, type LayoutPresetKey } from "../../domain/types";
-  import BpmControl from "$lib/features/compose/components/controls/BpmControl.svelte";
+  import BpmChips from "$lib/features/compose/components/controls/BpmChips.svelte";
 
   // Renamed to avoid conflict with $state rune
   const compState = getCompositionState();
@@ -169,7 +169,7 @@
 
   <!-- Row 2: BPM Control -->
   <div class="control-row bpm-row">
-    <BpmControl {bpm} onBpmChange={handleBpmChange} />
+    <BpmChips bpm={bpm} onBpmChange={handleBpmChange} />
   </div>
 </div>
 

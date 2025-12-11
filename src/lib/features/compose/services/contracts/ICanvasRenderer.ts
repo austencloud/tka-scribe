@@ -36,4 +36,14 @@ export interface ICanvasRenderer {
     letterImage: HTMLImageElement,
     letterViewBoxDimensions: { width: number; height: number }
   ): void;
+
+  /**
+   * Render a beat number onto the canvas at the standard position (top-left)
+   * @param beatNumber - The beat number to render (0 = "Start", null = no render)
+   */
+  renderBeatNumberToCanvas(
+    ctx: CanvasRenderingContext2D,
+    canvasSize: number,
+    beatNumber: number | null
+  ): void;
 }

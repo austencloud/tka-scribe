@@ -42,6 +42,8 @@ export class PixiApplicationManager {
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
         autoStart: false, // Prevent automatic ticker
+        // CRITICAL: Required for GIF export - preserves canvas content for drawImage capture
+        preserveDrawingBuffer: true,
       });
 
       // Wait a tick for canvas to be available
@@ -73,16 +75,15 @@ export class PixiApplicationManager {
   }
 
   resize(newSize: number): void {
-    if (!this.app) return;
+    if (!this.isInitialized || !this.app?.renderer) return;
 
     this.currentSize = newSize;
     this.app.renderer.resize(newSize, newSize);
   }
 
   render(): void {
-    if (this.app?.renderer) {
-      this.app.renderer.render(this.app.stage);
-    }
+    if (!this.isInitialized || !this.app?.renderer) return;
+    this.app.renderer.render(this.app.stage);
   }
 
   getApplication(): Application | null {
@@ -105,16 +106,15 @@ export class PixiApplicationManager {
     if (!this.app || !this.isInitialized) return;
 
     try {
-      // CRITICAL: Remove canvas from DOM before destroying renderer
+      // CRITICAL: Remove canvas from DOM before destroying
       const canvas = this.app.canvas;
       if (canvas.parentElement) {
         canvas.parentElement.removeChild(canvas);
       }
 
-      // Destroy app
-      if (this.app.renderer) {
-        this.app.renderer.destroy();
-      }
+      // Destroy entire app (includes renderer, stage, ticker, etc.)
+      // Pass true to remove canvas from DOM and destroy all children
+      this.app.destroy(true, { children: true, texture: true });
 
       this.app = null;
       this.isInitialized = false;

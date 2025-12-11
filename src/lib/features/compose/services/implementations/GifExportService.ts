@@ -12,6 +12,10 @@ import type {
   GifExportProgress,
   IGifExportService,
 } from "../contracts/IGifExportService";
+import {
+  GIF_EXPORT_FPS,
+  GIF_EXPORT_QUALITY,
+} from "../../shared/domain/constants/timing";
 
 /**
  * TypeScript interface for gif.js library
@@ -77,8 +81,8 @@ export class GifExportService implements IGifExportService {
     this.shouldCancel = false;
 
     const {
-      fps = 30,
-      quality = 10,
+      fps = GIF_EXPORT_FPS,
+      quality = GIF_EXPORT_QUALITY,
       workers = 2,
       duration,
       repeat = 0,
@@ -298,8 +302,8 @@ export class GifExportService implements IGifExportService {
     this.shouldCancel = false;
 
     const {
-      fps = 30,
-      quality = 10,
+      fps = GIF_EXPORT_FPS,
+      quality = GIF_EXPORT_QUALITY,
       workers = 2,
       repeat = 0,
       filename = "animation.gif",

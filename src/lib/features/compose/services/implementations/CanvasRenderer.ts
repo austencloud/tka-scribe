@@ -85,6 +85,18 @@ export class CanvasRenderer implements ICanvasRenderer {
   }
 
   /**
+   * Render a beat number onto the canvas at the standard position (top-left)
+   * Matches BeatNumber.svelte positioning: x=50, y=50 in 950px viewBox
+   */
+  renderBeatNumberToCanvas(
+    ctx: CanvasRenderingContext2D,
+    canvasSize: number,
+    beatNumber: number | null
+  ): void {
+    this.drawBeatNumber(ctx, canvasSize, beatNumber);
+  }
+
+  /**
    * Draw grid exactly as in standalone_animator.html
    */
   private drawGrid(
@@ -186,5 +198,49 @@ export class CanvasRenderer implements ICanvasRenderer {
     const scaledHeight = letterViewBoxDimensions.height * gridScaleFactor;
 
     ctx.drawImage(letterImage, x, y, scaledWidth, scaledHeight);
+  }
+
+  /**
+   * Draw beat number in the top-left area of the canvas
+   * Position matches BeatNumber.svelte: x=50, y=50 in 950px viewBox
+   * Style matches: Georgia serif, bold, black fill with white stroke
+   */
+  private drawBeatNumber(
+    ctx: CanvasRenderingContext2D,
+    canvasSize: number,
+    beatNumber: number | null
+  ): void {
+    if (beatNumber === null) return;
+
+    const gridScaleFactor = canvasSize / 950;
+
+    // Position matches BeatNumber.svelte: x=50, y=50 in 950px viewBox
+    const x = 50 * gridScaleFactor;
+    const y = 50 * gridScaleFactor;
+
+    // Font size matches BeatNumber.svelte: 100 for numbers, 80 for "Start"
+    const isStart = beatNumber === 0;
+    const fontSize = (isStart ? 80 : 100) * gridScaleFactor;
+    const strokeWidth = (isStart ? 5 : 6) * gridScaleFactor;
+    const displayText = isStart ? "Start" : beatNumber.toString();
+
+    ctx.save();
+
+    // Set font style to match BeatNumber.svelte
+    ctx.font = `bold ${fontSize}px Georgia, serif`;
+    ctx.textBaseline = "hanging";
+    ctx.textAlign = "start";
+
+    // Draw stroke first (white outline)
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = strokeWidth;
+    ctx.lineJoin = "round";
+    ctx.strokeText(displayText, x, y);
+
+    // Draw fill (black text)
+    ctx.fillStyle = "#000000";
+    ctx.fillText(displayText, x, y);
+
+    ctx.restore();
   }
 }

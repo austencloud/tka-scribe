@@ -85,6 +85,7 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
     // Clear glyph cache for fresh export
     this.letterGlyphCache.clear();
 
+    // Default to GIF - WebP transcoding causes quality loss and timing issues
     const exportFormat: AnimationExportFormat = options.format ?? "gif";
     const filename = this.resolveFilename(
       options.filename,
@@ -127,7 +128,10 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
 
       console.log(`📊 Export settings: ${totalFrames} frames @ ${options.fps ?? GIF_EXPORT_FPS} FPS, speed ${panelState.speed}x, frame delay ${frameDelay}ms`);
 
-      const logicalCanvasSize = this.getLogicalCanvasSize(canvas);
+      // CRITICAL: Use actual canvas pixel size, not CSS display size
+      // The canvas.width is the actual pixel dimension used for rendering
+      // getBoundingClientRect().width would give the CSS display size which is different
+      const actualCanvasSize = canvas.width;
 
       // Create offscreen canvas for compositing (so we don't touch the visible canvas)
       const offscreenCanvas = document.createElement("canvas");
@@ -172,15 +176,25 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
             : null;
         }
 
+        // Calculate beat number for display (matches AnimatorCanvas logic)
+        const beatNumber = this.getBeatNumberForFrame(beat, panelState);
+
         // Render the glyph on top of the OFFSCREEN canvas (not the visible one!)
         if (currentGlyph?.image) {
           this.canvasRenderer.renderLetterToCanvas(
             offscreenCtx,
-            logicalCanvasSize,
+            actualCanvasSize,
             currentGlyph.image,
             currentGlyph.dimensions
           );
         }
+
+        // Render the beat number overlay
+        this.canvasRenderer.renderBeatNumberToCanvas(
+          offscreenCtx,
+          actualCanvasSize,
+          beatNumber
+        );
 
         // Capture from the offscreen canvas (not the visible one!)
         exporter.addFrame(offscreenCanvas, frameDelay);
@@ -275,6 +289,7 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
 
   /**
    * Get the letter for a specific beat from the sequence data
+   * Matches the logic in AnimationSheetCoordinator.svelte's currentLetter derived
    */
   private getLetterForBeat(
     beat: number,
@@ -284,24 +299,49 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
       return null;
     }
 
-    // Beat 0 is the start position
-    if (beat === 0 && panelState.sequenceData.startPosition) {
-      const startLetter = panelState.sequenceData.startPosition.letter;
-      return startLetter ? (startLetter as Letter) : null;
-    }
-
-    // For beats >= 1, get from the beats array
-    const beatIndex = Math.floor(beat) - 1; // beats array is 0-indexed, but beatNumber is 1-indexed
+    // During animation: show beat letters using floor(beat) as index
+    // This matches the live canvas behavior where:
+    // - beat 0.0-0.99 shows beats[0] (first beat)
+    // - beat 1.0-1.99 shows beats[1] (second beat)
+    // - etc.
     if (
-      beatIndex >= 0 &&
       panelState.sequenceData.beats &&
-      beatIndex < panelState.sequenceData.beats.length
+      panelState.sequenceData.beats.length > 0
     ) {
-      const beatData = panelState.sequenceData.beats[beatIndex];
+      const beatIndex = Math.floor(beat);
+      const clampedIndex = Math.max(
+        0,
+        Math.min(beatIndex, panelState.sequenceData.beats.length - 1)
+      );
+      const beatData = panelState.sequenceData.beats[clampedIndex];
       return beatData?.letter ? (beatData.letter as Letter) : null;
     }
 
     return null;
+  }
+
+  /**
+   * Get the beat number for a specific frame
+   * Matches the logic in AnimatorCanvas.svelte's beatNumber derived
+   * Beat numbers are 1-indexed (beats[0] = beat 1, beats[1] = beat 2, etc.)
+   */
+  private getBeatNumberForFrame(
+    beat: number,
+    panelState: AnimationPanelState
+  ): number | null {
+    if (!panelState.sequenceData?.beats) {
+      return null;
+    }
+
+    // Calculate which beat index we're showing
+    const beatIndex = Math.floor(beat);
+    const clampedIndex = Math.max(
+      0,
+      Math.min(beatIndex, panelState.sequenceData.beats.length - 1)
+    );
+
+    // Beat numbers are 1-indexed
+    return clampedIndex + 1;
   }
 
   /**
@@ -356,13 +396,5 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
 
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  private getLogicalCanvasSize(canvas: HTMLCanvasElement): number {
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width > 0) {
-      return rect.width;
-    }
-    return canvas.width;
   }
 }

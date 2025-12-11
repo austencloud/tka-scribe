@@ -7,7 +7,7 @@
   Uses glassmorphism styling for modern appearance.
 -->
 <script lang="ts">
-  import BpmControl from "./BpmControl.svelte";
+  import BpmChips from "./BpmChips.svelte";
   import ExportButton from "./ExportButton.svelte";
   import PlayPauseButton from "./PlayPauseButton.svelte";
 
@@ -53,7 +53,7 @@
   <!-- BPM Control Row -->
   <div class="bar-content bpm-row">
     <div class="control-section bpm-section">
-      <BpmControl bind:bpm {onBpmChange} />
+      <BpmChips bind:bpm {onBpmChange} />
     </div>
   </div>
 </div>

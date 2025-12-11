@@ -6,7 +6,7 @@
   - BPM preset chips
 -->
 <script lang="ts">
-  import BpmControl from "$lib/features/compose/components/controls/BpmControl.svelte";
+  import BpmChips from "$lib/features/compose/components/controls/BpmChips.svelte";
 
   // Constants - BPM conversion
   const DEFAULT_BPM = 60; // Base tempo
@@ -65,7 +65,7 @@
 
   <!-- BPM Control Row -->
   <div class="speed-control">
-    <BpmControl
+    <BpmChips
       bind:bpm
       min={MIN_BPM}
       max={MAX_BPM}

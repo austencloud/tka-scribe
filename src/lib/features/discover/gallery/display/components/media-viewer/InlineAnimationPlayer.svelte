@@ -9,7 +9,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-  import BpmPresetChips from "$lib/features/compose/components/controls/BpmPresetChips.svelte";
+  import BpmChips from "$lib/features/compose/components/controls/BpmChips.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
   import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
@@ -234,7 +234,7 @@
       </button>
 
       <div class="bpm-controls">
-        <BpmPresetChips {bpm} onBpmChange={handleBpmChange} />
+        <BpmChips bpm={bpm} variant="compact" onBpmChange={handleBpmChange} />
       </div>
     </div>
   {/if}

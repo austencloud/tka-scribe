@@ -12,7 +12,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
-  import BpmControl from "../controls/BpmControl.svelte";
+  import BpmChips from "../controls/BpmChips.svelte";
   import SimpleTrailControls from "../trail/SimpleTrailControls.svelte";
   import ExpandToggleButton from "../inputs/ExpandToggleButton.svelte";
   import ExportActionsPanel from "./ExportActionsPanel.svelte";
@@ -30,7 +30,7 @@
 
   const debug = createComponentLogger("AnimationControlsPanel");
   const DEFAULT_BPM = 60;
-  const SMALL_SCREEN_HEIGHT = 700; // iPhone SE is 667px
+  const COMPACT_CONTROLS_HEIGHT = 800; // Use compact controls below this height
 
   let {
     speed = 1,
@@ -113,14 +113,14 @@
     onSpeedChange(newSpeed);
   }
 
-  // Small screen detection for compact mode
-  let isSmallScreen = $state(false);
+  // Height detection for compact controls mode
+  let viewportHeight = $state(0);
 
   onMount(() => {
     if (!browser) return;
 
     const checkHeight = () => {
-      isSmallScreen = window.innerHeight <= SMALL_SCREEN_HEIGHT;
+      viewportHeight = window.innerHeight;
     };
 
     checkHeight();
@@ -128,9 +128,11 @@
     return () => window.removeEventListener("resize", checkHeight);
   });
 
-  // Sheet states
-  let isBpmSheetOpen = $state(false);
-  let isTrailsSheetOpen = $state(false);
+  // Use compact controls when viewport is too short (regardless of side-by-side)
+  const useCompactControls = $derived(viewportHeight > 0 && viewportHeight < COMPACT_CONTROLS_HEIGHT);
+
+  // Sheet state - unified settings sheet
+  let isSettingsSheetOpen = $state(false);
 
   // Derive current trail preset for display
   const currentTrailPreset = $derived.by(() => {
@@ -140,8 +142,6 @@
     return "Vivid";
   });
 
-  // Use compact controls when on small screen AND in mobile expanded mode
-  const useCompactControls = $derived(isSmallScreen && !isSideBySideLayout && isExpanded);
 </script>
 
 <div
@@ -205,20 +205,9 @@
     {/if}
   {/if}
 
-  <!-- Expanded Mode: [Blue Eye] [◀] [▶❚❚] [▶] [Red Eye] -->
+  <!-- Expanded Mode: Playback controls centered -->
   {#if isSideBySideLayout || isExpanded}
     <div class="control-row playback-row">
-      <!-- Blue Motion Visibility (left edge) -->
-      <button
-        class="vis-btn blue-vis-btn"
-        class:active={blueMotionVisible}
-        onclick={onToggleBlue}
-        type="button"
-        aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
-      >
-        <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
-      </button>
-
       <!-- Center transport controls -->
       <div class="transport-controls">
         <!-- Full Beat Back -->
@@ -276,48 +265,29 @@
           <i class="fas fa-angles-right" aria-hidden="true"></i>
         </button>
       </div>
-
-      <!-- Red Motion Visibility (right edge) -->
-      <button
-        class="vis-btn red-vis-btn"
-        class:active={redMotionVisible}
-        onclick={onToggleRed}
-        type="button"
-        aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
-      >
-        <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
-      </button>
     </div>
   {/if}
 
-  <!-- BPM & Trails: Compact buttons on small screens, full controls otherwise -->
+  <!-- BPM & Visibility/Trails -->
   {#if isSideBySideLayout || isExpanded}
     {#if useCompactControls}
-      <!-- Compact mode: Two buttons that open sheets -->
-      <div class="control-row compact-settings-row">
+      <!-- Compact mode: Single settings button opens unified sheet -->
+      <div class="control-row compact-row-settings">
         <button
-          class="compact-setting-btn"
-          onclick={() => (isBpmSheetOpen = true)}
+          class="settings-sheet-btn"
+          onclick={() => (isSettingsSheetOpen = true)}
           type="button"
-          aria-label="Open BPM settings"
+          aria-label="Open playback settings"
         >
-          <span class="setting-value">{bpm}</span>
-          <span class="setting-label">BPM</span>
-        </button>
-        <button
-          class="compact-setting-btn"
-          onclick={() => (isTrailsSheetOpen = true)}
-          type="button"
-          aria-label="Open trail settings"
-        >
-          <span class="setting-value">{currentTrailPreset}</span>
-          <span class="setting-label">Trails</span>
+          <i class="fas fa-sliders-h" aria-hidden="true"></i>
+          <span class="settings-btn-label">Settings</span>
+          <span class="settings-summary">{bpm} BPM · {currentTrailPreset}</span>
         </button>
       </div>
     {:else}
-      <!-- Full controls for larger screens -->
+      <!-- Full controls: Enough vertical space -->
       <div class="control-row bpm-row">
-        <BpmControl
+        <BpmChips
           bind:bpm
           min={15}
           max={180}
@@ -325,7 +295,30 @@
           onBpmChange={handleBpmChange}
         />
       </div>
-      <SimpleTrailControls />
+      <!-- Visibility & Trails Row: [Blue Eye] [Trails] [Red Eye] -->
+      <div class="control-row trails-row">
+        <button
+          class="vis-btn blue-vis-btn"
+          class:active={blueMotionVisible}
+          onclick={onToggleBlue}
+          type="button"
+          aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+        >
+          <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+        </button>
+
+        <SimpleTrailControls />
+
+        <button
+          class="vis-btn red-vis-btn"
+          class:active={redMotionVisible}
+          onclick={onToggleRed}
+          type="button"
+          aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
+        >
+          <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+        </button>
+      </div>
     {/if}
   {/if}
 
@@ -335,22 +328,22 @@
   {/if}
 </div>
 
-<!-- BPM Sheet -->
+<!-- Unified Settings Sheet - Right side panel -->
 <Drawer
-  bind:isOpen={isBpmSheetOpen}
-  placement="bottom"
-  snapPoints={["45%"]}
+  bind:isOpen={isSettingsSheetOpen}
+  placement="right"
   closeOnBackdrop={true}
   closeOnEscape={true}
-  ariaLabel="BPM Settings"
+  ariaLabel="Playback Settings"
   showHandle={true}
+  class="settings-sheet"
 >
-  <div class="sheet-content">
+    <div class="sheet-content">
     <header class="sheet-header">
-      <h3 class="sheet-title">Speed (BPM)</h3>
+      <h3 class="sheet-title">Playback Settings</h3>
       <button
         class="sheet-close-btn"
-        onclick={() => (isBpmSheetOpen = false)}
+        onclick={() => (isSettingsSheetOpen = false)}
         aria-label="Close"
         type="button"
       >
@@ -358,41 +351,48 @@
       </button>
     </header>
     <div class="sheet-body">
-      <BpmControl
-        bind:bpm
-        min={15}
-        max={180}
-        step={1}
-        onBpmChange={handleBpmChange}
-      />
-    </div>
-  </div>
-</Drawer>
+      <!-- Motion Visibility -->
+      <section class="settings-section">
+        <h4 class="settings-section-title">Motion Visibility</h4>
+        <div class="visibility-toggles">
+          <button
+            class="visibility-toggle blue"
+            class:active={blueMotionVisible}
+            onclick={onToggleBlue}
+            type="button"
+          >
+            <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+            <span>Blue</span>
+          </button>
+          <button
+            class="visibility-toggle red"
+            class:active={redMotionVisible}
+            onclick={onToggleRed}
+            type="button"
+          >
+            <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+            <span>Red</span>
+          </button>
+        </div>
+      </section>
 
-<!-- Trails Sheet -->
-<Drawer
-  bind:isOpen={isTrailsSheetOpen}
-  placement="bottom"
-  snapPoints={["35%"]}
-  closeOnBackdrop={true}
-  closeOnEscape={true}
-  ariaLabel="Trail Settings"
-  showHandle={true}
->
-  <div class="sheet-content">
-    <header class="sheet-header">
-      <h3 class="sheet-title">Trail Settings</h3>
-      <button
-        class="sheet-close-btn"
-        onclick={() => (isTrailsSheetOpen = false)}
-        aria-label="Close"
-        type="button"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    </header>
-    <div class="sheet-body">
-      <SimpleTrailControls />
+      <!-- Speed -->
+      <section class="settings-section">
+        <h4 class="settings-section-title">Speed</h4>
+        <BpmChips
+          bind:bpm
+          min={15}
+          max={180}
+          step={1}
+          onBpmChange={handleBpmChange}
+        />
+      </section>
+
+      <!-- Trails -->
+      <section class="settings-section">
+        <h4 class="settings-section-title">Trails</h4>
+        <SimpleTrailControls />
+      </section>
     </div>
   </div>
 </Drawer>
@@ -516,7 +516,7 @@
 
   /* Expanded mode rows */
   .playback-row {
-    justify-content: space-between;
+    justify-content: center;
     gap: 12px;
   }
 
@@ -576,56 +576,93 @@
     width: 100%;
   }
 
-  /* Compact Settings Row (small screens) */
-  .compact-settings-row {
-    display: flex;
+  .trails-row {
+    width: 100%;
+    justify-content: space-between;
     gap: 8px;
+  }
+
+  .trails-row :global(.trail-controls) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Compact mode: Settings button row */
+  .compact-row-settings {
     width: 100%;
   }
 
-  .compact-setting-btn {
-    flex: 1;
+  .settings-sheet-btn {
+    width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 2px;
+    gap: 10px;
     min-height: 52px;
-    padding: 8px 12px;
-    background: rgba(139, 92, 246, 0.15);
-    border: 1.5px solid rgba(139, 92, 246, 0.3);
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .compact-setting-btn:active {
-    transform: scale(0.97);
-    background: rgba(139, 92, 246, 0.25);
-  }
-
-  .compact-setting-btn .setting-value {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
-    line-height: 1;
-  }
-
-  .compact-setting-btn .setting-label {
-    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
     font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .settings-sheet-btn i {
+    font-size: 1rem;
+    color: rgba(139, 92, 246, 0.8);
+  }
+
+  .settings-sheet-btn .settings-btn-label {
+    flex: 0 0 auto;
+  }
+
+  .settings-sheet-btn .settings-summary {
+    flex: 1;
+    text-align: right;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .settings-sheet-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+  }
+
+  .settings-sheet-btn:active {
+    transform: scale(0.98);
   }
 
   /* Sheet Styles */
+  :global(.settings-sheet) {
+    --sheet-width: min(320px, 85vw);
+  }
+
+  /* Position settings sheet to not overlap bottom navigation */
+  :global(.drawer-content.settings-sheet) {
+    /* Leave space for bottom navigation (64px + safe area) */
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    /* Limit height to available space */
+    max-height: calc(100dvh - 64px - env(safe-area-inset-bottom, 0px)) !important;
+    /* Rounded bottom corners since it's not touching bottom of screen */
+    border-radius: 16px 0 0 16px !important;
+  }
+
   .sheet-content {
     display: flex;
     flex-direction: column;
-    padding: 0 20px 20px;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     min-width: 280px;
+    height: 100%;
   }
 
   .sheet-header {
@@ -667,7 +704,63 @@
   .sheet-body {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
+  }
+
+  /* Settings sections */
+  .settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .settings-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
+  /* Visibility toggles in sheet */
+  .visibility-toggles {
+    display: flex;
+    gap: 8px;
+  }
+
+  .visibility-toggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .visibility-toggle.blue.active {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 100%);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: rgba(191, 219, 254, 1);
+  }
+
+  .visibility-toggle.red.active {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: rgba(254, 202, 202, 1);
+  }
+
+  .visibility-toggle:active {
+    transform: scale(0.97);
   }
 
   /* Visibility Buttons */
