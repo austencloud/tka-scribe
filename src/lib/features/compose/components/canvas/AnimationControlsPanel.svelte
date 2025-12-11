@@ -57,9 +57,10 @@
     onToggleRed = () => {},
     onToggleExpanded = () => {},
     onToggleToolView = () => {},
-    onExportGif = () => {},
-    onShareAnimation = () => {},
-    isSharing = false,
+    onExportVideo = () => {},
+    isCircular = false,
+    loopCount = 1,
+    onLoopCountChange = () => {},
     preventBackNavAction = () => {},
     onScroll = () => {},
   }: {
@@ -87,9 +88,10 @@
     onToggleRed?: () => void;
     onToggleExpanded?: () => void;
     onToggleToolView?: () => void;
-    onExportGif?: () => void;
-    onShareAnimation?: () => void;
-    isSharing?: boolean;
+    onExportVideo?: () => void;
+    isCircular?: boolean;
+    loopCount?: number;
+    onLoopCountChange?: (count: number) => void;
     preventBackNavAction?: (
       node: HTMLElement,
       isSideBySideLayout: boolean
@@ -97,7 +99,7 @@
     onScroll?: (e: Event) => void;
   } = $props();
 
-  debug.log("Received onExportGif:", onExportGif);
+  debug.log("Received onExportVideo:", onExportVideo);
 
   // Convert speed multiplier to BPM for display
   let bpm = $state(Math.round(speed * DEFAULT_BPM));
@@ -140,6 +142,16 @@
     if (!trail.enabled || trail.mode === TrailMode.OFF) return "Off";
     if (trail.lineWidth <= 2.5 && trail.maxOpacity <= 0.7) return "Subtle";
     return "Vivid";
+  });
+
+  // Get propType from sequence data for bilateral toggle
+  // Priority: sequence.propType > first beat's blue motion propType > first beat's red motion propType
+  const currentPropType = $derived.by(() => {
+    if (sequenceData?.propType) return sequenceData.propType;
+    const firstBeat = sequenceData?.beats?.[0];
+    if (firstBeat?.motions?.blue?.propType) return firstBeat.motions.blue.propType;
+    if (firstBeat?.motions?.red?.propType) return firstBeat.motions.red.propType;
+    return null;
   });
 
 </script>
@@ -307,7 +319,7 @@
           <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
         </button>
 
-        <SimpleTrailControls />
+        <SimpleTrailControls propType={currentPropType} />
 
         <button
           class="vis-btn red-vis-btn"
@@ -324,7 +336,7 @@
 
   <!-- Export -->
   {#if isSideBySideLayout || isExpanded}
-    <ExportActionsPanel {onExportGif} {onShareAnimation} {isExporting} {exportProgress} {isSharing} />
+    <ExportActionsPanel {onExportVideo} {isExporting} {exportProgress} {isCircular} {loopCount} {onLoopCountChange} />
   {/if}
 </div>
 
@@ -391,7 +403,7 @@
       <!-- Trails -->
       <section class="settings-section">
         <h4 class="settings-section-title">Trails</h4>
-        <SimpleTrailControls />
+        <SimpleTrailControls propType={currentPropType} />
       </section>
     </div>
   </div>
@@ -905,12 +917,6 @@
     width: 52px;
     height: 52px;
     font-size: 18px;
-  }
-
-  /* Visibility row styling */
-  .visibility-row {
-    display: flex;
-    gap: 8px;
   }
 
   /* Expand toggle in expanded mode */

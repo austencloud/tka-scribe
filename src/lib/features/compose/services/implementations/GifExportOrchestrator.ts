@@ -7,7 +7,6 @@
 import {
   GIF_EXPORT_FPS,
   GIF_EXPORT_QUALITY,
-  GIF_FRAMES_PER_BEAT,
   GIF_INITIAL_CAPTURE_DELAY_MS,
 } from "../../shared/domain/constants/timing";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
@@ -27,6 +26,7 @@ import type {
 import type { IAnimatedImageTranscoder } from "../contracts/IAnimatedImageTranscoder";
 import type { IGifExportService } from "../contracts/IGifExportService";
 import type { GifExportProgress } from "../contracts/IGifExportService";
+import type { IVideoExportService } from "../contracts/IVideoExportService";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import { SequenceAnimationOrchestrator } from "./SequenceAnimationOrchestrator";
 
@@ -46,6 +46,8 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
   constructor(
     @inject(TYPES.IGifExportService)
     private readonly gifExportService: IGifExportService,
+    @inject(TYPES.IVideoExportService)
+    private readonly videoExportService: IVideoExportService,
     @inject(TYPES.ICanvasRenderer)
     private readonly canvasRenderer: ICanvasRenderer,
     @inject(TYPES.ISvgImageService)
@@ -87,22 +89,27 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
 
     // Default to GIF - WebP transcoding causes quality loss and timing issues
     const exportFormat: AnimationExportFormat = options.format ?? "gif";
+    const isVideoFormat = exportFormat === "webm" || exportFormat === "mp4";
     const filename = this.resolveFilename(
       options.filename,
       panelState.sequenceWord,
       exportFormat
     );
 
-    const exporter = await this.gifExportService.createManualExporter(
-      canvas.width,
-      canvas.height,
-      {
-        fps: options.fps ?? GIF_EXPORT_FPS,
-        quality: options.quality ?? GIF_EXPORT_QUALITY,
-        filename,
-        autoDownload: false,
-      }
-    );
+    // Create the appropriate exporter based on format
+    const exporter = isVideoFormat
+      ? await this.videoExportService.createManualExporter(canvas.width, canvas.height, {
+          format: exportFormat as "webm" | "mp4",
+          fps: options.fps ?? GIF_EXPORT_FPS,
+          filename,
+          autoDownload: false,
+        })
+      : await this.gifExportService.createManualExporter(canvas.width, canvas.height, {
+          fps: options.fps ?? GIF_EXPORT_FPS,
+          quality: options.quality ?? GIF_EXPORT_QUALITY,
+          filename,
+          autoDownload: false,
+        });
 
     const captureState = {
       wasPlaying: panelState.isPlaying,
@@ -118,15 +125,27 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
       playbackController.jumpToBeat(0);
       await this.delay(GIF_INITIAL_CAPTURE_DELAY_MS);
 
-      const totalFrames = panelState.totalBeats * GIF_FRAMES_PER_BEAT;
+      // Calculate effective duration at user's BPM/speed
+      // At speed=1.0 (60 BPM): 1 second per beat
+      // At speed=2.0 (120 BPM): 0.5 seconds per beat
+      const secondsPerBeat = 1.0 / panelState.speed;
+      const singleLoopDurationSeconds = panelState.totalBeats * secondsPerBeat;
 
-      // Calculate frame delay, respecting the user's current speed setting
-      // Lower speed = slower playback = longer delay between frames
-      // Higher speed = faster playback = shorter delay between frames
-      const baseFrameDelay = Math.floor(1000 / (options.fps ?? GIF_EXPORT_FPS));
-      const frameDelay = Math.floor(baseFrameDelay / panelState.speed);
+      // Use fixed high frame rate for smooth playback at any BPM
+      // This ensures visual quality is consistent regardless of tempo
+      const fps = options.fps ?? GIF_EXPORT_FPS;
+      const frameDelay = Math.floor(1000 / fps); // Fixed ~20ms at 50fps
+      const framesPerLoop = Math.ceil(singleLoopDurationSeconds * fps);
 
-      console.log(`📊 Export settings: ${totalFrames} frames @ ${options.fps ?? GIF_EXPORT_FPS} FPS, speed ${panelState.speed}x, frame delay ${frameDelay}ms`);
+      // Apply loop count for circular sequences
+      const loopCount = panelState.exportLoopCount ?? 1;
+      const totalFrames = framesPerLoop * loopCount;
+
+      // Calculate beat progression per frame to match timing
+      // beatsPerFrame = totalBeats / framesPerLoop (for single loop)
+      const beatsPerFrame = panelState.totalBeats / framesPerLoop;
+
+      console.log(`📊 Export settings: ${totalFrames} frames @ ${fps} FPS, ${loopCount} loop(s), ${panelState.speed}x speed (${Math.round(panelState.speed * 60)} BPM), ${secondsPerBeat.toFixed(2)}s per beat, frame delay ${frameDelay}ms`);
 
       // CRITICAL: Use actual canvas pixel size, not CSS display size
       // The canvas.width is the actual pixel dimension used for rendering
@@ -154,7 +173,10 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
           throw new Error("Export cancelled");
         }
 
-        const beat = i / GIF_FRAMES_PER_BEAT;
+        // Calculate beat position for this frame
+        // Uses modulo to loop through the sequence for multiple loops
+        const frameInLoop = i % framesPerLoop;
+        const beat = frameInLoop * beatsPerFrame;
         playbackController.jumpToBeat(beat);
 
         // Wait for the UI + canvas to render the new beat
@@ -197,7 +219,13 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
         );
 
         // Capture from the offscreen canvas (not the visible one!)
-        exporter.addFrame(offscreenCanvas, frameDelay);
+        // Video: WebCodecs sets explicit timestamps per frame - no delays needed
+        // GIF: gif.js uses frame delay metadata
+        if (isVideoFormat) {
+          await exporter.addFrame(offscreenCanvas);
+        } else {
+          (exporter as { addFrame: (canvas: HTMLCanvasElement, delay: number) => void }).addFrame(offscreenCanvas, frameDelay);
+        }
 
         onProgress({
           progress: (i + 1) / totalFrames,
@@ -213,19 +241,19 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
         throw new Error("Export cancelled");
       }
 
-      console.log("🔄 Encoding GIF...");
+      console.log(`🔄 Encoding ${isVideoFormat ? 'video' : 'GIF'}...`);
       onProgress({ progress: 0, stage: "encoding" });
-      const gifBlob = await exporter.finish();
-      console.log(`✅ GIF encoded, size: ${(gifBlob.size / 1024 / 1024).toFixed(2)} MB`);
+      const outputBlob = await exporter.finish();
+      console.log(`✅ ${exportFormat.toUpperCase()} encoded, size: ${(outputBlob.size / 1024 / 1024).toFixed(2)} MB`);
 
-      if (exportFormat === "gif") {
-        console.log(`📥 Downloading GIF: ${filename}`);
-        await this.fileDownloadService.downloadBlob(gifBlob, filename);
+      if (isVideoFormat || exportFormat === "gif") {
+        console.log(`📥 Downloading ${exportFormat.toUpperCase()}: ${filename}`);
+        await this.fileDownloadService.downloadBlob(outputBlob, filename);
         console.log("✅ Download triggered");
-      } else {
+      } else if (exportFormat === "webp") {
         onProgress({ progress: 0.9, stage: "transcoding" });
         const webpBlob = await this.animatedImageTranscoder.convertGifToWebp(
-          gifBlob,
+          outputBlob,
           options.webp
         );
         await this.fileDownloadService.downloadBlob(webpBlob, filename);
@@ -280,7 +308,14 @@ export class GifExportOrchestrator implements IGifExportOrchestrator {
     }
 
     const baseName = sequenceWord || "animation";
-    const extension = format === "gif" ? "gif" : "webp";
+    // Map format to file extension
+    const extensionMap: Record<AnimationExportFormat, string> = {
+      gif: "gif",
+      webp: "webp",
+      webm: "webm",
+      mp4: "mp4",
+    };
+    const extension = extensionMap[format] || "gif";
     return this.fileDownloadService.generateTimestampedFilename(
       baseName,
       extension

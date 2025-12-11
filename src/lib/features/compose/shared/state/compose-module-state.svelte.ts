@@ -96,9 +96,9 @@ const modePersistence = createPersistenceHelper({
 });
 
 export function createComposeModuleState(): ComposeModuleState {
-  // Migrate old "compose" tab value to "arrange"
+  // Migrate old "compose" or "playback" tab values to "arrange"
   const storedTab = tabPersistence.load();
-  const migratedTab: ComposeTab = storedTab === "compose" || storedTab === "playback" ? "arrange" : storedTab;
+  const migratedTab: ComposeTab = (storedTab as string) === "compose" || (storedTab as string) === "playback" ? "arrange" : storedTab;
 
   // Current tab (persisted)
   let currentTab = $state<ComposeTab>(migratedTab);
@@ -209,8 +209,8 @@ export function createComposeModuleState(): ComposeModuleState {
       isPlaybackOpen = false;
       playbackSource = "arrange";
 
-      saveToStorage(STORAGE_KEYS.CURRENT_TAB, "arrange");
-      saveToStorage(STORAGE_KEYS.CURRENT_MODE, "single");
+      tabPersistence.save("arrange");
+      modePersistence.save("single");
       debug.log("Reset");
     },
   };

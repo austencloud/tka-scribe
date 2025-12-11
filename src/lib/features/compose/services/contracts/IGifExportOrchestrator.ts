@@ -10,7 +10,7 @@ import type { GifExportProgress } from "./IGifExportService";
 import type { AnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
 import type { WebpTranscodeOptions } from "./IAnimatedImageTranscoder";
 
-export type AnimationExportFormat = "gif" | "webp";
+export type AnimationExportFormat = "gif" | "webp" | "webm" | "mp4";
 
 export interface GifExportOrchestratorOptions {
   /** Custom filename for the export (defaults to sequence word) */

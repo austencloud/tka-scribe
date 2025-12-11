@@ -1,99 +1,205 @@
 <!--
   ExportActionsPanel.svelte
 
-  2026 Bento Box Design - GIF export and share buttons
-  Animation Panel focuses on animated GIF export and sharing.
-  Static image export lives in Share Panel.
+  2026 Bento Box Design - Save button with settings access
+  Uses WebCodecs for hardware-accelerated MP4 export with precise timing.
+  Settings icon opens export options sheet (loop count, etc.)
 -->
 <script lang="ts">
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+
   let {
-    onExportGif = () => {},
-    onShareAnimation = () => {},
+    onExportVideo = () => {},
     isExporting = false,
     exportProgress = null,
-    isSharing = false,
+    isCircular = false,
+    loopCount = 1,
+    onLoopCountChange = () => {},
   }: {
-    onExportGif?: () => void;
-    onShareAnimation?: () => void;
+    onExportVideo?: () => void;
     isExporting?: boolean;
     exportProgress?: { progress: number; stage: string } | null;
-    isSharing?: boolean;
+    isCircular?: boolean;
+    loopCount?: number;
+    onLoopCountChange?: (count: number) => void;
   } = $props();
 
-  function handleExportClick() {
-    if (isExporting) return; // Prevent double-clicks
-    console.log("🎬 ExportActionsPanel: Export GIF button clicked");
-    console.log("🎬 onExportGif handler:", onExportGif);
-    onExportGif();
+  // Settings sheet state
+  let isSettingsOpen = $state(false);
+
+  function handleSaveClick() {
+    if (isExporting) return;
+    console.log("💾 ExportActionsPanel: Save button clicked");
+    onExportVideo();
   }
 
-  function handleShareClick() {
-    if (isSharing || isExporting) return; // Prevent double-clicks
-    console.log("📤 ExportActionsPanel: Share animation button clicked");
-    onShareAnimation();
+  function handleSettingsClick(e: MouseEvent) {
+    e.stopPropagation();
+    if (isExporting) return;
+    isSettingsOpen = true;
+  }
+
+  function handleLoopPresetClick(count: number) {
+    onLoopCountChange(count);
   }
 
   // Derive display text based on export state
   const buttonText = $derived(() => {
-    if (!isExporting) return "Export GIF";
+    if (!isExporting) return "Save";
     if (!exportProgress) return "Starting...";
 
     const { stage, progress } = exportProgress;
     if (stage === "capturing") {
       return `Capturing ${Math.round(progress * 100)}%`;
     } else if (stage === "encoding") {
-      return "Encoding GIF...";
-    } else if (stage === "transcoding") {
-      return "Transcoding...";
+      return "Encoding...";
     } else if (stage === "complete") {
       return "Complete!";
     }
-    return "Exporting...";
+    return "Saving...";
   });
 
   const buttonHint = $derived(() => {
-    if (!isExporting) return "Save animation";
+    if (!isExporting) {
+      if (isCircular && loopCount > 1) {
+        return `MP4 · ${loopCount}x loop`;
+      }
+      return "Download as MP4";
+    }
     if (exportProgress?.stage === "complete") return "Download started";
     return "Please wait...";
   });
+
+  const loopPresets = [1, 2, 4, 8];
 </script>
 
 <div class="export-actions-panel">
-  <!-- Export GIF Button -->
-  <button
-    class="action-btn export-btn"
-    class:exporting={isExporting}
-    class:complete={exportProgress?.stage === "complete"}
-    onclick={handleExportClick}
-    type="button"
-    disabled={isExporting && exportProgress?.stage !== "complete"}
-    aria-label={isExporting ? "Exporting GIF..." : "Export as GIF"}
-  >
-    <i class="fas" class:fa-download={!isExporting} class:fa-spinner={isExporting && exportProgress?.stage !== "complete"} class:fa-spin={isExporting && exportProgress?.stage !== "complete"} class:fa-check={exportProgress?.stage === "complete"}></i>
-    <span class="btn-label">{buttonText()}</span>
-    <span class="btn-hint">{buttonHint()}</span>
+  <div class="save-button-container">
+    <!-- Main save button -->
+    <button
+      class="save-btn"
+      class:exporting={isExporting}
+      class:complete={exportProgress?.stage === "complete"}
+      onclick={handleSaveClick}
+      type="button"
+      disabled={isExporting && exportProgress?.stage !== "complete"}
+      aria-label={isExporting ? "Saving..." : "Save as MP4 video"}
+    >
+      <i
+        class="fas main-icon"
+        class:fa-download={!isExporting}
+        class:fa-spinner={isExporting && exportProgress?.stage !== "complete"}
+        class:fa-spin={isExporting && exportProgress?.stage !== "complete"}
+        class:fa-check={exportProgress?.stage === "complete"}
+      ></i>
+      <span class="btn-label">{buttonText()}</span>
+      <span class="btn-hint">{buttonHint()}</span>
 
-    {#if isExporting && exportProgress?.stage === "capturing"}
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
-      </div>
-    {/if}
-  </button>
+      {#if isExporting && exportProgress?.stage === "capturing"}
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
+        </div>
+      {/if}
+    </button>
 
-  <!-- Share Animation Button -->
-  <button
-    class="action-btn share-btn"
-    class:sharing={isSharing}
-    onclick={handleShareClick}
-    type="button"
-    disabled={isSharing || isExporting}
-    aria-label={isSharing ? "Sharing..." : "Share animation"}
-  >
-    <i class="fas" class:fa-share-nodes={!isSharing} class:fa-spinner={isSharing} class:fa-spin={isSharing}></i>
-    <span class="btn-label">{isSharing ? "Sharing..." : "Share"}</span>
-    <span class="btn-hint">{isSharing ? "Please wait..." : "Send to others"}</span>
-  </button>
+    <!-- Settings button (gear icon) -->
+    <button
+      class="settings-btn"
+      class:has-settings={isCircular && loopCount > 1}
+      onclick={handleSettingsClick}
+      type="button"
+      disabled={isExporting}
+      aria-label="Export settings"
+    >
+      <i class="fas fa-cog"></i>
+    </button>
+  </div>
 </div>
+
+<!-- Export Settings Sheet -->
+<Drawer
+  bind:isOpen={isSettingsOpen}
+  placement="bottom"
+  closeOnBackdrop={true}
+  closeOnEscape={true}
+  ariaLabel="Export Settings"
+  showHandle={true}
+>
+  <div class="settings-sheet">
+    <header class="sheet-header">
+      <h3 class="sheet-title">Export Settings</h3>
+      <button
+        class="sheet-close-btn"
+        onclick={() => (isSettingsOpen = false)}
+        aria-label="Close"
+        type="button"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </header>
+
+    <div class="sheet-body">
+      <!-- Loop Count Section -->
+      {#if isCircular}
+        <section class="settings-section">
+          <div class="section-header">
+            <i class="fas fa-infinity section-icon"></i>
+            <div class="section-info">
+              <h4 class="section-title">Loop Count</h4>
+              <p class="section-desc">This sequence loops seamlessly</p>
+            </div>
+          </div>
+          <div class="loop-presets">
+            {#each loopPresets as count}
+              <button
+                class="loop-preset-btn"
+                class:active={loopCount === count}
+                onclick={() => handleLoopPresetClick(count)}
+                type="button"
+                aria-label="Export {count} loop{count > 1 ? 's' : ''}"
+              >
+                {count}x
+              </button>
+            {/each}
+          </div>
+        </section>
+      {:else}
+        <section class="settings-section">
+          <div class="section-header">
+            <i class="fas fa-info-circle section-icon muted"></i>
+            <div class="section-info">
+              <h4 class="section-title muted">Loop Count</h4>
+              <p class="section-desc">Not available - sequence doesn't loop seamlessly</p>
+            </div>
+          </div>
+        </section>
+      {/if}
+
+      <!-- Future settings can be added here -->
+      <!--
+      <section class="settings-section">
+        <div class="section-header">
+          <i class="fas fa-film section-icon"></i>
+          <div class="section-info">
+            <h4 class="section-title">Quality</h4>
+            <p class="section-desc">Video bitrate and resolution</p>
+          </div>
+        </div>
+      </section>
+      -->
+    </div>
+
+    <footer class="sheet-footer">
+      <button
+        class="done-btn"
+        onclick={() => (isSettingsOpen = false)}
+        type="button"
+      >
+        Done
+      </button>
+    </footer>
+  </div>
+</Drawer>
 
 <style>
   /* ===========================
@@ -102,20 +208,24 @@
      =========================== */
 
   .export-actions-panel {
+    width: 100%;
+  }
+
+  .save-button-container {
     display: flex;
     gap: 8px;
     width: 100%;
   }
 
-  /* Shared button styles */
-  .action-btn {
+  /* Save Button - Cyan/Teal theme */
+  .save-btn {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 4px;
-    padding: 14px 12px;
+    padding: 16px 20px;
     flex: 1;
     border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
@@ -123,15 +233,26 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      rgba(6, 182, 212, 0.2) 0%,
+      rgba(8, 145, 178, 0.15) 100%
+    );
+    border: 1.5px solid rgba(6, 182, 212, 0.35);
+    box-shadow:
+      0 2px 10px rgba(6, 182, 212, 0.15),
+      0 0 20px rgba(6, 182, 212, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .action-btn i {
-    font-size: 22px;
+  .save-btn .main-icon {
+    font-size: 24px;
+    color: rgba(6, 182, 212, 1);
     transition: transform 0.2s ease;
   }
 
   .btn-label {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     letter-spacing: 0.3px;
@@ -144,116 +265,96 @@
     letter-spacing: 0.2px;
   }
 
-  /* Export GIF Button - Purple theme */
-  .export-btn {
-    background: linear-gradient(
-      135deg,
-      rgba(168, 85, 247, 0.15) 0%,
-      rgba(147, 51, 234, 0.12) 100%
-    );
-    border: 1.5px solid rgba(168, 85, 247, 0.3);
-    box-shadow:
-      0 2px 8px rgba(168, 85, 247, 0.12),
-      0 0 16px rgba(168, 85, 247, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  /* Settings Button */
+  .settings-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .export-btn i {
-    color: rgba(168, 85, 247, 1);
-  }
-
-  /* Share Button - Pink/Magenta theme */
-  .share-btn {
-    background: linear-gradient(
-      135deg,
-      rgba(236, 72, 153, 0.15) 0%,
-      rgba(219, 39, 119, 0.12) 100%
-    );
-    border: 1.5px solid rgba(236, 72, 153, 0.3);
-    box-shadow:
-      0 2px 8px rgba(236, 72, 153, 0.12),
-      0 0 16px rgba(236, 72, 153, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  }
-
-  .share-btn i {
-    color: rgba(236, 72, 153, 1);
+  .settings-btn.has-settings {
+    color: rgba(6, 182, 212, 0.8);
+    border-color: rgba(6, 182, 212, 0.25);
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .export-btn:hover:not(:disabled) {
+    .save-btn:hover:not(:disabled) {
       background: linear-gradient(
         135deg,
-        rgba(168, 85, 247, 0.25) 0%,
-        rgba(147, 51, 234, 0.2) 100%
+        rgba(6, 182, 212, 0.3) 0%,
+        rgba(8, 145, 178, 0.25) 100%
       );
-      border-color: rgba(168, 85, 247, 0.5);
+      border-color: rgba(6, 182, 212, 0.5);
       transform: translateY(-2px);
       box-shadow:
-        0 4px 16px rgba(168, 85, 247, 0.2),
-        0 0 24px rgba(168, 85, 247, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 4px 16px rgba(6, 182, 212, 0.25),
+        0 0 28px rgba(6, 182, 212, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
     }
 
-    .share-btn:hover:not(:disabled) {
-      background: linear-gradient(
-        135deg,
-        rgba(236, 72, 153, 0.25) 0%,
-        rgba(219, 39, 119, 0.2) 100%
-      );
-      border-color: rgba(236, 72, 153, 0.5);
-      transform: translateY(-2px);
-      box-shadow:
-        0 4px 16px rgba(236, 72, 153, 0.2),
-        0 0 24px rgba(236, 72, 153, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    .action-btn:hover i {
+    .save-btn:hover .main-icon {
       transform: scale(1.08);
+    }
+
+    .settings-btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .settings-btn.has-settings:hover:not(:disabled) {
+      border-color: rgba(6, 182, 212, 0.4);
+      color: rgba(6, 182, 212, 1);
     }
   }
 
-  .action-btn:active:not(:disabled) {
+  .save-btn:active:not(:disabled) {
     transform: scale(0.98);
   }
 
-  .action-btn:disabled {
+  .settings-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .save-btn:disabled,
+  .settings-btn:disabled {
     cursor: not-allowed;
     opacity: 0.5;
   }
 
-  .export-btn.exporting {
+  .save-btn.exporting {
     background: linear-gradient(
       135deg,
-      rgba(168, 85, 247, 0.18) 0%,
-      rgba(147, 51, 234, 0.15) 100%
+      rgba(6, 182, 212, 0.22) 0%,
+      rgba(8, 145, 178, 0.18) 100%
     );
   }
 
-  .export-btn.complete {
+  .save-btn.complete {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.2) 0%,
-      rgba(22, 163, 74, 0.15) 100%
+      rgba(34, 197, 94, 0.25) 0%,
+      rgba(22, 163, 74, 0.2) 100%
     );
     border-color: rgba(34, 197, 94, 0.5);
     box-shadow:
-      0 2px 12px rgba(34, 197, 94, 0.2),
-      0 0 20px rgba(34, 197, 94, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 2px 14px rgba(34, 197, 94, 0.25),
+      0 0 24px rgba(34, 197, 94, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
   }
 
-  .export-btn.complete i {
+  .save-btn.complete .main-icon {
     color: rgba(34, 197, 94, 1);
-  }
-
-  .share-btn.sharing {
-    background: linear-gradient(
-      135deg,
-      rgba(236, 72, 153, 0.18) 0%,
-      rgba(219, 39, 119, 0.15) 100%
-    );
   }
 
   .progress-bar {
@@ -271,10 +372,191 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      rgba(168, 85, 247, 1) 0%,
-      rgba(147, 51, 234, 1) 100%
+      rgba(6, 182, 212, 1) 0%,
+      rgba(8, 145, 178, 1) 100%
     );
     transition: width 0.3s ease;
+  }
+
+  /* ===========================
+     SETTINGS SHEET
+     =========================== */
+
+  .settings-sheet {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    max-height: 70vh;
+  }
+
+  .sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 20px;
+  }
+
+  .sheet-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+  }
+
+  .sheet-close-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .sheet-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .sheet-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .sheet-footer {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 20px;
+  }
+
+  .done-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(6, 182, 212, 0.25) 0%,
+      rgba(8, 145, 178, 0.2) 100%
+    );
+    border: 1.5px solid rgba(6, 182, 212, 0.4);
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .done-btn:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(6, 182, 212, 0.35) 0%,
+      rgba(8, 145, 178, 0.3) 100%
+    );
+    border-color: rgba(6, 182, 212, 0.5);
+  }
+
+  .done-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Settings Sections */
+  .settings-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .section-icon {
+    font-size: 18px;
+    color: rgba(6, 182, 212, 0.9);
+    margin-top: 2px;
+  }
+
+  .section-icon.muted {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .section-info {
+    flex: 1;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 4px 0;
+  }
+
+  .section-title.muted {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .section-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+  }
+
+  /* Loop Presets */
+  .loop-presets {
+    display: flex;
+    gap: 8px;
+    padding-left: 30px;
+  }
+
+  .loop-preset-btn {
+    flex: 1;
+    min-height: 44px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .loop-preset-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  .loop-preset-btn:active {
+    transform: scale(0.95);
+  }
+
+  .loop-preset-btn.active {
+    background: linear-gradient(
+      135deg,
+      rgba(6, 182, 212, 0.3) 0%,
+      rgba(8, 145, 178, 0.25) 100%
+    );
+    border-color: rgba(6, 182, 212, 0.5);
+    color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
   }
 
   /* ===========================
@@ -282,20 +564,34 @@
      =========================== */
 
   @media (max-width: 360px) {
-    .action-btn {
-      padding: 12px 8px;
+    .save-btn {
+      padding: 14px 16px;
     }
 
-    .action-btn i {
-      font-size: 20px;
+    .save-btn .main-icon {
+      font-size: 22px;
     }
 
     .btn-label {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
     }
 
     .btn-hint {
       font-size: 0.6rem;
+    }
+
+    .settings-btn {
+      width: 48px;
+      font-size: 16px;
+    }
+
+    .loop-presets {
+      padding-left: 0;
+    }
+
+    .loop-preset-btn {
+      padding: 8px 12px;
+      font-size: 0.8rem;
     }
   }
 
@@ -304,13 +600,17 @@
      =========================== */
 
   @media (prefers-reduced-motion: reduce) {
-    .action-btn,
-    .action-btn i {
+    .save-btn,
+    .save-btn .main-icon,
+    .settings-btn,
+    .loop-preset-btn {
       transition: none;
     }
 
-    .action-btn:hover,
-    .action-btn:active {
+    .save-btn:hover,
+    .save-btn:active,
+    .settings-btn:active,
+    .loop-preset-btn:active {
       transform: none;
     }
   }

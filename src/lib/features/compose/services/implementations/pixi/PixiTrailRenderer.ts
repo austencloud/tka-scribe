@@ -139,9 +139,11 @@ export class PixiTrailRenderer {
       return;
     }
 
-    // Render blue trail
-    if (hasBlue) {
-      this.blueTrailGraphics.clear();
+    // Debug: log visibility state
+
+    // Clear and render blue trail (always clear to remove stale trails when visibility toggled off)
+    this.blueTrailGraphics.clear();
+    if (hasBlue && blueTrailPoints.length >= 2) {
       this.renderTrailSegments(
         this.blueTrailGraphics,
         blueTrailPoints,
@@ -151,9 +153,9 @@ export class PixiTrailRenderer {
       );
     }
 
-    // Render red trail
-    if (hasRed) {
-      this.redTrailGraphics.clear();
+    // Clear and render red trail (always clear to remove stale trails when visibility toggled off)
+    this.redTrailGraphics.clear();
+    if (hasRed && redTrailPoints.length >= 2) {
       this.renderTrailSegments(
         this.redTrailGraphics,
         redTrailPoints,

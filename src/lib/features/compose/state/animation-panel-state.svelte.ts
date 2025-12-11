@@ -24,12 +24,20 @@ const loopPersistence = createPersistenceHelper({
   defaultValue: false,
 });
 
+const exportLoopCountPersistence = createPersistenceHelper({
+  key: "tka_animation_export_loop_count",
+  defaultValue: 1,
+});
+
 export type AnimationPanelState = {
   // Playback state
   readonly currentBeat: number;
   readonly isPlaying: boolean;
   readonly speed: number;
   readonly shouldLoop: boolean;
+
+  // Export settings
+  readonly exportLoopCount: number;
 
   // Sequence metadata
   readonly totalBeats: number;
@@ -50,6 +58,7 @@ export type AnimationPanelState = {
   setIsPlaying: (playing: boolean) => void;
   setSpeed: (speed: number) => void;
   setShouldLoop: (loop: boolean) => void;
+  setExportLoopCount: (count: number) => void;
   setTotalBeats: (beats: number) => void;
   setSequenceMetadata: (word: string, author: string) => void;
   setBluePropState: (state: PropState) => void;
@@ -74,7 +83,10 @@ export function createAnimationPanelState(): AnimationPanelState {
   let speed = $state(speedPersistence.load());
   let shouldLoop = $state(loopPersistence.load());
 
-  // Auto-save speed and loop state
+  // Export settings
+  let exportLoopCount = $state(exportLoopCountPersistence.load());
+
+  // Auto-save speed, loop state, and export loop count
   $effect.root(() => {
     $effect(() => {
       void speed;
@@ -84,6 +96,11 @@ export function createAnimationPanelState(): AnimationPanelState {
     $effect(() => {
       void shouldLoop;
       loopPersistence.setupAutoSave(shouldLoop);
+    });
+
+    $effect(() => {
+      void exportLoopCount;
+      exportLoopCountPersistence.setupAutoSave(exportLoopCount);
     });
   });
 
@@ -114,6 +131,9 @@ export function createAnimationPanelState(): AnimationPanelState {
     },
     get shouldLoop() {
       return shouldLoop;
+    },
+    get exportLoopCount() {
+      return exportLoopCount;
     },
     get totalBeats() {
       return totalBeats;
@@ -157,6 +177,10 @@ export function createAnimationPanelState(): AnimationPanelState {
       shouldLoop = loop;
     },
 
+    setExportLoopCount: (count: number) => {
+      exportLoopCount = Math.max(1, Math.min(10, count));
+    },
+
     setTotalBeats: (beats: number) => {
       totalBeats = beats;
     },
@@ -196,6 +220,7 @@ export function createAnimationPanelState(): AnimationPanelState {
       isPlaying = false;
       speed = 1.0;
       shouldLoop = false;
+      exportLoopCount = 1;
       totalBeats = 0;
       sequenceWord = "";
       sequenceAuthor = "";

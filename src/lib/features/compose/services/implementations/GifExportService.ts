@@ -80,10 +80,15 @@ export class GifExportService implements IGifExportService {
     this.isCurrentlyExporting = true;
     this.shouldCancel = false;
 
+    // Use all available CPU cores for faster encoding
+    const defaultWorkers = typeof navigator !== 'undefined'
+      ? Math.max(2, navigator.hardwareConcurrency || 4)
+      : 4;
+
     const {
       fps = GIF_EXPORT_FPS,
       quality = GIF_EXPORT_QUALITY,
-      workers = 2,
+      workers = defaultWorkers,
       duration,
       repeat = 0,
       filename = "animation.gif",
@@ -301,10 +306,15 @@ export class GifExportService implements IGifExportService {
     this.isCurrentlyExporting = true;
     this.shouldCancel = false;
 
+    // Use all available CPU cores for faster encoding
+    const defaultWorkers = typeof navigator !== 'undefined'
+      ? Math.max(2, navigator.hardwareConcurrency || 4)
+      : 4;
+
     const {
       fps = GIF_EXPORT_FPS,
       quality = GIF_EXPORT_QUALITY,
-      workers = 2,
+      workers = defaultWorkers,
       repeat = 0,
       filename = "animation.gif",
       autoDownload = true,

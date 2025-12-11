@@ -36,7 +36,7 @@
 
   // Custom popover state (compact variant only)
   let showCustomPopover = $state(false);
-  let customButtonRef: HTMLButtonElement | null = null;
+  let customButtonRef = $state<HTMLButtonElement | null>(null);
   let popoverX = $state(0);
   let popoverY = $state(0);
 
