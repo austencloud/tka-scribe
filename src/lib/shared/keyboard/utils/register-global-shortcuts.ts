@@ -14,6 +14,7 @@ import {
 } from "../../navigation-coordinator/navigation-coordinator.svelte";
 import { authStore } from "../../auth/stores/authStore.svelte";
 import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
+import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutService,
@@ -39,11 +40,11 @@ export function registerGlobalShortcuts(
   // ==================== TIER 1: Essential Global Shortcuts ====================
   // Using single-key shortcuts (Gmail/Notion style) since Chrome blocks most Ctrl combinations
 
-  // ? - Show keyboard shortcuts help (Gmail standard)
+  // ? - Show keyboard shortcuts settings (Gmail standard, opens Settings → Keyboard)
   service.register({
     id: "global.shortcuts-help",
-    label: "Show keyboard shortcuts",
-    description: "Display all available shortcuts (press ? key)",
+    label: "Keyboard shortcuts",
+    description: "Open keyboard shortcuts settings (press ? key)",
     key: "?",
     modifiers: [],
     context: "global",
@@ -53,8 +54,10 @@ export function registerGlobalShortcuts(
       // Only enable if settings allow single-key shortcuts
       return state.settings.enableSingleKeyShortcuts;
     },
-    action: () => {
-      state.toggleHelp();
+    action: async () => {
+      // Set the active tab to Keyboard before navigating to settings
+      saveActiveTab("Keyboard");
+      await handleModuleChange("settings");
     },
   });
 
@@ -72,12 +75,6 @@ export function registerGlobalShortcuts(
       // Close command palette if open
       if (state.showCommandPalette) {
         state.closeCommandPalette();
-        return;
-      }
-
-      // Close help if open
-      if (state.showHelp) {
-        state.closeHelp();
         return;
       }
 

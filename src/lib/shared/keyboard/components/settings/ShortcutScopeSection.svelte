@@ -5,7 +5,8 @@
   Features expand/collapse animation, colored header, and shortcut count.
 -->
 <script lang="ts">
-  import { slide } from "svelte/transition";
+  import { slide, fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import ShortcutListItem from "./ShortcutListItem.svelte";
   import type { ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizationService";
   import type { ShortcutScope } from "../../domain/types/keyboard-types";
@@ -84,12 +85,17 @@
 
   {#if isExpanded}
     <div class="scope-content" transition:slide={{ duration: 200 }}>
-      {#each shortcuts as item (item.shortcut.id)}
-        <ShortcutListItem
-          {item}
-          onEdit={onEditShortcut}
-          onReset={onResetShortcut}
-        />
+      {#each shortcuts as item, index (item.shortcut.id)}
+        <div
+          class="shortcut-item-wrapper"
+          in:fly={{ y: 8, duration: 200, delay: index * 30, easing: cubicOut }}
+        >
+          <ShortcutListItem
+            {item}
+            onEdit={onEditShortcut}
+            onReset={onResetShortcut}
+          />
+        </div>
       {/each}
     </div>
   {/if}
@@ -198,6 +204,18 @@
 
   .scope-content {
     background: rgba(0, 0, 0, 0.1);
+  }
+
+  .shortcut-item-wrapper {
+    /* Container for animation */
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .shortcut-item-wrapper {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 
   /* Mobile adjustments */
