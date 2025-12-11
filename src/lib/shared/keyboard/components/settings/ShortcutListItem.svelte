@@ -3,6 +3,7 @@
 
   Individual shortcut row for the keyboard settings tab.
   Shows label, description, context badge, key combo, and edit button.
+  Navigation shortcuts display with their module's accent color.
 -->
 <script lang="ts">
   import KeyboardKeyDisplay from "./KeyboardKeyDisplay.svelte";
@@ -18,6 +19,32 @@
     onEdit?: (item: ShortcutWithBinding) => void;
     onReset?: (item: ShortcutWithBinding) => void;
   } = $props();
+
+  // Module colors from MODULE_DEFINITIONS
+  const MODULE_COLORS: Record<string, string> = {
+    dashboard: "#10b981",
+    create: "#f59e0b",
+    discover: "#a855f7",
+    learn: "#3b82f6",
+    compose: "#ec4899",
+    train: "#ef4444",
+    library: "#0891b2",
+    feedback: "#14b8a6",
+    "ml-training": "#8b5cf6",
+    admin: "#ffd700",
+    settings: "#64748b",
+  };
+
+  // Detect if this is a module navigation shortcut and get its color
+  const moduleColor = $derived(() => {
+    const id = item.shortcut.id;
+    // Pattern: global.switch-to-{moduleId}
+    if (id.startsWith("global.switch-to-")) {
+      const moduleId = id.replace("global.switch-to-", "");
+      return MODULE_COLORS[moduleId] || null;
+    }
+    return null;
+  });
 
   // Format context for display
   function formatContext(context: ShortcutContext | ShortcutContext[]): string {
@@ -51,16 +78,27 @@
   }
 </script>
 
-<button
+<div
   class="shortcut-item"
   class:customized={item.isCustomized}
   class:disabled={item.isDisabled}
+  class:has-module-color={moduleColor() !== null}
+  style:--module-color={moduleColor()}
   onclick={handleEdit}
-  type="button"
+  onkeydown={(e) => e.key === "Enter" && handleEdit()}
+  tabindex="0"
+  role="button"
 >
+  <!-- Module color accent bar for navigation shortcuts -->
+  {#if moduleColor()}
+    <div class="module-accent"></div>
+  {/if}
+
   <div class="shortcut-info">
     <div class="shortcut-header">
-      <span class="shortcut-label">{item.shortcut.label}</span>
+      <span class="shortcut-label" class:module-colored={moduleColor() !== null}>
+        {item.shortcut.label}
+      </span>
       {#if item.isCustomized}
         <span class="customized-badge">Custom</span>
       {/if}
@@ -94,22 +132,24 @@
       <i class="fas fa-pen"></i>
     </button>
   </div>
-</button>
+</div>
 
 <style>
   .shortcut-item {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
     width: 100%;
-    padding: 12px 16px;
+    padding: 14px 16px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     cursor: pointer;
     text-align: left;
-    transition: background 150ms ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
   }
 
   .shortcut-item:last-child {
@@ -117,19 +157,56 @@
   }
 
   .shortcut-item:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.04);
   }
 
+  .shortcut-item:active {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Module color accent bar */
+  .module-accent {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--module-color);
+    border-radius: 0 2px 2px 0;
+    opacity: 0.8;
+    transition: all 0.2s ease;
+  }
+
+  .shortcut-item.has-module-color {
+    padding-left: 20px;
+  }
+
+  .shortcut-item.has-module-color:hover .module-accent {
+    height: 80%;
+    opacity: 1;
+    box-shadow: 0 0 12px var(--module-color);
+  }
+
+  /* Customized state with violet accent */
   .shortcut-item.customized {
-    background: rgba(99, 102, 241, 0.04);
+    background: linear-gradient(
+      90deg,
+      rgba(139, 92, 246, 0.06) 0%,
+      rgba(139, 92, 246, 0.02) 100%
+    );
   }
 
   .shortcut-item.customized:hover {
-    background: rgba(99, 102, 241, 0.08);
+    background: linear-gradient(
+      90deg,
+      rgba(139, 92, 246, 0.1) 0%,
+      rgba(139, 92, 246, 0.04) 100%
+    );
   }
 
   .shortcut-item.disabled {
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   .shortcut-info {
@@ -137,7 +214,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
 
   .shortcut-header {
@@ -148,44 +225,57 @@
   }
 
   .shortcut-label {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
+    transition: color 0.2s ease;
+  }
+
+  /* Module-colored label on hover */
+  .shortcut-label.module-colored {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .shortcut-item:hover .shortcut-label.module-colored {
+    color: var(--module-color);
   }
 
   .customized-badge,
   .disabled-badge {
-    font-size: 10px;
-    font-weight: 600;
+    font-size: 9px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 3px 7px;
+    border-radius: 6px;
   }
 
   .customized-badge {
-    background: rgba(99, 102, 241, 0.2);
+    background: rgba(139, 92, 246, 0.15);
     color: rgba(167, 139, 250, 1);
+    border: 1px solid rgba(139, 92, 246, 0.25);
   }
 
   .disabled-badge {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.15);
     color: rgba(248, 113, 113, 1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
   }
 
   .shortcut-description {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .shortcut-context {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.35);
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.3);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-weight: 500;
   }
 
   .shortcut-actions {
@@ -196,12 +286,12 @@
   }
 
   .key-combo-wrapper {
-    transition: opacity 150ms ease;
+    transition: all 0.15s ease;
   }
 
   .key-combo-wrapper.muted {
-    opacity: 0.4;
-    text-decoration: line-through;
+    opacity: 0.35;
+    filter: grayscale(1);
   }
 
   .reset-btn,
@@ -212,19 +302,24 @@
     width: 32px;
     height: 32px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11px;
     cursor: pointer;
-    transition: all 150ms ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .reset-btn:hover {
     background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.35);
     color: rgba(248, 113, 113, 1);
+    transform: scale(1.05);
+  }
+
+  .reset-btn:active {
+    transform: scale(0.95);
   }
 
   .edit-btn {
@@ -236,15 +331,36 @@
   }
 
   .edit-btn:hover {
-    background: rgba(99, 102, 241, 0.15);
-    border-color: rgba(99, 102, 241, 0.3);
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.35);
     color: rgba(167, 139, 250, 1);
+    transform: scale(1.05);
+  }
+
+  .edit-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* Focus states */
+  .shortcut-item:focus-visible {
+    outline: 2px solid rgba(139, 92, 246, 0.5);
+    outline-offset: -2px;
+  }
+
+  .reset-btn:focus-visible,
+  .edit-btn:focus-visible {
+    outline: 2px solid rgba(139, 92, 246, 0.5);
+    outline-offset: 2px;
   }
 
   /* Mobile: Always show edit button */
   @media (max-width: 768px) {
     .shortcut-item {
-      padding: 14px 12px;
+      padding: 16px 14px;
+    }
+
+    .shortcut-item.has-module-color {
+      padding-left: 22px;
     }
 
     .edit-btn {
@@ -253,8 +369,32 @@
 
     .reset-btn,
     .edit-btn {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
+      font-size: 12px;
+    }
+
+    .shortcut-label {
+      font-size: 14px;
+    }
+
+    .shortcut-description {
+      font-size: 12px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .shortcut-item,
+    .module-accent,
+    .reset-btn,
+    .edit-btn {
+      transition: none;
+    }
+
+    .reset-btn:hover,
+    .edit-btn:hover {
+      transform: none;
     }
   }
 </style>

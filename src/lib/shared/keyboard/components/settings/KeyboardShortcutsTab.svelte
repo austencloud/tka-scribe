@@ -99,13 +99,14 @@
 
     // Filter by context
     if (contextFilter !== "all") {
+      const filterContext = contextFilter as ShortcutContext;
       filtered = filtered.filter((item) => {
         const contexts = item.shortcut.context;
-        if (!contexts) return contextFilter === "global";
+        if (!contexts) return filterContext === "global";
         if (Array.isArray(contexts)) {
-          return contexts.includes(contextFilter) || contexts.includes("global");
+          return contexts.includes(filterContext) || contexts.includes("global");
         }
-        return contexts === contextFilter || contexts === "global";
+        return contexts === filterContext || contexts === "global";
       });
     }
 
@@ -128,9 +129,10 @@
   });
 
   // Count customized shortcuts
-  const customizedCount = $derived(
-    customizationService?.getCustomizedCount() ?? 0
-  );
+  function getCustomizedCount(): number {
+    return customizationService?.getCustomizedCount() ?? 0;
+  }
+  const customizedCount = $derived(getCustomizedCount());
 
   // Edit handlers
   function handleEditShortcut(item: ShortcutWithBinding) {
@@ -170,21 +172,6 @@
     return customizationService.detectConflict(editingItem.shortcut.id, keyCombo);
   }
 
-  // Settings handlers
-  function handleSingleKeyToggle(event: Event) {
-    const target = event.target as HTMLInputElement;
-    singleKeyEnabled = target.checked;
-    onSettingUpdate({ key: "singleKeyShortcuts", value: target.checked });
-    keyboardShortcutState.updateSettings({ enableSingleKeyShortcuts: target.checked });
-  }
-
-  function handleHintsToggle(event: Event) {
-    const target = event.target as HTMLInputElement;
-    hintsEnabled = target.checked;
-    onSettingUpdate({ key: "showShortcutHints", value: target.checked });
-    keyboardShortcutState.updateSettings({ showShortcutHints: target.checked });
-  }
-
   function toggleScope(scope: ShortcutScope) {
     const newSet = new Set(expandedScopes);
     if (newSet.has(scope)) {
@@ -197,39 +184,41 @@
 </script>
 
 <div class="keyboard-shortcuts-tab">
-  <!-- Toggle Settings Section -->
-  <div class="settings-toggles">
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <span class="toggle-label">Single-key shortcuts</span>
-        <span class="toggle-description">Enable shortcuts without modifier keys (e.g., Space to play)</span>
-      </div>
-      <label class="toggle-switch">
-        <input
-          type="checkbox"
-          checked={singleKeyEnabled}
-          onchange={handleSingleKeyToggle}
-          aria-label="Toggle single-key shortcuts"
-        />
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
+  <!-- Quick Settings Chips -->
+  <div class="settings-chips">
+    <button
+      type="button"
+      class="setting-chip"
+      class:active={singleKeyEnabled}
+      onclick={() => {
+        singleKeyEnabled = !singleKeyEnabled;
+        onSettingUpdate({ key: "singleKeyShortcuts", value: singleKeyEnabled });
+        keyboardShortcutState.updateSettings({ enableSingleKeyShortcuts: singleKeyEnabled });
+      }}
+      aria-pressed={singleKeyEnabled}
+      aria-label="Toggle single-key shortcuts"
+    >
+      <i class="fas fa-bolt chip-icon"></i>
+      <span class="chip-label">Single-key</span>
+      <span class="chip-hint">Space, J, K</span>
+    </button>
 
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <span class="toggle-label">Show shortcut hints</span>
-        <span class="toggle-description">Display keyboard hints in tooltips and buttons</span>
-      </div>
-      <label class="toggle-switch">
-        <input
-          type="checkbox"
-          checked={hintsEnabled}
-          onchange={handleHintsToggle}
-          aria-label="Toggle shortcut hints"
-        />
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
+    <button
+      type="button"
+      class="setting-chip"
+      class:active={hintsEnabled}
+      onclick={() => {
+        hintsEnabled = !hintsEnabled;
+        onSettingUpdate({ key: "showShortcutHints", value: hintsEnabled });
+        keyboardShortcutState.updateSettings({ showShortcutHints: hintsEnabled });
+      }}
+      aria-pressed={hintsEnabled}
+      aria-label="Toggle shortcut hints"
+    >
+      <i class="fas fa-lightbulb chip-icon"></i>
+      <span class="chip-label">Show hints</span>
+      <span class="chip-hint">Tooltips & buttons</span>
+    </button>
   </div>
 
   <!-- Search and Filter Bar -->
@@ -293,102 +282,118 @@
     background: var(--background, #0f0f0f);
   }
 
-  /* Settings Toggles Section */
-  .settings-toggles {
+  /* Quick Settings Chips - 2026 Bento Box Style */
+  .settings-chips {
     flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.03) 0%,
+      rgba(99, 102, 241, 0.02) 100%
+    );
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
-  .toggle-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 0;
-  }
-
-  .toggle-row:first-child {
-    padding-top: 0;
-  }
-
-  .toggle-row:last-child {
-    padding-bottom: 0;
-  }
-
-  .toggle-row:not(:last-child) {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  }
-
-  .toggle-info {
-    flex: 1;
-    min-width: 0;
+  .setting-chip {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px 12px;
+    min-height: 80px;
+
+    /* Bento box frosted glass */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Subtle inset glow */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .toggle-label {
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+  .setting-chip:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 8px 24px rgba(0, 0, 0, 0.15);
   }
 
-  .toggle-description {
-    font-size: 12px;
+  .setting-chip:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 0.1s;
+  }
+
+  /* Active (On) State - Violet Gradient */
+  .setting-chip.active {
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.2) 0%,
+      rgba(99, 102, 241, 0.15) 100%
+    );
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(139, 92, 246, 0.15),
+      0 4px 16px rgba(139, 92, 246, 0.2);
+  }
+
+  .setting-chip.active:hover:not(:disabled) {
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.25) 0%,
+      rgba(99, 102, 241, 0.2) 100%
+    );
+    border-color: rgba(139, 92, 246, 0.5);
+  }
+
+  .chip-icon {
+    font-size: 18px;
     color: rgba(255, 255, 255, 0.5);
+    transition: all 0.2s ease;
   }
 
-  /* iOS-style Toggle Switch */
-  .toggle-switch {
-    flex-shrink: 0;
-    position: relative;
-    display: inline-block;
-    width: 51px;
-    height: 31px;
-    cursor: pointer;
+  .setting-chip.active .chip-icon {
+    color: rgba(167, 139, 250, 1);
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
   }
 
-  .toggle-switch input {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    margin: 0;
-    z-index: 2;
-    top: 0;
-    left: 0;
+  .chip-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    transition: color 0.2s ease;
   }
 
-  .toggle-slider {
-    position: absolute;
-    inset: 0;
-    background: rgba(120, 120, 128, 0.32);
-    border-radius: 999px;
-    transition: all 200ms ease;
+  .setting-chip.active .chip-label {
+    color: rgba(255, 255, 255, 0.95);
   }
 
-  .toggle-slider::before {
-    content: "";
-    position: absolute;
-    height: 27px;
-    width: 27px;
-    left: 2px;
-    top: 2px;
-    background: white;
-    border-radius: 50%;
-    transition: all 200ms ease;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  .chip-hint {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 
-  input:checked + .toggle-slider {
-    background: #34c759;
+  .setting-chip.active .chip-hint {
+    color: rgba(167, 139, 250, 0.7);
   }
 
-  input:checked + .toggle-slider::before {
-    left: 22px;
+  /* Focus State */
+  .setting-chip:focus-visible {
+    outline: 2px solid rgba(139, 92, 246, 0.5);
+    outline-offset: 2px;
   }
 
   /* Shortcuts List */
@@ -431,17 +436,27 @@
 
   /* Mobile Adjustments */
   @media (max-width: 768px) {
-    .settings-toggles {
+    .settings-chips {
       padding: 12px;
+      gap: 8px;
+    }
+
+    .setting-chip {
+      min-height: 72px;
+      padding: 14px 10px;
+    }
+
+    .chip-icon {
+      font-size: 16px;
+    }
+
+    .chip-label {
+      font-size: 12px;
     }
 
     .shortcuts-list {
       padding: 12px;
       gap: 10px;
-    }
-
-    .toggle-description {
-      display: none;
     }
   }
 
@@ -452,14 +467,28 @@
 
   /* Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
-    .toggle-slider,
-    .toggle-slider::before {
+    .setting-chip {
       transition: none;
+    }
+
+    .setting-chip:hover:not(:disabled) {
+      transform: none;
     }
 
     .scope-section-wrapper {
       animation: none !important;
       transition: none !important;
+    }
+  }
+
+  /* High Contrast Mode */
+  @media (prefers-contrast: high) {
+    .setting-chip {
+      border-width: 2px;
+    }
+
+    .setting-chip.active {
+      border-color: rgba(139, 92, 246, 0.8);
     }
   }
 </style>

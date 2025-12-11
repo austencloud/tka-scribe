@@ -32,12 +32,16 @@
     navigation: "#6366f1", // Indigo
     action: "#10b981", // Emerald
     editing: "#f59e0b", // Amber
-    playback: "#ef4444", // Red
+    panel: "#14b8a6", // Teal
+    focus: "#f97316", // Orange
+    help: "#84cc16", // Lime
+    "sequence-management": "#0ea5e9", // Sky
     animation: "#8b5cf6", // Violet
+    workspace: "#22c55e", // Green
+    playback: "#ef4444", // Red
     view: "#06b6d4", // Cyan
     selection: "#ec4899", // Pink
     special: "#64748b", // Slate
-    help: "#84cc16", // Lime
   };
 
   // Scope icons for visual distinction
@@ -45,12 +49,16 @@
     navigation: "fa-compass",
     action: "fa-bolt",
     editing: "fa-pen",
-    playback: "fa-play",
+    panel: "fa-window-restore",
+    focus: "fa-crosshairs",
+    help: "fa-question-circle",
+    "sequence-management": "fa-list-ol",
     animation: "fa-film",
+    workspace: "fa-th-large",
+    playback: "fa-play",
     view: "fa-eye",
     selection: "fa-object-group",
     special: "fa-star",
-    help: "fa-question-circle",
   };
 
   const color = $derived(scopeColors[scope] || "#6366f1");
@@ -103,64 +111,92 @@
 
 <style>
   .scope-section {
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .scope-section:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .scope-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     width: 100%;
-    padding: 14px 16px;
+    padding: 16px 18px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--scope-color) 8%, transparent) 0%,
+      color-mix(in srgb, var(--scope-color) 10%, transparent) 0%,
       color-mix(in srgb, var(--scope-color) 4%, transparent) 100%
     );
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     cursor: pointer;
     text-align: left;
-    transition: background 150ms ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .scope-header:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--scope-color) 12%, transparent) 0%,
-      color-mix(in srgb, var(--scope-color) 6%, transparent) 100%
+      color-mix(in srgb, var(--scope-color) 15%, transparent) 0%,
+      color-mix(in srgb, var(--scope-color) 7%, transparent) 100%
     );
   }
 
   .scope-header.expanded {
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgba(255, 255, 255, 0.06);
   }
 
   .scope-header:not(.expanded) {
     border-bottom: none;
-    border-radius: 12px;
+    border-radius: 14px;
   }
 
   .scope-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: color-mix(in srgb, var(--scope-color) 20%, transparent);
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--scope-color) 25%, transparent) 0%,
+      color-mix(in srgb, var(--scope-color) 15%, transparent) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--scope-color) 30%, transparent);
+    border-radius: 10px;
     color: var(--scope-color);
-    font-size: 14px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    box-shadow:
+      0 2px 6px color-mix(in srgb, var(--scope-color) 20%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .scope-header:hover .scope-icon {
+    transform: scale(1.05);
+    box-shadow:
+      0 4px 12px color-mix(in srgb, var(--scope-color) 30%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
   .scope-label {
     flex: 1;
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: -0.01em;
   }
 
   .scope-badges {
@@ -173,29 +209,38 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 24px;
-    height: 24px;
-    padding: 0 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 9px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
     font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.55);
+    font-variant-numeric: tabular-nums;
   }
 
   .customized-count {
-    padding: 4px 8px;
-    background: rgba(99, 102, 241, 0.15);
+    padding: 5px 10px;
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
     border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 700;
     color: rgba(167, 139, 250, 1);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 
   .expand-icon {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
-    transition: transform 200ms ease;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.35);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .scope-header:hover .expand-icon {
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .scope-header.expanded .expand-icon {
@@ -203,15 +248,36 @@
   }
 
   .scope-content {
-    background: rgba(0, 0, 0, 0.1);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.12) 0%,
+      rgba(0, 0, 0, 0.06) 100%
+    );
   }
 
   .shortcut-item-wrapper {
     /* Container for animation */
   }
 
+  /* Focus states */
+  .scope-header:focus-visible {
+    outline: 2px solid var(--scope-color);
+    outline-offset: -2px;
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
+    .scope-section,
+    .scope-header,
+    .scope-icon,
+    .expand-icon {
+      transition: none;
+    }
+
+    .scope-header:hover .scope-icon {
+      transform: none;
+    }
+
     .shortcut-item-wrapper {
       animation: none !important;
       transition: none !important;
@@ -220,18 +286,46 @@
 
   /* Mobile adjustments */
   @media (max-width: 480px) {
+    .scope-section {
+      border-radius: 14px;
+    }
+
     .scope-header {
-      padding: 12px;
+      padding: 14px 14px;
+      gap: 12px;
     }
 
     .scope-icon {
-      width: 28px;
-      height: 28px;
-      font-size: 12px;
+      width: 32px;
+      height: 32px;
+      font-size: 13px;
+      border-radius: 8px;
     }
 
     .scope-label {
       font-size: 13px;
+    }
+
+    .shortcut-count {
+      min-width: 24px;
+      height: 24px;
+      font-size: 11px;
+    }
+
+    .customized-count {
+      padding: 4px 8px;
+      font-size: 9px;
+    }
+  }
+
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .scope-section {
+      border-width: 2px;
+    }
+
+    .scope-header:focus-visible {
+      outline-width: 3px;
     }
   }
 </style>

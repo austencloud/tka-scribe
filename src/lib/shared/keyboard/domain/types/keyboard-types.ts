@@ -41,7 +41,11 @@ export type ShortcutScope =
   | "help" // Help and information
   | "sequence-management" // Sequence management (save, add, delete beats)
   | "animation" // Animation control (play, pause, seek)
-  | "workspace"; // Workspace navigation and interaction
+  | "workspace" // Workspace navigation and interaction
+  | "playback" // Media playback controls
+  | "view" // View toggles and display options
+  | "selection" // Selection operations
+  | "special"; // Special/misc shortcuts
 
 /**
  * Shortcut priority - determines which shortcut takes precedence when multiple match

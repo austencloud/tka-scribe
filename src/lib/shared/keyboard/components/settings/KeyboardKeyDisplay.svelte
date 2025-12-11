@@ -96,66 +96,78 @@
   .key-combo {
     display: inline-flex;
     align-items: center;
-    gap: 2px;
+    gap: 3px;
   }
 
   .separator {
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.75em;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.7em;
     margin: 0 1px;
+    font-weight: 500;
   }
 
-  /* Realistic keyboard key styling */
+  /* 2026 Realistic keyboard key styling */
   .kbd {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 28px;
     height: 28px;
-    padding: 0 8px;
+    padding: 0 9px;
 
-    /* 3D keycap effect */
+    /* Enhanced 3D keycap effect */
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.05) 100%
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0.04) 100%
     );
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-bottom: 3px solid rgba(0, 0, 0, 0.3);
-    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.35);
+    border-radius: 7px;
 
-    /* Text styling */
-    font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    /* Text styling - modern mono */
+    font-family: ui-monospace, "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.4px;
     white-space: nowrap;
 
-    /* Subtle shadow for depth */
+    /* Enhanced depth effect */
     box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 2px 4px rgba(0, 0, 0, 0.25),
+      0 1px 2px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 
-    transition: all 100ms ease;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Modifier keys - accent color */
+  /* Modifier keys - violet accent */
   .kbd.modifier {
     background: linear-gradient(
       180deg,
-      rgba(99, 102, 241, 0.2) 0%,
-      rgba(99, 102, 241, 0.1) 100%
+      rgba(139, 92, 246, 0.25) 0%,
+      rgba(139, 92, 246, 0.15) 50%,
+      rgba(139, 92, 246, 0.1) 100%
     );
-    border-color: rgba(99, 102, 241, 0.3);
-    color: rgba(167, 139, 250, 1);
+    border-color: rgba(139, 92, 246, 0.35);
+    border-bottom-color: rgba(109, 62, 216, 0.5);
+    color: rgba(196, 181, 253, 1);
+    box-shadow:
+      0 2px 4px rgba(139, 92, 246, 0.2),
+      0 1px 2px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   }
 
   /* Wide keys (Space, Enter, etc.) */
   .kbd.wide {
-    min-width: 52px;
-    padding: 0 12px;
+    min-width: 56px;
+    padding: 0 14px;
+    letter-spacing: 0.6px;
   }
 
   /* Pressable key hover/active states */
@@ -164,10 +176,11 @@
   }
 
   .kbd.pressable:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow:
-      0 3px 6px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      0 6px 12px rgba(0, 0, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
     border-color: rgba(255, 255, 255, 0.25);
   }
 
@@ -175,36 +188,60 @@
     transform: translateY(1px);
     border-bottom-width: 1px;
     box-shadow:
-      0 0 2px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(0, 0, 0, 0.1);
+      0 1px 2px rgba(0, 0, 0, 0.2),
+      inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .kbd.modifier.pressable:hover {
+    box-shadow:
+      0 6px 16px rgba(139, 92, 246, 0.35),
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   /* Size variants */
   .key-combo.small .kbd {
     min-width: 22px;
     height: 22px;
-    padding: 0 5px;
-    font-size: 10px;
-    border-radius: 4px;
+    padding: 0 6px;
+    font-size: 9px;
+    border-radius: 5px;
     border-bottom-width: 2px;
+    font-weight: 600;
+  }
+
+  .key-combo.small .separator {
+    font-size: 0.6em;
   }
 
   .key-combo.small .kbd.wide {
-    min-width: 40px;
-    padding: 0 8px;
+    min-width: 42px;
+    padding: 0 9px;
   }
 
   .key-combo.large .kbd {
-    min-width: 36px;
-    height: 36px;
-    padding: 0 12px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 14px;
     font-size: 14px;
-    border-radius: 8px;
+    border-radius: 9px;
     border-bottom-width: 4px;
   }
 
   .key-combo.large .kbd.wide {
-    min-width: 72px;
-    padding: 0 16px;
+    min-width: 76px;
+    padding: 0 18px;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .kbd {
+      transition: none;
+    }
+
+    .kbd.pressable:hover,
+    .kbd.pressable:active {
+      transform: none;
+    }
   }
 </style>

@@ -108,6 +108,10 @@
       "sequence-management": "Sequence Management",
       animation: "Animation",
       workspace: "Workspace",
+      playback: "Playback",
+      view: "View",
+      selection: "Selection",
+      special: "Special",
     };
 
     return labels[scope] || scope;
@@ -124,6 +128,10 @@
       "sequence-management": "Save, add, delete beats and manage sequences",
       animation: "Control animation playback and settings",
       workspace: "Navigate and interact with the workspace",
+      playback: "Media playback controls",
+      view: "Toggle views and display options",
+      selection: "Selection operations",
+      special: "Miscellaneous shortcuts",
     };
 
     return descriptions[scope] || "";
