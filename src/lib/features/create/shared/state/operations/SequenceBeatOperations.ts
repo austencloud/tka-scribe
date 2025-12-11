@@ -312,6 +312,9 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
     updateBeat(beatIndex: number, beatData: Partial<BeatData>) {
       if (!coreState.currentSequence) return;
 
+      const currentSelectedBeat = selectionState.selectedBeatNumber;
+      console.log(`[SequenceBeatOperations.updateBeat] START - selectedBeatNumber=${currentSelectedBeat}, updating beatIndex=${beatIndex}`);
+
       try {
         let updatedSequence = updateBeatInSequence(
           coreState.currentSequence,
@@ -322,8 +325,11 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         if (reversalDetectionService) {
           updatedSequence = reversalDetectionService.processReversals(updatedSequence);
         }
+        console.log(`[SequenceBeatOperations.updateBeat] Before setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`);
         coreState.setCurrentSequence(updatedSequence);
+        console.log(`[SequenceBeatOperations.updateBeat] After setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`);
         coreState.clearError();
+        console.log(`[SequenceBeatOperations.updateBeat] END - selectedBeatNumber=${selectionState.selectedBeatNumber}`);
       } catch (error) {
         handleError("Failed to update beat", error);
       }

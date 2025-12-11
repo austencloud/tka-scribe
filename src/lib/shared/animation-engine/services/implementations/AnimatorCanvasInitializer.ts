@@ -14,6 +14,16 @@ import type {
 	InitializerDependencies,
 } from "../contracts/IAnimatorCanvasInitializer";
 
+/**
+ * Measure the actual size of a container element.
+ * Returns DEFAULT_CANVAS_SIZE if container has no dimensions yet.
+ */
+function measureContainerSize(container: HTMLDivElement): number {
+	const rect = container.getBoundingClientRect();
+	const size = Math.min(rect.width || DEFAULT_CANVAS_SIZE, rect.height || DEFAULT_CANVAS_SIZE);
+	return size > 0 ? size : DEFAULT_CANVAS_SIZE;
+}
+
 export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 	private pixiRenderer: IPixiAnimationRenderer | null = null;
 	private initialized = false;
@@ -76,10 +86,13 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 				return { success: false, error: this.destroyRequested ? "Destroyed during initialization" : "Container element became null during initialization" };
 			}
 
-			// Step 4: Initialize PixiJS renderer
+			// Step 4: Measure container size BEFORE initializing PixiJS to avoid resize flash
+			const initialSize = measureContainerSize(deps.containerElement);
+
+			// Step 5: Initialize PixiJS renderer with measured size
 			await this.pixiRenderer.initialize(
 				deps.containerElement,
-				DEFAULT_CANVAS_SIZE,
+				initialSize,
 				deps.backgroundAlpha
 			);
 
@@ -91,10 +104,10 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 				return { success: false, error: "Destroyed during initialization" };
 			}
 
-			// Step 5: Initialize texture services
+			// Step 6: Initialize texture services
 			deps.initializePropTextureService();
 
-			// Step 6: Load initial textures
+			// Step 7: Load initial textures
 			const initialGridMode = deps.gridMode?.toString() ?? "diamond";
 			await Promise.all([
 				this.pixiRenderer.loadGridTexture(initialGridMode),
@@ -109,19 +122,19 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 				return { success: false, error: "Destroyed during initialization" };
 			}
 
-			// Step 7: Mark as initialized
+			// Step 8: Mark as initialized
 			this.initialized = true;
 			callbacks.onInitialized(true);
 
 			const canvas = this.pixiRenderer.getCanvas();
 			callbacks.onCanvasReady(canvas);
 
-			// Step 8: Set up remaining services
+			// Step 9: Set up remaining services
 			deps.initializeResizeService();
 			deps.initializeGlyphTextureService();
 			deps.initializeRenderLoopService();
 
-			// Step 9: Start render loop
+			// Step 10: Start render loop
 			deps.startRenderLoop();
 
 			this.isInitializing = false;

@@ -7,7 +7,7 @@
  * Domain: Keyboard Shortcuts - State Management
  */
 
-import type { ShortcutContext, ShortcutSettings } from '../domain/types/keyboard-types';
+import type { CustomBinding, ShortcutContext, ShortcutSettings } from '../domain/types/keyboard-types';
 import { browser } from "$app/environment";
 
 /**
@@ -18,7 +18,7 @@ const defaultSettings: ShortcutSettings = {
   enableVimStyleNavigation: false,
   showShortcutHints: true,
   playSoundOnActivation: false,
-  customBindings: {},
+  customBindings: {} as Record<string, CustomBinding>,
 };
 
 /**
@@ -179,6 +179,47 @@ export function createKeyboardShortcutState() {
       setTimeout(() => {
         recentlyActivated = recentlyActivated.filter((id) => id !== shortcutId);
       }, 2000);
+    },
+
+    // Custom binding management
+    setCustomBinding(shortcutId: string, binding: CustomBinding) {
+      settings = {
+        ...settings,
+        customBindings: {
+          ...settings.customBindings,
+          [shortcutId]: binding,
+        },
+      };
+      saveSettings(settings);
+    },
+
+    removeCustomBinding(shortcutId: string) {
+      const { [shortcutId]: _, ...rest } = settings.customBindings;
+      settings = {
+        ...settings,
+        customBindings: rest,
+      };
+      saveSettings(settings);
+    },
+
+    resetAllCustomBindings() {
+      settings = {
+        ...settings,
+        customBindings: {},
+      };
+      saveSettings(settings);
+    },
+
+    getCustomBinding(shortcutId: string): CustomBinding | undefined {
+      return settings.customBindings[shortcutId];
+    },
+
+    get customBindingCount() {
+      return Object.keys(settings.customBindings).length;
+    },
+
+    get hasCustomBindings() {
+      return Object.keys(settings.customBindings).length > 0;
     },
   };
 }

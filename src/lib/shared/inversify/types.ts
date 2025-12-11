@@ -69,6 +69,7 @@ export const TYPES = {
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
   IShortcutRegistryService: Symbol.for("IShortcutRegistryService"),
   ICommandPaletteService: Symbol.for("ICommandPaletteService"),
+  IShortcutCustomizationService: Symbol.for("IShortcutCustomizationService"),
 
   // === Create Module ServiceS ===
   ICreateModuleService: Symbol.for("ICreateModuleService"),
