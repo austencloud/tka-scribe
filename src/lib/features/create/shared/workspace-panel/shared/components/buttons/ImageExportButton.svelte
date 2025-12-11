@@ -1,7 +1,7 @@
 <!--
-  ShareButton.svelte
+  ImageExportButton.svelte
 
-  Opens the share sheet from the ButtonPanel. Highlights when the sheet is visible.
+  Opens the image export panel from the ButtonPanel. Highlights when the panel is visible.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -35,15 +35,15 @@
 </script>
 
 <button
-  class="panel-button share-button"
+  class="panel-button image-export-button"
   class:active={isActive}
   onclick={handleClick}
   aria-pressed={isActive}
-  aria-label={isActive ? "Close share panel" : "Open share panel"}
-  title="Share"
+  aria-label={isActive ? "Close image export" : "Export as image"}
+  title="Export Image"
   {disabled}
 >
-  <i class="fas fa-share-nodes" aria-hidden="true"></i>
+  <i class="fas fa-image" aria-hidden="true"></i>
 </button>
 
 <style>
@@ -94,7 +94,7 @@
     box-shadow: none;
   }
 
-  .share-button.active {
+  .image-export-button.active {
     background: linear-gradient(
       135deg,
       rgba(139, 92, 246, 1),

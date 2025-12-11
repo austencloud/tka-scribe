@@ -6,7 +6,7 @@
 
   Layout:
   - LEFT ZONE: Sequence Actions (tools menu)
-  - CENTER ZONE: Play, Share, Record Video (3 main export/preview actions)
+  - CENTER ZONE: Play (Animation), Image Export, Record Video (3 media type actions)
   - RIGHT ZONE: Clear Sequence
 
   Note: Undo button moved to workspace top-left (near WordLabel) for better UX.
@@ -25,7 +25,7 @@
   import ClearSequencePanelButton from "./buttons/ClearSequenceButton.svelte";
   import PlayButton from "./buttons/PlayButton.svelte";
   import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
-  import ShareButton from "./buttons/ShareButton.svelte";
+  import ImageExportButton from "./buttons/ImageExportButton.svelte";
   import RecordVideoButton from "./buttons/RecordVideoButton.svelte";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
@@ -35,14 +35,14 @@
   const {
     onClearSequence,
     onSequenceActionsClick,
-    onShare,
+    onImageExport,
     onRecordVideo,
     onPlayAnimation,
     visible = true,
   }: {
     onClearSequence?: () => void;
     onSequenceActionsClick?: () => void;
-    onShare?: () => void;
+    onImageExport?: () => void;
     onRecordVideo?: () => void;
     onPlayAnimation?: () => void;
     visible?: boolean;
@@ -50,7 +50,7 @@
 
   // Derive computed values from context
   const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
-  const showShareButton = $derived(CreateModuleState.canShowActionButtons());
+  const showImageExportButton = $derived(CreateModuleState.canShowActionButtons());
   const showRecordVideoButton = $derived(
     CreateModuleState.canShowActionButtons()
   );
@@ -59,7 +59,7 @@
   );
   const canClearSequence = $derived(CreateModuleState.canClearSequence());
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
-  const isShareOpen = $derived(panelState.isSharePanelOpen);
+  const isImageExportOpen = $derived(panelState.isSharePanelOpen);
   // TODO: Video record panel not yet implemented in PanelCoordinationState
   const isRecordVideoOpen = false;
 
@@ -68,7 +68,7 @@
   const centerZoneButtonCount = $derived(() => {
     let count = 0;
     if (showPlayButton) count++;
-    if (showShareButton) count++;
+    if (showImageExportButton) count++;
     if (showRecordVideoButton) count++;
     return count;
   });
@@ -128,10 +128,10 @@
             </div>
           {/if}
 
-          <!-- Share Button -->
-          {#if showShareButton && onShare}
+          <!-- Image Export Button -->
+          {#if showImageExportButton && onImageExport}
             <div>
-              <ShareButton onclick={onShare} isActive={isShareOpen} />
+              <ImageExportButton onclick={onImageExport} isActive={isImageExportOpen} />
             </div>
           {/if}
 

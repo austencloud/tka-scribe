@@ -9,6 +9,9 @@
   import BeatGrid from "./BeatGrid.svelte";
   import WordLabel from "./WordLabel.svelte";
   import UndoButton from "../../shared/components/buttons/UndoButton.svelte";
+  import SaveToLibraryButton from "../../shared/components/buttons/SaveToLibraryButton.svelte";
+  import SaveToLibraryPanel from "../../../components/SaveToLibraryPanel.svelte";
+  import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
   let {
     sequenceState,
@@ -42,11 +45,14 @@
     currentDisplayWord?: string;
   }>();
 
+  const logger = createComponentLogger("SequenceDisplay");
+
   // Services
   let hapticService: IHapticFeedbackService;
 
-  // Get CreateModuleState from context for UndoButton
-  const { CreateModuleState } = getCreateModuleContext();
+  // Get context for UndoButton and library save
+  const ctx = getCreateModuleContext();
+  const { CreateModuleState, panelState } = ctx;
 
   // Initialize haptic service on mount
   onMount(() => {
@@ -54,6 +60,19 @@
       TYPES.IHapticFeedbackService
     );
   });
+
+  // Library save handlers - use panelState for mutual exclusivity with other panels
+  function handleSaveButtonClick() {
+    panelState.openSaveToLibraryPanel(); // This calls closeAllPanels() first
+  }
+
+  function handleSaveClose() {
+    panelState.closeSaveToLibraryPanel();
+  }
+
+  function handleSaveComplete(sequenceId: string) {
+    logger.success("Sequence saved with ID:", sequenceId);
+  }
 
   const currentSequence = $derived(sequenceState.currentSequence);
   const selectedStartPosition = $derived(sequenceState.selectedStartPosition);
@@ -99,7 +118,10 @@
           <WordLabel word={currentDisplayWord} scrollMode={false} />
         </div>
         <div class="top-right-zone">
-          <!-- Empty for balance, could add future controls -->
+          <SaveToLibraryButton
+            sequence={currentSequence}
+            onclick={handleSaveButtonClick}
+          />
         </div>
       </div>
 
@@ -127,6 +149,12 @@
     </div>
   </div>
 </div>
+
+<SaveToLibraryPanel
+  show={panelState.isSaveToLibraryPanelOpen}
+  onClose={handleSaveClose}
+  onSaveComplete={handleSaveComplete}
+/>
 
 <style>
   .sequence-container {

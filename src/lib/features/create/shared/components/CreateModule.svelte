@@ -873,7 +873,7 @@
             bind:toolPanelElement
             onPlayAnimation={handlePlayAnimation}
             onClearSequence={handleClearSequence}
-            onShare={handleOpenSharePanel}
+            onImageExport={handleOpenSharePanel}
             onRecordVideo={handleOpenVideoRecordPanel}
             onSequenceActionsClick={handleOpenSequenceActions}
             onOptionSelected={handleOptionSelected}

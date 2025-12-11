@@ -74,7 +74,7 @@
     // Event handlers
     onPlayAnimation,
     onClearSequence,
-    onShare,
+    onImageExport,
     onRecordVideo = undefined,
     onSequenceActionsClick,
     onOptionSelected,
@@ -91,7 +91,7 @@
     toolPanelElement?: HTMLElement | null;
     onPlayAnimation: () => void;
     onClearSequence: () => void;
-    onShare: () => void;
+    onImageExport: () => void;
     onRecordVideo?: () => void;
     onSequenceActionsClick: () => void;
     onOptionSelected: (option: PictographData) => Promise<void>;
@@ -162,7 +162,7 @@
         <ButtonPanel
           {onPlayAnimation}
           {onClearSequence}
-          {onShare}
+          {onImageExport}
           {onRecordVideo}
           {onSequenceActionsClick}
         />

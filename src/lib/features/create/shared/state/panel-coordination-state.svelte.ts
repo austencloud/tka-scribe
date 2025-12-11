@@ -75,11 +75,17 @@ export interface PanelCoordinationState {
 
   triggerOrbitAnimation(): void;
 
-  // Share Panel State
+  // Share Panel State (Image Export)
   get isSharePanelOpen(): boolean;
 
   openSharePanel(): void;
   closeSharePanel(): void;
+
+  // Save to Library Panel State
+  get isSaveToLibraryPanelOpen(): boolean;
+
+  openSaveToLibraryPanel(): void;
+  closeSaveToLibraryPanel(): void;
 
   // Video Record Panel State
   get isVideoRecordPanelOpen(): boolean;
@@ -178,8 +184,11 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let shouldOrbitAroundCenter = $state(false);
   let orbitAnimationTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // Share panel state
+  // Share panel state (Image Export)
   let isSharePanelOpen = $state(false);
+
+  // Save to Library panel state
+  let isSaveToLibraryPanelOpen = $state(false);
 
   // Video record panel state (persisted)
   let isVideoRecordPanelOpen = $state(videoRecordPanelPersistence.load());
@@ -247,6 +256,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     isAnimating = false;
 
     isSharePanelOpen = false;
+    isSaveToLibraryPanelOpen = false;
     isVideoRecordPanelOpen = false;
     isFilterPanelOpen = false;
     isSequenceActionsPanelOpen = false;
@@ -359,6 +369,20 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     closeSharePanel() {
       isSharePanelOpen = false;
+    },
+
+    // Save to Library Panel Getters
+    get isSaveToLibraryPanelOpen() {
+      return isSaveToLibraryPanelOpen;
+    },
+
+    openSaveToLibraryPanel() {
+      closeAllPanels();
+      isSaveToLibraryPanelOpen = true;
+    },
+
+    closeSaveToLibraryPanel() {
+      isSaveToLibraryPanelOpen = false;
     },
 
     // Video Record Panel Getters
@@ -567,6 +591,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isEditPanelOpen ||
         isAnimationPanelOpen ||
         isSharePanelOpen ||
+        isSaveToLibraryPanelOpen ||
         isVideoRecordPanelOpen ||
         isFilterPanelOpen ||
         isSequenceActionsPanelOpen ||
