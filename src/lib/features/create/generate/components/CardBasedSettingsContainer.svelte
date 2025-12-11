@@ -259,7 +259,7 @@ Delegates ALL logic to services (SRP compliant)
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-auto-rows: 1fr; /* Pure fr units - rows divide space equally, NO minimums */
     grid-auto-flow: row;
-    align-content: stretch; /* Stretch to fill available vertical space */
+    align-content: center; /* Center vertically - padding handles the square-ish shape */
   }
 
   .card-wrapper {

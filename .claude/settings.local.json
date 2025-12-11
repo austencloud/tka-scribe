@@ -388,7 +388,22 @@
       "Bash(src/lib/shared/share/services/contracts/IFirebaseVideoUploadService.ts )",
       "Bash(src/lib/shared/share/services/implementations/FirebaseVideoUploadService.ts )",
       "Bash(src/lib/features/discover/gallery/display/components/mobile/)",
-      "SlashCommand(/commit)"
+      "SlashCommand(/commit)",
+      "Bash(src/lib/features/create/shared/components/CreateModule.svelte )",
+      "Bash(src/lib/features/create/shared/components/StandardWorkspaceLayout.svelte )",
+      "Bash(src/lib/features/create/shared/workspace-panel/sequence-display/components/SequenceDisplay.svelte )",
+      "Bash(src/lib/features/create/shared/workspace-panel/shared/components/ButtonPanel.svelte )",
+      "Bash(src/lib/features/create/shared/workspace-panel/shared/components/buttons/ShareButton.svelte )",
+      "Bash(src/lib/features/create/shared/workspace-panel/shared/components/buttons/ImageExportButton.svelte )",
+      "Bash(src/lib/features/create/shared/workspace-panel/shared/components/buttons/SaveToLibraryButton.svelte )",
+      "Bash(src/lib/features/create/shared/components/SaveToLibraryPanel.svelte)",
+      "Bash(src/lib/features/dashboard/ )",
+      "Bash(src/lib/shared/debug/components/RoleSwitcherDebugPanel.svelte)",
+      "Bash(src/lib/features/compose/components/canvas/AnimationControlsPanel.svelte )",
+      "Bash(src/lib/features/compose/components/canvas/ExportActionsPanel.svelte )",
+      "Bash(src/lib/features/create/shared/components/coordinators/AnimationCoordinator.svelte )",
+      "Bash(src/lib/shared/animation-engine/components/AnimationShareDrawer.svelte )",
+      "Bash(src/lib/shared/share/components/ImageSharePanel.svelte)"
     ],
     "deny": [],
     "ask": []

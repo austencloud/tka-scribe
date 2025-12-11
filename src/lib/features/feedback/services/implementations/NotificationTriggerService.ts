@@ -43,6 +43,12 @@ import {
   collection,
   addDoc,
   serverTimestamp,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+  Timestamp,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
 import type {
@@ -58,9 +64,16 @@ import { notificationPreferencesService } from "./NotificationPreferencesService
 const USERS_COLLECTION = "users";
 const NOTIFICATIONS_SUBCOLLECTION = "notifications";
 
+/**
+ * Deduplication window in milliseconds.
+ * Notifications of the same type for the same feedback within this window are considered duplicates.
+ */
+const DEDUP_WINDOW_MS = 30_000; // 30 seconds
+
 export class NotificationTriggerService {
   /**
    * Create a feedback notification
+   * Includes deduplication to prevent rapid duplicate notifications
    */
   async createFeedbackNotification(
     userId: string,
@@ -77,6 +90,19 @@ export class NotificationTriggerService {
       return null; // User has disabled this notification type
     }
 
+    // Check for duplicate notification within dedup window
+    const isDuplicate = await this.isDuplicateFeedbackNotification(
+      userId,
+      feedbackId,
+      type
+    );
+    if (isDuplicate) {
+      console.log(
+        `[NotificationTriggerService] Skipping duplicate ${type} notification for feedback ${feedbackId}`
+      );
+      return null;
+    }
+
     const notification: Omit<FeedbackNotification, "id"> = {
       userId,
       type,
@@ -90,6 +116,72 @@ export class NotificationTriggerService {
     };
 
     return await this.createNotification(userId, notification);
+  }
+
+  /**
+   * Check if a similar feedback notification was created recently
+   * Used to prevent duplicate notifications from rapid-fire clicks or double-calls
+   *
+   * Also treats feedback-response and feedback-resolved as duplicates of each other
+   * since they serve the same purpose (notifying user about feedback update)
+   */
+  private async isDuplicateFeedbackNotification(
+    userId: string,
+    feedbackId: string,
+    type: NotificationType
+  ): Promise<boolean> {
+    try {
+      const cutoffTime = new Date(Date.now() - DEDUP_WINDOW_MS);
+      const userNotificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
+      );
+
+      // Types that are considered equivalent for deduplication purposes
+      // (sending both response and resolved for same feedback is redundant)
+      const equivalentTypes = this.getEquivalentNotificationTypes(type);
+
+      // Check for each equivalent type
+      for (const checkType of equivalentTypes) {
+        const q = query(
+          userNotificationsRef,
+          where("feedbackId", "==", feedbackId),
+          where("type", "==", checkType),
+          where("createdAt", ">=", Timestamp.fromDate(cutoffTime)),
+          orderBy("createdAt", "desc"),
+          limit(1)
+        );
+
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          return true;
+        }
+      }
+
+      return false;
+    } catch (error) {
+      // Log but don't block notification creation on dedup check failure
+      console.warn("[NotificationTriggerService] Dedup check failed:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Get notification types that should be treated as duplicates of each other
+   * For example, feedback-response and feedback-resolved are redundant
+   */
+  private getEquivalentNotificationTypes(type: NotificationType): NotificationType[] {
+    // feedback-response and feedback-resolved are equivalent - user only needs one
+    const responseResolvedGroup: NotificationType[] = ["feedback-response", "feedback-resolved"];
+
+    if (responseResolvedGroup.includes(type)) {
+      return responseResolvedGroup;
+    }
+
+    // Default: only check for exact same type
+    return [type];
   }
 
   /**

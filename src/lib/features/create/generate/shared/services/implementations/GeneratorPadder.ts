@@ -34,9 +34,16 @@ export class GeneratorPadder implements IGeneratorPadder {
   calculatePadding(width: number, height: number): PaddingResult {
     const aspectRatio = width / height;
 
+    // === MOBILE PORTRAIT: Add vertical padding to prevent cards from stretching ===
+    // When on a phone in portrait mode with lots of vertical space (empty sequence),
+    // add padding so the card grid forms a more square shape instead of stretching tall
+    if (width < 400 && aspectRatio < 0.8) {
+      return this.calculateMobilePortraitPadding(width, height, aspectRatio);
+    }
+
     // === CONSTRAINED PANELS: Remove all padding ===
 
-    // Extremely narrow panels (< 400px width)
+    // Extremely narrow panels in landscape-ish orientation (< 400px width but wide aspect)
     if (width < 400) {
       return { top: 0, right: 0, bottom: 0, left: 0, scale: 0 };
     }
@@ -139,6 +146,51 @@ export class GeneratorPadder implements IGeneratorPadder {
       left: horizontalPadding,
       right: horizontalPadding,
       scale,
+    };
+  }
+
+  /**
+   * Calculate mobile portrait padding
+   * Adds vertical padding when the panel is tall and narrow (phone with empty sequence)
+   * Goal: make the card grid form a more square shape instead of stretching vertically
+   */
+  private calculateMobilePortraitPadding(
+    width: number,
+    height: number,
+    aspectRatio: number
+  ): PaddingResult {
+    // Calculate how much extra vertical space we have
+    // Ideal card grid aspect ratio is around 1:1 (square)
+    // If panel is taller than wide, add vertical padding to center content
+
+    // Target a square grid (1.0 aspect ratio)
+    const targetAspect = 1.0;
+
+    if (aspectRatio >= targetAspect) {
+      // Panel is already square or wider - minimal padding
+      return { top: 8, right: 8, bottom: 8, left: 8, scale: 1 };
+    }
+
+    // Calculate how much height to "remove" via padding to approach target aspect
+    const targetHeight = width / targetAspect;
+    const excessHeight = height - targetHeight;
+
+    // Distribute excess height as top/bottom padding
+    // Use 70% of excess as padding (aggressive padding for square-ish result)
+    const verticalPadding = Math.min(
+      Math.max(excessHeight * 0.7, 16), // At least 16px, 70% of excess
+      height * 0.25 // Cap at 25% of height
+    );
+
+    // Small horizontal padding for breathing room
+    const horizontalPadding = Math.min(width * 0.03, 12);
+
+    return {
+      top: verticalPadding,
+      bottom: verticalPadding,
+      left: horizontalPadding,
+      right: horizontalPadding,
+      scale: 1,
     };
   }
 }
