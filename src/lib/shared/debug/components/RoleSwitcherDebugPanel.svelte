@@ -66,10 +66,19 @@
   async function handleUserSelect(user: { uid: string; displayName: string; email: string }) {
     // Use eager=true to load all data upfront (for banner stats and Library view)
     await loadUserPreview(user.uid, true);
+
+    // Also set the role override to match the previewed user's role
+    // This ensures module access matches what the user would see
+    const previewedRole = userPreviewState.data.profile?.role as UserRole | undefined;
+    if (previewedRole) {
+      featureFlagService.setDebugRoleOverride(previewedRole);
+    }
   }
 
   function handleClearPreview() {
     clearUserPreview();
+    // Also clear the role override when clearing preview
+    featureFlagService.clearDebugRoleOverride();
   }
 
   // Keyboard shortcut: F9 (easy single-key access for debug tool)

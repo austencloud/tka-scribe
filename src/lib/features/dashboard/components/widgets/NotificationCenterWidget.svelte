@@ -2,6 +2,7 @@
   NotificationCenterWidget - Dashboard Notification Widget
 
   Displays recent notifications with quick access to all notifications.
+  Supports preview mode - shows previewed user's notifications when active.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -12,15 +13,47 @@
   import { setNotificationTargetFeedback } from "$lib/features/feedback/state/notification-action-state.svelte";
   import type { UserNotification, FeedbackNotification, AdminNotification } from "$lib/features/feedback/domain/models/notification-models";
   import { discoverNavigationState } from "$lib/features/discover/shared/state/discover-navigation-state.svelte";
+  import {
+    userPreviewState,
+    loadPreviewSection,
+    type PreviewNotification,
+  } from "$lib/shared/debug/state/user-preview-state.svelte";
 
   const notificationState = createNotificationState();
 
+  // Check if in preview mode
+  const isPreviewActive = $derived(userPreviewState.isActive);
+  const previewNotifications = $derived(userPreviewState.data.notifications);
+
+  // Convert preview notifications to UserNotification format for display
+  const effectiveNotifications = $derived.by(() => {
+    if (isPreviewActive) {
+      // Transform preview notifications to match UserNotification interface
+      return previewNotifications.map((n: PreviewNotification) => ({
+        id: n.id,
+        type: n.type,
+        title: n.title || "",
+        message: n.message || "",
+        read: n.read ?? false,
+        createdAt: n.createdAt ? new Date(n.createdAt) : new Date(),
+      })) as unknown as UserNotification[];
+    }
+    return notificationState.notifications;
+  });
+
   // Show only first 5 notifications
-  const recentNotifications = $derived(notificationState.notifications.slice(0, 5));
-  const hasMore = $derived(notificationState.notifications.length > 5);
+  const recentNotifications = $derived(effectiveNotifications.slice(0, 5));
+  const hasMore = $derived(effectiveNotifications.length > 5);
+
+  // Effective unread count
+  const effectiveUnreadCount = $derived(
+    isPreviewActive
+      ? previewNotifications.filter((n: PreviewNotification) => !n.read).length
+      : notificationState.unreadCount
+  );
 
   onMount(() => {
-    if (authStore.isAuthenticated) {
+    if (authStore.isAuthenticated && !isPreviewActive) {
       notificationState.init();
     }
 
@@ -29,9 +62,15 @@
     };
   });
 
-  // Watch auth state changes
+  // Watch auth state changes and preview mode
   $effect(() => {
-    if (authStore.isAuthenticated) {
+    if (isPreviewActive) {
+      // In preview mode, load preview notifications if not already loaded
+      if (!userPreviewState.loadedSections.has("notifications")) {
+        loadPreviewSection("notifications");
+      }
+      notificationState.cleanup();
+    } else if (authStore.isAuthenticated) {
       notificationState.init();
     } else {
       notificationState.cleanup();
@@ -81,14 +120,20 @@
   }
 </script>
 
-<div class="notification-center-widget">
+<div class="notification-center-widget" class:preview-mode={isPreviewActive}>
+  {#if isPreviewActive}
+    <div class="preview-banner">
+      <i class="fas fa-eye"></i>
+      <span>Viewing user's notifications</span>
+    </div>
+  {/if}
   <div class="widget-header">
     <div class="header-left">
       <i class="fas fa-bell"></i>
       <h3>Notifications</h3>
     </div>
     <div class="header-right">
-      {#if notificationState.notifications.length > 0}
+      {#if effectiveNotifications.length > 0 && !isPreviewActive}
         <button
           class="clear-all-btn"
           onclick={() => handleClearAll()}
@@ -98,19 +143,19 @@
           Clear all
         </button>
       {/if}
-      {#if notificationState.unreadCount > 0}
-        <span class="unread-badge">{notificationState.unreadCount}</span>
+      {#if effectiveUnreadCount > 0}
+        <span class="unread-badge">{effectiveUnreadCount}</span>
       {/if}
     </div>
   </div>
 
   <div class="widget-content">
-    {#if !authStore.isAuthenticated}
+    {#if !authStore.isAuthenticated && !isPreviewActive}
       <div class="empty-state">
         <i class="fas fa-bell-slash"></i>
         <p>Sign in to see notifications</p>
       </div>
-    {:else if notificationState.isLoading}
+    {:else if notificationState.isLoading || userPreviewState.loadingSection === "notifications"}
       <div class="loading-state">
         <i class="fas fa-spinner fa-spin"></i>
         <p>Loading notifications...</p>
@@ -119,7 +164,7 @@
       <div class="empty-state">
         <i class="fas fa-inbox"></i>
         <p>No notifications yet</p>
-        <span class="empty-hint">You'll be notified when there's activity</span>
+        <span class="empty-hint">{isPreviewActive ? "This user has no notifications" : "You'll be notified when there's activity"}</span>
       </div>
     {:else}
       <div class="notifications-list">
@@ -157,6 +202,31 @@
 
   .notification-center-widget:hover {
     border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* ============================================================================
+     PREVIEW MODE
+     ============================================================================ */
+  .notification-center-widget.preview-mode {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.03);
+  }
+
+  .preview-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(59, 130, 246, 0.15);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    font-size: 12px;
+    font-weight: 600;
+    color: #60a5fa;
+  }
+
+  .preview-banner i {
+    font-size: 12px;
   }
 
   /* ============================================================================

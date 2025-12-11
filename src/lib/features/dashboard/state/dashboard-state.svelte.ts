@@ -1,6 +1,7 @@
 /**
  * Dashboard State Wrapper
  * Manages all reactive state for the dashboard
+ * Supports preview mode for admin user viewing
  */
 
 import { loadFeatureModule } from "$lib/shared/inversify/di";
@@ -8,6 +9,7 @@ import { navigationState } from "$lib/shared/navigation/state/navigation-state.s
 import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
 import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
 import { libraryState } from "$lib/features/library/state/library-state.svelte";
+import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 
 interface DashboardState {
@@ -32,9 +34,25 @@ function createDashboardState() {
   // Derived values
   const isAuthenticated = $derived(authStore.isAuthenticated);
   const user = $derived(authStore.user);
-  const sequenceCount = $derived(libraryState.sequences.length);
+  const isPreviewActive = $derived(userPreviewState.isActive);
+  const previewProfile = $derived(userPreviewState.data.profile);
+
+  // Use preview data when active, otherwise use actual data
+  const effectiveDisplayName = $derived(
+    isPreviewActive && previewProfile
+      ? previewProfile.displayName
+      : user?.displayName ?? null
+  );
+
+  const sequenceCount = $derived(
+    isPreviewActive
+      ? userPreviewState.data.sequences.length
+      : libraryState.sequences.length
+  );
   const favoriteCount = $derived(
-    libraryState.sequences.filter((s) => s.isFavorite).length
+    isPreviewActive
+      ? 0 // Preview doesn't track favorites yet
+      : libraryState.sequences.filter((s) => s.isFavorite).length
   );
 
   const greeting = $derived.by(() => {
@@ -45,8 +63,14 @@ function createDashboardState() {
   });
 
   const welcomeMessage = $derived.by(() => {
-    if (isAuthenticated && user?.displayName) {
-      const firstName = user.displayName.split(" ")[0];
+    // When previewing another user, show their name
+    if (isPreviewActive && previewProfile) {
+      const firstName = (previewProfile.displayName || previewProfile.email || "User").split(" ")[0];
+      return `Viewing as ${firstName}`;
+    }
+    // Normal authenticated user
+    if (isAuthenticated && effectiveDisplayName) {
+      const firstName = effectiveDisplayName.split(" ")[0];
       return `${greeting}, ${firstName}`;
     }
     return "Welcome to TKA Studio";
@@ -140,6 +164,8 @@ function createDashboardState() {
     greeting,
     welcomeMessage,
     moduleCards,
+    isPreviewActive,
+    previewProfile,
 
     showSignInRequiredToast,
     clearToast,

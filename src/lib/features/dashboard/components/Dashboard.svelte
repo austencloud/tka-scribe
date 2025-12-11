@@ -2,6 +2,7 @@
   /**
    * Dashboard - 2026 Bento Box Design
    * Composition-based widget dashboard with modular state management
+   * Supports preview mode for admin user viewing
    */
 
   import { onMount } from "svelte";
@@ -14,6 +15,11 @@
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
+  import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 
   // Components
   import DashboardHeader from "./DashboardHeader.svelte";
@@ -32,6 +38,48 @@
 
   // State
   const dashboardState = createDashboard();
+
+  // Preview-aware derived values (directly in component for proper reactivity)
+  const isPreviewActive = $derived(userPreviewState.isActive);
+  const previewProfile = $derived(userPreviewState.data.profile);
+
+  const greeting = $derived.by(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  });
+
+  const effectiveWelcomeMessage = $derived.by(() => {
+    // When previewing another user, show their name
+    if (isPreviewActive && previewProfile) {
+      const firstName = (previewProfile.displayName || previewProfile.email || "User").split(" ")[0];
+      return `Viewing as ${firstName}`;
+    }
+    // Normal authenticated user
+    if (authStore.isAuthenticated && authStore.user?.displayName) {
+      const firstName = authStore.user.displayName.split(" ")[0];
+      return `${greeting}, ${firstName}`;
+    }
+    return "Welcome to TKA Studio";
+  });
+
+  const effectiveModuleCards = $derived.by(() =>
+    navigationState.moduleDefinitions
+      .filter((m) => {
+        // Only show main modules (exclude dashboard and settings)
+        if (!m.isMain || m.id === "dashboard") return false;
+
+        // Filter out modules the user cannot access (respects debugRoleOverride)
+        const canAccess = featureFlagService.canAccessModule(m.id);
+        return canAccess;
+      })
+      .map((m) => ({
+        ...m,
+        gradient: MODULE_GRADIENTS[m.id] || MODULE_GRADIENTS["learn"],
+        isLocked: false,
+      }))
+  );
 
   // Derived
   const isMobile = $derived(
@@ -134,12 +182,12 @@
 
 <div class="dashboard" class:visible={dashboardState.isVisible}>
   <DashboardHeader
-    welcomeMessage={dashboardState.welcomeMessage}
+    welcomeMessage={effectiveWelcomeMessage}
     isVisible={dashboardState.isVisible}
   />
 
   <DashboardGrid
-    moduleCards={dashboardState.moduleCards}
+    moduleCards={effectiveModuleCards}
     isVisible={dashboardState.isVisible}
     onModuleClick={navigateToModule}
   />
