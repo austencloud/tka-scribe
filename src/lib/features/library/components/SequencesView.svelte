@@ -15,12 +15,14 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { goto } from "$app/navigation";
   import { libraryState } from "../state/library-state.svelte";
   import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
   import SequenceCard from "../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
   import type { LibrarySequence } from "../domain/models/LibrarySequence";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IDiscoverThumbnailService } from "../../discover/gallery/display/services/contracts/IDiscoverThumbnailService";
 
   type ViewFilter = "all" | "created" | "forked" | "favorites";
 
@@ -108,14 +110,19 @@
     if (isSelectMode) {
       libraryState.toggleSelection(sequence.id ?? "");
     } else {
-      // Navigate to sequence viewer
-      openSequenceViewer(sequence.id ?? "");
+      // Open in spotlight viewer
+      openSequenceInViewer(sequence);
     }
   }
 
-  function openSequenceViewer(sequenceId: string) {
-    // Navigate to the sequence viewer route
-    goto(`/sequence?id=${sequenceId}`);
+  function openSequenceInViewer(sequence: SequenceData) {
+    // Try to resolve thumbnail service, but it's optional
+    // SpotlightViewer can work without it if thumbnails are full URLs
+    const thumbnailService = tryResolve<IDiscoverThumbnailService>(
+      TYPES.IDiscoverThumbnailService
+    );
+    // Pass null if service not available - SpotlightViewer handles this
+    openSpotlightViewer(sequence, thumbnailService as IDiscoverThumbnailService);
   }
 
   // Batch actions

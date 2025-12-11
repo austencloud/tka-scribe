@@ -459,7 +459,7 @@ export class LibraryService implements ILibraryService {
 			totalCollections: 0, // TODO: Get from collection service
 			totalActs: 0, // TODO: Get from act service
 			totalBeats: sequences.reduce(
-				(sum, seq) => sum + (seq.beats.length ?? 0),
+				(sum, seq) => sum + (seq.beats?.length ?? 0),
 				0
 			),
 		};
