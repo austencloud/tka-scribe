@@ -379,6 +379,14 @@ export const SETTINGS_TABS: Section[] = [
     color: "#22c55e",
     gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
   },
+  {
+    id: "keyboard",
+    label: "Keyboard",
+    icon: '<i class="fas fa-keyboard"></i>',
+    description: "Keyboard shortcuts and customization",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
 ];
 
 // Feedback tabs configuration (testers/admins only)
