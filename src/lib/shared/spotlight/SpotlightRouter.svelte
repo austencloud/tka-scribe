@@ -88,7 +88,8 @@
 
 <!-- Spotlight Viewer - rendered at root level for proper z-index -->
 <!-- Route-aware: Opens via ?spotlight={id} or legacy showSpotlight state -->
-{#if (showSpotlight && spotlightSequence && spotlightThumbnailService) || spotlightSequenceId}
+<!-- Note: thumbnailService is optional - SpotlightViewer can work without it -->
+{#if (showSpotlight && spotlightSequence) || spotlightSequenceId}
   <SpotlightViewer
     show={showSpotlight || !!spotlightSequenceId}
     {...spotlightSequence ? { sequence: spotlightSequence } : {}}

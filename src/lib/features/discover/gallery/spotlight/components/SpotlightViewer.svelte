@@ -29,7 +29,7 @@
 
   // Show/hide logic
   $effect(() => {
-    if (show && sequence && thumbnailService) {
+    if (show && sequence) {
       console.log("✨ Spotlight viewer opened");
       isVisible = true;
       isClosing = false;
@@ -42,10 +42,22 @@
       // Get first variation thumbnail
       const thumbnail = sequence.thumbnails?.[0];
       if (thumbnail) {
-        try {
-          imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
-        } catch (error) {
-          console.warn("Failed to resolve thumbnail", error);
+        // Check if thumbnail is already a full URL (starts with http or /)
+        if (thumbnail.startsWith("http") || thumbnail.startsWith("/")) {
+          // Use the URL directly
+          imageUrl = thumbnail;
+        } else if (thumbnailService) {
+          // Use thumbnail service to construct the URL
+          try {
+            imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
+          } catch (error) {
+            console.warn("Failed to resolve thumbnail via service", error);
+            // Fallback: try using it as a relative path
+            imageUrl = `/gallery/${thumbnail}`;
+          }
+        } else {
+          // No service available, assume it's a gallery path
+          imageUrl = `/gallery/${thumbnail}`;
         }
       }
     }
@@ -63,23 +75,51 @@
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
+
+    // On desktop (screens wider than 1024px), don't auto-rotate
+    // User has plenty of screen space and won't be rotating their monitor
+    // They can still manually rotate using the button if desired
+    const isDesktop = viewportWidth >= 1024;
+    if (isDesktop) {
+      shouldRotate = false;
+      return;
+    }
+
+    // Mobile/tablet: apply smart rotation logic
     const viewportIsLandscape = viewportWidth > viewportHeight;
 
-    const imageIsLandscape =
-      imageElement.naturalWidth > imageElement.naturalHeight;
+    const imageWidth = imageElement.naturalWidth;
+    const imageHeight = imageElement.naturalHeight;
+    const imageAspectRatio = imageWidth / imageHeight;
 
-    // Rotate if orientations don't match
-    const newRotation = viewportIsLandscape !== imageIsLandscape;
+    // Check if image is approximately square (aspect ratio between 0.85 and 1.15)
+    const isSquareImage = imageAspectRatio >= 0.85 && imageAspectRatio <= 1.15;
+
+    const imageIsLandscape = imageWidth > imageHeight;
+
+    let newRotation: boolean;
+
+    if (isSquareImage) {
+      // Square images (like 16-count sequences) should rotate by default on mobile
+      // This uses more screen real estate on portrait phone screens
+      newRotation = true;
+    } else {
+      // Non-square images: rotate if orientations don't match
+      newRotation = viewportIsLandscape !== imageIsLandscape;
+    }
 
     console.log("🔄 Rotation calculation:", {
       viewport: {
         width: viewportWidth,
         height: viewportHeight,
         isLandscape: viewportIsLandscape,
+        isDesktop,
       },
       image: {
-        width: imageElement.naturalWidth,
-        height: imageElement.naturalHeight,
+        width: imageWidth,
+        height: imageHeight,
+        aspectRatio: imageAspectRatio.toFixed(2),
+        isSquare: isSquareImage,
         isLandscape: imageIsLandscape,
       },
       shouldRotate: newRotation,
