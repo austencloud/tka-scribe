@@ -38,16 +38,41 @@ The script automatically handles two modes:
 - Skips Firestore operations
 - Shows commit count
 
-### Step 2: Show Preview to User
+### Step 2: Rewrite Changelog for Users
+
+**CRITICAL**: The raw feedback titles are developer notes, NOT user-facing release notes. Before showing the preview, you MUST rewrite them.
+
+**Audience**: Flow artists who create choreography. They don't code, don't know what "persistence" or "endpoints" mean, and just want to know what's better for them.
+
+**Rewriting Rules**:
+1. **Remove developer jargon**: No "persistence", "endpoints", "state", "components", "services"
+2. **Focus on user benefit**: What can they DO now? What problem is fixed?
+3. **Be specific and concrete**: "Videos now save properly" not "Fixed video persistence"
+4. **Keep it short**: 5-10 words per entry
+5. **Use active voice**: "You can now..." or "Fixed..."
+6. **Group related items**: Combine small related fixes into one clear entry
+
+**Transform Examples**:
+| Raw Feedback Title | User-Friendly Version |
+|-------------------|----------------------|
+| "Fixed i thought we had implemented persistence for the feedback..." | "Your feedback drafts now save automatically" |
+| "Added when extending a module in the desktop navigation sidebar..." | "Sidebar sections now expand smoothly" |
+| "Fixed generator endpoint mismatch" | "Sequence generation works reliably now" |
+| "Added video collaboration (Instagram-style)" | "Share videos with collaborators" |
+| "Fixed toggle cards don't register taps with slight finger movement" | "Buttons respond better to taps" |
+
+**After rewriting**, present the polished changelog to the user for review before proceeding.
+
+### Step 3: Show Preview to User
 
 Display the output from the dry-run, which includes:
 - Source indicator (feedback mode or git history mode)
 - Completed feedback count and breakdown OR commit count
 - Current version vs. suggested new version
-- Full changelog preview (categorized by fixed/added/improved)
+- **YOUR REWRITTEN changelog preview** (categorized by fixed/added/improved)
 - Git status warnings (if uncommitted changes exist)
 
-### Step 3: Get User Confirmation
+### Step 4: Get User Confirmation
 
 Use AskUserQuestion to confirm the release:
 
@@ -62,26 +87,47 @@ Use AskUserQuestion to confirm the release:
 2. **"Change version number"**
    - Description: "Manually specify a different version (e.g., for major releases)"
 
-3. **"Cancel"**
+3. **"Edit changelog"**
+   - Description: "Revise the release notes before publishing"
+
+4. **"Cancel"**
    - Description: "Abort the release process"
 
-### Step 4: Handle User Response
+### Step 5: Handle User Response
 
 #### If "Yes, release now":
-Execute the release:
+
+**IMPORTANT**: You must pass your rewritten changelog entries to the release script. Create a temporary JSON file with your polished entries:
+
 ```bash
-node scripts/release.js --confirm
+# Write your rewritten changelog to a temp file
+cat > .release-changelog.json << 'EOF'
+[
+  { "category": "fixed", "text": "Your polished fix description" },
+  { "category": "added", "text": "Your polished feature description" },
+  { "category": "improved", "text": "Your polished improvement description" }
+]
+EOF
+
+# Execute release with the custom changelog
+node scripts/release.js --confirm --changelog .release-changelog.json
 ```
 
 This will:
 - Update package.json version field
 - Create git commit with changelog
 - Create annotated git tag
-- Create GitHub release with formatted changelog
+- Create GitHub release with **YOUR REWRITTEN** changelog
 - Archive completed feedback in Firestore (feedback mode only)
-- Create version record in Firestore (feedback mode only)
+- Create version record in Firestore with **YOUR REWRITTEN** changelog entries
+- **Create a "What's New" announcement** that pops up for all users
 
-Then proceed to Step 5.
+Then proceed to Step 6.
+
+**Note:** The announcement summarizes key features and links to Settings → What's New for full details. Use `--skip-announcement` if you don't want to notify users.
+
+#### If "Edit changelog":
+Let the user provide corrections, then update your rewritten changelog and return to Step 4.
 
 #### If "Change version number":
 Ask for manual version input, then execute with:
