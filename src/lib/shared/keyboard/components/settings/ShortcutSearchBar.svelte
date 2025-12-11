@@ -52,7 +52,7 @@
       bind:value={query}
     />
     {#if query}
-      <button class="clear-btn" onclick={clearSearch} type="button">
+      <button class="clear-btn" onclick={clearSearch} type="button" aria-label="Clear search">
         <i class="fas fa-times"></i>
       </button>
     {/if}

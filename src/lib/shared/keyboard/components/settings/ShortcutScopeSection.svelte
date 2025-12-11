@@ -257,6 +257,7 @@
 
   .shortcut-item-wrapper {
     /* Container for animation */
+    display: contents;
   }
 
   /* Focus states */

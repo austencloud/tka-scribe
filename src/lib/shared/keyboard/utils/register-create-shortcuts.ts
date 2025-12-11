@@ -366,6 +366,153 @@ export function registerCreateShortcuts(
     },
   });
 
+  // ==================== Sequence Transforms ====================
+  // Global hotkeys for sequence transforms - available anytime in CREATE module
+
+  // m - Mirror sequence (flip left/right)
+  service.register({
+    id: "create.transform-mirror",
+    label: "Mirror Sequence",
+    description: "Mirror the sequence (flip left and right)",
+    key: "m",
+    modifiers: [],
+    context: "create",
+    scope: "sequence-management",
+    priority: "medium",
+    condition: () => {
+      if (!state.settings.enableSingleKeyShortcuts) return false;
+      const ref = getCreateModuleRef();
+      if (!ref) return false;
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      return sequenceState?.hasSequence() ?? false;
+    },
+    action: async () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      if (!sequenceState?.hasSequence()) return;
+
+      console.log("⌨️ M - Mirror sequence");
+      await sequenceState.mirrorSequence();
+    },
+  });
+
+  // h - Swap hands (swap colors)
+  service.register({
+    id: "create.transform-swap-hands",
+    label: "Swap Hands",
+    description: "Swap hand movements (left becomes right, right becomes left)",
+    key: "h",
+    modifiers: [],
+    context: "create",
+    scope: "sequence-management",
+    priority: "medium",
+    condition: () => {
+      if (!state.settings.enableSingleKeyShortcuts) return false;
+      const ref = getCreateModuleRef();
+      if (!ref) return false;
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      return sequenceState?.hasSequence() ?? false;
+    },
+    action: async () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      if (!sequenceState?.hasSequence()) return;
+
+      console.log("⌨️ H - Swap hands");
+      await sequenceState.swapColors();
+    },
+  });
+
+  // r - Rotate sequence clockwise (45°)
+  service.register({
+    id: "create.transform-rotate-cw",
+    label: "Rotate Clockwise",
+    description: "Rotate the sequence 45° clockwise",
+    key: "r",
+    modifiers: [],
+    context: "create",
+    scope: "sequence-management",
+    priority: "medium",
+    condition: () => {
+      if (!state.settings.enableSingleKeyShortcuts) return false;
+      const ref = getCreateModuleRef();
+      if (!ref) return false;
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      return sequenceState?.hasSequence() ?? false;
+    },
+    action: async () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      if (!sequenceState?.hasSequence()) return;
+
+      console.log("⌨️ R - Rotate clockwise");
+      await sequenceState.rotateSequence("clockwise");
+    },
+  });
+
+  // Shift+R - Rotate sequence counter-clockwise (45°)
+  service.register({
+    id: "create.transform-rotate-ccw",
+    label: "Rotate Counter-Clockwise",
+    description: "Rotate the sequence 45° counter-clockwise",
+    key: "R",
+    modifiers: ["shift"],
+    context: "create",
+    scope: "sequence-management",
+    priority: "medium",
+    condition: () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return false;
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      return sequenceState?.hasSequence() ?? false;
+    },
+    action: async () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      if (!sequenceState?.hasSequence()) return;
+
+      console.log("⌨️ Shift+R - Rotate counter-clockwise");
+      await sequenceState.rotateSequence("counterclockwise");
+    },
+  });
+
+  // w - Rewind/Reverse sequence
+  service.register({
+    id: "create.transform-rewind",
+    label: "Rewind Sequence",
+    description: "Reverse the sequence to return to start position",
+    key: "w",
+    modifiers: [],
+    context: "create",
+    scope: "sequence-management",
+    priority: "medium",
+    condition: () => {
+      if (!state.settings.enableSingleKeyShortcuts) return false;
+      const ref = getCreateModuleRef();
+      if (!ref) return false;
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      return sequenceState?.hasSequence() ?? false;
+    },
+    action: async () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      if (!sequenceState?.hasSequence()) return;
+
+      console.log("⌨️ W - Rewind sequence");
+      await sequenceState.rewindSequence();
+    },
+  });
+
   // ==================== Edit Panel Adjustments ====================
 
   // [ - Decrease rotation/adjustment value

@@ -128,7 +128,7 @@
     <div class="capture-sheet">
       <header class="capture-header">
         <h3 class="capture-title">Edit Shortcut</h3>
-        <button class="close-btn" onclick={handleCancel} type="button">
+        <button class="close-btn" onclick={handleCancel} type="button" aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
       </header>
@@ -210,7 +210,7 @@
       <div class="capture-modal" onclick={(e) => e.stopPropagation()}>
         <header class="capture-header">
           <h3 class="capture-title">Edit Shortcut</h3>
-          <button class="close-btn" onclick={handleCancel} type="button">
+          <button class="close-btn" onclick={handleCancel} type="button" aria-label="Close">
             <i class="fas fa-times"></i>
           </button>
         </header>

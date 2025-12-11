@@ -463,6 +463,7 @@
   /* Scope section animation wrapper */
   .scope-section-wrapper {
     /* Container for animation */
+    display: contents;
   }
 
   /* Reduced Motion */
