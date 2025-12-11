@@ -29,10 +29,12 @@
  *   node scripts/release.js --last             - Show what was in the last release (same as --show-last)
  *   node scripts/release.js --version 0.2.0    - Manual version
  *   node scripts/release.js --confirm          - Execute release (requires prior preview)
+ *   node scripts/release.js --changelog file.json - Use custom changelog entries (user-friendly)
+ *   node scripts/release.js --skip-announcement - Don't create the "What's New" popup
  */
 
 import admin from 'firebase-admin';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
 
 // Load service account key
@@ -272,6 +274,84 @@ async function prepareFirestoreRelease(version, changelogEntries, feedbackItems)
 
   // Commit batch
   await batch.commit();
+}
+
+/**
+ * Create a "What's New" announcement for the release
+ * This will show as a popup to all users when they next open the app
+ *
+ * IMPORTANT: Deletes any previous "What's New" announcements first,
+ * so users who haven't opened the app in a while only see the latest.
+ */
+async function createReleaseAnnouncement(version, changelogEntries, adminUserId) {
+  // First, delete any existing "What's New" announcements
+  const announcementsRef = db.collection('announcements');
+  const existingSnapshot = await announcementsRef
+    .where('title', '>=', "What's New in v")
+    .where('title', '<', "What's New in w")
+    .get();
+
+  if (!existingSnapshot.empty) {
+    const batch = db.batch();
+    existingSnapshot.docs.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+    console.log(`  🗑️  Deleted ${existingSnapshot.docs.length} previous release announcement(s)`);
+  }
+
+  // Build a clean, simple message from changelog
+  const fixed = changelogEntries.filter(e => e.category === 'fixed');
+  const added = changelogEntries.filter(e => e.category === 'added');
+  const improved = changelogEntries.filter(e => e.category === 'improved');
+
+  let message = '';
+
+  if (added.length > 0) {
+    message += `**✨ New**\n`;
+    added.slice(0, 3).forEach(e => {
+      message += `• ${e.text}\n`;
+    });
+    if (added.length > 3) {
+      message += `• +${added.length - 3} more\n`;
+    }
+    message += '\n';
+  }
+
+  if (fixed.length > 0) {
+    message += `**🐛 Fixed**\n`;
+    message += `• ${fixed.length} bug${fixed.length > 1 ? 's' : ''} squashed\n\n`;
+  }
+
+  if (improved.length > 0) {
+    message += `**🔧 Improved**\n`;
+    improved.slice(0, 2).forEach(e => {
+      message += `• ${e.text}\n`;
+    });
+    message += '\n';
+  }
+
+  // Footer encouraging feedback
+  message += `---\n\n`;
+  message += `💬 **Your feedback shapes TKA Studio.**\n`;
+  message += `Found a bug? Have an idea? Let us know in the Feedback tab!`;
+
+  // Create announcement document
+  const newDoc = announcementsRef.doc();
+
+  await newDoc.set({
+    title: `What's New in v${version}`,
+    message,
+    severity: 'info',
+    targetAudience: 'all',
+    showAsModal: true,
+    createdBy: adminUserId,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    actionUrl: '/settings?tab=whats-new',
+    actionLabel: 'View Full Release Notes'
+  });
+
+  return newDoc.id;
 }
 
 /**
@@ -523,6 +603,12 @@ async function main() {
   const showLast = args.includes('--show-last') || args.includes('--last');
   const manualVersionIndex = args.indexOf('--version');
   const manualVersion = manualVersionIndex >= 0 ? args[manualVersionIndex + 1] : null;
+  const changelogFileIndex = args.indexOf('--changelog');
+  const changelogFile = changelogFileIndex >= 0 ? args[changelogFileIndex + 1] : null;
+  const skipAnnouncement = args.includes('--skip-announcement');
+
+  // Admin user ID for announcement creation (defaults to Austen's ID)
+  const ADMIN_USER_ID = 'wJY6RSmdY7WQaAfnCniSHRpCLs22'; // austencloud
 
   // Show last release mode
   if (showLast) {
@@ -543,8 +629,20 @@ async function main() {
 
   let changelog;
   let useGitHistory = false;
+  let useCustomChangelog = false;
 
-  if (feedbackItems.length === 0) {
+  // Check if a custom changelog file was provided (user-friendly entries from Claude)
+  if (changelogFile && existsSync(changelogFile)) {
+    try {
+      changelog = JSON.parse(readFileSync(changelogFile, 'utf8'));
+      useCustomChangelog = true;
+      console.log(`✓ Using custom changelog from ${changelogFile}`);
+      console.log(`  (${changelog.length} user-friendly entries)\n`);
+    } catch (error) {
+      console.error(`❌ Failed to parse changelog file: ${error.message}`);
+      process.exit(1);
+    }
+  } else if (feedbackItems.length === 0) {
     console.log('⚠️  No completed feedback found.');
     console.log('📝 Using git commit history instead...\n');
 
@@ -639,11 +737,12 @@ async function main() {
   console.log('✓ Updating package.json...');
   updatePackageVersion(suggestedVersion);
 
-  // Prepare Firestore (only if using feedback)
-  if (!useGitHistory) {
+  // Prepare Firestore (only if using feedback or custom changelog with feedback)
+  if (!useGitHistory && feedbackItems.length > 0) {
     console.log('✓ Archiving feedback in Firestore...');
+    // Use custom changelog entries if provided, otherwise use generated ones
     await prepareFirestoreRelease(suggestedVersion, changelog, feedbackItems);
-  } else {
+  } else if (useGitHistory) {
     console.log('⏭️  Skipping Firestore operations (git history mode)');
   }
 
@@ -654,6 +753,15 @@ async function main() {
   // Create GitHub release
   console.log('✓ Creating GitHub release...');
   createGitHubRelease(suggestedVersion, changelog);
+
+  // Create "What's New" announcement (unless skipped)
+  if (!skipAnnouncement && !useGitHistory) {
+    console.log('✓ Creating release announcement...');
+    const announcementId = await createReleaseAnnouncement(suggestedVersion, changelog, ADMIN_USER_ID);
+    console.log(`  📢 Announcement created: ${announcementId}`);
+  } else if (skipAnnouncement) {
+    console.log('⏭️  Skipping announcement (--skip-announcement)');
+  }
 
   console.log(`\n🎉 Release v${suggestedVersion} complete!\n`);
   console.log('   Next steps:');

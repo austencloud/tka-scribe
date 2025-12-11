@@ -10,6 +10,9 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IAnnouncementService } from "../services/contracts/IAnnouncementService";
   import type { Announcement } from "../domain/models/announcement-models";
+  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import type { ModuleId } from "$lib/shared/navigation/domain/types";
 
   interface Props {
     announcement: Announcement;
@@ -26,6 +29,37 @@
       TYPES.IAnnouncementService
     );
   });
+
+  // Check if URL is internal (starts with /)
+  function isInternalUrl(url: string): boolean {
+    return url.startsWith('/');
+  }
+
+  // Handle internal navigation
+  async function handleInternalNavigation(url: string) {
+    // Parse the URL to extract module and tab
+    // Expected format: /settings?tab=whats-new or /module?tab=tabname
+    const [path, queryString] = url.split('?');
+    const moduleId = path.replace('/', '') as ModuleId;
+
+    // Parse query params
+    const params = new URLSearchParams(queryString || '');
+    const tab = params.get('tab');
+
+    // Navigate to module
+    await handleModuleChange(moduleId);
+
+    // Set tab if specified
+    if (tab) {
+      // Small delay to ensure module is loaded
+      setTimeout(() => {
+        navigationState.setActiveTab(tab);
+      }, 100);
+    }
+
+    // Dismiss the announcement
+    await handleDismiss();
+  }
 
   async function handleDismiss() {
     if (!authStore.user || !announcementService) return;
@@ -104,15 +138,25 @@
 
     <div class="modal-footer">
       {#if announcement.actionUrl}
-        <a
-          href={announcement.actionUrl}
-          class="action-button secondary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {announcement.actionLabel || "Learn More"}
-          <i class="fas fa-external-link-alt"></i>
-        </a>
+        {#if isInternalUrl(announcement.actionUrl)}
+          <button
+            class="action-button secondary"
+            onclick={() => handleInternalNavigation(announcement.actionUrl!)}
+          >
+            {announcement.actionLabel || "Learn More"}
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        {:else}
+          <a
+            href={announcement.actionUrl}
+            class="action-button secondary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {announcement.actionLabel || "Learn More"}
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+        {/if}
       {/if}
       <button class="action-button primary" onclick={handleDismiss}>
         <i class="fas fa-check"></i>

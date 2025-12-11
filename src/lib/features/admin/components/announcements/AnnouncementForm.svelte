@@ -337,12 +337,12 @@
       >
       <input
         id="action-url"
-        type="url"
+        type="text"
         class="text-input"
         bind:value={actionUrl}
-        placeholder="https://example.com/learn-more"
+        placeholder="/settings?tab=whats-new or https://..."
       />
-      <span class="help-text">Link for "Learn More" button</span>
+      <span class="help-text">Internal path or external URL for action button</span>
     </div>
 
     {#if actionUrl}
