@@ -1,6 +1,6 @@
 <!--
 BentoFilterPanel.svelte - Modern Bento box style filter panel
-Displays filter cards in a responsive grid with scope toggle
+Displays filter cards in a responsive grid
 Uses shared parameter cards from $lib/shared/components/parameter-cards
 -->
 <script lang="ts">
@@ -23,20 +23,16 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
 
   let {
     currentFilter = { type: "all", value: null },
-    scope = "community",
     startPosition = null,
     endPosition = null,
     onFilterChange = () => {},
-    onScopeChange = () => {},
     onOpenLetterSheet = () => {},
     onOpenOptionsSheet = () => {},
   } = $props<{
     currentFilter?: { type: string; value: ExploreFilterValue };
-    scope?: "community" | "library";
     startPosition?: PictographData | null;
     endPosition?: PictographData | null;
     onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
-    onScopeChange?: (scope: "community" | "library") => void;
     onOpenLetterSheet?: () => void;
     onOpenOptionsSheet?: () => void;
   }>();
@@ -71,11 +67,6 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   const isFavoritesActive = $derived(currentFilter.type === "favorites");
 
   // Handlers
-  function handleScopeChange(newScope: "community" | "library") {
-    hapticService?.trigger("selection");
-    onScopeChange(newScope);
-  }
-
   function handleLevelChange(level: DifficultyLevel | null) {
     if (level === null) {
       onFilterChange("all");
@@ -102,30 +93,6 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
 </script>
 
 <div class="bento-filter-panel">
-  <!-- Scope Toggle -->
-  <div class="scope-section">
-    <div class="scope-toggle">
-      <div
-        class="scope-slider"
-        style="transform: translateX({scope === 'library' ? '100%' : '0'})"
-      ></div>
-      <button
-        class="scope-option"
-        class:active={scope === "community"}
-        onclick={() => handleScopeChange("community")}
-      >
-        Community
-      </button>
-      <button
-        class="scope-option"
-        class:active={scope === "library"}
-        onclick={() => handleScopeChange("library")}
-      >
-        My Library
-      </button>
-    </div>
-  </div>
-
   <!-- Filter Cards Grid -->
   <div class="cards-grid">
     <LevelCard
@@ -181,49 +148,6 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     overflow-y: auto;
   }
 
-  /* Scope Toggle */
-  .scope-section {
-    flex-shrink: 0;
-  }
-
-  .scope-toggle {
-    position: relative;
-    display: flex;
-    background: #252532;
-    border-radius: 12px;
-    padding: 4px;
-  }
-
-  .scope-slider {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: calc(50% - 4px);
-    height: calc(100% - 8px);
-    background: #3b82f6;
-    border-radius: 8px;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .scope-option {
-    position: relative;
-    z-index: 1;
-    flex: 1;
-    min-height: 52px;
-    padding: 0 16px;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: clamp(13px, 3cqi, 15px);
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-
-  .scope-option.active {
-    color: #fff;
-  }
-
   /* Cards Grid - Default: 3 columns (6 sub-columns, cards span 2) */
   .cards-grid {
     container-type: inline-size;
@@ -253,13 +177,4 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     }
   }
 
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .scope-slider {
-      transition: none;
-    }
-    .scope-option {
-      transition: none;
-    }
-  }
 </style>

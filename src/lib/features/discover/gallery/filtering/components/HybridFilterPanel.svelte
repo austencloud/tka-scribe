@@ -2,7 +2,6 @@
   HybridFilterPanel.svelte - Modern 2026 Filter UI
 
   Features:
-  - Scope toggle (Community/Library) with pill design
   - Recent/smart quick filters
   - Visual filter grid with drill-down
   - Level cards using TKA color gradients
@@ -19,14 +18,10 @@
   // Props
   const {
     currentFilter = { type: "all", value: null },
-    scope = "community",
     onFilterChange = () => {},
-    onScopeChange = () => {},
   } = $props<{
     currentFilter?: { type: string; value: ExploreFilterValue };
-    scope?: "community" | "library";
     onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
-    onScopeChange?: (scope: "community" | "library") => void;
   }>();
 
   let hapticService: IHapticFeedbackService | null = null;
@@ -100,11 +95,6 @@
   const recentFilters = ["Level 2", "Favorites", "Letter A"];
 
   // Handlers
-  function handleScopeChange(newScope: "community" | "library") {
-    hapticService?.trigger("selection");
-    onScopeChange(newScope);
-  }
-
   function handleFilterTypeSelect(type: typeof activeFilterType) {
     hapticService?.trigger("selection");
     activeFilterType = type;
@@ -190,30 +180,6 @@
 </script>
 
 <div class="hybrid-filter-panel">
-  <!-- Scope Toggle -->
-  <div class="panel-section">
-    <div class="scope-toggle">
-      <div
-        class="scope-slider"
-        style="transform: translateX({scope === 'library' ? '100%' : '0'})"
-      ></div>
-      <button
-        class="scope-option"
-        class:active={scope === "community"}
-        onclick={() => handleScopeChange("community")}
-      >
-        Community
-      </button>
-      <button
-        class="scope-option"
-        class:active={scope === "library"}
-        onclick={() => handleScopeChange("library")}
-      >
-        My Library
-      </button>
-    </div>
-  </div>
-
   <!-- Recent Filters -->
   <div class="panel-section">
     <div class="section-label">Recent</div>
@@ -407,45 +373,6 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* Scope Toggle */
-  .scope-toggle {
-    position: relative;
-    display: flex;
-    background: #252532;
-    border-radius: 12px;
-    padding: 4px;
-  }
-
-  .scope-slider {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    width: calc(50% - 4px);
-    height: calc(100% - 8px);
-    background: #3b82f6;
-    border-radius: 8px;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .scope-option {
-    position: relative;
-    z-index: 1;
-    flex: 1;
-    min-height: 52px;
-    padding: 0 16px;
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: clamp(13px, 3cqi, 15px);
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-
-  .scope-option.active {
-    color: #fff;
   }
 
   /* Quick Chips */

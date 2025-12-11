@@ -32,7 +32,7 @@ Ultra-minimal design: No overlays, just clean image display.
         />
       {:else}
         <div class="media-placeholder" aria-label="Sequence preview missing">
-          <span>{word.slice(0, 1) ?? "?"}</span>
+          <span>{word?.slice(0, 1) ?? "?"}</span>
         </div>
       {/if}
     </div>

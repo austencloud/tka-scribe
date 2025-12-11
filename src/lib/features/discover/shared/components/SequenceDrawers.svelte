@@ -20,11 +20,9 @@
     currentFilter: any;
     currentSortMethod: ExploreSortMethod;
     availableSections: any[];
-    scope?: "community" | "library";
     isNavVisible?: boolean;
     onFilterChange: (type: string, value?: any) => void;
     onSortMethodChange: (method: ExploreSortMethod) => void;
-    onScopeChange?: (scope: "community" | "library") => void;
     onSectionClick: (sectionId: string) => void;
     onDetailPanelAction: (action: string, sequence: SequenceData) => void;
     onCloseDetailPanel: () => void;
@@ -36,11 +34,9 @@
     currentFilter,
     currentSortMethod,
     availableSections,
-    scope = "community",
     isNavVisible = true,
     onFilterChange,
     onSortMethodChange,
-    onScopeChange = () => {},
     onSectionClick,
     onDetailPanelAction,
     onCloseDetailPanel,
@@ -204,11 +200,9 @@
     <div class="bento-filter-wrapper">
       <BentoFilterPanel
         {currentFilter}
-        {scope}
         {startPosition}
         {endPosition}
         onFilterChange={handleBentoFilterChange}
-        {onScopeChange}
         onOpenLetterSheet={handleOpenLetterSheet}
         onOpenOptionsSheet={handleOpenOptionsSheet}
       />
