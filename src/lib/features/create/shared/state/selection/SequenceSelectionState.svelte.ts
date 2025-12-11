@@ -104,14 +104,17 @@ export function createSequenceSelectionState() {
 
     // Selection operations
     selectBeat(beatNumber: number | null) {
+      console.log(`[SequenceSelectionState.selectBeat] ${state.selectedBeatNumber} → ${beatNumber}`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       state.selectedBeatNumber = beatNumber;
     },
 
     selectStartPosition() {
+      console.log(`[SequenceSelectionState.selectStartPosition] ${state.selectedBeatNumber} → 0`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       state.selectedBeatNumber = 0;
     },
 
     clearSelection() {
+      console.log(`[SequenceSelectionState.clearSelection] ${state.selectedBeatNumber} → null`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       state.selectedBeatNumber = null;
     },
 
@@ -124,12 +127,14 @@ export function createSequenceSelectionState() {
 
     // Multi-select operations
     enterMultiSelectMode(initialBeatNumber: number) {
+      console.log(`[SequenceSelectionState.enterMultiSelectMode] ${state.selectedBeatNumber} → null (entering multi-select)`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       state.mode = "multi";
       state.selectedBeatNumbers = new Set([initialBeatNumber]);
       state.selectedBeatNumber = null; // Clear single-select
     },
 
     exitMultiSelectMode() {
+      console.log(`[SequenceSelectionState.exitMultiSelectMode] ${state.selectedBeatNumber} → null (exiting multi-select)`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       state.mode = "single";
       state.selectedBeatNumbers = new Set<number>(); // Create new Set to trigger reactivity
       state.selectedBeatNumber = null;
@@ -207,26 +212,32 @@ export function createSequenceSelectionState() {
 
     // Helpers for beat removal adjustments
     adjustSelectionForRemovedBeat(removedBeatNumber: number) {
+      console.log(`[SequenceSelectionState.adjustSelectionForRemovedBeat] removedBeatNumber=${removedBeatNumber}, currentSelection=${state.selectedBeatNumber}`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       if (state.selectedBeatNumber === removedBeatNumber) {
+        console.log(`  → Clearing selection (was removed)`);
         state.selectedBeatNumber = null;
       } else if (
         state.selectedBeatNumber !== null &&
         state.selectedBeatNumber > removedBeatNumber
       ) {
+        console.log(`  → Adjusting selection from ${state.selectedBeatNumber} to ${state.selectedBeatNumber - 1}`);
         state.selectedBeatNumber = state.selectedBeatNumber - 1;
       }
     },
 
     adjustSelectionForInsertedBeat(insertedBeatNumber: number) {
+      console.log(`[SequenceSelectionState.adjustSelectionForInsertedBeat] insertedBeatNumber=${insertedBeatNumber}, currentSelection=${state.selectedBeatNumber}`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       if (
         state.selectedBeatNumber !== null &&
         state.selectedBeatNumber >= insertedBeatNumber
       ) {
+        console.log(`  → Adjusting selection from ${state.selectedBeatNumber} to ${state.selectedBeatNumber + 1}`);
         state.selectedBeatNumber = state.selectedBeatNumber + 1;
       }
     },
 
     reset() {
+      console.log(`[SequenceSelectionState.reset] ${state.selectedBeatNumber} → null (reset)`, new Error().stack?.split('\n').slice(1, 4).join('\n'));
       state.mode = "single";
       state.selectedBeatNumber = null;
       state.selectedBeatNumbers.clear();
