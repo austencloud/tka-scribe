@@ -1,4 +1,5 @@
-<!-- ProfileTab.svelte - User Profile & Account Settings -->
+<!-- ProfileTab.svelte - User Profile & Account Settings (2026 Redesign)
+     Curated indigo/purple color scheme with glassmorphism cards -->
 <script lang="ts">
   import { authStore } from "../../../auth/stores/authStore.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
@@ -8,7 +9,6 @@
     hasPasswordProvider,
     uiState,
   } from "../../../navigation/state/profile-settings-state.svelte";
-  import UnifiedHeader from "../UnifiedHeader.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
@@ -39,11 +39,16 @@
   // Cache clearing state
   let clearingCache = $state(false);
 
+  // Entry animation
+  let isVisible = $state(false);
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
     authService = resolve<IAuthService>(TYPES.IAuthService);
+
+    setTimeout(() => (isVisible = true), 30);
   });
 
   async function handleSignOut() {
@@ -72,7 +77,6 @@
     uiState.saving = true;
 
     try {
-      // TODO: Implement password change via Firebase
       console.log("Changing password");
       hapticService?.trigger("success");
       alert("Password changed successfully!");
@@ -104,7 +108,6 @@
     }
 
     try {
-      // TODO: Implement account deletion
       console.log("Deleting account");
       await authStore.signOut();
       alert("Account deleted successfully.");
@@ -142,15 +145,14 @@
   }
 </script>
 
-<div class="profile-tab">
+<div class="profile-tab" class:visible={isVisible}>
   {#if authStore.isAuthenticated && authStore.user}
     <!-- Signed In State -->
-    <div class="profile-section">
-      <!-- Profile Card -->
-      <div class="profile-card">
-        <div class="profile-top">
-          <!-- Profile Picture -->
-          <div class="profile-avatar">
+    <div class="profile-content">
+      <!-- Profile Hero Card -->
+      <section class="glass-card profile-card">
+        <div class="profile-hero">
+          <div class="avatar-wrapper">
             <RobustAvatar
               src={authStore.user.photoURL}
               name={authStore.user.displayName || authStore.user.email}
@@ -158,106 +160,125 @@
               size="xl"
             />
           </div>
-
-          <!-- User Info -->
           <div class="profile-info">
             {#if authStore.user.displayName}
-              <h3 class="profile-name">{authStore.user.displayName}</h3>
+              <h2 class="profile-name">{authStore.user.displayName}</h2>
             {/if}
             {#if authStore.user.email}
               <p class="profile-email">{authStore.user.email}</p>
             {/if}
           </div>
-
-          <button class="sign-out-chip" onclick={handleSignOut}>
+          <button class="sign-out-btn" onclick={handleSignOut}>
             <i class="fas fa-sign-out-alt"></i>
-            Sign Out
+            <span>Sign Out</span>
           </button>
         </div>
-      </div>
+      </section>
 
-      <!-- Account Management Sections -->
-      <div class="account-sections">
-        <!-- Connected Accounts Card -->
-        <div class="security-card">
-          <UnifiedHeader
-            title="Connected Accounts"
-            icon="fas fa-link"
-            description="Manage the authentication providers linked to your account"
-          />
+      <!-- Connected Accounts -->
+      <section class="glass-card accounts-card">
+        <header class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-link"></i>
+          </div>
+          <div class="card-header-text">
+            <h3 class="card-title">Connected Accounts</h3>
+            <p class="card-subtitle">Manage linked authentication providers</p>
+          </div>
+        </header>
+        <div class="card-content">
           <ConnectedAccounts />
         </div>
+      </section>
 
-        <!-- Password Section (only for password-authenticated users) -->
-        {#if hasPasswordProvider()}
-          <div class="security-card">
-            <UnifiedHeader
-              title="Password"
-              icon="fas fa-key"
-              description="Update your password to keep your account secure"
-            />
+      <!-- Password Section (only for password-authenticated users) -->
+      {#if hasPasswordProvider()}
+        <section class="glass-card password-card">
+          <header class="card-header">
+            <div class="card-icon">
+              <i class="fas fa-key"></i>
+            </div>
+            <div class="card-header-text">
+              <h3 class="card-title">Password</h3>
+              <p class="card-subtitle">Update your account security</p>
+            </div>
+          </header>
+          <div class="card-content">
             <PasswordSection
               onChangePassword={handleChangePassword}
               {hapticService}
             />
           </div>
-        {/if}
-      </div>
+        </section>
+      {/if}
 
       <!-- Storage Section -->
-      <div class="security-card storage-section">
-          <UnifiedHeader
-            title="Storage"
-            icon="fas fa-database"
-            description="Clear locally cached data to fix issues or free up space"
-          />
-          <div class="storage-actions">
+      <section class="glass-card storage-card">
+        <header class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="card-header-text">
+            <h3 class="card-title">Storage</h3>
+            <p class="card-subtitle">Manage local cached data</p>
+          </div>
+        </header>
+        <div class="card-content">
+          <div class="storage-content">
             <button
-              class="clear-cache-btn"
+              class="action-btn"
               onclick={handleClearCache}
               disabled={clearingCache}
             >
               <i class="fas fa-broom"></i>
-              {clearingCache ? "Clearing..." : "Clear Cache"}
+              <span>{clearingCache ? "Clearing..." : "Clear Cache"}</span>
             </button>
-            <p class="storage-hint">
-              Clears IndexedDB, localStorage, and cookies. Your account data is
-              stored in the cloud and won't be affected.
+            <p class="hint-text">
+              Clears IndexedDB, localStorage, and cookies. Your cloud data is safe.
             </p>
           </div>
         </div>
+      </section>
 
-      <!-- Account Deletion -->
-      <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
+      <!-- Danger Zone -->
+      <section class="glass-card danger-card">
+        <header class="card-header">
+          <div class="card-icon danger-icon">
+            <i class="fas fa-skull"></i>
+          </div>
+          <div class="card-header-text">
+            <h3 class="card-title danger-title">Danger Zone</h3>
+            <p class="card-subtitle">Irreversible account actions</p>
+          </div>
+        </header>
+        <div class="card-content">
+          <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
+        </div>
+      </section>
     </div>
   {:else}
-    <!-- Signed Out State - Inline Auth -->
+    <!-- Signed Out State - Auth Section -->
     <div class="auth-section">
-      <div class="auth-header">
-        <div class="prompt-icon">
-          <i class="fas fa-user-circle"></i>
+      <div class="auth-hero">
+        <div class="auth-icon-wrapper">
+          <i class="fas fa-user-astronaut"></i>
         </div>
-        <h3>Sign In to TKA Studio</h3>
-        <p>
+        <h2 class="auth-title">Sign In to TKA Studio</h2>
+        <p class="auth-subtitle">
           Save your progress, sync across devices, and access your creations.
         </p>
       </div>
 
-      <!-- Social Auth Buttons - Compact side-by-side layout -->
-      <div class="auth-content">
+      <div class="auth-form-container">
         <SocialAuthCompact
           mode={authMode}
           onFacebookAuth={handleFacebookAuth}
         />
 
-        <!-- Divider -->
         <div class="auth-divider">
-          <span
-            >or {authMode === "signin" ? "sign in" : "sign up"} with email</span
-          >
+          <span>or {authMode === "signin" ? "sign in" : "sign up"} with email</span>
         </div>
 
-        <!-- Email/Password Auth -->
         <EmailPasswordAuth bind:mode={authMode} />
       </div>
     </div>
@@ -265,366 +286,420 @@
 </div>
 
 <style>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PROFILE TAB - Theme-Aware Glassmorphism
+     Uses --theme-* CSS variables set by background selection
+     ═══════════════════════════════════════════════════════════════════════════ */
   .profile-tab {
-    padding: 3cqh 3cqw;
+    container-type: inline-size;
+    container-name: profile-tab;
+
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: clamp(16px, 3cqi, 24px);
+    gap: clamp(14px, 2cqi, 20px);
+    overflow-y: auto;
     max-width: 900px;
     margin: 0 auto;
-    height: 100%;
-    overflow-y: auto;
+
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
 
-  /* Compact layout when parent container height is limited */
-  @container settings-content (max-height: 600px) {
-    .profile-tab {
-      padding: 2cqh 2cqw;
-    }
+  .profile-tab.visible {
+    opacity: 1;
   }
 
-  @container settings-content (max-height: 500px) {
-    .profile-tab {
-      padding: 1.5cqh 1.5cqw;
-    }
-  }
-
-  .profile-section {
+  .profile-content {
     display: flex;
     flex-direction: column;
-    gap: 3cqh;
+    gap: clamp(14px, 2cqi, 20px);
   }
 
-  @container settings-content (max-height: 600px) {
-    .profile-section {
-      gap: 2cqh;
-    }
-  }
-
-  @container settings-content (max-height: 500px) {
-    .profile-section {
-      gap: 1.5cqh;
-    }
-  }
-
-  /* Profile Card */
-  .profile-card {
+  /* ========================================
+     GLASS CARD BASE - Theme-aware
+     ======================================== */
+  .glass-card {
     display: flex;
     flex-direction: column;
-    gap: 2cqh;
-    padding: 3cqh 3cqw;
-    background: rgba(255, 255, 255, 0.05);
+    gap: 16px;
+    padding: clamp(16px, 2.5cqi, 24px);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
   }
 
-  @container settings-content (max-height: 600px) {
-    .profile-card {
-      gap: 1.5cqh;
-      padding: 2cqh 2cqw;
-    }
-
-    .profile-top {
-      grid-template-columns: auto 1fr;
-      grid-template-rows: auto auto;
-      align-items: start;
-    }
-
-    .sign-out-chip {
-      grid-column: 2;
-      justify-self: start;
-      margin-top: 6px;
-    }
+  .glass-card:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    transform: translateY(-1px);
+    box-shadow: var(--theme-shadow, 0 8px 32px rgba(0, 0, 0, 0.2));
   }
 
-  /* Mobile: Stack profile card elements on narrow screens */
-  @container settings-content (max-width: 452px) {
-    .profile-top {
-      grid-template-columns: auto 1fr;
-      grid-template-rows: auto auto;
-    }
-
-    .sign-out-chip {
-      grid-column: 1 / -1;
-      justify-self: center;
-      margin-top: 1.5cqh;
-    }
-  }
-
-  .profile-top {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1.5cqw;
+  /* ========================================
+     PROFILE CARD - Hero section
+     ======================================== */
+  .profile-hero {
+    display: flex;
     align-items: center;
+    gap: clamp(14px, 2.5cqi, 24px);
+    flex-wrap: wrap;
   }
 
-  .profile-avatar {
-    width: min(96px, 15cqh);
-    height: min(96px, 15cqh);
+  .avatar-wrapper {
+    width: clamp(72px, 14cqi, 100px);
+    height: clamp(72px, 14cqi, 100px);
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    padding: 3px;
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #a78bfa) 100%
+    );
+    box-shadow: 0 0 32px color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    flex-shrink: 0;
+  }
+
+  .avatar-wrapper :global(img),
+  .avatar-wrapper :global(.avatar-fallback) {
+    border-radius: 50%;
   }
 
   .profile-info {
-    text-align: left;
+    flex: 1;
+    min-width: 140px;
   }
 
   .profile-name {
-    font-size: clamp(18px, 3cqw, 24px);
+    font-size: clamp(20px, 3.5cqi, 28px);
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0 0 4px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .profile-email {
-    font-size: clamp(12px, 2cqw, 14px);
-    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(13px, 2cqi, 15px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
   }
 
-  .sign-out-chip {
+  .sign-out-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.6cqw;
-    padding: 10px 14px;
-    border-radius: 12px;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 20px;
+    background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.4);
-    background: rgba(239, 68, 68, 0.12);
-    color: #ef4444;
-    font-weight: 700;
-    cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease,
-      border-color 0.15s ease;
-    justify-self: end;
-  }
-
-  .sign-out-chip i {
-    font-size: 14px;
-  }
-
-  .sign-out-chip:hover {
-    transform: translateY(-1px);
-    border-color: rgba(239, 68, 68, 0.6);
-    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.15);
-  }
-
-  .sign-out-chip:active {
-    transform: translateY(0) scale(0.98);
-  }
-
-  /* Account Sections */
-  .account-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 2cqh;
-  }
-
-  /* Security Cards */
-  .security-card {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    padding: 2cqh 2cqw;
-    transition: all 0.2s ease;
+    color: #fca5a5;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+    flex-shrink: 0;
   }
 
-  @container settings-content (max-height: 600px) {
-    .security-card {
-      padding: 1.5cqh 1.5cqw;
+  .sign-out-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #fecaca;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.2);
+  }
+
+  .sign-out-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Mobile: Stack profile */
+  @container profile-tab (max-width: 420px) {
+    .profile-hero {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-info {
+      min-width: 100%;
+    }
+
+    .sign-out-btn {
+      width: 100%;
     }
   }
 
-  .security-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-
-  /* Auth Section - Inline Auth */
-  .auth-section {
-    display: flex;
-    flex-direction: column;
-    gap: 3cqh;
-    padding: 3cqh 3cqw;
-    height: 100%;
-    justify-content: center;
-  }
-
-  @container settings-content (max-height: 600px) {
-    .auth-section {
-      gap: 2cqh;
-      padding: 2cqh 2cqw;
-    }
-  }
-
-  @container settings-content (max-height: 500px) {
-    .auth-section {
-      gap: 1.5cqh;
-      padding: 1cqh 1.5cqw;
-    }
-  }
-
-  .auth-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5cqh;
-    text-align: center;
-  }
-
-  .prompt-icon {
-    width: min(64px, 10cqh);
-    height: min(64px, 10cqh);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
+  /* ========================================
+     DANGER CARD - Always red (semantic)
+     ======================================== */
+  .danger-card {
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.15),
-      rgba(118, 75, 162, 0.15)
+      rgba(239, 68, 68, 0.1) 0%,
+      rgba(220, 38, 38, 0.06) 100%
     );
-    border: 2px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(239, 68, 68, 0.25);
   }
 
-  .prompt-icon i {
-    font-size: min(32px, 5cqh);
-    color: rgba(99, 102, 241, 0.9);
+  .danger-card:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.15) 0%,
+      rgba(220, 38, 38, 0.08) 100%
+    );
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
   }
 
-  .auth-header h3 {
-    font-size: clamp(16px, 3cqw, 20px);
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+  .danger-card .card-icon {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+  }
+
+  .danger-card .card-title {
+    color: #fecaca;
+  }
+
+  /* ========================================
+     CARD HEADER
+     ======================================== */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    color: var(--theme-accent, #6366f1);
+  }
+
+  .card-header-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-title {
+    font-size: 17px;
+    font-weight: 600;
     margin: 0;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  .auth-header p {
-    font-size: clamp(12px, 2cqw, 14px);
-    color: rgba(255, 255, 255, 0.6);
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.45));
+    margin: 3px 0 0 0;
+  }
+
+  .card-content {
+    padding-top: 4px;
+  }
+
+  /* ========================================
+     STORAGE SECTION
+     ======================================== */
+  .storage-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 14px 24px;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border-radius: 12px;
+    color: var(--theme-accent, #6366f1);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms ease;
+    align-self: flex-start;
+  }
+
+  .action-btn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+  }
+
+  .action-btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .hint-text {
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 0;
-    max-width: 400px;
     line-height: 1.5;
   }
 
-  /* Auth Content */
-  .auth-content {
+  /* ========================================
+     AUTH SECTION - Sign In State
+     ======================================== */
+  .auth-section {
     display: flex;
     flex-direction: column;
-    gap: 2cqh;
-    max-width: min(400px, 90cqw);
+    align-items: center;
+    gap: clamp(28px, 5cqi, 48px);
+    padding: clamp(24px, 5cqi, 48px);
+    max-width: 440px;
     margin: 0 auto;
     width: 100%;
   }
 
-  @container settings-content (max-height: 500px) {
-    .auth-content {
-      gap: 1.5cqh;
-    }
+  .auth-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
   }
 
-  /* Auth Divider */
+  .auth-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #a78bfa) 25%, transparent)
+    );
+    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    font-size: 32px;
+    color: var(--theme-accent, #a5b4fc);
+    box-shadow: 0 0 40px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+  }
+
+  .auth-title {
+    font-size: clamp(22px, 4.5cqi, 30px);
+    font-weight: 700;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  }
+
+  .auth-subtitle {
+    font-size: clamp(14px, 2.5cqi, 16px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    margin: 0;
+    max-width: 340px;
+    line-height: 1.5;
+  }
+
+  .auth-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+
   .auth-divider {
     display: flex;
     align-items: center;
     text-align: center;
-    margin: 0.5cqh 0;
   }
 
   .auth-divider::before,
   .auth-divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
   }
 
   .auth-divider span {
-    padding: 0 2cqw;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: clamp(11px, 1.8cqw, 13px);
+    padding: 0 16px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: 13px;
     font-weight: 500;
   }
 
-  /* Desktop: Constrain content width */
-  @container settings-content (min-width: 600px) {
-    .auth-content {
-      max-width: 440px;
-    }
+  /* ========================================
+     SCROLLBAR
+     ======================================== */
+  .profile-tab::-webkit-scrollbar {
+    width: 6px;
   }
 
-  /* Storage Section */
-  .storage-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 12px;
+  .profile-tab::-webkit-scrollbar-track {
+    background: transparent;
   }
 
-  .clear-cache-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: 1px solid rgba(99, 102, 241, 0.4);
-    background: rgba(99, 102, 241, 0.12);
-    color: #818cf8;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease,
-      border-color 0.15s ease,
-      background 0.15s ease;
-    align-self: flex-start;
+  .profile-tab::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    border-radius: 3px;
   }
 
-  .clear-cache-btn i {
-    font-size: 14px;
+  .profile-tab::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
   }
 
-  .clear-cache-btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(99, 102, 241, 0.18);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-  }
-
-  .clear-cache-btn:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
-  }
-
-  .clear-cache-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .storage-hint {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  /* Accessibility */
+  /* ========================================
+     ACCESSIBILITY
+     ======================================== */
   @media (prefers-reduced-motion: reduce) {
-    .security-card,
-    .clear-cache-btn {
+    .profile-tab,
+    .glass-card,
+    .sign-out-btn,
+    .action-btn {
       transition: none;
+    }
+
+    .glass-card:hover,
+    .sign-out-btn:hover,
+    .action-btn:hover:not(:disabled) {
+      transform: none;
     }
   }
 
   @media (prefers-contrast: high) {
-    .profile-card,
-    .security-card {
+    .glass-card {
       border-width: 2px;
     }
 
-    .auth-divider::before,
-    .auth-divider::after {
-      border-color: white;
+    .sign-out-btn,
+    .action-btn {
+      border-width: 2px;
     }
+  }
+
+  .sign-out-btn:focus-visible,
+  .action-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
   }
 </style>

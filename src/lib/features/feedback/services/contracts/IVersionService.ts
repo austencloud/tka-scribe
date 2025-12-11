@@ -45,6 +45,16 @@ export interface IVersionService {
   updateChangelogEntry(version: string, index: number, updatedEntry: ChangelogEntry): Promise<void>;
 
   /**
+   * Add a new changelog entry to a version
+   */
+  addChangelogEntry(version: string, entry: ChangelogEntry): Promise<void>;
+
+  /**
+   * Delete a changelog entry from a version
+   */
+  deleteChangelogEntry(version: string, index: number): Promise<void>;
+
+  /**
    * Get count of completed feedback ready for release
    */
   getCompletedCount(): Promise<number>;

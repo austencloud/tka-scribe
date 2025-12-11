@@ -7,6 +7,7 @@
     entry,
     canEdit,
     onSave,
+    onDelete,
     onOpenFeedback,
     itemId,
     isEditing,
@@ -16,6 +17,7 @@
     entry: ChangelogEntry;
     canEdit: boolean;
     onSave: (newText: string) => Promise<void>;
+    onDelete?: () => Promise<void>;
     onOpenFeedback?: () => void;
     itemId: string;
     isEditing: boolean;
@@ -25,6 +27,8 @@
 
   let editText = $state(entry.text);
   let isSaving = $state(false);
+  let isDeleting = $state(false);
+  let showDeleteConfirm = $state(false);
   let error = $state<string | null>(null);
 
   // Track if user has made changes
@@ -45,6 +49,26 @@
     }
     editText = entry.text;
     error = null;
+    showDeleteConfirm = false;
+  }
+
+  async function handleDelete() {
+    if (!onDelete) return;
+
+    isDeleting = true;
+    error = null;
+
+    try {
+      await onDelete();
+      if (onEndEdit) {
+        onEndEdit();
+      }
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to delete";
+      showDeleteConfirm = false;
+    } finally {
+      isDeleting = false;
+    }
   }
 
   async function saveEdit() {
@@ -104,37 +128,73 @@
         <div class="error-message" in:fly={{ y: -10, duration: 200 }}>
           {error}
         </div>
-      {:else if !hasChanges}
-        <div class="hint" in:fly={{ y: -10, duration: 200 }}>
-          Make changes to enable Save • Press <kbd>Esc</kbd> to exit
-        </div>
       {/if}
 
-      {#if hasChanges}
+      {#if showDeleteConfirm}
+        <div class="delete-confirm" in:fly={{ y: 10, duration: 200 }}>
+          <span class="confirm-text">Delete this entry?</span>
+          <div class="confirm-actions">
+            <button
+              type="button"
+              class="glass-btn danger"
+              onclick={() => void handleDelete()}
+              disabled={isDeleting}
+            >
+              {#if isDeleting}
+                <i class="fas fa-spinner fa-spin"></i>
+              {:else}
+                <i class="fas fa-trash"></i>
+              {/if}
+              Delete
+            </button>
+            <button
+              type="button"
+              class="glass-btn"
+              onclick={() => (showDeleteConfirm = false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      {:else}
         <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
-          <button
-            type="button"
-            class="action-btn save"
-            onclick={() => void saveEdit()}
-            disabled={isSaving}
-          >
-            {#if isSaving}
-              <i class="fas fa-spinner fa-spin"></i>
-              Saving...
-            {:else}
-              <i class="fas fa-check"></i>
+          {#if onDelete}
+            <button
+              type="button"
+              class="glass-btn danger"
+              onclick={() => (showDeleteConfirm = true)}
+              disabled={isSaving}
+            >
+              <i class="fas fa-trash"></i>
+              Delete
+            </button>
+          {/if}
+
+          {#if hasChanges}
+            <button
+              type="button"
+              class="glass-btn primary flex-2"
+              onclick={() => void saveEdit()}
+              disabled={isSaving}
+            >
+              {#if isSaving}
+                <i class="fas fa-spinner fa-spin"></i>
+              {:else}
+                <i class="fas fa-check"></i>
+              {/if}
               Save
-            {/if}
-          </button>
+            </button>
+          {/if}
 
           <button
             type="button"
-            class="action-btn cancel"
+            class="glass-btn"
             onclick={cancelEdit}
             disabled={isSaving}
           >
             <i class="fas fa-times"></i>
-            Cancel
+            {hasChanges ? "Cancel" : "Close"}
           </button>
         </div>
       {/if}
@@ -269,74 +329,109 @@
     cursor: not-allowed;
   }
 
-  .hint {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
-    padding: 4px 8px;
-  }
-
-  kbd {
-    display: inline-block;
-    padding: 2px 5px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-    font-family: monospace;
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.6);
-  }
-
   .error-message {
     font-size: 12px;
     color: #ef4444;
-    padding: 4px 8px;
+    padding: 6px 10px;
     background: rgba(239, 68, 68, 0.1);
-    border-radius: 4px;
+    border-radius: 6px;
   }
 
   .edit-actions {
     display: flex;
     gap: 8px;
-    justify-content: flex-end;
   }
 
-  .action-btn {
+  /* Glass morphism buttons - unified style */
+  .glass-btn {
+    flex: 1;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
+    height: 36px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
   }
 
-  .action-btn:disabled {
-    opacity: 0.6;
+  .glass-btn.flex-2 {
+    flex: 2;
+  }
+
+  .glass-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  .glass-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .glass-btn:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .action-btn.save {
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.4);
+  .glass-btn i {
+    font-size: 12px;
+  }
+
+  /* Primary variant (purple) */
+  .glass-btn.primary {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.3);
     color: #c4b5fd;
   }
 
-  .action-btn.save:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.3);
+  .glass-btn.primary:hover:not(:disabled) {
+    background: rgba(139, 92, 246, 0.25);
+    border-color: rgba(139, 92, 246, 0.45);
     color: #ddd6fe;
   }
 
-  .action-btn.cancel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+  /* Danger variant (red) */
+  .glass-btn.danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: rgba(252, 165, 165, 0.9);
   }
 
-  .action-btn.cancel:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+  .glass-btn.danger:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+  }
+
+  /* Delete confirmation bar */
+  .delete-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+  }
+
+  .confirm-text {
+    font-size: 13px;
+    color: #fca5a5;
+    font-weight: 500;
+  }
+
+  .confirm-actions {
+    display: flex;
+    gap: 8px;
   }
 </style>

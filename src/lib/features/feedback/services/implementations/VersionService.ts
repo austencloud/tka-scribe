@@ -178,6 +178,42 @@ export class VersionService implements IVersionService {
     await updateDoc(versionRef, { changelogEntries });
   }
 
+  async addChangelogEntry(version: string, entry: ChangelogEntry): Promise<void> {
+    const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
+    const versionDoc = await getDoc(versionRef);
+
+    if (!versionDoc.exists()) {
+      throw new Error(`Version ${version} not found`);
+    }
+
+    const data = versionDoc.data();
+    const changelogEntries = (data['changelogEntries'] as ChangelogEntry[]) || [];
+
+    changelogEntries.push(entry);
+
+    await updateDoc(versionRef, { changelogEntries });
+  }
+
+  async deleteChangelogEntry(version: string, index: number): Promise<void> {
+    const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
+    const versionDoc = await getDoc(versionRef);
+
+    if (!versionDoc.exists()) {
+      throw new Error(`Version ${version} not found`);
+    }
+
+    const data = versionDoc.data();
+    const changelogEntries = (data['changelogEntries'] as ChangelogEntry[]) || [];
+
+    if (index < 0 || index >= changelogEntries.length) {
+      throw new Error(`Invalid changelog entry index: ${index}`);
+    }
+
+    changelogEntries.splice(index, 1);
+
+    await updateDoc(versionRef, { changelogEntries });
+  }
+
   /**
    * Seed v0.1.0 with human-readable changelog entries
    * Call this once to populate the initial changelog
