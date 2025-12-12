@@ -173,7 +173,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
       0 4px 8px hsl(var(--shadow-color) / 0.1),
-      /* Inner highlight for 3D effect */ inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      /* Inner highlight for 3D effect */ inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.2));
 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: visible; /* Allow hover effects to overflow and pop over neighbors */
@@ -194,10 +194,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     height: 60%; /* Cover top 60% */
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.3) 0%,
-      rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
-      rgba(255, 255, 255, 0) 100%
+      color-mix(in srgb, var(--theme-text, #fff) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-text, #fff) 15%, transparent) 40%,
+      color-mix(in srgb, var(--theme-text, #fff) 5%, transparent) 70%,
+      transparent 100%
     );
     border-radius: 16px 16px 0 0;
     pointer-events: none;
@@ -214,7 +214,7 @@ import { TYPES } from "$lib/shared/inversify/types";
         0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.2));
     }
   }
 
@@ -265,7 +265,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     box-shadow:
       0 1px 2px hsl(var(--shadow-color) / 0.18),
       0 2px 4px hsl(var(--shadow-color) / 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.1));
 
     /* Faster transition on press */
     transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
@@ -288,7 +288,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .base-card:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.6));
     outline-offset: 3px;
   }
 
@@ -324,7 +324,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     right: 12px;
     width: 20px;
     height: 20px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.5));
     opacity: 0;
     transition: opacity 0.2s ease;
   }
@@ -357,7 +357,7 @@ import { TYPES } from "$lib/shared/inversify/types";
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
       0 4px 8px hsl(var(--shadow-color) / 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.2)) !important;
   }
 
   /* Mesh Gradient Flow Animation - Organic color movement */
@@ -387,7 +387,7 @@ import { TYPES } from "$lib/shared/inversify/types";
         0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.2)) !important;
     }
   }
 

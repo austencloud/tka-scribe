@@ -58,11 +58,11 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
     /* 🟢 PURE GREEN MONOCHROMATIC: Green = GO psychology (no gold/yellow distraction) */
     background: linear-gradient(
       135deg,
-      #059669 0%,
-      /* Emerald 600 - Deep green */ #10b981 25%,
-      /* Emerald 500 - Main green */ #34d399 50%,
-      /* Emerald 400 - Bright green */ #10b981 75%,
-      /* Emerald 500 - Main green */ #059669 100% /* Emerald 600 - Deep green */
+      color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 0%,
+      /* Deep green */ var(--semantic-success, #22c55e) 25%,
+      /* Main green */ color-mix(in srgb, var(--semantic-success, #22c55e) 100%, #a7f3d0) 50%,
+      /* Bright green */ var(--semantic-success, #22c55e) 75%,
+      /* Main green */ color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 100% /* Deep green */
     );
 
     /* Flowing gradient animation + subtle pulse (NO glow animation to prevent overlay) */
@@ -70,8 +70,8 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
       meshGradientFlow 8s ease infinite,
       subtlePulse 2s ease-in-out infinite;
 
-    border: 3px solid rgba(255, 255, 255, 0.4);
-    color: white;
+    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text, white);
     border-radius: 20px;
 
     /* 🎯 TEXT SIZE - Use shared card text styling from parent container */
@@ -88,9 +88,9 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
     /* 🔥 CONTAINED glow - stays within button boundaries */
     box-shadow:
-      0 4px 12px rgba(5, 150, 105, 0.4),
+      0 4px 12px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent),
       0 2px 6px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)),
       inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   }
 
@@ -109,15 +109,15 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
     /* 🌟 ENHANCED but CONTAINED glow - no overlay on other cards */
     box-shadow:
-      0 8px 20px rgba(5, 150, 105, 0.6),
+      0 8px 20px color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent),
       0 4px 12px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.4)),
       inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 
     /* Enhance text glow on hover */
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.6),
-      0 0 25px rgba(255, 255, 255, 0.4);
+      0 0 25px color-mix(in srgb, var(--theme-text, #fff) 40%, transparent);
 
     /* Speed up animations on hover for urgency */
     animation-duration: 6s, 1.5s;
