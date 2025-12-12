@@ -69,7 +69,7 @@
     font-weight: 600; /* iOS semibold */
     letter-spacing: -0.41px; /* iOS body tracking */
     line-height: 1.29; /* iOS body ratio */
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
     text-align: center;
     font-family:
@@ -82,7 +82,7 @@
     font-weight: 400;
     letter-spacing: -0.06px; /* iOS caption tracking */
     line-height: 1.3; /* iOS caption ratio */
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-style: italic;
     margin: 0;
     text-align: center;
@@ -97,8 +97,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.2);
-    border: 0.33px solid rgba(255, 255, 255, 0.12); /* iOS hairline border */
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
+    border: 0.33px solid var(--theme-stroke, rgba(255, 255, 255, 0.12)); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
     padding: clamp(
       6px,
@@ -107,9 +107,7 @@
     ); /* Minimal padding to maximize pictograph space */
     min-height: 300px; /* Reduced minimum to allow more flexibility */
     container-type: size;
-    box-shadow:
-      inset 0 2px 8px rgba(0, 0, 0, 0.1),
-      0 1px 3px rgba(0, 0, 0, 0.08); /* iOS inset shadow for depth */
+    box-shadow: var(--theme-shadow, inset 0 2px 8px rgba(0, 0, 0, 0.1)); /* iOS inset shadow for depth */
   }
 
   /* Pictograph wrapper - uses container query units to size based on preview-container */

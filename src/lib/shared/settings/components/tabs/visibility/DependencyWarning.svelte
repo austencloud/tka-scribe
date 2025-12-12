@@ -20,11 +20,11 @@
 
 <style>
   .dependency-warning {
-    background: rgba(255, 193, 7, 0.1);
-    border: 2px solid rgba(255, 193, 7, 0.3);
+    background: var(--semantic-warning-dim, rgba(245, 158, 11, 0.15));
+    border: 2px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
     border-radius: 8px;
     padding: 12px;
-    color: rgba(255, 193, 7, 1);
+    color: var(--semantic-warning, #f59e0b);
     font-size: 13px;
     font-weight: 600;
     text-align: center;

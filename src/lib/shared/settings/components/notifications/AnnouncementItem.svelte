@@ -104,10 +104,10 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    background: rgba(99, 102, 241, 0.18);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 10px;
-    color: #a5b4fc;
+    color: var(--theme-accent, #a5b4fc);
     font-size: 12px;
     font-weight: 700;
     text-decoration: none;
@@ -115,7 +115,7 @@
   }
 
   .action-link:hover {
-    background: rgba(99, 102, 241, 0.25);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
     transform: translateY(-1px);
   }
 

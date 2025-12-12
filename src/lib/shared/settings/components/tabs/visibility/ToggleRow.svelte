@@ -50,8 +50,8 @@
     justify-content: space-between;
     gap: clamp(8px, 2cqi, 16px);
     min-height: 52px;
-    padding: clamp(10px, 2.5cqi, 16px) 0; /* Balanced padding that expands when space is available */
-    border-bottom: 0.33px solid rgba(255, 255, 255, 0.08); /* iOS hairline */
+    padding: clamp(10px, 2.5cqi, 16px) 0;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     transition: opacity 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
@@ -72,11 +72,11 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-size: clamp(13px, 2.5cqi, 17px); /* iOS footnote to body */
-    font-weight: 400; /* iOS regular */
-    letter-spacing: -0.08px; /* iOS footnote tracking */
-    line-height: 1.38; /* iOS footnote ratio */
-    color: rgba(255, 255, 255, 0.95);
+    font-size: clamp(13px, 2.5cqi, 17px);
+    font-weight: 400;
+    letter-spacing: -0.08px;
+    line-height: 1.38;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     flex: 1;
     min-width: 0;
     font-family:
@@ -144,9 +144,9 @@
       0 1px 2px rgba(0, 0, 0, 0.1); /* iOS exact shadow */
   }
 
-  /* iOS Toggle - Checked State (System Green) */
+  /* Toggle - Checked State (Theme Accent) */
   input:checked + .toggle-slider {
-    background: #34c759; /* iOS system green - exact hex */
+    background: var(--theme-accent, #34c759);
   }
 
   input:checked + .toggle-slider:before {
@@ -176,7 +176,7 @@
     }
 
     input:checked + .toggle-slider {
-      border-color: #34c759;
+      border-color: var(--theme-accent, #34c759);
     }
   }
 </style>

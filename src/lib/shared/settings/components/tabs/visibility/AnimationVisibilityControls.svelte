@@ -157,7 +157,7 @@
   .section-title {
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -182,10 +182,10 @@
     padding: 12px 8px;
     min-height: 70px;
     /* Bento box frosted glass background */
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
@@ -209,9 +209,9 @@
   }
 
   .control-btn:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     /* Subtle lift effect */
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
@@ -219,63 +219,63 @@
     transform: translateY(-1px);
   }
 
-  /* Active State - Blue Accent (Bento box system) */
+  /* Active State - Uses theme accent */
   .control-btn.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px rgba(59, 130, 246, 0.2);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .control-btn.active:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #93c5fd;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    color: var(--theme-accent, #93c5fd);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 0 0 1px rgba(59, 130, 246, 0.3),
-      0 4px 12px rgba(59, 130, 246, 0.2);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
+      0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
-  /* Motion Color Variants - Subtle color hints within blue system */
+  /* Motion Color Variants - Use prop colors for motion icons */
   .control-btn.motion-blue.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px rgba(59, 130, 246, 0.2);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .control-btn.motion-blue.active i {
-    color: #60a5fa;
+    color: var(--prop-blue, #2e3192);
   }
 
   .control-btn.motion-blue.active:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #93c5fd;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    color: var(--theme-accent, #93c5fd);
   }
 
   .control-btn.motion-red.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px rgba(59, 130, 246, 0.2);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .control-btn.motion-red.active i {
-    color: #ef4444;
+    color: var(--prop-red, #ed1c24);
   }
 
   .control-btn.motion-red.active:hover {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #93c5fd;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    color: var(--theme-accent, #93c5fd);
   }
 
   .control-btn:active {
@@ -338,7 +338,7 @@
     }
 
     .control-btn.active {
-      border-color: rgba(59, 130, 246, 0.8);
+      border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 80%, transparent);
     }
   }
 </style>

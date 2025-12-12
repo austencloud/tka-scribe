@@ -235,7 +235,7 @@
     gap: 10px;
     width: 100%;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border: none;
     border-radius: 8px;
     text-align: left;
@@ -251,7 +251,7 @@
   }
 
   .change-item.clickable:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
   }
 
   .change-item.clickable:active {
@@ -267,7 +267,7 @@
     width: 6px;
     height: 6px;
     margin-top: 6px;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     border-radius: 50%;
   }
 
@@ -275,13 +275,13 @@
     flex: 1;
     font-size: 14px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .arrow {
     margin-left: auto;
     flex-shrink: 0;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     font-size: 12px;
     transition:
       transform 0.2s,
@@ -289,7 +289,7 @@
   }
 
   .change-item.clickable:hover .arrow {
-    color: rgba(139, 92, 246, 0.8);
+    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
     transform: translateX(2px);
   }
 
@@ -300,8 +300,8 @@
     gap: 8px;
     width: 100%;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 8px;
   }
 
@@ -309,9 +309,9 @@
     width: 100%;
     padding: 8px;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 14px;
     line-height: 1.5;
     font-family: inherit;
@@ -321,7 +321,7 @@
 
   textarea:focus {
     outline: none;
-    border-color: rgba(139, 92, 246, 0.5);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
   }
 
   textarea:disabled {
@@ -331,9 +331,9 @@
 
   .error-message {
     font-size: 12px;
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     padding: 6px 10px;
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
     border-radius: 6px;
   }
 
@@ -351,13 +351,13 @@
     gap: 6px;
     height: 36px;
     padding: 0 14px;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -367,9 +367,9 @@
   }
 
   .glass-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     transform: translateY(-1px);
   }
 
@@ -386,30 +386,30 @@
     font-size: 12px;
   }
 
-  /* Primary variant (purple) */
+  /* Primary variant (accent) */
   .glass-btn.primary {
-    background: rgba(139, 92, 246, 0.15);
-    border-color: rgba(139, 92, 246, 0.3);
-    color: #c4b5fd;
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    color: var(--theme-accent, #c4b5fd);
   }
 
   .glass-btn.primary:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.25);
-    border-color: rgba(139, 92, 246, 0.45);
-    color: #ddd6fe;
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 45%, transparent);
+    color: var(--theme-accent-strong, #ddd6fe);
   }
 
-  /* Danger variant (red) */
+  /* Danger variant (error) */
   .glass-btn.danger {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.25);
-    color: rgba(252, 165, 165, 0.9);
+    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
+    color: color-mix(in srgb, var(--semantic-error, #fca5a5) 90%, white);
   }
 
   .glass-btn.danger:hover:not(:disabled) {
-    background: rgba(239, 68, 68, 0.18);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 18%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    color: var(--semantic-error, #fca5a5);
   }
 
   /* Delete confirmation bar */
@@ -419,14 +419,14 @@
     justify-content: space-between;
     gap: 12px;
     padding: 8px 10px;
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
     border-radius: 8px;
   }
 
   .confirm-text {
     font-size: 13px;
-    color: #fca5a5;
+    color: var(--semantic-error, #fca5a5);
     font-weight: 500;
   }
 

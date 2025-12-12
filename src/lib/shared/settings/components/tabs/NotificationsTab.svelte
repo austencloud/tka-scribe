@@ -68,14 +68,16 @@
     return dismissedAnnouncements.has(announcementId);
   }
 
+  // Severity colors aligned with semantic color system
+  // Note: These match --semantic-error, --semantic-warning, --semantic-info
   function getSeverityColor(severity: Announcement["severity"]): string {
     switch (severity) {
       case "critical":
-        return "#ef4444";
+        return "#ef4444"; // --semantic-error
       case "warning":
-        return "#f59e0b";
+        return "#f59e0b"; // --semantic-warning
       case "info":
-        return "#6366f1";
+        return "#3b82f6"; // --semantic-info
     }
   }
 

@@ -27,10 +27,10 @@
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 15px;
     font-weight: 500;
     font-family:
@@ -43,8 +43,8 @@
   }
 
   .catdog-chip:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .catdog-chip:active {
@@ -52,11 +52,11 @@
   }
 
   .catdog-chip.active {
-    background: rgba(52, 199, 89, 0.2);
-    border-color: rgba(52, 199, 89, 0.4);
-    color: rgba(255, 255, 255, 0.95);
+    background: color-mix(in srgb, var(--theme-accent, #34c759) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #34c759) 40%, transparent);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     box-shadow:
-      0 0 12px rgba(52, 199, 89, 0.15),
+      0 0 12px color-mix(in srgb, var(--theme-accent, #34c759) 15%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 

@@ -402,9 +402,9 @@
     flex-shrink: 0;
     gap: 6px;
     padding: 4px;
-    background: rgba(20, 22, 35, 0.8);
+    background: var(--theme-card-bg, rgba(20, 22, 35, 0.8));
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     width: 100%;
     margin-bottom: 12px;
   }
@@ -420,7 +420,7 @@
     background: transparent;
     border: none;
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 14px;
     font-weight: 500;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -434,12 +434,12 @@
   }
 
   .segment-btn:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .segment-btn.active {
-    background: rgba(99, 102, 241, 0.3);
-    color: #e0e7ff;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    color: var(--theme-text, #e0e7ff);
   }
 
   /* Hide segment control on desktop (>=700px container width) */
@@ -489,8 +489,8 @@
     align-items: center;
     gap: 12px;
     padding: clamp(12px, 2cqi, 20px);
-    background: rgba(25, 28, 40, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(25, 28, 40, 0.6));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     backdrop-filter: blur(8px);
     flex: 1;
@@ -537,7 +537,7 @@
   .panel-title {
     font-size: 15px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
     white-space: nowrap;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -552,7 +552,7 @@
     justify-content: center;
     background: rgba(0, 0, 0, 0.25);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     overflow: hidden;
     /* Square aspect ratio, scales with container width */
     width: 100%;
@@ -634,7 +634,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     padding-left: 2px;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
@@ -661,10 +661,10 @@
     justify-content: center;
     min-height: 52px;
     padding: 12px 10px;
-    background: rgba(30, 32, 45, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(30, 32, 45, 0.85));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 12px;
     font-weight: 500;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -674,9 +674,9 @@
   }
 
   .toggle-btn:hover {
-    background: rgba(45, 48, 65, 0.9);
-    border-color: rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(45, 48, 65, 0.9));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .toggle-btn:active {
@@ -684,16 +684,16 @@
     transition-duration: 50ms;
   }
 
-  /* Active state - indigo accent */
+  /* Active state - theme accent (uses pictograph panel's indigo as default) */
   .toggle-btn.active {
-    background: rgba(99, 102, 241, 0.35);
-    border-color: rgba(99, 102, 241, 0.5);
-    color: #e0e7ff;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    color: var(--theme-text, #e0e7ff);
   }
 
   .toggle-btn.active:hover {
-    background: rgba(99, 102, 241, 0.45);
-    border-color: rgba(99, 102, 241, 0.6);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 45%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
     color: #fff;
   }
 

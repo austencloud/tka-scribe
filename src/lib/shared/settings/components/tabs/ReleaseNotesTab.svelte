@@ -1,9 +1,9 @@
-<!-- WhatsNewTab - Version history and release notes -->
+<!-- ReleaseNotesTab - Version history and release notes -->
 <script lang="ts">
   import { createVersionState } from "$lib/features/feedback/state/version-state.svelte";
   import type { AppVersion } from "$lib/features/feedback/domain/models/version-models";
-  import VersionCard from "./whats-new/VersionCard.svelte";
-  import VersionDetailPanel from "./whats-new/VersionDetailPanel.svelte";
+  import VersionCard from "./release-notes/VersionCard.svelte";
+  import VersionDetailPanel from "./release-notes/VersionDetailPanel.svelte";
   import { versionService } from "$lib/features/feedback/services/implementations/VersionService";
 
   // Create version state
@@ -49,7 +49,7 @@
   }
 </script>
 
-<div class="whats-new-tab">
+<div class="release-notes-tab">
   <header class="tab-header">
     <div class="header-content">
       <h2>
@@ -98,7 +98,7 @@
 </div>
 
 <style>
-  .whats-new-tab {
+  .release-notes-tab {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -110,7 +110,7 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .header-content h2 {
@@ -120,11 +120,11 @@
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .header-content h2 i {
-    color: #a78bfa;
+    color: var(--theme-accent, #a78bfa);
   }
 
   .tab-content {
@@ -142,7 +142,7 @@
   }
 
   .tab-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
     border-radius: 3px;
   }
 
@@ -161,7 +161,7 @@
 
   .skeleton-card {
     height: 72px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 12px;
     animation: pulse 1.5s ease-in-out infinite;
   }
@@ -195,22 +195,22 @@
   .error-state p {
     margin: 0 0 16px 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .error-state button {
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .error-state button:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 
   /* Empty state */
@@ -225,7 +225,7 @@
 
   .empty-state i {
     font-size: 50px;
-    color: rgba(139, 92, 246, 0.4);
+    color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
     margin-bottom: 16px;
   }
 
@@ -233,13 +233,13 @@
     margin: 0 0 8px 0;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .empty-state p {
     margin: 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Reduced motion */

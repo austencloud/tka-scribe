@@ -142,7 +142,7 @@
 <style>
   .cache-tab {
     padding: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .section {
@@ -152,11 +152,12 @@
   h3 {
     font-size: 20px;
     margin-bottom: 16px;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .firebase-info {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 16px;
@@ -165,7 +166,7 @@
   .firebase-info p {
     margin: 0 0 4px 0;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   code {
@@ -174,7 +175,7 @@
     border-radius: 4px;
     font-family: monospace;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-accent, rgba(255, 255, 255, 0.95));
   }
 
   .stats {
@@ -185,7 +186,8 @@
   }
 
   .stat {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     padding: 12px;
     border-radius: 6px;
     display: flex;
@@ -195,14 +197,15 @@
 
   .stat span {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .stat strong {
     font-size: 18px;
-    color: white;
+    color: var(--theme-accent, white);
   }
 
+  /* Semantic colors: error stays red, success stays green */
   .alert {
     padding: 12px 16px;
     border-radius: 8px;
@@ -233,8 +236,8 @@
   }
 
   details {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 16px;
@@ -244,6 +247,7 @@
     cursor: pointer;
     font-weight: 600;
     user-select: none;
+    color: var(--theme-text, white);
   }
 
   .db-list {
@@ -254,7 +258,7 @@
 
   .db-list li {
     padding: 6px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 4px;
     margin-bottom: 4px;
     font-family: monospace;
@@ -288,7 +292,7 @@
   .btn {
     padding: 10px 16px;
     border-radius: 6px;
-    border: none;
+    border: 1px solid transparent;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -300,14 +304,17 @@
   }
 
   .btn.secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, white);
   }
 
   .btn.secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
+  /* Danger button stays red (semantic) */
   .btn.danger {
     background: #ef4444;
     color: white;
@@ -318,14 +325,14 @@
   }
 
   .help {
-    background: rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
     border-radius: 8px;
     padding: 12px;
   }
 
   .help strong {
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
   }
 
   .help ul {

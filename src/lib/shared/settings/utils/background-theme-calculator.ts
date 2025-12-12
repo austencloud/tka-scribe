@@ -3,6 +3,33 @@
  *
  * Calculates theme properties (luminance, contrast, appropriate glass morphism styles)
  * for background colors and gradients to ensure accessibility and visual consistency.
+ *
+ * ## CSS Variable Hierarchy (3 Layers)
+ *
+ * ### Layer 1: Static Layout Tokens (`--settings-*`)
+ * Defined in settings-tokens.css - spacing, radius, typography, transitions.
+ * These do NOT change with background.
+ *
+ * ### Layer 2: Dynamic Theme Variables (`--theme-*`) ← Injected here
+ * Adapt based on background luminance (light vs dark mode):
+ * - `--theme-panel-bg`, `--theme-panel-elevated-bg`
+ * - `--theme-card-bg`, `--theme-card-hover-bg`
+ * - `--theme-accent`, `--theme-accent-strong`
+ * - `--theme-stroke`, `--theme-stroke-strong`
+ * - `--theme-text`, `--theme-text-dim`
+ * - `--theme-shadow`, `--theme-panel-shadow`
+ *
+ * ### Layer 3: Semantic Colors (`--semantic-*`) ← Injected here
+ * Status colors that stay constant regardless of background:
+ * - `--semantic-error`, `--semantic-error-dim` (red)
+ * - `--semantic-success`, `--semantic-success-dim` (green)
+ * - `--semantic-warning`, `--semantic-warning-dim` (amber)
+ * - `--semantic-info`, `--semantic-info-dim` (blue)
+ * - `--prop-blue`, `--prop-red` (domain-specific motion prop colors)
+ *
+ * ### Legacy Variables (`--*-current`)
+ * Still in use across 30+ components. Migration pending.
+ * DO NOT REMOVE until all components are migrated to `--theme-*` variables.
  */
 
 import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
@@ -10,6 +37,10 @@ import { BackgroundType } from "$lib/shared/background/shared/domain/enums/backg
 /**
  * Theme colors for each background type
  * These represent the dominant visual palette for deriving UI accents
+ *
+ * Format: [dark1, dark2, accent, accentLight?]
+ * - First colors are for luminance calculation
+ * - Middle/later colors are extracted as accent for buttons and interactive elements
  */
 export const BACKGROUND_THEME_COLORS: Record<BackgroundType, string[]> = {
   [BackgroundType.AURORA]: ["#064e3b", "#0d9488", "#06b6d4", "#a855f7"],
@@ -18,8 +49,9 @@ export const BACKGROUND_THEME_COLORS: Record<BackgroundType, string[]> = {
   [BackgroundType.DEEP_OCEAN]: ["#0c4a6e", "#0891b2", "#22d3ee"],
   [BackgroundType.EMBER_GLOW]: ["#7c2d12", "#ea580c", "#fb923c"],
   [BackgroundType.SAKURA_DRIFT]: ["#831843", "#db2777", "#f9a8d4"],
-  [BackgroundType.SOLID_COLOR]: ["#18181b", "#3f3f46", "#71717a"],
-  [BackgroundType.LINEAR_GRADIENT]: ["#0d1117", "#161b22", "#21262d"],
+  // Solid/gradient: dark backgrounds but vibrant indigo accent for visibility
+  [BackgroundType.SOLID_COLOR]: ["#18181b", "#6366f1", "#818cf8"],
+  [BackgroundType.LINEAR_GRADIENT]: ["#0d1117", "#6366f1", "#a78bfa"],
 };
 
 /**
@@ -201,7 +233,7 @@ export function generateMatteTheme(
     cardBg: "#0f172a",
     cardHoverBg: "#131c33",
     accent,
-    accentStrong: mode === "dark" ? "#34d399" : accent,
+    accentStrong: accent, // Use same accent for strong variant
     stroke: "rgba(255, 255, 255, 0.08)",
     strokeStrong: "rgba(255, 255, 255, 0.14)",
     text: "rgba(255, 255, 255, 0.92)",
@@ -269,7 +301,10 @@ export function applyThemeFromColors(
   // Apply to document root
   const root = document.documentElement;
 
-  // Legacy glass variables
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LEGACY VARIABLES - Still used by 30+ components. DO NOT REMOVE.
+  // Migration to --theme-* variables is ongoing.
+  // ═══════════════════════════════════════════════════════════════════════════
   root.style.setProperty("--panel-bg-current", theme.panelBg);
   root.style.setProperty("--panel-border-current", theme.panelBorder);
   root.style.setProperty("--panel-hover-current", theme.panelHover);
@@ -284,7 +319,10 @@ export function applyThemeFromColors(
   root.style.setProperty("--button-active-current", theme.buttonActive);
   root.style.setProperty("--glass-backdrop", theme.backdropBlur);
 
-  // Matte 2026 bento theme variables
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LAYER 2: Dynamic Theme Variables (--theme-*)
+  // Adapt based on background luminance. Use these for new components.
+  // ═══════════════════════════════════════════════════════════════════════════
   root.style.setProperty("--theme-panel-bg", matteTheme.panelBg);
   root.style.setProperty("--theme-panel-elevated-bg", matteTheme.panelElevatedBg);
   root.style.setProperty("--theme-card-bg", matteTheme.cardBg);
@@ -297,6 +335,24 @@ export function applyThemeFromColors(
   root.style.setProperty("--theme-text-dim", matteTheme.textDim);
   root.style.setProperty("--theme-shadow", matteTheme.shadow);
   root.style.setProperty("--theme-panel-shadow", matteTheme.panelShadow);
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LAYER 3: Semantic Colors (--semantic-*, --prop-*)
+  // Constant colors that do NOT change with background.
+  // Use for status indicators, errors, successes, and domain-specific colors.
+  // ═══════════════════════════════════════════════════════════════════════════
+  root.style.setProperty("--semantic-error", "#ef4444");
+  root.style.setProperty("--semantic-error-dim", "rgba(239, 68, 68, 0.15)");
+  root.style.setProperty("--semantic-success", "#22c55e");
+  root.style.setProperty("--semantic-success-dim", "rgba(34, 197, 94, 0.15)");
+  root.style.setProperty("--semantic-warning", "#f59e0b");
+  root.style.setProperty("--semantic-warning-dim", "rgba(245, 158, 11, 0.15)");
+  root.style.setProperty("--semantic-info", "#3b82f6");
+  root.style.setProperty("--semantic-info-dim", "rgba(59, 130, 246, 0.15)");
+
+  // Domain-specific prop colors (constant)
+  root.style.setProperty("--prop-blue", "#2e3192");
+  root.style.setProperty("--prop-red", "#ed1c24");
 }
 
 /**

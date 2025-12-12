@@ -226,17 +226,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .type-badge {
@@ -265,7 +265,7 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .loading-state i,
@@ -274,7 +274,7 @@
   }
 
   .error-state {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   /* Sections */
@@ -286,7 +286,7 @@
     margin: 0 0 12px 0;
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -300,7 +300,7 @@
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     line-height: 1.4;
   }
 
@@ -308,11 +308,11 @@
   .description-text {
     margin: 0;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 12px;
     font-size: 14px;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     white-space: pre-wrap;
   }
 
@@ -328,20 +328,20 @@
     flex-direction: column;
     gap: 4px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 8px;
   }
 
   .context-label {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
 
   .context-value {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     text-transform: capitalize;
   }
 
@@ -351,7 +351,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 12px;
   }
 
@@ -366,11 +366,11 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .submitter-details {
@@ -382,12 +382,12 @@
   .submitter-name {
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .submitter-date {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Resolution */
@@ -402,9 +402,9 @@
     align-items: center;
     gap: 10px;
     padding: 12px;
-    background: rgba(16, 185, 129, 0.1);
+    background: var(--semantic-success-dim, rgba(16, 185, 129, 0.1));
     border-radius: 8px;
-    color: #34d399;
+    color: var(--semantic-success, #34d399);
     font-size: 14px;
   }
 
@@ -415,8 +415,8 @@
   /* Response */
   .response-card {
     padding: 16px;
-    background: rgba(139, 92, 246, 0.1);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
     border-radius: 12px;
   }
 
@@ -424,13 +424,13 @@
     margin: 0 0 8px 0;
     font-size: 14px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
     white-space: pre-wrap;
   }
 
   .response-date {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   /* Mobile adjustments */

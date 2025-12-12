@@ -186,13 +186,13 @@
                   cx="12"
                   cy="12"
                   r="10"
-                  fill="rgba(99, 102, 241, 0.2)"
-                  stroke="#6366f1"
+                  fill="color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent)"
+                  stroke="var(--theme-accent, #6366f1)"
                   stroke-width="2"
                 />
                 <path
                   d="M8 12l2 2 4-4"
-                  stroke="#6366f1"
+                  stroke="var(--theme-accent, #6366f1)"
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -277,8 +277,8 @@
 
   .background-card:hover {
     transform: scale(1.05);
-    border-color: rgba(99, 102, 241, 0.6);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .background-card:active {
@@ -286,9 +286,9 @@
   }
 
   .background-card.selected {
-    border-color: #6366f1;
+    border-color: var(--theme-accent, #6366f1);
     border-width: 3px;
-    box-shadow: 0 0 24px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 24px color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
   }
 
   .background-preview {

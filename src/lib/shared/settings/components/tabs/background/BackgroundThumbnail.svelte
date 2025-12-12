@@ -78,13 +78,13 @@
             cx="12"
             cy="12"
             r="10"
-            fill="rgba(99, 102, 241, 0.2)"
-            stroke="#6366f1"
+            fill="color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent)"
+            stroke="var(--theme-accent, #6366f1)"
             stroke-width="2"
           />
           <path
             d="M8 12l2 2 4-4"
-            stroke="#6366f1"
+            stroke="var(--theme-accent, #6366f1)"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -120,19 +120,19 @@
 
   .background-thumbnail:hover {
     transform: translateY(-4px) scale(1.02);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.4),
-      0 0 20px rgba(99, 102, 241, 0.2);
+      0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .background-thumbnail.selected {
-    border-color: #6366f1;
+    border-color: var(--theme-accent, #6366f1);
     border-width: 3px;
     box-shadow:
-      0 0 0 2px rgba(99, 102, 241, 0.3),
-      0 8px 32px rgba(99, 102, 241, 0.4),
-      0 0 24px rgba(99, 102, 241, 0.3);
+      0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
+      0 8px 32px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
+      0 0 24px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     transform: scale(1.03);
   }
 
@@ -141,7 +141,7 @@
   }
 
   .background-thumbnail:focus-visible {
-    outline: 3px solid #6366f1;
+    outline: 3px solid var(--theme-accent, #6366f1);
     outline-offset: 3px;
   }
 
@@ -761,9 +761,9 @@
     }
 
     .background-thumbnail.selected {
-      border-color: #6366f1;
+      border-color: var(--theme-accent, #6366f1);
       border-width: 4px;
-      background: rgba(99, 102, 241, 0.15);
+      background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
     }
 
     .thumbnail-overlay {

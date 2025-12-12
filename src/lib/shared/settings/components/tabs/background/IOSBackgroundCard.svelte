@@ -129,23 +129,23 @@
 
   /* Selected - iOS subtle tint, NO thick borders - Pixel Perfect */
   .ios-background-card.selected {
-    /* Subtle system blue tint - exact iOS value */
-    background: rgba(0, 122, 255, 0.06);
-    border-color: rgba(0, 122, 255, 0.28);
+    /* Subtle accent tint - uses theme accent with iOS-style opacity */
+    background: color-mix(in srgb, var(--theme-accent, #007aff) 6%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #007aff) 28%, transparent);
     box-shadow:
-      0 4px 14px rgba(0, 122, 255, 0.12),
-      0 1px 3px rgba(0, 122, 255, 0.08),
-      inset 0 0 0 0.5px rgba(0, 122, 255, 0.1); /* Subtle inner glow */
+      0 4px 14px color-mix(in srgb, var(--theme-accent, #007aff) 12%, transparent),
+      0 1px 3px color-mix(in srgb, var(--theme-accent, #007aff) 8%, transparent),
+      inset 0 0 0 0.5px color-mix(in srgb, var(--theme-accent, #007aff) 10%, transparent); /* Subtle inner glow */
   }
 
   .ios-background-card.selected:hover {
-    background: rgba(0, 122, 255, 0.12);
+    background: color-mix(in srgb, var(--theme-accent, #007aff) 12%, transparent);
     transform: scale(1.02);
   }
 
-  /* Focus - iOS blue outline */
+  /* Focus - accent outline */
   .ios-background-card:focus-visible {
-    outline: 2px solid #007aff;
+    outline: 2px solid var(--theme-accent, #007aff);
     outline-offset: 2px;
   }
 
@@ -231,7 +231,7 @@
     width: 24px; /* iOS exact checkmark badge size */
     height: 24px; /* iOS exact checkmark badge size */
     border-radius: 50%;
-    background: #007aff; /* iOS system blue - exact hex */
+    background: var(--theme-accent, #007aff); /* Theme accent with iOS blue fallback */
     backdrop-filter: blur(10px) saturate(180%);
     -webkit-backdrop-filter: blur(10px) saturate(180%);
     display: flex;
@@ -240,7 +240,7 @@
     color: white;
     font-size: 12px; /* iOS checkmark icon size */
     box-shadow:
-      0 2px 6px rgba(0, 122, 255, 0.3),
+      0 2px 6px color-mix(in srgb, var(--theme-accent, #007aff) 30%, transparent),
       0 1px 2px rgba(0, 0, 0, 0.2);
     /* iOS spring animation */
     animation: ios-checkmark-appear 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -673,8 +673,8 @@
     }
 
     .ios-background-card.selected {
-      background: rgba(0, 122, 255, 0.06);
-      border-color: rgba(0, 122, 255, 0.3);
+      background: color-mix(in srgb, var(--theme-accent, #007aff) 6%, transparent);
+      border-color: color-mix(in srgb, var(--theme-accent, #007aff) 30%, transparent);
     }
   }
 
@@ -713,8 +713,8 @@
     }
 
     .ios-background-card.selected {
-      border: 2px solid #0a84ff;
-      background: rgba(10, 132, 255, 0.15);
+      border: 2px solid var(--theme-accent, #0a84ff);
+      background: color-mix(in srgb, var(--theme-accent, #0a84ff) 15%, transparent);
     }
   }
 

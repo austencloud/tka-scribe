@@ -43,8 +43,8 @@
 
 <style>
   .motion-controls {
-    background: rgba(59, 130, 246, 0.08);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
     border-radius: 10px;
     padding: 16px;
   }
@@ -52,13 +52,13 @@
   .group-title {
     font-size: 15px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0 0 8px 0;
   }
 
   .group-note {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-style: italic;
     margin: 0 0 12px 0;
   }
@@ -67,7 +67,7 @@
   @media (prefers-contrast: high) {
     .motion-controls {
       border-width: 2px;
-      border-color: rgba(59, 130, 246, 0.4);
+      border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
     }
   }
 </style>

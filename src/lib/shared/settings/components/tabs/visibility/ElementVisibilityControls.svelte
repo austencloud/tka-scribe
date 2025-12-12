@@ -132,7 +132,7 @@
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
     padding: 0 4px;
     flex-shrink: 0;
@@ -200,7 +200,7 @@
   /* Accessibility */
   @media (prefers-contrast: high) {
     .section-title {
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--theme-text, rgba(255, 255, 255, 0.9));
     }
   }
 </style>

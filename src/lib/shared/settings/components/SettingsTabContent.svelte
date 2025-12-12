@@ -19,11 +19,12 @@
   // Tab loader functions for lazy loading
   const tabLoaders: Record<string, () => Promise<{ default: Component<any> }>> = {
     Profile: () => import("./tabs/ProfileTab.svelte"),
+    ReleaseNotes: () => import("./tabs/ReleaseNotesTab.svelte"),
+    Notifications: () => import("./tabs/NotificationsTab.svelte"),
     PropType: () => import("./tabs/PropTypeTab.svelte"),
-    Background: () => import("./tabs/background/BackgroundTab.svelte"),
+    Theme: () => import("./tabs/background/BackgroundTab.svelte"),
     Visibility: () => import("./tabs/VisibilityTab.svelte"),
     Keyboard: () => import("$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte"),
-    Accessibility: () => import("./tabs/AccessibilityTab.svelte"),
   };
 
   // Cache for loaded tab components
@@ -52,15 +53,17 @@
   {#if LoadedTab}
     {#if activeTab === "Profile"}
       <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
+    {:else if activeTab === "ReleaseNotes"}
+      <LoadedTab />
+    {:else if activeTab === "Notifications"}
+      <LoadedTab />
     {:else if activeTab === "PropType"}
       <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
-    {:else if activeTab === "Background"}
+    {:else if activeTab === "Theme"}
       <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
     {:else if activeTab === "Visibility"}
       <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
     {:else if activeTab === "Keyboard"}
-      <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
-    {:else if activeTab === "Accessibility"}
       <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
     {/if}
   {/if}

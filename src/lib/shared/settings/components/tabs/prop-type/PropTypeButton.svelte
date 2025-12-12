@@ -231,11 +231,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    background: rgba(255, 255, 255, 0.04);
-    border: 0.33px solid rgba(255, 255, 255, 0.16); /* iOS hairline border */
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 0.33px solid var(--theme-stroke, rgba(255, 255, 255, 0.16)); /* iOS hairline border */
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
     position: relative;
     padding: clamp(6px, 1.8cqi, 12px);
     gap: clamp(4px, 1cqi, 8px);
@@ -244,40 +244,38 @@
     min-height: 0; /* Allow shrinking */
     overflow: hidden; /* Prevent image overflow */
     /* iOS precise shadow - matches Photos.app */
-    box-shadow:
-      0 3px 12px rgba(0, 0, 0, 0.12),
-      0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--theme-shadow, 0 3px 12px rgba(0, 0, 0, 0.12));
   }
 
   .prop-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.22);
-    color: #ffffff;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.22));
+    color: var(--theme-text, #ffffff);
     transform: translateY(-1px) scale(1.01); /* iOS subtle lift */
     box-shadow:
       0 6px 18px rgba(0, 0, 0, 0.14),
       0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  /* Selected - More Obvious iOS selection - Enhanced Visibility */
+  /* Selected - Uses theme accent */
   .prop-button.selected {
-    background: rgba(0, 122, 255, 0.15); /* Stronger tint for visibility */
-    border-color: rgba(0, 122, 255, 0.5); /* Much more visible border */
-    color: #ffffff;
+    background: color-mix(in srgb, var(--theme-accent, #007aff) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #007aff) 50%, transparent);
+    color: var(--theme-text, #ffffff);
     transform: scale(1.02); /* Slightly larger when selected */
     box-shadow:
-      0 6px 20px rgba(0, 122, 255, 0.25),
-      /* Stronger glow */ 0 2px 6px rgba(0, 122, 255, 0.15),
-      inset 0 0 0 1px rgba(0, 122, 255, 0.2); /* Stronger inner glow */
+      0 6px 20px color-mix(in srgb, var(--theme-accent, #007aff) 25%, transparent),
+      0 2px 6px color-mix(in srgb, var(--theme-accent, #007aff) 15%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--theme-accent, #007aff) 20%, transparent);
   }
 
   .prop-button.selected:hover {
-    background: rgba(0, 122, 255, 0.2);
+    background: color-mix(in srgb, var(--theme-accent, #007aff) 20%, transparent);
     transform: translateY(-1px) scale(1.03);
   }
 
   .prop-button:focus-visible {
-    outline: 2px solid #007aff; /* iOS system blue */
+    outline: 2px solid var(--theme-accent, #007aff);
     outline-offset: 2px;
   }
 
@@ -299,7 +297,7 @@
 
   .prop-loading {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .prop-image {
@@ -372,16 +370,16 @@
   }
 
   .ios-checkmark.blue {
-    background: #2e3192;
+    background: var(--prop-blue, #2e3192);
     box-shadow:
-      0 3px 10px rgba(46, 49, 146, 0.5),
+      0 3px 10px color-mix(in srgb, var(--prop-blue, #2e3192) 50%, transparent),
       0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   .ios-checkmark.red {
-    background: #ed1c24;
+    background: var(--prop-red, #ed1c24);
     box-shadow:
-      0 3px 10px rgba(237, 28, 36, 0.5),
+      0 3px 10px color-mix(in srgb, var(--prop-red, #ed1c24) 50%, transparent),
       0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
@@ -427,12 +425,12 @@
   /* iOS Accessibility - High Contrast */
   @media (prefers-contrast: high) {
     .prop-button {
-      border: 2px solid rgba(255, 255, 255, 0.4);
+      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
     }
 
     .prop-button.selected {
-      border: 2px solid #0a84ff;
-      background: rgba(10, 132, 255, 0.15);
+      border: 2px solid var(--theme-accent, #0a84ff);
+      background: color-mix(in srgb, var(--theme-accent, #0a84ff) 15%, transparent);
     }
   }
 

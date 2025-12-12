@@ -114,7 +114,7 @@
   .picker-panel {
     width: 100%;
     max-height: 90vh;
-    background: #1a1a1a;
+    background: var(--theme-panel-bg, #1a1a1a);
     border-radius: 16px 16px 0 0;
     display: flex;
     flex-direction: column;
@@ -163,7 +163,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    border-bottom: 0.33px solid rgba(255, 255, 255, 0.16);
+    border-bottom: 0.33px solid var(--theme-stroke, rgba(255, 255, 255, 0.16));
     flex-shrink: 0;
   }
 
@@ -171,7 +171,7 @@
     margin: 0;
     font-size: 20px;
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, white);
     letter-spacing: -0.45px;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
@@ -181,9 +181,9 @@
     min-width: 52px;
     min-height: 52px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border: none;
-    color: white;
+    color: var(--theme-text, white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -194,7 +194,7 @@
 
   .close-button:active {
     transform: scale(0.95);
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 
   .picker-grid {
@@ -213,7 +213,7 @@
     -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     /* Scrollbar styling */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    scrollbar-color: var(--theme-text-dim, rgba(255, 255, 255, 0.3)) transparent;
   }
 
   /* 3 columns for landscape mobile and larger */
@@ -240,12 +240,12 @@
   }
 
   .picker-grid::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     border-radius: 4px;
   }
 
   .picker-grid::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--theme-text, rgba(255, 255, 255, 0.4));
   }
 
   @media (prefers-reduced-motion: reduce) {

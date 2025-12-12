@@ -164,12 +164,12 @@
     width: 100%;
     margin: 0;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border: 1px solid transparent;
     border-radius: 12px;
     font-size: 14px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
     white-space: pre-wrap;
     text-align: left;
     cursor: default;
@@ -183,8 +183,8 @@
   }
 
   .release-notes-text.clickable:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(139, 92, 246, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
   }
 
   .release-notes-text:disabled {
@@ -197,8 +197,8 @@
     flex-direction: column;
     gap: 8px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 12px;
   }
 
@@ -206,9 +206,9 @@
     width: 100%;
     padding: 12px;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 14px;
     line-height: 1.6;
     font-family: inherit;
@@ -218,7 +218,7 @@
 
   textarea:focus {
     outline: none;
-    border-color: rgba(139, 92, 246, 0.5);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
   }
 
   textarea:disabled {
@@ -228,26 +228,26 @@
 
   .hint {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     padding: 4px 8px;
   }
 
   kbd {
     display: inline-block;
     padding: 2px 5px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 3px;
     font-family: monospace;
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .error-message {
     font-size: 12px;
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     padding: 6px 8px;
-    background: rgba(239, 68, 68, 0.1);
+    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
     border-radius: 6px;
   }
 
@@ -276,24 +276,24 @@
   }
 
   .action-btn.save {
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.4);
-    color: #c4b5fd;
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
+    color: var(--theme-accent, #c4b5fd);
   }
 
   .action-btn.save:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.3);
-    color: #ddd6fe;
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    color: var(--theme-accent-strong, #ddd6fe);
   }
 
   .action-btn.cancel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.7));
   }
 
   .action-btn.cancel:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 </style>

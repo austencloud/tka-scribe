@@ -130,8 +130,8 @@
     gap: 16px;
     width: 100%;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     cursor: pointer;
     text-align: left;
@@ -139,8 +139,8 @@
   }
 
   .version-card:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(139, 92, 246, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
   }
 
   .version-card:active {
@@ -161,17 +161,17 @@
   .version-number {
     font-size: 16px;
     font-weight: 700;
-    color: #a78bfa;
+    color: var(--theme-accent, #a78bfa);
   }
 
   .pre-release .version-number {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 14px;
   }
 
   .version-date {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .version-summary {
@@ -183,12 +183,12 @@
 
   .summary-text {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .total-count {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .arrow-icon {
@@ -197,14 +197,14 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     transition:
       color 0.2s ease,
       transform 0.2s ease;
   }
 
   .version-card:hover .arrow-icon {
-    color: rgba(139, 92, 246, 0.8);
+    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
     transform: translateX(2px);
   }
 

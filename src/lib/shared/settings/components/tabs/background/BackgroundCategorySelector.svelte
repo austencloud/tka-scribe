@@ -87,9 +87,9 @@
     gap: 10px;
     padding: 12px 20px;
     border-radius: 10px; /* More rounded */
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    color: var(--theme-text, #ffffff);
     font-size: clamp(15px, 1.5cqw, 17px); /* Slightly larger */
     font-weight: 500;
     line-height: 1.5;
@@ -102,27 +102,27 @@
   }
 
   .filter-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(99, 102, 241, 0.6);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
     transform: scale(1.02); /* Subtle scale */
   }
 
   .filter-chip:active {
-    background: rgba(255, 255, 255, 0.16);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.16));
     transform: scale(0.98);
   }
 
   .filter-chip.selected {
-    background: rgba(99, 102, 241, 0.25); /* Indigo theme */
-    border-color: #6366f1;
-    color: #ffffff;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border-color: var(--theme-accent, #6366f1);
+    color: var(--theme-text, #ffffff);
     font-weight: 600;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.3); /* Subtle glow */
+    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .filter-chip.selected:hover {
-    background: rgba(99, 102, 241, 0.3);
-    box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .chip-icon {
@@ -142,7 +142,7 @@
 
   .chip-checkmark {
     font-size: 14px;
-    color: #6366f1; /* Indigo checkmark */
+    color: var(--theme-accent, #6366f1);
     font-weight: bold;
     animation: checkmarkPop 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -163,7 +163,7 @@
 
   /* Focus styles for accessibility */
   .filter-chip:focus-visible {
-    outline: 2px solid var(--mio-theme-color-primary, #6442d6);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

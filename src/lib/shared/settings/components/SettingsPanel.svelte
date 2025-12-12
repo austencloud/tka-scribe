@@ -22,7 +22,6 @@
   import IOSSkeletonLoader from "./IOSSkeletonLoader.svelte";
   import SettingsTabContent from "./SettingsTabContent.svelte";
   import Toast from "./Toast.svelte";
-  import SettingsGalaxyView from "./galaxy/SettingsGalaxyView.svelte";
   import {
     loadActiveTab,
     validateActiveTab as validateTab,
@@ -33,10 +32,11 @@
   // Valid tab IDs for validation
   const VALID_TAB_IDS = [
     "Profile",
+    "ReleaseNotes",
+    "Notifications",
     "PropType",
-    "Background",
+    "Theme",
     "Visibility",
-    "Accessibility",
     "Keyboard",
   ];
 
@@ -54,12 +54,7 @@
   // Reactive settings - derives from getSettings() to maintain reactivity
   let settings = $derived(getSettings());
 
-  // Galaxy navigation state - always start with galaxy view
-  let showGalaxy = $state(true);
-  let activeDetailView = $state<string | null>(null);
-
   // Initialize activeTab from localStorage or default to "PropType"
-  // This is only used when in detail view
   let activeTab = $state(loadActiveTab(VALID_TAB_IDS, "PropType"));
 
   // Toast notification state
@@ -126,11 +121,13 @@
   // Tab configuration - icons match galaxy view for consistency
   const tabs = [
     { id: "Profile", label: "Profile", icon: '<i class="fas fa-user"></i>' },
-    { id: "PropType", label: "Prop Type", icon: '<i class="fas fa-tags"></i>' },
+    { id: "ReleaseNotes", label: "Release Notes", icon: '<i class="fas fa-gift"></i>' },
+    { id: "Notifications", label: "Notifications", icon: '<i class="fas fa-bell"></i>' },
+    { id: "PropType", label: "Props", icon: '<i class="fas fa-tags"></i>' },
     {
-      id: "Background",
-      label: "Background",
-      icon: '<i class="fas fa-image"></i>',
+      id: "Theme",
+      label: "Theme",
+      icon: '<i class="fas fa-palette"></i>',
     },
     {
       id: "Visibility",
@@ -142,38 +139,13 @@
       label: "Keyboard",
       icon: '<i class="fas fa-keyboard"></i>',
     },
-    {
-      id: "Accessibility",
-      label: "Miscellaneous",
-      icon: '<i class="fas fa-sliders-h"></i>',
-    },
   ];
 
-  // Handle category selection from galaxy view
-  function handleCategorySelect(categoryId: string) {
-    hapticService?.trigger("selection");
-    activeTab = categoryId;
-    activeDetailView = categoryId;
-    showGalaxy = false;
-    // Don't save to localStorage yet - only save when user actively switches tabs in detail view
-  }
-
-  // Handle tab switching within detail view
+  // Handle tab switching
   function switchTab(tabId: string) {
-    // iOS uses light impact for tab changes (using "selection" pattern)
     hapticService?.trigger("selection");
     activeTab = tabId;
-    activeDetailView = tabId;
-    // Only save when user switches tabs within detail view
     saveActiveTab(tabId);
-  }
-
-  // Handle back to galaxy
-  function handleBackToGalaxy() {
-    hapticService?.trigger("selection");
-    showGalaxy = true;
-    activeDetailView = null;
-    // Don't clear activeTab - preserve it in case user returns to same category
   }
 
   // Adapter for modern prop-based updates with instant save
@@ -220,10 +192,6 @@
   onOpenChange={(open: boolean) => {
     if (!open) {
       handleClose();
-    } else {
-      // Reset to galaxy view when opening
-      showGalaxy = true;
-      activeDetailView = null;
     }
   }}
 >
@@ -239,63 +207,37 @@
 
     <!-- Main content area -->
     <div class="settings-panel__body">
-      {#if showGalaxy}
-        <!-- Galaxy View: Card-based navigation -->
-        <main class="settings-panel__content settings-panel__content--galaxy">
+      <!-- Sidebar navigation -->
+      <aside class="settings-panel__sidebar settings-panel__sidebar--desktop">
+        <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
+      </aside>
+
+      <!-- Content Area -->
+      <main class="settings-panel__content">
+        <!-- Header -->
+        <header class="detail-header">
+          <div class="detail-header__title">
+            <h2>
+              {tabs.find((t) => t.id === activeTab)?.label || "Settings"}
+            </h2>
+          </div>
+        </header>
+
+        <!-- Tab Content -->
+        <div class="detail-content">
           {#if !isSettingsLoaded}
             <div class="loading-state">
               <IOSSkeletonLoader variant="toggle" count={5} />
             </div>
           {:else}
-            <SettingsGalaxyView
+            <SettingsTabContent
+              {activeTab}
               {settings}
-              onCategorySelect={handleCategorySelect}
+              onSettingUpdate={handlePropUpdate}
             />
           {/if}
-        </main>
-      {:else}
-        <!-- Detail View: Tab content with sidebar navigation -->
-
-        <!-- Desktop Layout: Sidebar + Content -->
-        <aside class="settings-panel__sidebar settings-panel__sidebar--desktop">
-          <SettingsSidebar {tabs} {activeTab} onTabSelect={switchTab} />
-        </aside>
-
-        <!-- Content Area (with header for both mobile and desktop) -->
-        <main class="settings-panel__content settings-panel__content--detail">
-          <!-- Detail View Header -->
-          <header class="detail-header">
-            <button
-              class="detail-header__back"
-              onclick={handleBackToGalaxy}
-              aria-label="Back to settings overview"
-            >
-              <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="detail-header__title">
-              <h2>
-                {tabs.find((t) => t.id === activeTab)?.label || "Settings"}
-              </h2>
-            </div>
-            <div class="detail-header__spacer"></div>
-          </header>
-
-          <!-- Tab Content -->
-          <div class="detail-content">
-            {#if !isSettingsLoaded}
-              <div class="loading-state">
-                <IOSSkeletonLoader variant="toggle" count={5} />
-              </div>
-            {:else}
-              <SettingsTabContent
-                {activeTab}
-                {settings}
-                onSettingUpdate={handlePropUpdate}
-              />
-            {/if}
-          </div>
-        </main>
-      {/if}
+        </div>
+      </main>
     </div>
   </div>
 
@@ -407,43 +349,6 @@
     z-index: 10;
   }
 
-  .detail-header__back {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    padding: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    color: rgba(255, 255, 255, 0.95);
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    flex-shrink: 0;
-  }
-
-  .detail-header__back:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateX(-2px);
-  }
-
-  .detail-header__back:active {
-    transform: translateX(-1px) scale(0.95);
-  }
-
-  .detail-header__back:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo, #6366f1);
-    outline-offset: 2px;
-  }
-
-  .detail-header__back i {
-    font-size: 16px;
-  }
-
   .detail-header__title {
     flex: 1;
     text-align: center;
@@ -457,11 +362,6 @@
     letter-spacing: -0.01em;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-  }
-
-  .detail-header__spacer {
-    width: 52px; /* Match back button width for centered title */
-    flex-shrink: 0;
   }
 
   .settings-panel__content {
@@ -481,18 +381,6 @@
     container-type: size;
     container-name: settings-content;
     min-height: 0;
-  }
-
-  /* Galaxy content - remove padding, ensure full height for container queries */
-  .settings-panel__content--galaxy {
-    padding: 0;
-    background: transparent;
-    overflow: hidden;
-  }
-
-  /* Detail content wrapper - contains the scrollable content */
-  .settings-panel__content--detail {
-    padding: 0;
   }
 
   .detail-content {
@@ -575,50 +463,18 @@
       padding: 14px 16px;
     }
 
-    .detail-header__back {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
-    }
-
-    .detail-header__spacer {
-      width: 52px;
-    }
-
     .detail-header__title h2 {
       font-size: 17px;
     }
 
-    /* Detail content on mobile */
     .detail-content {
       padding: 16px;
-    }
-
-    /* Galaxy content on mobile */
-    .settings-panel__content--galaxy {
-      padding: 0;
     }
   }
 
   @media (max-width: 480px) {
     .detail-header {
       padding: 12px 14px;
-    }
-
-    .detail-header__back {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
-    }
-
-    .detail-header__back i {
-      font-size: 15px;
-    }
-
-    .detail-header__spacer {
-      width: 52px;
     }
 
     .detail-header__title h2 {
