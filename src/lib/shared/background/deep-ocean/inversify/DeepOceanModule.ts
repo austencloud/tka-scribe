@@ -1,37 +1,56 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import { TYPES } from "../../../inversify/types";
-import type { IBubblePhysics } from '../services/contracts/IBubblePhysics';
-import type { IMarineLifeAnimator } from '../services/contracts/IMarineLifeAnimator';
-import type { IParticleSystem } from '../services/contracts/IParticleSystem';
-import type { IFishSpriteManager } from '../services/contracts/IFishSpriteManager';
-import type { IOceanRenderer } from '../services/contracts/IOceanRenderer';
-import type { ILightRayCalculator } from '../services/contracts/ILightRayCalculator';
-import { BubblePhysics } from '../services/implementations/BubblePhysics';
-import { MarineLifeAnimator } from '../services/implementations/MarineLifeAnimator';
-import { ParticleSystem } from '../services/implementations/ParticleSystem';
-import { FishSpriteManager } from '../services/implementations/FishSpriteManager';
-import { OceanRenderer } from '../services/implementations/OceanRenderer';
-import { LightRayCalculator } from '../services/implementations/LightRayCalculator';
+
+// Contracts
+import type { IBubblePhysics } from "../services/contracts/IBubblePhysics";
+import type { IParticleSystem } from "../services/contracts/IParticleSystem";
+import type { IFishSpriteManager } from "../services/contracts/IFishSpriteManager";
+import type { ILightRayCalculator } from "../services/contracts/ILightRayCalculator";
+import type { IFishAnimator } from "../services/contracts/IFishAnimator";
+import type { IJellyfishAnimator } from "../services/contracts/IJellyfishAnimator";
+import type { IGradientRenderer } from "../services/contracts/IGradientRenderer";
+import type { ILightRayRenderer } from "../services/contracts/ILightRayRenderer";
+import type { IBubbleRenderer } from "../services/contracts/IBubbleRenderer";
+import type { IParticleRenderer } from "../services/contracts/IParticleRenderer";
+import type { IFishRenderer } from "../services/contracts/IFishRenderer";
+import type { IJellyfishRenderer } from "../services/contracts/IJellyfishRenderer";
+
+// Implementations
+import { BubblePhysics } from "../services/implementations/BubblePhysics";
+import { ParticleSystem } from "../services/implementations/ParticleSystem";
+import { FishSpriteManager } from "../services/implementations/FishSpriteManager";
+import { LightRayCalculator } from "../services/implementations/LightRayCalculator";
+import { FishAnimator } from "../services/implementations/FishAnimator";
+import { JellyfishAnimator } from "../services/implementations/JellyfishAnimator";
+import { GradientRenderer } from "../services/implementations/GradientRenderer";
+import { LightRayRenderer } from "../services/implementations/LightRayRenderer";
+import { BubbleRenderer } from "../services/implementations/BubbleRenderer";
+import { ParticleRenderer } from "../services/implementations/ParticleRenderer";
+import { FishRenderer } from "../services/implementations/FishRenderer";
+import { JellyfishRenderer } from "../services/implementations/JellyfishRenderer";
 
 /**
  * Deep Ocean Background Services Module
  *
- * Binds all the focused deep ocean background services that replace the monolithic system.
+ * Focused, single-responsibility services for the deep ocean background.
+ * Each service handles one specific concern (physics, animation, or rendering).
  */
 export const deepOceanBackgroundModule = new ContainerModule(
   async (options: ContainerModuleLoadOptions) => {
     const { bind, isBound } = options;
 
-    // Physics & Animation Services - guard against duplicate bindings
+    // === RESOURCE MANAGEMENT ===
+    if (!isBound(TYPES.IFishSpriteManager)) {
+      bind<IFishSpriteManager>(TYPES.IFishSpriteManager)
+        .to(FishSpriteManager)
+        .inSingletonScope();
+    }
+
+    // === PHYSICS SERVICES ===
     if (!isBound(TYPES.IBubblePhysics)) {
       bind<IBubblePhysics>(TYPES.IBubblePhysics)
         .to(BubblePhysics)
-        .inSingletonScope();
-    }
-    if (!isBound(TYPES.IMarineLifeAnimator)) {
-      bind<IMarineLifeAnimator>(TYPES.IMarineLifeAnimator)
-        .to(MarineLifeAnimator)
         .inSingletonScope();
     }
     if (!isBound(TYPES.IParticleSystem)) {
@@ -45,17 +64,47 @@ export const deepOceanBackgroundModule = new ContainerModule(
         .inSingletonScope();
     }
 
-    // Resource Management Services
-    if (!isBound(TYPES.IFishSpriteManager)) {
-      bind<IFishSpriteManager>(TYPES.IFishSpriteManager)
-        .to(FishSpriteManager)
+    // === ANIMATOR SERVICES ===
+    if (!isBound(TYPES.IFishAnimator)) {
+      bind<IFishAnimator>(TYPES.IFishAnimator)
+        .to(FishAnimator)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IJellyfishAnimator)) {
+      bind<IJellyfishAnimator>(TYPES.IJellyfishAnimator)
+        .to(JellyfishAnimator)
         .inSingletonScope();
     }
 
-    // Rendering Services
-    if (!isBound(TYPES.IOceanRenderer)) {
-      bind<IOceanRenderer>(TYPES.IOceanRenderer)
-        .to(OceanRenderer)
+    // === RENDERER SERVICES ===
+    if (!isBound(TYPES.IGradientRenderer)) {
+      bind<IGradientRenderer>(TYPES.IGradientRenderer)
+        .to(GradientRenderer)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.ILightRayRenderer)) {
+      bind<ILightRayRenderer>(TYPES.ILightRayRenderer)
+        .to(LightRayRenderer)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IBubbleRenderer)) {
+      bind<IBubbleRenderer>(TYPES.IBubbleRenderer)
+        .to(BubbleRenderer)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IParticleRenderer)) {
+      bind<IParticleRenderer>(TYPES.IParticleRenderer)
+        .to(ParticleRenderer)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IFishRenderer)) {
+      bind<IFishRenderer>(TYPES.IFishRenderer)
+        .to(FishRenderer)
+        .inSingletonScope();
+    }
+    if (!isBound(TYPES.IJellyfishRenderer)) {
+      bind<IJellyfishRenderer>(TYPES.IJellyfishRenderer)
+        .to(JellyfishRenderer)
         .inSingletonScope();
     }
   }

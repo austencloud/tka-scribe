@@ -7,17 +7,34 @@ import type {
 } from "../../shared/domain/types/background-types";
 import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import { TYPES } from "../../../inversify/types";
-import type { DeepOceanState } from "../domain/models/DeepOceanModels";
+import type { DeepOceanState, FishMarineLife, JellyfishMarineLife } from "../domain/models/DeepOceanModels";
+
+// Physics & Animation contracts
 import type { IBubblePhysics } from "./contracts/IBubblePhysics";
-import type { IMarineLifeAnimator } from "./contracts/IMarineLifeAnimator";
 import type { IParticleSystem } from "./contracts/IParticleSystem";
-import type { IOceanRenderer } from "./contracts/IOceanRenderer";
 import type { ILightRayCalculator } from "./contracts/ILightRayCalculator";
+import type { IFishAnimator } from "./contracts/IFishAnimator";
+import type { IJellyfishAnimator } from "./contracts/IJellyfishAnimator";
+
+// Renderer contracts
+import type { IGradientRenderer } from "./contracts/IGradientRenderer";
+import type { ILightRayRenderer } from "./contracts/ILightRayRenderer";
+import type { IBubbleRenderer } from "./contracts/IBubbleRenderer";
+import type { IParticleRenderer } from "./contracts/IParticleRenderer";
+import type { IFishRenderer } from "./contracts/IFishRenderer";
+import type { IJellyfishRenderer } from "./contracts/IJellyfishRenderer";
+
+// Performance monitoring
+import {
+  DeepOceanPerformanceMonitor,
+  setMonitorInstance,
+} from "./implementations/DeepOceanPerformanceMonitor";
+
 /**
  * Deep Ocean Background Orchestrator
  *
- * Thin coordinator that delegates to focused services.
- * Replaces the 792-line monolithic DeepOceanBackgroundSystem.
+ * Thin coordinator that delegates to focused, single-responsibility services.
+ * Each service handles exactly one concern (physics, animation, or rendering).
  */
 @injectable()
 export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
@@ -29,82 +46,79 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
     visibleParticleSize: 1,
   };
   private animationTime = 0;
+  private perfMonitor = new DeepOceanPerformanceMonitor();
 
   constructor(
-    @inject(TYPES.IBubblePhysics)
-    private bubblePhysics: IBubblePhysics,
+    // Physics services
+    @inject(TYPES.IBubblePhysics) private bubblePhysics: IBubblePhysics,
+    @inject(TYPES.IParticleSystem) private particleSystem: IParticleSystem,
+    @inject(TYPES.ILightRayCalculator) private lightRayCalculator: ILightRayCalculator,
 
-    @inject(TYPES.IMarineLifeAnimator)
-    private marineLifeAnimator: IMarineLifeAnimator,
+    // Animator services
+    @inject(TYPES.IFishAnimator) private fishAnimator: IFishAnimator,
+    @inject(TYPES.IJellyfishAnimator) private jellyfishAnimator: IJellyfishAnimator,
 
-    @inject(TYPES.IParticleSystem)
-    private particleSystem: IParticleSystem,
-
-    @inject(TYPES.IOceanRenderer)
-    private oceanRenderer: IOceanRenderer,
-
-    @inject(TYPES.ILightRayCalculator)
-    private lightRayCalculator: ILightRayCalculator
+    // Renderer services
+    @inject(TYPES.IGradientRenderer) private gradientRenderer: IGradientRenderer,
+    @inject(TYPES.ILightRayRenderer) private lightRayRenderer: ILightRayRenderer,
+    @inject(TYPES.IBubbleRenderer) private bubbleRenderer: IBubbleRenderer,
+    @inject(TYPES.IParticleRenderer) private particleRenderer: IParticleRenderer,
+    @inject(TYPES.IFishRenderer) private fishRenderer: IFishRenderer,
+    @inject(TYPES.IJellyfishRenderer) private jellyfishRenderer: IJellyfishRenderer
   ) {
-    this.state = {
+    this.state = this.createEmptyState();
+
+    // Expose perf monitor to console (call enableDeepOceanPerf() in console to activate)
+    setMonitorInstance(this.perfMonitor);
+  }
+
+  private createEmptyState(): DeepOceanState {
+    return {
       bubbles: [],
-      marineLife: [],
+      fish: [],
+      jellyfish: [],
       particles: [],
-      currentGradient: {
-        top: "#0d2d47", // Rich ocean blue
-        bottom: "#091a2b", // Darker ocean depth
-      },
+      currentGradient: { top: "#0d2d47", bottom: "#091a2b" },
       lightRays: [],
-      pendingSpawns: [],
+      pendingFishSpawns: [],
+      schools: new Map(),
     };
   }
 
-  async initialize(
-    dimensions: Dimensions,
-    quality: QualityLevel
-  ): Promise<void> {
+  async initialize(dimensions: Dimensions, quality: QualityLevel): Promise<void> {
     this.quality = quality;
     this.animationTime = 0;
 
-    // Delegate initialization to focused services
+    // Initialize bubbles
     const bubbleCount = this.bubblePhysics.getBubbleCount(quality);
-    this.state.bubbles = this.bubblePhysics.initializeBubbles(
-      dimensions,
-      bubbleCount
-    );
+    this.state.bubbles = this.bubblePhysics.initializeBubbles(dimensions, bubbleCount);
 
-    // MarineLifeAnimator handles sprite preloading internally
-    const marineLifeCount = this.marineLifeAnimator.getMarineLifeCount(quality);
-    const fishCount = Math.ceil(marineLifeCount * 0.7); // 70% fish
-    const jellyfishCount = Math.floor(marineLifeCount * 0.3); // 30% jellyfish
-    this.state.marineLife = await this.marineLifeAnimator.initializeMarineLife(
-      dimensions,
-      fishCount,
-      jellyfishCount
-    );
+    // Initialize fish (async for sprite loading)
+    const fishCount = this.fishAnimator.getFishCount(quality);
+    this.state.fish = await this.fishAnimator.initializeFish(dimensions, fishCount);
 
+    // Initialize jellyfish
+    const jellyfishCount = this.jellyfishAnimator.getJellyfishCount(quality);
+    this.state.jellyfish = this.jellyfishAnimator.initializeJellyfish(dimensions, jellyfishCount);
+
+    // Initialize particles
     const particleCount = this.particleSystem.getParticleCount(quality);
-    this.state.particles = this.particleSystem.initializeParticles(
-      dimensions,
-      particleCount
-    );
+    this.state.particles = this.particleSystem.initializeParticles(dimensions, particleCount);
 
+    // Initialize light rays
     const lightRayCount = this.lightRayCalculator.getLightRayCount(quality);
-    this.state.lightRays = this.lightRayCalculator.initializeLightRays(
-      dimensions,
-      lightRayCount
-    );
+    this.state.lightRays = this.lightRayCalculator.initializeLightRays(dimensions, lightRayCount);
 
     // Pre-populate for smooth initial animation
     this.prePopulateElements(dimensions);
 
     console.log(
-      `🌊 Deep Ocean background initialized with ${this.state.bubbles.length} bubbles, ${this.state.marineLife.length} marine life`
+      `🌊 Deep Ocean initialized: ${this.state.fish.length} fish, ${this.state.jellyfish.length} jellyfish, ${this.state.bubbles.length} bubbles`
     );
   }
 
   private prePopulateElements(dimensions: Dimensions): void {
-    // Spread bubbles across full height (instead of starting at bottom)
+    // Spread bubbles across full height
     this.state.bubbles.forEach((bubble) => {
       bubble.y = Math.random() * dimensions.height;
     });
@@ -114,67 +128,80 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
       particle.y = Math.random() * dimensions.height;
     });
 
-    // Randomize animation time so light rays appear mid-animation
+    // Randomize animation time for varied light ray states
     this.animationTime = Math.random() * 1000;
   }
 
   update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
-    // Apply accessibility-aware timing
-    const accessibilityMultiplier = this.accessibility.reducedMotion
-      ? 0.3
-      : 1.0;
-    const effectiveFrameMultiplier = frameMultiplier * accessibilityMultiplier;
+    this.perfMonitor.startFrame();
 
-    // Accumulate delta time for consistent animation speed across all refresh rates
-    // 0.016 represents one frame at 60fps (1/60 second), matching the original monolith
-    this.animationTime += 0.016 * effectiveFrameMultiplier;
+    const accessibilityMultiplier = this.accessibility.reducedMotion ? 0.3 : 1.0;
+    const effectiveMultiplier = frameMultiplier * accessibilityMultiplier;
 
-    // Delegate updates to focused services with accessibility-aware timing
+    this.animationTime += 0.016 * effectiveMultiplier;
+
+    // Update physics
     this.state.bubbles = this.bubblePhysics.updateBubbles(
       this.state.bubbles,
       dimensions,
-      effectiveFrameMultiplier,
-      this.animationTime
-    );
-
-    this.state.marineLife = this.marineLifeAnimator.updateMarineLife(
-      this.state.marineLife,
-      dimensions,
-      effectiveFrameMultiplier,
+      effectiveMultiplier,
       this.animationTime
     );
 
     this.state.particles = this.particleSystem.updateParticles(
       this.state.particles,
       dimensions,
-      effectiveFrameMultiplier
+      effectiveMultiplier
     );
 
     this.state.lightRays = this.lightRayCalculator.updateLightRays(
       this.state.lightRays,
-      effectiveFrameMultiplier
+      effectiveMultiplier
     );
 
-    // Process any pending marine life spawns
-    const newMarineLife = this.marineLifeAnimator.processPendingSpawns(
+    // Update animators
+    this.state.fish = this.fishAnimator.updateFish(
+      this.state.fish,
       dimensions,
+      effectiveMultiplier,
       this.animationTime
     );
-    this.state.marineLife.push(...newMarineLife);
+
+    this.state.jellyfish = this.jellyfishAnimator.updateJellyfish(
+      this.state.jellyfish,
+      dimensions,
+      effectiveMultiplier
+    );
+
+    // Process pending fish spawns
+    const newFish = this.fishAnimator.processPendingSpawns(dimensions, this.animationTime);
+    this.state.fish.push(...newFish);
+
+    this.perfMonitor.endUpdate();
   }
 
   draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
-    // Delegate all rendering to the focused renderer
-    this.oceanRenderer.drawOceanGradient(ctx, dimensions);
-    this.oceanRenderer.drawLightRays(
-      ctx,
-      dimensions,
-      this.state.lightRays,
-      this.quality
+    // Layer order: gradient -> rays -> far particles -> far fish -> bubbles -> mid fish -> near fish -> jellyfish
+    this.gradientRenderer.drawOceanGradient(ctx, dimensions);
+    this.lightRayRenderer.drawLightRays(ctx, dimensions, this.state.lightRays, this.quality);
+
+    // Draw particles (background layer)
+    this.particleRenderer.drawParticles(ctx, this.state.particles);
+
+    // Draw bubbles
+    this.bubbleRenderer.drawBubbles(ctx, this.state.bubbles);
+
+    // Draw fish (sorted by depth internally)
+    this.fishRenderer.drawFish(ctx, this.state.fish);
+
+    // Draw jellyfish (foreground)
+    this.jellyfishRenderer.drawJellyfish(ctx, this.state.jellyfish);
+
+    this.perfMonitor.endRender(
+      this.state.fish.length,
+      this.state.jellyfish.length,
+      this.state.bubbles.length
     );
-    this.oceanRenderer.drawParticles(ctx, this.state.particles);
-    this.oceanRenderer.drawBubbles(ctx, this.state.bubbles);
-    this.oceanRenderer.drawMarineLife(ctx, this.state.marineLife);
   }
 
   setQuality(quality: QualityLevel): void {
@@ -186,40 +213,27 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
   }
 
   setThumbnailMode(enabled: boolean): void {
-    // Update gradient for thumbnail mode
-    if (enabled) {
-      this.state.currentGradient = {
-        top: "#1d4d77", // Lighter ocean blue
-        bottom: "#194a5b", // Lighter ocean depth
-      };
-    } else {
-      this.state.currentGradient = {
-        top: "#0d2d47", // Rich ocean blue
-        bottom: "#091a2b", // Darker ocean depth
-      };
-    }
+    this.state.currentGradient = enabled
+      ? { top: "#1d4d77", bottom: "#194a5b" }
+      : { top: "#0d2d47", bottom: "#091a2b" };
   }
 
   getMetrics(): PerformanceMetrics {
     return {
-      fps: 60, // TODO: Calculate actual FPS
+      fps: 60,
       warnings: [],
       particleCount:
         this.state.bubbles.length +
-        this.state.marineLife.length +
+        this.state.fish.length +
+        this.state.jellyfish.length +
         this.state.particles.length,
-      renderTime: 0, // TODO: Measure if needed
-      memoryUsage: 0, // TODO: Calculate if needed
+      renderTime: 0,
+      memoryUsage: 0,
     };
   }
 
   cleanup(): void {
-    // Clear all state
-    this.state.bubbles = [];
-    this.state.marineLife = [];
-    this.state.particles = [];
-    this.state.lightRays = [];
-    this.state.pendingSpawns = [];
+    this.state = this.createEmptyState();
   }
 
   dispose(): void {

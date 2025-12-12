@@ -4,8 +4,9 @@
 import type { AccessibilitySettings, BackgroundSystem } from "../../domain/models/background-models";
 import type { QualityLevel } from "../../domain/types/background-types";
 import { BackgroundType } from "../../domain/enums/background-enums";
-import { getContainerInstance, resolve } from "../../../../inversify/di";
+import { getContainerInstance } from "../../../../inversify/di";
 import { TYPES } from "../../../../inversify/types";
+import type { Container } from "inversify";
 
 // BackgroundFactoryParams doesn't exist in domain - define locally
 interface BackgroundFactoryParams {
@@ -65,17 +66,17 @@ export class BackgroundFactory {
 
   /**
    * Load Deep Ocean DI module on-demand (only when Deep Ocean background is needed)
+   * @returns The container instance for resolving services
    */
-  private static async loadDeepOceanModule(): Promise<void> {
+  private static async loadDeepOceanModule(): Promise<Container> {
     // Use container.isBound() as the source of truth (survives code-splitting)
     const container = await getContainerInstance();
-    if (container.isBound(TYPES.IBubblePhysics)) {
-      return; // Already loaded
+    if (!container.isBound(TYPES.IBubblePhysics)) {
+      const { deepOceanBackgroundModule } = await import("../../../deep-ocean/inversify/DeepOceanModule");
+      await container.load(deepOceanBackgroundModule);
+      deepOceanModuleLoaded = true;
     }
-
-    const { deepOceanBackgroundModule } = await import("../../../deep-ocean/inversify/DeepOceanModule");
-    await container.load(deepOceanBackgroundModule);
-    deepOceanModuleLoaded = true;
+    return container;
   }
 
   public static async createBackgroundSystem(
@@ -127,17 +128,26 @@ export class BackgroundFactory {
         break;
       }
       case BackgroundType.DEEP_OCEAN: {
-        // Load Deep Ocean DI module on-demand (6 services only loaded when needed)
-        await this.loadDeepOceanModule();
-        
+        // Load Deep Ocean DI module on-demand (services only loaded when needed)
+        const container = await this.loadDeepOceanModule();
+
         const { DeepOceanBackgroundOrchestrator } = await backgroundLoaders.deepOcean();
-        // Use the refactored orchestrator with resolved services
+        // Use the refactored orchestrator with all split services from container
         backgroundSystem = new DeepOceanBackgroundOrchestrator(
-          resolve(TYPES.IBubblePhysics),
-          resolve(TYPES.IMarineLifeAnimator),
-          resolve(TYPES.IParticleSystem),
-          resolve(TYPES.IOceanRenderer),
-          resolve(TYPES.ILightRayCalculator)
+          // Physics services
+          container.get(TYPES.IBubblePhysics),
+          container.get(TYPES.IParticleSystem),
+          container.get(TYPES.ILightRayCalculator),
+          // Animator services
+          container.get(TYPES.IFishAnimator),
+          container.get(TYPES.IJellyfishAnimator),
+          // Renderer services
+          container.get(TYPES.IGradientRenderer),
+          container.get(TYPES.ILightRayRenderer),
+          container.get(TYPES.IBubbleRenderer),
+          container.get(TYPES.IParticleRenderer),
+          container.get(TYPES.IFishRenderer),
+          container.get(TYPES.IJellyfishRenderer)
         );
         break;
       }
