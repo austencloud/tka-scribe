@@ -55,11 +55,11 @@
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     font-size: 18px;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
 
     /* Base button styling */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
@@ -74,19 +74,19 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--primary-light, #818cf8);
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
   .remove-beat-button {
-    background: linear-gradient(135deg, #ff9800 0%, #ff6b00 100%);
-    border-color: rgba(255, 152, 0, 0.3);
-    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+    background: linear-gradient(135deg, var(--semantic-warning, #ff9800) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%);
+    border-color: color-mix(in srgb, var(--semantic-warning, #ff9800) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-warning, #ff9800) 40%, transparent);
   }
 
   .remove-beat-button:hover {
-    background: linear-gradient(135deg, #ff6b00 0%, #ff5500 100%);
-    box-shadow: 0 6px 16px rgba(255, 152, 0, 0.6);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */

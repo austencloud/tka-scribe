@@ -45,7 +45,6 @@ Delegates ALL logic to services (SRP compliant)
     isGenerating,
     onGenerateClicked,
     customizeState,
-    constrainSize = false,
   } = $props<{
     config: UIGenerationConfig;
     isFreeformMode: boolean;
@@ -53,8 +52,6 @@ Delegates ALL logic to services (SRP compliant)
     isGenerating: boolean;
     onGenerateClicked: (options: any) => Promise<void>;
     customizeState?: CustomizeOptionsState;
-    /** When true, constrain max dimensions (used when workspace is empty) */
-    constrainSize?: boolean;
   }>();
 
   // Services - use $state to make them reactive
@@ -190,7 +187,7 @@ Delegates ALL logic to services (SRP compliant)
   });
 </script>
 
-<div class="card-settings-container" class:constrained={constrainSize}>
+<div class="card-settings-container">
   {#each cards as card (card.id)}
     <div
       class="card-wrapper"
@@ -232,14 +229,16 @@ Delegates ALL logic to services (SRP compliant)
     container-name: settings-grid; /* Name the container for explicit targeting */
     display: grid;
 
-    /* Fill available space - parent controls overall sizing */
+    /* Fill available space UP TO max dimensions - don't expand beyond sensible size */
     flex: 1 1 auto;
     width: 100%;
+    max-width: min(550px, 95%); /* Never expand beyond this width */
+    /* max-height applied conditionally below - not on mobile stacked layouts */
     margin: 0 auto; /* Center horizontally */
-    align-self: center; /* Center vertically in flex container */
+    align-self: stretch; /* Default: fill vertical space (mobile stacked) */
 
-    /* Use programmatic element spacing from parent */
-    gap: var(--element-spacing);
+    /* Responsive gap - scales with container, respects device setting as max */
+    gap: clamp(4px, 1.5cqi, var(--element-spacing, 10px));
 
     /* 🎯 SHARED CARD TEXT STYLING - Consistent across all cards */
     --card-text-size: clamp(16px, 2.2vmin, 30px);
@@ -268,19 +267,6 @@ Delegates ALL logic to services (SRP compliant)
       padding 450ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /*
-   * CONSTRAINED MODE: When workspace is empty, limit card grid size
-   * so cards don't become enormous filling the full screen.
-   *
-   * The aspect-ratio constraints from container queries still apply,
-   * but we also cap absolute dimensions to prevent giant cards.
-   */
-  .card-settings-container.constrained {
-    /* Use aspect-ratio based height limit that matches non-constrained behavior
-       This prevents jarring jumps when transitioning between states */
-    max-height: min(85%, 550px, 120cqw);
-  }
-
   .card-wrapper {
     display: flex;
     flex-direction: column;
@@ -297,47 +283,20 @@ Delegates ALL logic to services (SRP compliant)
   }
 
   /*
-   * ASPECT RATIO CONSTRAINTS: Keep grid roughly square (max 1.2:1 portrait)
+   * MAX-HEIGHT CONSTRAINTS:
+   * - Mobile/tablet stacked layouts: NO max-height - use all vertical space
+   * - Desktop (1024px+): Apply max-height so cards don't expand infinitely
    *
-   * When container is too portrait-oriented (taller than 1.2× its width),
-   * limit the grid's max-height to maintain roughly square cards.
-   * Use width-based calculation: max-height = width × 1.2
-   *
-   * The grid with 3 rows of cards looks best when aspect ratio is close to 1:1.
-   * Beyond 1.2:1 portrait, cards become uncomfortably tall rectangles.
+   * Note: Don't use orientation to detect layout - app uses width breakpoints
+   * to decide stacked vs side-by-side, not orientation.
    */
 
-  /* Portrait containers: limit height to maintain card squareness */
-  /* max-aspect-ratio: 1/1.2 means "when height/width > 1.2" */
-  @container (max-aspect-ratio: 1 / 1.2) {
-    .card-settings-container {
-      /* Limit height to 120% of container width */
-      max-height: 120cqw;
-    }
-  }
-
-  /* Tighter constraint for very small screens (iPhone SE width)
-     At <400px, every pixel matters - allow slightly more portrait ratio */
-  @container (max-width: 400px) and (max-aspect-ratio: 1 / 1.3) {
-    .card-settings-container {
-      /* Allow up to 130% on tiny screens */
-      max-height: 130cqw;
-    }
-  }
-
-  /* Larger screens (tablets, foldables) can afford tighter aspect constraints */
-  @container (min-width: 500px) and (max-aspect-ratio: 1 / 1.15) {
-    .card-settings-container {
-      /* Tighter constraint: 115% of width */
-      max-height: 115cqw;
-    }
-  }
-
-  /* Desktop constrained: Allow slightly larger limits */
+  /* Desktop (side-by-side layout): constrain height and center */
   @media (min-width: 1024px) {
-    .card-settings-container.constrained {
+    .card-settings-container {
       max-width: min(650px, 95%);
-      max-height: min(85%, 650px, 115cqw);
+      max-height: min(85%, 550px);
+      align-self: center; /* Center vertically when height is constrained */
     }
   }
 

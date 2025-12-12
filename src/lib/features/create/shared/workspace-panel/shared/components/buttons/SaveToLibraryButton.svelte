@@ -73,18 +73,18 @@
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     font-size: 18px;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
 
     /* Purple gradient matching AddToLibraryButton */
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, var(--theme-accent, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #4f46e5) 100%);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
   }
 
   .save-button:hover:not(:disabled) {
     transform: scale(1.05);
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.6);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #4f46e5) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 70%, #4f46e5) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent, #8b5cf6) 60%, transparent);
   }
 
   .save-button:active:not(:disabled) {
@@ -93,7 +93,7 @@
   }
 
   .save-button:focus-visible {
-    outline: 2px solid var(--primary-light, #818cf8);
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
@@ -107,8 +107,8 @@
   .save-button:disabled:hover,
   .save-button.disabled:hover {
     transform: none;
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, var(--theme-accent, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #4f46e5) 100%);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
   }
 
   /* Mobile responsive - 52px minimum per iOS/Android guidelines */

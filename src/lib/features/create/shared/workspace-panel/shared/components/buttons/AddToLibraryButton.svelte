@@ -57,11 +57,11 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 18px;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
 
     /* Base button styling */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
@@ -76,7 +76,7 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
@@ -87,14 +87,14 @@
   }
 
   .add-to-library-button {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    border-color: rgba(139, 92, 246, 0.3);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, var(--theme-accent, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #4f46e5) 100%);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
   }
 
   .add-to-library-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.6);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #4f46e5) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 70%, #4f46e5) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent, #8b5cf6) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */

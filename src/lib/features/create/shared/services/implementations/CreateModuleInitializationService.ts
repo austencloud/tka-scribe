@@ -2,17 +2,22 @@
  * Create Module Initialization Service Implementation
  *
  * Manages complete initialization sequence for CreateModule's construction interface.
- * Resolves services, creates state, configures callbacks for sequence building workflow.
+ * Creates state, configures callbacks for sequence building workflow.
  *
  * Domain: Create module - Sequence Construction Interface
  * Extracted from CreateModule.svelte onMount monolith.
+ *
+ * REFACTORED: Now uses constructor injection instead of resolve() calls.
+ * All dependencies are injected via @inject decorators for:
+ * - Visible dependencies (can see what class needs in constructor)
+ * - Compile-time safety (missing bindings fail at startup, not runtime)
+ * - Testability (can pass mocks directly to constructor)
  */
 
 import { TYPES } from "$lib/shared/inversify/types";
-import { resolve } from "$lib/shared/inversify/di";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts/IStartPositionService";
 import { createCreateModuleState } from "$lib/features/create/shared/state/create-module-state.svelte";
 import { createConstructTabState } from "$lib/features/create/shared/state/construct-tab-state.svelte";
@@ -47,88 +52,84 @@ import type { BeatData } from "../../domain/models/BeatData";
 export class CreateModuleInitializationService
   implements ICreateModuleInitializationService
 {
-  private sequenceService: ISequenceService | null = null;
-  private sequencePersistenceService: ISequencePersistenceService | null = null;
-  private startPositionService: IStartPositionService | null = null;
-  private CreateModuleService: ICreateModuleService | null = null;
-  private layoutService: IResponsiveLayoutService | null = null;
-  private navigationSyncService: INavigationSyncService | null = null;
-  private beatOperationsService: IBeatOperationsService | null = null;
-  private deepLinkService: IDeepLinkSequenceService | null = null;
-  private navigationDeepLinkService: IDeepLinkService | null = null;
+  constructor(
+    // Core services
+    @inject(TYPES.ISequenceService)
+    private readonly sequenceService: ISequenceService,
+    @inject(TYPES.ISequencePersistenceService)
+    private readonly sequencePersistenceService: ISequencePersistenceService,
+    @inject(TYPES.IStartPositionService)
+    private readonly startPositionService: IStartPositionService,
+    @inject(TYPES.ICreateModuleService)
+    private readonly createModuleService: ICreateModuleService,
+    @inject(TYPES.IResponsiveLayoutService)
+    private readonly layoutService: IResponsiveLayoutService,
+    @inject(TYPES.INavigationSyncService)
+    private readonly navigationSyncService: INavigationSyncService,
+    @inject(TYPES.IBeatOperationsService)
+    private readonly beatOperationsService: IBeatOperationsService,
+    @inject(TYPES.IDeepLinkSequenceService)
+    private readonly deepLinkService: IDeepLinkSequenceService,
+    @inject(TYPES.IDeepLinkService)
+    private readonly navigationDeepLinkService: IDeepLinkService,
+
+    // UI coordination services
+    @inject(TYPES.ICreateModuleHandlers)
+    private readonly handlers: ICreateModuleHandlers,
+    @inject(TYPES.ICreationMethodPersistenceService)
+    private readonly creationMethodPersistence: ICreationMethodPersistenceService,
+    @inject(TYPES.ICreateModuleEffectCoordinator)
+    private readonly effectCoordinator: ICreateModuleEffectCoordinator,
+    @inject(TYPES.IShareService)
+    private readonly shareService: IShareService,
+
+    // Sequence operation services
+    @inject(TYPES.ISequenceStatisticsService)
+    private readonly sequenceStatisticsService: ISequenceStatisticsService,
+    @inject(TYPES.ISequenceTransformationService)
+    private readonly sequenceTransformationService: ISequenceTransformationService,
+    @inject(TYPES.ISequenceValidationService)
+    private readonly sequenceValidationService: ISequenceValidationService
+  ) {}
 
   async initialize(): Promise<CreateModuleInitializationResult> {
-    // Resolve all required services
-    this.sequenceService = resolve(TYPES.ISequenceService);
-    this.sequencePersistenceService = resolve(
-      TYPES.ISequencePersistenceService
-    );
-    this.startPositionService = resolve(TYPES.IStartPositionService);
-    this.CreateModuleService = resolve(TYPES.ICreateModuleService);
-    this.layoutService = resolve(TYPES.IResponsiveLayoutService);
-    this.navigationSyncService = resolve(TYPES.INavigationSyncService);
-    this.beatOperationsService = resolve(TYPES.IBeatOperationsService);
-    this.deepLinkService = resolve(TYPES.IDeepLinkSequenceService);
-    this.navigationDeepLinkService = resolve(TYPES.IDeepLinkService);
-
-    // Resolve UI coordination services
-    const handlers = resolve<ICreateModuleHandlers>(TYPES.ICreateModuleHandlers);
-    const creationMethodPersistence = resolve<ICreationMethodPersistenceService>(
-      TYPES.ICreationMethodPersistenceService
-    );
-    const effectCoordinator = resolve<ICreateModuleEffectCoordinator>(
-      TYPES.ICreateModuleEffectCoordinator
-    );
-    const shareService = resolve(TYPES.IShareService) as IShareService;
-
-    // Resolve optional services needed for sequence operations (transformations, statistics, validation)
-    const sequenceStatisticsService = resolve<ISequenceStatisticsService | undefined>(
-      TYPES.ISequenceStatisticsService
-    );
-    const sequenceTransformationService = resolve<ISequenceTransformationService | undefined>(
-      TYPES.ISequenceTransformationService
-    );
-    const sequenceValidationService = resolve<ISequenceValidationService | undefined>(
-      TYPES.ISequenceValidationService
-    );
-
     // Wait a tick to ensure component context is fully established
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise((r) => setTimeout(r, 0));
 
-    // Create state objects
+    // Create state objects using injected services
     const CreateModuleState = createCreateModuleState(
-      this.sequenceService!,
-      this.sequencePersistenceService!,
-      sequenceStatisticsService,
-      sequenceTransformationService,
-      sequenceValidationService
+      this.sequenceService,
+      this.sequencePersistenceService,
+      this.sequenceStatisticsService,
+      this.sequenceTransformationService,
+      this.sequenceValidationService
     );
 
     // Create tab-specific states - each tab has its own independent sequence state
     const constructTabState = createConstructTabState(
-      this.CreateModuleService!,
-      this.sequenceService!,
-      this.sequencePersistenceService!,
-      sequenceStatisticsService,
-      sequenceTransformationService,
-      sequenceValidationService,
+      this.createModuleService,
+      this.sequenceService,
+      this.sequencePersistenceService,
+      this.sequenceStatisticsService,
+      this.sequenceTransformationService,
+      this.sequenceValidationService,
       CreateModuleState
     );
 
     const assemblerTabState = createAssemblerTabState(
-      this.sequenceService!,
-      this.sequencePersistenceService!,
-      sequenceStatisticsService,
-      sequenceTransformationService,
-      sequenceValidationService
+      this.sequenceService,
+      this.sequencePersistenceService,
+      this.sequenceStatisticsService,
+      this.sequenceTransformationService,
+      this.sequenceValidationService
     );
 
     const generatorTabState = createGeneratorTabState(
-      this.sequenceService!,
-      this.sequencePersistenceService!,
-      sequenceStatisticsService,
-      sequenceTransformationService,
-      sequenceValidationService
+      this.sequenceService,
+      this.sequencePersistenceService,
+      this.sequenceStatisticsService,
+      this.sequenceTransformationService,
+      this.sequenceValidationService
     );
 
     // Attach tab states to CreateModuleState for easy access
@@ -138,7 +139,7 @@ export class CreateModuleInitializationService
     CreateModuleState.generatorTabState = generatorTabState;
 
     // Initialize services
-    await this.CreateModuleService!.initialize();
+    await this.createModuleService.initialize();
 
     // Initialize tab states (but NOT persistence - that's done after deep link check)
     await constructTabState.initializeConstructTab();
@@ -159,20 +160,20 @@ export class CreateModuleInitializationService
       generatorTabState,
 
       // Core services
-      sequenceService: this.sequenceService!,
-      sequencePersistenceService: this.sequencePersistenceService!,
-      startPositionService: this.startPositionService!,
-      CreateModuleService: this.CreateModuleService!,
-      layoutService: this.layoutService!,
-      navigationSyncService: this.navigationSyncService!,
-      beatOperationsService: this.beatOperationsService!,
+      sequenceService: this.sequenceService,
+      sequencePersistenceService: this.sequencePersistenceService,
+      startPositionService: this.startPositionService,
+      CreateModuleService: this.createModuleService,
+      layoutService: this.layoutService,
+      navigationSyncService: this.navigationSyncService,
+      beatOperationsService: this.beatOperationsService,
 
       // UI coordination services
-      handlers,
-      creationMethodPersistence,
-      effectCoordinator,
-      deepLinkService: this.deepLinkService!,
-      shareService,
+      handlers: this.handlers,
+      creationMethodPersistence: this.creationMethodPersistence,
+      effectCoordinator: this.effectCoordinator,
+      deepLinkService: this.deepLinkService,
+      shareService: this.shareService,
     };
   }
 
@@ -180,10 +181,6 @@ export class CreateModuleInitializationService
     setSequence: (sequence: SequenceData) => void,
     initializePersistence: () => Promise<void>
   ): Promise<SequenceLoadResult> {
-    if (!this.deepLinkService) {
-      throw new Error("DeepLinkService not initialized");
-    }
-
     // Try to load from deep link or pending edit
     const loadResult = await this.deepLinkService.loadFromAnySource(setSequence);
 
@@ -282,10 +279,6 @@ export class CreateModuleInitializationService
   }
 
   async loadStartPositions(gridMode: GridMode): Promise<void> {
-    if (!this.startPositionService) {
-      throw new Error("Start position service not initialized");
-    }
-
     await this.startPositionService.getDefaultStartPositions(gridMode);
   }
 
@@ -294,6 +287,6 @@ export class CreateModuleInitializationService
    * This checks if the navigation DeepLinkService has data stored for the "share" module.
    */
   hasShareDeepLink(): boolean {
-    return this.navigationDeepLinkService?.hasDataForModule("share") ?? false;
+    return this.navigationDeepLinkService.hasDataForModule("share");
   }
 }

@@ -47,22 +47,17 @@
     width: 52px;
     height: 52px;
     border: none;
-    background: rgba(
-      59,
-      130,
-      246,
-      0.2
-    ); /* Subtle blue tint for primary action */
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent); /* Subtle blue tint for primary action */
     backdrop-filter: blur(10px);
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .play-button:hover {
-    background: rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
@@ -73,17 +68,17 @@
   }
 
   .play-button:focus-visible {
-    outline: 2px solid var(--primary-light, #818cf8);
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
   /* Animating state - red/stop color */
   .play-button.is-animating {
-    background: rgba(239, 68, 68, 0.2); /* Red tint when animating */
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent); /* Red tint when animating */
   }
 
   .play-button.is-animating:hover {
-    background: rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .play-button i {
@@ -139,8 +134,8 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .play-button {
-      background: rgba(59, 130, 246, 0.3);
-      border: 2px solid rgba(59, 130, 246, 0.7);
+      background: color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
+      border: 2px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
     }
   }
 

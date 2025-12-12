@@ -40,19 +40,19 @@
     justify-content: center;
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #06b6d4) 30%, transparent);
+    background: linear-gradient(135deg, var(--semantic-info, #06b6d4) 0%, color-mix(in srgb, var(--semantic-info, #06b6d4) 85%, #0e7490) 100%);
     border-radius: 50%;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-info, #06b6d4) 40%, transparent);
   }
 
   .sequence-actions-button:hover {
-    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-info, #06b6d4) 85%, #0e7490) 0%, color-mix(in srgb, var(--semantic-info, #06b6d4) 70%, #0e7490) 100%);
     transform: scale(1.05);
-    box-shadow: 0 6px 16px rgba(6, 182, 212, 0.6);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-info, #06b6d4) 60%, transparent);
   }
 
   .sequence-actions-button:active {
@@ -61,7 +61,7 @@
   }
 
   .sequence-actions-button:focus-visible {
-    outline: 2px solid var(--primary-light, #818cf8);
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
@@ -109,8 +109,8 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .sequence-actions-button {
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid rgba(255, 255, 255, 0.5);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.5));
     }
   }
 

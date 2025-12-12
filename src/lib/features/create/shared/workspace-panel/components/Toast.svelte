@@ -88,11 +88,11 @@ Shows at the bottom center of screen, auto-dismisses after 3 seconds
   }
 
   .toast-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
   }
 
   .toast-close:active {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   /* Mobile adjustments */

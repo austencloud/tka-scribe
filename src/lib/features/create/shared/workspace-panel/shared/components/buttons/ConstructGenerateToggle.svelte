@@ -87,13 +87,13 @@ Design Principles:
     gap: 8px;
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(148, 163, 184, 0.3);
+    border: 1px solid var(--theme-stroke, rgba(148, 163, 184, 0.3));
     border-radius: 50%;
-    background: rgba(100, 116, 139, 0.8);
+    background: var(--theme-card-bg, rgba(100, 116, 139, 0.8));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
   }
 
   /* Wider when showing label */
@@ -105,8 +105,8 @@ Design Principles:
 
   .toggle-button:hover {
     transform: scale(1.05);
-    background: rgba(100, 116, 139, 0.9);
-    border-color: rgba(148, 163, 184, 0.4);
+    background: var(--theme-card-hover-bg, rgba(100, 116, 139, 0.9));
+    border-color: var(--theme-stroke-strong, rgba(148, 163, 184, 0.4));
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
@@ -116,7 +116,7 @@ Design Principles:
   }
 
   .toggle-button:focus-visible {
-    outline: 2px solid var(--primary-light, #818cf8);
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
@@ -130,7 +130,7 @@ Design Principles:
   .label {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     white-space: nowrap;
   }
 

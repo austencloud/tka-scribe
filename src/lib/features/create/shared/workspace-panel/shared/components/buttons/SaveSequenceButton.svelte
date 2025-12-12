@@ -53,11 +53,11 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 18px;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
 
     /* Base button styling */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
@@ -72,19 +72,19 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
   .save-button {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    border-color: rgba(34, 197, 94, 0.3);
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+    background: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #15803d) 100%);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
   }
 
   .save-button:hover {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    box-shadow: 0 6px 16px rgba(34, 197, 94, 0.6);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #15803d) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 60%, #15803d) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */

@@ -156,11 +156,11 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
   }
 
   .color-indicator.blue {
-    background-color: #2e3192;
+    background-color: var(--prop-blue, #2e3192);
   }
 
   .color-indicator.red {
-    background-color: #ed1c24;
+    background-color: var(--prop-red, #ed1c24);
   }
 
   select {

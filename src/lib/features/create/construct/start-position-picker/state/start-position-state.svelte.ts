@@ -5,7 +5,7 @@
  * No over-engineering, just the core functionality needed.
  */
 
-import { resolve } from "../../../../../shared/inversify/di";
+import { getContainerInstance } from "../../../../../shared/inversify/di";
 import { TYPES } from "../../../../../shared/inversify/types";
 import { GridMode } from "../../../../../shared/pictograph/grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
@@ -18,40 +18,36 @@ export function createSimplifiedStartPositionState() {
   // Lazy service resolution to avoid effect_orphan error
   let startPositionService: IStartPositionService | null = null;
   let settingsService: ISettingsState | null = null;
+  let containerPromise: Promise<ReturnType<typeof getContainerInstance>> | null = null;
 
-  function getService(): IStartPositionService {
+  async function ensureContainer() {
+    if (!containerPromise) {
+      containerPromise = getContainerInstance();
+    }
+    return containerPromise;
+  }
+
+  async function getService(): Promise<IStartPositionService> {
     if (!startPositionService) {
-      startPositionService = resolve(TYPES.IStartPositionService)!;
+      const container = await ensureContainer();
+      startPositionService = container.get<IStartPositionService>(TYPES.IStartPositionService);
     }
     return startPositionService;
   }
 
-  function getSettingsService(): ISettingsState {
+  async function getSettingsServiceAsync(): Promise<ISettingsState> {
     if (!settingsService) {
-      settingsService = resolve(TYPES.ISettingsState)!;
+      const container = await ensureContainer();
+      settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
     }
     return settingsService;
-  }
-
-  // Load grid mode from settings (defaults to DIAMOND if not set)
-  function getInitialGridMode(): GridMode {
-    try {
-      const settings = getSettingsService();
-      return settings.currentSettings.gridMode || GridMode.DIAMOND;
-    } catch (error) {
-      console.warn(
-        "Failed to load grid mode from settings, defaulting to DIAMOND",
-        error
-      );
-      return GridMode.DIAMOND;
-    }
   }
 
   // Simple reactive state - just what we need
   let positions = $state<PictographData[]>([]);
   let allVariations = $state<PictographData[]>([]);
   let selectedPosition = $state<PictographData | null>(null);
-  let currentGridMode = $state<GridMode>(getInitialGridMode());
+  let currentGridMode = $state<GridMode>(GridMode.DIAMOND); // Default, loaded async
   const selectionListeners = new Set<
     (position: PictographData | null, source: "user" | "sync") => void
   >();
@@ -72,11 +68,13 @@ export function createSimplifiedStartPositionState() {
   // Load positions on initialization - always succeeds with hardcoded positions
   async function loadPositions(gridMode: GridMode = currentGridMode) {
     currentGridMode = gridMode;
-    positions = await getService().getStartPositions(gridMode);
+    const service = await getService();
+    positions = await service.getStartPositions(gridMode);
 
     // Persist grid mode to settings when it changes
     try {
-      await getSettingsService().updateSetting("gridMode", gridMode);
+      const settings = await getSettingsServiceAsync();
+      await settings.updateSetting("gridMode", gridMode);
     } catch (error) {
       console.warn("Failed to persist grid mode to settings", error);
     }
@@ -94,11 +92,13 @@ export function createSimplifiedStartPositionState() {
   // Load all 16 start position variations for the current grid mode
   async function loadAllVariations(gridMode: GridMode = currentGridMode) {
     currentGridMode = gridMode;
-    allVariations = await getService().getAllStartPositionVariations(gridMode);
+    const service = await getService();
+    allVariations = await service.getAllStartPositionVariations(gridMode);
 
     // Persist grid mode to settings when it changes
     try {
-      await getSettingsService().updateSetting("gridMode", gridMode);
+      const settings = await getSettingsServiceAsync();
+      await settings.updateSetting("gridMode", gridMode);
     } catch (error) {
       console.warn("Failed to persist grid mode to settings", error);
     }
@@ -106,7 +106,8 @@ export function createSimplifiedStartPositionState() {
 
   // Select a position
   async function selectPosition(position: PictographData) {
-    await getService().selectStartPosition(position);
+    const service = await getService();
+    await service.selectStartPosition(position);
     selectedPosition = position;
     notifySelectionChange(position, "user");
   }

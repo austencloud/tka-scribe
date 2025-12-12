@@ -4,7 +4,7 @@ Refactored to use Drawer component for consistent behavior
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
   import { onMount } from "svelte";
@@ -26,16 +26,15 @@ Refactored to use Drawer component for consistent behavior
       onClose: () => void;
     }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedbackService | null = null;
   let capTypeService: ICAPTypeService | null = null;
   let isMultiSelectMode = $state(false);
   const explanationGenerator = new CAPExplanationTextGenerator();
 
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-    capTypeService = resolve(TYPES.ICAPTypeService);
+  onMount(async () => {
+    const container = await getContainerInstance();
+    hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    capTypeService = container.get<ICAPTypeService>(TYPES.ICAPTypeService);
   });
 
   // Generate explanation text based on selected components

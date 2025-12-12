@@ -169,7 +169,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .turn-dialog {
-    background: rgba(30, 30, 30, 0.95);
+    background: var(--theme-panel-bg, rgba(30, 30, 30, 0.95));
     border-radius: 8px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     padding: 16px;
@@ -177,11 +177,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .blue-dialog {
-    border: 2px solid #3b82f6;
+    border: 2px solid var(--prop-blue, #3b82f6);
   }
 
   .red-dialog {
-    border: 2px solid #ef4444;
+    border: 2px solid var(--prop-red, #ef4444);
   }
 
   .dialog-header {
@@ -195,13 +195,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
   }
 
   .current-value {
     font-size: 18px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
   }
 
   .turn-buttons {
@@ -215,13 +215,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     flex: 1;
     padding: 12px 8px;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, #ffffff);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .turn-btn:last-child {
@@ -229,26 +229,26 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .turn-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
   }
 
   .turn-btn.selected {
-    background: #6366f1;
-    color: #ffffff;
+    background: var(--theme-accent, #6366f1);
+    color: var(--theme-text, #ffffff);
   }
 
   .blue-dialog .turn-btn.selected {
-    background: #3b82f6;
+    background: var(--prop-blue, #3b82f6);
   }
 
   .red-dialog .turn-btn.selected {
-    background: #ef4444;
+    background: var(--prop-red, #ef4444);
   }
 
   .close-btn {
     padding: 12px 24px;
-    background: #6366f1;
-    color: #ffffff;
+    background: var(--theme-accent, #6366f1);
+    color: var(--theme-text, #ffffff);
     border: none;
     border-radius: 6px;
     font-size: 14px;
@@ -258,7 +258,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .close-btn:hover {
-    background: #4f46e5;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 85%, black);
   }
 
   /* Mobile adjustments */

@@ -78,8 +78,8 @@ export function createToggleCardState<T>(props: {
           const entry = entries[0];
           if (entry) {
             const { width, height } = entry.contentRect;
-            // Options go side-by-side when aspect-ratio > 2.5 (matches CSS)
-            optionsAreSideBySide = width / height > 2.5;
+            // Options go side-by-side when aspect-ratio > 3.5 (matches CSS)
+            optionsAreSideBySide = width / height > 3.5;
           }
         });
         resizeObserver.observe(cardElement);

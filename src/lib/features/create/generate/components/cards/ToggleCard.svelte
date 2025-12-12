@@ -202,7 +202,7 @@ Hides header when card height is below 65px for space optimization
     display: block;
   }
 
-  /* Hide header when card is too short (< 85px) */
+  /* Hide header when card is too short (< 65px) */
   @container toggle-card (height < 65px) {
     .card-header-wrapper {
       display: none;
@@ -211,6 +211,16 @@ Hides header when card height is below 65px for space optimization
     /* Center toggle options when header is hidden */
     .toggle-options {
       justify-content: center;
+    }
+  }
+
+  /* Shrink icons and text when card is short (< 95px) to prevent overflow */
+  @container toggle-card (height < 95px) {
+    .toggle-options :global(.option-icon) {
+      font-size: clamp(12px, 2cqh, 18px);
+    }
+    .toggle-options :global(.option-label) {
+      font-size: clamp(12px, 5cqi, 16px);
     }
   }
 
@@ -238,9 +248,9 @@ Hides header when card height is below 65px for space optimization
 
   /* 🎯 UNIFIED LAYOUT CONTROL: Pure CSS Container Query (2025 Gold Standard) */
   /* Switch to horizontal layout ONLY when card is significantly wider than tall */
-  /* Aspect ratio > 2.5:1 ensures vertical layout for readability */
+  /* Aspect ratio > 3.5:1 ensures vertical layout stays for most reasonable card sizes */
   /* No JavaScript needed - browser-native, performant, declarative */
-  @container toggle-card (aspect-ratio > 2.5) {
+  @container toggle-card (aspect-ratio > 3.5) {
     .toggle-options {
       flex-direction: row; /* Horizontal stacking when card is wide */
       justify-content: center;

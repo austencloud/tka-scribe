@@ -372,16 +372,26 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     const allOptions =
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
 
-    // Apply filters
+    // Apply filters - track counts at each step for diagnostics
     let filteredOptions = allOptions;
     const lastBeat = sequence.length > 0 ? sequence[sequence.length - 1] : null;
-
-    // Handle undefined case from array access
     const lastBeatSafe = lastBeat ?? null;
+    const lastPos = lastBeatSafe?.endPosition ?? "start";
+
+    // Track filter results for diagnostics
+    const filterCounts = {
+      total: allOptions.length,
+      afterContinuity: 0,
+      afterType6: 0,
+      afterRotation: 0,
+      afterAvoidPos: 0,
+    };
+
     filteredOptions = this.pictographFilterService.filterByContinuity(
       filteredOptions,
       lastBeatSafe
     );
+    filterCounts.afterContinuity = filteredOptions.length;
 
     // Filter out static Type 6 pictographs based on level
     // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
@@ -389,6 +399,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       filteredOptions,
       level
     );
+    filterCounts.afterType6 = filteredOptions.length;
 
     if (propContinuity === PropContinuity.CONTINUOUS) {
       filteredOptions = this.pictographFilterService.filterByRotation(
@@ -397,6 +408,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         redRotationDirection
       );
     }
+    filterCounts.afterRotation = filteredOptions.length;
 
     // Avoid landing on the required end position during intermediate beats
     // This prevents situations where the only path to the end position is a Type 6 static move
@@ -405,9 +417,31 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         (p) => p.endPosition !== avoidEndPosition
       );
     }
+    filterCounts.afterAvoidPos = filteredOptions.length;
 
     if (filteredOptions.length === 0) {
-      throw new Error("No valid options available after filtering");
+      // Provide detailed diagnostic info to understand what caused the failure
+      console.error("🔴 GENERATION FAILURE DIAGNOSTIC:");
+      console.error(`  Current position: ${lastPos}`);
+      console.error(`  Level: ${level}`);
+      console.error(`  PropContinuity: ${propContinuity}`);
+      console.error(`  BlueRotationDir: ${blueRotationDirection}`);
+      console.error(`  RedRotationDir: ${redRotationDirection}`);
+      console.error(`  AvoidEndPosition: ${avoidEndPosition ?? "none"}`);
+      console.error(`  GridMode: ${gridMode}`);
+      console.error(`  Sequence so far: ${sequence.map(b => b.endPosition).join(" → ")}`);
+      console.error(`  Filter chain breakdown:`);
+      console.error(`    Total loaded: ${filterCounts.total}`);
+      console.error(`    After continuity filter (start=${lastPos}): ${filterCounts.afterContinuity}`);
+      console.error(`    After Type6 filter (level=${level}): ${filterCounts.afterType6}`);
+      console.error(`    After rotation filter: ${filterCounts.afterRotation}`);
+      console.error(`    After avoidPos filter (avoid=${avoidEndPosition}): ${filterCounts.afterAvoidPos}`);
+
+      throw new Error(
+        `No valid options available after filtering. ` +
+        `Position: ${lastPos}, Level: ${level}, Continuity: ${propContinuity}, ` +
+        `AvoidPos: ${avoidEndPosition ?? "none"}`
+      );
     }
 
     // Random selection

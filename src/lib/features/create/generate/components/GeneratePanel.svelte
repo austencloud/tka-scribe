@@ -42,16 +42,6 @@ Card-based architecture with integrated Generate button:
   const deviceState = createDeviceState();
   const customizeState = createCustomizeOptionsState();
 
-  // ===== Workspace Content Detection =====
-  // When empty: constrain card grid size so it doesn't fill entire screen
-  // When has content: use all available space since workspace is taking room
-  const hasWorkspaceContent = $derived.by(() => {
-    const sequence = sequenceState.currentSequence;
-    if (!sequence) return false;
-    const hasBeat = sequence.beats && sequence.beats.length > 0;
-    const hasStartPosition = sequence.startingPositionBeat || sequence.startPosition;
-    return hasBeat || hasStartPosition;
-  });
 
   // ===== Device Service Integration =====
   onMount(() => {
@@ -79,7 +69,6 @@ Card-based architecture with integrated Generate button:
       isGenerating={actionsState.isGenerating}
       onGenerateClicked={actionsState.onGenerateClicked}
       customizeState={customizeState}
-      constrainSize={!hasWorkspaceContent}
     />
   </div>
 </div>
@@ -103,8 +92,15 @@ Card-based architecture with integrated Generate button:
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: stretch; /* Default: fill space (stacked layouts) */
     min-height: 0;
+  }
+
+  /* Desktop: center cards vertically since we constrain their height */
+  @media (min-width: 1024px) {
+    .generate-panel-inner {
+      justify-content: center;
+    }
   }
 
 

@@ -58,11 +58,11 @@
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     font-size: 18px;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
 
     /* Base button styling */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
@@ -77,17 +77,17 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--primary-light, #818cf8);
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
   .new-sequence-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--theme-accent, #667eea) 0%, color-mix(in srgb, var(--theme-accent, #667eea) 80%, #764ba2) 100%);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .new-sequence-button:hover:not(.disabled) {
-    background: linear-gradient(135deg, #7b8ef0 0%, #8b5ab8 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #667eea) 90%, white) 0%, color-mix(in srgb, var(--theme-accent, #667eea) 70%, #764ba2) 100%);
   }
 
   .panel-button.disabled {

@@ -91,11 +91,11 @@ Responsive design:
     {
       id: "reverse",
       icon: "fa-backward",
-      name: "Reverse",
+      name: "Reverse", 
       shortDesc: "Retrace to start",
       fullDesc: "Creates a sequence that returns you to where you started. Each movement is inverted so you physically wind back.",
       color: "#f43f5e",
-      handler: onReverse,
+      handler: onRewind,
     },
   ];
 </script>
@@ -133,10 +133,10 @@ Responsive design:
 
 <style>
   .sequence-transform-tools {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: var(--border-radius, 12px);
     padding: var(--spacing-md, 16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .tools-header {
@@ -145,7 +145,7 @@ Responsive design:
 
   .tools-header h4 {
     margin: 0;
-    color: var(--foreground, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: var(--font-size-md, 1rem);
     font-weight: 600;
   }
@@ -169,7 +169,7 @@ Responsive design:
     );
     border: 1px solid color-mix(in srgb, var(--action-color) 25%, transparent);
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     cursor: pointer;
     width: 100%;
     text-align: left;
@@ -228,12 +228,12 @@ Responsive design:
   .action-name {
     font-size: 0.95rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .action-desc {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   /* Small mobile */

@@ -23,7 +23,7 @@
   import { onMount, setContext, tick } from "svelte";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
-  import type { CreateModuleServices } from "../services/ServiceInitializer";
+  import type { CreateModuleServices } from "../types/create-module-services";
   import type { ICreateModuleInitializationService } from "../services/contracts/ICreateModuleInitializationService";
   import type { ICreateModuleHandlers } from "../services/contracts/ICreateModuleHandlers";
   import type { ICreationMethodPersistenceService } from "../services/contracts/ICreationMethodPersistenceService";

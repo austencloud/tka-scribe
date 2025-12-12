@@ -58,24 +58,24 @@
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     font-size: 18px;
-    color: #ffffff;
+    color: var(--theme-text, #ffffff);
 
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 0.9),
-      rgba(220, 38, 38, 0.9)
+      color-mix(in srgb, var(--semantic-error, #ef4444) 90%, transparent),
+      color-mix(in srgb, var(--semantic-error, #dc2626) 90%, transparent)
     );
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     box-shadow:
-      0 2px 8px rgba(239, 68, 68, 0.35),
-      0 6px 18px rgba(220, 38, 38, 0.25);
+      0 2px 8px color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent),
+      0 6px 18px color-mix(in srgb, var(--semantic-error, #dc2626) 25%, transparent);
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
     box-shadow:
-      0 4px 12px rgba(239, 68, 68, 0.45),
-      0 8px 22px rgba(220, 38, 38, 0.35);
+      0 4px 12px color-mix(in srgb, var(--semantic-error, #ef4444) 45%, transparent),
+      0 8px 22px color-mix(in srgb, var(--semantic-error, #dc2626) 35%, transparent);
   }
 
   .panel-button:active:not(:disabled) {
@@ -84,7 +84,7 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--primary-light, #fca5a5);
+    outline: 2px solid color-mix(in srgb, var(--semantic-error, #ef4444) 70%, white);
     outline-offset: 2px;
   }
 
@@ -97,12 +97,12 @@
   .record-button.active {
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 1),
-      rgba(220, 38, 38, 1)
+      var(--semantic-error, #ef4444),
+      color-mix(in srgb, var(--semantic-error, #ef4444) 85%, #b91c1c)
     );
     box-shadow:
-      0 4px 14px rgba(239, 68, 68, 0.55),
-      0 10px 26px rgba(220, 38, 38, 0.4);
+      0 4px 14px color-mix(in srgb, var(--semantic-error, #ef4444) 55%, transparent),
+      0 10px 26px color-mix(in srgb, var(--semantic-error, #dc2626) 40%, transparent);
   }
 
   /* Mobile responsive - ALWAYS 52px minimum per iOS/Android guidelines */

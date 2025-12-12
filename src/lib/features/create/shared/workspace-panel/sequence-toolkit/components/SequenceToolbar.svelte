@@ -72,13 +72,13 @@ Transform tools moved to edit tab.
     height: 100%; /* Take full height to enable centering */
 
     /* Glassmorphism panel styling with reduced opacity to avoid visual conflict */
-    background: rgba(255, 255, 255, 0.04); /* Reduced from 0.08 */
-    border: 1px solid rgba(255, 255, 255, 0.08); /* More subtle border */
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04)); /* Reduced from 0.08 */
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)); /* More subtle border */
     border-radius: 12px;
     box-shadow:
       0 4px 16px rgba(0, 0, 0, 0.08),
       0 2px 8px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05); /* Reduced shadow intensity */
+      inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.05)); /* Reduced shadow intensity */
 
     /* Position relative for pseudo-element */
     position: relative;
@@ -95,8 +95,8 @@ Transform tools moved to edit tab.
     padding: 1px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.02)
+      var(--theme-stroke, rgba(255, 255, 255, 0.1)),
+      var(--theme-card-bg, rgba(255, 255, 255, 0.02))
     );
     mask:
       linear-gradient(#fff 0 0) content-box,
@@ -111,7 +111,7 @@ Transform tools moved to edit tab.
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.3),
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)),
       transparent
     );
     margin: var(--spacing-xs) 0;
@@ -136,7 +136,7 @@ Transform tools moved to edit tab.
       background: linear-gradient(
         180deg,
         transparent,
-        rgba(255, 255, 255, 0.3),
+        var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)),
         transparent
       );
       margin: 0 var(--spacing-xs);

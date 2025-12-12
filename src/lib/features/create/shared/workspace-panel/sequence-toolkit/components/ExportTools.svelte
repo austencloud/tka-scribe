@@ -93,8 +93,8 @@ Pure presentation component that delegates to sequence export services.
     width: 52px;
     height: 52px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     backdrop-filter: blur(10px);
     cursor: pointer;
     font-size: 20px;
@@ -102,44 +102,44 @@ Pure presentation component that delegates to sequence export services.
     align-items: center;
     justify-content: center;
     transition: all var(--transition-normal);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-weight: 500;
 
     /* Subtle inner shadow for depth */
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.1)),
       0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .tool-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 1px 0 var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15)),
       0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .tool-btn:active:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: translateY(0);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)),
       0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
   .tool-btn:disabled {
-    background: rgba(200, 200, 200, 0.05);
-    border-color: rgba(200, 200, 200, 0.1);
-    color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-bg, rgba(200, 200, 200, 0.05));
+    border-color: var(--theme-stroke, rgba(200, 200, 200, 0.1));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     cursor: not-allowed;
     transform: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   /* Focus styles for accessibility */
   .tool-btn:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 
