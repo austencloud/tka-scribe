@@ -77,7 +77,7 @@ Container-aware and aspect-ratio responsive
     border-radius: 12px;
     cursor: pointer;
     text-align: center;
-    color: white;
+    color: var(--theme-text, white);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     width: 100%;
     height: 100%;
@@ -85,7 +85,7 @@ Container-aware and aspect-ratio responsive
 
     /* Subtle color glow */
     box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
+      0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
       0 0 20px color-mix(in srgb, var(--component-color) 15%, transparent);
   }
 
@@ -93,13 +93,13 @@ Container-aware and aspect-ratio responsive
   .cap-component-button:not(.multi-select):hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 35%, rgba(255, 255, 255, 0.2)) 0%,
-      color-mix(in srgb, var(--component-color) 20%, rgba(0, 0, 0, 0.3)) 100%
+      color-mix(in srgb, var(--component-color) 35%, color-mix(in srgb, var(--theme-text, #fff) 20%, transparent)) 0%,
+      color-mix(in srgb, var(--component-color) 20%, var(--theme-shadow, rgba(0, 0, 0, 0.3))) 100%
     );
     border-color: var(--component-color);
     box-shadow:
       0 0 24px color-mix(in srgb, var(--component-color) 50%, transparent),
-      0 6px 16px rgba(0, 0, 0, 0.4),
+      0 6px 16px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
       0 0 40px color-mix(in srgb, var(--component-color) 30%, transparent);
     transform: translateY(-3px) scale(1.05);
   }
@@ -109,19 +109,19 @@ Container-aware and aspect-ratio responsive
     transform: translateY(0) scale(0.98);
     box-shadow:
       0 0 16px color-mix(in srgb, var(--component-color) 40%, transparent),
-      0 2px 8px rgba(0, 0, 0, 0.3);
+      0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.3));
   }
 
   /* Multi-select mode: Subtle hover (state building) */
   .cap-component-button.multi-select:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 25%, rgba(0, 0, 0, 0.4)) 0%,
-      rgba(0, 0, 0, 0.35) 100%
+      color-mix(in srgb, var(--component-color) 25%, var(--theme-shadow, rgba(0, 0, 0, 0.4))) 0%,
+      var(--theme-shadow, rgba(0, 0, 0, 0.35)) 100%
     );
-    border-color: color-mix(in srgb, var(--component-color) 60%, rgba(255, 255, 255, 0.3));
+    border-color: color-mix(in srgb, var(--component-color) 60%, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)));
     box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
+      0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
       0 0 24px color-mix(in srgb, var(--component-color) 25%, transparent);
     transform: translateY(-2px) scale(1.02);
   }
@@ -129,13 +129,13 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.selected {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.15)) 0%,
-      color-mix(in srgb, var(--component-color) 25%, rgba(0, 0, 0, 0.3)) 100%
+      color-mix(in srgb, var(--component-color) 40%, color-mix(in srgb, var(--theme-text, #fff) 15%, transparent)) 0%,
+      color-mix(in srgb, var(--component-color) 25%, var(--theme-shadow, rgba(0, 0, 0, 0.3))) 100%
     );
     border-color: var(--component-color);
     border-width: 3px;
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.4),
+      0 4px 16px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
       0 0 30px color-mix(in srgb, var(--component-color) 40%, transparent),
       inset 0 0 20px color-mix(in srgb, var(--component-color) 10%, transparent);
   }
@@ -143,11 +143,11 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.selected:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 50%, rgba(255, 255, 255, 0.2)) 0%,
-      color-mix(in srgb, var(--component-color) 30%, rgba(0, 0, 0, 0.3)) 100%
+      color-mix(in srgb, var(--component-color) 50%, color-mix(in srgb, var(--theme-text, #fff) 20%, transparent)) 0%,
+      color-mix(in srgb, var(--component-color) 30%, var(--theme-shadow, rgba(0, 0, 0, 0.3))) 100%
     );
     box-shadow:
-      0 6px 20px rgba(0, 0, 0, 0.4),
+      0 6px 20px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
       0 0 40px color-mix(in srgb, var(--component-color) 60%, transparent),
       inset 0 0 25px color-mix(in srgb, var(--component-color) 15%, transparent);
   }
@@ -164,7 +164,7 @@ Container-aware and aspect-ratio responsive
   .cap-component-label {
     font-size: 15px;
     font-weight: 600;
-    color: white;
+    color: var(--theme-text, white);
     line-height: 1.3;
     width: 100%;
     text-align: center;
@@ -200,7 +200,7 @@ Container-aware and aspect-ratio responsive
     right: 8px;
     width: 28px;
     height: 28px;
-    color: white;
+    color: var(--theme-text, white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -212,19 +212,19 @@ Container-aware and aspect-ratio responsive
   .selection-indicator svg {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.3)));
   }
 
   /* Checkbox style (multi-select mode only) */
   .selection-indicator.checkbox svg rect {
-    fill: rgba(255, 255, 255, 0.15);
+    fill: color-mix(in srgb, var(--theme-text, #fff) 15%, transparent);
   }
 
   .selection-indicator.checkbox.checked svg rect {
-    fill: white;
+    fill: var(--theme-text, white);
   }
 
   .selection-indicator.checkbox.checked svg polyline {
-    stroke: rgba(0, 0, 0, 0.8);
+    stroke: var(--theme-panel-bg, rgba(0, 0, 0, 0.8));
   }
 </style>

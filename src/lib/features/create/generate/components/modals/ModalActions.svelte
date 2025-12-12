@@ -61,7 +61,7 @@ Provides consistent, beautiful button layouts for modal actions
     inset: 0;
     background: radial-gradient(
       circle at center,
-      rgba(255, 255, 255, 0.2) 0%,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 0%,
       transparent 70%
     );
     opacity: 0;
@@ -75,22 +75,22 @@ Provides consistent, beautiful button layouts for modal actions
   .cancel-button {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.05)
+      var(--theme-stroke, rgba(255, 255, 255, 0.1)),
+      var(--theme-card-bg, rgba(255, 255, 255, 0.05))
     );
-    color: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .cancel-button:hover {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.15),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15)),
+      var(--theme-stroke, rgba(255, 255, 255, 0.08))
     );
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .cancel-button:active {
@@ -98,47 +98,47 @@ Provides consistent, beautiful button layouts for modal actions
   }
 
   .confirm-button {
-    color: white;
+    color: var(--theme-text, white);
     font-weight: 700;
   }
 
   .confirm-button.primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, var(--theme-accent, #3b82f6), color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, #1e40af));
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
   }
 
   .confirm-button.primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, #1e40af), color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, #1e3a8a));
     transform: translateY(-2px);
     box-shadow:
-      0 6px 20px rgba(59, 130, 246, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+      0 6px 20px color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent),
+      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.2)) inset;
   }
 
   .confirm-button.success {
-    background: linear-gradient(135deg, #10b981, #059669);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, var(--semantic-success, #10b981), color-mix(in srgb, var(--semantic-success, #10b981) 85%, #065f46));
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
   }
 
   .confirm-button.success:hover:not(:disabled) {
-    background: linear-gradient(135deg, #059669, #047857);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #10b981) 85%, #065f46), color-mix(in srgb, var(--semantic-success, #10b981) 70%, #064e3b));
     transform: translateY(-2px);
     box-shadow:
-      0 6px 20px rgba(16, 185, 129, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+      0 6px 20px color-mix(in srgb, var(--semantic-success, #10b981) 40%, transparent),
+      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.2)) inset;
   }
 
   .confirm-button.danger {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    background: linear-gradient(135deg, var(--semantic-error, #ef4444), color-mix(in srgb, var(--semantic-error, #ef4444) 85%, #7f1d1d));
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .confirm-button.danger:hover:not(:disabled) {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-error, #ef4444) 85%, #7f1d1d), color-mix(in srgb, var(--semantic-error, #ef4444) 70%, #7f1d1d));
     transform: translateY(-2px);
     box-shadow:
-      0 6px 20px rgba(239, 68, 68, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+      0 6px 20px color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent),
+      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.2)) inset;
   }
 
   .confirm-button:active:not(:disabled) {

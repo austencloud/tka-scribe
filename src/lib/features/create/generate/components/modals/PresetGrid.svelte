@@ -50,17 +50,17 @@ Displays a list of presets in a scrollable grid layout
   }
 
   .preset-list::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--theme-shadow, rgba(0, 0, 0, 0.2));
     border-radius: 4px;
   }
 
   .preset-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     border-radius: 4px;
   }
 
   .preset-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: color-mix(in srgb, var(--theme-text, #fff) 50%, transparent);
   }
 
   .empty-state {
@@ -70,7 +70,7 @@ Displays a list of presets in a scrollable grid layout
     justify-content: center;
     padding: 60px 24px;
     text-align: center;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .empty-icon {
@@ -83,12 +83,12 @@ Displays a list of presets in a scrollable grid layout
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .empty-hint {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   @media (max-width: 640px) {

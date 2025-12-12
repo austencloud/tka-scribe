@@ -15,26 +15,26 @@ Shows contextual information based on current selection
 
 <style>
   .explanation-panel {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--theme-shadow, rgba(0, 0, 0, 0.3));
     border-radius: 10px;
     padding: 10px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     flex-shrink: 0;
   }
 
   .explanation-panel h3 {
-    color: white;
+    color: var(--theme-text, white);
     font-size: 14px;
     font-weight: 600;
     margin: 0 0 6px 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.3));
   }
 
   .explanation-panel p {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 13px;
     line-height: 1.4;
     margin: 0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 </style>

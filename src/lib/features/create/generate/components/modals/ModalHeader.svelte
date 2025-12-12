@@ -32,7 +32,7 @@ Displays modal title and close button
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
@@ -40,7 +40,7 @@ Displays modal title and close button
     margin: 0;
     font-size: 24px;
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .close-button {
@@ -48,8 +48,8 @@ Displays modal title and close button
     width: 52px;
     height: 52px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -62,12 +62,12 @@ Displays modal title and close button
   .close-button svg {
     width: 20px;
     height: 20px;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .close-button:hover {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: rgba(239, 68, 68, 0.5);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
     transform: scale(1.05);
   }
 

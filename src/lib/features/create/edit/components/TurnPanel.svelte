@@ -282,19 +282,19 @@
 
   /* Color variants */
   .turn-panel.blue {
-    border-color: #3b82f6;
+    border-color: var(--prop-blue, #3b82f6);
     border-style: solid;
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.05) 0%,
-      white 100%
+      color-mix(in srgb, var(--prop-blue, #3b82f6) 5%, transparent) 0%,
+      var(--theme-panel-bg, white) 100%
     );
   }
 
   .turn-panel.red {
-    border-color: #ef4444;
+    border-color: var(--prop-red, #ef4444);
     border-style: solid;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--prop-red, #ef4444) 5%, transparent) 0%, var(--theme-panel-bg, white) 100%);
   }
 
   @keyframes expandIn {
@@ -314,7 +314,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid var(--theme-stroke, rgba(0, 0, 0, 0.1));
   }
 
   .turn-panel.compact .turn-header {
@@ -362,20 +362,20 @@
   }
 
   .turn-panel.blue .turn-label {
-    color: #3b82f6;
+    color: var(--prop-blue, #3b82f6);
   }
 
   .turn-panel.red .turn-label {
-    color: #ef4444;
+    color: var(--prop-red, #ef4444);
   }
 
   .motion-badge {
-    background: rgba(0, 0, 0, 0.08);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.08));
     border-radius: 6px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #333;
+    color: var(--theme-text, #333);
   }
 
   .turn-panel.compact .motion-badge {
@@ -396,8 +396,8 @@
   .close-btn {
     border: none;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.08);
-    color: #666;
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.08));
+    color: var(--theme-text-dim, #666);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -430,7 +430,7 @@
   }
 
   .close-btn:hover {
-    background: rgba(0, 0, 0, 0.12);
+    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.12));
     transform: scale(1.1);
   }
 
@@ -448,8 +448,8 @@
 
   .turn-btn {
     border-radius: 50%;
-    background: white;
-    color: black;
+    background: var(--theme-panel-bg, white);
+    color: var(--theme-text, black);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -457,7 +457,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .turn-panel.compact .turn-btn {
@@ -484,23 +484,23 @@
   }
 
   .turn-panel.blue .turn-btn {
-    border-color: #3b82f6;
+    border-color: var(--prop-blue, #3b82f6);
     border-style: solid;
   }
 
   .turn-panel.red .turn-btn {
-    border-color: #ef4444;
+    border-color: var(--prop-red, #ef4444);
     border-style: solid;
   }
 
   .turn-btn:hover:not(:disabled) {
     transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 
   .turn-btn:active:not(:disabled) {
     transform: scale(0.95);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .turn-btn:disabled {
@@ -510,15 +510,15 @@
 
   .turn-display {
     flex: 1;
-    background: white;
-    color: black;
+    background: var(--theme-panel-bg, white);
+    color: var(--theme-text, black);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .turn-panel.compact .turn-display {
@@ -546,23 +546,23 @@
   }
 
   .turn-panel.blue .turn-display {
-    border-color: #3b82f6;
+    border-color: var(--prop-blue, #3b82f6);
     border-style: solid;
   }
 
   .turn-panel.red .turn-display {
-    border-color: #ef4444;
+    border-color: var(--prop-red, #ef4444);
     border-style: solid;
   }
 
   .turn-display:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 
   .turn-display:active {
     transform: scale(0.98);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   /* Rotation direction toggle buttons - in header */
@@ -571,9 +571,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    background: rgba(255, 255, 255, 0.95);
-    color: #666;
+    border: 2px solid var(--theme-stroke, rgba(0, 0, 0, 0.2));
+    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text-dim, #666);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 16px;
@@ -583,13 +583,13 @@
     min-width: 52px;
     min-height: 52px;
     flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .rotation-btn:hover {
-    background: rgba(255, 255, 255, 1);
+    background: var(--theme-panel-elevated-bg, rgba(255, 255, 255, 1));
     transform: scale(1.08);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 
   .rotation-btn:active {
@@ -598,16 +598,16 @@
 
   /* Active state - matches panel color */
   .turn-panel.blue .rotation-btn.active {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: white;
-    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.5);
+    background: var(--prop-blue, #3b82f6);
+    border-color: var(--prop-blue, #3b82f6);
+    color: var(--theme-text, white);
+    box-shadow: 0 3px 10px color-mix(in srgb, var(--prop-blue, #3b82f6) 50%, transparent);
   }
 
   .turn-panel.red .rotation-btn.active {
-    background: #ef4444;
-    border-color: #ef4444;
-    color: white;
-    box-shadow: 0 3px 10px rgba(239, 68, 68, 0.5);
+    background: var(--prop-red, #ef4444);
+    border-color: var(--prop-red, #ef4444);
+    color: var(--theme-text, white);
+    box-shadow: 0 3px 10px color-mix(in srgb, var(--prop-red, #ef4444) 50%, transparent);
   }
 </style>

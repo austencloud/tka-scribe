@@ -70,8 +70,8 @@ Presentational component for a single toggle option with icon and label
     min-height: 0;
     border-radius: 10px;
     background: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-weight: 600;
     transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     user-select: none;
@@ -80,19 +80,19 @@ Presentational component for a single toggle option with icon and label
   }
 
   .toggle-option.active {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-text, white);
     border-width: 3px;
-    color: white;
+    color: var(--theme-text, white);
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2));
     transform: scale(1.02);
   }
 
   .toggle-option.inactive {
     background: rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.7);
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.25));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .option-icon {

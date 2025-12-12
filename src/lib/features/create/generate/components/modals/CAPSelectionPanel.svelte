@@ -291,11 +291,11 @@ Refactored to use Drawer component for consistent behavior
   }
 
   .coming-soon-badge {
-    background: rgba(255, 193, 7, 0.2);
-    border: 2px solid rgba(255, 193, 7, 0.6);
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
+    border: 2px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 60%, transparent);
     border-radius: 8px;
     padding: 8px 12px;
-    color: #ffd54f;
+    color: var(--semantic-warning, #ffd54f);
     font-size: 13px;
     font-weight: 600;
     text-align: center;
@@ -324,10 +324,10 @@ Refactored to use Drawer component for consistent behavior
     padding: 14px 24px;
     min-height: 52px;
 
-    background: rgba(255, 255, 255, 0.25);
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--theme-text, #fff) 25%, transparent);
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
     border-radius: 12px;
-    color: white;
+    color: var(--theme-text, white);
 
     font-size: 16px;
     font-weight: 700;
@@ -347,8 +347,8 @@ Refactored to use Drawer component for consistent behavior
   }
 
   .confirm-button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.35);
-    border-color: white;
+    background: color-mix(in srgb, var(--theme-text, #fff) 35%, transparent);
+    border-color: var(--theme-text, white);
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
   }
@@ -361,20 +361,20 @@ Refactored to use Drawer component for consistent behavior
   .confirm-button.disabled {
     opacity: 0.4;
     cursor: not-allowed;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .confirm-button.coming-soon {
-    background: rgba(255, 193, 7, 0.25);
-    border-color: rgba(255, 193, 7, 0.6);
-    color: #ffd54f;
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 25%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-warning, #f59e0b) 60%, transparent);
+    color: var(--semantic-warning, #ffd54f);
     cursor: pointer;
   }
 
   .confirm-button.coming-soon:hover {
-    background: rgba(255, 193, 7, 0.35);
-    border-color: #ffd54f;
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 35%, transparent);
+    border-color: var(--semantic-warning, #ffd54f);
     transform: translateY(-2px) scale(1.02);
   }
 
@@ -393,17 +393,17 @@ Refactored to use Drawer component for consistent behavior
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .cap-modal-content {
-      border-top: 2px solid white;
+      border-top: 2px solid var(--theme-text, white);
     }
 
     .confirm-button {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     }
 
     .confirm-button:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: white;
+      background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+      border-color: var(--theme-text, white);
     }
   }
 

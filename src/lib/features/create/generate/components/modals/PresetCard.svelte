@@ -230,22 +230,22 @@ Displays a single preset with icon, name, summary, and action buttons
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: left;
-    color: white;
+    color: var(--theme-text, white);
     font-family: inherit;
     min-height: 88px;
   }
 
   .preset-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 
   .preset-item:active {
@@ -279,7 +279,7 @@ Displays a single preset with icon, name, summary, and action buttons
   .preset-name {
     font-size: 15px;
     font-weight: 600;
-    color: white;
+    color: var(--theme-text, white);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -301,7 +301,7 @@ Displays a single preset with icon, name, summary, and action buttons
 
   .preset-summary {
     font-size: 12.5px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -323,11 +323,11 @@ Displays a single preset with icon, name, summary, and action buttons
   .edit-button {
     background: linear-gradient(
       135deg,
-      rgba(100, 150, 255, 0.15),
-      rgba(100, 150, 255, 0.08)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent)
     );
-    border: 1px solid rgba(100, 150, 255, 0.3);
-    color: rgba(100, 150, 255, 0.9);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 90%, white);
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
@@ -343,13 +343,13 @@ Displays a single preset with icon, name, summary, and action buttons
   .edit-button:hover {
     background: linear-gradient(
       135deg,
-      rgba(100, 150, 255, 0.25),
-      rgba(100, 150, 255, 0.15)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent),
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent)
     );
-    border-color: rgba(100, 150, 255, 0.5);
-    color: rgba(100, 150, 255, 1);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    color: var(--semantic-info, #3b82f6);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(100, 150, 255, 0.2);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
   }
 
   .edit-button svg {
@@ -360,11 +360,11 @@ Displays a single preset with icon, name, summary, and action buttons
   .delete-button {
     background: linear-gradient(
       135deg,
-      rgba(255, 100, 100, 0.15),
-      rgba(255, 100, 100, 0.08)
+      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent),
+      color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent)
     );
-    border: 1px solid rgba(255, 100, 100, 0.3);
-    color: rgba(255, 100, 100, 0.9);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-error, #ef4444) 90%, white);
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
@@ -380,13 +380,13 @@ Displays a single preset with icon, name, summary, and action buttons
   .delete-button:hover {
     background: linear-gradient(
       135deg,
-      rgba(255, 100, 100, 0.25),
-      rgba(255, 100, 100, 0.15)
+      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent),
+      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent)
     );
-    border-color: rgba(255, 100, 100, 0.5);
-    color: rgba(255, 100, 100, 1);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    color: var(--semantic-error, #ef4444);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(255, 100, 100, 0.2);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
   }
 
   .delete-button svg {
