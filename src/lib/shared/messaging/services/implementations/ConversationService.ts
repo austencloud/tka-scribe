@@ -207,9 +207,9 @@ export class ConversationService implements IConversationService {
 		);
 
 		const snapshot = await getDocs(q);
-		return snapshot.docs.map((docSnap) =>
-			this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId)
-		);
+		return snapshot.docs
+			.map((docSnap) => this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId))
+			.filter((preview): preview is ConversationPreview => preview !== null);
 	}
 
 	/**
@@ -233,9 +233,9 @@ export class ConversationService implements IConversationService {
 		);
 
 		this.conversationsUnsubscribe = onSnapshot(q, (snapshot) => {
-			const conversations = snapshot.docs.map((docSnap) =>
-				this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId)
-			);
+			const conversations = snapshot.docs
+				.map((docSnap) => this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId))
+				.filter((preview): preview is ConversationPreview => preview !== null);
 			callback(conversations);
 		});
 
@@ -393,11 +393,17 @@ export class ConversationService implements IConversationService {
 		id: string,
 		data: Record<string, unknown>,
 		currentUserId: string
-	): ConversationPreview {
+	): ConversationPreview | null {
 		const participants = data["participants"] as string[];
 		const otherUserId = participants.find((p) => p !== currentUserId) || "";
 		const participantInfo = data["participantInfo"] as Record<string, ParticipantInfo>;
 		const unreadCount = (data["unreadCount"] as Record<string, number>) || {};
+
+		// Filter out self-conversations (user messaging themselves)
+		if (!otherUserId || otherUserId === currentUserId) {
+			console.log("[ConversationService] Filtering out self-conversation:", id);
+			return null;
+		}
 
 		const otherParticipant = participantInfo[otherUserId] || {
 			userId: otherUserId,

@@ -165,7 +165,7 @@ f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\features\community\components\profi
 Error: Cannot find module '$lib/shared/components/panel' or its corresponding type declarations. (ts)
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { PanelButton } from "$lib/shared/components/panel";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 
 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\features\community\challenges\components\ChallengesPanelDesktop.svelte:14:30
@@ -339,7 +339,7 @@ Error: Cannot find module '../../context' or its corresponding type declarations
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\features\create\shared\workspace-panel\components\CreationMethodSelector.svelte:18:29
 Error: Cannot find module '$lib/shared/auth' or its corresponding type declarations. (ts)
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth";
+  import { authState } from "$lib/shared/auth";
   import CreationWelcomeCue from "../../components/CreationWelcomeCue.svelte";
 
 
@@ -430,7 +430,7 @@ Error: Cannot find module '../../assemble' or its corresponding type declaration
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\features\create\shared\components\SaveToLibraryDialog.svelte:22:29
 Error: Cannot find module '$lib/shared/auth' or its corresponding type declarations. (ts)
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { authStore } from "$lib/shared/auth";
+  import { authState } from "$lib/shared/auth";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 
@@ -619,21 +619,21 @@ Error: Module '"../../foundation/ui/ErrorScreen.svelte"' has no exported member 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\navigation\components\AccountSettingsButton.svelte:10:29
 Error: Cannot find module '../../auth' or its corresponding type declarations. (ts)
 <script lang="ts">
-  import { authStore } from "../../auth";
+  import { authState } from "../../auth";
   import { resolve } from "../../inversify";
 
 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\navigation\components\ProfileButton.svelte:11:29
 Error: Cannot find module '../../auth' or its corresponding type declarations. (ts)
 <script lang="ts">
-  import { authStore } from "../../auth";
+  import { authState } from "../../auth";
   import { resolve } from "../../inversify";
 
 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\navigation\components\SettingsButton.svelte:12:29
 Error: Cannot find module '../../auth' or its corresponding type declarations. (ts)
   import { TYPES } from "../../inversify/types";
-  import { authStore } from "../../auth";
+  import { authState } from "../../auth";
   import { onMount } from "svelte";
 
 
@@ -696,14 +696,14 @@ Error: Parameter 'db' implicitly has an 'any' type. (ts)
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\navigation\components\profile-settings\ProfilePhotoUpload.svelte:8:29
 Error: Cannot find module '../../../auth' or its corresponding type declarations. (ts)
 <script lang="ts">
-  import { authStore } from "../../../auth";
+  import { authState } from "../../../auth";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
 
 
 f:\_THE KINETIC ALPHABET\_TKA-STUDIO\src\lib\shared\navigation\components\profile-settings\PersonalTab.svelte:9:29
 Error: Cannot find module '../../../auth' or its corresponding type declarations. (ts)
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "../../../auth";
+  import { authState } from "../../../auth";
   import {
 
 
