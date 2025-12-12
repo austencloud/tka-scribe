@@ -24,6 +24,17 @@
 	let isMobile = $state(false);
 	let placement = $derived(isMobile ? "bottom" : "right") as "bottom" | "right";
 
+	// Snap points for mobile - full height when in thread/compose, partial for list
+	const mobileSnapPoints = $derived.by(() => {
+		if (!isMobile) return null;
+		// When viewing messages or composing, expand to full height
+		if (inboxState.currentView === "thread" || inboxState.currentView === "compose") {
+			return ["100%"];
+		}
+		// List view uses default height (no snap points)
+		return null;
+	});
+
 	onMount(() => {
 		const mediaQuery = window.matchMedia("(max-width: 768px)");
 		isMobile = mediaQuery.matches;
@@ -107,10 +118,17 @@
 	closeOnBackdrop={true}
 	closeOnEscape={false}
 	onclose={handleClose}
-	class="inbox-drawer"
+	class="inbox-drawer {isMobile && inboxState.currentView !== 'list' ? 'inbox-expanded' : ''}"
 	ariaLabel="Inbox"
+	snapPoints={mobileSnapPoints}
+	closeOnSnapToZero={false}
 >
-	<div class="inbox-container" role="dialog" aria-labelledby="inbox-title">
+	<div
+		class="inbox-container"
+		class:expanded={isMobile && inboxState.currentView !== 'list'}
+		role="dialog"
+		aria-labelledby="inbox-title"
+	>
 		<!-- Header -->
 		<header class="inbox-header">
 			{#if inboxState.currentView === "list"}
@@ -276,6 +294,19 @@
 
 		.inbox-container {
 			max-height: 85vh;
+		}
+
+		/* When expanded (thread/compose view), fill the viewport */
+		:global(.drawer-content.inbox-drawer.inbox-expanded) {
+			height: 100vh !important;
+			height: 100dvh !important; /* Dynamic viewport height for mobile browsers */
+			max-height: none !important;
+			border-radius: 0 !important;
+		}
+
+		.inbox-container.expanded {
+			max-height: none;
+			height: 100%;
 		}
 	}
 

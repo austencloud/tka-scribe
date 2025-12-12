@@ -24,9 +24,16 @@
   let isDisabling = $state(false);
   let disableError = $state<string | null>(null);
 
-  // Reactive MFA status
-  const isMFAEnabled = $derived(authService.isMFAEnabled());
-  const enrolledFactors = $derived(authService.getEnrolledFactors());
+  // Reactive MFA status - uses statusVersion to trigger re-evaluation
+  const isMFAEnabled = $derived.by(() => {
+    // Read statusVersion to create reactive dependency
+    void mfaUIState.statusVersion;
+    return authService.isMFAEnabled();
+  });
+  const enrolledFactors = $derived.by(() => {
+    void mfaUIState.statusVersion;
+    return authService.getEnrolledFactors();
+  });
 
   function handleEnableMFA() {
     // Open the drawer via global state (rendered in MainApplication)
@@ -50,6 +57,8 @@
       }
       showDisableConfirm = false;
       hapticService?.trigger("success");
+      // Trigger UI update
+      mfaUIState.notifyStatusChange();
     } catch (error: unknown) {
       console.error("Failed to disable MFA:", error);
       disableError =

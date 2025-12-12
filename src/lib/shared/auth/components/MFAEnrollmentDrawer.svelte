@@ -3,9 +3,12 @@
    * MFAEnrollmentDrawer
    *
    * Multi-step drawer for TOTP enrollment.
-   * Uses Drawer component for mobile-friendly UX.
+   * Uses Drawer component with responsive placement:
+   * - Mobile: bottom sheet
+   * - Desktop: right side sheet
    */
 
+  import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import MFASetupStep from "./mfa-enrollment/MFASetupStep.svelte";
   import MFAVerifyStep from "./mfa-enrollment/MFAVerifyStep.svelte";
@@ -35,6 +38,22 @@
 
   let enrollmentState: MFAEnrollmentState | null = $state(null);
   let localIsOpen = $state(false);
+
+  // Responsive placement
+  let isMobile = $state(false);
+  let placement = $derived((isMobile ? "bottom" : "right") as "bottom" | "right");
+
+  onMount(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    isMobile = mediaQuery.matches;
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      isMobile = e.matches;
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  });
 
   // Sync local state with prop (allows Drawer to work with bind:isOpen)
   $effect(() => {
@@ -77,7 +96,7 @@
 
 <Drawer
   bind:isOpen={localIsOpen}
-  placement="bottom"
+  {placement}
   dismissible={enrollmentState?.currentStep !== "verify" ||
     !enrollmentState?.isSubmitting}
   onOpenChange={handleOpenChange}
@@ -154,6 +173,12 @@
   :global(.mfa-enrollment-drawer) {
     z-index: 10000 !important;
     background: var(--theme-panel-bg, #1e293b) !important;
+  }
+
+  /* Desktop side sheet sizing */
+  :global(.mfa-enrollment-drawer[data-placement="right"]) {
+    width: 420px !important;
+    max-width: 90vw !important;
   }
 
   :global(.mfa-enrollment-backdrop) {

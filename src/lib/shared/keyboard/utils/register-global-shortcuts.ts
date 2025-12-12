@@ -51,10 +51,6 @@ export function registerGlobalShortcuts(
     context: "global",
     scope: "help",
     priority: "critical",
-    condition: () => {
-      // Only enable if settings allow single-key shortcuts
-      return state.settings.enableSingleKeyShortcuts;
-    },
     action: async () => {
       // Set the active tab to Keyboard before navigating to settings
       saveActiveTab("Keyboard");
@@ -103,10 +99,6 @@ export function registerGlobalShortcuts(
       context: "global",
       scope: "navigation",
       priority: "high",
-      condition: () => {
-        // Only enable if settings allow single-key shortcuts
-        return state.settings.enableSingleKeyShortcuts;
-      },
       action: async () => {
         await handleModuleChange(module.id);
       },
@@ -125,14 +117,7 @@ export function registerGlobalShortcuts(
     context: "global",
     scope: "action",
     priority: "high",
-    condition: () => {
-      // Only enable if settings allow single-key shortcuts
-      const enabled = state.settings.enableSingleKeyShortcuts;
-      console.log(`[QuickFeedback] Condition check: enableSingleKeyShortcuts=${enabled}`);
-      return enabled;
-    },
     action: () => {
-      console.log(`[QuickFeedback] Action triggered!`);
       quickFeedbackState.toggle();
     },
   });
@@ -150,12 +135,9 @@ export function registerGlobalShortcuts(
     context: "global",
     scope: "admin",
     priority: "high",
-    // No condition needed - the RoleSwitcherDebugPanel already checks {#if isAdmin}
-    // This allows F9 to work even during auth initialization race conditions
+    // No condition needed - the RoleSwitcherDebugPanel handles admin check with auth timing fallback
     action: () => {
-      console.log(`[RoleSwitcher] Action triggered! Current isOpen:`, roleSwitcherState.isOpen);
       roleSwitcherState.toggle();
-      console.log(`[RoleSwitcher] After toggle, isOpen:`, roleSwitcherState.isOpen);
     },
   });
 }

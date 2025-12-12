@@ -13,7 +13,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import UserSearchInput from "$lib/shared/user-search/UserSearchInput.svelte";
   import {
@@ -58,9 +57,12 @@
   const actualRole = $derived(featureFlagService.userRole);
   const effectiveRole = $derived(featureFlagService.effectiveRole);
   const debugOverride = $derived(featureFlagService.debugRoleOverride);
-  const isAdmin = $derived(authState.isAdmin);
   const isPreview = $derived(userPreviewState.isActive);
   const previewProfile = $derived(userPreviewState.data.profile);
+
+  // Use featureFlagService for admin check - more reliable than authState.isAdmin
+  // which can have timing issues with Firebase auth initialization
+  const isAdmin = $derived(actualRole === "admin");
 
   // Check if current preview user is in quick access (must be after previewProfile)
   const isCurrentUserInQuickAccess = $derived(
@@ -160,12 +162,8 @@
   });
 </script>
 
-<!-- Only show for admins -->
-{#if isAdmin}
-  <!-- Note: Role override indicator now handled by PreviewModeBanner -->
-
-  <!-- Debug panel -->
-  {#if isOpen}
+<!-- Only show for admins (using featureFlagService which is more reliable than authState) -->
+{#if isAdmin && isOpen}
     <button
       type="button"
       class="debug-panel-backdrop"
@@ -398,7 +396,6 @@
         </div>
       </div>
     </div>
-  {/if}
 {/if}
 
 <style>

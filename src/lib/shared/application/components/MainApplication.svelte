@@ -398,7 +398,10 @@
         isOpen={showMFAEnrollment}
         {authService}
         onClose={() => mfaUIState.closeEnrollment()}
-        onSuccess={() => mfaUIState.closeEnrollment()}
+        onSuccess={() => {
+          mfaUIState.notifyStatusChange();
+          mfaUIState.closeEnrollment();
+        }}
       />
     {/if}
 

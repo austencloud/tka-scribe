@@ -187,20 +187,6 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     // Normalize the event
     const normalized = new NormalizedKeyboardEvent(event);
 
-    // Debug: Log all single-key presses (F, F9, etc.)
-    if (normalized.modifiers.length === 0 && (normalized.key === "f" || normalized.key === "F9")) {
-      console.log(`[KeyboardShortcutService] Key pressed:`, {
-        key: normalized.key,
-        context: this.currentContext,
-        registeredShortcuts: this.registry.getAll().length,
-      });
-    }
-
-    // Debug Backspace specifically
-    if (normalized.key === "Backspace") {
-      debug.log(`Backspace pressed! Context: ${this.currentContext}`);
-    }
-
     // Find matching shortcuts
     const matches = this.registry.findMatches(
       normalized.key,
@@ -208,18 +194,6 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
       normalized.ctrlOrMeta,
       this.currentContext
     );
-
-    // Debug: Log matches for F and F9
-    if (normalized.modifiers.length === 0 && (normalized.key === "f" || normalized.key === "F9")) {
-      console.log(`[KeyboardShortcutService] Matches for ${normalized.key}:`, matches.map(m => ({ id: m.id, enabled: m.enabled })));
-    }
-
-    if (normalized.key === "Backspace") {
-      debug.log(
-        `Backspace matches found: ${matches.length}`,
-        matches.map((m) => m.id)
-      );
-    }
 
     if (matches.length === 0) return;
 

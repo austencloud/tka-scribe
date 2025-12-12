@@ -24,7 +24,6 @@
   let commandPaletteService: ICommandPaletteService | null = null;
 
   onMount(() => {
-    console.log(`[KeyboardShortcutCoordinator] onMount called`);
     // Initialize services asynchronously
     (async () => {
       try {
@@ -35,15 +34,12 @@
         commandPaletteService = resolve<ICommandPaletteService>(
           TYPES.ICommandPaletteService
         );
-        console.log(`[KeyboardShortcutCoordinator] Services resolved`);
 
         // Initialize the shortcut service
         shortcutService.initialize();
-        console.log(`[KeyboardShortcutCoordinator] Service initialized`);
 
         // Register global shortcuts
         registerGlobalShortcuts(shortcutService, keyboardShortcutState);
-        console.log(`[KeyboardShortcutCoordinator] Global shortcuts registered, total:`, shortcutService.getAllShortcuts().length);
 
         // Register command palette commands
         registerCommandPaletteCommands(
@@ -53,7 +49,6 @@
 
         // Register CREATE module shortcuts
         registerCreateShortcuts(shortcutService, keyboardShortcutState);
-        console.log(`[KeyboardShortcutCoordinator] All shortcuts registered, total:`, shortcutService.getAllShortcuts().length);
       } catch (error) {
         console.error("❌ Failed to initialize keyboard shortcuts:", error);
       }
