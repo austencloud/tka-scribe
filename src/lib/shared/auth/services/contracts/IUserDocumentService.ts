@@ -1,0 +1,23 @@
+/**
+ * IUserDocumentService
+ *
+ * Contract for managing user documents in Firestore.
+ * Handles creating and updating user profile documents.
+ */
+
+import type { User } from "firebase/auth";
+
+export interface IUserDocumentService {
+  /**
+   * Create or update a user document in Firestore.
+   * Ensures every authenticated user has a corresponding Firestore document
+   * that can be displayed in the users explore panel.
+   *
+   * Creates new document with initial fields if doesn't exist.
+   * Updates existing document with latest auth data if exists.
+   *
+   * @param user - Firebase User object
+   * @returns Promise that resolves when document is created/updated
+   */
+  createOrUpdateUserDocument(user: User): Promise<void>;
+}

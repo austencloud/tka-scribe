@@ -56,14 +56,14 @@
 <style>
   .auth-footer {
     padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
     flex-shrink: 0;
   }
 
   .auth-footer__text {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 0;
     text-align: center;
     line-height: 1.6;
@@ -73,7 +73,7 @@
     background: none;
     border: none;
     padding: 0;
-    color: rgba(99, 102, 241, 0.9);
+    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     font-size: inherit;
     font-family: inherit;
     text-decoration: none;
@@ -82,7 +82,7 @@
   }
 
   .auth-footer__link:hover {
-    color: rgba(99, 102, 241, 1);
+    color: var(--theme-accent, #6366f1);
     text-decoration: underline;
   }
 

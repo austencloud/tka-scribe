@@ -5,7 +5,7 @@
   Only shows for email/password users who haven't verified their email.
 -->
 <script lang="ts">
-  import { authStore } from "../stores/authStore.svelte";
+  import { authState } from "../state/authState.svelte";
   import { sendEmailVerification } from "firebase/auth";
   import { auth } from "../firebase";
   import { slide } from "svelte/transition";
@@ -18,25 +18,25 @@
   // Check if we should show the banner
   // Only show for email/password users with unverified email
   const shouldShow = $derived(() => {
-    if (dismissed || !authStore.user) return false;
+    if (dismissed || !authState.user) return false;
 
     // Check if user has email/password provider
-    const hasEmailProvider = authStore.user.providerData.some(
+    const hasEmailProvider = authState.user.providerData.some(
       (provider) => provider.providerId === "password"
     );
 
     // Only show banner for email/password users who haven't verified
-    return hasEmailProvider && !authStore.user.emailVerified;
+    return hasEmailProvider && !authState.user.emailVerified;
   });
 
   async function resendVerification() {
-    if (!authStore.user || sending) return;
+    if (!authState.user || sending) return;
 
     sending = true;
     error = null;
 
     try {
-      await sendEmailVerification(authStore.user);
+      await sendEmailVerification(authState.user);
       sent = true;
     } catch (err: any) {
       if (err.code === "auth/too-many-requests") {
@@ -84,7 +84,9 @@
           <span class="error-text">{error}</span>
         {:else}
           <strong>Please verify your email</strong>
-          <span>Check your inbox for a verification link to secure your account.</span>
+          <span
+            >Check your inbox for a verification link to secure your account.</span
+          >
         {/if}
       </div>
 
@@ -121,10 +123,14 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning, #f59e0b) 0%,
+      #d97706 100%
+    );
+    color: var(--theme-text, white);
     padding: 12px 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 
   .banner-content {
@@ -169,9 +175,10 @@
   }
 
   .action-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    background: color-mix(in srgb, var(--theme-text, white) 20%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-text, white) 30%, transparent);
+    color: var(--theme-text, white);
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 13px;
@@ -182,7 +189,7 @@
   }
 
   .action-button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   .action-button:disabled {
@@ -193,7 +200,7 @@
   .dismiss-button {
     background: transparent;
     border: none;
-    color: white;
+    color: var(--theme-text, white);
     padding: 8px;
     border-radius: 4px;
     cursor: pointer;

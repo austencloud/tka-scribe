@@ -21,7 +21,15 @@ import {
   linkWithRedirect,
   linkWithCredential,
   unlink,
+  multiFactor,
+  TotpMultiFactorGenerator,
+  getMultiFactorResolver,
+  type MultiFactorInfo,
+  type MultiFactorResolver,
+  type TotpSecret,
+  type MultiFactorError,
 } from "firebase/auth";
+import { MFARequiredError } from "../../domain/errors/MFARequiredError";
 import { auth } from "../../firebase";
 import { injectable } from "inversify";
 import type { IAuthService } from "../contracts/IAuthService";
@@ -88,6 +96,17 @@ export class AuthService implements IAuthService {
 
       console.log("✅ [email] Sign-in successful:", userCredential.user.email);
     } catch (error: unknown) {
+      // Check if MFA is required
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        (error as { code: string }).code === "auth/multi-factor-auth-required"
+      ) {
+        console.log("🔐 [email] MFA required, resolving...");
+        const resolver = getMultiFactorResolver(auth, error as MultiFactorError);
+        throw new MFARequiredError(resolver);
+      }
+
       console.error("❌ [email] Sign-in error:", error);
       const message = error instanceof Error ? error.message : "Unknown error";
       throw new Error(`Email sign-in failed: ${message}`);
@@ -389,5 +408,156 @@ export class AuthService implements IAuthService {
       return false;
     }
     return currentUser.emailVerified;
+  }
+
+  // ============================================================================
+  // MULTI-FACTOR AUTHENTICATION
+  // ============================================================================
+
+  isMFAEnabled(): boolean {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return false;
+    }
+    return multiFactor(currentUser).enrolledFactors.length > 0;
+  }
+
+  getEnrolledFactors(): MultiFactorInfo[] {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      return [];
+    }
+    return multiFactor(currentUser).enrolledFactors;
+  }
+
+  async startTOTPEnrollment(): Promise<{
+    secret: TotpSecret;
+    qrCodeUri: string;
+    secretKey: string;
+  }> {
+    console.log("🔐 [mfa] Starting TOTP enrollment...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    try {
+      // Get multi-factor session
+      const multiFactorSession = await multiFactor(currentUser).getSession();
+
+      // Generate TOTP secret
+      const secret = await TotpMultiFactorGenerator.generateSecret(
+        multiFactorSession
+      );
+
+      // Build the QR code URI for authenticator apps
+      const accountName = currentUser.email || currentUser.uid;
+      const issuer = "TKA Studio";
+      const qrCodeUri = secret.generateQrCodeUrl(accountName, issuer);
+      const secretKey = secret.secretKey;
+
+      console.log("✅ [mfa] TOTP secret generated");
+
+      return { secret, qrCodeUri, secretKey };
+    } catch (error: unknown) {
+      console.error("❌ [mfa] Failed to start TOTP enrollment:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to start TOTP enrollment: ${message}`);
+    }
+  }
+
+  async completeTOTPEnrollment(
+    secret: TotpSecret,
+    verificationCode: string,
+    displayName: string = "Authenticator App"
+  ): Promise<void> {
+    console.log("🔐 [mfa] Completing TOTP enrollment...");
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    try {
+      // Create assertion for enrollment
+      const assertion = TotpMultiFactorGenerator.assertionForEnrollment(
+        secret,
+        verificationCode
+      );
+
+      // Enroll the factor
+      await multiFactor(currentUser).enroll(assertion, displayName);
+
+      console.log("✅ [mfa] TOTP enrollment complete");
+    } catch (error: unknown) {
+      console.error("❌ [mfa] Failed to complete TOTP enrollment:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      // Handle specific errors
+      if (message.includes("invalid-verification-code")) {
+        throw new Error("Invalid verification code. Please try again.");
+      }
+      throw new Error(`Failed to complete TOTP enrollment: ${message}`);
+    }
+  }
+
+  async unenrollFactor(factorUid: string): Promise<void> {
+    console.log(`🔐 [mfa] Unenrolling factor: ${factorUid}...`);
+
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      throw new Error("No user is currently signed in");
+    }
+
+    // Find the factor to unenroll
+    const factor = multiFactor(currentUser).enrolledFactors.find(
+      (f) => f.uid === factorUid
+    );
+    if (!factor) {
+      throw new Error("Factor not found");
+    }
+
+    try {
+      await multiFactor(currentUser).unenroll(factor);
+      console.log("✅ [mfa] Factor unenrolled successfully");
+    } catch (error: unknown) {
+      console.error("❌ [mfa] Failed to unenroll factor:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      throw new Error(`Failed to unenroll factor: ${message}`);
+    }
+  }
+
+  async verifyMFACode(
+    resolver: MultiFactorResolver,
+    verificationCode: string,
+    factorIndex: number = 0
+  ): Promise<void> {
+    console.log("🔐 [mfa] Verifying MFA code...");
+
+    const hint = resolver.hints[factorIndex];
+    if (!hint) {
+      throw new Error("No MFA factor found at the specified index");
+    }
+
+    try {
+      // Create assertion for sign-in
+      const assertion = TotpMultiFactorGenerator.assertionForSignIn(
+        hint.uid,
+        verificationCode
+      );
+
+      // Complete sign-in
+      await resolver.resolveSignIn(assertion);
+      console.log("✅ [mfa] MFA verification successful");
+    } catch (error: unknown) {
+      console.error("❌ [mfa] MFA verification failed:", error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      if (message.includes("invalid-verification-code")) {
+        throw new Error("Invalid verification code. Please try again.");
+      }
+      throw new Error(`MFA verification failed: ${message}`);
+    }
   }
 }

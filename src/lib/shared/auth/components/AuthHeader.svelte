@@ -37,7 +37,7 @@
     align-items: flex-start;
     justify-content: space-between;
     padding: 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
@@ -49,13 +49,13 @@
   .auth-header__title {
     font-size: 24px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin: 0 0 8px 0;
   }
 
   .auth-header__subtitle {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
     line-height: 1.5;
   }
@@ -67,8 +67,8 @@
     min-height: 52px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -80,7 +80,7 @@
   }
 
   .auth-header__close:hover {
-    background: rgba(255, 255, 255, 0.16);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.16));
     transform: scale(1.05);
   }
 
@@ -89,7 +89,7 @@
   }
 
   .auth-header__close:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 

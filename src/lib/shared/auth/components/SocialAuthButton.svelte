@@ -398,7 +398,7 @@
   }
 
   .error-message {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     font-size: 0.875rem;
     margin-top: 0.5rem;
     text-align: center;

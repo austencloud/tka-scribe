@@ -70,22 +70,30 @@ export interface UserFeatureOverrides {
 /**
  * Role overrides for specific modules and tabs
  * If not specified here, defaults to "user" for modules, inherits parent module role for tabs
+ *
+ * IMPORTANT: For testers, only these modules should be visible:
+ * - Dashboard, Create, Discover, Feedback
+ * All other modules are admin-only until they're ready for public use.
  */
 const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
-  // Modules
-  "module:learn": "tester",
-  "module:compose": "user", // Composition/choreography module
-  "module:feedback": "tester", // Feedback requires sign-in (tester access)
-  "module:ml-training": "tester", // ML Training - tester access for data collection
+  // Modules - Admin-only (hidden from testers)
+  "module:learn": "admin", // Not ready for testers yet
+  "module:compose": "admin", // Not ready for testers yet
+  "module:train": "admin", // Not ready for testers yet
+  "module:library": "admin", // Not ready for testers yet
+  "module:ml-training": "admin", // Admin-only feature
   "module:admin": "admin",
+
+  // Modules - Tester access
+  "module:feedback": "tester", // Feedback requires sign-in (tester access)
 
   // Create tabs
   "tab:create:assembler": "admin", // Advanced feature - admin only
 
-  // Learn tabs
-  "tab:learn:concepts": "tester",
-  "tab:learn:play": "tester",
-  "tab:learn:codex": "tester",
+  // Learn tabs (inherit from parent module, which is now admin)
+  "tab:learn:concepts": "admin",
+  "tab:learn:play": "admin",
+  "tab:learn:codex": "admin",
 
   // Feedback tabs
   "tab:feedback:manage": "admin", // Manage tab is admin-only (testers can only submit/view their own)

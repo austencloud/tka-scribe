@@ -5,7 +5,7 @@
    * Displays user avatar and provides logout functionality
    */
 
-  import { authStore } from "../stores/authStore.svelte";
+  import { authState } from "../state/authState.svelte";
 
   let {
     class: className = "",
@@ -19,7 +19,7 @@
   async function handleLogout() {
     loading = true;
     try {
-      await authStore.signOut();
+      await authState.signOut();
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
@@ -38,8 +38,8 @@
 
   // Get user initials for avatar
   const userInitials = $derived.by(() => {
-    if (!authStore.user) return "?";
-    const name = authStore.user.displayName || authStore.user.email || "User";
+    if (!authState.user) return "?";
+    const name = authState.user.displayName || authState.user.email || "User";
     return name
       .split(" ")
       .map((n: string) => n[0])
@@ -50,11 +50,11 @@
 
   // Get user display name
   const displayName = $derived(
-    authStore.user?.displayName || authStore.user?.email || "User"
+    authState.user?.displayName || authState.user?.email || "User"
   );
 
   // Get user avatar URL
-  const avatarUrl = $derived(authStore.user?.photoURL);
+  const avatarUrl = $derived(authState.user?.photoURL);
 </script>
 
 <div class="user-menu {className}">
@@ -85,7 +85,7 @@
     <div class="menu-dropdown">
       <div class="menu-header">
         <p class="user-name">{displayName}</p>
-        <p class="user-email">{authStore.user?.email || ""}</p>
+        <p class="user-email">{authState.user?.email || ""}</p>
       </div>
 
       <div class="menu-divider"></div>
@@ -117,7 +117,7 @@
   }
 
   .avatar-button:hover {
-    border-color: var(--accent-color, #3b82f6);
+    border-color: var(--semantic-info, #3b82f6);
     transform: scale(1.05);
   }
 
@@ -132,11 +132,15 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #667eea) 0%,
+      #764ba2 100%
+    );
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--theme-text, white);
     font-weight: 600;
     font-size: 0.875rem;
   }
@@ -152,9 +156,10 @@
     right: 0;
     top: calc(100% + 0.5rem);
     min-width: 200px;
-    background: white;
+    background: var(--theme-panel-bg, #1f2937);
     border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    box-shadow: 0 10px 25px var(--theme-shadow, rgba(0, 0, 0, 0.3));
     z-index: 50;
     overflow: hidden;
     animation: slideIn 0.2s ease;
@@ -177,13 +182,13 @@
 
   .user-name {
     font-weight: 600;
-    color: #1f2937;
+    color: var(--theme-text, #f9fafb);
     margin: 0 0 0.25rem 0;
     font-size: 0.875rem;
   }
 
   .user-email {
-    color: #6b7280;
+    color: var(--theme-text-dim, #9ca3af);
     margin: 0;
     font-size: 0.75rem;
     overflow: hidden;
@@ -192,7 +197,7 @@
 
   .menu-divider {
     height: 1px;
-    background: #e5e7eb;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .logout-button {
@@ -201,7 +206,7 @@
     text-align: left;
     background: transparent;
     border: none;
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s ease;
@@ -212,7 +217,11 @@
   }
 
   .logout-button:hover {
-    background: #fef2f2;
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 10%,
+      transparent
+    );
   }
 
   .logout-button:disabled {
@@ -236,26 +245,14 @@
     }
   }
 
-  /* Dark mode support */
-  @media (prefers-color-scheme: dark) {
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
     .menu-dropdown {
-      background: #1f2937;
+      border-width: 2px;
     }
 
-    .user-name {
-      color: #f9fafb;
-    }
-
-    .user-email {
-      color: #9ca3af;
-    }
-
-    .menu-divider {
-      background: #374151;
-    }
-
-    .logout-button:hover {
-      background: #374151;
+    .logout-button {
+      font-weight: 600;
     }
   }
 </style>

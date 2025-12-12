@@ -100,19 +100,19 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(59, 130, 246, 0.15);
+		background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
 		border-radius: 50%;
 	}
 
 	.email-icon-container i {
 		font-size: 36px;
-		color: #3b82f6;
+		color: var(--semantic-info, #3b82f6);
 	}
 
 	.pulse-ring {
 		position: absolute;
 		inset: 0;
-		border: 2px solid rgba(59, 130, 246, 0.4);
+		border: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
 		border-radius: 50%;
 		animation: pulse-ring 2s ease-out infinite;
 	}
@@ -141,12 +141,12 @@
 	.verification-instructions p {
 		margin: 0;
 		font-size: 15px;
-		color: rgba(255, 255, 255, 0.8);
+		color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
 	}
 
 	.verification-instructions .hint {
 		font-size: 13px;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 	}
 
 	.verification-status {
@@ -162,24 +162,24 @@
 		justify-content: center;
 		gap: 8px;
 		font-size: 14px;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
 	}
 
 	.status-indicator i {
-		color: #3b82f6;
+		color: var(--semantic-info, #3b82f6);
 	}
 
 	.progress-bar {
 		width: 100%;
 		height: 4px;
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
 		border-radius: 2px;
 		overflow: hidden;
 	}
 
 	.progress-fill {
 		height: 100%;
-		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(90deg, var(--semantic-info, #3b82f6), var(--theme-accent, #8b5cf6));
 		border-radius: 2px;
 		transition: width 0.3s ease;
 	}
@@ -194,7 +194,7 @@
 	.resend-section p {
 		margin: 0;
 		font-size: 14px;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 	}
 
 	.resend-btn {
@@ -202,18 +202,18 @@
 		align-items: center;
 		gap: 8px;
 		padding: 12px 20px;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.15);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
 		border-radius: 10px;
-		color: rgba(255, 255, 255, 0.8);
+		color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
 		font-size: 14px;
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.resend-btn:hover:not(:disabled) {
-		background: rgba(255, 255, 255, 0.1);
-		border-color: rgba(255, 255, 255, 0.25);
+		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+		border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
 	}
 
 	.resend-btn:disabled {
@@ -226,8 +226,8 @@
 		align-items: flex-start;
 		gap: 10px;
 		padding: 12px 14px;
-		background: rgba(239, 68, 68, 0.15);
-		border: 1px solid rgba(239, 68, 68, 0.3);
+		background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+		border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
 		border-radius: 10px;
 		color: #fca5a5;
 		font-size: 14px;
@@ -235,7 +235,7 @@
 	}
 
 	.form-error i {
-		color: #ef4444;
+		color: var(--semantic-error, #ef4444);
 		flex-shrink: 0;
 		margin-top: 2px;
 	}
@@ -244,7 +244,7 @@
 		padding: 10px 20px;
 		background: transparent;
 		border: none;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 		font-size: 14px;
 		cursor: pointer;
 		text-decoration: underline;
@@ -253,13 +253,13 @@
 	}
 
 	.skip-btn:hover {
-		color: rgba(255, 255, 255, 0.7);
+		color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
 	}
 
 	/* Focus States */
 	.resend-btn:focus-visible,
 	.skip-btn:focus-visible {
-		outline: 2px solid rgba(139, 92, 246, 0.8);
+		outline: 2px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
 		outline-offset: 2px;
 	}
 

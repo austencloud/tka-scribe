@@ -54,14 +54,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(34, 197, 94, 0.15);
+		background: color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent);
 		border-radius: 50%;
 		animation: success-pop 0.4s ease-out;
 	}
 
 	.success-checkmark i {
 		font-size: 40px;
-		color: #22c55e;
+		color: var(--semantic-success, #22c55e);
 	}
 
 	@keyframes success-pop {
@@ -87,7 +87,7 @@
 	.success-message p {
 		margin: 0;
 		font-size: 15px;
-		color: rgba(255, 255, 255, 0.7);
+		color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
 	}
 
 	.credential-display {
@@ -96,20 +96,20 @@
 		justify-content: center;
 		gap: 10px;
 		padding: 14px 24px;
-		background: rgba(139, 92, 246, 0.15);
-		border: 1px solid rgba(139, 92, 246, 0.3);
+		background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+		border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
 		border-radius: 12px;
 	}
 
 	.credential-display i {
-		color: #8b5cf6;
+		color: var(--theme-accent, #8b5cf6);
 		font-size: 16px;
 	}
 
 	.credential-display span {
 		font-size: 15px;
 		font-weight: 500;
-		color: rgba(255, 255, 255, 0.95);
+		color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
 	}
 
 	.done-btn {
@@ -120,10 +120,10 @@
 		width: 100%;
 		max-width: 220px;
 		padding: 14px 28px;
-		background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+		background: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #000) 100%);
 		border: none;
 		border-radius: 12px;
-		color: white;
+		color: var(--theme-text, white);
 		font-size: 15px;
 		font-weight: 600;
 		cursor: pointer;
@@ -132,7 +132,7 @@
 
 	.done-btn:hover {
 		transform: translateY(-1px);
-		box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+		box-shadow: 0 4px 20px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
 	}
 
 	.done-btn:active {
@@ -141,7 +141,7 @@
 
 	/* Focus States */
 	.done-btn:focus-visible {
-		outline: 2px solid rgba(139, 92, 246, 0.8);
+		outline: 2px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
 		outline-offset: 2px;
 	}
 

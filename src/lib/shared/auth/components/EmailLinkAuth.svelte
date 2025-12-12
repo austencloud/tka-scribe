@@ -230,13 +230,13 @@
   .form-header h3 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #1f2937;
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin: 0 0 0.25rem 0;
   }
 
   .form-header p {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
   }
 
@@ -249,21 +249,23 @@
   label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #374151;
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
   }
 
   input {
     padding: 0.75rem;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 0.5rem;
     font-size: 1rem;
     transition: all 0.2s ease;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   input:focus {
     outline: none;
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    border-color: var(--theme-accent, #8b5cf6);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
   }
 
   input:disabled {
@@ -277,8 +279,8 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    color: white;
+    background: linear-gradient(135deg, var(--theme-accent, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #000) 100%);
+    color: var(--theme-text, white);
     border: none;
     border-radius: 0.5rem;
     font-weight: 600;
@@ -286,12 +288,12 @@
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 52px;
-    box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
   }
 
   .submit-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 6px 8px rgba(139, 92, 246, 0.3);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #000) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 70%, #000) 100%);
+    box-shadow: 0 6px 8px color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     transform: translateY(-1px);
   }
 
@@ -321,11 +323,12 @@
   }
 
   .error-message {
-    color: #ef4444;
+    color: #fca5a5;
     font-size: 0.875rem;
     text-align: center;
     padding: 0.75rem;
-    background: rgba(239, 68, 68, 0.1);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: 0.5rem;
     margin: 0;
   }
@@ -335,43 +338,17 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
     font-size: 0.875rem;
     text-align: center;
     padding: 0.75rem;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.2);
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
     border-radius: 0.5rem;
     margin: 0;
   }
 
   .success-message svg {
     flex-shrink: 0;
-  }
-
-  /* Dark mode support */
-  @media (prefers-color-scheme: dark) {
-    .form-header h3 {
-      color: #f9fafb;
-    }
-
-    .form-header p {
-      color: #9ca3af;
-    }
-
-    label {
-      color: #d1d5db;
-    }
-
-    input {
-      background: #374151;
-      border-color: #4b5563;
-      color: white;
-    }
-
-    input:focus {
-      border-color: #a78bfa;
-      box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.1);
-    }
   }
 </style>

@@ -4,6 +4,7 @@
    *
    * Provides email/password sign-in and sign-up functionality
    * Includes client-side rate limiting for security
+   * Supports MFA challenge when enabled
    */
 
   import {
@@ -14,11 +15,17 @@
     indexedDBLocalPersistence,
     setPersistence,
     updateProfile,
+    getMultiFactorResolver,
+    type MultiFactorResolver,
   } from "firebase/auth";
   import { auth } from "../firebase";
   import { goto } from "$app/navigation";
   import { slide } from "svelte/transition";
   import { onDestroy } from "svelte";
+  import MFAChallengeModal from "./MFAChallengeModal.svelte";
+  import { resolve, TYPES } from "../../inversify/di";
+  import type { IAuthService } from "../services/contracts/IAuthService";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
 
   // Props - accept mode as a binding
   let { mode = $bindable("signin" as "signin" | "signup") } = $props();
@@ -30,6 +37,26 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
   let success = $state<string | null>(null);
+
+  // MFA state
+  let showMFAChallenge = $state(false);
+  let mfaResolver = $state<MultiFactorResolver | null>(null);
+  let authService = $state<IAuthService | null>(null);
+  let hapticService = $state<IHapticFeedbackService | null>(null);
+
+  // Initialize services
+  $effect(() => {
+    if (!authService) {
+      try {
+        authService = resolve<IAuthService>(TYPES.IAuthService);
+        hapticService = resolve<IHapticFeedbackService>(
+          TYPES.IHapticFeedbackService
+        );
+      } catch (e) {
+        console.warn("Services not available for MFA");
+      }
+    }
+  });
 
   // Rate limiting state
   const MAX_ATTEMPTS = 5;
@@ -161,6 +188,15 @@
       console.error(`❌ [email] Auth error:`, err);
       console.error(`❌ [email] Error code:`, err.code);
 
+      // Check if MFA is required
+      if (err.code === "auth/multi-factor-auth-required") {
+        console.log("🔐 [email] MFA required, showing challenge modal...");
+        mfaResolver = getMultiFactorResolver(auth, err);
+        showMFAChallenge = true;
+        loading = false;
+        return;
+      }
+
       // Record failed attempt for rate limiting (only for sign-in credential errors)
       if (
         mode === "signin" &&
@@ -216,6 +252,22 @@
     if (mode === "signin") {
       name = "";
     }
+  }
+
+  // MFA handlers
+  function handleMFASuccess() {
+    console.log("✅ [email] MFA verification successful");
+    showMFAChallenge = false;
+    mfaResolver = null;
+    resetAttempts();
+    goto("/");
+  }
+
+  function handleMFACancel() {
+    console.log("🔐 [email] MFA verification cancelled");
+    showMFAChallenge = false;
+    mfaResolver = null;
+    error = "Sign-in cancelled. Please try again.";
   }
 </script>
 
@@ -313,6 +365,18 @@
   </button>
 </form>
 
+<!-- MFA Challenge Modal -->
+{#if showMFAChallenge && mfaResolver && authService}
+  <MFAChallengeModal
+    bind:isOpen={showMFAChallenge}
+    resolver={mfaResolver}
+    {authService}
+    {hapticService}
+    onSuccess={handleMFASuccess}
+    onCancel={handleMFACancel}
+  />
+{/if}
+
 <style>
   .email-auth-form {
     display: flex;
@@ -330,29 +394,34 @@
   label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   input {
     padding: 0.75rem;
     padding-right: 0.75rem;
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 0.75rem;
     font-size: 1rem;
     transition: all 0.2s ease;
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   input:focus {
     outline: none;
-    border-color: rgba(99, 102, 241, 0.8);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 80%,
+      transparent
+    );
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   input:disabled {
@@ -381,7 +450,7 @@
     height: 2.5rem;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     border-radius: 0.5rem;
     display: flex;
@@ -392,8 +461,8 @@
   }
 
   .password-toggle:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .password-toggle:active:not(:disabled) {
@@ -406,13 +475,14 @@
   }
 
   .password-toggle:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 
   .password-hint {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin-top: -0.25rem;
   }
 
@@ -422,8 +492,12 @@
     justify-content: center;
     gap: 0.75rem;
     padding: 0.875rem 1.5rem;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    color: white;
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 85%, #000) 100%
+    );
+    color: var(--theme-text, white);
     border: none;
     border-radius: 0.75rem;
     font-weight: 600;
@@ -431,12 +505,18 @@
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 52px;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .submit-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 85%, #000) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000) 100%
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
     transform: translateY(-1px);
   }
 
@@ -452,7 +532,7 @@
   .toggle-button {
     padding: 0.75rem;
     background: transparent;
-    color: rgba(99, 102, 241, 0.9);
+    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     border: none;
     font-size: 0.875rem;
     font-weight: 500;
@@ -462,8 +542,12 @@
   }
 
   .toggle-button:hover:not(:disabled) {
-    color: rgba(99, 102, 241, 1);
-    background: rgba(99, 102, 241, 0.1);
+    color: var(--theme-accent, #6366f1);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 10%,
+      transparent
+    );
   }
 
   .toggle-button:disabled {
@@ -492,8 +576,13 @@
     font-size: 0.875rem;
     text-align: center;
     padding: 0.75rem 1rem;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: 0.75rem;
     margin: 0;
     line-height: 1.5;
@@ -504,8 +593,13 @@
     font-size: 0.875rem;
     text-align: center;
     padding: 0.75rem 1rem;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
     border-radius: 0.75rem;
     margin: 0;
     line-height: 1.5;

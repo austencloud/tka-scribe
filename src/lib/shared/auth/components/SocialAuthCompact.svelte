@@ -122,7 +122,7 @@
 
   .social-compact-label {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
     font-weight: 500;
   }
@@ -148,7 +148,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .social-compact-button :global(svg) {
@@ -193,7 +193,7 @@
   }
 
   .social-compact-button:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.7);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 
