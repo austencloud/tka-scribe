@@ -131,8 +131,8 @@
     min-height: 52px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -159,7 +159,7 @@
   }
 
   .profile-button:hover:not(.variant-sidebar) {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     transform: scale(1.05);
   }
 
@@ -183,7 +183,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
     font-size: 18px; /* Match Settings icon size */
   }
@@ -230,8 +230,8 @@
     justify-content: center;
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    background: rgba(99, 102, 241, 0.6); /* Simplified, more subtle */
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent); /* Simplified, more subtle */
   }
 
   /* Smaller font in labeled button */
@@ -245,7 +245,7 @@
     text-align: left;
     font-size: 15px; /* Match Settings button font-size */
     font-weight: 500; /* Match Settings button font-weight */
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -262,7 +262,7 @@
   }
 
   .profile-button.variant-sidebar:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     transform: translateX(2px); /* Match sidebar hover transform */
   }
 
@@ -277,22 +277,22 @@
 
   /* Icon wrapper in sidebar - needs subtle background */
   .profile-button.variant-sidebar .profile-icon-wrapper {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .profile-button.variant-sidebar:hover .profile-icon-wrapper {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   /* Avatar in sidebar icon wrapper */
   .profile-button.variant-sidebar.has-avatar .profile-icon-wrapper {
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     background: transparent;
   }
 
   .profile-button.variant-sidebar.has-avatar:hover .profile-icon-wrapper {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   /* Collapsed sidebar - center icon only */
@@ -323,7 +323,7 @@
 
   @media (prefers-contrast: high) {
     .profile-button {
-      background: rgba(255, 255, 255, 0.2);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
       border: 2px solid white;
     }
   }

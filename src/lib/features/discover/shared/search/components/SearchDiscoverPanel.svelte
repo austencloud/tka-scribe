@@ -319,17 +319,17 @@ Allows natural language queries to find sequences, users, and collections.
   .search-input {
     flex: 1;
     padding: 14px 16px 14px 50px;
-    background: var(--input-bg-current);
-    border: 2px solid var(--input-border-current);
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--text-primary-current);
+    color: var(--theme-text);
     font-size: 15px;
     transition: all 0.2s ease;
   }
 
   .search-input:focus {
     outline: none;
-    background: var(--input-focus-current);
+    background: var(--theme-card-hover-bg);
     border-color: rgba(0, 123, 255, 0.5);
     box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
   }
@@ -378,10 +378,10 @@ Allows natural language queries to find sequences, users, and collections.
   .filter-tab {
     min-height: 52px;
     padding: 12px 18px;
-    background: var(--panel-bg-current);
-    border: var(--panel-border-current);
+    background: var(--theme-panel-bg);
+    border: var(--theme-stroke);
     border-radius: 24px;
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -390,8 +390,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .filter-tab:hover {
-    background: var(--panel-hover-current);
-    color: var(--text-primary-current);
+    background: var(--theme-panel-elevated-bg);
+    color: var(--theme-text);
   }
 
   .filter-tab.active {
@@ -433,10 +433,10 @@ Allows natural language queries to find sequences, users, and collections.
     gap: 8px;
     min-height: 52px;
     padding: 12px 16px;
-    background: var(--card-bg-current);
-    border: var(--card-border-current);
+    background: var(--theme-card-bg);
+    border: var(--theme-stroke);
     border-radius: 10px;
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     font-size: 14px;
     text-align: left;
     cursor: pointer;
@@ -444,7 +444,7 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .suggestion-chip:hover {
-    background: var(--card-hover-current);
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
   }
@@ -527,8 +527,8 @@ Allows natural language queries to find sequences, users, and collections.
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: var(--card-bg-current);
-    border: var(--card-border-current);
+    background: var(--theme-card-bg);
+    border: var(--theme-stroke);
     border-radius: 12px;
     text-align: left;
     cursor: pointer;
@@ -536,7 +536,7 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .result-item:hover {
-    background: var(--card-hover-current);
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateX(4px);
   }

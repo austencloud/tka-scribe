@@ -114,12 +114,12 @@
   .item-label {
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .item-description {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.3;
   }
 

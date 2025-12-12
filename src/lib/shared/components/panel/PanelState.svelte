@@ -75,23 +75,23 @@
 
   .panel-state__icon {
     font-size: 50px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
   }
 
   .panel-state--error .panel-state__icon {
-    color: rgba(239, 68, 68, 0.7);
+    color: var(--semantic-error, #ef4444);
   }
 
   .panel-state__title {
     font-size: 20px;
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     margin: 0;
   }
 
   .panel-state__message {
     font-size: 14px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 0;
     max-width: 300px;
   }
@@ -99,10 +99,10 @@
   .panel-state__retry {
     margin-top: 8px;
     padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -110,8 +110,8 @@
   }
 
   .panel-state__retry:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   @media (prefers-reduced-motion: reduce) {

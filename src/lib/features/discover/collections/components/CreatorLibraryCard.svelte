@@ -260,15 +260,15 @@ Displays:
   .creator-library-card {
     display: flex;
     flex-direction: column;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.2s ease;
   }
 
   .creator-library-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
     border-color: rgba(255, 255, 255, 0.12);
   }
 
@@ -332,7 +332,7 @@ Displays:
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -341,7 +341,7 @@ Displays:
   .username {
     margin: 2px 0 0 0;
     font-size: 13px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .stats {
@@ -355,7 +355,7 @@ Displays:
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .stat i {
@@ -371,7 +371,7 @@ Displays:
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -379,7 +379,7 @@ Displays:
 
   .view-profile-btn:hover {
     background: rgba(255, 255, 255, 0.12);
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
   }
 
   .view-profile-btn span {
@@ -407,7 +407,7 @@ Displays:
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
@@ -416,12 +416,12 @@ Displays:
 
   .tab:hover:not(.disabled) {
     background: rgba(255, 255, 255, 0.06);
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
   }
 
   .tab.active {
     background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
   }
 
   .tab.disabled {
@@ -501,17 +501,17 @@ Displays:
     justify-content: center;
     gap: 4px;
     aspect-ratio: 1;
-    background: rgba(168, 85, 247, 0.15);
-    border: 1px dashed rgba(168, 85, 247, 0.4);
+    background: color-mix(in srgb, var(--theme-accent, #a855f7) 15%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
     border-radius: 8px;
-    color: #a855f7;
+    color: var(--theme-accent, #a855f7);
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .see-all-btn:hover {
-    background: rgba(168, 85, 247, 0.25);
-    border-color: rgba(168, 85, 247, 0.6);
+    background: color-mix(in srgb, var(--theme-accent, #a855f7) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #a855f7) 60%, transparent);
   }
 
   .see-all-count {
@@ -546,12 +546,12 @@ Displays:
   .collection-name {
     flex: 1;
     font-size: 13px;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
   }
 
   .collection-count {
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Empty/no content states */
@@ -559,7 +559,7 @@ Displays:
   .no-content {
     text-align: center;
     padding: 20px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 13px;
   }
 

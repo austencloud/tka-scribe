@@ -194,8 +194,8 @@
     max-width: 52px;
     padding: 0;
     /* Glass background to make button clearly tappable */
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     /* Ensure proper touch handling */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -205,15 +205,15 @@
   }
 
   .side-navigation :global(.nav-button.special:hover) {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .side-navigation :global(.nav-button.special.active) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     /* Override the section-style top border indicator */
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    border-top: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     padding-top: 0;
   }
 
@@ -233,7 +233,7 @@
     }
 
     .side-navigation :global(.nav-button.active) {
-      background: rgba(255, 255, 255, 0.3);
+      background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     }
   }
 </style>

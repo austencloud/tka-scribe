@@ -146,8 +146,8 @@
   }
 
   .password-form {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     padding: 20px;
     margin-top: 16px;
@@ -161,7 +161,7 @@
     display: block;
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     margin-bottom: 8px;
     transition: all 0.2s ease;
   }
@@ -175,10 +175,10 @@
   .input {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 15px;
     transition: all 0.2s ease;
   }
@@ -198,14 +198,14 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .toggle-visibility:hover {
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
   }
 
   .toggle-visibility:active {
@@ -218,8 +218,8 @@
 
   .input:focus {
     outline: none;
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .input[aria-invalid="true"] {
@@ -271,26 +271,30 @@
   }
 
   .button--primary {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1),
+      var(--theme-accent-strong, #4f46e5)
+    );
     color: white;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .button--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    color: var(--theme-accent, #a5b4fc);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
   }
 
   .button:active:not(:disabled) {
@@ -305,13 +309,13 @@
 
   /* Accessibility - Focus Indicators */
   .input:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid var(--theme-accent, rgba(99, 102, 241, 0.9));
     outline-offset: 2px;
   }
 
   .button:focus-visible,
   .toggle-visibility:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid var(--theme-accent, rgba(99, 102, 241, 0.9));
     outline-offset: 2px;
   }
 

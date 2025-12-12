@@ -318,7 +318,7 @@
   .profile-name {
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -326,14 +326,14 @@
 
   .profile-email {
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   .dropdown-icon {
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 11px;
     transition: transform var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
   }
@@ -361,7 +361,7 @@
     background: transparent;
     border: none;
     border-radius: var(--radius-2026-xs, 8px);
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     font-size: var(--text-2026-caption, 0.875rem);
     cursor: pointer;
     transition: background var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
@@ -374,11 +374,11 @@
   }
 
   .dropdown-item.sign-out {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   .dropdown-item.sign-out:hover {
-    background: rgba(239, 68, 68, 0.12);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
   }
 
   /* Quick Stats - Inline text style for 2026 */
@@ -432,13 +432,13 @@
   .stat-value {
     font-size: var(--text-2026-title, 1.125rem);
     font-weight: 700;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     line-height: 1.2;
   }
 
   .stat-label {
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Library Button - 2026 text link style */
@@ -504,13 +504,13 @@
     margin: 0;
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .prompt-text p {
     margin: 2px 0 0;
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Auth Buttons - 2026 Cleaner */
@@ -567,7 +567,7 @@
     gap: 8px;
     margin: 0;
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .guest-note i {

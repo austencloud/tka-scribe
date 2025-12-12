@@ -127,7 +127,7 @@
     border-radius: 50%;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -167,8 +167,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     flex-shrink: 0;
     font-size: 20px;
     position: relative;
@@ -176,7 +176,7 @@
   }
 
   .dashboard-button:hover .profile-icon-wrapper {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   /* Profile avatar image */
@@ -205,7 +205,7 @@
     justify-content: center;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   }
 

@@ -151,9 +151,9 @@
      ============================================================================ */
   :global(.module-switcher-drawer) {
     /* Drawer fills viewport appropriately based on placement */
-    --sheet-bg: rgba(12, 12, 18, 0.96);
+    --sheet-bg: var(--theme-panel-bg, rgba(12, 12, 18, 0.96));
     --sheet-filter: blur(24px) saturate(140%);
-    --sheet-border: 1px solid rgba(255, 255, 255, 0.08);
+    --sheet-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     --sheet-radius-large: 20px;
     box-sizing: border-box !important;
   }
@@ -214,7 +214,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 16px 14px; /* Adjusted for larger close button */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     flex-shrink: 0;
     gap: 16px; /* More space between header content and close button */
     position: relative;
@@ -246,7 +246,7 @@
     margin: 0 0 4px 0;
     font-size: 20px; /* Larger, more prominent on mobile */
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     letter-spacing: -0.01em;
   }
 
@@ -255,12 +255,12 @@
     align-items: center;
     gap: 6px;
     font-size: 14px; /* Increased from 12px for better mobile readability */
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .module-name {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.75); /* Slightly more prominent */
+    color: var(--theme-text, rgba(255, 255, 255, 0.75)); /* Slightly more prominent */
   }
 
   /* Close button - accessible touch target (50px minimum) */
@@ -269,8 +269,8 @@
     height: 52px; /* Increased from 36px for proper touch target */
     border-radius: 12px; /* Slightly larger to match new size */
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -281,14 +281,14 @@
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.85);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
   }
 
   .close-button:active {
     transform: scale(0.95);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   /* ============================================================================
@@ -308,7 +308,7 @@
 
     /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) transparent;
   }
 
   .module-switcher-content::-webkit-scrollbar {
@@ -320,7 +320,7 @@
   }
 
   .module-switcher-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 2px;
   }
 

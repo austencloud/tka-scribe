@@ -151,8 +151,8 @@
 <style>
   .email-change-section {
     padding: clamp(18px, 3vh, 28px);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: clamp(12px, 2vh, 18px);
     transition: all 0.2s ease;
   }
@@ -190,7 +190,7 @@
   .section-header h4 {
     font-size: clamp(16px, 2.2vh, 20px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
   }
 
@@ -204,7 +204,7 @@
 
   .description {
     font-size: clamp(13px, 1.8vh, 15px);
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     margin: 0 0 clamp(16px, 2.5vh, 24px) 0;
     line-height: 1.5;
   }
@@ -236,7 +236,7 @@
     display: block;
     font-size: clamp(13px, 1.8vh, 16px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     margin-bottom: clamp(6px, 1vh, 10px);
   }
 
@@ -253,10 +253,10 @@
   .input {
     width: 100%;
     padding: clamp(10px, 1.5vh, 14px) clamp(14px, 2vh, 18px);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: clamp(14px, 1.9vh, 17px);
     transition: all 0.2s ease;
   }
@@ -275,8 +275,8 @@
 
   .input:focus {
     outline: none;
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .input.error {
@@ -385,14 +385,14 @@
   }
 
   .button--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     transform: translateY(-2px);
   }
 

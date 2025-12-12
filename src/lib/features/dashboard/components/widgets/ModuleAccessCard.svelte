@@ -88,13 +88,13 @@
     margin: 0;
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .card-content p {
     margin: 3px 0 0;
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -107,7 +107,7 @@
     width: 24px;
     height: 24px;
     flex-shrink: 0;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     font-size: 11px;
     transition: color var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
   }

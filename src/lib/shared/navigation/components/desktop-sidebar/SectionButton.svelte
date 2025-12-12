@@ -40,7 +40,7 @@
     background: transparent;
     border: 1px solid transparent;
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -56,7 +56,7 @@
     background: linear-gradient(
       135deg,
       transparent 40%,
-      rgba(255, 255, 255, 0.04) 50%,
+      var(--theme-card-bg, rgba(255, 255, 255, 0.04)) 50%,
       transparent 60%
     );
     opacity: 0;
@@ -79,8 +79,8 @@
   }
 
   .section-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.03);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     transform: translateX(3px);
   }
 
@@ -90,7 +90,7 @@
   }
 
   .section-button.active {
-    color: rgba(255, 255, 255, 1);
+    color: var(--theme-text, rgba(255, 255, 255, 1));
     background: color-mix(in srgb, var(--section-color) 12%, transparent);
     border-color: color-mix(in srgb, var(--section-color) 25%, transparent);
     box-shadow: 0 0 12px
@@ -170,7 +170,7 @@
      ============================================================================ */
   @media (prefers-contrast: high) {
     .section-button.active {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
       outline: 2px solid white;
     }
   }

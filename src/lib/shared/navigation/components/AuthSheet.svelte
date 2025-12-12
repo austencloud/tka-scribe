@@ -149,7 +149,7 @@
 
     /* Hide scrollbar but keep functionality */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) transparent;
   }
 
   .auth-sheet__content::-webkit-scrollbar {
@@ -161,12 +161,12 @@
   }
 
   .auth-sheet__content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 3px;
   }
 
   .auth-sheet__content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .auth-sheet__divider {
@@ -180,12 +180,12 @@
   .auth-sheet__divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .auth-sheet__divider span {
     padding: 0 16px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 14px;
     font-weight: 500;
   }

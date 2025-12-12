@@ -167,7 +167,7 @@
     background: transparent;
     border: none;
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 15px;
@@ -183,7 +183,7 @@
   }
 
   .account-settings-button:hover {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     transform: translateX(2px);
   }
 
@@ -218,12 +218,12 @@
 
   /* Avatar styling - add border for profile pictures */
   .account-settings-button.has-avatar .icon-wrapper {
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     background: transparent;
   }
 
   .account-settings-button.has-avatar:hover .icon-wrapper {
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.35));
   }
 
   .profile-avatar {
@@ -243,19 +243,19 @@
     justify-content: center;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 50%;
   }
 
   /* User icon styling (when signed out) */
   .icon-wrapper > i {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     transition: all 0.25s ease;
   }
 
   .account-settings-button:hover .icon-wrapper > i {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     transform: scale(1.1);
   }
 
@@ -295,7 +295,7 @@
 
   @media (prefers-contrast: high) {
     .account-settings-button {
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     }
   }
 </style>

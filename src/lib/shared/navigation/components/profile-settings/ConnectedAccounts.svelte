@@ -369,15 +369,15 @@
     background: none;
     border: none;
     padding: 4px 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.2s ease;
   }
 
   .dismiss-btn:hover {
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   /* Section Styles */
@@ -391,7 +391,7 @@
     margin: 0;
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -399,7 +399,7 @@
   .section-description {
     margin: 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.4;
   }
 
@@ -456,7 +456,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     flex-shrink: 0;
   }
@@ -478,13 +478,13 @@
   .provider-name {
     font-size: 15px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .provider-email,
   .provider-description {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -538,10 +538,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -585,10 +585,10 @@
     align-items: center;
     gap: 8px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     margin: 4px 0 0 0;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 8px;
   }
 
@@ -604,7 +604,7 @@
     align-items: center;
     gap: 12px;
     padding: 32px 16px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .empty-state i {

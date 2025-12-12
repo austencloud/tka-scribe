@@ -46,19 +46,19 @@
 
   .panel-header__icon {
     font-size: 24px;
-    color: #06b6d4;
+    color: var(--theme-accent, #06b6d4);
   }
 
   .panel-header__text {
     font-size: 28px;
     font-weight: 700;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
   }
 
   .panel-header__subtitle {
     font-size: 14px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
     padding-left: 36px;
   }

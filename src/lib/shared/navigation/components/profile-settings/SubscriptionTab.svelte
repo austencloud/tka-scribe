@@ -144,8 +144,8 @@
   .subscription-card {
     width: 100%;
     max-width: min(900px, 85vw); /* Fluid responsive width */
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: clamp(10px, 1.5vh, 14px);
     padding: clamp(16px, 2.5vh, 24px);
     transition: all 0.2s ease;
@@ -162,8 +162,8 @@
   }
 
   .subscription-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   /* Plan Badge */
@@ -173,8 +173,8 @@
     justify-content: center;
     gap: clamp(6px, 1vh, 10px);
     padding: clamp(10px, 1.5vh, 14px) clamp(16px, 2.5vw, 24px);
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
     margin-bottom: clamp(10px, 1.5vh, 14px);
   }
@@ -200,7 +200,7 @@
 
   .plan-badge i {
     font-size: clamp(18px, 2.5vh, 22px);
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
   }
 
   .section.compact .plan-badge i {
@@ -218,7 +218,7 @@
   .plan-badge span {
     font-size: clamp(16px, 2.2vh, 20px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .section.compact .plan-badge span {
@@ -231,7 +231,7 @@
 
   .plan-description {
     font-size: clamp(13px, 1.7vh, 15px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-align: center;
     line-height: 1.5;
     margin: 0 0 clamp(12px, 2vh, 18px) 0;
@@ -278,7 +278,7 @@
     align-items: center;
     gap: clamp(10px, 1.5vh, 14px);
     padding: clamp(8px, 1.2vh, 12px) clamp(10px, 1.5vw, 14px);
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
     border-radius: 8px;
   }
 
@@ -308,7 +308,7 @@
 
   .features-list span {
     font-size: clamp(12px, 1.6vh, 14px);
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
   }
 
   .section.compact .features-list span {
@@ -375,14 +375,14 @@
   }
 
   .button--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     transform: translateY(-2px);
   }
 

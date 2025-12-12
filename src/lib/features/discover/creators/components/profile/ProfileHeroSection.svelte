@@ -66,8 +66,8 @@
     align-items: center;
     gap: 20px;
     padding: 20px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     margin-bottom: 24px;
   }
@@ -111,21 +111,21 @@
     margin: 0;
     font-size: 28px;
     font-weight: 700;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
     text-align: center;
   }
 
   .username {
     margin: 0;
     font-size: 16px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .bio {
     margin: 8px 0 0 0;
     font-size: 14px;
     line-height: 1.5;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-align: center;
     max-width: 400px;
   }
@@ -133,8 +133,8 @@
   .follow-button {
     margin-top: 16px;
     padding: 12px 32px;
-    background: #a855f7;
-    border: 1px solid #a855f7;
+    background: var(--theme-accent, #a855f7);
+    border: 1px solid var(--theme-accent, #a855f7);
     border-radius: 8px;
     color: white;
     font-size: 15px;
@@ -146,18 +146,18 @@
   .follow-button:hover {
     filter: brightness(0.9);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, #a855f7 40%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
   }
 
   .follow-button.following {
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.1));
-    border-color: var(--card-border-current, rgba(255, 255, 255, 0.2));
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .follow-button.following:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.15));
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     filter: none;
   }
 

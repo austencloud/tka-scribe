@@ -132,7 +132,7 @@
     background: transparent;
     border: 1px solid transparent;
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -152,7 +152,7 @@
     background: linear-gradient(
       135deg,
       transparent 40%,
-      rgba(255, 255, 255, 0.05) 50%,
+      var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 50%,
       transparent 60%
     );
     opacity: 0;
@@ -175,9 +175,9 @@
   }
 
   .module-button:hover {
-    color: rgba(255, 255, 255, 0.95);
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.06);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
     transform: translateX(3px);
   }
 
@@ -188,15 +188,15 @@
 
   /* Expanded state - very subtle */
   .module-button.expanded {
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.02);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
   }
 
   /* Active module indicator - minimal, just the accent bar */
   .module-button.active {
-    color: rgba(255, 255, 255, 0.95);
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.06);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .module-button.active::after {
@@ -309,8 +309,8 @@
 
   .module-button.disabled:hover {
     transform: none;
-    color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.03);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     box-shadow: none;
   }
 
@@ -324,9 +324,9 @@
     text-transform: uppercase;
     padding: 3px 8px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     letter-spacing: 0.5px;
   }
 

@@ -192,11 +192,11 @@
     padding: 16px 24px;
     background: linear-gradient(
       to top,
-      rgba(20, 25, 35, 0.98) 0%,
-      rgba(20, 25, 35, 0.95) 50%,
-      rgba(20, 25, 35, 0) 100%
+      var(--theme-panel-bg, rgba(20, 25, 35, 0.98)) 0%,
+      color-mix(in srgb, var(--theme-panel-bg, rgba(20, 25, 35, 0.95)) 95%, transparent) 50%,
+      transparent 100%
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     transition: padding 0.2s ease;
   }
 
@@ -232,7 +232,7 @@
     display: block;
     font-size: clamp(13px, 1.8vh, 16px); /* Fluid font sizing */
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     margin-bottom: clamp(6px, 1vh, 10px);
     transition: all 0.2s ease;
   }
@@ -250,10 +250,10 @@
   :global(.input) {
     width: 100%;
     padding: clamp(10px, 1.5vh, 14px) clamp(14px, 2vh, 18px);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: clamp(14px, 1.9vh, 17px); /* Fluid font size */
     transition: all 0.2s ease;
   }
@@ -272,8 +272,8 @@
 
   :global(.input:focus) {
     outline: none;
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   :global(.input:disabled),
@@ -283,7 +283,7 @@
   }
 
   :global(.input--readonly) {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
   }
 
   .email-field-wrapper {
@@ -306,7 +306,7 @@
     max-width: min(800px, 80vw);
     margin-top: clamp(20px, 3vh, 32px);
     padding-top: clamp(20px, 3vh, 32px);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .section.compact .sign-out-section {
@@ -389,7 +389,7 @@
 
   :global(.hint) {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.65); /* Improved contrast for WCAG AA */
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65)); /* Improved contrast for WCAG AA */
     margin: 6px 0 0 0;
     transition: all 0.2s ease;
   }

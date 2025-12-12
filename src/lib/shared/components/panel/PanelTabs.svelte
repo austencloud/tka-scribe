@@ -65,7 +65,7 @@
     align-items: center;
     gap: 2px;
     padding: 3px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border-radius: 100px;
     backdrop-filter: blur(12px);
     box-shadow:
@@ -83,7 +83,7 @@
     background: transparent;
     border: none;
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -92,13 +92,13 @@
   }
 
   .panel-tab:hover {
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
   }
 
   .panel-tab--active {
-    background: rgba(255, 255, 255, 0.22);
-    color: rgba(255, 255, 255, 0.98);
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    color: var(--theme-text, rgba(255, 255, 255, 0.98));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 

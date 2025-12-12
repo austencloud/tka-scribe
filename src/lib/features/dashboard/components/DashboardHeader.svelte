@@ -35,14 +35,14 @@
     margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     letter-spacing: -0.02em;
   }
 
   .welcome-header p {
     margin: 6px 0 0;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   @media (max-width: 768px) {

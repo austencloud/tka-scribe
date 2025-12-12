@@ -273,7 +273,7 @@
 
   .dev-section {
     padding-top: 20px; /* More space before dev section */
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .section-title {
@@ -282,7 +282,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
   }
 
   /* ============================================================================
@@ -321,7 +321,7 @@
     background: transparent;
     border: none;
     border-radius: 16px; /* Slightly larger radius for modern feel */
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     cursor: pointer;
     text-align: center;
     overflow: hidden;
@@ -456,14 +456,14 @@
     /* Slightly larger labels: min 14px, preferred 2vh, max 17px */
     font-size: clamp(14px, 2vh, 17px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.88);
+    color: var(--theme-text, rgba(255, 255, 255, 0.88));
     letter-spacing: 0.01em;
     line-height: 1.2;
     transition: color 0.2s ease;
   }
 
   .module-cell.active .cell-label {
-    color: rgba(255, 255, 255, 1);
+    color: var(--theme-text, rgba(255, 255, 255, 1));
   }
 
   /* ============================================================================
@@ -478,9 +478,9 @@
     text-transform: uppercase;
     padding: 2px 5px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     letter-spacing: 0.4px;
     z-index: 3;
   }
@@ -507,10 +507,10 @@
   .module-cell.disabled:hover .cell-background {
     background: linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.07) 0%,
-      rgba(255, 255, 255, 0.03) 100%
+      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07)) 0%,
+      var(--theme-card-bg, rgba(255, 255, 255, 0.03)) 100%
     );
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .module-cell.disabled:hover .cell-glow {
@@ -551,12 +551,12 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .cell-background {
-      background: rgba(255, 255, 255, 0.15) !important;
-      border: 2px solid rgba(255, 255, 255, 0.4) !important;
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15)) !important;
+      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4)) !important;
     }
 
     .module-cell.active .cell-background {
-      background: rgba(255, 255, 255, 0.25) !important;
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25)) !important;
       border: 2px solid white !important;
     }
   }

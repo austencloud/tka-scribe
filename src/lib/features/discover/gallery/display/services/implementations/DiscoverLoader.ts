@@ -26,7 +26,7 @@ import {
 } from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
 // Constants for validation
 const MAX_WORD_LENGTH = 200;
-const SEQUENCE_INDEX_URL = "/sequence-index.json";
+const SEQUENCE_INDEX_URL = "/data/sequence-index.json";
 
 interface RawSequenceData {
   word?: string;

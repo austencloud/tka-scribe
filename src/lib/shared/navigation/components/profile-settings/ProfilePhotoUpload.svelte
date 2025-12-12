@@ -93,8 +93,8 @@
     padding: 24px;
     width: 100%;
     max-width: 400px; /* Match form field width for consistency */
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     margin-bottom: 24px;
     transition: all 0.2s ease;
@@ -146,7 +146,7 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgba(255, 255, 255, 0.15);
+    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     display: block;
     transition: all 0.2s ease;
   }
@@ -200,7 +200,7 @@
     font-size: 36px;
     font-weight: 600;
     color: white;
-    border: 3px solid rgba(255, 255, 255, 0.15);
+    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     transition: all 0.2s ease;
   }
 
@@ -288,7 +288,7 @@
   .photo-title {
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
     transition: font-size 0.2s ease;
   }

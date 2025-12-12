@@ -91,7 +91,7 @@
     width: 100%;
     max-width: min(900px, 85vw); /* Match SecurityTab card width */
     margin: 0 auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     padding-top: clamp(20px, 3vh, 28px);
   }
 
@@ -142,7 +142,7 @@
     align-items: flex-start;
     gap: 12px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     line-height: 1.6;
     margin: 0 0 16px 0;
   }
@@ -198,14 +198,14 @@
   }
 
   .button--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
   .button--danger {

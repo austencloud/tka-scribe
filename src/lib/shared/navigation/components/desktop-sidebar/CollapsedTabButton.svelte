@@ -40,7 +40,7 @@
     background: transparent;
     border: none;
     border-radius: 7px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -52,19 +52,17 @@
   }
 
   .collapsed-tab-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .collapsed-tab-button.active {
-    color: rgba(255, 255, 255, 1);
-    background: rgba(
-      255,
-      255,
-      255,
-      0.18
+    color: var(--theme-text, rgba(255, 255, 255, 1));
+    background: var(
+      --theme-card-hover-bg,
+      rgba(255, 255, 255, 0.18)
     ); /* More prominent to show active selection */
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
   .collapsed-tab-button.disabled {
@@ -107,11 +105,11 @@
     position: absolute;
     left: 52px;
     padding: 5px 10px;
-    background: rgba(20, 20, 30, 0.95);
+    background: var(--theme-panel-bg, rgba(20, 20, 30, 0.95));
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
     border-radius: 5px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
@@ -119,7 +117,7 @@
     opacity: 0;
     transform: translateX(-8px);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow, 0 4px 12px rgba(0, 0, 0, 0.3));
     z-index: 200;
   }
 
@@ -139,7 +137,7 @@
      ============================================================================ */
   @media (prefers-contrast: high) {
     .collapsed-tab-button.active {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
       outline: 2px solid white;
     }
   }

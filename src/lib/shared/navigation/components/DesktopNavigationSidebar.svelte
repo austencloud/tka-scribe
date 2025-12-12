@@ -398,10 +398,10 @@
     width: 220px;
     display: flex;
     flex-direction: column;
-    background: rgba(10, 10, 15, 0.85);
+    background: var(--theme-panel-bg, rgba(10, 10, 15, 0.85));
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     z-index: 150;
     overflow: hidden;
     transition: width var(--duration-emphasis, 280ms)
@@ -434,7 +434,7 @@
 
     /* Custom scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    scrollbar-color: var(--theme-stroke, rgba(255, 255, 255, 0.1)) transparent;
   }
 
   /* Tabs mode - VS Code activity bar layout when sidebar is collapsed */
@@ -461,10 +461,10 @@
     gap: 12px;
     padding: 10px 12px;
     margin-bottom: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 14px;
@@ -472,9 +472,9 @@
   }
 
   .settings-back-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .settings-back-button.collapsed {
@@ -493,7 +493,7 @@
     justify-content: center;
     font-size: 16px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     transition: all 0.2s ease;
   }
 
@@ -505,7 +505,7 @@
   }
 
   .settings-back-button:hover .back-icon {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
   }
 
   .back-label {
@@ -538,7 +538,7 @@
     background: transparent;
     border: none;
     border-radius: clamp(8px, 5cqw, 12px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: clamp(13px, 7.5cqw, 15px);
@@ -547,8 +547,8 @@
   }
 
   .section-button:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .section-button.active {

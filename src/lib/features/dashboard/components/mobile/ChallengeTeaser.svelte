@@ -72,12 +72,12 @@
   .teaser-title {
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .teaser-subtitle {
     font-size: var(--text-2026-caption, 0.875rem);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .teaser-arrow {
@@ -86,7 +86,7 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 12px;
     transition: color var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
   }

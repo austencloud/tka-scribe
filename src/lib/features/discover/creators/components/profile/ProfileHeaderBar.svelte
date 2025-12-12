@@ -14,8 +14,7 @@
     display: flex;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid
-      var(--card-border-current, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .back-btn {
@@ -23,10 +22,10 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -34,8 +33,8 @@
   }
 
   .back-btn:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.1));
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .back-btn i {

@@ -147,21 +147,21 @@
 	}
 
 	.list-panel::-webkit-scrollbar-track {
-		background: rgba(255, 255, 255, 0.05);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
 	}
 
 	.list-panel::-webkit-scrollbar-thumb {
-		background: rgba(255, 255, 255, 0.2);
+		background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
 		border-radius: 3px;
 	}
 
 	.list-panel::-webkit-scrollbar-thumb:hover {
-		background: rgba(255, 255, 255, 0.3);
+		background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
 	}
 
 	/* Drawer customization - Side drawer (desktop sidebar or landscape mobile) */
 	:global(.admin-detail-drawer.side) {
-		--sheet-width: min(480px, 90vw);
+		--sheet-width: min(560px, 90vw);
 		--sheet-bg: rgba(20, 20, 35, 0.98);
 	}
 

@@ -76,21 +76,21 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .stat-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
     transform: translateY(-2px);
   }
 
   .stat-icon {
     font-size: 24px;
-    color: #a855f7;
+    color: var(--theme-accent, #a855f7);
   }
 
   .stat-content {
@@ -102,12 +102,12 @@
   .stat-value {
     font-size: 20px;
     font-weight: 700;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
   }
 
   .stat-label {
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   @media (max-width: 768px) {

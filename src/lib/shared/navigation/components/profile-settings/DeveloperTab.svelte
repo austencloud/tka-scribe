@@ -334,33 +334,33 @@ ${
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   h4 {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   h5 {
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
   }
 
   .description {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     margin-bottom: 20px;
   }
 
   /* HMR Toggle Setting Card */
   .setting-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 24px;
@@ -382,13 +382,13 @@ ${
     margin: 0 0 6px 0;
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .setting-description {
     margin: 0;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.4;
   }
 
@@ -414,7 +414,7 @@ ${
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transition: 0.3s;
     border-radius: 28px;
   }
@@ -450,10 +450,10 @@ ${
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 8px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .setting-status.active {
@@ -471,10 +471,10 @@ ${
     gap: 0.75rem;
     width: 100%;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -482,8 +482,8 @@ ${
   }
 
   .diagnostics-toggle:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .diagnostics-toggle i {
@@ -505,8 +505,8 @@ ${
   }
 
   .firebase-config {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 20px;
@@ -525,17 +525,17 @@ ${
 
   .label {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     min-width: 100px;
   }
 
   code {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
     padding: 4px 8px;
     border-radius: 4px;
     font-family: "Consolas", "Monaco", monospace;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .diagnostics-summary {
@@ -546,8 +546,8 @@ ${
   }
 
   .summary-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     padding: 12px;
     display: flex;
@@ -557,13 +557,13 @@ ${
 
   .summary-item .label {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .summary-item .value {
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .alert {
@@ -585,13 +585,13 @@ ${
 
   .alert p {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     margin-bottom: 4px;
   }
 
   .diagnostics-details {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 20px;
@@ -600,12 +600,12 @@ ${
   .diagnostics-details summary {
     cursor: pointer;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     user-select: none;
   }
 
   .diagnostics-details summary:hover {
-    color: rgba(255, 255, 255, 1);
+    color: var(--theme-text, rgba(255, 255, 255, 1));
   }
 
   .storage-section {
@@ -620,12 +620,12 @@ ${
 
   .storage-section li {
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 4px;
     margin-bottom: 4px;
     font-family: "Consolas", "Monaco", monospace;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     display: flex;
     align-items: center;
     gap: 8px;
@@ -640,7 +640,7 @@ ${
   .storage-section li.more {
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-style: italic;
   }
 
@@ -658,7 +658,7 @@ ${
 
   .empty {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-style: italic;
   }
 
@@ -685,12 +685,12 @@ ${
   }
 
   .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     color: white;
   }
 
   .btn-secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 
   .btn-danger {
@@ -722,7 +722,7 @@ ${
 
   .help-text li {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     margin-bottom: 4px;
   }
 

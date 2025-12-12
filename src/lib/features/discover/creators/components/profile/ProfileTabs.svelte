@@ -274,8 +274,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 16px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -283,8 +283,8 @@
   }
 
   .sequence-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
@@ -307,13 +307,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .sequence-thumbnail-placeholder i {
     font-size: 32px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
   }
 
   .sequence-info {
@@ -326,7 +326,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -344,7 +344,7 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .meta-item i {
@@ -362,8 +362,8 @@
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -372,8 +372,8 @@
   }
 
   .user-list-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     transform: translateX(4px);
   }
 
@@ -392,7 +392,7 @@
     margin: 0;
     font-size: 15px;
     font-weight: 600;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -401,7 +401,7 @@
   .user-list-username {
     margin: 2px 0 0 0;
     font-size: 13px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -418,7 +418,7 @@
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .user-list-stat i {
@@ -427,14 +427,14 @@
 
   .user-list-arrow {
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     flex-shrink: 0;
     transition: transform 0.2s ease;
   }
 
   .user-list-card:hover .user-list-arrow {
     transform: translateX(4px);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .user-profile-achievements-grid {
@@ -448,15 +448,15 @@
     align-items: center;
     gap: 16px;
     padding: 20px;
-    background: var(--card-bg-current, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--card-border-current, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .achievement-card:hover {
-    background: var(--card-hover-current, rgba(255, 255, 255, 0.06));
-    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
     transform: translateY(-2px);
   }
 
@@ -466,10 +466,10 @@
     justify-content: center;
     width: 60px;
     height: 60px;
-    background: color-mix(in srgb, #a855f7 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
     border-radius: 50%;
     flex-shrink: 0;
-    border: 2px solid color-mix(in srgb, #a855f7 30%, transparent);
+    border: 2px solid color-mix(in srgb, var(--theme-accent, #a855f7) 30%, transparent);
   }
 
   .achievement-icon.tier-bronze {
@@ -500,14 +500,14 @@
     margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary-current, white);
+    color: var(--theme-text, white);
   }
 
   .achievement-description {
     margin: 0 0 8px 0;
     font-size: 13px;
     line-height: 1.4;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .achievement-meta {
@@ -549,8 +549,8 @@
   }
 
   .xp-badge {
-    background: color-mix(in srgb, #a855f7 20%, transparent);
-    color: #a855f7;
+    background: color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
+    color: var(--theme-accent, #a855f7);
   }
 
   .xp-badge i {

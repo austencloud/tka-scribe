@@ -44,10 +44,10 @@
     font-size: 11px;
     font-weight: 700;
     border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+      var(--theme-shadow, 0 2px 4px rgba(0, 0, 0, 0.2)),
+      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.1)) inset;
 
     /* Ensure it's always on top */
     z-index: 10;

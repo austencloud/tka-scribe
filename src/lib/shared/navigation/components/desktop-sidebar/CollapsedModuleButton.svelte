@@ -106,25 +106,25 @@
     background: transparent;
     border: none;
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     margin-bottom: 0; /* No margin - controlled by context group */
     /* Subtle border for differentiation */
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .collapsed-module-button:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
   }
 
   .collapsed-module-button.active {
-    color: rgba(255, 255, 255, 1);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    color: var(--theme-text, rgba(255, 255, 255, 1));
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   /* Ghost the button when tabs are showing - tabs become the focus */
@@ -192,11 +192,11 @@
     position: absolute;
     left: 60px;
     padding: 6px 12px;
-    background: rgba(20, 20, 30, 0.95);
+    background: var(--theme-panel-bg, rgba(20, 20, 30, 0.95));
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
@@ -204,7 +204,7 @@
     opacity: 0;
     transform: translateX(-8px);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--theme-shadow, 0 4px 12px rgba(0, 0, 0, 0.4));
     z-index: 200;
   }
 
@@ -224,7 +224,7 @@
      ============================================================================ */
   @media (prefers-contrast: high) {
     .collapsed-module-button.active {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
       outline: 2px solid white;
     }
   }

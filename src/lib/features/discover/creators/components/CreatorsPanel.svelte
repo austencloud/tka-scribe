@@ -471,7 +471,7 @@
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    color: var(--text-primary-current, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -480,7 +480,7 @@
   .username {
     margin: 2px 0 0 0;
     font-size: 12px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -499,7 +499,7 @@
     align-items: center;
     gap: 4px;
     font-size: 11px;
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
   }
 
   .stat i {
@@ -541,7 +541,7 @@
   .follow-button.following {
     background: transparent;
     border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
-    color: var(--text-secondary-current, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .follow-button.following:hover {

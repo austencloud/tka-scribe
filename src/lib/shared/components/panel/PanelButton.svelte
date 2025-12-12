@@ -66,10 +66,10 @@
     width: 100%;
   }
 
-  /* Primary variant - uses module accent */
+  /* Primary variant - uses theme accent */
   .panel-btn--primary {
-    background: #06b6d4;
-    border: 1px solid #06b6d4;
+    background: var(--theme-accent, #06b6d4);
+    border: 1px solid var(--theme-accent, #06b6d4);
     color: white;
   }
 
@@ -79,14 +79,14 @@
 
   /* Secondary variant - ghost style */
   .panel-btn--secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, white);
   }
 
   .panel-btn--secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   @media (prefers-reduced-motion: reduce) {
