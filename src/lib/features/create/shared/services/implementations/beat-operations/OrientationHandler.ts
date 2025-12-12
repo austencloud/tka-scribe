@@ -1,0 +1,247 @@
+/**
+ * Orientation Handler
+ * Handles beat orientation updates and propagation through the sequence.
+ */
+
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { BeatData } from "../../../domain/models/BeatData";
+import type { ICreateModuleState } from "../../../types/create-module-types";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { getBeatDataFromState, START_POSITION_BEAT_NUMBER } from "./beat-data-helpers";
+
+const logger = createComponentLogger("OrientationHandler");
+
+/**
+ * Update orientation for a specific prop color in a beat
+ */
+export function updateBeatOrientation(
+  beatNumber: number,
+  color: string,
+  orientation: string,
+  createModuleState: ICreateModuleState
+): void {
+  console.log(`🎨 OrientationHandler.updateBeatOrientation called:`, {
+    beatNumber,
+    color,
+    orientation,
+  });
+
+  const beatData = getBeatDataFromState(beatNumber, createModuleState);
+  console.log(`  Beat data from live state:`, beatData);
+
+  if (!beatData?.motions) {
+    logger.warn("Cannot update orientation - no beat data available");
+    return;
+  }
+
+  const colorKey = color as MotionColor;
+  const currentMotion: MotionData | undefined = beatData.motions[colorKey];
+  if (!currentMotion) {
+    logger.warn(`No motion data for ${color}`);
+    return;
+  }
+
+  // Recalculate endOrientation for this beat based on its turns/motion type
+  const orientationCalculator = resolve<IOrientationCalculator>(
+    TYPES.IOrientationCalculator
+  );
+
+  const tempMotionData = createMotionData({
+    ...currentMotion,
+    startOrientation: orientation as MotionData["startOrientation"],
+  });
+
+  const newEndOrientation = orientationCalculator.calculateEndOrientation(
+    tempMotionData,
+    colorKey
+  );
+
+  // Create updated beat data with new startOrientation and recalculated endOrientation
+  const updatedBeatData: BeatData = {
+    ...beatData,
+    motions: {
+      ...beatData.motions,
+      [colorKey]: {
+        ...currentMotion,
+        startOrientation: orientation as MotionData["startOrientation"],
+        endOrientation: newEndOrientation,
+      },
+    },
+  };
+
+  // Get current sequence and start position for propagation calculation
+  const currentSequence: SequenceData | null = createModuleState.sequenceState.currentSequence;
+  const startPosition: BeatData | null = createModuleState.sequenceState
+    .selectedStartPosition as unknown as BeatData | null;
+
+  if (!currentSequence) {
+    logger.warn("Cannot update beat orientation - no current sequence");
+    return;
+  }
+
+  // Build the updated sequence with the beat update + propagated orientations
+  let updatedSequence = currentSequence;
+  let updatedStartPosition = startPosition;
+
+  if (beatNumber === START_POSITION_BEAT_NUMBER) {
+    updatedStartPosition = updatedBeatData as BeatData;
+    logger.log(
+      `Updated start position ${color} orientation to ${orientation}, endOrientation to ${newEndOrientation}`
+    );
+
+    const propagatedBeats = calculatePropagatedBeats(
+      beatNumber,
+      color,
+      currentSequence,
+      updatedStartPosition
+    );
+
+    updatedSequence = {
+      ...currentSequence,
+      beats: propagatedBeats,
+    };
+  } else {
+    const arrayIndex = beatNumber - 1;
+    const updatedBeats = [...currentSequence.beats];
+    updatedBeats[arrayIndex] = updatedBeatData;
+
+    logger.log(
+      `Updated beat ${beatNumber} ${color} orientation to ${orientation}, endOrientation to ${newEndOrientation}`
+    );
+
+    const propagatedBeats = calculatePropagatedBeats(
+      beatNumber,
+      color,
+      { ...currentSequence, beats: updatedBeats },
+      startPosition
+    );
+
+    updatedSequence = {
+      ...currentSequence,
+      beats: propagatedBeats,
+    };
+  }
+
+  createModuleState.sequenceState.setCurrentSequence(updatedSequence);
+}
+
+/**
+ * Calculate propagated beats without calling setCurrentSequence
+ * Returns the updated beats array with all propagations applied
+ * DOES NOT mutate state - caller must call setCurrentSequence
+ */
+export function calculatePropagatedBeats(
+  startingBeatNumber: number,
+  color: string,
+  currentSequence: SequenceData,
+  startPosition: BeatData | null
+): BeatData[] {
+  if (!currentSequence?.beats || currentSequence.beats.length === 0) {
+    logger.log("No sequence beats to propagate through");
+    return [...currentSequence.beats];
+  }
+
+  const orientationCalculator = resolve<IOrientationCalculator>(
+    TYPES.IOrientationCalculator
+  );
+
+  // Get the starting beat's endOrientation
+  let previousEndOrientation: MotionData["endOrientation"] | undefined;
+
+  if (startingBeatNumber === START_POSITION_BEAT_NUMBER) {
+    if (startPosition?.motions) {
+      const motion: MotionData | undefined = startPosition.motions[color as MotionColor];
+      if (motion) {
+        previousEndOrientation = motion.endOrientation;
+      }
+    }
+  } else {
+    const arrayIndex = startingBeatNumber - 1;
+    const startingBeat: BeatData | undefined = currentSequence.beats[arrayIndex];
+    if (startingBeat?.motions) {
+      const motion: MotionData | undefined = startingBeat.motions[color as MotionColor];
+      if (motion) {
+        previousEndOrientation = motion.endOrientation;
+      }
+    }
+  }
+
+  if (!previousEndOrientation) {
+    logger.warn(
+      `Cannot propagate - no endOrientation found for beat ${startingBeatNumber} ${color}`
+    );
+    return [...currentSequence.beats];
+  }
+
+  // Propagate through subsequent beats
+  const updatedBeats: BeatData[] = [...currentSequence.beats];
+  const propagationStartIndex =
+    startingBeatNumber === START_POSITION_BEAT_NUMBER
+      ? 0
+      : startingBeatNumber;
+
+  logger.log(
+    `🔄 Propagating ${color} orientations starting from beat ${startingBeatNumber} (endOrientation: ${previousEndOrientation})`
+  );
+
+  for (let i = propagationStartIndex; i < updatedBeats.length; i++) {
+    const beat = updatedBeats[i];
+    if (!beat) continue;
+
+    // Runtime safety check - motions should always exist but validate to be safe
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!beat.motions) {
+      logger.warn(`No motions data at beat ${i + 1}, stopping propagation`);
+      break;
+    }
+
+    const beatMotion: MotionData | undefined = beat.motions[color as MotionColor];
+    if (!beatMotion) {
+      logger.warn(`No motion data for ${color} at beat ${i + 1}, stopping propagation`);
+      break;
+    }
+
+    // Recalculate this beat's endOrientation
+    const tempMotionData = createMotionData({
+      ...beatMotion,
+      startOrientation: previousEndOrientation,
+    });
+
+    const newEndOrientation = orientationCalculator.calculateEndOrientation(
+      tempMotionData,
+      color as MotionColor
+    );
+
+    // Update this beat's startOrientation and endOrientation
+    const updatedMotion: MotionData = {
+      ...beatMotion,
+      startOrientation: previousEndOrientation,
+      endOrientation: newEndOrientation,
+    };
+
+    updatedBeats[i] = {
+      ...beat,
+      motions: {
+        ...beat.motions,
+        [color]: updatedMotion,
+      },
+    };
+
+    logger.log(
+      `  ✓ Beat ${i + 1}: startOri=${previousEndOrientation} → endOri=${newEndOrientation}`
+    );
+
+    previousEndOrientation = newEndOrientation;
+  }
+
+  logger.success(
+    `✅ Calculated propagation for ${color} orientations through ${updatedBeats.length - propagationStartIndex} beats`
+  );
+
+  return updatedBeats;
+}
