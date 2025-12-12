@@ -189,6 +189,52 @@ service cloud.firestore {
     }
 
     // ============================================================================
+    // MESSAGING COLLECTIONS
+    // ============================================================================
+
+    // Check if user is a participant in a conversation
+    function isConversationParticipant(conversationId) {
+      let conv = get(/databases/$(database)/documents/conversations/$(conversationId)).data;
+      return isAuthenticated() && request.auth.uid in conv.participants;
+    }
+
+    // Conversations - only participants can read/write
+    match /conversations/{conversationId} {
+      // Only participants can read the conversation
+      allow read: if isAuthenticated()
+        && request.auth.uid in resource.data.participants;
+
+      // Creating a conversation - user must be in participants list
+      allow create: if isAuthenticated()
+        && request.auth.uid in request.resource.data.participants
+        && request.resource.data.participants.size() == 2;
+
+      // Updating - only participants can update (for unread counts, lastMessage, etc.)
+      allow update: if isAuthenticated()
+        && request.auth.uid in resource.data.participants;
+
+      // No deleting conversations (soft delete via flag if needed)
+      allow delete: if false;
+
+      // Messages subcollection - only participants can read/write
+      match /messages/{messageId} {
+        // Only participants of parent conversation can read messages
+        allow read: if isConversationParticipant(conversationId);
+
+        // Creating messages - must be sender and a participant
+        allow create: if isConversationParticipant(conversationId)
+          && request.resource.data.senderId == request.auth.uid;
+
+        // Updating messages - only sender can edit (for edit/delete)
+        allow update: if isConversationParticipant(conversationId)
+          && resource.data.senderId == request.auth.uid;
+
+        // No hard deleting messages (soft delete via isDeleted flag)
+        allow delete: if false;
+      }
+    }
+
+    // ============================================================================
     // DEVELOPMENT OVERRIDE (TEMPORARY)
     // This allows PUBLIC READ access and authenticated WRITE access during development
     // REMOVE IN PRODUCTION!

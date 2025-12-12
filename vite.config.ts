@@ -59,6 +59,42 @@ const dictionaryPlugin = () => ({
 });
 
 /**
+ * 📱 MOBILE DEBUGGING: CORS headers for font files
+ * - Fonts require CORS headers when accessed from different origins
+ * - Mobile devices connect via IP address, which browsers treat as cross-origin
+ * - Without this, Font Awesome icons won't load on mobile dev
+ */
+const fontCorsPlugin = () => ({
+  name: "font-cors-headers",
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use(
+      (
+        req: IncomingMessage,
+        res: ServerResponse,
+        next: (err?: unknown) => void
+      ) => {
+        const url = req.url || "";
+
+        // Add CORS headers for font files
+        if (
+          url.includes(".woff2") ||
+          url.includes(".woff") ||
+          url.includes(".ttf") ||
+          url.includes(".otf") ||
+          url.includes(".eot")
+        ) {
+          res.setHeader("Access-Control-Allow-Origin", "*");
+          res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+          res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        }
+
+        next();
+      }
+    );
+  },
+});
+
+/**
  * 🚀 2025 OPTIMIZATION: Aggressive no-cache during development
  * - Disables ALL caching for development files
  * - Works with browser cache and service workers
@@ -177,7 +213,8 @@ export default defineConfig({
       },
     }),
     dictionaryPlugin(),
-    devCachePlugin(), // ?? 2025: Smart caching (no-cache for CSS/JS, cache for SVGs)
+    fontCorsPlugin(), // 📱 CORS headers for fonts (mobile debugging)
+    devCachePlugin(), // 🚀 2025: Smart caching (no-cache for CSS/JS, cache for SVGs)
     webpWasmDevPlugin(),
     webpStaticCopyPlugin(),
   ].filter(Boolean),

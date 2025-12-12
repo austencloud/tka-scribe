@@ -133,13 +133,13 @@ Look for these key messages after clicking "Sign in with Google":
 
 ```
 ✅ Good:
-🔥 [authStore] Firebase Config: {projectId: "the-kinetic-alphabet", ...}
-📦 [authStore] Firebase IndexedDB databases: [...]
-✅ [authStore] Sign-in redirect successful
+🔥 [authState] Firebase Config: {projectId: "the-kinetic-alphabet", ...}
+📦 [authState] Firebase IndexedDB databases: [...]
+✅ [authState] Sign-in redirect successful
 
 ❌ Bad:
-🚨 [authStore] OLD PROJECT DATABASE DETECTED: ...
-❌ [authStore] Redirect result error: ...
+🚨 [authState] OLD PROJECT DATABASE DETECTED: ...
+❌ [authState] Redirect result error: ...
 ```
 
 ### Test Sequence
@@ -170,7 +170,7 @@ Then copy the full diagnostics output and send it to me with:
 | Config File            | Purpose                             |
 | ---------------------- | ----------------------------------- |
 | `firebase.ts`          | App Firebase config (hardcoded)     |
-| `authStore.svelte.ts`  | Auth state management + diagnostics |
+| `authState.svelte.ts`  | Auth state management + diagnostics |
 | `nuclearCacheClear.ts` | Cache clearing utilities            |
 | `DeveloperTab.svelte`  | UI for diagnostics                  |
 

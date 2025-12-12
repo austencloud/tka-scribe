@@ -22,6 +22,22 @@ service firebase.storage {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
+    // User thumbnails - users can write their own, anyone can read (for public library)
+    match /users/{userId}/thumbnails/{allPaths=**} {
+      // Owner can write their own thumbnails
+      allow write: if request.auth != null && request.auth.uid == userId;
+      // Anyone can read thumbnails (for public sequence display)
+      allow read: if true;
+    }
+
+    // User animations - users can write their own, anyone can read (for public library)
+    match /users/{userId}/animations/{allPaths=**} {
+      // Owner can write their own animations
+      allow write: if request.auth != null && request.auth.uid == userId;
+      // Anyone can read animations (for public sequence display)
+      allow read: if true;
+    }
+
     // Default: deny all other access
     match /{allPaths=**} {
       allow read, write: if false;

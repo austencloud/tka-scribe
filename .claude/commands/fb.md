@@ -47,7 +47,7 @@ The script will:
 
 If another agent runs `/fb` at the same time, they'll get a different item - no collisions!
 
-### After claiming, follow this process:
+### After claiming, follow this process
 
 1. **Immediately assign a short title:**
    - Read the feedback content and generate a concise title (2-5 words max)
@@ -126,7 +126,7 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
    - When `/release` runs, they're archived and tagged with the version number
    - This lets you batch multiple fixes into one release
 
-### Complex feedback with subtasks:
+### Complex feedback with subtasks
 When you claim feedback that's too large to implement directly (requires multiple prerequisites, infrastructure changes, or multi-sprint work):
 
 1. **Break it down into subtasks** instead of deferring:
@@ -154,7 +154,7 @@ When you claim feedback that's too large to implement directly (requires multipl
 
 The feedback stays in the queue. When agents claim it, they see the subtasks and can work on the next available one (pending with all dependencies completed).
 
-### Archiving without releasing:
+### Archiving without releasing
 When feedback won't be implemented, move directly to `archived` with a clear reason:
 
 ```bash
@@ -173,7 +173,7 @@ node fetch-feedback.js <id> archived "Cannot reproduce: Needs more details"
 
 **Important:** Archived items bypass the release process. They don't get a `fixedInVersion` tag and won't appear in What's New. Use this for items that are closed but not shipped.
 
-### Deferring to a future date:
+### Deferring to a future date
 **NEW:** Instead of archiving permanently, defer items with automatic reactivation:
 
 ```bash
@@ -202,7 +202,7 @@ Shows what will reactivate without making changes.
 - ✅ Keeps backlog clean while preserving valid feedback
 - ❌ Don't defer things you'll never do - use `archived` for permanent closure
 
-### Other commands:
+### Other commands
 - `node fetch-feedback.js list` - See queue status
 - `node fetch-feedback.js <id>` - View a specific item by document ID
 - `node fetch-feedback.js <id> title "short title"` - Update title
@@ -211,10 +211,10 @@ Shows what will reactivate without making changes.
 - `node fetch-feedback.js delete <id>` - Delete a feedback item
 - `node scripts/release.js --show-last` - View what shipped in last release
 
-### Stale claims:
+### Stale claims
 If a feedback item has been "in-progress" for over 2 hours, it's considered stale and will be auto-reclaimed by the next agent that runs `/fb`.
 
-### Status values (4 columns matching Kanban board):
+### Status values (4 columns matching Kanban board)
 - `new` - Unclaimed, ready to be picked up
 - `in-progress` - Being worked on
 - `in-review` - Done, waiting for tester confirmation
