@@ -12,7 +12,7 @@ const CACHE_STRATEGIES = {
   static: [
     "/",
     "/app.css",
-    "/manifest.webmanifest",
+    "/pwa/manifest.webmanifest",
     "/pwa/",
     "/_app/immutable/",
   ],
@@ -53,7 +53,7 @@ self.addEventListener("install", (event) => {
         const staticUrls = [
           "/",
           "/app.css",
-          "/manifest.webmanifest",
+          "/pwa/manifest.webmanifest",
           "/offline.html",
           "/images/offline-icon.svg",
         ];
