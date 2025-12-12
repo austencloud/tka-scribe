@@ -5,7 +5,7 @@
  * local state, and the trail capture service.
  */
 
-import type { TrailSettings } from "$lib/features/compose/shared/domain/types/TrailTypes";
+import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 
 /**

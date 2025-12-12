@@ -7,7 +7,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { TrailSettings } from "$lib/features/compose/shared/domain/types/TrailTypes";
+import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";

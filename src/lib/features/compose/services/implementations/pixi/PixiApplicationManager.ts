@@ -30,6 +30,14 @@ export class PixiApplicationManager {
     this.currentSize = size;
 
     try {
+      // Check WebGL support before attempting initialization
+      const webGLSupported = this.checkWebGLSupport();
+      if (!webGLSupported) {
+        throw new Error(
+          "WebGL is not supported in this browser. PixiJS v8 requires WebGL - Canvas fallback is not available."
+        );
+      }
+
       // Create PixiJS application with autoStart: false to prevent automatic render loop
       this.app = new Application();
       await this.app.init({
@@ -44,6 +52,8 @@ export class PixiApplicationManager {
         autoStart: false, // Prevent automatic ticker
         // CRITICAL: Required for GIF export - preserves canvas content for drawImage capture
         preserveDrawingBuffer: true,
+        // Explicitly prefer WebGL renderer (PixiJS v8 doesn't support Canvas2D fallback)
+        preference: "webgl",
       });
 
       // Wait a tick for canvas to be available
@@ -122,6 +132,23 @@ export class PixiApplicationManager {
       console.error("[PixiApplicationManager] Error during destroy:", error);
       this.app = null;
       this.isInitialized = false;
+    }
+  }
+
+  /**
+   * Check if WebGL is supported in the current browser context.
+   * PixiJS v8 requires WebGL - Canvas2D fallback is not available.
+   */
+  private checkWebGLSupport(): boolean {
+    try {
+      const canvas = document.createElement("canvas");
+      const gl =
+        canvas.getContext("webgl2") ||
+        canvas.getContext("webgl") ||
+        canvas.getContext("experimental-webgl");
+      return gl !== null;
+    } catch {
+      return false;
     }
   }
 }

@@ -28,7 +28,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   import type { AnimatorServices } from "../services/contracts/IAnimatorServiceLoader";
   import {
     type TrailSettings,
-  } from "$lib/features/compose/shared/domain/types/TrailTypes";
+  } from "../domain/types/TrailTypes";
   import {
     loadTrailSettings,
   } from "$lib/features/compose/utils/animation-panel-persistence";

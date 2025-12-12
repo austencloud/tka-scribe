@@ -6,9 +6,9 @@
  */
 
 import {
-	resolve,
 	loadPixiModule,
 	loadFeatureModule,
+	getContainerInstance,
 } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
@@ -30,19 +30,20 @@ export class AnimatorServiceLoader implements IAnimatorServiceLoader {
 			// First ensure the animator module is loaded
 			await loadFeatureModule("animate");
 
-			// Now resolve services
+			// Get container and resolve services
+			const container = await getContainerInstance();
 			const services: AnimatorServices = {
-				svgGenerator: resolve(TYPES.ISVGGenerator) as ISVGGenerator,
-				settingsService: resolve(TYPES.ISettingsState) as ISettingsState,
-				orchestrator: resolve(
+				svgGenerator: container.get<ISVGGenerator>(TYPES.ISVGGenerator),
+				settingsService: container.get<ISettingsState>(TYPES.ISettingsState),
+				orchestrator: container.get<ISequenceAnimationOrchestrator>(
 					TYPES.ISequenceAnimationOrchestrator
-				) as ISequenceAnimationOrchestrator,
-				trailCaptureService: resolve(
+				),
+				trailCaptureService: container.get<ITrailCaptureService>(
 					TYPES.ITrailCaptureService
-				) as ITrailCaptureService,
-				turnsTupleGenerator: resolve(
+				),
+				turnsTupleGenerator: container.get<ITurnsTupleGeneratorService>(
 					TYPES.ITurnsTupleGeneratorService
-				) as ITurnsTupleGeneratorService,
+				),
 			};
 
 			return { success: true, services };
@@ -58,9 +59,10 @@ export class AnimatorServiceLoader implements IAnimatorServiceLoader {
 	async loadPixiRenderer(): Promise<PixiLoadResult> {
 		try {
 			await loadPixiModule();
-			const renderer = resolve(
+			const container = await getContainerInstance();
+			const renderer = container.get<IPixiAnimationRenderer>(
 				TYPES.IPixiAnimationRenderer
-			) as IPixiAnimationRenderer;
+			);
 			return { success: true, renderer };
 		} catch (err) {
 			console.error("Failed to load Pixi module:", err);

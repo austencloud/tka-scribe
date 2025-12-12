@@ -8,8 +8,8 @@
 import type {
 	TrailSettings,
 	TrailMode,
-} from "$lib/features/compose/shared/domain/types/TrailTypes";
-import { TrailMode as TrailModeEnum } from "$lib/features/compose/shared/domain/types/TrailTypes";
+} from "../../domain/types/TrailTypes";
+import { TrailMode as TrailModeEnum } from "../../domain/types/TrailTypes";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import {
 	saveTrailSettings,

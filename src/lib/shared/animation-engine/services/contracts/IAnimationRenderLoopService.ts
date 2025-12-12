@@ -7,7 +7,7 @@
 
 import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
-import type { TrailSettings } from "$lib/features/compose/shared/domain/types/TrailTypes";
+import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { PropState } from "$lib/shared/animation-engine/domain/PropState";
 import type { AnimationPathCache } from "$lib/features/compose/services/implementations/AnimationPathCache";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";

@@ -46,7 +46,7 @@ interface GifJsInstance {
 
 // Dynamic import for gif.js to avoid SSR issues
 let GIF: GifJsConstructor | null = null;
-const GIF_WORKER_PATH = `${base}/gif.worker.js`;
+const GIF_WORKER_PATH = `${base}/workers/gif.worker.js`;
 
 // Load gif.js dynamically
 async function loadGifJs(): Promise<GifJsConstructor> {

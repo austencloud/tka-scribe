@@ -8,7 +8,7 @@
   import { onMount } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import {
-    resolve,
+    getContainerInstance,
     loadPixiModule,
     loadFeatureModule,
   } from "$lib/shared/inversify/di";
@@ -92,19 +92,20 @@
         // Ensure animator module is loaded (handles HMR recovery)
         await loadFeatureModule("animate");
 
-        primaryPlaybackController = resolve(
+        const container = await getContainerInstance();
+        primaryPlaybackController = container.get<IAnimationPlaybackController>(
           TYPES.IAnimationPlaybackController
-        ) as IAnimationPlaybackController;
-        secondaryPlaybackController = resolve(
+        );
+        secondaryPlaybackController = container.get<IAnimationPlaybackController>(
           TYPES.IAnimationPlaybackController
-        ) as IAnimationPlaybackController;
-        settingsService = resolve(TYPES.ISettingsState) as ISettingsState;
+        );
+        settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
 
         // Load Pixi module on-demand
         await loadPixiModule();
-        pixiRenderer = resolve(
+        pixiRenderer = container.get<IPixiAnimationRenderer>(
           TYPES.IPixiAnimationRenderer
-        ) as IPixiAnimationRenderer;
+        );
 
         // Load secondary prop textures for tunnel mode
         loadSecondaryPropTextures();

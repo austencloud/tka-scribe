@@ -7,8 +7,8 @@
 
 import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
-import type { TrailPoint, TrailSettings } from "$lib/features/compose/shared/domain/types/TrailTypes";
-import { TrailMode } from "$lib/features/compose/shared/domain/types/TrailTypes";
+import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
+import { TrailMode } from "../../domain/types/TrailTypes";
 import type { AnimationPathCache } from "$lib/features/compose/services/implementations/AnimationPathCache";
 import type {
 	IAnimationRenderLoopService,
