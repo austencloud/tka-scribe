@@ -4,13 +4,9 @@
  * Calculates theme properties (luminance, contrast, appropriate glass morphism styles)
  * for background colors and gradients to ensure accessibility and visual consistency.
  *
- * ## CSS Variable Hierarchy (3 Layers)
+ * ## CSS Variable Hierarchy (2 Layers)
  *
- * ### Layer 1: Static Layout Tokens (`--settings-*`)
- * Defined in settings-tokens.css - spacing, radius, typography, transitions.
- * These do NOT change with background.
- *
- * ### Layer 2: Dynamic Theme Variables (`--theme-*`) ← Injected here
+ * ### Layer 1: Dynamic Theme Variables (`--theme-*`) ← Injected here
  * Adapt based on background luminance (light vs dark mode):
  * - `--theme-panel-bg`, `--theme-panel-elevated-bg`
  * - `--theme-card-bg`, `--theme-card-hover-bg`
@@ -18,8 +14,11 @@
  * - `--theme-stroke`, `--theme-stroke-strong`
  * - `--theme-text`, `--theme-text-dim`
  * - `--theme-shadow`, `--theme-panel-shadow`
+ * - `--theme-danger-bg`, `--theme-danger-hover-bg` (destructive action surfaces)
+ * - `--theme-danger-border`, `--theme-danger-hover-border`
+ * - `--theme-danger-shadow`, `--theme-danger-hover-shadow`
  *
- * ### Layer 3: Semantic Colors (`--semantic-*`) ← Injected here
+ * ### Layer 2: Semantic Colors (`--semantic-*`) ← Injected here
  * Status colors that stay constant regardless of background:
  * - `--semantic-error`, `--semantic-error-dim` (red)
  * - `--semantic-success`, `--semantic-success-dim` (green)
@@ -27,9 +26,7 @@
  * - `--semantic-info`, `--semantic-info-dim` (blue)
  * - `--prop-blue`, `--prop-red` (domain-specific motion prop colors)
  *
- * ### Legacy Variables (`--*-current`)
- * Still in use across 30+ components. Migration pending.
- * DO NOT REMOVE until all components are migrated to `--theme-*` variables.
+ * Static values (spacing, radius, typography) are now hardcoded in components.
  */
 
 import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
@@ -200,6 +197,19 @@ export interface MatteTheme {
   panelShadow: string;
 }
 
+/**
+ * Danger zone theme tokens for destructive actions.
+ * Adapts based on background luminance for visibility.
+ */
+export interface DangerTheme {
+  bg: string;
+  hoverBg: string;
+  border: string;
+  hoverBorder: string;
+  shadow: string;
+  hoverShadow: string;
+}
+
 function fallbackAccent(mode: ThemeMode, accentColor?: string): string {
   if (accentColor) return accentColor;
   return mode === "light" ? "#2563eb" : "#38bdf8";
@@ -240,6 +250,36 @@ export function generateMatteTheme(
     textDim: "rgba(255, 255, 255, 0.65)",
     shadow: "0 14px 36px rgba(0, 0, 0, 0.4)",
     panelShadow: "0 12px 28px rgba(0, 0, 0, 0.35)",
+  };
+}
+
+/**
+ * Generate danger zone theme based on background luminance.
+ * Both modes use opaque dark surfaces - the difference is the base color tint.
+ * Light mode: darker, more opaque for contrast against bright backgrounds
+ * Dark mode: slightly less opaque, works well against dark solid backgrounds
+ */
+export function generateDangerTheme(mode: ThemeMode): DangerTheme {
+  if (mode === "light") {
+    // Light/colorful backgrounds (Aurora, etc.) - very opaque dark red surface
+    return {
+      bg: "linear-gradient(135deg, rgba(60, 12, 18, 0.95) 0%, rgba(75, 18, 25, 0.92) 100%)",
+      hoverBg: "linear-gradient(135deg, rgba(75, 15, 22, 0.96) 0%, rgba(90, 22, 30, 0.94) 100%)",
+      border: "rgba(239, 68, 68, 0.6)",
+      hoverBorder: "rgba(239, 68, 68, 0.75)",
+      shadow: "inset 0 1px 0 rgba(239, 68, 68, 0.2), 0 4px 20px rgba(0, 0, 0, 0.4)",
+      hoverShadow: "inset 0 1px 0 rgba(239, 68, 68, 0.25), 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(239, 68, 68, 0.25)",
+    };
+  }
+
+  // Dark backgrounds - opaque dark red (matches other card opacity but red-tinted)
+  return {
+    bg: "linear-gradient(135deg, rgba(45, 10, 15, 0.92) 0%, rgba(55, 15, 20, 0.88) 100%)",
+    hoverBg: "linear-gradient(135deg, rgba(55, 12, 18, 0.94) 0%, rgba(65, 18, 25, 0.9) 100%)",
+    border: "rgba(239, 68, 68, 0.45)",
+    hoverBorder: "rgba(239, 68, 68, 0.6)",
+    shadow: "inset 0 1px 0 rgba(239, 68, 68, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3)",
+    hoverShadow: "inset 0 1px 0 rgba(239, 68, 68, 0.2), 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 20px rgba(239, 68, 68, 0.18)",
   };
 }
 
@@ -297,6 +337,7 @@ export function applyThemeFromColors(
   // Generate themes
   const theme = generateGlassMorphismTheme(mode, accentColor);
   const matteTheme = generateMatteTheme(mode, accentColor);
+  const dangerTheme = generateDangerTheme(mode);
 
   // Apply to document root
   const root = document.documentElement;
@@ -335,6 +376,14 @@ export function applyThemeFromColors(
   root.style.setProperty("--theme-text-dim", matteTheme.textDim);
   root.style.setProperty("--theme-shadow", matteTheme.shadow);
   root.style.setProperty("--theme-panel-shadow", matteTheme.panelShadow);
+
+  // Danger zone theme variables (for destructive actions)
+  root.style.setProperty("--theme-danger-bg", dangerTheme.bg);
+  root.style.setProperty("--theme-danger-hover-bg", dangerTheme.hoverBg);
+  root.style.setProperty("--theme-danger-border", dangerTheme.border);
+  root.style.setProperty("--theme-danger-hover-border", dangerTheme.hoverBorder);
+  root.style.setProperty("--theme-danger-shadow", dangerTheme.shadow);
+  root.style.setProperty("--theme-danger-hover-shadow", dangerTheme.hoverShadow);
 
   // ═══════════════════════════════════════════════════════════════════════════
   // LAYER 3: Semantic Colors (--semantic-*, --prop-*)

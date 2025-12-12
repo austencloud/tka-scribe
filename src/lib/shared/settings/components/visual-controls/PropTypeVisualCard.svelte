@@ -143,7 +143,7 @@
 </script>
 
 <button
-  class="prop-visual-card settings-glass-card"
+  class="prop-visual-card"
   class:selected
   style="transform: perspective(1000px) rotateX({$rotateX}deg) rotateY({$rotateY}deg) scale({selected
     ? 1.05
@@ -195,36 +195,39 @@
 <style>
   .prop-visual-card {
     position: relative;
-    width: var(--settings-detail-card-prop-width);
-    height: var(--settings-detail-card-prop-height);
+    width: 180px;
+    height: 240px;
     cursor: pointer;
-    padding: var(--settings-space-lg);
+    padding: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--settings-space-md);
+    gap: 16px;
     transform-style: preserve-3d;
-    transition: all var(--settings-transition-base) var(--settings-ease-out);
-    border: 2px solid var(--settings-glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--theme-stroke);
     overflow: hidden;
+    background: var(--theme-card-bg);
+    border-radius: 20px;
   }
 
   .prop-visual-card:hover {
-    border-color: var(--settings-glass-border-hover);
-    box-shadow: var(--settings-shadow-xl), var(--settings-shadow-primary);
+    border-color: var(--theme-stroke-strong);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2),
+      0 8px 32px color-mix(in srgb, var(--theme-accent) 30%, transparent);
     transform: perspective(1000px) rotateX(var(--tilt-x, 0deg))
       rotateY(var(--tilt-y, 0deg)) scale(1.05);
   }
 
   .prop-visual-card.selected {
     border-color: transparent;
-    box-shadow:
-      var(--settings-shadow-xl), var(--settings-shadow-primary-strong);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2),
+      0 12px 40px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .prop-visual-card:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 4px;
   }
 
@@ -233,9 +236,9 @@
     position: absolute;
     inset: 0;
     opacity: 0;
-    transition: opacity var(--settings-transition-base);
+    transition: opacity 0.3s;
     pointer-events: none;
-    border-radius: var(--settings-radius-lg);
+    border-radius: 20px;
   }
 
   .color-glow.blue {
@@ -279,7 +282,7 @@
     max-width: 120px;
     max-height: 180px;
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-    transition: filter var(--settings-transition-base);
+    transition: filter 0.3s;
   }
 
   .prop-visual-card:hover .prop-svg {
@@ -297,7 +300,7 @@
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
-    border-radius: var(--settings-radius-sm);
+    border-radius: 8px;
   }
 
   @keyframes shimmer {
@@ -313,10 +316,10 @@
   .prop-label {
     display: flex;
     align-items: center;
-    gap: var(--settings-space-xs);
-    font-size: var(--settings-font-size-body);
-    font-weight: var(--settings-font-weight-semibold);
-    color: var(--settings-text-primary);
+    gap: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--theme-text);
     text-align: center;
     transform: translateZ(10px); /* 3D depth */
   }
@@ -329,13 +332,13 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: var(--settings-gradient-primary);
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
     color: white;
-    animation: badge-pop 0.3s var(--settings-ease-spring);
+    animation: badge-pop 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
   @keyframes badge-pop {
@@ -355,7 +358,7 @@
     position: absolute;
     inset: -2px;
     border: 3px solid transparent;
-    border-radius: var(--settings-radius-lg);
+    border-radius: 20px;
     pointer-events: none;
     animation: pulse-ring 2s ease-in-out infinite;
   }
@@ -385,7 +388,7 @@
     .prop-visual-card {
       width: 140px;
       height: 180px;
-      padding: var(--settings-space-md);
+      padding: 16px;
     }
 
     .prop-svg {
@@ -399,7 +402,7 @@
     }
 
     .prop-label {
-      font-size: var(--settings-font-size-caption);
+      font-size: 13px;
     }
 
     /* Disable 3D tilt on mobile for performance */

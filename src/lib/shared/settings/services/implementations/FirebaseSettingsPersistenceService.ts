@@ -18,7 +18,7 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { firestore } from "../../../auth/firebase";
-import { authStore } from "../../../auth/stores/authStore.svelte";
+import { authState } from "../../../auth/state/authState.svelte";
 import type { AppSettings } from "../../domain/AppSettings";
 import type { ISettingsPersistenceService } from "../contracts/ISettingsPersistenceService";
 
@@ -32,7 +32,7 @@ export class FirebaseSettingsPersistenceService
    * Get the Firestore document reference for user settings
    */
   private getSettingsDocRef() {
-    const userId = authStore.effectiveUserId;
+    const userId = authState.effectiveUserId;
     if (!userId) {
       return null;
     }

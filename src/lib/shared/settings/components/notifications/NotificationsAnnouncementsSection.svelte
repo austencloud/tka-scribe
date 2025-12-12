@@ -56,7 +56,7 @@
     align-items: center;
     gap: 10px;
     padding: 42px 18px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-align: center;
   }
 
@@ -70,11 +70,11 @@
     font-size: 15px;
     font-weight: 600;
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text);
   }
 
   .empty-state span {
     font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    color: var(--theme-text-dim);
   }
 </style>

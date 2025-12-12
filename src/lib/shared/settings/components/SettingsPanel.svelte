@@ -282,7 +282,7 @@
   }
 
   .settings-panel__close:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

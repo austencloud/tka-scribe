@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IAnnouncementService } from "$lib/features/admin/services/contracts/IAnnouncementService";
@@ -37,12 +37,12 @@
   });
 
   async function loadAnnouncements() {
-    if (!announcementService || !authStore.user) return;
+    if (!announcementService || !authState.user) return;
 
     try {
       const allAnnouncements =
         await announcementService.getActiveAnnouncementsForUser(
-          authStore.user.uid
+          authState.user.uid
         );
 
       announcements = allAnnouncements;
@@ -51,7 +51,7 @@
       const dismissed = new Set<string>();
       for (const announcement of allAnnouncements) {
         const isDismissed = await announcementService.hasUserDismissed(
-          authStore.user.uid,
+          authState.user.uid,
           announcement.id
         );
         if (isDismissed) {
@@ -94,16 +94,19 @@
   <NotificationsHero />
 
   <section class="content">
-    <NotificationsSectionShell eyebrow="Preferences" title="What you want to hear about">
+    <NotificationsSectionShell
+      eyebrow="Preferences"
+      title="What you want to hear about"
+    >
       <NotificationPreferencesPanel />
     </NotificationsSectionShell>
 
     <NotificationsAnnouncementsSection
       {announcements}
       {isLoading}
-      dismissedAnnouncements={dismissedAnnouncements}
+      {dismissedAnnouncements}
       severityColor={getSeverityColor}
-      formatDate={formatDate}
+      {formatDate}
     />
   </section>
 </div>
@@ -123,7 +126,6 @@
     grid-template-columns: 2fr 1fr;
     gap: 16px;
   }
-
 
   /* Responsive */
   @media (max-width: 900px) {

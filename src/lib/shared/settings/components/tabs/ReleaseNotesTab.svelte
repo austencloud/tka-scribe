@@ -90,11 +90,7 @@
   </div>
 
   <!-- Detail Panel -->
-  <VersionDetailPanel
-    version={selectedVersion}
-    bind:isOpen={isPanelOpen}
-    onVersionUpdated={handleVersionUpdated}
-  />
+  <VersionDetailPanel version={selectedVersion} bind:isOpen={isPanelOpen} />
 </div>
 
 <style>
@@ -142,7 +138,11 @@
   }
 
   .tab-content::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
     border-radius: 3px;
   }
 

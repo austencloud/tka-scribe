@@ -79,7 +79,7 @@
 
   .card-header i {
     font-size: clamp(18px, 2.5vh, 22px);
-    color: rgba(99, 102, 241, 0.8);
+    color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
     flex-shrink: 0;
   }
 
@@ -180,7 +180,7 @@
 
   /* Accessibility - Focus Indicators */
   .help-button:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -197,7 +197,7 @@
   /* Accessibility - High Contrast */
   @media (prefers-contrast: high) {
     .card-header i {
-      color: rgba(99, 102, 241, 1);
+      color: var(--theme-accent, #6366f1);
     }
 
     .help-button:focus-visible {

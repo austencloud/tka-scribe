@@ -6,11 +6,15 @@
     version,
     releasedAt,
     onClose,
+    onCopy,
   }: {
     version: string;
     releasedAt: Date;
     onClose: () => void;
+    onCopy?: () => void;
   } = $props();
+
+  let copied = $state(false);
 
   const isPreRelease = $derived(version === PRE_RELEASE_VERSION);
   const formattedDate = $derived(
@@ -20,12 +24,30 @@
       day: "numeric",
     })
   );
+
+  function handleCopy() {
+    onCopy?.();
+    copied = true;
+    setTimeout(() => (copied = false), 2000);
+  }
 </script>
 
 <header class="panel-header">
+  {#if onCopy}
+    <button
+      type="button"
+      class="header-button copy-button"
+      onclick={handleCopy}
+      aria-label={copied ? "Copied!" : "Copy release notes"}
+      title={copied ? "Copied!" : "Copy release notes"}
+    >
+      <i class="fas {copied ? 'fa-check' : 'fa-copy'}"></i>
+    </button>
+  {/if}
+
   <button
     type="button"
-    class="close-button"
+    class="header-button close-button"
     onclick={onClose}
     aria-label="Close version details"
   >
@@ -51,12 +73,11 @@
     position: relative;
   }
 
-  .close-button {
+  .header-button {
     position: absolute;
     top: 0;
-    right: 0;
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,9 +89,21 @@
     transition: all 0.2s;
   }
 
-  .close-button:hover {
+  .header-button:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .close-button {
+    right: 0;
+  }
+
+  .copy-button {
+    left: 0;
+  }
+
+  .copy-button :global(.fa-check) {
+    color: var(--semantic-success, #22c55e);
   }
 
   .version-badge {

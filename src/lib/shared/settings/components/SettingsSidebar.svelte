@@ -104,8 +104,8 @@
       clamp(180px, 12vw, 200px)
     ); /* Reduced max from 252px to 200px for better desktop layout */
     max-width: 200px; /* Never exceed 200px */
-    background: rgba(255, 255, 255, 0.08);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     overflow-y: auto;
     container-type: inline-size;
     display: flex;
@@ -129,10 +129,10 @@
     min-height: 52px; /* WCAG AAA: 52px minimum, we use 52px for comfort */
     flex: 1; /* Allow items to grow and fill space evenly */
     max-height: 72px; /* Cap growth so items don't get too tall */
-    background: rgba(255, 255, 255, 0.06); /* Visible inactive background */
-    border: 1.5px solid rgba(255, 255, 255, 0.12); /* Visible border shows it's a button */
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px; /* Slightly more rounded */
-    color: rgba(255, 255, 255, 0.85); /* Slightly brighter text */
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
@@ -178,11 +178,11 @@
   }
 
   .settings-sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.28);
-    color: #ffffff;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     transform: translateX(3px); /* Slide right hint - "go here" */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--theme-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
   }
 
   .settings-sidebar-item:active {
@@ -190,16 +190,16 @@
   }
 
   .settings-sidebar-item.active {
-    background: rgba(99, 102, 241, 0.25); /* Indigo theme */
-    color: #ffffff;
-    border-color: rgba(99, 102, 241, 0.6);
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.3); /* Subtle glow */
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
     font-weight: 600; /* Emphasize active tab */
   }
 
   .settings-sidebar-item.active:hover {
-    background: rgba(99, 102, 241, 0.3);
-    box-shadow: 0 0 16px rgba(99, 102, 241, 0.4);
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .sidebar-icon {
@@ -225,7 +225,7 @@
     font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
     font-weight: 900;
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     opacity: 0;
     transform: translateX(-4px);
     transition: all 0.2s ease;
@@ -247,7 +247,7 @@
       width: 100%;
       min-height: auto;
       border-right: none;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
       max-height: 90px;
       position: relative;
     }
@@ -393,10 +393,10 @@
     align-items: center;
     gap: 12px;
     padding: 14px 18px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
@@ -404,8 +404,8 @@
   }
 
   .dropdown-trigger:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .dropdown-icon {

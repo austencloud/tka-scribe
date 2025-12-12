@@ -102,18 +102,18 @@
     container-type: inline-size;
     container-name: visual-toggle;
     display: flex;
-    gap: var(--settings-space-lg);
+    gap: 24px;
     align-items: center;
-    padding: var(--settings-space-md);
-    background: var(--settings-glass-bg);
-    border: 1px solid var(--settings-glass-border);
-    border-radius: var(--settings-radius-md);
-    transition: all var(--settings-transition-base) var(--settings-ease-out);
+    padding: 16px;
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .visual-toggle:hover {
-    background: var(--settings-glass-bg-hover);
-    border-color: var(--settings-glass-border-hover);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Preview section (if provided) */
@@ -124,7 +124,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--settings-radius-sm);
+    border-radius: 8px;
     overflow: hidden;
   }
 
@@ -134,37 +134,37 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--settings-space-md);
+    gap: 16px;
   }
 
   .toggle-text {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--settings-space-xs);
+    gap: 4px;
   }
 
   .toggle-label {
-    font-size: var(--settings-font-size-body);
-    font-weight: var(--settings-font-weight-semibold);
-    color: var(--settings-text-primary);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--theme-text);
     cursor: pointer;
     margin: 0;
-    letter-spacing: var(--settings-letter-spacing-normal);
+    letter-spacing: -0.3px;
   }
 
   .toggle-description {
-    font-size: var(--settings-font-size-caption);
-    font-weight: var(--settings-font-weight-normal);
-    color: var(--settings-text-secondary);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--theme-text-dim);
     margin: 0;
     line-height: 1.4;
   }
 
   .toggle-helper-text {
-    font-size: var(--settings-font-size-caption);
-    font-weight: var(--settings-font-weight-normal);
-    color: var(--settings-text-tertiary, rgba(255, 255, 255, 0.5));
+    font-size: 13px;
+    font-weight: 400;
+    color: color-mix(in srgb, var(--theme-text-dim) 70%, transparent);
     margin: 0;
     line-height: 1.4;
     font-style: italic;
@@ -182,7 +182,7 @@
     border: none;
     cursor: pointer;
     padding: 0;
-    transition: all var(--settings-transition-base) var(--settings-ease-out);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: transparent;
     /* Container query aware sizing with 50px min touch target */
     min-width: 52px;
@@ -205,58 +205,57 @@
 
   /* Large size - responsive with container queries */
   .visual-setting-toggle.large .toggle-track {
-    width: clamp(50px, 10cqi, var(--settings-toggle-width, 68px));
-    height: clamp(28px, 6cqi, var(--settings-toggle-height, 40px));
+    width: clamp(50px, 10cqi, 68px);
+    height: clamp(28px, 6cqi, 40px);
   }
 
   /* Standard size - responsive with container queries */
   .visual-setting-toggle.standard .toggle-track {
-    width: clamp(50px, 8cqi, var(--settings-toggle-width-standard, 51px));
-    height: clamp(28px, 5cqi, var(--settings-toggle-height-standard, 31px));
+    width: clamp(50px, 8cqi, 51px);
+    height: clamp(28px, 5cqi, 31px);
   }
 
   .toggle-track {
     display: block;
-    border-radius: var(--settings-radius-full);
+    border-radius: 9999px;
     background: rgba(120, 120, 128, 0.32);
     position: relative;
-    transition: all var(--settings-transition-base) var(--settings-ease-out);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .visual-setting-toggle.on .toggle-track {
     background: linear-gradient(
       135deg,
-      var(--settings-primary-indigo),
-      var(--settings-primary-purple)
+      var(--theme-accent),
+      var(--theme-accent-strong)
     );
     box-shadow:
-      0 4px 20px rgba(99, 102, 241, 0.4),
+      0 4px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent),
       inset 0 1px 2px rgba(255, 255, 255, 0.2);
   }
 
   .toggle-thumb {
     position: absolute;
-    top: var(--settings-toggle-padding, 2px);
-    left: var(--settings-toggle-padding, 2px);
+    top: 2px;
+    left: 2px;
     border-radius: 50%;
     background: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: box-shadow var(--settings-transition-base)
-      var(--settings-ease-out);
+    transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
   }
 
   /* Large thumb - responsive */
   .visual-setting-toggle.large .toggle-thumb {
-    width: clamp(24px, 5cqi, var(--settings-toggle-thumb-size, 36px));
-    height: clamp(24px, 5cqi, var(--settings-toggle-thumb-size, 36px));
+    width: clamp(24px, 5cqi, 36px);
+    height: clamp(24px, 5cqi, 36px);
   }
 
   /* Standard thumb - responsive */
   .visual-setting-toggle.standard .toggle-thumb {
-    width: clamp(24px, 4cqi, var(--settings-toggle-thumb-size-standard, 27px));
-    height: clamp(24px, 4cqi, var(--settings-toggle-thumb-size-standard, 27px));
+    width: clamp(24px, 4cqi, 27px);
+    height: clamp(24px, 4cqi, 27px);
   }
 
   .visual-setting-toggle.on .toggle-thumb {
@@ -274,9 +273,9 @@
 
   /* Focus state */
   .visual-setting-toggle:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 4px;
-    border-radius: var(--settings-radius-full);
+    border-radius: 9999px;
   }
 
   /* Active (pressed) state */
@@ -289,7 +288,7 @@
     .toggle-control {
       flex-direction: column;
       align-items: flex-start;
-      gap: var(--settings-space-sm);
+      gap: 8px;
     }
 
     .visual-setting-toggle {

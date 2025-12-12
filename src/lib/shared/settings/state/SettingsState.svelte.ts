@@ -22,7 +22,7 @@ import type { AppSettings } from "../domain/AppSettings";
 import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { ISettingsPersistenceService } from "../services/contracts/ISettingsPersistenceService";
-import { authStore } from "../../auth/stores/authStore.svelte";
+import { authState } from "../../auth/state/authState.svelte";
 import type { ISettingsState } from "../services/contracts/ISettingsState";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
@@ -120,7 +120,7 @@ class SettingsState implements ISettingsState {
     await this.processOfflineQueue();
 
     // If user is authenticated, sync settings from Firebase
-    if (authStore.isAuthenticated && this.firebasePersistence) {
+    if (authState.isAuthenticated && this.firebasePersistence) {
       await this.syncFromFirebase();
 
       // Subscribe to real-time updates from other devices
@@ -143,7 +143,7 @@ class SettingsState implements ISettingsState {
    * Uses timestamp-based conflict resolution: local wins if newer
    */
   async syncFromFirebase(): Promise<void> {
-    if (!this.firebasePersistence || !authStore.isAuthenticated) return;
+    if (!this.firebasePersistence || !authState.isAuthenticated) return;
 
     try {
       const firebaseSettings = await this.firebasePersistence.loadSettings();
@@ -318,7 +318,7 @@ class SettingsState implements ISettingsState {
     this.saveSettingsToStorage(settingsState);
 
     // If authenticated, also save to Firebase with offline queue support
-    if (authStore.isAuthenticated && this.firebasePersistence) {
+    if (authState.isAuthenticated && this.firebasePersistence) {
       this.saveToFirebaseWithRetry();
     }
   }
@@ -386,7 +386,7 @@ class SettingsState implements ISettingsState {
       if (!queueEntry?.settings) return;
 
       // If we have Firebase persistence and are online, sync the queued changes
-      if (this.firebasePersistence && authStore.isAuthenticated) {
+      if (this.firebasePersistence && authState.isAuthenticated) {
         console.log("📤 [SettingsState] Processing offline queue...");
         await this.firebasePersistence.saveSettings(queueEntry.settings);
         this.clearOfflineQueue();
@@ -418,7 +418,7 @@ class SettingsState implements ISettingsState {
       Object.assign(settingsState, DEFAULT_SETTINGS);
 
       // Also clear from Firebase if authenticated
-      if (authStore.isAuthenticated && this.firebasePersistence) {
+      if (authState.isAuthenticated && this.firebasePersistence) {
         void this.firebasePersistence.clearSettings().catch((error) => {
           console.error("❌ [SettingsState] Failed to clear Firebase settings:", error);
         });

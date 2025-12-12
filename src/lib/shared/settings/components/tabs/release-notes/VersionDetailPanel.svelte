@@ -1,7 +1,11 @@
 <!-- VersionDetailPanel - Drawer showing full release details -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { AppVersion, ChangelogCategory, ChangelogEntry } from "$lib/features/feedback/domain/models/version-models";
+  import type {
+    AppVersion,
+    ChangelogCategory,
+    ChangelogEntry,
+  } from "$lib/features/feedback/domain/models/version-models";
   import { CHANGELOG_CATEGORIES } from "$lib/features/feedback/domain/constants/changelog-constants";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackViewPanel from "./FeedbackViewPanel.svelte";
@@ -10,11 +14,19 @@
   import VersionHeader from "./VersionHeader.svelte";
   import NoChangelogState from "./NoChangelogState.svelte";
   import ActionToast from "./ActionToast.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { changelogEditState } from "./state/changelog-edit-state.svelte";
   import { versionService } from "$lib/features/feedback/services/implementations/VersionService";
 
-  let { version, isOpen = $bindable(false) }: { version: AppVersion | null; isOpen?: boolean } = $props();
+  let {
+    version,
+    isOpen = $bindable(false),
+    onVersionUpdated,
+  }: {
+    version: AppVersion | null;
+    isOpen?: boolean;
+    onVersionUpdated?: () => void;
+  } = $props();
 
   // UI state
   let currentlyEditingId = $state<string | null>(null);
@@ -31,9 +43,11 @@
   let toastTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // Derived
-  const isAdmin = $derived(authStore.isAdmin);
+  const isAdmin = $derived(authState.isAdmin);
   const placement = $derived(isMobile ? "bottom" : "right");
-  const hasChangelog = $derived(version?.changelogEntries && version.changelogEntries.length > 0);
+  const hasChangelog = $derived(
+    version?.changelogEntries && version.changelogEntries.length > 0
+  );
 
   const groupedChangelog = $derived.by(() => {
     const entries = version?.changelogEntries;
@@ -53,8 +67,12 @@
   }
 
   // Edit state
-  function startEdit(id: string) { currentlyEditingId = id; }
-  function endEdit() { currentlyEditingId = null; }
+  function startEdit(id: string) {
+    currentlyEditingId = id;
+  }
+  function endEdit() {
+    currentlyEditingId = null;
+  }
 
   function openFeedback(entry: ChangelogEntry) {
     if (entry.feedbackId) {
@@ -64,19 +82,33 @@
   }
 
   function handlePanelClick(e: MouseEvent) {
-    if (currentlyEditingId && !(e.target as HTMLElement).closest(".edit-container")) endEdit();
+    if (
+      currentlyEditingId &&
+      !(e.target as HTMLElement).closest(".edit-container")
+    )
+      endEdit();
   }
 
   // Add entry
-  function startAdd(cat: ChangelogCategory) { addingToCategory = cat; newEntryText = ""; }
-  function cancelAdd() { addingToCategory = null; newEntryText = ""; }
+  function startAdd(cat: ChangelogCategory) {
+    addingToCategory = cat;
+    newEntryText = "";
+  }
+  function cancelAdd() {
+    addingToCategory = null;
+    newEntryText = "";
+  }
 
   async function confirmAdd() {
     if (!version || !addingToCategory || !newEntryText.trim()) return;
-    const entry: ChangelogEntry = { category: addingToCategory, text: newEntryText.trim() };
+    const entry: ChangelogEntry = {
+      category: addingToCategory,
+      text: newEntryText.trim(),
+    };
     await versionService.addChangelogEntry(version.version, entry);
     version.changelogEntries = [...(version.changelogEntries || []), entry];
     cancelAdd();
+    onVersionUpdated?.();
   }
 
   // Save/delete
@@ -89,11 +121,20 @@
 
     const absIdx = entries.indexOf(entry);
     const oldText = entry.text;
-    const updated: ChangelogEntry = { category: cat, text, ...(entry.feedbackId && { feedbackId: entry.feedbackId }) };
+    const updated: ChangelogEntry = {
+      category: cat,
+      text,
+      ...(entry.feedbackId && { feedbackId: entry.feedbackId }),
+    };
 
     await versionService.updateChangelogEntry(version.version, absIdx, updated);
     version.changelogEntries![absIdx] = updated;
-    changelogEditState.pushUndo({ type: "edit", oldText, absoluteIndex: absIdx });
+    changelogEditState.pushUndo({
+      type: "edit",
+      oldText,
+      absoluteIndex: absIdx,
+    });
+    onVersionUpdated?.();
   }
 
   async function handleDelete(cat: ChangelogCategory, idx: number) {
@@ -110,8 +151,13 @@
     version.changelogEntries!.splice(absIdx, 1);
     version.changelogEntries = [...version.changelogEntries!];
 
-    changelogEditState.pushUndo({ type: "delete", entry: deleted, absoluteIndex: absIdx });
+    changelogEditState.pushUndo({
+      type: "delete",
+      entry: deleted,
+      absoluteIndex: absIdx,
+    });
     showToast("Entry deleted", "action");
+    onVersionUpdated?.();
   }
 
   async function handleSaveReleaseNotes(text: string) {
@@ -120,6 +166,7 @@
     await versionService.updateReleaseNotes(version.version, text);
     version.releaseNotes = text;
     changelogEditState.pushUndo({ type: "editReleaseNotes", oldText });
+    onVersionUpdated?.();
   }
 
   // Undo/redo
@@ -128,7 +175,10 @@
     try {
       const msg = await changelogEditState.undo(version);
       if (msg) showToast(msg, "undone");
-    } catch { showToast("Undo failed", "action"); }
+      onVersionUpdated?.();
+    } catch {
+      showToast("Undo failed", "action");
+    }
   }
 
   async function handleRedo() {
@@ -136,13 +186,67 @@
     try {
       const msg = await changelogEditState.redo(version);
       if (msg) showToast(msg, "redone");
-    } catch { showToast("Redo failed", "action"); }
+      onVersionUpdated?.();
+    } catch {
+      showToast("Redo failed", "action");
+    }
   }
 
   function handleKeydown(e: KeyboardEvent) {
     const mod = e.ctrlKey || e.metaKey;
-    if (mod && e.key === "z" && !e.shiftKey && changelogEditState.canUndo) { e.preventDefault(); void handleUndo(); }
-    if (mod && ((e.key === "z" && e.shiftKey) || e.key === "y") && changelogEditState.canRedo) { e.preventDefault(); void handleRedo(); }
+    if (mod && e.key === "z" && !e.shiftKey && changelogEditState.canUndo) {
+      e.preventDefault();
+      void handleUndo();
+    }
+    if (
+      mod &&
+      ((e.key === "z" && e.shiftKey) || e.key === "y") &&
+      changelogEditState.canRedo
+    ) {
+      e.preventDefault();
+      void handleRedo();
+    }
+  }
+
+  function formatReleaseNotesForCopy(): string {
+    if (!version) return "";
+    const lines: string[] = [];
+
+    lines.push(`TKA Studio v${version.version}`);
+    lines.push(
+      `Released ${version.releasedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`
+    );
+    lines.push("");
+
+    if (version.releaseNotes) {
+      lines.push(version.releaseNotes);
+      lines.push("");
+    }
+
+    const cats = [
+      { key: "added", label: "Added" },
+      { key: "improved", label: "Improved" },
+      { key: "fixed", label: "Fixed" },
+    ] as const;
+
+    for (const { key, label } of cats) {
+      const entries = groupedChangelog[key];
+      if (entries.length > 0) {
+        lines.push(`${label}:`);
+        for (const entry of entries) {
+          lines.push(`• ${entry.text}`);
+        }
+        lines.push("");
+      }
+    }
+
+    return lines.join("\n").trim();
+  }
+
+  async function handleCopy() {
+    const text = formatReleaseNotesForCopy();
+    await navigator.clipboard.writeText(text);
+    showToast("Copied to clipboard", "action");
   }
 
   onMount(() => {
@@ -159,11 +263,26 @@
   });
 </script>
 
-<Drawer bind:isOpen {placement} showHandle={isMobile} ariaLabel={version ? `Version ${version.version} details` : "Version details"}>
+<Drawer
+  bind:isOpen
+  {placement}
+  showHandle={isMobile}
+  ariaLabel={version ? `Version ${version.version} details` : "Version details"}
+>
   {#if version}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="panel-content" onclick={handlePanelClick} onkeydown={() => {}} role="presentation">
-      <VersionHeader version={version.version} releasedAt={version.releasedAt} onClose={() => (isOpen = false)} />
+    <div
+      class="panel-content"
+      onclick={handlePanelClick}
+      onkeydown={() => {}}
+      role="presentation"
+    >
+      <VersionHeader
+        version={version.version}
+        releasedAt={version.releasedAt}
+        onClose={() => (isOpen = false)}
+        onCopy={handleCopy}
+      />
 
       {#if version.releaseNotes}
         <section>
@@ -183,7 +302,9 @@
       {#if hasChangelog || isAdmin}
         <section>
           <h3>What Changed</h3>
-          {#if !hasChangelog && isAdmin}<p class="hint">No entries yet. Add some below:</p>{/if}
+          {#if !hasChangelog && isAdmin}<p class="hint">
+              No entries yet. Add some below:
+            </p>{/if}
           {#each CHANGELOG_CATEGORIES as cat}
             {#if groupedChangelog[cat].length > 0 || isAdmin}
               <ChangeGroupSection
@@ -212,7 +333,10 @@
   {/if}
 </Drawer>
 
-<FeedbackViewPanel feedbackId={selectedFeedbackId} bind:isOpen={feedbackPanelOpen} />
+<FeedbackViewPanel
+  feedbackId={selectedFeedbackId}
+  bind:isOpen={feedbackPanelOpen}
+/>
 
 {#if toastMessage}
   <ActionToast
@@ -233,7 +357,9 @@
     overflow-y: auto;
   }
 
-  section { margin-bottom: 24px; }
+  section {
+    margin-bottom: 24px;
+  }
 
   section h3 {
     margin: 0 0 12px 0;
@@ -252,6 +378,9 @@
   }
 
   @media (max-width: 768px) {
-    .panel-content { padding: 16px; max-height: 85vh; }
+    .panel-content {
+      padding: 16px;
+      max-height: 85vh;
+    }
   }
 </style>

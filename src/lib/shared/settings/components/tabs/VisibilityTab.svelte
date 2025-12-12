@@ -23,6 +23,7 @@
   import PictographWithVisibility from "$lib/shared/pictograph/shared/components/PictographWithVisibility.svelte";
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import VisibilityHelpModal from "./visibility/VisibilityHelpModal.svelte";
 
   interface Props {
     currentSettings: unknown;
@@ -39,6 +40,24 @@
   // Mobile mode selection (only used on small screens)
   let mobileMode = $state<'pictograph' | 'animation' | 'image'>('pictograph');
   let isVisible = $state(false);
+
+  // Help modal state
+  let helpModalPanel = $state<'pictograph' | 'animation' | 'image' | null>(null);
+  let isHelpModalOpen = $state(false);
+
+  function openHelpModal(panel: 'pictograph' | 'animation' | 'image') {
+    triggerHaptic();
+    helpModalPanel = panel;
+    isHelpModalOpen = true;
+  }
+
+  function closeHelpModal() {
+    isHelpModalOpen = false;
+    // Delay clearing panel so animation completes
+    setTimeout(() => {
+      helpModalPanel = null;
+    }, 300);
+  }
 
   // Image composition visibility
   let imgAddWord = $state(true);
@@ -258,6 +277,14 @@
       <header class="panel-header">
         <span class="panel-icon pictograph-icon"><i class="fas fa-image"></i></span>
         <h3 class="panel-title">Pictograph</h3>
+        <button
+          class="help-btn"
+          onclick={() => openHelpModal('pictograph')}
+          aria-label="Learn about pictograph options"
+          type="button"
+        >
+          <i class="fas fa-info-circle"></i>
+        </button>
       </header>
 
       <!-- Pictograph Preview - Interactive: click elements to toggle -->
@@ -305,6 +332,14 @@
       <header class="panel-header">
         <span class="panel-icon animation-icon"><i class="fas fa-film"></i></span>
         <h3 class="panel-title">Animation</h3>
+        <button
+          class="help-btn"
+          onclick={() => openHelpModal('animation')}
+          aria-label="Learn about animation options"
+          type="button"
+        >
+          <i class="fas fa-info-circle"></i>
+        </button>
       </header>
 
       <!-- Animation Preview -->
@@ -344,6 +379,14 @@
       <header class="panel-header">
         <span class="panel-icon image-icon"><i class="fas fa-download"></i></span>
         <h3 class="panel-title">Image Export</h3>
+        <button
+          class="help-btn"
+          onclick={() => openHelpModal('image')}
+          aria-label="Learn about image export options"
+          type="button"
+        >
+          <i class="fas fa-info-circle"></i>
+        </button>
       </header>
 
       <!-- Export Preview -->
@@ -368,6 +411,13 @@
       </div>
     </section>
   </div>
+
+  <!-- Educational Help Modal -->
+  <VisibilityHelpModal
+    bind:isOpen={isHelpModalOpen}
+    panel={helpModalPanel}
+    onClose={closeHelpModal}
+  />
 </div>
 
 <style>
@@ -401,10 +451,13 @@
     display: flex;
     flex-shrink: 0;
     gap: 6px;
-    padding: 4px;
-    background: var(--theme-card-bg, rgba(20, 22, 35, 0.8));
-    border-radius: 14px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    padding: 6px;
+    /* Dark glass panel */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
     margin-bottom: 12px;
   }
@@ -417,12 +470,13 @@
     gap: 8px;
     min-height: 52px;
     padding: 12px 14px;
-    background: transparent;
-    border: none;
-    border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    /* Subtle glass for inactive */
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
@@ -431,15 +485,26 @@
 
   .segment-btn i {
     font-size: 15px;
+    transition: all 150ms ease;
   }
 
   .segment-btn:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .segment-btn.active {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
-    color: var(--theme-text, #e0e7ff);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    color: white;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+  }
+
+  .segment-btn.active i {
+    filter: drop-shadow(0 0 6px var(--theme-accent, #6366f1));
   }
 
   /* Hide segment control on desktop (>=700px container width) */
@@ -481,20 +546,27 @@
   }
 
   /* ========================================
-     SETTINGS PANEL - Centered content
+     SETTINGS PANEL - Dark Glass Style
      ======================================== */
   .settings-panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: clamp(12px, 2cqi, 20px);
-    background: var(--theme-card-bg, rgba(25, 28, 40, 0.6));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    border-radius: 16px;
-    backdrop-filter: blur(8px);
+    gap: 14px;
+    padding: clamp(14px, 2.5cqi, 20px);
+    /* Dark glass panel */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
     flex: 1;
     min-width: 0;
+    transition: border-color 0.2s ease;
+  }
+
+  .settings-panel:hover {
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
   /* ========================================
@@ -505,33 +577,47 @@
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-    align-self: flex-start;
+    width: 100%;
   }
 
   .panel-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 14px;
     flex-shrink: 0;
+    transition: all 0.15s ease;
   }
 
   .panel-icon.pictograph-icon {
-    background: rgba(99, 102, 241, 0.2);
-    color: #818cf8;
+    --icon-color: #818cf8;
+    background: color-mix(in srgb, var(--icon-color) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--icon-color) 35%, transparent);
+    color: var(--icon-color);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--icon-color) 15%, transparent);
   }
 
   .panel-icon.animation-icon {
-    background: rgba(236, 72, 153, 0.2);
-    color: #f472b6;
+    --icon-color: #f472b6;
+    background: color-mix(in srgb, var(--icon-color) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--icon-color) 35%, transparent);
+    color: var(--icon-color);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--icon-color) 15%, transparent);
   }
 
   .panel-icon.image-icon {
-    background: rgba(16, 185, 129, 0.2);
-    color: #34d399;
+    --icon-color: #34d399;
+    background: color-mix(in srgb, var(--icon-color) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--icon-color) 35%, transparent);
+    color: var(--icon-color);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--icon-color) 15%, transparent);
+  }
+
+  .settings-panel:hover .panel-icon {
+    box-shadow: 0 0 12px color-mix(in srgb, var(--icon-color) 25%, transparent);
   }
 
   .panel-title {
@@ -541,7 +627,42 @@
     margin: 0;
     white-space: nowrap;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    flex: 1;
   }
+
+  /* Help Button - Opens educational modal */
+  .help-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    margin-left: auto;
+    background: color-mix(in srgb, var(--icon-color, var(--theme-accent)) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--icon-color, var(--theme-accent)) 30%, transparent);
+    border-radius: 50%;
+    color: var(--icon-color, var(--theme-accent, #6366f1));
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .help-btn:hover {
+    background: color-mix(in srgb, var(--icon-color, var(--theme-accent)) 25%, transparent);
+    border-color: color-mix(in srgb, var(--icon-color, var(--theme-accent)) 45%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--icon-color, var(--theme-accent)) 25%, transparent);
+  }
+
+  .help-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* Inherit panel icon color */
+  .pictograph-panel .help-btn { --icon-color: #818cf8; }
+  .animation-panel .help-btn { --icon-color: #f472b6; }
+  .image-panel .help-btn { --icon-color: #34d399; }
 
   /* ========================================
      PREVIEW FRAME - Square, centered
@@ -550,14 +671,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.25);
-    border-radius: 12px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    /* Subtle inner glass - darker than panel */
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     overflow: hidden;
     /* Square aspect ratio, scales with container width */
     width: 100%;
     aspect-ratio: 1;
     flex-shrink: 0;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   /* Scale pictograph SVG to fill the preview */
@@ -578,17 +701,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    color: rgba(255, 255, 255, 0.4);
+    gap: 10px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .animation-placeholder i {
-    font-size: 32px;
-    color: rgba(236, 72, 153, 0.5);
+    font-size: 36px;
+    color: #f472b6;
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.3));
   }
 
   .animation-placeholder span {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
   }
 
@@ -598,17 +723,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    color: rgba(255, 255, 255, 0.4);
+    gap: 10px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .image-placeholder i {
-    font-size: 32px;
-    color: rgba(16, 185, 129, 0.5);
+    font-size: 36px;
+    color: #34d399;
+    opacity: 0.6;
+    filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.3));
   }
 
   .image-placeholder span {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
   }
 
@@ -645,7 +772,7 @@
   .toggle-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
+    gap: 8px;
   }
 
   /* 3 columns when panel is wide enough */
@@ -661,12 +788,13 @@
     justify-content: center;
     min-height: 52px;
     padding: 12px 10px;
-    background: var(--theme-card-bg, rgba(30, 32, 45, 0.85));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 12px;
-    font-weight: 500;
+    /* Subtle glass for inactive */
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 13px;
+    font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
@@ -674,60 +802,40 @@
   }
 
   .toggle-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(45, 48, 65, 0.9));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    transform: translateY(-1px);
   }
 
   .toggle-btn:active {
-    transform: scale(0.97);
+    transform: translateY(0) scale(0.97);
     transition-duration: 50ms;
   }
 
-  /* Active state - theme accent (uses pictograph panel's indigo as default) */
+  /* Active state - theme accent with glow */
   .toggle-btn.active {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
-    color: var(--theme-text, #e0e7ff);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 45%, transparent);
+    color: white;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent),
+      0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
   }
 
   .toggle-btn.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 45%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
-    color: #fff;
-  }
-
-  /* Animation panel uses pink accent */
-  .animation-panel .toggle-btn.active {
-    background: rgba(236, 72, 153, 0.3);
-    border-color: rgba(236, 72, 153, 0.5);
-    color: #fbcfe8;
-  }
-
-  .animation-panel .toggle-btn.active:hover {
-    background: rgba(236, 72, 153, 0.4);
-    border-color: rgba(236, 72, 153, 0.6);
-    color: #fff;
-  }
-
-  /* Image panel uses green/emerald accent */
-  .image-panel .toggle-btn.active {
-    background: rgba(16, 185, 129, 0.3);
-    border-color: rgba(16, 185, 129, 0.5);
-    color: #a7f3d0;
-  }
-
-  .image-panel .toggle-btn.active:hover {
-    background: rgba(16, 185, 129, 0.4);
-    border-color: rgba(16, 185, 129, 0.6);
-    color: #fff;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 55%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
   }
 
   /* ========================================
      SCROLLBAR
      ======================================== */
   .visibility-tab::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
 
   .visibility-tab::-webkit-scrollbar-track {
@@ -735,16 +843,17 @@
   }
 
   .visibility-tab::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 2px;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    border-radius: 3px;
   }
 
   /* ========================================
      FOCUS STATES
      ======================================== */
   .toggle-btn:focus-visible,
-  .segment-btn:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.6);
+  .segment-btn:focus-visible,
+  .help-btn:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -754,7 +863,8 @@
   @media (prefers-reduced-motion: reduce) {
     .visibility-tab,
     .toggle-btn,
-    .segment-btn {
+    .segment-btn,
+    .help-btn {
       transition: none;
     }
   }
@@ -770,7 +880,16 @@
     }
 
     .toggle-btn.active {
-      border-color: #6366f1;
+      border-color: var(--theme-accent, #6366f1);
+    }
+
+    .segment-btn.active {
+      border-color: var(--theme-accent, #6366f1);
+    }
+
+    .toggle-btn:focus-visible,
+    .segment-btn:focus-visible {
+      outline-width: 3px;
     }
   }
 </style>

@@ -99,7 +99,20 @@
     } else if (event.key === "Escape") {
       event.preventDefault();
       event.stopPropagation();
-      cancelEdit();
+      if (showDeleteConfirm) {
+        showDeleteConfirm = false;
+      } else {
+        cancelEdit();
+      }
+    } else if (event.key === "Delete" && onDelete) {
+      event.preventDefault();
+      if (showDeleteConfirm) {
+        // Second Delete press - confirm deletion
+        void handleDelete();
+      } else {
+        // First Delete press - show confirmation
+        showDeleteConfirm = true;
+      }
     }
   }
 
@@ -132,7 +145,7 @@
 
       {#if showDeleteConfirm}
         <div class="delete-confirm" in:fly={{ y: 10, duration: 200 }}>
-          <span class="confirm-text">Delete this entry?</span>
+          <span class="confirm-text">Delete? <span class="hint">(Del again or click)</span></span>
           <div class="confirm-actions">
             <button
               type="button"
@@ -145,7 +158,7 @@
               {:else}
                 <i class="fas fa-trash"></i>
               {/if}
-              Delete
+              Yes
             </button>
             <button
               type="button"
@@ -153,7 +166,7 @@
               onclick={() => (showDeleteConfirm = false)}
               disabled={isDeleting}
             >
-              Cancel
+              No
             </button>
           </div>
         </div>
@@ -428,6 +441,12 @@
     font-size: 13px;
     color: var(--semantic-error, #fca5a5);
     font-weight: 500;
+  }
+
+  .confirm-text .hint {
+    font-weight: 400;
+    opacity: 0.7;
+    font-size: 11px;
   }
 
   .confirm-actions {

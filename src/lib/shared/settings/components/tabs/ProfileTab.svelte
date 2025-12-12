@@ -1,7 +1,7 @@
 <!-- ProfileTab.svelte - User Profile & Account Settings (2026 Redesign)
      Curated indigo/purple color scheme with glassmorphism cards -->
 <script lang="ts">
-  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import { authState } from "../../../auth/state/authState.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
   import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
   import { onMount } from "svelte";
@@ -12,6 +12,7 @@
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
+  import SecuritySection from "../../../auth/components/SecuritySection.svelte";
   import RobustAvatar from "../../../components/avatar/RobustAvatar.svelte";
 
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
@@ -54,7 +55,7 @@
   async function handleSignOut() {
     hapticService?.trigger("selection");
     try {
-      await authStore.signOut();
+      await authState.signOut();
     } catch (error) {
       console.error("Sign out failed:", error);
     }
@@ -91,25 +92,12 @@
   }
 
   async function handleDeleteAccount() {
-    if (!uiState.showDeleteConfirmation) {
-      uiState.showDeleteConfirmation = true;
-      return;
-    }
-
+    // This is called after the user has typed "DELETE" to confirm
     hapticService?.trigger("warning");
-
-    const confirmed = confirm(
-      "Are you absolutely sure? This action cannot be undone. All your data will be permanently deleted."
-    );
-
-    if (!confirmed) {
-      uiState.showDeleteConfirmation = false;
-      return;
-    }
 
     try {
       console.log("Deleting account");
-      await authStore.signOut();
+      await authState.signOut();
       alert("Account deleted successfully.");
     } catch (error) {
       console.error("Failed to delete account:", error);
@@ -146,7 +134,7 @@
 </script>
 
 <div class="profile-tab" class:visible={isVisible}>
-  {#if authStore.isAuthenticated && authStore.user}
+  {#if authState.isAuthenticated && authState.user}
     <!-- Signed In State -->
     <div class="profile-content">
       <!-- Profile Hero Card -->
@@ -154,18 +142,18 @@
         <div class="profile-hero">
           <div class="avatar-wrapper">
             <RobustAvatar
-              src={authStore.user.photoURL}
-              name={authStore.user.displayName || authStore.user.email}
-              alt={authStore.user.displayName || "User"}
+              src={authState.user.photoURL}
+              name={authState.user.displayName || authState.user.email}
+              alt={authState.user.displayName || "User"}
               size="xl"
             />
           </div>
           <div class="profile-info">
-            {#if authStore.user.displayName}
-              <h2 class="profile-name">{authStore.user.displayName}</h2>
+            {#if authState.user.displayName}
+              <h2 class="profile-name">{authState.user.displayName}</h2>
             {/if}
-            {#if authStore.user.email}
-              <p class="profile-email">{authStore.user.email}</p>
+            {#if authState.user.email}
+              <p class="profile-email">{authState.user.email}</p>
             {/if}
           </div>
           <button class="sign-out-btn" onclick={handleSignOut}>
@@ -190,6 +178,24 @@
           <ConnectedAccounts />
         </div>
       </section>
+
+      <!-- Two-Factor Authentication -->
+      {#if authService}
+        <section class="glass-card security-card">
+          <header class="card-header">
+            <div class="card-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="card-header-text">
+              <h3 class="card-title">Two-Factor Authentication</h3>
+              <p class="card-subtitle">Add an extra layer of security</p>
+            </div>
+          </header>
+          <div class="card-content">
+            <SecuritySection {authService} {hapticService} />
+          </div>
+        </section>
+      {/if}
 
       <!-- Password Section (only for password-authenticated users) -->
       {#if hasPasswordProvider()}
@@ -234,7 +240,8 @@
               <span>{clearingCache ? "Clearing..." : "Clear Cache"}</span>
             </button>
             <p class="hint-text">
-              Clears IndexedDB, localStorage, and cookies. Your cloud data is safe.
+              Clears IndexedDB, localStorage, and cookies. Your cloud data is
+              safe.
             </p>
           </div>
         </div>
@@ -252,7 +259,13 @@
           </div>
         </header>
         <div class="card-content">
-          <DangerZone onDeleteAccount={handleDeleteAccount} {hapticService} />
+          <DangerZone
+            onDeleteAccount={handleDeleteAccount}
+            {hapticService}
+            userIdentifier={authState.user?.displayName ||
+              authState.user?.email ||
+              ""}
+          />
         </div>
       </section>
     </div>
@@ -276,7 +289,9 @@
         />
 
         <div class="auth-divider">
-          <span>or {authMode === "signin" ? "sign in" : "sign up"} with email</span>
+          <span
+            >or {authMode === "signin" ? "sign in" : "sign up"} with email</span
+          >
         </div>
 
         <EmailPasswordAuth bind:mode={authMode} />
@@ -328,8 +343,8 @@
     border-radius: 16px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
@@ -338,10 +353,10 @@
   }
 
   .glass-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
-    box-shadow: var(--theme-shadow, 0 8px 32px rgba(0, 0, 0, 0.2));
+    box-shadow: var(--theme-shadow);
   }
 
   /* ========================================
@@ -362,10 +377,11 @@
     padding: 3px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #a78bfa) 100%
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
     );
-    box-shadow: 0 0 32px color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    box-shadow: 0 0 32px
+      color-mix(in srgb, var(--theme-accent) 25%, transparent);
     flex-shrink: 0;
   }
 
@@ -382,14 +398,15 @@
   .profile-name {
     font-size: clamp(20px, 3.5cqi, 28px);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 4px 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .profile-email {
     font-size: clamp(13px, 2cqi, 15px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -441,24 +458,41 @@
 
   /* ========================================
      DANGER CARD - Always red (semantic)
+     Dark base with red tint for visibility on any background
      ======================================== */
   .danger-card {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.1) 0%,
-      rgba(220, 38, 38, 0.06) 100%
+    background: var(
+      --theme-danger-bg,
+      linear-gradient(
+        135deg,
+        rgba(70, 15, 20, 0.9) 0%,
+        rgba(85, 20, 25, 0.85) 100%
+      )
     );
-    border: 1px solid rgba(239, 68, 68, 0.25);
+    border: 1px solid var(--theme-danger-border, rgba(239, 68, 68, 0.5));
+    box-shadow: var(
+      --theme-danger-shadow,
+      inset 0 1px 0 rgba(239, 68, 68, 0.15),
+      0 4px 20px rgba(0, 0, 0, 0.3)
+    );
   }
 
   .danger-card:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.15) 0%,
-      rgba(220, 38, 38, 0.08) 100%
+    background: var(
+      --theme-danger-hover-bg,
+      linear-gradient(
+        135deg,
+        rgba(85, 18, 25, 0.92) 0%,
+        rgba(100, 25, 30, 0.88) 100%
+      )
     );
-    border-color: rgba(239, 68, 68, 0.4);
-    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.15);
+    border-color: var(--theme-danger-hover-border, rgba(239, 68, 68, 0.65));
+    box-shadow: var(
+      --theme-danger-hover-shadow,
+      inset 0 1px 0 rgba(239, 68, 68, 0.2),
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 0 20px rgba(239, 68, 68, 0.15)
+    );
   }
 
   .danger-card .card-icon {
@@ -488,8 +522,8 @@
     border-radius: 12px;
     font-size: 18px;
     flex-shrink: 0;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    color: var(--theme-accent, #6366f1);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    color: var(--theme-accent);
   }
 
   .card-header-text {
@@ -501,13 +535,14 @@
     font-size: 17px;
     font-weight: 600;
     margin: 0;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    color: var(--theme-text);
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .card-subtitle {
     font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.45));
+    color: var(--theme-text-dim);
     margin: 3px 0 0 0;
   }
 
@@ -531,10 +566,10 @@
     gap: 10px;
     min-height: 52px;
     padding: 14px 24px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
     border-radius: 12px;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -543,10 +578,11 @@
   }
 
   .action-btn:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .action-btn:active:not(:disabled) {
@@ -560,7 +596,7 @@
 
   .hint-text {
     font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
     margin: 0;
     line-height: 1.5;
   }
@@ -596,26 +632,28 @@
     border-radius: 24px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, #a78bfa) 25%, transparent)
+      color-mix(in srgb, var(--theme-accent) 25%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong) 25%, transparent)
     );
-    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border: 2px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
     font-size: 32px;
-    color: var(--theme-accent, #a5b4fc);
-    box-shadow: 0 0 40px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    color: var(--theme-accent);
+    box-shadow: 0 0 40px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .auth-title {
     font-size: clamp(22px, 4.5cqi, 30px);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
   }
 
   .auth-subtitle {
     font-size: clamp(14px, 2.5cqi, 16px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
     margin: 0;
     max-width: 340px;
     line-height: 1.5;
@@ -638,12 +676,12 @@
   .auth-divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .auth-divider span {
     padding: 0 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     font-size: 13px;
     font-weight: 500;
   }
@@ -660,12 +698,12 @@
   }
 
   .profile-tab::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 3px;
   }
 
   .profile-tab::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
   }
 
   /* ========================================
@@ -699,7 +737,7 @@
 
   .sign-out-btn:focus-visible,
   .action-btn:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 </style>

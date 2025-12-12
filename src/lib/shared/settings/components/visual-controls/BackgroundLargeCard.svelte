@@ -62,7 +62,7 @@
 </script>
 
 <button
-  class="background-large-card settings-glass-card"
+  class="background-large-card"
   class:selected
   style="transform: perspective(1000px) rotateX({$rotateX}deg) rotateY({$rotateY}deg) scale({selected
     ? 1.03
@@ -115,29 +115,30 @@
     width: 320px;
     height: 200px;
     cursor: pointer;
-    border-radius: var(--settings-radius-lg);
+    border-radius: 20px;
     overflow: hidden;
     transform-style: preserve-3d;
-    transition: all var(--settings-transition-base) var(--settings-ease-out);
-    border: 2px solid var(--settings-glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--theme-stroke);
     padding: 0;
   }
 
   .background-large-card:hover {
-    border-color: var(--settings-glass-border-hover);
-    box-shadow: var(--settings-shadow-xl), var(--settings-shadow-primary);
+    border-color: var(--theme-stroke-strong);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2),
+      0 8px 32px color-mix(in srgb, var(--theme-accent) 30%, transparent);
     transform: perspective(1000px) rotateX(var(--tilt-x, 0deg))
       rotateY(var(--tilt-y, 0deg)) scale(1.03);
   }
 
   .background-large-card.selected {
     border-color: transparent;
-    box-shadow:
-      var(--settings-shadow-xl), var(--settings-shadow-primary-strong);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2),
+      0 12px 40px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .background-large-card:focus-visible {
-    outline: 2px solid var(--settings-primary-indigo);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 4px;
   }
 
@@ -161,7 +162,7 @@
       rgba(255, 255, 255, 0.02) 20px
     );
     opacity: 0;
-    transition: opacity var(--settings-transition-base);
+    transition: opacity 0.3s;
   }
 
   .background-large-card:hover .preview-pattern {
@@ -176,14 +177,14 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: var(--settings-space-lg);
+    padding: 24px;
     background: linear-gradient(
       to top,
       rgba(0, 0, 0, 0.8) 0%,
       rgba(0, 0, 0, 0.4) 50%,
       transparent 100%
     );
-    gap: var(--settings-space-xs);
+    gap: 4px;
     transform: translateZ(10px); /* 3D depth */
   }
 
@@ -191,7 +192,7 @@
     font-size: 32px;
     color: white;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
-    margin-bottom: var(--settings-space-xs);
+    margin-bottom: 4px;
   }
 
   .card-info {
@@ -201,38 +202,38 @@
   }
 
   .card-name {
-    font-size: var(--settings-font-size-h4);
-    font-weight: var(--settings-font-weight-bold);
+    font-size: 16px;
+    font-weight: 700;
     color: white;
     margin: 0;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    letter-spacing: var(--settings-letter-spacing-normal);
+    letter-spacing: -0.3px;
   }
 
   .card-description {
-    font-size: var(--settings-font-size-caption);
-    font-weight: var(--settings-font-weight-medium);
+    font-size: 13px;
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
     margin: 0;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-    letter-spacing: var(--settings-letter-spacing-wide);
+    letter-spacing: -0.08px;
   }
 
   .selected-badge {
     position: absolute;
-    top: var(--settings-space-md);
-    right: var(--settings-space-md);
+    top: 16px;
+    right: 16px;
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: var(--settings-gradient-primary);
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     color: white;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    animation: badge-pop 0.3s var(--settings-ease-spring);
+    animation: badge-pop 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
   @keyframes badge-pop {
@@ -251,11 +252,11 @@
   .selection-ring {
     position: absolute;
     inset: -2px;
-    border: 3px solid var(--settings-primary-indigo);
-    border-radius: var(--settings-radius-lg);
+    border: 3px solid var(--theme-accent);
+    border-radius: 20px;
     pointer-events: none;
     animation: pulse-ring 2s ease-in-out infinite;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent) 60%, transparent);
   }
 
   @keyframes pulse-ring {
@@ -277,7 +278,7 @@
     }
 
     .card-content {
-      padding: var(--settings-space-md);
+      padding: 16px;
     }
 
     .card-icon {
@@ -285,7 +286,7 @@
     }
 
     .card-name {
-      font-size: var(--settings-font-size-body);
+      font-size: 15px;
     }
 
     .card-description {

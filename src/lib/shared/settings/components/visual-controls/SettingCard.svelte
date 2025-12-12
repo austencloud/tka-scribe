@@ -30,22 +30,23 @@
 
 <style>
 	.setting-card {
-		background: var(--settings-glass-bg);
-		border: 1px solid var(--settings-glass-border);
-		border-radius: var(--settings-radius-md);
-		padding: var(--settings-space-lg);
-		transition: all var(--settings-transition-base) var(--settings-ease-out);
+		background: var(--theme-card-bg);
+		border: 1px solid var(--theme-stroke);
+		border-radius: 12px;
+		padding: 24px;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
 	.setting-card:hover {
-		background: var(--settings-glass-bg-hover);
-		border-color: var(--settings-glass-border-hover);
+		background: var(--theme-card-hover-bg);
+		border-color: var(--theme-stroke-strong);
 	}
 
 	/* Accent variant (highlighted) */
 	.setting-card.accent {
-		border-color: var(--settings-glass-border-active);
-		box-shadow: var(--settings-shadow-primary), inset 0 1px 0 rgba(99, 102, 241, 0.1);
+		border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+		box-shadow: 0 8px 32px color-mix(in srgb, var(--theme-accent) 30%, transparent),
+			inset 0 1px 0 color-mix(in srgb, var(--theme-accent) 10%, transparent);
 	}
 
 	/* Transparent variant (no background) */
@@ -61,23 +62,23 @@
 
 	/* Card header */
 	.card-header {
-		margin-bottom: var(--settings-space-md);
-		padding-bottom: var(--settings-space-md);
-		border-bottom: 1px solid var(--settings-glass-border);
+		margin-bottom: 16px;
+		padding-bottom: 16px;
+		border-bottom: 1px solid var(--theme-stroke);
 	}
 
 	.card-title {
-		font-size: var(--settings-font-size-h3);
-		font-weight: var(--settings-font-weight-semibold);
-		color: var(--settings-text-primary);
-		margin: 0 0 var(--settings-space-xs) 0;
-		letter-spacing: var(--settings-letter-spacing-normal);
+		font-size: 18px;
+		font-weight: 600;
+		color: var(--theme-text);
+		margin: 0 0 4px 0;
+		letter-spacing: -0.3px;
 	}
 
 	.card-description {
-		font-size: var(--settings-font-size-caption);
-		font-weight: var(--settings-font-weight-normal);
-		color: var(--settings-text-secondary);
+		font-size: 13px;
+		font-weight: 400;
+		color: var(--theme-text-dim);
 		margin: 0;
 		line-height: 1.5;
 	}
@@ -86,22 +87,22 @@
 	.setting-card-body {
 		display: flex;
 		flex-direction: column;
-		gap: var(--settings-space-md);
+		gap: 16px;
 	}
 
 	/* Mobile adjustments */
 	@media (max-width: 768px) {
 		.setting-card {
-			padding: var(--settings-space-md);
+			padding: 16px;
 		}
 
 		.card-header {
-			margin-bottom: var(--settings-space-sm);
-			padding-bottom: var(--settings-space-sm);
+			margin-bottom: 8px;
+			padding-bottom: 8px;
 		}
 
 		.card-title {
-			font-size: var(--settings-font-size-body);
+			font-size: 15px;
 		}
 	}
 </style>
