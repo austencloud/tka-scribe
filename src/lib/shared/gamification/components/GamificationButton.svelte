@@ -126,7 +126,7 @@
     min-height: 52px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -137,7 +137,7 @@
   }
 
   .gamification-button:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     transform: scale(1.05);
   }
 
@@ -158,8 +158,8 @@
   .spinner {
     width: 20px;
     height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-top-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-top-color: var(--theme-text, rgba(255, 255, 255, 0.8));
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -173,7 +173,7 @@
   /* Minimal icon styling */
   .icon-minimal {
     font-size: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   /* Small level badge - subtle notification style */
@@ -181,7 +181,7 @@
     position: absolute;
     top: -2px;
     right: -2px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, var(--theme-accent-strong, #8b5cf6) 100%);
     border-radius: 50%;
     width: 16px;
     height: 16px;
@@ -190,14 +190,14 @@
     justify-content: center;
     font-size: 9px;
     font-weight: 700;
-    color: white;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    color: var(--theme-text, white);
+    box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.3));
     z-index: 2;
   }
 
   /* Accessibility */
   .gamification-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 
@@ -218,8 +218,8 @@
   /* High Contrast */
   @media (prefers-contrast: high) {
     .gamification-button {
-      background: rgba(255, 255, 255, 0.2);
-      border: 2px solid white;
+      background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+      border: 2px solid var(--theme-text, white);
     }
   }
 </style>

@@ -14,7 +14,7 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "../../inversify/di";
-  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { authState } from "../../auth/state/authState.svelte";
   import { getLevelProgress } from "../domain/constants/xp-constants";
   import Drawer from "../../foundation/ui/Drawer.svelte";
   import type {
@@ -113,14 +113,14 @@
 
   // Load data when panel opens and user is authenticated
   $effect(() => {
-    if (isOpen && authStore.isAuthenticated && !hasLoadedData) {
+    if (isOpen && authState.isAuthenticated && !hasLoadedData) {
       loadData();
     }
   });
 
   async function loadData() {
     if (!achievementService || !challengeService || !streakService) return;
-    if (!authStore.isAuthenticated) {
+    if (!authState.isAuthenticated) {
       console.warn("⚠️ Cannot load gamification data: User not authenticated");
       isLoading = false;
       return;
@@ -368,7 +368,11 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: rgba(15, 15, 25, 0.95);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #0f0f19) 95%,
+      transparent
+    );
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
@@ -380,13 +384,13 @@
     align-items: center;
     padding: clamp(12px, 3cqi, 24px);
     gap: clamp(8px, 2cqi, 16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .panel-title {
     font-size: clamp(16px, 4cqi, 24px);
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin: 0;
     display: flex;
     align-items: center;
@@ -401,8 +405,8 @@
     height: clamp(52px, 10cqi, 52px);
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
     font-size: clamp(24px, 6cqi, 28px);
     line-height: 1;
     cursor: pointer;
@@ -411,7 +415,7 @@
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: rotate(90deg);
   }
 
@@ -437,8 +441,8 @@
   .spinner-large {
     width: 52px;
     height: 52px;
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-top-color: rgba(255, 255, 255, 0.8);
+    border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-top-color: var(--theme-text, rgba(255, 255, 255, 0.8));
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -495,13 +499,13 @@
   .stat-value {
     font-size: clamp(18px, 4.5cqi, 24px);
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     line-height: 1.2;
   }
 
   .stat-label {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -512,7 +516,8 @@
     margin: 0 clamp(12px, 3cqi, 24px) clamp(12px, 3cqi, 24px);
     padding: clamp(12px, 3cqi, 24px);
     border-radius: clamp(12px, 3cqi, 16px);
-    border: 2px solid rgba(102, 126, 234, 0.3);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .challenge-header {
@@ -542,18 +547,30 @@
   }
 
   .difficulty-badge.beginner {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4caf50;
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #4caf50) 20%,
+      transparent
+    );
+    color: var(--semantic-success, #4caf50);
   }
 
   .difficulty-badge.intermediate {
-    background: rgba(255, 152, 0, 0.2);
-    color: #ff9800;
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #ff9800) 20%,
+      transparent
+    );
+    color: var(--semantic-warning, #ff9800);
   }
 
   .difficulty-badge.advanced {
-    background: rgba(244, 67, 54, 0.2);
-    color: #f44336;
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #f44336) 20%,
+      transparent
+    );
+    color: var(--semantic-error, #f44336);
   }
 
   .challenge-title {
@@ -565,7 +582,7 @@
 
   .challenge-description {
     font-size: clamp(12px, 3cqi, 14px);
-    color: rgba(255, 255, 255, 0.7);
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     margin-bottom: clamp(10px, 2.5cqi, 16px);
     line-height: 1.5;
   }
@@ -578,27 +595,31 @@
 
   .progress-bar {
     height: clamp(6px, 1.5cqi, 8px);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border-radius: clamp(3px, 0.8cqi, 4px);
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     transition: width var(--transition-normal);
   }
 
   .progress-text {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .challenge-reward {
     margin-top: clamp(6px, 1.5cqi, 8px);
     font-weight: 600;
     font-size: clamp(12px, 3cqi, 14px);
-    color: #ffd700;
+    color: var(--semantic-warning, #ffd700);
   }
 
   /* Category Tabs - Responsive with touch targets */
@@ -608,7 +629,8 @@
     padding: 0 clamp(12px, 3cqi, 24px) clamp(10px, 2.5cqi, 16px);
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2))
+      transparent;
   }
 
   .category-tabs::-webkit-scrollbar {
@@ -616,7 +638,7 @@
   }
 
   .category-tabs::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 3px;
   }
 
@@ -628,9 +650,9 @@
     padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
     min-height: var(--min-touch-target, 52px);
     border-radius: clamp(10px, 2.5cqi, 14px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     cursor: pointer;
     transition: var(--transition-fast);
     white-space: nowrap;
@@ -638,8 +660,8 @@
   }
 
   .category-tab:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transform: translateY(-1px);
   }
 
@@ -653,9 +675,13 @@
   }
 
   .category-tab.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     border-color: transparent;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .tab-icon {
@@ -690,7 +716,8 @@
     flex-direction: column;
     gap: clamp(10px, 2.5cqi, 16px);
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2))
+      transparent;
   }
 
   .achievements-list::-webkit-scrollbar {
@@ -698,7 +725,7 @@
   }
 
   .achievements-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 4px;
   }
 
@@ -712,13 +739,21 @@
   }
 
   .achievement-card:hover {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .achievement-card.completed {
-    border-color: rgba(76, 175, 80, 0.3);
-    background: rgba(76, 175, 80, 0.05);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #4caf50) 30%,
+      transparent
+    );
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #4caf50) 5%,
+      transparent
+    );
   }
 
   .achievement-icon {
@@ -765,28 +800,32 @@
   }
 
   .tier-badge.bronze {
-    background: rgba(205, 127, 50, 0.2);
+    background: color-mix(in srgb, #cd7f32 20%, transparent);
     color: #cd7f32;
   }
 
   .tier-badge.silver {
-    background: rgba(192, 192, 192, 0.2);
+    background: color-mix(in srgb, #c0c0c0 20%, transparent);
     color: #c0c0c0;
   }
 
   .tier-badge.gold {
-    background: rgba(255, 215, 0, 0.2);
-    color: #ffd700;
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #ffd700) 20%,
+      transparent
+    );
+    color: var(--semantic-warning, #ffd700);
   }
 
   .tier-badge.platinum {
-    background: rgba(229, 228, 226, 0.2);
+    background: color-mix(in srgb, #e5e4e2 20%, transparent);
     color: #e5e4e2;
   }
 
   .achievement-description {
     font-size: clamp(11px, 2.8cqi, 14px);
-    color: rgba(255, 255, 255, 0.7);
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     margin-bottom: clamp(6px, 1.5cqi, 8px);
     line-height: 1.4;
   }
@@ -805,7 +844,7 @@
   }
 
   .completed-badge {
-    color: #4caf50;
+    color: var(--semantic-success, #4caf50);
     font-weight: 600;
     font-size: clamp(11px, 2.8cqi, 14px);
     display: flex;
@@ -816,7 +855,7 @@
   .progress-bar-small {
     flex: 1;
     height: clamp(4px, 1cqi, 6px);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border-radius: clamp(2px, 0.5cqi, 3px);
     overflow: hidden;
     min-width: 60px;
@@ -824,13 +863,17 @@
 
   .progress-fill-small {
     height: 100%;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     transition: width var(--transition-normal);
   }
 
   .progress-text-small {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     white-space: nowrap;
   }
 
@@ -838,7 +881,7 @@
     flex-shrink: 0;
     font-weight: 600;
     font-size: clamp(11px, 2.8cqi, 14px);
-    color: #ffd700;
+    color: var(--semantic-warning, #ffd700);
     white-space: nowrap;
   }
 
@@ -900,15 +943,15 @@
   /* High Contrast Mode */
   @media (prefers-contrast: high) {
     .panel-header {
-      border-bottom-color: rgba(255, 255, 255, 0.3);
+      border-bottom-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     }
 
     .category-tab {
-      border-color: rgba(255, 255, 255, 0.4);
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
     }
 
     .achievement-card {
-      border-color: rgba(255, 255, 255, 0.3);
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     }
   }
 </style>

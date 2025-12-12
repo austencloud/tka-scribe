@@ -118,38 +118,38 @@
     min-width: 320px;
     max-width: 480px;
     cursor: pointer;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.4));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     animation: glow 2s ease-in-out infinite alternate;
   }
 
   @keyframes glow {
     from {
       box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(102, 126, 234, 0.3);
+        0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
+        0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     }
     to {
       box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 0 40px rgba(102, 126, 234, 0.5);
+        0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
+        0 0 40px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
     }
   }
 
   .toast.achievement {
-    border-color: rgba(255, 215, 0, 0.5);
+    border-color: color-mix(in srgb, var(--semantic-warning, #ffd700) 50%, transparent);
   }
 
   .toast.level_up {
-    border-color: rgba(102, 126, 234, 0.5);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
   }
 
   .toast.challenge_complete {
-    border-color: rgba(76, 175, 80, 0.5);
+    border-color: color-mix(in srgb, var(--semantic-success, #4caf50) 50%, transparent);
   }
 
   .toast.streak_milestone {
-    border-color: rgba(255, 87, 34, 0.5);
+    border-color: color-mix(in srgb, var(--semantic-error, #ff5722) 50%, transparent);
   }
 
   .toast-icon {
@@ -176,13 +176,13 @@
   .toast-title {
     font-size: 16px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin-bottom: 4px;
   }
 
   .toast-message {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
     line-height: 1.4;
   }
 
@@ -191,8 +191,8 @@
     height: 52px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
@@ -201,7 +201,7 @@
   }
 
   .toast-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: rotate(90deg);
   }
 

@@ -67,11 +67,11 @@
     align-items: center;
     gap: 1px;
     padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.75);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 75%, transparent);
     backdrop-filter: blur(8px);
     border-radius: 16px;
-    border: 1px solid rgba(102, 126, 234, 0.4);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2));
     animation: fadeInUp 0.3s ease-out;
   }
 
@@ -104,19 +104,19 @@
   .xp-icon {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(102, 126, 234, 0.9);
+    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
   }
 
   .xp-amount {
     font-size: 16px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   .xp-label {
     font-size: 12px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin-left: 2px;
   }
 
