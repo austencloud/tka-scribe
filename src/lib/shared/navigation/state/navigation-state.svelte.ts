@@ -4,7 +4,14 @@
  * Manages global navigation state including current modes for tabs with sub-modes.
  * This provides a centralized way to track and update navigation state across the app.
  *
- * REFACTORED: Tab and module definitions moved to config/ folder for separation of concerns.
+ * ARCHITECTURE:
+ * - Tab/module definitions: config/tab-definitions.ts, config/module-definitions.ts
+ * - Storage keys: config/storage-keys.ts
+ * - Persistence service: services/implementations/NavigationPersistenceService.ts (for DI contexts)
+ * - Validation service: services/implementations/NavigationValidationService.ts (for DI contexts)
+ *
+ * NOTE: This state is created at module load time (before DI container is ready),
+ * so we use storage keys directly and lazy-resolve services where needed.
  */
 
 import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
@@ -13,7 +20,6 @@ import { TYPES } from "../../inversify/types";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 
 // Import configurations from separated files
-// Tab arrays are used directly in this file for validation and lookups
 import {
   CREATE_TABS,
   LEARN_TABS,
@@ -26,6 +32,17 @@ import {
 } from "../config/tab-definitions";
 
 import { MODULE_DEFINITIONS } from "../config/module-definitions";
+
+// Import storage keys from centralized config
+import {
+  CURRENT_MODULE_KEY,
+  ACTIVE_TAB_KEY,
+  MODULE_LAST_TABS_KEY,
+  TAB_LAST_PANELS_KEY,
+  CURRENT_CREATE_MODE_KEY,
+  CURRENT_LEARN_MODE_KEY,
+  PREVIOUS_MODULE_SESSION_KEY,
+} from "../config/storage-keys";
 
 // Re-export for backwards compatibility
 export {
@@ -50,35 +67,40 @@ export {
 
 export { MODULE_DEFINITIONS } from "../config/module-definitions";
 
-// Session storage key for persisting previous module across HMR
-const PREVIOUS_MODULE_SESSION_KEY = "tka-previous-module-session";
-
 /**
  * Creates navigation state for managing modules and tabs
  */
 export function createNavigationState() {
-  // Current state
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Reactive State
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Current mode state (legacy, synced with activeTab)
   let currentCreateMode = $state<string>("constructor");
   let currentLearnMode = $state<string>("concepts");
 
   // Module-based state
   let currentModule = $state<ModuleId>("dashboard");
   let activeTab = $state<string>(""); // Active tab within the current module (dashboard has no tabs)
-  const MODULE_LAST_TABS_KEY = "tka-module-last-tabs";
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
 
   // Panel persistence per tab (e.g., animation panel open in construct tab)
   // Key format: "moduleId:tabId" (e.g., "create:constructor", "create:assembler")
-  const TAB_LAST_PANELS_KEY = "tka-tab-last-panels";
   let lastPanelByTab = $state<Record<string, string | null>>({});
 
   // Creation method selector visibility (for hiding tabs when selector is shown)
   let isCreationMethodSelectorVisible = $state<boolean>(false);
 
   // Track previous module for settings toggle behavior
-  // When entering settings, we remember where we came from to return on toggle
-  // Load from sessionStorage to survive HMR
   let previousModule = $state<ModuleId | null>(loadPreviousModuleFromSession());
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Lazy Service Resolution (for when DI container is available)
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Persistence Helpers (inline since state is created before DI is ready)
+  // ─────────────────────────────────────────────────────────────────────────────
 
   // Helper to load previous module from sessionStorage
   function loadPreviousModuleFromSession(): ModuleId | null {
@@ -100,25 +122,28 @@ export function createNavigationState() {
     }
   }
 
-  // Load persisted state
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Load Persisted State (runs at module initialization)
+  // ─────────────────────────────────────────────────────────────────────────────
+
   if (typeof localStorage !== "undefined") {
     // Load create mode persistence
-    const savedCreateMode = localStorage.getItem("tka-current-create-mode");
+    const savedCreateMode = localStorage.getItem(CURRENT_CREATE_MODE_KEY);
     if (savedCreateMode && CREATE_TABS.some((t) => t.id === savedCreateMode)) {
       currentCreateMode = savedCreateMode;
     }
 
-    const savedLearnMode = localStorage.getItem("tka-current-learn-mode");
+    const savedLearnMode = localStorage.getItem(CURRENT_LEARN_MODE_KEY);
     if (savedLearnMode && LEARN_TABS.some((t) => t.id === savedLearnMode)) {
       currentLearnMode = savedLearnMode;
     }
 
     // Load module persistence
-    const savedModule = localStorage.getItem("tka-current-module");
+    const savedModule = localStorage.getItem(CURRENT_MODULE_KEY);
     if (savedModule === "community" || savedModule === "account") {
       // Migration: community and account modules retired, redirect to dashboard
       currentModule = "dashboard";
-      localStorage.setItem("tka-current-module", "dashboard");
+      localStorage.setItem(CURRENT_MODULE_KEY, "dashboard");
     } else if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
       currentModule = savedModule as ModuleId;
     }
@@ -180,7 +205,7 @@ export function createNavigationState() {
     }
 
     // Load current active tab
-    const savedActiveTab = localStorage.getItem("tka-active-tab");
+    const savedActiveTab = localStorage.getItem(ACTIVE_TAB_KEY);
     if (savedActiveTab) {
       activeTab = savedActiveTab;
     }
@@ -208,12 +233,15 @@ export function createNavigationState() {
     }
   }
 
-  // Action functions
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Action Functions
+  // ─────────────────────────────────────────────────────────────────────────────
+
   function setCreateMode(mode: string) {
     if (CREATE_TABS.some((t) => t.id === mode)) {
       currentCreateMode = mode;
       if (typeof localStorage !== "undefined") {
-        localStorage.setItem("tka-current-create-mode", mode);
+        localStorage.setItem(CURRENT_CREATE_MODE_KEY, mode);
       }
     }
   }
@@ -222,7 +250,7 @@ export function createNavigationState() {
     if (LEARN_TABS.some((t) => t.id === mode)) {
       currentLearnMode = mode;
       if (typeof localStorage !== "undefined") {
-        localStorage.setItem("tka-current-learn-mode", mode);
+        localStorage.setItem(CURRENT_LEARN_MODE_KEY, mode);
       }
       // Sync with new state when in Learn module
       if (currentModule === "learn") {
@@ -330,9 +358,9 @@ export function createNavigationState() {
 
       // Persist both module and active tab
       if (typeof localStorage !== "undefined") {
-        localStorage.setItem("tka-current-module", moduleId);
+        localStorage.setItem(CURRENT_MODULE_KEY, moduleId);
         if (nextTab) {
-          localStorage.setItem("tka-active-tab", nextTab);
+          localStorage.setItem(ACTIVE_TAB_KEY, nextTab);
         }
       }
 
@@ -374,7 +402,7 @@ export function createNavigationState() {
       }
 
       if (typeof localStorage !== "undefined") {
-        localStorage.setItem("tka-active-tab", tabId);
+        localStorage.setItem(ACTIVE_TAB_KEY, tabId);
       }
 
       lastTabByModule = {

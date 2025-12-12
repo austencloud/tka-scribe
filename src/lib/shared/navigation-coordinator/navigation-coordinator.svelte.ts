@@ -14,7 +14,7 @@ import {
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
 import { switchModule } from "../application/state/ui/module-state";
-import { authStore } from "../auth/stores/authStore.svelte";
+import { authState } from "../auth/state/authState.svelte";
 import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
 
 // Session storage key for persisting navigation history across HMR
@@ -61,16 +61,16 @@ export function setSettingsPortalOrigin(x: number, y: number) {
   const yPercent = (y / vh) * 100;
   // Store for reuse on exit
   navigationCoordinator.settingsEntryOrigin = { x: xPercent, y: yPercent };
-  document.documentElement.style.setProperty('--settings-portal-x', `${xPercent}%`);
-  document.documentElement.style.setProperty('--settings-portal-y', `${yPercent}%`);
+  document.documentElement.style.setProperty('--portal-origin-x', `${xPercent}%`);
+  document.documentElement.style.setProperty('--portal-origin-y', `${yPercent}%`);
 }
 
 // Restore the original entry origin for exit animation
 // Creates consistent "dive in / pull out from same spot" experience
 export function restoreSettingsPortalOrigin() {
   const { x, y } = navigationCoordinator.settingsEntryOrigin;
-  document.documentElement.style.setProperty('--settings-portal-x', `${x}%`);
-  document.documentElement.style.setProperty('--settings-portal-y', `${y}%`);
+  document.documentElement.style.setProperty('--portal-origin-x', `${x}%`);
+  document.documentElement.style.setProperty('--portal-origin-y', `${y}%`);
 }
 
 // Derived state as functions (Svelte 5 doesn't allow exporting $derived directly)
@@ -347,48 +347,32 @@ export function handleSectionChange(
 // This ensures the module list updates when user role or feature flags change
 export function getModuleDefinitions() {
   // Read auth state directly in the getter so it's reactive
-  const isAuthInitialized = authStore.isInitialized;
+  const isAuthInitialized = authState.isInitialized;
   const isFeatureFlagsInitialized = featureFlagService.isInitialized;
 
   // Read role-based flags BEFORE the filter to establish Svelte reactivity
   // This ensures $derived recalculates when these values change
-  const isAdmin = featureFlagService.isAdmin;
-  const isTester = featureFlagService.isTester;
+  const _isAdmin = featureFlagService.isAdmin;
+  const _isTester = featureFlagService.isTester;
+  const _effectiveRole = featureFlagService.effectiveRole;
 
   return MODULE_DEFINITIONS.filter((module) => {
     // Settings module is accessed via sidebar footer gear icon, not main module list
     if (module.id === "settings") {
       return false;
     }
-    // Admin module only visible to admin users (hide until we know they're admin)
-    if (module.id === "admin") {
-      return isAdmin;
+
+    // If auth/feature flags not initialized, show core modules optimistically
+    // This prevents layout shifts while waiting for auth
+    if (!isAuthInitialized || !isFeatureFlagsInitialized) {
+      // Only show these core modules before auth is ready
+      return ["dashboard", "create", "discover"].includes(module.id);
     }
-    // Feedback module only visible to testers and admins
-    if (module.id === "feedback") {
-      return isTester;
-    }
-    // ML Training module only visible to testers and admins
-    if (module.id === "ml-training") {
-      return isTester;
-    }
-    return true;
-  }).map((module) => {
-    // Optimistic rendering: show modules as enabled until auth/feature flags confirm access
-    // This prevents the flash of disabled modules while loading
-    // - If not initialized yet: show enabled (optimistic)
-    // - If initialized: check feature flag access
-    if (isAuthInitialized && isFeatureFlagsInitialized) {
-      const hasAccess = featureFlagService.canAccessModule(module.id);
-      if (!hasAccess) {
-        return {
-          ...module,
-          disabled: true,
-          disabledMessage: "Coming Soon",
-        };
-      }
-    }
-    return module;
+
+    // Once initialized, use feature flags to determine visibility
+    // Modules the user can't access are hidden entirely (not shown with "Coming Soon")
+    // This provides an accurate preview when impersonating users
+    return featureFlagService.canAccessModule(module.id);
   });
 }
 

@@ -11,6 +11,8 @@ import { DeepLinkService } from "../../navigation/services/implementations/DeepL
 import { LetterDeriverService } from "../../navigation/services/implementations/LetterDeriverService";
 import { PositionDeriverService } from "../../navigation/services/implementations/PositionDeriverService";
 import { SequenceViewerService } from "../../sequence-viewer/services/implementations/SequenceViewerService";
+import { NavigationPersistenceService } from "../../navigation/services/implementations/NavigationPersistenceService";
+import { NavigationValidationService } from "../../navigation/services/implementations/NavigationValidationService";
 
 import { TYPES } from "../types";
 
@@ -53,6 +55,14 @@ export const navigationModule = new ContainerModule(
     options
       .bind(TYPES.ISequenceViewerService)
       .to(SequenceViewerService)
+      .inSingletonScope();
+    options
+      .bind(TYPES.INavigationPersistenceService)
+      .to(NavigationPersistenceService)
+      .inSingletonScope();
+    options
+      .bind(TYPES.INavigationValidationService)
+      .to(NavigationValidationService)
       .inSingletonScope();
   }
 );

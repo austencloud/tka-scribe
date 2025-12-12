@@ -5,7 +5,7 @@
  * Handles form state, UI state, and viewport adaptivity.
  */
 
-import { authStore } from "../../auth/stores/authStore.svelte";
+import { authState } from "../../auth/state/authState.svelte";
 
 // ============================================================================
 // FORM STATE
@@ -82,20 +82,20 @@ export function isVeryCompactMode() {
 
 // Export function that returns derived value (Svelte 5 requirement)
 export function hasPasswordProvider() {
-  if (!authStore.user?.providerData) return false;
-  return authStore.user.providerData.some(
+  if (!authState.user?.providerData) return false;
+  return authState.user.providerData.some(
     (provider) => provider.providerId === "password"
   );
 }
 
 // Check if user can change email (only password-only users)
 export function canChangeEmail() {
-  if (!authStore.user?.providerData) return false;
+  if (!authState.user?.providerData) return false;
   // Only allow email change if user ONLY has password authentication
   // Users with OAuth providers should manage email through those providers
   return (
-    authStore.user.providerData.length === 1 &&
-    authStore.user.providerData[0]?.providerId === "password"
+    authState.user.providerData.length === 1 &&
+    authState.user.providerData[0]?.providerId === "password"
   );
 }
 
@@ -114,9 +114,9 @@ export function hasPersonalInfoChanges() {
  * Sync form state with auth store when user changes
  */
 export function syncWithAuthStore() {
-  if (authStore.user) {
-    const displayName = authStore.user.displayName || "";
-    const email = authStore.user.email || "";
+  if (authState.user) {
+    const displayName = authState.user.displayName || "";
+    const email = authState.user.email || "";
 
     personalInfoState.displayName = displayName;
     personalInfoState.email = email;

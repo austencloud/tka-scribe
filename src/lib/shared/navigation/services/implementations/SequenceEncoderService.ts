@@ -95,8 +95,9 @@ const PROP_TYPE_ENCODE: Record<PropType, string> = {
   [PropType.SIMPLESTAFF]: "s",
   [PropType.BIGSTAFF]: "1",
   [PropType.STAFF2]: "2",
-  // Club
+  // Club family
   [PropType.CLUB]: "C",
+  [PropType.BIGCLUB]: "c",
   // Fan family
   [PropType.FAN]: "F",
   [PropType.BIGFAN]: "f",
