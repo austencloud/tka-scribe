@@ -227,18 +227,18 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
-    border: 1.5px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--theme-accent-strong, #6366f1) 30%, transparent);
     border-radius: 50%;
-    color: var(--theme-accent, #818cf8);
+    color: var(--theme-accent-strong, #818cf8);
     cursor: pointer;
     transition: all 200ms ease;
     flex-shrink: 0;
   }
 
   .voice-btn:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 50%, transparent);
     transform: scale(1.05);
   }
 

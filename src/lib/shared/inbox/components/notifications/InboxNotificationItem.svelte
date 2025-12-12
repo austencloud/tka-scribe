@@ -7,6 +7,8 @@
 
 	import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
 	import { formatRelativeTimeVerbose } from "../../utils/format";
+	import { goto } from "$app/navigation";
+	import { inboxState } from "../../state/inbox-state.svelte";
 
 	interface Props {
 		notification: UserNotification;
@@ -70,7 +72,56 @@
 		if (!notification.read) {
 			onMarkAsRead();
 		}
-		// TODO: Navigate to relevant content based on notification type
+
+		// Deep-link to relevant content based on notification type
+		const n = notification as Record<string, unknown>;
+
+		switch (notification.type) {
+			case "feedback-resolved":
+			case "feedback-in-progress":
+			case "feedback-needs-info":
+			case "feedback-response":
+				// Navigate to My Feedback tab
+				if (n["feedbackId"]) {
+					inboxState.close();
+					goto(`/feedback?item=${n["feedbackId"]}`);
+				}
+				break;
+
+			case "sequence-liked":
+				// Navigate to the sequence
+				if (n["sequenceId"]) {
+					inboxState.close();
+					goto(`/sequence/${n["sequenceId"]}`);
+				}
+				break;
+
+			case "user-followed":
+				// Navigate to the follower's profile
+				if (n["fromUserId"]) {
+					inboxState.close();
+					goto(`/profile/${n["fromUserId"]}`);
+				}
+				break;
+
+			case "message-received":
+				// Switch to messages tab and open conversation
+				if (n["conversationId"]) {
+					inboxState.setTab("messages");
+					// The ConversationList will be shown, user can click the conversation
+				}
+				break;
+
+			case "achievement-unlocked":
+				// Navigate to achievements
+				inboxState.close();
+				goto("/collect?tab=achievements");
+				break;
+
+			default:
+				// No specific navigation for other types
+				break;
+		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {

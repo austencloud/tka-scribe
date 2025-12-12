@@ -11,6 +11,9 @@
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import MessageBubble from "./MessageBubble.svelte";
   import MessageComposer from "./MessageComposer.svelte";
+  import MessageSkeleton from "../skeletons/MessageSkeleton.svelte";
+  import DateSeparator from "./DateSeparator.svelte";
+  import EmptyMessages from "../empty-states/EmptyMessages.svelte";
 
   interface Props {
     conversation: Conversation;
@@ -32,7 +35,6 @@
   // Auto-scroll to bottom when new messages arrive
   $effect(() => {
     if (messages.length > 0 && messagesContainer) {
-      // Slight delay to ensure DOM update
       requestAnimationFrame(() => {
         messagesContainer?.scrollTo({
           top: messagesContainer.scrollHeight,
@@ -42,33 +44,67 @@
     }
   });
 
-  // Get other participant info (use currentUserId for preview mode support)
+  // Get other participant info
   const otherParticipantId = $derived(
     conversation.participants.find((p: string) => p !== currentUserId) || ""
   );
   const otherParticipant = $derived(
     conversation.participantInfo[otherParticipantId]
   );
+
+  // Group messages by date for separators
+  interface MessageGroup {
+    date: Date;
+    messages: Message[];
+  }
+
+  function getDateKey(d: Date): string {
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }
+
+  const messageGroups = $derived.by(() => {
+    const groups: MessageGroup[] = [];
+    let currentDateKey = "";
+    let currentGroup: MessageGroup | null = null;
+
+    for (const message of messages) {
+      const dateKey = getDateKey(message.createdAt);
+
+      if (dateKey !== currentDateKey) {
+        currentDateKey = dateKey;
+        currentGroup = {
+          date: message.createdAt,
+          messages: [message]
+        };
+        groups.push(currentGroup);
+      } else if (currentGroup) {
+        currentGroup.messages.push(message);
+      }
+    }
+
+    return groups;
+  });
 </script>
 
 <div class="message-thread">
   <!-- Messages container -->
   <div class="messages-container" bind:this={messagesContainer}>
     {#if isLoading}
-      <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
-        <span>Loading messages...</span>
-      </div>
+      <MessageSkeleton count={6} />
     {:else if messages.length === 0}
-      <div class="empty-state">
-        <i class="fas fa-comments"></i>
-        <h3>Start the conversation</h3>
-        <p>Send a message to {otherParticipant?.displayName || "this user"}</p>
-      </div>
+      <EmptyMessages recipientName={otherParticipant?.displayName} />
     {:else}
       <div class="messages">
-        {#each messages as message (message.id)}
-          <MessageBubble {message} isOwn={message.senderId === currentUserId} />
+        {#each messageGroups as group, groupIndex}
+          <DateSeparator date={group.date} />
+          {#each group.messages as message, messageIndex (message.id)}
+            <MessageBubble
+              {message}
+              isOwn={message.senderId === currentUserId}
+              isNew={groupIndex === messageGroups.length - 1 && messageIndex === group.messages.length - 1}
+              {otherParticipantId}
+            />
+          {/each}
         {/each}
       </div>
     {/if}
@@ -88,38 +124,7 @@
   .messages-container {
     flex: 1;
     overflow-y: auto;
-    padding: 16px;
-  }
-
-  .loading-state,
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    height: 100%;
-    min-height: 200px;
-    text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-  }
-
-  .loading-state i,
-  .empty-state i {
-    font-size: 32px;
-    opacity: 0.5;
-  }
-
-  .empty-state h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--theme-text, #ffffff);
-  }
-
-  .empty-state p {
-    margin: 0;
-    font-size: 14px;
+    padding: 8px 16px 16px;
   }
 
   .messages {

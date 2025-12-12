@@ -156,7 +156,7 @@
 	}
 
 	.input-wrapper:focus-within .input-icon {
-		color: var(--theme-accent, #8b5cf6);
+		color: var(--theme-accent-strong, #8b5cf6);
 	}
 
 	.form-group input {
@@ -176,8 +176,8 @@
 
 	.form-group input:focus {
 		outline: none;
-		border-color: var(--theme-accent, #8b5cf6);
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+		border-color: var(--theme-accent-strong, #8b5cf6);
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
 	}
 
 	.form-group input:disabled {
@@ -278,7 +278,7 @@
 		justify-content: center;
 		gap: 8px;
 		padding: 14px 20px;
-		background: linear-gradient(135deg, var(--theme-accent, #8b5cf6) 0%, #7c3aed 100%);
+		background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, #7c3aed 100%);
 		border: none;
 		border-radius: 12px;
 		color: var(--theme-text, white);
@@ -290,7 +290,7 @@
 
 	.submit-btn:hover:not(:disabled) {
 		transform: translateY(-1px);
-		box-shadow: 0 4px 20px color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
+		box-shadow: 0 4px 20px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
 	}
 
 	.submit-btn:active:not(:disabled) {
@@ -320,7 +320,7 @@
 	.cancel-btn:focus-visible,
 	.submit-btn:focus-visible,
 	.toggle-password:focus-visible {
-		outline: 2px solid var(--theme-accent, rgba(139, 92, 246, 0.8));
+		outline: 2px solid var(--theme-accent-strong, rgba(139, 92, 246, 0.8));
 		outline-offset: 2px;
 	}
 

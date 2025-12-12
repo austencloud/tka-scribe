@@ -22,7 +22,7 @@
 
 	// Derive avatar color from participant ID
 	const avatarColor = $derived(
-		getAvatarColor(conversation.otherParticipant.id || conversation.id)
+		getAvatarColor(conversation.otherParticipant.userId || conversation.id)
 	);
 </script>
 

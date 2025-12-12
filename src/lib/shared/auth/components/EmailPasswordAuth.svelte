@@ -416,11 +416,11 @@
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 80%,
+      var(--theme-accent-strong, #6366f1) 80%,
       transparent
     );
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent);
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
@@ -476,7 +476,7 @@
 
   .password-toggle:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -494,8 +494,8 @@
     padding: 0.875rem 1.5rem;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 85%, #000) 100%
+      var(--theme-accent-strong, #6366f1) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 85%, #000) 100%
     );
     color: var(--theme-text, white);
     border: none;
@@ -506,17 +506,17 @@
     transition: all 0.2s ease;
     min-height: 52px;
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 30%, transparent);
   }
 
   .submit-button:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 85%, #000) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 85%, #000) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, #000) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 40%, transparent);
     transform: translateY(-1px);
   }
 
@@ -532,7 +532,7 @@
   .toggle-button {
     padding: 0.75rem;
     background: transparent;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    color: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 90%, transparent);
     border: none;
     font-size: 0.875rem;
     font-weight: 500;
@@ -542,10 +542,10 @@
   }
 
   .toggle-button:hover:not(:disabled) {
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent-strong, #6366f1);
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 10%,
+      var(--theme-accent-strong, #6366f1) 10%,
       transparent
     );
   }

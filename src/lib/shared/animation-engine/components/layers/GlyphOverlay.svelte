@@ -7,6 +7,7 @@ Displays TKA glyph and beat number with fade transitions.
 <script lang="ts">
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
+  import TurnsColumn from "$lib/shared/pictograph/tka-glyph/components/TurnsColumn.svelte";
   import BeatNumber from "$lib/shared/pictograph/shared/components/BeatNumber.svelte";
 
   let {
@@ -50,7 +51,15 @@ Displays TKA glyph and beat number with fade transitions.
         {#if fadingOutLetter && tkaGlyphVisible}
           <TKAGlyph
             letter={fadingOutLetter}
+            pictographData={null}
+            x={50}
+            y={800}
+            scale={1}
+            visible={true}
+          />
+          <TurnsColumn
             turnsTuple={fadingOutTurnsTuple ?? "(s, 0, 0)"}
+            letter={fadingOutLetter}
             pictographData={null}
             x={50}
             y={800}
@@ -76,7 +85,15 @@ Displays TKA glyph and beat number with fade transitions.
         {#if letter && tkaGlyphVisible}
           <TKAGlyph
             {letter}
+            pictographData={null}
+            x={50}
+            y={800}
+            scale={1}
+            visible={true}
+          />
+          <TurnsColumn
             turnsTuple={displayedTurnsTuple}
+            {letter}
             pictographData={null}
             x={50}
             y={800}
@@ -114,6 +131,11 @@ Displays TKA glyph and beat number with fade transitions.
 
   /* Override TKAGlyph's internal opacity transitions - we control fade at wrapper level */
   .glyph-wrapper :global(.tka-glyph) {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .glyph-wrapper :global(.turns-column) {
     opacity: 1 !important;
     transition: none !important;
   }

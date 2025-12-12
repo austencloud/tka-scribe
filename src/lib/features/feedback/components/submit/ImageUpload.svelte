@@ -211,10 +211,10 @@
   }
 
   .upload-button.dragging {
-    border-color: var(--theme-accent, #6366f1);
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
-    color: var(--theme-accent, #6366f1);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    border-color: var(--theme-accent-strong, #6366f1);
+    background: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent);
+    color: var(--theme-accent-strong, #6366f1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong, #6366f1) 20%, transparent);
   }
 
   .upload-button:disabled {

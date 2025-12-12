@@ -179,7 +179,7 @@
 
 	.progress-fill {
 		height: 100%;
-		background: linear-gradient(90deg, var(--semantic-info, #3b82f6), var(--theme-accent, #8b5cf6));
+		background: linear-gradient(90deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
 		border-radius: 2px;
 		transition: width 0.3s ease;
 	}
@@ -259,7 +259,7 @@
 	/* Focus States */
 	.resend-btn:focus-visible,
 	.skip-btn:focus-visible {
-		outline: 2px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
+		outline: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
 		outline-offset: 2px;
 	}
 

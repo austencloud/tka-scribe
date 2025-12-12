@@ -26,7 +26,7 @@
   }
 
   let {
-    isOpen = $bindable(),
+    isOpen,
     authService,
     hapticService = null,
     onClose,
@@ -34,6 +34,12 @@
   }: Props = $props();
 
   let enrollmentState: MFAEnrollmentState | null = $state(null);
+  let localIsOpen = $state(false);
+
+  // Sync local state with prop (allows Drawer to work with bind:isOpen)
+  $effect(() => {
+    localIsOpen = isOpen;
+  });
 
   // Create state when drawer opens
   $effect(() => {
@@ -52,7 +58,8 @@
   function requestClose() {
     if (enrollmentState?.currentStep === "verify" && enrollmentState.isSubmitting)
       return;
-    isOpen = false;
+    localIsOpen = false;
+    onClose();
   }
 
   function handleOpenChange(open: boolean) {
@@ -69,13 +76,15 @@
 </script>
 
 <Drawer
-  bind:isOpen
+  bind:isOpen={localIsOpen}
   placement="bottom"
   dismissible={enrollmentState?.currentStep !== "verify" ||
     !enrollmentState?.isSubmitting}
   onOpenChange={handleOpenChange}
+  class="mfa-enrollment-drawer"
+  backdropClass="mfa-enrollment-backdrop"
 >
-  <div class="drawer-content">
+  <div class="mfa-drawer-content">
     <header class="drawer-header">
       <div
         class="header-icon"
@@ -141,11 +150,25 @@
 </Drawer>
 
 <style>
-  .drawer-content {
+  /* Ensure MFA drawer appears above everything else */
+  :global(.mfa-enrollment-drawer) {
+    z-index: 10000 !important;
+    background: var(--theme-panel-bg, #1e293b) !important;
+  }
+
+  :global(.mfa-enrollment-backdrop) {
+    z-index: 9999 !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  .mfa-drawer-content {
     display: flex;
     flex-direction: column;
     min-height: 400px;
     max-height: 90vh;
+    background: var(--theme-panel-bg, #1e293b);
+    color: var(--theme-text, #ffffff);
   }
 
   .drawer-header {

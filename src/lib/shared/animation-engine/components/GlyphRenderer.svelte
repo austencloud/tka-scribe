@@ -13,6 +13,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
 
 <script lang="ts">
   import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
+  import TurnsColumn from "$lib/shared/pictograph/tka-glyph/components/TurnsColumn.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
@@ -207,6 +208,7 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
   viewBox="0 0 950 950"
 >
   {#if letter}
-    <TKAGlyph {letter} {turnsTuple} {pictographData} x={50} y={800} scale={1} />
+    <TKAGlyph {letter} {pictographData} x={50} y={800} scale={1} />
+    <TurnsColumn {turnsTuple} {letter} {pictographData} x={50} y={800} scale={1} visible={true} />
   {/if}
 </svg>

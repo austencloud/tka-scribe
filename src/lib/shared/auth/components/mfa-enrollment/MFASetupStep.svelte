@@ -90,6 +90,11 @@
           Go to <strong>Google Cloud Console → Identity Platform → MFA</strong> and enable TOTP.
           Changes may take a few minutes to propagate.
         </p>
+      {:else if error.includes("recent-login") || error.includes("requires-recent-login")}
+        <p class="error-help">
+          For security, Firebase requires a recent sign-in to enable 2FA.
+          Please <strong>sign out and sign back in</strong>, then try enabling 2FA again.
+        </p>
       {/if}
       {#if onRetry}
         <button type="button" class="retry-button" onclick={onRetry}>

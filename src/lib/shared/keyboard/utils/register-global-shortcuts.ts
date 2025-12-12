@@ -127,9 +127,12 @@ export function registerGlobalShortcuts(
     priority: "high",
     condition: () => {
       // Only enable if settings allow single-key shortcuts
-      return state.settings.enableSingleKeyShortcuts;
+      const enabled = state.settings.enableSingleKeyShortcuts;
+      console.log(`[QuickFeedback] Condition check: enableSingleKeyShortcuts=${enabled}`);
+      return enabled;
     },
     action: () => {
+      console.log(`[QuickFeedback] Action triggered!`);
       quickFeedbackState.toggle();
     },
   });
@@ -150,7 +153,9 @@ export function registerGlobalShortcuts(
     // No condition needed - the RoleSwitcherDebugPanel already checks {#if isAdmin}
     // This allows F9 to work even during auth initialization race conditions
     action: () => {
+      console.log(`[RoleSwitcher] Action triggered! Current isOpen:`, roleSwitcherState.isOpen);
       roleSwitcherState.toggle();
+      console.log(`[RoleSwitcher] After toggle, isOpen:`, roleSwitcherState.isOpen);
     },
   });
 }

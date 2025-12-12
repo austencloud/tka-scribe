@@ -54,10 +54,11 @@ export function setLearnHeader(header: string) {
 export function moduleHasPrimaryNav(moduleId: string): boolean {
   return (
     moduleId === "create" ||    // Assembler, Constructor, Generator tabs
-    moduleId === "discover" ||  // Gallery, Collections, Creators, Library tabs
+    moduleId === "discover" ||  // Gallery, Creators tabs
     moduleId === "learn" ||     // Concepts, Play, Codex tabs
     moduleId === "compose" ||   // Compose, Playback, Browse tabs
     moduleId === "train" ||     // Challenges, Sessions tabs
+    moduleId === "library" ||   // Sequences, Collections, Compositions tabs
     moduleId === "feedback" ||  // Submit, Manage tabs
     moduleId === "ml-training" || // ML Training - no tabs, full page
     moduleId === "admin" ||     // Various admin tabs

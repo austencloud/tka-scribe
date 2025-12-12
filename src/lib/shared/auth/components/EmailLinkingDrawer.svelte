@@ -196,7 +196,7 @@
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 20px;
     padding: 32px;
     max-width: 480px;
@@ -205,10 +205,10 @@
     overflow-y: auto;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent),
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent),
       0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.6)),
       0 0 100px
-        color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent);
     z-index: 1001;
     animation: modalSlideIn 0.3s ease-out;
   }
@@ -249,18 +249,18 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 15%,
+      var(--theme-accent-strong, #8b5cf6) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 14px;
     flex-shrink: 0;
   }
 
   .header-icon i {
     font-size: 22px;
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .header-icon.verifying {
@@ -341,7 +341,7 @@
   }
 
   .close-btn:focus-visible {
-    outline: 2px solid var(--theme-accent, rgba(139, 92, 246, 0.8));
+    outline: 2px solid var(--theme-accent-strong, rgba(139, 92, 246, 0.8));
     outline-offset: 2px;
   }
 

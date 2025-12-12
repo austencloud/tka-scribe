@@ -62,11 +62,6 @@
   const isPreview = $derived(userPreviewState.isActive);
   const previewProfile = $derived(userPreviewState.data.profile);
 
-  // Debug: Log when isOpen or isAdmin changes
-  $effect(() => {
-    console.log(`[RoleSwitcherDebugPanel] State:`, { isOpen, isAdmin });
-  });
-
   // Check if current preview user is in quick access (must be after previewProfile)
   const isCurrentUserInQuickAccess = $derived(
     previewProfile

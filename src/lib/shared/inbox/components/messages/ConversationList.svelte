@@ -9,6 +9,8 @@
 	import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
 	import { toast } from "../../../toast/state/toast-state.svelte";
 	import ConversationItem from "./ConversationItem.svelte";
+	import ConversationSkeleton from "../skeletons/ConversationSkeleton.svelte";
+	import EmptyConversations from "../empty-states/EmptyConversations.svelte";
 
 	interface Props {
 		conversations: ConversationPreview[];
@@ -69,16 +71,9 @@
 	</div>
 
 	{#if isLoading}
-		<div class="loading-state" role="status" aria-live="polite">
-			<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-			<span>Loading conversations...</span>
-		</div>
+		<ConversationSkeleton count={5} />
 	{:else if conversations.length === 0}
-		<div class="empty-state">
-			<i class="fas fa-comments" aria-hidden="true"></i>
-			<h3>No messages yet</h3>
-			<p>Start a conversation by clicking "New Message"</p>
-		</div>
+		<EmptyConversations />
 	{:else}
 		<div class="conversations" role="list" aria-label="Conversation list">
 			{#each conversations as conversation, index (conversation.id)}
@@ -176,36 +171,6 @@
 	.mark-all-read:focus-visible {
 		outline: none;
 		box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
-	}
-
-	.loading-state,
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 12px;
-		padding: 48px 24px;
-		text-align: center;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-	}
-
-	.loading-state i,
-	.empty-state i {
-		font-size: 32px;
-		opacity: 0.5;
-	}
-
-	.empty-state h3 {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 600;
-		color: var(--theme-text, #ffffff);
-	}
-
-	.empty-state p {
-		margin: 0;
-		font-size: 14px;
 	}
 
 	.conversations {

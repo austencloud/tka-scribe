@@ -73,7 +73,7 @@
     background: none;
     border: none;
     padding: 0;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    color: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 90%, transparent);
     font-size: inherit;
     font-family: inherit;
     text-decoration: none;
@@ -82,7 +82,7 @@
   }
 
   .auth-footer__link:hover {
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent-strong, #6366f1);
     text-decoration: underline;
   }
 

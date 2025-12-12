@@ -200,7 +200,7 @@
 
     --fb-primary: var(--semantic-success, #10b981);
     --fb-error: var(--semantic-error, #ef4444);
-    --fb-purple: var(--theme-accent, #8b5cf6);
+    --fb-purple: var(--theme-accent-strong, #8b5cf6);
     --fb-surface: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     --fb-surface-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));

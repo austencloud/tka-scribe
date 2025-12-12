@@ -19,17 +19,33 @@ import { TYPES } from "../../inversify/types";
 import type { IGlyphCacheService } from "../services/implementations/GlyphCacheService";
 
 /**
+ * Visibility settings for pictograph rendering
+ * When provided, these override the global visibility settings
+ */
+export interface PictographVisibilityOptions {
+  showTKA?: boolean;
+  showVTG?: boolean;
+  showElemental?: boolean;
+  showPositions?: boolean;
+  showReversals?: boolean;
+  showNonRadialPoints?: boolean;
+  showTurnNumbers?: boolean;
+}
+
+/**
  * Render a Pictograph component to SVG string
  *
  * @param pictographData - BeatData or PictographData to render
  * @param size - Size of the SVG viewBox (will be size x size)
  * @param beatNumber - Optional beat number to display (for export)
+ * @param visibilityOptions - Optional visibility settings to override global defaults
  * @returns Promise<string> - SVG string ready to be converted to canvas
  */
 export async function renderPictographToSVG(
   pictographData: BeatData | PictographData,
   size: number = 300,
-  beatNumber?: number
+  beatNumber?: number,
+  visibilityOptions?: PictographVisibilityOptions
 ): Promise<string> {
   // Create hidden container
   const container = document.createElement("div");
@@ -52,12 +68,22 @@ export async function renderPictographToSVG(
         ? { ...pictographData, beatNumber }
         : { ...pictographData, beatNumber: undefined };
 
-    // Mount Pictograph component
+    // Mount Pictograph component with explicit visibility settings
     const component = mount(Pictograph, {
       target: container,
       props: {
         pictographData: dataWithBeatNumber,
         disableContentTransitions: true, // Disable animations for export
+        // Pass visibility settings explicitly to avoid relying on global state timing
+        ...(visibilityOptions && {
+          showTKA: visibilityOptions.showTKA,
+          showVTG: visibilityOptions.showVTG,
+          showElemental: visibilityOptions.showElemental,
+          showPositions: visibilityOptions.showPositions,
+          showReversals: visibilityOptions.showReversals,
+          showNonRadialPoints: visibilityOptions.showNonRadialPoints,
+          showTurnNumbers: visibilityOptions.showTurnNumbers,
+        }),
       },
     });
 

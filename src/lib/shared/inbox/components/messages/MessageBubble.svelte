@@ -2,7 +2,7 @@
 	/**
 	 * MessageBubble
 	 *
-	 * Single message bubble with enhanced visual polish and animations
+	 * Single message bubble with read receipts and animations
 	 */
 
 	import type { Message } from "$lib/shared/messaging";
@@ -12,12 +12,26 @@
 		message: Message;
 		isOwn: boolean;
 		isNew?: boolean;
+		otherParticipantId?: string;
 	}
 
-	let { message, isOwn, isNew = false }: Props = $props();
+	let { message, isOwn, isNew = false, otherParticipantId }: Props = $props();
 
 	// Check if message was edited
 	const wasEdited = $derived(message.editedAt !== undefined);
+
+	// Read receipt status for own messages
+	const readStatus = $derived.by(() => {
+		if (!isOwn) return null;
+
+		// Check if the other participant has read this message
+		if (otherParticipantId && message.readBy?.includes(otherParticipantId)) {
+			return "read";
+		}
+
+		// Message is sent (we have an ID)
+		return "sent";
+	});
 </script>
 
 <div
@@ -35,9 +49,17 @@
 			{#if wasEdited && !message.isDeleted}
 				<span class="edited">(edited)</span>
 			{/if}
-			{#if isOwn && !message.isDeleted}
-				<span class="status" aria-label="Sent">
-					<i class="fas fa-check"></i>
+			{#if isOwn && !message.isDeleted && readStatus}
+				<span
+					class="read-receipt"
+					class:read={readStatus === "read"}
+					aria-label={readStatus === "read" ? "Read" : "Sent"}
+				>
+					{#if readStatus === "read"}
+						<i class="fas fa-check-double"></i>
+					{:else}
+						<i class="fas fa-check"></i>
+					{/if}
 				</span>
 			{/if}
 		</div>
@@ -139,9 +161,20 @@
 		font-style: italic;
 	}
 
-	.status {
-		font-size: 10px;
-		opacity: 0.8;
+	/* Read receipts */
+	.read-receipt {
+		font-size: 12px;
+		opacity: 0.7;
+		transition: color 0.2s ease;
+	}
+
+	.read-receipt.read {
+		color: #60a5fa;
+		opacity: 1;
+	}
+
+	.own .read-receipt.read {
+		color: #93c5fd;
 	}
 
 	/* Reduced motion */

@@ -8,6 +8,7 @@
 
 	import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
 	import UserSearchInput from "$lib/shared/user-search/UserSearchInput.svelte";
+	import { authState } from "$lib/shared/auth/state/authState.svelte";
 
 	interface Props {
 		recipientId?: string | null;
@@ -21,6 +22,10 @@
 	let isCreating = $state(false);
 	let selectedUserId = $state("");
 	let selectedUserDisplay = $state("");
+
+	// Exclude current user from search results (can't message yourself)
+	let currentUserId = $derived(authState.user?.uid ?? "");
+	let excludeUserIds = $derived(currentUserId ? [currentUserId] : []);
 
 	// If recipient is pre-selected, create conversation immediately
 	$effect(() => {
@@ -67,6 +72,7 @@
 				onSelect={handleUserSelect}
 				placeholder="Search by name or email..."
 				inlineResults={true}
+				{excludeUserIds}
 			/>
 		</div>
 	{/if}

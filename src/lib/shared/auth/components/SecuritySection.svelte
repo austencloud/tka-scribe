@@ -4,12 +4,14 @@
    *
    * MFA management section for settings ProfileTab.
    * Shows MFA status and allows enabling/disabling.
+   * Note: The enrollment drawer is rendered in MainApplication.svelte
+   * and controlled via mfaUIState for proper z-index stacking.
    */
 
-  import MFAEnrollmentDrawer from "./MFAEnrollmentDrawer.svelte";
   import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
   import type { IAuthService } from "../services/contracts/IAuthService";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { mfaUIState } from "../state/mfa-ui-state.svelte";
 
   interface Props {
     authService: IAuthService;
@@ -18,7 +20,6 @@
 
   let { authService, hapticService = null }: Props = $props();
 
-  let showEnrollmentDrawer = $state(false);
   let showDisableConfirm = $state(false);
   let isDisabling = $state(false);
   let disableError = $state<string | null>(null);
@@ -28,11 +29,8 @@
   const enrolledFactors = $derived(authService.getEnrolledFactors());
 
   function handleEnableMFA() {
-    showEnrollmentDrawer = true;
-  }
-
-  function handleEnrollmentSuccess() {
-    hapticService?.trigger("success");
+    // Open the drawer via global state (rendered in MainApplication)
+    mfaUIState.openEnrollment();
   }
 
   function handleDisableMFAClick() {
@@ -116,15 +114,6 @@
     </p>
   {/if}
 </section>
-
-<!-- Enrollment Drawer -->
-<MFAEnrollmentDrawer
-  bind:isOpen={showEnrollmentDrawer}
-  {authService}
-  {hapticService}
-  onClose={() => (showEnrollmentDrawer = false)}
-  onSuccess={handleEnrollmentSuccess}
-/>
 
 <!-- Disable Confirmation Dialog -->
 <ConfirmDialog

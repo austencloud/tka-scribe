@@ -88,14 +88,18 @@
   <div class="search-input-wrapper">
     <i class="fas fa-search search-icon"></i>
     <input
-      type="text"
+      type="search"
       class="search-input"
+      name="admin-user-search"
       bind:value={searchQuery}
       oninput={handleSearchInput}
       onfocus={handleFocus}
       onblur={handleBlur}
       placeholder="Search by name or email..."
       autocomplete="off"
+      data-1p-ignore
+      data-lpignore="true"
+      data-form-type="other"
     />
     {#if isSearching}
       <i class="fas fa-spinner fa-spin loading-icon"></i>

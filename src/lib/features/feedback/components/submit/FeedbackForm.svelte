@@ -396,11 +396,11 @@
     container-name: feedback-form;
 
     /* Colors - Type-reactive */
-    --fb-primary: var(--active-type-color, #3b82f6);
+    --fb-primary: var(--active-type-color, var(--theme-accent, #3b82f6));
     --fb-error: var(--semantic-error, #ef4444);
     --fb-border: color-mix(
       in srgb,
-      var(--active-type-color, #3b82f6) 25%,
+      var(--active-type-color, var(--theme-accent, #3b82f6)) 25%,
       var(--theme-stroke, rgba(255, 255, 255, 0.1))
     );
     --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
@@ -420,13 +420,13 @@
       145deg,
       color-mix(
           in srgb,
-          var(--active-type-color, #3b82f6) 6%,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 6%,
           rgba(22, 22, 32, 0.95)
         )
         0%,
       color-mix(
           in srgb,
-          var(--active-type-color, #3b82f6) 3%,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 3%,
           rgba(18, 18, 28, 0.98)
         )
         100%
@@ -701,9 +701,9 @@
   }
 
   .textarea-wrapper:has(.field-textarea.streaming) {
-    border-color: var(--theme-accent, #8b5cf6);
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 8%, rgba(0, 0, 0, 0.25));
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+    border-color: var(--theme-accent-strong, #8b5cf6);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, rgba(0, 0, 0, 0.25));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
   }
 
   .field-textarea {
@@ -767,7 +767,7 @@
     gap: 4px;
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
     font-weight: 500;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent-strong, #6366f1);
     animation: fadeInOut 2s ease-in-out;
   }
 
@@ -807,13 +807,13 @@
       135deg,
       color-mix(
           in srgb,
-          var(--active-type-color, #3b82f6) 8%,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 8%,
           rgba(255, 255, 255, 0.03)
         )
         0%,
       color-mix(
           in srgb,
-          var(--active-type-color, #3b82f6) 4%,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
           rgba(255, 255, 255, 0.01)
         )
         100%
@@ -821,7 +821,7 @@
     border: 1px solid
       color-mix(
         in srgb,
-        var(--active-type-color, #3b82f6) 15%,
+        var(--active-type-color, var(--theme-accent, #3b82f6)) 15%,
         rgba(255, 255, 255, 0.06)
       );
     border-radius: clamp(8px, 1.8cqi, 10px);
@@ -833,7 +833,7 @@
     font-size: clamp(0.8rem, 2cqi, 0.9rem);
     color: color-mix(
       in srgb,
-      var(--active-type-color, #3b82f6) 70%,
+      var(--active-type-color, var(--theme-accent, #3b82f6)) 70%,
       rgba(255, 255, 255, 0.6)
     );
     margin-top: 2px;
@@ -864,13 +864,13 @@
       to top,
       color-mix(
           in srgb,
-          var(--active-type-color, #3b82f6) 4%,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
           rgba(18, 18, 28, 1)
         )
         0%,
       color-mix(
           in srgb,
-          var(--active-type-color, #3b82f6) 4%,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
           rgba(18, 18, 28, 1)
         )
         70%,
@@ -970,14 +970,14 @@
   .toast.info {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 8%, transparent) 100%
     );
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #6366f1) 25%, transparent);
   }
 
   .toast.info .toast-icon {
-    background: var(--theme-accent, #6366f1);
+    background: var(--theme-accent-strong, #6366f1);
     color: white;
   }
 

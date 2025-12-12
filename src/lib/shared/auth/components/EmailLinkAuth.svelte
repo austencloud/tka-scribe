@@ -264,8 +264,8 @@
 
   input:focus {
     outline: none;
-    border-color: var(--theme-accent, #8b5cf6);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+    border-color: var(--theme-accent-strong, #8b5cf6);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
   }
 
   input:disabled {
@@ -279,7 +279,7 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--theme-accent, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #000) 100%);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000) 100%);
     color: var(--theme-text, white);
     border: none;
     border-radius: 0.5rem;
@@ -288,12 +288,12 @@
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 52px;
-    box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
+    box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
   }
 
   .submit-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #8b5cf6) 85%, #000) 0%, color-mix(in srgb, var(--theme-accent, #8b5cf6) 70%, #000) 100%);
-    box-shadow: 0 6px 8px color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 70%, #000) 100%);
+    box-shadow: 0 6px 8px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     transform: translateY(-1px);
   }
 

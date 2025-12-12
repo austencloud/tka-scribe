@@ -23,6 +23,7 @@
     disabled?: boolean;
     useFixedPosition?: boolean; // Use position:fixed for overflow container contexts
     inlineResults?: boolean; // Show results inline instead of dropdown
+    excludeUserIds?: string[]; // User IDs to exclude from search results
   }
 
   let {
@@ -33,6 +34,7 @@
     disabled = false,
     useFixedPosition = false,
     inlineResults = false,
+    excludeUserIds = [],
   }: Props = $props();
 
   let inputElement: HTMLInputElement | undefined = $state();
@@ -85,12 +87,14 @@
 
       console.log("[UserSearch] Got results:", data.length, data);
 
-      return data.map((user) => ({
-        uid: user.id,
-        displayName: user.displayName || "",
-        email: user.email || "",
-        photoURL: user.photoURL || undefined,
-      }));
+      return data
+        .map((user) => ({
+          uid: user.id,
+          displayName: user.displayName || "",
+          email: user.email || "",
+          photoURL: user.photoURL || undefined,
+        }))
+        .filter((user) => !excludeUserIds.includes(user.uid));
     } catch (error) {
       console.error("[UserSearch] Failed to search users:", error);
       return [];
@@ -185,8 +189,9 @@
   <div class="search-input-wrapper">
     <i class="fas fa-search search-icon"></i>
     <input
-      type="text"
+      type="search"
       class="search-input"
+      name="user-search-query"
       bind:this={inputElement}
       bind:value={searchQuery}
       oninput={handleSearchInput}
@@ -195,6 +200,9 @@
       {placeholder}
       {disabled}
       autocomplete="off"
+      data-1p-ignore
+      data-lpignore="true"
+      data-form-type="other"
     />
     {#if isSearching}
       <i class="fas fa-spinner fa-spin loading-icon"></i>

@@ -10,8 +10,9 @@ import type { PictographData } from "../../../pictograph/shared/domain/models/Pi
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import { renderPictographToSVG } from "../../utils/pictograph-to-svg";
+import { renderPictographToSVG, type PictographVisibilityOptions } from "../../utils/pictograph-to-svg";
 import { simplifyRepeatedWord } from "../../utils/word-simplifier";
+import { getVisibilityStateManager } from "../../../pictograph/shared/state/visibility-state.svelte";
 
 import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
@@ -41,6 +42,23 @@ export class ImageCompositionService implements IImageCompositionService {
     private readonly dimensionCalculationService: IDimensionCalculationService
   ) {}
   /**
+   * Get current visibility settings from global visibility manager
+   * These are passed to each pictograph during export to ensure consistency
+   */
+  private getCurrentVisibilitySettings(): PictographVisibilityOptions {
+    const visibilityManager = getVisibilityStateManager();
+    return {
+      showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"),
+      showVTG: visibilityManager.getGlyphVisibility("vtgGlyph"),
+      showElemental: visibilityManager.getGlyphVisibility("elementalGlyph"),
+      showPositions: visibilityManager.getGlyphVisibility("positionsGlyph"),
+      showReversals: visibilityManager.getGlyphVisibility("reversalIndicators"),
+      showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
+      showTurnNumbers: visibilityManager.getGlyphVisibility("turnNumbers"),
+    };
+  }
+
+  /**
    * Compose complete sequence image from sequence data
    */
   async composeSequenceImage(
@@ -50,6 +68,10 @@ export class ImageCompositionService implements IImageCompositionService {
     if (!sequence.beats || sequence.beats.length === 0) {
       throw new Error("Sequence must have at least one beat");
     }
+
+    // Get visibility settings ONCE at the start of composition
+    // This ensures all pictographs use the same settings
+    const visibilitySettings = this.getCurrentVisibilitySettings();
 
     // Step 1: Calculate layout using LayoutCalculationService
     // This service has the proper lookup tables matching the desktop application
@@ -118,7 +140,8 @@ export class ImageCompositionService implements IImageCompositionService {
         0,
         beatSize,
         startBeatNumber,
-        headerHeight // Offset grid below header
+        headerHeight, // Offset grid below header
+        visibilitySettings // Pass visibility settings
       );
     }
 
@@ -142,7 +165,8 @@ export class ImageCompositionService implements IImageCompositionService {
         row,
         beatSize,
         beatNumber,
-        headerHeight // Offset grid below header
+        headerHeight, // Offset grid below header
+        visibilitySettings // Pass visibility settings
       );
     }
 
@@ -206,14 +230,17 @@ export class ImageCompositionService implements IImageCompositionService {
     row: number,
     beatSize: number,
     beatNumber?: number,
-    titleOffset: number = 0
+    titleOffset: number = 0,
+    visibilitySettings?: PictographVisibilityOptions
   ): Promise<void> {
     try {
       // 🚀 PERF: Generate cache key and check cache first
+      // Include visibility settings in cache key for correct caching
       const cacheKey = this.generatePictographCacheKey(
         pictographData,
         beatSize,
-        beatNumber
+        beatNumber,
+        visibilitySettings
       );
 
       let img = this.renderedImageCache.get(cacheKey);
@@ -225,11 +252,12 @@ export class ImageCompositionService implements IImageCompositionService {
         // Cache miss - render SVG and cache the result
         this.cacheMisses++;
 
-        // Generate SVG with beat number
+        // Generate SVG with beat number and visibility settings
         const svgString = await renderPictographToSVG(
           pictographData,
           beatSize,
-          beatNumber
+          beatNumber,
+          visibilitySettings
         );
 
         // Convert SVG to image
@@ -265,7 +293,8 @@ export class ImageCompositionService implements IImageCompositionService {
   private generatePictographCacheKey(
     data: BeatData | PictographData,
     beatSize: number,
-    beatNumber?: number
+    beatNumber?: number,
+    visibilitySettings?: PictographVisibilityOptions
   ): string {
     // Extract the key visual properties that affect rendering
     const keyParts: string[] = [];
@@ -295,6 +324,13 @@ export class ImageCompositionService implements IImageCompositionService {
       );
     } else {
       keyParts.push("red:none");
+    }
+
+    // Include visibility settings in cache key (important for correct caching!)
+    if (visibilitySettings) {
+      keyParts.push(
+        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|${visibilitySettings.showTurnNumbers ?? "d"}`
+      );
     }
 
     return keyParts.join(":");

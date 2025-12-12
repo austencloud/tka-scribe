@@ -96,13 +96,13 @@
 		justify-content: center;
 		gap: 10px;
 		padding: 14px 24px;
-		background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
-		border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+		background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+		border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
 		border-radius: 12px;
 	}
 
 	.credential-display i {
-		color: var(--theme-accent, #8b5cf6);
+		color: var(--theme-accent-strong, #8b5cf6);
 		font-size: 16px;
 	}
 
@@ -141,7 +141,7 @@
 
 	/* Focus States */
 	.done-btn:focus-visible {
-		outline: 2px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
+		outline: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
 		outline-offset: 2px;
 	}
 

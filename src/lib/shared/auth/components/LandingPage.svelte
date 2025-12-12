@@ -222,15 +222,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 12%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
     border-radius: 20px;
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
     transition: background var(--theme-transition), border-color var(--theme-transition);
   }
 
   .logo-icon {
     font-size: 36px;
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent-strong, #8b5cf6);
     transition: color var(--theme-transition);
   }
 
@@ -246,7 +246,7 @@
     margin: 0;
     font-size: 1.125rem;
     font-weight: 500;
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent-strong, #8b5cf6);
     transition: color var(--theme-transition);
   }
 
@@ -263,15 +263,15 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, rgba(255, 255, 255, 0.03));
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, rgba(255, 255, 255, 0.03));
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
     border-radius: 14px;
     transition: background var(--theme-transition), border-color var(--theme-transition);
   }
 
   .feature-card:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, rgba(255, 255, 255, 0.05));
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 35%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, rgba(255, 255, 255, 0.05));
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, transparent);
   }
 
   .feature-icon {
@@ -280,7 +280,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
     transition: background var(--theme-transition);
@@ -288,7 +288,7 @@
 
   .feature-icon i {
     font-size: 16px;
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent-strong, #8b5cf6);
     transition: color var(--theme-transition);
   }
 
@@ -320,8 +320,8 @@
     gap: 16px;
     width: 100%;
     padding: 28px 24px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, rgba(255, 255, 255, 0.03));
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, rgba(255, 255, 255, 0.03));
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
     border-radius: 20px;
     transition: background var(--theme-transition), border-color var(--theme-transition);
   }
@@ -353,8 +353,8 @@
     gap: 10px;
     width: 100%;
     padding: 12px 20px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 12%, rgba(255, 255, 255, 0.02));
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, rgba(255, 255, 255, 0.02));
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border-radius: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 0.9375rem;
@@ -364,8 +364,8 @@
   }
 
   .email-toggle:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 18%, rgba(255, 255, 255, 0.04));
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 18%, rgba(255, 255, 255, 0.04));
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     color: var(--theme-text, white);
   }
 
@@ -386,7 +386,7 @@
     content: "";
     flex: 1;
     height: 1px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     transition: background var(--theme-transition);
   }
 
@@ -414,10 +414,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 18%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 18%, transparent);
     border-radius: 12px;
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent-strong, #8b5cf6);
     font-size: 18px;
     cursor: pointer;
     transition: background var(--theme-transition), border-color var(--theme-transition), color var(--theme-transition), transform 200ms ease;
@@ -425,8 +425,8 @@
   }
 
   .bg-toggle:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     transform: scale(1.05);
   }
 

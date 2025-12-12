@@ -11,6 +11,8 @@
 	import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 	import { toast } from "../../../toast/state/toast-state.svelte";
 	import InboxNotificationItem from "./InboxNotificationItem.svelte";
+	import NotificationSkeleton from "../skeletons/NotificationSkeleton.svelte";
+	import EmptyNotifications from "../empty-states/EmptyNotifications.svelte";
 
 	interface Props {
 		notifications: UserNotification[];
@@ -126,16 +128,9 @@
 	{/if}
 
 	{#if isLoading}
-		<div class="loading-state" role="status" aria-live="polite">
-			<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-			<span>Loading notifications...</span>
-		</div>
+		<NotificationSkeleton count={5} />
 	{:else if notifications.length === 0}
-		<div class="empty-state">
-			<i class="fas fa-bell-slash" aria-hidden="true"></i>
-			<h3>No notifications</h3>
-			<p>You're all caught up!</p>
-		</div>
+		<EmptyNotifications />
 	{:else}
 		<div class="notifications" role="list" aria-label="Notification list">
 			{#each notifications as notification, index (notification.id)}
@@ -207,36 +202,6 @@
 
 	.action-btn.clear-all:hover:not(:disabled) {
 		color: var(--semantic-error, #ef4444);
-	}
-
-	.loading-state,
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 12px;
-		padding: 48px 24px;
-		text-align: center;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-	}
-
-	.loading-state i,
-	.empty-state i {
-		font-size: 32px;
-		opacity: 0.5;
-	}
-
-	.empty-state h3 {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 600;
-		color: var(--theme-text, #ffffff);
-	}
-
-	.empty-state p {
-		margin: 0;
-		font-size: 14px;
 	}
 
 	.notifications {
