@@ -5,7 +5,7 @@
    * Provides social authentication options for users
    */
 
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { getRedirectResult } from "firebase/auth";
@@ -181,7 +181,7 @@
     // Redirect if already logged in
     // This handles cases where the user is already authenticated from a previous session
     $effect(() => {
-      if (authStore.isAuthenticated && !hasRedirected && !loadingRedirect) {
+      if (authState.isAuthenticated && !hasRedirected && !loadingRedirect) {
         console.log("✅ User is authenticated, redirecting to home...");
         hasRedirected = true;
         goto("/");
@@ -348,8 +348,8 @@
   .loading-state .spinner {
     width: 52px;
     height: 52px;
-    border: 4px solid rgba(99, 102, 241, 0.2);
-    border-top-color: #6366f1;
+    border: 4px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    border-top-color: var(--theme-accent, #6366f1);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }

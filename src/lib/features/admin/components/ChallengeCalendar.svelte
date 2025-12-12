@@ -143,8 +143,8 @@
   }
 
   .calendar-day.scheduled {
-    border-color: rgba(102, 126, 234, 0.5);
-    background: rgba(102, 126, 234, 0.1);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .calendar-day.today {

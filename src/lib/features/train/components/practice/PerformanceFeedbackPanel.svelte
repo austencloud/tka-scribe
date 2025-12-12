@@ -62,8 +62,8 @@
 		align-items: center;
 		gap: var(--space-2026-lg, 28px);
 		padding: var(--space-2026-md, 20px) var(--space-2026-lg, 28px);
-		background: #1a1a24;
-		border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+		background: var(--theme-panel-bg, #1a1a24);
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
 		border-radius: var(--radius-2026-md, 14px);
 		box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
 		min-height: 72px;
@@ -75,7 +75,7 @@
 
 	.empty-text {
 		font-size: 0.875rem;
-		color: rgba(255, 255, 255, 0.4);
+		color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
 		font-weight: 500;
 	}
 
@@ -90,7 +90,7 @@
 		font-weight: 500;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 	}
 
 	.metric-value {
@@ -100,24 +100,24 @@
 	}
 
 	.metric-value.score {
-		color: #3b82f6;
-		text-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+		color: var(--semantic-info, #3b82f6);
+		text-shadow: 0 0 20px color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
 	}
 
 	.metric-value.combo {
-		color: #fbbf24;
-		text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+		color: var(--semantic-warning, #fbbf24);
+		text-shadow: 0 0 20px color-mix(in srgb, var(--semantic-warning, #fbbf24) 30%, transparent);
 	}
 
 	.combo-metric {
 		padding: var(--space-2026-sm, 12px) var(--space-2026-md, 20px);
 		background: linear-gradient(
 			135deg,
-			rgba(251, 191, 36, 0.12) 0%,
-			rgba(251, 191, 36, 0.08) 100%
+			color-mix(in srgb, var(--semantic-warning, #fbbf24) 12%, transparent) 0%,
+			color-mix(in srgb, var(--semantic-warning, #fbbf24) 8%, transparent) 100%
 		);
 		border-radius: var(--radius-2026-sm, 10px);
-		border: 1px solid rgba(251, 191, 36, 0.2);
+		border: 1px solid color-mix(in srgb, var(--semantic-warning, #fbbf24) 20%, transparent);
 	}
 
 	.hit-feedback {
@@ -132,23 +132,23 @@
 	.hit-feedback.hit {
 		background: linear-gradient(
 			135deg,
-			rgba(34, 197, 94, 0.15) 0%,
-			rgba(34, 197, 94, 0.1) 100%
+			color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
+			color-mix(in srgb, var(--semantic-success, #22c55e) 10%, transparent) 100%
 		);
-		border-color: rgba(34, 197, 94, 0.3);
-		color: rgba(134, 239, 172, 1);
-		text-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+		border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+		color: var(--semantic-success, #86efac);
+		text-shadow: 0 0 20px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
 	}
 
 	.hit-feedback.miss {
 		background: linear-gradient(
 			135deg,
-			rgba(239, 68, 68, 0.15) 0%,
-			rgba(239, 68, 68, 0.1) 100%
+			color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
+			color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent) 100%
 		);
-		border-color: rgba(239, 68, 68, 0.3);
-		color: rgba(248, 113, 113, 1);
-		text-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+		border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+		color: var(--semantic-error, #f87171);
+		text-shadow: 0 0 20px color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
 	}
 
 	@keyframes fadeInOut {

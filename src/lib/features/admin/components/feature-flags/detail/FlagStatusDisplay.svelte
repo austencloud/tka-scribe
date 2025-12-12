@@ -34,7 +34,7 @@
   .status-display h3 {
     margin: 0 0 var(--radius-2026-sm) 0;
     font-size: var(--text-2026-caption);
-    font-weight: var(--settings-font-weight-semibold);
+    font-weight: 600;
     color: var(--theme-text);
   }
 
@@ -63,13 +63,13 @@
   .status-label {
     font-size: var(--text-2026-caption);
     color: var(--theme-text-dim);
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
   }
 
   .status-value {
     font-size: var(--text-2026-caption);
     color: var(--theme-text);
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: var(--space-2026-xs);

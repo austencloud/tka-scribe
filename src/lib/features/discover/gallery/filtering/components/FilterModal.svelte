@@ -238,7 +238,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     margin: 0;
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding-bottom: 4px;
@@ -248,32 +248,32 @@ import { TYPES } from "$lib/shared/inversify/types";
   .filter-button {
     padding: 10px 16px;
     border: none;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 14px;
     font-weight: 500;
     backdrop-filter: blur(8px);
-    box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .filter-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     transform: translateY(-1px);
     box-shadow:
-      inset 0 0.5px 1px rgba(255, 255, 255, 0.08),
-      0 2px 4px rgba(0, 0, 0, 0.15);
+      inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08)),
+      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .filter-button.active {
-    background: rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.98);
+    background: color-mix(in srgb, var(--theme-text, white) 18%, transparent);
+    color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.2),
-      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .filter-button:active {
@@ -298,33 +298,33 @@ import { TYPES } from "$lib/shared/inversify/types";
   .letter-button {
     padding: 10px 8px;
     border: none;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-size: 14px;
     font-weight: 600;
     text-align: center;
     backdrop-filter: blur(8px);
-    box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .letter-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     transform: translateY(-1px);
     box-shadow:
-      inset 0 0.5px 1px rgba(255, 255, 255, 0.08),
-      0 2px 4px rgba(0, 0, 0, 0.15);
+      inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08)),
+      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .letter-button.active {
-    background: rgba(255, 255, 255, 0.18);
-    color: rgba(255, 255, 255, 0.98);
+    background: color-mix(in srgb, var(--theme-text, white) 18%, transparent);
+    color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.2),
-      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .letter-button:active {
@@ -338,7 +338,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     gap: 12px;
     padding-top: 20px;
     margin-top: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     flex-shrink: 0;
   }
 
@@ -357,30 +357,30 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .clear-button {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
+    box-shadow: 0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .clear-button:hover {
-    background: rgba(255, 255, 255, 0.14);
-    color: rgba(255, 255, 255, 0.98);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.14));
+    color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .apply-button {
-    background: rgba(59, 130, 246, 0.2);
-    color: rgba(59, 130, 246, 1);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    color: var(--semantic-info, #3b82f6);
     box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.1),
-      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1)),
+      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .apply-button:hover {
-    background: rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .clear-button:active,

@@ -17,10 +17,16 @@
 <script lang="ts">
   import CreatePanelDrawer from "./CreatePanelDrawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { getCreateModuleContext } from "../context/create-module-context";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import type { SequenceVisibility } from "$lib/features/library/domain/models/LibrarySequence";
+  import { tryResolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
+  import type { IFirebaseVideoUploadService } from "$lib/shared/share/services/contracts/IFirebaseVideoUploadService";
+  import { DEFAULT_SHARE_OPTIONS } from "$lib/shared/share/domain/models/ShareOptions";
+  import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
 
   interface Props {
     show: boolean;
@@ -37,7 +43,9 @@
   const { CreateModuleState, panelState, layout } = ctx;
 
   // Get current sequence
-  const activeSequenceState = $derived(CreateModuleState.getActiveTabSequenceState());
+  const activeSequenceState = $derived(
+    CreateModuleState.getActiveTabSequenceState()
+  );
   const sequence = $derived(activeSequenceState.currentSequence);
 
   // Panel height for drawer
@@ -59,7 +67,7 @@
   const visibility: SequenceVisibility = "public";
 
   // Derived state
-  const currentUser = $derived(authStore.user);
+  const currentUser = $derived(authState.user);
   const displayName = $derived(
     currentUser?.displayName || currentUser?.email || "Anonymous"
   );
@@ -105,26 +113,89 @@
       return;
     }
 
-    const metadata: SaveMetadata = {
-      name: name.trim(),
-      visibility: "public",
-      tags,
-      collectionIds: [],
-      notes: notes.trim(),
-    };
-
     isSaving = true;
+    let thumbnailUrl: string | undefined;
 
     try {
       logger.info("Saving sequence to library...", {
         beatCount: sequence.beats.length,
-        sequenceName: metadata.name,
+        sequenceName: name.trim(),
       });
 
-      // Save sequence to library
+      // Step 1: Generate thumbnail image
+      try {
+        const shareService = tryResolve<IShareService>(TYPES.IShareService);
+        const uploadService = tryResolve<IFirebaseVideoUploadService>(
+          TYPES.IFirebaseVideoUploadService
+        );
+
+        console.log("[SaveToLibraryPanel] Services resolved:", {
+          shareService: !!shareService,
+          uploadService: !!uploadService,
+        });
+
+        if (shareService && uploadService) {
+          console.log("[SaveToLibraryPanel] Generating thumbnail...");
+
+          // Get image composition settings from visibility settings
+          const imageCompositionManager = getImageCompositionManager();
+          const compositionSettings = imageCompositionManager.getSettings();
+
+          // Use the user's visibility settings for thumbnail generation
+          const thumbnailOptions = {
+            ...DEFAULT_SHARE_OPTIONS,
+            addWord: compositionSettings.addWord,
+            addBeatNumbers: compositionSettings.addBeatNumbers,
+            addDifficultyLevel: compositionSettings.addDifficultyLevel,
+            addUserInfo: compositionSettings.addUserInfo,
+            includeStartPosition: compositionSettings.includeStartPosition,
+            format: "PNG" as const,
+          };
+
+          console.log("[SaveToLibraryPanel] Thumbnail options (from settings):", thumbnailOptions);
+          console.log("[SaveToLibraryPanel] Sequence to render:", {
+            id: sequence.id,
+            beatCount: sequence.beats.length,
+            hasStartPosition: !!sequence.startPosition || !!sequence.startingPositionBeat,
+          });
+
+          const imageBlob = await shareService.getImageBlob(
+            sequence,
+            thumbnailOptions
+          );
+
+          console.log("[SaveToLibraryPanel] Image blob generated:", {
+            size: imageBlob.size,
+            type: imageBlob.type,
+          });
+
+          // Upload to Firebase Storage
+          console.log("[SaveToLibraryPanel] Uploading thumbnail...");
+          const uploadResult = await uploadService.uploadSequenceThumbnail(
+            sequence.id,
+            imageBlob,
+            "png"
+          );
+          thumbnailUrl = uploadResult.url;
+          console.log("[SaveToLibraryPanel] ✅ Thumbnail uploaded:", thumbnailUrl);
+        } else {
+          console.warn("[SaveToLibraryPanel] ⚠️ Share/upload services not available, saving without thumbnail");
+        }
+      } catch (thumbnailError) {
+        // Don't fail the entire save if thumbnail generation fails
+        console.error("[SaveToLibraryPanel] ❌ Failed to generate/upload thumbnail:", thumbnailError);
+      }
+
+      // Step 2: Save sequence with thumbnail URL in metadata
       const sequenceId = await ctx.sequencePersistenceService.saveSequence(
         sequence,
-        metadata
+        {
+          name: name.trim(),
+          visibility: "public",
+          tags,
+          notes: notes.trim(),
+          thumbnailUrl,
+        }
       );
 
       logger.success("Sequence saved to library with ID:", sequenceId);
@@ -176,11 +247,7 @@
     <SheetDragHandle />
 
     <!-- Close button -->
-    <button
-      class="close-button"
-      onclick={handleClose}
-      aria-label="Close panel"
-    >
+    <button class="close-button" onclick={handleClose} aria-label="Close panel">
       <i class="fas fa-times"></i>
     </button>
 
@@ -333,7 +400,7 @@
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     transform: scale(1.05);
   }
 
@@ -395,8 +462,8 @@
   .textarea-field {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
@@ -408,9 +475,10 @@
   .input-field:focus,
   .textarea-field:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .input-field::placeholder,
@@ -429,8 +497,8 @@
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
@@ -459,10 +527,10 @@
     width: 48px;
     height: 48px;
     flex-shrink: 0;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 8px;
-    color: rgba(139, 92, 246, 1);
+    color: var(--theme-accent-strong, #8b5cf6);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -471,8 +539,8 @@
   }
 
   .add-tag-button:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.3);
-    border-color: rgba(139, 92, 246, 0.5);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
   }
 
   .add-tag-button:disabled {
@@ -493,10 +561,10 @@
     align-items: center;
     gap: 6px;
     padding: 5px 10px;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 16px;
-    color: rgba(139, 92, 246, 1);
+    color: var(--theme-accent-strong, #8b5cf6);
     font-size: 12px;
   }
 
@@ -549,25 +617,25 @@
   }
 
   .button-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .button-secondary:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     color: rgba(255, 255, 255, 0.9);
   }
 
   .button-primary {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, var(--theme-accent-strong, #7c3aed) 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .button-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.6);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #7c3aed) 0%, var(--theme-accent-strong, #6d28d9) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
     transform: translateY(-1px);
   }
 

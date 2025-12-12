@@ -114,7 +114,7 @@
   /* Gallery controls container - wraps the top bar controls */
   .gallery-controls-container {
     flex-shrink: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .display-content {
@@ -134,18 +134,18 @@
   }
 
   .display-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 3px;
   }
 
   .display-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: color-mix(in srgb, var(--theme-text, white) 25%, transparent);
   }
 
   /* Firefox scrollbar */
   .display-content {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) transparent;
   }
 
   /* Error state */
@@ -156,7 +156,7 @@
     justify-content: center;
     height: 200px;
     gap: var(--spacing-md);
-    color: #ff6b6b;
+    color: var(--semantic-error, #ff6b6b);
   }
 
   .error-message {
@@ -166,16 +166,16 @@
 
   .error-state button {
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 107, 107, 0.2);
-    border: 1px solid #ff6b6b;
+    background: color-mix(in srgb, var(--semantic-error, #ff6b6b) 20%, transparent);
+    border: 1px solid var(--semantic-error, #ff6b6b);
     border-radius: 6px;
-    color: #ff6b6b;
+    color: var(--semantic-error, #ff6b6b);
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .error-state button:hover {
-    background: rgba(255, 107, 107, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ff6b6b) 30%, transparent);
   }
 
   /* Empty state */
@@ -184,7 +184,7 @@
     align-items: center;
     justify-content: center;
     height: 200px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .empty-state p {

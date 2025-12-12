@@ -237,8 +237,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #1a1a24;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-panel-bg, #1a1a24);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .content-column {
@@ -258,18 +258,22 @@
     gap: 10px;
     width: 100%;
     padding: 10px 14px;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(16, 185, 129, 0.08));
-    border: 1px solid rgba(34, 197, 94, 0.25);
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent),
+      color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent));
+    border: 1px solid color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .sequence-info:hover {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.18), rgba(16, 185, 129, 0.12));
-    border-color: rgba(34, 197, 94, 0.4);
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 18%, transparent),
+      color-mix(in srgb, var(--semantic-success, #10b981) 12%, transparent));
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
   }
 
   .seq-name {
@@ -283,26 +287,26 @@
 
   .seq-meta {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .sequence-info i {
     font-size: 0.8rem;
-    color: rgba(134, 239, 172, 0.8);
+    color: color-mix(in srgb, var(--semantic-success, #86efac) 80%, transparent);
   }
 
   .grid-cell {
     flex: 1 1 auto;
     min-height: 120px;
     display: flex;
-    background: #1a1a24;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-panel-bg, #1a1a24);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .settings-cell {
     flex-shrink: 0;
-    background: #1a1a24;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-panel-bg, #1a1a24);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .settings-toggle {
@@ -313,7 +317,7 @@
     padding: 10px 14px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -321,8 +325,8 @@
   }
 
   .settings-toggle:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .settings-toggle span {

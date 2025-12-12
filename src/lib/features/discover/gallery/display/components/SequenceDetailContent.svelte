@@ -332,14 +332,14 @@ Used by both desktop side panel and mobile slide-up overlay.
     align-items: center;
     justify-content: space-between;
     padding-bottom: clamp(8px, 2cqi, 12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
   .header-title {
     font-size: clamp(14px, 4cqi, 18px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   /* Close button - uses global touch target token */
@@ -349,10 +349,10 @@ Used by both desktop side panel and mobile slide-up overlay.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -364,9 +364,9 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, white);
   }
 
   .close-button:active {
@@ -395,18 +395,18 @@ Used by both desktop side panel and mobile slide-up overlay.
     z-index: 10;
     padding: 0;
     margin: 0;
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.4));
   }
 
   .creator-badge:hover {
     transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border-color: color-mix(in srgb, var(--theme-text, white) 60%, transparent);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.5));
   }
 
   .creator-badge:active {
@@ -428,7 +428,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   .viewer-word-label {
     font-size: clamp(18px, 6cqi, 28px);
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, white);
     margin: 0;
     text-align: center;
   }
@@ -442,15 +442,15 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   .metadata-item {
     font-size: clamp(12px, 3cqi, 14px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .creator-link {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     padding: 8px 14px;
     border-radius: 20px;
     cursor: pointer;
@@ -458,8 +458,8 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .creator-link:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.35);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.35));
   }
 
   .creator-link:active {
@@ -468,12 +468,12 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   .creator-label {
     font-size: clamp(12px, 3cqi, 14px);
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     font-weight: 500;
   }
 
   .creator-link:hover .creator-label {
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .creator-arrow {
@@ -503,10 +503,10 @@ Used by both desktop side panel and mobile slide-up overlay.
     justify-content: center;
     gap: clamp(6px, 2cqi, 10px);
     padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 18px);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: clamp(6px, 2cqi, 10px);
-    color: white;
+    color: var(--theme-text, white);
     font-size: clamp(12px, 3cqi, 14px);
     font-weight: 600;
     cursor: pointer;
@@ -522,7 +522,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .action-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
   }
 
   .action-btn:active {
@@ -530,14 +530,14 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .action-btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6) 0%, var(--semantic-info, #2563eb) 100%);
     border-color: transparent;
     flex: 1;
     min-width: clamp(100px, 30cqi, 140px);
   }
 
   .action-btn-primary:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--semantic-info, #2563eb) 0%, color-mix(in srgb, var(--semantic-info, #1d4ed8) 90%, #000) 100%);
   }
 
   .action-btn-maximize {
@@ -546,19 +546,19 @@ Used by both desktop side panel and mobile slide-up overlay.
   }
 
   .action-btn.favorited {
-    color: #f87171;
-    border-color: #f87171;
+    color: var(--semantic-error, #f87171);
+    border-color: var(--semantic-error, #f87171);
   }
 
   /* Primary button favorited state - pink/red gradient */
   .action-btn-primary.favorited {
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-error, #ef4444) 90%, #f87171) 0%, var(--semantic-error, #ef4444) 100%);
     border-color: transparent;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .action-btn-primary.favorited:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--semantic-error, #ef4444) 0%, color-mix(in srgb, var(--semantic-error, #dc2626) 90%, #000) 100%);
   }
 
   /* Compact layout for smaller containers */
@@ -603,7 +603,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   .video-player-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 85%, transparent);
     border: none;
     cursor: pointer;
   }
@@ -615,12 +615,12 @@ Used by both desktop side panel and mobile slide-up overlay.
     width: 100%;
     max-width: 800px;
     max-height: 90vh;
-    background: linear-gradient(
+    background: var(--theme-panel-bg, linear-gradient(
       135deg,
       rgba(20, 20, 30, 0.98) 0%,
       rgba(30, 30, 45, 0.98) 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    ));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     overflow: hidden;
     animation: videoPlayerIn 0.2s ease-out;
@@ -642,8 +642,8 @@ Used by both desktop side panel and mobile slide-up overlay.
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .video-player-title {
@@ -652,11 +652,11 @@ Used by both desktop side panel and mobile slide-up overlay.
     gap: 0.625rem;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary, white);
+    color: var(--theme-text, white);
   }
 
   .video-player-title i {
-    color: #3b82f6;
+    color: var(--semantic-info, #3b82f6);
   }
 
   .video-player-close {
@@ -665,17 +665,17 @@ Used by both desktop side panel and mobile slide-up overlay.
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: none;
     border-radius: 8px;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .video-player-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, white);
   }
 
   .video-player-content {
@@ -683,7 +683,7 @@ Used by both desktop side panel and mobile slide-up overlay.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: black;
+    background: var(--theme-shadow, black);
   }
 
   .video-player-video {
@@ -695,8 +695,8 @@ Used by both desktop side panel and mobile slide-up overlay.
   .video-player-description {
     padding: 1rem 1.25rem;
     font-size: 0.9rem;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.02);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
   }
 </style>

@@ -59,7 +59,8 @@ export class SequencePersistenceService {
   ): Promise<string> {
     console.log("[SequencePersistenceService] saveSequence called", {
       beatCount: sequenceData.beats.length,
-      metadata
+      thumbnailUrl: metadata.thumbnailUrl,
+      name: metadata.name,
     });
     
     const user = auth.currentUser;
@@ -72,6 +73,18 @@ export class SequencePersistenceService {
     console.log("[SequencePersistenceService] Generated sequence ID:", sequenceId);
 
     // Flatten structure to match LibrarySequence format
+    // Store thumbnail in both thumbnails array (for SequenceData compatibility)
+    // and thumbnailUrl field (for backward compatibility)
+    const thumbnails = metadata.thumbnailUrl
+      ? [metadata.thumbnailUrl]
+      : sequenceData.thumbnails || [];
+
+    console.log("[SequencePersistenceService] Thumbnails to save:", {
+      thumbnailUrl: metadata.thumbnailUrl,
+      thumbnailsArray: thumbnails,
+      existingThumbnails: sequenceData.thumbnails,
+    });
+
     const savedSequence = {
       id: sequenceId,
       userId: user.uid,
@@ -81,8 +94,10 @@ export class SequencePersistenceService {
       visibility: metadata.visibility,
       description: metadata.description,
       tags: metadata.tags || [],
-      thumbnailUrl: metadata.thumbnailUrl,
+      thumbnails, // Array for SequenceData compatibility
+      thumbnailUrl: metadata.thumbnailUrl, // Single URL for backward compatibility
       videoUrl: metadata.videoUrl,
+      source: "created" as const, // Mark as user-created
     };
 
     const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);

@@ -40,7 +40,7 @@
   .capability-chip {
     display: flex;
     align-items: center;
-    gap: var(--settings-space-sm);
+    gap: 8px;
     padding: var(--radius-2026-sm) var(--radius-2026-md);
     background: var(--surface-2026);
     border: 1px solid var(--border-2026);
@@ -77,7 +77,7 @@
   }
 
   .capability-name {
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
   }
 
   .role-badge {

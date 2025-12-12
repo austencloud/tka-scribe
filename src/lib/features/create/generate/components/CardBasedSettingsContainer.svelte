@@ -245,7 +245,8 @@ Delegates ALL logic to services (SRP compliant)
     --card-text-weight: 700;
     --card-text-spacing: 0.3px;
     --card-text-shadow:
-      0 2px 6px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.2);
+      0 2px 6px var(--theme-shadow, rgba(0, 0, 0, 0.5)),
+      0 0 20px var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
 
     min-height: 0; /* Allow flex to shrink */
     overflow: visible; /* Allow cards to pop over neighbors and modals to escape */
@@ -294,8 +295,8 @@ Delegates ALL logic to services (SRP compliant)
   /* Desktop (side-by-side layout): constrain height and center */
   @media (min-width: 1024px) {
     .card-settings-container {
-      max-width: min(650px, 95%);
-      max-height: min(85%, 550px);
+      max-width: min(750px, 95%);
+      max-height: min(65%, 750px);
       align-self: center; /* Center vertically when height is constrained */
     }
   }

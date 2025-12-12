@@ -12,6 +12,7 @@
   import type { IGridModeDeriver } from "../../grid/services/contracts/IGridModeDeriver";
   import PropSvg from "../../prop/components/PropSvg.svelte";
   import TKAGlyph from "../../tka-glyph/components/TKAGlyph.svelte";
+  import TurnsColumn from "../../tka-glyph/components/TurnsColumn.svelte";
   import { createPictographState } from "../state/pictograph-state.svelte";
   import BeatNumber from "./BeatNumber.svelte";
   import ReversalIndicators from "./ReversalIndicators.svelte";
@@ -37,12 +38,14 @@
     showPositions = undefined,
     showReversals = undefined,
     showNonRadialPoints = undefined,
+    showTurnNumbers = undefined,
     onToggleTKA = undefined,
     onToggleVTG = undefined,
     onToggleElemental = undefined,
     onTogglePositions = undefined,
     onToggleReversals = undefined,
     onToggleNonRadial = undefined,
+    onToggleTurnNumbers = undefined,
   } = $props<{
     pictographData?: (BeatData | PictographData) | null;
     disableContentTransitions?: boolean;
@@ -58,6 +61,7 @@
     showPositions?: boolean;
     showReversals?: boolean;
     showNonRadialPoints?: boolean;
+    showTurnNumbers?: boolean;
     // Toggle callbacks for interactive visibility
     onToggleTKA?: () => void;
     onToggleVTG?: () => void;
@@ -65,6 +69,7 @@
     onTogglePositions?: () => void;
     onToggleReversals?: () => void;
     onToggleNonRadial?: () => void;
+    onToggleTurnNumbers?: () => void;
   }>();
 
   // Extract beat context from pictographData (if it's BeatData)
@@ -137,6 +142,13 @@
     return showNonRadialPoints !== undefined
       ? showNonRadialPoints
       : visibilityManager.getNonRadialVisibility();
+  });
+
+  const effectiveShowTurnNumbers = $derived.by(() => {
+    visibilityUpdateCount;
+    return showTurnNumbers !== undefined
+      ? showTurnNumbers
+      : visibilityManager.getGlyphVisibility("turnNumbers");
   });
 
   // =============================================================================
@@ -500,13 +512,23 @@
           {#if pictographState.displayLetter || pictographData?.letter}
             <TKAGlyph
               letter={pictographState.displayLetter || pictographData?.letter}
-              {turnsTuple}
               pictographData={pictographState.effectivePictographData}
               visible={effectiveShowTKA}
               {previewMode}
               onToggle={onToggleTKA}
             />
           {/if}
+
+          <!-- Turn numbers (independent of TKA glyph) -->
+          <TurnsColumn
+            {turnsTuple}
+            letter={pictographState.displayLetter || pictographData?.letter}
+            pictographData={pictographState.effectivePictographData}
+            visible={effectiveShowTurnNumbers}
+            {previewMode}
+            standalone={!effectiveShowTKA}
+            onToggle={onToggleTurnNumbers}
+          />
 
           <!-- Beat number overlay -->
           <BeatNumber
@@ -597,13 +619,23 @@
             {#if pictographState.displayLetter || pictographData?.letter}
               <TKAGlyph
                 letter={pictographState.displayLetter || pictographData?.letter}
-                {turnsTuple}
                 pictographData={pictographState.effectivePictographData}
                 visible={effectiveShowTKA}
                 {previewMode}
                 onToggle={onToggleTKA}
               />
             {/if}
+
+            <!-- Turn numbers (independent of TKA glyph) -->
+            <TurnsColumn
+              {turnsTuple}
+              letter={pictographState.displayLetter || pictographData?.letter}
+              pictographData={pictographState.effectivePictographData}
+              visible={effectiveShowTurnNumbers}
+              {previewMode}
+              standalone={!effectiveShowTKA}
+              onToggle={onToggleTurnNumbers}
+            />
 
             <!-- Beat number overlay -->
             <BeatNumber

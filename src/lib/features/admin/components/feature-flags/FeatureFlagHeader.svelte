@@ -47,8 +47,8 @@
 <style>
   .management-header {
     padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .header-top {
@@ -71,13 +71,13 @@
   .header-description {
     margin: 0;
     font-size: clamp(12px, 3.5vw, 14px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .view-toggle {
     display: flex;
     gap: 4px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     padding: 4px;
     border-radius: 12px;
     width: 100%;
@@ -93,7 +93,7 @@
     border: none;
     border-radius: 10px;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -103,8 +103,8 @@
   }
 
   .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .toggle-btn:active {
@@ -112,9 +112,9 @@
   }
 
   .toggle-btn.active {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    color: var(--theme-accent);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   /* Hide text on very small screens, show only icons */

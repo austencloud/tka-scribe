@@ -70,7 +70,7 @@ export async function revalidateCurrentModule(): Promise<void> {
             // Sync BOTH ui state and navigation state to ensure nav bar matches content
             syncBothStateSystems(cachedModuleId);
             // Sync Firestore to match localStorage
-            const persistence = getPersistenceService();
+            const persistence = await getPersistenceService();
             await persistence.saveActiveTab(cachedModuleId);
             return;
           }
@@ -80,7 +80,7 @@ export async function revalidateCurrentModule(): Promise<void> {
       }
 
       // If localStorage doesn't have a valid module, check Firestore as fallback
-      const persistence = getPersistenceService();
+      const persistence = await getPersistenceService();
       const savedFromFirestore = await persistence.getActiveTab();
 
       // If Firestore has a module the user can access, restore it
@@ -212,7 +212,7 @@ export async function switchModule(module: ModuleId): Promise<void> {
 
     setActiveModule(module);
 
-    const persistence = getPersistenceService();
+    const persistence = await getPersistenceService();
     await persistence.saveActiveTab(module);
 
     if (browser) {
@@ -255,7 +255,7 @@ export async function initializeModulePersistence(): Promise<void> {
 
     // Fallback to Firestore if not in localStorage
     if (!savedModule) {
-      const persistence = getPersistenceService();
+      const persistence = await getPersistenceService();
       await persistence.initialize();
       savedModule = await persistence.getActiveTab();
     }
@@ -287,7 +287,7 @@ export async function initializeModulePersistence(): Promise<void> {
       // Sync BOTH ui state and navigation state to ensure nav bar matches content
       syncBothStateSystems(defaultModule);
 
-      const persistence = getPersistenceService();
+      const persistence = await getPersistenceService();
       await persistence.initialize();
       await persistence.saveActiveTab(defaultModule);
       if (browser) {

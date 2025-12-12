@@ -480,6 +480,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await loadIfNeeded("gamification", () => import("./modules/gamification.module"));
         break;
 
+      case "messaging":
+        await loadIfNeeded("messaging", () => import("./modules/messaging.module"));
+        break;
+
       default:
         // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
         console.warn(`Unknown feature module: ${feature}`);

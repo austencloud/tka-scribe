@@ -160,8 +160,8 @@
   /* Segmented Control Styles */
   .segmented-control {
     display: inline-flex;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     gap: 0;
   }
@@ -202,17 +202,17 @@
 
   .segment-button:hover:not(.active) {
     color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
   }
 
   .segment-button.active {
     background: linear-gradient(
       135deg,
-      rgba(102, 126, 234, 0.9) 0%,
+      color-mix(in srgb, var(--theme-accent) 90%, transparent) 0%,
       rgba(118, 75, 162, 0.9) 100%
     );
     color: white;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   /* Remove focus outline to prevent visual distraction on mobile */

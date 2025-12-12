@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IAnnouncementService } from "../services/contracts/IAnnouncementService";
@@ -32,19 +32,19 @@
 
   // Check if URL is internal (starts with /)
   function isInternalUrl(url: string): boolean {
-    return url.startsWith('/');
+    return url.startsWith("/");
   }
 
   // Handle internal navigation
   async function handleInternalNavigation(url: string) {
     // Parse the URL to extract module and tab
     // Expected format: /settings?tab=release-notes or /module?tab=tabname
-    const [path, queryString] = url.split('?');
-    const moduleId = (path ?? '').replace('/', '') as ModuleId;
+    const [path, queryString] = url.split("?");
+    const moduleId = (path ?? "").replace("/", "") as ModuleId;
 
     // Parse query params
-    const params = new URLSearchParams(queryString || '');
-    const tab = params.get('tab');
+    const params = new URLSearchParams(queryString || "");
+    const tab = params.get("tab");
 
     // Navigate to module
     await handleModuleChange(moduleId);
@@ -62,11 +62,11 @@
   }
 
   async function handleDismiss() {
-    if (!authStore.user || !announcementService) return;
+    if (!authState.user || !announcementService) return;
 
     try {
       await announcementService.dismissAnnouncement(
-        authStore.user.uid,
+        authState.user.uid,
         announcement.id
       );
       onDismiss();
@@ -84,7 +84,7 @@
       case "warning":
         return "#f59e0b";
       case "info":
-        return "#6366f1";
+        return "var(--theme-accent, #6366f1)";
     }
   }
 
@@ -326,14 +326,19 @@
   }
 
   .action-button.primary {
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
+      var(--theme-accent, #6366f1) 100%
+    );
     border: none;
     color: white;
   }
 
   .action-button.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 8px 20px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .action-button.secondary {

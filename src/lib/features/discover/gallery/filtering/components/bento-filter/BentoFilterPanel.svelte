@@ -12,13 +12,11 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   import type { DifficultyLevel } from "$lib/shared/domain/models/sequence-parameters";
 
   // Shared parameter cards
-  import {
-    LevelCard,
-    LetterCard,
-    LengthCard,
-    FavoritesCard,
-    OptionsCard,
-  } from "$lib/shared/components/parameter-cards";
+  import LevelCard from "$lib/shared/components/parameter-cards/LevelCard.svelte";
+  import LetterCard from "$lib/shared/components/parameter-cards/LetterCard.svelte";
+  import LengthCard from "$lib/shared/components/parameter-cards/LengthCard.svelte";
+  import FavoritesCard from "$lib/shared/components/parameter-cards/FavoritesCard.svelte";
+  import OptionsCard from "$lib/shared/components/parameter-cards/OptionsCard.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   let {

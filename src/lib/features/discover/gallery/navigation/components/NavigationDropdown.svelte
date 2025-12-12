@@ -320,10 +320,10 @@ Responsive behavior:
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text, white) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-text, white) 30%, transparent);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -332,13 +332,13 @@ Responsive behavior:
   }
 
   .dropdown-toggle:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--theme-text, white) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
   }
 
   .dropdown-toggle.active {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: color-mix(in srgb, var(--theme-text, white) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-text, white) 50%, transparent);
   }
 
   .toggle-label {
@@ -359,11 +359,11 @@ Responsive behavior:
     min-width: 280px;
     max-width: 360px;
     max-height: 500px;
-    background: rgba(10, 10, 15, 0.95);
+    background: color-mix(in srgb, var(--theme-panel-bg, #0a0a0f) 95%, transparent);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.4));
     z-index: 10000;
     overflow: hidden;
     animation: slideDown 0.2s ease;
@@ -389,14 +389,14 @@ Responsive behavior:
     padding: 8px 8px 4px 8px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .divider {
     height: 1px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     margin: 4px 0;
   }
 
@@ -416,7 +416,7 @@ Responsive behavior:
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -425,11 +425,11 @@ Responsive behavior:
   }
 
   .sort-method-button:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
   }
 
   .sort-method-button.active {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     font-weight: 600;
   }
 
@@ -444,7 +444,7 @@ Responsive behavior:
   }
 
   .check-icon {
-    color: rgba(74, 222, 128, 0.9);
+    color: var(--semantic-success, rgba(74, 222, 128, 0.9));
     font-size: 0.875rem;
     flex-shrink: 0;
   }
@@ -464,25 +464,25 @@ Responsive behavior:
   }
 
   .menu-items::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 3px;
   }
 
   .menu-items::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 3px;
   }
 
   .menu-items::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   .menu-item {
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -491,8 +491,8 @@ Responsive behavior:
   }
 
   .menu-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     transform: translateY(-1px);
   }
 
@@ -536,7 +536,7 @@ Responsive behavior:
     padding: 0 0 12px 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -553,10 +553,10 @@ Responsive behavior:
     align-items: center;
     gap: 16px;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
@@ -565,13 +565,13 @@ Responsive behavior:
   }
 
   .mobile-sort-button:active {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     transform: scale(0.98);
   }
 
   .mobile-sort-button.active {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     font-weight: 600;
   }
 
@@ -586,14 +586,14 @@ Responsive behavior:
   }
 
   .mobile-sort-button .check-icon {
-    color: rgba(74, 222, 128, 0.9);
+    color: var(--semantic-success, rgba(74, 222, 128, 0.9));
     font-size: 1rem;
     flex-shrink: 0;
   }
 
   .mobile-divider {
     height: 1px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     margin: 20px 0;
   }
 
@@ -605,10 +605,10 @@ Responsive behavior:
 
   .mobile-menu-item {
     padding: 16px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
@@ -617,8 +617,8 @@ Responsive behavior:
   }
 
   .mobile-menu-item:active {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     transform: scale(0.96);
   }
 </style>

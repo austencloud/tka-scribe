@@ -2,7 +2,7 @@
 StepperButtonVisual.svelte - Re-exports from shared for backwards compatibility
 -->
 <script lang="ts">
-  import { StepperButtonVisual as SharedStepperButtonVisual } from "$lib/shared/components/stepper-card";
+  import SharedStepperButtonVisual from "$lib/shared/components/stepper-card/shared/StepperButtonVisual.svelte";
 
   let { type } = $props<{
     type: "increment" | "decrement";

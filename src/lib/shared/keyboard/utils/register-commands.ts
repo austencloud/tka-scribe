@@ -14,7 +14,7 @@ import {
 } from "../../navigation-coordinator/navigation-coordinator.svelte";
 import { navigationState } from "../../navigation/state/navigation-state.svelte";
 import type { ModuleId } from "../../navigation/domain/types";
-import { authStore } from "../../auth/stores/authStore.svelte";
+import { authState } from "../../auth/state/authState.svelte";
 
 export function registerCommandPaletteCommands(
   service: ICommandPaletteService,
@@ -22,7 +22,7 @@ export function registerCommandPaletteCommands(
 ) {
   // Get accessible modules
   const moduleDefinitions = getModuleDefinitions();
-  const isAdmin = authStore.isAdmin;
+  const isAdmin = authState.isAdmin;
 
   // Filter modules to only show accessible ones
   const accessibleModules = moduleDefinitions.filter((module) => {
@@ -47,9 +47,8 @@ export function registerCommandPaletteCommands(
 
     service.registerCommand({
       id: `navigate.${module.id}`,
-      label: `Go to ${module.label.toUpperCase()}`,
-      description:
-        module.description || `Navigate to the ${module.label} module`,
+      label: module.label,
+      description: module.description || `Navigate to ${module.label}`,
       icon: module.icon || "fa-circle",
       category: "Navigation",
       ...(shortcutKey !== undefined && { shortcut: shortcutKey }),

@@ -106,8 +106,8 @@
   /* Benefits Section - Fluid sizing */
   .benefits-section {
     padding: clamp(10px, 2.5cqh, 16px);
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: clamp(8px, 2cqw, 12px);
   }
 

@@ -16,7 +16,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { libraryState } from "../state/library-state.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import SequenceCard from "../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
   import type { LibrarySequence } from "../domain/models/LibrarySequence";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -36,7 +36,7 @@
   const error = $derived(libraryState.error);
   const isSelectMode = $derived(libraryState.isSelectMode);
   const selectedCount = $derived(libraryState.selectedCount);
-  const isAuthenticated = $derived(!!authStore.effectiveUserId);
+  const isAuthenticated = $derived(!!authState.effectiveUserId);
 
   // Filtered sequences based on current filter
   const displayedSequences = $derived(() => {
@@ -122,7 +122,10 @@
       TYPES.IDiscoverThumbnailService
     );
     // Pass null if service not available - SpotlightViewer handles this
-    openSpotlightViewer(sequence, thumbnailService as IDiscoverThumbnailService);
+    openSpotlightViewer(
+      sequence,
+      thumbnailService as IDiscoverThumbnailService
+    );
   }
 
   // Batch actions
@@ -179,9 +182,14 @@
     }
   });
 
-  // Get cover URL for sequence
+  // Get cover URL for sequence - handles both array and single URL formats
   function getCoverUrl(sequence: LibrarySequence): string | undefined {
-    return sequence.thumbnails?.[0];
+    // Check thumbnails array first (SequenceData standard)
+    if (sequence.thumbnails && sequence.thumbnails.length > 0) {
+      return sequence.thumbnails[0];
+    }
+    // Fall back to thumbnailUrl field (backward compatibility)
+    return (sequence as any).thumbnailUrl;
   }
 </script>
 

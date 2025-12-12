@@ -48,7 +48,7 @@
   import { SessionManager } from "../services/SessionManager.svelte";
   import { AutosaveService } from "../services/AutosaveService";
   import { SequencePersistenceService } from "../services/SequencePersistenceService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -541,18 +541,18 @@
 
         // Wait for auth to be initialized before creating session
         // This prevents race condition where CreateModule initializes before Firebase auth
-        if (!authStore.isInitialized) {
+        if (!authState.isInitialized) {
           logger.info("Waiting for auth to initialize...");
           // Poll for auth initialization (max 5 seconds)
           let waited = 0;
-          while (!authStore.isInitialized && waited < 5000) {
+          while (!authState.isInitialized && waited < 5000) {
             await new Promise((r) => setTimeout(r, 100));
             waited += 100;
           }
         }
 
         // Only create session if user is authenticated
-        if (authStore.isAuthenticated) {
+        if (authState.isAuthenticated) {
           try {
             await sessionManager.createSession();
 

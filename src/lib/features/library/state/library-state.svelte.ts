@@ -7,9 +7,9 @@
 
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState, type PreviewSequence } from "$lib/shared/debug/state/user-preview-state.svelte";
-import { toast } from "$lib/shared/toast";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { ILibraryService, LibraryQueryOptions, LibraryStats } from '../services/contracts/ILibraryService';
 import type { LibrarySequence, SequenceVisibility } from "../domain/models/LibrarySequence";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -217,7 +217,7 @@ class LibraryStateManager {
 	}
 
 	get isAuthenticated() {
-		return !!authStore.effectiveUserId;
+		return !!authState.effectiveUserId;
 	}
 
 	// Derived: filtered sequences

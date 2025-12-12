@@ -70,12 +70,12 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 2px;
     padding: 3px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border-radius: 100px; /* Full pill */
     backdrop-filter: blur(12px);
     box-shadow:
-      inset 0 0.5px 1px rgba(0, 0, 0, 0.15),
-      0 1px 2px rgba(0, 0, 0, 0.1);
+      inset 0 0.5px 1px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
+      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1));
     transition: all 0.2s ease;
   }
 
@@ -88,7 +88,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     background: transparent;
     border: none;
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 14px;
     font-weight: 590; /* SF Pro semibold weight */
     letter-spacing: -0.2px;
@@ -100,18 +100,18 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .segment:hover:not(.active) {
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(255, 255, 255, 0.06);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
   }
 
   /* Active state - modern iOS pill style */
   .segment.active {
-    background: rgba(255, 255, 255, 0.22);
-    color: rgba(255, 255, 255, 0.98);
+    background: color-mix(in srgb, var(--theme-text, white) 22%, transparent);
+    color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.2),
-      0 0.5px 1px rgba(0, 0, 0, 0.15),
-      inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+      0 0.5px 1px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
+      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .segment:active {

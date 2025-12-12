@@ -239,7 +239,7 @@ Allows viewing, continuing, or deleting sessions.
   .btn-refresh {
     padding: 0.5rem;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 6px;
     color: inherit;
     cursor: pointer;
@@ -247,7 +247,7 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-refresh:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .loading,
@@ -274,8 +274,8 @@ Allows viewing, continuing, or deleting sessions.
   .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
+    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.3));
+    border-top-color: var(--theme-text, #fff);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -296,21 +296,21 @@ Allows viewing, continuing, or deleting sessions.
 
   .session-card {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .session-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .session-card.selected {
-    border-color: var(--accent-color, #6366f1);
-    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--theme-accent, #6366f1);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .session-header {
@@ -329,23 +329,23 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .prop-badge.club {
-    background: #ef4444;
+    background: var(--semantic-error, #ef4444);
   }
 
   .prop-badge.staff {
-    background: #3b82f6;
+    background: var(--semantic-info, #3b82f6);
   }
 
   .prop-badge.fan {
-    background: #10b981;
+    background: var(--semantic-success, #10b981);
   }
 
   .prop-badge.hoop {
-    background: #f59e0b;
+    background: var(--semantic-warning, #f59e0b);
   }
 
   .prop-badge.buugeng {
-    background: #8b5cf6;
+    background: var(--theme-accent-strong, #8b5cf6);
   }
 
   .session-date {
@@ -378,7 +378,7 @@ Allows viewing, continuing, or deleting sessions.
 
   .progress-bar {
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 0.35rem;
@@ -386,7 +386,7 @@ Allows viewing, continuing, or deleting sessions.
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #34d399);
+    background: linear-gradient(90deg, var(--semantic-success, #10b981), color-mix(in srgb, var(--semantic-success, #10b981) 80%, white));
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -415,21 +415,21 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-label {
-    background: #3b82f6;
+    background: var(--semantic-info, #3b82f6);
     color: white;
   }
 
   .btn-label:hover {
-    background: #2563eb;
+    background: var(--theme-accent, #2563eb);
   }
 
   .btn-delete {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    color: var(--semantic-error, #ef4444);
   }
 
   .btn-delete:hover {
-    background: rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .delete-confirm {
@@ -440,12 +440,12 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-confirm-delete {
-    background: #ef4444;
+    background: var(--semantic-error, #ef4444);
     color: white;
   }
 
   .btn-cancel-delete {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     color: inherit;
   }
 </style>

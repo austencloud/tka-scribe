@@ -94,7 +94,7 @@ export class JellyfishAnimator implements IJellyfishAnimator {
   }
 
   getJellyfishCount(quality: string): number {
-    return JELLYFISH_COUNTS[quality] ?? JELLYFISH_COUNTS.medium;
+    return JELLYFISH_COUNTS[quality] ?? 3;
   }
 
   private randomInRange(min: number, max: number): number {

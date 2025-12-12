@@ -25,7 +25,7 @@ import {
 	type DocumentData,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -76,7 +76,7 @@ export class LibraryService implements ILibraryService {
 	 * Get the current user ID or throw if not authenticated
 	 */
 	private getUserId(): string {
-		const userId = authStore.effectiveUserId;
+		const userId = authState.effectiveUserId;
 		if (!userId) {
 			throw new LibraryError("User not authenticated", "UNAUTHORIZED");
 		}

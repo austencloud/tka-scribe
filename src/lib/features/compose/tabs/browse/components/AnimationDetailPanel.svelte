@@ -235,7 +235,7 @@ Features:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: white;
@@ -377,8 +377,8 @@ Features:
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 6px;
   }
 
@@ -388,11 +388,11 @@ Features:
     justify-content: center;
     width: 28px;
     height: 28px;
-    background: rgba(59, 130, 246, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 50%;
     font-size: 12px;
     font-weight: 600;
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
     flex-shrink: 0;
   }
 
@@ -424,7 +424,7 @@ Features:
     justify-content: center;
     gap: 8px;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: white;

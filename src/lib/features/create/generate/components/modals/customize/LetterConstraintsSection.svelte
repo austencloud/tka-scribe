@@ -3,7 +3,7 @@ LetterConstraintsSection.svelte - Re-exports from shared for backwards compatibi
 -->
 <script lang="ts">
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { LetterConstraintsSection as SharedLetterConstraintsSection } from "$lib/shared/components/letter-constraints";
+  import SharedLetterConstraintsSection from "$lib/shared/components/letter-constraints/LetterConstraintsSection.svelte";
 
   let {
     mustContainLetters,

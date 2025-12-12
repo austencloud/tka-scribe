@@ -206,8 +206,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   }
 
   .sequence-list-item.selected {
-    background: rgba(102, 126, 234, 0.2);
-    border-color: rgba(102, 126, 234, 0.6);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
   }
 
   .sequence-header {

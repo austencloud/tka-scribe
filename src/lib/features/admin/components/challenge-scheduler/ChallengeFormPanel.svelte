@@ -336,8 +336,8 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    background: rgba(102, 126, 234, 0.15);
-    border: 1px solid rgba(102, 126, 234, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 8px;
     font-weight: 500;
   }
@@ -361,8 +361,8 @@
     gap: 0.75rem;
     width: 100%;
     padding: 1rem;
-    background: rgba(102, 126, 234, 0.1);
-    border: 2px dashed rgba(102, 126, 234, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    border: 2px dashed color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 10px;
     color: #fff;
     cursor: pointer;
@@ -370,20 +370,20 @@
   }
 
   .select-sequence-btn:hover {
-    background: rgba(102, 126, 234, 0.2);
-    border-color: rgba(102, 126, 234, 0.5);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   .select-sequence-btn .btn-icon {
     width: 52px;
     height: 52px;
-    background: rgba(102, 126, 234, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    color: #667eea;
+    color: var(--theme-accent, #667eea);
   }
 
   .select-sequence-btn span {
@@ -403,8 +403,8 @@
     gap: 0.75rem;
     width: 100%;
     padding: 0.75rem;
-    background: rgba(102, 126, 234, 0.15);
-    border: 1px solid rgba(102, 126, 234, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 10px;
     color: #fff;
     cursor: pointer;
@@ -413,8 +413,8 @@
   }
 
   .selected-sequence-card:hover {
-    background: rgba(102, 126, 234, 0.25);
-    border-color: rgba(102, 126, 234, 0.5);
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   .sequence-thumbnail {
@@ -507,7 +507,7 @@
   .form-group textarea:focus,
   .form-group select:focus {
     outline: none;
-    border-color: rgba(102, 126, 234, 0.5);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     background: rgba(255, 255, 255, 0.08);
   }
 
@@ -561,7 +561,7 @@
 
   .schedule-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .creation-form::-webkit-scrollbar {

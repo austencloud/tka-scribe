@@ -131,7 +131,7 @@
 
   /* Focus state for keyboard navigation */
   .nav-button:focus-visible {
-    outline: 2px solid hsl(210 100% 60%);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

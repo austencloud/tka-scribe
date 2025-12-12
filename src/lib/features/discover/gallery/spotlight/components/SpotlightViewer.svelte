@@ -368,9 +368,9 @@
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, white);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -383,8 +383,8 @@
   }
 
   .rotate-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     transform: scale(1.05);
   }
 

@@ -41,8 +41,8 @@
 
 <style>
   .step-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: clamp(8px, 2cqw, 12px);
     padding: clamp(10px, 2.5cqh, 14px);
     transition: all 0.2s ease;
@@ -53,7 +53,7 @@
   }
 
   .step-card:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     border-color: rgba(255, 255, 255, 0.15);
   }
 
@@ -78,11 +78,11 @@
     border-radius: clamp(6px, 1.5cqw, 8px);
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.3) 0%,
-      rgba(139, 92, 246, 0.3) 100%
+      color-mix(in srgb, var(--theme-accent) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent) 30%, transparent) 100%
     );
-    border: 1px solid rgba(99, 102, 241, 0.4);
-    color: rgba(139, 92, 246, 1);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    color: var(--theme-accent, rgba(139, 92, 246, 1));
     font-weight: 700;
     font-size: clamp(13px, 3cqw, 15px);
   }

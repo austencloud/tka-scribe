@@ -79,7 +79,7 @@
 </script>
 
 <div
-  class="shortcut-item"
+  class="shortcut-card"
   class:customized={item.isCustomized}
   class:disabled={item.isDisabled}
   class:has-module-color={moduleColor() !== null}
@@ -89,34 +89,11 @@
   tabindex="0"
   role="button"
 >
-  <!-- Module color accent bar for navigation shortcuts -->
-  {#if moduleColor()}
-    <div class="module-accent"></div>
-  {/if}
-
-  <div class="shortcut-info">
-    <div class="shortcut-header">
-      <span class="shortcut-label" class:module-colored={moduleColor() !== null}>
-        {item.shortcut.label}
-      </span>
-      {#if item.isCustomized}
-        <span class="customized-badge">Custom</span>
-      {/if}
-      {#if item.isDisabled}
-        <span class="disabled-badge">Disabled</span>
-      {/if}
-    </div>
-    {#if item.shortcut.description}
-      <span class="shortcut-description">{item.shortcut.description}</span>
-    {/if}
-    <span class="shortcut-context">{formatContext(item.shortcut.context ?? "global")}</span>
-  </div>
-
-  <div class="shortcut-actions">
+  <!-- Key badge - prominent at top -->
+  <div class="card-key-section">
     <div class="key-combo-wrapper" class:muted={item.isDisabled}>
-      <KeyboardKeyDisplay parsed={item.effectiveBinding} size="small" />
+      <KeyboardKeyDisplay parsed={item.effectiveBinding} />
     </div>
-
     {#if item.isCustomized}
       <button
         class="reset-btn"
@@ -127,166 +104,94 @@
         <i class="fas fa-undo"></i>
       </button>
     {/if}
+  </div>
 
-    <button class="edit-btn" aria-label="Edit shortcut" type="button">
-      <i class="fas fa-pen"></i>
-    </button>
+  <!-- Label and description -->
+  <div class="card-info">
+    <span class="shortcut-label" class:module-colored={moduleColor() !== null}>
+      {item.shortcut.label}
+    </span>
+    {#if item.shortcut.description}
+      <span class="shortcut-description">{item.shortcut.description}</span>
+    {/if}
+  </div>
+
+  <!-- Footer with context and badges -->
+  <div class="card-footer">
+    <span class="shortcut-context">{formatContext(item.shortcut.context ?? "global")}</span>
+    <div class="card-badges">
+      {#if item.isCustomized}
+        <span class="customized-badge">Custom</span>
+      {/if}
+      {#if item.isDisabled}
+        <span class="disabled-badge">Off</span>
+      {/if}
+    </div>
   </div>
 </div>
 
 <style>
-  .shortcut-item {
-    position: relative;
+  /* Compact card layout for bento grid */
+  .shortcut-card {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    width: 100%;
-    padding: 14px 16px;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-  }
-
-  .shortcut-item:last-child {
-    border-bottom: none;
-  }
-
-  .shortcut-item:hover {
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  .shortcut-item:active {
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    /* Subtle glass card */
     background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    /* Fill parent wrapper completely */
+    width: 100%;
+    height: 100%;
+    min-height: 120px;
+    box-sizing: border-box;
   }
 
-  /* Module color accent bar */
-  .module-accent {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 60%;
-    background: var(--module-color);
-    border-radius: 0 2px 2px 0;
-    opacity: 0.8;
-    transition: all 0.2s ease;
+  .shortcut-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   }
 
-  .shortcut-item.has-module-color {
-    padding-left: 20px;
+  .shortcut-card:active {
+    transform: translateY(0);
   }
 
-  .shortcut-item.has-module-color:hover .module-accent {
-    height: 80%;
-    opacity: 1;
-    box-shadow: 0 0 12px var(--module-color);
+  /* Module navigation - subtle colored glass */
+  .shortcut-card.has-module-color {
+    background: color-mix(in srgb, var(--module-color) 8%, rgba(255, 255, 255, 0.04));
+    border: 1px solid color-mix(in srgb, var(--module-color) 20%, rgba(255, 255, 255, 0.08));
+    border-left: 2px solid var(--module-color);
   }
 
-  /* Customized state with violet accent */
-  .shortcut-item.customized {
-    background: linear-gradient(
-      90deg,
-      rgba(139, 92, 246, 0.06) 0%,
-      rgba(139, 92, 246, 0.02) 100%
-    );
+  .shortcut-card.has-module-color:hover {
+    background: color-mix(in srgb, var(--module-color) 12%, rgba(255, 255, 255, 0.06));
+    border-color: color-mix(in srgb, var(--module-color) 30%, rgba(255, 255, 255, 0.12));
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--module-color) 15%, rgba(0, 0, 0, 0.2));
   }
 
-  .shortcut-item.customized:hover {
-    background: linear-gradient(
-      90deg,
-      rgba(139, 92, 246, 0.1) 0%,
-      rgba(139, 92, 246, 0.04) 100%
-    );
+  .shortcut-card.customized {
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
   }
 
-  .shortcut-item.disabled {
+  .shortcut-card.disabled {
     opacity: 0.5;
   }
 
-  .shortcut-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .shortcut-header {
+  /* Key section - top of card */
+  .card-key-section {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .shortcut-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    transition: color 0.2s ease;
-  }
-
-  /* Module-colored label on hover */
-  .shortcut-label.module-colored {
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .shortcut-item:hover .shortcut-label.module-colored {
-    color: var(--module-color);
-  }
-
-  .customized-badge,
-  .disabled-badge {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 3px 7px;
-    border-radius: 6px;
-  }
-
-  .customized-badge {
-    background: rgba(139, 92, 246, 0.15);
-    color: rgba(167, 139, 250, 1);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-  }
-
-  .disabled-badge {
-    background: rgba(239, 68, 68, 0.15);
-    color: rgba(248, 113, 113, 1);
-    border: 1px solid rgba(239, 68, 68, 0.25);
-  }
-
-  .shortcut-description {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.45);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .shortcut-context {
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 500;
-  }
-
-  .shortcut-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
   }
 
   .key-combo-wrapper {
-    transition: all 0.15s ease;
+    transition: opacity 0.15s ease;
   }
 
   .key-combo-wrapper.muted {
@@ -294,106 +199,125 @@
     filter: grayscale(1);
   }
 
-  .reset-btn,
-  .edit-btn {
+  /* Module navigation key badges get module color tint */
+  .shortcut-card.has-module-color .key-combo-wrapper :global(.kbd:not(.modifier)) {
+    background: color-mix(in srgb, var(--module-color) 18%, rgba(255, 255, 255, 0.06));
+    border-color: color-mix(in srgb, var(--module-color) 30%, rgba(255, 255, 255, 0.1));
+    color: var(--module-color);
+  }
+
+  .reset-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 32px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 11px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s ease;
+    /* Touch target padding */
+    margin: -10px;
+    padding: 10px;
   }
 
   .reset-btn:hover {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.35);
-    color: rgba(248, 113, 113, 1);
-    transform: scale(1.05);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    color: var(--semantic-error, #f87171);
   }
 
-  .reset-btn:active {
-    transform: scale(0.95);
+  /* Info section - grows to push footer down */
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
   }
 
-  .edit-btn {
-    opacity: 0;
+  .shortcut-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    line-height: 1.3;
   }
 
-  .shortcut-item:hover .edit-btn {
-    opacity: 1;
+  .shortcut-label.module-colored {
+    color: var(--module-color);
   }
 
-  .edit-btn:hover {
-    background: rgba(139, 92, 246, 0.15);
-    border-color: rgba(139, 92, 246, 0.35);
-    color: rgba(167, 139, 250, 1);
-    transform: scale(1.05);
+  .shortcut-description {
+    font-size: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    line-height: 1.4;
+    /* Allow up to 2 lines, then truncate */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  .edit-btn:active {
-    transform: scale(0.95);
+  /* Footer */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  .shortcut-context {
+    font-size: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+  }
+
+  .card-badges {
+    display: flex;
+    gap: 4px;
+  }
+
+  .customized-badge,
+  .disabled-badge {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    padding: 3px 6px;
+    border-radius: 4px;
+  }
+
+  .customized-badge {
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    color: var(--theme-accent-strong, #a78bfa);
+  }
+
+  .disabled-badge {
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    color: var(--semantic-error, #f87171);
   }
 
   /* Focus states */
-  .shortcut-item:focus-visible {
-    outline: 2px solid rgba(139, 92, 246, 0.5);
-    outline-offset: -2px;
-  }
-
-  .reset-btn:focus-visible,
-  .edit-btn:focus-visible {
-    outline: 2px solid rgba(139, 92, 246, 0.5);
+  .shortcut-card:focus-visible {
+    outline: 2px solid var(--theme-accent-strong, #8b5cf6);
     outline-offset: 2px;
-  }
-
-  /* Mobile: Always show edit button */
-  @media (max-width: 768px) {
-    .shortcut-item {
-      padding: 16px 14px;
-    }
-
-    .shortcut-item.has-module-color {
-      padding-left: 22px;
-    }
-
-    .edit-btn {
-      opacity: 1;
-    }
-
-    .reset-btn,
-    .edit-btn {
-      width: 44px;
-      height: 44px;
-      font-size: 12px;
-    }
-
-    .shortcut-label {
-      font-size: 14px;
-    }
-
-    .shortcut-description {
-      font-size: 12px;
-    }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .shortcut-item,
-    .module-accent,
-    .reset-btn,
-    .edit-btn {
+    .shortcut-card,
+    .reset-btn {
       transition: none;
     }
 
-    .reset-btn:hover,
-    .edit-btn:hover {
+    .shortcut-card:hover {
       transform: none;
     }
   }

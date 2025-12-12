@@ -44,10 +44,10 @@
     display: flex;
     align-items: center;
     gap: var(--space-2026-xs);
-    padding: var(--settings-space-sm) var(--space-2026-sm);
+    padding: 8px var(--space-2026-sm);
     background: var(--surface-glass);
-    border: 1px solid var(--settings-glass-border);
-    border-radius: var(--settings-radius-sm);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 8px;
     font-size: var(--text-2026-micro);
     color: var(--theme-text-dim);
     cursor: pointer;
@@ -56,8 +56,8 @@
   }
 
   .tab-chip:hover {
-    background: var(--settings-glass-bg-hover);
-    border-color: var(--settings-glass-border-hover);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(var(--hover-lift-sm));
   }
 
@@ -84,7 +84,7 @@
   }
 
   .tab-name {
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
   }
 
   .tab-role {

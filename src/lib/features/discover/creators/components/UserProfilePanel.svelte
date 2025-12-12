@@ -10,7 +10,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
   import type { ILeaderboardService } from "$lib/shared/community/services/contracts/ILeaderboardService";
   import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
@@ -80,13 +80,13 @@
   );
 
   // Get current user ID
-  const currentUserId = $derived(authStore.user?.uid);
+  const currentUserId = $derived(authState.user?.uid);
 
   // Check if viewing own profile
   const isOwnProfile = $derived(currentUserId === userId);
 
   // Check if current user is admin (for admin controls)
-  const isAdmin = $derived(authStore.isAdmin);
+  const isAdmin = $derived(authState.isAdmin);
 
   // Handler for admin updates
   function handleAdminUpdate(updates: Partial<EnhancedUserProfile>) {
@@ -147,7 +147,11 @@
     if (!location || location.view === "list") {
       // No history or going back to list view
       creatorsViewState.goBack();
-    } else if (location.view === "profile" && location.contextId && location.contextId !== userId) {
+    } else if (
+      location.view === "profile" &&
+      location.contextId &&
+      location.contextId !== userId
+    ) {
       // Going back to a different profile
       creatorsViewState.viewUserProfile(location.contextId);
     } else {
@@ -334,10 +338,7 @@
 
       <!-- Admin Controls (only visible to admins, not on own profile) -->
       {#if isAdmin && !isOwnProfile}
-        <ProfileAdminSection
-          {userProfile}
-          onUserUpdated={handleAdminUpdate}
-        />
+        <ProfileAdminSection {userProfile} onUserUpdated={handleAdminUpdate} />
       {/if}
     </div>
   {/if}

@@ -1,11 +1,7 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import {
-    BentoFilterPanel,
-    LetterSelectionSheet,
-    PositionOptionsSheet,
-  } from "../../gallery/filtering/components/bento-filter";
+
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import SequenceDetailContent from "../../gallery/display/components/SequenceDetailContent.svelte";
   import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
@@ -13,6 +9,9 @@
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
   import { ExploreSortMethod } from "../domain/enums/discover-enums";
   import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
+  import BentoFilterPanel from "../../gallery/filtering/components/bento-filter/BentoFilterPanel.svelte";
+  import LetterSelectionSheet from "../../gallery/filtering/components/bento-filter/LetterSelectionSheet.svelte";
+  import PositionOptionsSheet from "../../gallery/filtering/components/bento-filter/PositionOptionsSheet.svelte";
 
   interface Props {
     isMobile: boolean;
@@ -324,11 +323,11 @@
     top: 0 !important;
     height: 100vh !important;
     /* Integrated, native feel - transparent background, no hard edges */
-    background: rgba(20, 20, 30, 0.7) !important;
+    background: color-mix(in srgb, var(--theme-panel-bg, #14141e) 70%, transparent) !important;
     backdrop-filter: blur(20px) !important;
     border: none !important;
     border-radius: 0 !important;
-    box-shadow: -2px 0 16px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: -2px 0 16px var(--theme-shadow, rgba(0, 0, 0, 0.15)) !important;
   }
 
   /* Subtle vertical grip indicator on left edge for swipe affordance */
@@ -343,8 +342,8 @@
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(255, 255, 255, 0.2) 10%,
-      rgba(255, 255, 255, 0.2) 90%,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 10%,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 90%,
       transparent 100%
     );
     border-radius: 2px;
@@ -379,7 +378,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
-    background: #1a1a24;
+    background: var(--theme-panel-bg, #1a1a24);
   }
 
   /* Modern scrollbar for bento filter panel */
@@ -392,24 +391,24 @@
   }
 
   .bento-filter-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 3px;
   }
 
   .bento-filter-wrapper::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: color-mix(in srgb, var(--theme-text, white) 25%, transparent);
   }
 
   /* Firefox scrollbar for bento filter */
   .bento-filter-wrapper {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) transparent;
   }
 
   /* Sheet content padding */
   .sheet-content {
     padding: 16px 20px 24px;
-    background: #1a1a24;
+    background: var(--theme-panel-bg, #1a1a24);
   }
 
   /* Drawer Headers */
@@ -418,14 +417,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
   :global(.drawer-content) .drawer-header h2 {
     font-size: 20px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin: 0;
   }
 
@@ -435,10 +434,10 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -456,9 +455,9 @@
   }
 
   :global(.drawer-content) .drawer-close-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, white);
   }
 
   :global(.drawer-content) .drawer-close-btn:active {
@@ -488,11 +487,11 @@
     top: 0 !important;
     height: 100vh !important;
     /* 2026 solid color style - no glassmorphism */
-    background: #1a1a24 !important;
+    background: var(--theme-panel-bg, #1a1a24) !important;
     border: none !important;
-    border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
   }
 
   /* Subtle vertical grip indicator on left edge for swipe affordance */
@@ -507,8 +506,8 @@
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(255, 255, 255, 0.2) 10%,
-      rgba(255, 255, 255, 0.2) 90%,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 10%,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 90%,
       transparent 100%
     );
     border-radius: 2px;
@@ -528,8 +527,8 @@
     right: 20px !important;
     width: 36px !important;
     height: 36px !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) !important;
+    border: 1px solid color-mix(in srgb, var(--theme-text, white) 25%, transparent) !important;
     z-index: 100 !important;
     position: relative;
   }
@@ -546,8 +545,8 @@
   }
 
   :global(.filters-drawer .close-button:hover) {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
+    background: color-mix(in srgb, var(--theme-text, white) 25%, transparent) !important;
+    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent) !important;
   }
 
   /* Mobile: Make detail drawer full-height bottom sheet */
@@ -582,7 +581,7 @@
     height: 100vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: #1a1a24 !important;
+    background: var(--theme-panel-bg, #1a1a24) !important;
   }
 
   /* Letter/Length sheet drawer styles - desktop side panel */
@@ -594,11 +593,11 @@
       opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
     top: 0 !important;
     height: 100vh !important;
-    background: #1a1a24 !important;
+    background: var(--theme-panel-bg, #1a1a24) !important;
     border: none !important;
-    border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
   }
 
   /* Mobile: Letter/Length sheets as bottom sheets */
@@ -607,7 +606,7 @@
     max-height: 80vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: #1a1a24 !important;
+    background: var(--theme-panel-bg, #1a1a24) !important;
   }
 
   /* Options sheet drawer styles - desktop side panel */
@@ -618,11 +617,11 @@
       opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
     top: 0 !important;
     height: 100vh !important;
-    background: #1a1a24 !important;
+    background: var(--theme-panel-bg, #1a1a24) !important;
     border: none !important;
-    border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
   }
 
   /* Mobile: Options sheet as bottom sheet */
@@ -630,7 +629,7 @@
     max-height: 85vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: #1a1a24 !important;
+    background: var(--theme-panel-bg, #1a1a24) !important;
   }
 
   /* Options sheet content - scrollable */

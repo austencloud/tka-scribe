@@ -76,9 +76,9 @@ Shows visual feedback of active filters with easy removal.
         if (level === 1) return "#10b981"; // Green
         if (level === 2) return "#f59e0b"; // Amber
         if (level === 3) return "#ef4444"; // Red
-        return "#8b5cf6"; // Purple
+        return "var(--theme-accent-strong, #8b5cf6)"; // Purple
       case "startingPosition":
-        return "#8b5cf6"; // Purple
+        return "var(--theme-accent-strong, #8b5cf6)"; // Purple
       case "startingLetter":
         return "#3b82f6"; // Blue
       case "containsLetters":
@@ -88,7 +88,7 @@ Shows visual feedback of active filters with easy removal.
       case "gridMode":
         return "#f59e0b"; // Amber
       default:
-        return "#8b5cf6"; // Purple
+        return "var(--theme-accent-strong, #8b5cf6)"; // Purple
     }
   });
 
@@ -127,13 +127,13 @@ Shows visual feedback of active filters with easy removal.
     background: color-mix(in srgb, var(--chip-color) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--chip-color) 30%, transparent);
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     font-size: 14px;
     font-weight: 500;
     letter-spacing: -0.1px;
     white-space: nowrap;
     backdrop-filter: blur(12px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.1));
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -161,10 +161,10 @@ Shows visual feedback of active filters with easy removal.
     min-width: 32px;
     min-height: 32px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--theme-text, white) 15%, transparent);
     border: none;
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     cursor: pointer;
     transition: all 0.15s ease;
     flex-shrink: 0;
@@ -183,7 +183,7 @@ Shows visual feedback of active filters with easy removal.
   }
 
   .chip-remove:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: color-mix(in srgb, var(--theme-text, white) 25%, transparent);
     transform: scale(1.1);
   }
 

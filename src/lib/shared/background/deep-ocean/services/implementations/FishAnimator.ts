@@ -467,7 +467,7 @@ export class FishAnimator implements IFishAnimator {
   }
 
   getFishCount(quality: string): number {
-    return FISH_COUNTS[quality] ?? FISH_COUNTS.medium;
+    return FISH_COUNTS[quality] ?? 8;
   }
 
   scheduleSpawn(spawnTime: number): void {

@@ -356,7 +356,7 @@
     flex-direction: column;
     gap: clamp(12px, 3cqi, 20px);
     padding: clamp(12px, 3cqi, 20px);
-    background: #1a1a24;
+    background: var(--theme-panel-bg, #1a1a24);
     container-type: inline-size;
     container-name: filter-panel;
   }
@@ -372,7 +372,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Quick Chips */
@@ -385,10 +385,10 @@
   .quick-chip {
     min-height: 52px;
     padding: 0 clamp(12px, 3cqi, 18px);
-    background: #252532;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, #252532);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     font-size: clamp(12px, 2.5cqi, 14px);
     font-weight: 500;
     cursor: pointer;
@@ -396,8 +396,8 @@
   }
 
   .quick-chip:hover {
-    background: #2d2d3d;
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, #2d2d3d);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   /* Filter Grid */
@@ -421,23 +421,23 @@
     gap: clamp(6px, 1.5cqi, 10px);
     min-height: clamp(72px, 18cqi, 90px);
     padding: clamp(10px, 2.5cqi, 16px);
-    background: #252532;
+    background: var(--theme-card-bg, #252532);
     border: 2px solid transparent;
     border-radius: clamp(12px, 3cqi, 16px);
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .filter-card:hover {
-    background: #2d2d3d;
+    background: var(--theme-card-hover-bg, #2d2d3d);
     transform: translateY(-2px);
   }
 
   .filter-card.selected {
-    background: color-mix(in srgb, #3b82f6 15%, #252532);
-    border-color: #3b82f6;
-    color: #fff;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, var(--theme-card-bg, #252532));
+    border-color: var(--semantic-info, #3b82f6);
+    color: var(--theme-text, white);
   }
 
   .card-icon {
@@ -446,25 +446,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(59, 130, 246, 0.15);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
     border-radius: clamp(8px, 2cqi, 12px);
-    color: #3b82f6;
+    color: var(--semantic-info, #3b82f6);
     font-size: clamp(12px, 3cqi, 16px);
   }
 
   .filter-card.selected .card-icon {
-    background: #3b82f6;
-    color: #fff;
+    background: var(--semantic-info, #3b82f6);
+    color: var(--theme-text, white);
   }
 
   .card-icon.favorites {
-    background: rgba(236, 72, 153, 0.15);
-    color: #ec4899;
+    background: color-mix(in srgb, var(--semantic-error, #ec4899) 15%, transparent);
+    color: var(--semantic-error, #ec4899);
   }
 
   .filter-card.selected .card-icon.favorites {
-    background: #ec4899;
-    color: #fff;
+    background: var(--semantic-error, #ec4899);
+    color: var(--theme-text, white);
   }
 
   .card-label {
@@ -476,9 +476,9 @@
   /* Drill-down */
   .drill-down {
     padding: clamp(12px, 3cqi, 16px);
-    background: rgba(59, 130, 246, 0.05);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 5%, transparent);
     border-radius: clamp(10px, 2.5cqi, 14px);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
     animation: slideDown 0.2s ease;
   }
 
@@ -516,12 +516,12 @@
 
   .level-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3));
   }
 
   .level-card.selected {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    border-color: var(--semantic-info, #3b82f6);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .level-num {
@@ -535,12 +535,12 @@
     gap: clamp(6px, 1.5cqi, 10px);
     margin-top: clamp(8px, 2cqi, 12px);
     padding-top: clamp(8px, 2cqi, 12px);
-    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    border-top: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .coming-soon {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .level-card.future {
@@ -566,10 +566,10 @@
     min-height: 52px;
     min-width: 44px;
     padding: 0;
-    background: #252532;
+    background: var(--theme-card-bg, #252532);
     border: 1px solid transparent;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     font-size: clamp(13px, 3cqi, 15px);
     font-weight: 600;
     cursor: pointer;
@@ -577,12 +577,12 @@
   }
 
   .letter-btn:hover {
-    background: #2d2d3d;
+    background: var(--theme-card-hover-bg, #2d2d3d);
   }
 
   .letter-btn.selected {
-    background: #3b82f6;
-    color: #fff;
+    background: var(--semantic-info, #3b82f6);
+    color: var(--theme-text, white);
   }
 
   /* Length & Position Chips */
@@ -597,10 +597,10 @@
   .position-chip {
     min-height: 52px;
     padding: 0 clamp(14px, 3.5cqi, 20px);
-    background: #252532;
+    background: var(--theme-card-bg, #252532);
     border: 1px solid transparent;
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     font-size: clamp(13px, 3cqi, 15px);
     font-weight: 500;
     cursor: pointer;
@@ -609,12 +609,12 @@
 
   .length-chip:hover,
   .position-chip:hover {
-    background: #2d2d3d;
+    background: var(--theme-card-hover-bg, #2d2d3d);
   }
 
   .length-chip.selected,
   .position-chip.selected {
-    background: #3b82f6;
-    color: #fff;
+    background: var(--semantic-info, #3b82f6);
+    color: var(--theme-text, white);
   }
 </style>

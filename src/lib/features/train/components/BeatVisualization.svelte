@@ -88,8 +88,8 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
   }
 
@@ -102,7 +102,7 @@
   .beat-counter {
     font-size: 1.25rem;
     font-weight: 600;
-    color: white;
+    color: var(--theme-text, white);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -112,7 +112,7 @@
     justify-content: center;
     align-items: center;
     min-height: 200px;
-    background: rgba(0, 0, 0, 0.2);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
     border-radius: 8px;
     padding: 1rem;
   }
@@ -124,7 +124,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 1rem;
   }
 
@@ -151,15 +151,15 @@
   }
 
   .reversal.blue {
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--prop-blue, #3b82f6) 20%, transparent);
+    color: var(--prop-blue, #3b82f6);
+    border: 1px solid color-mix(in srgb, var(--prop-blue, #3b82f6) 30%, transparent);
   }
 
   .reversal.red {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--prop-red, #ef4444) 20%, transparent);
+    color: var(--prop-red, #ef4444);
+    border: 1px solid color-mix(in srgb, var(--prop-red, #ef4444) 30%, transparent);
   }
 
   .positions {
@@ -180,15 +180,15 @@
   }
 
   .label.blue {
-    color: #3b82f6;
+    color: var(--prop-blue, #3b82f6);
   }
 
   .label.red {
-    color: #ef4444;
+    color: var(--prop-red, #ef4444);
   }
 
   .location {
     font-family: monospace;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 </style>

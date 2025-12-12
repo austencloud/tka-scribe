@@ -78,7 +78,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: #000;
+    background: var(--theme-shadow, #000);
   }
 
   /* ===== DESKTOP SIDE PANEL ===== */
@@ -87,12 +87,12 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
     min-width: 0;
     max-width: 500px;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.9));
+    border-left: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     overflow-y: hidden;
     overflow-x: hidden;
     flex-shrink: 0;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: -4px 0 20px var(--theme-shadow, rgba(0, 0, 0, 0.5));
     backdrop-filter: blur(10px);
     transition:
       width 0.3s ease,
@@ -116,16 +116,16 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
   }
 
   .detail-panel-desktop::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
   }
 
   .detail-panel-desktop::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 4px;
   }
 
   .detail-panel-desktop::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   /* Tablet adjustments for desktop panel */

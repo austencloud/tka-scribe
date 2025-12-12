@@ -187,6 +187,15 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
     // Normalize the event
     const normalized = new NormalizedKeyboardEvent(event);
 
+    // Debug F9 specifically
+    if (event.key === "F9" || normalized.key === "F9") {
+      console.log(`[KeyboardShortcutService] F9 pressed!`, {
+        rawKey: event.key,
+        normalizedKey: normalized.key,
+        context: this.currentContext,
+      });
+    }
+
     // Debug Backspace specifically
     if (normalized.key === "Backspace") {
       debug.log(`Backspace pressed! Context: ${this.currentContext}`);
@@ -199,6 +208,11 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
       normalized.ctrlOrMeta,
       this.currentContext
     );
+
+    // Debug F9 matches
+    if (event.key === "F9" || normalized.key === "F9") {
+      console.log(`[KeyboardShortcutService] F9 matches:`, matches.length, matches.map(m => m.id));
+    }
 
     if (normalized.key === "Backspace") {
       debug.log(

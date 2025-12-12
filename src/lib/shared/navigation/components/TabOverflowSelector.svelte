@@ -238,6 +238,7 @@
   }
 
   /* Starting style for smooth open animation */
+  /* svelte-ignore css_unknown_at_rule */
   @starting-style {
     .tab-overflow-popover:popover-open {
       opacity: 0;
@@ -410,6 +411,7 @@
       transition: none;
     }
 
+    /* svelte-ignore css_unknown_at_rule */
     @starting-style {
       .tab-overflow-popover:popover-open {
         opacity: 1;

@@ -8,7 +8,7 @@
   - 50px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { authState } from "../../auth/state/authState.svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
@@ -45,10 +45,10 @@
 
     // Debug auth state
     console.log("[ProfileButton] Auth state:", {
-      isAuthenticated: authStore.isAuthenticated,
-      hasUser: !!authStore.user,
-      displayName: authStore.user?.displayName,
-      photoURL: authStore.user?.photoURL,
+      isAuthenticated: authState.isAuthenticated,
+      hasUser: !!authState.user,
+      displayName: authState.user?.displayName,
+      photoURL: authState.user?.photoURL,
     });
   });
 
@@ -64,25 +64,25 @@
 
 <button
   class="profile-button"
-  class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
+  class:has-avatar={authState.isAuthenticated && authState.user?.photoURL}
   class:variant-sidebar={variant === "sidebar"}
   class:with-label={showLabel && !isCollapsed}
   class:sidebar-collapsed={isCollapsed}
   onclick={handleProfileClick}
-  aria-label={authStore.isAuthenticated ? "Account menu" : "Sign in"}
+  aria-label={authState.isAuthenticated ? "Account menu" : "Sign in"}
 >
   <div class="profile-icon-wrapper">
-    {#if authStore.isAuthenticated && authStore.user?.photoURL}
+    {#if authState.isAuthenticated && authState.user?.photoURL}
       <img
-        src={authStore.user.photoURL}
-        alt={authStore.user.displayName || "User"}
+        src={authState.user.photoURL}
+        alt={authState.user.displayName || "User"}
         class="profile-avatar"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
         onerror={(e) => {
           console.error(
             "[ProfileButton] Photo failed to load:",
-            authStore.user?.photoURL
+            authState.user?.photoURL
           );
           // Hide the broken image and show initial instead
           const wrapper = e.currentTarget.parentElement;
@@ -91,8 +91,8 @@
             const initial = document.createElement("div");
             initial.className = "profile-initial";
             initial.textContent = (
-              authStore.user?.displayName ||
-              authStore.user?.email ||
+              authState.user?.displayName ||
+              authState.user?.email ||
               "?"
             )
               .charAt(0)
@@ -101,9 +101,9 @@
           }
         }}
       />
-    {:else if authStore.isAuthenticated && authStore.user}
+    {:else if authState.isAuthenticated && authState.user}
       <div class="profile-initial">
-        {(authStore.user.displayName || authStore.user.email || "?")
+        {(authState.user.displayName || authState.user.email || "?")
           .charAt(0)
           .toUpperCase()}
       </div>
@@ -113,8 +113,8 @@
   </div>
   {#if showLabel && !isCollapsed}
     <span class="profile-label">
-      {authStore.isAuthenticated && authStore.user?.displayName
-        ? authStore.user.displayName
+      {authState.isAuthenticated && authState.user?.displayName
+        ? authState.user.displayName
         : "Profile"}
     </span>
   {/if}
@@ -168,7 +168,7 @@
   }
 
   .profile-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 
@@ -231,7 +231,7 @@
     font-size: 16px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent); /* Simplified, more subtle */
+    background: var(--theme-accent-strong, #8b5cf6); /* Simplified, more subtle */
   }
 
   /* Smaller font in labeled button */

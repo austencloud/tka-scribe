@@ -93,7 +93,7 @@
     align-items: flex-start;
     gap: var(--space-2026-sm);
     width: 100%;
-    padding: var(--settings-space-md);
+    padding: 16px;
     border: none;
     background: transparent;
     color: inherit;
@@ -118,7 +118,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--settings-radius-md);
+    border-radius: 12px;
     font-size: 18px;
     flex-shrink: 0;
   }
@@ -131,7 +131,7 @@
   .module-info h3 {
     margin: 0 0 4px 0;
     font-size: var(--text-2026-body);
-    font-weight: var(--settings-font-weight-semibold);
+    font-weight: 600;
     color: var(--theme-text);
   }
 
@@ -156,10 +156,10 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 4px var(--settings-space-sm);
+    padding: 4px 8px;
     border-radius: var(--radius-2026-xs);
     font-size: 11px;
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
     text-transform: capitalize;
   }
 
@@ -182,8 +182,7 @@
   .tabs-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--settings-space-sm);
-    padding: 0 var(--settings-space-md) var(--settings-space-md)
-      var(--settings-space-md);
+    gap: 8px;
+    padding: 0 16px 16px 16px;
   }
 </style>

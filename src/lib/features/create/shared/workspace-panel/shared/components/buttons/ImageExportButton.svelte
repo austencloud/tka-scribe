@@ -62,19 +62,19 @@
 
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 90%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent),
       color-mix(in srgb, #ec4899 90%, transparent)
     );
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     box-shadow:
-      0 2px 8px color-mix(in srgb, var(--theme-accent, #4f46e5) 35%, transparent),
+      0 2px 8px color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 35%, transparent),
       0 6px 18px color-mix(in srgb, #ec4899 25%, transparent);
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
     box-shadow:
-      0 4px 12px color-mix(in srgb, var(--theme-accent, #4f46e5) 45%, transparent),
+      0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 45%, transparent),
       0 8px 22px color-mix(in srgb, #ec4899 35%, transparent);
   }
 
@@ -97,11 +97,11 @@
   .image-export-button.active {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #8b5cf6),
+      var(--theme-accent-strong, #8b5cf6),
       #ec4899
     );
     box-shadow:
-      0 4px 14px color-mix(in srgb, var(--theme-accent, #4f46e5) 55%, transparent),
+      0 4px 14px color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 55%, transparent),
       0 10px 26px color-mix(in srgb, #ec4899 40%, transparent);
   }
 

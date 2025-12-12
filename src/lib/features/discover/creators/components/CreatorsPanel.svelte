@@ -12,7 +12,7 @@
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import { discoverNavigationState } from "../../shared/state/discover-navigation-state.svelte";
   import { creatorsDataState } from "../state/creators-data-state.svelte";
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
@@ -47,7 +47,7 @@
   let hapticService: IHapticFeedbackService;
 
   // Get current user ID
-  const currentUserId = $derived(authStore.user?.uid);
+  const currentUserId = $derived(authState.user?.uid);
 
   // Reactive getters from cached state
   const users = $derived(creatorsDataState.users);
@@ -107,7 +107,10 @@
   /**
    * Handle successful avatar image load - extract color
    */
-  async function handleAvatarLoad(user: UserProfile, imgElement: HTMLImageElement) {
+  async function handleAvatarLoad(
+    user: UserProfile,
+    imgElement: HTMLImageElement
+  ) {
     // Skip if already have color for this user
     if (userColors.has(user.id)) return;
 
@@ -131,7 +134,10 @@
 
     // Set fallback color based on name
     if (!userColors.has(user.id)) {
-      const fallbackColor = getCachedOrFallbackColor(undefined, user.displayName);
+      const fallbackColor = getCachedOrFallbackColor(
+        undefined,
+        user.displayName
+      );
       userColors = new Map(userColors).set(user.id, fallbackColor);
     }
   }
@@ -215,87 +221,95 @@
       {:else}
         <PanelGrid minCardWidth="240px" gap="20px">
           {#each filteredUsers as user (user.id)}
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <div
-            class="user-card"
-            style="--card-accent: {getUserColor(user)}"
-            onclick={() => handleUserClick(user)}
-            role="button"
-            tabindex="0"
-            onkeydown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                handleUserClick(user);
-              }
-            }}
-          >
-            <!-- Avatar -->
-            <div class="user-avatar">
-              {#if user.avatar}
-                <img
-                  src={user.avatar}
-                  alt={user.displayName}
-                  crossorigin="anonymous"
-                  referrerpolicy="no-referrer"
-                  onload={(e) => handleAvatarLoad(user, e.currentTarget as HTMLImageElement)}
-                  onerror={(e) => handleAvatarError(user, e.currentTarget as HTMLImageElement)}
-                />
-                <!-- Fallback placeholder (shown if image fails to load) -->
-                <div class="avatar-placeholder" style="display: none;">
-                  <i class="fas fa-user"></i>
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <div
+              class="user-card"
+              style="--card-accent: {getUserColor(user)}"
+              onclick={() => handleUserClick(user)}
+              role="button"
+              tabindex="0"
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleUserClick(user);
+                }
+              }}
+            >
+              <!-- Avatar -->
+              <div class="user-avatar">
+                {#if user.avatar}
+                  <img
+                    src={user.avatar}
+                    alt={user.displayName}
+                    crossorigin="anonymous"
+                    referrerpolicy="no-referrer"
+                    onload={(e) =>
+                      handleAvatarLoad(
+                        user,
+                        e.currentTarget as HTMLImageElement
+                      )}
+                    onerror={(e) =>
+                      handleAvatarError(
+                        user,
+                        e.currentTarget as HTMLImageElement
+                      )}
+                  />
+                  <!-- Fallback placeholder (shown if image fails to load) -->
+                  <div class="avatar-placeholder" style="display: none;">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {:else}
+                  <div class="avatar-placeholder">
+                    <i class="fas fa-user"></i>
+                  </div>
+                {/if}
+              </div>
+
+              <!-- User info -->
+              <div class="user-info">
+                <h3 class="display-name">{user.displayName}</h3>
+                <p class="username">@{user.username}</p>
+
+                <!-- Stats -->
+                <div class="user-stats">
+                  <div class="stat">
+                    <i class="fas fa-list"></i>
+                    <span>{user.sequenceCount}</span>
+                  </div>
+                  <div class="stat">
+                    <i class="fas fa-folder"></i>
+                    <span>{user.collectionCount}</span>
+                  </div>
+                  <div class="stat">
+                    <i class="fas fa-users"></i>
+                    <span>{user.followerCount}</span>
+                  </div>
                 </div>
-              {:else}
-                <div class="avatar-placeholder">
-                  <i class="fas fa-user"></i>
+              </div>
+
+              <!-- Actions - only show follow button if logged in and not own profile -->
+              {#if currentUserId && currentUserId !== user.id}
+                <div class="user-actions">
+                  <button
+                    class="follow-button"
+                    class:following={user.isFollowing}
+                    class:loading={followingInProgress.has(user.id)}
+                    disabled={followingInProgress.has(user.id)}
+                    onclick={(e) => {
+                      e.stopPropagation();
+                      handleFollowToggle(user);
+                    }}
+                  >
+                    {#if followingInProgress.has(user.id)}
+                      <i class="fas fa-spinner fa-spin"></i>
+                    {:else}
+                      {user.isFollowing ? "Following" : "Follow"}
+                    {/if}
+                  </button>
                 </div>
               {/if}
             </div>
-
-            <!-- User info -->
-            <div class="user-info">
-              <h3 class="display-name">{user.displayName}</h3>
-              <p class="username">@{user.username}</p>
-
-              <!-- Stats -->
-              <div class="user-stats">
-                <div class="stat">
-                  <i class="fas fa-list"></i>
-                  <span>{user.sequenceCount}</span>
-                </div>
-                <div class="stat">
-                  <i class="fas fa-folder"></i>
-                  <span>{user.collectionCount}</span>
-                </div>
-                <div class="stat">
-                  <i class="fas fa-users"></i>
-                  <span>{user.followerCount}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Actions - only show follow button if logged in and not own profile -->
-            {#if currentUserId && currentUserId !== user.id}
-              <div class="user-actions">
-                <button
-                  class="follow-button"
-                  class:following={user.isFollowing}
-                  class:loading={followingInProgress.has(user.id)}
-                  disabled={followingInProgress.has(user.id)}
-                  onclick={(e) => {
-                    e.stopPropagation();
-                    handleFollowToggle(user);
-                  }}
-                >
-                  {#if followingInProgress.has(user.id)}
-                    <i class="fas fa-spinner fa-spin"></i>
-                  {:else}
-                    {user.isFollowing ? "Following" : "Follow"}
-                  {/if}
-                </button>
-              </div>
-            {/if}
-          </div>
           {/each}
         </PanelGrid>
       {/if}
@@ -372,7 +386,7 @@
      ============================================================================ */
   .user-card {
     /* Fallback if no color extracted yet */
-    --card-accent: #8b5cf6;
+    --card-accent: var(--theme-accent-strong, #8b5cf6);
     /* Derive lighter variant using color-mix */
     --card-accent-light: color-mix(in srgb, var(--card-accent) 80%, #fff);
     --card-accent-glow: color-mix(in srgb, var(--card-accent) 25%, transparent);
@@ -507,7 +521,9 @@
     /* Dynamic color tinted icons */
     color: var(--card-accent);
     opacity: 0.75;
-    transition: opacity 0.2s ease, color 0.3s ease;
+    transition:
+      opacity 0.2s ease,
+      color 0.3s ease;
   }
 
   .user-card:hover .stat i {

@@ -29,19 +29,20 @@
 
   // Scope colors for visual distinction
   const scopeColors: Record<ShortcutScope, string> = {
-    navigation: "#6366f1", // Indigo
+    navigation: "var(--theme-accent, #6366f1)", // Indigo
     action: "#10b981", // Emerald
     editing: "#f59e0b", // Amber
     panel: "#14b8a6", // Teal
     focus: "#f97316", // Orange
     help: "#84cc16", // Lime
     "sequence-management": "#0ea5e9", // Sky
-    animation: "#8b5cf6", // Violet
+    animation: "var(--theme-accent-strong, #8b5cf6)", // Violet
     workspace: "#22c55e", // Green
     playback: "#ef4444", // Red
     view: "#06b6d4", // Cyan
     selection: "#ec4899", // Pink
     special: "#64748b", // Slate
+    admin: "#fbbf24", // Amber/Gold (admin crown color)
   };
 
   // Scope icons for visual distinction
@@ -59,6 +60,7 @@
     view: "fa-eye",
     selection: "fa-object-group",
     special: "fa-star",
+    admin: "fa-crown", // Admin crown icon
   };
 
   const color = $derived(scopeColors[scope] || "#6366f1");
@@ -93,69 +95,61 @@
 
   {#if isExpanded}
     <div class="scope-content" transition:slide={{ duration: 200 }}>
-      {#each shortcuts as item, index (item.shortcut.id)}
-        <div
-          class="shortcut-item-wrapper"
-          in:fly={{ y: 8, duration: 200, delay: index * 30, easing: cubicOut }}
-        >
-          <ShortcutListItem
-            {item}
-            onEdit={onEditShortcut}
-            onReset={onResetShortcut}
-          />
-        </div>
-      {/each}
+      <div class="shortcuts-grid">
+        {#each shortcuts as item, index (item.shortcut.id)}
+          <div
+            class="shortcut-item-wrapper"
+            in:fly={{ y: 8, duration: 200, delay: Math.min(index * 20, 200), easing: cubicOut }}
+          >
+            <ShortcutListItem
+              {item}
+              onEdit={onEditShortcut}
+              onReset={onResetShortcut}
+            />
+          </div>
+        {/each}
+      </div>
     </div>
   {/if}
 </section>
 
 <style>
   .scope-section {
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1.5px solid rgba(255, 255, 255, 0.06);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.03);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Dark glass - theme shows through blurred */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
   }
 
   .scope-section:hover {
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
   .scope-header {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     width: 100%;
-    padding: 16px 18px;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--scope-color) 10%, transparent) 0%,
-      color-mix(in srgb, var(--scope-color) 4%, transparent) 100%
-    );
+    min-height: 52px; /* Touch target */
+    padding: 14px 16px;
+    background: transparent;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     cursor: pointer;
     text-align: left;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background 0.15s ease;
   }
 
   .scope-header:hover {
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--scope-color) 15%, transparent) 0%,
-      color-mix(in srgb, var(--scope-color) 7%, transparent) 100%
-    );
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .scope-header.expanded {
-    border-bottom-color: rgba(255, 255, 255, 0.06);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
   }
 
   .scope-header:not(.expanded) {
@@ -167,36 +161,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--scope-color) 25%, transparent) 0%,
-      color-mix(in srgb, var(--scope-color) 15%, transparent) 100%
-    );
-    border: 1px solid color-mix(in srgb, var(--scope-color) 30%, transparent);
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    background: color-mix(in srgb, var(--scope-color) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--scope-color) 35%, transparent);
+    border-radius: 8px;
     color: var(--scope-color);
-    font-size: 15px;
-    transition: all 0.2s ease;
-    box-shadow:
-      0 2px 6px color-mix(in srgb, var(--scope-color) 20%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-size: 14px;
+    transition: all 0.15s ease;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--scope-color) 15%, transparent);
   }
 
   .scope-header:hover .scope-icon {
-    transform: scale(1.05);
-    box-shadow:
-      0 4px 12px color-mix(in srgb, var(--scope-color) 30%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: color-mix(in srgb, var(--scope-color) 28%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--scope-color) 25%, transparent);
   }
 
   .scope-label {
     flex: 1;
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.92);
-    letter-spacing: -0.01em;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .scope-badges {
@@ -211,36 +196,36 @@
     justify-content: center;
     min-width: 26px;
     height: 26px;
-    padding: 0 9px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+    padding: 0 8px;
+    /* Subtle glass with scope color tint */
+    background: color-mix(in srgb, var(--scope-color) 12%, rgba(255, 255, 255, 0.08));
+    border: 1px solid color-mix(in srgb, var(--scope-color) 25%, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
     font-size: 12px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.55);
+    font-weight: 600;
+    color: var(--scope-color);
     font-variant-numeric: tabular-nums;
   }
 
   .customized-count {
     padding: 5px 10px;
-    background: rgba(139, 92, 246, 0.12);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 700;
-    color: rgba(167, 139, 250, 1);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--theme-accent-strong, #a78bfa);
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
 
   .expand-icon {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.35);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
+    transition: transform 0.2s ease;
   }
 
   .scope-header:hover .expand-icon {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .scope-header.expanded .expand-icon {
@@ -248,16 +233,23 @@
   }
 
   .scope-content {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.12) 0%,
-      rgba(0, 0, 0, 0.06) 100%
-    );
+    padding: 12px;
+  }
+
+  /* Bento grid for shortcuts - consistent card sizes */
+  .shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    /* Ensure all items in a row stretch to same height */
+    align-items: stretch;
   }
 
   .shortcut-item-wrapper {
-    /* Container for animation */
-    display: contents;
+    /* Fill grid cell completely */
+    display: flex;
+    min-width: 0;
+    height: 100%;
   }
 
   /* Focus states */
@@ -315,7 +307,7 @@
 
     .customized-count {
       padding: 4px 8px;
-      font-size: 9px;
+      font-size: 11px;
     }
   }
 

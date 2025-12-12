@@ -130,8 +130,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     min-width: 0;
     overflow: hidden;
   }
@@ -153,7 +153,7 @@
     justify-content: center;
     padding: 52px 24px;
     gap: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .loading-state i {
@@ -168,7 +168,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
     flex-shrink: 0;
   }
 
@@ -181,20 +181,20 @@
   .initials {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text);
   }
 
   .user-info h4 {
     margin: 0 0 4px 0;
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .user-email {
     margin: 0;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .role-badge {

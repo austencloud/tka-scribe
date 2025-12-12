@@ -165,12 +165,12 @@ Enhanced with Svelte 5 runes for reactive state management.
     position: relative;
     border-radius: 8px;
     overflow: hidden;
-    background: rgba(8, 8, 12, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #fff;
+    background: var(--theme-card-bg, rgba(8, 8, 12, 0.9));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, #fff);
     display: flex;
     flex-direction: column;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 12px 40px var(--theme-shadow, rgba(0, 0, 0, 0.35));
     width: 100%; /* Fill grid cell width */
     height: 100%; /* Fill grid cell height */
     padding: 0; /* Remove default button padding */
@@ -193,8 +193,8 @@ Enhanced with Svelte 5 runes for reactive state management.
     /* Subtle scale instead of lift - more modern, less aggressive */
     transform: scale(1.02);
     /* Slightly enhanced shadow - much more subtle */
-    box-shadow: 0 14px 50px rgba(0, 0, 0, 0.38);
-    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 14px 50px var(--theme-shadow, rgba(0, 0, 0, 0.38));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
   }
 
   /* Active state - brief feedback on touch/mobile only */
@@ -206,12 +206,12 @@ Enhanced with Svelte 5 runes for reactive state management.
   }
 
   .sequence-card:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.4);
+    outline: 2px solid color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     outline-offset: 2px;
   }
 
   .sequence-card.selected {
-    border-color: rgba(102, 126, 234, 0.8);
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.4);
+    border-color: color-mix(in srgb, var(--semantic-info, #667eea) 80%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--semantic-info, #667eea) 40%, transparent);
   }
 </style>

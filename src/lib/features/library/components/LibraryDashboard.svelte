@@ -14,7 +14,7 @@
     libraryState,
     type LibraryViewSection,
   } from "../state/library-state.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import SequenceCard from "../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
   import type { LibrarySequence } from "../domain/models/LibrarySequence";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -34,7 +34,7 @@
   // Derived state
   const isLoading = $derived(libraryState.isLoading);
   const error = $derived(libraryState.error);
-  const isAuthenticated = $derived(!!authStore.effectiveUserId);
+  const isAuthenticated = $derived(!!authState.effectiveUserId);
 
   // Recent sequences (last 8, sorted by update time)
   const recentSequences = $derived(() => {
@@ -71,13 +71,14 @@
   const totalVideos = $derived(videos.length);
 
   async function loadVideos() {
-    if (!videoService || !authStore.effectiveUserId) return;
+    if (!videoService || !authState.effectiveUserId) return;
 
     videosLoading = true;
     try {
       const library = await videoService.getUserVideoLibrary();
-      videos = [...library.created, ...library.collaborations]
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      videos = [...library.created, ...library.collaborations].sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+      );
     } catch (e) {
       console.error("Failed to load videos:", e);
     } finally {
@@ -118,7 +119,9 @@
   // Initialize on mount
   onMount(() => {
     prevIsAuthenticated = isAuthenticated;
-    videoService = tryResolve<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
+    videoService = tryResolve<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
     if (isAuthenticated) {
       libraryState.initialize();
       loadVideos();

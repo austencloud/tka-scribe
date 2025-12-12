@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
@@ -17,7 +17,7 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
 
-  const isAuthenticated = $derived(!!authStore.user);
+  const isAuthenticated = $derived(!!authState.user);
 
   onMount(async () => {
     if (!isAuthenticated) {

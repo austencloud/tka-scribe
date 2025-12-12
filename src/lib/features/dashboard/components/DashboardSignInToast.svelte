@@ -24,7 +24,7 @@
     align-items: center;
     gap: 10px;
     padding: 14px 20px;
-    background: rgba(99, 102, 241, 0.95);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 95%, transparent);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-radius: 14px;
@@ -36,7 +36,7 @@
     line-height: 20px;
     letter-spacing: -0.24px;
     box-shadow:
-      0 8px 24px rgba(99, 102, 241, 0.35),
+      0 8px 24px color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent),
       0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 10000;
     animation: toast-enter 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);

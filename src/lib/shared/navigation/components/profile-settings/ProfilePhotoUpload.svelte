@@ -5,7 +5,7 @@
   Features horizontal layout with photo preview and upload button.
 -->
 <script lang="ts">
-  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import { authState } from "../../../auth/state/authState.svelte";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import {
     isCompactMode,
@@ -18,8 +18,8 @@
     hapticService: IHapticFeedbackService | null;
   }>();
 
-  let displayName = $derived(authStore.user?.displayName || "");
-  let email = $derived(authStore.user?.email || "");
+  let displayName = $derived(authState.user?.displayName || "");
+  let email = $derived(authState.user?.email || "");
 
   function triggerFileInput() {
     hapticService?.trigger("selection");
@@ -47,10 +47,10 @@
     aria-busy={uiState.uploadingPhoto}
     aria-label="Change profile photo"
   >
-    {#if authStore.user?.photoURL}
+    {#if authState.user?.photoURL}
       <img
-        src={authStore.user.photoURL}
-        alt={authStore.user.displayName || "User"}
+        src={authState.user.photoURL}
+        alt={authState.user.displayName || "User"}
         class="photo"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
@@ -193,7 +193,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -221,7 +221,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -311,7 +311,7 @@
 
   /* Accessibility - Focus Indicators */
   .photo-wrapper:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
     border-radius: 50%;
   }

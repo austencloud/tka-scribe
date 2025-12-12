@@ -110,8 +110,8 @@
 		flex-direction: column;
 		gap: var(--space-2026-sm, 12px);
 		padding: var(--space-2026-sm, 12px);
-		background: #1a1a24;
-		border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+		background: var(--theme-panel-bg, #1a1a24);
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
 		border-radius: var(--radius-2026-md, 14px);
 		box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
 		transition:
@@ -137,7 +137,7 @@
 		transition:
 			opacity var(--duration-2026-fast, 150ms) var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1)),
 			background var(--duration-2026-fast, 150ms) var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1));
-		color: rgba(255, 255, 255, 0.9);
+		color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
 		font-size: 0.7rem;
 		cursor: pointer;
 		user-select: none;
@@ -145,7 +145,7 @@
 	}
 
 	.status-item:hover {
-		background: #2d2d3a;
+		background: var(--theme-card-hover-bg, #2d2d3a);
 	}
 
 	.status-item.active {
@@ -156,14 +156,14 @@
 		width: 6px;
 		height: 6px;
 		border-radius: 50%;
-		background: rgba(107, 114, 128, 0.8);
+		background: var(--theme-text-dim, rgba(107, 114, 128, 0.8));
 		transition: all var(--duration-2026-fast, 150ms) var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1));
 		flex-shrink: 0;
 	}
 
 	.status-item.active .status-dot {
-		background: #22c55e;
-		box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+		background: var(--semantic-success, #22c55e);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
 	}
 
 	.status-label {
@@ -176,7 +176,7 @@
 		flex-direction: column;
 		gap: var(--space-2026-xs, 6px);
 		padding: var(--space-2026-sm, 12px);
-		background: rgba(0, 0, 0, 0.2);
+		background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
 		border-radius: var(--radius-2026-sm, 10px);
 		font-family: 'Courier New', monospace;
 		font-size: 0.7rem;
@@ -191,23 +191,23 @@
 	}
 
 	.stat-label {
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
 		font-weight: 500;
 	}
 
 	.stat-value {
-		color: rgba(255, 255, 255, 0.95);
+		color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
 		font-weight: 600;
 		min-width: 4ch;
 		text-align: right;
 	}
 
 	.stat-value.warn {
-		color: #fbbf24;
+		color: var(--semantic-warning, #fbbf24);
 	}
 
 	.stat-value.error {
-		color: #ef4444;
+		color: var(--semantic-error, #ef4444);
 	}
 
 	/* ============================================

@@ -230,7 +230,7 @@ Combines video feed with playback controls for practicing sequences.
     height: 100%;
     background: var(
       --gradient-primary,
-      linear-gradient(90deg, #3b82f6, #8b5cf6)
+      linear-gradient(90deg, #3b82f6, var(--theme-accent-strong, #8b5cf6))
     );
     transition: width 0.3s ease;
   }

@@ -44,21 +44,20 @@ export class PixiTextureLoader {
         svgGenerator.generateRedPropSvg(propType),
       ]);
 
-      // Destroy old textures before creating new ones to prevent memory leak
-      this.bluePropTexture?.destroy(true);
-      this.redPropTexture?.destroy(true);
+      // CRITICAL: Create new textures BEFORE destroying old ones
+      // This prevents race condition where renderScene uses destroyed texture
+      const [newBlueTexture, newRedTexture] = await Promise.all([
+        this.createTextureFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
+        this.createTextureFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+      ]);
 
-      // Load textures from SVG strings
-      this.bluePropTexture = await this.createTextureFromSVG(
-        bluePropData.svg,
-        bluePropData.width,
-        bluePropData.height
-      );
-      this.redPropTexture = await this.createTextureFromSVG(
-        redPropData.svg,
-        redPropData.width,
-        redPropData.height
-      );
+      // Now safe to destroy old textures and swap
+      const oldBlue = this.bluePropTexture;
+      const oldRed = this.redPropTexture;
+      this.bluePropTexture = newBlueTexture;
+      this.redPropTexture = newRedTexture;
+      oldBlue?.destroy(true);
+      oldRed?.destroy(true);
 
       return {
         blue: this.bluePropTexture,
@@ -93,21 +92,20 @@ export class PixiTextureLoader {
         svgGenerator.generateRedPropSvg(redPropType),
       ]);
 
-      // Destroy old textures before creating new ones to prevent memory leak
-      this.bluePropTexture?.destroy(true);
-      this.redPropTexture?.destroy(true);
+      // CRITICAL: Create new textures BEFORE destroying old ones
+      // This prevents race condition where renderScene uses destroyed texture
+      const [newBlueTexture, newRedTexture] = await Promise.all([
+        this.createTextureFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
+        this.createTextureFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+      ]);
 
-      // Load textures from SVG strings
-      this.bluePropTexture = await this.createTextureFromSVG(
-        bluePropData.svg,
-        bluePropData.width,
-        bluePropData.height
-      );
-      this.redPropTexture = await this.createTextureFromSVG(
-        redPropData.svg,
-        redPropData.width,
-        redPropData.height
-      );
+      // Now safe to destroy old textures and swap
+      const oldBlue = this.bluePropTexture;
+      const oldRed = this.redPropTexture;
+      this.bluePropTexture = newBlueTexture;
+      this.redPropTexture = newRedTexture;
+      oldBlue?.destroy(true);
+      oldRed?.destroy(true);
 
       return {
         blue: this.bluePropTexture,
@@ -139,21 +137,28 @@ export class PixiTextureLoader {
         svgGenerator.generatePropSvg(propType, redColor),
       ]);
 
-      // Destroy old textures before creating new ones to prevent memory leak
-      this.secondaryBluePropTexture?.destroy(true);
-      this.secondaryRedPropTexture?.destroy(true);
+      // CRITICAL: Create new textures BEFORE destroying old ones
+      // This prevents race condition where renderScene uses destroyed texture
+      const [newBlueTexture, newRedTexture] = await Promise.all([
+        this.createTextureFromSVG(
+          secondaryBluePropData.svg,
+          secondaryBluePropData.width,
+          secondaryBluePropData.height
+        ),
+        this.createTextureFromSVG(
+          secondaryRedPropData.svg,
+          secondaryRedPropData.width,
+          secondaryRedPropData.height
+        ),
+      ]);
 
-      // Load textures from SVG strings
-      this.secondaryBluePropTexture = await this.createTextureFromSVG(
-        secondaryBluePropData.svg,
-        secondaryBluePropData.width,
-        secondaryBluePropData.height
-      );
-      this.secondaryRedPropTexture = await this.createTextureFromSVG(
-        secondaryRedPropData.svg,
-        secondaryRedPropData.width,
-        secondaryRedPropData.height
-      );
+      // Now safe to destroy old textures and swap
+      const oldBlue = this.secondaryBluePropTexture;
+      const oldRed = this.secondaryRedPropTexture;
+      this.secondaryBluePropTexture = newBlueTexture;
+      this.secondaryRedPropTexture = newRedTexture;
+      oldBlue?.destroy(true);
+      oldRed?.destroy(true);
 
       console.log(
         `[PixiTextureLoader] Loaded secondary prop textures for ${propType} (blue: ${blueColor}, red: ${redColor})`
@@ -189,15 +194,18 @@ export class PixiTextureLoader {
 
       const gridSvg = svgGenerator.generateGridSvg(gridModeEnum);
 
-      // Destroy old grid texture before creating new one to prevent memory leak
-      this.gridTexture?.destroy(true);
-
-      // Load texture at current canvas size for optimal quality
-      this.gridTexture = await this.createTextureFromSVG(
+      // CRITICAL: Create new texture BEFORE destroying old one
+      // This prevents race condition where renderScene uses destroyed texture
+      const newTexture = await this.createTextureFromSVG(
         gridSvg,
         canvasSize,
         canvasSize
       );
+
+      // Now safe to destroy old texture and swap
+      const oldTexture = this.gridTexture;
+      this.gridTexture = newTexture;
+      oldTexture?.destroy(true);
 
       return this.gridTexture;
     } catch (error) {

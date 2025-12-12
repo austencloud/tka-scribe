@@ -45,7 +45,8 @@ export type ShortcutScope =
   | "playback" // Media playback controls
   | "view" // View toggles and display options
   | "selection" // Selection operations
-  | "special"; // Special/misc shortcuts
+  | "special" // Special/misc shortcuts
+  | "admin"; // Admin-only shortcuts (debug tools, impersonation)
 
 /**
  * Shortcut priority - determines which shortcut takes precedence when multiple match

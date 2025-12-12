@@ -302,7 +302,7 @@
   .handle-bar {
     width: 36px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     border-radius: 2px;
   }
 
@@ -316,7 +316,7 @@
     margin: 0 0 8px;
     font-size: 1.75rem;
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, white);
     text-align: center;
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -327,7 +327,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     font-size: 1rem;
     line-height: 1.4;
   }
@@ -350,15 +350,15 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .creator-row:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .creator-info {
@@ -372,24 +372,24 @@
   .creator-name {
     font-size: 1rem;
     font-weight: 600;
-    color: white;
+    color: var(--theme-text, white);
     line-height: 1.4;
   }
 
   .creator-label {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.3;
   }
 
   .creator-arrow {
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     transition: transform 0.2s ease;
   }
 
   .creator-row:hover .creator-arrow {
     transform: translateX(2px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   /* Actions */
@@ -406,10 +406,10 @@
     align-items: center;
     gap: 6px;
     padding: 14px 8px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.3;
@@ -418,8 +418,8 @@
   }
 
   .action-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, white);
   }
 
   .action-btn:active {
@@ -427,13 +427,13 @@
   }
 
   .action-btn-danger {
-    color: #ef4444;
-    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--semantic-error, #ef4444);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .action-btn-danger:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ff6b6b;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    color: var(--semantic-error, #ff6b6b);
   }
 
   /* Video Modal */

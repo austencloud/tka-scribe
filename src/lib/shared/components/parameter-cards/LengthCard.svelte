@@ -9,7 +9,7 @@ Can operate as stepper (inline) or panel opener (click to select)
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { StepperCard } from "$lib/shared/components/stepper-card";
+  import StepperCard from "$lib/shared/components/stepper-card/StepperCard.svelte";
 
   type LengthCardMode = "stepper" | "panel-opener";
 

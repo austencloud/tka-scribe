@@ -41,7 +41,7 @@
       label: "Top-Right",
       shortLabel: "TR",
       rotation: 90,
-      color: "#8b5cf6",
+      color: "var(--theme-accent-strong, #8b5cf6)",
     },
     {
       index: 2 as const,
@@ -195,7 +195,7 @@
     gap: 0.35rem;
     padding: 0.3rem 0.6rem;
     background: color-mix(in srgb, var(--cell-color) 25%, transparent);
-    border: 1px solid var(--cell-color, rgba(139, 92, 246, 0.4));
+    border: 1px solid var(--cell-color, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent));
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 600;

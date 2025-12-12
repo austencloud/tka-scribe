@@ -45,6 +45,9 @@ export const TYPES = {
 
   // === AUTH SERVICES ===
   IAuthService: Symbol.for("IAuthService"),
+  IProfilePictureService: Symbol.for("IProfilePictureService"),
+  IUserDocumentService: Symbol.for("IUserDocumentService"),
+  IImpersonationService: Symbol.for("IImpersonationService"),
 
   // === MOBILE SERVICES ===
   IMobileFullscreenService: Symbol.for("IMobileFullscreenService"),
@@ -64,6 +67,8 @@ export const TYPES = {
   IDeepLinkService: Symbol.for("IDeepLinkService"),
   ILetterDeriverService: Symbol.for("ILetterDeriverService"),
   IPositionDeriverService: Symbol.for("IPositionDeriverService"),
+  INavigationPersistenceService: Symbol.for("INavigationPersistenceService"),
+  INavigationValidationService: Symbol.for("INavigationValidationService"),
 
   // === KEYBOARD SHORTCUT SERVICES ===
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
@@ -499,6 +504,10 @@ export const TYPES = {
   // === TRAIN MODULE - CHALLENGES & PROGRESS ===
   ITrainChallengeService: Symbol.for("ITrainChallengeService"),
   IPerformanceHistoryService: Symbol.for("IPerformanceHistoryService"),
+
+  // === MESSAGING SERVICES ===
+  IMessagingService: Symbol.for("IMessagingService"),
+  IConversationService: Symbol.for("IConversationService"),
 
 } as const;
 

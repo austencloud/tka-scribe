@@ -5,7 +5,7 @@
  * Uses Svelte 5 runes pattern for reactive state.
  */
 
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
 
 export type GallerySource = "community" | "my-library";
 
@@ -41,7 +41,7 @@ class GallerySourceManager {
    * Check if user can view their library (must be authenticated)
    */
   get canViewMyLibrary(): boolean {
-    return authStore.isAuthenticated;
+    return authState.isAuthenticated;
   }
 
   /**
@@ -49,7 +49,7 @@ class GallerySourceManager {
    */
   setSource(newSource: GallerySource): void {
     // If trying to set "my-library" but not authenticated, stay on community
-    if (newSource === "my-library" && !authStore.isAuthenticated) {
+    if (newSource === "my-library" && !authState.isAuthenticated) {
       return;
     }
 
@@ -64,7 +64,7 @@ class GallerySourceManager {
    * Toggle between sources
    */
   toggle(): void {
-    if (this.source === "community" && authStore.isAuthenticated) {
+    if (this.source === "community" && authState.isAuthenticated) {
       this.setSource("my-library");
     } else {
       this.setSource("community");

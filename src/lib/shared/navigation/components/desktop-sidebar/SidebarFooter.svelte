@@ -1,19 +1,30 @@
 <!-- Sidebar Footer Component -->
-<!-- Minimal footer with just the settings gear/back button -->
+<!-- Footer with inbox button and settings gear/back button -->
 <script lang="ts">
+  import InboxButton from "$lib/shared/inbox/components/InboxButton.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
+
   let { isCollapsed, isSettingsActive, onSettingsClick } = $props<{
     isCollapsed: boolean;
     isSettingsActive: boolean;
     onSettingsClick?: () => void;
   }>();
+
+  // Only show inbox button for authenticated users
+  const showInbox = $derived(authState.isAuthenticated);
 </script>
 
-<!-- Minimal footer - just the settings gear/back button -->
+<!-- Footer with inbox and settings -->
 <div
   class="sidebar-footer"
   class:collapsed={isCollapsed}
-  style="--settings-color: #64748b;"
+  style="--button-accent-color: #64748b;"
 >
+  <!-- Inbox Button (only when authenticated) -->
+  {#if showInbox}
+    <InboxButton {isCollapsed} />
+  {/if}
+
   <!-- Settings Button -->
   <button
     class="settings-button"
@@ -33,17 +44,20 @@
 
 <style>
   /* ============================================================================
-     SIDEBAR FOOTER - Minimal settings entry point
+     SIDEBAR FOOTER - Inbox + Settings entry points
      ============================================================================ */
   .sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     padding: 16px 12px;
     border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .sidebar-footer.collapsed {
     padding: 12px 8px;
-    display: flex;
-    justify-content: center;
+    align-items: center;
+    gap: 12px;
   }
 
   /* ============================================================================
@@ -72,8 +86,12 @@
   }
 
   .settings-button.active {
-    background: color-mix(in srgb, var(--settings-color) 15%, transparent);
-    border-color: color-mix(in srgb, var(--settings-color) 25%, transparent);
+    background: color-mix(in srgb, var(--button-accent-color) 15%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--button-accent-color) 25%,
+      transparent
+    );
     color: white;
   }
 
@@ -109,7 +127,7 @@
   }
 
   .settings-button.active .button-icon {
-    background: color-mix(in srgb, var(--settings-color) 20%, transparent);
+    background: color-mix(in srgb, var(--button-accent-color) 20%, transparent);
   }
 
   .settings-button:not(.active):hover .button-icon i {
@@ -127,7 +145,7 @@
      ACCESSIBILITY
      ============================================================================ */
   .settings-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 70%, transparent);
     outline-offset: 2px;
   }
 

@@ -84,19 +84,19 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.3));
   }
 
   .action-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, white);
     padding: 0.75rem 1.5rem;
     border-radius: 1.5rem;
     cursor: pointer;
@@ -108,10 +108,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .action-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    border-color: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px var(--theme-shadow, rgba(0, 0, 0, 0.2));
   }
 
   .action-button:active {
@@ -119,26 +119,26 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .action-button.edit:hover {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    color: var(--semantic-info, #60a5fa);
   }
 
   .action-button.favorite:hover {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: rgba(239, 68, 68, 0.5);
-    color: #f87171;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    color: var(--semantic-error, #f87171);
   }
 
   .action-button.favorite.favorited {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    color: var(--semantic-error, #f87171);
   }
 
   .action-button.delete:hover {
-    background: rgba(220, 38, 38, 0.3);
-    border-color: rgba(220, 38, 38, 0.5);
+    background: color-mix(in srgb, var(--semantic-error, #dc2626) 30%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #dc2626) 50%, transparent);
     color: #fca5a5;
   }
 

@@ -6,6 +6,7 @@
   import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
   import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
   import TabOverflowSelector from "$lib/shared/navigation/components/TabOverflowSelector.svelte";
+  import InboxButton from "$lib/shared/inbox/components/InboxButton.svelte";
   import { shouldHideUIForPanels } from "../../../application/state/animation-visibility-state.svelte";
   import {
     navigationState,
@@ -13,6 +14,7 @@
   } from "../../state/navigation-state.svelte";
   import { galleryPanelManager } from "$lib/features/discover/shared/state/gallery-panel-state.svelte";
   import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   // Get current module color for themed navigation (fixed: was returning function)
   let moduleColor = $derived(
@@ -135,8 +137,8 @@
     <div class="sections-overflow" class:hidden={shouldHideNav}>
       <TabOverflowSelector
         {sections}
-        currentSection={currentSection}
-        onSectionChange={onSectionChange}
+        {currentSection}
+        {onSectionChange}
         {moduleColor}
       />
     </div>
@@ -160,15 +162,23 @@
     </div>
   {/if}
 
-  <!-- Settings Button (Right) - hidden when in settings -->
-  {#if showSettings && !isSettingsActive}
-    <SettingsButton
-      active={isSettingsActive}
-      onClick={onSettingsTap}
-      onLongPress={handleSettingsLongPress}
-      longPressMs={500}
-    />
-  {/if}
+  <!-- Right side buttons -->
+  <div class="right-buttons">
+    <!-- Inbox Button (only when authenticated) -->
+    {#if authState.isAuthenticated}
+      <InboxButton />
+    {/if}
+
+    <!-- Settings Button - hidden when in settings -->
+    {#if showSettings && !isSettingsActive}
+      <SettingsButton
+        active={isSettingsActive}
+        onClick={onSettingsTap}
+        onLongPress={handleSettingsLongPress}
+        longPressMs={500}
+      />
+    {/if}
+  </div>
 </nav>
 
 <style>
@@ -288,6 +298,17 @@
   .sections-overflow.hidden {
     opacity: 0;
     pointer-events: none;
+  }
+
+  /* ============================================================================
+     RIGHT BUTTONS CONTAINER (Inbox + Settings)
+     ============================================================================ */
+  .right-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
   }
 
   /* ============================================================================
@@ -474,7 +495,7 @@
 
   /* Focus state for keyboard navigation */
   .peek-indicator:focus-visible {
-    outline: 2px solid hsl(210 100% 60%);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: -2px;
   }
 

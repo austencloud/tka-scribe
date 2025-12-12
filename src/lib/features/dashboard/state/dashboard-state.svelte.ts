@@ -6,7 +6,7 @@
 
 import { loadFeatureModule } from "$lib/shared/inversify/di";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
 import { libraryState } from "$lib/features/library/state/library-state.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
@@ -32,8 +32,8 @@ function createDashboardState() {
   });
 
   // Derived values
-  const isAuthenticated = $derived(authStore.isAuthenticated);
-  const user = $derived(authStore.user);
+  const isAuthenticated = $derived(authState.isAuthenticated);
+  const user = $derived(authState.user);
   const isPreviewActive = $derived(userPreviewState.isActive);
   const previewProfile = $derived(userPreviewState.data.profile);
 
@@ -95,7 +95,7 @@ function createDashboardState() {
 
   // Effects
   $effect(() => {
-    const userId = authStore.effectiveUserId;
+    const userId = authState.effectiveUserId;
     if (userId) {
       loadFeatureModule("library")
         .then(() => {

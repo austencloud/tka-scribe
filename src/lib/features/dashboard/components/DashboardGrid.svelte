@@ -64,14 +64,14 @@
 
   @media (min-width: 640px) {
     .modules-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 18px;
     }
   }
 
   @media (min-width: 900px) {
     .modules-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
     }
   }

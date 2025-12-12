@@ -112,11 +112,11 @@ Follows Svelte 5 runes + microservices architecture.
     display: flex;
     align-items: center;
     gap: 24px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
     backdrop-filter: blur(10px);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }
 
   .filter-button {
@@ -124,8 +124,8 @@ Follows Svelte 5 runes + microservices architecture.
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: #007bff;
-    color: white;
+    background: var(--semantic-info, #007bff);
+    color: var(--theme-text, white);
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -135,9 +135,9 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .filter-button:hover {
-    background: #0056b3;
+    background: color-mix(in srgb, var(--semantic-info, #007bff) 85%, #000);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--semantic-info, #007bff) 30%, transparent);
   }
 
   .filter-icon {
@@ -153,7 +153,7 @@ Follows Svelte 5 runes + microservices architecture.
   .sort-section label {
     font-size: 0.9rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     white-space: nowrap;
   }
 
@@ -165,10 +165,10 @@ Follows Svelte 5 runes + microservices architecture.
 
   select {
     padding: 8px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text, white);
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -176,14 +176,14 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   select:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   select:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+    border-color: var(--semantic-info, #007bff);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--semantic-info, #007bff) 20%, transparent);
   }
 
   .sort-direction-button {
@@ -192,16 +192,16 @@ Follows Svelte 5 runes + microservices architecture.
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .sort-direction-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .sort-direction-button:active {
@@ -210,7 +210,7 @@ Follows Svelte 5 runes + microservices architecture.
 
   .sort-icon {
     font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
   }
 
   /* Responsive design */

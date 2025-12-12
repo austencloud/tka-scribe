@@ -277,12 +277,12 @@
     background:
       radial-gradient(
         circle at 20% 20%,
-        rgba(99, 102, 241, 0.1),
+        color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent),
         transparent 45%
       ),
       radial-gradient(
         circle at 80% 30%,
-        rgba(59, 130, 246, 0.15),
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent),
         transparent 40%
       ),
       #05060b;
@@ -313,7 +313,7 @@
     font-weight: 600;
     font-size: 0.9rem;
     color: #93c5fd;
-    background: rgba(59, 130, 246, 0.18);
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 18%, transparent);
   }
   .chip.recording {
     background: #ef4444;
@@ -505,7 +505,7 @@
     background: linear-gradient(135deg, #f59e0b, #d97706);
   }
   .main-buttons .snapshot {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--theme-accent, #3b82f6), var(--theme-accent-strong, #2563eb));
   }
   .main-buttons .stop {
     background: linear-gradient(135deg, #6b7280, #4b5563);
@@ -520,7 +520,7 @@
   .prop-tag {
     justify-self: end;
     padding: 8px 12px;
-    background: rgba(99, 102, 241, 0.18);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 18%, transparent);
     border-radius: 12px;
     color: #a5b4fc;
     text-transform: capitalize;
@@ -577,7 +577,7 @@
   }
   input:focus,
   select:focus {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
   }
 
   .hint {

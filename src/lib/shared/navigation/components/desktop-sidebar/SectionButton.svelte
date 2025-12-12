@@ -48,36 +48,6 @@
     overflow: hidden;
   }
 
-  /* Shimmer effect layer - subtle */
-  .section-button::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      transparent 40%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.04)) 50%,
-      transparent 60%
-    );
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-  }
-
-  .section-button:hover:not(.disabled)::before {
-    opacity: 1;
-    animation: section-shimmer 1s ease-in-out;
-  }
-
-  @keyframes section-shimmer {
-    0% {
-      transform: translateX(-100%) translateY(-100%);
-    }
-    100% {
-      transform: translateX(100%) translateY(100%);
-    }
-  }
-
   .section-button:hover:not(.disabled) {
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
@@ -161,7 +131,7 @@
 
   /* Focus styles for keyboard navigation */
   .section-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

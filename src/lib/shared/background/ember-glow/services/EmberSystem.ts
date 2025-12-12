@@ -147,6 +147,11 @@ export function createEmberSystem() {
     embers.forEach((ember) => {
       const { x, y, size, opacity, glowRadius, color } = ember;
 
+      // Skip if any values are non-finite (NaN or Infinity)
+      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(glowRadius) || glowRadius <= 0) {
+        return;
+      }
+
       // Create radial gradient for glow effect
       const gradient = ctx.createRadialGradient(x, y, 0, x, y, glowRadius);
       gradient.addColorStop(

@@ -196,4 +196,42 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     console.log("✅ Thumbnail upload complete:", url);
     return { url, storagePath };
   }
+
+  /**
+   * Upload a sequence thumbnail (static image) to Firebase Storage
+   */
+  async uploadSequenceThumbnail(
+    sequenceId: string,
+    thumbnailBlob: Blob,
+    format: "png" | "jpeg" | "webp" = "png"
+  ): Promise<VideoUploadResult> {
+    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const storage = await getStorageInstance();
+    const userId = this.getUserId();
+
+    // Storage path: users/{userId}/thumbnails/{sequenceId}/thumbnail.{format}
+    const storagePath = `users/${userId}/thumbnails/${sequenceId}/thumbnail.${format}`;
+
+    const contentTypeMap = {
+      png: "image/png",
+      jpeg: "image/jpeg",
+      webp: "image/webp",
+    };
+
+    console.log(`📤 Uploading sequence thumbnail to: ${storagePath}`);
+
+    const storageRef = ref(storage, storagePath);
+    await uploadBytes(storageRef, thumbnailBlob, {
+      contentType: contentTypeMap[format],
+      customMetadata: {
+        sequenceId,
+        userId,
+        uploadedAt: new Date().toISOString(),
+      },
+    });
+
+    const url = await getDownloadURL(storageRef);
+    console.log("✅ Sequence thumbnail upload complete:", url);
+    return { url, storagePath };
+  }
 }

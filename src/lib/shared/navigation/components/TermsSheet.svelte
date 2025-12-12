@@ -225,7 +225,7 @@
   }
 
   .terms-sheet__close:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 70%, transparent);
     outline-offset: 2px;
   }
 

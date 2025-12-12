@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/svelte";
 import ImageOptionsMenu from "$lib/shared/share/components/ImageOptionsMenu.svelte";
-import type { ShareOptions } from "$lib/shared/share/domain";
+import type { ShareOptions } from "$lib/shared/share/domain/models/ShareOptions";
 
 const meta = {
   title: "Create/Share/ImageOptionsMenu",
@@ -14,7 +14,7 @@ const meta = {
     },
   },
   argTypes: {
-    onOptionsChange: { action: "optionsChange" },
+    // onOptionsChange is a callback prop - handled by component
   },
 } satisfies Meta<ImageOptionsMenu>;
 

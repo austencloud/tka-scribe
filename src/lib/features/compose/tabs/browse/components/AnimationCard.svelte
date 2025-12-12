@@ -284,8 +284,8 @@ Features:
   }
 
   .animation-card.selected {
-    border-color: rgba(102, 126, 234, 0.8);
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   /* Card Media */

@@ -15,7 +15,7 @@
     type SaveMetadata,
   } from "../SaveToLibraryDialog.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
-  import type { RecordingResult } from "$lib/shared/video-record";
+  import type { RecordingResult } from "$lib/shared/video-record/services/contracts/IVideoRecordService";
   import { FirebaseVideoUploadService } from "$lib/shared/share/services/implementations/FirebaseVideoUploadService";
   import { RecordingPersistenceService } from "$lib/shared/video-record/services/implementations/RecordingPersistenceService";
   import {

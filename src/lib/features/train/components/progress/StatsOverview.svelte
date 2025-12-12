@@ -25,7 +25,7 @@
 </script>
 
 <div class="stats-grid">
-	<div class="stat-card" style="--gradient: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)">
+	<div class="stat-card" style="--gradient: linear-gradient(135deg, var(--semantic-info, #3b82f6) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, white) 100%)">
 		<i class="fas fa-calendar-check"></i>
 		<div class="stat-content">
 			<div class="stat-value">{stats.totalSessions}</div>
@@ -33,7 +33,7 @@
 		</div>
 	</div>
 
-	<div class="stat-card" style="--gradient: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)">
+	<div class="stat-card" style="--gradient: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, white) 100%)">
 		<i class="fas fa-clock"></i>
 		<div class="stat-content">
 			<div class="stat-value">{formatDuration(stats.totalPracticeTime)}</div>
@@ -41,7 +41,7 @@
 		</div>
 	</div>
 
-	<div class="stat-card" style="--gradient: linear-gradient(135deg, #22c55e 0%, #16a34a 100%)">
+	<div class="stat-card" style="--gradient: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 70%, #000) 100%)">
 		<i class="fas fa-bullseye"></i>
 		<div class="stat-content">
 			<div class="stat-value">{stats.averageAccuracy.toFixed(1)}%</div>
@@ -49,7 +49,7 @@
 		</div>
 	</div>
 
-	<div class="stat-card" style="--gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%)">
+	<div class="stat-card" style="--gradient: linear-gradient(135deg, var(--semantic-warning, #f59e0b) 0%, color-mix(in srgb, var(--semantic-warning, #f59e0b) 70%, #000) 100%)">
 		<i class="fas fa-fire"></i>
 		<div class="stat-content">
 			<div class="stat-value">{stats.maxCombo}</div>
@@ -72,7 +72,7 @@
 		padding: 1.5rem;
 		background: var(--gradient);
 		border-radius: 1rem;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 4px 6px var(--theme-shadow, rgba(0, 0, 0, 0.1));
 		transition: transform 0.2s;
 	}
 

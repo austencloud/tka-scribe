@@ -166,9 +166,9 @@ Features:
     flex-direction: column;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   /* Filter Section */
@@ -198,8 +198,8 @@ Features:
     align-items: center;
     gap: 6px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
@@ -209,15 +209,15 @@ Features:
   }
 
   .mode-chip:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.9);
   }
 
   .mode-chip.active {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #3b82f6;
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    color: var(--theme-accent, #3b82f6);
   }
 
   .mode-chip i {
@@ -238,8 +238,8 @@ Features:
     align-items: center;
     gap: 6px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
@@ -249,7 +249,7 @@ Features:
   }
 
   .favorites-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.9);
   }
@@ -269,8 +269,8 @@ Features:
 
   .sort-select {
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.9);
     font-size: 13px;
@@ -280,12 +280,12 @@ Features:
   }
 
   .sort-select:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-color: rgba(255, 255, 255, 0.2);
   }
 
   .sort-select:focus {
-    outline: 2px solid rgba(59, 130, 246, 0.5);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -301,8 +301,8 @@ Features:
     width: 36px;
     height: 36px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
@@ -310,7 +310,7 @@ Features:
   }
 
   .sort-direction-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.9);
   }

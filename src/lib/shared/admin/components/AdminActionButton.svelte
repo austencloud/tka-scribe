@@ -93,14 +93,14 @@
 
   /* Secondary variant */
   .variant-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   @media (hover: hover) {
     .variant-secondary:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     }
   }
 
@@ -132,12 +132,12 @@
 
   /* Info variant */
   .variant-info {
-    background: rgba(99, 102, 241, 0.15);
-    color: #a5b4fc;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    color: var(--theme-accent, #a5b4fc);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .variant-info:hover:not(:disabled) {
-    background: rgba(99, 102, 241, 0.25);
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
 </style>

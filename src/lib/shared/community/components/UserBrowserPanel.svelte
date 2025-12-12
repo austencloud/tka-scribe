@@ -18,7 +18,7 @@
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
   import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
@@ -29,7 +29,10 @@
     extractDominantColor,
     getCachedOrFallbackColor,
   } from "$lib/shared/foundation/utils/color-extractor";
-  import { ROLE_DISPLAY, type UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import {
+    ROLE_DISPLAY,
+    type UserRole,
+  } from "$lib/shared/auth/domain/models/UserRole";
   import UserCard from "./UserCard.svelte";
   import RoleFilterButtons from "./RoleFilterButtons.svelte";
 
@@ -65,8 +68,8 @@
   let hapticService: IHapticFeedbackService;
 
   // Computed
-  const currentUserId = $derived(authStore.user?.uid);
-  const isAdmin = $derived(authStore.isAdmin);
+  const currentUserId = $derived(authState.user?.uid);
+  const isAdmin = $derived(authState.isAdmin);
 
   // Filtered users based on search and role filter
   const filteredUsers = $derived.by(() => {
@@ -94,7 +97,9 @@
     try {
       await loadFeatureModule("community");
       userService = resolve<IUserService>(TYPES.IUserService);
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
       await loadUsers();
     } catch (err) {
       console.error("[UserBrowserPanel] Error initializing:", err);
@@ -126,7 +131,10 @@
     return getCachedOrFallbackColor(user.avatar, user.displayName);
   }
 
-  async function handleAvatarLoad(user: UserProfile, imgElement: HTMLImageElement) {
+  async function handleAvatarLoad(
+    user: UserProfile,
+    imgElement: HTMLImageElement
+  ) {
     if (userColors.has(user.id)) return;
     try {
       const color = await extractDominantColor(user.avatar, user.displayName);
@@ -142,7 +150,10 @@
     if (fallback) fallback.style.display = "flex";
 
     if (!userColors.has(user.id)) {
-      const fallbackColor = getCachedOrFallbackColor(undefined, user.displayName);
+      const fallbackColor = getCachedOrFallbackColor(
+        undefined,
+        user.displayName
+      );
       userColors = new Map(userColors).set(user.id, fallbackColor);
     }
   }
@@ -196,7 +207,11 @@
 
     <!-- Search + Admin Filters -->
     <div class="controls-row">
-      <PanelSearch placeholder="Search users..." bind:value={searchQuery} maxWidth="400px" />
+      <PanelSearch
+        placeholder="Search users..."
+        bind:value={searchQuery}
+        maxWidth="400px"
+      />
       {#if isAdmin}
         <RoleFilterButtons bind:value={roleFilter} />
       {/if}
@@ -212,7 +227,9 @@
           type="empty"
           icon="fa-users"
           title="No Users Found"
-          message={searchQuery ? "No users match your search" : "No users found"}
+          message={searchQuery
+            ? "No users match your search"
+            : "No users found"}
         />
       {:else}
         <PanelGrid minCardWidth="240px" gap="20px">

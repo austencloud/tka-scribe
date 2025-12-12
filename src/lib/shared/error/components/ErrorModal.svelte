@@ -9,7 +9,7 @@
   import { resolve, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IErrorHandlingService } from "$lib/shared/application/services/contracts/IErrorHandlingService";
-  import { toast } from "$lib/shared/toast";
+  import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
   let showDetails = $state(false);
   let userComment = $state("");

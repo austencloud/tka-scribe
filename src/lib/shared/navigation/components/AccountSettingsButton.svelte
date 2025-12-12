@@ -7,7 +7,7 @@
   - 44px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -50,7 +50,7 @@
   function handleClick() {
     hapticService?.trigger("selection");
 
-    if (authStore.isAuthenticated) {
+    if (authState.isAuthenticated) {
       // Toggle profile popover
       showPopover = !showPopover;
     } else {
@@ -62,18 +62,18 @@
   async function handleSignOut() {
     hapticService?.trigger("selection");
     showPopover = false;
-    await authStore.signOut();
+    await authState.signOut();
   }
 
   // Derive button label based on auth state
   const buttonLabel = $derived(
-    authStore.isAuthenticated
-      ? authStore.user?.displayName || "Profile"
+    authState.isAuthenticated
+      ? authState.user?.displayName || "Profile"
       : "Sign In"
   );
 
   const ariaLabel = $derived(
-    authStore.isAuthenticated ? "Open profile menu" : "Sign in"
+    authState.isAuthenticated ? "Open profile menu" : "Sign in"
   );
 </script>
 
@@ -82,7 +82,7 @@
     bind:this={buttonRef}
     class="account-settings-button"
     class:collapsed={isCollapsed}
-    class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
+    class:has-avatar={authState.isAuthenticated && authState.user?.photoURL}
     onclick={handleClick}
     aria-label={ariaLabel}
     aria-expanded={showPopover}
@@ -90,11 +90,11 @@
   >
     <!-- Icon/Avatar Section -->
     <div class="icon-wrapper">
-      {#if authStore.isAuthenticated && authStore.user?.photoURL}
+      {#if authState.isAuthenticated && authState.user?.photoURL}
         <!-- Profile Picture -->
         <img
-          src={authStore.user.photoURL}
-          alt={authStore.user.displayName || "User"}
+          src={authState.user.photoURL}
+          alt={authState.user.displayName || "User"}
           class="profile-avatar"
           crossorigin="anonymous"
           referrerpolicy="no-referrer"
@@ -106,8 +106,8 @@
               const initial = document.createElement("div");
               initial.className = "profile-initial";
               initial.textContent = (
-                authStore.user?.displayName ||
-                authStore.user?.email ||
+                authState.user?.displayName ||
+                authState.user?.email ||
                 "?"
               )
                 .charAt(0)
@@ -116,10 +116,10 @@
             }
           }}
         />
-      {:else if authStore.isAuthenticated && authStore.user}
+      {:else if authState.isAuthenticated && authState.user}
         <!-- Profile Initial -->
         <div class="profile-initial">
-          {(authStore.user.displayName || authStore.user.email || "?")
+          {(authState.user.displayName || authState.user.email || "?")
             .charAt(0)
             .toUpperCase()}
         </div>
@@ -136,12 +136,12 @@
   </button>
 
   <!-- Profile Popover (shown when signed in and clicked) -->
-  {#if showPopover && authStore.isAuthenticated}
+  {#if showPopover && authState.isAuthenticated}
     <div class="profile-popover">
       <div class="popover-header">
         <div class="user-info">
-          <span class="user-name">{authStore.user?.displayName || "User"}</span>
-          <span class="user-email">{authStore.user?.email}</span>
+          <span class="user-name">{authState.user?.displayName || "User"}</span>
+          <span class="user-email">{authState.user?.email}</span>
         </div>
       </div>
       <div class="popover-divider"></div>
@@ -244,7 +244,11 @@
     font-size: 18px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     border-radius: 50%;
   }
 
@@ -274,6 +278,7 @@
      ACCESSIBILITY
      ============================================================================ */
   .account-settings-button:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

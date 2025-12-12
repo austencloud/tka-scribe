@@ -237,10 +237,10 @@ Features:
     align-items: center;
     gap: 8px;
     padding: 12px 24px;
-    background: rgba(59, 130, 246, 0.2);
-    border: 1px solid rgba(59, 130, 246, 0.4);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
     border-radius: 8px;
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -248,8 +248,8 @@ Features:
   }
 
   .retry-btn:hover {
-    background: rgba(59, 130, 246, 0.3);
-    border-color: rgba(59, 130, 246, 0.6);
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
   }
 
   /* Detail Drawer Styling */

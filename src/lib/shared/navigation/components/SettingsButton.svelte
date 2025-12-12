@@ -9,7 +9,7 @@
   import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { authState } from "../../auth/state/authState.svelte";
   import { onMount } from "svelte";
 
   let { navigationLayout = "top" } = $props<{
@@ -44,26 +44,26 @@
 <button
   class="nav-action"
   class:layout-left={navigationLayout === "left"}
-  class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
+  class:has-avatar={authState.isAuthenticated && authState.user?.photoURL}
   onclick={handleSettingsClick}
-  title="Settings (Ctrl+,) - Auth: {authStore.isAuthenticated}, Photo: {authStore
+  title="Settings (Ctrl+,) - Auth: {authState.isAuthenticated}, Photo: {authState
     .user?.photoURL
     ? 'yes'
     : 'no'}"
   aria-label="Open Settings"
 >
-  <!-- DEBUG: Auth={authStore.isAuthenticated ? 'Y' : 'N'} Photo={authStore.user?.photoURL ? 'Y' : 'N'} -->
-  {#if authStore.isAuthenticated && authStore.user?.photoURL}
+  <!-- DEBUG: Auth={authState.isAuthenticated ? 'Y' : 'N'} Photo={authState.user?.photoURL ? 'Y' : 'N'} -->
+  {#if authState.isAuthenticated && authState.user?.photoURL}
     <img
-      src={authStore.user.photoURL}
-      alt={authStore.user.displayName || "User"}
+      src={authState.user.photoURL}
+      alt={authState.user.displayName || "User"}
       class="user-avatar"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-  {:else if authStore.isAuthenticated && authStore.user}
+  {:else if authState.isAuthenticated && authState.user}
     <div class="user-initial">
-      {(authStore.user.displayName || authStore.user.email || "?")
+      {(authState.user.displayName || authState.user.email || "?")
         .charAt(0)
         .toUpperCase()}
     </div>
@@ -146,7 +146,7 @@
     font-size: 14px;
     font-weight: 600;
     color: white;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: var(--theme-accent-strong, #8b5cf6);
   }
 
   /* ACCESSIBILITY & MOTION */

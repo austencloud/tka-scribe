@@ -30,12 +30,12 @@
   .form-field {
     display: flex;
     flex-direction: column;
-    gap: var(--settings-space-sm);
+    gap: 8px;
   }
 
   .field-label {
     font-size: var(--text-2026-caption);
-    font-weight: var(--settings-font-weight-semibold);
+    font-weight: 600;
     color: var(--theme-text-dim);
   }
 
@@ -85,7 +85,7 @@
 
   .toggle-label {
     font-size: var(--text-2026-body);
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
     transition: color var(--transition-fast);
   }
 

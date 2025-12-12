@@ -15,7 +15,7 @@
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import CreationWelcomeCue from "../../components/CreationWelcomeCue.svelte";
   import MethodCard from "./MethodCard.svelte";
   import SelectorUndoButton from "./SelectorUndoButton.svelte";
@@ -43,7 +43,7 @@
       icon: "fa-compass",
       title: "Guided",
       description: "Step-by-step wizard",
-      color: "#8b5cf6", // Purple
+      color: "var(--theme-accent-strong, #8b5cf6)", // Purple
     },
     {
       id: "constructor" as BuildModeId,
@@ -94,7 +94,7 @@
     <!-- Method selection cards below -->
     <div class="methods-container">
       {#each methods as method, index (method.id)}
-        {@const isDisabled = method.id === "guided" && !authStore.isAdmin}
+        {@const isDisabled = method.id === "guided" && !authState.isAdmin}
         <MethodCard
           id={method.id}
           icon={method.icon}

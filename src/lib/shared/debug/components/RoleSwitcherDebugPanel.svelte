@@ -11,27 +11,97 @@
   - Keyboard shortcut to toggle
 -->
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
-  import { UserSearchInput } from "$lib/shared/user-search";
+  import UserSearchInput from "$lib/shared/user-search/UserSearchInput.svelte";
   import {
     userPreviewState,
     loadUserPreview,
     clearUserPreview,
   } from "$lib/shared/debug/state/user-preview-state.svelte";
+  import { roleSwitcherState } from "$lib/shared/debug/state/role-switcher-state.svelte";
 
-  // State
-  let isOpen = $state(false);
+  // Quick access users storage
+  const QUICK_ACCESS_KEY = "tka-quick-access-users";
+
+  interface QuickAccessUser {
+    uid: string;
+    displayName: string;
+    email: string;
+    photoURL?: string | null;
+  }
+
+  // State - use shared state for panel visibility (controlled by keyboard shortcut system)
+  const isOpen = $derived(roleSwitcherState.isOpen);
+  let quickAccessUsers = $state<QuickAccessUser[]>([]);
+
+  // Load quick access users from localStorage
+  function loadQuickAccessUsers(): QuickAccessUser[] {
+    if (typeof localStorage === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(QUICK_ACCESS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  // Save quick access users to localStorage
+  function saveQuickAccessUsers(users: QuickAccessUser[]) {
+    if (typeof localStorage === "undefined") return;
+    localStorage.setItem(QUICK_ACCESS_KEY, JSON.stringify(users));
+  }
 
   // Get values from service
   const actualRole = $derived(featureFlagService.userRole);
   const effectiveRole = $derived(featureFlagService.effectiveRole);
   const debugOverride = $derived(featureFlagService.debugRoleOverride);
-  const isAdmin = $derived(authStore.isAdmin);
+  const isAdmin = $derived(authState.isAdmin);
   const isPreview = $derived(userPreviewState.isActive);
   const previewProfile = $derived(userPreviewState.data.profile);
+
+  // Debug: Log when isOpen or isAdmin changes
+  $effect(() => {
+    console.log(`[RoleSwitcherDebugPanel] State:`, { isOpen, isAdmin });
+  });
+
+  // Check if current preview user is in quick access (must be after previewProfile)
+  const isCurrentUserInQuickAccess = $derived(
+    previewProfile
+      ? quickAccessUsers.some((u) => u.uid === previewProfile.uid)
+      : false
+  );
+
+  // Add current preview user to quick access
+  function addToQuickAccess() {
+    if (!previewProfile) return;
+    const newUser: QuickAccessUser = {
+      uid: previewProfile.uid,
+      displayName:
+        previewProfile.displayName || previewProfile.email || "Unknown",
+      email: previewProfile.email || "",
+      photoURL: previewProfile.photoURL,
+    };
+    quickAccessUsers = [...quickAccessUsers, newUser];
+    saveQuickAccessUsers(quickAccessUsers);
+  }
+
+  // Remove user from quick access
+  function removeFromQuickAccess(uid: string) {
+    quickAccessUsers = quickAccessUsers.filter((u) => u.uid !== uid);
+    saveQuickAccessUsers(quickAccessUsers);
+  }
+
+  // Select a quick access user
+  async function selectQuickAccessUser(user: QuickAccessUser) {
+    await handleUserSelect({
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+    });
+  }
 
   // Role options
   const roles: {
@@ -47,7 +117,7 @@
   ];
 
   function togglePanel() {
-    isOpen = !isOpen;
+    roleSwitcherState.toggle();
   }
 
   function setRole(role: UserRole) {
@@ -63,13 +133,19 @@
     featureFlagService.clearDebugRoleOverride();
   }
 
-  async function handleUserSelect(user: { uid: string; displayName: string; email: string }) {
+  async function handleUserSelect(user: {
+    uid: string;
+    displayName: string;
+    email: string;
+  }) {
     // Use eager=true to load all data upfront (for banner stats and Library view)
     await loadUserPreview(user.uid, true);
 
     // Also set the role override to match the previewed user's role
     // This ensures module access matches what the user would see
-    const previewedRole = userPreviewState.data.profile?.role as UserRole | undefined;
+    const previewedRole = userPreviewState.data.profile?.role as
+      | UserRole
+      | undefined;
     if (previewedRole) {
       featureFlagService.setDebugRoleOverride(previewedRole);
     }
@@ -81,20 +157,11 @@
     featureFlagService.clearDebugRoleOverride();
   }
 
-  // Keyboard shortcut: F9 (easy single-key access for debug tool)
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "F9") {
-      event.preventDefault();
-      togglePanel();
-    }
-  }
+  // F9 keyboard shortcut is now handled by the formal keyboard shortcut system
+  // See: register-global-shortcuts.ts → admin.role-switcher
 
   onMount(() => {
-    window.addEventListener("keydown", handleKeydown);
-  });
-
-  onDestroy(() => {
-    window.removeEventListener("keydown", handleKeydown);
+    quickAccessUsers = loadQuickAccessUsers();
   });
 </script>
 
@@ -104,7 +171,12 @@
 
   <!-- Debug panel -->
   {#if isOpen}
-    <button type="button" class="debug-panel-backdrop" onclick={togglePanel} aria-label="Close debug panel"></button>
+    <button
+      type="button"
+      class="debug-panel-backdrop"
+      onclick={togglePanel}
+      aria-label="Close debug panel"
+    ></button>
     <div class="debug-panel">
       <div class="panel-header">
         <div class="panel-title">
@@ -117,135 +189,213 @@
       </div>
 
       <div class="panel-content">
-        <div class="info-section">
-          <div class="info-row">
-            <span class="info-label">Your Role:</span>
-            <span class="info-value actual">{actualRole}</span>
-          </div>
-          {#if debugOverride}
-            <div class="info-row">
-              <span class="info-label">Viewing As:</span>
-              <span class="info-value override">{effectiveRole}</span>
+        <div class="two-column-layout">
+          <!-- Left Column: Role Switching -->
+          <div class="left-column">
+            <div class="info-section">
+              <div class="info-row">
+                <span class="info-label">Your Role:</span>
+                <span class="info-value actual">{actualRole}</span>
+              </div>
+              {#if debugOverride}
+                <div class="info-row">
+                  <span class="info-label">Viewing As:</span>
+                  <span class="info-value override">{effectiveRole}</span>
+                </div>
+              {/if}
             </div>
-          {/if}
-        </div>
 
-        <div class="roles-section">
-          <p class="section-label">Switch to:</p>
-          <div class="roles-grid">
-            {#each roles as role}
-              <button
-                class="role-btn"
-                class:active={effectiveRole === role.value}
-                class:actual={actualRole === role.value}
-                style="--role-color: {role.color}"
-                onclick={() => setRole(role.value)}
-              >
-                <i class="fas {role.icon}"></i>
-                <span>{role.label}</span>
-                {#if actualRole === role.value}
-                  <span class="badge">You</span>
-                {/if}
+            <div class="roles-section">
+              <p class="section-label">Switch to:</p>
+              <div class="roles-grid">
+                {#each roles as role}
+                  <button
+                    class="role-btn"
+                    class:active={effectiveRole === role.value}
+                    class:actual={actualRole === role.value}
+                    style="--role-color: {role.color}"
+                    onclick={() => setRole(role.value)}
+                  >
+                    <i class="fas {role.icon}"></i>
+                    <span>{role.label}</span>
+                    {#if actualRole === role.value}
+                      <span class="badge">You</span>
+                    {/if}
+                  </button>
+                {/each}
+              </div>
+            </div>
+
+            {#if debugOverride}
+              <button class="reset-btn" onclick={clearOverride}>
+                <i class="fas fa-undo"></i>
+                Reset to Actual Role
               </button>
-            {/each}
-          </div>
-        </div>
+            {/if}
 
-        {#if debugOverride}
-          <button class="reset-btn" onclick={clearOverride}>
-            <i class="fas fa-undo"></i>
-            Reset to Actual Role
-          </button>
-        {/if}
-
-        <div class="preview-section">
-          <div class="preview-header">
-            <div class="panel-title">
-              <i class="fas fa-eye"></i>
-              <span>Preview User Data</span>
-            </div>
-            {#if isPreview && previewProfile}
-              <span class="preview-pill">
-                {previewProfile.displayName || previewProfile.email || previewProfile.uid}
-              </span>
+            <!-- Quick Access Users -->
+            {#if quickAccessUsers.length > 0}
+              <div class="quick-access-section">
+                <p class="section-label">Quick Access:</p>
+                <div class="quick-access-chips">
+                  {#each quickAccessUsers as user (user.uid)}
+                    <div
+                      class="quick-access-chip"
+                      class:active={previewProfile?.uid === user.uid}
+                    >
+                      <button
+                        type="button"
+                        class="chip-select"
+                        onclick={() => selectQuickAccessUser(user)}
+                        title={user.email}
+                      >
+                        {#if user.photoURL}
+                          <img src={user.photoURL} alt="" class="chip-avatar" />
+                        {:else}
+                          <span class="chip-avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                          </span>
+                        {/if}
+                        <span class="chip-name">{user.displayName}</span>
+                      </button>
+                      <button
+                        type="button"
+                        class="chip-remove"
+                        onclick={() => removeFromQuickAccess(user.uid)}
+                        aria-label="Remove from quick access"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  {/each}
+                </div>
+              </div>
             {/if}
           </div>
 
-          <UserSearchInput
-            onSelect={handleUserSelect}
-            selectedUserId={previewProfile?.uid || ""}
-            selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
-            placeholder="Search users by name or email..."
-            disabled={userPreviewState.isLoading}
-          />
+          <!-- Right Column: User Preview -->
+          <div class="right-column">
+            <div class="preview-section">
+              <div class="preview-header">
+                <div class="panel-title">
+                  <i class="fas fa-eye"></i>
+                  <span>Preview User</span>
+                </div>
+                {#if isPreview && previewProfile}
+                  <span class="preview-pill">
+                    {previewProfile.displayName ||
+                      previewProfile.email ||
+                      previewProfile.uid}
+                  </span>
+                {/if}
+              </div>
 
-          {#if userPreviewState.isLoading}
-            <div class="loading-state">
-              <i class="fas fa-spinner fa-spin"></i>
-              <span>Loading {userPreviewState.loadingSection || "user data"}...</span>
-            </div>
-          {/if}
+              <UserSearchInput
+                onSelect={handleUserSelect}
+                selectedUserId={previewProfile?.uid || ""}
+                selectedUserDisplay={previewProfile?.displayName ||
+                  previewProfile?.email ||
+                  ""}
+                placeholder="Search users..."
+                disabled={userPreviewState.isLoading}
+                inlineResults={true}
+              />
 
-          {#if isPreview && previewProfile}
-            <div class="preview-user-card">
-              {#if previewProfile.photoURL}
-                <img src={previewProfile.photoURL} alt="" class="preview-avatar" />
-              {:else}
-                <div class="preview-avatar-placeholder">
-                  <i class="fas fa-user"></i>
+              {#if userPreviewState.isLoading}
+                <div class="loading-state">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Loading...</span>
                 </div>
               {/if}
-              <div class="preview-user-info">
-                <span class="preview-name">{previewProfile.displayName || "No name"}</span>
-                <span class="preview-email">{previewProfile.email}</span>
-                <span class="preview-role">{previewProfile.role || "user"}</span>
-              </div>
-            </div>
 
-            <div class="preview-stats">
-              {#if userPreviewState.data.gamification}
-                <div class="stat-item">
-                  <i class="fas fa-star"></i>
-                  <span>{userPreviewState.data.gamification.totalXP} XP</span>
+              {#if isPreview && previewProfile}
+                <div class="preview-user-card">
+                  {#if previewProfile.photoURL}
+                    <img
+                      src={previewProfile.photoURL}
+                      alt=""
+                      class="preview-avatar"
+                    />
+                  {:else}
+                    <div class="preview-avatar-placeholder">
+                      <i class="fas fa-user"></i>
+                    </div>
+                  {/if}
+                  <div class="preview-user-info">
+                    <span class="preview-name"
+                      >{previewProfile.displayName || "No name"}</span
+                    >
+                    <span class="preview-email">{previewProfile.email}</span>
+                    <span class="preview-role"
+                      >{previewProfile.role || "user"}</span
+                    >
+                  </div>
                 </div>
-                <div class="stat-item">
-                  <i class="fas fa-trophy"></i>
-                  <span>Level {userPreviewState.data.gamification.currentLevel}</span>
+
+                <div class="preview-stats">
+                  {#if userPreviewState.data.gamification}
+                    <div class="stat-item">
+                      <i class="fas fa-star"></i>
+                      <span
+                        >{userPreviewState.data.gamification.totalXP} XP</span
+                      >
+                    </div>
+                    <div class="stat-item">
+                      <i class="fas fa-trophy"></i>
+                      <span
+                        >Lvl {userPreviewState.data.gamification
+                          .currentLevel}</span
+                      >
+                    </div>
+                  {/if}
+                  <div class="stat-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>{userPreviewState.data.sequences.length} seq</span>
+                  </div>
+                  <div class="stat-item">
+                    <i class="fas fa-medal"></i>
+                    <span>{userPreviewState.data.achievements.length} ach</span>
+                  </div>
                 </div>
               {/if}
-              <div class="stat-item">
-                <i class="fas fa-layer-group"></i>
-                <span>{userPreviewState.data.sequences.length} sequences</span>
-              </div>
-              <div class="stat-item">
-                <i class="fas fa-folder"></i>
-                <span>{userPreviewState.data.collections.length} collections</span>
-              </div>
-              <div class="stat-item">
-                <i class="fas fa-medal"></i>
-                <span>{userPreviewState.data.achievements.length} achievements</span>
+
+              <div class="preview-actions">
+                <button
+                  type="button"
+                  class="ghost"
+                  onclick={handleClearPreview}
+                  disabled={!isPreview}
+                >
+                  <i class="fas fa-times"></i>
+                  Clear
+                </button>
+                {#if isPreview && previewProfile}
+                  {#if isCurrentUserInQuickAccess}
+                    <button
+                      type="button"
+                      class="ghost remove-quick"
+                      onclick={() => removeFromQuickAccess(previewProfile.uid)}
+                    >
+                      <i class="fas fa-bookmark"></i>
+                      Remove
+                    </button>
+                  {:else}
+                    <button
+                      type="button"
+                      class="ghost add-quick"
+                      onclick={addToQuickAccess}
+                    >
+                      <i class="far fa-bookmark"></i>
+                      Save
+                    </button>
+                  {/if}
+                {/if}
+                {#if userPreviewState.error}
+                  <span class="error-text">{userPreviewState.error}</span>
+                {/if}
               </div>
             </div>
-          {/if}
-
-          <div class="preview-actions">
-            <button
-              type="button"
-              class="ghost"
-              onclick={handleClearPreview}
-              disabled={!isPreview}
-            >
-              <i class="fas fa-times"></i>
-              Clear Preview
-            </button>
-            {#if userPreviewState.error}
-              <span class="error-text">{userPreviewState.error}</span>
-            {/if}
           </div>
-          <p class="preview-hint">
-            <i class="fas fa-info-circle"></i>
-            Read-only mode: View user data throughout the app without modifying anything.
-          </p>
         </div>
 
         <div class="hint">
@@ -273,12 +423,14 @@
     transform: translate(-50%, -50%);
     z-index: 10001;
     width: 90%;
-    max-width: 420px;
+    max-width: 780px;
     background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
     overflow: hidden;
+    container-type: inline-size;
+    container-name: debug-panel;
   }
 
   /* Header */
@@ -301,17 +453,18 @@
   }
 
   .close-btn {
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     transition: all 0.2s;
+    margin: -10px -12px -10px 0;
   }
 
   .close-btn:hover {
@@ -321,10 +474,39 @@
 
   /* Content */
   .panel-content {
-    padding: 20px;
+    padding: 20px 24px 16px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+  }
+
+  /* Two-column layout - uses container queries */
+  .two-column-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  @container debug-panel (min-width: 600px) {
+    .two-column-layout {
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+  }
+
+  .left-column,
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .right-column .preview-section {
+    margin-top: 0;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
   }
 
   /* Info Section */
@@ -332,9 +514,9 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 12px;
+    padding: 12px 14px;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+    border-radius: 10px;
   }
 
   .info-row {
@@ -349,7 +531,7 @@
   }
 
   .info-value {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     padding: 4px 10px;
     border-radius: 6px;
@@ -367,6 +549,12 @@
   }
 
   /* Roles Section */
+  .roles-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .section-label {
     font-size: 13px;
     font-weight: 600;
@@ -385,20 +573,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    padding: 16px 12px;
+    min-height: 52px;
+    padding: 12px 10px;
     background: rgba(255, 255, 255, 0.03);
     border: 2px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
     color: white;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .role-btn i {
-    font-size: 20px;
+    font-size: 18px;
     color: var(--role-color);
     opacity: 0.8;
   }
@@ -447,12 +637,13 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    min-height: 52px;
     padding: 12px;
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
     color: #ef4444;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -481,11 +672,9 @@
   }
 
   .preview-section {
-    margin-top: 20px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
 
   .preview-header {
@@ -523,30 +712,29 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    margin-top: 12px;
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.2);
     border-radius: 10px;
   }
 
   .preview-avatar {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
   }
 
   .preview-avatar-placeholder {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.5);
-    font-size: 20px;
+    font-size: 18px;
     flex-shrink: 0;
   }
 
@@ -587,7 +775,6 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
-    margin-top: 12px;
   }
 
   .stat-item {
@@ -613,7 +800,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 12px;
+    flex-wrap: wrap;
   }
 
   .preview-actions .ghost {
@@ -624,7 +811,8 @@
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.8);
     border-radius: 8px;
-    padding: 8px 12px;
+    min-height: 52px;
+    padding: 12px 16px;
     cursor: pointer;
     font-size: 13px;
     transition: all 0.2s;
@@ -645,19 +833,119 @@
     font-size: 12px;
   }
 
-  .preview-hint {
+  /* Quick Access Section */
+  .quick-access-section {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 12px 0 0;
-    padding: 10px;
-    background: rgba(59, 130, 246, 0.08);
-    border-radius: 8px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .preview-hint i {
+  .quick-access-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .quick-access-chip {
+    display: flex;
+    align-items: center;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 999px;
+    min-height: 52px;
+    transition: all 0.2s;
+  }
+
+  .quick-access-chip:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+
+  .quick-access-chip.active {
+    background: rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
+  }
+
+  .chip-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px 10px 14px;
+    background: transparent;
+    border: none;
+    color: #bfdbfe;
+    font-size: 14px;
+    cursor: pointer;
+    min-height: 52px;
+  }
+
+  .chip-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .chip-avatar-placeholder {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .chip-name {
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .chip-remove {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: -4px;
+  }
+
+  .chip-remove:hover {
+    background: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+
+  /* Quick access button variants */
+  .preview-actions .add-quick {
     color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .preview-actions .add-quick:hover:not(:disabled) {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  .preview-actions .remove-quick {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.3);
+  }
+
+  .preview-actions .remove-quick:hover:not(:disabled) {
+    background: rgba(251, 191, 36, 0.1);
+    border-color: rgba(251, 191, 36, 0.5);
   }
 </style>

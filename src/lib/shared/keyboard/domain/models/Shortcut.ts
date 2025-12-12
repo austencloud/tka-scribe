@@ -95,6 +95,15 @@ export class Shortcut implements ShortcutDefinition {
    * Execute the shortcut action
    */
   async execute(event: KeyboardEvent): Promise<void> {
+    // Debug for F9
+    if (this.id === "admin.role-switcher") {
+      console.log(`[Shortcut] Executing ${this.id}:`, {
+        enabled: this.enabled,
+        hasCondition: !!this.condition,
+        conditionMet: this.isConditionMet(),
+      });
+    }
+
     if (!this.enabled || !this.isConditionMet()) return;
 
     if (this.preventDefault) {

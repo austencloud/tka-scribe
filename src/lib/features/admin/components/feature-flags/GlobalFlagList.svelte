@@ -109,8 +109,8 @@
   @media (min-width: 700px) {
     .bento-grid {
       grid-template-columns: repeat(2, 1fr);
-      gap: var(--settings-space-md);
-      padding: var(--settings-space-md);
+      gap: 16px;
+      padding: 16px;
     }
   }
 
@@ -132,7 +132,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--settings-space-2xl) var(--settings-space-lg);
+    padding: 52px 24px;
     gap: var(--space-2026-sm);
     color: var(--theme-text-dim);
   }

@@ -6,7 +6,7 @@
    */
 
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { libraryState } from "$lib/features/library/state/library-state.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
@@ -22,8 +22,8 @@
   // Get preview context
   const preview = useUserPreview();
 
-  const isAuthenticated = $derived(authStore.isAuthenticated);
-  const user = $derived(authStore.user);
+  const isAuthenticated = $derived(authState.isAuthenticated);
+  const user = $derived(authState.user);
 
   // Effective values (use preview data when active)
   const effectiveDisplayName = $derived(
@@ -38,9 +38,7 @@
 
   // Stats - use preview data when active
   const sequenceCount = $derived(
-    preview.isActive
-      ? preview.sequences.length
-      : libraryState.sequences.length
+    preview.isActive ? preview.sequences.length : libraryState.sequences.length
   );
   const favoriteCount = $derived(
     preview.isActive
@@ -59,7 +57,7 @@
     }
 
     // Load library data if authenticated
-    if (authStore.effectiveUserId) {
+    if (authState.effectiveUserId) {
       libraryState.loadSequences();
     }
   });
@@ -73,7 +71,7 @@
   async function handleSignOut() {
     hapticService?.trigger("selection");
     try {
-      await authStore.signOut();
+      await authState.signOut();
       showAuthOptions = false;
     } catch (error) {
       console.error("Sign out failed:", error);
@@ -129,7 +127,9 @@
             />
           {:else}
             <div class="avatar-placeholder">
-              {(effectiveDisplayName || effectiveEmail || "?").charAt(0).toUpperCase()}
+              {(effectiveDisplayName || effectiveEmail || "?")
+                .charAt(0)
+                .toUpperCase()}
             </div>
           {/if}
         </div>
@@ -140,7 +140,10 @@
           <span class="profile-email">{effectiveEmail || "Signed In"}</span>
         </div>
         {#if !preview.isActive}
-          <i class="fas fa-chevron-down dropdown-icon" class:open={showAuthOptions}></i>
+          <i
+            class="fas fa-chevron-down dropdown-icon"
+            class:open={showAuthOptions}
+          ></i>
         {/if}
       </button>
 
@@ -198,10 +201,22 @@
       <div class="auth-buttons">
         <button class="auth-btn google" onclick={handleGoogleSignIn}>
           <svg viewBox="0 0 24 24" class="google-icon">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            <path
+              fill="#4285F4"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+            />
+            <path
+              fill="#34A853"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            />
           </svg>
           Google
         </button>
@@ -272,7 +287,8 @@
     border: none;
     border-radius: var(--radius-2026-sm, 10px);
     cursor: pointer;
-    transition: background var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
+    transition: background var(--duration-2026-fast, 150ms)
+      var(--ease-2026, ease);
     text-align: left;
     width: calc(100% + 16px);
   }
@@ -286,7 +302,7 @@
     height: 44px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid var(--accent-2026-indigo-soft, rgba(99, 102, 241, 0.2));
+    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
     flex-shrink: 0;
   }
 
@@ -304,7 +320,7 @@
     justify-content: center;
     font-size: 16px;
     font-weight: 700;
-    background: var(--accent-2026-indigo, #6366f1);
+    background: var(--theme-accent, #6366f1);
     color: white;
   }
 
@@ -335,7 +351,8 @@
   .dropdown-icon {
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 11px;
-    transition: transform var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
+    transition: transform var(--duration-2026-fast, 150ms)
+      var(--ease-2026, ease);
   }
 
   .dropdown-icon.open {
@@ -364,7 +381,8 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
     font-size: var(--text-2026-caption, 0.875rem);
     cursor: pointer;
-    transition: background var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
+    transition: background var(--duration-2026-fast, 150ms)
+      var(--ease-2026, ease);
     width: 100%;
     text-align: left;
   }
@@ -378,7 +396,11 @@
   }
 
   .dropdown-item.sign-out:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 12%,
+      transparent
+    );
   }
 
   /* Quick Stats - Inline text style for 2026 */
@@ -402,8 +424,8 @@
   }
 
   .stat-item:hover {
-    background: var(--accent-2026-indigo-soft, rgba(99, 102, 241, 0.08));
-    border-color: rgba(99, 102, 241, 0.15);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
   }
 
   .stat-icon {
@@ -413,8 +435,8 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-2026-xs, 8px);
-    background: var(--accent-2026-indigo-soft, rgba(99, 102, 241, 0.12));
-    color: var(--accent-2026-indigo, #6366f1);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 12%, transparent);
+    color: var(--theme-accent, #6366f1);
     font-size: 13px;
     flex-shrink: 0;
   }
@@ -467,7 +489,8 @@
   .library-btn i:last-child {
     font-size: 11px;
     margin-left: auto;
-    transition: transform var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
+    transition: transform var(--duration-2026-fast, 150ms)
+      var(--ease-2026, ease);
   }
 
   .library-btn:hover i:last-child {
@@ -493,9 +516,9 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: var(--accent-2026-indigo-soft, rgba(99, 102, 241, 0.12));
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 12%, transparent);
     border-radius: var(--radius-2026-sm, 10px);
-    color: var(--accent-2026-indigo, #6366f1);
+    color: var(--theme-accent, #6366f1);
     font-size: 20px;
     flex-shrink: 0;
   }
@@ -571,7 +594,7 @@
   }
 
   .guest-note i {
-    color: var(--accent-2026-indigo, rgba(99, 102, 241, 0.6));
+    color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
   }
 
   /* Responsive - 2026 */

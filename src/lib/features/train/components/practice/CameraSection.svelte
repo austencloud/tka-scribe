@@ -276,21 +276,21 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: #252532;
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg, #252532);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 1rem;
     cursor: pointer;
     z-index: 20;
     transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .grid-settings-btn:hover {
-    background: #2d2d3a;
-    border-color: var(--border-2026-hover, rgba(255, 255, 255, 0.12));
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, #2d2d3a);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     transform: scale(1.05);
   }
 
@@ -321,15 +321,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent);
     z-index: 30;
   }
 
   .countdown-number {
     font-size: clamp(3rem, 15vw, 6rem);
     font-weight: bold;
-    color: white;
-    text-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+    color: var(--theme-text, white);
+    text-shadow: 0 0 40px color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
     animation: pulse 1s ease-in-out infinite;
   }
 
@@ -360,8 +360,8 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: #252532;
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg, #252532);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     padding: 0.5rem 0.75rem;
     border-radius: 8px;
     font-weight: 600;
@@ -375,18 +375,18 @@
 
   .combo-value {
     font-size: 1.125rem;
-    color: #fbbf24;
+    color: var(--semantic-warning, #fbbf24);
   }
 
   .combo-label {
     font-size: 0.625rem;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .score-value {
     font-size: 1.25rem;
-    color: #3b82f6;
+    color: var(--semantic-info, #3b82f6);
   }
 
   .hit-indicator {
@@ -398,13 +398,13 @@
   }
 
   .hit-indicator.hit {
-    background: rgba(34, 197, 94, 0.9);
-    color: white;
+    background: color-mix(in srgb, var(--semantic-success, #22c55e) 90%, transparent);
+    color: var(--theme-text, white);
   }
 
   .hit-indicator.miss {
-    background: rgba(239, 68, 68, 0.9);
-    color: white;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 90%, transparent);
+    color: var(--theme-text, white);
   }
 
   @keyframes fadeInOut {

@@ -22,6 +22,15 @@ Uses pure runes instead of stores for reactivity.
   }
 
   /**
+   * Get cached dimensions for a letter, or default if not cached.
+   * Used by TurnsColumn to position turn numbers to the right of the letter.
+   */
+  export function getLetterDimensions(letter: string | null | undefined): { width: number; height: number } {
+    if (!letter) return { width: 100, height: 100 };
+    return globalDimensionsCache.get(letter) ?? { width: 100, height: 100 };
+  }
+
+  /**
    * Preload letter SVGs for a list of letters.
    * Call this before animation starts to prevent flash on first render.
    * Caches both dimensions AND the SVG as a data URL for instant rendering.
@@ -80,15 +89,12 @@ Uses pure runes instead of stores for reactivity.
 import type { PictographData } from "../../shared/domain/models/PictographData";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { getLetterImagePath } from "../utils/letter-image-getter";
-  import TurnsColumn from "./TurnsColumn.svelte";
-  import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
   import { onMount } from "svelte";
 
   let {
     letter,
     x = 50, // Match legacy positioning exactly
     y = 800, // Match legacy positioning exactly
-    turnsTuple = "(s, 0, 0)",
     pictographData = undefined,
     scale = 1, // Match legacy default scale
     visible = true,
@@ -101,8 +107,6 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     x?: number;
     /** Position Y coordinate */
     y?: number;
-    /** Turns tuple in format "(s, 0, 0)" */
-    turnsTuple?: string;
     /** Full pictograph data for turn color interpretation */
     pictographData?: PictographData | null;
     /** Scale factor - match legacy behavior */
@@ -236,31 +240,10 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     return letter != null && letter.trim() !== "";
   });
 
-  // Check if letter dimensions are loaded (for TurnsColumn)
+  // Check if letter dimensions are loaded
   const dimensionsLoaded = $derived.by(
     () => letterDimensions.width > 0 && letterDimensions.height > 0
   );
-
-  // Get visibility state manager to check turn numbers visibility
-  const visibilityManager = getVisibilityStateManager();
-
-  // Check if turn numbers should be visible
-  let turnNumbersVisible = $state(
-    visibilityManager.getGlyphVisibility("turnNumbers")
-  );
-
-  // Register observer to update turn numbers visibility when it changes
-  onMount(() => {
-    const observer = () => {
-      turnNumbersVisible = visibilityManager.getGlyphVisibility("turnNumbers");
-    };
-
-    visibilityManager.registerObserver(observer, ["glyph"]);
-
-    return () => {
-      visibilityManager.unregisterObserver(observer);
-    };
-  });
 </script>
 
 <!-- TKA Glyph Group - only render when dimensions are loaded to prevent flash -->
@@ -271,7 +254,6 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
     data-letter={letter}
-    data-turns={turnsTuple}
     transform="translate({x}, {y}) scale({scale})"
     onclick={onToggle}
     {...onToggle
@@ -292,16 +274,6 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
       height={letterDimensions.height}
       preserveAspectRatio="xMinYMin meet"
       class="letter-image"
-    />
-
-    <!-- Turns Column - displays turn numbers to the right of the letter -->
-    <TurnsColumn
-      {turnsTuple}
-      {letter}
-      {letterDimensions}
-      {pictographData}
-      visible={turnNumbersVisible}
-      {previewMode}
     />
   </g>
 {/if}

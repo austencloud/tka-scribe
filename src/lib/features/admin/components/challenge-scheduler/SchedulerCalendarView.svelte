@@ -205,13 +205,13 @@
 	}
 
 	.calendar-day.scheduled {
-		background: rgba(102, 126, 234, 0.2);
-		border-color: rgba(102, 126, 234, 0.4);
+		background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+		border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
 	}
 
 	.calendar-day.selected {
-		background: rgba(102, 126, 234, 0.4);
-		border-color: rgba(102, 126, 234, 0.8);
+		background: color-mix(in srgb, var(--theme-accent) 40%, transparent);
+		border-color: color-mix(in srgb, var(--theme-accent) 80%, transparent);
 		transform: scale(1.05);
 	}
 

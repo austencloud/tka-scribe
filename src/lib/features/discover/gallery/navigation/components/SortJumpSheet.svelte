@@ -142,7 +142,7 @@ Touch-friendly interface for changing sort method and jumping to sections
     display: flex;
     align-items: center;
     gap: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
@@ -168,8 +168,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -177,13 +177,13 @@ Touch-friendly interface for changing sort method and jumping to sections
   }
 
   .option-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .option-button.active {
-    background: rgba(103, 126, 234, 0.15);
-    border-color: rgba(103, 126, 234, 0.4);
+    background: color-mix(in srgb, var(--semantic-info, #667eea) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info, #667eea) 40%, transparent);
   }
 
   .option-icon {
@@ -192,16 +192,16 @@ Touch-friendly interface for changing sort method and jumping to sections
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     flex-shrink: 0;
   }
 
   .option-button.active .option-icon {
-    background: rgba(103, 126, 234, 0.3);
-    color: #667eea;
+    background: color-mix(in srgb, var(--semantic-info, #667eea) 30%, transparent);
+    color: var(--semantic-info, #667eea);
   }
 
   .option-content {
@@ -212,13 +212,13 @@ Touch-friendly interface for changing sort method and jumping to sections
   .option-label {
     font-size: 15px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin-bottom: 2px;
   }
 
   .option-description {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .check-icon {
@@ -227,7 +227,7 @@ Touch-friendly interface for changing sort method and jumping to sections
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: #667eea;
+    color: var(--semantic-info, #667eea);
     font-size: 16px;
     flex-shrink: 0;
   }
@@ -245,16 +245,16 @@ Touch-friendly interface for changing sort method and jumping to sections
     align-items: center;
     gap: 6px;
     padding: 16px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .jump-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: translateY(-2px);
   }
 
@@ -265,15 +265,15 @@ Touch-friendly interface for changing sort method and jumping to sections
   .jump-label {
     font-size: 14px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     text-align: center;
   }
 
   .jump-count {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     padding: 2px 8px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
   }
 

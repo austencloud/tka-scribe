@@ -680,7 +680,7 @@
     flex-direction: column;
     height: 100%;
     background: transparent;
-    color: white;
+    color: var(--theme-text, white);
     overflow: hidden;
   }
 
@@ -703,10 +703,10 @@
     right: 12px;
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 0.98) 0%,
-      rgba(220, 38, 38, 0.98) 100%
+      color-mix(in srgb, var(--semantic-error, #ef4444) 98%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, #dc2626) 98%, transparent) 100%
     );
-    border: 1px solid rgba(248, 113, 113, 0.3);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #f87171) 30%, transparent);
     border-radius: 12px;
     padding: 0.75rem 1rem;
     display: flex;
@@ -715,7 +715,7 @@
     gap: 0.75rem;
     z-index: 150;
     animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 20px color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   @keyframes slideUp {
@@ -731,7 +731,7 @@
 
   .error-toast p {
     margin: 0;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 0.875rem;
     flex: 1;
   }
@@ -744,16 +744,16 @@
     height: 36px;
     min-width: 36px;
     min-height: 36px;
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     border: none;
     border-radius: 8px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 0.9rem;
     cursor: pointer;
     transition: background 0.2s;
   }
 
   .error-toast button:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: color-mix(in srgb, var(--theme-text, white) 25%, transparent);
   }
 </style>

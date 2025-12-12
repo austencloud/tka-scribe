@@ -5,23 +5,23 @@
    * Displays user profile information and provides account management options
    */
 
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { goto } from "$app/navigation";
 
   let copying = $state(false);
 
   // Redirect if not authenticated
   $effect(() => {
-    if (!authStore.isAuthenticated && !authStore.isLoading) {
+    if (!authState.isAuthenticated && !authState.loading) {
       goto("/auth/login");
     }
   });
 
   async function copyUserId() {
-    if (!authStore.user?.uid) return;
+    if (!authState.user?.uid) return;
 
     try {
-      await navigator.clipboard.writeText(authStore.user.uid);
+      await navigator.clipboard.writeText(authState.user.uid);
       copying = true;
       setTimeout(() => (copying = false), 2000);
     } catch (err) {
@@ -30,7 +30,7 @@
   }
 
   const providerName = $derived.by(() => {
-    const providerId = authStore.user?.providerData?.[0]?.providerId;
+    const providerId = authState.user?.providerData?.[0]?.providerId;
     if (providerId === "facebook.com") return "Facebook";
     if (providerId === "google.com") return "Google";
     if (providerId === "github.com") return "GitHub";
@@ -38,15 +38,15 @@
     return providerId || "Email";
   });
 
-  const avatarUrl = $derived(authStore.user?.photoURL);
+  const avatarUrl = $derived(authState.user?.photoURL);
 
   const displayName = $derived(
-    authStore.user?.displayName || authStore.user?.email || "User"
+    authState.user?.displayName || authState.user?.email || "User"
   );
 
   const joinedDate = $derived.by(() => {
-    if (!authStore.user?.metadata?.creationTime) return "Unknown";
-    return new Date(authStore.user.metadata.creationTime).toLocaleDateString(
+    if (!authState.user?.metadata?.creationTime) return "Unknown";
+    return new Date(authState.user.metadata.creationTime).toLocaleDateString(
       "en-US",
       {
         year: "numeric",
@@ -61,12 +61,12 @@
   <title>Profile - TKA</title>
 </svelte:head>
 
-{#if authStore.isLoading}
+{#if authState.loading}
   <div class="loading-container">
     <div class="spinner"></div>
     <p>Loading profile...</p>
   </div>
-{:else if authStore.user}
+{:else if authState.user}
   <div class="profile-container">
     <div class="profile-card">
       <div class="profile-header">
@@ -79,7 +79,7 @@
         {/if}
 
         <h1 class="profile-name">{displayName}</h1>
-        <p class="profile-email">{authStore.user.email}</p>
+        <p class="profile-email">{authState.user.email}</p>
 
         <div class="profile-badge">
           <svg
@@ -104,7 +104,7 @@
         <div class="detail-row">
           <span class="detail-label">User ID</span>
           <div class="detail-value">
-            <code class="user-id">{authStore.user.uid.slice(0, 20)}...</code>
+            <code class="user-id">{authState.user.uid.slice(0, 20)}...</code>
             <button
               onclick={copyUserId}
               class="copy-button"
@@ -150,9 +150,9 @@
         <div class="detail-row">
           <span class="detail-label">Last sign in</span>
           <span class="detail-value">
-            {authStore.user.metadata?.lastSignInTime
+            {authState.user.metadata?.lastSignInTime
               ? new Date(
-                  authStore.user.metadata.lastSignInTime
+                  authState.user.metadata.lastSignInTime
                 ).toLocaleString()
               : "Unknown"}
           </span>
@@ -161,7 +161,7 @@
         <div class="detail-row">
           <span class="detail-label">Email verified</span>
           <span class="detail-value">
-            {#if authStore.user.emailVerified}
+            {#if authState.user.emailVerified}
               <span class="verified">✓ Verified</span>
             {:else}
               <span class="unverified">Not verified</span>

@@ -118,7 +118,7 @@
             change: 0,
             changeLabel: "all time",
             icon: "fas fa-layer-group",
-            color: "#8b5cf6",
+            color: "var(--theme-accent-strong, #8b5cf6)",
           },
           {
             label: "Total Challenges",
@@ -223,7 +223,7 @@
               Math.round((engagement.totalXPEarned / 1000) * 2)
             ),
             icon: "fas fa-star",
-            color: "#8b5cf6",
+            color: "var(--theme-accent-strong, #8b5cf6)",
           },
         ];
         loadingEngagement = false;

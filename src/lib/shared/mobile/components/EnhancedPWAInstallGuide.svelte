@@ -214,8 +214,8 @@
     height: 52px;
     min-width: 52px;
     min-height: 52px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
@@ -223,7 +223,7 @@
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     color: rgba(255, 255, 255, 0.95);
   }
 
@@ -262,8 +262,8 @@
     padding: clamp(10px, 2.5cqh, 12px) clamp(20px, 6cqw, 32px);
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.9) 0%,
-      rgba(139, 92, 246, 0.9) 100%
+      color-mix(in srgb, var(--theme-accent) 90%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent) 90%, transparent) 100%
     );
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -272,7 +272,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .compact .got-it-btn {
@@ -282,7 +282,7 @@
 
   .got-it-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .got-it-btn:active {

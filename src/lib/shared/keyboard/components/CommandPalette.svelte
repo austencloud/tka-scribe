@@ -238,7 +238,7 @@
   .command-palette-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 60%, transparent);
     backdrop-filter: blur(4px);
     z-index: 9999;
     display: flex;
@@ -250,10 +250,10 @@
   .command-palette {
     width: 90%;
     max-width: 640px;
-    background: var(--background, #1e1e1e);
-    border: 1px solid var(--border-color, #333);
+    background: var(--theme-panel-bg, #1e1e1e);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.5));
     display: flex;
     flex-direction: column;
     max-height: 70vh;
@@ -264,12 +264,12 @@
     display: flex;
     align-items: center;
     padding: 1rem;
-    border-bottom: 1px solid var(--border-color, #333);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     gap: 0.75rem;
   }
 
   .command-palette__search-icon {
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 1.125rem;
   }
 
@@ -278,20 +278,20 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--text-primary, #fff);
+    color: var(--theme-text, #fff);
     font-size: 1.125rem;
     padding: 0;
   }
 
   .command-palette__input::placeholder {
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .command-palette__hint {
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 0.875rem;
     padding: 0.25rem 0.5rem;
-    background: var(--background-secondary, #2a2a2a);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border-radius: 4px;
   }
 
@@ -309,7 +309,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     padding: 0.5rem 0.75rem;
     letter-spacing: 0.5px;
   }
@@ -323,7 +323,7 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--text-primary, #fff);
+    color: var(--theme-text, #fff);
     cursor: pointer;
     transition: background 0.1s;
     text-align: left;
@@ -331,14 +331,14 @@
 
   .command-palette__item:hover,
   .command-palette__item--selected {
-    background: var(--background-secondary, #2a2a2a);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
   }
 
   .command-palette__item-icon {
     font-size: 1.125rem;
     width: 1.5rem;
     text-align: center;
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .command-palette__item-content {
@@ -353,7 +353,7 @@
 
   .command-palette__item-description {
     font-size: 0.875rem;
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -362,9 +362,9 @@
   .command-palette__item-shortcut {
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: var(--background-tertiary, #333);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     border-radius: 4px;
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-family: monospace;
   }
 
@@ -372,21 +372,21 @@
   .command-palette__empty {
     text-align: center;
     padding: 2rem;
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .command-palette__footer {
     display: flex;
     gap: 1.5rem;
     padding: 0.75rem 1rem;
-    border-top: 1px solid var(--border-color, #333);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     font-size: 0.75rem;
-    color: var(--text-secondary, #888);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .command-palette__footer kbd {
     padding: 0.125rem 0.375rem;
-    background: var(--background-secondary, #2a2a2a);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border-radius: 3px;
     font-family: monospace;
     font-size: 0.7rem;

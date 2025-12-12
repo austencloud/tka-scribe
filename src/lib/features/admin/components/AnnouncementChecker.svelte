@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { loadSharedModules } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -22,7 +22,7 @@
 
   // Watch for auth state changes
   $effect(() => {
-    if (authStore.isAuthenticated && authStore.user) {
+    if (authState.isAuthenticated && authState.user) {
       checkForAnnouncements();
     }
   });
@@ -36,7 +36,7 @@
         TYPES.IAnnouncementService
       );
 
-      if (authStore.isAuthenticated) {
+      if (authState.isAuthenticated) {
         checkForAnnouncements();
       }
     } catch (error) {
@@ -45,12 +45,12 @@
   });
 
   async function checkForAnnouncements() {
-    if (!announcementService || !authStore.user) return;
+    if (!announcementService || !authState.user) return;
 
     try {
       const undismissed =
         await announcementService.getUndismissedModalAnnouncements(
-          authStore.user.uid
+          authState.user.uid
         );
 
       pendingAnnouncements = undismissed;

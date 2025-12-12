@@ -182,8 +182,8 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
 
   select:focus {
     outline: none;
-    border-color: var(--accent-primary, #6366f1);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: var(--theme-accent, #6366f1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   option {

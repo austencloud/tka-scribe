@@ -3,7 +3,7 @@
   import type { Container } from "inversify";
   import type { Snippet } from "svelte";
   import { onMount, setContext } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { registerCacheClearShortcut } from "$lib/shared/utils/cache-buster";
   import "../app.css";
   // Import modern view transitions CSS
@@ -69,7 +69,7 @@
 
     // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
     // This is required to catch auth state changes from social sign-in
-    authStore.initialize();
+    authState.initialize();
 
     // Note: Sequence restoration tester removed (now integrated into services)
 
@@ -94,7 +94,7 @@
     // Return synchronous cleanup function
     return () => {
       // Clean up auth listener
-      authStore.cleanup();
+      authState.cleanup();
 
       if (window.visualViewport) {
         window.visualViewport.removeEventListener(
@@ -107,7 +107,6 @@
         );
       }
       window.removeEventListener("resize", updateViewportHeight);
-
     };
   });
 </script>

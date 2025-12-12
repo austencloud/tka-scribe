@@ -127,8 +127,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--background-primary, #0f0f0f);
-    color: white;
+    background: var(--theme-panel-bg, #0f0f0f);
+    color: var(--theme-text, white);
     overflow: hidden;
     position: relative;
   }
@@ -157,16 +157,16 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(139, 92, 246, 0.2)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent)
     );
     border-radius: 20px;
-    border: 2px solid rgba(59, 130, 246, 0.3);
+    border: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .icon-container i {
     font-size: 2.5rem;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -176,7 +176,7 @@
     font-size: 2rem;
     font-weight: 800;
     margin: 0 0 0.75rem 0;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -184,7 +184,7 @@
 
   .setup-header p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 1rem;
     max-width: 400px;
     margin: 0 auto;
@@ -207,14 +207,14 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .feature i {
     font-size: 1.25rem;
-    color: #3b82f6;
+    color: var(--semantic-info, #3b82f6);
     width: 24px;
     text-align: center;
   }
@@ -222,16 +222,16 @@
   .feature span {
     flex: 1;
     font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .select-sequence-button {
     width: 100%;
     padding: 1.25rem 2rem;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
     border: none;
     border-radius: 12px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 1.125rem;
     font-weight: 600;
     cursor: pointer;
@@ -240,12 +240,12 @@
     justify-content: center;
     gap: 0.75rem;
     transition: all 0.2s;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .select-sequence-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .select-sequence-button i {
@@ -259,7 +259,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -271,14 +271,14 @@
   .loading-spinner {
     width: 52px;
     height: 52px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #3b82f6;
+    border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top-color: var(--semantic-info, #3b82f6);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
   .loading-overlay p {
-    color: white;
+    color: var(--theme-text, white);
     font-size: 1rem;
     margin: 0;
   }

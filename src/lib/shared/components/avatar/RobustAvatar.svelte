@@ -157,7 +157,7 @@
 		border-radius: 50%;
 		overflow: hidden;
 		flex-shrink: 0;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		background: linear-gradient(135deg, var(--semantic-info, #667eea) 0%, #764ba2 100%);
 	}
 
 	.robust-avatar.ring {
@@ -178,7 +178,7 @@
 		align-items: center;
 		justify-content: center;
 		font-weight: 600;
-		color: white;
+		color: var(--theme-text, white);
 		font-size: calc(var(--avatar-size) * 0.4);
 		text-transform: uppercase;
 		user-select: none;

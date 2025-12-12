@@ -460,13 +460,13 @@
     display: flex;
     justify-content: center;
     padding: 16px;
-    background: rgba(0, 0, 0, 0.5);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
     backdrop-filter: blur(4px);
     animation: fadeIn 0.3s ease-out;
   }
 
   .fullscreen-prompt-overlay.nag-mode {
-    background: rgba(0, 0, 0, 0.9);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 90%, transparent);
   }
 
   .fullscreen-prompt-overlay.position-top {
@@ -486,22 +486,22 @@
   }
 
   .fullscreen-prompt {
-    background: var(--color-surface, rgba(15, 23, 42, 0.94));
+    background: color-mix(in srgb, var(--theme-panel-bg, #0f172a) 94%, transparent);
     border-radius: 12px;
-    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.5);
+    box-shadow: 0 12px 40px var(--theme-shadow, rgba(0, 0, 0, 0.5));
     max-width: 420px;
     width: 100%;
     animation: slideIn 0.3s ease-out;
   }
 
   .fullscreen-prompt.nag-mode {
-    border: 2px solid rgba(129, 140, 248, 0.6);
+    border: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
   }
 
   .prompt-content {
     padding: 24px;
     text-align: center;
-    color: var(--color-text-primary, #e2e8f0);
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .prompt-icon {
@@ -517,7 +517,7 @@
 
   .prompt-content p {
     margin: 0 0 20px 0;
-    color: var(--color-text-secondary, #cbd5f5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .prompt-actions {
@@ -527,8 +527,8 @@
   }
 
   .install-button {
-    background: var(--color-primary, #6366f1);
-    color: white;
+    background: var(--theme-accent-strong, #8b5cf6);
+    color: var(--theme-text, white);
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
@@ -539,7 +539,7 @@
   }
 
   .install-button:hover {
-    background: var(--color-primary-hover, #4f46e5);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000);
     transform: translateY(-1px);
   }
 
@@ -551,8 +551,8 @@
 
   .dismiss-button {
     background: transparent;
-    color: var(--color-text-secondary, #cbd5f5);
-    border: 1px solid rgba(148, 163, 184, 0.35);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
     padding: 12px 24px;
     font-size: 14px;
@@ -561,17 +561,17 @@
   }
 
   .dismiss-button:hover {
-    background: rgba(148, 163, 184, 0.12);
-    color: var(--color-text-primary, #e2e8f0);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .dismiss-button.nag-dismiss {
-    border-color: rgba(226, 232, 240, 0.4);
-    color: rgba(226, 232, 240, 0.92);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: color-mix(in srgb, var(--theme-text, white) 92%, transparent);
   }
 
   .manual-instructions {
-    background: rgba(99, 102, 241, 0.12);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 16px;
@@ -586,7 +586,7 @@
   .manual-instructions ol {
     margin: 0 0 12px 0;
     padding-left: 20px;
-    color: var(--color-text-secondary, #cbd5f5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .manual-instructions ol li {
@@ -595,20 +595,20 @@
 
   .manual-note {
     margin: 0;
-    color: var(--color-text-secondary, #cbd5f5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 14px;
   }
 
   .unsupported-message {
     margin: 0 0 16px 0;
-    color: var(--color-text-secondary, #cbd5f5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .recommendations {
     text-align: left;
     padding-left: 20px;
     margin: 0 0 20px 0;
-    color: var(--color-text-secondary, #cbd5f5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .recommendations li {
@@ -618,10 +618,10 @@
   .nag-reminder {
     margin-top: 18px;
     padding: 12px;
-    background: rgba(99, 102, 241, 0.14);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 14%, transparent);
     border-radius: 10px;
     font-size: 14px;
-    color: var(--color-text-secondary, #cbd5f5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   @keyframes slideIn {

@@ -172,12 +172,12 @@
     height: clamp(52px, 14vw, 80px);
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(139, 92, 246, 0.2)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent)
     );
-    border: 2px solid rgba(59, 130, 246, 0.3);
+    border: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: clamp(14px, 4vw, 20px);
-    color: #60a5fa;
+    color: var(--semantic-info, #60a5fa);
     font-size: clamp(1.5rem, 5vw, 2rem);
   }
 
@@ -185,13 +185,13 @@
     margin: 0;
     font-size: clamp(1.25rem, 4.5vw, 1.75rem);
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   .prompt-subtitle {
     margin: 0;
     font-size: clamp(0.875rem, 3vw, 1rem);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.5;
   }
 
@@ -208,7 +208,7 @@
     margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
     font-size: clamp(0.8rem, 2.5vw, 0.9rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -233,10 +233,10 @@
     padding: clamp(0.75rem, 3vw, 1rem);
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.03) 100%
+      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08)) 0%,
+      var(--theme-card-bg, rgba(255, 255, 255, 0.03)) 100%
     );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: clamp(0.5rem, 2vw, 0.75rem);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -244,11 +244,11 @@
   }
 
   .recent-card:hover {
-    border-color: rgba(59, 130, 246, 0.5);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.15) 0%,
-      rgba(139, 92, 246, 0.1) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent) 100%
     );
     transform: translateY(-2px);
   }
@@ -261,7 +261,7 @@
   .recent-name {
     font-size: clamp(0.875rem, 3vw, 0.9375rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -272,11 +272,11 @@
     align-items: center;
     gap: 0.5rem;
     font-size: clamp(0.7rem, 2.5vw, 0.8rem);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .beat-count {
-    color: rgba(59, 130, 246, 0.9);
+    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 90%, transparent);
     font-weight: 500;
   }
 
@@ -296,10 +296,10 @@
     min-height: 52px;
     padding: clamp(0.875rem, 3.5vw, 1.125rem) clamp(1rem, 4vw, 1.5rem);
     margin-top: clamp(0.5rem, 2vw, 0.75rem);
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
     border: none;
     border-radius: clamp(0.625rem, 2.5vw, 0.875rem);
-    color: white;
+    color: var(--theme-text, white);
     font-size: clamp(0.9rem, 3vw, 1rem);
     font-weight: 600;
     cursor: pointer;
@@ -308,7 +308,7 @@
 
   .browse-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .browse-button:active {

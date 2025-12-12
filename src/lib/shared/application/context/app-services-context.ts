@@ -16,8 +16,9 @@ import type { IHapticFeedbackService } from "../services/contracts/IHapticFeedba
 import type { ICollaborativeVideoService } from "../../video-collaboration/services/contracts/ICollaborativeVideoService";
 import type { IUserService } from "../../community/services/contracts/IUserService";
 import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
-import type { ICodexService } from "$lib/features/learn/services/contracts/ICodexService";
-import type { IQuizRepoManager } from "$lib/features/learn/quiz/services/contracts/IQuizRepoManager";
+import type { ICodexService } from "$lib/features/learn/codex/services/contracts/ICodexService";
+// TODO: IQuizRepoManager contract doesn't exist yet - uncomment when created
+// import type { IQuizRepoManager } from "$lib/features/learn/quiz/services/contracts/IQuizRepoManager";
 import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
 import type { IStartPositionService } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionService";
 
@@ -37,7 +38,7 @@ export interface AppServicesContext {
   userService?: IUserService;
   discoverLoader?: IDiscoverLoader;
   codexService?: ICodexService;
-  quizRepo?: IQuizRepoManager;
+  // quizRepo?: IQuizRepoManager; // TODO: uncomment when IQuizRepoManager contract is created
   capTypeService?: ICAPTypeService;
   startPositionService?: IStartPositionService;
 }

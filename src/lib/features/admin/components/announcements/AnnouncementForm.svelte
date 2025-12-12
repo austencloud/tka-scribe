@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { IAnnouncementService } from "../../services/contracts/IAnnouncementService";
   import type {
     Announcement,
@@ -72,7 +72,12 @@
     icon: string;
     color: string;
   }[] = [
-    { value: "info", label: "Info", icon: "fa-info-circle", color: "#6366f1" },
+    {
+      value: "info",
+      label: "Info",
+      icon: "fa-info-circle",
+      color: "var(--theme-accent, #6366f1)",
+    },
     {
       value: "warning",
       label: "Warning",
@@ -123,7 +128,7 @@
       return;
     }
 
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) {
       error = "You must be logged in to create announcements";
       return;
@@ -342,7 +347,9 @@
         bind:value={actionUrl}
         placeholder="/settings?tab=release-notes or https://..."
       />
-      <span class="help-text">Internal path or external URL for action button</span>
+      <span class="help-text"
+        >Internal path or external URL for action button</span
+      >
     </div>
 
     {#if actionUrl}
@@ -397,7 +404,8 @@
     justify-content: space-between;
     margin-bottom: 32px;
     padding-bottom: 20px;
-    border-bottom: 2px solid rgba(99, 102, 241, 0.2);
+    border-bottom: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .form-header h2 {
@@ -414,7 +422,10 @@
     justify-content: center;
     min-width: 52px;
     min-height: 52px;
-    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%));
+    background: var(
+      --theme-card-bg,
+      linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%)
+    );
     border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
@@ -423,7 +434,10 @@
   }
 
   .close-button:hover {
-    background: var(--theme-card-hover-bg, linear-gradient(135deg, #3d3d4a 0%, #2f2f38 100%));
+    background: var(
+      --theme-card-hover-bg,
+      linear-gradient(135deg, #3d3d4a 0%, #2f2f38 100%)
+    );
     color: var(--theme-text, #ffffff);
     transform: scale(1.05);
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
@@ -474,7 +488,7 @@
     padding: 16px 20px;
     min-height: 52px;
     background: linear-gradient(135deg, #1a1a24 0%, #16161e 100%);
-    border: 2px solid rgba(99, 102, 241, 0.3);
+    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 12px;
     color: #ffffff;
     font-size: 15px;
@@ -489,9 +503,10 @@
 
   .text-input:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--theme-accent, #6366f1);
     background: linear-gradient(135deg, #20202e 0%, #1c1c28 100%);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 0 4px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
   }
 
   textarea.text-input {
@@ -511,7 +526,7 @@
   .indented {
     margin-left: 20px;
     padding-left: 20px;
-    border-left: 3px solid #6366f1;
+    border-left: 3px solid var(--theme-accent, #6366f1);
   }
 
   /* ============================================================================
@@ -530,7 +545,10 @@
     gap: 10px;
     padding: 14px 20px;
     min-height: 52px;
-    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    background: var(
+      --theme-card-bg,
+      linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
+    );
     border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
@@ -551,7 +569,10 @@
 
   .selection-chip:hover,
   .toggle-chip:hover {
-    background: var(--theme-card-hover-bg, linear-gradient(135deg, #3d3d4a 0%, #35353f 100%));
+    background: var(
+      --theme-card-hover-bg,
+      linear-gradient(135deg, #3d3d4a 0%, #35353f 100%)
+    );
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     color: var(--theme-text, #ffffff);
     transform: translateY(-2px);
@@ -572,11 +593,15 @@
   }
 
   .toggle-chip.active {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    border-color: #818cf8;
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, black) 100%
+    );
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
     color: #ffffff;
     box-shadow:
-      0 0 24px rgba(99, 102, 241, 0.4),
+      0 0 24px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
@@ -608,7 +633,8 @@
     gap: 12px;
     margin-top: 40px;
     padding-top: 24px;
-    border-top: 2px solid rgba(99, 102, 241, 0.2);
+    border-top: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .cancel-button,
@@ -629,14 +655,20 @@
   }
 
   .cancel-button {
-    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    background: var(
+      --theme-card-bg,
+      linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
+    );
     border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .cancel-button:hover {
-    background: var(--theme-card-hover-bg, linear-gradient(135deg, #3d3d4a 0%, #35353f 100%));
+    background: var(
+      --theme-card-hover-bg,
+      linear-gradient(135deg, #3d3d4a 0%, #35353f 100%)
+    );
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     color: var(--theme-text, #ffffff);
     transform: translateY(-2px);
@@ -644,19 +676,27 @@
   }
 
   .save-button {
-    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
-    border: 2px solid #a5b4fc;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
+      var(--theme-accent, #6366f1) 100%
+    );
+    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 140%, white);
     color: #ffffff;
     box-shadow:
-      0 0 20px rgba(99, 102, 241, 0.3),
+      0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .save-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, #9ca3f8 0%, #7c7fef 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 130%, white) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 110%, white) 100%
+    );
     transform: translateY(-2px);
     box-shadow:
-      0 0 30px rgba(99, 102, 241, 0.5),
+      0 0 30px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent),
       0 6px 20px rgba(0, 0, 0, 0.5);
   }
 

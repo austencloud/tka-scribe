@@ -162,10 +162,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -175,15 +175,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .filter-chip:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .filter-chip.active {
     background: var(--chip-gradient, rgba(0, 123, 255, 0.25));
     border-color: var(--chip-color, rgba(0, 123, 255, 0.5));
-    color: white;
+    color: var(--theme-text, white);
     box-shadow: 0 0 12px var(--chip-glow, rgba(0, 123, 255, 0.3));
   }
 
@@ -196,10 +196,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -209,9 +209,9 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .advanced-button:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: white;
+    background: color-mix(in srgb, var(--theme-text, white) 12%, transparent);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    color: var(--theme-text, white);
   }
 
   .advanced-button i {

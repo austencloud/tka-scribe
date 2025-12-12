@@ -23,6 +23,7 @@ matching the legacy desktop app's behavior.
     onTogglePositions = undefined,
     onToggleReversals = undefined,
     onToggleNonRadial = undefined,
+    onToggleTurnNumbers = undefined,
   } = $props<{
     /** Pictograph data to render */
     pictographData?: PictographData | null;
@@ -51,6 +52,7 @@ matching the legacy desktop app's behavior.
     onTogglePositions?: () => void;
     onToggleReversals?: () => void;
     onToggleNonRadial?: () => void;
+    onToggleTurnNumbers?: () => void;
   }>();
 
   // Visibility state manager
@@ -115,6 +117,12 @@ matching the legacy desktop app's behavior.
     return undefined;
   });
 
+  const showTurnNumbers = $derived.by(() => {
+    visibilityUpdateCount;
+    if (forceShowAll && !previewMode) return true;
+    return undefined;
+  });
+
   // Use original pictograph data without mutation
   // Visibility should only affect rendering, not data
   const effectivePictographData = $derived(
@@ -138,12 +146,14 @@ matching the legacy desktop app's behavior.
     {...showPositions !== undefined && { showPositions }}
     {...showReversals !== undefined && { showReversals }}
     {...showNonRadialPoints !== undefined && { showNonRadialPoints }}
+    {...showTurnNumbers !== undefined && { showTurnNumbers }}
     {...onToggleTKA && { onToggleTKA }}
     {...onToggleVTG && { onToggleVTG }}
     {...onToggleElemental && { onToggleElemental }}
     {...onTogglePositions && { onTogglePositions }}
     {...onToggleReversals && { onToggleReversals }}
     {...onToggleNonRadial && { onToggleNonRadial }}
+    {...onToggleTurnNumbers && { onToggleTurnNumbers }}
   />
 </div>
 

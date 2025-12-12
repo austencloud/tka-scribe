@@ -67,16 +67,16 @@ export const DEPTH_LAYER_DISTRIBUTION = {
 
 export const FISH_MOVEMENT = {
   /** Base horizontal speed range [min, max] in pixels per second */
-  baseSpeed: [10, 22],
+  baseSpeed: [10, 22] as const,
 
   /** Vertical drift range (pixels per second, centered at 0) */
   verticalDrift: 4,
 
   /** Bobbing animation amplitude range [min, max] in pixels */
-  bobAmplitude: [2, 5],
+  bobAmplitude: [2, 5] as const,
 
   /** Bobbing animation speed range [min, max] (radians per frame at 60fps) */
-  bobSpeed: [0.008, 0.02],
+  bobSpeed: [0.008, 0.02] as const,
 
   /** Maximum spawn offset from screen edge (pixels or fraction of width) */
   spawnOffset: { pixels: 140, fractionOfWidth: 0.2 },
@@ -93,7 +93,7 @@ export const BEHAVIOR_CONFIG = {
    */
   cruising: {
     /** Duration range [min, max] in seconds before behavior change */
-    duration: [8, 20],
+    duration: [8, 20] as const,
   },
 
   /**
@@ -117,7 +117,7 @@ export const BEHAVIOR_CONFIG = {
     /** Fixed duration in seconds */
     duration: 0.8,
     /** Speed multiplier range [min, max] */
-    speedMultiplier: [2.5, 4.0],
+    speedMultiplier: [2.5, 4.0] as const,
   },
 
   /**
@@ -126,7 +126,7 @@ export const BEHAVIOR_CONFIG = {
    */
   schooling: {
     /** Duration range [min, max] in seconds */
-    duration: [10, 25],
+    duration: [10, 25] as const,
   },
 };
 
@@ -194,7 +194,7 @@ export const FLOCKING_CONFIG = {
   /** School formation */
   school: {
     /** Target number of fish per school */
-    size: [2, 4],
+    size: [2, 4] as const,
     /** Percentage of fish population to form into schools */
     populationFraction: 0.35,
   },
@@ -224,7 +224,7 @@ export const FISH_VISUALS = {
 
 export const SPAWN_CONFIG = {
   /** Delay range [min, max] in seconds before respawning off-screen fish */
-  respawnDelay: [2, 8],
+  respawnDelay: [2, 8] as const,
 
   /** Buffer zone beyond screen edge before fish is considered "off-screen" */
   offScreenBuffer: 100,

@@ -38,12 +38,12 @@
   .form-field {
     display: flex;
     flex-direction: column;
-    gap: var(--settings-space-sm);
+    gap: 8px;
   }
 
   .field-label {
     font-size: var(--text-2026-caption);
-    font-weight: var(--settings-font-weight-semibold);
+    font-weight: 600;
     color: var(--theme-text-dim);
   }
 
@@ -55,7 +55,7 @@
 
   @media (min-width: 480px) {
     .role-chips {
-      gap: var(--settings-space-sm);
+      gap: 8px;
     }
   }
 
@@ -63,13 +63,13 @@
     display: flex;
     align-items: center;
     gap: var(--space-2026-xs);
-    padding: var(--settings-space-sm) var(--space-2026-sm);
+    padding: 8px var(--space-2026-sm);
     border: 2px solid var(--border-2026);
     border-radius: var(--radius-2026-full);
     background: var(--surface-2026);
     color: var(--theme-text-dim);
     font-size: var(--text-2026-micro);
-    font-weight: var(--settings-font-weight-medium);
+    font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
     min-height: 52px;
@@ -77,7 +77,7 @@
 
   @media (min-width: 480px) {
     .role-chip {
-      padding: var(--radius-2026-sm) var(--settings-space-md);
+      padding: var(--radius-2026-sm) 16px;
       font-size: var(--text-2026-caption);
     }
   }

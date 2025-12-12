@@ -215,7 +215,7 @@
     background: var(--primary-color);
     border-color: var(--primary-light);
     color: white;
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .separator {
@@ -257,7 +257,7 @@
   .column-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .column-select option {

@@ -3,23 +3,32 @@
 
   Handles account deletion with collapsible disclosure pattern.
   User must expand section before seeing deletion option.
+  Includes GitHub-style text confirmation barrier.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { uiState } from "../../state/profile-settings-state.svelte";
 
-  let { onDeleteAccount, hapticService } = $props<{
+  let { onDeleteAccount, hapticService, userIdentifier } = $props<{
     onDeleteAccount: () => Promise<void>;
     hapticService: IHapticFeedbackService | null;
+    userIdentifier: string;
   }>();
 
   let isExpanded = $state(false);
+  let confirmationText = $state("");
+
+  // Require exact match of their username/email (case-insensitive)
+  let isConfirmationValid = $derived(
+    confirmationText.toLowerCase().trim() === userIdentifier.toLowerCase().trim()
+  );
 
   function toggleExpanded() {
     hapticService?.trigger("selection");
     isExpanded = !isExpanded;
     if (!isExpanded) {
       uiState.showDeleteConfirmation = false;
+      confirmationText = "";
     }
   }
 
@@ -31,6 +40,13 @@
   function handleCancel() {
     hapticService?.trigger("selection");
     uiState.showDeleteConfirmation = false;
+    confirmationText = "";
+  }
+
+  function handleConfirmDelete() {
+    if (!isConfirmationValid) return;
+    hapticService?.trigger("warning");
+    onDeleteAccount();
   }
 </script>
 
@@ -68,13 +84,31 @@
             <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
             Are you absolutely sure? This action is irreversible.
           </p>
+
+          <div class="confirmation-input-section">
+            <label for="delete-confirmation" class="confirmation-label">
+              To confirm, type <strong>{userIdentifier}</strong> below:
+            </label>
+            <input
+              id="delete-confirmation"
+              type="text"
+              class="confirmation-input"
+              class:valid={isConfirmationValid}
+              placeholder={userIdentifier}
+              bind:value={confirmationText}
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+
           <div class="button-row">
             <button class="button button--secondary" onclick={handleCancel}>
               Cancel
             </button>
             <button
               class="button button--danger-confirm"
-              onclick={onDeleteAccount}
+              onclick={handleConfirmDelete}
+              disabled={!isConfirmationValid}
             >
               <i class="fas fa-trash-alt" aria-hidden="true"></i>
               Yes, Delete Forever
@@ -155,7 +189,7 @@
   }
 
   .confirmation-box {
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
     border-radius: 10px;
     padding: 16px;
     margin-top: 12px;
@@ -174,6 +208,61 @@
   .confirmation-text i {
     font-size: 18px;
     flex-shrink: 0;
+  }
+
+  /* Confirmation Input */
+  .confirmation-input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .confirmation-label {
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    line-height: 1.5;
+  }
+
+  .confirmation-label strong {
+    color: #ef4444;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+      monospace;
+    background: rgba(239, 68, 68, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .confirmation-input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+      monospace;
+    letter-spacing: 0.5px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(239, 68, 68, 0.25);
+    border-radius: 8px;
+    color: var(--theme-text, #fff);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .confirmation-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+    font-family: inherit;
+  }
+
+  .confirmation-input:focus {
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+
+  .confirmation-input.valid {
+    border-color: rgba(239, 68, 68, 0.6);
+    background: rgba(239, 68, 68, 0.08);
   }
 
   /* Buttons */
@@ -266,12 +355,12 @@
 
   /* Accessibility - Focus Indicators */
   .disclosure-button:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 
   .button:focus-visible {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 

@@ -15,7 +15,7 @@
   <div class="stat-card">
     <div
       class="stat-icon"
-      style="background: rgba(102, 126, 234, 0.2); color: #667eea;"
+      style="background: color-mix(in srgb, var(--theme-accent) 20%, transparent); color: var(--theme-accent, #667eea);"
     >
       <i class="fas fa-calendar-check"></i>
     </div>

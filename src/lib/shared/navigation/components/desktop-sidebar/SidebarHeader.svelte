@@ -28,8 +28,8 @@
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.1) 0%,
-      rgba(139, 92, 246, 0.08) 50%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent) 50%,
       rgba(236, 72, 153, 0.06) 100%
     );
     display: flex;
@@ -48,8 +48,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(99, 102, 241, 0.4),
-      rgba(139, 92, 246, 0.4),
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent),
       transparent
     );
   }
@@ -128,7 +128,7 @@
 
   /* Focus styles for keyboard navigation */
   .collapse-toggle:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 70%, transparent);
     outline-offset: 2px;
   }
 

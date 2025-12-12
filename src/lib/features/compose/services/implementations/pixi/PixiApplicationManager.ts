@@ -93,7 +93,20 @@ export class PixiApplicationManager {
 
   render(): void {
     if (!this.isInitialized || !this.app?.renderer) return;
-    this.app.renderer.render(this.app.stage);
+
+    try {
+      // Guard against invalid renderer state (can happen during resize/context loss)
+      const renderer = this.app.renderer;
+      if (!renderer.renderTarget || !renderer.renderPipes) {
+        console.warn('[PixiApplicationManager] Renderer not ready for rendering');
+        return;
+      }
+
+      this.app.renderer.render(this.app.stage);
+    } catch (error) {
+      // Catch WebGL errors like null alphaMode (texture/context issues)
+      console.error('[PixiApplicationManager] Render error:', error);
+    }
   }
 
   getApplication(): Application | null {

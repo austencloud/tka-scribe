@@ -9,7 +9,9 @@ Mobile-first design:
 -->
 <script lang="ts">
   import { onMount, onDestroy, untrack } from "svelte";
-  import { CaptureInterface, SessionList, LabelingSession } from "./index";
+  import CaptureInterface from "./CaptureInterface.svelte";
+  import SessionList from "./SessionList.svelte";
+  import LabelingSession from "./LabelingSession.svelte";
   import { getMLTrainingStorage } from "../services/MLTrainingStorageService";
   import {
     exportSessionToCoco,
@@ -340,25 +342,25 @@ Mobile-first design:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border: none;
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.2s;
     flex-shrink: 0;
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, #fff);
   }
 
   .prop-badge {
     display: inline-flex;
     align-self: flex-start;
     padding: 0.35rem 0.875rem;
-    background: rgba(99, 102, 241, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 20px;
     font-size: 0.85rem;
     color: #a5b4fc;
@@ -401,7 +403,7 @@ Mobile-first design:
   .preview-more {
     aspect-ratio: 1;
     border-radius: 8px;
-    background: rgba(99, 102, 241, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -427,7 +429,7 @@ Mobile-first design:
     justify-content: center;
     gap: 0.75rem;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 12px;
     opacity: 0.7;
   }
@@ -435,7 +437,7 @@ Mobile-first design:
   .spinner {
     width: 24px;
     height: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-top-color: #a5b4fc;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -459,7 +461,7 @@ Mobile-first design:
     align-items: center;
     gap: 0.75rem;
     padding: 0.875rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 10px;
   }
 

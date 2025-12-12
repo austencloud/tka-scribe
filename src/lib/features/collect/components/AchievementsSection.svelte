@@ -10,7 +10,7 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { getLevelProgress } from "$lib/shared/gamification/domain/constants/xp-constants";
   import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
   import type { IStreakService } from "$lib/shared/gamification/services/contracts/IStreakService";
@@ -90,7 +90,7 @@
   });
 
   async function loadData() {
-    if (!achievementService || !streakService || !authStore.isAuthenticated) {
+    if (!achievementService || !streakService || !authState.isAuthenticated) {
       isLoading = false;
       return;
     }
@@ -133,7 +133,7 @@
   }
 
   async function loadUserRanks() {
-    if (!leaderboardService || !authStore.isAuthenticated) return;
+    if (!leaderboardService || !authState.isAuthenticated) return;
 
     isLoadingRanks = true;
     try {
@@ -177,7 +177,7 @@
       <div class="spinner"></div>
       <p>Loading your progress...</p>
     </div>
-  {:else if !authStore.isAuthenticated}
+  {:else if !authState.isAuthenticated}
     <div class="auth-required">
       <i class="fas fa-lock"></i>
       <h3>Sign In Required</h3>

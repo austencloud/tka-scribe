@@ -21,10 +21,10 @@
   .type-indicator {
     display: inline-flex;
     align-items: center;
-    gap: var(--settings-space-sm);
+    gap: 8px;
     padding: var(--radius-2026-sm) var(--radius-2026-md);
-    border-radius: var(--settings-radius-sm);
-    font-weight: var(--settings-font-weight-semibold);
+    border-radius: 8px;
+    font-weight: 600;
     font-size: var(--text-2026-caption);
     letter-spacing: 0.5px;
     text-transform: uppercase;
@@ -40,8 +40,8 @@
   }
 
   .type-indicator.module {
-    background: color-mix(in srgb, #8b5cf6 15%, transparent);
-    border-color: color-mix(in srgb, #8b5cf6 40%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
     color: #a78bfa;
   }
 
@@ -58,7 +58,7 @@
   }
 
   .type-indicator i {
-    font-size: var(--settings-space-md);
+    font-size: 16px;
   }
 
   @media (min-width: 480px) {
@@ -68,6 +68,6 @@
   }
 
   .type-label {
-    font-weight: var(--settings-font-weight-bold);
+    font-weight: 700;
   }
 </style>

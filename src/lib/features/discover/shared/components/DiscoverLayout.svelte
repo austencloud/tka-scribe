@@ -52,7 +52,7 @@ Provides responsive layout with clean 3-button interface:
     flex-direction: column;
     overflow: hidden;
     min-width: 0;
-    background: rgba(255, 255, 255, 0.01);
+    background: color-mix(in srgb, var(--theme-text, white) 1%, transparent);
   }
 
   /* Mobile-first responsive design */

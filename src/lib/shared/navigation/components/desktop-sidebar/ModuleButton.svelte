@@ -5,7 +5,7 @@
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ModuleDefinition } from "../../domain/types";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import NotificationBadge from "../NotificationBadge.svelte";
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
@@ -37,7 +37,7 @@
     );
 
     // Initialize notifications for dashboard module
-    if (module.id === "dashboard" && authStore.isAuthenticated) {
+    if (module.id === "dashboard" && authState.isAuthenticated) {
       notificationState?.init();
     }
 
@@ -49,7 +49,7 @@
   // Watch auth state changes to init/cleanup notifications
   $effect(() => {
     if (module.id === "dashboard") {
-      if (authStore.isAuthenticated) {
+      if (authState.isAuthenticated) {
         notificationState?.init();
       } else {
         notificationState?.cleanup();
@@ -67,11 +67,11 @@
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
     module.id === "dashboard" &&
-      authStore.isAuthenticated &&
-      authStore.user?.photoURL
+      authState.isAuthenticated &&
+      authState.user?.photoURL
   );
-  const profilePictureUrl = $derived(authStore.user?.photoURL || "");
-  const profileDisplayName = $derived(authStore.user?.displayName || "User");
+  const profilePictureUrl = $derived(authState.user?.photoURL || "");
+  const profileDisplayName = $derived(authState.user?.displayName || "User");
 </script>
 
 <button
@@ -110,9 +110,10 @@
     <span class="module-label">{module.label}</span>
     {#if isDisabled && module.disabledMessage}
       <span class="disabled-badge">{module.disabledMessage}</span>
-    {:else}
+    {:else if !isExpanded && hasSections}
+      <!-- Only show chevron when collapsed AND has sections to expand -->
       <span class="expand-icon">
-        <i class="fas fa-chevron-{isExpanded ? 'down' : 'right'}"></i>
+        <i class="fas fa-chevron-right"></i>
       </span>
     {/if}
   {/if}
@@ -186,10 +187,22 @@
     transition-duration: 0.1s;
   }
 
-  /* Expanded state - very subtle */
+  /* Expanded state - blends with surrounding panel, not interactive */
   .module-button.expanded {
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: transparent;
+    border-color: transparent;
+    cursor: default;
+    pointer-events: none; /* Disable interaction when expanded */
+  }
+
+  .module-button.expanded:hover {
+    transform: none;
+    background: transparent;
+  }
+
+  .module-button.expanded::before {
+    display: none; /* No shimmer on non-interactive state */
   }
 
   /* Active module indicator - minimal, just the accent bar */
@@ -197,6 +210,14 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
+  }
+
+  /* When both active AND expanded, blend completely (acts as section header) */
+  .module-button.active.expanded {
+    background: transparent;
+    border-color: transparent;
+    cursor: default;
+    pointer-events: none;
   }
 
   .module-button.active::after {
@@ -210,9 +231,14 @@
     border-radius: 0 3px 3px 0;
     background: linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.7),
-      rgba(255, 255, 255, 0.3)
+      var(--theme-accent, #6366f1),
+      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent)
     );
+  }
+
+  /* Hide accent bar when expanded - no longer looks like a button */
+  .module-button.active.expanded::after {
+    display: none;
   }
 
   .module-button.sidebar-collapsed.active::after {
@@ -223,9 +249,9 @@
     border-radius: 3px;
     background: linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.3),
-      rgba(255, 255, 255, 0.7),
-      rgba(255, 255, 255, 0.3)
+      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent),
+      var(--theme-accent, #6366f1),
+      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent)
     );
   }
 
@@ -332,7 +358,7 @@
 
   /* Focus styles for keyboard navigation */
   .module-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

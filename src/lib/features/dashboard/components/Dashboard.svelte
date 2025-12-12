@@ -16,7 +16,7 @@
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
@@ -53,12 +53,16 @@
   const effectiveWelcomeMessage = $derived.by(() => {
     // When previewing another user, show their name
     if (isPreviewActive && previewProfile) {
-      const firstName = (previewProfile.displayName || previewProfile.email || "User").split(" ")[0];
+      const firstName = (
+        previewProfile.displayName ||
+        previewProfile.email ||
+        "User"
+      ).split(" ")[0];
       return `Viewing as ${firstName}`;
     }
     // Normal authenticated user
-    if (authStore.isAuthenticated && authStore.user?.displayName) {
-      const firstName = authStore.user.displayName.split(" ")[0];
+    if (authState.isAuthenticated && authState.user?.displayName) {
+      const firstName = authState.user.displayName.split(" ")[0];
       return `${greeting}, ${firstName}`;
     }
     return "Welcome to TKA Studio";
@@ -269,8 +273,10 @@
   <DashboardMobileDrawers
     challengeDrawerOpen={dashboardState.challengeDrawerOpen}
     supportDrawerOpen={dashboardState.supportDrawerOpen}
-    onChallengeDrawerChange={(open: boolean) => (dashboardState.challengeDrawerOpen = open)}
-    onSupportDrawerChange={(open: boolean) => (dashboardState.supportDrawerOpen = open)}
+    onChallengeDrawerChange={(open: boolean) =>
+      (dashboardState.challengeDrawerOpen = open)}
+    onSupportDrawerChange={(open: boolean) =>
+      (dashboardState.supportDrawerOpen = open)}
   />
 
   <DashboardSignInToast

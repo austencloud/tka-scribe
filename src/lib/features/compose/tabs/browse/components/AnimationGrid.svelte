@@ -232,14 +232,14 @@ Features:
   .skeleton-title {
     height: 16px;
     width: 70%;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
   }
 
   .skeleton-meta {
     height: 12px;
     width: 50%;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: 4px;
   }
 

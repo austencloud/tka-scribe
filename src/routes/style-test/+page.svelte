@@ -26,10 +26,10 @@
   ];
 
   const statuses = [
-    { label: "All", color: "#3b82f6", icon: "fa-list", count: 24 },
-    { label: "New", color: "#3b82f6", icon: "fa-inbox", count: 8 },
+    { label: "All", color: "var(--theme-accent, #3b82f6)", icon: "fa-list", count: 24 },
+    { label: "New", color: "var(--theme-accent, #3b82f6)", icon: "fa-inbox", count: 8 },
     { label: "In Progress", color: "#f59e0b", icon: "fa-spinner", count: 6 },
-    { label: "In Review", color: "#8b5cf6", icon: "fa-eye", count: 5 },
+    { label: "In Review", color: "var(--theme-accent-strong, #8b5cf6)", icon: "fa-eye", count: 5 },
     { label: "Completed", color: "#10b981", icon: "fa-check-circle", count: 5 }
   ];
 </script>
@@ -294,7 +294,7 @@
     gap: 6px;
     padding: 6px 12px;
     background: rgba(30, 35, 50, 0.95);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
     border-radius: 20px;
     color: rgba(200, 210, 255, 0.9);
     font-size: 0.8125rem;
@@ -305,7 +305,7 @@
 
   .approach-3 .filter-chip:hover {
     background: rgba(40, 45, 65, 0.98);
-    border-color: rgba(99, 102, 241, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .approach-3 .filter-chip.active {
@@ -320,7 +320,7 @@
     gap: 12px;
     padding: 14px;
     background: rgba(25, 30, 45, 0.95);
-    border: 1px solid rgba(99, 102, 241, 0.25);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -328,7 +328,7 @@
 
   .approach-3 .feedback-card:hover {
     background: rgba(30, 35, 55, 0.98);
-    border-color: rgba(99, 102, 241, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .approach-3 .card-type {

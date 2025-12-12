@@ -22,7 +22,7 @@
   import type { ISequenceViewerService } from "$lib/shared/sequence-viewer/services/contracts/ISequenceViewerService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import EditSlidePanel from "$lib/features/create/edit/components/EditSlidePanel.svelte";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import SequenceViewerActions from "./SequenceViewerActions.svelte";
@@ -55,7 +55,7 @@
   let isSaving = $state(false);
   let saveError = $state<string | null>(null);
   let isSavedToLibrary = $state(false);
-  const isAuthenticated = $derived(!!authStore.effectiveUserId);
+  const isAuthenticated = $derived(!!authState.effectiveUserId);
 
   // Derived
   const thumbnailUrl = $derived.by(() => {

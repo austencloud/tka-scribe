@@ -135,7 +135,12 @@
 
       {#if item}
         <div class="capture-content">
-          <div class="shortcut-name">{item.shortcut.label}</div>
+          <div class="shortcut-info">
+            <div class="shortcut-name">{item.shortcut.label}</div>
+            {#if item.shortcut.description}
+              <div class="shortcut-description">{item.shortcut.description}</div>
+            {/if}
+          </div>
 
           <div class="current-binding">
             <span class="binding-label">Current:</span>
@@ -216,7 +221,12 @@
         </header>
 
         <div class="capture-content">
-          <div class="shortcut-name">{item.shortcut.label}</div>
+          <div class="shortcut-info">
+            <div class="shortcut-name">{item.shortcut.label}</div>
+            {#if item.shortcut.description}
+              <div class="shortcut-description">{item.shortcut.description}</div>
+            {/if}
+          </div>
 
           <div class="current-binding">
             <span class="binding-label">Current:</span>
@@ -301,10 +311,13 @@
   .capture-modal {
     width: 100%;
     max-width: 420px;
-    background: var(--background, #1a1a1a);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: 16px;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+    /* Dark glass panel */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 24px 80px var(--theme-shadow, rgba(0, 0, 0, 0.5));
     overflow: hidden;
   }
 
@@ -368,11 +381,25 @@
     padding: 20px 0;
   }
 
-  .shortcut-name {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  .shortcut-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
     text-align: center;
+  }
+
+  .shortcut-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+  }
+
+  .shortcut-description {
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    line-height: 1.4;
+    max-width: 320px;
   }
 
   .current-binding {
@@ -394,43 +421,43 @@
     min-height: 80px;
     padding: 20px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 2px dashed rgba(99, 102, 241, 0.4);
+    border: 2px dashed color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
     border-radius: 12px;
     cursor: pointer;
     transition: all 200ms ease;
   }
 
   .capture-area:hover {
-    background: rgba(99, 102, 241, 0.05);
-    border-color: rgba(99, 102, 241, 0.6);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 5%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
   }
 
   .capture-area.capturing {
     border-style: solid;
-    border-color: var(--primary-color, #6366f1);
-    background: rgba(99, 102, 241, 0.08);
+    border-color: var(--theme-accent-strong, #8b5cf6);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent);
     animation: pulse-glow 1.5s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
     0%,
     100% {
-      box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
     }
     50% {
-      box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+      box-shadow: 0 0 0 8px transparent;
     }
   }
 
   .capture-area.has-value {
     border-style: solid;
-    border-color: rgba(34, 197, 94, 0.5);
-    background: rgba(34, 197, 94, 0.05);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
+    background: color-mix(in srgb, var(--semantic-success, #22c55e) 5%, transparent);
   }
 
   .capture-prompt {
     font-size: 14px;
-    color: rgba(99, 102, 241, 1);
+    color: var(--theme-accent-strong, #8b5cf6);
     font-weight: 500;
   }
 
@@ -480,13 +507,13 @@
   }
 
   .btn-primary {
-    background: var(--primary-color, #6366f1);
+    background: var(--theme-accent-strong, #8b5cf6);
     border: none;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .btn-primary:hover:not(:disabled) {
-    background: #4f46e5;
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000);
   }
 
   .btn-primary:disabled {

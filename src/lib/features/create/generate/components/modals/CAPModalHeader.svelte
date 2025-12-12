@@ -136,14 +136,14 @@ Uses grid layout for perfect centering with multi-select toggle
   }
 
   .multi-select-toggle.active {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
-    box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent, #8b5cf6) 60%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
   }
 
   .multi-select-toggle.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
-    border-color: var(--theme-accent, #8b5cf6);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
+    border-color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .multi-select-toggle svg {

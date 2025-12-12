@@ -235,13 +235,13 @@ export function initUserPreviewContext(): UserPreviewContext {
  * ```svelte
  * <script>
  *   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
- *   import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+ *   import { authState } from "$lib/shared/auth/state/authState.svelte";
  *
  *   const preview = useUserPreview();
  *
  *   // Get the effective display name (previewed or actual)
  *   const displayName = $derived(
- *     preview.getEffectiveDisplayName(authStore.user?.displayName ?? null)
+ *     preview.getEffectiveDisplayName(authState.user?.displayName ?? null)
  *   );
  * </script>
  * ```

@@ -3,7 +3,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { ModuleDefinition } from "../../domain/types";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import NotificationBadge from "../NotificationBadge.svelte";
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
@@ -29,7 +29,7 @@
 
   onMount(() => {
     // Initialize notifications for dashboard module
-    if (module.id === "dashboard" && authStore.isAuthenticated) {
+    if (module.id === "dashboard" && authState.isAuthenticated) {
       notificationState?.init();
     }
 
@@ -41,7 +41,7 @@
   // Watch auth state changes to init/cleanup notifications
   $effect(() => {
     if (module.id === "dashboard") {
-      if (authStore.isAuthenticated) {
+      if (authState.isAuthenticated) {
         notificationState?.init();
       } else {
         notificationState?.cleanup();
@@ -52,11 +52,11 @@
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
     module.id === "dashboard" &&
-      authStore.isAuthenticated &&
-      authStore.user?.photoURL
+      authState.isAuthenticated &&
+      authState.user?.photoURL
   );
-  const profilePictureUrl = $derived(authStore.user?.photoURL || "");
-  const profileDisplayName = $derived(authStore.user?.displayName || "User");
+  const profilePictureUrl = $derived(authState.user?.photoURL || "");
+  const profileDisplayName = $derived(authState.user?.displayName || "User");
 </script>
 
 <button
@@ -118,13 +118,15 @@
   .collapsed-module-button:hover:not(.disabled) {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    box-shadow: inset 0 0 0 1px
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
   }
 
   .collapsed-module-button.active {
     color: var(--theme-text, rgba(255, 255, 255, 1));
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    box-shadow: inset 0 0 0 1px
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   /* Ghost the button when tabs are showing - tabs become the focus */
@@ -215,7 +217,7 @@
 
   /* Focus styles for keyboard navigation */
   .collapsed-module-button:focus-visible {
-    outline: 2px solid rgba(102, 126, 234, 0.6);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

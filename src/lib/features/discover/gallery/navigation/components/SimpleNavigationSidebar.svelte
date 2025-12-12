@@ -152,8 +152,8 @@ Matches the desktop Python app navigation pattern exactly.
     flex-direction: column;
     height: 100%;
     padding: clamp(0.75rem, 2vw, 1.25rem);
-    background: rgba(0, 0, 0, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.1));
+    border-right: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     width: clamp(80px, 10vw, 160px);
     flex-shrink: 0;
     overflow: hidden;
@@ -186,11 +186,11 @@ Matches the desktop Python app navigation pattern exactly.
     flex-shrink: 0;
     padding-right: 12px;
     margin-right: 12px;
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .header-text {
-    color: white;
+    color: var(--theme-text, white);
     font-size: clamp(0.8rem, 2.2vw, 1.1rem);
     font-weight: bold;
     text-align: center;
@@ -209,14 +209,14 @@ Matches the desktop Python app navigation pattern exactly.
     font-weight: 600;
     text-align: left;
     white-space: nowrap;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .header-line {
     height: 1px;
-    background-color: white;
+    background-color: var(--theme-text, white);
     margin: 0;
   }
 
@@ -242,9 +242,9 @@ Matches the desktop Python app navigation pattern exactly.
   }
 
   .nav-button {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, white);
     padding: clamp(0.75rem, 2vw, 1rem) clamp(0.5rem, 1.5vw, 0.75rem);
     border-radius: 6px;
     cursor: pointer;
@@ -268,19 +268,19 @@ Matches the desktop Python app navigation pattern exactly.
     flex-shrink: 0;
     white-space: nowrap;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .nav-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    border-color: color-mix(in srgb, var(--theme-text, white) 50%, transparent);
     transform: translateY(-1px);
   }
 
   .nav-button:active {
     transform: translateY(0);
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   .nav-spacer {
@@ -299,12 +299,12 @@ Matches the desktop Python app navigation pattern exactly.
   }
 
   .nav-buttons::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 2px;
   }
 
   .nav-buttons::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   /* Horizontal scrollbar styling */

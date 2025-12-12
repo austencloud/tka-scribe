@@ -15,12 +15,17 @@
   import ConnectedAccounts from "./ConnectedAccounts.svelte";
   import DangerZone from "./DangerZone.svelte";
   import PasswordSection from "./PasswordSection.svelte";
+  import { authState } from "../../../auth/state/authState.svelte";
 
   let { onChangePassword, onDeleteAccount, hapticService } = $props<{
     onChangePassword: () => Promise<void>;
     onDeleteAccount: () => Promise<void>;
     hapticService: IHapticFeedbackService | null;
   }>();
+
+  const userIdentifier = $derived(
+    authState.user?.email || authState.user?.uid || ""
+  );
 </script>
 
 <section
@@ -54,7 +59,7 @@
   </div>
 
   <!-- Account Deletion (outside of centered cards) -->
-  <DangerZone {onDeleteAccount} {hapticService} />
+  <DangerZone {onDeleteAccount} {hapticService} {userIdentifier} />
 </section>
 
 <style>

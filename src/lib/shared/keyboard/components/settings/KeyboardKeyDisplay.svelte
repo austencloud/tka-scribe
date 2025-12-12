@@ -100,74 +100,56 @@
   }
 
   .separator {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     font-size: 0.7em;
     margin: 0 1px;
     font-weight: 500;
   }
 
-  /* 2026 Realistic keyboard key styling */
+  /* Compact keyboard key styling */
   .kbd {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-width: 28px;
     height: 28px;
-    padding: 0 9px;
+    padding: 0 8px;
 
-    /* Enhanced 3D keycap effect */
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.14) 0%,
-      rgba(255, 255, 255, 0.06) 50%,
-      rgba(255, 255, 255, 0.04) 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-bottom: 3px solid rgba(0, 0, 0, 0.35);
-    border-radius: 7px;
+    /* Subtle glass effect */
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-bottom: 2px solid var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    border-radius: 6px;
 
-    /* Text styling - modern mono */
+    /* Text styling */
     font-family: ui-monospace, "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.92);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
     white-space: nowrap;
 
-    /* Enhanced depth effect */
+    /* Subtle depth */
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.25),
-      0 1px 2px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s ease;
   }
 
-  /* Modifier keys - violet accent */
+  /* Modifier keys - theme accent tint */
   .kbd.modifier {
-    background: linear-gradient(
-      180deg,
-      rgba(139, 92, 246, 0.25) 0%,
-      rgba(139, 92, 246, 0.15) 50%,
-      rgba(139, 92, 246, 0.1) 100%
-    );
-    border-color: rgba(139, 92, 246, 0.35);
-    border-bottom-color: rgba(109, 62, 216, 0.5);
-    color: rgba(196, 181, 253, 1);
-    box-shadow:
-      0 2px 4px rgba(139, 92, 246, 0.2),
-      0 1px 2px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
+    border-bottom-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, rgba(0, 0, 0, 0.2));
+    color: var(--theme-accent-strong, #a78bfa);
   }
 
   /* Wide keys (Space, Enter, etc.) */
   .kbd.wide {
-    min-width: 56px;
-    padding: 0 14px;
-    letter-spacing: 0.6px;
+    min-width: 44px;
+    padding: 0 10px;
   }
 
   /* Pressable key hover/active states */
@@ -178,24 +160,24 @@
   .kbd.pressable:hover {
     transform: translateY(-2px);
     box-shadow:
-      0 6px 12px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 6px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
+      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
       inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
   .kbd.pressable:active {
     transform: translateY(1px);
     border-bottom-width: 1px;
     box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.2),
-      inset 0 2px 4px rgba(0, 0, 0, 0.15);
+      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+      inset 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }
 
   .kbd.modifier.pressable:hover {
     box-shadow:
-      0 6px 16px rgba(139, 92, 246, 0.35),
-      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, transparent),
+      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
@@ -204,7 +186,7 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    font-size: 9px;
+    font-size: 11px;
     border-radius: 5px;
     border-bottom-width: 2px;
     font-weight: 600;

@@ -128,7 +128,7 @@
 
   /* Focus styles for keyboard navigation */
   .collapsed-tab-button:focus-visible {
-    outline: 2px solid rgba(102, 126, 234, 0.6);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 

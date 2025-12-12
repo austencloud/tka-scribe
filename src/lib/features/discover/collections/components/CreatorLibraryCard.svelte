@@ -269,7 +269,7 @@ Displays:
 
   .creator-library-card:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
   }
 
   .creator-library-card.has-content {
@@ -291,7 +291,7 @@ Displays:
   }
 
   .card-header:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: color-mix(in srgb, var(--theme-text, white) 2%, transparent);
   }
 
   /* Avatar */
@@ -313,13 +313,13 @@ Displays:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .avatar-fallback i {
     font-size: 24px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   /* Creator info */
@@ -368,8 +368,8 @@ Displays:
     align-items: center;
     gap: 6px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 8px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 12px;
@@ -378,7 +378,7 @@ Displays:
   }
 
   .view-profile-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     color: var(--theme-text, white);
   }
 
@@ -388,7 +388,7 @@ Displays:
 
   /* Content area */
   .content-area {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   /* Content tabs */
@@ -396,7 +396,7 @@ Displays:
     display: flex;
     gap: 4px;
     padding: 8px 16px;
-    background: rgba(0, 0, 0, 0.1);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 10%, transparent);
   }
 
   .tab {
@@ -415,12 +415,12 @@ Displays:
   }
 
   .tab:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.06);
+    background: color-mix(in srgb, var(--theme-text, white) 6%, transparent);
     color: var(--theme-text, white);
   }
 
   .tab.active {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     color: var(--theme-text, white);
   }
 
@@ -431,7 +431,7 @@ Displays:
 
   .tab .count {
     padding: 2px 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     font-size: 10px;
   }
@@ -451,8 +451,8 @@ Displays:
   .sequence-thumbnail {
     position: relative;
     aspect-ratio: 1;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
@@ -460,7 +460,7 @@ Displays:
   }
 
   .sequence-thumbnail:hover {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: scale(1.02);
   }
 
@@ -476,7 +476,7 @@ Displays:
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
   }
 
   .sequence-name {
@@ -485,9 +485,9 @@ Displays:
     left: 0;
     right: 0;
     padding: 4px 6px;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    background: linear-gradient(transparent, color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent));
     font-size: 10px;
-    color: white;
+    color: var(--theme-text, white);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -535,7 +535,7 @@ Displays:
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border-radius: 8px;
   }
 
@@ -564,7 +564,7 @@ Displays:
   }
 
   .no-content {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   /* Responsive */

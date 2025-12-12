@@ -10,6 +10,9 @@ import { HapticFeedbackService } from "../../application/services/implementation
 import { ResourceTracker } from "../../application/services/implementations/ResourceTracker";
 import { RippleEffectService } from "../../application/services/implementations/RippleEffectService";
 import { AuthService } from "../../auth/services/implementations/AuthService";
+import { ProfilePictureService } from "../../auth/services/implementations/ProfilePictureService";
+import { UserDocumentService } from "../../auth/services/implementations/UserDocumentService";
+import { ImpersonationService } from "../../auth/services/implementations/ImpersonationService";
 import { createAppState } from "../../application/state/app-state-factory.svelte";
 import { createPerformanceMetricsState } from "../../application/state/PerformanceMetricsState.svelte";
 import { DeviceDetector } from "../../device/services/implementations/DeviceDetector";
@@ -45,6 +48,9 @@ export const coreModule = new ContainerModule(
 
     // === AUTH SERVICES ===
     options.bind(TYPES.IAuthService).to(AuthService);
+    options.bind(TYPES.IProfilePictureService).to(ProfilePictureService).inSingletonScope();
+    options.bind(TYPES.IUserDocumentService).to(UserDocumentService).inSingletonScope();
+    options.bind(TYPES.IImpersonationService).to(ImpersonationService).inSingletonScope();
 
     // === MOBILE SERVICES ===
     options.bind(TYPES.IMobileFullscreenService).to(MobileFullscreenService);

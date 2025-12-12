@@ -37,8 +37,8 @@
 		display: block;
 		width: var(--avatar-size, 64px);
 		height: var(--avatar-size, 64px);
-		background: rgba(255, 255, 255, 0.04);
-		border: 2px solid rgba(255, 255, 255, 0.1);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+		border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
 		overflow: hidden;
 	}
 

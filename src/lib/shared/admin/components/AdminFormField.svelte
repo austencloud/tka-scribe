@@ -136,7 +136,7 @@
   .field-label {
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
   }
 
   .required {
@@ -147,10 +147,10 @@
   .field-textarea,
   .field-select {
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 14px;
     transition: all 0.2s ease;
   }
@@ -159,8 +159,8 @@
   .field-textarea:focus,
   .field-select:focus {
     outline: none;
-    border-color: rgba(102, 126, 234, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .field-textarea {
@@ -195,7 +195,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--theme-card-bg, rgba(255, 255, 255, 0.2));
     transition: 0.3s;
     border-radius: 24px;
   }
@@ -223,7 +223,7 @@
   /* Help and error text */
   .field-help {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .field-error {

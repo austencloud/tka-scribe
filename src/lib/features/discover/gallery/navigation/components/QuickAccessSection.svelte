@@ -76,10 +76,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     min-width: 180px;
     max-width: 400px;
 
-    background: rgba(255, 255, 255, 0.12);
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--theme-text, white) 12%, transparent);
+    border: 2px solid color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     border-radius: 14px;
-    color: white;
+    color: var(--theme-text, white);
     font-weight: bold;
     font-size: 16px;
     padding: 18px 32px;
@@ -90,12 +90,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .quick-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.5);
+    background: color-mix(in srgb, var(--theme-text, white) 15%, transparent);
+    border: 2px solid color-mix(in srgb, var(--theme-text, white) 50%, transparent);
   }
 
   .quick-button:active {
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--theme-text, white) 20%, transparent);
   }
 
   /* Responsive Design */

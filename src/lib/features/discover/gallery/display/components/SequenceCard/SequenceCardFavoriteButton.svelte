@@ -54,16 +54,16 @@ Handles click events and accessibility.
     min-height: 52px;
     border: none;
     border-radius: 999px;
-    background: rgba(17, 17, 23, 0.7);
+    background: color-mix(in srgb, var(--theme-panel-bg, #11111f) 70%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    color: #fff;
+    color: var(--theme-text, white);
     font-size: 1.25rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3));
     transition:
       background 0.2s ease,
       transform 0.2s ease,
@@ -72,9 +72,9 @@ Handles click events and accessibility.
 
   .favorite:hover,
   .favorite:focus-visible {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
     transform: scale(1.1);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 16px var(--theme-shadow, rgba(0, 0, 0, 0.4));
     outline: none;
   }
 

@@ -137,7 +137,7 @@ Features frame processing loop for pose estimation and overlay support.
     position: relative;
     width: 100%;
     height: 100%;
-    background: var(--surface-darker, #0a0a0a);
+    background: var(--theme-panel-bg, #0a0a0a);
     border-radius: var(--border-radius-lg, 12px);
     overflow: hidden;
   }
@@ -164,15 +164,15 @@ Features frame processing loop for pose estimation and overlay support.
     align-items: center;
     justify-content: center;
     gap: var(--spacing-md, 16px);
-    color: var(--foreground, #ffffff);
-    background: rgba(0, 0, 0, 0.8);
+    color: var(--theme-text, #ffffff);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
   }
 
   .spinner {
     width: 52px;
     height: 52px;
-    border: 3px solid var(--surface-light, rgba(255, 255, 255, 0.2));
-    border-top-color: var(--primary, #3b82f6);
+    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-top-color: var(--semantic-info, #3b82f6);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -186,7 +186,7 @@ Features frame processing loop for pose estimation and overlay support.
   .error-icon {
     width: 52px;
     height: 52px;
-    color: var(--error, #ef4444);
+    color: var(--semantic-error, #ef4444);
   }
 
   .error-state p {
@@ -197,8 +197,8 @@ Features frame processing loop for pose estimation and overlay support.
 
   .retry-button {
     padding: var(--spacing-sm, 8px) var(--spacing-lg, 24px);
-    background: var(--primary, #3b82f6);
-    color: white;
+    background: var(--semantic-info, #3b82f6);
+    color: var(--theme-text, white);
     border: none;
     border-radius: var(--border-radius-md, 8px);
     cursor: pointer;
@@ -207,7 +207,7 @@ Features frame processing loop for pose estimation and overlay support.
   }
 
   .retry-button:hover {
-    background: var(--primary-hover, #2563eb);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 85%, #000);
     transform: translateY(-2px);
   }
 

@@ -84,8 +84,8 @@
     gap: 0.75rem;
     padding: 1.5rem;
     text-align: center;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px dashed var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
   }
 
@@ -97,19 +97,19 @@
     height: 52px;
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.15),
-      rgba(139, 92, 246, 0.15)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent)
     );
-    border: 1px solid rgba(59, 130, 246, 0.25);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
     border-radius: 12px;
-    color: rgba(96, 165, 250, 0.8);
+    color: color-mix(in srgb, var(--semantic-info, #60a5fa) 80%, transparent);
     font-size: 1.25rem;
   }
 
   .empty-text {
     margin: 0;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .browse-btn {
@@ -120,12 +120,12 @@
     padding: 0.5rem 1rem;
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2),
-      rgba(139, 92, 246, 0.2)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent)
     );
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 8px;
-    color: rgba(147, 197, 253, 0.9);
+    color: color-mix(in srgb, var(--semantic-info, #93c5fd) 90%, white);
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
@@ -135,10 +135,10 @@
   .browse-btn:hover {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.3),
-      rgba(139, 92, 246, 0.3)
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent)
     );
-    border-color: rgba(59, 130, 246, 0.5);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
     transform: translateY(-1px);
   }
 </style>

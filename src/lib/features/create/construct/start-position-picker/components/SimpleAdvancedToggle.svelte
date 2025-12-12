@@ -91,7 +91,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   /* Hover state */
   @media (hover: hover) {
     .view-mode-toggle:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
       border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
       box-shadow:
@@ -108,7 +108,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 
   /* Focus state */
   .view-mode-toggle:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
   }
 

@@ -96,12 +96,12 @@
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 50%;
-    color: white;
+    color: var(--theme-text, white);
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 20px var(--theme-shadow, rgba(0, 0, 0, 0.4));
   }
 
   .fab:hover {
@@ -117,21 +117,21 @@
   .fab-primary {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, black) 100%);
     border-color: transparent;
   }
 
   .fab-primary:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    box-shadow: 0 4px 24px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-info, #3b82f6) 85%, black) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 70%, black) 100%);
+    box-shadow: 0 4px 24px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .fab-primary.favorited {
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    background: linear-gradient(135deg, var(--semantic-error, #f87171) 0%, color-mix(in srgb, var(--semantic-error, #ef4444) 100%, transparent) 100%);
   }
 
   .fab-primary.favorited:hover {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    box-shadow: 0 4px 24px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, var(--semantic-error, #ef4444) 0%, color-mix(in srgb, var(--semantic-error, #dc2626) 100%, transparent) 100%);
+    box-shadow: 0 4px 24px color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
   }
 </style>

@@ -15,7 +15,7 @@
   import AuthHeader from "../../auth/components/AuthHeader.svelte";
   import EmailPasswordAuth from "../../auth/components/EmailPasswordAuth.svelte";
   import SocialAuthCompact from "../../auth/components/SocialAuthCompact.svelte";
-  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { authState } from "../../auth/state/authState.svelte";
   import type { IAuthService } from "../../auth/services/contracts/IAuthService";
 
   // Props
@@ -44,7 +44,7 @@
 
   // Auto-close when user becomes authenticated
   $effect(() => {
-    if (authStore.isAuthenticated && isOpen) {
+    if (authState.isAuthenticated && isOpen) {
       setTimeout(() => {
         onClose();
       }, 300);
@@ -149,7 +149,8 @@
 
     /* Hide scrollbar but keep functionality */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2))
+      transparent;
   }
 
   .auth-sheet__content::-webkit-scrollbar {
@@ -180,7 +181,8 @@
   .auth-sheet__divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border-bottom: 1px solid
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .auth-sheet__divider span {

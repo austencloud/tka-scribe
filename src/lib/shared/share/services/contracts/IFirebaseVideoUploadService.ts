@@ -94,4 +94,20 @@ export interface IFirebaseVideoUploadService {
     thumbnailBlob: Blob,
     videoTimestamp: number
   ): Promise<VideoUploadResult>;
+
+  /**
+   * Upload a sequence thumbnail (static image) to Firebase Storage
+   *
+   * @param sequenceId - The sequence this thumbnail belongs to
+   * @param thumbnailBlob - The thumbnail image blob (PNG or JPEG)
+   * @param format - Image format ('png' or 'jpeg')
+   * @returns Promise resolving to upload result with URL and storage path
+   *
+   * Storage path: users/{userId}/thumbnails/{sequenceId}/thumbnail.{format}
+   */
+  uploadSequenceThumbnail(
+    sequenceId: string,
+    thumbnailBlob: Blob,
+    format?: "png" | "jpeg" | "webp"
+  ): Promise<VideoUploadResult>;
 }

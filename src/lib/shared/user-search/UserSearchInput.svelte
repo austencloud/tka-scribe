@@ -21,6 +21,8 @@
     onSelect: (user: UserResult) => void;
     placeholder?: string;
     disabled?: boolean;
+    useFixedPosition?: boolean; // Use position:fixed for overflow container contexts
+    inlineResults?: boolean; // Show results inline instead of dropdown
   }
 
   let {
@@ -29,31 +31,48 @@
     onSelect,
     placeholder = "Search by name or email...",
     disabled = false,
+    useFixedPosition = false,
+    inlineResults = false,
   }: Props = $props();
+
+  let inputElement: HTMLInputElement | undefined = $state();
+  let dropdownStyle = $state("");
 
   let searchQuery = $state("");
   let searchResults = $state<UserResult[]>([]);
   let isSearching = $state(false);
   let showResults = $state(false);
   let searchTimeout: number | null = null;
+  let wasCleared = $state(false); // Track if user intentionally cleared
 
-  // Pre-fill if we have a selected user
+  // Pre-fill if we have a selected user (but not if user cleared it)
   $effect(() => {
-    if (selectedUserDisplay && !searchQuery) {
+    if (selectedUserDisplay && !searchQuery && !wasCleared) {
       searchQuery = selectedUserDisplay;
     }
   });
 
+  // Debug effect to track rendering state
+  $effect(() => {
+    console.log("[UserSearch] Render state:", { showResults, resultsCount: searchResults.length, inlineResults });
+  });
+
   async function searchUsers(queryText: string): Promise<UserResult[]> {
     const q = queryText.trim();
-    if (!q || q.length < 2 || !browser) return [];
+    console.log("[UserSearch] Searching for:", q);
+    if (!q || q.length < 2 || !browser) {
+      console.log("[UserSearch] Query too short or not in browser");
+      return [];
+    }
 
     try {
       // Use the preview-users API which does case-insensitive matching
-      const res = await fetch(`/api/preview-users?q=${encodeURIComponent(q)}&limit=10`);
+      const url = `/api/preview-users?q=${encodeURIComponent(q)}&limit=10`;
+      console.log("[UserSearch] Fetching:", url);
+      const res = await fetch(url);
 
       if (!res.ok) {
-        console.error("User search failed:", res.status);
+        console.error("[UserSearch] API failed:", res.status, await res.text());
         return [];
       }
 
@@ -64,6 +83,8 @@
         photoURL?: string;
       }>;
 
+      console.log("[UserSearch] Got results:", data.length, data);
+
       return data.map((user) => ({
         uid: user.id,
         displayName: user.displayName || "",
@@ -71,12 +92,17 @@
         photoURL: user.photoURL || undefined,
       }));
     } catch (error) {
-      console.error("Failed to search users:", error);
+      console.error("[UserSearch] Failed to search users:", error);
       return [];
     }
   }
 
   async function handleSearchInput() {
+    // Reset cleared flag when user types
+    if (wasCleared && searchQuery) {
+      wasCleared = false;
+    }
+
     const q = searchQuery.trim();
 
     if (!q || q.length < 2) {
@@ -95,6 +121,11 @@
       try {
         searchResults = await searchUsers(q);
         showResults = true;
+        console.log("[UserSearch] Setting showResults=true, results:", searchResults.length, "inlineResults:", inlineResults);
+        if (!inlineResults) {
+          updateDropdownPosition();
+          console.log("[UserSearch] dropdownStyle:", dropdownStyle);
+        }
       } catch (error) {
         console.error("Failed to search users:", error);
         searchResults = [];
@@ -111,20 +142,39 @@
     onSelect(user);
   }
 
+  function updateDropdownPosition() {
+    if (!useFixedPosition || !inputElement) {
+      dropdownStyle = "";
+      return;
+    }
+    const rect = inputElement.getBoundingClientRect();
+    dropdownStyle = `position: fixed; top: ${rect.bottom + 8}px; left: ${rect.left}px; width: ${rect.width}px;`;
+  }
+
   function handleFocus() {
     if (searchResults.length > 0) {
       showResults = true;
+      if (!inlineResults) {
+        updateDropdownPosition();
+      }
     }
   }
 
   function handleBlur() {
     // Delay to allow click events on results to fire
+    // In inline mode, don't auto-hide on blur
+    if (inlineResults) {
+      console.log("[UserSearch] Blur ignored in inline mode");
+      return;
+    }
+    console.log("[UserSearch] Blur - hiding results in 200ms");
     setTimeout(() => {
       showResults = false;
     }, 200);
   }
 
   function clearSelection() {
+    wasCleared = true;
     searchQuery = "";
     searchResults = [];
     showResults = false;
@@ -137,6 +187,7 @@
     <input
       type="text"
       class="search-input"
+      bind:this={inputElement}
       bind:value={searchQuery}
       oninput={handleSearchInput}
       onfocus={handleFocus}
@@ -160,7 +211,7 @@
   </div>
 
   {#if showResults && searchResults.length > 0}
-    <div class="search-results">
+    <div class="search-results" class:fixed-position={useFixedPosition} class:inline={inlineResults} style={inlineResults ? "" : dropdownStyle}>
       {#each searchResults as user (user.uid)}
         <button
           type="button"
@@ -186,7 +237,7 @@
   {/if}
 
   {#if showResults && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching}
-    <div class="search-results">
+    <div class="search-results" class:fixed-position={useFixedPosition} class:inline={inlineResults} style={inlineResults ? "" : dropdownStyle}>
       <div class="no-results">
         <i class="fas fa-user-slash"></i>
         No users found
@@ -224,42 +275,61 @@
 
   .clear-btn {
     position: absolute;
-    right: 12px;
-    width: 24px;
-    height: 24px;
+    right: 0;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background: transparent;
     border: none;
     border-radius: 50%;
     color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     transition: all 0.15s ease;
+    z-index: 2;
+  }
+
+  .clear-btn::before {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: all 0.15s ease;
+  }
+
+  .clear-btn:hover::before {
+    background: rgba(255, 255, 255, 0.2);
   }
 
   .clear-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
     color: white;
+  }
+
+  .clear-btn i {
+    position: relative;
+    z-index: 1;
   }
 
   .search-input {
     width: 100%;
-    min-height: 48px;
-    padding: 0 48px;
-    background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    min-height: 52px;
+    padding: 0 52px;
+    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 15px;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-shadow, 0 2px 8px rgba(0, 0, 0, 0.3));
   }
 
   .search-input:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-color: var(--theme-accent, #6366f1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .search-input::placeholder {
@@ -277,14 +347,26 @@
     top: calc(100% + 8px);
     left: 0;
     right: 0;
-    background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-panel-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     overflow: hidden;
     z-index: 100;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--theme-shadow, 0 8px 24px rgba(0, 0, 0, 0.5));
     max-height: 320px;
     overflow-y: auto;
+  }
+
+  .search-results.fixed-position {
+    z-index: 10000; /* Higher z-index for fixed positioning */
+  }
+
+  .search-results.inline {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    margin-top: 12px;
   }
 
   .result-item {
@@ -292,7 +374,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 16px;
+    min-height: 52px;
+    padding: 10px 16px;
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -306,11 +389,11 @@
   }
 
   .result-item:hover {
-    background: rgba(99, 102, 241, 0.15);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .result-item.selected {
-    background: rgba(99, 102, 241, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .result-avatar {
@@ -368,12 +451,12 @@
 
   .result-item:hover .result-check {
     opacity: 1;
-    color: #6366f1;
+    color: var(--theme-accent, #6366f1);
   }
 
   .result-item.selected .result-check {
     opacity: 1;
-    color: #6366f1;
+    color: var(--theme-accent, #6366f1);
   }
 
   .no-results {

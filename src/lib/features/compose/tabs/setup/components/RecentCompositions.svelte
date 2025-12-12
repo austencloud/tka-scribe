@@ -35,8 +35,8 @@
 
   // Mode colors for consistency
   const modeColors: Record<ComposeMode, string> = {
-    single: "#3b82f6",
-    mirror: "#8b5cf6",
+    single: "var(--theme-accent, #6366f1)",
+    mirror: "var(--theme-accent-strong, #8b5cf6)",
     tunnel: "#ec4899",
     grid: "#f59e0b",
     "side-by-side": "#10b981",

@@ -158,7 +158,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -167,9 +167,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .modal-dialog {
-    background: white;
+    background: var(--theme-panel-bg, #1a1a24);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px var(--theme-shadow, rgba(0, 0, 0, 0.3));
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
@@ -193,31 +194,31 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid #e5e7eb;
-    background: #f9fafb;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
   }
 
   .modal-header h2 {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--theme-text, white);
   }
 
   .close-button {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #6b7280;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     padding: 4px;
-    border-radius: 50%; /* Consistent circular style */
+    border-radius: 50%;
     transition: all 0.2s ease;
   }
 
   .close-button:hover {
-    background: #e5e7eb;
-    color: #374151;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, white);
   }
 
   .modal-body {
@@ -233,11 +234,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   .confirmation-message p {
     margin: 0 0 16px 0;
     font-size: 1.1rem;
-    color: #374151;
+    color: var(--theme-text, white);
   }
 
   .sequence-info {
-    background: #f3f4f6;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     padding: 16px;
     margin: 16px 0;
@@ -247,25 +249,25 @@ import { TYPES } from "$lib/shared/inversify/types";
   .sequence-name {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #1f2937;
+    color: var(--theme-text, white);
     margin-bottom: 4px;
   }
 
   .sequence-author {
     font-size: 0.9rem;
-    color: #6b7280;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin-bottom: 4px;
   }
 
   .sequence-length {
     font-size: 0.9rem;
-    color: #3b82f6;
+    color: var(--semantic-info, #3b82f6);
     font-weight: 600;
   }
 
   .warning-details {
-    background: #fef3cd;
-    border: 1px solid #f59e0b;
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    border: 1px solid var(--semantic-warning, #f59e0b);
     border-radius: 8px;
     padding: 16px;
     margin: 16px 0;
@@ -274,14 +276,14 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .warning-details p {
     margin: 0 0 8px 0;
-    color: #92400e;
+    color: var(--semantic-warning, #f59e0b);
     font-weight: 600;
   }
 
   .warning-details ul {
     margin: 0;
     padding-left: 20px;
-    color: #92400e;
+    color: var(--semantic-warning, #f59e0b);
   }
 
   .warning-details li {
@@ -289,7 +291,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .final-warning {
-    color: #dc2626 !important;
+    color: var(--semantic-error, #dc2626) !important;
     font-weight: 600 !important;
     margin-top: 16px !important;
   }
@@ -299,14 +301,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     gap: 12px;
     justify-content: flex-end;
     padding: 20px 24px;
-    border-top: 1px solid #e5e7eb;
-    background: #f9fafb;
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
   }
 
   .cancel-button {
-    background: #f3f4f6;
-    border: 1px solid #d1d5db;
-    color: #374151;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, white);
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: 500;
@@ -315,13 +317,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .cancel-button:hover {
-    background: #e5e7eb;
-    border-color: #9ca3af;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .delete-button {
-    background: #dc2626;
-    border: 1px solid #dc2626;
+    background: var(--semantic-error, #dc2626);
+    border: 1px solid var(--semantic-error, #dc2626);
     color: white;
     padding: 10px 20px;
     border-radius: 6px;
@@ -331,13 +333,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .delete-button:hover {
-    background: #b91c1c;
-    border-color: #b91c1c;
+    background: color-mix(in srgb, var(--semantic-error, #dc2626) 85%, #000);
+    border-color: color-mix(in srgb, var(--semantic-error, #dc2626) 85%, #000);
   }
 
   .delete-button:focus,
   .cancel-button:focus {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid var(--semantic-info, #3b82f6);
     outline-offset: 2px;
   }
 </style>

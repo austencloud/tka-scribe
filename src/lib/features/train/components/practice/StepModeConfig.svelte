@@ -70,7 +70,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    color: var(--foreground, #ffffff);
+    color: var(--theme-text, #ffffff);
   }
 
   h3 {
@@ -106,18 +106,18 @@
   select {
     min-height: 52px;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 0.5rem;
-    color: var(--foreground, #ffffff);
+    color: var(--theme-text, #ffffff);
     font-size: 0.875rem;
   }
 
   input[type="text"]:focus,
   select:focus {
     outline: none;
-    border-color: #3b82f6;
-    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--semantic-info, #3b82f6);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 
   .checkbox-label {

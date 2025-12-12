@@ -9,7 +9,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { IDailyChallengeService } from "$lib/shared/gamification/services/contracts/IDailyChallengeService";
   import type {
     DailyChallenge,
@@ -65,7 +65,7 @@
   });
 
   async function loadData() {
-    if (!challengeService || !authStore.isAuthenticated) {
+    if (!challengeService || !authState.isAuthenticated) {
       isLoading = false;
       return;
     }
@@ -93,7 +93,7 @@
       <div class="spinner"></div>
       <p>Loading challenges...</p>
     </div>
-  {:else if !authStore.isAuthenticated}
+  {:else if !authState.isAuthenticated}
     <div class="auth-required">
       <i class="fas fa-lock"></i>
       <h3>Sign In Required</h3>
@@ -211,7 +211,7 @@
   .daily-challenge {
     padding: clamp(16px, 4cqi, 24px);
     border-radius: clamp(12px, 3cqi, 16px);
-    border: 2px solid rgba(102, 126, 234, 0.3);
+    border: 2px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .challenge-header {

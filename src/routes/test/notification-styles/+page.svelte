@@ -26,6 +26,7 @@
     "achievement-unlocked": "You unlocked the 'Creator' achievement!",
     "admin-new-user-signup": "New user signed up: Nina Salem",
     "system-announcement": "Important system update available.",
+    "message-received": "You have a new message from Nina Salem.",
   };
 
   const styles = [
@@ -123,17 +124,25 @@
             class="notification-item"
             style="background: rgba(255, 255, 255, 0.01); border-color: {config.color}; border-width: 1.5px;"
           >
-            <div class="notification-icon" style="background: rgba({rgb.r}, {rgb.g}, {rgb.b}, 0.15);">
+            <div
+              class="notification-icon"
+              style="background: rgba({rgb.r}, {rgb.g}, {rgb.b}, 0.15);"
+            >
               <i class="fas {config.icon}" style="color: {config.color};"></i>
             </div>
             <div class="notification-content">
               <div class="notification-header">
-                <span class="notification-label" style="color: {config.color};">{config.label}</span>
+                <span class="notification-label" style="color: {config.color};"
+                  >{config.label}</span
+                >
                 <span class="notification-time">10h ago</span>
               </div>
               <p class="notification-message">{mockMessages[type]}</p>
             </div>
-            <button class="notification-action" style="background: {config.color};">{config.actionLabel}</button>
+            <button
+              class="notification-action"
+              style="background: {config.color};">{config.actionLabel}</button
+            >
           </div>
         {/each}
       </div>
@@ -164,18 +173,26 @@
       <div class="style-demo dark-solid">
         {#each notificationTypes as type}
           {@const config = NOTIFICATION_TYPE_CONFIG[type]}
-          <div class="notification-item" style="background: rgba(0, 0, 0, 0.4); border: 1px solid {config.color};">
+          <div
+            class="notification-item"
+            style="background: rgba(0, 0, 0, 0.4); border: 1px solid {config.color};"
+          >
             <div class="notification-icon" style="background: {config.color};">
               <i class="fas {config.icon}"></i>
             </div>
             <div class="notification-content">
               <div class="notification-header">
-                <span class="notification-label" style="color: {config.color};">{config.label}</span>
+                <span class="notification-label" style="color: {config.color};"
+                  >{config.label}</span
+                >
                 <span class="notification-time">10h ago</span>
               </div>
               <p class="notification-message">{mockMessages[type]}</p>
             </div>
-            <button class="notification-action" style="background: {config.color};">{config.actionLabel}</button>
+            <button
+              class="notification-action"
+              style="background: {config.color};">{config.actionLabel}</button
+            >
           </div>
         {/each}
       </div>
@@ -211,7 +228,10 @@
             class="notification-item"
             style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08);"
           >
-            <div class="notification-icon" style="background: {config.color}; font-size: 20px;">
+            <div
+              class="notification-icon"
+              style="background: {config.color}; font-size: 20px;"
+            >
               <i class="fas {config.icon}"></i>
             </div>
             <div class="notification-content">

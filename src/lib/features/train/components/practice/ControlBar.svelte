@@ -166,11 +166,11 @@
     flex: 1;
     min-height: 52px;
     padding: var(--space-2026-xs, 6px);
-    background: #252532;
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg, #252532);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: var(--radius-2026-md, 14px);
-    box-shadow: var(--shadow-2026-sm, 0 1px 3px rgba(0, 0, 0, 0.06));
-    color: rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow-2026-sm, 0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.06)));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
@@ -187,9 +187,9 @@
   }
 
   .control-btn:hover:not(:disabled) {
-    background: #2d2d3a;
-    border-color: var(--border-2026-hover, rgba(255, 255, 255, 0.12));
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, #2d2d3a);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     transform: translateY(-1px);
   }
 
@@ -218,132 +218,132 @@
   .primary-btn {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.15) 0%,
-      rgba(22, 163, 74, 0.15) 100%
+      color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, #16a34a) 15%, transparent) 100%
     );
-    border-color: rgba(34, 197, 94, 0.3);
-    color: rgba(134, 239, 172, 0.95);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-success, #86efac) 95%, white);
   }
 
   .primary-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.25) 0%,
-      rgba(22, 163, 74, 0.25) 100%
+      color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, #16a34a) 25%, transparent) 100%
     );
-    border-color: rgba(34, 197, 94, 0.5);
-    color: rgba(134, 239, 172, 1);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
+    color: var(--semantic-success, #86efac);
   }
 
   .primary-btn:disabled {
-    background: #2d2d3a;
-    border-color: var(--border-2026, rgba(255, 255, 255, 0.06));
-    color: rgba(255, 255, 255, 0.4);
+    background: var(--theme-card-hover-bg, #2d2d3a);
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   /* Stop button (Red) */
   .primary-btn.playing {
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 0.15) 0%,
-      rgba(220, 38, 38, 0.15) 100%
+      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, #dc2626) 15%, transparent) 100%
     );
-    border-color: rgba(239, 68, 68, 0.3);
-    color: rgba(248, 113, 113, 0.95);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-error, #f87171) 95%, white);
   }
 
   .primary-btn.playing:hover {
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 0.25) 0%,
-      rgba(220, 38, 38, 0.25) 100%
+      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, #dc2626) 25%, transparent) 100%
     );
-    border-color: rgba(239, 68, 68, 0.5);
-    color: rgba(248, 113, 113, 1);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    color: var(--semantic-error, #f87171);
   }
 
   /* Mode button (Purple/Violet) - Brain/creativity vibe */
   .mode-btn {
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.15) 0%,
-      rgba(124, 58, 237, 0.15) 100%
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #7c3aed) 15%, transparent) 100%
     );
-    border-color: rgba(139, 92, 246, 0.3);
-    color: rgba(196, 181, 253, 0.95);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, #c4b5fd) 95%, white);
   }
 
   .mode-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.25) 0%,
-      rgba(124, 58, 237, 0.25) 100%
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #7c3aed) 25%, transparent) 100%
     );
-    border-color: rgba(139, 92, 246, 0.5);
-    color: rgba(196, 181, 253, 1);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
+    color: var(--theme-accent, #c4b5fd);
   }
 
   /* Sequence button (Blue) - Browse/explore vibe */
   .sequence-btn {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.15) 0%,
-      rgba(37, 99, 235, 0.15) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info, #2563eb) 15%, transparent) 100%
     );
-    border-color: rgba(59, 130, 246, 0.3);
-    color: rgba(147, 197, 253, 0.95);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-info, #93c5fd) 95%, white);
   }
 
   .sequence-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.25) 0%,
-      rgba(37, 99, 235, 0.25) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info, #2563eb) 25%, transparent) 100%
     );
-    border-color: rgba(59, 130, 246, 0.5);
-    color: rgba(147, 197, 253, 1);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    color: var(--semantic-info, #93c5fd);
   }
 
   /* Sequence button with sequence loaded - Green checkmark vibe */
   .sequence-btn.has-sequence {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.15) 0%,
-      rgba(22, 163, 74, 0.15) 100%
+      color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, #16a34a) 15%, transparent) 100%
     );
-    border-color: rgba(34, 197, 94, 0.3);
-    color: rgba(134, 239, 172, 0.95);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-success, #86efac) 95%, white);
   }
 
   .sequence-btn.has-sequence:hover {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.25) 0%,
-      rgba(22, 163, 74, 0.25) 100%
+      color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, #16a34a) 25%, transparent) 100%
     );
-    border-color: rgba(34, 197, 94, 0.5);
-    color: rgba(134, 239, 172, 1);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
+    color: var(--semantic-success, #86efac);
   }
 
   /* Settings button (Orange/Amber) - Configuration vibe */
   .settings-btn {
     background: linear-gradient(
       135deg,
-      rgba(251, 191, 36, 0.15) 0%,
-      rgba(245, 158, 11, 0.15) 100%
+      color-mix(in srgb, var(--semantic-warning, #fbbf24) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent) 100%
     );
-    border-color: rgba(251, 191, 36, 0.3);
-    color: rgba(253, 224, 71, 0.95);
+    border-color: color-mix(in srgb, var(--semantic-warning, #fbbf24) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-warning, #fde047) 95%, white);
   }
 
   .settings-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(251, 191, 36, 0.25) 0%,
-      rgba(245, 158, 11, 0.25) 100%
+      color-mix(in srgb, var(--semantic-warning, #fbbf24) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 25%, transparent) 100%
     );
-    border-color: rgba(251, 191, 36, 0.5);
-    color: rgba(253, 224, 71, 1);
+    border-color: color-mix(in srgb, var(--semantic-warning, #fbbf24) 50%, transparent);
+    color: var(--semantic-warning, #fde047);
   }
 
   /* ============================================

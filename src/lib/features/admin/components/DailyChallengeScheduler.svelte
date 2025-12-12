@@ -347,7 +347,7 @@
   }
 
   .toggle-btn.active {
-    background: rgba(102, 126, 234, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
     color: #fff;
   }
 

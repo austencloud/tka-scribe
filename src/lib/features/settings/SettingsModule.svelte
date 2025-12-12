@@ -25,6 +25,7 @@
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { applyThemeForBackground } from "$lib/shared/settings/utils/background-theme-calculator";
 
   // Navigation state - use global activeTab
   import {
@@ -55,8 +56,11 @@
   // Haptic feedback service
   let hapticService: IHapticFeedbackService | null = null;
 
-  // Show back header when using bottom navigation (not landscape mobile)
-  let useBottomNavigation = $derived(!responsiveSettings?.isLandscapeMobile);
+  // Show back header only on mobile/tablet (no sidebar)
+  // Desktop has sidebar with its own back button, so header is redundant there
+  let showBackHeader = $derived(
+    responsiveSettings ? !responsiveSettings.isDesktop : true
+  );
 
   onMount(() => {
     let deviceCleanup: (() => void) | undefined;
@@ -77,6 +81,14 @@
     return () => {
       deviceCleanup?.();
     };
+  });
+
+  // Ensure theme is applied whenever background changes
+  $effect(() => {
+    const bgType = settings?.backgroundType;
+    if (bgType) {
+      applyThemeForBackground(bgType);
+    }
   });
 
   // Check if settings are loaded AND services are initialized
@@ -189,8 +201,8 @@
   ontouchend={handleTouchEnd}
   ontouchcancel={handleTouchCancel}
 >
-  <!-- Back header - shown when using bottom navigation (no sidebar back button) -->
-  {#if useBottomNavigation}
+  <!-- Back header - shown on mobile/tablet only (desktop has sidebar with back button) -->
+  {#if showBackHeader}
     <header class="back-header">
       <button
         type="button"
@@ -241,10 +253,7 @@
             onSettingUpdate={handleSettingUpdate}
           />
         {:else if activeTab === "keyboard"}
-          <KeyboardShortcutsTab
-            currentSettings={settings}
-            onSettingUpdate={handleSettingUpdate}
-          />
+          <KeyboardShortcutsTab />
         {:else}
           <!-- Fallback to profile if unknown tab -->
           <ProfileTab
@@ -280,7 +289,7 @@
   }
 
   /* ============================================================================
-     BACK HEADER - Shown when using bottom navigation layout
+     BACK HEADER - Dark glass style matching settings panels
      ============================================================================ */
   .back-header {
     display: flex;
@@ -288,8 +297,11 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    background: rgba(12, 14, 24, 0.9);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    /* Dark glass panel */
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .back-header-button {
@@ -301,10 +313,11 @@
     min-width: 52px;
     min-height: 52px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* Subtle glass button */
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -312,21 +325,41 @@
   }
 
   .back-header-button:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 30%,
+      transparent
+    );
+    color: var(--theme-accent, #a78bfa);
   }
 
   .back-header-button:active {
     transform: scale(0.95);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
   }
 
   .back-header-button i {
     font-size: 14px;
+    transition: transform 0.15s ease;
+  }
+
+  .back-header-button:hover i {
+    transform: translateX(-2px);
   }
 
   .back-header-title {
     font-size: 17px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .settings-content {
@@ -349,7 +382,11 @@
   }
 
   .settings-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
     border-radius: 3px;
   }
 
@@ -403,14 +440,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      rgba(0, 0, 0, 0.3)
+    );
+    backdrop-filter: blur(12px);
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .swipe-arrow i {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-accent, #a78bfa);
     font-size: 14px;
     transform: translateX(calc(var(--swipe-progress, 0) * 2px));
     transition: transform 0.1s ease;

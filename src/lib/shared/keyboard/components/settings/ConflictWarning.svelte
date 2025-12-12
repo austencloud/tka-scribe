@@ -62,13 +62,13 @@
   }
 
   .conflict-warning.error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .conflict-warning.warning {
-    background: rgba(234, 179, 8, 0.1);
-    border: 1px solid rgba(234, 179, 8, 0.3);
+    background: color-mix(in srgb, var(--semantic-warning, #eab308) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
   }
 
   .conflict-icon {
@@ -77,11 +77,11 @@
   }
 
   .error .conflict-icon {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   .warning .conflict-icon {
-    color: #eab308;
+    color: var(--semantic-warning, #eab308);
   }
 
   .conflict-info {
@@ -98,20 +98,20 @@
   }
 
   .error .conflict-title {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   .warning .conflict-title {
-    color: #eab308;
+    color: var(--semantic-warning, #eab308);
   }
 
   .conflict-detail {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
   }
 
   .context-note {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-style: italic;
   }
 
@@ -131,22 +131,22 @@
   }
 
   .conflict-btn.replace {
-    background: #ef4444;
+    background: var(--semantic-error, #ef4444);
     border: none;
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .conflict-btn.replace:hover {
-    background: #dc2626;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 85%, #000);
   }
 
   .conflict-btn.swap {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .conflict-btn.swap:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 </style>

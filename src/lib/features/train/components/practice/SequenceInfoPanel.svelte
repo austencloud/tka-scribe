@@ -64,10 +64,10 @@
     padding: var(--space-2026-sm, 12px);
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.12) 0%,
-      rgba(99, 102, 241, 0.08) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
     );
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: var(--radius-2026-md, 14px);
     box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
     cursor: pointer;
@@ -80,17 +80,17 @@
         var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1)),
       transform var(--duration-2026-instant, 100ms)
         var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1));
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     width: 100%;
   }
 
   .sequence-info-panel:hover {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2) 0%,
-      rgba(99, 102, 241, 0.15) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 100%
     );
-    border-color: rgba(59, 130, 246, 0.25);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
     transform: translateY(-1px);
   }
 
@@ -102,18 +102,18 @@
   .sequence-info-panel.has-sequence {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.12) 0%,
-      rgba(16, 185, 129, 0.08) 100%
+      color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent) 100%
     );
   }
 
   .sequence-info-panel.has-sequence:hover {
     background: linear-gradient(
       135deg,
-      rgba(34, 197, 94, 0.2) 0%,
-      rgba(16, 185, 129, 0.15) 100%
+      color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent) 100%
     );
-    border-color: rgba(34, 197, 94, 0.25);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
   }
 
   .sequence-content {
@@ -126,7 +126,7 @@
   .sequence-name {
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -135,7 +135,7 @@
 
   .sequence-beats {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-weight: 500;
   }
 
@@ -173,7 +173,7 @@
     .sequence-beats::before {
       content: "•";
       margin-right: var(--space-2026-xs, 6px);
-      color: rgba(255, 255, 255, 0.3);
+      color: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
     }
   }
 
@@ -208,7 +208,7 @@
     .sequence-beats::before {
       content: "•";
       margin-right: var(--space-2026-sm, 12px);
-      color: rgba(255, 255, 255, 0.3);
+      color: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
     }
 
     /* Icon sizing */

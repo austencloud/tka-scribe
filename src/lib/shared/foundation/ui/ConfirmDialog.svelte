@@ -139,13 +139,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(30, 30, 35, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(30, 30, 35, 0.95));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     padding: 32px;
     max-width: 480px;
     width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--theme-shadow, 0 20px 60px rgba(0, 0, 0, 0.5));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 1001;
@@ -198,7 +198,7 @@
     margin: 0;
     font-size: 16px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .dialog-actions {
@@ -219,28 +219,28 @@
   }
 
   .cancel-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .cancel-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transform: translateY(-1px);
   }
 
   .confirm-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--theme-accent, #667eea) 0%, var(--theme-accent-strong, #764ba2) 100%);
     color: white;
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .confirm-button:hover {
-    background: linear-gradient(135deg, #7c8ff0 0%, #8a5bb0 100%);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #7c8ff0) 0%, var(--theme-accent, #8a5bb0) 100%);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   :global(.dialog-container.warning) .confirm-button {

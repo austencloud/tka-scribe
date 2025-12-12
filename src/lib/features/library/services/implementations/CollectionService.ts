@@ -13,7 +13,6 @@ import {
 	getDocs,
 	setDoc,
 	updateDoc,
-	deleteDoc,
 	query,
 	orderBy,
 	where,
@@ -26,7 +25,7 @@ import {
 	type DocumentData,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import type { ICollectionService } from "../contracts/ICollectionService";
 import type {
 	LibraryCollection,
@@ -37,13 +36,11 @@ import {
 	createSystemCollection,
 	isSystemCollection,
 	SYSTEM_COLLECTION_IDS,
-	SYSTEM_COLLECTION_CONFIG,
 } from "../../domain/models/Collection";
 import type { LibrarySequence } from "../../domain/models/LibrarySequence";
 import {
 	getUserCollectionsPath,
 	getUserCollectionPath,
-	getUserSequencesPath,
 	getUserSequencePath,
 } from "../../data/firestore-paths";
 
@@ -72,7 +69,7 @@ export class CollectionService implements ICollectionService {
 	 * Get the current user ID or throw if not authenticated
 	 */
 	private getUserId(): string {
-		const userId = authStore.effectiveUserId;
+		const userId = authState.effectiveUserId;
 		if (!userId) {
 			throw new CollectionError("User not authenticated", "UNAUTHORIZED");
 		}

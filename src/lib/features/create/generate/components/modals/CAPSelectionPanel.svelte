@@ -226,7 +226,7 @@ Refactored to use Drawer component for consistent behavior
     /* Animated rainbow gradient background */
     background: linear-gradient(
       135deg,
-      #4338ca 0%,
+      var(--theme-accent-strong, #4338ca) 0%,
       #6b21a8 12.5%,
       #db2777 25%,
       #f97316 37.5%,
@@ -234,7 +234,7 @@ Refactored to use Drawer component for consistent behavior
       #22c55e 62.5%,
       #0891b2 75%,
       #3b82f6 87.5%,
-      #6366f1 100%
+      var(--theme-accent, #6366f1) 100%
     );
     background-size: 300% 300%;
     animation: meshGradientFlow 15s ease infinite;

@@ -139,13 +139,13 @@
 		margin: 0 0 12px 0;
 		font-size: 14px;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.9);
+		color: var(--theme-text);
 	}
 
 	.override-description {
 		margin-bottom: 16px;
 		font-size: 13px;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim);
 	}
 
 	.status-info {
@@ -159,19 +159,19 @@
 		align-items: center;
 		gap: 12px;
 		padding: 12px;
-		background: rgba(255, 255, 255, 0.03);
+		background: var(--theme-card-bg);
 		border-radius: 6px;
 	}
 
 	.status-label {
 		font-size: 13px;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim);
 		font-weight: 500;
 	}
 
 	.status-value {
 		font-size: 13px;
-		color: rgba(255, 255, 255, 0.9);
+		color: var(--theme-text);
 		font-weight: 500;
 		display: flex;
 		align-items: center;
@@ -186,8 +186,8 @@
 	.override-list {
 		margin-top: 20px;
 		padding: 16px;
-		background: rgba(255, 255, 255, 0.02);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: var(--theme-panel-bg);
+		border: 1px solid var(--theme-stroke);
 		border-radius: 8px;
 	}
 
@@ -199,7 +199,7 @@
 		margin: 0 0 4px 0;
 		font-size: 14px;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.9);
+		color: var(--theme-text);
 		display: flex;
 		align-items: center;
 		gap: 8px;
@@ -208,7 +208,7 @@
 	.override-header p {
 		margin: 0;
 		font-size: 12px;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim);
 	}
 
 	.feature-checkboxes {
@@ -225,14 +225,14 @@
 		align-items: center;
 		gap: 10px;
 		padding: 10px 12px;
-		background: rgba(255, 255, 255, 0.03);
+		background: var(--theme-card-bg);
 		border-radius: 6px;
 		cursor: pointer;
 		transition: background 0.2s;
 	}
 
 	.feature-checkbox:hover {
-		background: rgba(255, 255, 255, 0.06);
+		background: var(--theme-card-hover-bg);
 	}
 
 	.feature-checkbox input[type='checkbox'] {
@@ -246,7 +246,7 @@
 		align-items: center;
 		gap: 8px;
 		font-size: 13px;
-		color: rgba(255, 255, 255, 0.8);
+		color: var(--theme-text);
 		flex: 1;
 	}
 

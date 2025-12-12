@@ -141,7 +141,7 @@ Supports:
   function drawAnnotation(ann: PropAnnotation, selected: boolean) {
     if (!ctx) return;
 
-    const color = ann.hand === "left" ? "#3b82f6" : "#ef4444"; // Blue for left, red for right
+    const color = ann.hand === "left" ? "#3b82f6" : "#ef4444"; // Blue for left, red for right (hardcoded for canvas)
     const box = bboxToCanvas(ann.boundingBox);
 
     // Draw bounding box
@@ -548,14 +548,14 @@ Supports:
     padding: 0.25rem 0.5rem;
     border: none;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     color: white;
     cursor: pointer;
     font-size: 0.8rem;
   }
 
   .hand-btn.active {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .annotation-count {
@@ -596,11 +596,11 @@ Supports:
     position: fixed;
     transform: translate(-50%, -50%);
     background: rgba(20, 20, 30, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 12px;
     padding: 1rem;
     z-index: 100;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.5));
   }
 
   .picker-title {
@@ -618,11 +618,11 @@ Supports:
   }
 
   .hand-indicator.left {
-    background: rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .hand-indicator.right {
-    background: rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .direction-grid {
@@ -661,9 +661,9 @@ Supports:
   .direction-btn {
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -671,8 +671,8 @@ Supports:
   }
 
   .direction-btn:hover {
-    background: rgba(99, 102, 241, 0.5);
-    border-color: #6366f1;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    border-color: var(--theme-accent, #6366f1);
     transform: scale(1.05);
   }
 
@@ -692,12 +692,12 @@ Supports:
   }
 
   .btn-toggle-hand {
-    background: #3b82f6;
+    background: var(--semantic-info, #3b82f6);
     color: white;
   }
 
   .btn-cancel {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     color: white;
   }
 </style>

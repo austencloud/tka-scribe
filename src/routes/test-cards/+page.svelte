@@ -5,7 +5,7 @@
    */
 
   const categories = [
-    { title: "Profile", status: "Signed in", icon: "fa-user", gradient: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "#6366f1" },
+    { title: "Profile", status: "Signed in", icon: "fa-user", gradient: "linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #8b5cf6))", color: "var(--theme-accent, #6366f1)" },
     { title: "Prop Type", status: "Fan", icon: "fa-tags", gradient: "linear-gradient(135deg, #ec4899, #f43f5e)", color: "#ec4899" },
     { title: "Background", status: "Deep Ocean", icon: "fa-image", gradient: "linear-gradient(135deg, #06b6d4, #0891b2)", color: "#06b6d4" },
   ];

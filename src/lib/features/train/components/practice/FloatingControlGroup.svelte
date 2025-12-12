@@ -179,11 +179,11 @@
     min-width: 52px;
     min-height: 52px;
     padding: 0.75rem;
-    background: #252532;
-    border: 1px solid var(--border-2026, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg, #252532);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: var(--radius-2026-md, 14px);
     box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
@@ -200,11 +200,11 @@
   /* Hover effects */
   @media (hover: hover) {
     .floating-btn:hover {
-      background: #2d2d3a;
-      border-color: rgba(59, 130, 246, 0.4);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+      background: var(--theme-card-hover-bg, #2d2d3a);
+      border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
       transform: translateY(-2px);
-      color: rgba(147, 197, 253, 1);
+      color: var(--semantic-info, #93c5fd);
     }
   }
 
@@ -216,15 +216,15 @@
 
   /* Sequence button with sequence loaded */
   .sequence-btn.has-sequence {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: rgba(34, 197, 94, 0.3);
-    color: rgba(134, 239, 172, 0.9);
+    background: color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-success, #86efac) 90%, transparent);
   }
 
   .sequence-btn.has-sequence:hover {
-    background: rgba(34, 197, 94, 0.25);
-    border-color: rgba(34, 197, 94, 0.5);
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    background: color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent);
   }
 
   /* Mode button accent colors based on mode */

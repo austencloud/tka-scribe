@@ -64,9 +64,9 @@
   import { initUserPreviewContext } from "./debug/context/user-preview-context";
   import { userPreviewState } from "./debug/state/user-preview-state.svelte";
   import { featureFlagService } from "./auth/services/FeatureFlagService.svelte";
+  import ToastContainer from "./toast/components/ToastContainer.svelte";
 
   // Toast notifications
-  import { ToastContainer } from "./toast";
 
   // Initialize user preview context for app-wide access
   initUserPreviewContext();

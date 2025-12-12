@@ -38,8 +38,8 @@ vi.mock(
 );
 
 // Mock auth store
-vi.mock("$lib/shared/auth/stores/authStore.svelte", () => ({
-  authStore: {
+vi.mock("$lib/shared/auth/state/authState.svelte", () => ({
+  authState: {
     user: { uid: "test-user-123" },
     isAuthenticated: true,
   },

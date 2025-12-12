@@ -112,10 +112,10 @@
     padding: clamp(10px, 2.5cqh, 14px) clamp(12px, 3cqw, 18px);
     background: linear-gradient(
       135deg,
-      rgba(245, 158, 11, 0.15),
-      rgba(245, 158, 11, 0.05)
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent),
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 5%, transparent)
     );
-    border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+    border-bottom: 1px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
     flex-shrink: 0;
   }
 
@@ -133,9 +133,9 @@
     justify-content: center;
     width: clamp(32px, 6cqw, 40px);
     height: clamp(32px, 6cqw, 40px);
-    background: rgba(245, 158, 11, 0.2);
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
     border-radius: clamp(8px, 2cqw, 10px);
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
     font-size: 16px;
     flex-shrink: 0;
   }
@@ -149,7 +149,7 @@
     margin: 0 0 2px 0;
     font-size: clamp(13px, 3cqi, 15px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -158,7 +158,7 @@
   .banner-text p {
     margin: 0;
     font-size: clamp(11px, 2.6cqi, 13px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -168,7 +168,7 @@
     display: flex;
     align-items: center;
     padding: clamp(6px, 1.6cqh, 10px) clamp(10px, 3cqw, 14px);
-    background: rgba(245, 158, 11, 0.2);
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
     border-radius: clamp(12px, 3cqw, 18px);
     flex-shrink: 0;
   }
@@ -176,7 +176,7 @@
   .banner-xp span {
     font-size: clamp(12px, 2.8cqi, 14px);
     font-weight: 600;
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
   }
 
   .banner-close {
@@ -185,17 +185,17 @@
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: clamp(6px, 1.8cqw, 10px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s;
     flex-shrink: 0;
   }
 
   .banner-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 </style>

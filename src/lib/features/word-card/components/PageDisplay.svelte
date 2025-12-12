@@ -288,13 +288,13 @@
     cursor: pointer;
     transition: all var(--transition-normal);
     backdrop-filter: blur(8px);
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .retry-button:hover {
     background: var(--primary-light);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   /* Pages Container - grid layout for multiple pages side-by-side */

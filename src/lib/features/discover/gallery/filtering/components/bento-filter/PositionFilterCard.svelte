@@ -95,13 +95,13 @@ Supports Alpha, Beta, Gamma starting positions
     padding: clamp(8px, 2cqh, 14px) clamp(6px, 2cqw, 10px);
 
     border-radius: 16px;
-    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6), var(--theme-accent-strong, #4f46e5));
     border: none;
 
     box-shadow:
-      0 1px 2px hsl(263deg 70% 40% / 0.15),
-      0 2px 4px hsl(263deg 70% 40% / 0.12),
-      0 4px 8px hsl(263deg 70% 40% / 0.1),
+      0 1px 2px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent),
+      0 2px 4px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 32%, transparent),
+      0 4px 8px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     overflow: hidden;
@@ -204,7 +204,7 @@ Supports Alpha, Beta, Gamma starting positions
 
   .pill-option.selected {
     background: rgba(255, 255, 255, 0.95);
-    color: #6d28d9;
+    color: var(--theme-accent-strong, #4f46e5);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 

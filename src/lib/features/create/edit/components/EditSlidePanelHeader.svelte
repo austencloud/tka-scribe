@@ -119,14 +119,14 @@ Contains:
     color: #ffffff;
 
     /* Gradient background for adjustment button */
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, var(--theme-accent-strong, #8b5cf6) 100%);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .adjust-arrows-button:hover {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #4f46e5) 0%, var(--theme-accent-strong, #7c3aed) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
     transform: scale(1.05);
   }
 

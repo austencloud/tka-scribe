@@ -202,11 +202,11 @@
     border-radius: 10px;
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.25) 0%,
-      rgba(139, 92, 246, 0.25) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent) 100%
     );
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    color: rgba(139, 92, 246, 1);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    color: var(--theme-accent-strong, #8b5cf6);
     font-size: 18px;
     flex-shrink: 0;
   }
@@ -233,8 +233,8 @@
     gap: 6px;
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.9) 0%,
-      rgba(139, 92, 246, 0.9) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent) 100%
     );
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -245,24 +245,20 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
   }
 
   .install-btn:hover,
   .learn-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 1) 0%,
-      rgba(139, 92, 246, 1) 100%
-    );
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    background: var(--theme-accent-strong, #8b5cf6);
   }
 
   .install-btn:active,
   .learn-btn:active {
     transform: translateY(0);
-    box-shadow: 0 1px 4px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 1px 4px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
   }
 
   .install-btn:disabled {
@@ -279,8 +275,8 @@
     height: 52px;
     min-width: 52px;
     min-height: 52px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
@@ -289,7 +285,7 @@
   }
 
   .dismiss-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.95);
   }

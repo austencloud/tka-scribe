@@ -231,8 +231,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(99, 102, 241, 0.3),
-      rgba(139, 92, 246, 0.3),
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent),
       transparent
     );
   }

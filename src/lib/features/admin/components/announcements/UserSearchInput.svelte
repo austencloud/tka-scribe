@@ -172,8 +172,8 @@
 
   .search-input:focus {
     outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-color: var(--theme-accent, #6366f1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .search-input::placeholder {
@@ -217,7 +217,7 @@
   }
 
   .result-item:hover {
-    background: rgba(99, 102, 241, 0.15);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
   }
 
   .result-info {
@@ -247,7 +247,7 @@
 
   .result-item:hover .result-check {
     opacity: 1;
-    color: #6366f1;
+    color: var(--theme-accent, #6366f1);
   }
 
   .no-results {

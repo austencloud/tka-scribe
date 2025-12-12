@@ -204,7 +204,7 @@
     flex-direction: column;
     min-height: 160px;
     background: var(--accent-tint);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
     text-align: left;
     cursor: default;
@@ -220,9 +220,9 @@
 
   .challenge-card.clickable:hover {
     transform: translateY(-3px);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     box-shadow:
-      0 12px 32px rgba(0, 0, 0, 0.2),
+      0 12px 32px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
       0 0 0 1px var(--accent-color),
       0 0 40px var(--accent-glow);
   }
@@ -276,7 +276,7 @@
     margin: 0 0 6px;
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     line-height: 1.35;
     letter-spacing: -0.01em;
   }
@@ -285,7 +285,7 @@
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -349,9 +349,9 @@
   }
 
   .tag.mode {
-    background: rgba(99, 102, 241, 0.12);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
     color: #a5b4fc;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   /* Progress Section */
@@ -360,15 +360,15 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .progress-track {
     flex: 1;
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 3px;
     overflow: hidden;
   }
@@ -386,7 +386,7 @@
   .progress-text {
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     min-width: 44px;
     text-align: right;
   }

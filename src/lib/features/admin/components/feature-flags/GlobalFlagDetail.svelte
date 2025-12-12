@@ -94,18 +94,18 @@
 
   @media (min-width: 480px) {
     .detail-content {
-      gap: var(--settings-space-lg);
+      gap: 24px;
     }
   }
 
   .type-indicator-section {
-    margin: calc(-1 * var(--settings-space-sm)) 0 0 0;
+    margin: -8px 0 0 0;
   }
 
   .detail-section h3 {
     margin: 0 0 var(--radius-2026-sm) 0;
     font-size: var(--text-2026-caption);
-    font-weight: var(--settings-font-weight-semibold);
+    font-weight: 600;
     color: var(--theme-text);
   }
 
@@ -132,7 +132,7 @@
   .form-fields {
     display: flex;
     flex-direction: column;
-    gap: var(--settings-space-md);
+    gap: 16px;
   }
 
   @media (min-width: 480px) {

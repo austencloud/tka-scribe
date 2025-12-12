@@ -12,7 +12,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ICollectionService } from "../services/contracts/ICollectionService";
   import type { LibraryCollection } from "../domain/models/Collection";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
 
@@ -21,7 +21,7 @@
   let error = $state<string | null>(null);
   let collectionService: ICollectionService | null = null;
 
-  const isAuthenticated = $derived(!!authStore.user);
+  const isAuthenticated = $derived(!!authState.user);
 
   onMount(async () => {
     if (!isAuthenticated) {
@@ -76,7 +76,9 @@
       <div class="empty-state">
         <i class="fas fa-folder-open"></i>
         <h3>No Collections Yet</h3>
-        <p>Create collections to organize your sequences, compositions, and more.</p>
+        <p>
+          Create collections to organize your sequences, compositions, and more.
+        </p>
         <PanelButton variant="primary" onclick={handleCreateCollection}>
           <i class="fas fa-plus"></i>
           Create Your First Collection
@@ -89,7 +91,7 @@
           <button
             class="collection-card"
             onclick={() => handleOpenCollection(collection)}
-            style="--card-color: {collection.color || '#8b5cf6'}"
+            style="--card-color: {collection.color || 'var(--theme-accent-strong, #8b5cf6)'}"
           >
             <div class="card-icon">
               <i class="fas {collection.icon || 'fa-folder'}"></i>
@@ -186,7 +188,7 @@
 
   .collection-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--card-color, #8b5cf6);
+    border-color: var(--card-color, var(--theme-accent-strong, #8b5cf6));
     transform: translateY(-2px);
   }
 
@@ -196,7 +198,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--card-color, #8b5cf6);
+    background: var(--card-color, var(--theme-accent-strong, #8b5cf6));
     border-radius: 12px;
     margin-bottom: 12px;
   }

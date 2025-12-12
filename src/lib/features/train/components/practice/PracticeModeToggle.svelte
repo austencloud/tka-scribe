@@ -68,9 +68,9 @@
     display: flex;
     gap: 0.375rem;
     padding: 0.25rem;
-    background: rgba(0, 0, 0, 0.3);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 30%, transparent);
     border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .mode-button {
@@ -84,21 +84,21 @@
     background: transparent;
     border: none;
     border-radius: 0.5rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
   }
 
   .mode-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .mode-button.active {
-    background: rgba(59, 130, 246, 0.25);
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    color: #ffffff;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    color: var(--theme-text, #ffffff);
   }
 
   .mode-button i {
@@ -123,12 +123,12 @@
   .mode-desc {
     font-size: 0.6875rem;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     line-height: 1.2;
   }
 
   .mode-button.active .mode-desc {
-    color: rgba(255, 255, 255, 0.7);
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
   }
 
   /* Compact mode - icon-only */

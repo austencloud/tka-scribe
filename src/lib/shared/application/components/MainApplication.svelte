@@ -4,7 +4,8 @@
   import XPToast from "../../gamification/components/XPToast.svelte";
   import QuickFeedbackPanel from "$lib/features/feedback/components/quick/QuickFeedbackPanel.svelte";
   import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
-  import { ErrorModal } from "../../error";
+  import ErrorModal from "../../error/components/ErrorModal.svelte";
+  import InboxDrawer from "../../inbox/components/InboxDrawer.svelte";
 
   import { TYPES } from "../../inversify/types";
 
@@ -18,8 +19,11 @@
     ISheetRouterService,
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
-  import { authStore } from "../../auth/stores/authStore.svelte";
+  import { authState } from "../../auth/state/authState.svelte";
+  import { mfaUIState } from "../../auth/state/mfa-ui-state.svelte";
   import LandingPage from "../../auth/components/LandingPage.svelte";
+  import MFAEnrollmentDrawer from "../../auth/components/MFAEnrollmentDrawer.svelte";
+  import type { IAuthService } from "../../auth/services/contracts/IAuthService";
   import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import { ThemeService } from "../../theme/services/ThemeService";
@@ -60,6 +64,7 @@
   let settingsService: ISettingsState | null = $state(null);
   let deviceService: IDeviceDetector | null = $state(null);
   let sheetRouterService: ISheetRouterService | null = $state(null);
+  let authService: IAuthService | null = $state(null);
   let servicesResolved = $state(false);
 
   // App state
@@ -68,8 +73,8 @@
   let settings = $derived(getSettings());
 
   // Auth state for gating
-  const isAuthenticated = $derived(authStore.isAuthenticated);
-  const authLoading = $derived(authStore.isLoading);
+  const isAuthenticated = $derived(authState.isAuthenticated);
+  const authLoading = $derived(authState.loading);
 
   // Route-based sheet state
   let currentSheetType = $state<SheetType>(null);
@@ -79,6 +84,9 @@
 
   // Debug panel state (admin-only) - uses centralized UI state
   let showDebugPanel = $derived(getShowDebugPanel());
+
+  // MFA enrollment drawer state (controlled via global mfaUIState)
+  let showMFAEnrollment = $derived(mfaUIState.isEnrollmentOpen);
 
   // Resolve services when container is available
   $effect(() => {
@@ -95,10 +103,19 @@
           }
 
           if (!servicesResolved) {
-            initService = container.get<IApplicationInitializer>(TYPES.IApplicationInitializer);
-            settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
-            deviceService = container.get<IDeviceDetector>(TYPES.IDeviceDetector);
-            sheetRouterService = container.get<ISheetRouterService>(TYPES.ISheetRouterService);
+            initService = container.get<IApplicationInitializer>(
+              TYPES.IApplicationInitializer
+            );
+            settingsService = container.get<ISettingsState>(
+              TYPES.ISettingsState
+            );
+            deviceService = container.get<IDeviceDetector>(
+              TYPES.IDeviceDetector
+            );
+            sheetRouterService = container.get<ISheetRouterService>(
+              TYPES.ISheetRouterService
+            );
+            authService = container.get<IAuthService>(TYPES.IAuthService);
             servicesResolved = true;
           }
         } catch (error) {
@@ -226,7 +243,7 @@
       // Debug panel toggle (Ctrl/Cmd + `) - Admin only
       if ((event.ctrlKey || event.metaKey) && event.key === "`") {
         event.preventDefault();
-        if (authStore.isAdmin) {
+        if (authState.isAdmin) {
           toggleDebugPanel();
         }
         return;
@@ -337,7 +354,13 @@
       error={initializationError}
       onRetry={() => window.location.reload()}
     />
-  {:else if !isAuthenticated && !authLoading}
+  {:else if authLoading}
+    <!-- Auth Loading State -->
+    <div class="auth-loading">
+      <div class="auth-loading-spinner"></div>
+      <p>Checking authentication...</p>
+    </div>
+  {:else if !isAuthenticated}
     <!-- Auth Gate: Show landing page for logged-out users -->
     <LandingPage />
   {:else if isAuthenticated}
@@ -366,6 +389,19 @@
     <AchievementNotificationToast />
     <XPToast />
 
+    <!-- Inbox Drawer (messages + notifications) -->
+    <InboxDrawer />
+
+    <!-- MFA Enrollment Drawer (triggered from Settings → Security) -->
+    {#if authService}
+      <MFAEnrollmentDrawer
+        isOpen={showMFAEnrollment}
+        {authService}
+        onClose={() => mfaUIState.closeEnrollment()}
+        onSuccess={() => mfaUIState.closeEnrollment()}
+      />
+    {/if}
+
     <!-- Quick Feedback Panel (desktop hotkey: f) -->
     <QuickFeedbackPanel />
 
@@ -391,6 +427,31 @@
     --text-color: rgba(255, 255, 255, 0.95);
     --foreground: rgba(255, 255, 255, 0.95);
     --muted-foreground: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Auth loading state */
+  .auth-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 16px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+  }
+
+  .auth-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: auth-spin 1s linear infinite;
+  }
+
+  @keyframes auth-spin {
+    to { transform: rotate(360deg); }
   }
 
   /* Responsive adjustments */

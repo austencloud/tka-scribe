@@ -124,7 +124,7 @@ Shown when sequence is empty.
   .welcome-icon {
     width: 80px;
     height: 80px;
-    color: rgba(139, 92, 246, 0.9);
+    color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent);
     margin-bottom: 8px;
   }
 
@@ -259,7 +259,7 @@ Shown when sequence is empty.
   }
 
   .mode-button.active {
-    background: rgba(139, 92, 246, 0.2);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     color: rgba(255, 255, 255, 0.95);
   }
 
@@ -281,7 +281,7 @@ Shown when sequence is empty.
     width: 100%;
     max-width: 280px;
     padding: 16px 24px;
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6), var(--theme-accent-strong, #7c3aed));
     border: none;
     border-radius: 12px;
     color: white;
@@ -289,13 +289,13 @@ Shown when sequence is empty.
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     margin-top: 8px;
   }
 
   .start-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .start-button:active {

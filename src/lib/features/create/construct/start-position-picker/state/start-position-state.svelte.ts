@@ -18,7 +18,7 @@ export function createSimplifiedStartPositionState() {
   // Lazy service resolution to avoid effect_orphan error
   let startPositionService: IStartPositionService | null = null;
   let settingsService: ISettingsState | null = null;
-  let containerPromise: Promise<ReturnType<typeof getContainerInstance>> | null = null;
+  let containerPromise: ReturnType<typeof getContainerInstance> | null = null;
 
   async function ensureContainer() {
     if (!containerPromise) {
@@ -30,17 +30,21 @@ export function createSimplifiedStartPositionState() {
   async function getService(): Promise<IStartPositionService> {
     if (!startPositionService) {
       const container = await ensureContainer();
-      startPositionService = container.get<IStartPositionService>(TYPES.IStartPositionService);
+      if (container) {
+        startPositionService = container.get<IStartPositionService>(TYPES.IStartPositionService);
+      }
     }
-    return startPositionService;
+    return startPositionService!;
   }
 
   async function getSettingsServiceAsync(): Promise<ISettingsState> {
     if (!settingsService) {
       const container = await ensureContainer();
-      settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
+      if (container) {
+        settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
+      }
     }
-    return settingsService;
+    return settingsService!;
   }
 
   // Simple reactive state - just what we need

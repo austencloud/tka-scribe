@@ -32,7 +32,7 @@
 <style>
   .capabilities-card {
     grid-column: 1 / -1;
-    padding: var(--settings-space-md);
+    padding: 16px;
     background: var(--surface-2026);
     border-radius: var(--radius-2026-lg);
     border: 1px solid var(--border-2026);
@@ -41,10 +41,10 @@
   .section-header {
     display: flex;
     align-items: center;
-    gap: var(--settings-space-sm);
+    gap: 8px;
     margin-bottom: var(--space-2026-sm);
     font-size: var(--text-2026-caption);
-    font-weight: var(--settings-font-weight-semibold);
+    font-weight: 600;
     color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -58,6 +58,6 @@
   .capabilities-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--settings-space-sm);
+    gap: 8px;
   }
 </style>

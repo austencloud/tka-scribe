@@ -10,7 +10,7 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { resolve } from "$lib/shared/inversify/di";
@@ -37,7 +37,7 @@
     );
 
     // Initialize notifications when user is authenticated
-    if (authStore.isAuthenticated) {
+    if (authState.isAuthenticated) {
       notificationState.init();
     }
 
@@ -49,7 +49,7 @@
 
   // Watch auth state changes to init/cleanup notifications
   $effect(() => {
-    if (authStore.isAuthenticated) {
+    if (authState.isAuthenticated) {
       notificationState.init();
     } else {
       notificationState.cleanup();
@@ -69,16 +69,16 @@
   class="dashboard-button"
   class:active={isActive}
   class:variant-sidebar={variant === "sidebar"}
-  class:has-avatar={authStore.isAuthenticated && authStore.user?.photoURL}
+  class:has-avatar={authState.isAuthenticated && authState.user?.photoURL}
   onclick={handleClick}
   aria-label="Dashboard"
   aria-current={isActive ? "page" : undefined}
 >
   <div class="profile-icon-wrapper">
-    {#if authStore.isAuthenticated && authStore.user?.photoURL}
+    {#if authState.isAuthenticated && authState.user?.photoURL}
       <img
-        src={authStore.user.photoURL}
-        alt={authStore.user.displayName || "User"}
+        src={authState.user.photoURL}
+        alt={authState.user.displayName || "User"}
         class="profile-avatar"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"
@@ -90,8 +90,8 @@
             const initial = document.createElement("div");
             initial.className = "profile-initial";
             initial.textContent = (
-              authStore.user?.displayName ||
-              authStore.user?.email ||
+              authState.user?.displayName ||
+              authState.user?.email ||
               "?"
             )
               .charAt(0)
@@ -100,9 +100,9 @@
           }
         }}
       />
-    {:else if authStore.isAuthenticated && authStore.user}
+    {:else if authState.isAuthenticated && authState.user}
       <div class="profile-initial">
-        {(authStore.user.displayName || authStore.user.email || "?")
+        {(authState.user.displayName || authState.user.email || "?")
           .charAt(0)
           .toUpperCase()}
       </div>
@@ -147,7 +147,7 @@
   }
 
   .dashboard-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 

@@ -12,9 +12,10 @@ import {
   handleModuleChange,
   getModuleDefinitions,
 } from "../../navigation-coordinator/navigation-coordinator.svelte";
-import { authStore } from "../../auth/stores/authStore.svelte";
+import { authState } from "../../auth/state/authState.svelte";
 import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
 import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
+import { roleSwitcherState } from "../../debug/state/role-switcher-state.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutService,
@@ -22,7 +23,7 @@ export function registerGlobalShortcuts(
 ) {
   // Get accessible modules
   const moduleDefinitions = getModuleDefinitions();
-  const isAdmin = authStore.isAdmin;
+  const isAdmin = authState.isAdmin;
 
   // Filter modules to only show accessible ones
   const accessibleModules = moduleDefinitions.filter((module) => {
@@ -95,8 +96,8 @@ export function registerGlobalShortcuts(
 
     service.register({
       id: `global.switch-to-${module.id}`,
-      label: `Switch to ${module.label.toUpperCase()} module`,
-      description: `Navigate to the ${module.label} module (press ${key})`,
+      label: module.label,
+      description: `Navigate to ${module.label}`,
       key: key,
       modifiers: [],
       context: "global",
@@ -130,6 +131,26 @@ export function registerGlobalShortcuts(
     },
     action: () => {
       quickFeedbackState.toggle();
+    },
+  });
+
+  // ==================== Admin Shortcuts ====================
+  // Only registered for admin users
+
+  // F9 - Role Switcher (admin-only debug tool)
+  service.register({
+    id: "admin.role-switcher",
+    label: "Role Switcher",
+    description: "Toggle the role switcher debug panel (admin only)",
+    key: "F9",
+    modifiers: [],
+    context: "global",
+    scope: "admin",
+    priority: "high",
+    // No condition needed - the RoleSwitcherDebugPanel already checks {#if isAdmin}
+    // This allows F9 to work even during auth initialization race conditions
+    action: () => {
+      roleSwitcherState.toggle();
     },
   });
 }

@@ -6,12 +6,16 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
-  import NotificationItem from "$lib/features/feedback/components/NotificationItem.svelte";
+  import FeedbackNotificationCard from "$lib/features/feedback/components/FeedbackNotificationCard.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { setNotificationTargetFeedback } from "$lib/features/feedback/state/notification-action-state.svelte";
-  import type { UserNotification, FeedbackNotification, AdminNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import type {
+    UserNotification,
+    FeedbackNotification,
+    AdminNotification,
+  } from "$lib/features/feedback/domain/models/notification-models";
   import { discoverNavigationState } from "$lib/features/discover/shared/state/discover-navigation-state.svelte";
   import {
     userPreviewState,
@@ -53,7 +57,7 @@
   );
 
   onMount(() => {
-    if (authStore.isAuthenticated && !isPreviewActive) {
+    if (authState.isAuthenticated && !isPreviewActive) {
       notificationState.init();
     }
 
@@ -70,7 +74,7 @@
         loadPreviewSection("notifications");
       }
       notificationState.cleanup();
-    } else if (authStore.isAuthenticated) {
+    } else if (authState.isAuthenticated) {
       notificationState.init();
     } else {
       notificationState.cleanup();
@@ -104,7 +108,7 @@
   }
 
   async function handleClearAll() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) return;
 
     // Call service to delete all notifications
@@ -150,7 +154,7 @@
   </div>
 
   <div class="widget-content">
-    {#if !authStore.isAuthenticated && !isPreviewActive}
+    {#if !authState.isAuthenticated && !isPreviewActive}
       <div class="empty-state">
         <i class="fas fa-bell-slash"></i>
         <p>Sign in to see notifications</p>
@@ -164,12 +168,16 @@
       <div class="empty-state">
         <i class="fas fa-inbox"></i>
         <p>No notifications yet</p>
-        <span class="empty-hint">{isPreviewActive ? "This user has no notifications" : "You'll be notified when there's activity"}</span>
+        <span class="empty-hint"
+          >{isPreviewActive
+            ? "This user has no notifications"
+            : "You'll be notified when there's activity"}</span
+        >
       </div>
     {:else}
       <div class="notifications-list">
         {#each recentNotifications as notification (notification.id)}
-          <NotificationItem
+          <FeedbackNotificationCard
             {notification}
             onAction={handleNotificationAction}
             onDismiss={handleNotificationDismiss}

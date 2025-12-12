@@ -1,14 +1,16 @@
 <!--
 TurnsColumn.svelte - Turn Numbers Display Component
 
-A thin presentation wrapper that displays top and bottom turn numbers
-to the right of a TKA letter. All logic is delegated to services/utilities.
+A thin presentation wrapper that displays top and bottom turn numbers.
+Can render alongside a TKA letter (to the right) or standalone (at left edge).
 
 Props:
 - turnsTuple: The turns tuple string (e.g., "(s, 1, 2)")
 - letter: The TKA letter (for color interpretation)
-- letterDimensions: Width and height of the letter
+- letterDimensions: Width and height of the letter (optional for standalone)
 - pictographData: Full pictograph data (for color interpretation)
+- standalone: When true, positions at left edge instead of right of letter
+- x, y: Base position (matches TKAGlyph positioning)
 -->
 <script lang="ts">
 import type { PictographData } from "../../shared/domain/models/PictographData";
@@ -21,26 +23,78 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   } from "../utils/turn-tuple-parser";
   import { calculateTurnPositions } from "../utils/turn-position-calculator";
   import { TurnColorInterpreter } from "../services/implementations/TurnColorInterpreter";
+  import { getLetterDimensions, preloadLetterDimensions } from "./TKAGlyph.svelte";
 
   let {
     turnsTuple = "(s, 0, 0)",
     letter = null,
-    letterDimensions,
+    letterDimensions = { width: 100, height: 100 },
     pictographData = undefined,
     visible = true,
     previewMode = false,
+    standalone = false,
+    x = 50,
+    y = 800,
+    scale = 1,
+    onToggle = undefined,
   } = $props<{
     turnsTuple: string;
     letter: string | null | undefined;
-    letterDimensions: Dimensions;
+    letterDimensions?: Dimensions;
     pictographData?: PictographData | null;
     visible?: boolean;
     /** Preview mode: show at 40% opacity when off instead of hidden */
     previewMode?: boolean;
+    /** When true, positions at left edge instead of right of letter */
+    standalone?: boolean;
+    /** Base X position */
+    x?: number;
+    /** Base Y position */
+    y?: number;
+    /** Scale factor */
+    scale?: number;
+    /** Toggle callback for interactive mode */
+    onToggle?: () => void;
   }>();
 
   // Service instance for color interpretation
   const colorInterpreter = new TurnColorInterpreter();
+
+  // Track loaded letter dimensions with $state for reactivity
+  // This allows async loading to trigger re-renders when dimensions become available
+  let loadedLetterDimensions = $state<Dimensions>({ width: 100, height: 100 });
+
+  // Load letter dimensions when letter changes
+  // Uses the same cache as TKAGlyph to ensure consistency
+  $effect(() => {
+    const currentLetter = letter;
+    if (!currentLetter) {
+      loadedLetterDimensions = { width: 100, height: 100 };
+      return;
+    }
+
+    // Check cache first (synchronous)
+    const cachedDims = getLetterDimensions(currentLetter);
+    if (cachedDims.width !== 100 || cachedDims.height !== 100) {
+      // Already cached - use immediately
+      loadedLetterDimensions = cachedDims;
+    } else {
+      // Not cached yet - trigger async load and wait for it
+      preloadLetterDimensions([currentLetter]).then(() => {
+        // After loading completes, get from cache and update state
+        loadedLetterDimensions = getLetterDimensions(currentLetter);
+      });
+    }
+  });
+
+  // Use loaded dimensions, or prop if explicitly provided
+  const effectiveLetterDimensions = $derived(() => {
+    // Use provided dimensions if explicitly set (not default)
+    if (letterDimensions.width !== 100 || letterDimensions.height !== 100) {
+      return letterDimensions;
+    }
+    return loadedLetterDimensions;
+  });
 
   // Parse the turns tuple
   const parsedTurns = $derived(() => parseTurnsTuple(turnsTuple));
@@ -62,9 +116,21 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   });
 
   // Calculate positions for the numbers (with proper bottom number height)
-  const positions = $derived(() =>
-    calculateTurnPositions(letterDimensions, numberHeight)
-  );
+  // In standalone mode, position at left edge (x=0) instead of right of letter
+  const positions = $derived(() => {
+    const dims = effectiveLetterDimensions();
+    if (standalone) {
+      // Standalone mode: position at left edge
+      const topY = -5; // Small padding from top
+      const bottomY = dims.height - numberHeight + 5;
+      return {
+        top: { x: 0, y: topY },
+        bottom: { x: 0, y: bottomY },
+      };
+    }
+    // Normal mode: position to the right of the letter
+    return calculateTurnPositions(dims, numberHeight);
+  });
 
   // Check visibility
   const showTop = $derived(() => shouldDisplayTurn(parsedTurns().top));
@@ -80,7 +146,22 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 </script>
 
 <!-- Turns Column Group -->
-<g class="turns-column" class:visible class:preview-mode={previewMode} data-letter={letter}>
+<g
+  class="turns-column"
+  class:visible
+  class:preview-mode={previewMode}
+  class:interactive={onToggle !== undefined}
+  data-letter={letter}
+  transform="translate({x}, {y}) scale({scale})"
+  onclick={onToggle}
+  {...onToggle
+    ? {
+        role: "button",
+        tabindex: 0,
+        "aria-label": "Toggle turn numbers visibility",
+      }
+    : {}}
+>
   <!-- SVG Recoloring Filter Definitions -->
   <defs>
     <!-- Blue color filter - matches arrow color #2E3192 -->
@@ -156,8 +237,6 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
 
 <style>
   .turns-column {
-    /* Turns column renders at same layer as letter */
-    pointer-events: none;
     /* Beautiful fade in/out effect matching TKA glyph */
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -170,6 +249,20 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   /* Preview mode: show "off" state at 40% opacity instead of hidden */
   .turns-column.preview-mode:not(.visible) {
     opacity: 0.4;
+  }
+
+  .turns-column.interactive {
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .turns-column.interactive:hover {
+    opacity: 0.7;
+  }
+
+  /* In preview mode, dim hover state for "off" elements */
+  .turns-column.preview-mode:not(.visible).interactive:hover {
+    opacity: 0.5;
   }
 
   .turn-number image {

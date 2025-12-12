@@ -125,7 +125,7 @@
   .setting-label {
     font-size: 0.75rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.03em;
     min-width: 40px;
@@ -135,7 +135,7 @@
   .mode-toggle {
     display: flex;
     gap: 4px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 8px;
     padding: 3px;
   }
@@ -149,20 +149,20 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .toggle-option:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   .toggle-option.active {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    color: var(--semantic-info, #60a5fa);
   }
 
   /* Scale Controls */
@@ -178,19 +178,19 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .scale-btn:hover:not(:disabled) {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    color: var(--semantic-info, #60a5fa);
   }
 
   .scale-btn:active:not(:disabled) {
@@ -207,7 +207,7 @@
     text-align: center;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--semantic-info, #60a5fa);
     font-variant-numeric: tabular-nums;
   }
 
@@ -217,18 +217,18 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 0.65rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .reset-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   /* Visibility Toggle */
@@ -237,10 +237,10 @@
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -252,15 +252,15 @@
   }
 
   .visibility-toggle:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   .visibility-toggle.active {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.3);
-    color: #60a5fa;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    color: var(--semantic-info, #60a5fa);
   }
 
   /* Focus states */
@@ -268,7 +268,7 @@
   .scale-btn:focus-visible,
   .reset-btn:focus-visible,
   .visibility-toggle:focus-visible {
-    outline: 2px solid rgba(59, 130, 246, 0.6);
+    outline: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 60%, transparent);
     outline-offset: 2px;
   }
 </style>

@@ -31,6 +31,7 @@
   const debug = createComponentLogger("AnimationControlsPanel");
   const DEFAULT_BPM = 60;
   const COMPACT_CONTROLS_HEIGHT = 800; // Use compact controls below this height
+  const COMPACT_CONTROLS_WIDTH = 380; // Use compact controls below this width (Z Fold narrow mode)
 
   let {
     speed = 1,
@@ -115,23 +116,28 @@
     onSpeedChange(newSpeed);
   }
 
-  // Height detection for compact controls mode
+  // Viewport detection for compact controls mode
   let viewportHeight = $state(0);
+  let viewportWidth = $state(0);
 
   onMount(() => {
     if (!browser) return;
 
-    const checkHeight = () => {
+    const checkViewport = () => {
       viewportHeight = window.innerHeight;
+      viewportWidth = window.innerWidth;
     };
 
-    checkHeight();
-    window.addEventListener("resize", checkHeight);
-    return () => window.removeEventListener("resize", checkHeight);
+    checkViewport();
+    window.addEventListener("resize", checkViewport);
+    return () => window.removeEventListener("resize", checkViewport);
   });
 
-  // Use compact controls when viewport is too short (regardless of side-by-side)
-  const useCompactControls = $derived(viewportHeight > 0 && viewportHeight < COMPACT_CONTROLS_HEIGHT);
+  // Use compact controls when viewport is too short OR too narrow (Z Fold folded mode)
+  const useCompactControls = $derived(
+    (viewportHeight > 0 && viewportHeight < COMPACT_CONTROLS_HEIGHT) ||
+    (viewportWidth > 0 && viewportWidth < COMPACT_CONTROLS_WIDTH)
+  );
 
   // Sheet state - unified settings sheet
   let isSettingsSheetOpen = $state(false);

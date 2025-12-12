@@ -43,7 +43,7 @@ Ultra-minimal design: No overlays, just clean image display.
   .media {
     position: relative;
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     flex: 1;
     min-height: 0;
     display: flex;
@@ -80,7 +80,8 @@ Ultra-minimal design: No overlays, just clean image display.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1f2937, #111827);
+    background: linear-gradient(135deg, var(--theme-card-hover-bg, #1f2937), var(--theme-panel-bg, #111827));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 4rem;
     font-weight: 700;
   }

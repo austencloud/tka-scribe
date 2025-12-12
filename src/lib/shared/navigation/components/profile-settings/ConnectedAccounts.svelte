@@ -7,7 +7,7 @@
   - Unlink providers (if more than one is linked)
 -->
 <script lang="ts">
-  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import { authState } from "../../../auth/state/authState.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
   import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
@@ -62,7 +62,7 @@
 
   // Derived state
   const linkedProviders = $derived(
-    authStore.user?.providerData?.map((p) => p.providerId) ?? []
+    authState.user?.providerData?.map((p) => p.providerId) ?? []
   );
 
   const availableProviders = $derived(
@@ -75,7 +75,7 @@
 
   // Get provider details from providerData
   function getProviderEmail(providerId: string): string | null {
-    const provider = authStore.user?.providerData?.find(
+    const provider = authState.user?.providerData?.find(
       (p) => p.providerId === providerId
     );
     return provider?.email ?? null;
@@ -168,7 +168,7 @@
   }
 
   // Check if email is verified
-  const isEmailVerified = $derived(authStore.user?.emailVerified ?? false);
+  const isEmailVerified = $derived(authState.user?.emailVerified ?? false);
 </script>
 
 <div class="connected-accounts">
@@ -594,7 +594,7 @@
 
   .hint i {
     font-size: 14px;
-    color: rgba(99, 102, 241, 0.7);
+    color: color-mix(in srgb, var(--theme-accent) 70%, transparent);
   }
 
   /* Empty State */
@@ -688,7 +688,7 @@
   .provider-card.available:focus-visible,
   .unlink-btn:focus-visible,
   .dismiss-btn:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.8);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
     outline-offset: 2px;
   }
 </style>

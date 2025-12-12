@@ -117,37 +117,37 @@ Shows all 4 orientations: in, out, clock, counter
     gap: 8px;
     min-height: 80px;
     padding: 16px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 16px;
-    color: white;
+    color: var(--theme-text, white);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .orientation-cell:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     transform: translateY(-2px);
   }
 
   .orientation-cell:active {
     transform: translateY(0);
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 
   .orientation-cell.selected {
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.25),
-      rgba(139, 92, 246, 0.25)
+      color-mix(in srgb, var(--theme-accent) 25%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 25%, transparent)
     );
-    border-color: rgba(139, 92, 246, 0.6);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
 
   .orientation-cell:focus-visible {
-    outline: 2px solid rgba(139, 92, 246, 0.8);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
     outline-offset: 2px;
   }
 

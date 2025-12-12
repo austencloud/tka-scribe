@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   let { onClick = () => {} } = $props<{
     onClick?: () => void;
@@ -66,8 +66,8 @@
   }
 
   // Get user photo reactively
-  const userPhoto = $derived(authStore.user?.photoURL);
-  const isAuthenticated = $derived(authStore.isAuthenticated);
+  const userPhoto = $derived(authState.user?.photoURL);
+  const isAuthenticated = $derived(authState.isAuthenticated);
 </script>
 
 <button
@@ -143,7 +143,7 @@
 
   /* Focus state for keyboard navigation */
   .home-button:focus-visible {
-    outline: 2px solid hsl(210 100% 60%);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 4px;
   }
 
@@ -174,8 +174,8 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      hsl(239 84% 67%) 0%,
-      hsl(263 70% 65%) 100%
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
     );
     color: white;
     font-size: 20px;

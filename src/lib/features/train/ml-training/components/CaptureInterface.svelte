@@ -598,8 +598,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .spinner {
     width: 52px;
     height: 52px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
+    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.3));
+    border-top-color: var(--theme-text, #fff);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -649,7 +649,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     justify-content: center;
     gap: 2rem;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 12px;
     margin-top: 0.75rem;
   }
@@ -686,7 +686,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
       rgba(26, 26, 46, 0.95) 0%,
       rgba(15, 15, 30, 0.98) 100%
     );
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .main-controls {
@@ -747,18 +747,18 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .btn-settings:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, #fff);
   }
 
   .prop-indicator {
@@ -768,10 +768,10 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
 
   .prop-badge {
     padding: 0.4rem 0.875rem;
-    background: rgba(99, 102, 241, 0.2);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
     border-radius: 20px;
     font-size: 0.85rem;
-    color: #a5b4fc;
+    color: var(--theme-accent, #a5b4fc);
     text-transform: capitalize;
   }
 
@@ -797,7 +797,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #a5b4fc;
+    color: var(--theme-accent, #a5b4fc);
   }
 
   .config-row {
@@ -824,8 +824,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .config-field input,
   .config-field select {
     padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
     color: inherit;
     font-size: 1rem;
@@ -835,8 +835,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .config-field input:focus,
   .config-field select:focus {
     outline: none;
-    border-color: #6366f1;
-    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--theme-accent, #6366f1);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .config-field input:disabled,
@@ -848,7 +848,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .btn-done {
     margin-top: 0.5rem;
     padding: 1rem;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #8b5cf6));
     border: none;
     border-radius: 12px;
     color: white;
@@ -892,9 +892,9 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
 
     .config-panel {
       padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
       border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
@@ -904,24 +904,24 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
       margin: 0;
       font-size: 1rem;
       font-weight: 600;
-      color: #a5b4fc;
+      color: var(--theme-accent, #a5b4fc);
     }
 
     .workflow-info {
       padding: 1.25rem;
       background: linear-gradient(
         135deg,
-        rgba(99, 102, 241, 0.1),
-        rgba(139, 92, 246, 0.1)
+        color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent),
+        color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent)
       );
-      border: 1px solid rgba(99, 102, 241, 0.2);
+      border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
       border-radius: 12px;
     }
 
     .workflow-info h4 {
       margin: 0 0 0.75rem 0;
       font-size: 0.95rem;
-      color: #a5b4fc;
+      color: var(--theme-accent, #a5b4fc);
     }
 
     .workflow-info ol {
@@ -933,7 +933,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     }
 
     .workflow-info strong {
-      color: #c4b5fd;
+      color: var(--theme-accent, #c4b5fd);
     }
 
     .desktop-controls {
@@ -1031,26 +1031,26 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     margin: 0.5rem;
     border-radius: 10px;
     font-size: 0.85rem;
-    background: rgba(59, 130, 246, 0.15);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     color: #93c5fd;
   }
 
   .sync-status.syncing {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     color: #93c5fd;
   }
 
   .sync-status.synced {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: rgba(34, 197, 94, 0.3);
+    background: color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
     color: #86efac;
   }
 
   .sync-status.error {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     color: #fca5a5;
   }
 
@@ -1061,7 +1061,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .sync-progress-bar {
     flex: 1;
     height: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 2px;
     overflow: hidden;
     margin-left: 0.5rem;
@@ -1069,7 +1069,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
 
   .sync-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    background: linear-gradient(90deg, var(--semantic-info, #3b82f6), color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, white));
     border-radius: 2px;
     transition: width 0.3s ease;
   }

@@ -148,8 +148,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--background-primary, #0f0f0f);
-    color: white;
+    background: var(--theme-panel-bg, #0f0f0f);
+    color: var(--theme-text, white);
   }
 
   .browser-header {
@@ -157,7 +157,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .browser-header h2 {
@@ -173,15 +173,15 @@
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
-    color: white;
+    color: var(--theme-text, white);
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .search-bar {
@@ -189,12 +189,12 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .search-bar i {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .search-bar input {
@@ -202,12 +202,12 @@
     background: transparent;
     border: none;
     outline: none;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 1rem;
   }
 
   .search-bar input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
   }
 
   .browser-content {
@@ -226,22 +226,22 @@
     gap: 1rem;
     padding: 3rem 1rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .loading-state i,
   .error-state i,
   .empty-state i {
     font-size: 3rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .error-state button {
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
     border: none;
     border-radius: 8px;
-    color: white;
+    color: var(--theme-text, white);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -249,7 +249,7 @@
 
   .error-state button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .sequences-grid {
@@ -264,18 +264,18 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 1rem 1.25rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: white;
+    color: var(--theme-text, white);
     cursor: pointer;
     transition: all 0.2s;
     text-align: left;
   }
 
   .sequence-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(59, 130, 246, 0.4);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
     transform: translateX(4px);
   }
 
@@ -296,7 +296,7 @@
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .sequence-meta span {
@@ -306,12 +306,12 @@
   }
 
   .sequence-card > i {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     transition: all 0.2s;
   }
 
   .sequence-card:hover > i {
-    color: rgba(59, 130, 246, 0.8);
+    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
     transform: translateX(4px);
   }
 </style>

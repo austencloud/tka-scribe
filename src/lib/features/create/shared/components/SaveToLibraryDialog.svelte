@@ -19,7 +19,7 @@ Allows user to set name, visibility, tags, collections, and notes.
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {
@@ -44,7 +44,7 @@ Allows user to set name, visibility, tags, collections, and notes.
   const visibility: SequenceVisibility = "public";
 
   // Derived state
-  const currentUser = $derived(authStore.user);
+  const currentUser = $derived(authState.user);
   const displayName = $derived(
     currentUser?.displayName || currentUser?.email || "Anonymous"
   );
@@ -358,8 +358,8 @@ Allows user to set name, visibility, tags, collections, and notes.
   .textarea-field {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
@@ -371,9 +371,10 @@ Allows user to set name, visibility, tags, collections, and notes.
   .input-field:focus,
   .textarea-field:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .input-field::placeholder,
@@ -392,8 +393,8 @@ Allows user to set name, visibility, tags, collections, and notes.
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
@@ -422,10 +423,10 @@ Allows user to set name, visibility, tags, collections, and notes.
     width: 52px;
     height: 52px;
     flex-shrink: 0;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 8px;
-    color: rgba(139, 92, 246, 1);
+    color: var(--theme-accent-strong, #8b5cf6);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -434,8 +435,8 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .add-tag-button:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.3);
-    border-color: rgba(139, 92, 246, 0.5);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
   }
 
   .add-tag-button:disabled {
@@ -456,10 +457,10 @@ Allows user to set name, visibility, tags, collections, and notes.
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 16px;
-    color: rgba(139, 92, 246, 1);
+    color: var(--theme-accent-strong, #8b5cf6);
     font-size: 13px;
   }
 
@@ -525,25 +526,25 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .button-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .button-secondary:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     color: rgba(255, 255, 255, 0.9);
   }
 
   .button-primary {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, var(--theme-accent-strong, #7c3aed) 100%);
     color: white;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .button-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.6);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #7c3aed) 0%, var(--theme-accent-strong, #6d28d9) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
     transform: translateY(-1px);
   }
 

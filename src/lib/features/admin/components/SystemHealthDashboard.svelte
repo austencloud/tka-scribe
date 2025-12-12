@@ -88,7 +88,7 @@
       'account_enabled': '#10b981',
       'user_data_reset': '#f59e0b',
       'user_deleted': '#dc2626',
-      'challenge_created': '#8b5cf6',
+      'challenge_created': 'var(--theme-accent-strong, #8b5cf6)',
       'announcement_created': '#06b6d4',
       'flag_updated': '#ec4899',
     };

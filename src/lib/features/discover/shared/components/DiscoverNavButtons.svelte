@@ -86,18 +86,18 @@ Integrates with discoverNavigationState for proper navigation flow.
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: #252532;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, #252532);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .nav-button:hover:not(:disabled) {
-    background: #2d2d3d;
-    color: #fff;
+    background: var(--theme-card-hover-bg, #2d2d3d);
+    color: var(--theme-text, #fff);
   }
 
   .nav-button:active:not(:disabled) {

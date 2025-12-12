@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "../../../auth/stores/authStore.svelte";
+  import { authState } from "../../../auth/state/authState.svelte";
   import {
     personalInfoState,
     originalPersonalInfoState,
@@ -38,9 +38,9 @@
 
   // Sync with auth store
   $effect(() => {
-    if (authStore.user) {
-      const displayName = authStore.user.displayName || "";
-      const email = authStore.user.email || "";
+    if (authState.user) {
+      const displayName = authState.user.displayName || "";
+      const email = authState.user.email || "";
 
       personalInfoState.displayName = displayName;
       personalInfoState.email = email;
@@ -193,7 +193,12 @@
     background: linear-gradient(
       to top,
       var(--theme-panel-bg, rgba(20, 25, 35, 0.98)) 0%,
-      color-mix(in srgb, var(--theme-panel-bg, rgba(20, 25, 35, 0.95)) 95%, transparent) 50%,
+      color-mix(
+          in srgb,
+          var(--theme-panel-bg, rgba(20, 25, 35, 0.95)) 95%,
+          transparent
+        )
+        50%,
       transparent 100%
     );
     border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
@@ -272,7 +277,11 @@
 
   :global(.input:focus) {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 60%,
+      transparent
+    );
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
@@ -389,7 +398,10 @@
 
   :global(.hint) {
     font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65)); /* Improved contrast for WCAG AA */
+    color: var(
+      --theme-text-dim,
+      rgba(255, 255, 255, 0.65)
+    ); /* Improved contrast for WCAG AA */
     margin: 6px 0 0 0;
     transition: all 0.2s ease;
   }
@@ -454,15 +466,15 @@
   }
 
   :global(.button--primary) {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
     color: white;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   :global(.button--primary:hover:not(:disabled)) {
-    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #4f46e5), color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   :global(.button:active:not(:disabled)) {
@@ -477,7 +489,7 @@
 
   :global(.button--link) {
     background: transparent;
-    color: rgba(99, 102, 241, 0.9);
+    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     box-shadow: none;
     padding: clamp(8px, 1.2vh, 10px) 0;
     min-height: auto;
@@ -497,7 +509,7 @@
 
   :global(.button--link:hover:not(:disabled)) {
     background: transparent;
-    color: rgba(99, 102, 241, 1);
+    color: var(--theme-accent, #6366f1);
     transform: none;
     box-shadow: none;
     text-decoration: underline;
@@ -520,12 +532,12 @@
 
   /* Accessibility - Focus Indicators */
   :global(.input:focus-visible) {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
   }
 
   :global(.button:focus-visible) {
-    outline: 3px solid rgba(99, 102, 241, 0.9);
+    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
   }
 

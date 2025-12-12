@@ -4,7 +4,7 @@ Uses shared PositionSection components for consistent UX with Generate module
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { PositionSection } from "$lib/shared/components/position-picker";
+  import PositionSection from "$lib/shared/components/position-picker/PositionSection.svelte";
 
   let {
     startPosition = null,

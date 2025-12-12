@@ -13,7 +13,7 @@ Uses singleton state for caching - data persists across tab switches.
   import type { ICollectionService } from "$lib/features/library/services/contracts/ICollectionService";
   import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte.ts";
+  import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import { discoverNavigationState } from "../../shared/state/discover-navigation-state.svelte";
   import {
     collectionsBrowseState,
@@ -45,7 +45,7 @@ Uses singleton state for caching - data persists across tab switches.
   let searchQuery = $state("");
 
   // Get current user ID
-  const currentUserId = $derived(authStore.user?.uid);
+  const currentUserId = $derived(authState.user?.uid);
 
   // Reactive getters from cached state
   const creatorLibraries = $derived(collectionsBrowseState.creatorLibraries);
@@ -226,12 +226,12 @@ Uses singleton state for caching - data persists across tab switches.
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   .panel-title i {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .spacer {

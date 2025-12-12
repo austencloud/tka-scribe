@@ -257,7 +257,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(0, 0, 0, 0.98);
+		background: color-mix(in srgb, var(--theme-shadow, #000) 98%, transparent);
 		z-index: 100;
 		animation: fadeIn 0.4s ease-out;
 	}
@@ -322,7 +322,7 @@
 		font-size: 2.5rem;
 		font-weight: 800;
 		margin: 0;
-		background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent, #8b5cf6));
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
@@ -353,8 +353,8 @@
 		justify-content: center;
 		gap: 1.5rem;
 		padding: 1rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px solid rgba(255, 255, 255, 0.1);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+		border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
 		border-radius: 12px;
 	}
 
@@ -406,7 +406,7 @@
 	.accuracy-text {
 		font-size: 1.25rem;
 		font-weight: 700;
-		color: white;
+		color: var(--theme-text, white);
 	}
 
 	@media (max-width: 768px) {
@@ -433,14 +433,14 @@
 		align-items: center;
 		gap: 0.25rem;
 		padding: 0.75rem 0.5rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
 		border-radius: 8px;
 		transition: all 0.3s;
 	}
 
 	.stat-card:hover {
-		background: rgba(255, 255, 255, 0.08);
+		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
 	}
 
 	.stat-icon {
@@ -454,23 +454,23 @@
 	}
 
 	.stat-icon.score {
-		background: rgba(234, 179, 8, 0.2);
-		color: #eab308;
+		background: color-mix(in srgb, var(--semantic-warning, #eab308) 20%, transparent);
+		color: var(--semantic-warning, #eab308);
 	}
 
 	.stat-icon.hits {
-		background: rgba(34, 197, 94, 0.2);
-		color: #22c55e;
+		background: color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent);
+		color: var(--semantic-success, #22c55e);
 	}
 
 	.stat-icon.misses {
-		background: rgba(239, 68, 68, 0.2);
-		color: #ef4444;
+		background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+		color: var(--semantic-error, #ef4444);
 	}
 
 	.stat-icon.combo {
-		background: rgba(59, 130, 246, 0.2);
-		color: #3b82f6;
+		background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+		color: var(--semantic-info, #3b82f6);
 	}
 
 	.stat-icon svg {
@@ -481,7 +481,7 @@
 	.stat-value {
 		font-size: 1.25rem;
 		font-weight: 700;
-		color: white;
+		color: var(--theme-text, white);
 		font-variant-numeric: tabular-nums;
 	}
 
@@ -489,7 +489,7 @@
 		font-size: 0.7rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
 		font-weight: 600;
 	}
 
@@ -498,8 +498,8 @@
 		flex-direction: column;
 		gap: 0.25rem;
 		padding: 0.75rem 1rem;
-		background: rgba(255, 255, 255, 0.05);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
 		border-radius: 8px;
 	}
 
@@ -508,7 +508,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 0.25rem 0;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		border-bottom: 1px solid color-mix(in srgb, var(--theme-stroke, rgba(255, 255, 255, 0.1)) 50%, transparent);
 	}
 
 	.detail-row:last-child {
@@ -517,13 +517,13 @@
 
 	.detail-label {
 		font-size: 0.8rem;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
 	}
 
 	.detail-value {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: white;
+		color: var(--theme-text, white);
 		font-variant-numeric: tabular-nums;
 	}
 
@@ -533,8 +533,8 @@
 		justify-content: center;
 		padding: 1rem 1.25rem;
 		flex-shrink: 0; /* Never shrink - always visible */
-		background: rgba(0, 0, 0, 0.8);
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
+		border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
 	}
 
 	@media (max-width: 768px) {
@@ -561,14 +561,14 @@
 	}
 
 	.primary-button {
-		background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent, #8b5cf6));
 		border: none;
-		color: white;
+		color: var(--theme-text, white);
 	}
 
 	.primary-button:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+		box-shadow: 0 8px 20px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
 	}
 
 	.primary-button svg {
@@ -578,19 +578,21 @@
 
 	.secondary-button {
 		background: transparent;
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		color: white;
+		border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+		color: var(--theme-text, white);
 	}
 
 	.secondary-button:hover {
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
 	}
 
 	/* XP Section */
 	.xp-section {
 		padding: 0.75rem 1rem;
-		background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.05));
-		border: 1px solid rgba(234, 179, 8, 0.3);
+		background: linear-gradient(135deg,
+			color-mix(in srgb, var(--semantic-warning, #eab308) 10%, transparent),
+			color-mix(in srgb, var(--semantic-warning, #f59e0b) 5%, transparent));
+		border: 1px solid color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
 		border-radius: 8px;
 	}
 
@@ -604,14 +606,14 @@
 	.xp-header svg {
 		width: 18px;
 		height: 18px;
-		color: #eab308;
+		color: var(--semantic-warning, #eab308);
 	}
 
 	.xp-header h3 {
 		margin: 0;
 		font-size: 0.9rem;
 		font-weight: 700;
-		color: #eab308;
+		color: var(--semantic-warning, #eab308);
 	}
 
 	.xp-breakdown {
@@ -625,11 +627,11 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 0.25rem 0;
-		color: rgba(255, 255, 255, 0.8);
+		color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
 	}
 
 	.xp-row.bonus {
-		color: rgba(234, 179, 8, 0.9);
+		color: color-mix(in srgb, var(--semantic-warning, #eab308) 90%, transparent);
 	}
 
 	.xp-label {
@@ -648,33 +650,37 @@
 		align-items: center;
 		padding: 0.5rem 0;
 		margin-top: 0.25rem;
-		border-top: 1px solid rgba(234, 179, 8, 0.3);
+		border-top: 1px solid color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
 	}
 
 	.xp-total-label {
 		font-size: 0.9rem;
 		font-weight: 700;
-		color: white;
+		color: var(--theme-text, white);
 	}
 
 	.xp-total-value {
 		font-size: 1.125rem;
 		font-weight: 800;
-		color: #eab308;
+		color: var(--semantic-warning, #eab308);
 		font-variant-numeric: tabular-nums;
 	}
 
 	/* Challenge Section */
 	.challenge-section {
 		padding: 0.75rem 1rem;
-		background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
-		border: 1px solid rgba(59, 130, 246, 0.3);
+		background: linear-gradient(135deg,
+			color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent),
+			color-mix(in srgb, var(--theme-accent, #8b5cf6) 5%, transparent));
+		border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
 		border-radius: 8px;
 	}
 
 	.challenge-section.complete {
-		background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
-		border-color: rgba(34, 197, 94, 0.3);
+		background: linear-gradient(135deg,
+			color-mix(in srgb, var(--semantic-success, #22c55e) 10%, transparent),
+			color-mix(in srgb, var(--semantic-success, #10b981) 5%, transparent));
+		border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
 	}
 
 	.challenge-header {
@@ -687,22 +693,22 @@
 	.challenge-header svg {
 		width: 18px;
 		height: 18px;
-		color: #3b82f6;
+		color: var(--semantic-info, #3b82f6);
 	}
 
 	.challenge-section.complete .challenge-header svg {
-		color: #22c55e;
+		color: var(--semantic-success, #22c55e);
 	}
 
 	.challenge-header h3 {
 		margin: 0;
 		font-size: 0.9rem;
 		font-weight: 700;
-		color: #3b82f6;
+		color: var(--semantic-info, #3b82f6);
 	}
 
 	.challenge-section.complete .challenge-header h3 {
-		color: #22c55e;
+		color: var(--semantic-success, #22c55e);
 	}
 
 	.challenge-info {
@@ -714,7 +720,7 @@
 	.challenge-title {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: white;
+		color: var(--theme-text, white);
 	}
 
 	.challenge-progress-bar {
@@ -726,26 +732,26 @@
 	.progress-track {
 		width: 100%;
 		height: 6px;
-		background: rgba(255, 255, 255, 0.1);
+		background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
 		border-radius: 3px;
 		overflow: hidden;
 	}
 
 	.progress-fill {
 		height: 100%;
-		background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+		background: linear-gradient(90deg, var(--semantic-info, #3b82f6), var(--theme-accent, #8b5cf6));
 		border-radius: 3px;
 		transition: width 0.5s ease-out;
 	}
 
 	.challenge-section.complete .progress-fill {
-		background: linear-gradient(90deg, #22c55e, #10b981);
+		background: linear-gradient(90deg, var(--semantic-success, #22c55e), var(--semantic-success, #10b981));
 	}
 
 	.progress-text {
 		font-size: 0.75rem;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
 		text-align: center;
 		font-variant-numeric: tabular-nums;
 	}
@@ -756,19 +762,19 @@
 		justify-content: center;
 		gap: 0.5rem;
 		padding: 0.5rem;
-		background: rgba(34, 197, 94, 0.2);
+		background: color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent);
 		border-radius: 6px;
 	}
 
 	.reward-label {
 		font-size: 0.75rem;
-		color: rgba(255, 255, 255, 0.8);
+		color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
 	}
 
 	.reward-value {
 		font-size: 0.9rem;
 		font-weight: 700;
-		color: #22c55e;
+		color: var(--semantic-success, #22c55e);
 		font-variant-numeric: tabular-nums;
 	}
 </style>

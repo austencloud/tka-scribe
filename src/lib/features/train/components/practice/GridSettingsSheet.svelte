@@ -184,7 +184,7 @@
 <style>
   /* Backdrop styling */
   :global(.grid-settings-backdrop) {
-    background: rgba(0, 0, 0, 0.7) !important;
+    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent) !important;
   }
 
   /* Drawer content styling - content-aware sizing */
@@ -221,7 +221,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     margin-bottom: 16px;
   }
 
@@ -231,15 +231,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(59, 130, 246, 0.15);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
   }
 
   .header-icon i {
     font-size: 14px;
-    color: #60a5fa;
+    color: var(--semantic-info, #60a5fa);
   }
 
   .header-content {
@@ -251,13 +251,13 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .panel-subtitle {
     margin: 2px 0 0 0;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .close-btn {
@@ -267,9 +267,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -277,8 +277,8 @@
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .settings-content {
@@ -332,7 +332,7 @@
     display: block;
     font-size: 0.7rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -349,10 +349,10 @@
     align-items: center;
     gap: 6px;
     padding: 12px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -364,25 +364,25 @@
   }
 
   .mode-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .mode-btn.active {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2) 0%,
-      rgba(37, 99, 235, 0.2) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info, #2563eb) 20%, transparent) 100%
     );
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, #3b82f6);
   }
 
   .mode-hint {
     margin: 0;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.45);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.45)) 80%, transparent);
     line-height: 1.3;
     text-align: center;
   }
@@ -399,19 +399,19 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .scale-btn:hover:not(:disabled) {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: #3b82f6;
-    color: #3b82f6;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    border-color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, #3b82f6);
   }
 
   .scale-btn:active:not(:disabled) {
@@ -428,7 +428,7 @@
     text-align: center;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #3b82f6;
+    color: var(--semantic-info, #3b82f6);
     font-variant-numeric: tabular-nums;
   }
 
@@ -473,10 +473,10 @@
 
   .reset-btn {
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 0.7rem;
     font-weight: 500;
     cursor: pointer;
@@ -484,8 +484,8 @@
   }
 
   .reset-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   @container (min-width: 360px) {
@@ -501,10 +501,10 @@
     justify-content: center;
     gap: 10px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -528,19 +528,19 @@
   }
 
   .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .toggle-btn.active {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.2) 0%,
-      rgba(37, 99, 235, 0.2) 100%
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info, #2563eb) 20%, transparent) 100%
     );
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, #3b82f6);
   }
 
   /* Safe area for mobile */
@@ -556,7 +556,7 @@
   .toggle-btn:focus-visible,
   .reset-btn:focus-visible,
   .scale-btn:focus-visible {
-    outline: 2px solid rgba(59, 130, 246, 0.8);
+    outline: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
     outline-offset: 2px;
   }
 

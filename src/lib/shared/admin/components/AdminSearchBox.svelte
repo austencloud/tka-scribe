@@ -53,8 +53,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     padding: 10px 12px;
     transition: all 0.2s;
@@ -70,13 +70,13 @@
   }
 
   .admin-search-box:focus-within {
-    border-color: rgba(102, 126, 234, 0.5);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .search-icon {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 14px;
     flex-shrink: 0;
   }
@@ -102,9 +102,9 @@
   }
 
   .clear-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     padding: 6px;
     display: flex;
@@ -119,8 +119,8 @@
 
   @media (hover: hover) {
     .clear-btn:hover {
-      color: rgba(255, 255, 255, 0.9);
-      background: rgba(255, 255, 255, 0.15);
+      color: var(--theme-text, rgba(255, 255, 255, 0.9));
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     }
   }
 
