@@ -268,7 +268,7 @@ and smooth hover animations.
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.15),
       0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-      0 0 30px rgba(99, 102, 241, 0.1);
+      0 0 30px color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .quiz-card:active:not(.disabled) {
@@ -283,7 +283,7 @@ and smooth hover animations.
   }
 
   .quiz-card:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.8);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
     outline-offset: 3px;
   }
 
@@ -297,12 +297,12 @@ and smooth hover animations.
     justify-content: center;
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.2),
-      rgba(139, 92, 246, 0.15)
+      color-mix(in srgb, var(--theme-accent) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent) 15%, transparent)
     );
     border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     transition: all 280ms ease;
   }
 
@@ -314,10 +314,10 @@ and smooth hover animations.
   .quiz-card:hover:not(.disabled) .card-icon {
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.35),
-      rgba(139, 92, 246, 0.25)
+      color-mix(in srgb, var(--theme-accent) 35%, transparent),
+      color-mix(in srgb, var(--theme-accent) 25%, transparent)
     );
-    border-color: rgba(99, 102, 241, 0.5);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     transform: scale(1.05);
   }
 

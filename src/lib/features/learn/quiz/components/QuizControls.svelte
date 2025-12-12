@@ -122,14 +122,14 @@
 
   .control-button:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .control-button:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .control-button:disabled {
@@ -181,18 +181,18 @@
   .restart-button {
     background: linear-gradient(
       135deg,
-      rgba(102, 126, 234, 0.2),
-      rgba(118, 75, 162, 0.2)
+      color-mix(in srgb, var(--theme-accent) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent) 20%, transparent)
     );
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .restart-button:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(102, 126, 234, 0.3),
-      rgba(118, 75, 162, 0.3)
+      color-mix(in srgb, var(--theme-accent) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent) 30%, transparent)
     );
-    border-color: rgba(102, 126, 234, 0.6);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
   }
 </style>

@@ -143,17 +143,13 @@ Fixed Questions mode (set number) and Countdown mode (timed challenge).
     left: 4px;
     width: calc(50% - 4px);
     height: calc(100% - 8px);
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 0.9),
-      rgba(79, 70, 229, 0.9)
-    );
+    background: var(--theme-accent, #667eea);
     border-radius: 12px;
     transform: translateX(calc(var(--slider-position) * 100%));
     transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-      0 2px 8px rgba(99, 102, 241, 0.4),
-      0 0 20px rgba(99, 102, 241, 0.2);
+      0 2px 8px color-mix(in srgb, var(--theme-accent) 40%, transparent),
+      0 0 20px color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .segment {
@@ -193,7 +189,7 @@ Fixed Questions mode (set number) and Countdown mode (timed challenge).
   }
 
   .segment:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.8);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
     outline-offset: 2px;
   }
 

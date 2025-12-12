@@ -342,13 +342,9 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     align-items: center;
     justify-content: center;
     padding: 1rem 3rem;
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 0.4) 0%,
-      rgba(168, 85, 247, 0.4) 100%
-    );
+    background: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     backdrop-filter: blur(20px);
-    border: 2px solid rgba(99, 102, 241, 0.6);
+    border: 2px solid color-mix(in srgb, var(--theme-accent) 60%, transparent);
     border-radius: 12px;
     color: white;
     font-size: 1.125rem;
@@ -362,13 +358,9 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   }
 
   .next-button:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 0.5) 0%,
-      rgba(168, 85, 247, 0.5) 100%
-    );
-    border-color: rgba(99, 102, 241, 0.8);
-    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 80%, transparent);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .next-button:active {

@@ -180,8 +180,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .orientation-selector:focus {
-    border-color: rgba(99, 102, 241, 0.6);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .orientation-selector option {
@@ -235,7 +235,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .control-button:focus-visible {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 70%, transparent);
     outline-offset: 2px;
   }
 

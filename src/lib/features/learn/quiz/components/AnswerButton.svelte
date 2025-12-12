@@ -140,9 +140,9 @@
   }
 
   .answer-button.selected {
-    background: rgba(102, 126, 234, 0.3);
-    border-color: #667eea;
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    border-color: var(--theme-accent, #667eea);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .answer-button.correct {
@@ -279,7 +279,7 @@
 
   /* Focus styles for accessibility */
   .answer-button:focus {
-    outline: 3px solid #667eea;
+    outline: 3px solid var(--theme-accent, #667eea);
     outline-offset: 2px;
   }
 

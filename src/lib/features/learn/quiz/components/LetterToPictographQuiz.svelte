@@ -341,7 +341,7 @@
     width: 52px;
     height: 52px;
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-left-color: #667eea;
+    border-left-color: var(--theme-accent, #667eea);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -361,7 +361,7 @@
 
   .retry-btn {
     padding: 0.625rem 1.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--theme-accent, #667eea);
     border: none;
     border-radius: 10px;
     color: white;
@@ -375,7 +375,7 @@
 
   .retry-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   /* ===========================================
@@ -407,15 +407,15 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      rgba(102, 126, 234, 0.15),
-      rgba(118, 75, 162, 0.15)
+      color-mix(in srgb, var(--theme-accent) 15%, transparent),
+      color-mix(in srgb, var(--theme-accent) 15%, transparent)
     );
     border-radius: 20px;
     border: 2px solid rgba(255, 255, 255, 0.15);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.08),
-      0 0 80px -20px rgba(102, 126, 234, 0.15);
+      0 0 80px -20px color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .letter {
@@ -464,9 +464,9 @@
 
   .answer-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(102, 126, 234, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .answer-btn:active:not(:disabled) {
@@ -675,7 +675,7 @@
       box-shadow:
         0 12px 50px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 0 120px -30px rgba(102, 126, 234, 0.2);
+        0 0 120px -30px color-mix(in srgb, var(--theme-accent) 20%, transparent);
     }
 
     .letter {

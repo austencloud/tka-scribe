@@ -241,8 +241,8 @@
 
   .retry-button {
     padding: 10px 20px;
-    background: rgba(99, 102, 241, 0.2);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.9);
     font-family: var(
@@ -259,8 +259,8 @@
   }
 
   .retry-button:hover {
-    background: rgba(99, 102, 241, 0.3);
-    border-color: rgba(99, 102, 241, 0.5);
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   .retry-button:active {
@@ -271,7 +271,7 @@
     width: 32px;
     height: 32px;
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-left: 3px solid rgba(99, 102, 241, 0.8);
+    border-left: 3px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

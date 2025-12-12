@@ -256,11 +256,7 @@ Provides instant visual feedback (correct = green glow, wrong = red shake).
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(
-      90deg,
-      rgba(99, 102, 241, 0.8),
-      rgba(168, 85, 247, 0.8)
-    );
+    background: var(--theme-accent, #667eea);
     border-radius: 3px;
     transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -317,12 +313,12 @@ Provides instant visual feedback (correct = green glow, wrong = red shake).
   }
 
   .click-target:hover {
-    fill: rgba(99, 102, 241, 0.15);
+    fill: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .click-target:focus {
     outline: none;
-    fill: rgba(99, 102, 241, 0.2);
+    fill: color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   /* Correct feedback - green glow */
