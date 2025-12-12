@@ -36,7 +36,7 @@
   .field-label {
     font-size: var(--text-2026-caption);
     font-weight: var(--settings-font-weight-semibold);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
   }
 
   .toggle-button {
@@ -47,7 +47,7 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     min-height: 52px;
   }
 
@@ -70,7 +70,7 @@
     left: 3px;
     width: 22px;
     height: 22px;
-    background: var(--text-secondary-current);
+    background: var(--theme-text-dim);
     border-radius: 50%;
     transition: all var(--transition-fast);
     box-shadow: var(--shadow-2026-sm);

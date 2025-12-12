@@ -35,7 +35,7 @@
     margin: 0 0 var(--radius-2026-sm) 0;
     font-size: var(--text-2026-caption);
     font-weight: var(--settings-font-weight-semibold);
-    color: var(--text-primary-current);
+    color: var(--theme-text);
   }
 
   @media (min-width: 480px) {
@@ -62,13 +62,13 @@
 
   .status-label {
     font-size: var(--text-2026-caption);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     font-weight: var(--settings-font-weight-medium);
   }
 
   .status-value {
     font-size: var(--text-2026-caption);
-    color: var(--text-primary-current);
+    color: var(--theme-text);
     font-weight: var(--settings-font-weight-medium);
     display: flex;
     align-items: center;

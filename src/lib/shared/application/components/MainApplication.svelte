@@ -19,6 +19,7 @@
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
   import { authStore } from "../../auth/stores/authStore.svelte";
+  import LandingPage from "../../auth/components/LandingPage.svelte";
   import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import { ThemeService } from "../../theme/services/ThemeService";
@@ -48,7 +49,6 @@
   import { handleModuleChange } from "../../navigation-coordinator/navigation-coordinator.svelte";
   import {
     ensureContainerInitialized,
-    resolve,
     isContainerReady,
   } from "../../inversify/di";
 
@@ -66,6 +66,10 @@
   let isInitialized = $derived(getIsInitialized());
   let initializationError = $derived(getInitializationError());
   let settings = $derived(getSettings());
+
+  // Auth state for gating
+  const isAuthenticated = $derived(authStore.isAuthenticated);
+  const authLoading = $derived(authStore.isLoading);
 
   // Route-based sheet state
   let currentSheetType = $state<SheetType>(null);
@@ -91,10 +95,10 @@
           }
 
           if (!servicesResolved) {
-            initService = resolve(TYPES.IApplicationInitializer);
-            settingsService = resolve(TYPES.ISettingsState);
-            deviceService = resolve(TYPES.IDeviceDetector);
-            sheetRouterService = resolve(TYPES.ISheetRouterService);
+            initService = container.get<IApplicationInitializer>(TYPES.IApplicationInitializer);
+            settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
+            deviceService = container.get<IDeviceDetector>(TYPES.IDeviceDetector);
+            sheetRouterService = container.get<ISheetRouterService>(TYPES.ISheetRouterService);
             servicesResolved = true;
           }
         } catch (error) {
@@ -333,8 +337,11 @@
       error={initializationError}
       onRetry={() => window.location.reload()}
     />
-  {:else}
-    <!-- Main Interface - Always shown, progressive loading inside -->
+  {:else if !isAuthenticated && !authLoading}
+    <!-- Auth Gate: Show landing page for logged-out users -->
+    <LandingPage />
+  {:else if isAuthenticated}
+    <!-- Main Interface - Full app for authenticated users -->
     <MainInterface />
 
     <!-- Auth sheet (route-based) -->

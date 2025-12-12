@@ -157,14 +157,18 @@ beforeEach(() => {
     );
   }
 
-  // Ensure CSV data is available in window for tests
+  // Ensure CSV data is available in window for tests (optional - some tests don't need it)
   if (typeof window !== "undefined" && !window.csvData) {
-    const diamondData = readFileSync(diamondCsvPath, "utf-8");
-    const boxData = readFileSync(boxCsvPath, "utf-8");
-    (window as any).csvData = {
-      diamondData,
-      boxData,
-    };
+    try {
+      const diamondData = readFileSync(diamondCsvPath, "utf-8");
+      const boxData = readFileSync(boxCsvPath, "utf-8");
+      (window as any).csvData = {
+        diamondData,
+        boxData,
+      };
+    } catch {
+      // CSV files not available - tests that need them will fail individually
+    }
   }
 });
 

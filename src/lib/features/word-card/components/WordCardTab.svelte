@@ -1,15 +1,15 @@
 <!-- WordCardTab.svelte - Simple page-based word card tab matching legacy desktop -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "../../discover/gallery/display/services/contracts/IDiscoverLoader";
   import WordCardNavigation from "./Navigation.svelte";
   import PageDisplay from "./PageDisplay.svelte";
 
-  // Use the explore loader service directly
-  const loaderService = resolve(TYPES.IDiscoverLoader) as IDiscoverLoader;
+  // Loader service - resolved lazily
+  let loaderService = $state<IDiscoverLoader | null>(null);
 
   // Simple state matching legacy desktop
   let sequences: SequenceData[] = $state([]);
@@ -35,10 +35,14 @@
 
   // Load sequences on mount
   onMount(async () => {
+    const container = await getContainerInstance();
+    loaderService = container.get<IDiscoverLoader>(TYPES.IDiscoverLoader);
     await loadSequences();
   });
 
   async function loadSequences() {
+    if (!loaderService) return;
+
     try {
       isLoading = true;
       error = null;

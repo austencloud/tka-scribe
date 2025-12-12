@@ -134,7 +134,7 @@
     justify-content: center;
     padding: var(--settings-space-2xl) var(--settings-space-lg);
     gap: var(--space-2026-sm);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
   }
 
   .loading-state i {

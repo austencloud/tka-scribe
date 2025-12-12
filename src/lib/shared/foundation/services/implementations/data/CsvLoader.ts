@@ -125,8 +125,8 @@ export class CsvLoader implements ICSVLoader {
     return (sharedIsLoaded && sharedCsvCache !== null) || (this.isLoaded && this.csvData !== null);
   }
   private static readonly CSV_FILES = {
-    DIAMOND: "/DiamondPictographDataframe.csv",
-    BOX: "/BoxPictographDataframe.csv",
+    DIAMOND: "/data/pictographs/DiamondPictographDataframe.csv",
+    BOX: "/data/pictographs/BoxPictographDataframe.csv",
   } as const;
 
   private csvData: CsvDataSet | null = null;

@@ -5,7 +5,7 @@
   Shows all videos where user has been invited but hasn't responded.
 -->
 <script lang="ts">
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
@@ -23,8 +23,9 @@
   let loading = $state(true);
   let error = $state<string | null>(null);
 
-  onMount(() => {
-    videoService = resolve(TYPES.ICollaborativeVideoService) as ICollaborativeVideoService;
+  onMount(async () => {
+    const container = await getContainerInstance();
+    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
     loadPendingInvites();
   });
 

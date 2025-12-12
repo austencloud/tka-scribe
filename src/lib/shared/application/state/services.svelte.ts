@@ -1,5 +1,5 @@
 import type { IPersistenceService } from "../../persistence/services/contracts/IPersistenceService";
-import { ensureContainerInitialized, resolve } from "../../inversify/di";
+import { ensureContainerInitialized, getContainerInstance } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
 
@@ -12,7 +12,8 @@ export async function initializeAppServices(): Promise<void> {
   if (isInitialized) return;
 
   await ensureContainerInitialized();
-  settingsService = await resolve(TYPES.ISettingsState);
+  const container = await getContainerInstance();
+  settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
   isInitialized = true;
 }
 
@@ -33,11 +34,8 @@ export function getSettingsServiceSync(): ISettingsState {
 
 export async function getSettingsService(): Promise<ISettingsState> {
   if (!settingsService) {
-    const resolved = resolve<ISettingsState>(TYPES.ISettingsState);
-    if (!resolved) {
-      throw new Error("Failed to resolve ISettingsState");
-    }
-    settingsService = resolved;
+    const container = await getContainerInstance();
+    settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
   }
   if (!settingsService) {
     throw new Error("Settings service is null after resolution");
@@ -45,13 +43,10 @@ export async function getSettingsService(): Promise<ISettingsState> {
   return settingsService;
 }
 
-export function getPersistenceService(): IPersistenceService {
+export async function getPersistenceService(): Promise<IPersistenceService> {
   if (!persistenceService) {
-    const resolved = resolve<IPersistenceService>(TYPES.IPersistenceService);
-    if (!resolved) {
-      throw new Error("Failed to resolve IPersistenceService");
-    }
-    persistenceService = resolved;
+    const container = await getContainerInstance();
+    persistenceService = container.get<IPersistenceService>(TYPES.IPersistenceService);
   }
   if (!persistenceService) {
     throw new Error("Persistence service is null after resolution");

@@ -93,9 +93,9 @@
     background: linear-gradient(
       180deg,
       rgba(139, 92, 246, 0.04) 0%,
-      rgba(255, 255, 255, 0.02) 100%
+      var(--theme-card-bg, rgba(255, 255, 255, 0.02)) 100%
     );
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     position: sticky;
     top: 0;
     z-index: 10;
@@ -124,10 +124,10 @@
   .search-input {
     width: 100%;
     padding: 14px 44px 14px 44px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 14px;
     font-weight: 500;
     outline: none;
@@ -136,7 +136,7 @@
   }
 
   .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
     font-weight: 400;
   }
 
@@ -157,10 +157,10 @@
     width: 28px;
     height: 28px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -193,12 +193,12 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     white-space: nowrap;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -207,7 +207,7 @@
 
   .context-chip .chip-icon {
     font-size: 11px;
-    color: var(--chip-color, rgba(255, 255, 255, 0.4));
+    color: var(--chip-color, var(--theme-text-dim, rgba(255, 255, 255, 0.4)));
     opacity: 0.7;
     transition: all 0.2s ease;
   }
@@ -215,7 +215,7 @@
   .context-chip:hover {
     background: color-mix(in srgb, var(--chip-color) 10%, transparent);
     border-color: color-mix(in srgb, var(--chip-color) 30%, transparent);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     transform: translateY(-1px);
   }
 

@@ -62,7 +62,7 @@ export const RESOURCES: Resource[] = [
     description:
       "Comprehensive introduction to The Kinetic Alphabet methodology",
     url: "https://drive.google.com/file/d/1cgAWbrFiLgUSDEsCB0Mmu2d7Bu5PW45a/view?usp=drive_link",
-    icon: "/guide-cover.png",
+    icon: "/branding/guide-cover.png",
     type: "download",
   },
 ];

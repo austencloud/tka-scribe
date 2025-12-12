@@ -106,7 +106,7 @@
     margin: 0 0 var(--radius-2026-sm) 0;
     font-size: var(--text-2026-caption);
     font-weight: var(--settings-font-weight-semibold);
-    color: var(--text-primary-current);
+    color: var(--theme-text);
   }
 
   @media (min-width: 480px) {
@@ -119,7 +119,7 @@
   .detail-section p {
     margin: 0;
     font-size: var(--text-2026-caption);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     line-height: 1.5;
   }
 

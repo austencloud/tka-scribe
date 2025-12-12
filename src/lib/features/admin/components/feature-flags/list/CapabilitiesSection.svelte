@@ -45,7 +45,7 @@
     margin-bottom: var(--space-2026-sm);
     font-size: var(--text-2026-caption);
     font-weight: var(--settings-font-weight-semibold);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }

@@ -47,6 +47,37 @@ This project follows a **2025+ AI-assisted development approach**:
 - Container queries (`cqw`, `cqh`) for component-relative sizing
 - Mobile-first with progressive enhancement
 
+### CSS Variable Hierarchy (3 Layers)
+See `src/lib/shared/settings/utils/background-theme-calculator.ts` for implementation.
+
+**Layer 1: Static Layout Tokens (`--settings-*`)**
+- Defined in `settings-tokens.css`
+- Spacing, radius, typography, transitions
+- Do NOT change with background
+
+**Layer 2: Dynamic Theme Variables (`--theme-*`)**
+- Injected by background-theme-calculator based on luminance
+- Adapt to light/dark backgrounds
+- Use for: surfaces, text, borders, accents, shadows
+- Variables: `--theme-panel-bg`, `--theme-card-bg`, `--theme-accent`, `--theme-text`, etc.
+
+**Layer 3: Semantic Colors (`--semantic-*`, `--prop-*`)**
+- Constant colors that never change with background
+- Status: `--semantic-error`, `--semantic-success`, `--semantic-warning`, `--semantic-info`
+- Domain-specific: `--prop-blue`, `--prop-red`
+
+**Pattern for new components:**
+```css
+.card {
+  background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  color: var(--theme-text, #ffffff);
+}
+.error { color: var(--semantic-error); }
+```
+
+**Legacy (`--*-current`)**: Still used by 30+ components. Migration ongoing.
+
 ---
 
 ## Conversation Patterns
@@ -161,7 +192,7 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 
 ---
 
-*Last updated: 2025-12-10*
+*Last updated: 2025-12-12*
 
 ## Context Management
 When context usage exceeds 20%, proactively suggest running /compact before continuing with new tasks.

@@ -44,7 +44,7 @@
   .field-label {
     font-size: var(--text-2026-caption);
     font-weight: var(--settings-font-weight-semibold);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
   }
 
   .role-chips {
@@ -67,7 +67,7 @@
     border: 2px solid var(--border-2026);
     border-radius: var(--radius-2026-full);
     background: var(--surface-2026);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     font-size: var(--text-2026-micro);
     font-weight: var(--settings-font-weight-medium);
     cursor: pointer;
@@ -86,7 +86,7 @@
     .role-chip:hover {
       border-color: var(--border-2026-hover);
       background: var(--surface-2026-hover);
-      color: var(--text-primary-current);
+      color: var(--theme-text);
     }
   }
 

@@ -31,8 +31,12 @@ export const PROP_TYPE_DISPLAY_REGISTRY: Record<PropType, PropTypeDisplayInfo> =
       image: "/images/props/staff_v2.svg",
     },
 
-    // === CLUB ===
+    // === CLUB FAMILY ===
     [PropType.CLUB]: { label: "Club", image: "/images/props/club.svg" },
+    [PropType.BIGCLUB]: {
+      label: "Big Club",
+      image: "/images/props/bigclub.svg",
+    },
 
     // === FAN FAMILY ===
     [PropType.FAN]: { label: "Fan", image: "/images/props/fan.svg" },
@@ -161,6 +165,8 @@ export const VARIANT_PROP_TYPES: PropType[] = [
   PropType.SIMPLESTAFF,
   PropType.BIGSTAFF,
   PropType.STAFF2,
+  // Club family
+  PropType.BIGCLUB,
   // Fan family
   PropType.BIGFAN,
   // Triad family
@@ -190,6 +196,8 @@ const VARIANT_TO_BASE: Partial<Record<PropType, PropType>> = {
   [PropType.SIMPLESTAFF]: PropType.STAFF,
   [PropType.BIGSTAFF]: PropType.STAFF,
   [PropType.STAFF2]: PropType.STAFF,
+  // Club variations
+  [PropType.BIGCLUB]: PropType.CLUB,
   // Fan variations
   [PropType.BIGFAN]: PropType.FAN,
   // Triad variations
@@ -217,6 +225,7 @@ const VARIANT_TO_BASE: Partial<Record<PropType, PropType>> = {
  */
 const BASE_TO_VARIANTS: Partial<Record<PropType, PropType[]>> = {
   [PropType.STAFF]: [PropType.SIMPLESTAFF, PropType.BIGSTAFF, PropType.STAFF2],
+  [PropType.CLUB]: [PropType.BIGCLUB],
   [PropType.FAN]: [PropType.BIGFAN],
   [PropType.TRIAD]: [PropType.BIGTRIAD],
   [PropType.MINIHOOP]: [PropType.BIGHOOP],

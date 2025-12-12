@@ -302,7 +302,7 @@
     width: 100%;
     max-width: 420px;
     background: var(--background, #1a1a1a);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     overflow: hidden;
@@ -322,7 +322,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .capture-sheet .capture-header {
@@ -333,7 +333,7 @@
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .close-btn {
@@ -343,17 +343,17 @@
     width: 36px;
     height: 36px;
     padding: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 150ms ease;
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .capture-content {
@@ -371,7 +371,7 @@
   .shortcut-name {
     font-size: 15px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     text-align: center;
   }
 
@@ -384,7 +384,7 @@
 
   .binding-label {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .capture-area {
@@ -393,7 +393,7 @@
     justify-content: center;
     min-height: 80px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border: 2px dashed rgba(99, 102, 241, 0.4);
     border-radius: 12px;
     cursor: pointer;
@@ -436,7 +436,7 @@
 
   .capture-placeholder {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .capture-input {
@@ -451,7 +451,7 @@
     justify-content: center;
     gap: 10px;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .capture-footer {
@@ -459,7 +459,7 @@
     align-items: center;
     gap: 8px;
     padding: 16px 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .capture-sheet .capture-footer {
@@ -495,13 +495,13 @@
   }
 
   .btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.25);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 </style>

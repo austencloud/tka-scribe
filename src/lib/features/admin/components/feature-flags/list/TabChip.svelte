@@ -49,7 +49,7 @@
     border: 1px solid var(--settings-glass-border);
     border-radius: var(--settings-radius-sm);
     font-size: var(--text-2026-micro);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all var(--transition-fast);
     min-height: 52px;
@@ -93,7 +93,7 @@
   }
 
   .disabled-icon {
-    color: #f87171;
+    color: var(--semantic-error, #f87171);
     font-size: 10px;
     margin-left: 2px;
   }

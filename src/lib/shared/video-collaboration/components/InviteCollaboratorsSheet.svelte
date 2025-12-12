@@ -5,7 +5,7 @@
   Allows searching users and sending collaboration invites.
 -->
 <script lang="ts">
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
   import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
@@ -33,10 +33,11 @@
   let videoService = $state<ICollaborativeVideoService>();
   let hapticService = $state<IHapticFeedbackService>();
 
-  onMount(() => {
-    userService = resolve(TYPES.IUserService) as IUserService;
-    videoService = resolve(TYPES.ICollaborativeVideoService) as ICollaborativeVideoService;
-    hapticService = resolve(TYPES.IHapticFeedbackService) as IHapticFeedbackService;
+  onMount(async () => {
+    const container = await getContainerInstance();
+    userService = container.get<IUserService>(TYPES.IUserService);
+    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
+    hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
   });
 
   // Search state

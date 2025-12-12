@@ -351,11 +351,25 @@ export const TYPES = {
   // === DEEP OCEAN BACKGROUND SERVICES ===
   IBackgroundSystem: Symbol.for("IBackgroundSystem"),
   IBubblePhysics: Symbol.for("IBubblePhysics"),
-  IMarineLifeAnimator: Symbol.for("IMarineLifeAnimator"),
   IParticleSystem: Symbol.for("IParticleSystem"),
   IFishSpriteManager: Symbol.for("IFishSpriteManager"),
-  IOceanRenderer: Symbol.for("IOceanRenderer"),
   ILightRayCalculator: Symbol.for("ILightRayCalculator"),
+
+  // Deep Ocean Animators (split from monolithic MarineLifeAnimator)
+  IFishAnimator: Symbol.for("IFishAnimator"),
+  IJellyfishAnimator: Symbol.for("IJellyfishAnimator"),
+
+  // Deep Ocean Renderers (split from monolithic OceanRenderer)
+  IGradientRenderer: Symbol.for("IGradientRenderer"),
+  ILightRayRenderer: Symbol.for("ILightRayRenderer"),
+  IBubbleRenderer: Symbol.for("IBubbleRenderer"),
+  IParticleRenderer: Symbol.for("IParticleRenderer"),
+  IFishRenderer: Symbol.for("IFishRenderer"),
+  IJellyfishRenderer: Symbol.for("IJellyfishRenderer"),
+
+  // @deprecated - use split services above
+  IMarineLifeAnimator: Symbol.for("IMarineLifeAnimator"),
+  IOceanRenderer: Symbol.for("IOceanRenderer"),
 
   INightSkyCalculationService: Symbol.for("INightSkyCalculationService"),
   IBrowseStatePersister: Symbol.for("IBrowseStatePersister"),
@@ -525,9 +539,19 @@ export const BackgroundTypes = {
   // Deep Ocean Background Services
   IBackgroundSystem: TYPES.IBackgroundSystem,
   IBubblePhysics: TYPES.IBubblePhysics,
-  IMarineLifeAnimator: TYPES.IMarineLifeAnimator,
   IParticleSystem: TYPES.IParticleSystem,
   IFishSpriteManager: TYPES.IFishSpriteManager,
-  IOceanRenderer: TYPES.IOceanRenderer,
   ILightRayCalculator: TYPES.ILightRayCalculator,
+
+  // Deep Ocean Animators
+  IFishAnimator: TYPES.IFishAnimator,
+  IJellyfishAnimator: TYPES.IJellyfishAnimator,
+
+  // Deep Ocean Renderers
+  IGradientRenderer: TYPES.IGradientRenderer,
+  ILightRayRenderer: TYPES.ILightRayRenderer,
+  IBubbleRenderer: TYPES.IBubbleRenderer,
+  IParticleRenderer: TYPES.IParticleRenderer,
+  IFishRenderer: TYPES.IFishRenderer,
+  IJellyfishRenderer: TYPES.IJellyfishRenderer,
 } as const;

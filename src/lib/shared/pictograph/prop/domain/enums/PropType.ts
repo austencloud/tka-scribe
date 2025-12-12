@@ -17,8 +17,9 @@ export enum PropType {
   BIGSTAFF = "bigstaff",
   STAFF2 = "staff_v2",
 
-  // === CLUB ===
+  // === CLUB FAMILY ===
   CLUB = "club",
+  BIGCLUB = "bigclub",
 
   // === FAN FAMILY ===
   FAN = "fan",

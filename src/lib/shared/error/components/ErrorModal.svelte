@@ -248,7 +248,7 @@
     gap: 12px;
     padding: 16px 20px;
     background: var(--error-bg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .error-icon-wrapper {
@@ -284,14 +284,14 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .error-content {
@@ -302,7 +302,7 @@
     margin: 0 0 16px;
     font-size: 15px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .error-context {
@@ -317,11 +317,11 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .context-chip i {
@@ -336,14 +336,14 @@
     padding: 8px 0;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 13px;
     cursor: pointer;
     transition: color 0.15s;
   }
 
   .details-toggle:hover {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .technical-details {
@@ -351,13 +351,13 @@
     padding: 12px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .detail-text {
     margin: 0 0 8px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text, rgba(255, 255, 255, 0.7));
   }
 
   .stack-trace {
@@ -368,7 +368,7 @@
     font-family: "Fira Code", "Consolas", monospace;
     font-size: 11px;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     overflow-x: auto;
     max-height: 150px;
     white-space: pre-wrap;
@@ -378,30 +378,30 @@
   .report-section {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .report-prompt {
     margin: 0 0 8px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .comment-input {
     width: 100%;
     padding: 10px 12px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     font-family: inherit;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     resize: vertical;
     min-height: 60px;
   }
 
   .comment-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
   }
 
   .comment-input:focus {
@@ -414,7 +414,7 @@
     gap: 12px;
     padding: 16px 20px;
     background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .action-button {
@@ -433,13 +433,13 @@
   }
 
   .dismiss-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .dismiss-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, white);
   }
 
   .report-button {

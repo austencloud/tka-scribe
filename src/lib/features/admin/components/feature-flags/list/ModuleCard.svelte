@@ -132,12 +132,12 @@
     margin: 0 0 4px 0;
     font-size: var(--text-2026-body);
     font-weight: var(--settings-font-weight-semibold);
-    color: var(--text-primary-current);
+    color: var(--theme-text);
   }
 
   .module-description {
     font-size: var(--text-2026-micro);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -174,8 +174,8 @@
     width: 24px;
     height: 24px;
     border-radius: var(--radius-2026-xs);
-    background: color-mix(in srgb, #ef4444 15%, transparent);
-    color: #fca5a5;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    color: var(--semantic-error, #fca5a5);
     font-size: 11px;
   }
 

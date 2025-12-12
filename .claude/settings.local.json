@@ -405,7 +405,11 @@
       "Bash(src/lib/shared/animation-engine/components/AnimationShareDrawer.svelte )",
       "Bash(src/lib/shared/share/components/ImageSharePanel.svelte)",
       "WebFetch(domain:mazeez.dev)",
-      "WebFetch(domain:graph.facebook.com)"
+      "WebFetch(domain:graph.facebook.com)",
+      "WebFetch(domain:opengameart.org)",
+      "Bash(reg query \"HKLM\\SOFTWARE\\Policies\\Google\\Chrome\")",
+      "Bash(reg query \"HKCU\\SOFTWARE\\Policies\\Google\\Chrome\")",
+      "Bash(cmd /c \"type \"\"%LOCALAPPDATA%\\Google\\Chrome\\User Data\\Local State\"\"\")"
     ],
     "deny": [],
     "ask": []

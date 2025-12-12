@@ -9,7 +9,7 @@
   Also shows pending invites badge.
 -->
 <script lang="ts">
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ICollaborativeVideoService, UserVideoLibrary } from "../services/contracts/ICollaborativeVideoService";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
@@ -31,8 +31,9 @@
   let error = $state<string | null>(null);
   let currentTab = $state<Tab>("all");
 
-  onMount(() => {
-    videoService = resolve(TYPES.ICollaborativeVideoService) as ICollaborativeVideoService;
+  onMount(async () => {
+    const container = await getContainerInstance();
+    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
     loadLibrary();
   });
 

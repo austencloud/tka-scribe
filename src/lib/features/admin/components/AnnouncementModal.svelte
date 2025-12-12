@@ -38,7 +38,7 @@
   // Handle internal navigation
   async function handleInternalNavigation(url: string) {
     // Parse the URL to extract module and tab
-    // Expected format: /settings?tab=whats-new or /module?tab=tabname
+    // Expected format: /settings?tab=release-notes or /module?tab=tabname
     const [path, queryString] = url.split('?');
     const moduleId = (path ?? '').replace('/', '') as ModuleId;
 
@@ -195,8 +195,8 @@
   .modal-content {
     max-width: 600px;
     width: 100%;
-    background: rgba(20, 22, 36, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-panel-bg, rgba(20, 22, 36, 0.95));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 20px;
     overflow: hidden;
     animation: slideUp 0.3s ease-out;
@@ -228,7 +228,7 @@
       rgba(var(--severity-color, 99 102 241), 0.2) 0%,
       rgba(var(--severity-color, 99 102 241), 0.1) 100%
     );
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .header-icon {
@@ -237,9 +237,9 @@
     justify-content: center;
     width: 64px;
     height: 64px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 32px;
   }
 
@@ -252,17 +252,17 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   /* ============================================================================
@@ -287,14 +287,14 @@
   .announcement-title {
     font-size: 24px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0 0 16px 0;
     line-height: 1.3;
   }
 
   .announcement-message {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--theme-text, rgba(255, 255, 255, 0.75));
     line-height: 1.7;
     margin: 0;
     white-space: pre-wrap;
@@ -307,7 +307,7 @@
     display: flex;
     gap: 12px;
     padding: 20px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .action-button {
@@ -337,14 +337,14 @@
   }
 
   .action-button.secondary {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .action-button.secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .action-button:active {

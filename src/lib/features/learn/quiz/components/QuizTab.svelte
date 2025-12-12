@@ -9,7 +9,7 @@ Provides quiz functionality for learning TKA notation:
 -->
 <script lang="ts">
 import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
+import { getContainerInstance } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
   import { onDestroy, onMount } from "svelte";
   import type { ICodexService } from "../../codex/services/contracts/ICodexService";
@@ -26,15 +26,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   // Import learn components
 
   // ============================================================================
-  // SERVICE RESOLUTION
+  // SERVICE RESOLUTION - Resolved lazily in onMount
   // ============================================================================
 
-  const codexService = resolve(TYPES.ICodexService) as ICodexService;
-  const quizRepo = resolve(TYPES.IQuizRepoManager) as IQuizRepoManager;
-  const quizSessionService = resolve(
-    TYPES.IQuizSessionService
-  ) as IQuizSessionService;
-  let hapticService: IHapticFeedbackService;
+  let codexService = $state<ICodexService | null>(null);
+  let quizRepo = $state<IQuizRepoManager | null>(null);
+  let quizSessionService = $state<IQuizSessionService | null>(null);
+  let hapticService = $state<IHapticFeedbackService | null>(null);
 
   // ============================================================================
   // COMPONENT STATE
@@ -70,6 +68,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     quizType: QuizType;
     quizMode: QuizMode;
   }) {
+    if (!quizSessionService) return;
+
     // Trigger selection haptic for quiz selection
     hapticService?.trigger("selection");
 
@@ -111,6 +111,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   async function handleAnswerSubmit(answer: any) {
+    if (!quizSessionService) return;
+
     try {
       const isCorrect = await quizSessionService.submitAnswer(answer);
       if (isCorrect) score++;
@@ -133,6 +135,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   async function handleQuizComplete() {
+    if (!quizSessionService) return;
+
     try {
       await quizSessionService.completeQuiz();
       currentView = "results";
@@ -154,6 +158,8 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   async function handleRestartQuiz() {
+    if (!quizSessionService) return;
+
     // Trigger navigation haptic for restart
     hapticService?.trigger("selection");
 
@@ -177,13 +183,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   // ============================================================================
 
   onMount(async () => {
-    // Initialize haptic service
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-
     try {
       isLoading = true;
+
+      // Resolve services from container
+      const container = await getContainerInstance();
+      codexService = container.get<ICodexService>(TYPES.ICodexService);
+      quizRepo = container.get<IQuizRepoManager>(TYPES.IQuizRepoManager);
+      quizSessionService = container.get<IQuizSessionService>(TYPES.IQuizSessionService);
+      hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 
       // Initialize quiz repository
       await quizRepo.initialize();

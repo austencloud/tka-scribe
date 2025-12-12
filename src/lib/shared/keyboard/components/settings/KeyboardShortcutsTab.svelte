@@ -291,10 +291,10 @@
     padding: 16px;
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.03) 0%,
-      rgba(99, 102, 241, 0.02) 100%
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 3%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 2%, transparent) 100%
     );
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .setting-chip {
@@ -307,8 +307,8 @@
     min-height: 80px;
 
     /* Bento box frosted glass */
-    background: rgba(255, 255, 255, 0.03);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
 
     cursor: pointer;
@@ -321,8 +321,8 @@
   }
 
   .setting-chip:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
     transform: translateY(-2px);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
@@ -334,65 +334,65 @@
     transition-duration: 0.1s;
   }
 
-  /* Active (On) State - Violet Gradient */
+  /* Active (On) State - Theme accent with violet fallback */
   .setting-chip.active {
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.2) 0%,
-      rgba(99, 102, 241, 0.15) 100%
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 100%
     );
-    border-color: rgba(139, 92, 246, 0.4);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 1px rgba(139, 92, 246, 0.15),
-      0 4px 16px rgba(139, 92, 246, 0.2);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent),
+      0 4px 16px var(--theme-shadow, rgba(139, 92, 246, 0.2));
   }
 
   .setting-chip.active:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.25) 0%,
-      rgba(99, 102, 241, 0.2) 100%
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent) 100%
     );
-    border-color: rgba(139, 92, 246, 0.5);
+    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
   }
 
   .chip-icon {
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     transition: all 0.2s ease;
   }
 
   .setting-chip.active .chip-icon {
-    color: rgba(167, 139, 250, 1);
-    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+    color: var(--theme-accent, rgba(167, 139, 250, 1));
+    filter: drop-shadow(0 0 8px var(--theme-shadow, rgba(139, 92, 246, 0.5)));
   }
 
   .chip-label {
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     transition: color 0.2s ease;
   }
 
   .setting-chip.active .chip-label {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .chip-hint {
     font-size: 10px;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
 
   .setting-chip.active .chip-hint {
-    color: rgba(167, 139, 250, 0.7);
+    color: var(--theme-accent, rgba(167, 139, 250, 0.7));
   }
 
   /* Focus State */
   .setting-chip:focus-visible {
-    outline: 2px solid rgba(139, 92, 246, 0.5);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -415,7 +415,7 @@
     gap: 12px;
     padding: 48px 24px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .empty-state i {
@@ -427,7 +427,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text, rgba(255, 255, 255, 0.6));
   }
 
   .empty-state span {

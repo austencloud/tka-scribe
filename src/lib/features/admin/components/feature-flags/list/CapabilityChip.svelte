@@ -46,7 +46,7 @@
     border: 1px solid var(--border-2026);
     border-radius: var(--radius-2026-sm);
     font-size: var(--text-2026-caption);
-    color: var(--text-secondary-current);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all var(--transition-fast);
     min-height: 52px;
@@ -93,7 +93,7 @@
   }
 
   .disabled-icon {
-    color: #f87171;
+    color: var(--semantic-error, #f87171);
     font-size: 10px;
     margin-left: 2px;
   }

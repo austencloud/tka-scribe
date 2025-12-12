@@ -6,9 +6,10 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceBrowserPanel from "../../../shared/animation-engine/components/SequenceBrowserPanel.svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
+  import { onMount } from "svelte";
 
   interface Props {
     onSequenceSelected: (sequence: SequenceData) => void;
@@ -16,13 +17,18 @@
 
   let { onSequenceSelected }: Props = $props();
 
-  // Services
-  const loaderService = resolve(TYPES.IDiscoverLoader) as IDiscoverLoader;
+  // Services - resolved lazily
+  let loaderService = $state<IDiscoverLoader | null>(null);
 
   // State
   let showBrowser = $state(false);
   let isMobile = $state(false);
   let isLoadingFullSequence = $state(false);
+
+  onMount(async () => {
+    const container = await getContainerInstance();
+    loaderService = container.get<IDiscoverLoader>(TYPES.IDiscoverLoader);
+  });
 
   $effect(() => {
     isMobile = window.innerWidth < 768;
@@ -42,6 +48,8 @@
   }
 
   async function handleSequenceSelect(sequence: SequenceData) {
+    if (!loaderService) return;
+
     // Load full sequence data including beats
     try {
       isLoadingFullSequence = true;

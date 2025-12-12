@@ -340,7 +340,7 @@
         type="text"
         class="text-input"
         bind:value={actionUrl}
-        placeholder="/settings?tab=whats-new or https://..."
+        placeholder="/settings?tab=release-notes or https://..."
       />
       <span class="help-text">Internal path or external URL for action button</span>
     </div>
@@ -414,19 +414,19 @@
     justify-content: center;
     min-width: 52px;
     min-height: 52px;
-    background: linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%));
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-button:hover {
-    background: linear-gradient(135deg, #3d3d4a 0%, #2f2f38 100%);
-    color: #ffffff;
+    background: var(--theme-card-hover-bg, linear-gradient(135deg, #3d3d4a 0%, #2f2f38 100%));
+    color: var(--theme-text, #ffffff);
     transform: scale(1.05);
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
   /* ============================================================================
@@ -484,7 +484,7 @@
   }
 
   .text-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .text-input:focus {
@@ -504,7 +504,7 @@
     display: block;
     margin-top: 8px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-weight: 500;
   }
 
@@ -530,10 +530,10 @@
     gap: 10px;
     padding: 14px 20px;
     min-height: 52px;
-    background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -551,9 +551,9 @@
 
   .selection-chip:hover,
   .toggle-chip:hover {
-    background: linear-gradient(135deg, #3d3d4a 0%, #35353f 100%);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
+    background: var(--theme-card-hover-bg, linear-gradient(135deg, #3d3d4a 0%, #35353f 100%));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    color: var(--theme-text, #ffffff);
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
@@ -629,16 +629,16 @@
   }
 
   .cancel-button {
-    background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .cancel-button:hover {
-    background: linear-gradient(135deg, #3d3d4a 0%, #35353f 100%);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
+    background: var(--theme-card-hover-bg, linear-gradient(135deg, #3d3d4a 0%, #35353f 100%));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    color: var(--theme-text, #ffffff);
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }

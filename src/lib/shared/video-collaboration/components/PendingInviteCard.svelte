@@ -5,7 +5,7 @@
   Used in notifications or a dedicated invites list.
 -->
 <script lang="ts">
-  import { resolve } from "$lib/shared/inversify/di";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -25,9 +25,10 @@
   let videoService = $state<ICollaborativeVideoService>();
   let hapticService = $state<IHapticFeedbackService>();
 
-  onMount(() => {
-    videoService = resolve(TYPES.ICollaborativeVideoService) as ICollaborativeVideoService;
-    hapticService = resolve(TYPES.IHapticFeedbackService) as IHapticFeedbackService;
+  onMount(async () => {
+    const container = await getContainerInstance();
+    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
+    hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
   });
 
   let isProcessing = $state(false);
