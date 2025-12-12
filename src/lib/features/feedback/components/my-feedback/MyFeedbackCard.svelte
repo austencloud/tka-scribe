@@ -206,7 +206,7 @@
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -239,7 +239,7 @@
   .card-description {
     margin: 0;
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -255,7 +255,7 @@
     gap: 4px;
     margin-top: 6px;
     font-size: 0.6875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .screenshot-indicator i {
@@ -269,14 +269,14 @@
     gap: 12px;
     margin-top: 4px;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
   }
 
   .has-response {
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
   }
 
   .has-response i {
@@ -290,7 +290,7 @@
     top: 8px;
     bottom: 8px;
     width: 3px;
-    background: #3b82f6;
+    background: var(--theme-accent, #3b82f6);
     border-radius: 0 2px 2px 0;
   }
 </style>

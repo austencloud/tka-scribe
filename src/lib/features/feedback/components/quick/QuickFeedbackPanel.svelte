@@ -159,13 +159,13 @@
     --panel-gap: clamp(12px, 4cqi, 20px);
 
     /* Colors */
-    --accent: #6366f1;
-    --text-primary: rgba(255, 255, 255, 0.95);
-    --text-secondary: rgba(255, 255, 255, 0.7);
-    --text-muted: rgba(255, 255, 255, 0.5);
-    --border-subtle: rgba(255, 255, 255, 0.1);
-    --bg-subtle: rgba(255, 255, 255, 0.05);
-    --bg-hover: rgba(255, 255, 255, 0.1);
+    --accent: var(--theme-accent, #6366f1);
+    --text-primary: var(--theme-text, rgba(255, 255, 255, 0.95));
+    --text-secondary: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    --text-muted: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%, transparent);
+    --border-subtle: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    --bg-subtle: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    --bg-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -269,7 +269,7 @@
 
   .close-btn:hover {
     background: var(--bg-hover);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     color: var(--text-primary);
   }
 
@@ -348,12 +348,12 @@
   }
 
   .panel-body::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 3px;
   }
 
   .panel-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 60%, transparent);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════

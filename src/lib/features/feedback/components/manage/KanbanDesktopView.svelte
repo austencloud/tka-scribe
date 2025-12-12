@@ -181,12 +181,12 @@
   }
 
   .columns-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: clamp(6px, 1.5cqi, 10px);
   }
 
   .columns-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
   /* ===== ARCHIVE/DEFER STACK ===== */

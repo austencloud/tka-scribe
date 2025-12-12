@@ -150,7 +150,7 @@
     flex-direction: column;
     gap: 12px;
     padding: clamp(12px, 3cqi, 20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     flex-shrink: 0;
   }
 
@@ -201,13 +201,13 @@
     margin: 0;
     font-size: clamp(1rem, 2.5cqi, 1.25rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .header-text p {
     margin: 0;
     font-size: clamp(0.75rem, 1.8cqi, 0.875rem);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Content area */
@@ -243,7 +243,7 @@
   }
 
   .loading-state span {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .error-state i {
@@ -252,7 +252,7 @@
   }
 
   .error-state span {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .error-state button {
@@ -272,21 +272,21 @@
 
   .empty-state i {
     font-size: 52px;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .empty-state h2 {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .empty-state p {
     margin: 0;
     max-width: 300px;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     line-height: 1.5;
   }
 

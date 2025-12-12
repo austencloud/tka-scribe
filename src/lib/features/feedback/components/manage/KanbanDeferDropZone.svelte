@@ -98,7 +98,7 @@
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 12px);
     padding: clamp(10px, 2.5cqi, 16px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-align: center;
     flex-wrap: wrap;
   }

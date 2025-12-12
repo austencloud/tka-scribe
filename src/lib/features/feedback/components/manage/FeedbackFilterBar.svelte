@@ -158,8 +158,8 @@
     align-items: center;
     gap: 13px;
     padding: 13px;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   /* Search input */
@@ -174,7 +174,7 @@
     left: 13px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 0.875rem;
     pointer-events: none;
     transition: color 0.2s ease;
@@ -184,28 +184,28 @@
     width: 100%;
     height: 52px;
     padding: 0 34px 0 calc(13px + 24px);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 16px;
     font-family: inherit;
     transition: all 0.2s ease;
   }
 
   .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .search-input:focus {
     outline: none;
-    border-color: #10b981;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    border-color: var(--semantic-success, #10b981);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
   }
 
   .search-wrapper:focus-within .search-icon {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .search-clear {
@@ -220,7 +220,7 @@
     height: 32px;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.15s ease;
@@ -237,8 +237,8 @@
   }
 
   .search-clear:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.6);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.6));
   }
 
   .search-clear:active {
@@ -266,7 +266,7 @@
     padding: 0 21px;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -275,8 +275,8 @@
   }
 
   .clear-filters-btn:hover {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+    color: var(--semantic-error, #ef4444);
   }
 
   /* Mobile hidden by default, shown for mobile */

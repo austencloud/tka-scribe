@@ -47,9 +47,9 @@
     height: 52px;
     padding: 0 21px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 999px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -58,9 +58,9 @@
   }
 
   .filter-button:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .filter-button:active {
@@ -68,13 +68,13 @@
   }
 
   .filter-button.active {
-    background: color-mix(in srgb, #10b981 15%, transparent);
-    border-color: #10b981;
-    color: rgba(255, 255, 255, 0.95);
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    border-color: var(--semantic-success, #10b981);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .filter-button.active i:not(.panel-arrow) {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .filter-button i {
@@ -84,7 +84,7 @@
   .filter-button.panel .panel-arrow {
     font-size: 0.7em;
     margin-left: 6px;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -99,7 +99,7 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    background: #10b981;
+    background: var(--semantic-success, #10b981);
     border-radius: 999px;
     color: white;
     font-size: 11px;

@@ -83,7 +83,7 @@
     background: rgba(16, 185, 129, 0.12);
     border: 1px solid rgba(16, 185, 129, 0.25);
     border-radius: clamp(8px, 1.5cqi, 14px);
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
     font-size: clamp(14px, 2.5cqi, 24px);
   }
 
@@ -92,14 +92,14 @@
     /* Fluid typography */
     font-size: clamp(1rem, 3cqi, 1.5rem);
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     letter-spacing: -0.02em;
   }
 
   .header-subtitle {
     margin: 0;
     font-size: clamp(0.75rem, 1.8cqi, 0.9375rem);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     line-height: 1.4;
   }
 
@@ -161,7 +161,7 @@
   }
 
   .submit-tab::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 2px;
   }
 </style>

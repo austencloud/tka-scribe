@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { FeedbackDetailState } from "../../../state/feedback-detail-state.svelte";
-  import { generateAvatarUrl } from "$lib/shared/foundation/utils/avatar-generator";
+  import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
 
   const { detailState } = $props<{ detailState: FeedbackDetailState }>();
 </script>
@@ -8,13 +8,11 @@
 <section class="section">
   <h3 class="section-title">Submitted By</h3>
   <div class="user-card">
-    <img
-      src={detailState.item.userPhotoURL ||
-        generateAvatarUrl(detailState.item.userDisplayName, 64)}
+    <RobustAvatar
+      src={detailState.item.userPhotoURL}
+      name={detailState.item.userDisplayName}
       alt="{detailState.item.userDisplayName}'s avatar"
-      class="user-avatar-img"
-      referrerpolicy="no-referrer"
-      crossorigin="anonymous"
+      size="lg"
     />
     <div class="user-info">
       <span class="user-name">{detailState.item.userDisplayName}</span>
@@ -60,13 +58,7 @@
     border-radius: var(--fb-radius-md);
   }
 
-  .user-avatar-img {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
+  /* RobustAvatar handles its own sizing via size="lg" (64px) */
 
   .user-info {
     display: flex;

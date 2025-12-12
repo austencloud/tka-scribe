@@ -141,7 +141,7 @@
     left: var(--fb-space-sm);
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: var(--fb-text-sm);
     pointer-events: none;
   }
@@ -150,24 +150,24 @@
     width: 100%;
     height: var(--fb-touch-target);
     padding: 0 var(--fb-touch-target) 0 clamp(36px, 9cqi, 44px);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: var(--fb-touch-target);
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: var(--fb-text-sm);
     font-family: inherit;
     transition: all 0.2s ease;
   }
 
   .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .search-input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.12);
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--semantic-success, #10b981);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
   }
 
   .search-clear {
@@ -182,15 +182,15 @@
     height: clamp(32px, 8cqi, 40px);
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.15s ease;
   }
 
   .search-clear:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.7));
   }
 
   /* ===== FILTER ROW ===== */
@@ -203,7 +203,7 @@
   .filter-divider {
     width: 1px;
     height: clamp(20px, 5cqi, 28px);
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     margin: 0 var(--fb-space-xs);
   }
 
@@ -213,18 +213,18 @@
     justify-content: center;
     width: var(--fb-icon-btn);
     height: var(--fb-icon-btn);
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border: none;
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: var(--fb-text-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .filter-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .filter-chip:active {
@@ -246,10 +246,10 @@
     justify-content: center;
     width: var(--fb-icon-btn);
     height: var(--fb-icon-btn);
-    background: rgba(239, 68, 68, 0.12);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
     border: none;
     border-radius: 50%;
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     font-size: var(--fb-text-sm);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -257,7 +257,7 @@
   }
 
   .clear-btn:hover {
-    background: rgba(239, 68, 68, 0.2);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
   }
 
   /* ===== CONTAINER QUERY: Hide filters on mobile (tabs serve as filter) ===== */

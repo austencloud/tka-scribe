@@ -360,9 +360,9 @@
     --kc-radius-sm: clamp(8px, 2cqi, 12px);
     --kc-radius-md: clamp(12px, 3cqi, 18px);
 
-    --kc-text: rgba(255, 255, 255, 0.95);
-    --kc-text-muted: rgba(255, 255, 255, 0.7);
-    --kc-text-subtle: rgba(255, 255, 255, 0.5);
+    --kc-text: var(--theme-text, rgba(255, 255, 255, 0.95));
+    --kc-text-muted: color-mix(in srgb, var(--theme-text, rgba(255, 255, 255, 0.95)) 75%, transparent);
+    --kc-text-subtle: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 
     --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -625,8 +625,8 @@
   /* Focus state */
   .kanban-card:focus-visible {
     outline: none;
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    border-color: var(--semantic-success, #10b981);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-success, #10b981) 20%, transparent);
   }
 
   /* ===== Mobile optimizations ===== */

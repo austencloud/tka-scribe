@@ -178,8 +178,8 @@
   }
 
   .save-btn:hover:not(:disabled) {
-    background: #059669;
-    border-color: #059669;
+    background: color-mix(in srgb, var(--fb-primary) 80%, black);
+    border-color: color-mix(in srgb, var(--fb-primary) 80%, black);
   }
 
   .close-btn {

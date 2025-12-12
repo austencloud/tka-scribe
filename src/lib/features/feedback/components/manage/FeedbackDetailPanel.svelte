@@ -1,14 +1,13 @@
 <!-- FeedbackDetailPanel - Refactored with service-based architecture and Svelte 5 runes -->
 <script lang="ts">
-  import type { FeedbackItem, TesterConfirmationStatus } from "../../domain/models/feedback-models";
+  import type { FeedbackItem } from "../../domain/models/feedback-models";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { createFeedbackDetailState } from "../../state/feedback-detail-state.svelte";
-  import { PRIORITY_CONFIG, CONFIRMATION_STATUS_CONFIG } from "../../domain/models/feedback-models";
-  import { feedbackService } from "../../services/implementations/FeedbackService";
+  import { PRIORITY_CONFIG } from "../../domain/models/feedback-models";
   import FeedbackHeader from "./detail/FeedbackHeader.svelte";
   import FeedbackMetadataCard from "./detail/FeedbackMetadataCard.svelte";
   import FeedbackSubtaskPanel from "./detail/FeedbackSubtaskPanel.svelte";
-  import FeedbackStatusGrid from "./detail/FeedbackStatusGrid.svelte";
+  import FeedbackStatusSelector from "./detail/FeedbackStatusSelector.svelte";
   import FeedbackActionBar from "./detail/FeedbackActionBar.svelte";
 
   interface Props {
@@ -47,45 +46,48 @@
       autoResizeTextarea(descriptionTextarea);
     }
   });
-
-  async function handleGenerateTitle() {
-    if (readOnly || !manageState) return;
-    try {
-      await manageState.generateTitle(item.id, item.description);
-    } catch (err) {
-      console.error("Failed to generate title:", err);
-    }
-  }
-
-  async function handleSendResponse() {
-    if (readOnly || !manageState || detailState.isSendingResponse || !detailState.adminResponseMessage.trim()) return;
-    try {
-      await feedbackService.sendAdminResponse(
-        item.id,
-        detailState.adminResponseMessage.trim(),
-        true
-      );
-      detailState.showResponseForm = false;
-      await manageState.refreshItem(item.id);
-    } catch (err) {
-      console.error("Failed to send response:", err);
-    }
-  }
-
-  async function handleMarkResolved() {
-    if (readOnly || !manageState || detailState.isUpdatingStatus) return;
-    await manageState.updateStatus(item.id, "in-review");
-    await feedbackService.notifyTesterResolved(
-      item.id,
-      detailState.adminResponseMessage.trim() || undefined
-    );
-  }
 </script>
 
 <div class="detail-panel">
   <FeedbackHeader {detailState} {readOnly} {onClose} />
 
   <div class="panel-content">
+    <!-- Title - Simple inline edit at top, click to edit -->
+    <input
+      type="text"
+      class="title-input"
+      bind:value={detailState.editTitle}
+      onblur={() => detailState.handleFieldBlur()}
+      placeholder="Untitled feedback..."
+      readonly={readOnly}
+    />
+
+    <!-- Metadata Card - User info -->
+    <FeedbackMetadataCard {detailState} />
+
+    <!-- Resolution Summary - Show for completed/archived feedback -->
+    {#if (item.status === "completed" || item.status === "archived") && (item.resolutionNotes || item.adminNotes)}
+      <section class="section resolution-section">
+        <h3 class="section-title">
+          <i class="fas fa-check-circle"></i>
+          Resolution
+        </h3>
+        <div class="resolution-card">
+          {#if item.resolutionNotes}
+            <p class="resolution-text">{item.resolutionNotes}</p>
+          {:else if item.adminNotes}
+            <p class="resolution-text">{item.adminNotes}</p>
+          {/if}
+          {#if item.fixedInVersion}
+            <span class="version-badge">
+              <i class="fas fa-tag"></i>
+              v{item.fixedInVersion}
+            </span>
+          {/if}
+        </div>
+      </section>
+    {/if}
+
     <!-- Description Section - Primary content -->
     <section class="section">
       <h3 class="section-title">Description</h3>
@@ -126,61 +128,31 @@
       </section>
     {/if}
 
-    <!-- Title Section - Inline editable -->
-    <section class="section title-section">
-      <div class="title-row">
-        <div class="title-content">
-          <h3 class="section-title">Title</h3>
-          <input
-            type="text"
-            class="inline-edit-input"
-            bind:value={detailState.editTitle}
-            onblur={() => detailState.handleFieldBlur()}
-            placeholder="Add a title..."
-            readonly={readOnly}
-          />
-        </div>
-        {#if !readOnly && manageState}
-          <button
-            type="button"
-            class="generate-title-btn"
-            onclick={handleGenerateTitle}
-            disabled={manageState.isGeneratingTitle}
-            title="Generate title with AI"
-          >
-            {#if manageState.isGeneratingTitle}
-              <i class="fas fa-spinner fa-spin"></i>
-            {:else}
-              <i class="fas fa-magic"></i>
-            {/if}
-          </button>
-        {/if}
-      </div>
-    </section>
+    <!-- Status Selector - Click to change -->
+    <FeedbackStatusSelector {detailState} {readOnly} />
 
-    <!-- Priority Section -->
+    <!-- Priority Section - Compact single row -->
     <section class="section">
       <h3 class="section-title">
         <i class="fas fa-exclamation-circle"></i>
         Priority
       </h3>
-      <div class="priority-grid">
+      <div class="priority-row">
         <button
           type="button"
-          class="priority-btn"
+          class="priority-chip"
           class:active={detailState.editPriority === ""}
           onclick={() => {
             detailState.editPriority = "";
             void detailState.saveChanges();
           }}
         >
-          <i class="fas fa-minus"></i>
-          <span>None</span>
+          None
         </button>
         {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
           <button
             type="button"
-            class="priority-btn"
+            class="priority-chip"
             class:active={detailState.editPriority === priority}
             style="--priority-color: {config.color}"
             onclick={() => {
@@ -189,118 +161,14 @@
             }}
           >
             <i class="fas {config.icon}"></i>
-            <span>{config.label}</span>
+            {config.label}
           </button>
         {/each}
       </div>
     </section>
 
-    <!-- Metadata Card - User info and timestamps -->
-    <FeedbackMetadataCard {detailState} />
-
-    <!-- Status Grid -->
-    <FeedbackStatusGrid {detailState} {readOnly} />
-
     <!-- Subtasks Panel -->
     <FeedbackSubtaskPanel subtasks={item.subtasks || []} />
-
-    <!-- Admin Response Section (complex conditionals - stays inline) -->
-    {#if !readOnly || item.adminResponse}
-      <section class="section response-section">
-        <h3 class="section-title">
-          <i class="fas fa-reply"></i>
-          Response to Tester
-        </h3>
-
-        {#if item.adminResponse}
-          <!-- Existing response display -->
-          <div class="existing-response">
-            <p class="response-message">{item.adminResponse.message}</p>
-            <span class="response-meta">
-              Sent {detailState.formatRelativeTime(item.adminResponse.respondedAt)}
-            </span>
-          </div>
-        {/if}
-
-        {#if !readOnly}
-          {#if detailState.showResponseForm || !item.adminResponse}
-            <div class="response-form">
-              <textarea
-                class="response-textarea"
-                bind:value={detailState.adminResponseMessage}
-                placeholder="Write a message to notify the tester about this feedback..."
-                rows="3"
-              ></textarea>
-
-              <div class="response-actions">
-                <button
-                  type="button"
-                  class="send-response-btn"
-                  onclick={handleSendResponse}
-                  disabled={detailState.isSendingResponse || !detailState.adminResponseMessage.trim()}
-                >
-                  {#if detailState.isSendingResponse}
-                    <i class="fas fa-spinner fa-spin"></i>
-                  {:else}
-                    <i class="fas fa-paper-plane"></i>
-                  {/if}
-                  Send Response
-                </button>
-
-                {#if item.status !== "in-review" && item.status !== "completed"}
-                  <button
-                    type="button"
-                    class="resolve-notify-btn"
-                    onclick={handleMarkResolved}
-                    disabled={detailState.isUpdatingStatus}
-                  >
-                    {#if detailState.isUpdatingStatus}
-                      <i class="fas fa-spinner fa-spin"></i>
-                    {:else}
-                      <i class="fas fa-check-circle"></i>
-                    {/if}
-                    Mark Resolved & Notify
-                  </button>
-                {/if}
-              </div>
-            </div>
-          {:else}
-            <button
-              type="button"
-              class="update-response-btn"
-              onclick={() => (detailState.showResponseForm = true)}
-            >
-              <i class="fas fa-edit"></i>
-              Update Response
-            </button>
-          {/if}
-        {/if}
-
-        <!-- Tester confirmation status -->
-        {#if item.testerConfirmation}
-          {@const confConfig = CONFIRMATION_STATUS_CONFIG[item.testerConfirmation.status as TesterConfirmationStatus]}
-          <div
-            class="tester-confirmation"
-            style="--conf-color: {confConfig.color}"
-          >
-            <div class="confirmation-header">
-              <i class="fas {confConfig.icon}"></i>
-              <span class="confirmation-label">{confConfig.label}</span>
-            </div>
-            {#if item.testerConfirmation.comment}
-              <p class="confirmation-comment">
-                "{item.testerConfirmation.comment}"
-              </p>
-            {/if}
-            {#if item.testerConfirmation.respondedAt}
-              <span class="confirmation-date">
-                {detailState.formatRelativeTime(item.testerConfirmation.respondedAt)}
-              </span>
-            {/if}
-          </div>
-        {/if}
-      </section>
-    {/if}
 
     <!-- Action Bar - Delete functionality -->
     <FeedbackActionBar {detailState} {readOnly} />
@@ -330,15 +198,15 @@
     --fb-radius-md: 12px;
     --fb-radius-lg: 16px;
 
-    --fb-primary: #10b981;
-    --fb-error: #ef4444;
-    --fb-purple: #8b5cf6;
-    --fb-surface: rgba(255, 255, 255, 0.04);
-    --fb-surface-hover: rgba(255, 255, 255, 0.08);
-    --fb-border: rgba(255, 255, 255, 0.08);
-    --fb-text: rgba(255, 255, 255, 0.95);
-    --fb-text-muted: rgba(255, 255, 255, 0.6);
-    --fb-text-subtle: rgba(255, 255, 255, 0.4);
+    --fb-primary: var(--semantic-success, #10b981);
+    --fb-error: var(--semantic-error, #ef4444);
+    --fb-purple: var(--theme-accent, #8b5cf6);
+    --fb-surface: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    --fb-surface-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
+    --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%, transparent);
     --fb-warning: #f59e0b;
 
     display: flex;
@@ -379,6 +247,40 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
+     TITLE INPUT (Simple inline edit)
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .title-input {
+    width: 100%;
+    padding: var(--fb-space-xs) 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: var(--fb-text);
+    font-size: var(--fb-text-lg);
+    font-weight: 700;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+  }
+
+  .title-input:focus {
+    outline: none;
+    border-bottom-color: var(--fb-primary);
+  }
+
+  .title-input:hover:not(:focus):not(:readonly) {
+    border-bottom-color: var(--fb-border);
+  }
+
+  .title-input:readonly {
+    cursor: default;
+  }
+
+  .title-input::placeholder {
+    color: var(--fb-text-muted);
+    font-weight: 500;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
      INLINE EDIT STYLES
      ═══════════════════════════════════════════════════════════════════════════ */
   .inline-edit-textarea {
@@ -406,111 +308,85 @@
     cursor: default;
   }
 
-  .inline-edit-input {
-    width: 100%;
-    padding: var(--fb-space-sm);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-text);
-    font-size: var(--fb-text-lg);
-    font-weight: 700;
-    font-family: inherit;
-    transition: all 0.2s ease;
-  }
-
-  .inline-edit-input:focus {
-    outline: none;
-    border-color: var(--fb-primary);
-  }
-
-  .inline-edit-input:readonly {
-    opacity: 0.6;
-    cursor: default;
-  }
-
   /* ═══════════════════════════════════════════════════════════════════════════
-     TITLE SECTION
+     RESOLUTION SECTION
      ═══════════════════════════════════════════════════════════════════════════ */
-  .title-section {
-    gap: var(--fb-space-sm);
+  .resolution-section {
+    padding: var(--fb-space-md);
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
+    border-radius: var(--fb-radius-md);
   }
 
-  .title-row {
-    display: flex;
-    gap: var(--fb-space-md);
-    align-items: flex-start;
-  }
-
-  .title-content {
-    flex: 1;
+  .resolution-card {
     display: flex;
     flex-direction: column;
     gap: var(--fb-space-sm);
   }
 
-  .generate-title-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
-    margin-top: 22px;
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-text-muted);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .generate-title-btn:hover:not(:disabled) {
-    background: var(--fb-surface-hover);
+  .resolution-text {
+    margin: 0;
     color: var(--fb-text);
+    font-size: var(--fb-text-sm);
+    line-height: 1.5;
   }
 
-  .generate-title-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════════════
-     PRIORITY GRID
-     ═══════════════════════════════════════════════════════════════════════════ */
-  .priority-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: var(--fb-space-sm);
-  }
-
-  .priority-btn {
-    display: flex;
-    flex-direction: column;
+  .version-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
     gap: 4px;
-    padding: var(--fb-space-sm);
+    padding: 4px 10px;
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    border-radius: 999px;
+    color: var(--semantic-success, #10b981);
+    font-size: var(--fb-text-xs);
+    font-weight: 600;
+    width: fit-content;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRIORITY ROW (Compact single-line)
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .priority-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--fb-space-xs);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .priority-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .priority-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
     background: var(--fb-surface);
-    border: 2px solid transparent;
-    border-radius: var(--fb-radius-md);
+    border: 1px solid var(--fb-border);
+    border-radius: 999px;
     color: var(--fb-text-muted);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: var(--fb-text-xs);
     font-weight: 500;
-    text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .priority-btn:hover {
+  .priority-chip:hover {
     background: var(--fb-surface-hover);
-    border-color: var(--priority-color);
-    color: var(--priority-color);
+    border-color: var(--priority-color, var(--fb-text-muted));
+    color: var(--priority-color, var(--fb-text));
   }
 
-  .priority-btn.active {
-    background: color-mix(in srgb, var(--priority-color) 15%, transparent);
-    border-color: var(--priority-color);
-    color: var(--priority-color);
+  .priority-chip.active {
+    background: color-mix(in srgb, var(--priority-color, #6b7280) 15%, transparent);
+    border-color: var(--priority-color, #6b7280);
+    color: var(--priority-color, #6b7280);
     font-weight: 600;
   }
 
@@ -565,153 +441,14 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     ADMIN RESPONSE SECTION
-     ═══════════════════════════════════════════════════════════════════════════ */
-  .response-section {
-    padding-top: var(--fb-space-md);
-    border-top: 1px solid var(--fb-border);
-  }
-
-  .existing-response {
-    padding: var(--fb-space-md);
-    background: color-mix(in srgb, #10b981 5%, transparent);
-    border: 1px solid color-mix(in srgb, #10b981 30%, transparent);
-    border-radius: var(--fb-radius-md);
-  }
-
-  .response-message {
-    margin: 0 0 var(--fb-space-xs) 0;
-    color: var(--fb-text);
-    font-size: var(--fb-text-sm);
-    line-height: 1.5;
-  }
-
-  .response-meta {
-    font-size: var(--fb-text-xs);
-    color: var(--fb-text-muted);
-  }
-
-  .response-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--fb-space-sm);
-  }
-
-  .response-textarea {
-    width: 100%;
-    padding: var(--fb-space-sm);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-text);
-    font-size: var(--fb-text-sm);
-    font-family: inherit;
-    resize: none;
-    transition: all 0.2s ease;
-  }
-
-  .response-textarea:focus {
-    outline: none;
-    border-color: var(--fb-primary);
-  }
-
-  .response-actions {
-    display: flex;
-    gap: var(--fb-space-sm);
-  }
-
-  .send-response-btn,
-  .resolve-notify-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: var(--fb-space-sm) var(--fb-space-md);
-    background: var(--fb-primary);
-    border: 1px solid var(--fb-primary);
-    border-radius: var(--fb-radius-md);
-    color: white;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .send-response-btn:hover:not(:disabled),
-  .resolve-notify-btn:hover:not(:disabled) {
-    background: #059669;
-    border-color: #059669;
-  }
-
-  .send-response-btn:disabled,
-  .resolve-notify-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .update-response-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: var(--fb-space-sm) var(--fb-space-md);
-    background: var(--fb-surface);
-    border: 1px solid var(--fb-border);
-    border-radius: var(--fb-radius-md);
-    color: var(--fb-text);
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .update-response-btn:hover {
-    background: var(--fb-surface-hover);
-  }
-
-  .tester-confirmation {
-    padding: var(--fb-space-md);
-    background: color-mix(in srgb, var(--conf-color) 5%, transparent);
-    border: 1px solid color-mix(in srgb, var(--conf-color) 30%, transparent);
-    border-radius: var(--fb-radius-md);
-  }
-
-  .confirmation-header {
-    display: flex;
-    align-items: center;
-    gap: var(--fb-space-xs);
-    margin-bottom: var(--fb-space-xs);
-    font-weight: 600;
-    color: var(--conf-color);
-  }
-
-  .confirmation-label {
-    font-size: var(--fb-text-sm);
-  }
-
-  .confirmation-comment {
-    margin: var(--fb-space-xs) 0;
-    color: var(--fb-text);
-    font-size: var(--fb-text-sm);
-    font-style: italic;
-  }
-
-  .confirmation-date {
-    font-size: var(--fb-text-xs);
-    color: var(--fb-text-muted);
-  }
-
-  /* ═══════════════════════════════════════════════════════════════════════════
      REDUCED MOTION
      ═══════════════════════════════════════════════════════════════════════════ */
   @media (prefers-reduced-motion: reduce) {
     .section-title,
     .inline-edit-textarea,
-    .inline-edit-input,
-    .priority-btn,
-    .status-btn,
-    .screenshot-link,
-    .send-response-btn,
-    .update-response-btn {
+    .title-input,
+    .priority-chip,
+    .screenshot-link {
       transition: none;
     }
   }

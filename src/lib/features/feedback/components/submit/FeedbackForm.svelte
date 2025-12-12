@@ -397,15 +397,15 @@
 
     /* Colors - Type-reactive */
     --fb-primary: var(--active-type-color, #3b82f6);
-    --fb-error: #ef4444;
+    --fb-error: var(--semantic-error, #ef4444);
     --fb-border: color-mix(
       in srgb,
       var(--active-type-color, #3b82f6) 25%,
-      rgba(255, 255, 255, 0.1)
+      var(--theme-stroke, rgba(255, 255, 255, 0.1))
     );
-    --fb-text: rgba(255, 255, 255, 0.95);
-    --fb-text-muted: rgba(255, 255, 255, 0.7);
-    --fb-text-subtle: rgba(255, 255, 255, 0.5);
+    --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
+    --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%, transparent);
 
     /* Layout - Fluid */
     position: relative;
@@ -476,10 +476,10 @@
     justify-content: center;
     width: 64px;
     height: 64px;
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%, var(--semantic-success, #10b981) 100%);
     border-radius: 50%;
     margin-bottom: 16px;
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
   }
 
   .success-icon i {
@@ -491,14 +491,14 @@
     margin: 0 0 8px 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     letter-spacing: -0.02em;
   }
 
   .success-message {
     margin: 0 0 24px 0;
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.5;
     max-width: 320px;
   }
@@ -510,10 +510,10 @@
     gap: 8px;
     min-height: 52px;
     padding: 0 20px;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
     border-radius: 10px;
-    color: #34d399;
+    color: color-mix(in srgb, var(--semantic-success, #10b981) 80%, white);
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
@@ -521,8 +521,8 @@
   }
 
   .success-action:hover {
-    background: rgba(16, 185, 129, 0.25);
-    border-color: rgba(16, 185, 129, 0.5);
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-success, #10b981) 50%, transparent);
   }
 
   .success-action:active {
@@ -559,9 +559,9 @@
     display: flex;
     gap: clamp(4px, 1cqi, 8px);
     padding: clamp(3px, 0.8cqi, 5px);
-    background: rgba(0, 0, 0, 0.25);
+    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 80%, transparent);
     border-radius: clamp(8px, 2cqi, 12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .segment {
@@ -670,9 +670,9 @@
 
   .textarea-wrapper {
     position: relative;
-    background: rgba(0, 0, 0, 0.2);
+    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 80%, transparent);
     border: 1.5px solid
-      color-mix(in srgb, var(--active-type-color) 20%, rgba(255, 255, 255, 0.1));
+      color-mix(in srgb, var(--active-type-color) 20%, var(--theme-stroke, rgba(255, 255, 255, 0.1)));
     border-radius: clamp(8px, 1.8cqi, 12px);
     transition:
       border-color 200ms ease,
@@ -701,9 +701,9 @@
   }
 
   .textarea-wrapper:has(.field-textarea.streaming) {
-    border-color: #8b5cf6;
-    background: color-mix(in srgb, #8b5cf6 8%, rgba(0, 0, 0, 0.25));
-    box-shadow: 0 0 0 2px color-mix(in srgb, #8b5cf6 15%, transparent);
+    border-color: var(--theme-accent, #8b5cf6);
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 8%, rgba(0, 0, 0, 0.25));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
   }
 
   .field-textarea {
@@ -751,7 +751,7 @@
   }
 
   .char-count.met {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .field-error {
@@ -767,7 +767,7 @@
     gap: 4px;
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
     font-weight: 500;
-    color: #6366f1;
+    color: var(--theme-accent, #6366f1);
     animation: fadeInOut 2s ease-in-out;
   }
 
@@ -961,23 +961,23 @@
   .toast.error {
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 0.15) 0%,
-      rgba(239, 68, 68, 0.08) 100%
+      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent) 100%
     );
-    border: 1px solid rgba(239, 68, 68, 0.25);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
   }
 
   .toast.info {
     background: linear-gradient(
       135deg,
-      rgba(99, 102, 241, 0.15) 0%,
-      rgba(99, 102, 241, 0.08) 100%
+      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
     );
-    border: 1px solid rgba(99, 102, 241, 0.25);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
   }
 
   .toast.info .toast-icon {
-    background: #6366f1;
+    background: var(--theme-accent, #6366f1);
     color: white;
   }
 

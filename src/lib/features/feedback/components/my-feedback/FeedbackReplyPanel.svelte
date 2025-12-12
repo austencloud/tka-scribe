@@ -174,13 +174,13 @@
     margin: 0 0 4px 0;
     font-size: 0.9375rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .header-hint {
     margin: 0;
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.4;
   }
 
@@ -222,7 +222,7 @@
   .field-label {
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -234,10 +234,10 @@
   .reply-textarea {
     width: 100%;
     padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 80%, transparent);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-family: inherit;
     font-size: 0.9375rem;
     line-height: 1.5;
@@ -247,9 +247,9 @@
 
   .reply-textarea:focus {
     outline: none;
-    background: rgba(0, 0, 0, 0.5);
-    border-color: rgba(59, 130, 246, 0.6);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 90%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 60%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
   }
 
   .reply-textarea:disabled {
@@ -264,12 +264,12 @@
 
   .char-count {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
     transition: color 0.2s ease;
   }
 
   .char-count.met {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .form-actions {
@@ -293,13 +293,13 @@
   }
 
   .cancel-btn {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .cancel-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .cancel-btn:disabled {

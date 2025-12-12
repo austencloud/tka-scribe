@@ -151,7 +151,7 @@
   }
 
   .notification-item.unread {
-    box-shadow: 0 0 0 1px inset rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 1px inset color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   /* ============================================================================
@@ -209,18 +209,18 @@
   .notification-label {
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .notification-time {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     flex-shrink: 0;
   }
 
   .notification-message {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     margin: 0;
     line-height: 1.4;
     overflow: hidden;
@@ -234,7 +234,7 @@
   .notification-from {
     display: block;
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.5);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
     margin-top: 4px;
   }
 
@@ -245,10 +245,10 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, color-mix(in srgb, var(--theme-accent, #6366f1) 80%, #8b5cf6) 100%);
     flex-shrink: 0;
     margin-top: 4px;
-    box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
   }
 
   /* ============================================================================
@@ -257,7 +257,7 @@
   .notification-action {
     align-self: flex-end;
     padding: 6px 12px;
-    background: #3b82f6;
+    background: var(--theme-accent, #3b82f6);
     color: white;
     border: none;
     border-radius: 6px;
@@ -265,13 +265,13 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
-    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .notification-action:hover {
-    background: #2563eb;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, black);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, transparent);
   }
 
   .notification-action:active {
@@ -282,7 +282,7 @@
      ACCESSIBILITY
      ============================================================================ */
   .notification-item:focus-within {
-    outline: 2px solid rgba(99, 102, 241, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -291,7 +291,7 @@
   }
 
   .notification-action:focus-visible {
-    outline: 2px solid rgba(59, 130, 246, 0.7);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
     outline-offset: 2px;
   }
 

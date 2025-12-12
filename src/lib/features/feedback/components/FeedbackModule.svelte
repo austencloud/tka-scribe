@@ -46,7 +46,7 @@
     height: 100%;
     width: 100%;
     background: transparent;
-    color: var(--text-color, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     position: relative;
     overflow: hidden;
   }
@@ -71,7 +71,7 @@
 
   .placeholder i {
     font-size: 52px;
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .placeholder h2 {

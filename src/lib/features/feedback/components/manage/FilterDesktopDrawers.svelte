@@ -140,7 +140,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: linear-gradient(180deg, #1e1e24 0%, #16161a 100%);
+    background: var(--theme-panel-bg, linear-gradient(180deg, #1e1e24 0%, #16161a 100%));
   }
 
   .drawer-header {
@@ -148,7 +148,7 @@
     align-items: center;
     gap: 13px;
     padding: 21px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .drawer-title {
@@ -158,11 +158,11 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .drawer-title i {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .drawer-close {
@@ -175,15 +175,15 @@
     margin-right: calc(-1 * 13px);
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     border-radius: 12px;
     transition: all 0.15s ease;
   }
 
   .drawer-close:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .drawer-close:active {

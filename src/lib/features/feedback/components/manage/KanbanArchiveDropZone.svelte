@@ -135,7 +135,7 @@
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 12px);
     padding: clamp(8px, 2cqi, 14px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-align: center;
     writing-mode: vertical-rl;
     text-orientation: mixed;

@@ -289,9 +289,9 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: rgba(12, 14, 24, 0.98);
+    background: var(--theme-panel-bg, rgba(12, 14, 24, 0.98));
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     overflow: hidden;
   }
 
@@ -300,7 +300,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     background: linear-gradient(
       135deg,
       rgba(139, 92, 246, 0.15),
@@ -315,7 +315,7 @@
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .panel-header h2 i {
@@ -328,17 +328,17 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .panel-content {
@@ -362,9 +362,9 @@
     align-items: center;
     gap: 4px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .stat-value {
@@ -375,7 +375,7 @@
 
   .stat-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-align: center;
   }
 
@@ -386,7 +386,7 @@
     justify-content: center;
     padding: 32px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .empty-state i {
@@ -401,7 +401,7 @@
 
   .empty-state .hint {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin-top: 8px;
   }
 
@@ -423,7 +423,7 @@
     gap: 8px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .label-text {
@@ -432,7 +432,7 @@
     gap: 8px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .label-text i {
@@ -445,10 +445,10 @@
 
   input {
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 14px;
     font-family: inherit;
     transition: border-color 0.2s;
@@ -471,7 +471,7 @@
   .field-hint {
     margin: 4px 0 0 0;
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   /* Changelog preview */
@@ -482,9 +482,9 @@
     max-height: 200px;
     overflow-y: auto;
     padding: 12px;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .changelog-entry {
@@ -492,7 +492,7 @@
     align-items: flex-start;
     gap: 10px;
     padding: 8px 10px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 6px;
     border-left: 3px solid;
   }
@@ -529,14 +529,14 @@
 
   .changelog-entry .entry-text {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
     line-height: 1.4;
   }
 
   .changelog-hint {
     margin: 4px 0 0 0;
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .changelog-loading,
@@ -546,9 +546,9 @@
     justify-content: center;
     gap: 8px;
     padding: 24px;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 13px;
   }
 
@@ -592,13 +592,13 @@
   }
 
   .secondary-btn {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .secondary-btn:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .secondary-btn:disabled {
@@ -624,7 +624,7 @@
   .migration-section p {
     margin: 0 0 12px 0;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .error-banner {
@@ -674,13 +674,13 @@
     margin: 0 0 12px 0;
     font-size: 20px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .confirm-content p {
     margin: 0 0 8px 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .confirm-content ul {
@@ -695,7 +695,7 @@
     padding-left: 20px;
     margin-bottom: 8px;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .confirm-content li::before {

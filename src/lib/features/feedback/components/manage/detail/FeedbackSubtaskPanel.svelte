@@ -118,13 +118,13 @@
   }
 
   .subtask-item.in-progress {
-    border-color: #3b82f6;
-    background: color-mix(in srgb, #3b82f6 5%, transparent);
+    border-color: var(--theme-accent, #3b82f6);
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 5%, transparent);
   }
 
   .subtask-item.blocked {
-    border-color: #f59e0b;
-    background: color-mix(in srgb, #f59e0b 5%, transparent);
+    border-color: var(--semantic-warning, #f59e0b);
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 5%, transparent);
   }
 
   .subtask-status-icon {
@@ -139,15 +139,15 @@
   }
 
   .subtask-item.completed .subtask-status-icon {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .subtask-item.in-progress .subtask-status-icon {
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
   }
 
   .subtask-item.blocked .subtask-status-icon {
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
   }
 
   .subtask-content {

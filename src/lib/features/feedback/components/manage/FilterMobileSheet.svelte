@@ -288,7 +288,7 @@
     right: 0;
     bottom: 0;
     max-height: 85vh;
-    background: linear-gradient(180deg, #1e1e24 0%, #16161a 100%);
+    background: var(--theme-panel-bg, linear-gradient(180deg, #1e1e24 0%, #16161a 100%));
     border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
@@ -332,13 +332,13 @@
   .sheet-handle {
     width: 40px;
     height: 5px;
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
     border-radius: 3px;
     transition: background 0.2s ease;
   }
 
   .sheet-handle-area:hover .sheet-handle {
-    background: rgba(255, 255, 255, 0.4);
+    background: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .sheet-header {
@@ -346,7 +346,7 @@
     align-items: center;
     gap: 13px;
     padding: 0 21px 21px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .sheet-title {
@@ -356,22 +356,22 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .sheet-title i {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .active-count {
     margin-left: auto;
     margin-right: 8px;
     padding: 4px 8px;
-    background: rgba(16, 185, 129, 0.15);
+    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   .sheet-close {
@@ -384,15 +384,15 @@
     margin-left: 0;
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     border-radius: 12px;
     transition: all 0.15s ease;
   }
 
   .sheet-close:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .sheet-close:active {
@@ -411,8 +411,8 @@
   .filter-section {
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     overflow: hidden;
   }
@@ -445,7 +445,7 @@
     display: flex;
     gap: 13px;
     padding: 21px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     background: rgba(0, 0, 0, 0.2);
   }
 
@@ -469,14 +469,14 @@
   }
 
   .sheet-btn.secondary {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .sheet-btn.secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .sheet-btn.secondary:disabled {
@@ -485,13 +485,13 @@
   }
 
   .sheet-btn.primary {
-    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%, var(--semantic-success, #10b981) 100%);
     color: white;
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
   }
 
   .sheet-btn.primary:hover {
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--semantic-success, #10b981) 35%, transparent);
     transform: translateY(-1px);
   }
 

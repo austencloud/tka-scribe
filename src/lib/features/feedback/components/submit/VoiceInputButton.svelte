@@ -227,18 +227,18 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(99, 102, 241, 0.15);
-    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    border: 1.5px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 50%;
-    color: #818cf8;
+    color: var(--theme-accent, #818cf8);
     cursor: pointer;
     transition: all 200ms ease;
     flex-shrink: 0;
   }
 
   .voice-btn:hover:not(:disabled) {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: rgba(99, 102, 241, 0.5);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
     transform: scale(1.05);
   }
 
@@ -259,19 +259,19 @@
 
   /* Recording state */
   .voice-btn.recording {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #ef4444;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    color: var(--semantic-error, #ef4444);
     animation: pulse 1.5s ease-in-out infinite;
   }
 
   @keyframes pulse {
     0%,
     100% {
-      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
     }
     50% {
-      box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+      box-shadow: 0 0 0 8px transparent;
     }
   }
 
@@ -279,7 +279,7 @@
   .pulse-ring {
     position: absolute;
     inset: -4px;
-    border: 2px solid rgba(239, 68, 68, 0.6);
+    border: 2px solid color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
     border-radius: 50%;
     animation: ringPulse 1.5s ease-out infinite;
   }

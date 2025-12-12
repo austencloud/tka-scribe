@@ -112,20 +112,20 @@
 
   .access-denied i {
     font-size: 64px;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .access-denied h2 {
     margin: 0;
     font-size: 24px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .access-denied p {
     margin: 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .release-panel-container {
@@ -134,7 +134,7 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: rgba(0, 0, 0, 0.3);
+    background: color-mix(in srgb, var(--theme-panel-bg, #000) 30%, transparent);
   }
 
   .release-panel-container > :global(*) {

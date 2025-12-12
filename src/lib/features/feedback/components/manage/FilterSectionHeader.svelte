@@ -41,20 +41,20 @@
   }
 
   .filter-section-header:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .filter-section-title {
     margin: 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .section-active-dot {
     width: 8px;
     height: 8px;
-    background: #10b981;
+    background: var(--semantic-success, #10b981);
     border-radius: 50%;
     animation: pulse 2s infinite;
   }
@@ -72,7 +72,7 @@
   .section-chevron {
     margin-left: auto;
     font-size: 0.75em;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     transition: transform 0.2s ease;
   }
 

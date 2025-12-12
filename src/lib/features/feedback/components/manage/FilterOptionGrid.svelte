@@ -68,7 +68,7 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -83,8 +83,8 @@
   }
 
   .filter-option:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .filter-option:active {
@@ -95,7 +95,7 @@
   .option-radio {
     width: 20px;
     height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 50%;
     flex-shrink: 0;
     position: relative;
@@ -117,7 +117,7 @@
 
   .filter-option.selected {
     background: color-mix(in srgb, var(--option-color, #10b981) 10%, transparent);
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .filter-option.selected .option-radio {

@@ -404,22 +404,22 @@
     height: 52px;
     min-width: 52px;
     min-height: 52px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
   }
 
   .notification-bell:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .notification-bell.has-unread {
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
     animation: bellShake 0.5s ease;
   }
 
@@ -443,7 +443,7 @@
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
-    background: #ef4444;
+    background: var(--semantic-error, #ef4444);
     border-radius: 9px;
     font-size: 11px;
     font-weight: 600;
@@ -459,10 +459,10 @@
     right: 0;
     width: 320px;
     max-height: 400px;
-    background: #1a1a24;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-elevated-bg, #1a1a24);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--theme-panel-shadow, 0 8px 32px rgba(0, 0, 0, 0.4));
     overflow: hidden;
     z-index: 100;
   }
@@ -472,14 +472,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .dropdown-header h3 {
     margin: 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .mark-all-btn {
@@ -487,13 +487,13 @@
     background: none;
     border: none;
     font-size: 0.75rem;
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
     cursor: pointer;
     transition: color 0.2s ease;
   }
 
   .mark-all-btn:hover {
-    color: #60a5fa;
+    color: color-mix(in srgb, var(--theme-accent, #3b82f6) 80%, white);
   }
 
   .notification-list {
@@ -507,7 +507,7 @@
     align-items: center;
     justify-content: center;
     padding: 32px;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
     gap: 8px;
   }
 
@@ -525,11 +525,11 @@
     flex-direction: column;
     gap: 8px;
     padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .notification-item.unread {
-    background: rgba(59, 130, 246, 0.05);
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 5%, transparent);
   }
 
   .notification-card {
@@ -552,7 +552,7 @@
   .notification-action {
     align-self: flex-end;
     padding: 6px 12px;
-    background: #3b82f6;
+    background: var(--theme-accent, #3b82f6);
     color: white;
     border: none;
     border-radius: 6px;
@@ -563,7 +563,7 @@
   }
 
   .notification-action:hover {
-    background: #2563eb;
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, black);
     transform: translateY(-1px);
   }
 
@@ -595,7 +595,7 @@
   .notification-title {
     font-size: 0.8125rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -603,7 +603,7 @@
 
   .notification-message {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -611,7 +611,7 @@
 
   .notification-time {
     font-size: 0.6875rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
   }
 
   .unread-dot {
@@ -621,7 +621,7 @@
     transform: translateY(-50%);
     width: 8px;
     height: 8px;
-    background: #3b82f6;
+    background: var(--theme-accent, #3b82f6);
     border-radius: 50%;
   }
 
@@ -635,7 +635,7 @@
   }
 
   .notification-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 2px;
   }
 

@@ -11,23 +11,24 @@
 </script>
 
 {#if !readOnly}
-  <section class="section delete-section">
+  <section class="section actions-section">
+    <!-- Delete Button - Destructive action with confirmation -->
     {#if detailState.showDeleteConfirm}
-      <div class="delete-confirm-simple">
-        <span class="delete-confirm-text">
-          Are you sure you want to delete this feedback?
+      <div class="confirm-box">
+        <span class="confirm-text">
+          Permanently delete this feedback? This cannot be undone.
         </span>
-        <div class="delete-confirm-actions">
+        <div class="confirm-actions">
           <button
             type="button"
-            class="cancel-btn-simple"
+            class="cancel-btn"
             onclick={() => (detailState.showDeleteConfirm = false)}
           >
             Cancel
           </button>
           <button
             type="button"
-            class="confirm-btn-simple"
+            class="delete-confirm-btn"
             onclick={() => detailState.handleDelete()}
             disabled={detailState.isDeleting}
           >
@@ -43,11 +44,11 @@
     {:else}
       <button
         type="button"
-        class="delete-btn-simple"
+        class="delete-btn"
         onclick={() => (detailState.showDeleteConfirm = true)}
       >
         <i class="fas fa-trash-alt"></i>
-        Delete Feedback
+        Delete Forever
       </button>
     {/if}
   </section>
@@ -60,57 +61,60 @@
     gap: var(--fb-space-sm);
   }
 
-  .delete-section {
+  .actions-section {
     padding-top: var(--fb-space-md);
     border-top: 1px solid var(--fb-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--fb-space-sm);
   }
 
-  .delete-btn-simple {
+  /* Delete button - subtle danger style */
+  .delete-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: var(--fb-space-xs);
     padding: var(--fb-space-sm) var(--fb-space-md);
-    background: color-mix(in srgb, #ef4444 10%, transparent);
-    border: 1px solid color-mix(in srgb, #ef4444 30%, transparent);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: var(--fb-radius-md);
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     cursor: pointer;
     font-weight: 500;
+    font-size: var(--fb-text-xs);
+    opacity: 0.7;
     transition: all 0.2s ease;
   }
 
-  .delete-btn-simple:hover {
-    background: color-mix(in srgb, #ef4444 15%, transparent);
-    border-color: #ef4444;
+  .delete-btn:hover {
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+    opacity: 1;
   }
 
-  .delete-btn-simple:active {
-    transform: scale(0.98);
-  }
-
-  .delete-confirm-simple {
+  /* Confirm box */
+  .confirm-box {
     display: flex;
     flex-direction: column;
     gap: var(--fb-space-md);
     padding: var(--fb-space-md);
-    background: color-mix(in srgb, #ef4444 5%, transparent);
-    border: 1px solid color-mix(in srgb, #ef4444 30%, transparent);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: var(--fb-radius-md);
   }
 
-  .delete-confirm-text {
+  .confirm-text {
     font-size: var(--fb-text-sm);
     color: var(--fb-text);
     font-weight: 500;
   }
 
-  .delete-confirm-actions {
+  .confirm-actions {
     display: flex;
     gap: var(--fb-space-sm);
   }
 
-  .cancel-btn-simple {
+  .cancel-btn {
     flex: 1;
     padding: var(--fb-space-sm) var(--fb-space-md);
     background: var(--fb-surface);
@@ -122,19 +126,19 @@
     transition: all 0.2s ease;
   }
 
-  .cancel-btn-simple:hover {
+  .cancel-btn:hover {
     background: var(--fb-surface-hover);
   }
 
-  .confirm-btn-simple {
+  .delete-confirm-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     padding: var(--fb-space-sm) var(--fb-space-md);
-    background: #ef4444;
-    border: 1px solid #ef4444;
+    background: var(--semantic-error, #ef4444);
+    border: 1px solid var(--semantic-error, #ef4444);
     border-radius: var(--fb-radius-md);
     color: white;
     cursor: pointer;
@@ -142,12 +146,12 @@
     transition: all 0.2s ease;
   }
 
-  .confirm-btn-simple:hover:not(:disabled) {
-    background: #dc2626;
-    border-color: #dc2626;
+  .delete-confirm-btn:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 80%, black);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 80%, black);
   }
 
-  .confirm-btn-simple:disabled {
+  .delete-confirm-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }

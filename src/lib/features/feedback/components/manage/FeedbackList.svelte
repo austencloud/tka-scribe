@@ -216,13 +216,13 @@
     --fb-radius-sm: 8px;
     --fb-radius-md: 12px;
 
-    --fb-primary: #10b981;
-    --fb-error: #ef4444;
-    --fb-surface: rgba(255, 255, 255, 0.04);
-    --fb-border: rgba(255, 255, 255, 0.08);
-    --fb-text: rgba(255, 255, 255, 0.95);
-    --fb-text-muted: rgba(255, 255, 255, 0.6);
-    --fb-text-subtle: rgba(255, 255, 255, 0.35);
+    --fb-primary: var(--semantic-success, #10b981);
+    --fb-error: var(--semantic-error, #ef4444);
+    --fb-surface: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
+    --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 70%, transparent);
 
     display: flex;
     flex-direction: column;
@@ -461,8 +461,8 @@
   }
 
   .load-more-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     color: var(--fb-text);
   }
 
@@ -515,12 +515,12 @@
   }
 
   .feedback-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 3px;
   }
 
   .feedback-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   /* Reduced motion */

@@ -251,23 +251,15 @@
     max-width: 90vw;
     height: 100%;
     max-height: 100vh;
-    background: linear-gradient(
-      135deg,
-      rgba(20, 25, 35, 0.98) 0%,
-      rgba(15, 20, 30, 0.98) 100%
-    );
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(20, 25, 35, 0.98));
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   /* Bottom sheet (mobile) styling */
   :global(.drawer-content.feedback-edit-drawer.bottom-sheet) {
     max-height: 85vh;
-    background: linear-gradient(
-      135deg,
-      rgba(20, 25, 35, 0.98) 0%,
-      rgba(15, 20, 30, 0.98) 100%
-    );
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(20, 25, 35, 0.98));
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .edit-drawer-content {
@@ -303,7 +295,7 @@
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .close-btn {
@@ -312,17 +304,17 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .edit-form {
@@ -339,25 +331,25 @@
     align-items: flex-start;
     gap: 10px;
     padding: 12px 14px;
-    background: rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.25);
+    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent);
     border-radius: 10px;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     line-height: 1.4;
   }
 
   .append-info i {
     flex-shrink: 0;
     margin-top: 2px;
-    color: #3b82f6;
+    color: var(--theme-accent, #3b82f6);
   }
 
   /* Original description display */
   .original-description {
     padding: 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
   }
 
@@ -378,7 +370,7 @@
   .original-description p {
     margin: 0;
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     line-height: 1.5;
     white-space: pre-wrap;
   }
@@ -407,9 +399,9 @@
     display: flex;
     gap: 6px;
     padding: 4px;
-    background: rgba(0, 0, 0, 0.25);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.25));
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .segment {
@@ -423,7 +415,7 @@
     background: transparent;
     border: 1.5px solid transparent;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
@@ -431,7 +423,7 @@
   }
 
   .segment:hover:not(.selected) {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     border-color: color-mix(in srgb, var(--type-color) 35%, transparent);
   }
 
@@ -440,7 +432,7 @@
   }
 
   .segment.selected {
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     border-color: var(--type-color);
     background: color-mix(in srgb, var(--type-color) 15%, transparent);
   }
@@ -469,13 +461,13 @@
   .field-label {
     font-size: 0.8125rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     flex-shrink: 0;
   }
 
   .textarea-wrapper {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 20%, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
+    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 20%, var(--theme-stroke, rgba(255, 255, 255, 0.1)));
     border-radius: 10px;
     transition: border-color 0.2s ease;
     flex: 1;
@@ -493,7 +485,7 @@
     padding: 12px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     font-size: 1rem;
     font-family: inherit;
     min-height: 120px;
@@ -507,7 +499,7 @@
   }
 
   .field-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .field-hint {
@@ -520,11 +512,11 @@
   .char-count {
     font-size: 0.75rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .char-count.met {
-    color: #10b981;
+    color: var(--semantic-success, #10b981);
   }
 
   /* Error */
@@ -533,10 +525,10 @@
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: 8px;
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
     font-size: 0.875rem;
   }
 
@@ -565,14 +557,14 @@
   }
 
   .cancel-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .save-btn {
