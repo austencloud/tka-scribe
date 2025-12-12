@@ -8,9 +8,9 @@
 
 import type { FeedbackItem, FeedbackType } from "../domain/models/feedback-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
-import { toast } from "$lib/shared/toast";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
 const PAGE_SIZE = 20;
 
@@ -48,7 +48,7 @@ export function createMyFeedbackState() {
     // Use previewed user ID when preview mode is active, otherwise use actual user
     const effectiveUserId = userPreviewState.isActive && userPreviewState.data.profile
       ? userPreviewState.data.profile.uid
-      : authStore.user?.uid;
+      : authState.user?.uid;
 
     if (!effectiveUserId) return;
     if (isLoading) return;

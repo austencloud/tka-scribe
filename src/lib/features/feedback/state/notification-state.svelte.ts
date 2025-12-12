@@ -7,7 +7,7 @@
 
 import type { UserNotification } from "../domain/models/notification-models";
 import { notificationService } from "../services/implementations/NotificationService";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
 
 /**
  * Creates notification state instance
@@ -19,7 +19,7 @@ export function createNotificationState() {
   let unsubscribe: (() => void) | null = null;
 
   function init() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) return;
 
     // Clean up previous subscription
@@ -41,7 +41,7 @@ export function createNotificationState() {
   }
 
   async function markAsRead(notificationId: string) {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) return;
 
     await notificationService.markAsRead(user.uid, notificationId);
@@ -54,7 +54,7 @@ export function createNotificationState() {
   }
 
   async function markAllAsRead() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) return;
 
     await notificationService.markAllAsRead(user.uid);

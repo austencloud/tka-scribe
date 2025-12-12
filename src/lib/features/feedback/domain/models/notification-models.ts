@@ -18,6 +18,8 @@ export type NotificationType =
   // Social notifications
   | "user-followed"          // Someone followed you
   | "achievement-unlocked"   // User unlocked an achievement
+  // Messaging notifications
+  | "message-received"       // Someone sent you a direct message
   // Admin notifications
   | "admin-new-user-signup"  // A new user signed up (admin-only)
   // System notifications
@@ -76,6 +78,17 @@ export interface SocialNotification extends BaseNotification {
 }
 
 /**
+ * Message notification (direct messages)
+ */
+export interface MessageNotification extends BaseNotification {
+  type: "message-received";
+  conversationId: string;
+  fromUserId: string;
+  fromUserName: string;
+  messagePreview: string;
+}
+
+/**
  * System notification
  */
 export interface SystemNotification extends BaseNotification {
@@ -101,6 +114,7 @@ export type UserNotification =
   | FeedbackNotification
   | SequenceNotification
   | SocialNotification
+  | MessageNotification
   | SystemNotification
   | AdminNotification;
 
@@ -131,6 +145,9 @@ export interface NotificationPreferences {
   userFollowed: boolean;
   achievementUnlocked: boolean;
 
+  // Messaging notifications
+  messageReceived: boolean;
+
   // Admin notifications (only relevant for admin users)
   adminNewUserSignup: boolean;
 
@@ -152,6 +169,7 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
   sequenceCommented: true,
   userFollowed: true,
   achievementUnlocked: true,
+  messageReceived: true,
   adminNewUserSignup: true,
 };
 
@@ -167,6 +185,7 @@ export function getPreferenceKeyForType(type: NotificationType): keyof Notificat
     "sequence-liked": "sequenceLiked",
     "user-followed": "userFollowed",
     "achievement-unlocked": "achievementUnlocked",
+    "message-received": "messageReceived",
     "admin-new-user-signup": "adminNewUserSignup",
   };
 
@@ -224,6 +243,13 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     color: "#f59e0b",
     icon: "fa-trophy",
     actionLabel: "View Achievement",
+  },
+  // Messaging notifications
+  "message-received": {
+    label: "New Message",
+    color: "#8b5cf6",
+    icon: "fa-envelope",
+    actionLabel: "View Message",
   },
   // Admin notifications
   "admin-new-user-signup": {

@@ -56,6 +56,7 @@ import type {
   FeedbackNotification,
   SequenceNotification,
   SocialNotification,
+  MessageNotification,
   SystemNotification,
 } from "../../domain/models/notification-models";
 import { getPreferenceKeyForType } from "../../domain/models/notification-models";
@@ -255,6 +256,43 @@ export class NotificationTriggerService {
   }
 
   /**
+   * Create a message notification (for direct messages)
+   */
+  async createMessageNotification(
+    userId: string,
+    conversationId: string,
+    message: string,
+    messagePreview: string,
+    fromUserId: string,
+    fromUserName: string
+  ): Promise<string | null> {
+    // Check user preferences
+    const shouldNotify = await this.shouldNotify(userId, "message-received");
+    if (!shouldNotify) {
+      return null;
+    }
+
+    // Don't notify yourself
+    if (userId === fromUserId) {
+      return null;
+    }
+
+    const notification: Omit<MessageNotification, "id"> = {
+      userId,
+      type: "message-received",
+      conversationId,
+      message,
+      messagePreview,
+      createdAt: new Date(),
+      read: false,
+      fromUserId,
+      fromUserName,
+    };
+
+    return await this.createNotification(userId, notification);
+  }
+
+  /**
    * Create a system announcement notification
    * System announcements always bypass user preferences
    */
@@ -312,7 +350,7 @@ export class NotificationTriggerService {
    */
   private async createNotification(
     userId: string,
-    notification: Omit<FeedbackNotification | SequenceNotification | SocialNotification | SystemNotification, "id">
+    notification: Omit<FeedbackNotification | SequenceNotification | SocialNotification | MessageNotification | SystemNotification, "id">
   ): Promise<string> {
     const userNotificationsRef = collection(
       firestore,

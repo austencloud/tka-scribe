@@ -8,7 +8,7 @@
     FeedbackNotification,
   } from "../../domain/models/notification-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { testPreviewState } from "$lib/shared/debug/state/test-preview-state.svelte";
 
   // Local component state
@@ -44,7 +44,7 @@
 
   $effect(() => {
     const isPreview = testPreviewState.isActive;
-    const user = authStore.user;
+    const user = authState.user;
 
     // If preview is active, use preview data and ensure no live subscription
     if (isPreview) {
@@ -52,7 +52,8 @@
         unsubscribe();
         unsubscribe = null;
       }
-      notifications = testPreviewState.notifications as unknown as UserNotification[];
+      notifications =
+        testPreviewState.notifications as unknown as UserNotification[];
       unreadCount = notifications.filter((n) => !n.read).length;
       isLoading = testPreviewState.isLoading;
       activePopup = notifications.find(
@@ -108,7 +109,7 @@
     const isPreview = testPreviewState.isActive;
 
     if (!isPreview) {
-      const user = authStore.user;
+      const user = authState.user;
       if (user) {
         await notificationService.markAsRead(user.uid, notificationId);
       }
@@ -181,7 +182,7 @@
     const isPreview = testPreviewState.isActive;
 
     if (!isPreview) {
-      const user = authStore.user;
+      const user = authState.user;
       if (user) {
         await notificationService.markAsRead(user.uid, notification.id);
       }
@@ -211,7 +212,7 @@
     const isPreview = testPreviewState.isActive;
 
     if (!isPreview) {
-      const user = authStore.user;
+      const user = authState.user;
       if (user) {
         await notificationService.markAsRead(user.uid, notificationId);
       }
@@ -239,17 +240,25 @@
     if (!current) return;
 
     if (action === "view") {
-      await handleNotificationClick(getNotificationActionId(current), current.id, {
-        navigate: true,
-      });
+      await handleNotificationClick(
+        getNotificationActionId(current),
+        current.id,
+        {
+          navigate: true,
+        }
+      );
       activePopup = null;
       return;
     }
 
     if (action === "dismiss") {
-      await handleNotificationClick(getNotificationActionId(current), current.id, {
-        navigate: false,
-      });
+      await handleNotificationClick(
+        getNotificationActionId(current),
+        current.id,
+        {
+          navigate: false,
+        }
+      );
       activePopup = null;
       return;
     }
@@ -259,7 +268,7 @@
   }
 
   async function handleMarkAllAsRead() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) return;
 
     await notificationService.markAllAsRead(user.uid);
@@ -340,7 +349,9 @@
                   <span class="notification-title"
                     >{getNotificationTitle(notification)}</span
                   >
-                  <span class="notification-message">{notification.message}</span>
+                  <span class="notification-message"
+                    >{notification.message}</span
+                  >
                   <span class="notification-time"
                     >{formatDate(notification.createdAt)}</span
                   >
@@ -376,13 +387,25 @@
           <p class="popup-message">{activePopup.message}</p>
         </div>
         <div class="popup-actions">
-          <button class="ghost" type="button" onclick={() => handlePopupAction("later")}>
+          <button
+            class="ghost"
+            type="button"
+            onclick={() => handlePopupAction("later")}
+          >
             Later
           </button>
-          <button class="secondary" type="button" onclick={() => handlePopupAction("dismiss")}>
+          <button
+            class="secondary"
+            type="button"
+            onclick={() => handlePopupAction("dismiss")}
+          >
             Dismiss
           </button>
-          <button class="primary" type="button" onclick={() => handlePopupAction("view")}>
+          <button
+            class="primary"
+            type="button"
+            onclick={() => handlePopupAction("view")}
+          >
             View
           </button>
         </div>
@@ -507,7 +530,11 @@
     align-items: center;
     justify-content: center;
     padding: 32px;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
     gap: 8px;
   }
 
@@ -529,7 +556,11 @@
   }
 
   .notification-item.unread {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 5%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 5%,
+      transparent
+    );
   }
 
   .notification-card {
@@ -611,7 +642,11 @@
 
   .notification-time {
     font-size: 0.6875rem;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
   }
 
   .unread-dot {

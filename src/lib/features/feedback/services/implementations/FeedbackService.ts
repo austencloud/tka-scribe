@@ -26,7 +26,7 @@ import {
 import { firestore, getStorageInstance } from "$lib/shared/auth/firebase";
 import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
 import type { FirebaseStorage } from "firebase/storage";
-import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
 import type { IFeedbackService } from "../contracts/IFeedbackService";
 import type {
   FeedbackItem,
@@ -95,7 +95,7 @@ export class FeedbackService implements IFeedbackService {
     capturedTab: string,
     images?: File[]
   ): Promise<string> {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated to submit feedback");
     }
@@ -330,7 +330,7 @@ export class FeedbackService implements IFeedbackService {
     message: string,
     notifyTester: boolean = true
   ): Promise<void> {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated");
     }
@@ -433,7 +433,7 @@ export class FeedbackService implements IFeedbackService {
     type: NotificationType,
     message: string
   ): Promise<void> {
-    const admin = authStore.user;
+    const admin = authState.user;
     if (!admin) return;
 
     // Use NotificationTriggerService which checks user preferences
@@ -556,7 +556,7 @@ export class FeedbackService implements IFeedbackService {
     updates: Partial<Pick<FeedbackItem, "type" | "description">>,
     appendMode: boolean = false
   ): Promise<FeedbackItem> {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated to update feedback");
     }

@@ -5,10 +5,17 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { notificationPreferencesService } from "../services/implementations/NotificationPreferencesService";
-  import type { NotificationPreferences, NotificationType } from "../domain/models/notification-models";
-  import { DEFAULT_NOTIFICATION_PREFERENCES, NOTIFICATION_TYPE_CONFIG, getPreferenceKeyForType } from "../domain/models/notification-models";
+  import type {
+    NotificationPreferences,
+    NotificationType,
+  } from "../domain/models/notification-models";
+  import {
+    DEFAULT_NOTIFICATION_PREFERENCES,
+    NOTIFICATION_TYPE_CONFIG,
+    getPreferenceKeyForType,
+  } from "../domain/models/notification-models";
   import PreferenceGroup from "./notifications/PreferenceGroup.svelte";
   import type { PreferenceItem } from "./notifications/PreferenceItem";
 
@@ -27,7 +34,7 @@
   });
 
   async function loadPreferences() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) {
       isLoading = false;
       return;
@@ -46,7 +53,7 @@
   }
 
   async function togglePreference(key: keyof NotificationPreferences) {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user) return;
     if (pendingKeys.has(key)) return;
 
@@ -71,7 +78,7 @@
   }
 
   async function enableAll() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user || bulkBusy) return;
 
     try {
@@ -87,7 +94,7 @@
   }
 
   async function disableAll() {
-    const user = authStore.user;
+    const user = authState.user;
     if (!user || bulkBusy) return;
 
     try {
@@ -111,6 +118,7 @@
     "sequence-liked": "When someone likes your sequence",
     "user-followed": "When someone follows you",
     "achievement-unlocked": "When you unlock an achievement",
+    "message-received": "When you receive a direct message",
     "admin-new-user-signup": "When a new user signs up",
     "system-announcement": "Important system announcements",
   };
@@ -204,7 +212,7 @@
       <i class="fas fa-spinner fa-spin"></i>
       <p>Loading preferences...</p>
     </div>
-  {:else if !authStore.isAuthenticated}
+  {:else if !authState.isAuthenticated}
     <div class="empty-state shell">
       <i class="fas fa-user-slash"></i>
       <p>Sign in to manage notification preferences</p>
@@ -247,7 +255,7 @@
           title={group.title}
           description={group.description}
           items={group.items}
-          preferences={preferences}
+          {preferences}
           isBusyKey={(key) => pendingKeys.has(key)}
           onToggle={togglePreference}
         />
@@ -337,7 +345,12 @@
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, filter 180ms ease, background 180ms ease;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease,
+      filter 180ms ease,
+      background 180ms ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -382,20 +395,20 @@
     align-items: center;
     gap: 10px;
     padding: 12px 14px;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 8px;
   }
 
   .system-notice i {
-    color: rgba(99, 102, 241, 0.8);
+    color: color-mix(in srgb, var(--theme-accent) 80%, transparent);
     font-size: 14px;
     flex-shrink: 0;
   }
 
   .system-notice p {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     margin: 0;
     line-height: 1.4;
   }

@@ -6,7 +6,7 @@
 
 import { versionService } from "../services/implementations/VersionService";
 import type { AppVersion, VersionFeedbackItem, ChangelogEntry } from "../domain/models/version-models";
-import { generateFromFeedback } from "../services/changelog";
+import { generateFromFeedback } from "../services/changelog/changelog-generator";
 
 export interface VersionState {
   // Data

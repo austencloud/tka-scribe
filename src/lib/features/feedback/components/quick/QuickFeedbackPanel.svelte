@@ -159,7 +159,7 @@
     --panel-gap: clamp(12px, 4cqi, 20px);
 
     /* Colors */
-    --accent: var(--theme-accent, #6366f1);
+    --accent: var(--theme-accent-strong, #6366f1);
     --text-primary: var(--theme-text, rgba(255, 255, 255, 0.95));
     --text-secondary: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     --text-muted: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%, transparent);
@@ -295,7 +295,7 @@
     color: var(--text-muted);
     background: linear-gradient(
       180deg,
-      rgba(99, 102, 241, 0.08) 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 0%,
       transparent 100%
     );
     flex-shrink: 0;
@@ -308,14 +308,14 @@
     min-width: clamp(24px, 6cqi, 28px);
     min-height: clamp(24px, 6cqi, 28px);
     padding: clamp(2px, 0.5cqi, 4px) clamp(6px, 2cqi, 10px);
-    background: rgba(99, 102, 241, 0.15);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
     border-radius: clamp(4px, 1cqi, 6px);
     font-family: inherit;
     /* Minimum 12px */
     font-size: clamp(0.75rem, 3cqi, 0.8125rem);
     font-weight: 600;
-    color: rgba(99, 102, 241, 0.9);
+    color: color-mix(in srgb, var(--accent) 90%, white);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════

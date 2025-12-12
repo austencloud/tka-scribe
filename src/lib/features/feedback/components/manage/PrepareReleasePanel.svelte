@@ -303,8 +303,8 @@
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.15),
-      rgba(59, 130, 246, 0.1)
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent),
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent)
     );
   }
 
@@ -319,7 +319,7 @@
   }
 
   .panel-header h2 i {
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .close-btn {
@@ -370,7 +370,7 @@
   .stat-value {
     font-size: 28px;
     font-weight: 700;
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .stat-label {
@@ -436,7 +436,7 @@
   }
 
   .label-text i {
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .required {
@@ -456,7 +456,7 @@
 
   input:focus {
     outline: none;
-    border-color: #8b5cf6;
+    border-color: var(--theme-accent-strong, #8b5cf6);
   }
 
   input.error {
@@ -506,11 +506,11 @@
   }
 
   .changelog-entry.added {
-    border-left-color: #8b5cf6;
+    border-left-color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .changelog-entry.added i {
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .changelog-entry.improved {
@@ -577,13 +577,13 @@
   }
 
   .primary-btn {
-    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6), var(--theme-accent-strong, #6366f1));
     color: white;
   }
 
   .primary-btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .primary-btn:disabled {
@@ -658,8 +658,8 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.2),
-      rgba(99, 102, 241, 0.1)
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 10%, transparent)
     );
     border-radius: 50%;
     margin-bottom: 16px;
@@ -667,7 +667,7 @@
 
   .confirm-icon i {
     font-size: 28px;
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .confirm-content h3 {
@@ -702,11 +702,11 @@
     content: "•";
     position: absolute;
     left: 0;
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .confirm-content li strong {
-    color: #8b5cf6;
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .confirm-content .warning {

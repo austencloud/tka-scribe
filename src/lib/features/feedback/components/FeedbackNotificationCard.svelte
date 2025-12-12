@@ -1,5 +1,5 @@
 <!--
-  NotificationItem - Single Notification Card
+  FeedbackNotificationCard - Styled notification card for dashboard
 
   Displays a notification with icon, message, and two actions:
   - Click card: Mark as read (dismiss)
@@ -12,7 +12,7 @@
   } from "../domain/models/notification-models";
   import { NOTIFICATION_TYPE_CONFIG } from "../domain/models/notification-models";
   import { notificationService } from "../services/implementations/NotificationService";
-  import { authStore } from "$lib/shared/auth/stores/authStore.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   let { notification, onAction, onDismiss } = $props<{
     notification: UserNotification;
@@ -66,7 +66,7 @@
 
   async function handleDismiss() {
     // Delete the notification
-    const user = authStore.user;
+    const user = authState.user;
     if (user) {
       try {
         // Dynamically import to avoid circular dependencies
@@ -84,7 +84,7 @@
 
   async function handleAction() {
     // Mark as read and trigger action (navigate)
-    const user = authStore.user;
+    const user = authState.user;
     if (user && !notification.read) {
       await notificationService.markAsRead(user.uid, notification.id);
     }
@@ -94,7 +94,11 @@
   }
 </script>
 
-<div class="notification-item" class:unread={!notification.read} style="background: {bgColor}; border-color: {borderColor};">
+<div
+  class="notification-item"
+  class:unread={!notification.read}
+  style="background: {bgColor}; border-color: {borderColor};"
+>
   <button
     class="notification-card"
     onclick={handleDismiss}
@@ -151,7 +155,8 @@
   }
 
   .notification-item.unread {
-    box-shadow: 0 0 0 1px inset color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 0 0 1px inset
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 30%, transparent);
   }
 
   /* ============================================================================
@@ -234,7 +239,11 @@
   .notification-from {
     display: block;
     font-size: 11px;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
     margin-top: 4px;
   }
 
@@ -245,10 +254,15 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, color-mix(in srgb, var(--theme-accent, #6366f1) 80%, #8b5cf6) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #6366f1) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 80%, var(--theme-accent-strong, #8b5cf6)) 100%
+    );
     flex-shrink: 0;
     margin-top: 4px;
-    box-shadow: 0 0 8px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    box-shadow: 0 0 8px
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 50%, transparent);
   }
 
   /* ============================================================================
@@ -265,13 +279,15 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
-    box-shadow: 0 2px 6px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+    box-shadow: 0 2px 6px
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .notification-action:hover {
     background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, black);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, transparent);
   }
 
   .notification-action:active {
@@ -282,7 +298,8 @@
      ACCESSIBILITY
      ============================================================================ */
   .notification-item:focus-within {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -291,7 +308,8 @@
   }
 
   .notification-action:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
     outline-offset: 2px;
   }
 

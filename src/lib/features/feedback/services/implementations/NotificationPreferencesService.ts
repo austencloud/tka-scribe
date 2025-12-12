@@ -107,6 +107,7 @@ export class NotificationPreferencesService {
       sequenceCommented: true,
       userFollowed: true,
       achievementUnlocked: true,
+      messageReceived: true,
       adminNewUserSignup: true,
     };
     await this.savePreferences(userId, allEnabled);
@@ -127,6 +128,7 @@ export class NotificationPreferencesService {
       sequenceCommented: false,
       userFollowed: false,
       achievementUnlocked: false,
+      messageReceived: false,
       adminNewUserSignup: false,
     };
     await this.savePreferences(userId, allDisabled);
