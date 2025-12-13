@@ -101,15 +101,17 @@ export class ImageCompositionService implements IImageCompositionService {
     const derivedWord = simplifyRepeatedWord(rawWord);
 
     // Calculate header height if word should be included
-    // Header is at the TOP of the image
+    // Header is at the TOP of the image - proportional to beat size for balanced layout
     const headerHeight =
       options.addWord && derivedWord
-        ? this.calculateHeaderHeight(beatCount, options.beatScale || 1)
+        ? this.calculateHeaderHeight(beatCount, beatSize)
         : 0;
+
+    console.log(`📐 Layout: beatSize=${beatSize}, headerHeight=${headerHeight}, rows=${rows}, cols=${columns}`);
 
     // Calculate footer height if user info should be included
     const footerHeight = options.addUserInfo
-      ? this.calculateFooterHeight(beatCount, options.beatScale || 1)
+      ? this.calculateFooterHeight(beatSize)
       : 0;
 
     const canvasHeight = rows * beatSize + headerHeight + footerHeight;
@@ -479,44 +481,31 @@ export class ImageCompositionService implements IImageCompositionService {
   }
 
   /**
-   * Calculate header height based on beat count
+   * Calculate header height based on beat count and actual beat size
    * Header is at the top of the image
-   * Matches legacy HeightDeterminer.determine_additional_heights()
+   *
+   * Height is proportional to beat size for balanced layout:
+   * - 1 beat: 1.0x beat size
+   * - 2 beats: 1.0x beat size
+   * - 3+ beats: 1.0x beat size (header equals one beat height)
    */
-  private calculateHeaderHeight(beatCount: number, beatScale: number): number {
-    let baseHeight = 0;
-
+  private calculateHeaderHeight(beatCount: number, beatSize: number): number {
     if (beatCount === 0) {
-      baseHeight = 0;
-    } else if (beatCount === 1) {
-      baseHeight = 150;
-    } else if (beatCount === 2) {
-      baseHeight = 200;
-    } else {
-      // beatCount >= 3
-      baseHeight = 300;
+      return 0;
     }
 
-    // Apply beat scale (matches legacy: int(additional_height_top * beat_scale))
-    return Math.floor(baseHeight * beatScale);
+    // Header height = 1x beat size for balanced proportions
+    // This ensures the header doesn't dominate the image
+    return Math.floor(beatSize/3);
   }
 
   /**
-   * Calculate footer height for user info based on beat count
-   * Footer is at the bottom of the image - sized for legacy font sizes
-   * Legacy uses 50pt base font with 52px margin, so footer = font + margin + padding
+   * Calculate footer height for user info based on beat size
+   * Footer is at the bottom of the image - proportional to beat size for consistency
    */
-  private calculateFooterHeight(beatCount: number, beatScale: number): number {
-    // Legacy sizing: margin + font height + some padding
-    // For 3+ beats: margin=50, font=50pt (~52px), so footer ≈ 100-110px
-    let baseHeight = 110; // For 50pt font + 52px margin (3+ beats)
-    if (beatCount <= 1) {
-      baseHeight = 50;    // For ~22pt font + 17px margin
-    } else if (beatCount === 2) {
-      baseHeight = 75;    // For ~33pt font + 25px margin
-    }
-
-    return Math.floor(baseHeight * beatScale);
+  private calculateFooterHeight(beatSize: number): number {
+    // Footer height = 1/3 of beat size (same as header for balanced layout)
+    return Math.floor(beatSize / 7);
   }
 
   /**
