@@ -14,6 +14,7 @@ export interface ThumbnailGridLayout {
 
 /**
  * Calculate optimal grid layout for thumbnail display
+ * Grid expands to fill available space
  */
 export function calculateThumbnailGridLayout(
   beatCount: number,
@@ -21,42 +22,40 @@ export function calculateThumbnailGridLayout(
   containerHeight: number,
   maxColumns: number = 4
 ): ThumbnailGridLayout {
-  const MIN_CELL_SIZE = 30;
-  const MAX_CELL_SIZE = 80;
+  const MIN_CELL_SIZE = 20;
   const GAP = 2;
 
   // Include start position in total cells
   const totalCells = beatCount + 1;
 
-  // Determine columns based on beat count
+  // Determine columns based on beat count - use optimal layout
   let columns: number;
   if (totalCells <= 2) {
     columns = 2;
   } else if (totalCells <= 4) {
     columns = 2;
-  } else if (totalCells <= 6) {
-    columns = 3;
   } else if (totalCells <= 8) {
     columns = 4;
-  } else if (totalCells <= 12) {
-    columns = Math.min(4, maxColumns);
+  } else if (totalCells <= 16) {
+    columns = 4;
   } else {
-    columns = Math.min(Math.ceil(totalCells / 4), maxColumns);
+    columns = Math.min(8, maxColumns);
   }
 
-  columns = Math.min(columns, totalCells);
+  columns = Math.min(columns, totalCells, maxColumns);
 
   const rows = Math.ceil(totalCells / columns);
 
-  // Calculate cell size to fit container
+  // Calculate cell size to fill container (no artificial max cap)
   const availableWidth = containerWidth - (columns - 1) * GAP;
   const availableHeight = containerHeight - (rows - 1) * GAP;
 
   const maxCellWidth = availableWidth / columns;
   const maxCellHeight = availableHeight / rows;
 
+  // Use the smaller dimension to ensure cells are square and fit
   let cellSize = Math.floor(Math.min(maxCellWidth, maxCellHeight));
-  cellSize = Math.max(MIN_CELL_SIZE, Math.min(MAX_CELL_SIZE, cellSize));
+  cellSize = Math.max(MIN_CELL_SIZE, cellSize);
 
   return {
     columns,

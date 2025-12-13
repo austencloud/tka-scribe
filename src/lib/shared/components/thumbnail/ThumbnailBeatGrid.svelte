@@ -1,16 +1,13 @@
 <!--
   ThumbnailBeatGrid - Grid Layout for Sequence Beats
 
-  Renders a sequence as a grid of beat pictographs.
-  Uses computed positions passed from parent to avoid per-beat service resolution.
-
+  Renders a sequence as a grid of real Pictograph components.
   Layout: Start position in first cell, then beats in reading order.
 -->
 <script lang="ts">
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import type { ThumbnailRenderConfig } from "./thumbnail-types";
-  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import ThumbnailBeatCell from "./ThumbnailBeatCell.svelte";
   import { calculateThumbnailGridLayout } from "./thumbnail-grid-utils";
 
@@ -58,7 +55,7 @@
     }
 
     // Add beats
-    beats.forEach((beat, i) => {
+    beats.forEach((beat: BeatData, i: number) => {
       cells.push({
         type: "beat",
         data: beat,
@@ -67,15 +64,6 @@
     });
 
     return cells;
-  });
-
-  // Derive grid mode from first beat's motions
-  const gridMode = $derived.by(() => {
-    if (beats.length === 0) return GridMode.DIAMOND;
-    const firstBeat = beats[0];
-    // Simple heuristic: if both motions exist and have positions ending in 's' or 'n',
-    // it's likely box mode. Default to diamond for safety.
-    return GridMode.DIAMOND;
   });
 </script>
 
@@ -92,7 +80,6 @@
       beatData={cell.data}
       isStartPosition={cell.type === "start"}
       {renderConfig}
-      {gridMode}
       cellSize={layout.cellSize}
     />
   {/each}
