@@ -23,6 +23,11 @@
   import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import type { IDiscoverThumbnailService } from "../../discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import { getSettings } from "$lib/shared/application/state/app-state.svelte";
+  import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
+  import type { ThumbnailRenderConfig } from "$lib/shared/components/thumbnail/thumbnail-types";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import { preloadThumbnailAssets } from "$lib/shared/components/thumbnail/thumbnail-asset-cache.svelte";
 
   type ViewFilter = "all" | "created" | "forked" | "favorites";
 
@@ -30,6 +35,26 @@
   let currentFilter = $state<ViewFilter>("all");
   let searchQuery = $state("");
   let showSortMenu = $state(false);
+
+  // Feature flag: Enable dynamic beat grid rendering
+  // Set to true to use dynamic grids instead of static thumbnails
+  const useDynamicGrid = true;
+
+  // Settings and visibility state for render config (subscribed once, passed to all cards)
+  const settings = $derived(getSettings());
+  const visibilityManager = getVisibilityStateManager();
+
+  // Build render config from settings (single subscription for all cards)
+  const renderConfig = $derived<ThumbnailRenderConfig>({
+    bluePropType: settings.bluePropType ?? PropType.STAFF,
+    redPropType: settings.redPropType ?? PropType.STAFF,
+    showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"),
+    showVTG: visibilityManager.getGlyphVisibility("vtgGlyph"),
+    showElemental: visibilityManager.getGlyphVisibility("elementalGlyph"),
+    showPositions: visibilityManager.getGlyphVisibility("positionsGlyph"),
+    showReversals: visibilityManager.getGlyphVisibility("reversalIndicators"),
+    showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
+  });
 
   // Derived from library state
   const isLoading = $derived(libraryState.isLoading);
@@ -153,8 +178,14 @@
   let prevIsAuthenticated: boolean | undefined;
 
   // Initialize on mount
-  onMount(() => {
+  onMount(async () => {
     prevIsAuthenticated = isAuthenticated;
+
+    // Preload thumbnail assets for dynamic grid rendering
+    if (useDynamicGrid) {
+      await preloadThumbnailAssets();
+    }
+
     if (isAuthenticated) {
       libraryState.initialize();
     }
@@ -432,6 +463,8 @@
             coverUrl={getCoverUrl(sequence)}
             onPrimaryAction={handleCardClick}
             selected={libraryState.isSelected(sequence.id)}
+            {renderConfig}
+            {useDynamicGrid}
           />
         {/each}
       </div>

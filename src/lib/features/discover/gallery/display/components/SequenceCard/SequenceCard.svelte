@@ -13,6 +13,8 @@ Enhanced with Svelte 5 runes for reactive state management.
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { ThumbnailRenderConfig } from "$lib/shared/components/thumbnail/thumbnail-types";
+  import { DEFAULT_THUMBNAIL_CONFIG } from "$lib/shared/components/thumbnail/thumbnail-types";
   import SequenceCardMedia from "./SequenceCardMedia.svelte";
   import SequenceCardFooter from "./SequenceCardFooter.svelte";
 
@@ -21,12 +23,22 @@ Enhanced with Svelte 5 runes for reactive state management.
     coverUrl = undefined,
     onPrimaryAction = () => {},
     selected = false,
+    renderConfig = DEFAULT_THUMBNAIL_CONFIG,
+    useDynamicGrid = false,
   }: {
     sequence: SequenceData;
     coverUrl?: string;
     onPrimaryAction?: (sequence: SequenceData) => void;
     selected?: boolean;
+    renderConfig?: ThumbnailRenderConfig;
+    useDynamicGrid?: boolean;
   } = $props();
+
+  // Extract beats and start position from sequence
+  const beats = $derived(sequence.beats ?? []);
+  const startPosition = $derived(
+    sequence.startPosition ?? sequence.startingPositionBeat
+  );
 
   // Extract image dimensions from metadata for layout shift prevention
   const imageDimensions = $derived({
@@ -155,6 +167,10 @@ Enhanced with Svelte 5 runes for reactive state management.
     word={sequence.word}
     width={imageDimensions.width}
     height={imageDimensions.height}
+    {beats}
+    {startPosition}
+    {renderConfig}
+    {useDynamicGrid}
   />
 
   <SequenceCardFooter title={displayTitle()} {levelStyle} />
