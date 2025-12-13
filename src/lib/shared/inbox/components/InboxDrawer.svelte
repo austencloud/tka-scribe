@@ -24,17 +24,6 @@
 	let isMobile = $state(false);
 	let placement = $derived(isMobile ? "bottom" : "right") as "bottom" | "right";
 
-	// Snap points for mobile - full height when in thread/compose, partial for list
-	const mobileSnapPoints = $derived.by(() => {
-		if (!isMobile) return null;
-		// When viewing messages or composing, expand to full height
-		if (inboxState.currentView === "thread" || inboxState.currentView === "compose") {
-			return ["100%"];
-		}
-		// List view uses default height (no snap points)
-		return null;
-	});
-
 	onMount(() => {
 		const mediaQuery = window.matchMedia("(max-width: 768px)");
 		isMobile = mediaQuery.matches;
@@ -120,8 +109,6 @@
 	onclose={handleClose}
 	class="inbox-drawer {isMobile && inboxState.currentView !== 'list' ? 'inbox-expanded' : ''}"
 	ariaLabel="Inbox"
-	snapPoints={mobileSnapPoints}
-	closeOnSnapToZero={false}
 >
 	<div
 		class="inbox-container"

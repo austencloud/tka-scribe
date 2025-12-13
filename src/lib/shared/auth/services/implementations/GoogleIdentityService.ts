@@ -167,6 +167,8 @@ export class GoogleIdentityService {
   /**
    * Trigger Google sign-in using popup
    * Falls back from One Tap since it doesn't work reliably on localhost
+   * Note: Throws the raw Firebase error for MFA required (auth/multi-factor-auth-required)
+   * so the calling component can handle it with getMultiFactorResolver().
    */
   async signInWithPopup(): Promise<void> {
     console.log("🔐 [GoogleIdentity] Using Firebase popup flow as fallback...");
@@ -187,9 +189,15 @@ export class GoogleIdentityService {
     } catch (error: unknown) {
       console.error("❌ [GoogleIdentity] Popup sign-in error:", error);
 
-      // If popup is blocked by COOP, provide helpful error
+      // Re-throw MFA required error as-is so component can handle it
       if (error instanceof Error && 'code' in error) {
         const firebaseError = error as { code: string; message: string };
+        if (firebaseError.code === "auth/multi-factor-auth-required") {
+          console.log("🔐 [GoogleIdentity] MFA required, re-throwing for component to handle...");
+          throw error;
+        }
+
+        // If popup is blocked by COOP, provide helpful error
         if (
           firebaseError.code === "auth/popup-blocked" ||
           firebaseError.code === "auth/popup-closed-by-user"

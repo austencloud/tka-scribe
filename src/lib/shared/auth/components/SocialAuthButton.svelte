@@ -3,6 +3,7 @@
    * Social Authentication Button
    *
    * Provides branded login buttons for social providers (Facebook, Google, etc.)
+   * Supports MFA challenge when enabled on account.
    */
 
   import { goto } from "$app/navigation";
@@ -11,10 +12,12 @@
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "../../device/domain/models/device-models";
+  import type { IAuthService } from "../services/contracts/IAuthService";
   import {
     browserLocalPersistence,
     FacebookAuthProvider,
     fetchSignInMethodsForEmail,
+    getMultiFactorResolver,
     GithubAuthProvider,
     GoogleAuthProvider,
     indexedDBLocalPersistence,
@@ -23,10 +26,12 @@
     signInWithRedirect,
     TwitterAuthProvider,
     updateProfile,
+    type MultiFactorResolver,
     type User,
   } from "firebase/auth";
   import { onMount } from "svelte";
   import { auth } from "../firebase";
+  import MFAChallengeModal from "./MFAChallengeModal.svelte";
 
   let {
     provider,
@@ -40,6 +45,11 @@
 
   let loading = $state(false);
   let error = $state<string | null>(null);
+
+  // MFA state
+  let showMFAChallenge = $state(false);
+  let mfaResolver = $state<MultiFactorResolver | null>(null);
+  let authService = $state<IAuthService | null>(null);
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
@@ -104,11 +114,16 @@
     return hasTouch && window.innerWidth < 768;
   };
 
-  // Initialize DeviceDetector service
+  // Initialize services
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+    try {
+      authService = resolve<IAuthService>(TYPES.IAuthService);
+    } catch (e) {
+      console.warn("SocialAuthButton: Failed to resolve AuthService", e);
+    }
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
@@ -234,6 +249,15 @@
       console.error(`❌ [${provider}] Error message:`, err.message);
       console.error(`❌ [${provider}] Full error:`, err);
 
+      // Check if MFA is required
+      if (err.code === "auth/multi-factor-auth-required") {
+        console.log(`🔐 [${provider}] MFA required, showing challenge modal...`);
+        mfaResolver = getMultiFactorResolver(auth, err);
+        showMFAChallenge = true;
+        loading = false;
+        return;
+      }
+
       // Clear auth attempt markers on error
       try {
         localStorage.removeItem("tka_auth_attempt");
@@ -336,6 +360,28 @@
 
   const styleClasses =
     `${styles.bg} ${styles.hover} ${styles.text} ${"border" in styles ? styles.border : ""} ${styles.shadow} ${styles.hoverShadow}`.trim();
+
+  // MFA handlers
+  function handleMFASuccess() {
+    console.log(`✅ [${provider}] MFA verification successful`);
+    showMFAChallenge = false;
+    mfaResolver = null;
+    // Clear auth attempt markers
+    try {
+      localStorage.removeItem("tka_auth_attempt");
+      sessionStorage.removeItem("tka_auth_attempt");
+    } catch (e) {
+      // Ignore
+    }
+    goto("/");
+  }
+
+  function handleMFACancel() {
+    console.log(`🔐 [${provider}] MFA verification cancelled`);
+    showMFAChallenge = false;
+    mfaResolver = null;
+    error = "Sign-in cancelled. Please try again.";
+  }
 </script>
 
 <button
@@ -352,6 +398,18 @@
 
 {#if error}
   <p class="error-message">{error}</p>
+{/if}
+
+<!-- MFA Challenge Modal -->
+{#if showMFAChallenge && mfaResolver && authService}
+  <MFAChallengeModal
+    bind:isOpen={showMFAChallenge}
+    resolver={mfaResolver}
+    {authService}
+    {hapticService}
+    onSuccess={handleMFASuccess}
+    onCancel={handleMFACancel}
+  />
 {/if}
 
 <style>

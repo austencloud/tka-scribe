@@ -3,13 +3,21 @@
 
   Side-by-side Google and Facebook auth buttons for sign-in/sign-up flows
   Uses Google Identity Services for improved reliability on modern browsers
+  Supports MFA challenge when enabled on account.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+  import { getMultiFactorResolver, type MultiFactorResolver } from "firebase/auth";
+  import { auth } from "../firebase";
   import { GoogleIdentityService } from "../services/implementations/GoogleIdentityService";
   import { env } from "$env/dynamic/public";
+  import { resolve, TYPES } from "../../inversify/di";
+  import type { IAuthService } from "../services/contracts/IAuthService";
+  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import FacebookIcon from "./icons/FacebookIcon.svelte";
   import GoogleIcon from "./icons/GoogleIcon.svelte";
+  import MFAChallengeModal from "./MFAChallengeModal.svelte";
 
   // Get Google OAuth Client ID from environment (runtime)
   const PUBLIC_GOOGLE_OAUTH_CLIENT_ID = env.PUBLIC_GOOGLE_OAUTH_CLIENT_ID;
@@ -24,8 +32,24 @@
   let googleIdentityService: GoogleIdentityService | null = null;
   let googleButtonReady = $state(false);
 
-  // Initialize Google Identity Services
+  // MFA state
+  let showMFAChallenge = $state(false);
+  let mfaResolver = $state<MultiFactorResolver | null>(null);
+  let authService = $state<IAuthService | null>(null);
+  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let googleError = $state<string | null>(null);
+
+  // Initialize services
   onMount(async () => {
+    // Resolve DI services for MFA
+    try {
+      authService = resolve<IAuthService>(TYPES.IAuthService);
+      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    } catch (e) {
+      console.warn("SocialAuthCompact: Failed to resolve services", e);
+    }
+
+    // Initialize Google Identity Services
     try {
       if (!PUBLIC_GOOGLE_OAUTH_CLIENT_ID) {
         console.warn(
@@ -54,14 +78,13 @@
   // Handle Google sign-in
   async function handleGoogleClick() {
     console.log("🖱️ [SocialAuthCompact] Google button clicked");
+    googleError = null;
 
     if (!googleIdentityService) {
       console.error(
         "❌ [SocialAuthCompact] Google Identity Service not initialized"
       );
-      alert(
-        "Google Sign-In is not ready. Please refresh the page and try again."
-      );
+      googleError = "Google Sign-In is not ready. Please refresh the page.";
       return;
     }
 
@@ -70,8 +93,32 @@
       await googleIdentityService.signInWithPopup();
     } catch (error: any) {
       console.error("❌ [SocialAuthCompact] Google sign-in error:", error);
-      alert(`Google sign-in failed: ${error.message}`);
+
+      // Check if MFA is required
+      if (error.code === "auth/multi-factor-auth-required") {
+        console.log("🔐 [SocialAuthCompact] MFA required, showing challenge modal...");
+        mfaResolver = getMultiFactorResolver(auth, error);
+        showMFAChallenge = true;
+        return;
+      }
+
+      googleError = error.message || "Google sign-in failed";
     }
+  }
+
+  // MFA handlers
+  function handleMFASuccess() {
+    console.log("✅ [SocialAuthCompact] MFA verification successful");
+    showMFAChallenge = false;
+    mfaResolver = null;
+    goto("/");
+  }
+
+  function handleMFACancel() {
+    console.log("🔐 [SocialAuthCompact] MFA verification cancelled");
+    showMFAChallenge = false;
+    mfaResolver = null;
+    googleError = "Sign-in cancelled. Please try again.";
   }
 
   function handleFacebookClick() {
@@ -109,7 +156,22 @@
       Facebook
     </button>
   </div>
+  {#if googleError}
+    <p class="error-message">{googleError}</p>
+  {/if}
 </div>
+
+<!-- MFA Challenge Modal -->
+{#if showMFAChallenge && mfaResolver && authService}
+  <MFAChallengeModal
+    bind:isOpen={showMFAChallenge}
+    resolver={mfaResolver}
+    {authService}
+    {hapticService}
+    onSuccess={handleMFASuccess}
+    onCancel={handleMFACancel}
+  />
+{/if}
 
 <style>
   .social-auth-compact {
@@ -195,6 +257,19 @@
   .social-compact-button:focus-visible {
     outline: 3px solid color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, transparent);
     outline-offset: 2px;
+  }
+
+  .error-message {
+    color: var(--semantic-error, #ef4444);
+    font-size: 0.8125rem;
+    text-align: center;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 400px;
   }
 
   /* ============================================================================
