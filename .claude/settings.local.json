@@ -561,7 +561,8 @@
       "Bash(\"src/lib/shared/auth/\" )",
       "Bash(\"src/lib/shared/inbox/\" )",
       "Bash(\"src/lib/shared/layout/\" )",
-      "Bash(\"src/lib/shared/render/\" )"
+      "Bash(\"src/lib/shared/render/\" )",
+      "Bash(tasklist:*)"
     ],
     "deny": [],
     "ask": []
