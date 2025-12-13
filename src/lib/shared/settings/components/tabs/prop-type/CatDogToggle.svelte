@@ -17,7 +17,10 @@
   aria-checked={catDogMode}
   aria-label="Toggle CatDog Mode - different props per hand"
 >
-  <span class="chip-icon">🐱🐶</span>
+  <span class="chip-icons">
+    <i class="fas fa-cat"></i>
+    <i class="fas fa-dog"></i>
+  </span>
   <span class="chip-label">Cat Dog</span>
 </button>
 
@@ -60,9 +63,25 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .chip-icon {
-    font-size: 16px;
+  .chip-icons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
     line-height: 1;
+    color: inherit;
+  }
+
+  .chip-icons i {
+    transition: transform 0.2s ease;
+  }
+
+  .catdog-chip.active .chip-icons i:first-child {
+    color: var(--prop-blue, #2e3192);
+  }
+
+  .catdog-chip.active .chip-icons i:last-child {
+    color: var(--prop-red, #ed1c24);
   }
 
   .chip-label {

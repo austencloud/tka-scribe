@@ -328,6 +328,7 @@
       73% 29%,
       97% 59%;
     animation: snowfall-layer1 18s linear infinite;
+    animation-delay: -9s; /* Start mid-scene */
     filter: blur(0.5px);
   }
 
@@ -372,7 +373,7 @@
       23% 89%,
       53% 53%;
     animation: snowfall-layer2 24s linear infinite;
-    animation-delay: -6s;
+    animation-delay: -15s; /* Start mid-scene, offset from layer1 */
     opacity: 0.65;
     filter: blur(1px);
   }
@@ -553,6 +554,7 @@
         transparent 50%
       );
     animation: aurora-flow 15s ease-in-out infinite;
+    animation-delay: -8s; /* Start mid-scene */
     filter: blur(clamp(18px, 5.5cqi, 32px)) brightness(1.2);
   }
 
@@ -585,6 +587,7 @@
         transparent 50%
       );
     animation: aurora-flow 20s ease-in-out infinite reverse;
+    animation-delay: -12s; /* Start mid-scene */
     filter: blur(clamp(22px, 6.5cqi, 40px)) brightness(1.15);
   }
 
@@ -646,6 +649,7 @@
       180px 100px,
       40px 152px;
     animation: bubbles 12s ease-in-out infinite;
+    animation-delay: -6s; /* Start mid-scene */
   }
 
   @keyframes bubbles {
@@ -659,6 +663,208 @@
     100% {
       transform: translateY(-100%);
       opacity: 0.4;
+    }
+  }
+
+  /* ===== EMBER GLOW BACKGROUND ===== */
+  .background-preview[data-background="emberGlow"] {
+    background: linear-gradient(180deg, #1a0a00 0%, #2d1810 50%, #1a0800 100%);
+  }
+
+  .background-preview[data-background="emberGlow"]::before {
+    content: "";
+    position: absolute;
+    bottom: -50%;
+    left: -10%;
+    width: 120%;
+    height: 150%;
+    background-image:
+      radial-gradient(circle, rgba(255, 140, 50, 0.9) 2px, transparent 2px),
+      radial-gradient(circle, rgba(255, 100, 30, 0.8) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(255, 180, 80, 0.85) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255, 120, 40, 0.9) 2.5px, transparent 2.5px),
+      radial-gradient(circle, rgba(255, 90, 20, 0.7) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255, 160, 60, 0.8) 1.5px, transparent 1.5px);
+    background-size:
+      80px 90px,
+      120px 100px,
+      100px 80px,
+      70px 110px,
+      90px 70px,
+      110px 90px;
+    background-position:
+      10% 20%,
+      40% 60%,
+      70% 30%,
+      25% 80%,
+      85% 50%,
+      55% 10%;
+    animation: embers-rise 10s ease-in-out infinite;
+    animation-delay: -5s; /* Start mid-scene */
+    filter: blur(0.5px);
+  }
+
+  .background-preview[data-background="emberGlow"]::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: radial-gradient(
+      ellipse 80% 50% at 50% 100%,
+      rgba(255, 100, 30, 0.4) 0%,
+      rgba(255, 60, 10, 0.2) 40%,
+      transparent 70%
+    );
+    animation: ember-glow-pulse 4s ease-in-out infinite;
+    animation-delay: -2s; /* Start mid-scene */
+  }
+
+  @keyframes embers-rise {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.6;
+    }
+    25% {
+      transform: translateY(-25%) translateX(3%);
+      opacity: 0.9;
+    }
+    50% {
+      transform: translateY(-50%) translateX(-2%);
+      opacity: 0.7;
+    }
+    75% {
+      transform: translateY(-75%) translateX(4%);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(-100%) translateX(0);
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes ember-glow-pulse {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scaleY(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleY(1.1);
+    }
+  }
+
+  /* ===== SAKURA DRIFT BACKGROUND ===== */
+  .background-preview[data-background="sakuraDrift"] {
+    /* Twilight gradient - deep purple sky fading to warm pink/peach horizon */
+    background: linear-gradient(
+      180deg,
+      #1a1028 0%,
+      #2d1f3d 25%,
+      #4a2850 50%,
+      #6b3a5c 70%,
+      #8b4a60 85%,
+      #a85a65 100%
+    );
+  }
+
+  .background-preview[data-background="sakuraDrift"]::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -10%;
+    width: 120%;
+    height: 200%;
+    /* Larger, more saturated pink petals with soft edges */
+    background-image:
+      radial-gradient(ellipse 18px 12px, rgba(255, 140, 170, 0.95) 0%, rgba(255, 180, 200, 0.6) 40%, transparent 70%),
+      radial-gradient(ellipse 14px 10px, rgba(255, 130, 165, 0.9) 0%, rgba(255, 170, 195, 0.5) 40%, transparent 70%),
+      radial-gradient(ellipse 20px 14px, rgba(255, 150, 180, 0.85) 0%, rgba(255, 190, 210, 0.5) 40%, transparent 70%),
+      radial-gradient(ellipse 16px 11px, rgba(255, 135, 168, 0.9) 0%, rgba(255, 175, 198, 0.55) 40%, transparent 70%),
+      radial-gradient(ellipse 12px 9px, rgba(255, 145, 175, 0.85) 0%, rgba(255, 185, 205, 0.5) 40%, transparent 70%);
+    background-size:
+      80px 90px,
+      110px 100px,
+      95px 85px,
+      70px 105px,
+      120px 95px;
+    background-position:
+      8% 12%,
+      38% 35%,
+      68% 22%,
+      22% 65%,
+      82% 48%;
+    animation: sakura-fall 12s linear infinite;
+    animation-delay: -6s; /* Start mid-scene */
+    filter: blur(0.5px);
+  }
+
+  .background-preview[data-background="sakuraDrift"]::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: -10%;
+    width: 120%;
+    height: 200%;
+    /* Background layer - slightly smaller, more transparent */
+    background-image:
+      radial-gradient(ellipse 14px 10px, rgba(255, 160, 185, 0.7) 0%, rgba(255, 190, 210, 0.4) 40%, transparent 70%),
+      radial-gradient(ellipse 16px 11px, rgba(255, 150, 178, 0.65) 0%, rgba(255, 185, 205, 0.35) 40%, transparent 70%),
+      radial-gradient(ellipse 12px 9px, rgba(255, 155, 182, 0.6) 0%, rgba(255, 188, 208, 0.35) 40%, transparent 70%),
+      radial-gradient(ellipse 15px 10px, rgba(255, 145, 175, 0.65) 0%, rgba(255, 182, 202, 0.4) 40%, transparent 70%);
+    background-size:
+      95px 88px,
+      130px 105px,
+      75px 95px,
+      105px 78px;
+    background-position:
+      18% 28%,
+      52% 55%,
+      78% 38%,
+      35% 72%;
+    animation: sakura-fall-slow 16s linear infinite;
+    animation-delay: -10s; /* Start mid-scene, offset from layer1 */
+    filter: blur(1px);
+    opacity: 0.7;
+  }
+
+  @keyframes sakura-fall {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(25%) translateX(6%) rotate(8deg);
+    }
+    50% {
+      transform: translateY(50%) translateX(-4%) rotate(-5deg);
+    }
+    75% {
+      transform: translateY(75%) translateX(5%) rotate(6deg);
+    }
+    100% {
+      transform: translateY(100%) translateX(0) rotate(0deg);
+    }
+  }
+
+  @keyframes sakura-fall-slow {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    20% {
+      transform: translateY(20%) translateX(-5%) rotate(-8deg);
+    }
+    40% {
+      transform: translateY(40%) translateX(4%) rotate(6deg);
+    }
+    60% {
+      transform: translateY(60%) translateX(-6%) rotate(-10deg);
+    }
+    80% {
+      transform: translateY(80%) translateX(3%) rotate(4deg);
+    }
+    100% {
+      transform: translateY(100%) translateX(0) rotate(0deg);
     }
   }
 

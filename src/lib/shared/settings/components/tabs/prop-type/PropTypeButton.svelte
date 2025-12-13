@@ -207,44 +207,52 @@
   </div>
   <span class="prop-label">{displayInfo.label}</span>
 
-  <!-- iOS checkmark indicators -->
+  <!-- Checkmark indicator -->
   {#if selected || selectedBlue || selectedRed}
     <div class="checkmark-container">
-      {#if selected || selectedBlue}
-        <div class="ios-checkmark blue">
+      {#if selected}
+        <!-- Single selection mode: show checkmark matching the color prop -->
+        <div class="ios-checkmark {color}">
           <i class="fas fa-check"></i>
         </div>
-      {/if}
-      {#if selected || selectedRed}
-        <div class="ios-checkmark red" class:offset={selectedBlue}>
-          <i class="fas fa-check"></i>
-        </div>
+      {:else}
+        <!-- Dual selection mode (both props shown, rare case) -->
+        {#if selectedBlue}
+          <div class="ios-checkmark blue">
+            <i class="fas fa-check"></i>
+          </div>
+        {/if}
+        {#if selectedRed}
+          <div class="ios-checkmark red" class:offset={selectedBlue}>
+            <i class="fas fa-check"></i>
+          </div>
+        {/if}
       {/if}
     </div>
   {/if}
 </button>
 
 <style>
-  /* iOS-native prop button - Pixel Perfect */
+  /* iOS-native prop button - Inline Grid Optimized */
   .prop-button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 0.33px solid var(--theme-stroke, rgba(255, 255, 255, 0.16)); /* iOS hairline border */
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.36, 0.66, 0.04, 1); /* iOS spring */
+    transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
     color: var(--theme-text, rgba(255, 255, 255, 0.85));
     position: relative;
-    padding: clamp(6px, 1.8cqi, 12px);
+    padding: clamp(8px, 1.5cqi, 12px) clamp(6px, 1cqi, 8px) clamp(6px, 1cqi, 10px);
     gap: clamp(4px, 1cqi, 8px);
-    border-radius: 12px; /* iOS medium corner radius */
+    border-radius: 12px;
     box-sizing: border-box;
+    aspect-ratio: 1 / 1.15; /* Slightly taller than square for label */
     min-height: 0; /* Allow shrinking */
-    overflow: hidden; /* Prevent image overflow */
-    /* iOS precise shadow - matches Photos.app */
-    box-shadow: var(--theme-shadow, 0 3px 12px rgba(0, 0, 0, 0.12));
+    overflow: hidden;
+    box-shadow: var(--theme-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
   }
 
   .prop-button:hover {
@@ -288,10 +296,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 1; /* Take up all available space */
+    flex: 1;
     width: 100%;
-    min-height: 60px; /* Ensure images have minimum display space */
-    overflow: hidden; /* Prevent overflow */
+    min-height: 0; /* Allow shrinking */
+    overflow: hidden;
     position: relative;
   }
 
@@ -301,14 +309,13 @@
   }
 
   .prop-image {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto; /* Don't force width - let aspect ratio determine it */
-    height: auto; /* Don't force height - let aspect ratio determine it */
-    opacity: 0.85;
-    transition:
-      opacity 0.2s ease,
-      transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
+    width: 100%;
+    height: 100%;
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
   }
 
   /* Rotate image 90 degrees counterclockwise when aspect ratios don't match */
@@ -324,49 +331,45 @@
     opacity: 1;
   }
 
-  /* iOS-perfect typography */
+  /* Label typography */
   .prop-label {
     text-align: center;
-    word-break: break-word;
-    white-space: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     max-width: 100%;
     width: 100%;
-    font-size: clamp(10px, 2.5cqi, 14px);
-    font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.08px; /* iOS footnote tracking - exact spec */
-    line-height: 1.3;
-    flex-shrink: 0; /* Don't allow label to shrink - it needs to be readable */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Show ... if text too long */
-    font-family:
-      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-size: clamp(9px, 2.5cqi, 11px);
+    font-weight: 600;
+    letter-spacing: -0.1px;
+    line-height: 1.2;
+    flex-shrink: 0;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
-  /* Checkmark container for dual indicators */
+  /* Checkmark container */
   .checkmark-container {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 6px;
+    right: 6px;
     display: flex;
-    gap: 4px;
+    gap: 3px;
     z-index: 10;
   }
 
-  /* iOS checkmark - Larger and More Visible */
+  /* Compact checkmark for inline grid */
   .ios-checkmark {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    backdrop-filter: blur(10px) saturate(180%);
-    -webkit-backdrop-filter: blur(10px) saturate(180%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 700;
-    /* iOS spring animation */
-    animation: ios-checkmark-pop 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
+    animation: ios-checkmark-pop 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
   .ios-checkmark.blue {
@@ -434,43 +437,5 @@
     }
   }
 
-  /* Light mode support */
-  @media (prefers-color-scheme: light) {
-    .prop-button {
-      background: rgba(0, 0, 0, 0.04);
-      border-color: rgba(0, 0, 0, 0.12);
-      color: rgba(0, 0, 0, 0.85);
-    }
-
-    .prop-button:hover {
-      background: rgba(0, 0, 0, 0.08);
-      border-color: rgba(0, 0, 0, 0.18);
-      color: #000000;
-    }
-
-    .prop-button.selected {
-      background: rgba(0, 122, 255, 0.2);
-      border-color: rgba(0, 122, 255, 0.6);
-      box-shadow:
-        0 6px 20px rgba(0, 122, 255, 0.3),
-        0 2px 6px rgba(0, 122, 255, 0.2),
-        inset 0 0 0 1px rgba(0, 122, 255, 0.25);
-    }
-  }
-
-  /* Desktop: Better spacing and sizing */
-  @media (min-width: 769px) {
-    .prop-button {
-      min-height: 160px;
-      padding: clamp(10px, 2vw, 18px);
-    }
-
-    .prop-image-container {
-      min-height: 100px;
-    }
-
-    .prop-label {
-      font-size: clamp(12px, 1.2vw, 15px);
-    }
-  }
+  /* Light mode support - skipped, app is dark-mode only */
 </style>

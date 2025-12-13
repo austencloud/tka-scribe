@@ -163,91 +163,95 @@
         </div>
       </section>
 
-      <!-- Connected Accounts -->
-      <section class="glass-card accounts-card">
-        <header class="card-header">
-          <div class="card-icon">
-            <i class="fas fa-link"></i>
-          </div>
-          <div class="card-header-text">
-            <h3 class="card-title">Connected Accounts</h3>
-            <p class="card-subtitle">Manage linked authentication providers</p>
-          </div>
-        </header>
-        <div class="card-content">
-          <ConnectedAccounts />
-        </div>
-      </section>
-
-      <!-- Two-Factor Authentication -->
-      {#if authService}
-        <section class="glass-card security-card">
+      <!-- Settings Grid - 2x2 layout for utility cards -->
+      <div class="settings-grid">
+        <!-- Connected Accounts -->
+        <section class="glass-card accounts-card">
           <header class="card-header">
             <div class="card-icon">
-              <i class="fas fa-shield-alt"></i>
+              <i class="fas fa-link"></i>
             </div>
             <div class="card-header-text">
-              <h3 class="card-title">Two-Factor Authentication</h3>
-              <p class="card-subtitle">Add an extra layer of security</p>
+              <h3 class="card-title">Connected Accounts</h3>
+              <p class="card-subtitle">Manage linked providers</p>
             </div>
           </header>
           <div class="card-content">
-            <SecuritySection {authService} {hapticService} />
+            <ConnectedAccounts />
           </div>
         </section>
-      {/if}
 
-      <!-- Password Section (only for password-authenticated users) -->
-      {#if hasPasswordProvider()}
-        <section class="glass-card password-card">
+        <!-- Two-Factor Authentication -->
+        {#if authService}
+          <section class="glass-card security-card">
+            <header class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div class="card-header-text">
+                <h3 class="card-title">Two-Factor Authentication</h3>
+                <p class="card-subtitle">Add an extra layer of security</p>
+              </div>
+            </header>
+            <div class="card-content">
+              <SecuritySection {authService} {hapticService} />
+            </div>
+          </section>
+        {/if}
+
+        <!-- Password Section (only for password-authenticated users) -->
+        {#if hasPasswordProvider()}
+          <section class="glass-card password-card">
+            <header class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-key"></i>
+              </div>
+              <div class="card-header-text">
+                <h3 class="card-title">Password</h3>
+                <p class="card-subtitle">Update your account security</p>
+              </div>
+            </header>
+            <div class="card-content">
+              <PasswordSection
+                onChangePassword={handleChangePassword}
+                {hapticService}
+              />
+            </div>
+          </section>
+        {/if}
+
+        <!-- Storage Section -->
+        <section class="glass-card storage-card">
           <header class="card-header">
             <div class="card-icon">
-              <i class="fas fa-key"></i>
+              <i class="fas fa-database"></i>
             </div>
             <div class="card-header-text">
-              <h3 class="card-title">Password</h3>
-              <p class="card-subtitle">Update your account security</p>
+              <h3 class="card-title">Storage</h3>
+              <p class="card-subtitle">Manage local cached data</p>
             </div>
           </header>
           <div class="card-content">
-            <PasswordSection
-              onChangePassword={handleChangePassword}
-              {hapticService}
-            />
+            <div class="storage-content">
+              <button
+                class="action-btn"
+                onclick={handleClearCache}
+                disabled={clearingCache}
+              >
+                <i class="fas fa-broom"></i>
+                <span>{clearingCache ? "Clearing..." : "Clear Cache"}</span>
+              </button>
+              <p class="hint-text">
+                Clears IndexedDB, localStorage, and cookies. Your cloud data is
+                safe.
+              </p>
+            </div>
           </div>
         </section>
-      {/if}
 
-      <!-- Storage Section -->
-      <section class="glass-card storage-card">
-        <header class="card-header">
-          <div class="card-icon">
-            <i class="fas fa-database"></i>
-          </div>
-          <div class="card-header-text">
-            <h3 class="card-title">Storage</h3>
-            <p class="card-subtitle">Manage local cached data</p>
-          </div>
-        </header>
-        <div class="card-content">
-          <div class="storage-content">
-            <button
-              class="action-btn"
-              onclick={handleClearCache}
-              disabled={clearingCache}
-            >
-              <i class="fas fa-broom"></i>
-              <span>{clearingCache ? "Clearing..." : "Clear Cache"}</span>
-            </button>
-            <p class="hint-text">
-              Clears IndexedDB, localStorage, and cookies. Your cloud data is
-              safe.
-            </p>
-          </div>
-        </div>
-      </section>
+      </div>
 
-      <!-- Danger Zone -->
+      <!-- Danger Zone - Full width, separated from grid -->
       <section class="glass-card danger-card">
         <header class="card-header">
           <div class="card-icon danger-icon">
@@ -330,6 +334,27 @@
     display: flex;
     flex-direction: column;
     gap: clamp(14px, 2cqi, 20px);
+  }
+
+  /* ========================================
+     SETTINGS GRID - 2x2 layout for utility cards
+     ======================================== */
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(14px, 2cqi, 20px);
+  }
+
+  .settings-grid .glass-card {
+    /* Cards should stretch to fill their grid cell */
+    height: 100%;
+  }
+
+  /* Single column on narrow screens */
+  @container profile-tab (max-width: 600px) {
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* ========================================
@@ -560,21 +585,21 @@
   }
 
   .action-btn {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
+    width: 100%;
     min-height: 52px;
     padding: 14px 24px;
     background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    border-radius: 12px;
+    border-radius: 10px;
     color: var(--theme-accent);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 150ms ease;
-    align-self: flex-start;
   }
 
   .action-btn:hover:not(:disabled) {
