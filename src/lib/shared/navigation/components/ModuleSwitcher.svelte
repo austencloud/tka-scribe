@@ -36,7 +36,7 @@
   let deviceDetector: IDeviceDetector | null = null;
   let isOpen = $state(false);
 
-  // Responsive settings from DeviceDetector (same as PrimaryNavigation)
+  // Responsive settings from DeviceDetector (same as MobileNavigation)
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
   // Determine drawer placement based on navigation layout
@@ -61,7 +61,7 @@
       TYPES.IHapticFeedbackService
     );
 
-    // Resolve DeviceDetector service (same pattern as PrimaryNavigation)
+    // Resolve DeviceDetector service (same pattern as MobileNavigation)
     let deviceCleanup: (() => void) | undefined;
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);

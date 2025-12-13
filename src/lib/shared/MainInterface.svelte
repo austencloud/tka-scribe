@@ -34,7 +34,7 @@
   const moduleDefinitions = $derived(getModuleDefinitions());
 
   // Layout components
-  import PrimaryNavigation from "./navigation/components/PrimaryNavigation.svelte";
+  import MobileNavigation from "./navigation/components/MobileNavigation.svelte";
   import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
@@ -221,9 +221,9 @@
       />
     </main>
 
-    <!-- Primary Navigation (conditionally rendered) -->
+    <!-- Mobile Navigation (conditionally rendered) -->
     {#if moduleHasPrimaryNav(currentModule()) && !showDesktopSidebar}
-      <PrimaryNavigation
+      <MobileNavigation
         sections={moduleSections()}
         currentSection={currentSection()}
         onSectionChange={handleSectionChange}

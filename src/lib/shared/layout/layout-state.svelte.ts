@@ -10,10 +10,10 @@
 
 // Reactive state object using Svelte 5 $state rune
 export const layoutState = $state({
-  // PrimaryNavigation height - measured dynamically by PrimaryNavigation component
+  // MobileNavigation height - measured dynamically by MobileNavigation component
   primaryNavHeight: 64, // Default fallback
 
-  // Navigation layout state - updated by PrimaryNavigation
+  // Navigation layout state - updated by MobileNavigation
   isPrimaryNavLandscape: false,
 
   // Panel accessibility state - updated by Create Module

@@ -1,4 +1,4 @@
-<!-- Primary Navigation - Responsive Bottom/Side Navigation Orchestrator -->
+<!-- Mobile Navigation - Responsive Bottom/Side Navigation Orchestrator -->
 <!-- Automatically adapts between bottom (portrait) and side (landscape) layouts -->
 <script lang="ts">
 import { resolve } from "../../inversify/di";
@@ -80,7 +80,7 @@ import { TYPES } from "../../inversify/types";
       });
     } catch (error) {
       console.warn(
-        "PrimaryNavigation: Failed to resolve DeviceDetector",
+        "MobileNavigation: Failed to resolve DeviceDetector",
         error
       );
     }
