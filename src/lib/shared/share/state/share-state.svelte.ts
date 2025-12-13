@@ -11,6 +11,7 @@ import type { IShareService } from '../services/contracts/IShareService';
 import { tryResolve, TYPES } from '../../inversify/di';
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 import { createPersistenceHelper } from '../../state/utils/persistent-state';
+import { getUser } from '../../auth/state/authState.svelte';
 
 // Persisted content options (the toggleable chips in the share panel)
 interface PersistedShareOptions {
@@ -70,10 +71,15 @@ export function createShareState(shareService: IShareService): ShareState {
     throw new Error("Social preset not found in SHARE_PRESETS");
   }
 
-  // Merge persisted content options with the base preset
+  // Get the authenticated user's display name (fallback to empty string)
+  const user = getUser();
+  const userName = user?.displayName || "";
+
+  // Merge persisted content options with the base preset and user info
   let options = $state<ShareOptions>({
     ...socialPreset.options,
     ...persistedOptions,
+    userName,
   });
   let selectedPreset = $state<string>("custom"); // Start as custom since we loaded persisted options
 
@@ -144,7 +150,10 @@ export function createShareState(shareService: IShareService): ShareState {
     selectPreset: (presetName: string) => {
       const preset = SHARE_PRESETS[presetName];
       if (preset) {
-        options = { ...preset.options };
+        // Preserve the user's display name when switching presets
+        const currentUser = getUser();
+        const currentUserName = currentUser?.displayName || "";
+        options = { ...preset.options, userName: currentUserName };
         selectedPreset = presetName;
         previewError = null;
 

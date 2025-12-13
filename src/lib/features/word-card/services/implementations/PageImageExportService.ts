@@ -10,6 +10,7 @@ import type {
   Html2CanvasFunction,
 } from "$lib/shared/foundation/ui/UITypes";
 import { injectable } from "inversify";
+import { getUser } from "$lib/shared/auth/state/authState.svelte";
 
 import type {
   ExportProgress,
@@ -280,6 +281,10 @@ export class PageImageExportService implements IPageImageExportService {
   getRecommendedSettings(
     useCase: "print" | "web" | "archive"
   ): SequenceExportOptions {
+    // Get the authenticated user's display name
+    const user = getUser();
+    const userName = user?.displayName || "TKA Studio User";
+
     const baseOptions: SequenceExportOptions = {
       // Core export settings
       includeStartPosition: true,
@@ -300,7 +305,7 @@ export class PageImageExportService implements IPageImageExportService {
       blueVisible: true,
 
       // User information
-      userName: "TKA Studio User",
+      userName,
       exportDate: new Date().toISOString().split("T")[0] ?? "",
       notes: "Exported from TKA",
 

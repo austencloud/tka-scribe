@@ -68,7 +68,7 @@ export const SHARE_PRESETS: Record<string, SharePreset> = {
       beatSize: 950, // Always 1:1 scale
       margin: 50,
       backgroundColor: "#ffffff",
-      userName: "TKA Studio User",
+      userName: "", // Will be populated from auth state
       notes: "Created with TKA Studio",
     },
   },
@@ -87,7 +87,7 @@ export const SHARE_PRESETS: Record<string, SharePreset> = {
       beatSize: 950, // Always 1:1 scale
       margin: 30,
       backgroundColor: "#ffffff",
-      userName: "TKA Studio User",
+      userName: "", // Will be populated from auth state
       notes: "",
     },
   },
