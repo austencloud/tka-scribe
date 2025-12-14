@@ -4,13 +4,11 @@ import { AngleCalculator } from "../../../features/compose/services/implementati
 import { AnimationLoopService } from "../../../features/compose/services/implementations/AnimationLoopService";
 import { AnimationPlaybackController } from "../../../features/compose/services/implementations/AnimationPlaybackController";
 import { AnimationStateManager as AnimationStateService } from "../../../features/compose/services/implementations/AnimationStateManager";
-import { AnimatedImageTranscoder } from "../../../features/compose/services/implementations/AnimatedImageTranscoder";
 import { BeatCalculator as BeatCalculationService } from "../../../features/compose/services/implementations/BeatCalculator";
 import { CanvasRenderer } from "../../../features/compose/services/implementations/CanvasRenderer";
 import { CoordinateUpdater } from "../../../features/compose/services/implementations/CoordinateUpdater";
 import { EndpointCalculator } from "../../../features/compose/services/implementations/EndpointCalculator";
-import { GifExportService } from "../../../features/compose/services/implementations/GifExportService";
-import { GifExportOrchestrator } from "../../../features/compose/services/implementations/GifExportOrchestrator";
+import { VideoExportOrchestrator } from "../../../features/compose/services/implementations/VideoExportOrchestrator";
 import { VideoExportService } from "../../../features/compose/services/implementations/VideoExportService";
 import { MotionCalculator } from "../../../features/compose/services/implementations/MotionCalculator";
 // PixiAnimationRenderer moved to on-demand loading in PixiModule (pixi.js ~500KB)
@@ -53,10 +51,8 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
     // IPixiAnimationRenderer loaded on-demand via PixiModule when animation canvas is used
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
-    options.bind(TYPES.IGifExportService).to(GifExportService);
     options.bind(TYPES.IVideoExportService).to(VideoExportService);
-    options.bind(TYPES.IAnimatedImageTranscoder).to(AnimatedImageTranscoder);
-    options.bind(TYPES.IGifExportOrchestrator).to(GifExportOrchestrator);
+    options.bind(TYPES.IVideoExportOrchestrator).to(VideoExportOrchestrator);
 
     // === TRAIL SERVICES ===
     options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);

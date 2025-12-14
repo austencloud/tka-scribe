@@ -19,7 +19,7 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     category: "creator",
     tier: "bronze",
     xpReward: 50,
-    icon: "fa-sparkles",
+    icon: "fa-magic-wand-sparkles",
     requirement: {
       type: "sequence_count",
       target: 1,
