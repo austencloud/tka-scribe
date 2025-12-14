@@ -10,6 +10,7 @@
 
   let {
     onExportVideo = () => {},
+    onCancelExport = () => {},
     isExporting = false,
     exportProgress = null,
     isCircular = false,
@@ -17,6 +18,7 @@
     onLoopCountChange = () => {},
   }: {
     onExportVideo?: () => void;
+    onCancelExport?: () => void;
     isExporting?: boolean;
     exportProgress?: { progress: number; stage: string } | null;
     isCircular?: boolean;
@@ -31,6 +33,11 @@
     if (isExporting) return;
     console.log("💾 ExportActionsPanel: Save button clicked");
     onExportVideo();
+  }
+
+  function handleCancelClick() {
+    console.log("❌ ExportActionsPanel: Cancel button clicked");
+    onCancelExport();
   }
 
   function handleSettingsClick(e: MouseEvent) {
@@ -75,32 +82,43 @@
 
 <div class="export-actions-panel">
   <div class="save-button-container">
-    <!-- Main save button -->
-    <button
-      class="save-btn"
-      class:exporting={isExporting}
-      class:complete={exportProgress?.stage === "complete"}
-      onclick={handleSaveClick}
-      type="button"
-      disabled={isExporting && exportProgress?.stage !== "complete"}
-      aria-label={isExporting ? "Saving..." : "Save as MP4 video"}
-    >
-      <i
-        class="fas main-icon"
-        class:fa-download={!isExporting}
-        class:fa-spinner={isExporting && exportProgress?.stage !== "complete"}
-        class:fa-spin={isExporting && exportProgress?.stage !== "complete"}
-        class:fa-check={exportProgress?.stage === "complete"}
-      ></i>
-      <span class="btn-label">{buttonText()}</span>
-      <span class="btn-hint">{buttonHint()}</span>
+    <!-- Main save button (or cancel button when exporting) -->
+    {#if isExporting && exportProgress?.stage !== "complete"}
+      <!-- Cancel button during export -->
+      <button
+        class="save-btn cancelling"
+        onclick={handleCancelClick}
+        type="button"
+        aria-label="Cancel export"
+      >
+        <i class="fas main-icon fa-times"></i>
+        <span class="btn-label">Cancel</span>
+        <span class="btn-hint">Tap to stop export</span>
 
-      {#if isExporting && exportProgress?.stage === "capturing"}
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
-        </div>
-      {/if}
-    </button>
+        {#if exportProgress?.stage === "capturing"}
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
+          </div>
+        {/if}
+      </button>
+    {:else}
+      <!-- Normal save button -->
+      <button
+        class="save-btn"
+        class:complete={exportProgress?.stage === "complete"}
+        onclick={handleSaveClick}
+        type="button"
+        aria-label="Save as MP4 video"
+      >
+        <i
+          class="fas main-icon"
+          class:fa-download={exportProgress?.stage !== "complete"}
+          class:fa-check={exportProgress?.stage === "complete"}
+        ></i>
+        <span class="btn-label">{buttonText()}</span>
+        <span class="btn-hint">{buttonHint()}</span>
+      </button>
+    {/if}
 
     <!-- Settings button (gear icon) -->
     <button
@@ -273,9 +291,9 @@
     width: 52px;
     flex-shrink: 0;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.5);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 18px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -307,9 +325,9 @@
     }
 
     .settings-btn:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.25);
-      color: rgba(255, 255, 255, 0.8);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+      color: var(--theme-text, rgba(255, 255, 255, 0.8));
     }
 
     .settings-btn.has-settings:hover:not(:disabled) {
@@ -332,12 +350,37 @@
     opacity: 0.5;
   }
 
-  .save-btn.exporting {
+  .save-btn.cancelling {
     background: linear-gradient(
       135deg,
-      rgba(6, 182, 212, 0.22) 0%,
-      rgba(8, 145, 178, 0.18) 100%
+      rgba(239, 68, 68, 0.2) 0%,
+      rgba(220, 38, 38, 0.15) 100%
     );
+    border-color: rgba(239, 68, 68, 0.35);
+    box-shadow:
+      0 2px 10px rgba(239, 68, 68, 0.15),
+      0 0 20px rgba(239, 68, 68, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .save-btn.cancelling .main-icon {
+    color: rgba(239, 68, 68, 1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .save-btn.cancelling:hover {
+      background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.3) 0%,
+        rgba(220, 38, 38, 0.25) 100%
+      );
+      border-color: rgba(239, 68, 68, 0.5);
+      transform: translateY(-2px);
+      box-shadow:
+        0 4px 16px rgba(239, 68, 68, 0.25),
+        0 0 28px rgba(239, 68, 68, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
   }
 
   .save-btn.complete {
@@ -395,14 +438,14 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     margin-bottom: 20px;
   }
 
   .sheet-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
   }
 
@@ -413,17 +456,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .sheet-close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .sheet-body {
@@ -436,7 +479,7 @@
 
   .sheet-footer {
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     margin-top: 20px;
   }
 
@@ -500,17 +543,18 @@
   .section-title {
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     margin: 0 0 4px 0;
   }
 
   .section-title.muted {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    opacity: 0.6;
   }
 
   .section-desc {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 0;
   }
 
@@ -525,10 +569,10 @@
     flex: 1;
     min-height: 44px;
     padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -538,9 +582,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .loop-preset-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.25);
-      color: rgba(255, 255, 255, 0.95);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+      color: var(--theme-text, rgba(255, 255, 255, 0.95));
     }
   }
 

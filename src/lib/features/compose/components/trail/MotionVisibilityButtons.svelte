@@ -62,10 +62,10 @@
     min-width: 52px;
     padding: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 17px;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -77,9 +77,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .vis-btn:hover {
-      background: rgba(255, 255, 255, 0.07);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: rgba(255, 255, 255, 0.6);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      color: var(--theme-text, rgba(255, 255, 255, 0.6));
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.12),
@@ -95,14 +95,14 @@
   .vis-btn.active.blue-vis-btn {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.25) 0%,
-      rgba(37, 99, 235, 0.2) 100%
+      color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent) 0%,
+      color-mix(in srgb, var(--prop-blue, #2e3192) 16%, transparent) 100%
     );
-    border-color: rgba(59, 130, 246, 0.5);
-    color: rgba(191, 219, 254, 1);
+    border-color: color-mix(in srgb, var(--prop-blue, #2e3192) 55%, transparent);
+    color: color-mix(in srgb, var(--prop-blue, #2e3192) 35%, white);
     box-shadow:
-      0 2px 12px rgba(59, 130, 246, 0.2),
-      0 0 16px rgba(59, 130, 246, 0.15),
+      0 2px 12px color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--prop-blue, #2e3192) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
@@ -110,13 +110,13 @@
     .vis-btn.active.blue-vis-btn:hover {
       background: linear-gradient(
         135deg,
-        rgba(59, 130, 246, 0.35) 0%,
-        rgba(37, 99, 235, 0.3) 100%
+        color-mix(in srgb, var(--prop-blue, #2e3192) 32%, transparent) 0%,
+        color-mix(in srgb, var(--prop-blue, #2e3192) 24%, transparent) 100%
       );
-      border-color: rgba(59, 130, 246, 0.7);
+      border-color: color-mix(in srgb, var(--prop-blue, #2e3192) 70%, transparent);
       box-shadow:
-        0 4px 16px rgba(59, 130, 246, 0.3),
-        0 0 20px rgba(59, 130, 246, 0.2),
+        0 4px 16px color-mix(in srgb, var(--prop-blue, #2e3192) 30%, transparent),
+        0 0 20px color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent),
         inset 0 1px 0 rgba(255, 255, 255, 0.12);
     }
   }
@@ -125,14 +125,14 @@
   .vis-btn.active.red-vis-btn {
     background: linear-gradient(
       135deg,
-      rgba(239, 68, 68, 0.25) 0%,
-      rgba(220, 38, 38, 0.2) 100%
+      color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent) 0%,
+      color-mix(in srgb, var(--prop-red, #ed1c24) 16%, transparent) 100%
     );
-    border-color: rgba(239, 68, 68, 0.5);
-    color: rgba(254, 202, 202, 1);
+    border-color: color-mix(in srgb, var(--prop-red, #ed1c24) 55%, transparent);
+    color: color-mix(in srgb, var(--prop-red, #ed1c24) 35%, white);
     box-shadow:
-      0 2px 12px rgba(239, 68, 68, 0.2),
-      0 0 16px rgba(239, 68, 68, 0.15),
+      0 2px 12px color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--prop-red, #ed1c24) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
@@ -140,13 +140,13 @@
     .vis-btn.active.red-vis-btn:hover {
       background: linear-gradient(
         135deg,
-        rgba(239, 68, 68, 0.35) 0%,
-        rgba(220, 38, 38, 0.3) 100%
+        color-mix(in srgb, var(--prop-red, #ed1c24) 32%, transparent) 0%,
+        color-mix(in srgb, var(--prop-red, #ed1c24) 24%, transparent) 100%
       );
-      border-color: rgba(239, 68, 68, 0.7);
+      border-color: color-mix(in srgb, var(--prop-red, #ed1c24) 70%, transparent);
       box-shadow:
-        0 4px 16px rgba(239, 68, 68, 0.3),
-        0 0 20px rgba(239, 68, 68, 0.2),
+        0 4px 16px color-mix(in srgb, var(--prop-red, #ed1c24) 30%, transparent),
+        0 0 20px color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent),
         inset 0 1px 0 rgba(255, 255, 255, 0.12);
     }
   }

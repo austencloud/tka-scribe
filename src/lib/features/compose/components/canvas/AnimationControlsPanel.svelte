@@ -1,13 +1,10 @@
 <!--
-  AnimationControlsPanel.svelte
-
-  2026 Bento Box Design - Unified controls panel
-  - Speed controls and play/pause
-  - Motion visibility buttons
-  - Trail settings
-  - Export actions
-
-  Organizes all controls in a clean grid layout.
+  AnimationControlsPanel - Orchestrates playback, BPM, visibility, and export controls.
+  
+  Responsive modes:
+  - Mobile compact: CompactMobileRow + tool area (beat grid or BPM presets)
+  - Mobile expanded: All controls visible, scrollable
+  - Desktop: Fixed layout with full controls
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
@@ -136,7 +133,7 @@
   // Use compact controls when viewport is too short OR too narrow (Z Fold folded mode)
   const useCompactControls = $derived(
     (viewportHeight > 0 && viewportHeight < COMPACT_CONTROLS_HEIGHT) ||
-    (viewportWidth > 0 && viewportWidth < COMPACT_CONTROLS_WIDTH)
+      (viewportWidth > 0 && viewportWidth < COMPACT_CONTROLS_WIDTH)
   );
 
   // Sheet state - unified settings sheet
@@ -155,13 +152,14 @@
   const currentPropType = $derived.by(() => {
     const firstBeat = sequenceData?.beats?.[0];
     // Motion data is most accurate - it reflects what's actually being animated
-    if (firstBeat?.motions?.blue?.propType) return firstBeat.motions.blue.propType;
-    if (firstBeat?.motions?.red?.propType) return firstBeat.motions.red.propType;
+    if (firstBeat?.motions?.blue?.propType)
+      return firstBeat.motions.blue.propType;
+    if (firstBeat?.motions?.red?.propType)
+      return firstBeat.motions.red.propType;
     // Fallback to sequence-level propType (may be stale)
     if (sequenceData?.propType) return sequenceData.propType;
     return null;
   });
-
 </script>
 
 <div
@@ -200,11 +198,7 @@
     <!-- Tool Area: Beat Grid or Quick Presets based on view -->
     {#if mobileToolView === "beat-grid"}
       <div class="beat-grid-area">
-        <AnimationBeatGrid
-          {sequenceData}
-          {currentBeat}
-          {isPlaying}
-        />
+        <AnimationBeatGrid {sequenceData} {currentBeat} {isPlaying} />
       </div>
     {:else}
       <div class="control-row quick-presets-row">
@@ -322,9 +316,14 @@
           class:active={blueMotionVisible}
           onclick={onToggleBlue}
           type="button"
-          aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+          aria-label={blueMotionVisible
+            ? "Hide blue motion"
+            : "Show blue motion"}
         >
-          <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+          <i
+            class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+            aria-hidden="true"
+          ></i>
         </button>
 
         <SimpleTrailControls propType={currentPropType} />
@@ -336,7 +335,10 @@
           type="button"
           aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
         >
-          <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+          <i
+            class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+            aria-hidden="true"
+          ></i>
         </button>
       </div>
     {/if}
@@ -344,7 +346,14 @@
 
   <!-- Export -->
   {#if isSideBySideLayout || isExpanded}
-    <ExportActionsPanel {onExportVideo} {isExporting} {exportProgress} {isCircular} {loopCount} {onLoopCountChange} />
+    <ExportActionsPanel
+      {onExportVideo}
+      {isExporting}
+      {exportProgress}
+      {isCircular}
+      {loopCount}
+      {onLoopCountChange}
+    />
   {/if}
 </div>
 
@@ -358,7 +367,7 @@
   showHandle={true}
   class="settings-sheet"
 >
-    <div class="sheet-content">
+  <div class="sheet-content">
     <header class="sheet-header">
       <h3 class="sheet-title">Playback Settings</h3>
       <button
@@ -381,7 +390,10 @@
             onclick={onToggleBlue}
             type="button"
           >
-            <i class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+            <i
+              class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+              aria-hidden="true"
+            ></i>
             <span>Blue</span>
           </button>
           <button
@@ -390,7 +402,10 @@
             onclick={onToggleRed}
             type="button"
           >
-            <i class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
+            <i
+              class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+              aria-hidden="true"
+            ></i>
             <span>Red</span>
           </button>
         </div>
@@ -671,7 +686,9 @@
     /* Leave space for bottom navigation (64px + safe area) */
     bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
     /* Limit height to available space */
-    max-height: calc(100dvh - 64px - env(safe-area-inset-bottom, 0px)) !important;
+    max-height: calc(
+      100dvh - 64px - env(safe-area-inset-bottom, 0px)
+    ) !important;
     /* Rounded bottom corners since it's not touching bottom of screen */
     border-radius: 16px 0 0 16px !important;
   }
@@ -768,13 +785,21 @@
   }
 
   .visibility-toggle.blue.active {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2) 0%,
+      rgba(37, 99, 235, 0.15) 100%
+    );
     border-color: rgba(59, 130, 246, 0.4);
     color: rgba(191, 219, 254, 1);
   }
 
   .visibility-toggle.red.active {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.2) 0%,
+      rgba(220, 38, 38, 0.15) 100%
+    );
     border-color: rgba(239, 68, 68, 0.4);
     color: rgba(254, 202, 202, 1);
   }

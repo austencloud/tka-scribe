@@ -17,17 +17,26 @@
   type TrailPreset = "none" | "subtle" | "vivid";
 
   interface Props {
+    /** @deprecated Use bluePropType and redPropType instead */
     propType?: PropType | string | null;
+    bluePropType?: PropType | string | null;
+    redPropType?: PropType | string | null;
   }
 
-  let { propType = null }: Props = $props();
+  let { propType = null, bluePropType = null, redPropType = null }: Props = $props();
 
-  // Check if current prop is bilateral (staff, buugeng, etc.)
+  // Check if EITHER prop is bilateral (staff, buugeng, etc.)
+  // This allows users to track both ends even with mixed props
   const showBilateralToggle = $derived.by(() => {
-    if (propType == null) return false;
-    const isBilateral = isBilateralProp(propType);
-    console.log("🎨 Prop type check:", { propType, isBilateral });
-    return isBilateral;
+    // Use new props if provided, fall back to legacy propType
+    const blue = bluePropType ?? propType;
+    const red = redPropType ?? propType;
+
+    const blueIsBilateral = blue != null && isBilateralProp(blue);
+    const redIsBilateral = red != null && isBilateralProp(red);
+
+    // Show toggle if either prop is bilateral
+    return blueIsBilateral || redIsBilateral;
   });
 
   // Check if tracking both ends
@@ -47,7 +56,6 @@
   const showEndToggle = $derived(showBilateralToggle && currentPreset !== "none");
 
   function setPreset(preset: TrailPreset) {
-    console.log("🎨 Setting trail preset:", preset);
     switch (preset) {
       case "none":
         animationSettings.setTrailMode(TrailMode.OFF);
@@ -71,13 +79,11 @@
         });
         break;
     }
-    console.log("🎨 Trail settings after preset:", animationSettings.trail);
   }
 
   function toggleBothEnds() {
     const newMode = isBothEnds ? TrackingMode.RIGHT_END : TrackingMode.BOTH_ENDS;
     animationSettings.setTrackingMode(newMode);
-    console.log("🎨 Tracking mode:", newMode);
   }
 </script>
 
@@ -135,8 +141,8 @@
     align-items: center;
     gap: 10px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 14px;
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.1),
@@ -146,7 +152,7 @@
   .label {
     font-size: 0.75rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -162,10 +168,10 @@
     flex: 1;
     min-height: 52px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
@@ -178,9 +184,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .preset-btn:not(.active):hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: rgba(255, 255, 255, 0.8);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      color: var(--theme-text, rgba(255, 255, 255, 0.8));
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.12),
@@ -195,14 +201,14 @@
   .preset-btn.active {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.25) 0%,
-      rgba(37, 99, 235, 0.2) 100%
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 18%, transparent) 100%
     );
-    border-color: rgba(59, 130, 246, 0.5);
-    color: rgba(191, 219, 254, 1);
+    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 55%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, white);
     box-shadow:
-      0 2px 12px rgba(59, 130, 246, 0.2),
-      0 0 16px rgba(59, 130, 246, 0.1),
+      0 2px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--theme-accent, #3b82f6) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
@@ -217,10 +223,10 @@
     gap: 6px;
     min-height: 52px;
     padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
@@ -243,9 +249,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .ends-toggle:not(.active):hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: rgba(255, 255, 255, 0.8);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      color: var(--theme-text, rgba(255, 255, 255, 0.8));
       transform: translateY(-1px);
     }
   }
@@ -257,14 +263,14 @@
   .ends-toggle.active {
     background: linear-gradient(
       135deg,
-      rgba(168, 85, 247, 0.25) 0%,
-      rgba(139, 92, 246, 0.2) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #7c3aed) 18%, transparent) 100%
     );
-    border-color: rgba(168, 85, 247, 0.5);
-    color: rgba(233, 213, 255, 1);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 55%, transparent);
+    color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, white);
     box-shadow:
-      0 2px 12px rgba(168, 85, 247, 0.2),
-      0 0 16px rgba(168, 85, 247, 0.1),
+      0 2px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 

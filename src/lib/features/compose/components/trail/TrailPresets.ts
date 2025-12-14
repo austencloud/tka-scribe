@@ -56,7 +56,7 @@ export const TRAIL_PRESETS: TrailPreset[] = [
 	{
 		id: 'vivid',
 		name: 'Vivid',
-		icon: 'fa-sparkles',
+		icon: 'fa-magic-wand-sparkles',
 		description: 'Bold glowing trail',
 		settings: {
 			enabled: true,
