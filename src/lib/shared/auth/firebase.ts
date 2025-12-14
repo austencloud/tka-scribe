@@ -20,6 +20,7 @@ import {
   persistentMultipleTabManager,
 } from "firebase/firestore";
 import { getAnalytics, type Analytics, isSupported } from "firebase/analytics";
+import { getDatabase, type Database } from "firebase/database";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const debug = createComponentLogger("Firebase");
@@ -34,6 +35,7 @@ const debug = createComponentLogger("Firebase");
 const firebaseConfig = {
   apiKey: "AIzaSyDKUM9pf0e_KgFjW1OBKChvrU75SnR12v4",
   authDomain: "the-kinetic-alphabet.firebaseapp.com",
+  databaseURL: "https://the-kinetic-alphabet-default-rtdb.firebaseio.com",
   projectId: "the-kinetic-alphabet",
   storageBucket: "the-kinetic-alphabet.firebasestorage.app",
   messagingSenderId: "664225703033",
@@ -70,6 +72,13 @@ export const firestore: Firestore = initializeFirestore(app, {
     tabManager: persistentMultipleTabManager(),
   }),
 });
+
+/**
+ * Firebase Realtime Database instance
+ * Used for real-time presence tracking (online/offline status, current location)
+ * Provides sub-second updates and automatic disconnect detection via onDisconnect()
+ */
+export const database: Database = getDatabase(app);
 
 /**
  * Get Firebase Storage instance (lazy loaded)

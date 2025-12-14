@@ -126,6 +126,18 @@
   let dragOffsetX = $state(0);
   let dragOffsetY = $state(0);
 
+  // Compute effective placement based on layout mode
+  // When respectLayoutMode is true and on mobile, use bottom regardless of specified placement
+  // This ensures consistent UX across the app: bottom sheets on mobile, side drawers on desktop
+  const effectivePlacement = $derived.by(() => {
+    if (respectLayoutMode && !isSideBySideLayout) {
+      // Mobile layout: always use bottom for consistent bottom sheet UX
+      return "bottom";
+    }
+    // Desktop/side-by-side layout or no layout awareness: use specified placement
+    return placement;
+  });
+
   // Internal drag change handler that updates local state AND calls parent callback
   function handleInternalDragChange(
     offset: number,
@@ -133,7 +145,7 @@
     dragging: boolean
   ) {
     isDragging = dragging;
-    if (placement === "right" || placement === "left") {
+    if (effectivePlacement === "right" || effectivePlacement === "left") {
       dragOffsetX = offset;
       dragOffsetY = 0;
     } else {
@@ -173,7 +185,7 @@
   // Swipe-to-dismiss handler
   let drawerElement = $state<HTMLElement | null>(null);
   let swipeToDismiss = new SwipeToDismiss({
-    placement,
+    placement: effectivePlacement,
     dismissible,
     drawerId, // Pass drawer ID so only top drawer responds to swipe
     onDismiss: () => {
@@ -206,7 +218,7 @@
   $effect(() => {
     if (snapPoints && snapPoints.length > 0) {
       snapPointsInstance = new SnapPoints({
-        placement,
+        placement: effectivePlacement,
         snapPoints,
         defaultSnapPoint: snapPoints.length - 1, // Start fully open
         onSnapPointChange: (index, valuePx) => {
@@ -362,7 +374,8 @@
   const computedTransform = $derived.by(() => {
     // During drag, show drag offset
     if (isDragging && (dragOffsetY !== 0 || dragOffsetX !== 0)) {
-      const isHorizontal = placement === "left" || placement === "right";
+      const isHorizontal =
+        effectivePlacement === "left" || effectivePlacement === "right";
       if (isHorizontal) {
         return `translateX(${dragOffsetX + snapPointOffset}px)`;
       } else {
@@ -372,7 +385,8 @@
 
     // When not dragging, show snap point offset if snap points are active
     if (snapPointOffset !== 0 && isAnimatedOpen) {
-      const isHorizontal = placement === "left" || placement === "right";
+      const isHorizontal =
+        effectivePlacement === "left" || effectivePlacement === "right";
       if (isHorizontal) {
         return `translateX(${snapPointOffset}px)`;
       } else {
@@ -386,7 +400,7 @@
   // Update handler options when props change
   $effect(() => {
     swipeToDismiss.updateOptions({
-      placement,
+      placement: effectivePlacement,
       dismissible,
       drawerId,
       onDragChange: handleInternalDragChange,
@@ -450,7 +464,7 @@
     class:dragging={isDragging}
     class:has-snap-points={snapPoints && snapPoints.length > 0}
     class:spring-animation={springAnimation}
-    data-placement={placement}
+    data-placement={effectivePlacement}
     data-state={dataState}
     data-snap-index={currentSnapIndex}
     data-drawer-id={drawerId}
