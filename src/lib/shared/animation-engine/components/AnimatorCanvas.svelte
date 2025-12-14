@@ -192,6 +192,18 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
     return turnsTupleGenerator?.generateTurnsTuple(beatData) ?? "(s, 0, 0)";
   });
 
+  // Extract prop types for bilateral detection in trail capture (legacy - kept for SimpleTrailControls)
+  // NOTE: For trail service, we use currentBluePropType/currentRedPropType from settings instead
+  const bluePropType = $derived.by(() => {
+    const firstBeat = sequenceData?.beats?.[0];
+    return firstBeat?.motions?.blue?.propType ?? sequenceData?.propType ?? null;
+  });
+
+  const redPropType = $derived.by(() => {
+    const firstBeat = sequenceData?.beats?.[0];
+    return firstBeat?.motions?.red?.propType ?? sequenceData?.propType ?? null;
+  });
+
   // Canvas size - controlled by CSS container queries
   let canvasSize = $state(DEFAULT_CANVAS_SIZE);
 
@@ -341,20 +353,45 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // TRAIL SERVICE INITIALIZATION
   // ============================================================================
 
-  // Initialize trail capture service reactively (only when services are ready)
+  // Track whether settings have been loaded (prop types are no longer defaults)
+  let settingsLoaded = $state(false);
   $effect(() => {
-    if (!trailCaptureService) return;
+    // Settings are "loaded" once prop types differ from defaults or settings service confirms
+    if (currentBluePropType !== "staff" || currentRedPropType !== "staff" || settingsService?.currentSettings) {
+      settingsLoaded = true;
+    }
+  });
+
+  // Initialize trail capture service reactively (only when services AND settings are ready)
+  $effect(() => {
+    if (!trailCaptureService || !settingsLoaded) return;
+    // Use settings-based prop types (currentBluePropType/currentRedPropType)
+    // instead of sequence data - settings has the actual prop types being rendered
     trailCaptureService.initialize({
       canvasSize,
       bluePropDimensions,
       redPropDimensions,
       trailSettings,
+      bluePropType: currentBluePropType,
+      redPropType: currentRedPropType,
     });
     // Initialize trail settings sync with capture service
     trailSettingsSyncService?.initialize(
       trailCaptureService,
       () => renderLoopService?.triggerRender(getFrameParams)
     );
+  });
+
+  // Update trail capture service when prop types change (after initial load)
+  $effect(() => {
+    if (!trailCaptureService || !settingsLoaded) return;
+    // Track prop type changes from settings
+    const blue = currentBluePropType;
+    const red = currentRedPropType;
+    trailCaptureService.updateConfig({
+      bluePropType: blue,
+      redPropType: red,
+    });
   });
 
   // ============================================================================

@@ -7,7 +7,7 @@
   This coordinator:
   - Manages animation playback lifecycle
   - Resolves services via DI
-  - Handles GIF export
+  - Handles video export
   - Provides clean prop interface for any module
 
   Usage:
@@ -21,10 +21,8 @@
 <script lang="ts">
   import AnimationShareDrawer from "../animation-engine/components/AnimationShareDrawer.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
-  import type { IGifExportOrchestrator } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
-  import type { AnimationExportFormat } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
-  import type { GifExportProgress } from "$lib/features/compose/services/contracts/IGifExportService";
-  import type { IVideoExportService } from "$lib/features/compose/services/contracts/IVideoExportService";
+  import type { IVideoExportOrchestrator, VideoExportProgress, VideoExportFormat } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
+import type { IVideoExportService } from "$lib/features/compose/services/contracts/IVideoExportService";
   import type { ISequenceLoopabilityChecker } from "$lib/features/compose/services/contracts/ISequenceLoopabilityChecker";
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
@@ -36,7 +34,7 @@
   import {
     ANIMATION_LOAD_DELAY_MS,
     ANIMATION_AUTO_START_DELAY_MS,
-    GIF_EXPORT_SUCCESS_DELAY_MS,
+    VIDEO_EXPORT_SUCCESS_DELAY_MS,
   } from "$lib/features/compose/shared/domain/constants/timing";
   import type {
     ISheetRouterService,
@@ -63,7 +61,7 @@
   let sequenceService: ISequenceService | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedbackService | null = null;
-  let gifExportOrchestrator: IGifExportOrchestrator | null = null;
+  let videoExportOrchestrator: IVideoExportOrchestrator | null = null;
   let videoExportService: IVideoExportService | null = null;
   let sheetRouterService: ISheetRouterService | null = null;
   let loopabilityChecker: ISequenceLoopabilityChecker | null = null;
@@ -93,10 +91,10 @@
     return () => clearInterval(interval);
   });
 
-  // GIF Export state
+  // Video export state
   let _showExportDialog = $state(false);
   let isExporting = $state(false);
-  let _exportProgress = $state<GifExportProgress | null>(null);
+  let _exportProgress = $state<VideoExportProgress | null>(null);
 
   // Track if we're currently responding to a route change to avoid infinite loops
   let isRespondingToRouteChange = false;
@@ -220,8 +218,8 @@
         playbackController = resolve<IAnimationPlaybackController>(
           TYPES.IAnimationPlaybackController
         );
-        gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-          TYPES.IGifExportOrchestrator
+        videoExportOrchestrator = resolve<IVideoExportOrchestrator>(
+          TYPES.IVideoExportOrchestrator
         );
         videoExportService = resolve<IVideoExportService>(
           TYPES.IVideoExportService
@@ -587,8 +585,8 @@
     }
   }
 
-  async function _handleExport(format: AnimationExportFormat) {
-    if (!gifExportOrchestrator || !playbackController) {
+  async function _handleExport(format: VideoExportFormat) {
+    if (!videoExportOrchestrator || !playbackController) {
       console.error("Export services not ready");
       return;
     }
@@ -602,7 +600,7 @@
       isExporting = true;
 
       // Execute export using orchestrator service
-      await gifExportOrchestrator.executeExport(
+      await videoExportOrchestrator.executeExport(
         animationCanvas,
         playbackController,
         animationPanelState,
@@ -616,16 +614,20 @@
       setTimeout(() => {
         handleCloseExport();
         isExporting = false;
-      }, GIF_EXPORT_SUCCESS_DELAY_MS);
+      }, VIDEO_EXPORT_SUCCESS_DELAY_MS);
     } catch (error) {
-      console.error("GIF export failed:", error);
+      // Don't log cancellation as an error - it's intentional
+      const isCancellation = error instanceof Error && error.message.includes("cancelled");
+      if (!isCancellation) {
+        console.error("Video export failed:", error);
+      }
       isExporting = false;
     }
   }
 
   function _handleCancelExport() {
-    if (gifExportOrchestrator) {
-      gifExportOrchestrator.cancelExport();
+    if (videoExportOrchestrator) {
+      videoExportOrchestrator.cancelExport();
     }
     isExporting = false;
     _exportProgress = null;
@@ -666,6 +668,7 @@
   onStepFullBeatForward={() => playbackController?.stepFullBeatForward()}
   onCanvasReady={handleCanvasReady}
   onExportVideo={handleExportVideo}
+  onCancelExport={_handleCancelExport}
   {isExporting}
   exportProgress={_exportProgress}
   {isCircular}

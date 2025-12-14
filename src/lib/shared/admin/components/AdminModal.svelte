@@ -87,7 +87,7 @@
 	.modal-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.7);
+		background: var(--sheet-backdrop-bg, var(--backdrop-medium, rgba(0, 0, 0, 0.7)));
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -96,24 +96,24 @@
 	}
 
 	.admin-modal {
-		background: #1a1a2e;
+		background: var(--theme-panel-elevated-bg, #1a1a2e);
 		border-radius: 16px;
 		padding: 24px;
 		max-width: 400px;
 		width: 100%;
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
 	}
 
 	.modal-title {
 		margin: 0 0 12px 0;
 		font-size: 18px;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.95);
+		color: var(--theme-text, rgba(255, 255, 255, 0.95));
 	}
 
 	.modal-message {
 		margin: 0 0 24px 0;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
 		line-height: 1.5;
 	}
 
@@ -139,37 +139,38 @@
 	}
 
 	.cancel-btn {
-		background: rgba(255, 255, 255, 0.1);
-		color: rgba(255, 255, 255, 0.8);
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+		color: var(--theme-text, rgba(255, 255, 255, 0.85));
 	}
 
 	.cancel-btn:hover:not(:disabled) {
-		background: rgba(255, 255, 255, 0.15);
+		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
 	}
 
 	.confirm-btn {
-		background: #3b82f6;
+		background: var(--theme-accent, #3b82f6);
 		color: white;
 	}
 
 	.confirm-btn:hover:not(:disabled) {
-		background: #2563eb;
+		background: var(--theme-accent-strong, #2563eb);
 	}
 
 	.confirm-btn.danger {
-		background: #ef4444;
+		background: var(--semantic-error, #ef4444);
 	}
 
 	.confirm-btn.danger:hover:not(:disabled) {
-		background: #dc2626;
+		background: color-mix(in srgb, var(--semantic-error, #ef4444) 85%, black);
 	}
 
 	.confirm-btn.warning {
-		background: #f59e0b;
+		background: var(--semantic-warning, #f59e0b);
 	}
 
 	.confirm-btn.warning:hover:not(:disabled) {
-		background: #d97706;
+		background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 80%, black);
 	}
 
 	.cancel-btn:disabled,

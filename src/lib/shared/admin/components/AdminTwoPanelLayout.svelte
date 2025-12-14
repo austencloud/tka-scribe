@@ -162,13 +162,13 @@
 	/* Drawer customization - Side drawer (desktop sidebar or landscape mobile) */
 	:global(.admin-detail-drawer.side) {
 		--sheet-width: min(560px, 90vw);
-		--sheet-bg: rgba(20, 20, 35, 0.98);
+		--sheet-bg: var(--sheet-bg-gradient);
 	}
 
 	/* Drawer customization - Bottom sheet (when bottom nav is showing) */
 	:global(.admin-detail-drawer.bottom) {
 		--sheet-height: 85vh;
-		--sheet-bg: rgba(20, 20, 35, 0.98);
+		--sheet-bg: var(--sheet-bg-gradient);
 		border-radius: 20px 20px 0 0;
 	}
 

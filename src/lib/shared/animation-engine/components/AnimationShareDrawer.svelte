@@ -1,13 +1,13 @@
 <!--
   AnimationShareDrawer.svelte
 
-  Drawer component for animated GIF export and playback.
+  Drawer component for video export and playback.
   All business logic lives in AnimationCoordinator.
 
   This component:
   - Receives all state as props
   - Displays animation playback UI
-  - Handles GIF export controls
+  - Handles video export controls
   - Emits events when user interacts
   - Has ZERO business logic
 -->
@@ -154,6 +154,7 @@
     onCanvasReady = () => {},
     onVideoBeatChange = () => {},
     onExportVideo = () => {},
+    onCancelExport = () => {},
     onShareAnimation = () => {},
     isSharing = false,
     isCircular = false,
@@ -187,6 +188,7 @@
     onCanvasReady?: (canvas: HTMLCanvasElement | null) => void;
     onVideoBeatChange?: (beat: number) => void;
     onExportVideo?: () => void;
+    onCancelExport?: () => void;
     onShareAnimation?: () => void;
     isSharing?: boolean;
     isCircular?: boolean;
@@ -386,7 +388,11 @@
     aria-labelledby="animation-panel-title"
   >
     <!-- Header (Mobile/Desktop adaptive) -->
-    <AnimationPanelHeader {isSideBySideLayout} onClose={handleClose} onShowHelp={handleShowHelp} />
+    <AnimationPanelHeader
+      {isSideBySideLayout}
+      onClose={handleClose}
+      onShowHelp={handleShowHelp}
+    />
 
     <h2 id="animation-panel-title" class="sr-only">Animation Viewer</h2>
 
@@ -428,7 +434,9 @@
             isExpanded={!isSideBySideLayout}
             {mobileToolView}
             {sequenceData}
-            currentBeat={beatData && "beatNumber" in beatData ? beatData.beatNumber : 0}
+            currentBeat={beatData && "beatNumber" in beatData
+              ? beatData.beatNumber
+              : 0}
             {onSpeedChange}
             {onPlaybackStart}
             {onPlaybackToggle}
@@ -440,6 +448,7 @@
             onToggleRed={toggleRedMotion}
             onToggleToolView={toggleMobileToolView}
             {onExportVideo}
+            {onCancelExport}
             {isExporting}
             {exportProgress}
             {isCircular}
@@ -524,16 +533,50 @@
 
   /* Small devices (iPhone SE, small phones): Fixed compact canvas */
   @media (max-width: 430px) and (max-height: 752px) {
+    .canvas-container {
+      padding: 8px !important;
+      gap: 8px;
+    }
+
+    .content-wrapper.mobile-expanded {
+      gap: 8px;
+    }
+
+    .content-wrapper.mobile-expanded :global(.canvas-area) {
+      flex: 0 0 auto;
+      min-height: 200px;
+      max-height: 280px;
+    }
+
     .content-wrapper.mobile-expanded :global(.controls-panel) {
       flex: 1 1 0;
+      min-height: 0;
       overflow-y: auto;
       max-height: none;
-      padding: 4px;
+      padding: 8px;
+      gap: 8px;
+    }
+  }
+
+  /* Extra small devices (iPhone SE): Even more compact */
+  @media (max-width: 375px) and (max-height: 670px) {
+    .canvas-container {
+      padding: 6px !important;
       gap: 6px;
     }
 
-    .animation-panel:has(.content-wrapper.mobile-expanded) .canvas-container {
-      padding: 4px !important;
+    .content-wrapper.mobile-expanded {
+      gap: 6px;
+    }
+
+    .content-wrapper.mobile-expanded :global(.canvas-area) {
+      min-height: 180px;
+      max-height: 240px;
+    }
+
+    .content-wrapper.mobile-expanded :global(.controls-panel) {
+      padding: 6px;
+      gap: 6px;
     }
   }
 
@@ -594,16 +637,20 @@
     padding: clamp(20px, 4vw, 32px);
     font-size: clamp(13px, 2.8vw, 15px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     border-radius: clamp(12px, 2vw, 16px);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     backdrop-filter: blur(8px);
   }
 
   .error-message {
-    color: rgba(252, 165, 165, 1);
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
+    color: var(--semantic-error, rgba(252, 165, 165, 1));
+    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
   }
 </style>

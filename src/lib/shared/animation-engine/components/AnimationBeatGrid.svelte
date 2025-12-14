@@ -90,7 +90,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 0.85rem;
   }
 
@@ -110,8 +110,8 @@
   .beat-cell {
     position: relative;
     aspect-ratio: 1;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 8px;
     display: flex;
     align-items: center;
