@@ -184,6 +184,8 @@ Mobile-first design:
   ariaLabel="Session Details"
   snapPoints={["50%", "85%"]}
   activeSnapPoint={1}
+  class="ml-training-panel__drawer"
+  backdropClass="ml-training-panel__backdrop"
 >
   {#if selectedSession}
     <div class="session-detail">
@@ -291,8 +293,8 @@ Mobile-first design:
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--bg-primary, #0f0f1a);
-    color: var(--text-primary, #fff);
+    background: transparent;
+    color: var(--theme-text, rgba(255, 255, 255, 0.92));
     overflow: hidden;
   }
 
@@ -558,5 +560,17 @@ Mobile-first design:
     .detail-stats {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  :global(.drawer-overlay.ml-training-panel__backdrop) {
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+  }
+
+  :global(.drawer-content.ml-training-panel__drawer) {
+    --sheet-bg: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
+    --sheet-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --sheet-filter: blur(24px) saturate(180%);
   }
 </style>

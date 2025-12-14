@@ -9,6 +9,8 @@
 	import { formatRelativeTimeVerbose } from "../../utils/format";
 	import { goto } from "$app/navigation";
 	import { inboxState } from "../../state/inbox-state.svelte";
+	import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
+	import { setNotificationTargetFeedback } from "$lib/features/feedback/state/notification-action-state.svelte";
 
 	interface Props {
 		notification: UserNotification;
@@ -17,6 +19,9 @@
 	}
 
 	let { notification, onDismiss, onMarkAsRead }: Props = $props();
+
+	// Track dismissing state for animation
+	let isDismissing = $state(false);
 
 	// Get icon based on notification type
 	function getIcon(type: UserNotification["type"]): string {
@@ -68,7 +73,7 @@
 		}
 	}
 
-	function handleClick() {
+	async function handleClick() {
 		if (!notification.read) {
 			onMarkAsRead();
 		}
@@ -81,10 +86,11 @@
 			case "feedback-in-progress":
 			case "feedback-needs-info":
 			case "feedback-response":
-				// Navigate to My Feedback tab
+				// Navigate to My Feedback tab via module change
 				if (n["feedbackId"]) {
+					setNotificationTargetFeedback(n["feedbackId"] as string);
 					inboxState.close();
-					goto(`/feedback?item=${n["feedbackId"]}`);
+					await handleModuleChange("feedback", "my-feedback");
 				}
 				break;
 
@@ -113,9 +119,9 @@
 				break;
 
 			case "achievement-unlocked":
-				// Navigate to achievements
+				// Navigate to achievements via module change
 				inboxState.close();
-				goto("/collect?tab=achievements");
+				await handleModuleChange("collect", "achievements");
 				break;
 
 			default:
@@ -133,14 +139,21 @@
 
 	function handleDismissClick(e: MouseEvent) {
 		e.stopPropagation();
-		onDismiss();
+		// Trigger fade-out animation before dismissing
+		isDismissing = true;
+		setTimeout(() => {
+			onDismiss();
+		}, 200);
 	}
 
 	function handleDismissKeydown(e: KeyboardEvent) {
 		if (e.key === "Enter" || e.key === " ") {
 			e.preventDefault();
 			e.stopPropagation();
-			onDismiss();
+			isDismissing = true;
+			setTimeout(() => {
+				onDismiss();
+			}, 200);
 		}
 	}
 </script>
@@ -148,6 +161,7 @@
 <div
 	class="notification-item"
 	class:unread={!notification.read}
+	class:dismissing={isDismissing}
 	onclick={handleClick}
 	onkeydown={handleKeydown}
 	role="button"
@@ -197,7 +211,8 @@
 		cursor: pointer;
 		transition:
 			background 0.2s ease,
-			transform 0.15s ease;
+			transform 0.2s ease,
+			opacity 0.2s ease;
 	}
 
 	.notification-item:hover {
@@ -216,6 +231,13 @@
 
 	.notification-item.unread {
 		background: color-mix(in srgb, var(--theme-accent) 5%, transparent);
+	}
+
+	/* Dismiss animation */
+	.notification-item.dismissing {
+		opacity: 0;
+		transform: translateX(20px) scale(0.95);
+		pointer-events: none;
 	}
 
 	/* Unread dot indicator */

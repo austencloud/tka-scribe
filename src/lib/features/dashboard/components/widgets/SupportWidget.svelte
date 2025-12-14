@@ -142,10 +142,10 @@
     padding: 24px;
     background: linear-gradient(
       145deg,
-      rgba(236, 72, 153, 0.1) 0%,
-      rgba(168, 85, 247, 0.08) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
     );
-    border: 1px solid rgba(236, 72, 153, 0.15);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 24px;
   }
 
@@ -163,7 +163,11 @@
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     border-radius: 14px;
     color: white;
     font-size: 20px;
@@ -185,13 +189,13 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .header-text p {
     margin: 6px 0 0;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     line-height: 1.4;
   }
 
@@ -224,7 +228,7 @@
   .donate-btn:hover {
     background: var(--btn-hover);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
   }
 
   .donate-btn:active {
@@ -232,7 +236,7 @@
   }
 
   .donate-btn.success {
-    background: #10b981 !important;
+    background: var(--semantic-success, #10b981) !important;
   }
 
   .donate-btn i {
@@ -248,13 +252,13 @@
   .social-section {
     margin-top: auto;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .social-label {
     display: block;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     text-align: center;
     margin-bottom: 12px;
   }
@@ -271,10 +275,10 @@
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 16px;
     text-decoration: none;
     cursor: pointer;

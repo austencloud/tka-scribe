@@ -73,7 +73,7 @@
     inset: 0;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.15) 0%,
+      color-mix(in srgb, var(--theme-text, #ffffff) 18%, transparent) 0%,
       transparent 50%
     );
     pointer-events: none;
@@ -82,7 +82,7 @@
   .module-card:hover {
     transform: translateY(var(--hover-lift-md, -2px))
       scale(var(--hover-scale-sm, 1.01));
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--theme-panel-shadow, 0 12px 32px rgba(0, 0, 0, 0.3));
   }
 
   .module-card:active {
@@ -91,7 +91,7 @@
   }
 
   .module-card:focus {
-    outline: 3px solid white;
+    outline: 3px solid color-mix(in srgb, var(--theme-text, #ffffff) 95%, transparent);
     outline-offset: 2px;
   }
 
@@ -103,7 +103,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.15);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 15%, transparent);
     border-radius: inherit;
     pointer-events: none;
   }
@@ -117,9 +117,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.4);
+    background: color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    border: 1px solid color-mix(in srgb, var(--theme-stroke, rgba(255, 255, 255, 0.08)) 60%, transparent);
     border-radius: 8px;
     z-index: 2;
   }
@@ -135,7 +136,7 @@
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--theme-text, #ffffff) 20%, transparent);
     border-radius: 14px;
     font-size: 24px;
     color: white;
@@ -160,7 +161,7 @@
 
   .module-desc {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--theme-text, #ffffff) 85%, transparent);
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;

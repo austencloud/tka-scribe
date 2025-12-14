@@ -54,9 +54,9 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: var(--accent-2026-pink-soft, rgba(236, 72, 153, 0.12));
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
     border-radius: var(--radius-2026-sm, 10px);
-    color: var(--accent-2026-pink, #ec4899);
+    color: var(--theme-accent-strong, #8b5cf6);
     font-size: 16px;
     flex-shrink: 0;
   }
@@ -92,7 +92,7 @@
   }
 
   .teaser:hover .teaser-arrow {
-    color: var(--accent-2026-pink, #ec4899);
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   @media (prefers-reduced-motion: reduce) {

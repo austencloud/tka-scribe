@@ -107,14 +107,14 @@
     // Apply changes immediately - this will trigger reactivity
     await updateSettings(updatedSettings);
 
-    // Show success toast
+    // Show success toast briefly
     showToast = true;
-    toastMessage = "Settings saved";
+    toastMessage = "Saved";
 
-    // Reset toast after it displays
+    // Auto-hide toast after 1.5 seconds
     setTimeout(() => {
       showToast = false;
-    }, 100);
+    }, 1500);
   }
 
   // Use navigation state's active tab
@@ -232,7 +232,7 @@
       <IOSSkeletonLoader variant="toggle" count={8} />
     </div>
   {:else}
-    <div class="settings-content">
+    <div class="settings-module-body">
       <section class="panel">
         {#if activeTab === "profile"}
           <ProfileTab
@@ -362,26 +362,25 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
-  .settings-content {
+  .settings-module-body {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: clamp(8px, 2vw, 16px);
     min-height: 0;
-    /* Container queries for responsive children */
     container-type: size;
-    container-name: settings-content;
+    container-name: settings-module-body;
   }
 
-  .settings-content::-webkit-scrollbar {
+  .settings-module-body::-webkit-scrollbar {
     width: 6px;
   }
 
-  .settings-content::-webkit-scrollbar-track {
+  .settings-module-body::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .settings-content::-webkit-scrollbar-thumb {
+  .settings-module-body::-webkit-scrollbar-thumb {
     background: color-mix(
       in srgb,
       var(--theme-accent, #6366f1) 25%,
@@ -393,8 +392,13 @@
   /* Panel - content card */
   .panel {
     border-radius: 16px;
-    padding: clamp(12px, 2vw, 20px);
+    /* Reduced padding to maximize grid space */
+    padding: clamp(6px, 1.5vw, 12px);
     min-width: 0;
+    /* Must have height for child tabs to use height: 100% */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Loading state */

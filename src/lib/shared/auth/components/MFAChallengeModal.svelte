@@ -75,7 +75,11 @@
   >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div class="modal-content" onclick={(e) => e.stopPropagation()} role="document">
+    <div
+      class="modal-content"
+      onclick={(e) => e.stopPropagation()}
+      role="document"
+    >
       <header class="modal-header">
         <div class="header-icon">
           <i class="fas fa-shield-alt"></i>

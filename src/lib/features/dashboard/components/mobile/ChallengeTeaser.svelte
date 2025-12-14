@@ -54,9 +54,9 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: var(--accent-2026-amber-soft, rgba(245, 158, 11, 0.12));
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 12%, transparent);
     border-radius: var(--radius-2026-sm, 10px);
-    color: var(--accent-2026-amber, #f59e0b);
+    color: var(--semantic-warning, #f59e0b);
     font-size: 16px;
     flex-shrink: 0;
   }
@@ -92,7 +92,7 @@
   }
 
   .teaser:hover .teaser-arrow {
-    color: var(--accent-2026-amber, #f59e0b);
+    color: var(--semantic-warning, #f59e0b);
   }
 
   @media (prefers-reduced-motion: reduce) {

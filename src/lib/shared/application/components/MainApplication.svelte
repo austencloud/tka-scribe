@@ -6,6 +6,8 @@
   import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
   import ErrorModal from "../../error/components/ErrorModal.svelte";
   import InboxDrawer from "../../inbox/components/InboxDrawer.svelte";
+  import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
+  import { myFeedbackDetailState } from "$lib/features/feedback/state/my-feedback-detail-state.svelte";
 
   import { TYPES } from "../../inversify/types";
 
@@ -87,6 +89,10 @@
 
   // MFA enrollment drawer state (controlled via global mfaUIState)
   let showMFAEnrollment = $derived(mfaUIState.isEnrollmentOpen);
+
+  // My Feedback Detail drawer state (controlled via global myFeedbackDetailState)
+  let feedbackDetailItem = $derived(myFeedbackDetailState.selectedItem);
+  let showFeedbackDetail = $derived(myFeedbackDetailState.isOpen);
 
   // Resolve services when container is available
   $effect(() => {
@@ -407,6 +413,15 @@
 
     <!-- Quick Feedback Panel (desktop hotkey: f) -->
     <QuickFeedbackPanel />
+
+    <!-- My Feedback Detail Drawer (for viewing/editing user's own feedback) -->
+    <MyFeedbackDetail
+      item={feedbackDetailItem}
+      isOpen={showFeedbackDetail}
+      onClose={() => myFeedbackDetailState.close()}
+      onUpdate={myFeedbackDetailState.updateItem}
+      onDelete={myFeedbackDetailState.deleteItem}
+    />
 
     <!-- System Announcements Modal -->
     <AnnouncementChecker />

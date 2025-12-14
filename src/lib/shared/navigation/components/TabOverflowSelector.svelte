@@ -83,7 +83,8 @@
         class:disabled={section.disabled}
         disabled={section.disabled}
         onclick={() => handleSectionClick(section)}
-        style="--section-color: {section.color || moduleColor}; --section-gradient: {section.gradient ||
+        style="--section-color: {section.color ||
+          moduleColor}; --section-gradient: {section.gradient ||
           section.color ||
           moduleColor}"
       >
@@ -121,7 +122,11 @@
       hsl(240 10% 12%)
     );
     border: 1px solid
-      color-mix(in srgb, var(--module-color, #667eea) 30%, hsl(0 0% 100% / 0.15));
+      color-mix(
+        in srgb,
+        var(--module-color, #667eea) 30%,
+        hsl(0 0% 100% / 0.15)
+      );
     border-radius: 12px;
 
     color: hsl(0 0% 100% / 0.9);
@@ -297,7 +302,11 @@
       hsl(240 8% 10%)
     );
     border: 1px solid
-      color-mix(in srgb, var(--section-color, #667eea) 20%, hsl(0 0% 100% / 0.08));
+      color-mix(
+        in srgb,
+        var(--section-color, #667eea) 20%,
+        hsl(0 0% 100% / 0.08)
+      );
     border-radius: 12px;
 
     color: hsl(0 0% 100% / 0.85);
@@ -339,7 +348,8 @@
     );
     border-color: var(--section-color, #667eea);
     box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--section-color, #667eea) 25%, transparent),
+      0 0 0 2px
+        color-mix(in srgb, var(--section-color, #667eea) 25%, transparent),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.1);
   }
 

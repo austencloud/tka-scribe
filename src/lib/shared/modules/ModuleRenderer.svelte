@@ -166,14 +166,14 @@
     justify-content: center;
     height: 100%;
     min-height: 200px;
-    color: var(--text-color, #333);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .loading-spinner {
     width: 52px;
     height: 52px;
-    border: 3px solid var(--border-color, #e0e0e0);
-    border-top: 3px solid var(--primary-color, #007bff);
+    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-top: 3px solid var(--theme-accent, #007bff);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
@@ -201,7 +201,7 @@
     justify-content: center;
     height: 100%;
     min-height: 200px;
-    color: var(--error-color, #dc3545);
+    color: var(--semantic-error, #dc3545);
   }
 
   .module-error p {

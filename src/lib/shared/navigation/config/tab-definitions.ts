@@ -285,6 +285,14 @@ export const ADMIN_TABS: Section[] = [
     gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
   },
   {
+    id: "users",
+    label: "Users",
+    icon: '<i class="fas fa-users"></i>',
+    description: "Active users and activity monitoring",
+    color: "#22c55e",
+    gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
+  },
+  {
     id: "challenges",
     label: "Challenges",
     icon: '<i class="fas fa-calendar-day"></i>',

@@ -16,6 +16,7 @@
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   // BPM/Speed conversion constant
   const DEFAULT_BPM = 60;
@@ -23,9 +24,11 @@
   let {
     sequence,
     autoPlay = true,
+    showControls = true,
   }: {
     sequence: SequenceData;
     autoPlay?: boolean;
+    showControls?: boolean;
   } = $props();
 
   // Services
@@ -212,31 +215,34 @@
         sequenceData={animationState.sequenceData}
         {isPlaying}
         onPlaybackToggle={togglePlayback}
+        trailSettings={animationSettings.trail}
       />
     </div>
 
-    <!-- Controls -->
-    <div class="controls">
-      <button
-        class="control-btn play-btn"
-        onclick={togglePlayback}
-        aria-label={isPlaying ? "Pause" : "Play"}
-      >
-        {#if isPlaying}
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-          </svg>
-        {:else}
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-        {/if}
-      </button>
+    <!-- Controls (optional) -->
+    {#if showControls}
+      <div class="controls">
+        <button
+          class="control-btn play-btn"
+          onclick={togglePlayback}
+          aria-label={isPlaying ? "Pause" : "Play"}
+        >
+          {#if isPlaying}
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            </svg>
+          {:else}
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          {/if}
+        </button>
 
-      <div class="bpm-controls">
-        <BpmChips bpm={bpm} variant="compact" onBpmChange={handleBpmChange} />
+        <div class="bpm-controls">
+          <BpmChips bpm={bpm} variant="compact" onBpmChange={handleBpmChange} />
+        </div>
       </div>
-    </div>
+    {/if}
   {/if}
 </div>
 

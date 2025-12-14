@@ -239,7 +239,7 @@
     {#if isInSettings}
       <!-- Settings Content with Back Button Header -->
       <div
-        class="settings-content"
+        class="sidebar-settings-nav"
         in:slide={{ duration: 250, axis: "y" }}
         out:slide={{ duration: 200, axis: "y" }}
       >
@@ -447,7 +447,7 @@
 
   /* Inner content wrappers for transition targeting */
   .modules-content,
-  .settings-content {
+  .sidebar-settings-nav {
     width: 100%;
   }
 

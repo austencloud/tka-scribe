@@ -44,6 +44,7 @@ if (import.meta.hot) {
           "data",
           "keyboard",
           "analytics",
+          "presence",
           // Tier 2: Shared services
           "render",
           "pictograph",
@@ -232,13 +233,15 @@ export async function loadCriticalModules(): Promise<void> {
       { navigationModule },
       { dataModule },
       { keyboardModule },
-      { analyticsModule }
+      { analyticsModule },
+      { presenceModule }
     ] = await Promise.all([
       import("./modules/core.module"),
       import("./modules/navigation.module"),
       import("./modules/data.module"),
       import("./modules/keyboard.module"),
-      import("./modules/analytics.module")
+      import("./modules/analytics.module"),
+      import("./modules/presence.module")
     ]);
 
     if (!coreModule) {
@@ -256,13 +259,17 @@ export async function loadCriticalModules(): Promise<void> {
     if (!analyticsModule) {
       throw new Error("analyticsModule is undefined");
     }
+    if (!presenceModule) {
+      throw new Error("presenceModule is undefined");
+    }
 
     await container.load(
       coreModule,
       navigationModule,
       dataModule,
       keyboardModule,
-      analyticsModule
+      analyticsModule,
+      presenceModule
     );
 
     loadedModules.add("core");
@@ -270,6 +277,7 @@ export async function loadCriticalModules(): Promise<void> {
     loadedModules.add("data");
     loadedModules.add("keyboard");
     loadedModules.add("analytics");
+    loadedModules.add("presence");
     tier1Loaded = true;
   } catch (error) {
     console.error("❌ Failed to load Tier 1 modules:", error);

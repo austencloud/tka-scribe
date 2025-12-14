@@ -89,7 +89,7 @@
     </header>
 
     <!-- Settings Content -->
-    <div class="settings-content">
+    <div class="grid-sheet-body">
       <!-- Grid Mode Switcher -->
       <div class="setting-section">
         <span class="section-label" id="detection-mode-label">Detection Mode</span>
@@ -189,7 +189,7 @@
 
   /* Drawer content styling - content-aware sizing */
   :global(.grid-settings-sheet) {
-    --sheet-bg: #1a1a24;
+    --sheet-bg: var(--sheet-bg-solid);
     /* Bottom sheet: fit content height, don't stretch */
     height: auto !important;
     max-height: 85vh !important;
@@ -281,7 +281,7 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
-  .settings-content {
+  .grid-sheet-body {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -319,7 +319,7 @@
       height: 40px;
     }
 
-    .settings-content {
+    .grid-sheet-body {
       gap: 20px;
     }
 

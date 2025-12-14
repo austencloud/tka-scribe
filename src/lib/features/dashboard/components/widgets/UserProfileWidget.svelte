@@ -365,7 +365,8 @@
     flex-direction: column;
     gap: 4px;
     padding: 8px;
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.15));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: var(--radius-2026-sm, 10px);
     margin-top: -8px;
   }

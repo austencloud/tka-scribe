@@ -489,6 +489,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   placement="bottom"
   showHandle={true}
   ariaLabel="Capture Settings"
+  class="ml-training-capture__drawer"
+  backdropClass="ml-training-capture__backdrop"
 >
   <div class="drawer-settings">
     <h3>Session Settings</h3>
@@ -544,8 +546,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--bg-primary, #1a1a2e);
-    color: var(--text-primary, #fff);
+    background: transparent;
+    color: var(--theme-text, rgba(255, 255, 255, 0.92));
     overflow: hidden;
   }
 
@@ -649,7 +651,11 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     justify-content: center;
     gap: 2rem;
     padding: 0.75rem 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-radius: 12px;
     margin-top: 0.75rem;
   }
@@ -681,11 +687,10 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     justify-content: space-between;
     padding: 1rem;
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    background: linear-gradient(
-      180deg,
-      rgba(26, 26, 46, 0.95) 0%,
-      rgba(15, 15, 30, 0.98) 100%
-    );
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
+    box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
@@ -737,8 +742,19 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .btn-stop {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-    color: white;
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 22%,
+      var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65))
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--semantic-error, #ef4444) 35%,
+        var(--theme-stroke, rgba(255, 255, 255, 0.08))
+      );
+    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   }
 
   .btn-settings {
@@ -862,6 +878,18 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     transform: translateY(-1px);
   }
 
+  :global(.drawer-overlay.ml-training-capture__backdrop) {
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+  }
+
+  :global(.drawer-content.ml-training-capture__drawer) {
+    --sheet-bg: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
+    --sheet-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --sheet-filter: blur(24px) saturate(180%);
+  }
+
   /* Desktop Layout */
   @media (min-width: 1024px) {
     .capture-interface {
@@ -892,9 +920,12 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
 
     .config-panel {
       padding: 1.5rem;
-      background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+      background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
       border-radius: 16px;
       border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+      box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
@@ -989,8 +1020,18 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     }
 
     .btn-stop-desktop {
-      background: linear-gradient(135deg, #6b7280, #4b5563);
-      color: white;
+      background: color-mix(
+        in srgb,
+        var(--semantic-error, #ef4444) 18%,
+        var(--theme-panel-bg, rgba(0, 0, 0, 0.5))
+      );
+      border: 1px solid
+        color-mix(
+          in srgb,
+          var(--semantic-error, #ef4444) 30%,
+          var(--theme-stroke, rgba(255, 255, 255, 0.08))
+        );
+      color: var(--theme-text, rgba(255, 255, 255, 0.92));
     }
 
     /* Desktop needs recording controls somewhere - add them to stats bar */

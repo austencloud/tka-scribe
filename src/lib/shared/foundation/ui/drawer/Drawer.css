@@ -5,8 +5,8 @@
     inset: 0;
     z-index: calc(var(--sheet-z-index, var(--sheet-z-base, 50)) - 1);
 
-    /* Semi-transparent dark backdrop */
-    background: var(--sheet-backdrop-bg, rgba(0, 0, 0, 0.5));
+    /* Semi-transparent backdrop (theme-aware via app.css tokens) */
+    background: var(--sheet-backdrop-bg, var(--backdrop-medium, rgba(0, 0, 0, 0.5)));
     pointer-events: var(--sheet-backdrop-pointer-events, auto);
     transition: opacity var(--duration-dramatic, 350ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
     opacity: 0;
@@ -40,7 +40,7 @@
   .drawer-overlay.settings-backdrop,
   :global(.has-desktop-sidebar) .drawer-overlay.settings-backdrop {
     left: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--sheet-backdrop-bg, var(--backdrop-medium, rgba(0, 0, 0, 0.4)));
     backdrop-filter: blur(12px) saturate(180%);
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     pointer-events: auto;
@@ -70,8 +70,8 @@
     display: flex;
     flex-direction: column;
     outline: none;
-    /* Background with fallback */
-    background: var(--sheet-bg, rgba(26, 26, 46, 0.95));
+    /* Background with theme-aware fallback */
+    background: var(--sheet-bg, var(--sheet-bg-gradient, rgba(26, 26, 46, 0.95)));
     backdrop-filter: var(--sheet-filter, blur(24px));
     -webkit-backdrop-filter: var(--sheet-filter, blur(24px));
 

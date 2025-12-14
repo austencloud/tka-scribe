@@ -245,7 +245,7 @@
 
   /* Drawer content styling */
   :global(.trail-settings-sheet) {
-    --sheet-bg: rgba(20, 25, 35, 0.98);
+    --sheet-bg: var(--sheet-bg-gradient);
   }
 
   .trail-settings-panel {
@@ -263,18 +263,18 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     margin-bottom: 20px;
     position: sticky;
     top: 0;
-    background: rgba(20, 25, 35, 0.98);
+    background: var(--sheet-bg, var(--sheet-bg-gradient));
     z-index: 1;
   }
 
   .panel-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
   }
 
@@ -285,17 +285,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .presets-section {

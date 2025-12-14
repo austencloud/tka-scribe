@@ -68,6 +68,17 @@
     isMobile ? true : settings.current.referenceView !== "none"
   );
 
+  // Extract prop types from sequence for bilateral toggle
+  const bluePropType = $derived.by(() => {
+    const firstBeat = sequence?.beats?.[0];
+    return firstBeat?.motions?.blue?.propType ?? sequence?.propType ?? null;
+  });
+
+  const redPropType = $derived.by(() => {
+    const firstBeat = sequence?.beats?.[0];
+    return firstBeat?.motions?.red?.propType ?? sequence?.propType ?? null;
+  });
+
   // Computed: Which reference view to show?
   const activeReferenceView = $derived.by(() => {
     if (!showReferencePanel) return null;
@@ -320,7 +331,7 @@
           </div>
           <div class="reference-wrapper">
             {#if activeReferenceView === "animation"}
-              <InlineAnimationPlayer {sequence} autoPlay={true} />
+              <InlineAnimationPlayer {sequence} autoPlay={true} showControls={false} />
             {:else if activeReferenceView === "grid"}
               <GridPreview
                 {sequence}
@@ -407,16 +418,11 @@
   isOpen={settingsOpen}
   {isMobile}
   referenceView={settings.current.referenceView}
-  animationSettings={settings.current.animationSettings}
   gridSettings={settings.current.gridSettings}
+  {bluePropType}
+  {redPropType}
   onClose={() => settingsOpen = false}
   onReferenceViewChange={(v) => settings.setReferenceView(v)}
-  onAnimationSettingsChange={(s) => {
-    settings.setAnimationSpeed(s.speed);
-    settings.setShowTrails(s.showTrails);
-    settings.setBlueMotionVisible(s.blueMotionVisible);
-    settings.setRedMotionVisible(s.redMotionVisible);
-  }}
   onGridSettingsChange={(s) => {
     settings.setGridAnimated(s.animated);
     settings.setGridBpm(s.bpm);
@@ -431,7 +437,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
   }
 
   /* Settings FAB */
@@ -445,19 +451,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.5));
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .settings-fab:hover {
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.7));
+    color: var(--theme-text, white);
     transform: rotate(45deg);
   }
 
@@ -487,7 +493,7 @@
     flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.4));
   }
 
   .panel-label {
@@ -499,12 +505,12 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: rgba(0, 0, 0, 0.6);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.6));
     backdrop-filter: blur(4px);
     border-radius: 6px;
     font-size: 11px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -558,7 +564,7 @@
     align-items: center;
     justify-content: center;
     padding: 12px 8px;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
   }
 
   .control-group {
@@ -566,27 +572,27 @@
     align-items: center;
     gap: 12px;
     padding: 8px 16px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.7));
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 24px;
   }
 
   .duration-badge {
     font-size: 14px;
     font-weight: 600;
-    color: white;
+    color: var(--theme-text, white);
     display: flex;
     align-items: center;
     gap: 6px;
   }
 
   .duration-badge.recording {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   .duration-badge.paused {
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
   }
 
   .duration-badge i.pulse {
@@ -617,23 +623,33 @@
   }
 
   .control-btn.primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #3b82f6) 0%,
+      var(--theme-accent-strong, #2563eb) 100%
+    );
+    color: var(--theme-text, white);
   }
 
   .control-btn.secondary {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, white);
   }
 
   .control-btn.success {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    color: white;
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success, #22c55e) 0%,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 70%, black) 100%
+    );
+    color: var(--theme-text, white);
   }
 
   .control-btn.danger {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.2));
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
+    color: var(--semantic-error, #ef4444);
   }
 
   .control-btn:hover:not(:disabled) {
@@ -656,16 +672,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.7));
     backdrop-filter: blur(12px);
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .record-btn:hover {
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 70%, white);
     transform: scale(1.05);
   }
 
@@ -676,14 +692,14 @@
   .record-dot {
     width: 32px;
     height: 32px;
-    background: #ef4444;
+    background: var(--semantic-error, #ef4444);
     border-radius: 50%;
     transition: all 0.2s ease;
   }
 
   .record-btn:hover .record-dot {
     transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
   }
 
   /* Loading/Error States */
@@ -703,17 +719,17 @@
   .error-state p {
     margin: 0;
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .error-state i {
     font-size: 48px;
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
   }
 
   .error-detail {
     font-size: 14px !important;
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5)) !important;
   }
 
   .retry-btn {
@@ -721,24 +737,24 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .retry-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
   }
 
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: rgba(59, 130, 246, 0.8);
+    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top-color: var(--theme-accent, rgba(59, 130, 246, 0.8));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

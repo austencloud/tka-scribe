@@ -11,11 +11,13 @@ import type { IAuditLogService } from "../../../features/admin/services/contract
 import type { IAdminChallengeService } from "../../../features/admin/services/contracts/IAdminChallengeService";
 import type { IAnalyticsDataService } from "../../../features/admin/services/contracts/IAnalyticsDataService";
 import type { IAnnouncementService } from "../../../features/admin/services/contracts/IAnnouncementService";
+import type { IUserActivityService } from "../../../features/admin/services/contracts/IUserActivityService";
 import { SystemStateService } from "../../../features/admin/services/implementations/SystemStateService";
 import { AuditLogService } from "../../../features/admin/services/implementations/AuditLogService";
 import { AdminChallengeService } from "../../../features/admin/services/implementations/AdminChallengeService";
 import { AnalyticsDataService } from "../../../features/admin/services/implementations/AnalyticsDataService";
 import { AnnouncementService } from "../../../features/admin/services/implementations/AnnouncementService";
+import { UserActivityService } from "../../../features/admin/services/implementations/UserActivityService";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -47,6 +49,12 @@ export const adminModule = new ContainerModule(
     options
       .bind<IAnnouncementService>(TYPES.IAnnouncementService)
       .to(AnnouncementService)
+      .inSingletonScope();
+
+    // User Activity Service (admin user monitoring)
+    options
+      .bind<IUserActivityService>(TYPES.IUserActivityService)
+      .to(UserActivityService)
       .inSingletonScope();
   }
 );

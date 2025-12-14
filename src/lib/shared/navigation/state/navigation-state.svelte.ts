@@ -18,6 +18,7 @@ import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
 import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
+import type { IPresenceService } from "../../presence/services/contracts/IPresenceService";
 
 // Import configurations from separated files
 import {
@@ -354,6 +355,16 @@ export function createNavigationState() {
         } catch {
           // Silently fail - activity logging is non-critical
         }
+
+        // Update presence with new location (non-blocking)
+        try {
+          const presenceService = tryResolve<IPresenceService>(TYPES.IPresenceService);
+          if (presenceService) {
+            void presenceService.updateLocation(moduleId, nextTab || null);
+          }
+        } catch {
+          // Silently fail - presence is non-critical
+        }
       }
 
       // Persist both module and active tab
@@ -398,6 +409,16 @@ export function createNavigationState() {
           }
         } catch {
           // Silently fail - activity logging is non-critical
+        }
+
+        // Update presence with new tab (non-blocking)
+        try {
+          const presenceService = tryResolve<IPresenceService>(TYPES.IPresenceService);
+          if (presenceService) {
+            void presenceService.updateLocation(currentModule, tabId);
+          }
+        } catch {
+          // Silently fail - presence is non-critical
         }
       }
 

@@ -14,7 +14,13 @@
     onsubmit?: () => void;
   }
 
-  let { value = "", disabled = false, error = false, onchange, onsubmit }: Props = $props();
+  let {
+    value = "",
+    disabled = false,
+    error = false,
+    onchange,
+    onsubmit,
+  }: Props = $props();
 
   let inputs: HTMLInputElement[] = [];
 
@@ -96,8 +102,14 @@
 </script>
 
 <div class="code-input-container" class:error class:disabled>
-  <label class="visually-hidden" for="code-input-0">Enter 6-digit verification code</label>
-  <div class="code-inputs" role="group" aria-label="Enter 6-digit verification code">
+  <label class="visually-hidden" for="code-input-0"
+    >Enter 6-digit verification code</label
+  >
+  <div
+    class="code-inputs"
+    role="group"
+    aria-label="Enter 6-digit verification code"
+  >
     {#each Array(6) as _, i}
       <input
         bind:this={inputs[i]}
@@ -152,12 +164,17 @@
   .code-digit:focus {
     outline: none;
     border-color: var(--theme-accent, #3b82f6);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent);
   }
 
   .code-digit.filled {
     border-color: var(--theme-accent, #3b82f6);
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 10%,
+      transparent
+    );
   }
 
   .code-digit.error {
@@ -188,9 +205,16 @@
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    75% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-4px);
+    }
+    75% {
+      transform: translateX(4px);
+    }
   }
 
   /* Responsive sizing */

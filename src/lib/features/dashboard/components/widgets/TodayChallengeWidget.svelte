@@ -83,8 +83,8 @@
     flex-direction: column;
     height: 100%;
     padding: 24px;
-    background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.15);
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 22%, transparent);
     border-radius: 24px;
   }
 
@@ -101,9 +101,9 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: rgba(245, 158, 11, 0.15);
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
     border-radius: 14px;
-    color: #f59e0b;
+    color: var(--semantic-warning, #f59e0b);
     font-size: 18px;
   }
 
@@ -111,7 +111,7 @@
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .widget-content {
@@ -131,9 +131,9 @@
     height: 80px;
     background: linear-gradient(
       90deg,
-      rgba(245, 158, 11, 0.08) 25%,
-      rgba(245, 158, 11, 0.15) 50%,
-      rgba(245, 158, 11, 0.08) 75%
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 8%, transparent) 25%,
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent) 50%,
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 8%, transparent) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -161,13 +161,13 @@
 
   .empty-state i {
     font-size: 32px;
-    color: rgba(245, 158, 11, 0.4);
+    color: color-mix(in srgb, var(--semantic-warning, #f59e0b) 40%, transparent);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .view-all-btn {
@@ -177,7 +177,11 @@
     gap: 10px;
     min-height: 52px;
     padding: 14px 20px;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning, #f59e0b) 0%,
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 80%, black) 100%
+    );
     border: none;
     border-radius: 14px;
     color: white;

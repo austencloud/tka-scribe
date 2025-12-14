@@ -430,8 +430,8 @@
     width: 100%;
     min-height: 72px;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 18px;
     cursor: pointer;
     transition: background var(--duration-fast, 150ms) var(--ease-out);
@@ -439,7 +439,7 @@
   }
 
   .teaser-card:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .teaser-icon {
@@ -454,13 +454,13 @@
   }
 
   .teaser-icon.challenge {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    color: var(--semantic-warning, #f59e0b);
   }
 
   .teaser-icon.support {
-    background: rgba(236, 72, 153, 0.15);
-    color: #ec4899;
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+    color: var(--theme-accent-strong, #8b5cf6);
   }
 
   .teaser-content {
@@ -473,16 +473,16 @@
   .teaser-title {
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .teaser-subtitle {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .teaser-arrow {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     font-size: 14px;
   }
 

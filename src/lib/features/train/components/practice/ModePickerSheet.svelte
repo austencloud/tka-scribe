@@ -132,7 +132,7 @@
   }
 
   :global(.mode-picker-sheet) {
-    --sheet-bg: #1a1a24;
+    --sheet-bg: var(--sheet-bg-solid);
     height: auto !important;
     max-height: 85vh !important;
   }

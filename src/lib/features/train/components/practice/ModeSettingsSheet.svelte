@@ -124,7 +124,7 @@
     </header>
 
     <!-- Mode-specific configuration -->
-    <div class="settings-content">
+    <div class="mode-sheet-body">
       {#if currentMode === PracticeMode.ADAPTIVE}
         <AdaptiveModeConfig
           config={adaptiveConfig}
@@ -147,7 +147,7 @@
 
   /* Drawer content styling */
   :global(.mode-settings-sheet) {
-    --sheet-bg: #1a1a24;
+    --sheet-bg: var(--sheet-bg-solid);
   }
 
   .settings-panel {
@@ -234,7 +234,7 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
-  .settings-content {
+  .mode-sheet-body {
     flex: 1;
     display: flex;
     flex-direction: column;

@@ -118,7 +118,9 @@
 
   <!-- Footer with context and badges -->
   <div class="card-footer">
-    <span class="shortcut-context">{formatContext(item.shortcut.context ?? "global")}</span>
+    <span class="shortcut-context"
+      >{formatContext(item.shortcut.context ?? "global")}</span
+    >
     <div class="card-badges">
       {#if item.isCustomized}
         <span class="customized-badge">Custom</span>
@@ -163,19 +165,37 @@
 
   /* Module navigation - subtle colored glass */
   .shortcut-card.has-module-color {
-    background: color-mix(in srgb, var(--module-color) 8%, rgba(255, 255, 255, 0.04));
-    border: 1px solid color-mix(in srgb, var(--module-color) 20%, rgba(255, 255, 255, 0.08));
+    background: color-mix(
+      in srgb,
+      var(--module-color) 8%,
+      rgba(255, 255, 255, 0.04)
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--module-color) 20%, rgba(255, 255, 255, 0.08));
     border-left: 2px solid var(--module-color);
   }
 
   .shortcut-card.has-module-color:hover {
-    background: color-mix(in srgb, var(--module-color) 12%, rgba(255, 255, 255, 0.06));
-    border-color: color-mix(in srgb, var(--module-color) 30%, rgba(255, 255, 255, 0.12));
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--module-color) 15%, rgba(0, 0, 0, 0.2));
+    background: color-mix(
+      in srgb,
+      var(--module-color) 12%,
+      rgba(255, 255, 255, 0.06)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--module-color) 30%,
+      rgba(255, 255, 255, 0.12)
+    );
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--module-color) 15%, rgba(0, 0, 0, 0.2));
   }
 
   .shortcut-card.customized {
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      transparent
+    );
   }
 
   .shortcut-card.disabled {
@@ -200,9 +220,19 @@
   }
 
   /* Module navigation key badges get module color tint */
-  .shortcut-card.has-module-color .key-combo-wrapper :global(.kbd:not(.modifier)) {
-    background: color-mix(in srgb, var(--module-color) 18%, rgba(255, 255, 255, 0.06));
-    border-color: color-mix(in srgb, var(--module-color) 30%, rgba(255, 255, 255, 0.1));
+  .shortcut-card.has-module-color
+    .key-combo-wrapper
+    :global(.kbd:not(.modifier)) {
+    background: color-mix(
+      in srgb,
+      var(--module-color) 18%,
+      rgba(255, 255, 255, 0.06)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--module-color) 30%,
+      rgba(255, 255, 255, 0.1)
+    );
     color: var(--module-color);
   }
 
@@ -226,7 +256,11 @@
   }
 
   .reset-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
   }
 
@@ -295,12 +329,20 @@
   }
 
   .customized-badge {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
     color: var(--theme-accent-strong, #a78bfa);
   }
 
   .disabled-badge {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 20%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
   }
 

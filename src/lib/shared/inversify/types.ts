@@ -25,6 +25,7 @@ export const TYPES = {
   ),
   ISettingsState: Symbol.for("ISettingsState"),
   ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
+  IBackgroundPopularityService: Symbol.for("IBackgroundPopularityService"),
   IDeviceDetector: Symbol.for("IDeviceDetector"),
   IResourceTracker: Symbol.for("IResourceTracker"),
   IPanelManagementService: Symbol.for("IPanelManagementService"),
@@ -310,10 +311,8 @@ export const TYPES = {
   ICanvasRenderer: Symbol.for("ICanvasRenderer"),
   IPixiAnimationRenderer: Symbol.for("IPixiAnimationRenderer"),
   ISVGGenerator: Symbol.for("ISVGGenerator"),
-  IGifExportService: Symbol.for("IGifExportService"),
   IVideoExportService: Symbol.for("IVideoExportService"),
-  IAnimatedImageTranscoder: Symbol.for("IAnimatedImageTranscoder"),
-  IGifExportOrchestrator: Symbol.for("IGifExportOrchestrator"),
+  IVideoExportOrchestrator: Symbol.for("IVideoExportOrchestrator"),
 
   // Animator Trail Services
   ITrailCaptureService: Symbol.for("ITrailCaptureService"),
@@ -460,9 +459,14 @@ export const TYPES = {
   IAdminChallengeService: Symbol.for("IAdminChallengeService"),
   IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
   IAnnouncementService: Symbol.for("IAnnouncementService"),
+  IUserActivityService: Symbol.for("IUserActivityService"),
 
   // === ANALYTICS SERVICES ===
   IActivityLogService: Symbol.for("IActivityLogService"),
+  ISessionTrackingService: Symbol.for("ISessionTrackingService"),
+
+  // === PRESENCE SERVICES ===
+  IPresenceService: Symbol.for("IPresenceService"),
 
   // === LIBRARY SERVICES ===
   ILibraryService: Symbol.for("ILibraryService"),

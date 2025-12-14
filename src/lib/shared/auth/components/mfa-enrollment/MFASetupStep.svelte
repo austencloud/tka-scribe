@@ -17,7 +17,8 @@
     onRetry?: () => void;
   }
 
-  let { qrCodeUri, secretKey, isLoading, error, onContinue, onRetry }: Props = $props();
+  let { qrCodeUri, secretKey, isLoading, error, onContinue, onRetry }: Props =
+    $props();
 
   let qrCodeDataUrl = $state("");
   let secretCopied = $state(false);
@@ -86,14 +87,15 @@
       <p class="error-message">{error}</p>
       {#if error.includes("not enabled")}
         <p class="error-help">
-          TOTP-based MFA needs to be enabled in your Firebase project.
-          Go to <strong>Google Cloud Console → Identity Platform → MFA</strong> and enable TOTP.
-          Changes may take a few minutes to propagate.
+          TOTP-based MFA needs to be enabled in your Firebase project. Go to <strong
+            >Google Cloud Console → Identity Platform → MFA</strong
+          > and enable TOTP. Changes may take a few minutes to propagate.
         </p>
       {:else if error.includes("recent-login") || error.includes("requires-recent-login")}
         <p class="error-help">
-          For security, Firebase requires a recent sign-in to enable 2FA.
-          Please <strong>sign out and sign back in</strong>, then try enabling 2FA again.
+          For security, Firebase requires a recent sign-in to enable 2FA. Please <strong
+            >sign out and sign back in</strong
+          >, then try enabling 2FA again.
         </p>
       {/if}
       {#if onRetry}
@@ -107,12 +109,17 @@
     <div class="qr-section">
       <h3>Scan QR Code</h3>
       <p class="instruction">
-        Open your authenticator app (Google Authenticator, Authy, etc.) and scan this QR code.
+        Open your authenticator app (Google Authenticator, Authy, etc.) and scan
+        this QR code.
       </p>
 
       <div class="qr-container">
         {#if qrCodeDataUrl}
-          <img src={qrCodeDataUrl} alt="QR Code for authenticator app" class="qr-code" />
+          <img
+            src={qrCodeDataUrl}
+            alt="QR Code for authenticator app"
+            class="qr-code"
+          />
         {:else}
           <div class="qr-placeholder">
             <i class="fas fa-qrcode"></i>
@@ -125,7 +132,13 @@
       <h4>Can't scan? Enter manually:</h4>
       <div class="secret-container">
         <code class="secret-key">{formatSecret(secretKey)}</code>
-        <button type="button" class="copy-button" onclick={copySecret} title="Copy to clipboard" aria-label="Copy secret key to clipboard">
+        <button
+          type="button"
+          class="copy-button"
+          onclick={copySecret}
+          title="Copy to clipboard"
+          aria-label="Copy secret key to clipboard"
+        >
           <i class="fas {secretCopied ? 'fa-check' : 'fa-copy'}"></i>
         </button>
       </div>
@@ -170,7 +183,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .error-state i {
@@ -192,7 +207,11 @@
     max-width: 300px;
     line-height: 1.5;
     padding: 12px 16px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
     border: 1px solid var(--semantic-error, #ef4444);
     border-radius: 10px;
   }
@@ -319,7 +338,11 @@
   }
 
   .copy-button:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 15%,
+      transparent
+    );
   }
 
   .copied-message {
@@ -334,7 +357,11 @@
     align-items: center;
     gap: 8px;
     padding: 14px 28px;
-    background: linear-gradient(135deg, var(--theme-accent, #3b82f6), color-mix(in srgb, var(--theme-accent, #3b82f6) 80%, #000));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #3b82f6),
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 80%, #000)
+    );
     border: none;
     border-radius: 12px;
     color: #ffffff;
@@ -346,6 +373,7 @@
 
   .continue-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
   }
 </style>

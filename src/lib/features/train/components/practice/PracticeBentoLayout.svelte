@@ -179,7 +179,7 @@
       </button>
 
       {#if showGridSettings}
-        <div class="settings-content">
+        <div class="bento-grid-settings">
           <GridSettingsInline
             {gridScale}
             {gridMode}
@@ -339,7 +339,7 @@
     transition: transform 0.2s;
   }
 
-  .settings-content {
+  .bento-grid-settings {
     padding: 0 14px 14px;
   }
 
@@ -402,7 +402,7 @@
       font-size: 0.85rem;
     }
 
-    .settings-content {
+    .bento-grid-settings {
       padding: 0 16px 16px;
     }
   }

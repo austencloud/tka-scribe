@@ -215,6 +215,9 @@
     height: 100%;
     overflow: hidden;
     background: transparent;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   /* Shortcuts List */
