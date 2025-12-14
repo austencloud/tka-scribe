@@ -621,6 +621,103 @@ export class FeedbackService implements IFeedbackService {
     return this.mapDocToFeedbackItem(updatedDoc.id, updatedDoc.data()!);
   }
 
+  /**
+   * Subscribe to real-time updates for a specific user's feedback
+   * Returns an unsubscribe function
+   */
+  subscribeToUserFeedback(
+    userId: string,
+    onUpdate: (items: FeedbackItem[]) => void,
+    onError?: (error: Error) => void
+  ): Unsubscribe {
+    // Query all feedback for this user, ordered by createdAt
+    const q = query(
+      collection(firestore, COLLECTION_NAME),
+      where("userId", "==", userId),
+      orderBy("createdAt", "desc")
+    );
+
+    let unsubscribed = false;
+
+    // First, do an initial server fetch to ensure fresh data
+    getDocsFromServer(q)
+      .then((snapshot) => {
+        if (unsubscribed) return;
+
+        const items: FeedbackItem[] = [];
+        snapshot.docs.forEach((docSnap) => {
+          try {
+            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+            items.push(item);
+          } catch (err) {
+            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+          }
+        });
+        onUpdate(items);
+      })
+      .catch((error) => {
+        console.error("Initial user feedback fetch error:", error);
+        // Continue to set up the listener even if initial fetch fails
+      });
+
+    // Then set up the real-time listener for ongoing updates
+    const unsubscribe = onSnapshot(
+      q,
+      { includeMetadataChanges: false },
+      (snapshot) => {
+        if (unsubscribed) return;
+
+        const items: FeedbackItem[] = [];
+        snapshot.docs.forEach((docSnap) => {
+          try {
+            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+            items.push(item);
+          } catch (err) {
+            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+          }
+        });
+        onUpdate(items);
+      },
+      (error) => {
+        console.error("User feedback subscription error:", error);
+        onError?.(error);
+      }
+    );
+
+    // Return combined unsubscribe function
+    return () => {
+      unsubscribed = true;
+      unsubscribe();
+    };
+  }
+
+  async deleteUserFeedback(feedbackId: string): Promise<void> {
+    const user = authState.user;
+    if (!user) {
+      throw new Error("User must be authenticated to delete feedback");
+    }
+
+    // Get the feedback item to verify ownership
+    const feedback = await this.getFeedback(feedbackId);
+    if (!feedback) {
+      throw new Error("Feedback not found");
+    }
+
+    // Verify the user owns this feedback
+    if (feedback.userId !== user.uid) {
+      throw new Error("You can only delete your own feedback");
+    }
+
+    // Only allow deletion when status is "new" (not yet picked up)
+    if (feedback.status !== "new") {
+      throw new Error("Cannot delete feedback that is already being processed");
+    }
+
+    // Delete the document
+    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+    await deleteDoc(docRef);
+  }
+
   private mapDocToFeedbackItem(
     id: string,
     data: Record<string, unknown>

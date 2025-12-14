@@ -195,7 +195,7 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-sparkles"></i></div>
+        <div class="stat-icon"><i class="fas fa-magic-wand-sparkles"></i></div>
         <div class="stat-content">
           <div class="stat-value">{stats?.totalXP.toLocaleString() || 0}</div>
           <div class="stat-label">Total XP</div>

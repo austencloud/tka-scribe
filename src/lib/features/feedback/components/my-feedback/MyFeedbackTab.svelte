@@ -2,10 +2,11 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { createMyFeedbackState } from "../../state/my-feedback-state.svelte";
+  import { myFeedbackDetailState } from "../../state/my-feedback-detail-state.svelte";
   import { takeNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import MyFeedbackList from "./MyFeedbackList.svelte";
-  import MyFeedbackDetail from "./MyFeedbackDetail.svelte";
 
   const state = createMyFeedbackState();
   const preview = useUserPreview();
@@ -13,26 +14,84 @@
   // Track preview user to reload when it changes
   let lastPreviewUserId: string | null = null;
 
+  // Track pending notification target
+  let pendingTargetId: string | null = null;
+  let targetCheckInterval: ReturnType<typeof setInterval> | null = null;
+
+  // Cleanup function for target interval
+  function cleanupTargetInterval() {
+    if (targetCheckInterval) {
+      clearInterval(targetCheckInterval);
+      targetCheckInterval = null;
+    }
+  }
+
+  // Handle finding and selecting a target feedback item
+  function setupTargetCheck(targetFeedbackId: string) {
+    pendingTargetId = targetFeedbackId;
+    cleanupTargetInterval();
+
+    // Wait for items to load, then find and select the target
+    targetCheckInterval = setInterval(() => {
+      const targetItem = state.items.find((item) => item.id === targetFeedbackId);
+      if (targetItem) {
+        myFeedbackDetailState.selectItem(targetItem);
+        pendingTargetId = null;
+        cleanupTargetInterval();
+      }
+    }, 100);
+
+    // Cleanup interval after 10 seconds if not found
+    setTimeout(() => {
+      cleanupTargetInterval();
+      if (pendingTargetId) {
+        console.warn(`[MyFeedbackTab] Could not find target feedback: ${pendingTargetId}`);
+        pendingTargetId = null;
+      }
+    }, 10000);
+  }
+
+  // Load feedback when auth is ready
+  async function loadWhenReady() {
+    // Wait for auth to be initialized
+    if (!authState.initialized) {
+      // Poll for auth initialization
+      await new Promise<void>((resolve) => {
+        const check = setInterval(() => {
+          if (authState.initialized) {
+            clearInterval(check);
+            resolve();
+          }
+        }, 50);
+        // Timeout after 5 seconds
+        setTimeout(() => {
+          clearInterval(check);
+          resolve();
+        }, 5000);
+      });
+    }
+
+    // Now load feedback
+    await state.loadMyFeedback(true);
+  }
+
   // Load on mount (not in $effect to avoid loops)
   onMount(() => {
-    state.loadMyFeedback(true);
     lastPreviewUserId = preview.profile?.uid ?? null;
+
+    // Register handlers with the shared detail state
+    myFeedbackDetailState.setHandlers(state.updateItem, state.deleteItem);
 
     // Check if a specific feedback should be opened (from notification)
     const targetFeedbackId = takeNotificationTargetFeedback();
-    if (targetFeedbackId) {
-      // Wait for items to load, then find and select the target
-      const checkAndSelect = setInterval(() => {
-        const targetItem = state.items.find((item) => item.id === targetFeedbackId);
-        if (targetItem) {
-          state.selectItem(targetItem);
-          clearInterval(checkAndSelect);
-        }
-      }, 100);
 
-      // Cleanup interval after 5 seconds if not found
-      setTimeout(() => clearInterval(checkAndSelect), 5000);
-    }
+    // First, ensure auth is ready, then load feedback
+    loadWhenReady().then(() => {
+      // After loading, set up target check if we have one
+      if (targetFeedbackId) {
+        setupTargetCheck(targetFeedbackId);
+      }
+    });
   });
 
   // Reload when preview user changes
@@ -49,6 +108,9 @@
   });
 
   onDestroy(() => {
+    cleanupTargetInterval();
+    myFeedbackDetailState.clearHandlers();
+    myFeedbackDetailState.close();
     state.cleanup();
   });
 
@@ -59,6 +121,9 @@
     preview.profile?.email ||
     "User"
   );
+
+  // Selected item for highlighting in list (synced from shared state)
+  const selectedItemId = $derived(myFeedbackDetailState.selectedItem?.id ?? null);
 </script>
 
 <div class="my-feedback-tab">
@@ -108,20 +173,10 @@
         <div class="feedback-layout">
           <MyFeedbackList
             items={state.items}
-            selectedItem={state.selectedItem}
-            onSelect={(item) => state.selectItem(item)}
-            hasMore={state.hasMore}
+            selectedItemId={selectedItemId}
+            onSelect={(item) => myFeedbackDetailState.selectItem(item)}
             isLoading={state.isLoading}
-            onLoadMore={() => state.loadMyFeedback()}
           />
-
-          {#if state.selectedItem}
-            <MyFeedbackDetail
-              item={state.selectedItem}
-              onClose={() => state.selectItem(null)}
-              onUpdate={state.updateItem}
-            />
-          {/if}
         </div>
       {/if}
     </div>

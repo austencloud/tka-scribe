@@ -306,7 +306,7 @@
 
   .splitter {
     width: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     cursor: col-resize;
     transition: background-color var(--transition-fast);
     flex-shrink: 0;
@@ -315,7 +315,7 @@
 
   .splitter:hover,
   .splitter.dragging {
-    background: var(--primary-color);
+    background: var(--theme-accent, var(--primary-color));
   }
 
   .right-panel {

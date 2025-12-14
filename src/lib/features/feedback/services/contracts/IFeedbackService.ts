@@ -130,4 +130,20 @@ export interface IFeedbackService {
     updates: Partial<Pick<FeedbackItem, "type" | "description">>,
     appendMode?: boolean
   ): Promise<FeedbackItem>;
+
+  /**
+   * Subscribe to real-time updates for a specific user's feedback
+   * Returns an unsubscribe function
+   */
+  subscribeToUserFeedback(
+    userId: string,
+    onUpdate: (items: FeedbackItem[]) => void,
+    onError?: (error: Error) => void
+  ): () => void;
+
+  /**
+   * Delete user's own feedback (validates ownership)
+   * Only allowed when status is "new" (not yet picked up by admin)
+   */
+  deleteUserFeedback(feedbackId: string): Promise<void>;
 }

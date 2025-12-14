@@ -11,14 +11,12 @@
   } from "../../domain/models/feedback-models";
   import MyFeedbackCard from "./MyFeedbackCard.svelte";
 
-  const { items, selectedItem, onSelect, hasMore, isLoading, onLoadMore } =
+  const { items, selectedItemId, onSelect, isLoading } =
     $props<{
       items: FeedbackItem[];
-      selectedItem: FeedbackItem | null;
+      selectedItemId: string | null;
       onSelect: (item: FeedbackItem) => void;
-      hasMore: boolean;
       isLoading: boolean;
-      onLoadMore: () => void;
     }>();
 
   // Filter state
@@ -39,20 +37,9 @@
     "completed",
     "archived",
   ];
-
-  // Scroll handler for infinite loading
-  function handleScroll(e: Event) {
-    const target = e.target as HTMLElement;
-    const nearBottom =
-      target.scrollHeight - target.scrollTop - target.clientHeight < 100;
-
-    if (nearBottom && hasMore && !isLoading) {
-      onLoadMore();
-    }
-  }
 </script>
 
-<div class="feedback-list" onscroll={handleScroll}>
+<div class="feedback-list">
   <!-- Filter controls -->
   <div class="filter-bar">
     <button
@@ -97,7 +84,7 @@
       {#each filteredItems as item (item.id)}
         <MyFeedbackCard
           {item}
-          isSelected={selectedItem?.id === item.id}
+          isSelected={selectedItemId === item.id}
           onClick={() => onSelect(item)}
         />
       {/each}

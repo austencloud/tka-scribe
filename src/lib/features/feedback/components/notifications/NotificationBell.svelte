@@ -10,6 +10,7 @@
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { testPreviewState } from "$lib/shared/debug/state/test-preview-state.svelte";
+  import { setNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
 
   // Local component state
   let showDropdown = $state(false);
@@ -18,6 +19,7 @@
   let isLoading = $state(false);
   let unsubscribe: (() => void) | null = null;
   let activePopup = $state<UserNotification | null>(null);
+  let dismissingIds = $state<Set<string>>(new Set());
 
   // Type guard for feedback notifications
   function isFeedbackNotification(
@@ -104,8 +106,18 @@
     return `${days}d ago`;
   }
 
-  // Mark notification as read without navigation (dismiss)
-  async function handleDismiss(notificationId: string) {
+  // Mark notification as read without navigation (dismiss) - with animation
+  async function handleDismiss(notificationId: string, e?: MouseEvent) {
+    if (e) {
+      e.stopPropagation();
+    }
+
+    // Start dismiss animation
+    dismissingIds = new Set([...dismissingIds, notificationId]);
+
+    // Wait for animation to complete
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
     const isPreview = testPreviewState.isActive;
 
     if (!isPreview) {
@@ -123,6 +135,9 @@
         activePopup = null;
       }
     }
+
+    // Clean up dismissing state
+    dismissingIds = new Set([...dismissingIds].filter((id) => id !== notificationId));
   }
 
   // Navigate to context-specific location based on notification type
@@ -134,15 +149,19 @@
         case "feedback-resolved":
         case "feedback-in-progress":
           // Navigate to my-feedback tab, focus on that item
+          if (isFeedbackNotification(notification)) {
+            setNotificationTargetFeedback(notification.feedbackId);
+          }
           await handleModuleChange("feedback", "my-feedback");
-          // TODO: Scroll to/highlight notification.feedbackId
           break;
 
         case "feedback-needs-info":
         case "feedback-response":
           // Navigate to my-feedback, open reply UI
+          if (isFeedbackNotification(notification)) {
+            setNotificationTargetFeedback(notification.feedbackId);
+          }
           await handleModuleChange("feedback", "my-feedback");
-          // TODO: Open feedback item + focus reply form
           break;
 
         case "sequence-liked":
@@ -332,12 +351,16 @@
         {:else}
           {#each notifications as notification (notification.id)}
             {@const config = NOTIFICATION_TYPE_CONFIG[notification.type]}
-            <div class="notification-item" class:unread={!notification.read}>
+            <div
+              class="notification-item"
+              class:unread={!notification.read}
+              class:dismissing={dismissingIds.has(notification.id)}
+            >
               <button
                 class="notification-card"
-                onclick={() => handleDismiss(notification.id)}
+                onclick={() => handleNotificationAction(notification)}
                 type="button"
-                title="Click to dismiss"
+                title="Click to view"
               >
                 <div
                   class="notification-icon"
@@ -361,12 +384,13 @@
                 {/if}
               </button>
               <button
-                class="notification-action"
-                onclick={() => handleNotificationAction(notification)}
+                class="dismiss-btn"
+                onclick={(e) => handleDismiss(notification.id, e)}
                 type="button"
-                title={config.actionLabel}
+                title="Dismiss"
+                aria-label="Dismiss notification"
               >
-                {config.actionLabel}
+                <i class="fas fa-times"></i>
               </button>
             </div>
           {/each}
@@ -549,10 +573,14 @@
 
   .notification-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-start;
     gap: 8px;
     padding: 12px 16px;
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
 
   .notification-item.unread {
@@ -563,10 +591,17 @@
     );
   }
 
+  .notification-item.dismissing {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+    pointer-events: none;
+  }
+
   .notification-card {
+    flex: 1;
     display: flex;
     gap: 12px;
-    width: 100%;
+    min-width: 0;
     padding: 0;
     background: none;
     border: none;
@@ -580,26 +615,37 @@
     opacity: 0.8;
   }
 
-  .notification-action {
-    align-self: flex-end;
-    padding: 6px 12px;
-    background: var(--theme-accent, #3b82f6);
-    color: white;
+  .dismiss-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin-top: 4px;
+    background: transparent;
     border: none;
     border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     cursor: pointer;
-    transition: all 0.15s ease;
+    opacity: 0;
+    transition: all 0.2s ease;
   }
 
-  .notification-action:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, black);
-    transform: translateY(-1px);
+  .notification-item:hover .dismiss-btn {
+    opacity: 1;
   }
 
-  .notification-action:active {
-    transform: translateY(0);
+  .dismiss-btn:hover {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: var(--semantic-error, #ef4444);
+  }
+
+  .dismiss-btn:focus-visible {
+    opacity: 1;
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   .notification-icon {

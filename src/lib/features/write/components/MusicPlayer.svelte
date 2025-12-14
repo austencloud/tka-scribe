@@ -221,7 +221,7 @@
   }
 
   .title {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: var(--font-size-sm);
     font-weight: bold;
     font-family: "Segoe UI", sans-serif;
@@ -241,7 +241,7 @@
   .position-slider {
     width: 100%;
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: var(--border-radius-sm);
     outline: none;
     cursor: pointer;
@@ -252,9 +252,9 @@
 
   .position-slider::-webkit-slider-track {
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .position-slider::-webkit-slider-thumb {
@@ -278,9 +278,9 @@
 
   .position-slider::-moz-range-track {
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
   .position-slider::-moz-range-thumb {
@@ -311,11 +311,11 @@
     gap: var(--spacing-xs);
     font-size: var(--font-size-sm);
     font-family: "Segoe UI", sans-serif;
-    color: var(--text-color);
+    color: var(--theme-text, var(--text-color, rgba(255, 255, 255, 0.9)));
   }
 
   .time-separator {
-    color: var(--text-secondary);
+    color: var(--theme-text-dim, var(--text-secondary, rgba(255, 255, 255, 0.6)));
   }
 
   .control-buttons {
@@ -354,9 +354,9 @@
   }
 
   .control-button:disabled {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: var(--text-secondary);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text-dim, var(--text-secondary, rgba(255, 255, 255, 0.6)));
     cursor: not-allowed;
     transform: none;
     box-shadow: none;

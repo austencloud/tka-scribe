@@ -2,7 +2,7 @@ import type { ChangelogCategory } from "../models/version-models";
 
 export const CATEGORY_ICONS: Record<ChangelogCategory, string> = {
   fixed: "fa-bug",
-  added: "fa-sparkles",
+  added: "fa-magic-wand-sparkles",
   improved: "fa-arrow-up",
 };
 

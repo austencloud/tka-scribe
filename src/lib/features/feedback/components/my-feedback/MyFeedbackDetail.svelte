@@ -1,8 +1,8 @@
-<!-- MyFeedbackDetail - Detail view with confirmation flow -->
+<!-- MyFeedbackDetail - Detail view with responsive drawer (bottom sheet on mobile, side panel on desktop) -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import type {
     FeedbackItem,
-    TesterConfirmationStatus,
     FeedbackType,
     FeedbackStatus,
     FeedbackPriority,
@@ -11,26 +11,58 @@
     STATUS_CONFIG,
     TYPE_CONFIG,
     PRIORITY_CONFIG,
-    CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
+  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackEditDrawer from "./FeedbackEditDrawer.svelte";
   import FeedbackReplyPanel from "./FeedbackReplyPanel.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
 
-  const { item, onClose, onUpdate } = $props<{
-    item: FeedbackItem;
+  let {
+    item,
+    isOpen = false,
+    onClose,
+    onUpdate,
+    onDelete,
+  } = $props<{
+    item: FeedbackItem | null;
+    isOpen?: boolean;
     onClose: () => void;
     onUpdate: (feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>;
+    onDelete: (feedbackId: string) => Promise<void>;
   }>();
+
+  // Local drawer state that syncs with parent's isOpen
+  let drawerOpen = $state(false);
+
+  // Sync with parent prop
+  $effect(() => {
+    drawerOpen = isOpen;
+  });
+
+  // Responsive placement
+  let isMobile = $state(false);
+  const placement = $derived(isMobile ? "bottom" : "right") as "bottom" | "right";
+
+  onMount(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    isMobile = mediaQuery.matches;
+    const handler = (e: MediaQueryListEvent) => {
+      isMobile = e.matches;
+    };
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  });
 
   // Get preview context for read-only checks
   const preview = useUserPreview();
 
   let isEditDrawerOpen = $state(false);
+  let showDeleteConfirm = $state(false);
+  let isDeleting = $state(false);
 
-  const typeConfig = $derived(TYPE_CONFIG[item.type as FeedbackType]);
-  const statusConfig = $derived(STATUS_CONFIG[item.status as FeedbackStatus]);
-  const priorityConfig = $derived(item.priority
+  const typeConfig = $derived(item ? TYPE_CONFIG[item.type as FeedbackType] : null);
+  const statusConfig = $derived(item ? STATUS_CONFIG[item.status as FeedbackStatus] : null);
+  const priorityConfig = $derived(item?.priority
     ? PRIORITY_CONFIG[item.priority as FeedbackPriority]
     : null);
 
@@ -39,15 +71,18 @@
 
   // Can edit if new, in-progress, or in-review (not completed/archived) AND not in preview mode
   const canEdit = $derived(
-    !isPreviewMode && ["new", "in-progress", "in-review"].includes(item.status)
+    item && !isPreviewMode && ["new", "in-progress", "in-review"].includes(item.status)
   );
 
   // Full edit mode only for "new" status, otherwise append mode
-  const isAppendMode = $derived(item.status !== "new");
+  const isAppendMode = $derived(item ? item.status !== "new" : false);
+
+  // Can delete only when status is "new" (not yet picked up by admin)
+  const canDelete = $derived(item && !isPreviewMode && item.status === "new");
 
   // Check if should show reply panel (for feedback-needs-info or feedback-response statuses)
   const shouldShowReplyPanel = $derived(
-    ["feedback-needs-info", "feedback-response"].includes(item.status)
+    item && ["feedback-needs-info", "feedback-response"].includes(item.status)
   );
 
   let isReplySubmitting = $state(false);
@@ -63,10 +98,12 @@
   }
 
   async function handleSave(updates: { type?: FeedbackType; description: string }, appendMode: boolean) {
+    if (!item) return;
     await onUpdate(item.id, updates, appendMode);
   }
 
   async function handleReplySubmit(reply: string) {
+    if (!item) return;
     isReplySubmitting = true;
     try {
       await onUpdate(item.id, { description: reply }, true);
@@ -74,180 +111,274 @@
       isReplySubmitting = false;
     }
   }
+
+  async function handleDelete() {
+    if (!item) return;
+    isDeleting = true;
+    try {
+      await onDelete(item.id);
+      // Panel will close automatically when item is removed
+    } catch (err) {
+      console.error("Failed to delete feedback:", err);
+      showDeleteConfirm = false;
+    } finally {
+      isDeleting = false;
+    }
+  }
+
+  function handleClose() {
+    showDeleteConfirm = false;
+    onClose();
+  }
 </script>
 
-<div class="detail-panel">
-  <!-- Header -->
-  <header class="panel-header">
-    <div class="header-actions">
-      {#if canEdit}
-        <button
-          class="edit-button"
-          onclick={() => (isEditDrawerOpen = true)}
-          type="button"
-          aria-label="Edit feedback"
-        >
-          <i class="fas fa-pen"></i>
-        </button>
-      {/if}
-      <button
-        class="close-button"
-        onclick={onClose}
-        type="button"
-        aria-label="Close detail panel"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="header-meta">
-      <span class="type-badge" style="--badge-color: {typeConfig.color}">
-        <i class="fas {typeConfig.icon}"></i>
-        {typeConfig.label}
-      </span>
-      <span class="status-badge" style="--badge-color: {statusConfig.color}">
-        <i class="fas {statusConfig.icon}"></i>
-        {statusConfig.label}
-      </span>
-      {#if priorityConfig}
-        <span
-          class="priority-badge"
-          style="--badge-color: {priorityConfig.color}"
-        >
-          <i class="fas {priorityConfig.icon}"></i>
-          {priorityConfig.label}
-        </span>
-      {/if}
-    </div>
-  </header>
-
-  <!-- Content -->
-  <div class="panel-content">
-    <h2 class="item-title">{item.title}</h2>
-
-    <div class="meta-row">
-      <span class="date">
-        <i class="fas fa-calendar"></i>
-        {formatDate(item.createdAt)}
-      </span>
-      {#if item.updatedAt}
-        <span class="updated">
-          <i class="fas fa-clock"></i>
-          Updated {formatDate(item.updatedAt)}
-        </span>
-      {/if}
-    </div>
-
-    <div class="description-section">
-      <h3>Your Feedback</h3>
-      <p class="description">{item.description}</p>
-    </div>
-
-    <!-- Screenshots -->
-    {#if item.imageUrls && item.imageUrls.length > 0}
-      <div class="screenshots-section">
-        <h3>Screenshots ({item.imageUrls.length})</h3>
-        <div class="screenshots-grid">
-          {#each item.imageUrls as imageUrl, index}
-            <a
-              href={imageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="screenshot-link"
+<Drawer
+  bind:isOpen={drawerOpen}
+  {placement}
+  showHandle={isMobile}
+  closeOnBackdrop={true}
+  closeOnEscape={true}
+  onclose={handleClose}
+  class="feedback-detail-drawer"
+  backdropClass="feedback-detail-backdrop"
+  ariaLabel="Feedback details"
+>
+  {#if item && typeConfig && statusConfig}
+    <div class="detail-container">
+      <!-- Header -->
+      <header class="panel-header">
+        <div class="header-actions">
+          {#if canEdit}
+            <button
+              class="action-button edit"
+              onclick={() => (isEditDrawerOpen = true)}
+              type="button"
+              aria-label="Edit feedback"
             >
-              <img
-                src={imageUrl}
-                alt="Screenshot {index + 1}"
-                class="screenshot-thumb"
-              />
-              <div class="screenshot-overlay">
-                <i class="fas fa-search-plus"></i>
-              </div>
-            </a>
-          {/each}
+              <i class="fas fa-pen"></i>
+            </button>
+          {/if}
+          {#if canDelete}
+            <button
+              class="action-button delete"
+              onclick={() => (showDeleteConfirm = true)}
+              type="button"
+              aria-label="Delete feedback"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          {/if}
+          <button
+            class="action-button close"
+            onclick={handleClose}
+            type="button"
+            aria-label="Close detail panel"
+          >
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-      </div>
-    {/if}
-
-    <!-- Context info -->
-    {#if item.capturedModule}
-      <div class="context-section">
-        <h3>Context</h3>
-        <div class="context-tags">
-          <span class="context-tag">
-            <i class="fas fa-cube"></i>
-            {item.capturedModule}
+        <div class="header-meta">
+          <span class="type-badge" style="--badge-color: {typeConfig.color}">
+            <i class="fas {typeConfig.icon}"></i>
+            {typeConfig.label}
           </span>
-          {#if item.capturedTab}
-            <span class="context-tag">
-              <i class="fas fa-folder"></i>
-              {item.capturedTab}
+          <span class="status-badge" style="--badge-color: {statusConfig.color}">
+            <i class="fas {statusConfig.icon}"></i>
+            {statusConfig.label}
+          </span>
+          {#if priorityConfig}
+            <span
+              class="priority-badge"
+              style="--badge-color: {priorityConfig.color}"
+            >
+              <i class="fas {priorityConfig.icon}"></i>
+              {priorityConfig.label}
             </span>
           {/if}
         </div>
-      </div>
-    {/if}
+      </header>
 
-    <!-- Admin Notes -->
-    {#if item.adminNotes}
-      <div class="response-section">
-        <h3>
-          <i class="fas fa-sticky-note"></i>
-          Admin Notes
-        </h3>
-        <div class="response-card">
-          <p class="response-message">{item.adminNotes}</p>
-        </div>
-      </div>
-    {/if}
+      <!-- Content -->
+      <div class="panel-content">
+        <h2 class="item-title">{item.title}</h2>
 
-    <!-- Resolution Notes -->
-    {#if item.resolutionNotes}
-      <div class="response-section">
-        <h3>
-          <i class="fas fa-check-circle"></i>
-          Resolution
-        </h3>
-        <div class="response-card resolution">
-          <p class="response-message">{item.resolutionNotes}</p>
+        <div class="meta-row">
+          <span class="date">
+            <i class="fas fa-calendar"></i>
+            {formatDate(item.createdAt)}
+          </span>
           {#if item.updatedAt}
-            <span class="response-date">
-              Resolved {formatDate(item.updatedAt)}
+            <span class="updated">
+              <i class="fas fa-clock"></i>
+              Updated {formatDate(item.updatedAt)}
             </span>
           {/if}
         </div>
+
+        <div class="description-section">
+          <h3>Your Feedback</h3>
+          <p class="description">{item.description}</p>
+        </div>
+
+        <!-- Screenshots -->
+        {#if item.imageUrls && item.imageUrls.length > 0}
+          <div class="screenshots-section">
+            <h3>Screenshots ({item.imageUrls.length})</h3>
+            <div class="screenshots-grid">
+              {#each item.imageUrls as imageUrl, index}
+                <a
+                  href={imageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="screenshot-link"
+                >
+                  <img
+                    src={imageUrl}
+                    alt="Screenshot {index + 1}"
+                    class="screenshot-thumb"
+                  />
+                  <div class="screenshot-overlay">
+                    <i class="fas fa-search-plus"></i>
+                  </div>
+                </a>
+              {/each}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Context info -->
+        {#if item.capturedModule}
+          <div class="context-section">
+            <h3>Context</h3>
+            <div class="context-tags">
+              <span class="context-tag">
+                <i class="fas fa-cube"></i>
+                {item.capturedModule}
+              </span>
+              {#if item.capturedTab}
+                <span class="context-tag">
+                  <i class="fas fa-folder"></i>
+                  {item.capturedTab}
+                </span>
+              {/if}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Admin Notes -->
+        {#if item.adminNotes}
+          <div class="response-section">
+            <h3>
+              <i class="fas fa-sticky-note"></i>
+              Admin Notes
+            </h3>
+            <div class="response-card">
+              <p class="response-message">{item.adminNotes}</p>
+            </div>
+          </div>
+        {/if}
+
+        <!-- Resolution Notes -->
+        {#if item.resolutionNotes}
+          <div class="response-section">
+            <h3>
+              <i class="fas fa-check-circle"></i>
+              Resolution
+            </h3>
+            <div class="response-card resolution">
+              <p class="response-message">{item.resolutionNotes}</p>
+              {#if item.updatedAt}
+                <span class="response-date">
+                  Resolved {formatDate(item.updatedAt)}
+                </span>
+              {/if}
+            </div>
+          </div>
+        {/if}
+
+        <!-- Reply Panel (for feedback-needs-info and feedback-response) -->
+        {#if shouldShowReplyPanel && !isPreviewMode}
+          <FeedbackReplyPanel
+            {item}
+            onSubmit={handleReplySubmit}
+            isLoading={isReplySubmitting}
+          />
+        {/if}
       </div>
-    {/if}
 
-    <!-- Reply Panel (for feedback-needs-info and feedback-response) -->
-    {#if shouldShowReplyPanel && !isPreviewMode}
-      <FeedbackReplyPanel
+      <!-- Delete Confirmation Dialog -->
+      {#if showDeleteConfirm}
+        <div class="delete-confirm-overlay" onclick={() => (showDeleteConfirm = false)}>
+          <div class="delete-confirm-dialog" onclick={(e) => e.stopPropagation()}>
+            <div class="dialog-icon">
+              <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3>Delete Feedback?</h3>
+            <p>This action cannot be undone. Your feedback will be permanently removed.</p>
+            <div class="dialog-actions">
+              <button
+                class="cancel-btn"
+                onclick={() => (showDeleteConfirm = false)}
+                disabled={isDeleting}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                class="confirm-btn"
+                onclick={handleDelete}
+                disabled={isDeleting}
+                type="button"
+              >
+                {#if isDeleting}
+                  <i class="fas fa-spinner fa-spin"></i>
+                  Deleting...
+                {:else}
+                  Delete
+                {/if}
+              </button>
+            </div>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Edit Drawer -->
+      <FeedbackEditDrawer
+        bind:isOpen={isEditDrawerOpen}
         {item}
-        onSubmit={handleReplySubmit}
-        isLoading={isReplySubmitting}
+        appendMode={isAppendMode}
+        onSave={handleSave}
       />
-    {/if}
-  </div>
-
-  <!-- Edit Drawer -->
-  <FeedbackEditDrawer
-    bind:isOpen={isEditDrawerOpen}
-    {item}
-    appendMode={isAppendMode}
-    onSave={handleSave}
-  />
-</div>
+    </div>
+  {/if}
+</Drawer>
 
 <style>
-  .detail-panel {
+  /* Drawer sizing and z-index (must be above bottom nav z-index: 100) */
+  :global(.drawer-content.feedback-detail-drawer) {
+    --sheet-width: min(420px, 95vw);
+    width: var(--sheet-width) !important;
+    z-index: 110 !important;
+  }
+
+  :global(.drawer-overlay.feedback-detail-backdrop) {
+    z-index: 109 !important;
+  }
+
+  @media (max-width: 768px) {
+    :global(.drawer-content.feedback-detail-drawer) {
+      --sheet-width: 100%;
+      width: 100% !important;
+      max-height: 90vh;
+      max-height: 90dvh;
+    }
+  }
+
+  .detail-container {
     display: flex;
     flex-direction: column;
-    width: 400px;
-    max-width: 50%;
     height: 100%;
-    background: var(--theme-panel-bg, #12121a);
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    overflow: hidden;
-    flex-shrink: 0;
+    min-height: 300px;
   }
 
   /* Header */
@@ -267,8 +398,7 @@
     gap: 8px;
   }
 
-  .edit-button,
-  .close-button {
+  .action-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -283,8 +413,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
-  .edit-button:hover,
-  .close-button:hover {
+  .action-button:hover {
     background: var(--theme-card-hover-bg, rgba(40, 40, 50, 0.98));
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
@@ -292,9 +421,14 @@
     transform: translateY(-1px);
   }
 
-  .edit-button:hover {
+  .action-button.edit:hover {
     border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
     color: var(--theme-accent, #3b82f6);
+  }
+
+  .action-button.delete:hover {
+    border-color: color-mix(in srgb, #ef4444 50%, transparent);
+    color: #ef4444;
   }
 
   .header-meta {
@@ -468,7 +602,7 @@
 
   .screenshots-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 12px;
   }
 
@@ -528,16 +662,119 @@
     border-radius: 3px;
   }
 
-  /* Mobile: Full width overlay */
-  @container my-feedback (max-width: 600px) {
-    .detail-panel {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      max-width: 100%;
-      border-left: none;
-      z-index: 10;
-      background: var(--theme-panel-bg, #12121a);
+  /* Delete Confirmation Dialog */
+  .delete-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    animation: fadeIn 0.15s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .delete-confirm-dialog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 32px;
+    background: #1a1a24;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    max-width: 320px;
+    text-align: center;
+    animation: slideUp 0.2s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .dialog-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(239, 68, 68, 0.15);
+    border-radius: 12px;
+    color: #ef4444;
+    font-size: 20px;
+  }
+
+  .delete-confirm-dialog h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+  }
+
+  .delete-confirm-dialog p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    line-height: 1.5;
+  }
+
+  .dialog-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .cancel-btn,
+  .confirm-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cancel-btn {
+    background: var(--theme-card-bg, rgba(40, 40, 50, 0.9));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+  }
+
+  .cancel-btn:hover:not(:disabled) {
+    background: var(--theme-card-hover-bg, rgba(50, 50, 60, 0.95));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .confirm-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ef4444;
+    border: 1px solid #dc2626;
+    color: white;
+  }
+
+  .confirm-btn:hover:not(:disabled) {
+    background: #dc2626;
+  }
+
+  .cancel-btn:disabled,
+  .confirm-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 </style>

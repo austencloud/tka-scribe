@@ -181,7 +181,7 @@
   }
 
   .length-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .length-options {
@@ -191,9 +191,9 @@
   }
 
   .length-button {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, var(--text-color, rgba(255, 255, 255, 0.9)));
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-md);
     cursor: pointer;
@@ -205,10 +205,10 @@
   }
 
   .length-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
   }
 
   .length-button.selected {
@@ -223,7 +223,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
+      var(--theme-stroke, rgba(255, 255, 255, 0.1)) 50%,
       transparent 100%
     );
     margin: var(--spacing-sm) 0;
@@ -237,9 +237,9 @@
 
   .column-select {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, var(--text-color, rgba(255, 255, 255, 0.9)));
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-md);
     font-size: var(--font-size-sm);
@@ -250,8 +250,8 @@
   }
 
   .column-select:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 
   .column-select:focus {

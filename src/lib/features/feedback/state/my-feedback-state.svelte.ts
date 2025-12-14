@@ -4,6 +4,8 @@
  * State management for the tester's personal feedback view.
  * Shows their submitted feedback and pending confirmations.
  * Supports preview mode for admin user viewing.
+ *
+ * Uses real-time Firestore subscription for automatic updates.
  */
 
 import type { FeedbackItem, FeedbackType } from "../domain/models/feedback-models";
@@ -12,8 +14,6 @@ import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
-const PAGE_SIZE = 20;
-
 /**
  * Creates my feedback state for testers
  */
@@ -21,12 +21,14 @@ export function createMyFeedbackState() {
   // List state
   let items = $state<FeedbackItem[]>([]);
   let isLoading = $state(false);
-  let hasMore = $state(true);
-  let lastDocId = $state<string | null>(null);
   let error = $state<string | null>(null);
 
   // Selected item for detail view
   let selectedItem = $state<FeedbackItem | null>(null);
+
+  // Subscription cleanup
+  let unsubscribe: (() => void) | null = null;
+  let subscribedUserId: string | null = null;
 
   // Derived: Items in progress
   const inProgress = $derived(
@@ -43,41 +45,62 @@ export function createMyFeedbackState() {
     items.filter((item) => item.status === "new")
   );
 
-  // Actions
-  async function loadMyFeedback(reset = false) {
+  /**
+   * Subscribe to real-time feedback updates for the current user
+   */
+  function subscribe() {
     // Use previewed user ID when preview mode is active, otherwise use actual user
     const effectiveUserId = userPreviewState.isActive && userPreviewState.data.profile
       ? userPreviewState.data.profile.uid
       : authState.user?.uid;
 
-    if (!effectiveUserId) return;
-    if (isLoading) return;
-    if (!reset && !hasMore) return;
+    if (!effectiveUserId) {
+      console.warn("[MyFeedbackState] No user ID available for subscription");
+      return;
+    }
+
+    // Don't resubscribe if already subscribed to this user
+    if (subscribedUserId === effectiveUserId && unsubscribe) {
+      return;
+    }
+
+    // Clean up existing subscription
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
 
     isLoading = true;
     error = null;
+    subscribedUserId = effectiveUserId;
 
-    try {
-      const result = await feedbackService.loadUserFeedback(
-        effectiveUserId,
-        PAGE_SIZE,
-        reset ? undefined : lastDocId ?? undefined
-      );
+    unsubscribe = feedbackService.subscribeToUserFeedback(
+      effectiveUserId,
+      (newItems) => {
+        items = newItems;
+        isLoading = false;
 
-      if (reset) {
-        items = result.items;
-      } else {
-        items = [...items, ...result.items];
+        // Update selected item if it changed
+        if (selectedItem) {
+          const updated = newItems.find(item => item.id === selectedItem!.id);
+          if (updated) {
+            selectedItem = updated;
+          }
+        }
+      },
+      (err) => {
+        console.error("Failed to subscribe to feedback:", err);
+        error = "Failed to load your feedback";
+        isLoading = false;
       }
+    );
+  }
 
-      lastDocId = result.lastDocId;
-      hasMore = result.hasMore;
-    } catch (err) {
-      console.error("Failed to load my feedback:", err);
-      error = "Failed to load your feedback";
-    } finally {
-      isLoading = false;
-    }
+  /**
+   * Legacy method for compatibility - now just triggers subscription
+   */
+  async function loadMyFeedback(_reset = false) {
+    subscribe();
   }
 
   function selectItem(item: FeedbackItem | null) {
@@ -112,19 +135,44 @@ export function createMyFeedbackState() {
     return updatedItem;
   }
 
-  // Cleanup function
+  // Delete an item (user deleting their own new feedback)
+  async function deleteItem(feedbackId: string): Promise<void> {
+    // Block writes in preview mode
+    if (userPreviewState.isActive) {
+      toast.warning("Cannot delete feedback in preview mode");
+      throw new Error("Cannot delete in preview mode");
+    }
+
+    await feedbackService.deleteUserFeedback(feedbackId);
+
+    // Clear selection if deleted item was selected
+    if (selectedItem?.id === feedbackId) {
+      selectedItem = null;
+    }
+
+    // Remove from local state (real-time subscription will also update)
+    items = items.filter((i) => i.id !== feedbackId);
+
+    toast.success("Feedback deleted");
+  }
+
+  // Cleanup function - unsubscribe and reset state
   function cleanup() {
+    if (unsubscribe) {
+      unsubscribe();
+      unsubscribe = null;
+    }
+    subscribedUserId = null;
     items = [];
     selectedItem = null;
-    lastDocId = null;
-    hasMore = true;
+    error = null;
+    isLoading = false;
   }
 
   return {
     // State (getters)
     get items() { return items; },
     get isLoading() { return isLoading; },
-    get hasMore() { return hasMore; },
     get error() { return error; },
     get selectedItem() { return selectedItem; },
 
@@ -134,9 +182,11 @@ export function createMyFeedbackState() {
     get pending() { return pending; },
 
     // Actions
+    subscribe,
     loadMyFeedback,
     selectItem,
     updateItem,
+    deleteItem,
     cleanup,
   };
 }
