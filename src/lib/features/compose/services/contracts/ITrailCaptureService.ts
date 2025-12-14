@@ -38,6 +38,10 @@ export interface TrailCaptureConfig {
   bluePropDimensions: PropDimensions;
   redPropDimensions: PropDimensions;
   trailSettings: TrailSettings;
+  /** Prop type for blue prop (e.g., "staff", "minihoop") - used for bilateral detection */
+  bluePropType?: string | null;
+  /** Prop type for red prop (e.g., "staff", "minihoop") - used for bilateral detection */
+  redPropType?: string | null;
 }
 
 /**

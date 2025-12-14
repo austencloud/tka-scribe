@@ -13,7 +13,7 @@ import type {
   VideoExportOptions,
   VideoFormat,
 } from "../contracts/IVideoExportService";
-import { GIF_EXPORT_FPS } from "../../shared/domain/constants/timing";
+import { VIDEO_EXPORT_FPS } from "../../shared/domain/constants/timing";
 import { WebCodecsVideoEncoder } from "./WebCodecsVideoEncoder";
 import { WasmVideoEncoder } from "./WasmVideoEncoder";
 
@@ -56,7 +56,7 @@ export class VideoExportService implements IVideoExportService {
 
     const {
       bitrate = 5_000_000,
-      fps = GIF_EXPORT_FPS,
+      fps = VIDEO_EXPORT_FPS,
     } = options;
 
     this.isCurrentlyExporting = true;
@@ -92,7 +92,9 @@ export class VideoExportService implements IVideoExportService {
     }
 
     const addFrame = async (canvas: HTMLCanvasElement): Promise<void> => {
-      if (this.shouldCancel || !this.activeEncoder) return;
+      if (this.shouldCancel || !this.activeEncoder) {
+        throw new Error("Export cancelled");
+      }
       try {
         await this.activeEncoder.addFrame(canvas);
       } catch (error) {
@@ -103,8 +105,8 @@ export class VideoExportService implements IVideoExportService {
     };
 
     const finish = async (): Promise<Blob> => {
-      if (!this.activeEncoder) {
-        throw new Error("Encoder not initialized");
+      if (this.shouldCancel || !this.activeEncoder) {
+        throw new Error("Export cancelled");
       }
 
       try {
@@ -127,9 +129,11 @@ export class VideoExportService implements IVideoExportService {
   }
 
   cancelExport(): void {
+    console.log("🛑 VideoExportService.cancelExport() called");
     this.shouldCancel = true;
 
     if (this.activeEncoder) {
+      console.log("🛑 Cancelling active encoder...");
       this.activeEncoder.cancel();
       this.activeEncoder = null;
     }

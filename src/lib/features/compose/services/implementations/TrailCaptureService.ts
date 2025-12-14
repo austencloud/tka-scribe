@@ -31,6 +31,7 @@ import type {
   IAnimationCacheService,
   IPerformanceMonitorService,
 } from "../contracts/ITrailCaptureService";
+import { isBilateralProp } from "$lib/shared/pictograph/prop/domain/enums/PropClassification";
 
 // ============================================================================
 // CIRCULAR BUFFER (inlined for O(1) trail point management)
@@ -367,15 +368,24 @@ export class TrailCaptureService implements ITrailCaptureService {
     currentTime: number,
     currentBeat: number
   ): void {
-    const { trailSettings } = this.config;
+    const { trailSettings, bluePropType, redPropType } = this.config;
 
-    // Determine which ends to track based on tracking mode
-    const endsToTrack: Array<0 | 1> =
-      trailSettings.trackingMode === TrackingMode.BOTH_ENDS
-        ? [0, 1]
-        : trailSettings.trackingMode === TrackingMode.LEFT_END
-          ? [0]
-          : [1]; // RIGHT_END
+    // Determine which ends to track based on tracking mode AND prop type
+    // For unilateral props (minihoop, fan, club), always use single end even if BOTH_ENDS is selected
+    // This prevents imaginary second ends on props that only have one meaningful endpoint
+    const propType = propIndex === 0 || propIndex === 2 ? bluePropType : redPropType;
+    const isPropBilateral = propType ? isBilateralProp(propType) : true; // Default to bilateral if unknown
+
+
+    let endsToTrack: Array<0 | 1>;
+    if (trailSettings.trackingMode === TrackingMode.BOTH_ENDS) {
+      // Only track both ends for bilateral props (staff, buugeng, etc.)
+      endsToTrack = isPropBilateral ? [0, 1] : [1]; // Unilateral uses right end only
+    } else if (trailSettings.trackingMode === TrackingMode.LEFT_END) {
+      endsToTrack = [0];
+    } else {
+      endsToTrack = [1]; // RIGHT_END
+    }
 
     // Select buffer based on prop index
     const buffer = this.getBufferForProp(propIndex);
