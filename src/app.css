@@ -82,9 +82,10 @@ h6 {
 /* CSS Custom Properties - 2025 Glassmorphism Design System */
 :root {
   /* Primary Color Palette */
-  --primary-color: #6366f1;
-  --primary-light: #818cf8;
-  --primary-dark: #4f46e5;
+  --primary-color: var(--theme-accent, #6366f1);
+  --primary-light: color-mix(in srgb, var(--primary-color) 70%, white);
+  --primary-dark: color-mix(in srgb, var(--primary-color) 80%, black);
+  --primary-color-hover: var(--theme-accent-strong, #4f46e5);
   --secondary-color: #ec4899;
   --secondary-light: #f472b6;
   --secondary-dark: #db2777;
@@ -95,9 +96,8 @@ h6 {
   /* Gradient System */
   --gradient-primary: linear-gradient(
     135deg,
-    #6366f1 0%,
-    #ec4899 50%,
-    #06b6d4 100%
+    var(--theme-accent, #6366f1) 0%,
+    var(--theme-accent-strong, #8b5cf6) 100%
   );
   --gradient-aurora: linear-gradient(
     135deg,
@@ -115,10 +115,13 @@ h6 {
   );
 
   /* Surface Colors with Transparency */
-  --surface-color: rgba(255, 255, 255, 0.08);
-  --surface-hover: rgba(255, 255, 255, 0.12);
-  --surface-active: rgba(255, 255, 255, 0.16);
-  --surface-glass: rgba(255, 255, 255, 0.05);
+  --surface-color: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+  --surface-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+  --surface-active: color-mix(in srgb, var(--surface-hover) 75%, white);
+  --surface-glass: var(--theme-panel-elevated-bg, rgba(255, 255, 255, 0.05));
+  --surface-dark: var(--theme-panel-bg, rgba(0, 0, 0, 0.35));
+  --surface-darker: color-mix(in srgb, var(--surface-dark) 75%, black);
+  --surface-glass-hover: color-mix(in srgb, var(--surface-glass) 75%, black);
 
   /* Blur Effects */
   --glass-blur: 20px;
@@ -127,8 +130,8 @@ h6 {
   --glass-backdrop-strong: blur(var(--glass-blur-strong));
 
   /* Border System */
-  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-  --glass-border-hover: 1px solid rgba(255, 255, 255, 0.25);
+  --glass-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  --glass-border-hover: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   --min-touch-target: 52px;
 
   /* Enhanced Shadow System */
@@ -402,13 +405,15 @@ h6 {
   --backdrop-blur-none: none;
 
   /* Sheet Background Styles */
+  --sheet-bg-solid: var(--theme-panel-bg, #1a1a2e);
+  --sheet-bg-glass: var(--theme-panel-elevated-bg, rgba(24, 24, 24, 0.92));
   --sheet-bg-gradient: linear-gradient(
     135deg,
-    rgba(20, 25, 35, 0.98) 0%,
-    rgba(15, 20, 30, 0.95) 100%
+    var(--theme-panel-elevated-bg, rgba(20, 25, 35, 0.98)) 0%,
+    var(--theme-panel-bg, rgba(15, 20, 30, 0.95)) 100%
   );
-  --sheet-bg-glass: rgba(24, 24, 24, 0.92);
-  --sheet-bg-solid: #1a1a2e;
+  /* Default sheet background used by Drawer.css */
+  --sheet-bg: var(--sheet-bg-gradient);
   --sheet-bg-transparent: transparent;
 
   /* Sheet Mesh Gradient (Animated) */
@@ -437,9 +442,9 @@ h6 {
   --sheet-shadow-elevated: 0 -20px 60px rgba(0, 0, 0, 0.5);
 
   /* Sheet Borders */
-  --sheet-border-subtle: 1px solid rgba(255, 255, 255, 0.08);
-  --sheet-border-medium: 1px solid rgba(255, 255, 255, 0.15);
-  --sheet-border-strong: 1px solid rgba(255, 255, 255, 0.2);
+  --sheet-border-subtle: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  --sheet-border-medium: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+  --sheet-border-strong: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
 
   /* Sheet Transitions */
   --sheet-transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -447,20 +452,20 @@ h6 {
   --sheet-transition-slide: 300ms;
 
   /* Sheet Header Styles */
-  --sheet-header-bg: rgba(255, 255, 255, 0.02);
-  --sheet-header-border: 1px solid rgba(255, 255, 255, 0.12);
+  --sheet-header-bg: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+  --sheet-header-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
 
   /* Close Button Styles */
-  --sheet-close-bg: rgba(255, 255, 255, 0.08);
-  --sheet-close-bg-hover: rgba(255, 255, 255, 0.16);
+  --sheet-close-bg: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+  --sheet-close-bg-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.16));
   --sheet-close-size-default: 52px;
   --sheet-close-size-small: 52px; /* iOS/Android minimum touch target */
 
   /* Unified Drag Handle Styles */
   --sheet-handle-width: 52px;
   --sheet-handle-height: 5px;
-  --sheet-handle-bg: rgba(255, 255, 255, 0.3);
-  --sheet-handle-bg-hover: rgba(255, 255, 255, 0.5);
+  --sheet-handle-bg: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+  --sheet-handle-bg-hover: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 85%, white);
   --sheet-handle-radius: 999px;
   --sheet-handle-spacing: 12px;
 
