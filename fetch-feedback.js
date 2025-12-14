@@ -899,8 +899,10 @@ async function updateFeedbackPriority(docId, priority) {
  * - HIGH: bugs, crashes, data loss, security, blocking issues, "can't", "broken", "error"
  * - MEDIUM: core features, important UX issues, "should", "need", "want"
  * - LOW: polish, cosmetic, nice-to-haves, "could", "maybe", "minor"
+ *
+ * With --json flag: outputs raw JSON for AI analysis instead of auto-assigning
  */
-async function prioritizeFeedback(dryRun = false) {
+async function prioritizeFeedback(dryRun = false, jsonOutput = false) {
   try {
     // Fetch all "new" items without a priority
     const snapshot = await db.collection('feedback')
@@ -912,9 +914,29 @@ async function prioritizeFeedback(dryRun = false) {
       .filter(item => !item.priority);
 
     if (unprioritized.length === 0) {
-      console.log('\n' + '='.repeat(70));
-      console.log('\n  ✨ All feedback items already have priorities!\n');
-      console.log('='.repeat(70) + '\n');
+      if (jsonOutput) {
+        console.log(JSON.stringify({ items: [], message: 'All feedback items already have priorities' }));
+      } else {
+        console.log('\n' + '='.repeat(70));
+        console.log('\n  ✨ All feedback items already have priorities!\n');
+        console.log('='.repeat(70) + '\n');
+      }
+      return;
+    }
+
+    // JSON output mode - just dump the raw data for AI analysis
+    if (jsonOutput) {
+      const items = unprioritized.map(item => ({
+        id: item.id,
+        type: item.type || 'general',
+        title: item.title || null,
+        description: item.description || item.content || null,
+        module: item.module || null,
+        tab: item.tab || null,
+        userName: item.userName || null,
+        createdAt: item.createdAt?._seconds ? new Date(item.createdAt._seconds * 1000).toISOString() : null
+      }));
+      console.log(JSON.stringify({ items, count: items.length }, null, 2));
       return;
     }
 
@@ -1062,7 +1084,8 @@ async function main() {
   } else if (args[0] === 'prioritize') {
     // Auto-prioritize all unprioritized feedback
     const dryRun = args.includes('--dry-run');
-    await prioritizeFeedback(dryRun);
+    const jsonOutput = args.includes('--json');
+    await prioritizeFeedback(dryRun, jsonOutput);
   } else if (args[0] === 'create') {
     // Create new feedback: create "title" "description" [type] [module] [tab]
     const title = args[1];

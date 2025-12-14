@@ -235,6 +235,23 @@ service cloud.firestore {
     }
 
     // ============================================================================
+    // ACTIVITY LOGGING
+    // ============================================================================
+
+    // Activity log - users can read their own, admins can read all
+    // Events are append-only (no update/delete)
+    match /users/{userId}/activityLog/{eventId} {
+      // Users can read their own activity, admins can read anyone's
+      allow read: if isOwner(userId) || isAdmin();
+
+      // Only the owner can create events in their own log
+      allow create: if isOwner(userId);
+
+      // Events are immutable - no updates or deletes
+      allow update, delete: if false;
+    }
+
+    // ============================================================================
     // DEVELOPMENT OVERRIDE (TEMPORARY)
     // This allows PUBLIC READ access and authenticated WRITE access during development
     // REMOVE IN PRODUCTION!
