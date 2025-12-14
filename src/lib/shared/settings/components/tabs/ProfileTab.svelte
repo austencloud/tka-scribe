@@ -316,11 +316,11 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: clamp(16px, 3cqi, 24px);
     gap: clamp(14px, 2cqi, 20px);
     overflow-y: auto;
-    max-width: 900px;
-    margin: 0 auto;
 
     opacity: 0;
     transition: opacity 200ms ease;

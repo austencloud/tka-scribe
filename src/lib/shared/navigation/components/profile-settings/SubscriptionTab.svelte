@@ -83,7 +83,7 @@
       <div class="subscription-card features-card">
         <UnifiedHeader
           title="Premium Features"
-          icon="fas fa-sparkles"
+          icon="fas fa-magic-wand-sparkles"
           description="What's coming with premium membership"
         />
 
@@ -363,15 +363,25 @@
   }
 
   .button--primary {
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1),
+      var(--theme-accent-strong, #4f46e5)
+    );
     color: white;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #4f46e5), color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #4f46e5),
+      color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black)
+    );
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .button--secondary {
@@ -410,7 +420,8 @@
 
   /* Accessibility - Focus Indicators */
   .button:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    outline: 3px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
   }
 

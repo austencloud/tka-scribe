@@ -452,12 +452,11 @@
     flex-shrink: 0;
     gap: 6px;
     padding: 6px;
-    /* Dark glass panel */
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
+    background: var(--theme-card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     width: 100%;
     margin-bottom: 12px;
   }
@@ -470,11 +469,10 @@
     gap: 8px;
     min-height: 52px;
     padding: 12px 14px;
-    /* Subtle glass for inactive */
-    background: rgba(255, 255, 255, 0.04);
+    background: transparent;
     border: 1px solid transparent;
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
     font-size: 14px;
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -489,9 +487,9 @@
   }
 
   .segment-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: color-mix(in srgb, var(--theme-card-hover-bg) 50%, transparent);
+    border-color: var(--theme-stroke);
+    color: var(--theme-text);
   }
 
   .segment-btn.active {
@@ -522,14 +520,15 @@
     flex-direction: column;
     gap: clamp(12px, 2cqi, 20px);
     width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     max-height: 100%;
   }
-  
-  /* Desktop: Side by side with wider constraint */
+
+  /* Desktop: Side by side */
   @container visibility-tab (min-width: 700px) {
     .visibility-panels-container {
       flex-direction: row;
-      max-width: 1200px;
       align-items: stretch;
     }
   }
@@ -546,7 +545,7 @@
   }
 
   /* ========================================
-     SETTINGS PANEL - Dark Glass Style
+     SETTINGS PANEL - Theme-aware
      ======================================== */
   .settings-panel {
     display: flex;
@@ -554,19 +553,23 @@
     align-items: center;
     gap: 14px;
     padding: clamp(14px, 2.5cqi, 20px);
-    /* Dark glass panel */
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     flex: 1;
     min-width: 0;
-    transition: border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
   }
 
   .settings-panel:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    transform: translateY(-1px);
   }
 
   /* ========================================
@@ -671,12 +674,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Subtle inner glass - darker than panel */
-    background: rgba(0, 0, 0, 0.3);
+    background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke);
     overflow: hidden;
-    /* Square aspect ratio, scales with container width */
     width: 100%;
     aspect-ratio: 1;
     flex-shrink: 0;
@@ -788,11 +789,10 @@
     justify-content: center;
     min-height: 52px;
     padding: 12px 10px;
-    /* Subtle glass for inactive */
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim);
     font-size: 13px;
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -802,9 +802,9 @@
   }
 
   .toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.18);
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     transform: translateY(-1px);
   }
 

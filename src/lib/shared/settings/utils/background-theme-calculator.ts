@@ -238,10 +238,10 @@ export function generateMatteTheme(
   }
 
   return {
-    panelBg: "#0b1021",
-    panelElevatedBg: "#0d1324",
-    cardBg: "#0f172a",
-    cardHoverBg: "#131c33",
+    panelBg: "rgba(0, 0, 0, 0.5)",
+    panelElevatedBg: "rgba(0, 0, 0, 0.65)",
+    cardBg: "rgba(0, 0, 0, 0.5)",
+    cardHoverBg: "rgba(0, 0, 0, 0.65)",
     accent,
     accentStrong: accent, // Use same accent for strong variant
     stroke: "rgba(255, 255, 255, 0.08)",

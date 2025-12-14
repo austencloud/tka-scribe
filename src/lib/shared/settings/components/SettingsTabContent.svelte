@@ -25,6 +25,7 @@
     Theme: () => import("./tabs/background/BackgroundTab.svelte"),
     Visibility: () => import("./tabs/VisibilityTab.svelte"),
     Keyboard: () => import("$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte"),
+    Activity: () => import("./tabs/ActivityTab.svelte"),
   };
 
   // Cache for loaded tab components
@@ -45,33 +46,42 @@
   let tabPromise = $derived(activeTab ? loadTab(activeTab) : Promise.resolve(null));
 </script>
 
-{#await tabPromise}
-  <div class="tab-loading">
-    <div class="loading-spinner"></div>
-  </div>
-{:then LoadedTab}
-  {#if LoadedTab}
-    {#if activeTab === "Profile"}
-      <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
-    {:else if activeTab === "ReleaseNotes"}
-      <LoadedTab />
-    {:else if activeTab === "Notifications"}
-      <LoadedTab />
-    {:else if activeTab === "PropType"}
-      <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
-    {:else if activeTab === "Theme"}
-      <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
-    {:else if activeTab === "Visibility"}
-      <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
-    {:else if activeTab === "Keyboard"}
-      <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
+<div class="settings-tab-wrapper">
+  {#await tabPromise}
+    <div class="tab-loading">
+      <div class="loading-spinner"></div>
+    </div>
+  {:then LoadedTab}
+    {#if LoadedTab}
+      {#if activeTab === "Profile"}
+        <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
+      {:else if activeTab === "ReleaseNotes"}
+        <LoadedTab />
+      {:else if activeTab === "Notifications"}
+        <LoadedTab />
+      {:else if activeTab === "PropType"}
+        <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
+      {:else if activeTab === "Theme"}
+        <LoadedTab settings={settings} onUpdate={onSettingUpdate} />
+      {:else if activeTab === "Visibility"}
+        <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
+      {:else if activeTab === "Keyboard"}
+        <LoadedTab currentSettings={settings} onSettingUpdate={onSettingUpdate} />
+      {:else if activeTab === "Activity"}
+        <LoadedTab />
+      {/if}
     {/if}
-  {/if}
-{:catch}
-  <div class="tab-error">Failed to load settings tab</div>
-{/await}
+  {:catch}
+    <div class="tab-error">Failed to load settings tab</div>
+  {/await}
+</div>
 
 <style>
+  .settings-tab-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
   .tab-loading {
     display: flex;
     justify-content: center;

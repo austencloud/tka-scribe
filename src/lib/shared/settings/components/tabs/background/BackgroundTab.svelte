@@ -190,7 +190,7 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: clamp(16px, 3cqi, 24px);
     gap: clamp(14px, 2cqi, 20px);
@@ -204,23 +204,28 @@
   }
 
   /* ========================================
-     SETTINGS PANEL - Dark Glass Style
+     SETTINGS PANEL - Theme-aware
      ======================================== */
   .settings-panel {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: clamp(16px, 3cqi, 24px);
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
-    transition: border-color 0.2s ease;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
   }
 
   .settings-panel:hover {
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    transform: translateY(-1px);
   }
 
   /* ========================================

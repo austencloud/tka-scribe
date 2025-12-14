@@ -9,6 +9,10 @@
   import { resolve } from "../../../../inversify/di";
   import { TYPES } from "../../../../inversify/types";
   import { onMount } from "svelte";
+  import {
+    backgroundPopularity,
+    initializePopularityTracking,
+  } from "../../../state/background-popularity-state.svelte";
 
   const {
     selectedType,
@@ -32,10 +36,18 @@
   // Services
   let hapticService: IHapticFeedbackService | null = null;
 
+  // Get popularity count for a preset - reactive via backgroundPopularity.counts
+  function getPresetPopularity(presetId: string): number {
+    return backgroundPopularity.counts[presetId] ?? 0;
+  }
+
   onMount(async () => {
     hapticService = await resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
+
+    // Initialize popularity tracking (safe to call multiple times)
+    initializePopularityTracking();
   });
 
   // Beautiful preset backgrounds (6 gradients + 2 solid colors = 8 total)
@@ -198,6 +210,22 @@
                   stroke-linejoin="round"
                 />
               </svg>
+            </div>
+          {/if}
+
+          <!-- Popularity counter badge -->
+          {#if getPresetPopularity(preset.id) > 0}
+            <div class="popularity-badge" title="{getPresetPopularity(preset.id)} users using this background">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <span class="popularity-count">{getPresetPopularity(preset.id)}</span>
             </div>
           {/if}
         </div>
@@ -419,6 +447,65 @@
 
     .background-card:active {
       transform: none;
+    }
+  }
+
+  /* ===== POPULARITY BADGE STYLES ===== */
+  .popularity-badge {
+    position: absolute;
+    bottom: 2cqi;
+    right: 2cqi;
+    display: flex;
+    align-items: center;
+    gap: clamp(2px, 0.8cqi, 4px);
+    padding: clamp(3px, 1cqi, 6px) clamp(6px, 1.5cqi, 10px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: clamp(10px, 3cqi, 16px);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(10px, 2.5cqi, 14px);
+    font-weight: 600;
+    z-index: 2;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .popularity-badge svg {
+    width: clamp(10px, 2.5cqi, 14px);
+    height: clamp(10px, 2.5cqi, 14px);
+    opacity: 0.85;
+  }
+
+  .popularity-count {
+    line-height: 1;
+    letter-spacing: 0.3px;
+  }
+
+  /* Highlight badge on hover */
+  .background-card:hover .popularity-badge {
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    transform: scale(1.05);
+  }
+
+  /* Hide badge on very small containers */
+  @container (max-width: 80px) {
+    .popularity-badge {
+      display: none;
+    }
+  }
+
+  /* Smaller badge in compact mode */
+  @container (max-width: 120px) {
+    .popularity-badge {
+      padding: clamp(2px, 0.8cqi, 4px) clamp(4px, 1.2cqi, 8px);
+      gap: clamp(1px, 0.5cqi, 3px);
+    }
+
+    .popularity-badge svg {
+      width: clamp(8px, 2cqi, 12px);
+      height: clamp(8px, 2cqi, 12px);
     }
   }
 </style>

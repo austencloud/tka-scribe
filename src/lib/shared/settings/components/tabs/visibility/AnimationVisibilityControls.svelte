@@ -284,7 +284,7 @@
   }
 
   /* Compact for small containers */
-  @container settings-content (max-height: 552px) {
+  @container settings-panel-body (max-height: 552px) {
     .controls-grid {
       gap: 6px;
     }

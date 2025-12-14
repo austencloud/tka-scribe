@@ -129,7 +129,7 @@
   }
 
   /* Compact mode when container height is limited */
-  @container settings-content (max-height: 552px) {
+  @container settings-panel-body (max-height: 552px) {
     .chip {
       padding: 10px 6px;
       min-height: 52px;
@@ -146,7 +146,7 @@
   }
 
   /* Ultra-compact mode */
-  @container settings-content (max-height: 480px) {
+  @container settings-panel-body (max-height: 480px) {
     .chip {
       padding: 8px 4px;
       min-height: 52px;

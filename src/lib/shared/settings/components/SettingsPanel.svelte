@@ -38,6 +38,7 @@
     "Theme",
     "Visibility",
     "Keyboard",
+    "Activity",
   ];
 
   // Props
@@ -138,6 +139,11 @@
       id: "Keyboard",
       label: "Keyboard",
       icon: '<i class="fas fa-keyboard"></i>',
+    },
+    {
+      id: "Activity",
+      label: "Activity",
+      icon: '<i class="fas fa-history"></i>',
     },
   ];
 
@@ -379,7 +385,7 @@
     flex-direction: column;
     /* Container queries - allow children to query available width AND height */
     container-type: size;
-    container-name: settings-content;
+    container-name: settings-panel-body;
     min-height: 0;
   }
 
@@ -391,6 +397,11 @@
     /* Hide scrollbar */
     scrollbar-width: none;
     -ms-overflow-style: none;
+  }
+
+  /* Extra bottom padding when drawer is in bottom placement (mobile with bottom nav) */
+  :global(.settings-drawer[data-placement="bottom"]) .detail-content {
+    padding-bottom: 80px; /* Account for bottom navigation bar */
   }
 
   .detail-content::-webkit-scrollbar {

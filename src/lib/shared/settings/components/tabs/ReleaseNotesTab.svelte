@@ -99,6 +99,9 @@
     flex-direction: column;
     gap: 20px;
     height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .tab-header {

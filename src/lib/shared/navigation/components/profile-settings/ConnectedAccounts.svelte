@@ -618,7 +618,7 @@
   }
 
   /* Responsive - Compact on smaller containers */
-  @container settings-content (max-width: 400px) {
+  @container settings-panel-body (max-width: 400px) {
     .provider-card {
       padding: 12px 14px;
       gap: 12px;

@@ -35,7 +35,10 @@
   let hapticService: IHapticFeedbackService | null = null;
 
   // Panel metadata for headers and icons
-  const panelMeta: Record<PanelType, { title: string; icon: string; color: string }> = {
+  const panelMeta: Record<
+    PanelType,
+    { title: string; icon: string; color: string }
+  > = {
     pictograph: {
       title: "Pictograph Elements",
       icon: "fa-image",
@@ -58,7 +61,9 @@
   onMount(() => {
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
       const responsive = deviceDetector.getResponsiveSettings();
       isMobile = responsive.isMobile || responsive.isTablet;
 
@@ -140,10 +145,7 @@
   {#if isOpen && meta}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div
-      class="modal-overlay"
-      onclick={handleBackdropClick}
-    >
+    <div class="modal-overlay" onclick={handleBackdropClick}>
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
@@ -202,8 +204,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* ========================================
@@ -285,7 +291,8 @@
     font-size: 18px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .close-btn {
@@ -337,7 +344,11 @@
   }
 
   .help-content::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
     border-radius: 3px;
   }
 
