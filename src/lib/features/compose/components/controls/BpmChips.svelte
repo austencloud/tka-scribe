@@ -274,6 +274,8 @@
 
   .bpm-chips.compact {
     gap: 6px;
+    overflow: hidden;
+    flex-wrap: nowrap;
   }
 
   /* Wide layout for full variant */
@@ -343,7 +345,7 @@
   .bpm-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -351,7 +353,7 @@
   .bpm-label {
     font-size: 0.6rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -368,10 +370,10 @@
     width: 52px;
     height: 52px;
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -383,9 +385,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .adjust-btn:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: rgba(255, 255, 255, 0.85);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      color: var(--theme-text, rgba(255, 255, 255, 0.85));
       transform: scale(1.05);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.15),
@@ -417,10 +419,10 @@
     min-width: 0;
     min-height: 52px;
     padding: 10px 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     font-weight: 600;
     cursor: pointer;
@@ -454,9 +456,9 @@
   @media (hover: hover) and (pointer: fine) {
     /* Hover for non-active chips only */
     .preset-chip:hover:not(:disabled):not(.active) {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.18);
-      color: rgba(255, 255, 255, 0.85);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      color: var(--theme-text, rgba(255, 255, 255, 0.85));
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.15),
@@ -486,6 +488,10 @@
     text-transform: uppercase;
     letter-spacing: 0.2px;
     padding: 10px 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60px;
   }
 
   /* ===========================
@@ -524,11 +530,11 @@
   .popover-header {
     font-size: 0.7rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0 4px 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     margin-bottom: 8px;
   }
 
@@ -544,10 +550,10 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.15s ease;
     font-size: 0.75rem;
@@ -592,7 +598,7 @@
   .bpm-number {
     font-size: 1.1rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -600,7 +606,7 @@
   .bpm-unit {
     font-size: 0.55rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;

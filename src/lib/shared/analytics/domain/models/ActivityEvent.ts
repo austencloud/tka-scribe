@@ -123,6 +123,9 @@ export interface ActivityEvent {
   /** User who performed the action */
   userId: string;
 
+  /** Session ID for grouping events */
+  sessionId?: string;
+
   /** Category of the event */
   category: ActivityCategory;
 

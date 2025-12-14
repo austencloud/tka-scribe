@@ -5,7 +5,7 @@
  * Events are stored in users/{userId}/activityLog subcollection.
  */
 
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import {
   collection,
   addDoc,
@@ -19,10 +19,12 @@ import {
 } from "firebase/firestore";
 import { logEvent } from "firebase/analytics";
 import { firestore, auth, analytics } from "../../../auth/firebase";
+import { TYPES } from "../../../inversify/types";
 import type {
   IActivityLogService,
   ActivityQueryOptions,
 } from "../contracts/IActivityLogService";
+import type { ISessionTrackingService } from "../contracts/ISessionTrackingService";
 import type {
   ActivityEvent,
   ActivityEventType,
@@ -39,8 +41,20 @@ const MAX_BUFFER_SIZE = 10;
 export class ActivityLogService implements IActivityLogService {
   private writeBuffer: ActivityEvent[] = [];
   private flushTimeout: ReturnType<typeof setTimeout> | null = null;
+  private sessionTrackingService: ISessionTrackingService | null = null;
 
-  constructor() {
+  constructor(
+    @inject(TYPES.ISessionTrackingService)
+    sessionTrackingService: ISessionTrackingService
+  ) {
+    this.sessionTrackingService = sessionTrackingService;
+
+    // Set up session end callback
+    this.sessionTrackingService.onSessionEnd(async () => {
+      const duration = this.sessionTrackingService?.getSessionDuration() ?? 0;
+      await this.log("session_end", "session", { duration });
+    });
+
     // Flush buffer on page unload
     if (typeof window !== "undefined") {
       window.addEventListener("beforeunload", () => this.flushBuffer());
@@ -179,6 +193,11 @@ export class ActivityLogService implements IActivityLogService {
           timestamp: Timestamp.fromDate(event.timestamp),
         };
 
+        // Add sessionId if present
+        if (event.sessionId) {
+          docData["sessionId"] = event.sessionId;
+        }
+
         // Only add metadata if it's defined and has properties
         if (event.metadata !== undefined) {
           // Filter out undefined values from metadata
@@ -228,6 +247,7 @@ export class ActivityLogService implements IActivityLogService {
 
     const event: ActivityEvent = {
       userId,
+      sessionId: this.sessionTrackingService?.getSessionId(),
       category,
       eventType,
       timestamp: new Date(),
@@ -350,6 +370,7 @@ export class ActivityLogService implements IActivityLogService {
         return {
           id: doc.id,
           userId: data["userId"] as string,
+          sessionId: data["sessionId"] as string | undefined,
           category: data["category"] as ActivityCategory,
           eventType: data["eventType"] as ActivityEventType,
           timestamp: (data["timestamp"] as Timestamp).toDate(),
@@ -420,6 +441,7 @@ export class ActivityLogService implements IActivityLogService {
         return {
           id: doc.id,
           userId: data["userId"] as string,
+          sessionId: data["sessionId"] as string | undefined,
           category: data["category"] as ActivityCategory,
           eventType: data["eventType"] as ActivityEventType,
           timestamp: (data["timestamp"] as Timestamp).toDate(),

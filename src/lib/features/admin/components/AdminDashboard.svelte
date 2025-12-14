@@ -14,6 +14,7 @@
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import AnnouncementManagement from "./AnnouncementManagement.svelte";
+  import ActiveUsersPanel from "./ActiveUsersPanel.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Services
@@ -58,6 +59,14 @@
           aria-labelledby="health-tab"
         >
           <SystemHealthDashboard />
+        </div>
+      {:else if activeSection === "users"}
+        <div
+          id="users-panel"
+          role="tabpanel"
+          aria-labelledby="users-tab"
+        >
+          <ActiveUsersPanel />
         </div>
       {:else if activeSection === "challenges" && adminChallengeService}
         <div
