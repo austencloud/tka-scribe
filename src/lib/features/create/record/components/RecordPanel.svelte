@@ -190,7 +190,7 @@ Combines video feed with playback controls for practicing sequences.
     flex-direction: column;
     height: 100%;
     padding: var(--spacing-sm, 24px);
-    background: var(--surface-glass, rgba(0, 0, 0, 0.3));
+    background: var(--theme-panel-elevated-bg, var(--surface-glass, rgba(0, 0, 0, 0.3)));
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius-lg, 12px);
     overflow-y: auto;
@@ -221,7 +221,7 @@ Combines video feed with playback controls for practicing sequences.
   .progress-bar {
     width: 100%;
     height: 8px;
-    background: var(--surface-light, #333);
+    background: var(--theme-card-bg, var(--surface-light, #333));
     border-radius: 4px;
     overflow: hidden;
   }
@@ -230,7 +230,11 @@ Combines video feed with playback controls for practicing sequences.
     height: 100%;
     background: var(
       --gradient-primary,
-      linear-gradient(90deg, #3b82f6, var(--theme-accent-strong, #8b5cf6))
+      linear-gradient(
+        90deg,
+        var(--theme-accent, #3b82f6),
+        var(--theme-accent-strong, #8b5cf6)
+      )
     );
     transition: width 0.3s ease;
   }
@@ -238,7 +242,7 @@ Combines video feed with playback controls for practicing sequences.
   .progress-text {
     text-align: center;
     font-size: var(--font-size-sm, 14px);
-    color: var(--foreground-muted, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--foreground-muted, rgba(255, 255, 255, 0.7)));
     font-weight: 600;
   }
 
@@ -250,7 +254,7 @@ Combines video feed with playback controls for practicing sequences.
     height: 100%;
     text-align: center;
     padding: var(--spacing-xl, 52px);
-    color: var(--foreground, #ffffff);
+    color: var(--theme-text, var(--foreground, #ffffff));
   }
 
   .empty-icon {
@@ -267,7 +271,7 @@ Combines video feed with playback controls for practicing sequences.
 
   .empty-state p {
     font-size: var(--font-size-md, 16px);
-    color: var(--foreground-muted, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--foreground-muted, rgba(255, 255, 255, 0.7)));
     max-width: 500px;
     line-height: 1.6;
   }

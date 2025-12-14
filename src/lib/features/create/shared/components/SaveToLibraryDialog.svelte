@@ -284,7 +284,7 @@ Allows user to set name, visibility, tags, collections, and notes.
     border: none;
     border-radius: 50%;
     background: var(--sheet-close-bg);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     cursor: pointer;
     transition: all var(--sheet-transition-smooth);
     display: flex;
@@ -314,13 +314,13 @@ Allows user to set name, visibility, tags, collections, and notes.
     margin: 0;
     font-size: 24px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .subtitle {
     margin: 4px 0 0;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   /* Body */
@@ -346,11 +346,11 @@ Allows user to set name, visibility, tags, collections, and notes.
     margin-bottom: 8px;
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .required {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   /* Input Fields */
@@ -361,7 +361,7 @@ Allows user to set name, visibility, tags, collections, and notes.
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 14px;
     font-family: inherit;
     transition: all 0.2s ease;
@@ -379,7 +379,7 @@ Allows user to set name, visibility, tags, collections, and notes.
 
   .input-field::placeholder,
   .textarea-field::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%, transparent);
   }
 
   .textarea-field {
@@ -396,7 +396,7 @@ Allows user to set name, visibility, tags, collections, and notes.
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 14px;
     margin-bottom: 24px;
   }
@@ -493,10 +493,10 @@ Allows user to set name, visibility, tags, collections, and notes.
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px dashed rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 45%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--theme-stroke, rgba(255, 255, 255, 0.1)) 70%, transparent);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%, transparent);
     font-size: 13px;
     margin: 0;
   }
@@ -527,13 +527,13 @@ Allows user to set name, visibility, tags, collections, and notes.
 
   .button-secondary {
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .button-secondary:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .button-primary {

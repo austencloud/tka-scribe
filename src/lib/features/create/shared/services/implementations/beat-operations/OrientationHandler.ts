@@ -104,6 +104,9 @@ export function updateBeatOrientation(
     updatedSequence = {
       ...currentSequence,
       beats: propagatedBeats,
+      // Include updated start position in the sequence so it propagates to selection state
+      startPosition: updatedStartPosition,
+      startingPositionBeat: updatedStartPosition,
     };
   } else {
     const arrayIndex = beatNumber - 1;

@@ -7,7 +7,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    MotionColor,
+    MotionType,
+    RotationDirection,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import type { BeatData } from "../../domain/models/BeatData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
@@ -19,9 +23,11 @@
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
   import SequencePreviewDialog from "./SequencePreviewDialog.svelte";
   import TurnsEditMode from "./TurnsEditMode.svelte";
+  import StartPositionEditMode from "./StartPositionEditMode.svelte";
   import TransformsGridMode from "./TransformsGridMode.svelte";
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
   import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
 
   type EditMode = "turns" | "transforms";
 
@@ -41,16 +47,22 @@
   // Context and state
   const ctx = getCreateModuleContext();
   const { CreateModuleState, panelState, layout } = ctx;
-  const activeSequenceState = $derived(CreateModuleState.getActiveTabSequenceState());
+  const activeSequenceState = $derived(
+    CreateModuleState.getActiveTabSequenceState()
+  );
   const sequence = $derived(activeSequenceState.currentSequence);
   const hasSequence = $derived(activeSequenceState.hasSequence());
-  const isInConstructTab = $derived(navigationState.currentCreateMode === "constructor");
+  const isInConstructTab = $derived(
+    navigationState.currentCreateMode === "constructor"
+  );
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
 
   // Panel height for drawer content
   // On desktop: only used for reference (drawer uses CSS top/bottom positioning)
   // On mobile: used to determine drawer height from bottom
-  const panelHeight = $derived(panelState.navigationBarHeight + panelState.toolPanelHeight);
+  const panelHeight = $derived(
+    panelState.navigationBarHeight + panelState.toolPanelHeight
+  );
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
@@ -63,9 +75,12 @@
   let showConfirmDialog = $state(false);
   let pendingSequenceTransfer = $state<any>(null);
   let showHelpSheet = $state(false);
+  let lastTrackedBeatNumber = $state<number | null>(null);
 
   // Sync isOpen with show prop
-  $effect(() => { isOpen = show; });
+  $effect(() => {
+    isOpen = show;
+  });
 
   // Auto-save current mode
   $effect(() => {
@@ -76,7 +91,20 @@
   // Auto-switch to turns mode when beat selected
   const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
   const selectedBeatData = $derived(activeSequenceState.selectedBeatData);
-  $effect(() => { if (show && selectedBeatNumber !== null) currentMode = "turns"; });
+
+  // Only auto-switch to turns mode when a NEW beat is selected (not when reopening panel)
+  $effect(() => {
+    if (
+      show &&
+      selectedBeatNumber !== null &&
+      selectedBeatNumber !== lastTrackedBeatNumber
+    ) {
+      currentMode = "turns";
+      lastTrackedBeatNumber = selectedBeatNumber;
+    } else if (selectedBeatNumber === null) {
+      lastTrackedBeatNumber = null;
+    }
+  });
 
   // Beat editing derived state
   const hasSelection = $derived(selectedBeatNumber !== null);
@@ -89,15 +117,23 @@
 
   const currentBlueTurns = $derived(normalizeTurns(blueMotion?.turns));
   const currentRedTurns = $derived(normalizeTurns(redMotion?.turns));
-  const displayBlueTurns = $derived(blueMotion?.turns === "fl" ? "fl" : currentBlueTurns);
-  const displayRedTurns = $derived(redMotion?.turns === "fl" ? "fl" : currentRedTurns);
+  const displayBlueTurns = $derived(
+    blueMotion?.turns === "fl" ? "fl" : currentBlueTurns
+  );
+  const displayRedTurns = $derived(
+    redMotion?.turns === "fl" ? "fl" : currentRedTurns
+  );
   // Determine if rotation can be shown for each prop
   // Disabled for:
   // - Float motions (turns == -0.5)
   // - Static or Dash motions with 0 turns
   const showBlueRotation = $derived.by(() => {
     if (currentBlueTurns < 0) return false; // Float motion
-    if ((blueMotion?.motionType === MotionType.STATIC || blueMotion?.motionType === MotionType.DASH) && currentBlueTurns === 0) {
+    if (
+      (blueMotion?.motionType === MotionType.STATIC ||
+        blueMotion?.motionType === MotionType.DASH) &&
+      currentBlueTurns === 0
+    ) {
       return false; // Static/Dash with 0 turns
     }
     return true;
@@ -105,42 +141,68 @@
 
   const showRedRotation = $derived.by(() => {
     if (currentRedTurns < 0) return false; // Float motion
-    if ((redMotion?.motionType === MotionType.STATIC || redMotion?.motionType === MotionType.DASH) && currentRedTurns === 0) {
+    if (
+      (redMotion?.motionType === MotionType.STATIC ||
+        redMotion?.motionType === MotionType.DASH) &&
+      currentRedTurns === 0
+    ) {
       return false; // Static/Dash with 0 turns
     }
     return true;
   });
-  const blueRotation = $derived(blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION);
-  const redRotation = $derived(redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION);
+  const blueRotation = $derived(
+    blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
+  );
+  const redRotation = $derived(
+    redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
+  );
 
   const beatLabel = $derived.by(() => {
     if (selectedBeatNumber === null) return "";
-    return selectedBeatNumber === 0 ? "Start Position" : `Beat ${selectedBeatNumber}`;
+    return selectedBeatNumber === 0
+      ? "Start Position"
+      : `Beat ${selectedBeatNumber}`;
   });
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    } catch (e) { /* Optional service */ }
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (e) {
+      /* Optional service */
+    }
     try {
-      beatOperationsService = resolve<IBeatOperationsService>(TYPES.IBeatOperationsService);
-    } catch (e) { /* Optional service */ }
+      beatOperationsService = resolve<IBeatOperationsService>(
+        TYPES.IBeatOperationsService
+      );
+    } catch (e) {
+      /* Optional service */
+    }
   });
 
   // Beat editing handlers
   function handleTurnsChange(color: MotionColor, delta: number) {
-    console.log(`[SequenceActionsPanel] handleTurnsChange called: color=${color}, delta=${delta}, selectedBeatNumber=${selectedBeatNumber}`);
+    console.log(
+      `[SequenceActionsPanel] handleTurnsChange called: color=${color}, delta=${delta}, selectedBeatNumber=${selectedBeatNumber}`
+    );
     if (selectedBeatNumber === null || !beatOperationsService) {
-      console.log(`[SequenceActionsPanel] Early return: selectedBeatNumber=${selectedBeatNumber}, beatOperationsService=${!!beatOperationsService}`);
+      console.log(
+        `[SequenceActionsPanel] Early return: selectedBeatNumber=${selectedBeatNumber}, beatOperationsService=${!!beatOperationsService}`
+      );
       return;
     }
     hapticService?.trigger("selection");
 
-    const currentTurns = color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
+    const currentTurns =
+      color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
     const newNumericTurns = Math.max(-0.5, currentTurns + delta);
-    const newTurns: number | "fl" = newNumericTurns === -0.5 ? "fl" : newNumericTurns;
+    const newTurns: number | "fl" =
+      newNumericTurns === -0.5 ? "fl" : newNumericTurns;
 
-    console.log(`[SequenceActionsPanel] Calling beatOperationsService.updateBeatTurns: beatNumber=${selectedBeatNumber}, color=${color}, turns=${newTurns}`);
+    console.log(
+      `[SequenceActionsPanel] Calling beatOperationsService.updateBeatTurns: beatNumber=${selectedBeatNumber}, color=${color}, turns=${newTurns}`
+    );
     // Use BeatOperationsService to handle motion type updates, float conversion, etc.
     beatOperationsService.updateBeatTurns(
       selectedBeatNumber,
@@ -152,17 +214,34 @@
     console.log(`[SequenceActionsPanel] updateBeatTurns completed`);
   }
 
-  function handleRotationChange(color: MotionColor, direction: RotationDirection) {
+  function handleRotationChange(
+    color: MotionColor,
+    direction: RotationDirection
+  ) {
     if (selectedBeatNumber === null || !beatOperationsService) return;
     hapticService?.trigger("selection");
 
     // Use BeatOperationsService to handle motion type flipping and letter recalculation
     // Map enum to string representation for the service
-    const directionString = direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
+    const directionString =
+      direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
     beatOperationsService.updateRotationDirection(
       selectedBeatNumber,
       color,
       directionString,
+      CreateModuleState,
+      panelState
+    );
+  }
+
+  function handleOrientationChange(color: MotionColor, orientation: string) {
+    if (selectedBeatNumber === null || !beatOperationsService) return;
+    hapticService?.trigger("selection");
+
+    beatOperationsService.updateBeatOrientation(
+      selectedBeatNumber,
+      color,
+      orientation,
       CreateModuleState,
       panelState
     );
@@ -173,40 +252,55 @@
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
-    try { await activeSequenceState.mirrorSequence(); }
-    finally { isTransforming = false; }
+    try {
+      await activeSequenceState.mirrorSequence();
+    } finally {
+      isTransforming = false;
+    }
   }
 
   async function handleRotateCW() {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
-    try { await activeSequenceState.rotateSequence("clockwise"); }
-    finally { isTransforming = false; }
+    try {
+      await activeSequenceState.rotateSequence("clockwise");
+    } finally {
+      isTransforming = false;
+    }
   }
 
   async function handleRotateCCW() {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
-    try { await activeSequenceState.rotateSequence("counterclockwise"); }
-    finally { isTransforming = false; }
+    try {
+      await activeSequenceState.rotateSequence("counterclockwise");
+    } finally {
+      isTransforming = false;
+    }
   }
 
   async function handleSwap() {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
-    try { await activeSequenceState.swapColors(); }
-    finally { isTransforming = false; }
+    try {
+      await activeSequenceState.swapColors();
+    } finally {
+      isTransforming = false;
+    }
   }
 
   async function handleRewind() {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
-    try { await activeSequenceState.rewindSequence(); }
-    finally { isTransforming = false; }
+    try {
+      await activeSequenceState.rewindSequence();
+    } finally {
+      isTransforming = false;
+    }
   }
 
   function handlePreview() {
@@ -246,7 +340,8 @@
 
     constructTabState.sequenceState.setCurrentSequence(sequenceCopy);
 
-    const startPos = sequenceCopy.startPosition || sequenceCopy.startingPositionBeat;
+    const startPos =
+      sequenceCopy.startPosition || sequenceCopy.startingPositionBeat;
     if (startPos) {
       constructTabState.sequenceState.setStartPosition(startPos);
       constructTabState.setSelectedStartPosition(startPos);
@@ -311,7 +406,11 @@
 
       <div class="header-actions">
         {#if currentMode === "transforms"}
-          <button class="icon-btn help" onclick={() => (showHelpSheet = true)} aria-label="Help">
+          <button
+            class="icon-btn help"
+            onclick={() => (showHelpSheet = true)}
+            aria-label="Help"
+          >
             <i class="fas fa-circle-question"></i>
           </button>
         {/if}
@@ -321,13 +420,27 @@
       </div>
     </div>
 
+    <!-- Desktop preview: shows selected beat pictograph above controls -->
+    {#if isSideBySideLayout && currentMode === "turns" && hasSelection && selectedBeatData}
+      <div class="desktop-preview-section">
+        <div class="preview-pictograph">
+          <Pictograph
+            pictographData={selectedBeatData}
+            disableContentTransitions={true}
+          />
+        </div>
+      </div>
+    {/if}
+
     <!-- Beat grid display: shows on mobile at 50% height -->
     {#if hasSequence && isSideBySideLayout === false && sequence}
       <div class="beat-grid-section">
         <BeatGrid
           beats={sequence.beats}
-          startPosition={sequence.startPosition || sequence.startingPositionBeat || null}
-          selectedBeatNumber={selectedBeatNumber}
+          startPosition={sequence.startPosition ||
+            sequence.startingPositionBeat ||
+            null}
+          {selectedBeatNumber}
           onBeatClick={handleBeatSelect}
           onStartClick={() => handleBeatSelect(0)}
         />
@@ -336,17 +449,24 @@
 
     <div class="controls-content">
       {#if currentMode === "turns"}
-        <TurnsEditMode
-          {hasSelection}
-          blueTurns={displayBlueTurns}
-          redTurns={displayRedTurns}
-          blueRotation={blueRotation}
-          redRotation={redRotation}
-          {showBlueRotation}
-          {showRedRotation}
-          onTurnsChange={handleTurnsChange}
-          onRotationChange={handleRotationChange}
-        />
+        {#if isStartPositionSelected}
+          <StartPositionEditMode
+            startPositionData={selectedBeatData}
+            onOrientationChange={handleOrientationChange}
+          />
+        {:else}
+          <TurnsEditMode
+            {hasSelection}
+            blueTurns={displayBlueTurns}
+            redTurns={displayRedTurns}
+            {blueRotation}
+            {redRotation}
+            {showBlueRotation}
+            {showRedRotation}
+            onTurnsChange={handleTurnsChange}
+            onRotationChange={handleRotationChange}
+          />
+        {/if}
       {:else}
         <TransformsGridMode
           {hasSequence}
@@ -366,14 +486,22 @@
 </CreatePanelDrawer>
 
 <!-- Render help sheet outside drawer so it can be a true full-viewport overlay -->
-<TransformHelpSheet show={showHelpSheet} onClose={() => (showHelpSheet = false)} />
+<TransformHelpSheet
+  show={showHelpSheet}
+  onClose={() => (showHelpSheet = false)}
+/>
 
 <SequencePreviewDialog
   bind:isOpen={showConfirmDialog}
   currentSequence={ctx.constructTabState?.sequenceState?.currentSequence}
   incomingSequence={pendingSequenceTransfer}
-  onConfirm={() => { performSequenceTransfer(pendingSequenceTransfer); pendingSequenceTransfer = null; }}
-  onCancel={() => { pendingSequenceTransfer = null; }}
+  onConfirm={() => {
+    performSequenceTransfer(pendingSequenceTransfer);
+    pendingSequenceTransfer = null;
+  }}
+  onCancel={() => {
+    pendingSequenceTransfer = null;
+  }}
 />
 
 <style>
@@ -478,12 +606,20 @@
   }
 
   .icon-btn.close {
-    background: linear-gradient(135deg, rgba(100, 100, 120, 0.85), rgba(70, 70, 90, 0.85));
+    background: linear-gradient(
+      135deg,
+      rgba(100, 100, 120, 0.85),
+      rgba(70, 70, 90, 0.85)
+    );
     color: white;
   }
 
   .icon-btn.close:hover {
-    background: linear-gradient(135deg, rgba(120, 120, 140, 0.95), rgba(90, 90, 110, 0.95));
+    background: linear-gradient(
+      135deg,
+      rgba(120, 120, 140, 0.95),
+      rgba(90, 90, 110, 0.95)
+    );
   }
 
   /* Narrow screens: hide mode labels */
@@ -526,13 +662,42 @@
     }
   }
 
-  .controls-content {
+  /* Desktop preview section - shows pictograph above controls */
+  .desktop-preview-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.15);
     flex: 1;
     min-height: 0;
+  }
+
+  .preview-pictograph {
+    width: 100%;
+    height: 100%;
+    max-width: 280px;
+    max-height: 280px;
+    aspect-ratio: 1;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .controls-content {
+    flex-shrink: 0;
+    min-height: 180px;
     padding: 12px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+  }
+
+  /* When no preview section, controls can expand */
+  .editor-panel:not(:has(.desktop-preview-section)) .controls-content {
+    flex: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {

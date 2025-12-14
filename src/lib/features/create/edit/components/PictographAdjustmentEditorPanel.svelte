@@ -343,15 +343,15 @@ Features:
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg) var(--spacing-xl);
-    background: #252540;
-    border-bottom: var(--sheet-border-strong);
+    background: var(--sheet-header-bg, var(--theme-card-bg, var(--sheet-bg-solid)));
+    border-bottom: var(--sheet-header-border, var(--sheet-border-strong));
   }
 
   .panel-title {
     margin: 0;
     font-size: var(--font-size-xl);
     font-weight: 700;
-    color: var(--foreground);
+    color: var(--theme-text, var(--foreground));
     display: flex;
     align-items: center;
     gap: var(--spacing-md);

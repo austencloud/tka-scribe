@@ -292,7 +292,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
     height: 52px;
     background: var(--surface-glass, rgba(0, 0, 0, 0.6));
     backdrop-filter: blur(10px);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: var(--border-radius-md, 8px);
     cursor: pointer;
     display: flex;
@@ -304,7 +304,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
 
   .settings-button:hover {
     background: var(--surface-glass-hover, rgba(0, 0, 0, 0.8));
-    border-color: var(--primary, #3b82f6);
+    border-color: var(--theme-accent, var(--primary-color, #3b82f6));
     transform: translateY(-2px);
   }
 
@@ -335,8 +335,8 @@ Features square aspect ratio for consistent layout and settings dialog for camer
   }
 
   .inactive-overlay {
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
+    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent);
+    color: var(--theme-text, white);
   }
 
   .loading-state,
@@ -346,7 +346,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
     align-items: center;
     justify-content: center;
     gap: var(--spacing-md, 16px);
-    color: var(--foreground, #ffffff);
+    color: var(--theme-text, var(--foreground, #ffffff));
     padding: var(--spacing-xl, 32px);
     text-align: center;
   }
@@ -354,8 +354,8 @@ Features square aspect ratio for consistent layout and settings dialog for camer
   .spinner {
     width: 52px;
     height: 52px;
-    border: 4px solid var(--surface-light, #333);
-    border-top-color: var(--primary, #3b82f6);
+    border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-top-color: var(--theme-accent, var(--primary-color, #3b82f6));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -374,13 +374,13 @@ Features square aspect ratio for consistent layout and settings dialog for camer
   .error-message {
     max-width: 400px;
     line-height: 1.5;
-    color: var(--error, #ef4444);
+    color: var(--semantic-error, var(--error, #ef4444));
   }
 
   .retry-button {
     padding: var(--spacing-sm, 8px) var(--spacing-lg, 24px);
-    background: var(--primary, #3b82f6);
-    color: white;
+    background: var(--primary-color, #3b82f6);
+    color: var(--theme-text, white);
     border: none;
     border-radius: var(--border-radius-md, 8px);
     cursor: pointer;
@@ -389,7 +389,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
   }
 
   .retry-button:hover {
-    background: var(--primary-hover, #2563eb);
+    background: var(--primary-color-hover, #2563eb);
     transform: translateY(-2px);
   }
 

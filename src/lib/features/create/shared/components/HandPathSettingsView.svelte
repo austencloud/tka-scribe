@@ -29,7 +29,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     in:scale={{ duration: 500, delay: 100, easing: cubicOut, start: 0.95 }}
   >
     <!-- Settings Section -->
-    <div class="settings-content">
+    <div class="handpath-settings-body">
       <SequenceLengthPicker
         bind:sequenceLength={handPathCoordinator.sequenceLength}
         bind:gridMode={handPathCoordinator.gridMode}
@@ -76,7 +76,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     container-name: settings-container;
   }
 
-  .settings-content {
+  .handpath-settings-body {
     display: flex;
     flex-direction: column;
     gap: 1rem;

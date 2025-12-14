@@ -134,10 +134,10 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     flex-direction: column;
     gap: var(--spacing-xs, --spacing-xs);
     padding: var(--spacing-xs, --spacing-xs);
-    background: var(--surface-glass, rgba(0, 0, 0, 0.5));
+    background: var(--theme-panel-elevated-bg, var(--surface-glass, rgba(0, 0, 0, 0.5)));
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius-lg, 12px);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
   }
 
   /* Main controls */
@@ -154,8 +154,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     justify-content: center;
     gap: var(--spacing-sm, 8px);
     padding: var(--spacing-md, 16px) var(--spacing-lg, 24px);
-    background: var(--surface-light, #333);
-    color: var(--foreground, #ffffff);
+    background: var(--theme-card-bg, var(--surface-light, #333));
+    color: var(--theme-text, var(--foreground, #ffffff));
     border: 2px solid transparent;
     border-radius: var(--border-radius-md, 8px);
     font-size: var(--font-size-md, 16px);
@@ -165,8 +165,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .control-button:hover {
-    background: var(--surface-lighter, #444);
-    border-color: var(--primary, #3b82f6);
+    background: var(--theme-card-hover-bg, var(--surface-lighter, #444));
+    border-color: var(--theme-accent, var(--primary, #3b82f6));
     transform: translateY(-2px);
   }
 
@@ -175,11 +175,11 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .play-pause-button.playing {
-    background: var(--error, #ef4444);
+    background: var(--semantic-error, var(--error, #ef4444));
   }
 
   .play-pause-button.playing:hover {
-    background: var(--error-hover, #dc2626);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 85%, black);
   }
 
   .icon {
@@ -201,7 +201,7 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--foreground, #ffffff);
+    color: var(--theme-text, var(--foreground, #ffffff));
   }
 
   .label-text {
@@ -212,7 +212,7 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   .speed-display {
     font-size: var(--font-size-xl, 24px);
     font-weight: 700;
-    color: var(--primary, #3b82f6);
+    color: var(--theme-accent, var(--primary, #3b82f6));
   }
 
   .speed-slider-container {
@@ -227,9 +227,9 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--surface-light, #333);
-    color: var(--foreground, #ffffff);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--surface-light, #333));
+    color: var(--theme-text, var(--foreground, #ffffff));
+    border: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
     border-radius: var(--border-radius-md, 8px);
     font-size: var(--font-size-lg, 20px);
     cursor: pointer;
@@ -237,14 +237,14 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   }
 
   .bpm-adjust-button:hover {
-    background: var(--surface-lighter, #444);
-    border-color: var(--primary, #3b82f6);
+    background: var(--theme-card-hover-bg, var(--surface-lighter, #444));
+    border-color: var(--theme-accent, var(--primary, #3b82f6));
   }
 
   .speed-slider {
     flex: 1;
     height: 8px;
-    background: var(--surface-light, #333);
+    background: var(--theme-card-bg, var(--surface-light, #333));
     border-radius: 4px;
     outline: none;
     -webkit-appearance: none;
@@ -256,7 +256,7 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     appearance: none;
     width: 20px;
     height: 20px;
-    background: var(--primary, #3b82f6);
+    background: var(--theme-accent, var(--primary, #3b82f6));
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -269,7 +269,7 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   .speed-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
-    background: var(--primary, #3b82f6);
+    background: var(--theme-accent, var(--primary, #3b82f6));
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -283,7 +283,7 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   /* Metronome control */
   .metronome-control {
     padding-top: var(--spacing-md, 16px);
-    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
   }
 
   .metronome-toggle {
@@ -291,15 +291,15 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     align-items: center;
     gap: var(--spacing-md, 16px);
     cursor: pointer;
-    color: var(--foreground, #ffffff);
+    color: var(--theme-text, var(--foreground, #ffffff));
   }
 
   .metronome-toggle input[type="checkbox"] {
     width: 52px;
     height: 24px;
     appearance: none;
-    background: var(--surface-light, #333);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--surface-light, #333));
+    border: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
     border-radius: 12px;
     position: relative;
     cursor: pointer;
@@ -312,14 +312,14 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--foreground, #ffffff);
+    background: var(--theme-text, var(--foreground, #ffffff));
     left: 2px;
     top: 2px;
     transition: all 0.3s ease;
   }
 
   .metronome-toggle input[type="checkbox"]:checked {
-    background: var(--primary, #3b82f6);
+    background: var(--theme-accent, var(--primary, #3b82f6));
   }
 
   .metronome-toggle input[type="checkbox"]:checked::before {

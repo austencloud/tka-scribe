@@ -10,7 +10,7 @@
 
   import AnimationShareDrawer from "../../../../../shared/animation-engine/components/AnimationShareDrawer.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
-  import type { IGifExportOrchestrator } from "$lib/features/compose/services/contracts/IGifExportOrchestrator";
+  import type { IVideoExportOrchestrator } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import type { ISequenceService } from "../../services/contracts/ISequenceService";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
@@ -40,7 +40,7 @@
   // Services
   let sequenceService: ISequenceService | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
-  let gifExportOrchestrator: IGifExportOrchestrator | null = null;
+  let videoExportOrchestrator: IVideoExportOrchestrator | null = null;
   let hapticService: IHapticFeedbackService | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
@@ -166,8 +166,8 @@
       playbackController = resolve<IAnimationPlaybackController>(
         TYPES.IAnimationPlaybackController
       );
-      gifExportOrchestrator = resolve<IGifExportOrchestrator>(
-        TYPES.IGifExportOrchestrator
+      videoExportOrchestrator = resolve<IVideoExportOrchestrator>(
+        TYPES.IVideoExportOrchestrator
       );
 
       servicesReady = true;
@@ -440,23 +440,23 @@
   }
 
   /**
-   * Handle GIF export
+   * Handle video export
    */
-  async function handleExportGif() {
-    console.log("🎬 GIF export handler called");
+  async function handleExportVideo() {
+    console.log("🎬 Video export handler called");
     console.log("Canvas:", animationCanvas);
     console.log("Playback controller:", playbackController);
-    console.log("GIF export orchestrator:", gifExportOrchestrator);
+    console.log("Video export orchestrator:", videoExportOrchestrator);
 
     hapticService?.trigger("selection");
 
     if (!animationCanvas) {
-      console.error("❌ No canvas available for GIF export");
+      console.error("❌ No canvas available for video export");
       return;
     }
 
-    if (!playbackController || !gifExportOrchestrator) {
-      console.error("❌ Required services not available for GIF export");
+    if (!playbackController || !videoExportOrchestrator) {
+      console.error("❌ Required services not available for video export");
       return;
     }
 
@@ -470,7 +470,7 @@
       exportProgress = 0;
       exportStage = "preparing";
 
-      await gifExportOrchestrator.executeExport(
+      await videoExportOrchestrator.executeExport(
         animationCanvas,
         playbackController,
         animationPanelState,
@@ -481,20 +481,26 @@
           if (progress.stage === "capturing" && progress.currentFrame) {
             console.log(`📸 Capturing frame ${progress.currentFrame}/${progress.totalFrames}`);
           } else if (progress.stage === "encoding") {
-            console.log("🔄 Encoding GIF...");
+            console.log("🔄 Encoding MP4...");
           } else if (progress.stage === "complete") {
-            console.log("✅ GIF export complete!");
+            console.log("✅ MP4 export complete!");
           } else if (progress.stage === "error") {
-            console.error("❌ GIF export error:", progress.error);
+            console.error("❌ MP4 export error:", progress.error);
           }
         },
         {
-          // Use default options from the orchestrator
-          // fps: 30, quality: 10, format: "gif"
+          // Uses MP4 format by default with 50fps
         }
       );
     } catch (error) {
-      console.error("❌ Failed to export GIF:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage === "Export cancelled") {
+        console.log("🛑 Export cancelled by user");
+        hapticService?.trigger("selection");
+      } else {
+        console.error("❌ Failed to export:", error);
+        hapticService?.trigger("error");
+      }
     } finally {
       isExporting = false;
       exportProgress = 0;
@@ -503,8 +509,33 @@
   }
 
   /**
+   * Handle cancelling an in-progress export
+   */
+  function handleCancelExport() {
+    console.log("❌ Cancel export handler called");
+    hapticService?.trigger("selection");
+
+    if (!videoExportOrchestrator) {
+      console.warn("⚠️ No export orchestrator available");
+      return;
+    }
+
+    if (!isExporting) {
+      console.warn("⚠️ No export in progress to cancel");
+      return;
+    }
+
+    try {
+      videoExportOrchestrator.cancelExport();
+      console.log("✅ Export cancellation requested");
+    } catch (error) {
+      console.error("❌ Failed to cancel export:", error);
+    }
+  }
+
+  /**
    * Handle sharing animation via native share API
-   * Shares a link to the animation (GIF file sharing requires blob generation to be added later)
+   * Shares a link to the animation (video file sharing requires blob generation to be added later)
    */
   async function handleShareAnimation() {
     console.log("📤 Share animation handler called");
@@ -574,7 +605,8 @@
   onPlaybackToggle={handlePlaybackToggle}
   onCanvasReady={handleCanvasReady}
   onVideoBeatChange={handleVideoBeatChange}
-  onExportVideo={handleExportGif}
+  onExportVideo={handleExportVideo}
+  onCancelExport={handleCancelExport}
   onShareAnimation={handleShareAnimation}
   {isExporting}
   exportProgress={{ progress: exportProgress, stage: exportStage }}

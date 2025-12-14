@@ -388,8 +388,8 @@
     height: 36px;
     border: none;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -411,7 +411,7 @@
   /* Header */
   .panel-header {
     padding: 24px 24px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
@@ -419,13 +419,13 @@
     margin: 0;
     font-size: 20px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .subtitle {
     margin: 4px 0 0;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   /* Body */
@@ -450,11 +450,11 @@
     margin-bottom: 8px;
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .required {
-    color: #ef4444;
+    color: var(--semantic-error, #ef4444);
   }
 
   /* Input Fields */
@@ -465,7 +465,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 14px;
     font-family: inherit;
     transition: all 0.2s ease;
@@ -483,7 +483,7 @@
 
   .input-field::placeholder,
   .textarea-field::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%, transparent);
   }
 
   .textarea-field {
@@ -500,7 +500,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 13px;
     margin-bottom: 20px;
   }
@@ -597,7 +597,7 @@
     display: flex;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
@@ -618,13 +618,13 @@
 
   .button-secondary {
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .button-secondary:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .button-primary {
