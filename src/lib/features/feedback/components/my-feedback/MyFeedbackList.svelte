@@ -1,5 +1,6 @@
 <!-- MyFeedbackList - List of tester's own feedback items -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import type {
     FeedbackItem,
     FeedbackStatus,
@@ -21,6 +22,19 @@
 
   // Filter state
   let selectedStatus = $state<FeedbackStatus | "all">("all");
+
+  // Load persisted filter state on mount
+  onMount(() => {
+    const stored = localStorage.getItem("my-feedback-filter");
+    if (stored === "all" || ["new", "in-progress", "in-review", "completed", "archived"].includes(stored)) {
+      selectedStatus = stored as FeedbackStatus | "all";
+    }
+  });
+
+  // Persist filter state when it changes
+  $effect(() => {
+    localStorage.setItem("my-feedback-filter", selectedStatus);
+  });
 
   // Filtered items based on status
   const filteredItems = $derived(
