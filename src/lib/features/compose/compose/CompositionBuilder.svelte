@@ -10,18 +10,22 @@
    * - Layout-first composition (choose grid, configure cells)
    * - Inline playback (no separate overlay)
    * - Toggle between live preview and static thumbnails
-   * - Overlay controls on hover/tap
+   * - Inline controls below canvas (participates in layout flow)
    * - Templates accessible via button (secondary)
-   * - Inline inspector panel on desktop (no overlay drawers)
+   * - Slide-out cell config panel (right on desktop, bottom on mobile)
+   * - Workflow stepper: Canvas → Audio → Export
    */
 
   import { onMount } from "svelte";
   import { getCompositionState } from "./state/composition-state.svelte";
+  import type { WorkflowPhase, BeatMarker, TempoRegion } from "./state/composition-state.svelte";
   import CompositionCanvas from "./components/canvas/CompositionCanvas.svelte";
   import CanvasControls from "./components/controls/CanvasControls.svelte";
   import TemplatesSheet from "./components/sheets/TemplatesSheet.svelte";
-  import CellConfigSheet from "./components/sheets/CellConfigSheet.svelte";
-  import CellInspector from "./components/panels/CellInspector.svelte";
+  import CellConfigPanel from "./components/panels/CellConfigPanel.svelte";
+  import WorkflowStepper from "./components/stepper/WorkflowStepper.svelte";
+  import AudioPhase from "./phases/audio/AudioPhase.svelte";
+  import ExportPhase from "./phases/export/ExportPhase.svelte";
 
   // Get singleton state (renamed to avoid conflict with $state rune)
   const compState = getCompositionState();
@@ -30,111 +34,172 @@
   const composition = $derived(compState.composition);
   const isPlaying = $derived(compState.isPlaying);
   const isPreviewing = $derived(compState.isPreviewing);
-  const showOverlayControls = $derived(compState.showOverlayControls);
   const isTemplatesOpen = $derived(compState.isTemplatesOpen);
-  const isCellConfigOpen = $derived(compState.isCellConfigOpen);
   const selectedCellId = $derived(compState.selectedCellId);
 
-  // Detect desktop vs mobile for inspector placement
-  let isDesktop = $state(false);
+  // Workflow phase bindings
+  const currentPhase = $derived(compState.currentPhase);
+  const audioState = $derived(compState.audioState);
+  const hasContent = $derived(compState.canPlay);
+  const hasAudio = $derived(compState.hasAudio);
 
-  // Interaction tracking for overlay visibility
-  let lastInteraction = $state(Date.now());
-  let hideControlsTimeout: number | null = null;
-
-  // Auto-hide controls after inactivity during playback
-  $effect(() => {
-    if (isPlaying && !isPreviewing) {
-      if (hideControlsTimeout) clearTimeout(hideControlsTimeout);
-
-      hideControlsTimeout = window.setTimeout(() => {
-        if (isPlaying) {
-          compState.setShowOverlayControls(false);
-        }
-      }, 3000);
-    } else {
-      compState.setShowOverlayControls(true);
-    }
-  });
-
-  function handleInteraction() {
-    lastInteraction = Date.now();
-    compState.setShowOverlayControls(true);
+  function handlePhaseChange(phase: WorkflowPhase) {
+    compState.setCurrentPhase(phase);
   }
 
-  function handleCellClick(cellId: string) {
-    handleInteraction();
+  function handleLoadAudio(file: File) {
+    compState.loadAudioFile(file);
+  }
 
-    if (isPlaying) {
-      // During playback, just show overlay briefly
+  function handleClearAudio() {
+    compState.clearAudio();
+  }
+
+  function handleSetBpm(bpm: number) {
+    compState.setManualBpm(bpm);
+  }
+
+  function handleAddBeatMarker(marker: BeatMarker) {
+    compState.addBeatMarker(marker);
+  }
+
+  function handleRemoveBeatMarker(id: string) {
+    compState.removeBeatMarker(id);
+  }
+
+  function handleAddTempoRegion(region: TempoRegion) {
+    compState.addTempoRegion(region);
+  }
+
+  function handleRemoveTempoRegion(id: string) {
+    compState.removeTempoRegion(id);
+  }
+
+  function handleUpdateTempoRegion(id: string, updates: Partial<TempoRegion>) {
+    compState.updateTempoRegion(id, updates);
+  }
+
+  // Fullscreen mode binding
+  const isFullscreen = $derived(compState.isFullscreen);
+
+  function handleCellClick(cellId: string) {
+    // In fullscreen mode, any cell click exits fullscreen
+    if (isFullscreen) {
+      compState.exitFullscreen();
       return;
     }
 
-    // Select cell for configuration
-    // On desktop, inline inspector shows automatically
-    // On mobile, opens drawer
+    if (isPlaying) {
+      // During playback, ignore cell clicks
+      return;
+    }
+
+    // Open cell config panel (slides from right on desktop, bottom on mobile)
     compState.openCellConfig(cellId);
   }
 
-  function updateDesktopState() {
-    isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
+  function handleCanvasClick() {
+    // Exit fullscreen on canvas tap
+    if (isFullscreen) {
+      compState.exitFullscreen();
+    }
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    // Exit fullscreen on Escape
+    if (e.key === "Escape" && isFullscreen) {
+      compState.exitFullscreen();
+    }
   }
 
   onMount(() => {
     console.log("🎨 CompositionBuilder mounted");
-    updateDesktopState();
-
-    // Listen for resize to update desktop state
-    window.addEventListener("resize", updateDesktopState);
-    return () => window.removeEventListener("resize", updateDesktopState);
   });
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
 <div
   class="composition-builder"
-  class:with-inspector={isDesktop}
-  onmousemove={handleInteraction}
-  ontouchstart={handleInteraction}
+  class:fullscreen={isFullscreen}
   role="application"
   aria-label="Composition Builder"
 >
-  <!-- Main Canvas Area -->
-  <div class="canvas-area">
-    <CompositionCanvas
-      {composition}
-      {isPlaying}
-      {isPreviewing}
-      {selectedCellId}
-      onCellClick={handleCellClick}
-    />
+  <!-- Workflow Stepper -->
+  <WorkflowStepper
+    {currentPhase}
+    onPhaseChange={handlePhaseChange}
+    {hasContent}
+    {hasAudio}
+  />
 
-    <!-- Overlay Controls -->
-    {#if showOverlayControls}
-      <div class="overlay-controls" class:playing={isPlaying}>
-        <CanvasControls />
+  <!-- Phase Content -->
+  <div class="phase-content">
+    {#if currentPhase === "canvas"}
+      <!-- Canvas Phase -->
+      <div class="canvas-phase">
+        <div class="canvas-column">
+          <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+          <div class="canvas-area" onclick={handleCanvasClick}>
+            <CompositionCanvas
+              {composition}
+              {isPlaying}
+              {isPreviewing}
+              {selectedCellId}
+              onCellClick={handleCellClick}
+            />
+
+            <!-- Fullscreen exit hint -->
+            {#if isFullscreen}
+              <div class="fullscreen-hint">
+                <span>Tap to exit fullscreen</span>
+              </div>
+            {/if}
+          </div>
+
+          <!-- Inline Controls (hidden in fullscreen) -->
+          {#if !isFullscreen}
+            <div class="inline-controls" class:playing={isPlaying}>
+              <CanvasControls />
+            </div>
+          {/if}
+        </div>
       </div>
+    {:else if currentPhase === "audio"}
+      <!-- Audio Phase -->
+      <AudioPhase
+        {audioState}
+        onLoadAudio={handleLoadAudio}
+        onClearAudio={handleClearAudio}
+        onSetBpm={handleSetBpm}
+        onSetDuration={(duration) => compState.setAudioDuration(duration)}
+        onSetAnalyzing={(analyzing) => compState.setAnalyzing(analyzing)}
+        onAddBeatMarker={handleAddBeatMarker}
+        onRemoveBeatMarker={handleRemoveBeatMarker}
+        onAddTempoRegion={handleAddTempoRegion}
+        onRemoveTempoRegion={handleRemoveTempoRegion}
+        onUpdateTempoRegion={handleUpdateTempoRegion}
+      />
+    {:else if currentPhase === "export"}
+      <!-- Export Phase -->
+      <ExportPhase
+        {hasContent}
+        {hasAudio}
+        {audioState}
+      />
     {/if}
   </div>
 
-  <!-- Inline Inspector Panel (desktop only) -->
-  {#if isDesktop}
-    <CellInspector />
-  {/if}
-
-  <!-- Templates Sheet (Drawer) -->
-  <TemplatesSheet
-    isOpen={isTemplatesOpen}
-    onClose={() => compState.closeTemplates()}
-    onSelectTemplate={(id: string) => compState.applyTemplate(id)}
-  />
-
-  <!-- Cell Configuration Sheet (Drawer - mobile only) -->
-  {#if !isDesktop}
-    <CellConfigSheet
-      isOpen={isCellConfigOpen}
-      cellId={selectedCellId}
-      onClose={() => compState.closeCellConfig()}
+  <!-- Templates Sheet (Drawer) - only for canvas phase -->
+  {#if currentPhase === "canvas"}
+    <TemplatesSheet
+      isOpen={isTemplatesOpen}
+      onClose={() => compState.closeTemplates()}
+      onSelectTemplate={(id: string) => compState.applyTemplate(id)}
     />
+
+    <!-- Cell Configuration Panel (slides from right on desktop, bottom on mobile) -->
+    <CellConfigPanel />
   {/if}
 </div>
 
@@ -145,19 +210,70 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(
-      135deg,
-      rgba(15, 15, 25, 1) 0%,
-      rgba(10, 10, 20, 1) 100%
-    );
+    background: transparent;
     overflow: hidden;
     container-type: size;
     container-name: builder;
   }
 
-  /* Side-by-side layout when inspector is present */
-  .composition-builder.with-inspector {
-    flex-direction: row;
+  /* Fullscreen mode */
+  .composition-builder.fullscreen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--theme-bg, #000);
+  }
+
+  .composition-builder.fullscreen .phase-content {
+    flex: 1;
+  }
+
+  .composition-builder.fullscreen .canvas-phase {
+    flex: 1;
+  }
+
+  .composition-builder.fullscreen .canvas-column {
+    flex: 1;
+  }
+
+  .composition-builder.fullscreen .canvas-area {
+    padding: 0;
+    cursor: pointer;
+    /* Prevent tap highlight flash on touch devices */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  /* Hide stepper in fullscreen */
+  .composition-builder.fullscreen :global(.workflow-stepper) {
+    display: none;
+  }
+
+  /* Phase content area - fills remaining space */
+  .phase-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Canvas phase */
+  .canvas-phase {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  /* Canvas + Controls column */
+  .canvas-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
   }
 
   .canvas-area {
@@ -166,48 +282,67 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Fluid padding based on container size */
-    /* Extra bottom padding to account for overlay controls bar */
     padding: clamp(8px, 2cqi, 24px);
-    padding-bottom: clamp(80px, 12cqb, 120px);
     min-height: 0;
     min-width: 0;
     container-type: size;
     container-name: canvas;
   }
 
-  /* Overlay Controls */
-  .overlay-controls {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: clamp(12px, 3cqi, 24px);
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.8) 0%,
-      rgba(0, 0, 0, 0.4) 50%,
-      transparent 100%
-    );
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 10;
+  /* Inline Controls - participates in flex layout */
+  .inline-controls {
+    flex-shrink: 0;
+    padding: clamp(8px, 2cqi, 16px);
+    transition: opacity 0.3s ease;
   }
 
-  .overlay-controls.playing {
+  .inline-controls.playing {
     opacity: 0.9;
   }
 
-  /* Hide overlay on mobile when playing (tap to show) */
+  /* Slight dim on mobile when playing */
   @media (hover: none) and (pointer: coarse) {
-    .overlay-controls.playing {
-      opacity: 0.7;
+    .inline-controls.playing {
+      opacity: 0.85;
     }
+  }
+
+  /* Fullscreen hint */
+  .fullscreen-hint {
+    position: absolute;
+    bottom: clamp(16px, 4cqi, 32px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: clamp(8px, 2cqi, 12px) clamp(16px, 4cqi, 24px);
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: clamp(20px, 4cqi, 30px);
+    backdrop-filter: blur(8px);
+    animation: fadeInOut 3s ease-in-out forwards;
+    pointer-events: none;
+  }
+
+  .fullscreen-hint span {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: clamp(0.75rem, 2.5cqi, 0.9rem);
+    white-space: nowrap;
+  }
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .overlay-controls {
+    .inline-controls {
       transition: none;
+    }
+
+    .fullscreen-hint {
+      animation: none;
+      opacity: 0.8;
     }
   }
 </style>

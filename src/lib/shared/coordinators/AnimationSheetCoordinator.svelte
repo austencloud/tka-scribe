@@ -652,6 +652,9 @@ import type { IVideoExportService } from "$lib/features/compose/services/contrac
   error={animationPanelState.error}
   speed={animationPanelState.speed}
   isPlaying={isPlayingLocal}
+  playbackMode={animationPanelState.playbackMode}
+  stepPlaybackPauseMs={animationPanelState.stepPlaybackPauseMs}
+  stepPlaybackStepSize={animationPanelState.stepPlaybackStepSize}
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
@@ -662,6 +665,11 @@ import type { IVideoExportService } from "$lib/features/compose/services/contrac
   onClose={handleClose}
   onSpeedChange={handleSpeedChange}
   onPlaybackToggle={() => playbackController?.togglePlayback()}
+  onPlaybackModeChange={(mode) => animationPanelState.setPlaybackMode(mode)}
+  onStepPlaybackPauseMsChange={(pauseMs) =>
+    animationPanelState.setStepPlaybackPauseMs(pauseMs)}
+  onStepPlaybackStepSizeChange={(stepSize) =>
+    animationPanelState.setStepPlaybackStepSize(stepSize)}
   onStepHalfBeatBackward={() => playbackController?.stepHalfBeatBackward()}
   onStepHalfBeatForward={() => playbackController?.stepHalfBeatForward()}
   onStepFullBeatBackward={() => playbackController?.stepFullBeatBackward()}

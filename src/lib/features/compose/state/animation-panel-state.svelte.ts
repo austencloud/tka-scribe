@@ -11,6 +11,16 @@ import type { PropState } from "../shared/domain/types/PropState";
 import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
 
 // ============================================================================
+// TYPES
+// ============================================================================
+
+/** Playback mode: continuous animation or step-by-step */
+export type PlaybackMode = "continuous" | "step";
+
+/** Step size for step playback mode: half-beat or full beat */
+export type StepPlaybackStepSize = 0.5 | 1;
+
+// ============================================================================
 // PERSISTENCE
 // ============================================================================
 
@@ -29,12 +39,30 @@ const exportLoopCountPersistence = createPersistenceHelper({
   defaultValue: 1,
 });
 
+const playbackModePersistence = createPersistenceHelper<PlaybackMode>({
+  key: "tka_animation_playback_mode",
+  defaultValue: "continuous",
+});
+
+const stepPlaybackPauseMsPersistence = createPersistenceHelper<number>({
+  key: "tka_animation_step_playback_pause_ms",
+  defaultValue: 250,
+});
+
+const stepPlaybackStepSizePersistence = createPersistenceHelper<StepPlaybackStepSize>({
+  key: "tka_animation_step_playback_step_size",
+  defaultValue: 1,
+});
+
 export type AnimationPanelState = {
   // Playback state
   readonly currentBeat: number;
   readonly isPlaying: boolean;
   readonly speed: number;
   readonly shouldLoop: boolean;
+  readonly playbackMode: PlaybackMode;
+  readonly stepPlaybackPauseMs: number;
+  readonly stepPlaybackStepSize: StepPlaybackStepSize;
 
   // Export settings
   readonly exportLoopCount: number;
@@ -58,6 +86,9 @@ export type AnimationPanelState = {
   setIsPlaying: (playing: boolean) => void;
   setSpeed: (speed: number) => void;
   setShouldLoop: (loop: boolean) => void;
+  setPlaybackMode: (mode: PlaybackMode) => void;
+  setStepPlaybackPauseMs: (pauseMs: number) => void;
+  setStepPlaybackStepSize: (stepSize: StepPlaybackStepSize) => void;
   setExportLoopCount: (count: number) => void;
   setTotalBeats: (beats: number) => void;
   setSequenceMetadata: (word: string, author: string) => void;
@@ -82,6 +113,9 @@ export function createAnimationPanelState(): AnimationPanelState {
   let isPlaying = $state(false);
   let speed = $state(speedPersistence.load());
   let shouldLoop = $state(loopPersistence.load());
+  let playbackMode = $state<PlaybackMode>(playbackModePersistence.load());
+  let stepPlaybackPauseMs = $state(stepPlaybackPauseMsPersistence.load());
+  let stepPlaybackStepSize = $state<StepPlaybackStepSize>(stepPlaybackStepSizePersistence.load());
 
   // Export settings
   let exportLoopCount = $state(exportLoopCountPersistence.load());
@@ -96,6 +130,21 @@ export function createAnimationPanelState(): AnimationPanelState {
     $effect(() => {
       void shouldLoop;
       loopPersistence.setupAutoSave(shouldLoop);
+    });
+
+    $effect(() => {
+      void playbackMode;
+      playbackModePersistence.setupAutoSave(playbackMode);
+    });
+
+    $effect(() => {
+      void stepPlaybackPauseMs;
+      stepPlaybackPauseMsPersistence.setupAutoSave(stepPlaybackPauseMs);
+    });
+
+    $effect(() => {
+      void stepPlaybackStepSize;
+      stepPlaybackStepSizePersistence.setupAutoSave(stepPlaybackStepSize);
     });
 
     $effect(() => {
@@ -131,6 +180,15 @@ export function createAnimationPanelState(): AnimationPanelState {
     },
     get shouldLoop() {
       return shouldLoop;
+    },
+    get playbackMode() {
+      return playbackMode;
+    },
+    get stepPlaybackPauseMs() {
+      return stepPlaybackPauseMs;
+    },
+    get stepPlaybackStepSize() {
+      return stepPlaybackStepSize;
     },
     get exportLoopCount() {
       return exportLoopCount;
@@ -177,6 +235,18 @@ export function createAnimationPanelState(): AnimationPanelState {
       shouldLoop = loop;
     },
 
+    setPlaybackMode: (mode: PlaybackMode) => {
+      playbackMode = mode;
+    },
+
+    setStepPlaybackPauseMs: (pauseMs: number) => {
+      stepPlaybackPauseMs = Math.max(0, Math.min(2000, Math.round(pauseMs)));
+    },
+
+    setStepPlaybackStepSize: (stepSize: StepPlaybackStepSize) => {
+      stepPlaybackStepSize = stepSize === 0.5 ? 0.5 : 1;
+    },
+
     setExportLoopCount: (count: number) => {
       exportLoopCount = Math.max(1, Math.min(10, count));
     },
@@ -220,6 +290,9 @@ export function createAnimationPanelState(): AnimationPanelState {
       isPlaying = false;
       speed = 1.0;
       shouldLoop = false;
+      playbackMode = "continuous";
+      stepPlaybackPauseMs = 250;
+      stepPlaybackStepSize = 1;
       exportLoopCount = 1;
       totalBeats = 0;
       sequenceWord = "";

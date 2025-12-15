@@ -119,9 +119,9 @@
     align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 1;
-    background: rgba(30, 30, 45, 0.8);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     /* Thin border for subtle separation, shared between cells */
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 0;
     cursor: pointer;
     transition:
@@ -129,40 +129,32 @@
       border-color 0.2s ease;
     overflow: hidden;
     padding: 0;
-    color: white;
+    color: var(--theme-text, white);
     text-align: center;
     container-type: size;
     container-name: cell;
   }
 
   .composition-cell:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(40, 40, 60, 0.9);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
   .composition-cell:focus {
     outline: none;
-    border-color: rgba(59, 130, 246, 0.6);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
   }
 
   .composition-cell.selected {
-    border-color: rgba(59, 130, 246, 0.8);
+    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
   }
 
   .composition-cell.configured {
-    background: linear-gradient(
-      135deg,
-      rgba(40, 40, 60, 0.95) 0%,
-      rgba(30, 30, 50, 0.95) 100%
-    );
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
   }
 
   .composition-cell.tunnel {
-    background: linear-gradient(
-      135deg,
-      rgba(60, 40, 80, 0.95) 0%,
-      rgba(40, 30, 60, 0.95) 100%
-    );
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, var(--theme-card-bg, rgba(255, 255, 255, 0.04)));
   }
 
   .composition-cell.playing {
@@ -200,7 +192,7 @@
   .sequence-name {
     font-size: clamp(0.65rem, 4cqi, 1rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -209,7 +201,7 @@
 
   .sequence-count {
     font-size: clamp(0.55rem, 3cqi, 0.8rem);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .type-badge,
@@ -218,10 +210,10 @@
     align-items: center;
     gap: clamp(2px, 1cqi, 6px);
     padding: clamp(1px, 0.5cqi, 4px) clamp(4px, 2cqi, 10px);
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border-radius: clamp(2px, 1cqi, 6px);
     font-size: clamp(0.55rem, 3cqi, 0.75rem);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .type-badge i,
@@ -236,12 +228,12 @@
     align-items: center;
     justify-content: center;
     gap: clamp(2px, 2cqi, 8px);
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     transition: color 0.2s ease;
   }
 
   .composition-cell:hover .empty-state {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text, rgba(255, 255, 255, 0.7));
   }
 
   .empty-icon {
@@ -264,7 +256,7 @@
   .selection-ring {
     position: absolute;
     inset: -2px;
-    border: 2px solid rgba(59, 130, 246, 0.8);
+    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
     border-radius: 0;
     pointer-events: none;
     animation: pulse-ring 1.5s ease-in-out infinite;

@@ -4,24 +4,45 @@
   Bottom control bar with play/pause, stop, speed, and loop controls.
 -->
 <script lang="ts">
+  import type { PlaybackMode, StepPlaybackStepSize } from "../../../state/animation-panel-state.svelte";
+  const STEP_PAUSE_PRESETS = [
+    { label: "None", ms: 0 },
+    { label: "Short", ms: 150 },
+    { label: "Med", ms: 300 },
+    { label: "Long", ms: 600 },
+    { label: "Extra", ms: 1000 },
+  ] as const;
+
   let {
     isPlaying,
     speed,
     shouldLoop,
+    playbackMode,
+    stepPlaybackPauseMs,
+    stepPlaybackStepSize,
     onPlay,
     onPause,
     onStop,
     onSpeedChange,
     onLoopToggle,
+    onPlaybackModeChange,
+    onStepPlaybackPauseMsChange,
+    onStepPlaybackStepSizeChange,
   }: {
     isPlaying: boolean;
     speed: number;
     shouldLoop: boolean;
+    playbackMode: PlaybackMode;
+    stepPlaybackPauseMs: number;
+    stepPlaybackStepSize: StepPlaybackStepSize;
     onPlay: () => void;
     onPause: () => void;
     onStop: () => void;
     onSpeedChange: (speed: number) => void;
     onLoopToggle: (loop: boolean) => void;
+    onPlaybackModeChange: (mode: PlaybackMode) => void;
+    onStepPlaybackPauseMsChange: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange: (stepSize: StepPlaybackStepSize) => void;
   } = $props();
 
   // Speed presets
@@ -41,6 +62,10 @@
 
   function handleLoopClick() {
     onLoopToggle(!shouldLoop);
+  }
+
+  function toggleStepMode() {
+    onPlaybackModeChange(playbackMode === "step" ? "continuous" : "step");
   }
 </script>
 
@@ -80,6 +105,58 @@
   <!-- Right: Loop toggle -->
   <div class="controls-right">
     <button
+      class="control-btn mode-btn"
+      class:active={playbackMode === "step"}
+      onclick={toggleStepMode}
+      disabled={isPlaying}
+      aria-label={playbackMode === "step" ? "Disable step mode" : "Enable step mode"}
+      title={isPlaying ? "Pause playback to change mode" : "Toggle step mode"}
+    >
+      <i class="fas fa-shoe-prints"></i>
+      <span class="mode-label">Step</span>
+    </button>
+
+    <div class="step-settings" class:disabled={playbackMode !== "step" || isPlaying}>
+      <div class="step-size">
+        <button
+          class="mini-btn"
+          class:active={stepPlaybackStepSize === 1}
+          onclick={() => onStepPlaybackStepSizeChange(1)}
+          disabled={playbackMode !== "step" || isPlaying}
+          aria-label="Step by full beats"
+        >
+          Beat
+        </button>
+        <button
+          class="mini-btn"
+          class:active={stepPlaybackStepSize === 0.5}
+          onclick={() => onStepPlaybackStepSizeChange(0.5)}
+          disabled={playbackMode !== "step" || isPlaying}
+          aria-label="Step by half beats"
+        >
+          Half
+        </button>
+      </div>
+
+      <label class="pause-field">
+        <span class="pause-label">Pause</span>
+        <div class="pause-presets" aria-label="Pause presets">
+          {#each STEP_PAUSE_PRESETS as preset}
+            <button
+              class="pause-chip"
+              class:active={stepPlaybackPauseMs === preset.ms}
+              onclick={() => onStepPlaybackPauseMsChange(preset.ms)}
+              disabled={playbackMode !== "step" || isPlaying}
+              aria-label="Pause {preset.label}"
+            >
+              {preset.label}
+            </button>
+          {/each}
+        </div>
+      </label>
+    </div>
+
+    <button
       class="control-btn loop-btn"
       class:active={shouldLoop}
       onclick={handleLoopClick}
@@ -98,8 +175,8 @@
     justify-content: space-between;
     gap: 1.5rem;
     padding: 1rem 1.25rem;
-    background: rgba(0, 0, 0, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     position: sticky;
@@ -167,6 +244,106 @@
     color: rgba(34, 211, 238, 1);
   }
 
+  .mode-btn.active {
+    background: rgba(251, 191, 36, 0.16);
+    border-color: rgba(251, 191, 36, 0.35);
+    color: rgba(252, 211, 77, 1);
+  }
+
+  .mode-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  .step-settings {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+  }
+
+  .step-settings.disabled {
+    opacity: 0.45;
+  }
+
+  .step-size {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .mini-btn {
+    height: 52px;
+    padding: 0 0.65rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mini-btn:hover:enabled {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .mini-btn.active {
+    background: rgba(251, 191, 36, 0.14);
+    border-color: rgba(251, 191, 36, 0.35);
+    color: rgba(252, 211, 77, 1);
+  }
+
+  .pause-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    font-weight: 600;
+    user-select: none;
+  }
+
+  .pause-label {
+    opacity: 0.8;
+    margin-right: 0.25rem;
+  }
+
+  .pause-presets {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .pause-chip {
+    height: 52px;
+    padding: 0 0.65rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pause-chip.active {
+    background: rgba(251, 191, 36, 0.14);
+    border-color: rgba(251, 191, 36, 0.35);
+    color: rgba(252, 211, 77, 1);
+  }
+
+  .pause-chip:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   .speed-label {
     font-size: 0.8rem;
     font-weight: 600;
@@ -223,6 +400,16 @@
     .playback-controls {
       padding: 0.75rem 1rem;
       gap: 1rem;
+    }
+
+    .step-settings {
+      padding: 0.3rem 0.5rem;
+      gap: 0.6rem;
+    }
+
+    .mini-btn,
+    .pause-chip {
+      height: 52px;
     }
 
     .speed-label {

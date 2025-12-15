@@ -25,6 +25,10 @@ export class AnimationPlaybackController
   private sequenceData: SequenceData | null = null;
   private isSeamlesslyLoopable: boolean = false;
 
+  // Step playback (auto-step) state
+  private stepPlaybackTimer: ReturnType<typeof setTimeout> | null = null;
+  private stepPlaybackRunId = 0;
+
   // Animation-to-beat state
   private animationTarget: number | null = null;
   private animationStartBeat: number = 0;
@@ -60,7 +64,7 @@ export class AnimationPlaybackController
     state.setTotalBeats(metadata.totalBeats);
     state.setSequenceMetadata(metadata.word, metadata.author);
 
-    // Set the sequence data on the state (critical for playback to work!)
+    // Set sequence data on state (data arrives already normalized from SequenceService)
     state.setSequenceData(sequenceData);
 
     // Reset playback state
@@ -78,15 +82,20 @@ export class AnimationPlaybackController
 
     if (this.state.isPlaying) {
       // Pause
+      this.stopStepPlayback();
       this.loopService.stop();
       this.state.setIsPlaying(false);
     } else {
       // Play
-      this.state.setIsPlaying(true);
-      this.loopService.start(
-        (deltaTime) => this.onAnimationUpdate(deltaTime),
-        this.state.speed
-      );
+      if (this.state.playbackMode === "step") {
+        this.startStepPlayback();
+      } else {
+        this.state.setIsPlaying(true);
+        this.loopService.start(
+          (deltaTime) => this.onAnimationUpdate(deltaTime),
+          this.state.speed
+        );
+      }
     }
   }
 
@@ -94,6 +103,7 @@ export class AnimationPlaybackController
     if (!this.state) return;
 
     // Stop animation loop
+    this.stopStepPlayback();
     this.loopService.stop();
     this.state.setIsPlaying(false);
 
@@ -113,6 +123,7 @@ export class AnimationPlaybackController
     if (!this.state) return;
 
     // Stop any current playback/animation
+    this.stopStepPlayback();
     this.loopService.stop();
     this.state.setIsPlaying(false);
     this.animationTarget = null;
@@ -127,8 +138,20 @@ export class AnimationPlaybackController
   }
 
   animateToBeat(beat: number, duration: number = 300, linear: boolean = false): void {
-    if (!this.state) {
-      return;
+    this.animateToBeatInternal(beat, duration, linear, true);
+  }
+
+  private animateToBeatInternal(
+    beat: number,
+    duration: number,
+    linear: boolean,
+    cancelStepPlayback: boolean
+  ): void {
+    if (!this.state) return;
+
+    if (cancelStepPlayback) {
+      // Manual/one-shot animation should cancel step playback
+      this.stopStepPlayback();
     }
 
     // Clamp target beat to valid range
@@ -148,7 +171,9 @@ export class AnimationPlaybackController
 
     // Stop any current playback/animation
     this.loopService.stop();
-    this.state.setIsPlaying(false);
+    if (cancelStepPlayback) {
+      this.state.setIsPlaying(false);
+    }
 
     // Set up animation parameters
     this.animationTarget = clampedBeat;
@@ -215,6 +240,8 @@ export class AnimationPlaybackController
   stepHalfBeatForward(): void {
     if (!this.state) return;
 
+    this.stopStepPlayback();
+
     const currentBeat = this.state.currentBeat;
     // Find next half-beat position (0, 0.5, 1, 1.5, 2, etc.)
     // Add small epsilon to handle exact positions (e.g., at 2.0, go to 2.5 not stay at 2.0)
@@ -227,6 +254,8 @@ export class AnimationPlaybackController
 
   stepHalfBeatBackward(): void {
     if (!this.state) return;
+
+    this.stopStepPlayback();
 
     const currentBeat = this.state.currentBeat;
     // Find previous half-beat position (0, 0.5, 1, 1.5, 2, etc.)
@@ -241,6 +270,8 @@ export class AnimationPlaybackController
   stepFullBeatForward(): void {
     if (!this.state) return;
 
+    this.stopStepPlayback();
+
     const currentBeat = this.state.currentBeat;
     // Find next full-beat position (0, 1, 2, 3, etc.)
     const nextFullBeat = Math.ceil(currentBeat + 0.001);
@@ -252,6 +283,8 @@ export class AnimationPlaybackController
 
   stepFullBeatBackward(): void {
     if (!this.state) return;
+
+    this.stopStepPlayback();
 
     const currentBeat = this.state.currentBeat;
     // Find previous full-beat position (0, 1, 2, 3, etc.)
@@ -288,9 +321,73 @@ export class AnimationPlaybackController
   }
 
   dispose(): void {
+    this.stopStepPlayback();
     this.loopService.stop();
     this.state = null;
     this.sequenceData = null;
+  }
+
+  private startStepPlayback(): void {
+    if (!this.state) return;
+
+    this.stopStepPlayback();
+
+    this.state.setIsPlaying(true);
+    const runId = ++this.stepPlaybackRunId;
+
+    // Step immediately on start (no initial pause)
+    this.stepPlaybackTimer = setTimeout(() => {
+      void this.runStepPlaybackTick(runId);
+    }, 0);
+  }
+
+  private stopStepPlayback(): void {
+    this.stepPlaybackRunId++;
+    if (this.stepPlaybackTimer) {
+      clearTimeout(this.stepPlaybackTimer);
+      this.stepPlaybackTimer = null;
+    }
+  }
+
+  private runStepPlaybackTick(runId: number): void {
+    if (!this.state || runId !== this.stepPlaybackRunId) return;
+    if (!this.state.isPlaying) return;
+    if (this.state.playbackMode !== "step") return;
+
+    const stepSize = this.state.stepPlaybackStepSize;
+
+    const currentBeat = this.state.currentBeat;
+    const nextBeat =
+      stepSize === 0.5
+        ? Math.ceil((currentBeat + 0.001) * 2) / 2
+        : Math.ceil(currentBeat + 0.001);
+
+    // End reached
+    if (nextBeat > this.state.totalBeats) {
+      if (this.state.shouldLoop) {
+        // Loop back to start without leaving "playing" state
+        this.state.setCurrentBeat(0);
+        if (this.sequenceData) {
+          this.animationEngine.initializeWithDomainData(this.sequenceData);
+        }
+        this.animationEngine.calculateState(0);
+        this.updatePropStatesFromEngine();
+      } else {
+        this.state.setCurrentBeat(this.state.totalBeats);
+        this.state.setIsPlaying(false);
+        return;
+      }
+    } else {
+      const duration = this.getStepDuration(stepSize);
+      this.animateToBeatInternal(nextBeat, duration, true, false);
+    }
+
+    const pauseMs = this.state.stepPlaybackPauseMs;
+    const nextDelay = this.getStepDuration(stepSize) + pauseMs;
+
+    this.stepPlaybackTimer = setTimeout(() => {
+      this.runStepPlaybackTick(runId);
+    }, nextDelay);
   }
 
   private onAnimationUpdate(deltaTime: number): void {

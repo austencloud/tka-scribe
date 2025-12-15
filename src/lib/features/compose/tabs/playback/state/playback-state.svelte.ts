@@ -10,8 +10,18 @@ import type { TrailSettings } from "../../../shared/domain/types/TrailTypes";
 import { DEFAULT_TRAIL_SETTINGS } from "../../../shared/domain/types/TrailTypes";
 import type { ComposeMode } from "../../../shared/state/compose-module-state.svelte";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import type { PlaybackMode, StepPlaybackStepSize } from "../../../state/animation-panel-state.svelte";
 
 const debug = createComponentLogger("PlaybackState");
+
+/**
+ * Easing type for beat-to-beat transitions
+ * - linear: Constant speed throughout
+ * - ease-in: Slow start, fast end (accelerating)
+ * - ease-out: Fast start, slow end (decelerating)
+ * - ease-in-out: Slow start and end, fast middle
+ */
+export type EasingType = "linear" | "ease-in" | "ease-out" | "ease-in-out";
 
 /**
  * Animation sequence slot for a specific canvas/position
@@ -37,6 +47,10 @@ const STORAGE_KEYS = {
   SPEED: "playback-speed",
   SHOULD_LOOP: "playback-should-loop",
   MOBILE_TOOL_VIEW: "playback-mobile-tool-view",
+  PLAYBACK_MODE: "tka_animation_playback_mode",
+  STEP_PLAYBACK_PAUSE_MS: "tka_animation_step_playback_pause_ms",
+  STEP_PLAYBACK_STEP_SIZE: "tka_animation_step_playback_step_size",
+  EASING_TYPE: "tka_animation_easing_type",
 } as const;
 
 // Mobile tool view type
@@ -48,6 +62,10 @@ export type PlaybackState = {
   readonly speed: number;
   readonly shouldLoop: boolean;
   readonly currentBeat: number;
+  readonly playbackMode: PlaybackMode;
+  readonly stepPlaybackPauseMs: number;
+  readonly stepPlaybackStepSize: StepPlaybackStepSize;
+  readonly easingType: EasingType;
 
   // Mobile UI state
   readonly mobileToolView: MobileToolView;
@@ -68,6 +86,10 @@ export type PlaybackState = {
   setSpeed: (speed: number) => void;
   setLoop: (loop: boolean) => void;
   setCurrentBeat: (beat: number) => void;
+  setPlaybackMode: (mode: PlaybackMode) => void;
+  setStepPlaybackPauseMs: (pauseMs: number) => void;
+  setStepPlaybackStepSize: (stepSize: StepPlaybackStepSize) => void;
+  setEasingType: (easing: EasingType) => void;
 
   // Mutators - Mode & Sequences
   setCurrentMode: (mode: ComposeMode) => void;
@@ -117,6 +139,18 @@ export function createPlaybackState(): PlaybackState {
   let speed = $state(loadFromStorage(STORAGE_KEYS.SPEED, 1.0));
   let shouldLoop = $state(loadFromStorage(STORAGE_KEYS.SHOULD_LOOP, false));
   let currentBeat = $state(0);
+  let playbackMode = $state<PlaybackMode>(
+    loadFromStorage(STORAGE_KEYS.PLAYBACK_MODE, "continuous")
+  );
+  let stepPlaybackPauseMs = $state(
+    loadFromStorage(STORAGE_KEYS.STEP_PLAYBACK_PAUSE_MS, 250)
+  );
+  let stepPlaybackStepSize = $state<StepPlaybackStepSize>(
+    loadFromStorage(STORAGE_KEYS.STEP_PLAYBACK_STEP_SIZE, 1)
+  );
+  let easingType = $state<EasingType>(
+    loadFromStorage(STORAGE_KEYS.EASING_TYPE, "linear")
+  );
 
   // Mobile UI state
   let mobileToolView = $state<MobileToolView>(
@@ -150,6 +184,18 @@ export function createPlaybackState(): PlaybackState {
     },
     get currentBeat() {
       return currentBeat;
+    },
+    get playbackMode() {
+      return playbackMode;
+    },
+    get stepPlaybackPauseMs() {
+      return stepPlaybackPauseMs;
+    },
+    get stepPlaybackStepSize() {
+      return stepPlaybackStepSize;
+    },
+    get easingType() {
+      return easingType;
     },
     get mobileToolView() {
       return mobileToolView;
@@ -195,6 +241,31 @@ export function createPlaybackState(): PlaybackState {
 
     setCurrentBeat(beat: number) {
       currentBeat = beat;
+    },
+
+    setPlaybackMode(mode: PlaybackMode) {
+      playbackMode = mode;
+      saveToStorage(STORAGE_KEYS.PLAYBACK_MODE, playbackMode);
+      debug.log(`Playback mode set to ${playbackMode}`);
+    },
+
+    setStepPlaybackPauseMs(pauseMs: number) {
+      stepPlaybackPauseMs = Math.max(0, Math.min(2000, Math.round(pauseMs)));
+      saveToStorage(STORAGE_KEYS.STEP_PLAYBACK_PAUSE_MS, stepPlaybackPauseMs);
+      debug.log(`Step playback pause set to ${stepPlaybackPauseMs}ms`);
+    },
+
+    setStepPlaybackStepSize(stepSize: StepPlaybackStepSize) {
+      stepPlaybackStepSize = stepSize === 0.5 ? 0.5 : 1;
+      saveToStorage(STORAGE_KEYS.STEP_PLAYBACK_STEP_SIZE, stepPlaybackStepSize);
+      debug.log(`Step playback step size set to ${stepPlaybackStepSize}`);
+    },
+
+    setEasingType(easing: EasingType) {
+      const validTypes: EasingType[] = ["linear", "ease-in", "ease-out", "ease-in-out"];
+      easingType = validTypes.includes(easing) ? easing : "linear";
+      saveToStorage(STORAGE_KEYS.EASING_TYPE, easingType);
+      debug.log(`Easing type set to ${easingType}`);
     },
 
     // Mode & Sequences
@@ -277,6 +348,10 @@ export function createPlaybackState(): PlaybackState {
       speed = 1.0;
       shouldLoop = false;
       currentBeat = 0;
+      playbackMode = "continuous";
+      stepPlaybackPauseMs = 250;
+      stepPlaybackStepSize = 1;
+      easingType = "linear";
       currentMode = "single";
       sequences = [];
       canvasSettings = [

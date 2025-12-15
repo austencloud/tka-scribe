@@ -134,6 +134,9 @@
     error = null,
     speed = 1,
     isPlaying = false,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
     blueProp = null,
     redProp = null,
     gridVisible = true,
@@ -147,6 +150,9 @@
     onSpeedChange = () => {},
     onPlaybackStart = () => {},
     onPlaybackToggle = () => {},
+    onPlaybackModeChange = () => {},
+    onStepPlaybackPauseMsChange = () => {},
+    onStepPlaybackStepSizeChange = () => {},
     onStepHalfBeatBackward = () => {},
     onStepHalfBeatForward = () => {},
     onStepFullBeatBackward = () => {},
@@ -168,6 +174,9 @@
     error?: string | null;
     speed?: number;
     isPlaying?: boolean;
+    playbackMode?: import("$lib/features/compose/state/animation-panel-state.svelte").PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: import("$lib/features/compose/state/animation-panel-state.svelte").StepPlaybackStepSize;
     blueProp?: PropState | null;
     redProp?: PropState | null;
     gridVisible?: boolean;
@@ -181,6 +190,13 @@
     onSpeedChange?: (newSpeed: number) => void;
     onPlaybackStart?: () => void;
     onPlaybackToggle?: () => void;
+    onPlaybackModeChange?: (
+      mode: import("$lib/features/compose/state/animation-panel-state.svelte").PlaybackMode
+    ) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange?: (
+      stepSize: import("$lib/features/compose/state/animation-panel-state.svelte").StepPlaybackStepSize
+    ) => void;
     onStepHalfBeatBackward?: () => void;
     onStepHalfBeatForward?: () => void;
     onStepFullBeatBackward?: () => void;
@@ -428,6 +444,9 @@
           <AnimationControlsPanel
             {speed}
             {isPlaying}
+            {playbackMode}
+            {stepPlaybackPauseMs}
+            {stepPlaybackStepSize}
             {blueMotionVisible}
             {redMotionVisible}
             {isSideBySideLayout}
@@ -440,6 +459,9 @@
             {onSpeedChange}
             {onPlaybackStart}
             {onPlaybackToggle}
+            {onPlaybackModeChange}
+            {onStepPlaybackPauseMsChange}
+            {onStepPlaybackStepSizeChange}
             {onStepHalfBeatBackward}
             {onStepHalfBeatForward}
             {onStepFullBeatBackward}

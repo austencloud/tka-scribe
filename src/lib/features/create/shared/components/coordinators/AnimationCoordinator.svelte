@@ -591,6 +591,9 @@
   error={animationPanelState.error}
   speed={animationPanelState.speed}
   isPlaying={animationPanelState.isPlaying}
+  playbackMode={animationPanelState.playbackMode}
+  stepPlaybackPauseMs={animationPanelState.stepPlaybackPauseMs}
+  stepPlaybackStepSize={animationPanelState.stepPlaybackStepSize}
   blueProp={animationPanelState.bluePropState}
   redProp={animationPanelState.redPropState}
   gridVisible={true}
@@ -603,6 +606,11 @@
   onSpeedChange={handleSpeedChange}
   onPlaybackStart={handlePlaybackStart}
   onPlaybackToggle={handlePlaybackToggle}
+  onPlaybackModeChange={(mode) => animationPanelState.setPlaybackMode(mode)}
+  onStepPlaybackPauseMsChange={(pauseMs) =>
+    animationPanelState.setStepPlaybackPauseMs(pauseMs)}
+  onStepPlaybackStepSizeChange={(stepSize) =>
+    animationPanelState.setStepPlaybackStepSize(stepSize)}
   onCanvasReady={handleCanvasReady}
   onVideoBeatChange={handleVideoBeatChange}
   onExportVideo={handleExportVideo}

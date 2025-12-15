@@ -61,6 +61,10 @@
     compState.openTemplates();
   }
 
+  function handleFullscreen() {
+    compState.enterFullscreen();
+  }
+
   // Close dropdowns on outside click
   function handleClickOutside(e: MouseEvent) {
     const target = e.target as HTMLElement;
@@ -164,6 +168,16 @@
         <i class="fas fa-magic"></i>
         <span class="templates-label">Templates</span>
       </button>
+
+      <!-- Fullscreen Button -->
+      <button
+        class="control-btn fullscreen-btn"
+        onclick={handleFullscreen}
+        title="Enter fullscreen"
+        aria-label="Enter fullscreen mode"
+      >
+        <i class="fas fa-expand"></i>
+      </button>
     </div>
   </div>
 
@@ -179,7 +193,8 @@
     flex-direction: column;
     gap: clamp(8px, 2cqi, 12px);
     padding: clamp(6px, 1.5cqi, 12px) clamp(10px, 2cqi, 20px);
-    background: rgba(20, 20, 35, 0.95);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: clamp(6px, 2cqi, 14px);
     backdrop-filter: blur(8px);
     container-type: inline-size;
@@ -203,13 +218,13 @@
     gap: clamp(2px, 1cqi, 8px);
   }
 
-  /* Control buttons - fluid touch target */
+  /* Control buttons - 52px minimum touch target */
   .control-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: clamp(40px, 8cqi, 52px);
+    min-height: 52px;
     padding: clamp(8px, 2cqi, 14px) clamp(10px, 2.5cqi, 18px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -284,6 +299,18 @@
     border-color: rgba(139, 92, 246, 0.6);
   }
 
+  /* Fullscreen button */
+  .fullscreen-btn {
+    min-width: 52px;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
   /* Layout Dropdown */
   .layout-picker {
     position: relative;
@@ -295,12 +322,12 @@
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: clamp(6px, 1.5cqi, 12px);
-    background: rgba(30, 30, 50, 0.98);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: clamp(6px, 1.5cqi, 10px);
     padding: clamp(3px, 1cqi, 6px);
-    box-shadow: 0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px)
-      rgba(0, 0, 0, 0.5);
+    box-shadow: var(--theme-shadow, 0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px) rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(12px);
     z-index: 100;
     display: grid;
     grid-template-columns: repeat(3, 1fr);

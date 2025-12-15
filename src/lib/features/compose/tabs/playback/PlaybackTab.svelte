@@ -169,6 +169,10 @@
         sequence={singleSequence()}
         isPlaying={playbackState.isPlaying}
         speed={playbackState.speed}
+        shouldLoop={playbackState.shouldLoop}
+        playbackMode={playbackState.playbackMode}
+        stepPlaybackPauseMs={playbackState.stepPlaybackPauseMs}
+        stepPlaybackStepSize={playbackState.stepPlaybackStepSize}
         visible={playbackState.sequences[0]?.visible ?? true}
         blueVisible={playbackState.sequences[0]?.blueVisible ?? true}
         redVisible={playbackState.sequences[0]?.redVisible ?? true}
@@ -181,6 +185,10 @@
         {tunnelColors}
         isPlaying={playbackState.isPlaying}
         speed={playbackState.speed}
+        shouldLoop={playbackState.shouldLoop}
+        playbackMode={playbackState.playbackMode}
+        stepPlaybackPauseMs={playbackState.stepPlaybackPauseMs}
+        stepPlaybackStepSize={playbackState.stepPlaybackStepSize}
         primaryVisible={playbackState.sequences[0]?.visible ?? true}
         primaryBlueVisible={playbackState.sequences[0]?.blueVisible ?? true}
         primaryRedVisible={playbackState.sequences[0]?.redVisible ?? true}
@@ -195,6 +203,10 @@
         axis="vertical"
         isPlaying={playbackState.isPlaying}
         speed={playbackState.speed}
+        shouldLoop={playbackState.shouldLoop}
+        playbackMode={playbackState.playbackMode}
+        stepPlaybackPauseMs={playbackState.stepPlaybackPauseMs}
+        stepPlaybackStepSize={playbackState.stepPlaybackStepSize}
         onOpenSettings={handleOpenSettings}
       />
     {:else if playbackState.currentMode === "grid"}
@@ -203,6 +215,10 @@
         {gridRotationOffsets}
         isPlaying={playbackState.isPlaying}
         speed={playbackState.speed}
+        shouldLoop={playbackState.shouldLoop}
+        playbackMode={playbackState.playbackMode}
+        stepPlaybackPauseMs={playbackState.stepPlaybackPauseMs}
+        stepPlaybackStepSize={playbackState.stepPlaybackStepSize}
         onSelectCell={handleGridSelectCell}
         onRemoveCell={handleGridRemoveCell}
         onOpenSettings={handleOpenSettings}
@@ -224,11 +240,19 @@
           isPlaying={playbackState.isPlaying}
           speed={playbackState.speed}
           shouldLoop={playbackState.shouldLoop}
+          playbackMode={playbackState.playbackMode}
+          stepPlaybackPauseMs={playbackState.stepPlaybackPauseMs}
+          stepPlaybackStepSize={playbackState.stepPlaybackStepSize}
           onPlay={() => playbackState.play()}
           onPause={() => playbackState.pause()}
           onStop={() => playbackState.stop()}
           onSpeedChange={(speed) => playbackState.setSpeed(speed)}
           onLoopToggle={(loop) => playbackState.setLoop(loop)}
+          onPlaybackModeChange={(mode) => playbackState.setPlaybackMode(mode)}
+          onStepPlaybackPauseMsChange={(pauseMs) =>
+            playbackState.setStepPlaybackPauseMs(pauseMs)}
+          onStepPlaybackStepSizeChange={(stepSize) =>
+            playbackState.setStepPlaybackStepSize(stepSize)}
         />
       {/if}
     </div>
@@ -238,11 +262,19 @@
       isPlaying={playbackState.isPlaying}
       speed={playbackState.speed}
       shouldLoop={playbackState.shouldLoop}
+      playbackMode={playbackState.playbackMode}
+      stepPlaybackPauseMs={playbackState.stepPlaybackPauseMs}
+      stepPlaybackStepSize={playbackState.stepPlaybackStepSize}
       onPlay={() => playbackState.play()}
       onPause={() => playbackState.pause()}
       onStop={() => playbackState.stop()}
       onSpeedChange={(speed) => playbackState.setSpeed(speed)}
       onLoopToggle={(loop) => playbackState.setLoop(loop)}
+      onPlaybackModeChange={(mode) => playbackState.setPlaybackMode(mode)}
+      onStepPlaybackPauseMsChange={(pauseMs) =>
+        playbackState.setStepPlaybackPauseMs(pauseMs)}
+      onStepPlaybackStepSizeChange={(stepSize) =>
+        playbackState.setStepPlaybackStepSize(stepSize)}
     />
   {/if}
 
@@ -285,8 +317,8 @@
     flex-shrink: 0;
     min-height: 140px;
     max-height: 200px;
-    background: rgba(0, 0, 0, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   /* Mobile: Give more space to canvas */

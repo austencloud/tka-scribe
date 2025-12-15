@@ -28,6 +28,10 @@
     sequence,
     isPlaying = false,
     speed = 1.0,
+    shouldLoop = false,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
     visible = true,
     blueVisible = true,
     redVisible = true,
@@ -36,6 +40,10 @@
     sequence: SequenceData | null;
     isPlaying?: boolean;
     speed?: number;
+    shouldLoop?: boolean;
+    playbackMode?: import("../../../state/animation-panel-state.svelte").PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: import("../../../state/animation-panel-state.svelte").StepPlaybackStepSize;
     visible?: boolean;
     blueVisible?: boolean;
     redVisible?: boolean;
@@ -144,6 +152,20 @@
       console.log(`🎬 Syncing speed to single renderer: ${speed}x`);
       playbackController.setSpeed(speed);
     }
+  });
+
+  // Sync loop + step playback preferences to per-renderer animation state
+  $effect(() => {
+    if (!animationState.sequenceData) return;
+    animationState.setShouldLoop(shouldLoop);
+  });
+
+  $effect(() => {
+    if (!animationState.sequenceData) return;
+    if (animationState.isPlaying) return;
+    animationState.setPlaybackMode(playbackMode);
+    animationState.setStepPlaybackPauseMs(stepPlaybackPauseMs);
+    animationState.setStepPlaybackStepSize(stepPlaybackStepSize);
   });
 
   // Derived: Current letter

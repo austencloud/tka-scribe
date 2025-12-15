@@ -15,6 +15,10 @@
     gridRotationOffsets = [0, 90, 180, 270],
     isPlaying = false,
     speed = 1.0,
+    shouldLoop = false,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
     onSelectCell,
     onRemoveCell,
     onOpenSettings,
@@ -23,6 +27,10 @@
     gridRotationOffsets?: number[];
     isPlaying?: boolean;
     speed?: number;
+    shouldLoop?: boolean;
+    playbackMode?: import("../../../state/animation-panel-state.svelte").PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: import("../../../state/animation-panel-state.svelte").StepPlaybackStepSize;
     onSelectCell: (index: GridIndex) => void;
     onRemoveCell: (index: GridIndex) => void;
     onOpenSettings: (canvasId: string) => void;
@@ -163,8 +171,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.2s ease;
@@ -185,8 +193,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .rotation-badge {

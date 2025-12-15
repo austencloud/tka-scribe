@@ -1,0 +1,571 @@
+<!--
+  AudioPhase.svelte
+
+  Audio timeline editor phase.
+  Desktop: Full waveform timeline with beat markers
+  Mobile: Placeholder message directing to desktop
+-->
+<script lang="ts">
+  import { onMount } from "svelte";
+  import type { AudioState, BeatMarker, TempoRegion } from "../../state/composition-state.svelte";
+  import WaveformTimeline from "./WaveformTimeline.svelte";
+  import BeatMarkerTrack from "./BeatMarkerTrack.svelte";
+  import TempoRegionTrack from "./TempoRegionTrack.svelte";
+  import ManualBeatTapper from "./ManualBeatTapper.svelte";
+  import { analyzeAudioBpm } from "./bpm-analyzer";
+
+  let {
+    audioState,
+    onLoadAudio,
+    onClearAudio,
+    onSetBpm,
+    onSetDuration,
+    onSetAnalyzing,
+    onAddBeatMarker,
+    onRemoveBeatMarker,
+    onAddTempoRegion,
+    onRemoveTempoRegion,
+    onUpdateTempoRegion,
+  }: {
+    audioState: AudioState;
+    onLoadAudio: (file: File) => void;
+    onClearAudio: () => void;
+    onSetBpm: (bpm: number) => void;
+    onSetDuration?: (duration: number) => void;
+    onSetAnalyzing?: (analyzing: boolean) => void;
+    onAddBeatMarker: (marker: BeatMarker) => void;
+    onRemoveBeatMarker: (id: string) => void;
+    onAddTempoRegion?: (region: TempoRegion) => void;
+    onRemoveTempoRegion?: (id: string) => void;
+    onUpdateTempoRegion?: (id: string, updates: Partial<TempoRegion>) => void;
+  } = $props();
+
+  // Playback state for waveform
+  let isAudioPlaying = $state(false);
+  let currentAudioTime = $state(0);
+
+  let isDesktop = $state(false);
+  let isDragging = $state(false);
+  let fileInput: HTMLInputElement;
+  let bpmAnalysisProgress = $state(0);
+  let bpmError = $state<string | null>(null);
+
+  // Auto-analyze BPM when audio is loaded
+  $effect(() => {
+    if (audioState.isLoaded && audioState.url && !audioState.detectedBpm && !audioState.isAnalyzing) {
+      analyzeBpm();
+    }
+  });
+
+  async function analyzeBpm() {
+    if (!audioState.url) return;
+
+    bpmError = null;
+    bpmAnalysisProgress = 0;
+    onSetAnalyzing?.(true);
+
+    try {
+      const result = await analyzeAudioBpm(audioState.url, (progress) => {
+        bpmAnalysisProgress = progress;
+      });
+
+      if (result.confidence > 0.5) {
+        onSetBpm(result.bpm);
+        console.log(`🎵 BPM detected: ${result.bpm} (confidence: ${(result.confidence * 100).toFixed(0)}%)`);
+      } else {
+        bpmError = "Could not detect BPM reliably. Try setting it manually.";
+        console.warn("🎵 BPM detection confidence too low:", result);
+      }
+    } catch (err) {
+      console.error("🎵 BPM analysis failed:", err);
+      bpmError = "BPM analysis failed. Try setting it manually.";
+    } finally {
+      onSetAnalyzing?.(false);
+      bpmAnalysisProgress = 0;
+    }
+  }
+
+  function updateDesktopState() {
+    isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
+  }
+
+  onMount(() => {
+    updateDesktopState();
+    window.addEventListener("resize", updateDesktopState);
+    return () => window.removeEventListener("resize", updateDesktopState);
+  });
+
+  function handleDragOver(e: DragEvent) {
+    e.preventDefault();
+    isDragging = true;
+  }
+
+  function handleDragLeave() {
+    isDragging = false;
+  }
+
+  function handleDrop(e: DragEvent) {
+    e.preventDefault();
+    isDragging = false;
+
+    const file = e.dataTransfer?.files[0];
+    if (file && file.type.startsWith("audio/")) {
+      onLoadAudio(file);
+    }
+  }
+
+  function handleFileSelect(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      onLoadAudio(file);
+    }
+  }
+
+  function openFilePicker() {
+    fileInput?.click();
+  }
+</script>
+
+<div class="audio-phase">
+  {#if !isDesktop}
+    <!-- Mobile Placeholder -->
+    <div class="mobile-placeholder">
+      <div class="placeholder-icon">
+        <i class="fas fa-desktop"></i>
+      </div>
+      <h3>Audio Timeline</h3>
+      <p>The audio editor is optimized for desktop screens.</p>
+      <p class="hint">Switch to a larger screen for the full timeline experience.</p>
+    </div>
+  {:else}
+    <!-- Desktop Audio Editor -->
+    <div class="audio-editor">
+      {#if !audioState.isLoaded}
+        <!-- Drop Zone -->
+        <div
+          class="drop-zone"
+          class:dragging={isDragging}
+          ondragover={handleDragOver}
+          ondragleave={handleDragLeave}
+          ondrop={handleDrop}
+          onclick={openFilePicker}
+          onkeydown={(e) => e.key === "Enter" && openFilePicker()}
+          role="button"
+          tabindex="0"
+        >
+          <input
+            bind:this={fileInput}
+            type="file"
+            accept="audio/*"
+            onchange={handleFileSelect}
+            hidden
+          />
+          <div class="drop-icon">
+            <i class="fas fa-music"></i>
+          </div>
+          <h3>Drop audio file here</h3>
+          <p>or click to browse</p>
+          <p class="formats">Supports MP3, WAV, OGG, M4A</p>
+        </div>
+      {:else}
+        <!-- Audio Loaded - Timeline UI -->
+        <div class="timeline-container">
+          <div class="audio-header">
+            <div class="file-info">
+              <i class="fas fa-file-audio"></i>
+              <span class="file-name">{audioState.fileName}</span>
+              <span class="duration">
+                {Math.floor(audioState.duration / 60)}:{String(Math.floor(audioState.duration % 60)).padStart(2, "0")}
+              </span>
+            </div>
+            <button class="clear-btn" onclick={onClearAudio}>
+              <i class="fas fa-times"></i>
+              Remove
+            </button>
+          </div>
+
+          <WaveformTimeline
+            audioUrl={audioState.url ?? ""}
+            isPlaying={isAudioPlaying}
+            currentTime={currentAudioTime}
+            onReady={() => console.log("🎵 Waveform ready")}
+            onTimeUpdate={(time) => (currentAudioTime = time)}
+            onDurationChange={(duration) => onSetDuration?.(duration)}
+            onPlayPause={(playing) => (isAudioPlaying = playing)}
+          />
+
+          <div class="bpm-controls">
+            <span class="label">BPM:</span>
+            {#if audioState.isAnalyzing}
+              <div class="analyzing-container">
+                <span class="analyzing">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  Analyzing... {Math.round(bpmAnalysisProgress * 100)}%
+                </span>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: {bpmAnalysisProgress * 100}%"></div>
+                </div>
+              </div>
+            {:else if bpmError}
+              <div class="error-container">
+                <span class="error">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  {bpmError}
+                </span>
+                <button class="retry-btn" onclick={analyzeBpm}>
+                  <i class="fas fa-redo"></i>
+                  Retry
+                </button>
+              </div>
+            {:else if audioState.detectedBpm}
+              <span class="detected">{audioState.detectedBpm}</span>
+              <span class="source">(detected)</span>
+            {:else}
+              <span class="not-detected">Not detected</span>
+            {/if}
+          </div>
+
+          <!-- Beat Marker Track -->
+          <BeatMarkerTrack
+            duration={audioState.duration}
+            bpm={audioState.detectedBpm ?? audioState.manualBpm}
+            currentTime={currentAudioTime}
+            beatMarkers={audioState.globalBeatMarkers}
+            onAddMarker={onAddBeatMarker}
+            onRemoveMarker={onRemoveBeatMarker}
+          />
+
+          <!-- Tempo Region Track (Variable BPM) -->
+          <TempoRegionTrack
+            duration={audioState.duration}
+            currentTime={currentAudioTime}
+            baseBpm={audioState.detectedBpm ?? audioState.manualBpm}
+            tempoRegions={audioState.tempoRegions}
+            onAddRegion={onAddTempoRegion}
+            onRemoveRegion={onRemoveTempoRegion}
+            onUpdateRegion={onUpdateTempoRegion}
+          />
+
+          <!-- Manual Beat Tapper (for recordings) -->
+          <ManualBeatTapper
+            currentTime={currentAudioTime}
+            duration={audioState.duration}
+            isPlaying={isAudioPlaying}
+            beatMarkers={audioState.globalBeatMarkers}
+            onAddMarker={onAddBeatMarker}
+            onRemoveMarker={onRemoveBeatMarker}
+            onClearAll={() => {
+              // Clear all beat markers
+              audioState.globalBeatMarkers.forEach((m) => onRemoveBeatMarker(m.id));
+            }}
+          />
+        </div>
+      {/if}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .audio-phase {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Mobile Placeholder */
+  .mobile-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .placeholder-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 92, 246, 0.15);
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+  }
+
+  .placeholder-icon i {
+    font-size: 2rem;
+    color: rgba(167, 139, 250, 0.8);
+  }
+
+  .mobile-placeholder h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .mobile-placeholder p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .mobile-placeholder .hint {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Desktop Audio Editor */
+  .audio-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    overflow: auto;
+  }
+
+  /* Drop Zone */
+  .drop-zone {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 300px;
+  }
+
+  .drop-zone:hover,
+  .drop-zone.dragging {
+    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(139, 92, 246, 0.05);
+  }
+
+  .drop-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 92, 246, 0.15);
+    border-radius: 50%;
+    margin-bottom: 1rem;
+  }
+
+  .drop-icon i {
+    font-size: 1.5rem;
+    color: rgba(167, 139, 250, 0.9);
+  }
+
+  .drop-zone h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .drop-zone p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .drop-zone .formats {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Timeline Container */
+  .timeline-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .audio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  .file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .file-info i {
+    color: rgba(139, 92, 246, 0.8);
+  }
+
+  .file-name {
+    font-weight: 500;
+  }
+
+  .duration {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+  }
+
+  .clear-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    color: rgba(248, 113, 113, 0.9);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .clear-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  /* Waveform Placeholder */
+  .waveform-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+  }
+
+  .placeholder-content {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .placeholder-content i {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .placeholder-content p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .placeholder-content .hint {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* BPM Controls */
+  .bpm-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .bpm-controls .label {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+  }
+
+  .bpm-controls .detected {
+    font-weight: 600;
+    color: rgba(167, 139, 250, 1);
+  }
+
+  .bpm-controls .source {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+  }
+
+  .bpm-controls .analyzing {
+    color: rgba(251, 191, 36, 0.9);
+  }
+
+  .bpm-controls .not-detected {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Analyzing Container */
+  .analyzing-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: rgba(251, 191, 36, 0.8);
+    border-radius: 2px;
+    transition: width 0.2s ease;
+  }
+
+  /* Error Container */
+  .error-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .bpm-controls .error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(248, 113, 113, 0.9);
+    font-size: 0.85rem;
+  }
+
+  .retry-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 6px;
+    color: rgba(167, 139, 250, 0.9);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .retry-btn:hover {
+    background: rgba(139, 92, 246, 0.25);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+</style>

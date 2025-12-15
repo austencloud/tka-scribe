@@ -43,6 +43,10 @@
     tunnelColors,
     isPlaying = false,
     speed = 1.0,
+    shouldLoop = false,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
     primaryVisible = true,
     primaryBlueVisible = true,
     primaryRedVisible = true,
@@ -56,6 +60,10 @@
     tunnelColors: TunnelColors;
     isPlaying?: boolean;
     speed?: number;
+    shouldLoop?: boolean;
+    playbackMode?: import("../../../state/animation-panel-state.svelte").PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: import("../../../state/animation-panel-state.svelte").StepPlaybackStepSize;
     primaryVisible?: boolean;
     primaryBlueVisible?: boolean;
     primaryRedVisible?: boolean;
@@ -252,6 +260,24 @@
       primaryPlaybackController.setSpeed(speed);
       secondaryPlaybackController.setSpeed(speed);
     }
+  });
+
+  // Sync loop + step playback preferences to both per-renderer animation states
+  $effect(() => {
+    if (!primaryAnimationState.sequenceData || !secondaryAnimationState.sequenceData) return;
+    primaryAnimationState.setShouldLoop(shouldLoop);
+    secondaryAnimationState.setShouldLoop(shouldLoop);
+  });
+
+  $effect(() => {
+    if (!primaryAnimationState.sequenceData || !secondaryAnimationState.sequenceData) return;
+    if (primaryAnimationState.isPlaying || secondaryAnimationState.isPlaying) return;
+    primaryAnimationState.setPlaybackMode(playbackMode);
+    primaryAnimationState.setStepPlaybackPauseMs(stepPlaybackPauseMs);
+    primaryAnimationState.setStepPlaybackStepSize(stepPlaybackStepSize);
+    secondaryAnimationState.setPlaybackMode(playbackMode);
+    secondaryAnimationState.setStepPlaybackPauseMs(stepPlaybackPauseMs);
+    secondaryAnimationState.setStepPlaybackStepSize(stepPlaybackStepSize);
   });
 
   // Derived: Current letters for both sequences

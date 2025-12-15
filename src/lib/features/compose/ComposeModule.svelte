@@ -157,6 +157,6 @@
     position: absolute;
     inset: 0;
     z-index: 100;
-    background: rgba(10, 15, 25, 0.98);
+    background: transparent;
   }
 </style>

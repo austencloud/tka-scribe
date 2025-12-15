@@ -62,10 +62,9 @@
     height: 100%;
     max-height: min(90cqb, 100%);
     /* Canvas aspect ratio matches grid layout (set via style binding) */
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
     border-radius: 0;
-    box-shadow:
-      0 clamp(4px, 1cqi, 12px) clamp(16px, 4cqi, 40px) rgba(0, 0, 0, 0.4);
+    box-shadow: var(--theme-shadow, 0 clamp(4px, 1cqi, 12px) clamp(16px, 4cqi, 40px) rgba(0, 0, 0, 0.4));
     container-type: size;
     container-name: grid;
     overflow: hidden;

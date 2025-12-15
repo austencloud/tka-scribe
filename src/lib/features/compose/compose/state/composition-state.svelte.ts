@@ -13,6 +13,47 @@ import type {
   GridLayout,
   CellType,
 } from "../domain/types";
+
+// ============================================================================
+// Workflow Phase Types
+// ============================================================================
+
+/** Workflow phases within the Arrange tab */
+export type WorkflowPhase = "canvas" | "audio" | "export";
+
+/** Beat marker for audio sync */
+export interface BeatMarker {
+  id: string;
+  beat: number;
+  time: number; // seconds
+  isHalfBeat?: boolean;
+  cellId?: string; // for per-cell custom timing
+}
+
+/** Tempo region for variable BPM support */
+export interface TempoRegion {
+  id: string;
+  startTime: number; // seconds
+  endTime: number; // seconds
+  bpm: number;
+  /** Optional: ramp from previous region's BPM */
+  rampFromPrevious?: boolean;
+}
+
+/** Audio state for the composition */
+export interface AudioState {
+  file: File | null;
+  url: string | null;
+  fileName: string | null;
+  duration: number; // seconds
+  detectedBpm: number | null;
+  manualBpm: number | null; // user override
+  globalBeatMarkers: BeatMarker[];
+  /** Tempo regions for variable BPM (empty = use detectedBpm/manualBpm) */
+  tempoRegions: TempoRegion[];
+  isAnalyzing: boolean;
+  isLoaded: boolean;
+}
 import {
   generateCellId,
   createEmptyCells,
@@ -30,7 +71,27 @@ const STORAGE_KEYS = {
   COMPOSITION: "compose-current-composition",
   PREVIEW_MODE: "compose-preview-mode",
   PLAYBACK_BPM: "compose-playback-bpm",
+  WORKFLOW_PHASE: "compose-workflow-phase",
 } as const;
+
+// ============================================================================
+// Default Audio State
+// ============================================================================
+
+function createDefaultAudioState(): AudioState {
+  return {
+    file: null,
+    url: null,
+    fileName: null,
+    duration: 0,
+    detectedBpm: null,
+    manualBpm: null,
+    globalBeatMarkers: [],
+    tempoRegions: [],
+    isAnalyzing: false,
+    isLoaded: false,
+  };
+}
 
 // ============================================================================
 // Helper Functions
@@ -107,10 +168,18 @@ export function createCompositionState() {
 
   // UI state
   let selectedCellId = $state<string | null>(null);
-  let showOverlayControls = $state(true);
   let isTemplatesOpen = $state(false);
   let isCellConfigOpen = $state(false);
   let isSettingsOpen = $state(false);
+  let isFullscreen = $state(false);
+
+  // Workflow phase state (persisted)
+  let currentPhase = $state<WorkflowPhase>(
+    loadFromStorage(STORAGE_KEYS.WORKFLOW_PHASE, "canvas")
+  );
+
+  // Audio state (not persisted - audio files don't survive page reload)
+  let audioState = $state<AudioState>(createDefaultAudioState());
 
   // =========================================================================
   // Derived State
@@ -133,6 +202,14 @@ export function createCompositionState() {
       ? composition.cells.find((c) => c.id === selectedCellId) ?? null
       : null
   );
+
+  // Effective BPM: manual override > detected > default
+  const effectiveBpm = $derived(
+    audioState.manualBpm ?? audioState.detectedBpm ?? bpm
+  );
+
+  // Whether audio is configured
+  const hasAudio = $derived(audioState.isLoaded && audioState.url !== null);
 
   // =========================================================================
   // Layout Mutations
@@ -271,6 +348,11 @@ export function createCompositionState() {
     updateCell(cellId, { rotationOffset: rotation });
   }
 
+  function setCellMediaType(cellId: string, mediaType: "animation" | "video" | "beatGrid" | "image") {
+    updateCell(cellId, { mediaType });
+    console.log(`🎨 Composition: Cell ${cellId} media type set to ${mediaType}`);
+  }
+
   function clearCell(cellId: string) {
     updateCell(cellId, {
       sequences: [],
@@ -376,8 +458,196 @@ export function createCompositionState() {
     isSettingsOpen = false;
   }
 
-  function setShowOverlayControls(show: boolean) {
-    showOverlayControls = show;
+  function enterFullscreen() {
+    closeAllSheets();
+    isFullscreen = true;
+    console.log("⛶ Composition: Entered fullscreen");
+  }
+
+  function exitFullscreen() {
+    isFullscreen = false;
+    console.log("⛶ Composition: Exited fullscreen");
+  }
+
+  function toggleFullscreen() {
+    if (isFullscreen) {
+      exitFullscreen();
+    } else {
+      enterFullscreen();
+    }
+  }
+
+  // =========================================================================
+  // Workflow Phase Mutations
+  // =========================================================================
+
+  function setCurrentPhase(phase: WorkflowPhase) {
+    currentPhase = phase;
+    saveToStorage(STORAGE_KEYS.WORKFLOW_PHASE, phase);
+    console.log(`📍 Composition: Phase changed to ${phase}`);
+  }
+
+  function goToCanvas() {
+    setCurrentPhase("canvas");
+  }
+
+  function goToAudio() {
+    setCurrentPhase("audio");
+  }
+
+  function goToExport() {
+    setCurrentPhase("export");
+  }
+
+  // =========================================================================
+  // Audio State Mutations
+  // =========================================================================
+
+  function loadAudioFile(file: File) {
+    // Revoke previous URL if exists
+    if (audioState.url) {
+      URL.revokeObjectURL(audioState.url);
+    }
+
+    const url = URL.createObjectURL(file);
+    audioState = {
+      ...audioState,
+      file,
+      url,
+      fileName: file.name,
+      isLoaded: true,
+      isAnalyzing: false,
+    };
+    console.log(`🎵 Composition: Audio loaded - ${file.name}`);
+  }
+
+  function setAudioDuration(duration: number) {
+    audioState = {
+      ...audioState,
+      duration,
+    };
+  }
+
+  function setDetectedBpm(bpm: number) {
+    audioState = {
+      ...audioState,
+      detectedBpm: bpm,
+      isAnalyzing: false,
+    };
+    console.log(`🎵 Composition: BPM detected - ${bpm}`);
+  }
+
+  function setManualBpm(bpm: number | null) {
+    audioState = {
+      ...audioState,
+      manualBpm: bpm,
+    };
+    if (bpm !== null) {
+      console.log(`🎵 Composition: Manual BPM set - ${bpm}`);
+    }
+  }
+
+  function setAnalyzing(analyzing: boolean) {
+    audioState = {
+      ...audioState,
+      isAnalyzing: analyzing,
+    };
+  }
+
+  function addBeatMarker(marker: BeatMarker) {
+    audioState = {
+      ...audioState,
+      globalBeatMarkers: [...audioState.globalBeatMarkers, marker],
+    };
+  }
+
+  function removeBeatMarker(markerId: string) {
+    audioState = {
+      ...audioState,
+      globalBeatMarkers: audioState.globalBeatMarkers.filter(
+        (m) => m.id !== markerId
+      ),
+    };
+  }
+
+  function updateBeatMarker(markerId: string, updates: Partial<BeatMarker>) {
+    audioState = {
+      ...audioState,
+      globalBeatMarkers: audioState.globalBeatMarkers.map((m) =>
+        m.id === markerId ? { ...m, ...updates } : m
+      ),
+    };
+  }
+
+  function setBeatMarkers(markers: BeatMarker[]) {
+    audioState = {
+      ...audioState,
+      globalBeatMarkers: markers,
+    };
+  }
+
+  function clearAudio() {
+    // Revoke URL if exists
+    if (audioState.url) {
+      URL.revokeObjectURL(audioState.url);
+    }
+    audioState = createDefaultAudioState();
+    console.log("🎵 Composition: Audio cleared");
+  }
+
+  // =========================================================================
+  // Tempo Region Mutations (Dynamic BPM)
+  // =========================================================================
+
+  function addTempoRegion(region: TempoRegion) {
+    // Insert in sorted order by startTime
+    const regions = [...audioState.tempoRegions, region].sort(
+      (a, b) => a.startTime - b.startTime
+    );
+    audioState = { ...audioState, tempoRegions: regions };
+    console.log(`🎵 Composition: Added tempo region at ${region.startTime}s (${region.bpm} BPM)`);
+  }
+
+  function removeTempoRegion(regionId: string) {
+    audioState = {
+      ...audioState,
+      tempoRegions: audioState.tempoRegions.filter((r) => r.id !== regionId),
+    };
+  }
+
+  function updateTempoRegion(regionId: string, updates: Partial<TempoRegion>) {
+    audioState = {
+      ...audioState,
+      tempoRegions: audioState.tempoRegions
+        .map((r) => (r.id === regionId ? { ...r, ...updates } : r))
+        .sort((a, b) => a.startTime - b.startTime),
+    };
+  }
+
+  function setTempoRegions(regions: TempoRegion[]) {
+    audioState = {
+      ...audioState,
+      tempoRegions: [...regions].sort((a, b) => a.startTime - b.startTime),
+    };
+  }
+
+  function clearTempoRegions() {
+    audioState = { ...audioState, tempoRegions: [] };
+  }
+
+  /**
+   * Get the BPM at a specific time in the audio.
+   * Returns the tempo region's BPM if within a region, otherwise falls back to detected/manual BPM.
+   */
+  function getBpmAtTime(time: number): number {
+    // Check if time falls within any tempo region
+    for (const region of audioState.tempoRegions) {
+      if (time >= region.startTime && time < region.endTime) {
+        return region.bpm;
+      }
+    }
+    // Fallback to manual or detected BPM
+    return audioState.manualBpm ?? audioState.detectedBpm ?? 120;
   }
 
   // =========================================================================
@@ -405,7 +675,10 @@ export function createCompositionState() {
     selectedCellId = null;
     isPlaying = false;
     currentBeat = 0;
+    currentPhase = "canvas";
+    clearAudio();
     closeAllSheets();
+    saveToStorage(STORAGE_KEYS.WORKFLOW_PHASE, "canvas");
     console.log("🔄 Composition: Reset");
   }
 
@@ -433,10 +706,14 @@ export function createCompositionState() {
 
     // UI state getters
     get selectedCellId() { return selectedCellId; },
-    get showOverlayControls() { return showOverlayControls; },
     get isTemplatesOpen() { return isTemplatesOpen; },
     get isCellConfigOpen() { return isCellConfigOpen; },
     get isSettingsOpen() { return isSettingsOpen; },
+    get isFullscreen() { return isFullscreen; },
+
+    // Workflow phase getters
+    get currentPhase() { return currentPhase; },
+    get audioState() { return audioState; },
 
     // Derived getters
     get cellCount() { return cellCount; },
@@ -444,6 +721,8 @@ export function createCompositionState() {
     get canPlay() { return canPlay; },
     get isComplete() { return isComplete; },
     get selectedCell() { return selectedCell; },
+    get effectiveBpm() { return effectiveBpm; },
+    get hasAudio() { return hasAudio; },
 
     // Layout mutations
     setLayout,
@@ -451,6 +730,7 @@ export function createCompositionState() {
 
     // Cell mutations
     setCellType,
+    setCellMediaType,
     setCellSequences,
     addSequenceToCell,
     removeSequenceFromCell,
@@ -477,7 +757,35 @@ export function createCompositionState() {
     openSettings,
     closeSettings,
     closeAllSheets,
-    setShowOverlayControls,
+    enterFullscreen,
+    exitFullscreen,
+    toggleFullscreen,
+
+    // Workflow phase mutations
+    setCurrentPhase,
+    goToCanvas,
+    goToAudio,
+    goToExport,
+
+    // Audio state mutations
+    loadAudioFile,
+    setAudioDuration,
+    setDetectedBpm,
+    setManualBpm,
+    setAnalyzing,
+    addBeatMarker,
+    removeBeatMarker,
+    updateBeatMarker,
+    setBeatMarkers,
+    clearAudio,
+
+    // Tempo region mutations (dynamic BPM)
+    addTempoRegion,
+    removeTempoRegion,
+    updateTempoRegion,
+    setTempoRegions,
+    clearTempoRegions,
+    getBpmAtTime,
 
     // Composition management
     setName,

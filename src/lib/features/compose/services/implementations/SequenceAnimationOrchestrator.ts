@@ -45,6 +45,7 @@ export class SequenceAnimationOrchestrator
 
   /**
    * Initialize with domain sequence data (PURE DOMAIN!)
+   * Data arrives already normalized from SequenceService
    */
   initializeWithDomainData(sequenceData: SequenceData): boolean {
     try {

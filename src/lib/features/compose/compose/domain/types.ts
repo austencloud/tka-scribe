@@ -53,6 +53,12 @@ export type LayoutPresetKey = keyof typeof LAYOUT_PRESETS;
 export type CellType = "single" | "tunnel";
 
 /**
+ * Media display type for a cell
+ * Controls how the sequence content is rendered
+ */
+export type MediaDisplayType = "animation" | "video" | "beatGrid" | "image";
+
+/**
  * Individual cell configuration
  * Each cell in the grid has its own independent configuration
  */
@@ -62,6 +68,9 @@ export interface CellConfig {
 
   /** Cell content type */
   type: CellType;
+
+  /** How to display the sequence content */
+  mediaType?: MediaDisplayType;
 
   /** Sequences assigned to this cell (1 for single, 2-4 for tunnel) */
   sequences: SequenceData[];

@@ -15,12 +15,20 @@
     axis = "vertical",
     isPlaying = false,
     speed = 1.0,
+    shouldLoop = false,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
     onOpenSettings,
   }: {
     sequence: SequenceData | null;
     axis?: MirrorAxis;
     isPlaying?: boolean;
     speed?: number;
+    shouldLoop?: boolean;
+    playbackMode?: import("../../../state/animation-panel-state.svelte").PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: import("../../../state/animation-panel-state.svelte").StepPlaybackStepSize;
     onOpenSettings: (canvasId: string) => void;
   } = $props();
 </script>
@@ -109,8 +117,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.4rem 0.8rem;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 500;
