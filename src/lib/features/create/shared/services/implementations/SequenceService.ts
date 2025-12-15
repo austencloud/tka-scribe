@@ -19,6 +19,7 @@ import type { ISequenceDomainService } from "../contracts/ISequenceDomainService
 import type { ISequenceImportService } from "../contracts/ISequenceImportService";
 import type { IReversalDetectionService } from "../contracts/IReversalDetectionService";
 import type { ISequenceService } from "../contracts/ISequenceService";
+import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
 
 @injectable()
 export class SequenceService implements ISequenceService {
@@ -29,6 +30,8 @@ export class SequenceService implements ISequenceService {
     private persistenceService: IPersistenceService,
     @inject(TYPES.IReversalDetectionService)
     private reversalDetectionService: IReversalDetectionService,
+    @inject(TYPES.ISequenceNormalizationService)
+    private normalizationService: ISequenceNormalizationService,
     @inject(TYPES.ISequenceImportService)
     private sequenceImportService?: ISequenceImportService
   ) {}
@@ -110,6 +113,15 @@ export class SequenceService implements ISequenceService {
       // Apply reversal detection to ensure sequence has up-to-date reversal data
       if (sequence) {
         sequence = this.reversalDetectionService.processReversals(sequence);
+
+        // Normalize sequence data to ensure start position is separated from beats
+        // This handles legacy data formats where beat 0 or startingPositionBeat was mixed into beats array
+        const normalized = this.normalizationService.separateBeatsFromStartPosition(sequence);
+        sequence = {
+          ...sequence,
+          beats: normalized.beats,
+          startPosition: normalized.startPosition ?? undefined,
+        };
       }
 
       return sequence;
@@ -126,10 +138,19 @@ export class SequenceService implements ISequenceService {
     try {
       const sequences = await this.persistenceService.loadAllSequences();
 
-      // Apply reversal detection to all sequences
-      return sequences.map((sequence) =>
-        this.reversalDetectionService.processReversals(sequence)
-      );
+      // Apply reversal detection and normalization to all sequences
+      return sequences.map((sequence) => {
+        // Apply reversal detection
+        let processed = this.reversalDetectionService.processReversals(sequence);
+
+        // Normalize to separate start position from beats
+        const normalized = this.normalizationService.separateBeatsFromStartPosition(processed);
+        return {
+          ...processed,
+          beats: normalized.beats,
+          startPosition: normalized.startPosition ?? undefined,
+        };
+      });
     } catch (error) {
       console.error("Failed to get all sequences:", error);
       return [];

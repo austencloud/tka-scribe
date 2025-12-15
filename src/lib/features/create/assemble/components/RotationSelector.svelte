@@ -59,13 +59,13 @@ for SHIFT motions in the completed hand paths.
     font-size: 28px;
     font-weight: 700;
     margin: 0;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     text-align: center;
   }
 
   .description {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-align: center;
     margin: 0;
     max-width: 400px;
@@ -87,8 +87,8 @@ for SHIFT motions in the completed hand paths.
     justify-content: center;
     gap: 12px;
     padding: 32px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -99,19 +99,19 @@ for SHIFT motions in the completed hand paths.
     font-size: 64px;
     line-height: 1;
     transition: transform 0.3s ease;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
   }
 
   .rotation-button .label {
     font-size: 18px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .rotation-button .sublabel {
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Hover effects */
@@ -135,11 +135,11 @@ for SHIFT motions in the completed hand paths.
     transition: transform 0.1s ease;
   }
 
-  /* Color themes */
+  /* Color themes - keep domain colors (blue=CW, red=CCW) with themed base */
   .rotation-button.clockwise {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.04),
+      var(--theme-card-bg, rgba(255, 255, 255, 0.04)),
       rgba(59, 130, 246, 0.12)
     );
   }
@@ -152,7 +152,7 @@ for SHIFT motions in the completed hand paths.
       rgba(59, 130, 246, 0.25)
     );
     box-shadow:
-      0 8px 24px rgba(0, 0, 0, 0.3),
+      0 8px 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
       0 0 32px rgba(59, 130, 246, 0.2);
   }
 
@@ -163,7 +163,7 @@ for SHIFT motions in the completed hand paths.
   .rotation-button.counter-clockwise {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.04),
+      var(--theme-card-bg, rgba(255, 255, 255, 0.04)),
       rgba(239, 68, 68, 0.12)
     );
   }
@@ -176,7 +176,7 @@ for SHIFT motions in the completed hand paths.
       rgba(239, 68, 68, 0.25)
     );
     box-shadow:
-      0 8px 24px rgba(0, 0, 0, 0.3),
+      0 8px 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
       0 0 32px rgba(239, 68, 68, 0.2);
   }
 

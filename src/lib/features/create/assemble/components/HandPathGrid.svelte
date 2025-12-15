@@ -127,10 +127,10 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.02);
-    border: 2px dashed rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    border: 2px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.2));
     font-size: 24px;
     opacity: 0.3;
   }

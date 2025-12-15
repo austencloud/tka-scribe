@@ -247,7 +247,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   .title {
     font-size: clamp(1.25rem, 4vw, 1.75rem);
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, #ffffff);
     text-align: center;
     margin: 0;
     line-height: 1.2;
@@ -255,7 +255,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
 
   .subtitle {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-align: center;
     margin: 0;
     line-height: 1.4;
@@ -413,15 +413,15 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .action-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.35);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.35));
+    color: var(--theme-text, white);
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(255, 255, 255, 0.1);
   }

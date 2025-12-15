@@ -80,26 +80,25 @@ Compact inline panel for configuring sequence length and grid mode.
     flex-direction: column;
     gap: 0.875rem;
     padding: 1.25rem;
-    background: linear-gradient(
-      135deg,
-      rgba(30, 41, 59, 0.6),
-      rgba(15, 23, 42, 0.6)
+    background: var(
+      --theme-panel-bg,
+      linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.6))
     );
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .setting-card:hover {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   }
 
   .setting-label {
     font-size: 0.75rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-align: center;
@@ -115,10 +114,10 @@ Compact inline panel for configuring sequence length and grid mode.
   .value-display {
     min-width: 70px;
     padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 14px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: 1.5rem;
     font-weight: 700;
     text-align: center;
@@ -171,10 +170,10 @@ Compact inline panel for configuring sequence length and grid mode.
   .grid-btn {
     min-width: 85px;
     padding: 0.875rem 1rem;
-    background: rgba(30, 41, 59, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(30, 41, 59, 0.5));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
@@ -197,9 +196,9 @@ Compact inline panel for configuring sequence length and grid mode.
   }
 
   .grid-btn:hover {
-    background: rgba(51, 65, 85, 0.6);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(51, 65, 85, 0.6));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     transform: translateY(-3px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   }

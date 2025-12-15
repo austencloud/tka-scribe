@@ -119,8 +119,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     gap: 12px;
   }
 
@@ -131,17 +131,17 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     width: 36px;
     height: 36px;
     border: none;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
 
   .back-button:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .back-placeholder {
@@ -173,12 +173,12 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   .phase-title {
     font-size: 16px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .phase-subtitle {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 4px 0 0 0;
     white-space: nowrap;
     overflow: hidden;
@@ -192,7 +192,7 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     font-size: 14px;
     flex-shrink: 0;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border-radius: 8px;
   }
 
@@ -203,17 +203,17 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   }
 
   .step-divider {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-stroke, rgba(255, 255, 255, 0.3));
   }
 
   .step-total {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   /* Progress bar */
   .progress-bar-container {
     height: 3px;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.06));
     overflow: hidden;
   }
 

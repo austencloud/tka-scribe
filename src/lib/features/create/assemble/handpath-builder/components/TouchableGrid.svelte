@@ -260,7 +260,7 @@ Provides visual feedback for current position and drawn path.
           y1={GRID_SIZE / 2 - GRID_SIZE / 3}
           x2={GRID_SIZE / 2}
           y2={GRID_SIZE / 2 + GRID_SIZE / 3}
-          stroke="rgba(255, 255, 255, 0.2)"
+          stroke="var(--theme-stroke, rgba(255, 255, 255, 0.2))"
           stroke-width="2"
         />
         <line
@@ -268,7 +268,7 @@ Provides visual feedback for current position and drawn path.
           y1={GRID_SIZE / 2}
           x2={GRID_SIZE / 2 + GRID_SIZE / 3}
           y2={GRID_SIZE / 2}
-          stroke="rgba(255, 255, 255, 0.2)"
+          stroke="var(--theme-stroke, rgba(255, 255, 255, 0.2))"
           stroke-width="2"
         />
       {:else}
@@ -277,7 +277,7 @@ Provides visual feedback for current position and drawn path.
           y1={GRID_SIZE / 2 - (GRID_SIZE / 3) * 0.707}
           x2={GRID_SIZE / 2 + (GRID_SIZE / 3) * 0.707}
           y2={GRID_SIZE / 2 + (GRID_SIZE / 3) * 0.707}
-          stroke="rgba(255, 255, 255, 0.2)"
+          stroke="var(--theme-stroke, rgba(255, 255, 255, 0.2))"
           stroke-width="2"
         />
         <line
@@ -285,7 +285,7 @@ Provides visual feedback for current position and drawn path.
           y1={GRID_SIZE / 2 - (GRID_SIZE / 3) * 0.707}
           x2={GRID_SIZE / 2 - (GRID_SIZE / 3) * 0.707}
           y2={GRID_SIZE / 2 + (GRID_SIZE / 3) * 0.707}
-          stroke="rgba(255, 255, 255, 0.2)"
+          stroke="var(--theme-stroke, rgba(255, 255, 255, 0.2))"
           stroke-width="2"
         />
       {/if}
@@ -300,9 +300,9 @@ Provides visual feedback for current position and drawn path.
         fill={position.location === pathState.currentLocation
           ? "rgba(59, 130, 246, 0.5)"
           : hoverLocation && position.location === hoverLocation
-            ? "rgba(255, 255, 255, 0.3)"
-            : "rgba(255, 255, 255, 0.1)"}
-        stroke="rgba(255, 255, 255, 0.5)"
+            ? "var(--theme-card-hover-bg, rgba(255, 255, 255, 0.3))"
+            : "var(--theme-card-bg, rgba(255, 255, 255, 0.1))"}
+        stroke="var(--theme-stroke-strong, rgba(255, 255, 255, 0.5))"
         stroke-width="2"
         class="grid-position"
       />
@@ -388,8 +388,8 @@ Provides visual feedback for current position and drawn path.
     touch-action: none;
     user-select: none;
     border-radius: 8px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     cursor: crosshair;
     min-height: 200px;
     margin: 0 auto;

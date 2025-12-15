@@ -223,15 +223,15 @@
    * ============================================================================
    */
 
-  /* Base drawer content styling - solid background */
+  /* Base drawer content styling - more opaque for floating over busy content */
   :global(.drawer-content[class*="-panel-container"]) {
     background: linear-gradient(
       135deg,
-      rgba(20, 25, 35, 0.98) 0%,
-      rgba(15, 20, 30, 0.95) 100%
+      rgba(0, 0, 0, 0.75),
+      rgba(0, 0, 0, 0.85)
     ) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow:
       0 -8px 32px rgba(0, 0, 0, 0.5),

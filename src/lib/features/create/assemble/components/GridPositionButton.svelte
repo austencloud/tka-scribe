@@ -68,38 +68,38 @@ Supports enabled/disabled states and highlights current position.
     font-size: 16px;
     font-weight: 600;
 
-    /* Base styling */
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Base styling - themed */
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
-  /* Enabled state */
+  /* Enabled state - themed accent with subtle blue tint */
   .grid-position-button.enabled {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.4);
-    color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-accent, rgba(99, 102, 241, 0.5));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    box-shadow: 0 0 12px var(--theme-shadow, rgba(99, 102, 241, 0.15));
   }
 
-  /* Disabled state */
+  /* Disabled state - themed */
   .grid-position-button.disabled {
-    background: rgba(255, 255, 255, 0.02);
-    border-color: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.2);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.2));
     cursor: not-allowed;
     opacity: 0.4;
   }
 
-  /* Current position highlight */
+  /* Current position highlight - themed accent */
   .grid-position-button.current {
     box-shadow:
-      0 0 0 3px rgba(6, 182, 212, 0.4),
-      0 0 20px rgba(6, 182, 212, 0.3);
-    border-color: rgba(6, 182, 212, 0.8);
+      0 0 0 3px var(--theme-accent, rgba(99, 102, 241, 0.4)),
+      0 0 20px var(--theme-shadow, rgba(99, 102, 241, 0.25));
+    border-color: var(--theme-accent-strong, rgba(99, 102, 241, 0.8));
     transform: scale(1.05);
   }
 
@@ -107,9 +107,9 @@ Supports enabled/disabled states and highlights current position.
   @media (hover: hover) {
     .grid-position-button.enabled:hover:not(.current) {
       transform: scale(1.08);
-      background: rgba(59, 130, 246, 0.25);
-      border-color: rgba(59, 130, 246, 0.6);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+      border-color: var(--theme-accent-strong, rgba(99, 102, 241, 0.7));
+      box-shadow: 0 4px 12px var(--theme-shadow, rgba(99, 102, 241, 0.25));
     }
   }
 
@@ -124,11 +124,11 @@ Supports enabled/disabled states and highlights current position.
     z-index: 1;
   }
 
-  /* Current indicator (pulsing ring) */
+  /* Current indicator (pulsing ring) - themed */
   .current-indicator {
     position: absolute;
     inset: -6px;
-    border: 2px solid rgba(6, 182, 212, 0.6);
+    border: 2px solid var(--theme-accent, rgba(99, 102, 241, 0.6));
     border-radius: 12px;
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     pointer-events: none;

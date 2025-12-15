@@ -191,7 +191,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
 
   .progress-label {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     text-align: center;
     display: flex;
     align-items: center;
@@ -201,7 +201,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
 
   .progress-bar {
     height: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
     overflow: hidden;
   }
@@ -229,7 +229,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
   .section-label {
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
@@ -246,10 +246,10 @@ Displays current state, beat progress, rotation selector, and action buttons.
     align-items: center;
     gap: 0.25rem;
     padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.75rem;
@@ -257,9 +257,9 @@ Displays current state, beat progress, rotation selector, and action buttons.
   }
 
   .rotation-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, white);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -296,16 +296,16 @@ Displays current state, beat progress, rotation selector, and action buttons.
     flex-wrap: wrap;
     gap: 0.375rem;
     padding: 0.375rem 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 4px;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     align-items: center;
   }
 
   .beat-num {
     font-weight: 600;
-    color: white;
+    color: var(--theme-text, white);
     white-space: nowrap;
   }
 
@@ -379,15 +379,15 @@ Displays current state, beat progress, rotation selector, and action buttons.
   }
 
   .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.85);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
   }
 
   .action-btn.secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.35);
-    color: white;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.35));
+    color: var(--theme-text, white);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
   }

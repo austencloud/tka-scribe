@@ -337,11 +337,7 @@ Integrates all Assembly components and manages state transitions.
     height: 100%;
     width: 100%;
     overflow: hidden;
-    background: linear-gradient(
-      180deg,
-      rgba(15, 23, 42, 0.95) 0%,
-      rgba(30, 41, 59, 0.98) 100%
-    );
+    background: transparent;
   }
 
   .welcome-phase {
@@ -385,8 +381,8 @@ Integrates all Assembly components and manages state transitions.
   /* Path indicator */
   .path-indicator {
     padding: 12px 16px;
-    background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
   }
 
   .path-dots {
@@ -419,7 +415,7 @@ Integrates all Assembly components and manages state transitions.
 
   .path-placeholder {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-style: italic;
   }
 
@@ -466,13 +462,13 @@ Integrates all Assembly components and manages state transitions.
   .complete-title {
     font-size: 28px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
   }
 
   .complete-text {
     font-size: 15px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
   }
 

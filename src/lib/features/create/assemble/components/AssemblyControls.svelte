@@ -125,7 +125,7 @@ Shows contextual action buttons based on current phase:
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    background: linear-gradient(to top, var(--theme-panel-bg, rgba(0, 0, 0, 0.4)), transparent);
   }
 
   .controls-row {
@@ -160,16 +160,16 @@ Shows contextual action buttons based on current phase:
     transform: none !important;
   }
 
-  /* Secondary button (Undo) */
+  /* Secondary button (Undo) - themed */
   .control-button.secondary {
     flex: 0 0 auto;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
   }
 
   .control-button.secondary:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.95);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   /* Primary button variants */
@@ -214,10 +214,10 @@ Shows contextual action buttons based on current phase:
     box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
   }
 
-  /* Hint text */
+  /* Hint text - themed */
   .hint-text {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 0;
     text-align: center;
   }

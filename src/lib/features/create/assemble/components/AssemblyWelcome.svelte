@@ -136,7 +136,7 @@ Shown when sequence is empty.
   .welcome-title {
     font-size: 28px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
     letter-spacing: -0.02em;
   }
@@ -144,14 +144,14 @@ Shown when sequence is empty.
   .welcome-description {
     font-size: 15px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
   }
 
   /* How it works section */
   .how-it-works {
     width: 100%;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border-radius: 12px;
     padding: 16px 20px;
     margin-top: 4px;
@@ -162,7 +162,7 @@ Shown when sequence is empty.
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     margin: 0 0 12px 0;
   }
 
@@ -211,11 +211,11 @@ Shown when sequence is empty.
 
   .step-text {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .step-text strong {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   /* Grid mode toggle */
@@ -230,14 +230,14 @@ Shown when sequence is empty.
   .grid-mode-label {
     font-size: 12px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .grid-mode-toggle {
     display: flex;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-radius: 8px;
     padding: 4px;
     gap: 4px;
@@ -251,7 +251,7 @@ Shown when sequence is empty.
     border: none;
     background: transparent;
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -260,12 +260,12 @@ Shown when sequence is empty.
 
   .mode-button.active {
     background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
-    color: rgba(255, 255, 255, 0.95);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
   .mode-button:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
   .mode-icon {
