@@ -9,6 +9,25 @@ declare global {
     readonly DEV: boolean;
     readonly PROD: boolean;
     readonly SSR: boolean;
+    
+    // Environment context
+    readonly PUBLIC_ENVIRONMENT: "development" | "production";
+    
+    // Module visibility flags
+    readonly PUBLIC_ENABLE_CREATE_MODULE: string;
+    readonly PUBLIC_ENABLE_DISCOVER_MODULE: string;
+    readonly PUBLIC_ENABLE_FEEDBACK_MODULE: string;
+    readonly PUBLIC_ENABLE_LEARN_MODULE: string;
+    readonly PUBLIC_ENABLE_LIBRARY_MODULE: string;
+    readonly PUBLIC_ENABLE_COMPOSE_MODULE: string;
+    readonly PUBLIC_ENABLE_TRAIN_MODULE: string;
+    readonly PUBLIC_ENABLE_ML_TRAINING_MODULE: string;
+    readonly PUBLIC_ENABLE_ADMIN_MODULE: string;
+    
+    // Development tools
+    readonly PUBLIC_ENABLE_DEBUG_TOOLS: string;
+    readonly PUBLIC_ENABLE_ROLE_OVERRIDE: string;
+    readonly PUBLIC_ENABLE_ANALYTICS: string;
   }
 
   interface ImportMeta {

@@ -23,6 +23,7 @@ import {
 } from '../domain/models/FeatureFlag';
 import type { ModuleId } from "../../navigation/domain/types";
 import { MODULE_DEFINITIONS } from "../../navigation/state/navigation-state.svelte";
+import { isModuleEnabledInEnvironment } from "../../environment/environment-features";
 
 /**
  * Global feature flags stored in Firestore
@@ -272,8 +273,15 @@ export const featureFlagService = {
 
   /**
    * Check if a module is accessible to the current user
+   * Combines role-based access with environment-based visibility
    */
   canAccessModule(moduleId: ModuleId): boolean {
+    // First check environment visibility (production vs dev)
+    if (!isModuleEnabledInEnvironment(moduleId)) {
+      return false;
+    }
+
+    // Then check role-based access
     const featureId = moduleIdToFeatureId(moduleId);
     return checkFeatureAccess(featureId);
   },
