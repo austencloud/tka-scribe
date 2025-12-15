@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Auto-update .env.local based on current branch
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "release" ]; then
+  echo "📦 Switched to production branch: $BRANCH"
+  echo "   Creating .env.local with production settings..."
+  cp .env.production .env.local
+  echo "   ✅ Environment set to PRODUCTION"
+else
+  echo "🔧 Switched to development branch: $BRANCH"
+  echo "   Creating .env.local with development settings..."
+  cp .env.development .env.local
+  echo "   ✅ Environment set to DEVELOPMENT"
+fi

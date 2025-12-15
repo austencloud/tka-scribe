@@ -53,7 +53,13 @@
     "analyze:dead-code:quick": "ts-prune --project tsconfig.json | grep -v '(used in module)' | grep 'src\\\\lib\\\\modules' | wc -l",
     "postinstall": "svelte-kit sync",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "release:prod": "node scripts/release-to-production.js",
+    "release:setup": "node scripts/setup-release-workflow.js",
+    "feedback:flow": "node scripts/feedback-workflow.js",
+    "env:check": "node scripts/check-environment.js",
+    "env:dev": "node scripts/switch-environment.js dev",
+    "env:prod": "node scripts/switch-environment.js prod"
   },
   "overrides": {
     "cookie": "^0.7.2",
@@ -172,6 +178,9 @@
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@jdfranel/snowflake-generator": "^1.0.1",
     "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
+    "@simplewebauthn/browser": "^13.2.2",
+    "@simplewebauthn/server": "^13.2.2",
+    "@simplewebauthn/types": "^12.0.0",
     "@tsparticles/basic": "^3.9.1",
     "@tsparticles/engine": "^3.9.1",
     "@tsparticles/preset-snow": "^3.2.0",

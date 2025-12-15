@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Auto-detect branch and set environment
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "release" ]; then
+  echo "⚠️  WARNING: Committing to production branch ($BRANCH)"
+  echo "   Make sure you're ready to release these changes!"
+  echo "   Production environment will be used."
+else
+  echo "✅ Development branch detected: $BRANCH"
+  echo "   Development environment will be used."
+fi
