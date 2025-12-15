@@ -14,6 +14,7 @@
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
+  import { generateSrcset, generateSizes } from "$lib/shared/components/thumbnail/srcset-utils";
   import InlineAnimationPlayer from "./InlineAnimationPlayer.svelte";
 
   type MediaType = "image" | "animation" | "video";
@@ -76,6 +77,12 @@
       return undefined;
     }
   });
+
+  // Responsive srcset for detail panel images
+  const imageSizes = $derived(generateSizes("detail"));
+  // Generate srcset dynamically for both current and previous images
+  const currentSrcset = $derived(generateSrcset(currentImageUrl));
+  const previousSrcset = $derived(generateSrcset(previousImageUrl));
 
   // Watch for thumbnail changes and trigger crossfade
   $effect(() => {
@@ -175,16 +182,22 @@
             {#if isTransitioning && previousImageUrl}
               <img
                 src={previousImageUrl}
+                srcset={previousSrcset}
+                sizes={imageSizes}
                 alt="Previous"
                 class="media-image previous"
+                decoding="async"
               />
             {/if}
             {#if currentImageUrl}
               <img
                 src={currentImageUrl}
+                srcset={currentSrcset}
+                sizes={imageSizes}
                 alt={sequence.name}
                 class="media-image current"
                 class:transitioning={isTransitioning}
+                decoding="async"
               />
             {/if}
           </div>

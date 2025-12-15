@@ -140,7 +140,7 @@
         throw new Error("Failed to initialize playback");
       }
 
-      animationState.setSequenceData(fullSequence);
+      // Note: playbackController.initialize() already sets normalized sequence data on the state
 
       // Auto-start if enabled
       if (autoPlay) {

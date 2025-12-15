@@ -13,6 +13,7 @@ Ultra-minimal design: Clean display with progressive enhancement.
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import type { ThumbnailRenderConfig } from "$lib/shared/components/thumbnail/thumbnail-types";
   import { DEFAULT_THUMBNAIL_CONFIG } from "$lib/shared/components/thumbnail/thumbnail-types";
+  import { generateSrcset, generateSizes } from "$lib/shared/components/thumbnail/srcset-utils";
   import ThumbnailBeatGrid from "$lib/shared/components/thumbnail/ThumbnailBeatGrid.svelte";
 
   const {
@@ -68,6 +69,10 @@ Ultra-minimal design: Clean display with progressive enhancement.
     useDynamicGrid && beats && beats.length > 0
   );
   const showImage = $derived(!showDynamicGrid && !!coverUrl);
+
+  // Generate responsive srcset for gallery images
+  const imageSrcset = $derived(generateSrcset(coverUrl));
+  const imageSizes = $derived(generateSizes("grid"));
 </script>
 
 <div class="media">
@@ -87,10 +92,13 @@ Ultra-minimal design: Clean display with progressive enhancement.
       {:else if showImage && coverUrl}
         <img
           src={coverUrl}
+          srcset={imageSrcset}
+          sizes={imageSizes}
           alt={`Preview of ${word}`}
           {width}
           {height}
           loading="lazy"
+          decoding="async"
         />
       {:else}
         <div class="media-placeholder" aria-label="Sequence preview missing">

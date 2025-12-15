@@ -1,5 +1,6 @@
 <!-- SpotlightViewer.svelte - Fullscreen viewer for images or beat grids -->
 <script lang="ts">
+  import { browser } from "$app/environment";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IDiscoverThumbnailService } from "../../display/services/contracts/IDiscoverThumbnailService";
   import type { SpotlightDisplayMode } from "$lib/shared/application/state/ui/ui-state.svelte";
@@ -28,7 +29,19 @@
   let shouldRotate = $state(false);
   let manualRotationOverride = $state<boolean | null>(null); // null = auto, true/false = manual
   let showColumnPicker = $state(false);
-  let manualColumnCount = $state<number | null>(null); // null = auto, number = manual override
+
+  // Persist column preference to localStorage (device-specific)
+  const COLUMN_STORAGE_KEY = "tka_spotlight_column_count";
+  let manualColumnCount = $state<number | null>(
+    browser ? JSON.parse(localStorage.getItem(COLUMN_STORAGE_KEY) ?? "null") : null
+  );
+
+  // Persist column changes
+  $effect(() => {
+    if (browser) {
+      localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(manualColumnCount));
+    }
+  });
 
   // Track fullscreen state
   let _spotlightElement = $state<HTMLElement | null>(null);
@@ -245,7 +258,7 @@
       isClosing = false;
       shouldRotate = false;
       manualRotationOverride = null; // Reset manual override on close
-      manualColumnCount = null; // Reset column override
+      // Note: manualColumnCount is NOT reset - it persists via localStorage
       showColumnPicker = false;
       try {
         document.documentElement.classList.remove("tka-no-select");

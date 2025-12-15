@@ -153,6 +153,7 @@ export class DiscoverLoader implements IDiscoverLoader {
         propType: metadata.propType || PropType.STAFF,
         startingPositionGroup: (metadata.startingPosition ||
           "alpha") as GridPositionGroup,
+        startPosition: metadata.startPosition,
       });
     } catch (error) {
       console.error(

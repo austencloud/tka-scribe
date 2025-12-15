@@ -6,8 +6,10 @@
  */
 
 import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../../../create/shared/domain/models/StartPositionData";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { GridLocation, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -109,7 +111,9 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
     sequenceName: string,
     rawData: Record<string, unknown>
   ): SequenceMetadata {
-    const beats = this.parseBeats(sequenceName, rawData["sequence"]);
+    const sequence = rawData["sequence"];
+    const beats = this.parseBeats(sequenceName, sequence);
+    const startPosition = this.parseStartPosition(sequenceName, sequence);
     const gridMode = this.parseGridMode(rawData["grid_mode"]);
 
     // Calculate difficulty from actual sequence data instead of stored level
@@ -128,18 +132,27 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
       propType: String(rawData["prop_type"] || "Staff") as PropType,
       sequenceLength: beats.length,
       startingPosition,
+      startPosition,
     };
   }
 
   /**
    * Parse beat data from sequence array with full motion parsing
+   * NOTE: Skips the first element if it's a start position (has sequence_start_position field)
    */
   private parseBeats(sequenceName: string, sequence: unknown): BeatData[] {
     if (!Array.isArray(sequence)) {
       return [];
     }
 
-    return sequence.map((step: unknown, index: number) => {
+    // Check if first element is start position (has sequence_start_position field)
+    const firstElement = sequence[0] as Record<string, unknown>;
+    const hasStartPosition = firstElement && "sequence_start_position" in firstElement;
+
+    // Skip first element if it's a start position, otherwise parse all elements
+    const beatElements = hasStartPosition ? sequence.slice(1) : sequence;
+
+    return beatElements.map((step: unknown, index: number) => {
       const stepData = step as Record<string, unknown>;
       const blueAttrs = stepData["blue_attributes"] as Record<string, unknown>;
       const redAttrs = stepData["red_attributes"] as Record<string, unknown>;
@@ -148,8 +161,8 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
         // PictographData properties
         id: `beat-${sequenceName}-${index + 1}`,
         letter: String(stepData["letter"] || ""),
-        startPosition: null,
-        endPosition: null,
+        startPosition: this.parseGridPosition(stepData["start_pos"]) || this.parseGridPosition(stepData["sequence_start_position"]),
+        endPosition: this.parseGridPosition(stepData["end_pos"]),
         motions: {
           [MotionColor.BLUE]: blueAttrs
             ? createMotionData({
@@ -200,6 +213,79 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
         isBlank: false,
       } as BeatData;
     });
+  }
+
+  /**
+   * Parse start position data from sequence array
+   * Returns StartPositionData if first element has sequence_start_position field
+   */
+  private parseStartPosition(
+    sequenceName: string,
+    sequence: unknown
+  ): StartPositionData | undefined {
+    if (!Array.isArray(sequence) || sequence.length === 0) {
+      return undefined;
+    }
+
+    const firstElement = sequence[0] as Record<string, unknown>;
+    if (!firstElement || !("sequence_start_position" in firstElement)) {
+      return undefined;
+    }
+
+    const blueAttrs = firstElement["blue_attributes"] as Record<string, unknown>;
+    const redAttrs = firstElement["red_attributes"] as Record<string, unknown>;
+    const gridPosition = this.parseGridPosition(firstElement["sequence_start_position"]);
+
+    return {
+      id: `start-${sequenceName}`,
+      isStartPosition: true,
+      letter: (firstElement["letter"] as Letter | null) ?? null,
+      gridPosition,
+      startPosition: gridPosition,
+      endPosition: null,
+      motions: {
+        [MotionColor.BLUE]: blueAttrs
+          ? createMotionData({
+              color: MotionColor.BLUE,
+              motionType: this.parseMotionType(blueAttrs["motion_type"]),
+              startLocation: this.parseLocation(blueAttrs["start_loc"]),
+              endLocation: this.parseLocation(blueAttrs["end_loc"]),
+              startOrientation: this.parseOrientation(blueAttrs["start_ori"]),
+              endOrientation: this.parseOrientation(blueAttrs["end_ori"]),
+              rotationDirection: this.parseRotationDirection(
+                blueAttrs["prop_rot_dir"]
+              ),
+              turns: this.parseTurns(blueAttrs["turns"]),
+              isVisible: true,
+              propType: PropType.STAFF,
+              arrowLocation:
+                this.parseLocation(blueAttrs["start_loc"]) ||
+                GridLocation.NORTH,
+              gridMode: GridMode.DIAMOND,
+            })
+          : undefined,
+        [MotionColor.RED]: redAttrs
+          ? createMotionData({
+              color: MotionColor.RED,
+              motionType: this.parseMotionType(redAttrs["motion_type"]),
+              startLocation: this.parseLocation(redAttrs["start_loc"]),
+              endLocation: this.parseLocation(redAttrs["end_loc"]),
+              startOrientation: this.parseOrientation(redAttrs["start_ori"]),
+              endOrientation: this.parseOrientation(redAttrs["end_ori"]),
+              rotationDirection: this.parseRotationDirection(
+                redAttrs["prop_rot_dir"]
+              ),
+              turns: this.parseTurns(redAttrs["turns"]),
+              isVisible: true,
+              propType: PropType.STAFF,
+              arrowLocation:
+                this.parseLocation(redAttrs["start_loc"]) ||
+                GridLocation.SOUTH,
+              gridMode: GridMode.DIAMOND,
+            })
+          : undefined,
+      },
+    };
   }
 
   /**
@@ -271,6 +357,32 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
       NORTHWEST: GridLocation.NORTHWEST,
     };
     return locationMap[str] ?? GridLocation.NORTH;
+  }
+
+  /**
+   * Parse grid position from string (e.g., "gamma11" -> GridPosition.GAMMA11)
+   */
+  private parseGridPosition(value: unknown): GridPosition | null {
+    if (!value) return null;
+
+    const str = String(value).toLowerCase();
+
+    // Direct mapping - try to match the exact GridPosition enum key
+    const enumKey = str.toUpperCase();
+    const positionValue = GridPosition[enumKey as keyof typeof GridPosition];
+
+    if (positionValue) {
+      return positionValue;
+    }
+
+    // Fallback: Check if the string value matches any enum value directly
+    for (const key in GridPosition) {
+      if (GridPosition[key as keyof typeof GridPosition] === str) {
+        return str as GridPosition;
+      }
+    }
+
+    return null;
   }
 
   /**
