@@ -1,4 +1,4 @@
-# TKA Studio - Claude Code Rules
+# TKA Scribe - Claude Code Rules
 
 ## Environment Detection & Context
 

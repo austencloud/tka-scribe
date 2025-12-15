@@ -1,4 +1,4 @@
-# Claude Code Guidelines for TKA-Studio
+# Claude Code Guidelines for TKA Scribe
 
 > **Meta-instruction**: This file is a living document. Claude should actively help build it out based on patterns observed in conversations. When the user expresses a general policy, preference, or recurring frustration, Claude should ask: *"Would you like me to add this to CLAUDE.md so future sessions follow this pattern?"*
 
@@ -180,7 +180,7 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 
 ## Project-Specific Notes
 
-- TKA-Studio is a Svelte 5 + TypeScript application
+- TKA Scribe is a Svelte 5 + TypeScript application
 - Uses inversify for dependency injection
 - Firebase for persistence and auth
 - Focus on animation and interactive pictograph rendering
@@ -188,11 +188,18 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 ### User Identity
 - **Primary developer**: Austen Cloud (austencloud@gmail.com)
 - When submitting feedback via scripts, default to `--user austen`
-- When `/done` is called with no feedback item, auto-create one under Austen's profile
+
+### /done command behavior (auto-create workflow)
+When `/done` is called and there's no matching feedback item for the work just completed:
+1. **Auto-create** a feedback item under Austen's profile (`--user austen`)
+2. **Auto-complete** it immediately with appropriate admin notes
+3. **Mark internal-only** if it's infrastructure/developer work (not user-facing)
+4. **Do NOT ask** for confirmation - just do it automatically
+5. Report what was created so the user knows it's tracked
 
 ---
 
-*Last updated: 2025-12-12*
+*Last updated: 2025-12-15*
 
 ## Context Management
 When context usage exceeds 20%, proactively suggest running /compact before continuing with new tasks.

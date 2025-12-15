@@ -2,7 +2,7 @@
 description: Submit feedback to the TKA feedback system
 ---
 
-You are helping the user submit feedback to the TKA Studio feedback tracking system.
+You are helping the user submit feedback to the TKA Scribe feedback tracking system.
 
 ## Task
 

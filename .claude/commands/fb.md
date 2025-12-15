@@ -47,6 +47,112 @@ The script will:
 
 If another agent runs `/fb` at the same time, they'll get a different item - no collisions!
 
+---
+
+## Model Triage System (Token Optimization)
+
+After claiming feedback, **assess complexity** before implementation to route to the most cost-effective model.
+
+### Step 1: Complexity Assessment
+
+Evaluate the feedback against these criteria:
+
+#### TRIVIAL → Delegate to Haiku (1/10th token cost)
+**Indicators:**
+- Keywords: "tiny", "small", "quick", "just", "simple", "swap", "change"
+- Icon or text changes
+- CSS tweaks (colors, spacing, sizing, overflow fixes)
+- Validation caps or simple constraints
+- Single-file changes where pattern already exists
+- Applying an existing pattern to a new location
+- String/label updates
+
+**Examples:**
+- "Change the icon for X to Y"
+- "The text spills over" (CSS overflow)
+- "Cap the value at 3"
+- "Add version number text"
+- "Apply the same styling as X to Y"
+
+#### MEDIUM → Delegate to Sonnet (1/3rd token cost)
+**Indicators:**
+- Clear bug with specific reproduction steps
+- Feature scoped to 1-3 files
+- "When X happens, do Y" patterns
+- Component state fixes
+- Adding a button/control with straightforward behavior
+- Form field additions
+- Event handler fixes
+
+**Examples:**
+- "When I click X, nothing happens"
+- "The panel doesn't close when..."
+- "Add a clear button to the form"
+- "Filter not persisting correctly"
+
+#### COMPLEX → Handle directly with Opus
+**Indicators:**
+- Keywords: "Dashboard", "System", "Architecture", "Authentication"
+- Multi-module coordination
+- Security/auth features
+- Ambiguous requirements ("I've been thinking...")
+- New infrastructure or patterns
+- Performance optimization requiring profiling
+- Features touching 4+ files
+- Policy/UX decisions needed
+
+**Examples:**
+- "Add Two-Factor Authentication"
+- "Admin monitoring dashboard"
+- "Rethink how X works"
+- "Session-based autosave system"
+
+### Step 2: Route to Appropriate Model
+
+After assessing complexity:
+
+#### For TRIVIAL tasks:
+```
+Use the Task tool with:
+- subagent_type: "general-purpose"
+- model: "haiku"
+- prompt: Include ALL context the agent needs:
+  1. Full feedback details (ID, description, module/tab)
+  2. The file(s) to modify (be specific)
+  3. What change to make
+  4. How to verify it worked
+  5. Command to mark complete when done
+```
+
+#### For MEDIUM tasks:
+```
+Use the Task tool with:
+- subagent_type: "general-purpose"
+- model: "sonnet"
+- prompt: Include ALL context:
+  1. Full feedback details
+  2. Likely files involved
+  3. Expected behavior vs current behavior
+  4. Implementation approach
+  5. Testing steps
+  6. Command to mark complete when done
+```
+
+#### For COMPLEX tasks:
+Handle directly as Opus - no delegation. Follow the standard workflow below.
+
+### Step 3: Review Delegated Results
+
+When a Haiku/Sonnet agent completes:
+1. Briefly review the changes made
+2. Verify the approach is sound
+3. If good: confirm to user, offer to mark complete
+4. If issues: fix them yourself or re-delegate with corrections
+
+---
+
+## Standard Workflow (for Opus-handled or post-delegation)
+
 ### After claiming, follow this process
 
 1. **Immediately assign a short title:**
@@ -70,40 +176,65 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
    - Map vague terms to actual modules/tabs/components
    - Don't blindly trust the "Module/Tab" field - users often submit from a different screen
 
-4. **Get confirmation before implementing** - state your assessment and interpretation, ask if Austen wants to proceed
+4. **Assess complexity and decide on model routing** (see Triage System above)
 
-5. **Implement or investigate** (only after approval)
+5. **For TRIVIAL/MEDIUM: Delegate to appropriate model**
+   - Spawn Task agent with haiku or sonnet
+   - Provide complete context in the prompt
+   - Wait for results and review
+
+6. **For COMPLEX or after delegation: Get confirmation before implementing**
+   - State your assessment and interpretation
+   - Ask if Austen wants to proceed
+
+7. **Implement or investigate** (only after approval for complex items)
    - For bugs: try to reproduce first, fix if confirmed
    - For features: implement if approved
    - For unclear issues: investigate and report findings
 
-6. **Move to review and add resolution notes:**
-   After implementation, move to `in-review` with brief admin notes, then add user-facing resolution notes:
+8. **Move to review and add resolution notes:**
+   After implementation, move to `in-review` with brief admin notes:
    ```
    node fetch-feedback.js <document-id> in-review "Fixed card height overflow in Kanban board"
-   node fetch-feedback.js <document-id> resolution "Adjusted the minimum height of feedback cards so all content is visible without being cut off."
    ```
 
-   **Admin notes (internal reference):**
+   **Admin notes (internal reference - only visible to admins):**
    - Brief summary of what was fixed (1 line, ~5-10 words)
    - Focus on WHAT was addressed, not HOW
    - Example: "Fixed card height overflow" not "Updated MyFeedbackCard.svelte:88-92 to set min-height: 120px"
    - NO file paths, line numbers, or testing steps
    - Think: "What would I search for later to find this fix?"
+   - **Visibility:** Only shown to admin users - never visible to regular users
+   - **Always required** for all feedback
 
-   **Resolution notes (visible to users):**
-   - Explain what was changed from the user's perspective
+   **Resolution notes (user-facing - visible to everyone):**
+   - **Only needed for user-facing features** (things regular users interact with)
+   - Skip resolution notes for admin-only features (Manage Feedback Kanban, admin dashboards, internal tools, etc.)
+   - Explain what was changed from the user's perspective in plain English
    - Clear and concise (1-3 sentences)
    - Focus on the outcome and user benefit
    - Help users understand how their feedback was addressed
-   - Example: "Adjusted the minimum height of feedback cards so all content is visible without being cut off."
+   - Avoid technical jargon (no "localStorage", "state management", "persistence", etc.)
+   - Write for flow artists, not developers
+   - **Visibility:** Shown to all users who submitted the feedback
+
+   **When to add resolution notes:**
+   ```bash
+   # User-facing feature (needs resolution notes)
+   node fetch-feedback.js <id> in-review "Fixed gallery card overflow"
+   node fetch-feedback.js <id> resolution "Sequence cards in the gallery now display correctly without being cut off."
+
+   # Admin-only feature (skip resolution notes)
+   node fetch-feedback.js <id> in-review "Fixed Kanban column drag-drop"
+   # No resolution command needed - admin notes are sufficient
+   ```
 
    **Where technical details go:**
    - File paths, line numbers → Commit messages
    - Testing steps, reproduction steps → PR descriptions or issue comments
    - Implementation approach → Code comments or architecture docs
 
-7. **CRITICAL: Offer to mark as completed (don't do it automatically):**
+9. **CRITICAL: Offer to mark as completed (don't do it automatically):**
    After moving to `in-review` and adding resolution notes, END your response by offering to mark as completed.
 
    **Examples:**
@@ -114,17 +245,17 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
    **DO NOT** automatically mark as completed. Wait for user confirmation.
    This gives the user a chance to test first and verify it actually works.
 
-8. **When user confirms the fix works:**
-   Only after the user confirms, mark as completed:
-   ```
-   node fetch-feedback.js <document-id> completed "Verified working"
-   ```
+10. **When user confirms the fix works:**
+    Only after the user confirms, mark as completed:
+    ```
+    node fetch-feedback.js <document-id> completed "Verified working"
+    ```
 
-   **Workflow context:**
-   - `completed` items are staged for the next release
-   - They stay visible in the "completed" column until `/release` is run
-   - When `/release` runs, they're archived and tagged with the version number
-   - This lets you batch multiple fixes into one release
+    **Workflow context:**
+    - `completed` items are staged for the next release
+    - They stay visible in the "completed" column until `/release` is run
+    - When `/release` runs, they're archived and tagged with the version number
+    - This lets you batch multiple fixes into one release
 
 ### Complex feedback with subtasks
 When you claim feedback that's too large to implement directly (requires multiple prerequisites, infrastructure changes, or multi-sprint work):
@@ -197,10 +328,10 @@ node scripts/reactivate-deferred.js --dry-run
 Shows what will reactivate without making changes.
 
 **Why use defer instead of archive:**
-- ✅ Items resurface automatically - you don't forget about them
-- ✅ Clear timeline expectations ("revisit in 3 months")
-- ✅ Keeps backlog clean while preserving valid feedback
-- ❌ Don't defer things you'll never do - use `archived` for permanent closure
+- Items resurface automatically - you don't forget about them
+- Clear timeline expectations ("revisit in 3 months")
+- Keeps backlog clean while preserving valid feedback
+- Don't defer things you'll never do - use `archived` for permanent closure
 
 ### Other commands
 - `node fetch-feedback.js list` - See queue status
