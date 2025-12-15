@@ -46,6 +46,7 @@ export const BACKGROUND_THEME_COLORS: Record<BackgroundType, string[]> = {
   [BackgroundType.DEEP_OCEAN]: ["#0c4a6e", "#0891b2", "#22d3ee"],
   [BackgroundType.EMBER_GLOW]: ["#7c2d12", "#ea580c", "#fb923c"],
   [BackgroundType.SAKURA_DRIFT]: ["#831843", "#db2777", "#f9a8d4"],
+  [BackgroundType.FIREFLY_FOREST]: ["#0d3320", "#166534", "#22c55e", "#bef264"],
   // Solid/gradient: dark backgrounds but vibrant indigo accent for visibility
   [BackgroundType.SOLID_COLOR]: ["#18181b", "#6366f1", "#818cf8"],
   [BackgroundType.LINEAR_GRADIENT]: ["#0d1117", "#6366f1", "#a78bfa"],
@@ -238,10 +239,10 @@ export function generateMatteTheme(
   }
 
   return {
-    panelBg: "rgba(0, 0, 0, 0.5)",
-    panelElevatedBg: "rgba(0, 0, 0, 0.65)",
-    cardBg: "rgba(0, 0, 0, 0.5)",
-    cardHoverBg: "rgba(0, 0, 0, 0.65)",
+    panelBg: "rgba(0, 0, 0, 0.6)",
+    panelElevatedBg: "rgba(0, 0, 0, 0.5)",
+    cardBg: "rgba(0, 0, 0, 0.45)",
+    cardHoverBg: "rgba(0, 0, 0, 0.55)",
     accent,
     accentStrong: accent, // Use same accent for strong variant
     stroke: "rgba(255, 255, 255, 0.08)",

@@ -34,6 +34,8 @@ const backgroundLoaders = {
   deepOcean: () => import("../../../deep-ocean/services/DeepOceanBackgroundOrchestrator"),
   emberGlow: () => import("../../../ember-glow/services/EmberGlowBackgroundSystem"),
   sakuraDrift: () => import("../../../sakura-drift/services/SakuraDriftBackgroundSystem"),
+  fireflyForest: () => import("../../../firefly-forest/services/FireflyForestBackgroundSystem"),
+  autumnDrift: () => import("../../../autumn-drift/services/AutumnDriftBackgroundSystem"),
   simple: () => import("../../../simple/services/SimpleBackgroundSystem"),
 };
 
@@ -161,6 +163,16 @@ export class BackgroundFactory {
         backgroundSystem = new SakuraDriftBackgroundSystem();
         break;
       }
+      case BackgroundType.FIREFLY_FOREST: {
+        const { FireflyForestBackgroundSystem } = await backgroundLoaders.fireflyForest();
+        backgroundSystem = new FireflyForestBackgroundSystem();
+        break;
+      }
+      case BackgroundType.AUTUMN_DRIFT: {
+        const { AutumnDriftBackgroundSystem } = await backgroundLoaders.autumnDrift();
+        backgroundSystem = new AutumnDriftBackgroundSystem();
+        break;
+      }
       case BackgroundType.SOLID_COLOR: {
         const { SimpleBackgroundSystem } = await backgroundLoaders.simple();
         backgroundSystem = new SimpleBackgroundSystem({
@@ -224,6 +236,8 @@ export class BackgroundFactory {
       case BackgroundType.DEEP_OCEAN:
       case BackgroundType.EMBER_GLOW:
       case BackgroundType.SAKURA_DRIFT:
+      case BackgroundType.FIREFLY_FOREST:
+      case BackgroundType.AUTUMN_DRIFT:
         return quality !== "minimal";
       default:
         return false;
@@ -238,6 +252,8 @@ export class BackgroundFactory {
       BackgroundType.DEEP_OCEAN,
       BackgroundType.EMBER_GLOW,
       BackgroundType.SAKURA_DRIFT,
+      BackgroundType.FIREFLY_FOREST,
+      BackgroundType.AUTUMN_DRIFT,
       BackgroundType.SOLID_COLOR,
       BackgroundType.LINEAR_GRADIENT,
     ];

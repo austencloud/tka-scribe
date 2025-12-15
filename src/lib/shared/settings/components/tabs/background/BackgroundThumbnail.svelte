@@ -705,6 +705,90 @@
     }
   }
 
+  /* ===== FIREFLY FOREST BACKGROUND ===== */
+  .background-preview[data-background="fireflyForest"] {
+    background: linear-gradient(180deg, #0a1a0d 0%, #0d2412 40%, #1a3d1f 70%, #0f2914 100%);
+  }
+
+  /* Tree silhouettes */
+  .background-preview[data-background="fireflyForest"]::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70%;
+    background:
+      /* Far trees - lighter, smaller */
+      linear-gradient(135deg, transparent 45%, #051208 45%, #051208 55%, transparent 55%) 0% 100% / 25% 35% no-repeat,
+      linear-gradient(225deg, transparent 45%, #051208 45%, #051208 55%, transparent 55%) 25% 100% / 25% 35% no-repeat,
+      linear-gradient(135deg, transparent 45%, #061509 45%, #061509 55%, transparent 55%) 50% 100% / 20% 30% no-repeat,
+      linear-gradient(225deg, transparent 45%, #061509 45%, #061509 55%, transparent 55%) 70% 100% / 22% 32% no-repeat,
+      /* Near trees - darker, larger */
+      linear-gradient(135deg, transparent 42%, #030a05 42%, #030a05 58%, transparent 58%) 10% 100% / 30% 55% no-repeat,
+      linear-gradient(225deg, transparent 42%, #030a05 42%, #030a05 58%, transparent 58%) 60% 100% / 35% 60% no-repeat,
+      linear-gradient(135deg, transparent 43%, #040c06 43%, #040c06 57%, transparent 57%) 85% 100% / 28% 50% no-repeat;
+    opacity: 0.85;
+  }
+
+  /* Fireflies */
+  .background-preview[data-background="fireflyForest"]::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(circle, rgba(190, 242, 100, 0.9) 2px, transparent 2px),
+      radial-gradient(circle, rgba(163, 230, 53, 0.85) 2.5px, transparent 2.5px),
+      radial-gradient(circle, rgba(253, 224, 71, 0.8) 2px, transparent 2px),
+      radial-gradient(circle, rgba(190, 242, 100, 0.75) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(163, 230, 53, 0.9) 2px, transparent 2px),
+      radial-gradient(circle, rgba(190, 242, 100, 0.7) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(253, 224, 71, 0.85) 2px, transparent 2px),
+      radial-gradient(circle, rgba(163, 230, 53, 0.8) 2.5px, transparent 2.5px);
+    background-size:
+      120px 100px,
+      140px 120px,
+      100px 140px,
+      160px 110px,
+      130px 150px,
+      110px 130px,
+      150px 100px,
+      90px 140px;
+    background-position:
+      15% 25%,
+      65% 35%,
+      35% 55%,
+      85% 20%,
+      25% 70%,
+      75% 60%,
+      45% 40%,
+      55% 75%;
+    animation: firefly-float 8s ease-in-out infinite;
+    filter: blur(0.5px) drop-shadow(0 0 6px rgba(190, 242, 100, 0.8));
+  }
+
+  @keyframes firefly-float {
+    0%, 100% {
+      transform: translate(0, 0);
+      opacity: 0.7;
+    }
+    25% {
+      transform: translate(3%, -2%);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-2%, 2%);
+      opacity: 0.5;
+    }
+    75% {
+      transform: translate(2%, -1%);
+      opacity: 0.9;
+    }
+  }
+
   /* Compact mode optimizations */
   @container (max-width: 152px) {
     /* Reduce animation complexity on very small buttons */

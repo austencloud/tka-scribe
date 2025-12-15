@@ -70,6 +70,22 @@ export const backgroundsConfig: BackgroundMetadata[] = [
     themeColors: ["#831843", "#db2777", "#f9a8d4"],
   },
   {
+    type: BackgroundType.FIREFLY_FOREST,
+    name: "Firefly Forest",
+    description: "Glowing fireflies drifting through a magical forest",
+    icon: "🌲",
+    // Forest: deep greens with yellow-green glow
+    themeColors: ["#0d3320", "#166534", "#22c55e", "#bef264"],
+  },
+  {
+    type: BackgroundType.AUTUMN_DRIFT,
+    name: "Autumn Drift",
+    description: "Tumbling autumn leaves dancing in crisp wind gusts",
+    icon: "🍂",
+    // Autumn: warm golds, oranges, and deep reds
+    themeColors: ["#92400e", "#d97706", "#dc2626", "#78350f"],
+  },
+  {
     type: BackgroundType.SOLID_COLOR,
     name: "Pure Black",
     description: "Classic solid black background",

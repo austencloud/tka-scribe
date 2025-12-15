@@ -13,6 +13,7 @@ const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
   deepOcean: "deep-ocean-flow",
   emberGlow: "ember-glow",
   sakuraDrift: "sakura-drift",
+  fireflyForest: "firefly-forest",
   solidColor: "", // No animation for solid colors
   linearGradient: "", // No animation for gradients
 };
