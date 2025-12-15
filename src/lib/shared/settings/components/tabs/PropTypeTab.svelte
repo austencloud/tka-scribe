@@ -110,13 +110,9 @@
       if (!catDogMode) {
         selectedRedPropType = propType;
         onUpdate?.({ key: "redPropType", value: propType });
-      } else {
-        // In Cat Dog mode, open second sheet for red hand
-        setTimeout(() => {
-          selectingHand = "red";
-          isSheetOpen = true;
-        }, 200);
       }
+      // In cat-dog mode, user clicks the red card directly to select red prop
+      // No need for sequential selection flow
     } else {
       selectedRedPropType = propType;
       onUpdate?.({ key: "redPropType", value: propType });
@@ -435,6 +431,19 @@
     height: clamp(90px, 20cqw, 160px);
     object-fit: contain;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Color-code prop icons based on hand */
+  .prop-card.blue .prop-icon {
+    filter:
+      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))
+      saturate(1.1);
+  }
+
+  .prop-card.red .prop-icon {
+    filter:
+      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))
+      hue-rotate(125deg) saturate(1.2);
   }
 
   .prop-name {

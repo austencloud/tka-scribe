@@ -45,6 +45,8 @@
     activeMode = null,
     // Spotlight mode: maximize cell size to fill viewport
     isSpotlightMode = false,
+    // Manual column override (null = auto)
+    manualColumnCount = null,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
     startPosition?: StartPositionData | BeatData | null;
@@ -66,6 +68,8 @@
     onStartLongPress?: () => void;
     // Spotlight mode: maximize cell size to fill viewport (no max constraint)
     isSpotlightMode?: boolean;
+    // Manual column override (null = auto)
+    manualColumnCount?: number | null;
   }>();
 
   const placeholderBeat = createBeatData({
@@ -94,11 +98,14 @@
       deviceDetector,
       {
         isSideBySideLayout,
-        // Spotlight mode: remove max cell size constraint to fill viewport
+        // Spotlight mode: maximize space - padding already handled by parent container
         maxCellSize: isSpotlightMode ? 9999 : undefined,
-        // Use full container in spotlight mode
-        widthPaddingRatio: isSpotlightMode ? 0.98 : undefined,
-        heightPaddingRatio: isSpotlightMode ? 0.98 : undefined,
+        widthPaddingRatio: isSpotlightMode ? 1.0 : undefined,
+        heightPaddingRatio: isSpotlightMode ? 1.0 : undefined,
+        // Always consider height in spotlight mode to prevent vertical overflow
+        heightSizingRowThreshold: isSpotlightMode ? 9999 : undefined,
+        // Manual column override
+        manualColumnCount,
       }
     );
   });
@@ -336,14 +343,100 @@
     `${beat.id ?? "no-id"}-${beat.beatNumber ?? index}-${index}`;
 </script>
 
-<div class="beat-grid-container" bind:this={containerRef}>
+<div class="beat-grid-container" class:spotlight-mode={isSpotlightMode} bind:this={containerRef}>
   {#if beats.length === 0 && (!startPosition || startPosition.isBlank)}
     <!-- Empty grid state -->
     <div class="empty-grid-message">
       <span class="empty-icon">📋</span>
       <span class="empty-text">No sequence loaded</span>
     </div>
+  {:else if isSpotlightMode}
+    <!-- Spotlight mode: render grid directly without scroll wrapper -->
+    <div
+      class="beat-grid spotlight-static"
+      class:clearing={isClearing || displayState.isClearingForGeneration}
+      style:--grid-rows={gridLayout().rows}
+      style:--grid-cols={gridLayout().totalColumns}
+      style:--cell-size="{gridLayout().cellSize}px"
+    >
+        <!-- Start Position - only show if it has content -->
+        {#if startPosition && !startPosition.isBlank}
+          <div
+            class="start-tile"
+            class:has-pictograph={true}
+            title="Start Position"
+            role="button"
+            tabindex="0"
+            style:grid-row="1"
+            style:grid-column="1"
+            onclick={handleStartClick}
+            onkeydown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleStartClick();
+              }
+            }}
+            aria-label="Start Position"
+          >
+            <BeatCell
+              beat={startPosition}
+              index={-1}
+              shouldAnimate={displayState.shouldAnimateStartPosition}
+              isSelected={isMultiSelectMode
+                ? selectedBeatNumbers.has(0)
+                : selectedBeatNumber === 0}
+              {isMultiSelectMode}
+              {shouldOrbitAroundCenter}
+              isPracticeBeat={practiceBeatNumber === 0}
+              onLongPress={onStartLongPress}
+              {activeMode}
+            />
+          </div>
+        {/if}
+
+        <!-- Beat Grid -->
+        {#each beats as beat, index (getBeatKey(beat, index))}
+          {@const position = calculateBeatPosition(index, gridLayout().columns)}
+          {@const gridRow = position.row}
+          {@const gridCol = position.column}
+          {@const isDeleting = removingBeatIndices.has(index)}
+          {@const shouldSlide =
+            removingBeatIndex !== null &&
+            !isDeleting &&
+            index > removingBeatIndex}
+          {@const shouldAnimateBeat = displayState.shouldBeatAnimate(index)}
+          {@const shouldHideBeat = displayState.shouldBeatBeHidden(index)}
+          <div
+            class="beat-container"
+            class:deleting={isDeleting}
+            class:sliding={shouldSlide}
+            class:hidden-for-sequential={shouldHideBeat}
+            style:grid-row={gridRow}
+            style:grid-column={gridCol}
+            style:animation-delay={shouldSlide
+              ? `${Math.min(index - removingBeatIndex - 1, 5) * 50}ms`
+              : "0ms"}
+          >
+            <BeatCell
+              {beat}
+              {index}
+              onClick={() => handleBeatClick(beat.beatNumber)}
+              onDelete={() => onBeatDelete?.(beat.beatNumber)}
+              shouldAnimate={shouldAnimateBeat}
+              isSelected={isMultiSelectMode
+                ? selectedBeatNumbers.has(beat.beatNumber)
+                : selectedBeatNumber === beat.beatNumber}
+              {shouldOrbitAroundCenter}
+              isPracticeBeat={practiceBeatNumber === beat.beatNumber}
+              {isMultiSelectMode}
+              onLongPress={() => onBeatLongPress?.(beat.beatNumber)}
+              {activeMode}
+            />
+          </div>
+        {/each}
+      </div>
   {:else}
+    <!-- Workspace mode: render grid inside scroll wrapper -->
     <div
       class="beat-grid-scroll"
       class:has-scrollbar={scrollState.hasVerticalScrollbar}
@@ -448,6 +541,13 @@
     min-height: 0;
   }
 
+  /* Spotlight mode: container becomes flexbox to center the grid */
+  .beat-grid-container.spotlight-mode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .empty-grid-message {
     display: flex;
     flex-direction: column;
@@ -501,6 +601,15 @@
     transition:
       opacity 300ms ease-out,
       transform 300ms ease-out;
+  }
+
+  /* Spotlight mode: static grid without scroll wrapper */
+  .beat-grid.spotlight-static {
+    /* Center in container */
+    margin: auto;
+    /* Ensure grid fits within available space */
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .beat-grid.clearing {

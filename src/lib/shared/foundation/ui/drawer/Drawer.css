@@ -110,6 +110,7 @@
     right: 0;
     width: 100%;
     max-width: 100%;
+    max-height: calc(100vh - 20px);
 
     margin: 0;
     border-top-left-radius: var(
@@ -158,6 +159,7 @@
     right: 0;
     bottom: 0;
     height: 100vh;
+    max-height: 100vh;
     width: var(--sheet-width, min(600px, 90vw));
     border-left: var(
       --sheet-border-strong,
@@ -198,6 +200,7 @@
     left: 0;
     bottom: 0;
     height: 100vh;
+    max-height: 100vh;
     width: var(--sheet-width, min(600px, 90vw));
     border-right: var(
       --sheet-border-strong,

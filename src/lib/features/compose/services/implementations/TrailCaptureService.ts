@@ -373,14 +373,16 @@ export class TrailCaptureService implements ITrailCaptureService {
     // Determine which ends to track based on tracking mode AND prop type
     // For unilateral props (minihoop, fan, club), always use single end even if BOTH_ENDS is selected
     // This prevents imaginary second ends on props that only have one meaningful endpoint
-    const propType = propIndex === 0 || propIndex === 2 ? bluePropType : redPropType;
+    const propType =
+      propIndex === 0 || propIndex === 2 ? bluePropType : redPropType;
     const isPropBilateral = propType ? isBilateralProp(propType) : true; // Default to bilateral if unknown
+    const isHandProp = propType?.toLowerCase() === "hand";
 
 
     let endsToTrack: Array<0 | 1>;
     if (trailSettings.trackingMode === TrackingMode.BOTH_ENDS) {
       // Only track both ends for bilateral props (staff, buugeng, etc.)
-      endsToTrack = isPropBilateral ? [0, 1] : [1]; // Unilateral uses right end only
+      endsToTrack = isPropBilateral && !isHandProp ? [0, 1] : [1]; // Unilateral/hand uses single point
     } else if (trailSettings.trackingMode === TrackingMode.LEFT_END) {
       endsToTrack = [0];
     } else {
@@ -402,7 +404,8 @@ export class TrailCaptureService implements ITrailCaptureService {
         prop,
         propDimensions,
         this.config.canvasSize,
-        endType
+        endType,
+        propType
       );
 
       // FIRST POINT: Wait for animation initialization
@@ -577,7 +580,8 @@ export class TrailCaptureService implements ITrailCaptureService {
     prop: PropState,
     propDimensions: PropDimensions,
     canvasSize: number,
-    endType: 0 | 1
+    endType: 0 | 1,
+    propType?: string | null
   ): { x: number; y: number } {
     const centerX = canvasSize / 2;
     const centerY = canvasSize / 2;
@@ -604,6 +608,10 @@ export class TrailCaptureService implements ITrailCaptureService {
         Math.sin(prop.centerPathAngle) *
           scaledHalfwayRadius *
           this.INWARD_FACTOR;
+    }
+
+    if (propType?.toLowerCase() === "hand") {
+      return { x: propCenterX, y: propCenterY };
     }
 
     const staffHalfWidth = (propDimensions.width / 2) * gridScaleFactor;

@@ -11,7 +11,7 @@
  * - Large size
  * - SKIP beta offset when ending in radial (IN/OUT) or non-radial (CLOCK/COUNTER)
  */
-export const BIG_UNILATERAL_PROPS = ["bighoop", "guitar", "sword"] as const;
+export const BIG_UNILATERAL_PROPS = ["bighoop", "bigfan", "bigtriad"] as const;
 
 /**
  * Small Unilateral Props
@@ -25,6 +25,8 @@ export const SMALL_UNILATERAL_PROPS = [
   "triad", // ← TRIAD IS UNILATERAL!
   "ukulele",
   "triquetra",
+  "triquetra2",
+  "chicken",
 ] as const;
 
 /**
@@ -37,6 +39,10 @@ export const BIG_BILATERAL_PROPS = [
   "bigbuugeng",
   "bigdoublestar",
   "bigeightrings",
+  "bigclub",
+  "bigchicken",
+  "guitar",
+  "sword",
 ] as const;
 
 /**
@@ -48,12 +54,12 @@ export const BIG_BILATERAL_PROPS = [
 export const SMALL_BILATERAL_PROPS = [
   "staff",
   "simple_staff",
+  "staff_v2",
   "buugeng",
   "doublestar",
   "quiad",
   "fractalgeng",
   "eightrings",
-  "chicken",
 ] as const;
 
 // Union types for type checking
@@ -70,6 +76,7 @@ export type BilateralProp = BigBilateralProp | SmallBilateralProp;
  */
 export function isUnilateralProp(propType: string): boolean {
   const normalizedType = propType.toLowerCase();
+  if (normalizedType === "hand") return false;
   return (
     (BIG_UNILATERAL_PROPS as readonly string[]).includes(normalizedType) ||
     (SMALL_UNILATERAL_PROPS as readonly string[]).includes(normalizedType)
@@ -81,6 +88,7 @@ export function isUnilateralProp(propType: string): boolean {
  */
 export function isBilateralProp(propType: string): boolean {
   const normalizedType = propType.toLowerCase();
+  if (normalizedType === "hand") return false;
   return (
     (BIG_BILATERAL_PROPS as readonly string[]).includes(normalizedType) ||
     (SMALL_BILATERAL_PROPS as readonly string[]).includes(normalizedType)

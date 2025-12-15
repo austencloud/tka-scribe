@@ -925,10 +925,10 @@ body.sakura-drift {
    TAB VIEW TRANSITIONS (within modules)
    ======================================== */
 
-/* Tab content gets a transition name for View Transitions API to target */
-.tab-panel,
-.mode-panel,
-.view-container,
+/* Tab content gets a transition name for View Transitions API to target
+   IMPORTANT: names must be unique per view, so only mark the active panel. */
+.tab-panel.active,
+.mode-panel.active,
 .section-panel {
   view-transition-name: tab-content;
 }

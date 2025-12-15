@@ -25,16 +25,18 @@ export interface GridSizingConfig {
   heightSizingRowThreshold?: number;
   columnBreakpoint?: number;
   isSideBySideLayout?: boolean;
+  manualColumnCount?: number | null;
 }
 
-const DEFAULT_SIZING: Required<GridSizingConfig> = {
+const DEFAULT_SIZING: Omit<Required<GridSizingConfig>, 'manualColumnCount'> & { manualColumnCount: number | null } = {
   minCellSize: 50,
   maxCellSize: 200,
   widthPaddingRatio: 0.95,
-  heightPaddingRatio: 0.95, // Increased from 0.9 to 1.0 to maximize cell size and fill available vertical space
+  heightPaddingRatio: 0.92, // Conservative to account for all container padding and gaps
   heightSizingRowThreshold: 4,
   columnBreakpoint: 650,
   isSideBySideLayout: false,
+  manualColumnCount: null,
 };
 
 /**
@@ -49,18 +51,29 @@ export function calculateGridLayout(
 ): GridLayout {
   const sizing = { ...DEFAULT_SIZING, ...config };
 
-  // Determine max columns based on layout mode and container width
-  // Side-by-side layout: Always 4 columns max (ignores container width)
-  // Top-and-bottom layout: Width-based (4 or 8 columns depending on width)
-  const maxColumns = getMaxColumnsForBeatCount(
-    beatCount,
-    sizing.isSideBySideLayout,
-    containerWidth
-  );
+  // Determine columns: use manual override if provided, otherwise calculate automatically
+  let maxColumns: number;
+  let columns: number;
 
-  // Calculate actual columns based on beat count and max columns
-  // For small beat counts, use the optimal count; for larger counts, respect max columns
-  const columns = Math.min(beatCount, maxColumns);
+  if (sizing.manualColumnCount !== null && sizing.manualColumnCount > 0) {
+    // Manual override: use the specified column count
+    maxColumns = sizing.manualColumnCount;
+    columns = Math.min(beatCount, sizing.manualColumnCount);
+  } else {
+    // Automatic: determine max columns based on layout mode and container width
+    // Side-by-side layout: Always 4 columns max (ignores container width)
+    // Top-and-bottom layout: Width-based (4 or 8 columns depending on width)
+    maxColumns = getMaxColumnsForBeatCount(
+      beatCount,
+      sizing.isSideBySideLayout,
+      containerWidth
+    );
+
+    // Calculate actual columns based on beat count and max columns
+    // For small beat counts, use the optimal count; for larger counts, respect max columns
+    columns = Math.min(beatCount, maxColumns);
+  }
+
   const rows = Math.ceil(beatCount / columns);
   const totalColumns = columns + 1; // +1 for start position
 
@@ -68,16 +81,26 @@ export function calculateGridLayout(
   let cellSize = 160; // Default
 
   if (containerWidth > 0 && containerHeight > 0) {
-    // Use padding ratio to leave space around grid
-    const maxCellWidth =
-      (containerWidth * sizing.widthPaddingRatio) / totalColumns;
+    // Grid gap between cells (must match CSS gap value in BeatGrid.svelte)
+    const gridGap = 1;
+    
+    // Scroll container padding (horizontal padding from beat-grid-scroll in BeatGrid.svelte)
+    const scrollContainerPadding = 8; // 4px on each side
+
+    // Account for ALL spacing when calculating available space
+    const totalWidthGaps = (totalColumns - 1) * gridGap;
+    const totalHeightGaps = (rows - 1) * gridGap;
+
+    // Calculate max cell size after subtracting gap space AND container padding
+    const availableWidth = containerWidth * sizing.widthPaddingRatio - totalWidthGaps - scrollContainerPadding;
+    const availableHeight = containerHeight * sizing.heightPaddingRatio - totalHeightGaps - scrollContainerPadding;
+
+    const maxCellWidth = availableWidth / totalColumns;
 
     // For grids with threshold rows or fewer, consider height to prevent clipping
     // For larger grids, prioritize width since scrolling is inevitable
     if (rows <= sizing.heightSizingRowThreshold) {
-      // Use padding ratio for height
-      const maxCellHeight =
-        (containerHeight * sizing.heightPaddingRatio) / rows;
+      const maxCellHeight = availableHeight / rows;
       // Use the smaller dimension to ensure the entire grid fits
       cellSize = Math.max(
         sizing.minCellSize,

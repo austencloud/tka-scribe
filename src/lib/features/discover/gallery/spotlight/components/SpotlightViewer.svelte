@@ -27,6 +27,8 @@
   let imageElement = $state<HTMLImageElement | null>(null);
   let shouldRotate = $state(false);
   let manualRotationOverride = $state<boolean | null>(null); // null = auto, true/false = manual
+  let showColumnPicker = $state(false);
+  let manualColumnCount = $state<number | null>(null); // null = auto, number = manual override
 
   // Track fullscreen state
   let _spotlightElement = $state<HTMLElement | null>(null);
@@ -177,6 +179,62 @@
     console.log("🔄 Manual rotation toggled:", shouldRotate);
   }
 
+  // Toggle column picker
+  function toggleColumnPicker(event?: MouseEvent) {
+    event?.stopPropagation();
+    showColumnPicker = !showColumnPicker;
+  }
+
+  // Set manual column count
+  function setColumnCount(count: number | null, event?: MouseEvent) {
+    event?.stopPropagation();
+    manualColumnCount = count;
+    showColumnPicker = false;
+  }
+
+  // Get suggested column options based on beat count and viewport width
+  function getColumnOptions(beatCount: number, viewportWidth: number): number[] {
+    const options: number[] = [];
+
+    // Minimum cell size to avoid cramped layouts
+    const MIN_CELL_SIZE = 60; // pixels
+
+    // Calculate viable column options
+    // Formula: (viewportWidth - padding) / (columns + 1 for start position) >= MIN_CELL_SIZE
+    const maxViableColumns = Math.floor((viewportWidth - 32) / MIN_CELL_SIZE) - 1;
+
+    // Always offer 4 columns if viable (rotational sequences)
+    if (maxViableColumns >= 4) {
+      options.push(4);
+    }
+
+    // For larger sequences, offer additional options if they fit
+    if (beatCount > 16) {
+      if (maxViableColumns >= 6) {
+        options.push(6);
+      }
+      if (maxViableColumns >= 8) {
+        options.push(8);
+      }
+    }
+
+    return options;
+  }
+
+  const columnOptions = $derived(
+    sequence?.beats ? getColumnOptions(sequence.beats.length, window.innerWidth) : [4, 6, 8]
+  );
+
+  // Detect if current layout is suboptimal (too many columns for screen size)
+  const isLayoutCramped = $derived.by(() => {
+    if (!manualColumnCount || !sequence?.beats) return false;
+
+    const MIN_COMFORTABLE_CELL_SIZE = 80;
+    const estimatedCellWidth = (window.innerWidth - 32) / (manualColumnCount + 1);
+
+    return estimatedCellWidth < MIN_COMFORTABLE_CELL_SIZE;
+  });
+
   // Close handler
   function handleClose() {
     isClosing = true;
@@ -187,6 +245,8 @@
       isClosing = false;
       shouldRotate = false;
       manualRotationOverride = null; // Reset manual override on close
+      manualColumnCount = null; // Reset column override
+      showColumnPicker = false;
       try {
         document.documentElement.classList.remove("tka-no-select");
       } catch {}
@@ -245,10 +305,71 @@
         <BeatGrid
           beats={sequence.beats ?? []}
           startPosition={sequence.startPosition ?? sequence.startingPositionBeat ?? null}
-          isSideBySideLayout={true}
+          isSideBySideLayout={false}
           isSpotlightMode={true}
+          manualColumnCount={manualColumnCount}
         />
       </div>
+
+      <!-- Column picker button - bottom left corner (beatgrid mode only) -->
+      <button
+        class="column-picker-button"
+        class:pulsing={isLayoutCramped}
+        onclick={toggleColumnPicker}
+        aria-label="Adjust grid columns"
+        title="Adjust grid columns"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      </button>
+
+      <!-- Layout hint - show when cramped -->
+      {#if isLayoutCramped && !showColumnPicker}
+        <div class="layout-hint">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          Too many columns - tap grid icon to adjust
+        </div>
+      {/if}
+
+      <!-- Column options picker -->
+      {#if showColumnPicker}
+        <div class="column-picker-menu">
+          <div class="column-picker-header">Grid Columns</div>
+          <button
+            class="column-option"
+            class:active={manualColumnCount === null}
+            onclick={(e) => setColumnCount(null, e)}
+          >
+            Auto
+          </button>
+          {#each columnOptions as colCount}
+            <button
+              class="column-option"
+              class:active={manualColumnCount === colCount}
+              onclick={(e) => setColumnCount(colCount, e)}
+            >
+              {colCount} columns
+            </button>
+          {/each}
+        </div>
+      {/if}
     {:else}
       <!-- Image mode: show thumbnail, tap anywhere to close -->
       <img
@@ -344,20 +465,25 @@
     max-height: 100vw;
   }
 
-  /* Beat grid container - fills viewport, tap anywhere to close */
+  /* Beat grid container - fills entire viewport, tap anywhere to close */
   .spotlight-beatgrid {
     width: 100vw;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
     /* Clicks pass through to parent spotlight for closing */
     pointer-events: none;
   }
 
-  /* Beat grid content also allows clicks through for closing */
+  /* Beat grid content - constrain to container size */
   .spotlight-beatgrid :global(.beat-grid-container) {
     pointer-events: none;
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
   }
 
   /* Rotate button - image mode only */
@@ -397,18 +523,180 @@
     height: 24px;
   }
 
+  /* Column picker button - bottom left corner (beatgrid mode only) */
+  .column-picker-button {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    pointer-events: auto;
+  }
+
+  .column-picker-button:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
+    transform: scale(1.05);
+  }
+
+  .column-picker-button:active {
+    transform: scale(0.95);
+  }
+
+  /* Pulsing animation for cramped layout hint */
+  .column-picker-button.pulsing {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    border-color: rgba(251, 191, 36, 0.6);
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(251, 191, 36, 0);
+    }
+  }
+
+  /* Column picker menu */
+  .column-picker-menu {
+    position: fixed;
+    bottom: 6rem;
+    left: 2rem;
+    background: var(--theme-panel-bg, rgba(20, 20, 25, 0.95));
+    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-radius: 12px;
+    padding: 8px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 10001;
+    pointer-events: auto;
+    min-width: 140px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .column-picker-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px 12px 6px;
+    margin-bottom: 4px;
+  }
+
+  .column-option {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--theme-text, white);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.15s ease;
+    margin-bottom: 4px;
+  }
+
+  .column-option:last-child {
+    margin-bottom: 0;
+  }
+
+  .column-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .column-option.active {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: rgba(6, 182, 212, 0.5);
+    color: #06b6d4;
+  }
+
+  /* Layout hint tooltip */
+  .layout-hint {
+    position: fixed;
+    bottom: 6rem;
+    left: 2rem;
+    background: rgba(251, 191, 36, 0.95);
+    color: rgba(0, 0, 0, 0.9);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10001;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    animation: slideUpBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: 220px;
+  }
+
+  @keyframes slideUpBounce {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .layout-hint svg {
+    flex-shrink: 0;
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .spotlight,
     .spotlight-image,
     .spotlight-beatgrid,
-    .rotate-button {
-      animation: none;
+    .rotate-button,
+    .column-picker-button,
+    .column-picker-menu,
+    .layout-hint {
+      animation: none !important;
       transition: none;
     }
 
     .spotlight-image.rotated {
       transition: none;
+    }
+
+    /* Still show pulsing hint visually but without animation */
+    .column-picker-button.pulsing {
+      border-color: rgba(251, 191, 36, 0.8);
+      box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.3);
     }
   }
 
