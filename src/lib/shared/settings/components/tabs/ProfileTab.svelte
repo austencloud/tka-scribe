@@ -7,18 +7,26 @@
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
+    passwordState,
+    resetPasswordForm,
     uiState,
   } from "../../../navigation/state/profile-settings-state.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
-  import SecuritySection from "../../../auth/components/SecuritySection.svelte";
+  import AccountSecuritySection from "../../../auth/components/AccountSecuritySection.svelte";
   import RobustAvatar from "../../../components/avatar/RobustAvatar.svelte";
 
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
   import EmailPasswordAuth from "../../../auth/components/EmailPasswordAuth.svelte";
   import { nuclearCacheClear } from "../../../auth/utils/nuclearCacheClear";
+  import PasskeyStepUpModal from "../../../auth/components/PasskeyStepUpModal.svelte";
+  import {
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    updatePassword,
+  } from "firebase/auth";
 
   interface Props {
     currentSettings?: unknown;
@@ -42,6 +50,10 @@
 
   // Entry animation
   let isVisible = $state(false);
+
+  // Step-up auth modal
+  let showStepUpModal = $state(false);
+  let pendingAction = $state<(() => Promise<void>) | null>(null);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -78,10 +90,24 @@
     uiState.saving = true;
 
     try {
-      console.log("Changing password");
+      const newPassword = passwordState.new;
+      if (newPassword.length < 8) {
+        throw new Error("Password must be at least 8 characters");
+      }
+
+      await withSensitiveAuth(async () => {
+        await authedApi("/api/account/update-password", { newPassword });
+      }, { allowPasswordReauth: true, password: passwordState.current });
+
+      // Also update client auth password so Firebase doesn't immediately desync
+      if (authState.user) {
+        await updatePassword(authState.user, newPassword).catch(() => {});
+      }
+
       hapticService?.trigger("success");
-      alert("Password changed successfully!");
+      alert("Password updated. For security, you may be signed out on other devices.");
       uiState.showPasswordSection = false;
+      resetPasswordForm();
     } catch (error) {
       console.error("Failed to change password:", error);
       hapticService?.trigger("error");
@@ -96,13 +122,91 @@
     hapticService?.trigger("warning");
 
     try {
-      console.log("Deleting account");
-      await authState.signOut();
+      await withSensitiveAuth(async () => {
+        await authedApi("/api/account/delete");
+      }, { allowPasswordReauth: true });
+
+      await authState.signOut().catch(() => {});
       alert("Account deleted successfully.");
     } catch (error) {
       console.error("Failed to delete account:", error);
       alert("Failed to delete account. Please try again.");
     }
+  }
+
+  async function authedApi(path: string, body?: unknown) {
+    const user = authState.user;
+    if (!user) throw new Error("Not signed in");
+
+    const token = await user.getIdToken();
+    const res = await fetch(path, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: body ? JSON.stringify(body) : "{}",
+    });
+
+    const data = (await res.json().catch(() => ({}))) as any;
+    if (!res.ok) {
+      const err = new Error(data?.error || `Request failed: ${res.status}`);
+      (err as any).status = res.status;
+      (err as any).code = data?.code;
+      throw err;
+    }
+    return data;
+  }
+
+  async function passwordReauthIfPossible(password: string | null | undefined) {
+    if (!password) return false;
+    if (!authState.user?.email) return false;
+    if (!hasPasswordProvider()) return false;
+
+    const credential = EmailAuthProvider.credential(authState.user.email, password);
+    await reauthenticateWithCredential(authState.user, credential);
+    await authState.user.getIdToken(true);
+    return true;
+  }
+
+  async function withSensitiveAuth(
+    action: () => Promise<void>,
+    options?: { allowPasswordReauth?: boolean; password?: string }
+  ) {
+    try {
+      await action();
+      return;
+    } catch (e: unknown) {
+      const code = typeof e === "object" && e && "code" in e ? (e as any).code : null;
+      if (code !== "step_up_required") throw e;
+    }
+
+    if (options?.allowPasswordReauth) {
+      const did = await passwordReauthIfPossible(options.password).catch(() => false);
+      if (did) {
+        await action();
+        return;
+      }
+    }
+
+    pendingAction = action;
+    showStepUpModal = true;
+  }
+
+  async function handleStepUpSuccess() {
+    const action = pendingAction;
+    pendingAction = null;
+    if (!action) return;
+    try {
+      await action();
+    } catch (e) {
+      console.error("Sensitive action failed after verification:", e);
+      alert("Verification succeeded, but the action still failed. Please try again.");
+    }
+  }
+
+  function handleStepUpCancel() {
+    pendingAction = null;
   }
 
   async function handleClearCache() {
@@ -181,7 +285,7 @@
           </div>
         </section>
 
-        <!-- Two-Factor Authentication -->
+        <!-- Security -->
         {#if authService}
           <section class="glass-card security-card">
             <header class="card-header">
@@ -189,12 +293,12 @@
                 <i class="fas fa-shield-alt"></i>
               </div>
               <div class="card-header-text">
-                <h3 class="card-title">Two-Factor Authentication</h3>
-                <p class="card-subtitle">Add an extra layer of security</p>
+                <h3 class="card-title">Security</h3>
+                <p class="card-subtitle">Protect sensitive actions</p>
               </div>
             </header>
             <div class="card-content">
-              <SecuritySection {authService} {hapticService} />
+              <AccountSecuritySection {hapticService} />
             </div>
           </section>
         {/if}
@@ -303,6 +407,13 @@
     </div>
   {/if}
 </div>
+
+<PasskeyStepUpModal
+  bind:isOpen={showStepUpModal}
+  allowPassword={hasPasswordProvider()}
+  onSuccess={handleStepUpSuccess}
+  onCancel={handleStepUpCancel}
+/>
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════

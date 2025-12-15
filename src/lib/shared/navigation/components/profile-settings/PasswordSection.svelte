@@ -45,8 +45,7 @@
   }
 
   const isFormValid = $derived(
-    passwordState.current &&
-      passwordState.new &&
+    passwordState.new &&
       passwordState.new.length >= 8 &&
       !uiState.saving
   );
@@ -65,14 +64,16 @@
   {:else}
     <div class="password-form">
       <div class="field">
-        <label class="label" for="current-password"> Current Password </label>
+        <label class="label" for="current-password">
+          Current Password <span class="optional">(optional)</span>
+        </label>
         <div class="input-wrapper">
           <input
             id="current-password"
             type={showCurrentPassword ? "text" : "password"}
             class="input input-with-toggle"
             bind:value={passwordState.current}
-            placeholder="Enter current password"
+            placeholder="Enter current password (fallback)"
             autocomplete="current-password"
           />
           <button
@@ -87,6 +88,9 @@
             ></i>
           </button>
         </div>
+        <p class="hint-message subtle">
+          If you have passkeys enabled, you can leave this blank and verify with your device.
+        </p>
       </div>
 
       <div class="field">
@@ -235,6 +239,17 @@
     color: rgba(251, 191, 36, 0.9);
     margin: 6px 0 0 0;
     font-weight: 500;
+  }
+
+  .hint-message.subtle {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    font-weight: 500;
+  }
+
+  .optional {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    font-weight: 500;
+    font-size: 12px;
   }
 
   .button-row {
