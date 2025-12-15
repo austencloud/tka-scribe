@@ -237,7 +237,7 @@
     </div>
     <h2 class="success-title">Feedback Submitted!</h2>
     <p class="success-message">
-      Thank you for helping improve TKA Studio. Your feedback has been received
+      Thank you for helping improve TKA Scribe. Your feedback has been received
       and will be reviewed.
     </p>
     <button type="button" class="success-action" onclick={handleReset}>

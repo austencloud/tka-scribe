@@ -16,6 +16,7 @@
   import FeedbackEditDrawer from "./FeedbackEditDrawer.svelte";
   import FeedbackReplyPanel from "./FeedbackReplyPanel.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   let {
     item,
@@ -59,6 +60,16 @@
   let isEditDrawerOpen = $state(false);
   let showDeleteConfirm = $state(false);
   let isDeleting = $state(false);
+  let deleteDialogRef = $state<HTMLDialogElement | null>(null);
+
+  // Show/hide delete dialog using native dialog API
+  $effect(() => {
+    if (showDeleteConfirm && deleteDialogRef) {
+      deleteDialogRef.showModal();
+    } else if (!showDeleteConfirm && deleteDialogRef?.open) {
+      deleteDialogRef.close();
+    }
+  });
 
   const typeConfig = $derived(item ? TYPE_CONFIG[item.type as FeedbackType] : null);
   const statusConfig = $derived(item ? STATUS_CONFIG[item.status as FeedbackStatus] : null);
@@ -68,6 +79,9 @@
 
   // Preview mode = read-only, no editing allowed
   const isPreviewMode = $derived(preview.isReadOnly);
+
+  // Check if current user is an admin (for showing admin-only notes)
+  const isUserAdmin = $derived(authState.isEffectiveAdmin);
 
   // Can edit if new, in-progress, or in-review (not completed/archived) AND not in preview mode
   const canEdit = $derived(
@@ -265,14 +279,14 @@
           </div>
         {/if}
 
-        <!-- Admin Notes -->
-        {#if item.adminNotes}
+        <!-- Admin Notes (admin-only) -->
+        {#if item.adminNotes && isUserAdmin}
           <div class="response-section">
             <h3>
               <i class="fas fa-sticky-note"></i>
-              Admin Notes
+              Admin Notes (Internal)
             </h3>
-            <div class="response-card">
+            <div class="response-card admin">
               <p class="response-message">{item.adminNotes}</p>
             </div>
           </div>
@@ -307,40 +321,48 @@
       </div>
 
       <!-- Delete Confirmation Dialog -->
-      {#if showDeleteConfirm}
-        <div class="delete-confirm-overlay" onclick={() => (showDeleteConfirm = false)}>
-          <div class="delete-confirm-dialog" onclick={(e) => e.stopPropagation()}>
-            <div class="dialog-icon">
-              <i class="fas fa-trash-alt"></i>
-            </div>
-            <h3>Delete Feedback?</h3>
-            <p>This action cannot be undone. Your feedback will be permanently removed.</p>
-            <div class="dialog-actions">
-              <button
-                class="cancel-btn"
-                onclick={() => (showDeleteConfirm = false)}
-                disabled={isDeleting}
-                type="button"
-              >
-                Cancel
-              </button>
-              <button
-                class="confirm-btn"
-                onclick={handleDelete}
-                disabled={isDeleting}
-                type="button"
-              >
-                {#if isDeleting}
-                  <i class="fas fa-spinner fa-spin"></i>
-                  Deleting...
-                {:else}
-                  Delete
-                {/if}
-              </button>
-            </div>
+      <dialog
+        class="delete-confirm-dialog"
+        bind:this={deleteDialogRef}
+        onclose={() => (showDeleteConfirm = false)}
+        onclick={(e) => {
+          // Close when clicking backdrop (the dialog element itself, not its contents)
+          if (e.target === e.currentTarget) {
+            deleteDialogRef?.close();
+          }
+        }}
+      >
+        <div class="dialog-content">
+          <div class="dialog-icon">
+            <i class="fas fa-trash-alt"></i>
+          </div>
+          <h3>Delete Feedback?</h3>
+          <p>This action cannot be undone. Your feedback will be permanently removed.</p>
+          <div class="dialog-actions">
+            <button
+              class="cancel-btn"
+              onclick={() => deleteDialogRef?.close()}
+              disabled={isDeleting}
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              class="confirm-btn"
+              onclick={handleDelete}
+              disabled={isDeleting}
+              type="button"
+            >
+              {#if isDeleting}
+                <i class="fas fa-spinner fa-spin"></i>
+                Deleting...
+              {:else}
+                Delete
+              {/if}
+            </button>
           </div>
         </div>
-      {/if}
+      </dialog>
 
       <!-- Edit Drawer -->
       <FeedbackEditDrawer
@@ -357,12 +379,15 @@
   /* Drawer sizing and z-index (must be above bottom nav z-index: 100) */
   :global(.drawer-content.feedback-detail-drawer) {
     --sheet-width: min(420px, 95vw);
+    --sheet-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40));
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40)) !important;
     width: var(--sheet-width) !important;
     z-index: 110 !important;
   }
 
   :global(.drawer-overlay.feedback-detail-backdrop) {
     z-index: 109 !important;
+    background: transparent !important;
   }
 
   @media (max-width: 768px) {
@@ -446,15 +471,15 @@
     padding: 4px 10px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--badge-color) 40%, rgba(20, 20, 25, 0.9)),
-      color-mix(in srgb, var(--badge-color) 25%, rgba(15, 15, 20, 0.9))
+      color-mix(in srgb, var(--badge-color) 40%, var(--theme-card-bg, rgba(20, 20, 25, 0.9))),
+      color-mix(in srgb, var(--badge-color) 25%, var(--theme-card-bg, rgba(15, 15, 20, 0.9)))
     );
     border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
     border-radius: 14px;
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--badge-color);
-    box-shadow: 0 2px 6px color-mix(in srgb, var(--badge-color) 20%, black);
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--badge-color) 20%, var(--theme-shadow-color, black));
   }
 
   /* Content */
@@ -573,6 +598,19 @@
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
+  /* Admin card styling (internal-only) */
+  .response-card.admin {
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.2) 0%,
+      rgba(239, 68, 68, 0.1) 100%
+    );
+    border: 1.5px solid rgba(239, 68, 68, 0.4);
+    box-shadow:
+      0 4px 16px rgba(239, 68, 68, 0.15),
+      0 0 0 1px rgba(239, 68, 68, 0.1);
+  }
+
   /* Resolution card styling */
   .response-card.resolution {
     background: linear-gradient(
@@ -662,16 +700,17 @@
     border-radius: 3px;
   }
 
-  /* Delete Confirmation Dialog */
-  .delete-confirm-overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Delete Confirmation Dialog (native dialog element) */
+  .delete-confirm-dialog {
+    padding: 0;
+    border: none;
+    background: transparent;
+    max-width: 320px;
+  }
+
+  .delete-confirm-dialog::backdrop {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
-    z-index: 100;
     animation: fadeIn 0.15s ease;
   }
 
@@ -680,17 +719,18 @@
     to { opacity: 1; }
   }
 
-  .delete-confirm-dialog {
+  .delete-confirm-dialog .dialog-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
     padding: 24px 32px;
-    background: #1a1a24;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    max-width: 320px;
     text-align: center;
     animation: slideUp 0.2s ease;
   }
@@ -718,14 +758,14 @@
     font-size: 20px;
   }
 
-  .delete-confirm-dialog h3 {
+  .delete-confirm-dialog .dialog-content h3 {
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
-  .delete-confirm-dialog p {
+  .delete-confirm-dialog .dialog-content p {
     margin: 0;
     font-size: 0.875rem;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));

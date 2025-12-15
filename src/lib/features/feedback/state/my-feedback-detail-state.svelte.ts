@@ -13,17 +13,41 @@ let selectedItem = $state<FeedbackItem | null>(null);
 let updateHandler = $state<((feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>) | null>(null);
 let deleteHandler = $state<((feedbackId: string) => Promise<void>) | null>(null);
 
+// URL persistence helpers
+function updateURLParam(feedbackId: string | null) {
+  if (typeof window === 'undefined') return;
+  const url = new URL(window.location.href);
+  if (feedbackId) {
+    url.searchParams.set('feedback', feedbackId);
+  } else {
+    url.searchParams.delete('feedback');
+  }
+  window.history.replaceState({}, '', url.toString());
+}
+
+function getURLParam(): string | null {
+  if (typeof window === 'undefined') return null;
+  return new URL(window.location.href).searchParams.get('feedback');
+}
+
 export const myFeedbackDetailState = {
   get selectedItem() { return selectedItem; },
   get isOpen() { return selectedItem !== null; },
 
+  // Get the persisted feedback ID from URL
+  getPersistedFeedbackId(): string | null {
+    return getURLParam();
+  },
+
   // Actions
   selectItem(item: FeedbackItem | null) {
     selectedItem = item;
+    updateURLParam(item?.id ?? null);
   },
 
   close() {
     selectedItem = null;
+    updateURLParam(null);
   },
 
   // Register handlers from MyFeedbackTab

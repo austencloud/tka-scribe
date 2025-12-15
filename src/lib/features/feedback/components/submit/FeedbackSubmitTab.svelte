@@ -15,7 +15,7 @@
         <i class="fas fa-paper-plane"></i>
       </div>
       <h1 class="header-title">Submit Feedback</h1>
-      <p class="header-subtitle">Help improve TKA Studio with your input</p>
+      <p class="header-subtitle">Help improve TKA Scribe with your input</p>
     </header>
 
     <!-- Form Content -->

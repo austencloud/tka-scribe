@@ -26,7 +26,7 @@
   // Load persisted filter state on mount
   onMount(() => {
     const stored = localStorage.getItem("my-feedback-filter");
-    if (stored === "all" || ["new", "in-progress", "in-review", "completed", "archived"].includes(stored)) {
+    if (stored && (stored === "all" || ["new", "in-progress", "in-review", "completed", "archived"].includes(stored))) {
       selectedStatus = stored as FeedbackStatus | "all";
     }
   });

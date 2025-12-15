@@ -757,6 +757,7 @@ export class FeedbackService implements IFeedbackService {
       capturedTab: data["capturedTab"] as string,
       status: (data["status"] as FeedbackStatus) || "new",
       adminNotes: data["adminNotes"] as string | undefined,
+      resolutionNotes: data["resolutionNotes"] as string | undefined,
       adminResponse,
       testerConfirmation,
       createdAt: (data["createdAt"] as Timestamp)?.toDate() || new Date(),

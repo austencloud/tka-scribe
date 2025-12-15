@@ -92,11 +92,6 @@ export function createFeedbackSubmitState() {
   // Derived state
   const isSubmitting = $derived(submitStatus === "submitting");
 
-  // Only description is required - AI will generate title if needed
-  const isFormValid = $derived(
-    formData.description.trim().length >= 10
-  );
-
   // Actions
   function updateField<K extends keyof FeedbackFormData>(
     field: K,
@@ -193,7 +188,8 @@ export function createFeedbackSubmitState() {
       return isSubmitting;
     },
     get isFormValid() {
-      return isFormValid;
+      // Compute directly to survive HMR - don't use $derived
+      return formData.description.trim().length >= 10;
     },
     // Captured context (frozen at state creation time)
     get capturedModule() {

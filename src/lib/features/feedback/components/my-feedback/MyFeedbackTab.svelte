@@ -82,8 +82,8 @@
     // Register handlers with the shared detail state
     myFeedbackDetailState.setHandlers(state.updateItem, state.deleteItem);
 
-    // Check if a specific feedback should be opened (from notification)
-    const targetFeedbackId = takeNotificationTargetFeedback();
+    // Check if a specific feedback should be opened (from notification or URL)
+    const targetFeedbackId = takeNotificationTargetFeedback() || myFeedbackDetailState.getPersistedFeedbackId();
 
     // First, ensure auth is ready, then load feedback
     loadWhenReady().then(() => {

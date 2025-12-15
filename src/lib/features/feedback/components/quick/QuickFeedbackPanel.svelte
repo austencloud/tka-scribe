@@ -84,7 +84,7 @@
       hasShownSuccessToast = true;
 
       // Show success toast immediately
-      toast.success("Feedback submitted! Thank you for helping improve TKA Studio.", 3000);
+      toast.success("Feedback submitted! Thank you for helping improve TKA Scribe.", 3000);
 
       // Close panel and reset after brief delay (300ms)
       // Store timeout in component variable instead of returning cleanup
