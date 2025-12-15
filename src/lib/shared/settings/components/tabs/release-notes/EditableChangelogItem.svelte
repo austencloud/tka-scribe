@@ -30,9 +30,25 @@
   let isDeleting = $state(false);
   let showDeleteConfirm = $state(false);
   let error = $state<string | null>(null);
+  let textareaElement: HTMLTextAreaElement;
 
   // Track if user has made changes
   const hasChanges = $derived(editText.trim() !== entry.text.trim());
+
+  // Auto-resize textarea
+  function autoResizeTextarea(textarea: HTMLTextAreaElement) {
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  }
+
+  // Auto-resize when text changes
+  $effect(() => {
+    editText; // Track changes
+    if (textareaElement) {
+      autoResizeTextarea(textareaElement);
+    }
+  });
 
   function startEdit() {
     if (!canEdit) return;
@@ -119,134 +135,147 @@
   const hasLink = $derived(!!entry.feedbackId);
 </script>
 
-{#key isEditing}
-  {#if isEditing}
-    <!-- Edit Mode -->
-    <div
-      class="edit-container"
-      in:scale={{ duration: 250, start: 0.96, opacity: 0 }}
-      out:scale={{ duration: 200, start: 0.96, opacity: 0 }}
-    >
-      <!-- svelte-ignore a11y_autofocus -->
-      <textarea
-        bind:value={editText}
-        onkeydown={handleKeydown}
-        placeholder="Enter changelog text..."
-        rows="2"
-        disabled={isSaving}
-        autofocus
-      ></textarea>
+{#if isEditing}
+  <!-- Edit Mode -->
+  <div class="edit-container">
+    <!-- svelte-ignore a11y_autofocus -->
+    <textarea
+      bind:this={textareaElement}
+      bind:value={editText}
+      onkeydown={handleKeydown}
+      placeholder="Enter changelog text..."
+      disabled={isSaving}
+      autofocus
+    ></textarea>
 
-      {#if error}
-        <div class="error-message" in:fly={{ y: -10, duration: 200 }}>
-          {error}
-        </div>
-      {/if}
+    {#if error}
+      <div class="error-message" in:fly={{ y: -10, duration: 200 }}>
+        {error}
+      </div>
+    {/if}
 
-      {#if showDeleteConfirm}
-        <div class="delete-confirm" in:fly={{ y: 10, duration: 200 }}>
-          <span class="confirm-text">Delete? <span class="hint">(Del again or click)</span></span>
-          <div class="confirm-actions">
-            <button
-              type="button"
-              class="glass-btn danger"
-              onclick={() => void handleDelete()}
-              disabled={isDeleting}
-            >
-              {#if isDeleting}
-                <i class="fas fa-spinner fa-spin"></i>
-              {:else}
-                <i class="fas fa-trash"></i>
-              {/if}
-              Yes
-            </button>
-            <button
-              type="button"
-              class="glass-btn"
-              onclick={() => (showDeleteConfirm = false)}
-              disabled={isDeleting}
-            >
-              No
-            </button>
-          </div>
-        </div>
-      {:else}
-        <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
-          {#if onDelete}
-            <button
-              type="button"
-              class="glass-btn danger"
-              onclick={() => (showDeleteConfirm = true)}
-              disabled={isSaving}
-            >
+    {#if showDeleteConfirm}
+      <div class="delete-confirm" in:fly={{ y: 10, duration: 200 }}>
+        <span class="confirm-text"
+          >Delete? <span class="hint">(Del again or click)</span></span
+        >
+        <div class="confirm-actions">
+          <button
+            type="button"
+            class="glass-btn danger"
+            onclick={() => void handleDelete()}
+            disabled={isDeleting}
+          >
+            {#if isDeleting}
+              <i class="fas fa-spinner fa-spin"></i>
+            {:else}
               <i class="fas fa-trash"></i>
-              Delete
-            </button>
-          {/if}
-
-          {#if hasChanges}
-            <button
-              type="button"
-              class="glass-btn primary flex-2"
-              onclick={() => void saveEdit()}
-              disabled={isSaving}
-            >
-              {#if isSaving}
-                <i class="fas fa-spinner fa-spin"></i>
-              {:else}
-                <i class="fas fa-check"></i>
-              {/if}
-              Save
-            </button>
-          {/if}
-
+            {/if}
+            Yes
+          </button>
           <button
             type="button"
             class="glass-btn"
-            onclick={cancelEdit}
-            disabled={isSaving}
+            onclick={() => (showDeleteConfirm = false)}
+            disabled={isDeleting}
           >
-            <i class="fas fa-times"></i>
-            {hasChanges ? "Cancel" : "Close"}
+            No
           </button>
         </div>
-      {/if}
-    </div>
-  {:else}
-    <!-- View Mode -->
+      </div>
+    {:else}
+      <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
+        {#if onDelete}
+          <button
+            type="button"
+            class="glass-btn danger"
+            onclick={() => (showDeleteConfirm = true)}
+            disabled={isSaving}
+          >
+            <i class="fas fa-trash"></i>
+            Delete
+          </button>
+        {/if}
+
+        {#if hasChanges}
+          <button
+            type="button"
+            class="glass-btn primary flex-2"
+            onclick={() => void saveEdit()}
+            disabled={isSaving}
+          >
+            {#if isSaving}
+              <i class="fas fa-spinner fa-spin"></i>
+            {:else}
+              <i class="fas fa-check"></i>
+            {/if}
+            Save
+          </button>
+        {/if}
+
+        <button
+          type="button"
+          class="glass-btn"
+          onclick={cancelEdit}
+          disabled={isSaving}
+        >
+          <i class="fas fa-times"></i>
+          {hasChanges ? "Cancel" : "Close"}
+        </button>
+      </div>
+    {/if}
+  </div>
+{:else}
+  <!-- View Mode -->
+  <div class="change-item-container">
     <button
       type="button"
       class="change-item"
-      class:clickable={canEdit || hasLink}
+      class:clickable={canEdit}
       class:editable={canEdit}
-      in:scale={{ duration: 250, start: 0.96, opacity: 0 }}
-      out:scale={{ duration: 200, start: 0.96, opacity: 0 }}
       onclick={(e) => {
         if (canEdit) {
-          e.stopPropagation(); // Prevent panel click handler from immediately closing
+          e.stopPropagation();
           startEdit();
-        } else if (hasLink && onOpenFeedback) {
-          onOpenFeedback();
         }
       }}
     >
       <span class="bullet"></span>
       <span class="change-text">{entry.text}</span>
-
-      {#if hasLink && !canEdit}
-        <i class="fas fa-chevron-right arrow"></i>
-      {/if}
     </button>
-  {/if}
-{/key}
+
+    {#if hasLink && onOpenFeedback}
+      <button
+        type="button"
+        class="feedback-link-icon"
+        onclick={(e) => {
+          e.stopPropagation();
+          onOpenFeedback();
+        }}
+        aria-label="View linked feedback"
+        title="View linked feedback"
+      >
+        <i class="fas fa-external-link-alt"></i>
+      </button>
+    {/if}
+  </div>
+{/if}
 
 <style>
+  /* View Mode Container */
+  .change-item-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
   /* View Mode */
   .change-item {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    width: 100%;
+    flex: 1;
     padding: 10px 12px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
     border: none;
@@ -291,19 +320,31 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
-  .arrow {
-    margin-left: auto;
+  .feedback-link-icon {
     flex-shrink: 0;
-    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    padding: 8px 10px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: none;
+    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
     font-size: 12px;
-    transition:
-      transform 0.2s,
-      color 0.2s;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
   }
 
-  .change-item.clickable:hover .arrow {
-    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
-    transform: translateX(2px);
+  .feedback-link-icon:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-accent, rgba(139, 92, 246, 0.9));
+    transform: scale(1.05);
+  }
+
+  .feedback-link-icon:active {
+    transform: scale(0.95);
   }
 
   /* Edit Mode */
@@ -314,7 +355,8 @@
     width: 100%;
     padding: 10px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 8px;
   }
 
@@ -334,7 +376,11 @@
 
   textarea:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 50%,
+      transparent
+    );
   }
 
   textarea:disabled {
@@ -401,27 +447,55 @@
 
   /* Primary variant (accent) */
   .glass-btn.primary {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
     color: var(--theme-accent, #c4b5fd);
   }
 
   .glass-btn.primary:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 45%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 45%,
+      transparent
+    );
     color: var(--theme-accent-strong, #ddd6fe);
   }
 
   /* Danger variant (error) */
   .glass-btn.danger {
     background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 25%,
+      transparent
+    );
     color: color-mix(in srgb, var(--semantic-error, #fca5a5) 90%, white);
   }
 
   .glass-btn.danger:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 18%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 18%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 40%,
+      transparent
+    );
     color: var(--semantic-error, #fca5a5);
   }
 
@@ -432,8 +506,13 @@
     justify-content: space-between;
     gap: 12px;
     padding: 8px 10px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 8%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
     border-radius: 8px;
   }
 

@@ -4,6 +4,7 @@
  * State management for the feedback submission form.
  * Provides both a factory function and a shared singleton for use across
  * the submit tab and quick feedback panel.
+ * Persists draft form data to localStorage so it survives page refreshes.
  */
 
 import type {
@@ -15,6 +16,52 @@ import type {
 import { feedbackService } from "../services/implementations/FeedbackService";
 import { getCapturedModule, getCapturedTab } from "./feedback-context-tracker.svelte";
 
+const FORM_STORAGE_KEY = "tka-feedback-form-draft";
+
+interface PersistedFormData {
+  type: FeedbackType;
+  title: string;
+  description: string;
+}
+
+function getPersistedFormData(): PersistedFormData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(FORM_STORAGE_KEY);
+    if (!stored) return null;
+    return JSON.parse(stored) as PersistedFormData;
+  } catch {
+    return null;
+  }
+}
+
+function persistFormData(data: FeedbackFormData): void {
+  if (typeof window === "undefined") return;
+  try {
+    // Only persist if there's actual content
+    if (data.title.trim() || data.description.trim()) {
+      localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({
+        type: data.type,
+        title: data.title,
+        description: data.description,
+      }));
+    } else {
+      localStorage.removeItem(FORM_STORAGE_KEY);
+    }
+  } catch {
+    // Storage unavailable
+  }
+}
+
+function clearPersistedFormData(): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(FORM_STORAGE_KEY);
+  } catch {
+    // Storage unavailable
+  }
+}
+
 /**
  * Creates feedback submit form state
  */
@@ -23,8 +70,11 @@ export function createFeedbackSubmitState() {
   const initialCapturedModule = getCapturedModule();
   const initialCapturedTab = getCapturedTab();
 
+  // Restore from localStorage if available
+  const persisted = getPersistedFormData();
+
   // Form data (simplified - just type, title, description)
-  let formData = $state<FeedbackFormData>({
+  let formData = $state<FeedbackFormData>(persisted ?? {
     type: "general",
     title: "",
     description: "",
@@ -53,6 +103,9 @@ export function createFeedbackSubmitState() {
     value: FeedbackFormData[K]
   ) {
     formData = { ...formData, [field]: value };
+
+    // Persist draft to localStorage
+    persistFormData(formData);
 
     // Clear error when field is updated
     if (formErrors[field as keyof FeedbackFormErrors]) {
@@ -98,6 +151,7 @@ export function createFeedbackSubmitState() {
         images.length > 0 ? images : undefined
       );
       submitStatus = "success";
+      clearPersistedFormData();
       return true;
     } catch (error) {
       console.error("Failed to submit feedback:", error);
@@ -115,6 +169,7 @@ export function createFeedbackSubmitState() {
     images = [];
     formErrors = {};
     submitStatus = "idle";
+    clearPersistedFormData();
   }
 
   return {

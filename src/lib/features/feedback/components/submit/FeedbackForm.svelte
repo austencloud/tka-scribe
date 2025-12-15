@@ -17,8 +17,9 @@
   } from "../../utils/draft-persistence";
 
   // Props
-  const { formState } = $props<{
+  const { formState, hideSuccessState = false } = $props<{
     formState: FeedbackSubmitState;
+    hideSuccessState?: boolean;
   }>();
 
   let hapticService: IHapticFeedbackService | undefined;
@@ -228,7 +229,7 @@
   }
 </script>
 
-{#if formState.submitStatus === "success"}
+{#if formState.submitStatus === "success" && !hideSuccessState}
   <!-- Success State - Replaces entire form -->
   <div class="success-state">
     <div class="success-icon">
@@ -405,7 +406,11 @@
     );
     --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
     --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%, transparent);
+    --fb-text-subtle: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      transparent
+    );
 
     /* Layout - Fluid */
     position: relative;
@@ -476,10 +481,15 @@
     justify-content: center;
     width: 64px;
     height: 64px;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%, var(--semantic-success, #10b981) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%,
+      var(--semantic-success, #10b981) 100%
+    );
     border-radius: 50%;
     margin-bottom: 16px;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
   }
 
   .success-icon i {
@@ -510,8 +520,13 @@
     gap: 8px;
     min-height: 52px;
     padding: 0 20px;
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
     border-radius: 10px;
     color: color-mix(in srgb, var(--semantic-success, #10b981) 80%, white);
     font-size: 0.9375rem;
@@ -521,8 +536,16 @@
   }
 
   .success-action:hover {
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-success, #10b981) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 50%,
+      transparent
+    );
   }
 
   .success-action:active {
@@ -559,7 +582,11 @@
     display: flex;
     gap: clamp(4px, 1cqi, 8px);
     padding: clamp(3px, 0.8cqi, 5px);
-    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 80%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 80%,
+      transparent
+    );
     border-radius: clamp(8px, 2cqi, 12px);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
@@ -670,9 +697,17 @@
 
   .textarea-wrapper {
     position: relative;
-    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 80%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 80%,
+      transparent
+    );
     border: 1.5px solid
-      color-mix(in srgb, var(--active-type-color) 20%, var(--theme-stroke, rgba(255, 255, 255, 0.1)));
+      color-mix(
+        in srgb,
+        var(--active-type-color) 20%,
+        var(--theme-stroke, rgba(255, 255, 255, 0.1))
+      );
     border-radius: clamp(8px, 1.8cqi, 12px);
     transition:
       border-color 200ms ease,
@@ -702,8 +737,13 @@
 
   .textarea-wrapper:has(.field-textarea.streaming) {
     border-color: var(--theme-accent-strong, #8b5cf6);
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, rgba(0, 0, 0, 0.25));
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 8%,
+      rgba(0, 0, 0, 0.25)
+    );
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
   }
 
   .field-textarea {
@@ -767,7 +807,7 @@
     gap: 4px;
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
     font-weight: 500;
-    color: var(--theme-accent-strong, #6366f1);
+    color: #10b981;
     animation: fadeInOut 2s ease-in-out;
   }
 
@@ -964,16 +1004,20 @@
       color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
       color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent) 100%
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
   }
 
   .toast.info {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 8%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent)
+        0%,
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 8%, transparent)
+        100%
     );
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #6366f1) 25%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 25%, transparent);
   }
 
   .toast.info .toast-icon {

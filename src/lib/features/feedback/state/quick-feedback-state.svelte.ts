@@ -3,11 +3,36 @@
  *
  * Manages the visibility of the quick feedback panel (desktop hotkey overlay).
  * Shares state with the submit tab for draft persistence.
+ * Persists open state to localStorage so panel restores on refresh.
  */
 
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
-let isOpen = $state(false);
+const STORAGE_KEY = "tka-quick-feedback-open";
+
+function getInitialOpenState(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return localStorage.getItem(STORAGE_KEY) === "true";
+  } catch {
+    return false;
+  }
+}
+
+function persistOpenState(open: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (open) {
+      localStorage.setItem(STORAGE_KEY, "true");
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch {
+    // Storage unavailable
+  }
+}
+
+let isOpen = $state(getInitialOpenState());
 
 /**
  * Check if we're currently on the feedback submit tab.
@@ -31,10 +56,12 @@ export const quickFeedbackState = {
       return;
     }
     isOpen = true;
+    persistOpenState(true);
   },
 
   close() {
     isOpen = false;
+    persistOpenState(false);
   },
 
   toggle() {
@@ -43,5 +70,6 @@ export const quickFeedbackState = {
       return;
     }
     isOpen = !isOpen;
+    persistOpenState(isOpen);
   },
 };

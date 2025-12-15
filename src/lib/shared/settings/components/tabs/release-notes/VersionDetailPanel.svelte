@@ -8,7 +8,10 @@
   } from "$lib/features/feedback/domain/models/version-models";
   import { CHANGELOG_CATEGORIES } from "$lib/features/feedback/domain/constants/changelog-constants";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import FeedbackViewPanel from "./FeedbackViewPanel.svelte";
+  import FeedbackDetailPanel from "$lib/features/feedback/components/manage/FeedbackDetailPanel.svelte";
+  import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
+  import { feedbackService } from "$lib/features/feedback/services/implementations/FeedbackService";
+  import { createFeedbackManageState } from "$lib/features/feedback/state/feedback-manage-state.svelte";
   import EditableReleaseNotes from "./EditableReleaseNotes.svelte";
   import ChangeGroupSection from "./ChangeGroupSection.svelte";
   import VersionHeader from "./VersionHeader.svelte";
@@ -30,11 +33,15 @@
 
   // UI state
   let currentlyEditingId = $state<string | null>(null);
-  let selectedFeedbackId = $state<string | null>(null);
+  let selectedFeedback = $state<FeedbackItem | null>(null);
+  let isLoadingFeedback = $state(false);
   let feedbackPanelOpen = $state(false);
   let addingToCategory = $state<ChangelogCategory | null>(null);
   let newEntryText = $state("");
   let isMobile = $state(false);
+
+  // Create a manage state for editing feedback in release notes context
+  const manageState = createFeedbackManageState();
 
   // Toast
   type ToastType = "action" | "undone" | "redone";
@@ -76,9 +83,28 @@
 
   function openFeedback(entry: ChangelogEntry) {
     if (entry.feedbackId) {
-      selectedFeedbackId = entry.feedbackId;
-      feedbackPanelOpen = true;
+      void loadAndOpenFeedback(entry.feedbackId);
     }
+  }
+
+  async function loadAndOpenFeedback(feedbackId: string) {
+    isLoadingFeedback = true;
+    try {
+      const feedback = await feedbackService.getFeedback(feedbackId);
+      if (feedback) {
+        selectedFeedback = feedback;
+        feedbackPanelOpen = true;
+      }
+    } catch (err) {
+      console.error("Failed to load feedback:", err);
+    } finally {
+      isLoadingFeedback = false;
+    }
+  }
+
+  function closeFeedbackPanel() {
+    feedbackPanelOpen = false;
+    selectedFeedback = null;
   }
 
   function handlePanelClick(e: MouseEvent) {
@@ -333,10 +359,21 @@
   {/if}
 </Drawer>
 
-<FeedbackViewPanel
-  feedbackId={selectedFeedbackId}
-  bind:isOpen={feedbackPanelOpen}
-/>
+{#if selectedFeedback}
+  <Drawer
+    bind:isOpen={feedbackPanelOpen}
+    {placement}
+    showHandle={isMobile}
+    ariaLabel={`Edit feedback: ${selectedFeedback.title}`}
+  >
+    <FeedbackDetailPanel
+      item={selectedFeedback}
+      {manageState}
+      onClose={closeFeedbackPanel}
+      readOnly={!isAdmin}
+    />
+  </Drawer>
+{/if}
 
 {#if toastMessage}
   <ActionToast

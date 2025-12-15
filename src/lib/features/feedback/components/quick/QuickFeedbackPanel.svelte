@@ -19,6 +19,7 @@
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
+  import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
   const debug = createComponentLogger("QuickFeedbackPanel");
 
@@ -27,6 +28,8 @@
   let deviceDetector: IDeviceDetector | null = null;
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
   let activeSnapPoint = $state<number | null>(null);
+  let hasShownSuccessToast = $state(false);
+  let closeTimeout: ReturnType<typeof setTimeout> | null = null;
 
   const isBottomSheet = $derived(
     responsiveSettings?.navigationLayout === "bottom"
@@ -36,8 +39,17 @@
 
   function handleClose() {
     debug.log("handleClose called, current isOpen:", quickFeedbackState.isOpen);
+
+    // Clear any pending close timeout
+    if (closeTimeout) {
+      clearTimeout(closeTimeout);
+      closeTimeout = null;
+    }
+
     quickFeedbackState.close();
     debug.log("After close(), isOpen:", quickFeedbackState.isOpen);
+    // Reset the toast flag when panel closes
+    hasShownSuccessToast = false;
     // Don't reset form state - drafts should persist!
   }
 
@@ -65,17 +77,23 @@
     };
   });
 
-  // Watch for successful submission to auto-close after delay
+  // Watch for successful submission to show toast and auto-close
   $effect(() => {
-    if (formState.submitStatus === "success") {
-      const timeout = setTimeout(() => {
+    if (formState.submitStatus === "success" && !hasShownSuccessToast) {
+      // Mark as shown to prevent infinite loop
+      hasShownSuccessToast = true;
+
+      // Show success toast immediately
+      toast.success("Feedback submitted! Thank you for helping improve TKA Studio.", 3000);
+
+      // Close panel and reset after brief delay (300ms)
+      // Store timeout in component variable instead of returning cleanup
+      closeTimeout = setTimeout(() => {
         handleClose();
         // Reset the shared state after successful submission
         resetSharedFeedbackSubmitState();
-      }, 1500);
-      return () => clearTimeout(timeout);
+      }, 300);
     }
-    return undefined;
   });
 </script>
 
@@ -132,7 +150,7 @@
       </div>
 
       <main class="panel-body">
-        <FeedbackForm {formState} />
+        <FeedbackForm {formState} hideSuccessState={true} />
       </main>
     </div>
   </div>

@@ -23,9 +23,25 @@
   let editText = $state(text);
   let isSaving = $state(false);
   let error = $state<string | null>(null);
+  let textareaElement: HTMLTextAreaElement;
 
   // Track if user has made changes
   const hasChanges = $derived(editText.trim() !== text.trim());
+
+  // Auto-resize textarea based on content
+  function autoResizeTextarea(textarea: HTMLTextAreaElement) {
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+  }
+
+  // Trigger resize when text changes
+  $effect(() => {
+    editText;
+    if (textareaElement) {
+      autoResizeTextarea(textareaElement);
+    }
+  });
 
   function startEdit() {
     if (!canEdit) return;
@@ -78,84 +94,76 @@
   }
 </script>
 
-{#key isEditing}
-  {#if isEditing}
-    <!-- Edit Mode -->
-    <div
-      class="edit-container"
-      in:scale={{ duration: 250, start: 0.96, opacity: 0 }}
-      out:scale={{ duration: 200, start: 0.96, opacity: 0 }}
-    >
-      <!-- svelte-ignore a11y_autofocus -->
-      <textarea
-        bind:value={editText}
-        onkeydown={handleKeydown}
-        placeholder="Enter release notes..."
-        rows="4"
-        disabled={isSaving}
-        autofocus
-      ></textarea>
+{#if isEditing}
+  <!-- Edit Mode -->
+  <div class="edit-container">
+    <!-- svelte-ignore a11y_autofocus -->
+    <textarea
+      bind:this={textareaElement}
+      bind:value={editText}
+      onkeydown={handleKeydown}
+      placeholder="Enter release notes..."
+      disabled={isSaving}
+      autofocus
+    ></textarea>
 
-      {#if error}
-        <div class="error-message" in:fly={{ y: -10, duration: 200 }}>
-          {error}
-        </div>
-      {:else if !hasChanges}
-        <div class="hint" in:fly={{ y: -10, duration: 200 }}>
-          Make changes to enable Save • Press <kbd>Shift+Enter</kbd> to save,
-          <kbd>Esc</kbd> to cancel
-        </div>
-      {/if}
+    {#if error}
+      <div class="error-message" in:fly={{ y: -10, duration: 200 }}>
+        {error}
+      </div>
+    {:else if !hasChanges}
+      <div class="hint" in:fly={{ y: -10, duration: 200 }}>
+        Make changes to enable Save • Press <kbd>Shift+Enter</kbd> to save,
+        <kbd>Esc</kbd> to cancel
+      </div>
+    {/if}
 
-      {#if hasChanges}
-        <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
-          <button
-            type="button"
-            class="action-btn save"
-            onclick={() => void saveEdit()}
-            disabled={isSaving}
-          >
-            {#if isSaving}
-              <i class="fas fa-spinner fa-spin"></i>
-              Saving...
-            {:else}
-              <i class="fas fa-check"></i>
-              Save
-            {/if}
-          </button>
+    {#if hasChanges}
+      <div class="edit-actions" in:fly={{ y: 10, duration: 200 }}>
+        <button
+          type="button"
+          class="action-btn save"
+          onclick={() => void saveEdit()}
+          disabled={isSaving}
+        >
+          {#if isSaving}
+            <i class="fas fa-spinner fa-spin"></i>
+            Saving...
+          {:else}
+            <i class="fas fa-check"></i>
+            Save
+          {/if}
+        </button>
 
-          <button
-            type="button"
-            class="action-btn cancel"
-            onclick={cancelEdit}
-            disabled={isSaving}
-          >
-            <i class="fas fa-times"></i>
-            Cancel
-          </button>
-        </div>
-      {/if}
-    </div>
-  {:else}
-    <!-- View Mode -->
-    <button
-      type="button"
-      class="release-notes-text"
-      class:clickable={canEdit}
-      in:scale={{ duration: 250, start: 0.96, opacity: 0 }}
-      out:scale={{ duration: 200, start: 0.96, opacity: 0 }}
-      onclick={(e) => {
-        if (canEdit) {
-          e.stopPropagation(); // Prevent panel click handler from immediately closing
-          startEdit();
-        }
-      }}
-      disabled={!canEdit}
-    >
-      {text}
-    </button>
-  {/if}
-{/key}
+        <button
+          type="button"
+          class="action-btn cancel"
+          onclick={cancelEdit}
+          disabled={isSaving}
+        >
+          <i class="fas fa-times"></i>
+          Cancel
+        </button>
+      </div>
+    {/if}
+  </div>
+{:else}
+  <!-- View Mode -->
+  <button
+    type="button"
+    class="release-notes-text"
+    class:clickable={canEdit}
+    onclick={(e) => {
+      if (canEdit) {
+        e.stopPropagation(); // Prevent panel click handler from immediately closing
+        startEdit();
+      }
+    }}
+    disabled={!canEdit}
+  >
+    {text}
+  </button>
+{/if}
 
 <style>
   /* View Mode */
@@ -184,7 +192,11 @@
 
   .release-notes-text.clickable:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
   }
 
   .release-notes-text:disabled {
@@ -198,7 +210,8 @@
     gap: 8px;
     padding: 12px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 12px;
   }
 
@@ -218,7 +231,11 @@
 
   textarea:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 50%,
+      transparent
+    );
   }
 
   textarea:disabled {
@@ -276,13 +293,22 @@
   }
 
   .action-btn.save {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
     color: var(--theme-accent, #c4b5fd);
   }
 
   .action-btn.save:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
     color: var(--theme-accent-strong, #ddd6fe);
   }
 

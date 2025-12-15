@@ -90,7 +90,11 @@
   </div>
 
   <!-- Detail Panel -->
-  <VersionDetailPanel version={selectedVersion} bind:isOpen={isPanelOpen} />
+  <VersionDetailPanel
+    version={selectedVersion}
+    bind:isOpen={isPanelOpen}
+    onVersionUpdated={handleVersionUpdated}
+  />
 </div>
 
 <style>
