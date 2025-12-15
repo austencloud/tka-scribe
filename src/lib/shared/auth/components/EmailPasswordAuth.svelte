@@ -1,33 +1,24 @@
 <script lang="ts">
   /**
-   * Email/Password Authentication Component
+   * EmailPasswordAuth
    *
-   * Provides email/password sign-in and sign-up functionality
-   * Includes client-side rate limiting for security
-   * Supports MFA challenge when enabled
+   * Email/password sign-in and sign-up.
+   * Note: Authenticator-app 2FA (TOTP) has been removed from the app.
    */
 
   import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    sendEmailVerification,
     browserLocalPersistence,
+    createUserWithEmailAndPassword,
     indexedDBLocalPersistence,
+    sendEmailVerification,
     setPersistence,
+    signInWithEmailAndPassword,
     updateProfile,
-    getMultiFactorResolver,
-    type MultiFactorResolver,
   } from "firebase/auth";
-  import { auth } from "../firebase";
   import { goto } from "$app/navigation";
-  import { slide } from "svelte/transition";
   import { onDestroy } from "svelte";
-  import MFAChallengeModal from "./MFAChallengeModal.svelte";
-  import { resolve, TYPES } from "../../inversify/di";
-  import type { IAuthService } from "../services/contracts/IAuthService";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import { auth } from "../firebase";
 
-  // Props - accept mode as a binding
   let { mode = $bindable("signin" as "signin" | "signup") } = $props();
 
   let email = $state("");
@@ -38,27 +29,7 @@
   let error = $state<string | null>(null);
   let success = $state<string | null>(null);
 
-  // MFA state
-  let showMFAChallenge = $state(false);
-  let mfaResolver = $state<MultiFactorResolver | null>(null);
-  let authService = $state<IAuthService | null>(null);
-  let hapticService = $state<IHapticFeedbackService | null>(null);
-
-  // Initialize services
-  $effect(() => {
-    if (!authService) {
-      try {
-        authService = resolve<IAuthService>(TYPES.IAuthService);
-        hapticService = resolve<IHapticFeedbackService>(
-          TYPES.IHapticFeedbackService
-        );
-      } catch (e) {
-        console.warn("Services not available for MFA");
-      }
-    }
-  });
-
-  // Rate limiting state
+  // Lightweight client-side rate limiting
   const MAX_ATTEMPTS = 5;
   const LOCKOUT_DURATION = 60; // seconds
   let failedAttempts = $state(0);
@@ -66,32 +37,27 @@
   let lockoutRemaining = $state(0);
   let lockoutInterval: ReturnType<typeof setInterval> | null = null;
 
-  // Check if currently locked out
   const isLockedOut = $derived(
     lockoutEndTime !== null && Date.now() < lockoutEndTime
   );
 
-  // Start lockout countdown timer
   function startLockoutTimer() {
     if (lockoutInterval) clearInterval(lockoutInterval);
-
     lockoutInterval = setInterval(() => {
-      if (lockoutEndTime) {
-        const remaining = Math.ceil((lockoutEndTime - Date.now()) / 1000);
-        if (remaining <= 0) {
-          lockoutEndTime = null;
-          lockoutRemaining = 0;
-          failedAttempts = 0;
-          if (lockoutInterval) clearInterval(lockoutInterval);
-          lockoutInterval = null;
-        } else {
-          lockoutRemaining = remaining;
-        }
+      if (!lockoutEndTime) return;
+      const remaining = Math.ceil((lockoutEndTime - Date.now()) / 1000);
+      if (remaining <= 0) {
+        lockoutEndTime = null;
+        lockoutRemaining = 0;
+        failedAttempts = 0;
+        if (lockoutInterval) clearInterval(lockoutInterval);
+        lockoutInterval = null;
+      } else {
+        lockoutRemaining = remaining;
       }
     }, 1000);
   }
 
-  // Record a failed attempt
   function recordFailedAttempt() {
     failedAttempts++;
     if (failedAttempts >= MAX_ATTEMPTS) {
@@ -101,7 +67,6 @@
     }
   }
 
-  // Reset attempts on successful login
   function resetAttempts() {
     failedAttempts = 0;
     lockoutEndTime = null;
@@ -110,17 +75,11 @@
     lockoutInterval = null;
   }
 
-  // Cleanup timer on destroy
   onDestroy(() => {
     if (lockoutInterval) clearInterval(lockoutInterval);
   });
 
-  function togglePasswordVisibility() {
-    showPassword = !showPassword;
-  }
-
   async function handleSubmit() {
-    // Check rate limiting before proceeding
     if (isLockedOut) {
       error = `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
       return;
@@ -131,111 +90,69 @@
     success = null;
 
     try {
-      console.log(
-        `🔐 [email] ${mode === "signin" ? "Signing in" : "Signing up"}...`
-      );
-
-      // Set persistence
-      console.log(`🔐 [email] Setting persistence to IndexedDB...`);
       try {
         await setPersistence(auth, indexedDBLocalPersistence);
-        console.log(`✅ [email] IndexedDB persistence set`);
-      } catch (indexedDBErr) {
+      } catch {
         await setPersistence(auth, browserLocalPersistence);
-        console.log(`✅ [email] localStorage persistence set`);
       }
 
       if (mode === "signup") {
-        // Sign up new user
         const result = await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
-        console.log(`✅ [email] User created:`, result.user.uid);
 
-        // Update profile with display name if provided
         if (name.trim()) {
-          await updateProfile(result.user, {
-            displayName: name.trim(),
-          });
-          console.log(`✅ [email] Display name set to:`, name.trim());
+          await updateProfile(result.user, { displayName: name.trim() });
         }
 
-        // Send verification email
         await sendEmailVerification(result.user);
-        success =
-          "Account created! Please check your email to verify your account.";
-
-        // Reset rate limiting on success
+        success = "Account created! Please check your email to verify your account.";
         resetAttempts();
-
-        // Wait a bit before redirecting
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 1200));
       } else {
-        // Sign in existing user
-        const result = await signInWithEmailAndPassword(auth, email, password);
-        console.log(`✅ [email] User signed in:`, result.user.uid);
-
-        // Reset rate limiting on success
+        await signInWithEmailAndPassword(auth, email, password);
         resetAttempts();
       }
 
-      // Navigate to home
-      console.log(`🔐 [email] Navigating to home page...`);
-      goto("/");
+      await goto("/");
     } catch (err: any) {
-      console.error(`❌ [email] Auth error:`, err);
-      console.error(`❌ [email] Error code:`, err.code);
-
-      // Check if MFA is required
-      if (err.code === "auth/multi-factor-auth-required") {
-        console.log("🔐 [email] MFA required, showing challenge modal...");
-        mfaResolver = getMultiFactorResolver(auth, err);
-        showMFAChallenge = true;
-        loading = false;
-        return;
-      }
-
-      // Record failed attempt for rate limiting (only for sign-in credential errors)
+      // Record failed attempt (only credential errors)
       if (
         mode === "signin" &&
-        (err.code === "auth/user-not-found" ||
-          err.code === "auth/wrong-password" ||
-          err.code === "auth/invalid-credential")
+        (err?.code === "auth/user-not-found" ||
+          err?.code === "auth/wrong-password" ||
+          err?.code === "auth/invalid-credential")
       ) {
         recordFailedAttempt();
       }
 
-      // Handle specific error codes
-      // SECURITY: Use generic messages for email/password errors to prevent enumeration
-      if (err.code === "auth/email-already-in-use") {
-        // Generic message - don't reveal that email exists
+      if (err?.code === "auth/email-already-in-use") {
         error =
           "Unable to create account. Please try a different email or sign in.";
         mode = "signin";
-      } else if (err.code === "auth/weak-password") {
+      } else if (err?.code === "auth/weak-password") {
         error = "Password is too weak. Use at least 8 characters.";
-      } else if (err.code === "auth/invalid-email") {
+      } else if (err?.code === "auth/invalid-email") {
         error = "Invalid email address format.";
       } else if (
-        err.code === "auth/user-not-found" ||
-        err.code === "auth/wrong-password"
+        err?.code === "auth/user-not-found" ||
+        err?.code === "auth/wrong-password" ||
+        err?.code === "auth/invalid-credential"
       ) {
-        // SECURITY: Generic message to prevent email enumeration
         const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
         error =
           attemptsLeft > 0
-            ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
+            ? `Invalid email or password. ${attemptsLeft} attempt${
+                attemptsLeft === 1 ? "" : "s"
+              } remaining.`
             : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
-      } else if (err.code === "auth/invalid-credential") {
-        const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
-        error =
-          attemptsLeft > 0
-            ? `Invalid email or password. ${attemptsLeft} attempt${attemptsLeft === 1 ? "" : "s"} remaining.`
-            : `Too many failed attempts. Please wait ${lockoutRemaining} seconds.`;
-      } else if (err.code === "auth/too-many-requests") {
+      } else if (err?.code === "auth/too-many-requests") {
         error = "Too many failed attempts. Please try again later.";
+      } else if (err?.code === "auth/multi-factor-auth-required") {
+        error =
+          "This account has authenticator 2FA enabled, which is no longer supported in the app. Disable it from your account settings or contact support.";
       } else {
         error = "An error occurred during authentication. Please try again.";
       }
@@ -248,510 +165,173 @@
     mode = mode === "signin" ? "signup" : "signin";
     error = null;
     success = null;
-    // Clear name field when switching modes
-    if (mode === "signin") {
-      name = "";
-    }
-  }
-
-  // MFA handlers
-  function handleMFASuccess() {
-    console.log("✅ [email] MFA verification successful");
-    showMFAChallenge = false;
-    mfaResolver = null;
-    resetAttempts();
-    goto("/");
-  }
-
-  function handleMFACancel() {
-    console.log("🔐 [email] MFA verification cancelled");
-    showMFAChallenge = false;
-    mfaResolver = null;
-    error = "Sign-in cancelled. Please try again.";
+    if (mode === "signin") name = "";
   }
 </script>
 
-<form
-  onsubmit={(e) => {
-    e.preventDefault();
-    handleSubmit();
-  }}
-  class="email-auth-form"
->
-  <!-- Name field - only shown in signup mode -->
-  {#if mode === "signup"}
-    <div class="form-group" transition:slide={{ duration: 300 }}>
-      <label for="name">Name (optional)</label>
-      <input
-        id="name"
-        type="text"
-        bind:value={name}
-        placeholder="Your name"
-        disabled={loading}
-        autocomplete="name"
-      />
-    </div>
-  {/if}
-
-  <div class="form-group">
-    <label for="email">Email</label>
-    <input
-      id="email"
-      type="email"
-      bind:value={email}
-      placeholder="you@example.com"
-      required
-      disabled={loading}
-      autocomplete="email"
-    />
-  </div>
-
-  <div class="form-group">
-    <label for="password">Password</label>
-    <div class="password-input-wrapper">
-      <input
-        id="password"
-        type={showPassword ? "text" : "password"}
-        bind:value={password}
-        placeholder="••••••••••••"
-        required
-        disabled={loading}
-        minlength="8"
-        autocomplete={mode === "signin" ? "current-password" : "new-password"}
-      />
-      <button
-        type="button"
-        class="password-toggle"
-        onclick={togglePasswordVisibility}
-        disabled={loading}
-        aria-label={showPassword ? "Hide password" : "Show password"}
-      >
-        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
-      </button>
-    </div>
+<div class="auth">
+  <form class="form" onsubmit={(e) => (e.preventDefault(), void handleSubmit())}>
     {#if mode === "signup"}
-      <small class="password-hint" transition:slide={{ duration: 200 }}>
-        Must be at least 8 characters
-      </small>
+      <label class="label">
+        Name
+        <input class="input" bind:value={name} autocomplete="name" />
+      </label>
     {/if}
-  </div>
 
-  {#if error}
-    <p class="error-message" transition:slide={{ duration: 200 }}>{error}</p>
-  {/if}
+    <label class="label">
+      Email
+      <input
+        class="input"
+        type="email"
+        bind:value={email}
+        autocomplete="email"
+        required
+      />
+    </label>
 
-  {#if success}
-    <p class="success-message" transition:slide={{ duration: 200 }}>
-      {success}
-    </p>
-  {/if}
+    <label class="label">
+      Password
+      <div class="password-row">
+        <input
+          class="input"
+          type={showPassword ? "text" : "password"}
+          bind:value={password}
+          autocomplete={mode === "signin" ? "current-password" : "new-password"}
+          required
+        />
+        <button
+          type="button"
+          class="toggle"
+          onclick={() => (showPassword = !showPassword)}
+          aria-label={showPassword ? "Hide password" : "Show password"}
+        >
+          <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
+        </button>
+      </div>
+    </label>
 
-  <button type="submit" disabled={loading || isLockedOut} class="submit-button">
-    {#if loading}
-      <span class="spinner"></span>
+    {#if error}
+      <p class="message error" role="alert">{error}</p>
     {/if}
-    {mode === "signin" ? "Sign In" : "Create Account"}
-  </button>
 
-  <button
-    type="button"
-    onclick={toggleMode}
-    class="toggle-button"
-    disabled={loading}
-  >
-    {mode === "signin"
-      ? "Need an account? Sign up"
-      : "Already have an account? Sign in"}
-  </button>
-</form>
+    {#if success}
+      <p class="message success" role="status">{success}</p>
+    {/if}
 
-<!-- MFA Challenge Modal -->
-{#if showMFAChallenge && mfaResolver && authService}
-  <MFAChallengeModal
-    bind:isOpen={showMFAChallenge}
-    resolver={mfaResolver}
-    {authService}
-    {hapticService}
-    onSuccess={handleMFASuccess}
-    onCancel={handleMFACancel}
-  />
-{/if}
+    <button class="submit" type="submit" disabled={loading}>
+      {#if loading}
+        {mode === "signin" ? "Signing in..." : "Creating account..."}
+      {:else}
+        {mode === "signin" ? "Sign In" : "Sign Up"}
+      {/if}
+    </button>
+
+    <button class="switch" type="button" onclick={toggleMode} disabled={loading}>
+      {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+    </button>
+  </form>
+</div>
 
 <style>
-  .email-auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .auth {
     width: 100%;
   }
 
-  .form-group {
+  .form {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 12px;
+    width: 100%;
   }
 
-  label {
-    font-size: 0.875rem;
+  .label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-weight: 600;
-    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
-  input {
-    padding: 0.75rem;
-    padding-right: 0.75rem;
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    transition: all 0.2s ease;
+  .input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text, #fff);
+    font-size: 14px;
   }
 
-  input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-  }
-
-  input:focus {
-    outline: none;
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #6366f1) 80%,
-      transparent
-    );
-    box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-  }
-
-  input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* Password input wrapper for toggle button */
-  .password-input-wrapper {
+  .password-row {
     position: relative;
     display: flex;
     align-items: center;
   }
 
-  .password-input-wrapper input {
-    width: 100%;
-    padding-right: 3rem;
-  }
-
-  .password-toggle {
+  .toggle {
     position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 2.5rem;
-    height: 2.5rem;
+    right: 6px;
+    width: 40px;
+    height: 40px;
     border: none;
+    border-radius: 10px;
     background: transparent;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
-    border-radius: 0.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    font-size: 1rem;
   }
 
-  .password-toggle:hover:not(:disabled) {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
+  .message {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    line-height: 1.4;
   }
 
-  .password-toggle:active:not(:disabled) {
-    transform: translateY(-50%) scale(0.95);
+  .message.error {
+    color: var(--semantic-error, #ef4444);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
   }
 
-  .password-toggle:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  .message.success {
+    color: var(--semantic-success, #22c55e);
+    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
+    background: color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent);
   }
 
-  .password-toggle:focus-visible {
-    outline: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, transparent);
-    outline-offset: 2px;
-  }
-
-  .password-hint {
-    font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    margin-top: -0.25rem;
-  }
-
-  .submit-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1.5rem;
-    background: linear-gradient(
-      135deg,
-      var(--theme-accent-strong, #6366f1) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 85%, #000) 100%
-    );
-    color: var(--theme-text, white);
-    border: none;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  .submit {
+    width: 100%;
     min-height: 52px;
-    box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 30%, transparent);
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--theme-accent, #6366f1), color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000));
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
   }
 
-  .submit-button:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 85%, #000) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, #000) 100%
-    );
-    box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 40%, transparent);
-    transform: translateY(-1px);
-  }
-
-  .submit-button:disabled {
+  .submit:disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 
-  .submit-button:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .toggle-button {
-    padding: 0.75rem;
+  .switch {
+    width: 100%;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     background: transparent;
-    color: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 90%, transparent);
-    border: none;
-    font-size: 0.875rem;
-    font-weight: 500;
+    color: var(--theme-text, #fff);
+    border-radius: 12px;
+    padding: 12px 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 0.5rem;
+    font-weight: 700;
   }
 
-  .toggle-button:hover:not(:disabled) {
-    color: var(--theme-accent-strong, #6366f1);
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #6366f1) 10%,
-      transparent
-    );
-  }
-
-  .toggle-button:disabled {
-    opacity: 0.5;
+  .switch:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
   }
-
-  .spinner {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .error-message {
-    color: #fca5a5;
-    font-size: 0.875rem;
-    text-align: center;
-    padding: 0.75rem 1rem;
-    background: color-mix(
-      in srgb,
-      var(--semantic-error, #ef4444) 15%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
-    border-radius: 0.75rem;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .success-message {
-    color: #86efac;
-    font-size: 0.875rem;
-    text-align: center;
-    padding: 0.75rem 1rem;
-    background: color-mix(
-      in srgb,
-      var(--semantic-success, #10b981) 15%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
-    border-radius: 0.75rem;
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  /* Responsive Design - iPhone SE and small screens */
-  @media (max-height: 700px) {
-    .email-auth-form {
-      gap: 0.65rem; /* Reduced from 0.85rem to save space */
-    }
-
-    .form-group {
-      gap: 0.35rem; /* Reduced from 0.4rem */
-    }
-
-    label {
-      font-size: 0.8125rem;
-    }
-
-    input {
-      padding: 0.65rem;
-      font-size: 0.9375rem;
-    }
-
-    .submit-button {
-      min-height: 52px;
-      padding: 0.8125rem 1.375rem;
-      font-size: 0.9375rem;
-    }
-
-    .toggle-button {
-      padding: 0.65rem;
-      font-size: 0.8125rem;
-    }
-
-    .password-hint {
-      font-size: 0.6875rem;
-    }
-  }
-
-  @media (max-height: 600px) {
-    .email-auth-form {
-      gap: 0.75rem;
-    }
-
-    .form-group {
-      gap: 0.35rem;
-    }
-
-    label {
-      font-size: 0.75rem;
-    }
-
-    input {
-      padding: 0.5625rem;
-      font-size: 0.875rem;
-      border-radius: 0.625rem;
-    }
-
-    .password-input-wrapper input {
-      padding-right: 2.75rem;
-    }
-
-    .password-toggle {
-      width: 2.25rem;
-      height: 2.25rem;
-      font-size: 0.9375rem;
-    }
-
-    .submit-button {
-      min-height: 52px;
-      padding: 0.75rem 1.25rem;
-      font-size: 0.875rem;
-      gap: 0.625rem;
-    }
-
-    .toggle-button {
-      padding: 0.5625rem;
-      font-size: 0.75rem;
-    }
-
-    .password-hint,
-    .error-message,
-    .success-message {
-      font-size: 0.625rem;
-      padding: 0.625rem 0.875rem;
-    }
-  }
-
-  @media (max-height: 568px) {
-    .email-auth-form {
-      gap: 0.625rem;
-    }
-
-    .form-group {
-      gap: 0.25rem;
-    }
-
-    label {
-      font-size: 0.6875rem;
-    }
-
-    input {
-      padding: 0.5rem;
-      font-size: 0.8125rem;
-      border-radius: 0.5rem;
-    }
-
-    .password-input-wrapper input {
-      padding-right: 2.5rem;
-    }
-
-    .password-toggle {
-      width: 2rem;
-      height: 2rem;
-      font-size: 0.875rem;
-      right: 0.375rem;
-    }
-
-    .submit-button {
-      min-height: 52px;
-      padding: 0.625rem 1.125rem;
-      font-size: 0.8125rem;
-      gap: 0.5rem;
-      border-radius: 0.625rem;
-    }
-
-    .toggle-button {
-      padding: 0.5rem;
-      font-size: 0.6875rem;
-      border-radius: 0.375rem;
-    }
-
-    .password-hint,
-    .error-message,
-    .success-message {
-      font-size: 0.5625rem;
-      padding: 0.5rem 0.75rem;
-      line-height: 1.4;
-    }
-
-    .spinner {
-      width: 0.875rem;
-      height: 0.875rem;
-    }
-  }
-
-  /* Accessibility */
-  @media (prefers-reduced-motion: reduce) {
-    .submit-button:hover,
-    .password-toggle:active {
-      transform: none;
-    }
-  }
 </style>
+

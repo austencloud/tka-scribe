@@ -22,9 +22,7 @@
     SheetType,
   } from "../../navigation/services/contracts/ISheetRouterService";
   import { authState } from "../../auth/state/authState.svelte";
-  import { mfaUIState } from "../../auth/state/mfa-ui-state.svelte";
   import LandingPage from "../../auth/components/LandingPage.svelte";
-  import MFAEnrollmentDrawer from "../../auth/components/MFAEnrollmentDrawer.svelte";
   import type { IAuthService } from "../../auth/services/contracts/IAuthService";
   import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
@@ -86,9 +84,6 @@
 
   // Debug panel state (admin-only) - uses centralized UI state
   let showDebugPanel = $derived(getShowDebugPanel());
-
-  // MFA enrollment drawer state (controlled via global mfaUIState)
-  let showMFAEnrollment = $derived(mfaUIState.isEnrollmentOpen);
 
   // My Feedback Detail drawer state (controlled via global myFeedbackDetailState)
   let feedbackDetailItem = $derived(myFeedbackDetailState.selectedItem);
@@ -397,19 +392,6 @@
 
     <!-- Inbox Drawer (messages + notifications) -->
     <InboxDrawer />
-
-    <!-- MFA Enrollment Drawer (triggered from Settings → Security) -->
-    {#if authService}
-      <MFAEnrollmentDrawer
-        isOpen={showMFAEnrollment}
-        {authService}
-        onClose={() => mfaUIState.closeEnrollment()}
-        onSuccess={() => {
-          mfaUIState.notifyStatusChange();
-          mfaUIState.closeEnrollment();
-        }}
-      />
-    {/if}
 
     <!-- Quick Feedback Panel (desktop hotkey: f) -->
     <QuickFeedbackPanel />
