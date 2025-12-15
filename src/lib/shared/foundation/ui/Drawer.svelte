@@ -184,15 +184,20 @@
 
   // Swipe-to-dismiss handler
   let drawerElement = $state<HTMLElement | null>(null);
-  let swipeToDismiss = new SwipeToDismiss({
-    placement: effectivePlacement,
-    dismissible,
-    drawerId, // Pass drawer ID so only top drawer responds to swipe
-    onDismiss: () => {
-      isOpen = false;
-    },
-    onDragChange: handleInternalDragChange,
-    onDragEnd: handleDragEnd,
+  let swipeToDismiss = $state<SwipeToDismiss | null>(null);
+
+  // Recreate swipe handler when placement changes (effectivePlacement is reactive)
+  $effect(() => {
+    swipeToDismiss = new SwipeToDismiss({
+      placement: effectivePlacement,
+      dismissible,
+      drawerId, // Pass drawer ID so only top drawer responds to swipe
+      onDismiss: () => {
+        isOpen = false;
+      },
+      onDragChange: handleInternalDragChange,
+      onDragEnd: handleDragEnd,
+    });
   });
 
   // Focus trap handler for accessibility
@@ -285,7 +290,7 @@
         stackZIndex = registerDrawer(drawerId);
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
-        swipeToDismiss.reset(); // Reset drag state when opening
+        swipeToDismiss?.reset(); // Reset drag state when opening
         // Force browser to render the closed state first using RAF for reliability
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -302,7 +307,7 @@
       if (previouslyOpen && !isOpen) {
         emitClose("programmatic");
         isAnimatedOpen = false; // Trigger close animation
-        swipeToDismiss.reset(); // Reset drag state when closing
+        swipeToDismiss?.reset(); // Reset drag state when closing
         // Deactivate focus trap immediately so focus can return
         focusTrap.deactivate();
         // Unregister from drawer stack
@@ -397,17 +402,6 @@
     return "";
   });
 
-  // Update handler options when props change
-  $effect(() => {
-    swipeToDismiss.updateOptions({
-      placement: effectivePlacement,
-      dismissible,
-      drawerId,
-      onDragChange: handleInternalDragChange,
-      onDragEnd: handleDragEnd,
-    });
-  });
-
   // Update focus trap options when props change
   $effect(() => {
     focusTrap.updateOptions({
@@ -419,11 +413,11 @@
 
   // Attach/detach swipe handler when element changes
   $effect(() => {
-    if (drawerElement) {
+    if (drawerElement && swipeToDismiss) {
       swipeToDismiss.attach(drawerElement);
     }
     return () => {
-      swipeToDismiss.detach();
+      swipeToDismiss?.detach();
     };
   });
 
@@ -437,7 +431,7 @@
 
   // Clean up on component destroy
   onDestroy(() => {
-    swipeToDismiss.detach();
+    swipeToDismiss?.detach();
     focusTrap.deactivate();
     drawerEffects.cleanup();
     // Unregister from drawer stack
