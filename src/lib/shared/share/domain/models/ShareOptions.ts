@@ -69,7 +69,7 @@ export const SHARE_PRESETS: Record<string, SharePreset> = {
       margin: 50,
       backgroundColor: "#ffffff",
       userName: "", // Will be populated from auth state
-      notes: "Created with TKA Studio",
+      notes: "Created with TKA Scribe",
     },
   },
 

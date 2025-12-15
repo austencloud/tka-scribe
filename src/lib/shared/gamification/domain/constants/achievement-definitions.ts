@@ -1,7 +1,7 @@
 /**
  * Achievement Definitions
  *
- * All available achievements in TKA Studio.
+ * All available achievements in TKA Scribe.
  * These are the "templates" that users can unlock.
  */
 

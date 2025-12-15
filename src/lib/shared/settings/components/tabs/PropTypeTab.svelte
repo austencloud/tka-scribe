@@ -186,16 +186,25 @@
           <img src={blueInfo.image} alt={blueInfo.label} class="prop-icon" />
           <span class="prop-name">{blueInfo.label}</span>
           {#if blueHasVariations}
-            <button
+            <span
               class="mini-variation-btn"
               onclick={(e) => {
                 e.stopPropagation();
                 toggleVariation("blue");
               }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleVariation("blue");
+                }
+              }}
+              role="button"
+              tabindex="0"
               aria-label="Toggle variation"
             >
               <i class="fas fa-sync-alt"></i>
-            </button>
+            </span>
           {/if}
         </button>
         <button
@@ -213,16 +222,25 @@
           <img src={redInfo.image} alt={redInfo.label} class="prop-icon" />
           <span class="prop-name">{redInfo.label}</span>
           {#if redHasVariations}
-            <button
+            <span
               class="mini-variation-btn"
               onclick={(e) => {
                 e.stopPropagation();
                 toggleVariation("red");
               }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleVariation("red");
+                }
+              }}
+              role="button"
+              tabindex="0"
               aria-label="Toggle variation"
             >
               <i class="fas fa-sync-alt"></i>
-            </button>
+            </span>
           {/if}
         </button>
       </div>
@@ -233,16 +251,25 @@
           <img src={blueInfo.image} alt={blueInfo.label} class="prop-icon" />
           <span class="prop-name">{blueInfo.label}</span>
           {#if blueHasVariations}
-            <button
+            <span
               class="mini-variation-btn"
               onclick={(e) => {
                 e.stopPropagation();
                 toggleVariation("blue");
               }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleVariation("blue");
+                }
+              }}
+              role="button"
+              tabindex="0"
               aria-label="Toggle variation"
             >
               <i class="fas fa-sync-alt"></i>
-            </button>
+            </span>
           {/if}
         </button>
       </div>

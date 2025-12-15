@@ -2,7 +2,7 @@
 
 ## Overview
 
-The TKA Studio release system now has **full AI assistant integration**. Claude, GitHub Copilot, and Cursor all understand when you're developing vs releasing, and will guide you through the appropriate workflow automatically.
+The TKA Scribe release system now has **full AI assistant integration**. Claude, GitHub Copilot, and Cursor all understand when you're developing vs releasing, and will guide you through the appropriate workflow automatically.
 
 ## How It Works
 

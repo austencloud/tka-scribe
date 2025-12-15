@@ -102,7 +102,7 @@
       <div class="logo-container">
         <i class="fas fa-infinity logo-icon"></i>
       </div>
-      <h1>TKA Studio</h1>
+      <h1>TKA Scribe</h1>
       <p class="tagline">The visual language for flow arts</p>
     </header>
 

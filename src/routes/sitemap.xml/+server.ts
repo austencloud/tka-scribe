@@ -8,19 +8,19 @@ const pages = [
     url: "",
     priority: "1.0",
     changefreq: "weekly",
-    description: "TKA Studio | Home",
+    description: "TKA Scribe | Home",
   },
   {
     url: "about",
     priority: "0.9",
     changefreq: "monthly",
-    description: "About TKA Studio - Revolutionary Flow Arts Tool",
+    description: "About TKA Scribe - Revolutionary Flow Arts Tool",
   },
   {
     url: "build",
     priority: "0.9",
     changefreq: "weekly",
-    description: "TKA Studio - Sequence Builder",
+    description: "TKA Scribe - Sequence Builder",
   },
   {
     url: "Explore",
@@ -46,7 +46,7 @@ const pages = [
     url: "getting-started",
     priority: "0.7",
     changefreq: "monthly",
-    description: "Getting Started with TKA Studio - Tutorial",
+    description: "Getting Started with TKA Scribe - Tutorial",
   },
   {
     url: "word-card",

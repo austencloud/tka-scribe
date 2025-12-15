@@ -42,8 +42,8 @@ export class SeoService implements ISeoService {
     canonicalUrl?: string;
   }): Record<string, string> {
     const {
-      title = "TKA Studio - Flow Arts Choreography Tool",
-      description = "Create visual movement sequences with TKA Studio using The Kinetic Alphabet notation system",
+      title = "TKA Scribe - Flow Arts Choreography Tool",
+      description = "Create visual movement sequences with TKA Scribe using The Kinetic Alphabet notation system",
       keywords = [],
       ogImage,
       canonicalUrl,

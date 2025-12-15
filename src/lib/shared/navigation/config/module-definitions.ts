@@ -26,7 +26,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     label: "Dashboard",
     icon: '<i class="fas fa-home" style="color: #10b981;"></i>',
     color: "#10b981", // Emerald - home/dashboard
-    description: "Your TKA Studio home",
+    description: "Your TKA Scribe home",
     isMain: true,
     sections: [], // Dashboard has no sub-tabs
   },

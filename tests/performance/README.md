@@ -1,6 +1,6 @@
 # Performance Tests
 
-Performance and memory leak tests for TKA Studio.
+Performance and memory leak tests for TKA Scribe.
 
 ## Tests
 

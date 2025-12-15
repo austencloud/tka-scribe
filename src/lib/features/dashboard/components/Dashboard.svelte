@@ -65,7 +65,7 @@
       const firstName = authState.user.displayName.split(" ")[0];
       return `${greeting}, ${firstName}`;
     }
-    return "Welcome to TKA Studio";
+    return "Welcome to TKA Scribe";
   });
 
   const effectiveModuleCards = $derived.by(() =>

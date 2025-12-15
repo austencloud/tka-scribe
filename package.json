@@ -1,9 +1,9 @@
 {
-  "name": "@tka/studio",
+  "name": "@tka/scribe",
   "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "TKA Studio - Browser-based sequence editor for flow arts",
+  "description": "TKA Scribe - Browser-based sequence editor for flow arts",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "dev:clean": "rimraf node_modules/.vite .svelte-kit && svelte-kit sync && npm run dev",
@@ -204,8 +204,10 @@
     "pixi.js": "^8.14.2",
     "potrace": "^2.1.8",
     "qrcode": "^1.5.4",
+    "realtime-bpm-analyzer": "^5.0.0",
     "reflect-metadata": "^0.2.2",
     "vaul-svelte": "^0.3.2",
+    "wavesurfer.js": "^7.12.1",
     "webp-encoder": "^2.1.2",
     "xstate": "^5.24.0",
     "zod": "^3.25.76"

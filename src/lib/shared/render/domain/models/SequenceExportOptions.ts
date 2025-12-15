@@ -5,6 +5,8 @@
  * Contains the main configuration types and fundamental data structures.
  */
 
+import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
+
 // ============================================================================
 // EXPORT OPTIONS AND CONFIGURATION
 // ============================================================================
@@ -18,6 +20,11 @@ export interface SequenceExportOptions {
   addWord: boolean;
   combinedGrids: boolean;
   addDifficultyLevel: boolean;
+
+  // Prop type override (optional)
+  // If provided, overrides the prop type for all beats in the sequence
+  // Used for batch re-rendering sequences with different prop types
+  propTypeOverride?: PropType;
 
   // Scaling and sizing
   beatScale: number;

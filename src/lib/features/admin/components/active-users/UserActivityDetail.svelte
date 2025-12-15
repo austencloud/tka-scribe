@@ -97,7 +97,7 @@
 <div class="activity-detail">
   <header class="detail-header">
     <h3>User Activity</h3>
-    <button class="close-btn" onclick={onClose}>
+    <button class="close-btn" onclick={onClose} aria-label="Close">
       <i class="fas fa-times"></i>
     </button>
   </header>

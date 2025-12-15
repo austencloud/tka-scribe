@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Automated dependency management for TKA Studio",
+  "description": "Automated dependency management for TKA Scribe",
   "extends": [
     "config:recommended",
     ":preserveSemverRanges",

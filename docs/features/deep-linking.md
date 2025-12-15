@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Deep Linking system allows users to create shareable URLs that open TKA Studio with a specific sequence pre-loaded in any module (Create, Animate, or Explore). This enables easy sharing of sequences without requiring database storage.
+The Deep Linking system allows users to create shareable URLs that open TKA Scribe with a specific sequence pre-loaded in any module (Create, Animate, or Explore). This enables easy sharing of sequences without requiring database storage.
 
 ## How It Works
 

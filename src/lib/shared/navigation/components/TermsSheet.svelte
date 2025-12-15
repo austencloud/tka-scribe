@@ -69,7 +69,7 @@
       <section>
         <h3>2. Description of Service</h3>
         <p>
-          TKA Studio is an educational platform that provides tools for
+          TKA Scribe is an educational platform that provides tools for
           learning, creating, and sharing kinetic alphabet sequences. The
           service includes sequence building tools, learning modules, and
           community features.
@@ -109,8 +109,8 @@
       <section>
         <h3>6. Intellectual Property</h3>
         <p>
-          The TKA Studio application, including its design, features, and
-          underlying technology, is owned by TKA Studio and protected by
+          The TKA Scribe application, including its design, features, and
+          underlying technology, is owned by TKA Scribe and protected by
           intellectual property laws. The Kinetic Alphabet system and
           methodology remain the intellectual property of their respective
           creators.
@@ -120,7 +120,7 @@
       <section>
         <h3>7. Disclaimers</h3>
         <p>
-          TKA Studio is provided "as is" without warranties of any kind. We do
+          TKA Scribe is provided "as is" without warranties of any kind. We do
           not guarantee that the service will be uninterrupted, secure, or
           error-free.
         </p>

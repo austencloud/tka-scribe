@@ -1,4 +1,4 @@
-# GitHub Copilot Instructions - TKA Studio
+# GitHub Copilot Instructions - TKA Scribe
 
 > Movement notation software for creating visual "pictographs" showing dance/flow art sequences. Think musical notation for physical movement - props, grid positions, arrows, timing, orientations.
 

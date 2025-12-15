@@ -6,8 +6,10 @@
  */
 
 import type { BeatData } from "../../../../features/create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { PictographData } from "../../../pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
+import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
 import { renderPictographToSVG, type PictographVisibilityOptions } from "../../utils/pictograph-to-svg";
@@ -135,9 +137,13 @@ export class ImageCompositionService implements IImageCompositionService {
     if (options.includeStartPosition && sequence.startPosition) {
       // Only pass beat number 0 if addBeatNumbers is true (shows "Start" text)
       const startBeatNumber = options.addBeatNumbers ? 0 : undefined;
+      // Apply prop type override if provided
+      const startPositionData = options.propTypeOverride
+        ? this.applyPropTypeOverride(sequence.startPosition, options.propTypeOverride)
+        : sequence.startPosition;
       await this.renderPictographAt(
         ctx,
-        sequence.startPosition,
+        startPositionData,
         0,
         0,
         beatSize,
@@ -160,9 +166,13 @@ export class ImageCompositionService implements IImageCompositionService {
       const row = Math.floor(i / beatsPerRow);
       // Only pass beat number if addBeatNumbers is true
       const beatNumber = options.addBeatNumbers ? i + 1 : undefined;
+      // Apply prop type override if provided
+      const beatData = options.propTypeOverride
+        ? this.applyPropTypeOverride(beat, options.propTypeOverride)
+        : beat;
       await this.renderPictographAt(
         ctx,
-        beat,
+        beatData,
         col,
         row,
         beatSize,
@@ -506,6 +516,27 @@ export class ImageCompositionService implements IImageCompositionService {
   private calculateFooterHeight(beatSize: number): number {
     // Footer height = 1/3 of beat size (same as header for balanced layout)
     return Math.floor(beatSize / 7);
+  }
+
+  /**
+   * Apply prop type override to a beat or start position
+   * Creates a shallow copy with prop type overridden in motion data
+   */
+  private applyPropTypeOverride<T extends BeatData | PictographData | StartPositionData>(
+    data: T,
+    propType: PropType
+  ): T {
+    return {
+      ...data,
+      motions: {
+        blue: data.motions.blue
+          ? { ...data.motions.blue, propType }
+          : undefined,
+        red: data.motions.red
+          ? { ...data.motions.red, propType }
+          : undefined,
+      },
+    };
   }
 
   /**

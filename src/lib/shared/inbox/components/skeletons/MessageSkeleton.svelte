@@ -24,7 +24,7 @@
 
 <div class="skeleton-messages" aria-hidden="true">
 	{#each Array(count) as _, i}
-		{@const pattern = patterns[i % patterns.length]}
+		{@const pattern = patterns[i % patterns.length]!}
 		<div
 			class="skeleton-bubble"
 			class:own={pattern.own}

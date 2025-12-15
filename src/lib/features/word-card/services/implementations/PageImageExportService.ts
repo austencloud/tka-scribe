@@ -283,7 +283,7 @@ export class PageImageExportService implements IPageImageExportService {
   ): SequenceExportOptions {
     // Get the authenticated user's display name
     const user = getUser();
-    const userName = user?.displayName || "TKA Studio User";
+    const userName = user?.displayName || "TKA Scribe User";
 
     const baseOptions: SequenceExportOptions = {
       // Core export settings

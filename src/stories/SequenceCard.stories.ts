@@ -16,7 +16,7 @@ const baseSequence = createSequenceData({
   tags: [],
   metadata: {},
   sequenceLength: 8,
-  author: "TKA Studio",
+  author: "TKA Scribe",
   dateAdded: new Date(),
   level: 1,
   difficultyLevel: "beginner",

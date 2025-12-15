@@ -242,8 +242,7 @@
       display 0.25s cubic-bezier(0.4, 0, 0.2, 1) allow-discrete;
   }
 
-  /* Starting style for smooth open animation */
-  /* svelte-ignore css_unknown_at_rule */
+  /* Starting style for smooth open animation - @starting-style is valid CSS */
   @starting-style {
     .tab-overflow-popover:popover-open {
       opacity: 0;
@@ -421,7 +420,7 @@
       transition: none;
     }
 
-    /* svelte-ignore css_unknown_at_rule */
+    /* @starting-style is valid CSS for entry animations */
     @starting-style {
       .tab-overflow-popover:popover-open {
         opacity: 1;

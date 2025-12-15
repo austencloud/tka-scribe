@@ -205,31 +205,22 @@
     showColumnPicker = false;
   }
 
-  // Get suggested column options based on beat count and viewport width
-  function getColumnOptions(beatCount: number, viewportWidth: number): number[] {
+  // Get suggested column options based on viewport width
+  // Offers all viable options - user can choose what looks best for their sequence
+  function getColumnOptions(_beatCount: number, viewportWidth: number): number[] {
     const options: number[] = [];
 
     // Minimum cell size to avoid cramped layouts
     const MIN_CELL_SIZE = 60; // pixels
 
-    // Calculate viable column options
+    // Calculate max viable columns based on screen width
     // Formula: (viewportWidth - padding) / (columns + 1 for start position) >= MIN_CELL_SIZE
     const maxViableColumns = Math.floor((viewportWidth - 32) / MIN_CELL_SIZE) - 1;
 
-    // Always offer 4 columns if viable (rotational sequences)
-    if (maxViableColumns >= 4) {
-      options.push(4);
-    }
-
-    // For larger sequences, offer additional options if they fit
-    if (beatCount > 16) {
-      if (maxViableColumns >= 6) {
-        options.push(6);
-      }
-      if (maxViableColumns >= 8) {
-        options.push(8);
-      }
-    }
+    // Offer all standard column options that fit the screen
+    if (maxViableColumns >= 4) options.push(4);
+    if (maxViableColumns >= 6) options.push(6);
+    if (maxViableColumns >= 8) options.push(8);
 
     return options;
   }

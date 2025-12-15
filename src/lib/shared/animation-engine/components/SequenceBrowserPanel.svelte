@@ -326,8 +326,13 @@
 </Drawer>
 
 <style>
-  :global(.sequence-browser-panel) {
+  /* Glass morphism styling for sequence browser */
+  :global(.drawer-content.sequence-browser-panel) {
     max-width: 500px;
+    --sheet-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40));
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40)) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
   }
 
   .browser-content {

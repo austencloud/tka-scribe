@@ -24,7 +24,7 @@ function question(query) {
 }
 
 async function setup() {
-  console.log('\n🚀 TKA Studio - Release Workflow Setup\n');
+  console.log('\n🚀 TKA Scribe - Release Workflow Setup\n');
   console.log('This will configure your local environment for the automated release workflow.\n');
   
   // Check if .env.local already exists

@@ -44,7 +44,7 @@ serialize(
 - Applications rarely accept user input for these fields
 - The vulnerability requires very specific misuse patterns
 
-#### Impact on TKA Studio
+#### Impact on TKA Scribe
 
 **Analysis**: ✅ **Minimal Risk**
 

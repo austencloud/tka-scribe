@@ -4,6 +4,7 @@
   import XPToast from "../../gamification/components/XPToast.svelte";
   import QuickFeedbackPanel from "$lib/features/feedback/components/quick/QuickFeedbackPanel.svelte";
   import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
+  import MigrationChecker from "../../migration/components/MigrationChecker.svelte";
   import ErrorModal from "../../error/components/ErrorModal.svelte";
   import InboxDrawer from "../../inbox/components/InboxDrawer.svelte";
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
@@ -326,10 +327,10 @@
 </script>
 
 <svelte:head>
-  <title>TKA Studio - Flow Arts Choreography Tool</title>
+  <title>TKA Scribe - Flow Arts Choreography Tool</title>
   <meta
     name="description"
-    content="TKA Studio is a revolutionary flow arts choreography toolbox for staffs, fans, and other flow arts. Create, learn, and share movement sequences using The Kinetic Alphabet notation system."
+    content="TKA Scribe is a revolutionary flow arts choreography toolbox for staffs, fans, and other flow arts. Create, learn, and share movement sequences using The Kinetic Alphabet notation system."
   />
 </svelte:head>
 
@@ -407,6 +408,9 @@
 
     <!-- System Announcements Modal -->
     <AnnouncementChecker />
+
+    <!-- Domain Migration Notifications -->
+    <MigrationChecker />
 
     <!-- Global Error Modal -->
     <ErrorModal />

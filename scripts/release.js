@@ -333,7 +333,7 @@ async function createReleaseAnnouncement(version, changelogEntries, adminUserId)
 
   // Footer encouraging feedback
   message += `---\n\n`;
-  message += `💬 **Your feedback shapes TKA Studio.**\n`;
+  message += `💬 **Your feedback shapes TKA Scribe.**\n`;
   message += `Found a bug? Have an idea? Let us know in the Feedback tab!`;
 
   // Create announcement document

@@ -1,6 +1,6 @@
 # TKA Persistence Layer with Dexie.js
 
-This document explains how TKA Studio uses Dexie.js for robust, enterprise-grade data persistence.
+This document explains how TKA Scribe uses Dexie.js for robust, enterprise-grade data persistence.
 
 ## 🎯 What is Dexie?
 
@@ -283,4 +283,4 @@ this.version(2)
 
 ---
 
-**🎉 You now have enterprise-grade persistence in TKA Studio!**
+**🎉 You now have enterprise-grade persistence in TKA Scribe!**

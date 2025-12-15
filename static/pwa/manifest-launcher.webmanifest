@@ -1,7 +1,7 @@
 {
-  "name": "TKA Studio Launcher",
+  "name": "TKA Scribe Launcher",
   "short_name": "TKA Launcher",
-  "description": "Advanced version management and development launcher for TKA Studio",
+  "description": "Advanced version management and development launcher for TKA Scribe",
   "version": "2.0.0",
   "start_url": "/",
   "display": "standalone",

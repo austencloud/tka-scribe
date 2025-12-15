@@ -201,7 +201,7 @@ async function submitFeedback(params) {
     }
 
     console.log('');
-    console.log(`   🔗 View in Kanban: Open TKA Studio → Feedback Manage tab`);
+    console.log(`   🔗 View in Kanban: Open TKA Scribe → Feedback Manage tab`);
 
     process.exit(0);
   } catch (error) {

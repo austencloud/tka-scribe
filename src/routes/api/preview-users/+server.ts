@@ -5,16 +5,17 @@ import { readFileSync } from "fs";
 
 const ALLOW = process.env.ALLOW_PREVIEW_NOTIFICATIONS === "true";
 
-let adminInitialized = false;
 function initAdmin() {
-  if (adminInitialized) return;
+  // Check if Firebase Admin is already initialized globally
+  if (admin.apps.length > 0) {
+    return;
+  }
   const serviceAccount = JSON.parse(
     readFileSync("serviceAccountKey.json", "utf8")
   );
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
-  adminInitialized = true;
 }
 
 export const GET: RequestHandler = async ({ url }) => {

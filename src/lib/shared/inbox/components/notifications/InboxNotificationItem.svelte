@@ -79,7 +79,7 @@
 		}
 
 		// Deep-link to relevant content based on notification type
-		const n = notification as Record<string, unknown>;
+		const n = notification as unknown as Record<string, unknown>;
 
 		switch (notification.type) {
 			case "feedback-resolved":
@@ -119,9 +119,9 @@
 				break;
 
 			case "achievement-unlocked":
-				// Navigate to achievements via module change
+				// Navigate to dashboard (achievements are shown via gamification panel)
 				inboxState.close();
-				await handleModuleChange("collect", "achievements");
+				await handleModuleChange("dashboard", "overview");
 				break;
 
 			default:

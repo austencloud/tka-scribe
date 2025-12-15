@@ -162,7 +162,7 @@
 		{/if}
 
 		<!-- Content -->
-		<main class="inbox-content" id="{inboxState.activeTab}-panel" role="tabpanel">
+		<section class="inbox-content" id="{inboxState.activeTab}-panel" role="tabpanel">
 			{#if inboxState.currentView === "list"}
 				{#if inboxState.activeTab === "messages"}
 					<ConversationList
@@ -191,7 +191,7 @@
 					onCancel={() => inboxState.cancelCompose()}
 				/>
 			{/if}
-		</main>
+		</section>
 	</div>
 </Drawer>
 

@@ -6,7 +6,7 @@ Hey Opus! Sonnet has done all the exploration and planning for a comprehensive c
 
 ### What This Is
 
-A complete reorganization from "modules-first" to "features-first" architecture for TKA Studio. All planning is done, just needs execution.
+A complete reorganization from "modules-first" to "features-first" architecture for TKA Scribe. All planning is done, just needs execution.
 
 ### Time Required
 

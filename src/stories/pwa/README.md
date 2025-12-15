@@ -1,6 +1,6 @@
 # PWA Installation Components - Storybook Documentation
 
-This directory contains Storybook stories for all PWA installation-related components in TKA Studio.
+This directory contains Storybook stories for all PWA installation-related components in TKA Scribe.
 
 ## Overview
 

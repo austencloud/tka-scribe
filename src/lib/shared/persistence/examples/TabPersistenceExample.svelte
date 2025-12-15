@@ -1,7 +1,7 @@
 <!--
   Tab Persistence Example
 
-  This shows you how to implement tab persistence in your actual TKA Studio app.
+  This shows you how to implement tab persistence in your actual TKA Scribe app.
   This is the FIRST thing you should implement - it's simple and immediately useful.
 -->
 

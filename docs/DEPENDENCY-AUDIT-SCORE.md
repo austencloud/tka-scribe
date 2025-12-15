@@ -275,6 +275,6 @@ Starting from 92/100, we systematically improved the dependency management and m
 ---
 
 _Generated: 2025-11-19_
-_Project: TKA Studio v2.0.0_
+_Project: TKA Scribe v2.0.0_
 _Node.js: 20.0.0+_
 _npm: 10.0.0+_

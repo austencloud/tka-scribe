@@ -2,7 +2,7 @@
 
 ## Overview
 
-TKA Studio now has a proper release workflow that separates production (public releases) from development (testing and active development). This ensures users only see features you've explicitly released, while developers and testers can access everything.
+TKA Scribe now has a proper release workflow that separates production (public releases) from development (testing and active development). This ensures users only see features you've explicitly released, while developers and testers can access everything.
 
 ## The Two-Track System
 

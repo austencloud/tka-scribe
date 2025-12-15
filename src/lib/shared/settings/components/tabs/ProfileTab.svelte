@@ -384,7 +384,7 @@
         <div class="auth-icon-wrapper">
           <i class="fas fa-user-astronaut"></i>
         </div>
-        <h2 class="auth-title">Sign In to TKA Studio</h2>
+        <h2 class="auth-title">Sign In to TKA Scribe</h2>
         <p class="auth-subtitle">
           Save your progress, sync across devices, and access your creations.
         </p>

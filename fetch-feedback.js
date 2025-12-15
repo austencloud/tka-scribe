@@ -70,7 +70,7 @@ async function notifyUserFeedbackResolved(userId, feedbackId, feedbackTitle, mes
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       read: false,
       fromUserId: 'system',
-      fromUserName: 'TKA Studio'
+      fromUserName: 'TKA Scribe'
     };
 
     const docRef = await notificationRef.add(notification);
@@ -766,6 +766,10 @@ async function getFeedbackById(docId) {
     if (item.adminNotes) {
       console.log('─'.repeat(70));
       console.log(`  Admin Notes: ${item.adminNotes}`);
+    }
+    if (item.resolutionNotes) {
+      console.log('─'.repeat(70));
+      console.log(`  Resolution Notes: ${item.resolutionNotes}`);
     }
 
     // Show subtasks if they exist

@@ -23,7 +23,7 @@
   let editText = $state(text);
   let isSaving = $state(false);
   let error = $state<string | null>(null);
-  let textareaElement: HTMLTextAreaElement;
+  let textareaElement = $state<HTMLTextAreaElement | null>(null);
 
   // Track if user has made changes
   const hasChanges = $derived(editText.trim() !== text.trim());

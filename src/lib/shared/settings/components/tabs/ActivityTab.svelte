@@ -138,7 +138,7 @@
 <div class="activity-tab">
   <header class="activity-header">
     <h2>Activity History</h2>
-    <p class="subtitle">Your recent activity in TKA Studio</p>
+    <p class="subtitle">Your recent activity in TKA Scribe</p>
   </header>
 
   <!-- Current Session -->

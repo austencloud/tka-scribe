@@ -179,7 +179,7 @@
       <section>
         <h3>8. Children's Privacy</h3>
         <p>
-          TKA Studio is designed for general audiences. We do not knowingly
+          TKA Scribe is designed for general audiences. We do not knowingly
           collect personal information from children under 13. If you believe we
           have collected information from a child under 13, please contact us
           immediately.

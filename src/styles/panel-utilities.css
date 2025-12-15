@@ -1,0 +1,133 @@
+/**
+ * Panel Utilities CSS
+ *
+ * Unified panel/container styling patterns for consistent theming.
+ * Use these utility classes OR the CSS custom properties directly.
+ *
+ * PRINCIPLE: Module/Tab containers should be transparent to let the
+ * app background show through. Only inner panels that need visual
+ * separation should have backgrounds.
+ *
+ * HIERARCHY:
+ * 1. Module container → transparent (let app bg show)
+ * 2. Tab container → transparent (let app bg show)
+ * 3. Panel (visual grouping) → --surface-glass or --theme-panel-bg
+ * 4. Card (interactive item) → --surface-color or --theme-card-bg
+ * 5. Elevated panel (modal, sheet) → --surface-glass + backdrop blur
+ */
+
+/* =============================================================================
+   TRANSPARENT CONTAINERS
+   Use on module/tab root elements to let app background show through
+   ============================================================================= */
+
+.panel-transparent {
+  background: transparent;
+}
+
+/* =============================================================================
+   GLASS PANELS
+   Semi-transparent panels that float over the background
+   ============================================================================= */
+
+.panel-glass {
+  background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+  border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  border-radius: 12px;
+}
+
+.panel-glass-elevated {
+  background: var(--theme-panel-elevated-bg, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* =============================================================================
+   CARD SURFACES
+   Interactive items within panels (buttons, list items, etc.)
+   ============================================================================= */
+
+.surface-card {
+  background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+}
+
+.surface-card-interactive {
+  background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.surface-card-interactive:hover {
+  background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+  border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+}
+
+/* =============================================================================
+   TEXT UTILITIES
+   Consistent text colors that adapt to theme
+   ============================================================================= */
+
+.text-primary {
+  color: var(--theme-text, rgba(255, 255, 255, 0.95));
+}
+
+.text-secondary {
+  color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+}
+
+.text-muted {
+  color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+}
+
+/* =============================================================================
+   DIVIDERS
+   Horizontal/vertical separators
+   ============================================================================= */
+
+.divider-horizontal {
+  height: 1px;
+  background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+}
+
+.divider-vertical {
+  width: 1px;
+  background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+}
+
+/* =============================================================================
+   OVERLAY PATTERNS
+   For modals, sheets, fullscreen overlays
+   ============================================================================= */
+
+/* Use when you need a dark scrim behind content */
+.overlay-scrim {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Use when you need to block the background but keep it slightly visible */
+.overlay-glass {
+  background: var(--theme-panel-bg, rgba(0, 0, 0, 0.85));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* =============================================================================
+   GRADIENT FADE PATTERNS
+   Bottom/top fades for scroll containers, toolbars, etc.
+   ============================================================================= */
+
+.fade-to-bottom {
+  background: linear-gradient(to bottom, transparent 0%, var(--theme-panel-bg, rgba(0, 0, 0, 0.3)) 100%);
+}
+
+.fade-to-top {
+  background: linear-gradient(to top, transparent 0%, var(--theme-panel-bg, rgba(0, 0, 0, 0.3)) 100%);
+}

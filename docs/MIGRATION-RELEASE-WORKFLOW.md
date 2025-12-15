@@ -2,7 +2,7 @@
 
 ## What Changed?
 
-TKA Studio now has a proper production release workflow with environment-based feature visibility.
+TKA Scribe now has a proper production release workflow with environment-based feature visibility.
 
 ### Before
 - All features visible to all users (controlled only by role)

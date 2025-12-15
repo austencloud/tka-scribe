@@ -31,7 +31,7 @@ export const INFO_TEXT: InfoTextContent = {
     title: "For Developers",
     subtitle: "Open source & contributions",
     message:
-      "TKA Studio is open source. Check out the code, report bugs, or contribute features.",
+      "TKA Scribe is open source. Check out the code, report bugs, or contribute features.",
   },
 };
 

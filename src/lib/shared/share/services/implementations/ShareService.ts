@@ -209,7 +209,7 @@ export class ShareService implements IShareService {
       blueVisible: true,
 
       // User information
-      userName: shareOptions.userName || "TKA Studio User",
+      userName: shareOptions.userName || "TKA Scribe User",
       exportDate: new Date()
         .toLocaleDateString("en-US", {
           year: "numeric",
@@ -217,7 +217,7 @@ export class ShareService implements IShareService {
           day: "numeric",
         })
         .replace(/\//g, "-"),
-      notes: shareOptions.notes || "Created with TKA Studio",
+      notes: shareOptions.notes || "Created with TKA Scribe",
 
       // Output format
       format: shareOptions.format,
@@ -249,7 +249,7 @@ export class ShareService implements IShareService {
       blueVisible: true,
 
       // User information
-      userName: shareOptions.userName || "TKA Studio User",
+      userName: shareOptions.userName || "TKA Scribe User",
       exportDate: new Date()
         .toLocaleDateString("en-US", {
           year: "numeric",
@@ -257,7 +257,7 @@ export class ShareService implements IShareService {
           day: "numeric",
         })
         .replace(/\//g, "-"),
-      notes: shareOptions.notes || "Created with TKA Studio",
+      notes: shareOptions.notes || "Created with TKA Scribe",
 
       // Output format - Maximum speed optimization
       format: "JPEG" as const, // JPEG encodes much faster than PNG

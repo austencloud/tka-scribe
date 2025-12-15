@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-  <title>ML Training Mock | TKA Studio</title>
+  <title>ML Training Mock | TKA Scribe</title>
 </svelte:head>
 
 <div class="mock-shell">

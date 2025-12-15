@@ -14,6 +14,7 @@ const BACKGROUND_ANIMATIONS: Record<BackgroundType, string> = {
   emberGlow: "ember-glow",
   sakuraDrift: "sakura-drift",
   fireflyForest: "firefly-forest",
+  autumnDrift: "autumn-drift",
   solidColor: "", // No animation for solid colors
   linearGradient: "", // No animation for gradients
 };

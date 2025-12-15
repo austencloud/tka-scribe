@@ -51,13 +51,13 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 
 <svelte:head>
 	<title>
-		{decodedSequence?.word || decodedSequence?.name || "Sequence"} - TKA Studio
+		{decodedSequence?.word || decodedSequence?.name || "Sequence"} - TKA Scribe
 	</title>
 	<meta
 		name="description"
 		content={decodedSequence?.word
-			? `View and edit the sequence "${decodedSequence.word}" in TKA Studio`
-			: "View and edit sequences in TKA Studio"}
+			? `View and edit the sequence "${decodedSequence.word}" in TKA Scribe`
+			: "View and edit sequences in TKA Scribe"}
 	/>
 </svelte:head>
 
