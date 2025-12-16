@@ -1,0 +1,25 @@
+{
+  "recommendations": [
+    // Core development
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "svelte.svelte-vscode",
+    "ms-vscode.vscode-typescript-next",
+
+    // Testing
+    "ms-playwright.playwright",
+    "vitest.explorer",
+
+    // Git and version control
+    "eamodio.gitlens",
+
+    // Productivity
+    "editorconfig.editorconfig",
+    "ms-vscode.js-debug",
+
+    // Optional but useful
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag"
+  ]
+}

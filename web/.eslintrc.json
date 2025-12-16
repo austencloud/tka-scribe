@@ -1,0 +1,60 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2020
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "varsIgnorePattern": ".*", "argsIgnorePattern": ".*" }
+    ],
+
+    // Enforce architectural boundaries with path aliases
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["$services", "$services/*"],
+            "message": "Use relative imports instead of $services alias to avoid circular dependencies"
+          },
+          {
+            "group": ["$domain", "$domain/*"],
+            "message": "Use $shared/domain or relative imports instead of $domain alias"
+          },
+          {
+            "group": ["$implementations", "$implementations/*"],
+            "message": "Use relative imports within modules instead of $implementations alias"
+          },
+          {
+            "group": ["$state", "$state/*"],
+            "message": "Use module-specific state imports instead of global $state alias"
+          }
+        ]
+      }
+    ]
+  },
+
+  "ignorePatterns": [
+    "build/",
+    ".svelte-kit/",
+    "dist/",
+    ".netlify/",
+    "node_modules/",
+    "**/*.generated.*",
+    "**/*.svelte"
+  ]
+}

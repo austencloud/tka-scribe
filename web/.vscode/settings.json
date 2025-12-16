@@ -1,0 +1,25 @@
+{
+  "debug.allowBreakpointsEverywhere": false,
+  "debug.showInlineBreakpointCandidates": false,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "editor.codeActionsOnSave": {
+    "source.removeUnused": "never",
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.includeAutomaticOptionalChainCompletions": false,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": false
+  },
+  "files.exclude": {
+    "**/archive/**": true
+  },
+  "search.exclude": {
+    "**/archive/**": true
+  }
+}

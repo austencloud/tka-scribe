@@ -1,0 +1,60 @@
+<!-- SEO-Optimized BROWSE Page with Enhanced Meta Data -->
+<script lang="ts">
+  import { browser } from "$app/environment";
+  import MainApplication from "../../lib/shared/application/components/MainApplication.svelte";
+
+  import type { ISeoService } from "$shared";
+  import { resolve, TYPES } from "$shared";
+  import { onMount } from "svelte";
+  import type { PageData } from "./$types";
+
+  let { data } = $props<{
+    data: PageData;
+  }>();
+
+  // Enhanced SEO redirect with analytics potential
+  onMount(() => {
+    if (browser) {
+      const seoService = resolve<ISeoService>(TYPES.ISeoService);
+      seoService.handleSEORedirect("browse");
+    }
+  });
+
+  // Structured data for enhanced SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Browse Flow Arts Gallery - TKA",
+    description:
+      "Comprehensive flow arts sequence gallery with poi, fans, staff movements. Filter by difficulty, style, and technique.",
+    url: "https://thekineticalphabet.com/browse",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "TKA - The Kinetic Constructor",
+      url: "https://thekineticalphabet.com",
+    },
+    creator: {
+      "@type": "SoftwareApplication",
+      name: "TKA - The Kinetic Constructor",
+    },
+  };
+</script>
+
+<svelte:head>
+  <title>{data.meta.title}</title>
+  <meta name="description" content={data.meta.description} />
+  <meta property="og:title" content={data.meta.ogTitle} />
+  <meta property="og:description" content={data.meta.ogDescription} />
+  <meta property="og:type" content={data.meta.ogType} />
+  <meta property="og:url" content={data.meta.ogUrl} />
+  <meta property="og:site_name" content="TKA - The Kinetic Constructor" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={data.meta.ogTitle} />
+  <meta name="twitter:description" content={data.meta.ogDescription} />
+  <link rel="canonical" href={data.meta.canonical} />
+
+  <!-- Enhanced Structured Data -->
+  {@html `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`}
+</svelte:head>
+
+<MainApplication />

@@ -1,0 +1,41 @@
+from __future__ import annotations
+
+from typing import Callable
+
+from PyQt6.QtGui import QResizeEvent
+from PyQt6.QtWidgets import QWidget
+
+
+class OptionPickerWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._resize_callback = None
+        self._sizing_callbacks: list[Callable[[int], None]] = []
+
+    def set_resize_callback(self, callback):
+        self._resize_callback = callback
+
+    def add_sizing_callback(self, callback: Callable[[int], None]):
+        """Add a callback that receives the option picker width when it changes"""
+        self._sizing_callbacks.append(callback)
+
+    def remove_sizing_callback(self, callback: Callable[[int], None]):
+        """Remove a sizing callback"""
+        if callback in self._sizing_callbacks:
+            self._sizing_callbacks.remove(callback)
+
+    def get_usable_width(self) -> int:
+        """Get the usable width for pictograph sizing (excluding margins/padding)"""
+        return max(0, self.width() - 10)
+    def resizeEvent(self, event: QResizeEvent):
+        super().resizeEvent(event)
+
+        if self._resize_callback:
+            self._resize_callback()
+
+        usable_width = self.get_usable_width()
+        for callback in self._sizing_callbacks:
+            try:
+                callback(usable_width)
+            except Exception as e:
+                print(f"❌ Error in sizing callback: {e}")
