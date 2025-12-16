@@ -187,6 +187,33 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   // Track the grid container element for animations
   let gridContainerElement = $state<SVGGElement | undefined>();
 
+  // Cubic bezier easing function - implements CSS cubic-bezier
+  // Standard "ease" is cubic-bezier(0.25, 0.1, 0.25, 1.0)
+  function cubicBezier(t: number, p1x: number, p1y: number, p2x: number, p2y: number): number {
+    // Simple approximation for cubic bezier with x coordinates at 0 and 1
+    // Using Newton-Raphson method for better accuracy
+    const cx = 3.0 * p1x;
+    const bx = 3.0 * (p2x - p1x) - cx;
+    const ax = 1.0 - cx - bx;
+
+    const cy = 3.0 * p1y;
+    const by = 3.0 * (p2y - p1y) - cy;
+    const ay = 1.0 - cy - by;
+
+    // Solve for t given x using Newton-Raphson
+    let x = t;
+    for (let i = 0; i < 8; i++) {
+      const z = ((ax * x + bx) * x + cx) * x - t;
+      if (Math.abs(z) < 1e-7) break;
+      const d = (3.0 * ax * x + 2.0 * bx) * x + cx;
+      if (Math.abs(d) < 1e-7) break;
+      x = x - z / d;
+    }
+
+    // Calculate y from solved t
+    return ((ay * x + by) * x + cy) * x;
+  }
+
   // Increment cumulative rotation by 45° with smooth animation whenever gridMode changes
   // Use global rotation direction to determine clockwise (+45) or counterclockwise (-45)
   $effect(() => {
@@ -199,15 +226,14 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
       if (gridContainerElement) {
         // Use requestAnimationFrame for smooth SVG transform animation
         const startTime = performance.now();
-        const duration = 300; // ms
+        const duration = 200; // ms - matches arrow/prop transition duration
 
         const animate = (currentTime: number) => {
           const elapsed = currentTime - startTime;
           const progress = Math.min(elapsed / duration, 1);
-          // Ease-in-out cubic easing
-          const eased = progress < 0.5
-            ? 4 * progress * progress * progress
-            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+          // Standard CSS "ease" timing function: cubic-bezier(0.25, 0.1, 0.25, 1.0)
+          // Matches the easing used by arrows and props
+          const eased = cubicBezier(progress, 0.25, 0.1, 0.25, 1.0);
 
           const currentRotation = previousRotation + (newRotation - previousRotation) * eased;
           gridContainerElement.setAttribute('transform', `rotate(${currentRotation}, 475, 475)`);

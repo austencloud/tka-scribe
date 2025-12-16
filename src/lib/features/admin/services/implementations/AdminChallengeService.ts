@@ -4,7 +4,7 @@
  * Handles admin operations for daily challenges
  */
 
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import {
   doc,
   getDoc,
@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
 import { db } from "$lib/shared/persistence/database/TKADatabase";
+import { TYPES } from "$lib/shared/inversify/types";
 import type { DailyChallenge } from "$lib/shared/gamification/domain/models/achievement-models";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
@@ -26,9 +27,14 @@ import type {
   ChallengeFormData,
 } from "../../domain/models/AdminModels";
 import type { IAdminChallengeService } from "../contracts/IAdminChallengeService";
+import type { IAuditLogService } from "../contracts/IAuditLogService";
 
 @injectable()
 export class AdminChallengeService implements IAdminChallengeService {
+  constructor(
+    @inject(TYPES.IAuditLogService)
+    private readonly auditLogService: IAuditLogService
+  ) {}
   /**
    * Get all scheduled challenges for a date range
    * Optimized: Single batch query instead of per-day requests
@@ -113,6 +119,14 @@ export class AdminChallengeService implements IAdminChallengeService {
       ...challenge,
       expiresAt: Timestamp.fromDate(expiresAt),
     });
+
+    // Log the action
+    await this.auditLogService.logAction(
+      "challenge_created",
+      `Created daily challenge: ${challenge.title} (${formData.date})`,
+      undefined,
+      { challengeId, date: formData.date, difficulty: formData.difficulty }
+    );
 
     console.log(`✅ [Admin] Created daily challenge: ${challenge.title}`);
 

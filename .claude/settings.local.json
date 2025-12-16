@@ -684,7 +684,11 @@
       "Bash(\"src/lib/features/create/assemble/state/handpath-assemble-state.svelte.ts\")",
       "Bash(\".claude/commands/fb.md\" )",
       "Bash(\".claude/settings.local.json\" )",
-      "Bash(\"scripts/temp/list-low-priority.cjs\")"
+      "Bash(\"scripts/temp/list-low-priority.cjs\")",
+      "Bash(\"src/lib/features/discover/creators/components/profile/ProfileTabs.svelte\" )",
+      "Bash(\"src/lib/features/library/services/implementations/LibraryService.ts\" )",
+      "Bash(\"src/lib/shared/pictograph/grid/components/GridSvg.svelte\" )",
+      "Bash(\"src/lib/shared/pictograph/grid/state/\")"
     ],
     "deny": [],
     "ask": []
