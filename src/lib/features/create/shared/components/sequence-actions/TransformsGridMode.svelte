@@ -14,6 +14,7 @@
     onSwap: () => void;
     onRewind: () => void;
     onPreview: () => void;
+    onTurnPattern: () => void;
     onEditInConstructor: () => void;
   }
 
@@ -27,6 +28,7 @@
     onSwap,
     onRewind,
     onPreview,
+    onTurnPattern,
     onEditInConstructor,
   }: Props = $props();
 
@@ -85,7 +87,16 @@
     </div>
   </button>
 
-  <!-- Row 4: Edit in Constructor (full width) -->
+  <!-- Row 4: Turn Pattern (full width) -->
+  <button class="grid-btn turns full-width" onclick={onTurnPattern} disabled={!hasSequence}>
+    <div class="btn-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+    <div class="btn-text">
+      <span class="btn-label">Turn Pattern</span>
+      <span class="btn-desc">Save & apply turn patterns</span>
+    </div>
+  </button>
+
+  <!-- Row 5: Edit in Constructor (full width) -->
   {#if showEditInConstructor}
     <button class="grid-btn edit full-width" onclick={onEditInConstructor} disabled={!hasSequence} data-testid="edit-in-constructor">
       <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
@@ -303,6 +314,18 @@
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(6, 182, 212, 0.15) 100%);
     border-color: rgba(6, 182, 212, 0.5);
     box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25);
+  }
+
+  /* Turns - Teal */
+  .grid-btn.turns {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(20, 184, 166, 0.08) 100%);
+    border: 1px solid rgba(20, 184, 166, 0.35);
+  }
+  .grid-btn.turns .btn-icon { background: #14b8a6; color: white; }
+  .grid-btn.turns:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.3) 0%, rgba(20, 184, 166, 0.15) 100%);
+    border-color: rgba(20, 184, 166, 0.5);
+    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.25);
   }
 
   /* Edit - Blue */

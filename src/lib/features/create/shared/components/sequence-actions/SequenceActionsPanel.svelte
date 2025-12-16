@@ -26,6 +26,7 @@
   import StartPositionEditMode from "./StartPositionEditMode.svelte";
   import TransformsGridMode from "./TransformsGridMode.svelte";
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
+  import TurnPatternDrawer from "./TurnPatternDrawer.svelte";
   import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
 
@@ -75,6 +76,7 @@
   let showConfirmDialog = $state(false);
   let pendingSequenceTransfer = $state<any>(null);
   let showHelpSheet = $state(false);
+  let showTurnPatternDrawer = $state(false);
   let lastTrackedBeatNumber = $state<number | null>(null);
 
   // Sync isOpen with show prop
@@ -196,7 +198,8 @@
 
     const currentTurns =
       color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
-    const newNumericTurns = Math.max(-0.5, currentTurns + delta);
+    // Cap turns between -0.5 (float) and 3 (max)
+    const newNumericTurns = Math.min(3, Math.max(-0.5, currentTurns + delta));
     const newTurns: number | "fl" =
       newNumericTurns === -0.5 ? "fl" : newNumericTurns;
 
@@ -309,6 +312,23 @@
     handleClose();
     // Open spotlight with beat grid - renders sequence directly without generating an image
     openSpotlightWithBeatGrid(sequence);
+  }
+
+  function handleTurnPattern() {
+    hapticService?.trigger("selection");
+    showTurnPatternDrawer = true;
+  }
+
+  function handleTurnPatternApply(result: { sequence: any; warnings?: readonly string[] }) {
+    // Update the active sequence with the pattern-applied sequence
+    activeSequenceState.setCurrentSequence(result.sequence);
+
+    // Log any warnings
+    if (result.warnings && result.warnings.length > 0) {
+      console.log("[TurnPattern] Applied with warnings:", result.warnings);
+    }
+
+    hapticService?.trigger("success");
   }
 
   function handleEditInConstructor() {
@@ -478,6 +498,7 @@
           onSwap={handleSwap}
           onRewind={handleRewind}
           onPreview={handlePreview}
+          onTurnPattern={handleTurnPattern}
           onEditInConstructor={handleEditInConstructor}
         />
       {/if}
@@ -502,6 +523,13 @@
   onCancel={() => {
     pendingSequenceTransfer = null;
   }}
+/>
+
+<TurnPatternDrawer
+  bind:isOpen={showTurnPatternDrawer}
+  {sequence}
+  onClose={() => (showTurnPatternDrawer = false)}
+  onApply={handleTurnPatternApply}
 />
 
 <style>

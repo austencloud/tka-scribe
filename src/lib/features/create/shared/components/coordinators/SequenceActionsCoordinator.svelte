@@ -17,7 +17,7 @@
 
   // Get context
   const ctx = getCreateModuleContext();
-  const { panelState } = ctx;
+  const { CreateModuleState, panelState } = ctx;
 
   const isEditorOpen = $derived.by(() => panelState.isSequenceActionsPanelOpen);
 
@@ -25,6 +25,9 @@
   function handleClose() {
     logger.log("SequenceActionsCoordinator closing sequence actions panel");
     panelState.closeSequenceActionsPanel();
+
+    // Clear beat selection when panel closes
+    CreateModuleState.sequenceState.clearSelection();
   }
 
   // Debug effect to track panel visibility
