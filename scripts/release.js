@@ -1,24 +1,29 @@
 /**
  * Release Script
  *
- * Automates version releases with two modes:
+ * Automates version releases with proper branch workflow:
+ *
+ * Branch Workflow:
+ * 1. Verify you're on develop branch (or main with --from-main flag)
+ * 2. Stash any uncommitted changes
+ * 3. Switch to main branch
+ * 4. Merge develop into main
+ * 5. Create release commit and tag on main
+ * 6. Push main and tags
+ * 7. Switch back to develop
+ * 8. Restore stashed changes
  *
  * Feedback Mode (preferred):
- * 1. Check completed feedback count
- * 2. Determine version number from feedback types
- * 3. Generate changelog from feedback items
- * 4. Archive feedback and create version record in Firestore
+ * - Check completed feedback count
+ * - Determine version number from feedback types
+ * - Generate changelog from feedback items
+ * - Archive feedback and create version record in Firestore
  *
  * Git History Mode (fallback):
- * 1. Parse commits since last tag (or all commits if no tags)
- * 2. Determine version from conventional commit types (feat/fix/etc)
- * 3. Generate changelog from commit messages
- * 4. Skip Firestore operations
- *
- * Both modes:
- * - Show preview and get confirmation
- * - Update package.json
- * - Create git commit and tag
+ * - Parse commits since last tag
+ * - Determine version from conventional commit types
+ * - Generate changelog from commit messages
+ * - Skip Firestore operations
  *
  * Usage:
  *   node scripts/release.js                    - Interactive flow
@@ -31,6 +36,7 @@
  *   node scripts/release.js --confirm          - Execute release (requires prior preview)
  *   node scripts/release.js --changelog file.json - Use custom changelog entries (user-friendly)
  *   node scripts/release.js --skip-announcement - Don't create the "What's New" popup
+ *   node scripts/release.js --from-main        - Release directly from main (skip branch workflow)
  */
 
 import admin from 'firebase-admin';
@@ -367,6 +373,64 @@ function checkGitStatus() {
 }
 
 /**
+ * Get current git branch
+ */
+function getCurrentBranch() {
+  try {
+    return execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Switch to a git branch
+ */
+function switchToBranch(branch) {
+  execSync(`git checkout ${branch}`, { stdio: 'inherit' });
+}
+
+/**
+ * Merge a branch into current branch
+ */
+function mergeBranch(sourceBranch) {
+  execSync(`git merge ${sourceBranch} --no-edit`, { stdio: 'inherit' });
+}
+
+/**
+ * Stash changes if there are any
+ * Returns true if changes were stashed
+ */
+function stashChanges() {
+  const status = checkGitStatus();
+  if (status) {
+    execSync('git stash push -m "release-script-auto-stash"', { stdio: 'inherit' });
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Pop stashed changes
+ */
+function popStash() {
+  try {
+    execSync('git stash pop', { stdio: 'inherit' });
+  } catch (error) {
+    console.log('⚠️  Could not restore stashed changes automatically.');
+    console.log('   Run "git stash pop" manually if needed.');
+  }
+}
+
+/**
+ * Push branch and tags to remote
+ */
+function pushToRemote(branch) {
+  execSync(`git push origin ${branch}`, { stdio: 'inherit' });
+  execSync('git push --tags', { stdio: 'inherit' });
+}
+
+/**
  * Create git commit and tag
  */
 function createGitRelease(version, changelog) {
@@ -606,6 +670,7 @@ async function main() {
   const changelogFileIndex = args.indexOf('--changelog');
   const changelogFile = changelogFileIndex >= 0 ? args[changelogFileIndex + 1] : null;
   const skipAnnouncement = args.includes('--skip-announcement');
+  const fromMain = args.includes('--from-main');
 
   // Admin user ID for announcement creation (defaults to Austen's ID)
   const ADMIN_USER_ID = 'wJY6RSmdY7WQaAfnCniSHRpCLs22'; // austencloud
@@ -616,11 +681,39 @@ async function main() {
     process.exit(0);
   }
 
+  // Check current branch
+  const startingBranch = getCurrentBranch();
+  const isOnDevelop = startingBranch === 'develop';
+  const isOnMain = startingBranch === 'main';
+
   // Quick preview mode - minimal output
   if (quickPreview) {
     console.log('🔍 Quick Release Preview\n');
   } else {
     console.log('📦 Starting release process...\n');
+  }
+
+  // Branch check (skip for preview modes)
+  if (!dryRun && !quickPreview) {
+    console.log(`🌿 Current branch: ${startingBranch}`);
+
+    if (!isOnDevelop && !isOnMain) {
+      console.error(`\n❌ You must be on 'develop' or 'main' to release.`);
+      console.error(`   Currently on: ${startingBranch}`);
+      console.error(`   Switch to develop: git checkout develop\n`);
+      process.exit(1);
+    }
+
+    if (isOnMain && !fromMain) {
+      console.log(`\n⚠️  You're on 'main' branch.`);
+      console.log(`   Releases should typically be made from 'develop'.`);
+      console.log(`   Add --from-main flag to release directly from main.\n`);
+      process.exit(1);
+    }
+
+    if (isOnDevelop) {
+      console.log(`   ✓ Will merge develop → main, then release on main\n`);
+    }
   }
 
   // 1. Check completed feedback
@@ -733,6 +826,34 @@ async function main() {
   // 5. Execute release
   console.log('🚀 Executing release...\n');
 
+  let didStash = false;
+
+  // Branch workflow: stash, switch to main, merge develop
+  if (isOnDevelop) {
+    // Stash any uncommitted changes
+    const gitStatus = checkGitStatus();
+    if (gitStatus) {
+      console.log('📦 Stashing uncommitted changes...');
+      didStash = stashChanges();
+    }
+
+    // Switch to main
+    console.log('🔀 Switching to main branch...');
+    switchToBranch('main');
+
+    // Pull latest main (in case remote has changes)
+    try {
+      console.log('⬇️  Pulling latest main...');
+      execSync('git pull origin main --no-edit', { stdio: 'inherit' });
+    } catch (error) {
+      console.log('   (No remote changes or not connected)');
+    }
+
+    // Merge develop into main
+    console.log('🔀 Merging develop → main...');
+    mergeBranch('develop');
+  }
+
   // Update package.json
   console.log('✓ Updating package.json...');
   updatePackageVersion(suggestedVersion);
@@ -750,6 +871,10 @@ async function main() {
   console.log('✓ Creating git commit and tag...');
   createGitRelease(suggestedVersion, changelog);
 
+  // Push main branch and tags
+  console.log('✓ Pushing to remote...');
+  pushToRemote('main');
+
   // Create GitHub release
   console.log('✓ Creating GitHub release...');
   createGitHubRelease(suggestedVersion, changelog);
@@ -763,11 +888,35 @@ async function main() {
     console.log('⏭️  Skipping announcement (--skip-announcement)');
   }
 
+  // Switch back to develop and restore stash
+  if (isOnDevelop) {
+    console.log('🔀 Switching back to develop...');
+    switchToBranch('develop');
+
+    // Merge main back to develop (so develop has the version bump)
+    console.log('🔀 Syncing main → develop...');
+    mergeBranch('main');
+
+    // Push develop
+    console.log('✓ Pushing develop...');
+    execSync('git push origin develop', { stdio: 'inherit' });
+
+    // Restore stashed changes
+    if (didStash) {
+      console.log('📦 Restoring stashed changes...');
+      popStash();
+    }
+  }
+
   console.log(`\n🎉 Release v${suggestedVersion} complete!\n`);
-  console.log('   Next steps:');
-  console.log('   - Review the commit: git show');
-  console.log('   - View the release: gh release view v' + suggestedVersion);
-  console.log('   - Push to remote: git push && git push --tags');
+  console.log('   Summary:');
+  console.log(`   - Version: v${suggestedVersion}`);
+  console.log(`   - Branch: main (tagged and pushed)`);
+  console.log(`   - Current branch: ${isOnDevelop ? 'develop' : 'main'}`);
+  console.log('');
+  console.log('   View the release:');
+  console.log(`   - GitHub: gh release view v${suggestedVersion}`);
+  console.log('   - In app: Settings → What\'s New tab');
   console.log('');
 
   process.exit(0);
