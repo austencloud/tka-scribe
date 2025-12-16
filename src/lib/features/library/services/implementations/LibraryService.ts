@@ -107,6 +107,10 @@ export class LibraryService implements ILibraryService {
 			id,
 			createdAt: this.toDate(data["createdAt"]),
 			updatedAt: this.toDate(data["updatedAt"]),
+			// Convert dateAdded if present (legacy field from SequenceData)
+			dateAdded: data["dateAdded"]
+				? this.toDate(data["dateAdded"])
+				: undefined,
 			visibilityChangedAt: data["visibilityChangedAt"]
 				? this.toDate(data["visibilityChangedAt"])
 				: undefined,

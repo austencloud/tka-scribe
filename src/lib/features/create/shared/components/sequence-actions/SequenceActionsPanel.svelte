@@ -29,6 +29,7 @@
   import TurnPatternDrawer from "./TurnPatternDrawer.svelte";
   import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import { setGridRotationDirection } from "$lib/shared/pictograph/grid/state/grid-rotation-state.svelte";
 
   type EditMode = "turns" | "transforms";
 
@@ -266,6 +267,8 @@
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
+    // Set grid rotation direction for animation
+    setGridRotationDirection(1);
     try {
       await activeSequenceState.rotateSequence("clockwise");
     } finally {
@@ -277,6 +280,8 @@
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
+    // Set grid rotation direction for animation
+    setGridRotationDirection(-1);
     try {
       await activeSequenceState.rotateSequence("counterclockwise");
     } finally {

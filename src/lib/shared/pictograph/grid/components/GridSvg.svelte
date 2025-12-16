@@ -8,6 +8,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   import { GridMode } from "../domain/enums/grid-enums";
   import { resolve, TYPES } from "../../../inversify/di";
   import type { ISvgPreloadService } from "../../shared/services/contracts/ISvgPreloadService";
+  import { getGridRotationDirection } from "../state/grid-rotation-state.svelte";
 
   let {
     gridMode = GridMode.DIAMOND,
@@ -187,10 +188,12 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   let gridContainerElement = $state<SVGGElement | undefined>();
 
   // Increment cumulative rotation by 45° with smooth animation whenever gridMode changes
+  // Use global rotation direction to determine clockwise (+45) or counterclockwise (-45)
   $effect(() => {
     if (gridMode !== previousGridMode) {
       const previousRotation = cumulativeRotation;
-      const newRotation = cumulativeRotation + 45;
+      const direction = getGridRotationDirection();
+      const newRotation = cumulativeRotation + (45 * direction);
 
       // Animate rotation smoothly if element is available
       if (gridContainerElement) {
