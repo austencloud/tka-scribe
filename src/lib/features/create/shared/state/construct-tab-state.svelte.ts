@@ -83,6 +83,7 @@ export function createConstructTabState(
   let isContinuousOnly = $state(false); // Filter state for option viewer
 
   // Construct tab has its own independent sequence state
+  // IMPORTANT: Pass tabId="constructor" to ensure persistence loads/saves only constructor's data
   const sequenceState: SequenceState | null = sequenceService
     ? createSequenceState({
         sequenceService,
@@ -90,6 +91,7 @@ export function createConstructTabState(
         ...(sequenceStatisticsService && { sequenceStatisticsService }),
         ...(sequenceTransformationService && { sequenceTransformationService }),
         ...(sequenceValidationService && { sequenceValidationService }),
+        tabId: "constructor", // Persistence isolation - only load/save constructor's data
       })
     : null;
 
@@ -188,6 +190,20 @@ export function createConstructTabState(
   const shouldShowStartPositionPicker = $derived(() => {
     // Don't return any state until initialization is complete
     if (!isInitialized) return null;
+
+    // SAFEGUARD: If Constructor has NO sequence data (no beats and no start position),
+    // ALWAYS show the Start Position Picker, regardless of what showStartPositionPicker says.
+    // This prevents the bug where Option Viewer shows "No options available" when
+    // there's nothing to show options for.
+    if (sequenceState) {
+      const hasNoData =
+        !sequenceState.hasStartPosition &&
+        sequenceState.getCurrentSequenceData().length === 0;
+      if (hasNoData) {
+        return true; // Force Start Position Picker when there's no data
+      }
+    }
+
     return showStartPositionPicker;
   });
   const isPickerStateLoading = $derived(
@@ -246,7 +262,9 @@ export function createConstructTabState(
         await sequenceState.initializeWithPersistence();
 
         // Check if we have a persisted state that should affect UI
-        const savedState = await sequencePersistenceService.loadCurrentState();
+        // IMPORTANT: Pass "constructor" to load only Constructor's persisted data
+        // Without this, it loads based on navigationState.currentSection which could be another tab
+        const savedState = await sequencePersistenceService.loadCurrentState("constructor");
         debug.log("init: savedState =", savedState);
         debug.log("init: savedState?.hasStartPosition =", savedState?.hasStartPosition);
         debug.log("init: sequenceState.hasStartPosition =", sequenceState.hasStartPosition);

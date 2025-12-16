@@ -39,7 +39,7 @@ export function createCreateModuleState(
   sequenceTransformationService?: ISequenceTransformationService,
   sequenceValidationService?: ISequenceValidationService
 ) {
-  // Create sequence state
+  // Create sequence state (shared/legacy - kept for backwards compatibility)
   const sequenceState = createSequenceState({
     sequenceService,
     ...(sequencePersistenceService && { sequencePersistenceService }),
@@ -47,6 +47,23 @@ export function createCreateModuleState(
     ...(sequenceTransformationService && { sequenceTransformationService }),
     ...(sequenceValidationService && { sequenceValidationService }),
   });
+
+  // Create per-tab fallback sequence states
+  // IMPORTANT: Each tab gets its own isolated fallback state to prevent cross-tab data pollution.
+  // Previously, all tabs fell back to the shared `sequenceState`, causing data from one tab
+  // (e.g., Generator) to appear in another tab (e.g., Assembler) when that tab's state was null.
+  const createTabFallbackState = () =>
+    createSequenceState({
+      sequenceService,
+      ...(sequencePersistenceService && { sequencePersistenceService }),
+      ...(sequenceStatisticsService && { sequenceStatisticsService }),
+      ...(sequenceTransformationService && { sequenceTransformationService }),
+      ...(sequenceValidationService && { sequenceValidationService }),
+    });
+
+  const constructorFallbackState = createTabFallbackState();
+  const assemblerFallbackState = createTabFallbackState();
+  const generatorFallbackState = createTabFallbackState();
 
   // Create hand path coordinator
   const handPathCoordinator = createHandPathCoordinator();
@@ -64,18 +81,21 @@ export function createCreateModuleState(
   /**
    * Get the sequence state for a specific tab
    * Used by persistence controller to save/restore the correct tab's state
+   *
+   * IMPORTANT: Each tab falls back to its own isolated state, NOT the shared state.
+   * This prevents cross-tab data pollution where one tab's sequence appears in another tab.
    */
   function getSequenceStateForTab(tab: BuildModeId): SequenceState {
     switch (tab) {
       case "constructor": {
         const ctor = _constructorTabState as { sequenceState?: SequenceState } | null;
-        return ctor?.sequenceState || sequenceState;
+        return ctor?.sequenceState || constructorFallbackState;
       }
       case "assembler": {
-        return _assemblerTabState?.sequenceState || sequenceState;
+        return _assemblerTabState?.sequenceState || assemblerFallbackState;
       }
       case "generator": {
-        return _generatorTabState?.sequenceState || sequenceState;
+        return _generatorTabState?.sequenceState || generatorFallbackState;
       }
       default:
         return sequenceState;

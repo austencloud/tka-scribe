@@ -52,6 +52,13 @@ export interface SequenceStateServices {
   sequenceTransformationService?: ISequenceTransformationService;
   sequenceValidationService?: ISequenceValidationService;
   reversalDetectionService?: IReversalDetectionService;
+  /**
+   * IMPORTANT: Tab ID for persistence isolation.
+   * Each tab (constructor, assembler, generator) should have its own persisted data.
+   * If not provided, persistence will use navigationState.currentSection which can cause
+   * cross-tab data pollution.
+   */
+  tabId?: BuildModeId;
 }
 
 export function createSequenceState(services: SequenceStateServices) {
@@ -61,6 +68,7 @@ export function createSequenceState(services: SequenceStateServices) {
     sequenceStatisticsService,
     sequenceTransformationService,
     sequenceValidationService,
+    tabId, // Tab ID for persistence isolation
     // reversalDetectionService, // Removed - not used
   } = services;
 
@@ -70,10 +78,11 @@ export function createSequenceState(services: SequenceStateServices) {
   const arrowState = createSequenceArrowState();
   const animationState = createSequenceAnimationState();
 
-  // Create persistence coordinator
+  // Create persistence coordinator with tab ID for isolated persistence
   const persistenceCoordinator = createSequencePersistenceCoordinator(
     sequencePersistenceService ?? null,
-    undefined // Reversal detection service removed
+    undefined, // Reversal detection service removed
+    tabId // Pass tab ID for persistence isolation
   );
 
   // 🚀 PERFORMANCE: Debounced auto-save to prevent excessive persistence operations

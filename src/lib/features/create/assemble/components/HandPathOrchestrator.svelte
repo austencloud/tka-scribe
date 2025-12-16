@@ -36,25 +36,75 @@ Integrates all Assembly components and manages state transitions.
 
   const {
     initialGridMode = GridMode.DIAMOND,
+    hasExistingSequence = false,
+    existingStartPositionBeat = null,
+    existingBeats = [],
     onSequenceComplete,
     onSequenceUpdate,
     onHeaderTextChange,
     onStartPositionSet,
   } = $props<{
     initialGridMode?: GridMode;
+    hasExistingSequence?: boolean;
+    existingStartPositionBeat?: PictographData | null;
+    existingBeats?: PictographData[];
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
     onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
+  // Extract GridLocation from a pictograph's blue motion
+  function extractBlueLocation(pictograph: PictographData | null | undefined, useEnd: boolean = false): GridLocation | null {
+    if (!pictograph) return null;
+
+    const blueMotion = pictograph.motions?.[MotionColor.BLUE];
+    if (!blueMotion) return null;
+
+    const location = useEnd ? blueMotion.endLocation : blueMotion.startLocation;
+    return location as GridLocation | null;
+  }
+
+  // Reconstruct the full blue hand path from existing sequence data
+  // The path is: startPosition + endLocations from each beat
+  function reconstructBlueHandPath(): GridLocation[] {
+    const path: GridLocation[] = [];
+
+    // Get start position from startingPositionBeat
+    const startLoc = extractBlueLocation(existingStartPositionBeat, false);
+    if (startLoc) {
+      path.push(startLoc);
+    }
+
+    // Get subsequent positions from beats (each beat's endLocation)
+    if (existingBeats && existingBeats.length > 0) {
+      for (const beat of existingBeats) {
+        const endLoc = extractBlueLocation(beat, true);
+        if (endLoc) {
+          path.push(endLoc);
+        }
+      }
+    }
+
+    return path;
+  }
+
+  // Get initial blue hand path from existing data
+  const initialBlueHandPath = hasExistingSequence ? reconstructBlueHandPath() : [];
+
   // Local state for welcome screen
-  let hasStarted = $state(false);
+  // If there's existing sequence data, skip the welcome screen
+  let hasStarted = $state(hasExistingSequence);
   let localGridMode = $state<GridMode>(initialGridMode);
 
-  // Create state manager (recreated when grid mode changes)
+  // Create state manager with restored state if available
   // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
-  let assemblyState: HandPathAssembleState = $state(createHandPathAssembleState({ gridMode: initialGridMode }));
+  let assemblyState: HandPathAssembleState = $state(
+    createHandPathAssembleState({
+      gridMode: initialGridMode,
+      initialBlueHandPath: initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
+    })
+  );
 
   // Derived values for UI
   const showWelcome = $derived(!hasStarted);

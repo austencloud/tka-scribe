@@ -31,7 +31,14 @@ export interface SequencePersistenceStateData {
 
 export function createSequencePersistenceCoordinator(
   persistenceService: ISequencePersistenceService | null,
-  applyReversalDetection?: (sequence: SequenceData) => SequenceData
+  applyReversalDetection?: (sequence: SequenceData) => SequenceData,
+  /**
+   * IMPORTANT: Tab ID for persistence isolation.
+   * If provided, this coordinator will ONLY load/save data for this specific tab,
+   * ignoring navigationState.currentSection. This prevents cross-tab data pollution
+   * where one tab's sequence appears in another tab's beat grid.
+   */
+  tabId?: ActiveCreateModule
 ) {
   const state = $state<SequencePersistenceStateData>({
     isInitialized: false,
@@ -39,7 +46,8 @@ export function createSequencePersistenceCoordinator(
   });
 
   // 🚀 PERFORMANCE: Cache the active tab to avoid unnecessary load operations
-  let cachedActiveTab: ActiveCreateModule = "constructor";
+  // If tabId is provided, use it as the fixed tab; otherwise start with "constructor"
+  let cachedActiveTab: ActiveCreateModule = tabId ?? "constructor";
 
   return {
     // Getters
@@ -56,7 +64,10 @@ export function createSequencePersistenceCoordinator(
 
       try {
         await persistenceService.initialize();
-        const savedState = await persistenceService.loadCurrentState();
+        // IMPORTANT: Use tabId if provided to load only this tab's data
+        // This prevents cross-tab data pollution where Generator's sequence
+        // appears in Assembler's beat grid
+        const savedState = await persistenceService.loadCurrentState(tabId);
 
         if (
           savedState?.currentSequence &&
@@ -68,7 +79,10 @@ export function createSequencePersistenceCoordinator(
         }
 
         // Cache the active tab for future saves
-        if (savedState?.activeBuildSection) {
+        // If tabId is set, always use it; otherwise use saved state's tab
+        if (tabId) {
+          cachedActiveTab = tabId;
+        } else if (savedState?.activeBuildSection) {
           cachedActiveTab = savedState.activeBuildSection;
         }
 

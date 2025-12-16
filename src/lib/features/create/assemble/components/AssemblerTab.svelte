@@ -15,12 +15,18 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     onHeaderTextChange,
     onStartPositionSet,
     initialGridMode,
+    hasExistingSequence = false,
+    existingStartPositionBeat = null,
+    existingBeats = [],
   } = $props<{
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
     onStartPositionSet?: (startPosition: PictographData) => void;
     initialGridMode?: GridMode;
+    hasExistingSequence?: boolean;
+    existingStartPositionBeat?: PictographData | null;
+    existingBeats?: PictographData[];
   }>();
 
   // Handle sequence updates (during building)
@@ -42,6 +48,9 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 <div class="assembler-tab">
   <HandPathOrchestrator
     {initialGridMode}
+    {hasExistingSequence}
+    {existingStartPositionBeat}
+    {existingBeats}
     onSequenceUpdate={handleSequenceUpdate}
     onSequenceComplete={handleSequenceComplete}
     onStartPositionSet={handleStartPositionSet}

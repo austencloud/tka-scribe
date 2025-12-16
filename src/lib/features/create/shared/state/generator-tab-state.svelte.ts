@@ -50,6 +50,7 @@ export function createGeneratorTabState(
   let isInitialized = $state(false);
 
   // Generator tab has its own independent sequence state
+  // IMPORTANT: Pass tabId="generator" to ensure persistence loads/saves only generator's data
   const sequenceState: SequenceState | null = sequenceService
     ? createSequenceState({
         sequenceService,
@@ -57,6 +58,7 @@ export function createGeneratorTabState(
         ...(sequenceStatisticsService && { sequenceStatisticsService }),
         ...(sequenceTransformationService && { sequenceTransformationService }),
         ...(sequenceValidationService && { sequenceValidationService }),
+        tabId: "generator", // Persistence isolation - only load/save generator's data
       })
     : null;
 

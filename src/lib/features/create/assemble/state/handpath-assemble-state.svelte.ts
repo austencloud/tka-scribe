@@ -27,6 +27,11 @@ export interface HandPathAssembleConfig {
   gridMode: GridMode;
   startingPosition?: GridLocation; // Optional: first tap sets this
   // Note: PropType is always HAND in hand path assembly mode
+
+  // Optional: Initialize with existing path data (for restoring state after tab switch)
+  initialBlueHandPath?: GridLocation[];
+  initialRedHandPath?: GridLocation[];
+  initialPhase?: HandPathPhase;
 }
 
 /**
@@ -37,11 +42,16 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
   const converter = new HandPathSequenceConverter();
   const calculator = new HandPathMotionCalculator();
 
-  // Reactive state
-  let currentPhase = $state<HandPathPhase>("blue");
-  let currentPosition = $state<GridLocation | null>(null);
-  let blueHandPath = $state<GridLocation[]>([]);
-  let redHandPath = $state<GridLocation[]>([]);
+  // Reactive state - initialize from config if restoring from existing data
+  let currentPhase = $state<HandPathPhase>(config.initialPhase ?? "blue");
+  let blueHandPath = $state<GridLocation[]>(config.initialBlueHandPath ?? []);
+  let redHandPath = $state<GridLocation[]>(config.initialRedHandPath ?? []);
+  let currentPosition = $state<GridLocation | null>(
+    // Set current position to last position in the active path
+    config.initialPhase === "red"
+      ? (config.initialRedHandPath?.[config.initialRedHandPath.length - 1] ?? null)
+      : (config.initialBlueHandPath?.[config.initialBlueHandPath.length - 1] ?? null)
+  );
   let selectedRotation = $state<RotationDirection | null>(null);
   let gridMode = $state<GridMode>(config.gridMode);
   // PropType is always HAND in hand path assembly mode (forced in converter)

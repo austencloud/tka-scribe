@@ -50,6 +50,7 @@ export function createAssemblerTabState(
   let isInitialized = $state(false);
 
   // Assembler tab has its own independent sequence state
+  // IMPORTANT: Pass tabId="assembler" to ensure persistence loads/saves only assembler's data
   const sequenceState: SequenceState | null = sequenceService
     ? createSequenceState({
         sequenceService,
@@ -57,6 +58,7 @@ export function createAssemblerTabState(
         ...(sequenceStatisticsService && { sequenceStatisticsService }),
         ...(sequenceTransformationService && { sequenceTransformationService }),
         ...(sequenceValidationService && { sequenceValidationService }),
+        tabId: "assembler", // Persistence isolation - only load/save assembler's data
       })
     : null;
 
