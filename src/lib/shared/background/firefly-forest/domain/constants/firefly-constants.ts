@@ -1,10 +1,10 @@
 import type { QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
 
 export const FIREFLY_COUNTS: Record<QualityLevel, number> = {
-	high: 18,
-	medium: 12,
-	low: 8,
-	minimal: 5,
+	high: 22,    // +20% from 18
+	medium: 14,  // +20% from 12
+	low: 10,     // +20% from 8
+	minimal: 6,  // +20% from 5
 } as const;
 
 export const FIREFLY_PHYSICS = {

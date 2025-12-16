@@ -49,10 +49,10 @@ export function setLearnHeader(header: string) {
 }
 
 // Helper to check if module needs primary navigation
-// Dashboard is the meta/launcher layer - no nav bar needed
-// Modules are the app layer - they have nav bar with Home button to return
+// All modules show nav bar on mobile for module switcher access
 export function moduleHasPrimaryNav(moduleId: string): boolean {
   return (
+    moduleId === "dashboard" || // Community hub - needs nav for module switcher
     moduleId === "create" ||    // Assembler, Constructor, Generator tabs
     moduleId === "discover" ||  // Gallery, Creators tabs
     moduleId === "learn" ||     // Concepts, Play, Codex tabs

@@ -101,12 +101,10 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
     let modifiedSvg = svgContent;
 
-    // Set fill-opacity and stroke-opacity based on grid mode for outer points
-    const fillOpacity = mode === GridMode.BOX ? "0" : "1";
-    const strokeOpacity = mode === GridMode.BOX ? "1" : "0";
-
+    // For outer points, set base attributes but let CSS handle fill-opacity and stroke-opacity
+    // This allows CSS transitions to animate the morphing effect smoothly
     for (const id of outerPointIds) {
-      // Use regex to find each outer point circle and add/update all necessary attributes
+      // Use regex to find each outer point circle and add/update base attributes
       const circlePattern = new RegExp(
         `(<circle[^>]*id="${id}"[^>]*)(/>)`,
         "g"
@@ -115,7 +113,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
       modifiedSvg = modifiedSvg.replace(
         circlePattern,
         (match, opening, closing) => {
-          // Remove any existing style attributes to ensure inline attributes take precedence
+          // Remove any existing style attributes
           let cleaned = opening.replace(/\s*fill-opacity="[^"]*"/g, "");
           cleaned = cleaned.replace(/\s*stroke-opacity="[^"]*"/g, "");
           cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
@@ -123,8 +121,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           cleaned = cleaned.replace(/\s*stroke-width="[^"]*"/g, "");
           cleaned = cleaned.replace(/\s*stroke-miterlimit="[^"]*"/g, "");
 
-          // Add all necessary attributes for proper rendering (matching CSS values)
-          return `${cleaned} fill="#000" stroke="#000" stroke-width="13" stroke-miterlimit="10" fill-opacity="${fillOpacity}" stroke-opacity="${strokeOpacity}"${closing}`;
+          // Add base attributes but DON'T set fill-opacity/stroke-opacity - let CSS handle it
+          return `${cleaned} fill="#000" stroke="#000" stroke-width="13" stroke-miterlimit="10"${closing}`;
         }
       );
     }
@@ -185,10 +183,44 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     return modifiedSvg;
   }
 
-  // Increment cumulative rotation by 45° whenever gridMode changes
+  // Track the grid container element for animations
+  let gridContainerElement = $state<SVGGElement | undefined>();
+
+  // Increment cumulative rotation by 45° with smooth animation whenever gridMode changes
   $effect(() => {
     if (gridMode !== previousGridMode) {
-      cumulativeRotation += 45;
+      const previousRotation = cumulativeRotation;
+      const newRotation = cumulativeRotation + 45;
+
+      // Animate rotation smoothly if element is available
+      if (gridContainerElement) {
+        // Use requestAnimationFrame for smooth SVG transform animation
+        const startTime = performance.now();
+        const duration = 300; // ms
+
+        const animate = (currentTime: number) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease-in-out cubic easing
+          const eased = progress < 0.5
+            ? 4 * progress * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+          const currentRotation = previousRotation + (newRotation - previousRotation) * eased;
+          gridContainerElement.setAttribute('transform', `rotate(${currentRotation}, 475, 475)`);
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            // Ensure final value is exact
+            gridContainerElement.setAttribute('transform', `rotate(${newRotation}, 475, 475)`);
+          }
+        };
+
+        requestAnimationFrame(animate);
+      }
+
+      cumulativeRotation = newRotation;
       previousGridMode = gridMode;
     }
   });
@@ -196,6 +228,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
 <!-- Grid Container - Rotates cumulatively by 45° each time -->
 <g
+  bind:this={gridContainerElement}
   class="grid-container"
   class:box-mode={gridMode === GridMode.BOX}
   class:show-non-radial={showNonRadialPoints}

@@ -2,9 +2,6 @@
   <div>
     <p class="eyebrow">Notifications</p>
     <h2>Control how you’re notified</h2>
-    <p class="lede">
-      Set your preferences and review announcements. Everything lives here—no pop-ups, no surprises.
-    </p>
   </div>
 </section>
 

@@ -29,7 +29,6 @@
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
   let activeSnapPoint = $state<number | null>(null);
   let hasShownSuccessToast = $state(false);
-  let closeTimeout: ReturnType<typeof setTimeout> | null = null;
 
   const isBottomSheet = $derived(
     responsiveSettings?.navigationLayout === "bottom"
@@ -39,13 +38,6 @@
 
   function handleClose() {
     debug.log("handleClose called, current isOpen:", quickFeedbackState.isOpen);
-
-    // Clear any pending close timeout
-    if (closeTimeout) {
-      clearTimeout(closeTimeout);
-      closeTimeout = null;
-    }
-
     quickFeedbackState.close();
     debug.log("After close(), isOpen:", quickFeedbackState.isOpen);
     // Reset the toast flag when panel closes
@@ -83,16 +75,12 @@
       // Mark as shown to prevent infinite loop
       hasShownSuccessToast = true;
 
-      // Show success toast immediately
+      // Close panel immediately and show toast simultaneously
+      handleClose();
       toast.success("Feedback submitted! Thank you for helping improve TKA Scribe.", 3000);
 
-      // Close panel and reset after brief delay (300ms)
-      // Store timeout in component variable instead of returning cleanup
-      closeTimeout = setTimeout(() => {
-        handleClose();
-        // Reset the shared state after successful submission
-        resetSharedFeedbackSubmitState();
-      }, 300);
+      // Reset the shared state after panel is closed
+      resetSharedFeedbackSubmitState();
     }
   });
 </script>

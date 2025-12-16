@@ -49,9 +49,61 @@ If another agent runs `/fb` at the same time, they'll get a different item - no 
 
 ---
 
-## Model Triage System (Token Optimization)
+## CRITICAL FIRST STEP: Display feedback verbatim before ANY analysis
 
-After claiming feedback, **assess complexity** before implementation to route to the most cost-effective model.
+When running `/fb`, you MUST start your response with the raw feedback details in this exact format:
+
+```
+## Claimed Feedback: [Title or "Untitled"]
+
+**ID:** [document-id]
+**Type:** [bug/feature/enhancement]
+**Priority:** [low/medium/high]
+**User:** [username]
+**Created:** [timestamp]
+**Module/Tab:** [module] / [tab]
+
+---
+
+**Description:**
+[Full feedback text exactly as provided]
+
+---
+
+**Previous Notes:** [if any]
+
+**Subtasks:** [if any]
+
+---
+```
+
+**Then and only then** proceed with your assessment, interpretation, and recommendations.
+
+---
+
+## Workflow Overview
+
+```
+1. Display feedback verbatim ↓
+2. Assess complexity (TRIVIAL / MEDIUM / COMPLEX) ↓
+3. Route decision:
+   ├─ TRIVIAL → Delegate to Haiku (do NOT implement yourself)
+   ├─ MEDIUM → Delegate to Sonnet (do NOT implement yourself)
+   └─ COMPLEX → Handle as Opus (follow Standard Workflow)
+4. Review delegated results (if applicable)
+5. Move to in-review with admin notes
+6. Offer to mark complete (wait for user confirmation)
+```
+
+**Key principle:** Save tokens by routing work to cheaper models. Opus is for coordination, not CSS tweaks.
+
+---
+
+## Model Triage System (MANDATORY - Do This First!)
+
+After displaying feedback, **immediately assess complexity** to route to the most cost-effective model.
+
+**This is NOT optional.** Every feedback item must go through triage before any work begins.
 
 ### Step 1: Complexity Assessment
 
@@ -107,62 +159,87 @@ Evaluate the feedback against these criteria:
 - "Rethink how X works"
 - "Session-based autosave system"
 
-### Step 2: Route to Appropriate Model
+### Step 2: Announce Your Triage Decision
 
-After assessing complexity:
+**MANDATORY:** After assessing complexity, explicitly state your decision:
 
-#### For TRIVIAL tasks:
 ```
-Use the Task tool with:
+**Complexity Assessment:** [TRIVIAL / MEDIUM / COMPLEX]
+**Model Routing:** [Delegating to Haiku / Delegating to Sonnet / Handling as Opus]
+**Reasoning:** [Brief explanation of why this classification]
+```
+
+**Example:**
+```
+**Complexity Assessment:** TRIVIAL
+**Model Routing:** Delegating to Haiku
+**Reasoning:** Simple CSS overflow fix in a single component. Pattern already exists elsewhere.
+```
+
+### Step 3: Execute Based on Triage
+
+#### For TRIVIAL tasks (DELEGATE to Haiku):
+**DO NOT implement yourself.** Use the Task tool with:
+```
+Task tool parameters:
 - subagent_type: "general-purpose"
 - model: "haiku"
-- prompt: Include ALL context the agent needs:
-  1. Full feedback details (ID, description, module/tab)
-  2. The file(s) to modify (be specific)
-  3. What change to make
+- description: "Fix [short description]"
+- prompt: Include ALL context:
+  1. Full feedback details (ID: [id], Description: [text])
+  2. Exact file(s) to modify with paths
+  3. Specific change to make
   4. How to verify it worked
-  5. Command to mark complete when done
+  5. After completing: "Move to in-review with: node fetch-feedback.js [id] in-review '[admin notes]'"
 ```
 
-#### For MEDIUM tasks:
+#### For MEDIUM tasks (DELEGATE to Sonnet):
+**DO NOT implement yourself.** Use the Task tool with:
 ```
-Use the Task tool with:
+Task tool parameters:
 - subagent_type: "general-purpose"
 - model: "sonnet"
+- description: "Implement [short description]"
 - prompt: Include ALL context:
   1. Full feedback details
-  2. Likely files involved
+  2. Likely files involved (provide starting points)
   3. Expected behavior vs current behavior
-  4. Implementation approach
+  4. Suggested implementation approach
   5. Testing steps
-  6. Command to mark complete when done
+  6. After completing: "Move to in-review with: node fetch-feedback.js [id] in-review '[admin notes]'"
 ```
 
-#### For COMPLEX tasks:
-Handle directly as Opus - no delegation. Follow the standard workflow below.
+#### For COMPLEX tasks (Handle as Opus):
+**DO NOT delegate.** Handle directly following the Standard Workflow below.
 
-### Step 3: Review Delegated Results
+### Step 4: Review Delegated Results (TRIVIAL/MEDIUM only)
 
 When a Haiku/Sonnet agent completes:
-1. Briefly review the changes made
-2. Verify the approach is sound
-3. If good: confirm to user, offer to mark complete
-4. If issues: fix them yourself or re-delegate with corrections
+1. Read their implementation summary
+2. Verify approach is sound (spot-check key changes)
+3. If good: Confirm completion to user, offer to mark complete
+4. If issues: Either fix them yourself or re-delegate with corrections
+
+**DO NOT:**
+- Re-implement trivial changes yourself "just to be sure"
+- Spend more tokens reviewing than the task itself would have cost
+- Delegate upward (don't send Haiku tasks to Sonnet)
 
 ---
 
-## Standard Workflow (for Opus-handled or post-delegation)
+## Standard Workflow (for COMPLEX items handled as Opus)
 
-### After claiming, follow this process
+**Note:** If you reached this section, you already completed Model Triage and determined this is a COMPLEX task requiring Opus.
 
-1. **Immediately assign a short title:**
-   - Read the feedback content and generate a concise title (2-5 words max)
-   - The title should capture the essence at a glance (e.g., "Mobile nav overlap", "Slow gallery load", "Missing undo button")
-   - Update Firebase immediately:
+### Implementation Process
+
+1. **Assign a short title:**
+   - Generate a concise title (2-5 words max)
+   - Should capture the essence at a glance (e.g., "Mobile nav overlap", "Slow gallery load", "Missing undo button")
+   - Update Firebase:
      ```
      node fetch-feedback.js <document-id> title "Your short title"
      ```
-   - Do this BEFORE any other analysis
 
 2. **Assess the feedback honestly:**
    - Is this a good idea? Mediocre? Or is the user confused?
@@ -176,23 +253,17 @@ When a Haiku/Sonnet agent completes:
    - Map vague terms to actual modules/tabs/components
    - Don't blindly trust the "Module/Tab" field - users often submit from a different screen
 
-4. **Assess complexity and decide on model routing** (see Triage System above)
-
-5. **For TRIVIAL/MEDIUM: Delegate to appropriate model**
-   - Spawn Task agent with haiku or sonnet
-   - Provide complete context in the prompt
-   - Wait for results and review
-
-6. **For COMPLEX or after delegation: Get confirmation before implementing**
+4. **Get confirmation before implementing:**
    - State your assessment and interpretation
    - Ask if Austen wants to proceed
+   - For COMPLEX items, don't assume - clarify ambiguities
 
-7. **Implement or investigate** (only after approval for complex items)
+5. **Implement or investigate** (only after approval)
    - For bugs: try to reproduce first, fix if confirmed
    - For features: implement if approved
    - For unclear issues: investigate and report findings
 
-8. **Move to review and add resolution notes:**
+6. **Move to review and add resolution notes:**
    After implementation, move to `in-review` with brief admin notes:
    ```
    node fetch-feedback.js <document-id> in-review "Fixed card height overflow in Kanban board"
@@ -234,7 +305,7 @@ When a Haiku/Sonnet agent completes:
    - Testing steps, reproduction steps → PR descriptions or issue comments
    - Implementation approach → Code comments or architecture docs
 
-9. **CRITICAL: Offer to mark as completed (don't do it automatically):**
+7. **CRITICAL: Offer to mark as completed (don't do it automatically):**
    After moving to `in-review` and adding resolution notes, END your response by offering to mark as completed.
 
    **Examples:**
@@ -245,7 +316,7 @@ When a Haiku/Sonnet agent completes:
    **DO NOT** automatically mark as completed. Wait for user confirmation.
    This gives the user a chance to test first and verify it actually works.
 
-10. **When user confirms the fix works:**
+8. **When user confirms the fix works:**
     Only after the user confirms, mark as completed:
     ```
     node fetch-feedback.js <document-id> completed "Verified working"
@@ -350,3 +421,102 @@ If a feedback item has been "in-progress" for over 2 hours, it's considered stal
 - `in-progress` - Being worked on
 - `in-review` - Done, waiting for tester confirmation
 - `archived` - Closed (use adminNotes to explain: fixed, declined, deferred, etc.)
+
+---
+
+## Real-World Triage Examples
+
+### Example 1: TRIVIAL → Delegate to Haiku
+
+**Feedback:** "The feedback submit button icon should be a paper airplane instead of a send icon"
+
+**Triage Decision:**
+```
+Complexity Assessment: TRIVIAL
+Model Routing: Delegating to Haiku
+Reasoning: Simple icon swap in a single component. No logic changes.
+```
+
+**Action:**
+```typescript
+Task({
+  subagent_type: "general-purpose",
+  model: "haiku",
+  description: "Change submit button icon",
+  prompt: `
+    Feedback ID: abc123
+    Task: Change the feedback submit button icon from send to paper airplane
+
+    File to modify: src/lib/features/feedback/components/submit/FeedbackForm.svelte
+
+    Change: Find the button with the send icon and replace with paper airplane icon
+    (use the icon system already in place - likely FontAwesome or similar)
+
+    After completing, run:
+    node fetch-feedback.js abc123 in-review "Changed submit button icon to paper airplane"
+  `
+})
+```
+
+### Example 2: MEDIUM → Delegate to Sonnet
+
+**Feedback:** "When I close the feedback panel, it should save my draft automatically"
+
+**Triage Decision:**
+```
+Complexity Assessment: MEDIUM
+Model Routing: Delegating to Sonnet
+Reasoning: Clear feature request. Requires state management and persistence logic, but scope is well-defined (1-2 files).
+```
+
+**Action:**
+```typescript
+Task({
+  subagent_type: "general-purpose",
+  model: "sonnet",
+  description: "Add auto-save to feedback",
+  prompt: `
+    Feedback ID: def456
+    Task: Auto-save feedback drafts when panel closes
+
+    Starting point: src/lib/features/feedback/components/submit/FeedbackForm.svelte
+
+    Expected behavior:
+    - When user types feedback and closes panel, content should persist
+    - On next open, pre-populate with saved draft
+    - Clear draft after successful submission
+
+    Implementation approach:
+    - Use localStorage for persistence (key: 'feedback_draft')
+    - Listen for panel close event
+    - Restore draft in onMount if present
+
+    Testing:
+    1. Type feedback text
+    2. Close panel without submitting
+    3. Reopen panel - text should still be there
+    4. Submit feedback - draft should clear
+
+    After completing, run:
+    node fetch-feedback.js def456 in-review "Added auto-save for feedback drafts"
+  `
+})
+```
+
+### Example 3: COMPLEX → Handle as Opus
+
+**Feedback:** "I've been thinking about how users discover new features. We should add a What's New notification system that shows release notes in-app when users log in after an update."
+
+**Triage Decision:**
+```
+Complexity Assessment: COMPLEX
+Model Routing: Handling as Opus
+Reasoning: Ambiguous requirements, multi-module feature (auth, settings, notifications), requires UX decisions (how intrusive? dismissible? persistent?), touches 4+ files, needs architectural planning.
+```
+
+**Action:** Handle directly as Opus. Follow Standard Workflow:
+1. Assign title
+2. Assess honestly (is this feature creep? does it align with product vision?)
+3. Interpret requirements (modal? banner? toast? settings toggle?)
+4. **Get confirmation** from Austen before implementing
+5. Implement after approval

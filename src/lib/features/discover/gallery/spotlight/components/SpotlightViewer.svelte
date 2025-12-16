@@ -218,6 +218,7 @@
     const maxViableColumns = Math.floor((viewportWidth - 32) / MIN_CELL_SIZE) - 1;
 
     // Offer all standard column options that fit the screen
+    if (maxViableColumns >= 2) options.push(2);
     if (maxViableColumns >= 4) options.push(4);
     if (maxViableColumns >= 6) options.push(6);
     if (maxViableColumns >= 8) options.push(8);
@@ -227,6 +228,53 @@
 
   const columnOptions = $derived(
     sequence?.beats ? getColumnOptions(sequence.beats.length, window.innerWidth) : [4, 6, 8]
+  );
+
+  // Calculate optimal column count that maximizes cell size while fitting in viewport
+  // This is used when manualColumnCount is null (Auto mode)
+  const optimalColumnCount = $derived.by(() => {
+    if (!sequence?.beats || !browser) return null;
+
+    const beatCount = sequence.beats.length;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Grid gap and padding (must match BeatGrid.svelte values)
+    const gridGap = 1;
+    const padding = 32; // Account for viewport padding
+
+    // Test each viable column count and find which gives the largest cell size
+    const candidateColumns = [2, 4, 6, 8].filter(cols => cols <= beatCount + 1);
+
+    let bestColumns = 4;
+    let bestCellSize = 0;
+
+    for (const cols of candidateColumns) {
+      const totalColumns = cols + 1; // +1 for start position
+      const rows = Math.ceil(beatCount / cols);
+
+      // Calculate cell size constrained by both width and height
+      const widthGaps = (totalColumns - 1) * gridGap;
+      const heightGaps = (rows - 1) * gridGap;
+
+      const maxCellByWidth = (viewportWidth - padding - widthGaps) / totalColumns;
+      const maxCellByHeight = (viewportHeight - padding - heightGaps) / rows;
+
+      // Cell size is limited by the smaller dimension
+      const cellSize = Math.min(maxCellByWidth, maxCellByHeight);
+
+      if (cellSize > bestCellSize) {
+        bestCellSize = cellSize;
+        bestColumns = cols;
+      }
+    }
+
+    return bestColumns;
+  });
+
+  // Effective column count: user's manual choice, or auto-optimized
+  const effectiveColumnCount = $derived(
+    manualColumnCount !== null ? manualColumnCount : optimalColumnCount
   );
 
   // Detect if current layout is suboptimal (too many columns for screen size)
@@ -311,7 +359,7 @@
           startPosition={sequence.startPosition ?? sequence.startingPositionBeat ?? null}
           isSideBySideLayout={false}
           isSpotlightMode={true}
-          manualColumnCount={manualColumnCount}
+          manualColumnCount={effectiveColumnCount}
         />
       </div>
 
