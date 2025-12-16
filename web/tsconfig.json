@@ -1,0 +1,42 @@
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["reflect-metadata"]
+  },
+  "include": [
+    "global.d.ts",
+    "src/**/*.ts",
+    "src/**/*.svelte",
+    "tests/**/*.ts",
+    "src/lib/modules/browse/domain/models/gallery-sorting-models.ts",
+    "src/lib/modules/browse/domain/models/gallery-sorting-models.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".svelte-kit",
+    ".vercel_build_output",
+    ".vercel",
+    "archive/**/*",
+    "**/*.js"
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "🚀 Modern TKA Desktop App",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/modern/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages",
+        "QT_DEBUG_PLUGINS": "0",
+        "PYQT_DEBUG": "1"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true,
+      "redirectOutput": true,
+      "args": []
+    },
+    {
+      "name": "🔧 Modern TKA (Debug Mode)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/modern/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages",
+        "QT_DEBUG_PLUGINS": "1",
+        "PYQT_DEBUG": "1",
+        "TKA_DEBUG": "1",
+        "TKA_LOG_LEVEL": "DEBUG"
+      },
+      "stopOnEntry": true,
+      "showReturnValue": true,
+      "subProcess": true,
+      "redirectOutput": true,
+      "args": ["--debug"]
+    },
+    {
+      "name": "🏛️ Legacy TKA Desktop App",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/legacy/main.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages",
+        "QT_DEBUG_PLUGINS": "0"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "subProcess": true,
+      "redirectOutput": true
+    },
+    {
+      "name": "🧪 Run Current Python File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true,
+      "args": []
+    },
+    {
+      "name": "🧪 PyTest Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+      },
+      "args": [
+        "${file}",
+        "-v",
+        "--tb=short",
+        "--capture=no"
+      ],
+      "stopOnEntry": false,
+      "showReturnValue": true
+    },
+    {
+      "name": "🧪 PyTest All Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+      },
+      "args": [
+        "tests/",
+        "-v",
+        "--tb=short",
+        "--capture=no",
+        "--maxfail=5"
+      ],
+      "stopOnEntry": false,
+      "showReturnValue": true
+    },
+    {
+      "name": "🐍 Python Interactive Console",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "code",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/../..",
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "PYTHONPATH": "${workspaceFolder}/../..;${workspaceFolder}/../../src;${workspaceFolder}/../../src/desktop/modern/src;${workspaceFolder}/../../launcher;${workspaceFolder}/../../packages"
+      },
+      "stopOnEntry": false,
+      "showReturnValue": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🔄 Compare Modern vs Legacy",
+      "configurations": [
+        "🚀 Modern TKA Desktop App",
+        "🏛️ Legacy TKA Desktop App"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "hidden": false,
+        "group": "comparison",
+        "order": 1
+      }
+    }
+  ]
+}
