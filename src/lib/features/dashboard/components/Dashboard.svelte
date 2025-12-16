@@ -17,18 +17,13 @@
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-  import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 
   // Components
   import DashboardHeader from "./DashboardHeader.svelte";
-  import DashboardGrid from "./DashboardGrid.svelte";
   import DashboardMobileDrawers from "./DashboardMobileDrawers.svelte";
   import DashboardSignInToast from "./DashboardSignInToast.svelte";
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
   import SupportWidget from "./widgets/SupportWidget.svelte";
-  import NotificationCenterWidget from "./widgets/NotificationCenterWidget.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
 
   // Services
@@ -68,23 +63,6 @@
     return "Welcome to TKA Scribe";
   });
 
-  const effectiveModuleCards = $derived.by(() =>
-    navigationState.moduleDefinitions
-      .filter((m) => {
-        // Only show main modules (exclude dashboard and settings)
-        if (!m.isMain || m.id === "dashboard") return false;
-
-        // Filter out modules the user cannot access (respects debugRoleOverride)
-        const canAccess = featureFlagService.canAccessModule(m.id);
-        return canAccess;
-      })
-      .map((m) => ({
-        ...m,
-        gradient: MODULE_GRADIENTS[m.id] || MODULE_GRADIENTS["learn"],
-        isLocked: false,
-      }))
-  );
-
   // Derived
   const isMobile = $derived(
     responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
@@ -116,58 +94,6 @@
     };
   });
 
-  function navigateToModule(
-    moduleId: string,
-    event: MouseEvent,
-    isLocked: boolean = false,
-    moduleLabel: string = ""
-  ) {
-    hapticService?.trigger("selection");
-
-    if (isLocked) {
-      dashboardState.showSignInRequiredToast(moduleLabel);
-      openSettings();
-      return;
-    }
-
-    const card = event.currentTarget as HTMLElement;
-    const doc = document as any;
-
-    if (typeof doc.startViewTransition === "function") {
-      const rect = card.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      document.documentElement.style.setProperty(
-        "--transition-origin-x",
-        `${centerX}px`
-      );
-      document.documentElement.style.setProperty(
-        "--transition-origin-y",
-        `${centerY}px`
-      );
-
-      card.style.transform = "scale(1.05)";
-      card.style.zIndex = "100";
-
-      const transition = doc.startViewTransition(async () => {
-        await handleModuleChange(moduleId as any);
-      });
-
-      transition.finished.finally(() => {
-        document.documentElement.style.removeProperty("--transition-origin-x");
-        document.documentElement.style.removeProperty("--transition-origin-y");
-      });
-    } else {
-      handleModuleChange(moduleId as any);
-    }
-  }
-
-  function navigateToLibrary() {
-    hapticService?.trigger("selection");
-    handleModuleChange("discover", "library");
-  }
-
   async function openSettings() {
     hapticService?.trigger("selection");
     await handleModuleChange("settings" as ModuleId);
@@ -190,13 +116,7 @@
     isVisible={dashboardState.isVisible}
   />
 
-  <DashboardGrid
-    moduleCards={effectiveModuleCards}
-    isVisible={dashboardState.isVisible}
-    onModuleClick={navigateToModule}
-  />
-
-  <!-- SECONDARY CONTENT - Challenge, Support, Notifications -->
+  <!-- SECONDARY CONTENT - Challenge, Support -->
   <div class="secondary-grid" class:mobile={isMobile}>
     <!-- Challenge Card -->
     {#if dashboardState.isVisible}
@@ -254,21 +174,7 @@
       </section>
     {/if}
 
-    <!-- Notification Center Card -->
-    {#if dashboardState.isVisible}
-      <section
-        class="bento-notifications"
-        transition:fly={{
-          y: 12,
-          duration: 200,
-          delay: 375,
-          easing: cubicOut,
-        }}
-      >
-        <NotificationCenterWidget />
-      </section>
-    {/if}
-  </div>
+    </div>
 
   <DashboardMobileDrawers
     challengeDrawerOpen={dashboardState.challengeDrawerOpen}
@@ -417,8 +323,7 @@
      ======================================== */
 
   .bento-challenge,
-  .bento-support,
-  .bento-notifications {
+  .bento-support {
     min-height: auto;
   }
 
