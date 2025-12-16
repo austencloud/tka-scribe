@@ -7,7 +7,7 @@
 
 export const MIGRATION_CONFIG = {
   /** Set to true to start showing migration notices */
-  ENABLED: true,
+  ENABLED: false,
 
   /** Old domain that will be retired */
   OLD_DOMAIN: "tkaflowarts.com",
