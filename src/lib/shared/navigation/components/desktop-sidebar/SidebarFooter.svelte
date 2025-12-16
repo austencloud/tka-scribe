@@ -40,6 +40,15 @@
       <span class="button-label">{isSettingsActive ? "Back" : "Settings"}</span>
     {/if}
   </button>
+
+  <!-- Version Number (below settings) -->
+  <div class="version-badge" class:collapsed={isCollapsed}>
+    {#if isCollapsed}
+      <span class="version-number">v{__APP_VERSION__}</span>
+    {:else}
+      <span class="version-label">Version {__APP_VERSION__}</span>
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -139,6 +148,20 @@
     flex: 1;
     text-align: left;
     font-weight: 500;
+
+    /* Delayed fade-in animation when sidebar expands (Google Calendar-style) */
+    animation: label-fade-in 0.25s ease-out 0.15s both;
+  }
+
+  @keyframes label-fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
   /* ============================================================================
@@ -155,5 +178,39 @@
     .button-icon {
       transition: none !important;
     }
+  }
+
+  /* ============================================================================
+     VERSION BADGE
+     ============================================================================ */
+  .version-badge {
+    display: flex;
+    justify-content: center;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    letter-spacing: 0.3px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .version-badge:hover {
+    opacity: 1;
+  }
+
+  .version-badge.collapsed {
+    padding: 4px 0;
+    font-size: 9px;
+  }
+
+  .version-number,
+  .version-label {
+    white-space: nowrap;
+  }
+
+  .version-label {
+    /* Delayed fade-in animation when sidebar expands (Google Calendar-style) */
+    animation: label-fade-in 0.25s ease-out 0.15s both;
   }
 </style>

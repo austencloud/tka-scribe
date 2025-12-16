@@ -512,6 +512,9 @@
     flex: 1;
     text-align: left;
     font-weight: 500;
+
+    /* Delayed fade-in animation when sidebar expands (Google Calendar-style) */
+    animation: label-fade-in 0.25s ease-out 0.15s both;
   }
 
   .settings-back-button:focus-visible {
@@ -585,6 +588,20 @@
 
   .section-label {
     flex: 1;
+
+    /* Delayed fade-in animation when sidebar expands (Google Calendar-style) */
+    animation: label-fade-in 0.25s ease-out 0.15s both;
+  }
+
+  @keyframes label-fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
   /* Collapsed settings tabs */

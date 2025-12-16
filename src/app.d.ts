@@ -12,6 +12,9 @@ declare global {
     // interface PageData {}
     // interface Platform {}
   }
+
+  /** App version injected from package.json at build time */
+  const __APP_VERSION__: string;
 }
 
 export {};

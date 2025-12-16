@@ -193,6 +193,9 @@ const webpStaticCopyPlugin = () => {
   });
 };
 
+// Read package.json version at build time
+const packageJson = JSON.parse(fs.readFileSync(path.resolve(dirname, 'package.json'), 'utf-8'));
+
 // ============================================================================
 // VITE 6.0 CONFIGURATION (2025 - Optimized for SvelteKit 2)
 // ============================================================================
@@ -203,6 +206,7 @@ export default defineConfig({
   // ============================================================================
   define: {
     __DEFINES__: JSON.stringify({}),
+    __APP_VERSION__: JSON.stringify(packageJson.version),
   },
   plugins: [
     sveltekit({

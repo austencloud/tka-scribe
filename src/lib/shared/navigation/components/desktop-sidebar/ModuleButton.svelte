@@ -310,6 +310,20 @@
     font-weight: 600;
     letter-spacing: -0.01em;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    /* Delayed fade-in animation when sidebar expands (Google Calendar-style) */
+    animation: label-fade-in 0.25s ease-out 0.15s both;
+  }
+
+  @keyframes label-fade-in {
+    from {
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
   .expand-icon {

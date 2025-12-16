@@ -36,6 +36,7 @@
   // Layout components
   import MobileNavigation from "./navigation/components/MobileNavigation.svelte";
   import DesktopNavigationSidebar from "./navigation/components/DesktopNavigationSidebar.svelte";
+  import ModuleSwitcher from "./navigation/components/ModuleSwitcher.svelte";
   // Domain managers
   import ModuleRenderer from "./modules/ModuleRenderer.svelte";
   import PWAInstallationManager from "./pwa/PWAInstallationManager.svelte";
@@ -228,22 +229,8 @@
         currentSection={currentSection()}
         onSectionChange={handleSectionChange}
         onModuleSwitcherTap={() => {
-          // Navigate to Dashboard with "pull out" view transition
-          const doc = document as any;
-          if (typeof doc.startViewTransition === "function") {
-            // Set direction for CSS to use reverse animation
-            document.documentElement.classList.add("back-transition");
-
-            const transition = doc.startViewTransition(async () => {
-              await handleModuleChange("dashboard");
-            });
-
-            transition.finished.finally(() => {
-              document.documentElement.classList.remove("back-transition");
-            });
-          } else {
-            handleModuleChange("dashboard");
-          }
+          // Open module switcher drawer directly
+          window.dispatchEvent(new CustomEvent("module-switcher-toggle"));
         }}
         onLayoutChange={setPrimaryNavLandscape}
         onHeightChange={setPrimaryNavHeight}
@@ -256,6 +243,13 @@
   <!-- Domain Managers -->
   <PWAInstallationManager />
   <SpotlightRouter />
+  <!-- Module Switcher Drawer (opens via custom event) -->
+  <ModuleSwitcher
+    currentModule={currentModule()}
+    currentModuleName={currentModuleName()}
+    modules={moduleDefinitions}
+    onModuleChange={handleModuleChange}
+  />
   <!-- Keyboard Shortcuts -->
   <KeyboardShortcutCoordinator />
   <CommandPalette />

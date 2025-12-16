@@ -61,7 +61,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "compose",
     label: "Compose",
-    icon: '<i class="fas fa-layer-group" style="color: #ec4899;"></i>',
+    icon: '<i class="fas fa-photo-film" style="color: #ec4899;"></i>',
     color: "#ec4899", // Pink - composition/choreography
     description: "Compose sequences into animations",
     isMain: true,
