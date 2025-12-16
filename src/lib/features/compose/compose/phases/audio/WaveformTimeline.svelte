@@ -14,6 +14,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import WaveSurfer from "wavesurfer.js";
+  import WaveformMinimap from "./WaveformMinimap.svelte";
 
   let {
     audioUrl,
@@ -39,6 +40,7 @@
 
   let containerEl: HTMLDivElement;
   let wavesurfer: WaveSurfer | null = null;
+  let resizeObserver: ResizeObserver | null = null;
   let isReady = $state(false);
   let duration = $state(0);
   let internalTime = $state(0);
@@ -49,6 +51,10 @@
   const MAX_ZOOM = 500;
   const DEFAULT_ZOOM = 50;
   let zoomLevel = $state(DEFAULT_ZOOM);
+
+  // Viewport tracking for minimap
+  let viewportStart = $state(0); // Start time of visible region
+  let containerWidth = $state(0); // Width of the waveform container
 
   // Sync external isPlaying prop with wavesurfer
   $effect(() => {
@@ -73,11 +79,41 @@
   });
 
   // Apply zoom level changes
-  $effect(() => {
+  function applyZoom(level: number) {
     if (!wavesurfer || !isReady) return;
-    wavesurfer.zoom(zoomLevel);
-    onZoomChange?.(zoomLevel);
-  });
+
+    // Call zoom method
+    wavesurfer.zoom(level);
+
+    // Update viewport after zoom
+    requestAnimationFrame(() => {
+      updateViewport();
+    });
+
+    onZoomChange?.(level);
+  }
+
+  // Update viewport tracking for minimap
+  function updateViewport() {
+    if (!containerEl || zoomLevel <= 0) return;
+    viewportStart = containerEl.scrollLeft / zoomLevel;
+  }
+
+  // Handle seek from minimap (clicking on the track)
+  function handleMinimapSeek(time: number) {
+    if (!wavesurfer || !isReady || duration <= 0) return;
+    wavesurfer.seekTo(time / duration);
+  }
+
+  // Handle scroll from minimap (dragging the viewport)
+  function handleMinimapScroll(startTime: number) {
+    if (!wavesurfer || !isReady) return;
+
+    // Use wavesurfer's native setScrollTime method (v7 API)
+    // This scrolls the waveform to show the specified time at the left edge
+    wavesurfer.setScrollTime(startTime);
+    viewportStart = startTime;
+  }
 
   onMount(() => {
     if (!containerEl) return;
@@ -95,13 +131,37 @@
       normalize: true,
       backend: "WebAudio",
       minPxPerSec: DEFAULT_ZOOM,
-      fillParent: true,
-      autoScroll: true,
-      autoCenter: true,
+      // Zoom/scroll configuration
+      fillParent: false,      // Allow waveform to expand when zoomed
+      autoScroll: true,       // Auto-scroll to keep cursor visible
+      autoCenter: true,       // Center cursor during playback
+      hideScrollbar: true,    // Hide scrollbar - minimap handles navigation
+    });
+
+    // Log zoom events for debugging
+    wavesurfer.on("zoom", (pxPerSec: number) => {
+      console.log(`🔍 Wavesurfer zoom event: ${pxPerSec}px/s`);
+      updateViewport();
+    });
+
+    // Track scroll position for minimap
+    // Wavesurfer v7 scroll event passes the scroll position
+    wavesurfer.on("scroll", (visibleStartTime: number) => {
+      // In v7, the scroll event passes the visible start time directly
+      viewportStart = visibleStartTime;
     });
 
     // Load audio
     wavesurfer.load(audioUrl);
+
+    // Track container width
+    resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        containerWidth = entry.contentRect.width;
+        updateViewport();
+      }
+    });
+    resizeObserver.observe(containerEl);
 
     // Event handlers
     wavesurfer.on("ready", () => {
@@ -109,6 +169,7 @@
       duration = wavesurfer?.getDuration() ?? 0;
       onDurationChange?.(duration);
       onReady?.();
+      // Wavesurfer's scroll event handles viewport sync - see above
     });
 
     wavesurfer.on("audioprocess", (time: number) => {
@@ -142,6 +203,8 @@
   onDestroy(() => {
     wavesurfer?.destroy();
     wavesurfer = null;
+    resizeObserver?.disconnect();
+    resizeObserver = null;
   });
 
   // Keyboard controls
@@ -178,7 +241,9 @@
 
     e.preventDefault();
     const delta = e.deltaY > 0 ? -10 : 10;
-    zoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel + delta));
+    const newLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoomLevel + delta));
+    zoomLevel = newLevel;
+    applyZoom(newLevel);
   }
 
   // Seek relative to current position
@@ -191,12 +256,15 @@
   // Zoom slider handler
   function handleZoomChange(e: Event) {
     const input = e.target as HTMLInputElement;
-    zoomLevel = parseInt(input.value, 10);
+    const newLevel = parseInt(input.value, 10);
+    zoomLevel = newLevel;
+    applyZoom(newLevel);
   }
 
   // Reset zoom
   function resetZoom() {
     zoomLevel = DEFAULT_ZOOM;
+    applyZoom(DEFAULT_ZOOM);
   }
 
   // Expose methods for parent control
@@ -219,23 +287,40 @@
   }
 
   export function setZoom(level: number) {
-    zoomLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, level));
+    const newLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, level));
+    zoomLevel = newLevel;
+    applyZoom(newLevel);
   }
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div
-  class="waveform-timeline"
-  class:focused={isFocused}
-  onfocus={() => (isFocused = true)}
-  onblur={() => (isFocused = false)}
-  onwheel={handleWheel}
-  tabindex="0"
-  role="application"
-  aria-label="Audio waveform timeline"
->
-  <div class="waveform-container" bind:this={containerEl}></div>
+<div class="waveform-wrapper">
+  <!-- Minimap overview bar -->
+  {#if isReady && duration > 0}
+    <WaveformMinimap
+      {duration}
+      currentTime={internalTime}
+      {viewportStart}
+      {zoomLevel}
+      {containerWidth}
+      onSeek={handleMinimapSeek}
+      onScroll={handleMinimapScroll}
+    />
+  {/if}
+
+  <div
+    class="waveform-timeline"
+    class:focused={isFocused}
+    onfocus={() => (isFocused = true)}
+    onblur={() => (isFocused = false)}
+    onwheel={handleWheel}
+    tabindex="0"
+    role="application"
+    aria-label="Audio waveform timeline"
+  >
+    <!-- Wavesurfer container - wavesurfer handles its own scroll via Shadow DOM -->
+    <div class="waveform-container" bind:this={containerEl}></div>
 
   {#if !isReady}
     <div class="loading-overlay">
@@ -277,7 +362,7 @@
     <div class="zoom-controls">
       <button
         class="control-btn small"
-        onclick={() => (zoomLevel = Math.max(MIN_ZOOM, zoomLevel - 20))}
+        onclick={() => { zoomLevel = Math.max(MIN_ZOOM, zoomLevel - 20); applyZoom(zoomLevel); }}
         disabled={!isReady || zoomLevel <= MIN_ZOOM}
         title="Zoom out"
       >
@@ -295,7 +380,7 @@
       />
       <button
         class="control-btn small"
-        onclick={() => (zoomLevel = Math.min(MAX_ZOOM, zoomLevel + 20))}
+        onclick={() => { zoomLevel = Math.min(MAX_ZOOM, zoomLevel + 20); applyZoom(zoomLevel); }}
         disabled={!isReady || zoomLevel >= MAX_ZOOM}
         title="Zoom in"
       >
@@ -312,14 +397,15 @@
     </div>
   </div>
 
-  <!-- Keyboard hints (shown when focused) -->
-  {#if isFocused && isReady}
-    <div class="keyboard-hints">
-      <span><kbd>Space</kbd> Play/Pause</span>
-      <span><kbd>←</kbd><kbd>→</kbd> Seek ±5s</span>
-      <span><kbd>Ctrl</kbd>+<kbd>Scroll</kbd> Zoom</span>
-    </div>
-  {/if}
+    <!-- Keyboard hints (shown when focused) -->
+    {#if isFocused && isReady}
+      <div class="keyboard-hints">
+        <span><kbd>Space</kbd> Play/Pause</span>
+        <span><kbd>←</kbd><kbd>→</kbd> Seek ±5s</span>
+        <span><kbd>Ctrl</kbd>+<kbd>Scroll</kbd> Zoom</span>
+      </div>
+    {/if}
+  </div>
 </div>
 
 <script context="module" lang="ts">
@@ -331,26 +417,51 @@
 </script>
 
 <style>
+  .waveform-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
   .waveform-timeline {
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
-    overflow: hidden;
     outline: none;
-    border: 1px solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     transition: border-color 0.2s ease;
+    overflow: hidden;
   }
 
   .waveform-timeline.focused {
-    border-color: rgba(139, 92, 246, 0.4);
+    border-color: rgba(139, 92, 246, 0.5);
   }
 
+  /* Waveform container - scrollable but hide scrollbar (minimap handles navigation) */
   .waveform-container {
-    width: 100%;
     min-height: 120px;
     cursor: pointer;
     overflow-x: auto;
+    overflow-y: hidden;
+    /* Hide scrollbar - minimap provides better navigation */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .waveform-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+
+  /* Hide wavesurfer's internal scrollbar via ::part selector */
+  .waveform-container ::part(scroll) {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .waveform-container ::part(scroll)::-webkit-scrollbar {
+    display: none;
   }
 
   .loading-overlay {
@@ -512,4 +623,10 @@
       width: 50px;
     }
   }
+
+  /*
+   * Note: Wavesurfer v7 uses Shadow DOM so scrollbar styling
+   * must be done via ::part() selectors. The scrollbar is internal
+   * to wavesurfer's shadow root.
+   */
 </style>

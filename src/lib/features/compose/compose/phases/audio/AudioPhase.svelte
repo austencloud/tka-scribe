@@ -18,7 +18,8 @@
     audioState,
     onLoadAudio,
     onClearAudio,
-    onSetBpm,
+    onSetDetectedBpm,
+    onSetManualBpm,
     onSetDuration,
     onSetAnalyzing,
     onAddBeatMarker,
@@ -26,11 +27,13 @@
     onAddTempoRegion,
     onRemoveTempoRegion,
     onUpdateTempoRegion,
+    onRestoreFromCache,
   }: {
     audioState: AudioState;
     onLoadAudio: (file: File) => void;
     onClearAudio: () => void;
-    onSetBpm: (bpm: number) => void;
+    onSetDetectedBpm: (bpm: number) => void;
+    onSetManualBpm?: (bpm: number) => void;
     onSetDuration?: (duration: number) => void;
     onSetAnalyzing?: (analyzing: boolean) => void;
     onAddBeatMarker: (marker: BeatMarker) => void;
@@ -38,6 +41,7 @@
     onAddTempoRegion?: (region: TempoRegion) => void;
     onRemoveTempoRegion?: (id: string) => void;
     onUpdateTempoRegion?: (id: string, updates: Partial<TempoRegion>) => void;
+    onRestoreFromCache?: () => Promise<boolean>;
   } = $props();
 
   // Playback state for waveform
@@ -49,10 +53,12 @@
   let fileInput: HTMLInputElement;
   let bpmAnalysisProgress = $state(0);
   let bpmError = $state<string | null>(null);
+  let bpmIsUncertain = $state(false);
+  let analysisAttempted = $state(false);
 
-  // Auto-analyze BPM when audio is loaded
+  // Auto-analyze BPM when audio is loaded (only once)
   $effect(() => {
-    if (audioState.isLoaded && audioState.url && !audioState.detectedBpm && !audioState.isAnalyzing) {
+    if (audioState.isLoaded && audioState.url && !audioState.detectedBpm && !audioState.isAnalyzing && !analysisAttempted) {
       analyzeBpm();
     }
   });
@@ -61,7 +67,9 @@
     if (!audioState.url) return;
 
     bpmError = null;
+    bpmIsUncertain = false;
     bpmAnalysisProgress = 0;
+    analysisAttempted = true;
     onSetAnalyzing?.(true);
 
     try {
@@ -69,16 +77,22 @@
         bpmAnalysisProgress = progress;
       });
 
-      if (result.confidence > 0.5) {
-        onSetBpm(result.bpm);
-        console.log(`🎵 BPM detected: ${result.bpm} (confidence: ${(result.confidence * 100).toFixed(0)}%)`);
+      // Always set the BPM, but track if it's uncertain
+      onSetDetectedBpm(result.bpm);
+      bpmIsUncertain = result.isUncertain ?? result.confidence < 0.5;
+
+      if (bpmIsUncertain) {
+        console.log(`🎵 BPM estimate: ${result.bpm} (low confidence: ${(result.confidence * 100).toFixed(0)}%) - verify manually`);
       } else {
-        bpmError = "Could not detect BPM reliably. Try setting it manually.";
-        console.warn("🎵 BPM detection confidence too low:", result);
+        console.log(`🎵 BPM detected: ${result.bpm} (confidence: ${(result.confidence * 100).toFixed(0)}%)`);
+      }
+
+      if (result.bestSectionStart !== undefined) {
+        console.log(`🎵 Best beat detection at ${result.bestSectionStart}s into the track`);
       }
     } catch (err) {
       console.error("🎵 BPM analysis failed:", err);
-      bpmError = "BPM analysis failed. Try setting it manually.";
+      bpmError = "BPM analysis failed. Set it manually below.";
     } finally {
       onSetAnalyzing?.(false);
       bpmAnalysisProgress = 0;
@@ -92,6 +106,12 @@
   onMount(() => {
     updateDesktopState();
     window.addEventListener("resize", updateDesktopState);
+
+    // Try to restore cached audio on mount (for dev workflow)
+    if (!audioState.isLoaded && onRestoreFromCache) {
+      onRestoreFromCache();
+    }
+
     return () => window.removeEventListener("resize", updateDesktopState);
   });
 
@@ -201,7 +221,7 @@
               <div class="analyzing-container">
                 <span class="analyzing">
                   <i class="fas fa-spinner fa-spin"></i>
-                  Analyzing... {Math.round(bpmAnalysisProgress * 100)}%
+                  Analyzing sections... {Math.round(bpmAnalysisProgress * 100)}%
                 </span>
                 <div class="progress-bar">
                   <div class="progress-fill" style="width: {bpmAnalysisProgress * 100}%"></div>
@@ -213,16 +233,54 @@
                   <i class="fas fa-exclamation-triangle"></i>
                   {bpmError}
                 </span>
-                <button class="retry-btn" onclick={analyzeBpm}>
-                  <i class="fas fa-redo"></i>
-                  Retry
-                </button>
+                <input
+                  type="number"
+                  class="manual-bpm-input"
+                  placeholder="Enter BPM"
+                  min="40"
+                  max="220"
+                  onchange={(e) => {
+                    const val = parseInt((e.target as HTMLInputElement).value);
+                    if (val >= 40 && val <= 220) onSetManualBpm?.(val);
+                  }}
+                />
               </div>
             {:else if audioState.detectedBpm}
-              <span class="detected">{audioState.detectedBpm}</span>
-              <span class="source">(detected)</span>
+              <div class="bpm-display" class:uncertain={bpmIsUncertain}>
+                <input
+                  type="number"
+                  class="bpm-input"
+                  value={audioState.manualBpm ?? audioState.detectedBpm}
+                  min="40"
+                  max="220"
+                  onchange={(e) => {
+                    const val = parseInt((e.target as HTMLInputElement).value);
+                    if (val >= 40 && val <= 220) onSetManualBpm?.(val);
+                  }}
+                />
+                {#if bpmIsUncertain}
+                  <span class="source uncertain">
+                    <i class="fas fa-question-circle"></i>
+                    estimate - verify
+                  </span>
+                {:else if audioState.manualBpm}
+                  <span class="source">(manual)</span>
+                {:else}
+                  <span class="source">(detected)</span>
+                {/if}
+              </div>
             {:else}
-              <span class="not-detected">Not detected</span>
+              <input
+                type="number"
+                class="manual-bpm-input"
+                placeholder="Enter BPM"
+                min="40"
+                max="220"
+                onchange={(e) => {
+                  const val = parseInt((e.target as HTMLInputElement).value);
+                  if (val >= 40 && val <= 220) onSetManualBpm?.(val);
+                }}
+              />
             {/if}
           </div>
 
@@ -400,7 +458,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
   }
 
@@ -483,7 +542,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     font-size: 0.9rem;
   }
@@ -567,5 +627,58 @@
   .retry-btn:hover {
     background: rgba(139, 92, 246, 0.25);
     border-color: rgba(139, 92, 246, 0.4);
+  }
+
+  /* BPM Display with input */
+  .bpm-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .bpm-display.uncertain {
+    padding: 0.25rem 0.5rem;
+    background: rgba(251, 191, 36, 0.1);
+    border-radius: 6px;
+  }
+
+  .bpm-input,
+  .manual-bpm-input {
+    width: 70px;
+    padding: 0.35rem 0.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: rgba(167, 139, 250, 1);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .bpm-input:focus,
+  .manual-bpm-input:focus {
+    outline: none;
+    border-color: rgba(139, 92, 246, 0.5);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .bpm-input::-webkit-inner-spin-button,
+  .bpm-input::-webkit-outer-spin-button,
+  .manual-bpm-input::-webkit-inner-spin-button,
+  .manual-bpm-input::-webkit-outer-spin-button {
+    opacity: 1;
+  }
+
+  .source.uncertain {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: rgba(251, 191, 36, 0.9);
+    font-size: 0.75rem;
+  }
+
+  .source.uncertain i {
+    font-size: 0.85rem;
   }
 </style>

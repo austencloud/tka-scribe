@@ -62,6 +62,12 @@ import {
   isCompositionComplete,
 } from "../domain/types";
 import { createCellsFromTemplate, getTemplateById } from "../domain/templates";
+import {
+  saveAudioToCache,
+  loadAudioFromCache,
+  clearAudioCache,
+  updateAudioCacheMetadata,
+} from "../phases/audio/audio-persistence";
 
 // ============================================================================
 // Storage Keys
@@ -503,7 +509,7 @@ export function createCompositionState() {
   // Audio State Mutations
   // =========================================================================
 
-  function loadAudioFile(file: File) {
+  function loadAudioFile(file: File, skipCache = false) {
     // Revoke previous URL if exists
     if (audioState.url) {
       URL.revokeObjectURL(audioState.url);
@@ -519,6 +525,11 @@ export function createCompositionState() {
       isAnalyzing: false,
     };
     console.log(`🎵 Composition: Audio loaded - ${file.name}`);
+
+    // Save to IndexedDB cache (for persistence across refreshes)
+    if (!skipCache) {
+      saveAudioToCache(file, audioState.duration, audioState.detectedBpm, audioState.manualBpm);
+    }
   }
 
   function setAudioDuration(duration: number) {
@@ -526,6 +537,10 @@ export function createCompositionState() {
       ...audioState,
       duration,
     };
+    // Update cache with new duration
+    if (audioState.isLoaded) {
+      updateAudioCacheMetadata(duration, undefined, undefined);
+    }
   }
 
   function setDetectedBpm(bpm: number) {
@@ -535,6 +550,10 @@ export function createCompositionState() {
       isAnalyzing: false,
     };
     console.log(`🎵 Composition: BPM detected - ${bpm}`);
+    // Update cache with detected BPM
+    if (audioState.isLoaded) {
+      updateAudioCacheMetadata(undefined, bpm, undefined);
+    }
   }
 
   function setManualBpm(bpm: number | null) {
@@ -544,6 +563,10 @@ export function createCompositionState() {
     };
     if (bpm !== null) {
       console.log(`🎵 Composition: Manual BPM set - ${bpm}`);
+    }
+    // Update cache with manual BPM
+    if (audioState.isLoaded) {
+      updateAudioCacheMetadata(undefined, undefined, bpm);
     }
   }
 
@@ -592,7 +615,39 @@ export function createCompositionState() {
       URL.revokeObjectURL(audioState.url);
     }
     audioState = createDefaultAudioState();
+    // Clear the IndexedDB cache
+    clearAudioCache();
     console.log("🎵 Composition: Audio cleared");
+  }
+
+  /**
+   * Restore audio from IndexedDB cache (called on init)
+   */
+  async function restoreAudioFromCache(): Promise<boolean> {
+    try {
+      const cached = await loadAudioFromCache();
+      if (cached) {
+        // Load the file without re-caching it
+        loadAudioFile(cached.file, true);
+
+        // Restore metadata
+        if (cached.duration > 0) {
+          audioState = { ...audioState, duration: cached.duration };
+        }
+        if (cached.detectedBpm !== null) {
+          audioState = { ...audioState, detectedBpm: cached.detectedBpm };
+        }
+        if (cached.manualBpm !== null) {
+          audioState = { ...audioState, manualBpm: cached.manualBpm };
+        }
+
+        console.log("🎵 Composition: Audio restored from cache");
+        return true;
+      }
+    } catch (err) {
+      console.warn("Failed to restore audio from cache:", err);
+    }
+    return false;
   }
 
   // =========================================================================
@@ -778,6 +833,7 @@ export function createCompositionState() {
     updateBeatMarker,
     setBeatMarkers,
     clearAudio,
+    restoreAudioFromCache,
 
     // Tempo region mutations (dynamic BPM)
     addTempoRegion,

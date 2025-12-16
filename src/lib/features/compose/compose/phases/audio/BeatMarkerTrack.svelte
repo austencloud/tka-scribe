@@ -1,8 +1,8 @@
 <!--
   BeatMarkerTrack.svelte
 
-  Overlay component that displays beat markers on the waveform timeline.
-  Shows generated beat positions based on BPM, allows adding/removing markers.
+  Beat marker component showing measure markers on timeline.
+  Shows only downbeats (measure starts) by default for clarity.
 -->
 <script lang="ts">
   import type { BeatMarker } from "../../state/composition-state.svelte";
@@ -24,21 +24,30 @@
     onRemoveMarker?: (id: string) => void;
   } = $props();
 
+  // Toggle to show all beats vs just downbeats
+  let showAllBeats = $state(false);
+
   // Generate beat positions based on BPM
   const generatedBeats = $derived(
     bpm && duration > 0 ? generateBeatTimestamps(bpm, duration) : []
   );
+
+  // Filter to only downbeats (every 4th beat) unless showing all
+  const visibleBeats = $derived(() => {
+    if (showAllBeats) return generatedBeats;
+    return generatedBeats.filter((_, index) => index % 4 === 0);
+  });
 
   // Get position percentage for a timestamp
   function getPositionPercent(time: number): number {
     return duration > 0 ? (time / duration) * 100 : 0;
   }
 
-  // Find current beat index
-  const currentBeatIndex = $derived(() => {
+  // Find current measure index
+  const currentMeasure = $derived(() => {
     if (!bpm || duration <= 0) return -1;
     const beatInterval = 60 / bpm;
-    return Math.floor(currentTime / beatInterval);
+    return Math.floor(currentTime / beatInterval / 4);
   });
 
   // Add a custom marker at current playhead position
@@ -53,90 +62,195 @@
 
     onAddMarker?.(newMarker);
   }
-
-  // Check if a beat has a custom marker
-  function hasCustomMarker(beatTime: number): BeatMarker | undefined {
-    // Find marker within 0.1s tolerance
-    return beatMarkers.find((m) => Math.abs(m.time - beatTime) < 0.1);
-  }
 </script>
 
 <div class="beat-marker-track">
-  <!-- Generated beat markers -->
-  {#if generatedBeats.length > 0}
-    <div class="beats-container">
-      {#each generatedBeats as beatTime, index}
-        {@const position = getPositionPercent(beatTime)}
-        {@const isCurrentBeat = currentBeatIndex() === index}
-        {@const customMarker = hasCustomMarker(beatTime)}
-        <div
-          class="beat-marker"
-          class:current={isCurrentBeat}
-          class:custom={customMarker}
-          class:downbeat={index % 4 === 0}
-          style="left: {position}%"
-          title="Beat {index + 1} at {beatTime.toFixed(2)}s"
-        >
-          {#if index % 4 === 0}
-            <span class="beat-number">{Math.floor(index / 4) + 1}</span>
-          {/if}
-        </div>
-      {/each}
+  <!-- Header with label and controls -->
+  <div class="track-header">
+    <div class="header-left">
+      <i class="fas fa-drum"></i>
+      <span class="track-label">Beat Markers</span>
+      {#if bpm}
+        <span class="bpm-badge">{bpm} BPM</span>
+      {/if}
     </div>
-  {:else}
-    <div class="no-beats">
-      <span>No BPM detected - beat markers unavailable</span>
+    <div class="header-controls">
+      <label class="toggle-label">
+        <input type="checkbox" bind:checked={showAllBeats} />
+        <span>Show all beats</span>
+      </label>
+      <button
+        class="add-marker-btn"
+        onclick={addMarkerAtPlayhead}
+        disabled={duration <= 0}
+        title="Add custom marker at playhead"
+      >
+        <i class="fas fa-flag"></i>
+        Add Marker
+      </button>
     </div>
-  {/if}
-
-  <!-- Custom markers (user-added) -->
-  {#if beatMarkers.length > 0}
-    <div class="custom-markers">
-      {#each beatMarkers as marker}
-        <button
-          class="custom-marker"
-          style="left: {getPositionPercent(marker.time)}%"
-          onclick={() => onRemoveMarker?.(marker.id)}
-          title="Custom marker at {marker.time.toFixed(2)}s - click to remove"
-        >
-          <i class="fas fa-flag"></i>
-        </button>
-      {/each}
-    </div>
-  {/if}
-
-  <!-- Playhead indicator -->
-  <div
-    class="playhead"
-    style="left: {getPositionPercent(currentTime)}%"
-  ></div>
-
-  <!-- Controls -->
-  <div class="track-controls">
-    <button
-      class="add-marker-btn"
-      onclick={addMarkerAtPlayhead}
-      disabled={duration <= 0}
-      title="Add marker at current position"
-    >
-      <i class="fas fa-plus"></i>
-      Add Marker
-    </button>
-    <span class="marker-count">
-      {beatMarkers.length} custom marker{beatMarkers.length !== 1 ? "s" : ""}
-    </span>
   </div>
+
+  <!-- Beat visualization track -->
+  <div class="track-body">
+    {#if generatedBeats.length > 0}
+      <div class="beats-container">
+        {#each visibleBeats() as beatTime, index}
+          {@const position = getPositionPercent(beatTime)}
+          {@const measureNum = showAllBeats ? Math.floor(index / 4) + 1 : index + 1}
+          {@const isCurrentMeasure = currentMeasure() === (showAllBeats ? Math.floor(index / 4) : index)}
+          {@const isDownbeat = !showAllBeats || index % 4 === 0}
+          <div
+            class="beat-marker"
+            class:current={isCurrentMeasure && isDownbeat}
+            class:downbeat={isDownbeat}
+            style="left: {position}%"
+            title="Measure {measureNum} at {beatTime.toFixed(1)}s"
+          >
+            {#if isDownbeat}
+              <span class="measure-number">{measureNum}</span>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <div class="no-beats">
+        <i class="fas fa-music"></i>
+        <span>Set BPM to see beat markers</span>
+      </div>
+    {/if}
+
+    <!-- Custom markers (user-added) -->
+    {#if beatMarkers.length > 0}
+      <div class="custom-markers">
+        {#each beatMarkers as marker}
+          <button
+            class="custom-marker"
+            style="left: {getPositionPercent(marker.time)}%"
+            onclick={() => onRemoveMarker?.(marker.id)}
+            title="Custom marker at {marker.time.toFixed(1)}s - click to remove"
+          >
+            <i class="fas fa-flag"></i>
+          </button>
+        {/each}
+      </div>
+    {/if}
+
+    <!-- Playhead indicator -->
+    <div
+      class="playhead"
+      style="left: {getPositionPercent(currentTime)}%"
+    ></div>
+  </div>
+
+  <!-- Footer info -->
+  {#if beatMarkers.length > 0}
+    <div class="track-footer">
+      <span class="marker-count">
+        <i class="fas fa-flag"></i>
+        {beatMarkers.length} custom marker{beatMarkers.length !== 1 ? "s" : ""}
+      </span>
+    </div>
+  {/if}
 </div>
 
 <style>
   .beat-marker-track {
-    position: relative;
-    width: 100%;
-    height: 48px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
     overflow: hidden;
+  }
+
+  /* Header */
+  .track-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .header-left i {
+    color: rgba(139, 92, 246, 0.7);
+    font-size: 0.85rem;
+  }
+
+  .track-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .bpm-badge {
+    padding: 0.15rem 0.4rem;
+    background: rgba(139, 92, 246, 0.25);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(167, 139, 250, 0.95);
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+  }
+
+  .toggle-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: rgba(139, 92, 246, 0.8);
+    cursor: pointer;
+  }
+
+  .add-marker-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.6rem;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: 5px;
+    color: rgba(251, 191, 36, 0.95);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .add-marker-btn:hover:not(:disabled) {
+    background: rgba(251, 191, 36, 0.25);
+    border-color: rgba(251, 191, 36, 0.5);
+  }
+
+  .add-marker-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Track body - beat visualization */
+  .track-body {
+    position: relative;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.2);
   }
 
   .beats-container {
@@ -148,45 +262,49 @@
   .beat-marker {
     position: absolute;
     top: 0;
-    width: 1px;
+    width: 2px;
     height: 100%;
-    background: rgba(139, 92, 246, 0.3);
+    background: rgba(139, 92, 246, 0.4);
     transition: background 0.1s ease;
   }
 
   .beat-marker.downbeat {
-    width: 2px;
-    background: rgba(139, 92, 246, 0.5);
+    width: 3px;
+    background: rgba(139, 92, 246, 0.6);
   }
 
   .beat-marker.current {
-    background: rgba(167, 139, 250, 0.9);
-    box-shadow: 0 0 4px rgba(167, 139, 250, 0.5);
+    background: rgba(167, 139, 250, 1);
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
   }
 
-  .beat-marker.custom {
-    background: rgba(251, 191, 36, 0.7);
-  }
-
-  .beat-number {
+  .measure-number {
     position: absolute;
-    top: 2px;
-    left: 4px;
-    font-size: 0.65rem;
+    top: 4px;
+    left: 6px;
+    font-size: 0.7rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.7);
     user-select: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   .no-beats {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     height: 100%;
     color: rgba(255, 255, 255, 0.4);
     font-size: 0.8rem;
   }
 
+  .no-beats i {
+    font-size: 1rem;
+    opacity: 0.6;
+  }
+
+  /* Custom markers */
   .custom-markers {
     position: absolute;
     inset: 0;
@@ -197,73 +315,54 @@
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(251, 191, 36, 0.2);
-    border: 1px solid rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.25);
+    border: 1px solid rgba(251, 191, 36, 0.6);
     border-radius: 50%;
-    color: rgba(251, 191, 36, 0.9);
-    font-size: 0.6rem;
+    color: rgba(251, 191, 36, 1);
+    font-size: 0.65rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .custom-marker:hover {
-    background: rgba(251, 191, 36, 0.3);
-    border-color: rgba(251, 191, 36, 0.8);
+    background: rgba(251, 191, 36, 0.4);
+    border-color: rgba(251, 191, 36, 0.9);
     transform: translate(-50%, -50%) scale(1.15);
   }
 
+  /* Playhead */
   .playhead {
     position: absolute;
     top: 0;
     width: 2px;
     height: 100%;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     z-index: 3;
     pointer-events: none;
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
   }
 
-  .track-controls {
-    position: absolute;
-    bottom: 4px;
-    right: 8px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    z-index: 4;
-  }
-
-  .add-marker-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.5rem;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 4px;
-    color: rgba(167, 139, 250, 0.9);
-    font-size: 0.7rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .add-marker-btn:hover:not(:disabled) {
-    background: rgba(139, 92, 246, 0.3);
-    border-color: rgba(139, 92, 246, 0.5);
-  }
-
-  .add-marker-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  /* Footer */
+  .track-footer {
+    padding: 0.35rem 0.75rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .marker-count {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(251, 191, 36, 0.8);
+  }
+
+  .marker-count i {
+    font-size: 0.65rem;
   }
 </style>

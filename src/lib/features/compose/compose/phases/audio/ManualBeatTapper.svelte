@@ -218,29 +218,31 @@
   .manual-beat-tapper {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-    border: 1px solid transparent;
+    overflow: hidden;
     transition: border-color 0.2s ease;
   }
 
   .manual-beat-tapper.active {
-    border-color: rgba(251, 191, 36, 0.3);
+    border-color: rgba(251, 191, 36, 0.4);
   }
 
   .tapper-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .header-left {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .header-left i {
@@ -303,6 +305,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    padding: 0.75rem;
   }
 
   /* Tap area */
@@ -312,8 +315,9 @@
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
-    background: rgba(251, 191, 36, 0.05);
+    background: rgba(251, 191, 36, 0.08);
     border-radius: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.15);
   }
 
   .tap-button {
@@ -522,19 +526,19 @@
 
   /* Inactive message */
   .inactive-message {
-    padding: 0.75rem;
+    padding: 1rem 0.75rem;
     text-align: center;
   }
 
   .inactive-message p {
     margin: 0;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .inactive-message .hint {
     margin-top: 0.25rem;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.45);
   }
 </style>

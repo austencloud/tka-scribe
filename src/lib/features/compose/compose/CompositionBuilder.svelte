@@ -55,7 +55,11 @@
     compState.clearAudio();
   }
 
-  function handleSetBpm(bpm: number) {
+  function handleSetDetectedBpm(bpm: number) {
+    compState.setDetectedBpm(bpm);
+  }
+
+  function handleSetManualBpm(bpm: number) {
     compState.setManualBpm(bpm);
   }
 
@@ -171,7 +175,8 @@
         {audioState}
         onLoadAudio={handleLoadAudio}
         onClearAudio={handleClearAudio}
-        onSetBpm={handleSetBpm}
+        onSetDetectedBpm={handleSetDetectedBpm}
+        onSetManualBpm={handleSetManualBpm}
         onSetDuration={(duration) => compState.setAudioDuration(duration)}
         onSetAnalyzing={(analyzing) => compState.setAnalyzing(analyzing)}
         onAddBeatMarker={handleAddBeatMarker}
@@ -179,6 +184,7 @@
         onAddTempoRegion={handleAddTempoRegion}
         onRemoveTempoRegion={handleRemoveTempoRegion}
         onUpdateTempoRegion={handleUpdateTempoRegion}
+        onRestoreFromCache={() => compState.restoreAudioFromCache()}
       />
     {:else if currentPhase === "export"}
       <!-- Export Phase -->

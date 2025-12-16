@@ -249,16 +249,19 @@
   .tempo-region-track {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
+    overflow: hidden;
   }
 
   .track-header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .track-label {
@@ -267,7 +270,7 @@
     gap: 0.5rem;
     font-size: 0.85rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .track-label i {
@@ -275,12 +278,12 @@
   }
 
   .current-bpm {
-    padding: 0.25rem 0.5rem;
-    background: rgba(139, 92, 246, 0.2);
+    padding: 0.2rem 0.45rem;
+    background: rgba(139, 92, 246, 0.25);
     border-radius: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(167, 139, 250, 1);
+    color: rgba(167, 139, 250, 0.95);
   }
 
   .add-btn {
@@ -288,11 +291,11 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.35rem 0.65rem;
+    padding: 0.3rem 0.6rem;
     background: rgba(139, 92, 246, 0.15);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 6px;
-    color: rgba(167, 139, 250, 0.9);
+    border: 1px solid rgba(139, 92, 246, 0.35);
+    border-radius: 5px;
+    color: rgba(167, 139, 250, 0.95);
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -311,10 +314,8 @@
   /* Track body */
   .track-body {
     position: relative;
-    height: 40px;
+    height: 50px;
     background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
   }
 
   .base-bpm-line {
@@ -425,8 +426,8 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .form-row {
