@@ -135,7 +135,9 @@ h6 {
   /* Border System */
   --glass-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   --glass-border-hover: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-  --min-touch-target: 52px;
+
+  /* Touch Target - WCAG 2.5.5 AAA compliant (48px minimum) */
+  --min-touch-target: 48px;
 
   /* Enhanced Shadow System */
   --shadow-glass:
@@ -145,7 +147,7 @@ h6 {
     0 12px 40px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   --shadow-modal:
-    0 25px 52px rgba(0, 0, 0, 0.25), 0 12px 24px rgba(0, 0, 0, 0.15),
+    0 25px 48px rgba(0, 0, 0, 0.25), 0 12px 24px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
   --shadow-elevated:
     0 20px 40px rgba(0, 0, 0, 0.2), 0 8px 16px rgba(0, 0, 0, 0.12),
@@ -214,14 +216,33 @@ h6 {
   --active-scale: 0.98;         /* Slight press-in feel */
   --active-scale-sm: 0.99;      /* Very subtle press */
 
-  /* Typography */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
+  /* ============================================================================
+     TYPOGRAPHY SCALE - Accessibility-First Design System
+     ============================================================================
+
+     TIER 1: ESSENTIAL TEXT (14px minimum) - Material Design standard
+     Use for: body text, form labels, buttons, links, error messages,
+              any text users MUST read to understand/use the interface
+
+     TIER 2: SUPPLEMENTARY TEXT (12px minimum) - Absolute floor
+     Use for: navigation labels under icons, badges, timestamps,
+              metadata, captions where context is already clear
+
+     NEVER: Go below 12px for any user-visible text
+     ============================================================================ */
+
+  /* Semantic Typography Tokens - USE THESE */
+  --font-size-min: 0.875rem;      /* 14px - minimum for essential/body text */
+  --font-size-compact: 0.75rem;   /* 12px - minimum for supplementary text (nav labels, badges) */
+
+  /* Scale Tokens - For general sizing */
+  --font-size-xs: 0.75rem;        /* 12px - alias for compact, supplementary only */
+  --font-size-sm: 0.875rem;       /* 14px - smallest for body text */
+  --font-size-base: 1rem;         /* 16px - default body text */
+  --font-size-lg: 1.125rem;       /* 18px */
+  --font-size-xl: 1.25rem;        /* 20px */
+  --font-size-2xl: 1.5rem;        /* 24px */
+  --font-size-3xl: 1.875rem;      /* 30px */
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -232,7 +253,7 @@ h6 {
   --spacing-2xl: 3rem;
 
   /* Interactive Element Sizing */
-  --touch-target-min: 52px; /* WCAG 2.5.5 AAA compliant minimum touch target */
+  --touch-target-min: var(--min-touch-target); /* Alias - use --min-touch-target as primary */
   --icon-size-sm: 16px;
   --icon-size-md: 20px;
   --icon-size-lg: 24px;
@@ -461,11 +482,11 @@ h6 {
   /* Close Button Styles */
   --sheet-close-bg: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
   --sheet-close-bg-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.16));
-  --sheet-close-size-default: 52px;
-  --sheet-close-size-small: 52px; /* iOS/Android minimum touch target */
+  --sheet-close-size-default: 48px;
+  --sheet-close-size-small: 48px; /* iOS/Android minimum touch target */
 
   /* Unified Drag Handle Styles */
-  --sheet-handle-width: 52px;
+  --sheet-handle-width: 48px;
   --sheet-handle-height: 5px;
   --sheet-handle-bg: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   --sheet-handle-bg-hover: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 85%, white);
@@ -505,7 +526,7 @@ h6 {
   --space-2026-md: 20px;
   --space-2026-lg: 28px;
   --space-2026-xl: 40px;
-  --space-2026-2xl: 52px;
+  --space-2026-2xl: 48px;
 
   /* Transition Timing - Faster, more direct */
   --duration-2026-instant: 100ms;
@@ -605,11 +626,11 @@ body.star-twinkle::before {
   bottom: 0;
   background:
     radial-gradient(1px 1px at 25px 25px, #ffffff, transparent),
-    radial-gradient(2px 2px at 75px 52px, #ffeb3b, transparent),
+    radial-gradient(2px 2px at 75px 48px, #ffeb3b, transparent),
     radial-gradient(1px 1px at 125px 75px, #ffffff, transparent),
     radial-gradient(1px 1px at 175px 25px, #81c784, transparent),
     radial-gradient(2px 2px at 200px 100px, #ffffff, transparent),
-    radial-gradient(1px 1px at 52px 120px, #ffcdd2, transparent),
+    radial-gradient(1px 1px at 48px 120px, #ffcdd2, transparent),
     radial-gradient(1px 1px at 152px 140px, #ffffff, transparent),
     radial-gradient(2px 2px at 252px 60px, #e1bee7, transparent);
   background-repeat: repeat;
@@ -795,12 +816,12 @@ body.sakura-drift {
 
 /* ========================================
    TOUCH TARGET ACCESSIBILITY
-   Best Practice: 52px minimum (Material Design, iOS guidelines)
-   WCAG 2.1 Level AAA (2.5.5): 52px minimum (exceeded)
+   Best Practice: 48px minimum (Material Design, iOS guidelines)
+   WCAG 2.1 Level AAA (2.5.5): 48px minimum (exceeded)
    ======================================== */
 
 /* Accessible touch target utility
-   Expands clickable/touchable area to 52px minimum
+   Expands clickable/touchable area to 48px minimum
    while preserving visual appearance */
 .accessible-touch-target {
   position: relative;
@@ -812,11 +833,11 @@ body.sakura-drift {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 52px;
-  min-height: 52px;
+  min-width: 48px;
+  min-height: 48px;
   /* Ensure it covers at least the full element */
-  width: max(100%, 52px);
-  height: max(100%, 52px);
+  width: max(100%, 48px);
+  height: max(100%, 48px);
 }
 
 /* ========================================

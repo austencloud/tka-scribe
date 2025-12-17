@@ -78,6 +78,32 @@ See `src/lib/shared/settings/utils/background-theme-calculator.ts` for implement
 
 **Legacy (`--*-current`)**: Still used by 30+ components. Migration ongoing.
 
+### Typography System (Accessibility-First)
+Defined in `src/app.css`. Two-tier minimum font size system:
+
+**Tier 1: Essential Text (14px / 0.875rem minimum)**
+- Use `var(--font-size-min)` or `var(--font-size-sm)`
+- For: body text, form labels, buttons, links, error messages
+- Any text users MUST read to understand/use the interface
+
+**Tier 2: Supplementary Text (12px / 0.75rem minimum)**
+- Use `var(--font-size-compact)` or `var(--font-size-xs)`
+- For: navigation labels under icons, badges, timestamps, metadata
+- Captions where context is already clear from surrounding UI
+
+**Rules:**
+- NEVER go below 12px for any user-visible text
+- Icons can be smaller (10-12px) as they're not text
+- Always use semantic tokens, not raw pixel values
+- Include fallback: `var(--font-size-compact, 12px)`
+
+**Pattern for new components:**
+```css
+.body-text { font-size: var(--font-size-min, 14px); }
+.badge { font-size: var(--font-size-compact, 12px); }
+.nav-label { font-size: var(--font-size-compact, 12px); }
+```
+
 ---
 
 ## Conversation Patterns
