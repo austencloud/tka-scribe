@@ -5,7 +5,11 @@
 	 * Tab switcher with animated underline indicator
 	 */
 
+	import { onMount } from "svelte";
 	import { inboxState, type InboxTab } from "../state/inbox-state.svelte";
+	import { resolve } from "$lib/shared/inversify/di";
+	import { TYPES } from "$lib/shared/inversify/types";
+	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
 	interface Props {
 		class?: string;
@@ -18,15 +22,60 @@
 		{ id: "notifications", label: "Notifications", icon: "fa-bell" }
 	];
 
+	// Haptic feedback service
+	let hapticService: IHapticFeedbackService | undefined;
+
+	onMount(() => {
+		hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	});
+
 	function handleTabClick(tab: InboxTab) {
+		hapticService?.trigger("selection");
 		inboxState.setTab(tab);
+	}
+
+	// Keyboard navigation for tabs (arrow keys)
+	function handleKeydown(event: KeyboardEvent) {
+		const currentIndex = tabs.findIndex((t) => t.id === inboxState.activeTab);
+
+		if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+			event.preventDefault();
+			const nextIndex = (currentIndex + 1) % tabs.length;
+			const nextTab = tabs[nextIndex];
+			if (nextTab) {
+				hapticService?.trigger("selection");
+				inboxState.setTab(nextTab.id);
+			}
+		} else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+			event.preventDefault();
+			const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+			const prevTab = tabs[prevIndex];
+			if (prevTab) {
+				hapticService?.trigger("selection");
+				inboxState.setTab(prevTab.id);
+			}
+		} else if (event.key === "Home") {
+			event.preventDefault();
+			const firstTab = tabs[0];
+			if (firstTab) {
+				hapticService?.trigger("selection");
+				inboxState.setTab(firstTab.id);
+			}
+		} else if (event.key === "End") {
+			event.preventDefault();
+			const lastTab = tabs[tabs.length - 1];
+			if (lastTab) {
+				hapticService?.trigger("selection");
+				inboxState.setTab(lastTab.id);
+			}
+		}
 	}
 
 	// Track active tab index for indicator position
 	const activeIndex = $derived(tabs.findIndex((t) => t.id === inboxState.activeTab));
 </script>
 
-<div class="inbox-tabs {className}" role="tablist" aria-label="Inbox tabs">
+<div class="inbox-tabs {className}" role="tablist" aria-label="Inbox tabs" onkeydown={handleKeydown}>
 	<!-- Sliding indicator -->
 	<div
 		class="tab-indicator"
@@ -89,10 +138,11 @@
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
-		padding: 10px 16px;
+		min-height: var(--min-touch-target);
+		padding: 12px 16px;
 		background: transparent;
 		border: none;
-		border-radius: 8px;
+		border-radius: 10px;
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
 		font-size: 14px;
 		font-weight: 500;
@@ -131,14 +181,14 @@
 
 	/* Badge */
 	.badge {
-		min-width: 18px;
-		height: 18px;
-		padding: 0 5px;
+		min-width: 20px;
+		height: 20px;
+		padding: 0 6px;
 		background: rgba(255, 255, 255, 0.2);
-		border-radius: 9px;
-		font-size: 11px;
+		border-radius: 10px;
+		font-size: 12px;
 		font-weight: 600;
-		line-height: 18px;
+		line-height: 20px;
 		text-align: center;
 		transition: background 0.2s ease;
 	}

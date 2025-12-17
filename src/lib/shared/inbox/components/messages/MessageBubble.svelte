@@ -2,11 +2,12 @@
 	/**
 	 * MessageBubble
 	 *
-	 * Single message bubble with read receipts and animations
+	 * Single message bubble with read receipts, animations, and rich attachments
 	 */
 
 	import type { Message } from "$lib/shared/messaging";
 	import { formatTime } from "../../utils/format";
+	import FeedbackMessageCard from "./FeedbackMessageCard.svelte";
 
 	interface Props {
 		message: Message;
@@ -19,6 +20,11 @@
 
 	// Check if message was edited
 	const wasEdited = $derived(message.editedAt !== undefined);
+
+	// Check for feedback attachment
+	const feedbackAttachment = $derived(
+		message.attachments?.find((a) => a.type === "feedback")
+	);
 
 	// Read receipt status for own messages
 	const readStatus = $derived.by(() => {
@@ -39,13 +45,21 @@
 	class:own={isOwn}
 	class:deleted={message.isDeleted}
 	class:is-new={isNew}
+	class:has-attachment={feedbackAttachment}
 	role="article"
 	aria-label="{isOwn ? 'You' : message.senderName} said: {message.content}"
 >
 	<div class="bubble">
-		<p class="content">{message.content}</p>
+		{#if feedbackAttachment}
+			<FeedbackMessageCard attachment={feedbackAttachment} {isOwn} />
+			{#if message.content && message.content !== "[Feedback submitted]"}
+				<p class="content attachment-content">{message.content}</p>
+			{/if}
+		{:else}
+			<p class="content">{message.content}</p>
+		{/if}
 		<div class="meta">
-			<span class="time">{formatTime(message.createdAt)}</span>
+			<time class="time" datetime={message.createdAt.toISOString()}>{formatTime(message.createdAt)}</time>
 			{#if wasEdited && !message.isDeleted}
 				<span class="edited">(edited)</span>
 			{/if}
@@ -144,11 +158,21 @@
 		color: white;
 	}
 
+	.attachment-content {
+		margin-top: 8px;
+		padding-top: 8px;
+		border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+	}
+
+	.has-attachment .bubble {
+		max-width: 300px;
+	}
+
 	.meta {
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		font-size: 11px;
+		font-size: 12px;
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 	}
 

@@ -1,353 +1,372 @@
 <script lang="ts">
-	/**
-	 * InboxNotificationItem
-	 *
-	 * Single notification row with enhanced accessibility and microinteractions
-	 */
+  /**
+   * InboxNotificationItem
+   *
+   * Single notification row with enhanced accessibility and microinteractions
+   */
 
-	import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
-	import { formatRelativeTimeVerbose } from "../../utils/format";
-	import { goto } from "$app/navigation";
-	import { inboxState } from "../../state/inbox-state.svelte";
-	import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
-	import { setNotificationTargetFeedback } from "$lib/features/feedback/state/notification-action-state.svelte";
+  import { onMount } from "svelte";
+  import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import { formatRelativeTimeVerbose } from "../../utils/format";
+  import { goto } from "$app/navigation";
+  import { inboxState } from "../../state/inbox-state.svelte";
+  import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
+  import { setNotificationTargetFeedback } from "$lib/features/feedback/state/notification-action-state.svelte";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
-	interface Props {
-		notification: UserNotification;
-		onDismiss: () => void;
-		onMarkAsRead: () => void;
-	}
+  interface Props {
+    notification: UserNotification;
+    onDismiss: () => void;
+    onMarkAsRead: () => void;
+  }
 
-	let { notification, onDismiss, onMarkAsRead }: Props = $props();
+  let { notification, onDismiss, onMarkAsRead }: Props = $props();
 
-	// Track dismissing state for animation
-	let isDismissing = $state(false);
+  // Track dismissing state for animation
+  let isDismissing = $state(false);
 
-	// Get icon based on notification type
-	function getIcon(type: UserNotification["type"]): string {
-		switch (type) {
-			case "feedback-resolved":
-				return "fa-check-circle";
-			case "feedback-in-progress":
-				return "fa-clock";
-			case "feedback-needs-info":
-				return "fa-question-circle";
-			case "feedback-response":
-				return "fa-comment";
-			case "sequence-liked":
-				return "fa-heart";
-			case "user-followed":
-				return "fa-user-plus";
-			case "achievement-unlocked":
-				return "fa-trophy";
-			case "message-received":
-				return "fa-envelope";
-			case "admin-new-user-signup":
-				return "fa-user-check";
-			case "system-announcement":
-				return "fa-bullhorn";
-			default:
-				return "fa-bell";
-		}
-	}
+  // Haptic feedback service
+  let hapticService: IHapticFeedbackService | undefined;
 
-	// Get color based on notification type
-	function getColor(type: UserNotification["type"]): string {
-		switch (type) {
-			case "feedback-resolved":
-				return "var(--semantic-success, #22c55e)";
-			case "feedback-in-progress":
-				return "var(--semantic-warning, #f59e0b)";
-			case "feedback-needs-info":
-				return "var(--semantic-info, #3b82f6)";
-			case "sequence-liked":
-				return "#ef4444";
-			case "user-followed":
-				return "var(--theme-accent, #3b82f6)";
-			case "achievement-unlocked":
-				return "#f59e0b";
-			case "message-received":
-				return "#8b5cf6";
-			default:
-				return "var(--theme-text-dim, rgba(255, 255, 255, 0.6))";
-		}
-	}
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
 
-	async function handleClick() {
-		if (!notification.read) {
-			onMarkAsRead();
-		}
+  // Get icon based on notification type
+  function getIcon(type: UserNotification["type"]): string {
+    switch (type) {
+      case "feedback-resolved":
+        return "fa-check-circle";
+      case "feedback-in-progress":
+        return "fa-clock";
+      case "feedback-needs-info":
+        return "fa-question-circle";
+      case "feedback-response":
+        return "fa-comment";
+      case "sequence-liked":
+        return "fa-heart";
+      case "user-followed":
+        return "fa-user-plus";
+      case "achievement-unlocked":
+        return "fa-trophy";
+      case "message-received":
+        return "fa-envelope";
+      case "admin-new-user-signup":
+        return "fa-user-check";
+      case "system-announcement":
+        return "fa-bullhorn";
+      default:
+        return "fa-bell";
+    }
+  }
 
-		// Deep-link to relevant content based on notification type
-		const n = notification as unknown as Record<string, unknown>;
+  // Get color based on notification type
+  function getColor(type: UserNotification["type"]): string {
+    switch (type) {
+      case "feedback-resolved":
+        return "var(--semantic-success, #22c55e)";
+      case "feedback-in-progress":
+        return "var(--semantic-warning, #f59e0b)";
+      case "feedback-needs-info":
+        return "var(--semantic-info, #3b82f6)";
+      case "sequence-liked":
+        return "#ef4444";
+      case "user-followed":
+        return "var(--theme-accent, #3b82f6)";
+      case "achievement-unlocked":
+        return "#f59e0b";
+      case "message-received":
+        return "#8b5cf6";
+      default:
+        return "var(--theme-text-dim, rgba(255, 255, 255, 0.6))";
+    }
+  }
 
-		switch (notification.type) {
-			case "feedback-resolved":
-			case "feedback-in-progress":
-			case "feedback-needs-info":
-			case "feedback-response":
-				// Navigate to My Feedback tab via module change
-				if (n["feedbackId"]) {
-					setNotificationTargetFeedback(n["feedbackId"] as string);
-					inboxState.close();
-					await handleModuleChange("feedback", "my-feedback");
-				}
-				break;
+  async function handleClick() {
+    hapticService?.trigger("selection");
+    if (!notification.read) {
+      onMarkAsRead();
+    }
 
-			case "sequence-liked":
-				// Navigate to the sequence
-				if (n["sequenceId"]) {
-					inboxState.close();
-					goto(`/sequence/${n["sequenceId"]}`);
-				}
-				break;
+    // Deep-link to relevant content based on notification type
+    const n = notification as unknown as Record<string, unknown>;
 
-			case "user-followed":
-				// Navigate to the follower's profile
-				if (n["fromUserId"]) {
-					inboxState.close();
-					goto(`/profile/${n["fromUserId"]}`);
-				}
-				break;
+    switch (notification.type) {
+      case "feedback-resolved":
+      case "feedback-in-progress":
+      case "feedback-needs-info":
+      case "feedback-response":
+        // Navigate to My Feedback tab via module change
+        if (n["feedbackId"]) {
+          setNotificationTargetFeedback(n["feedbackId"] as string);
+          inboxState.close();
+          await handleModuleChange("feedback", "my-feedback");
+        }
+        break;
 
-			case "message-received":
-				// Switch to messages tab and open conversation
-				if (n["conversationId"]) {
-					inboxState.setTab("messages");
-					// The ConversationList will be shown, user can click the conversation
-				}
-				break;
+      case "sequence-liked":
+        // Navigate to the sequence
+        if (n["sequenceId"]) {
+          inboxState.close();
+          goto(`/sequence/${n["sequenceId"]}`);
+        }
+        break;
 
-			case "achievement-unlocked":
-				// Navigate to dashboard (achievements are shown via gamification panel)
-				inboxState.close();
-				await handleModuleChange("dashboard", "overview");
-				break;
+      case "user-followed":
+        // Navigate to the follower's profile
+        if (n["fromUserId"]) {
+          inboxState.close();
+          goto(`/profile/${n["fromUserId"]}`);
+        }
+        break;
 
-			default:
-				// No specific navigation for other types
-				break;
-		}
-	}
+      case "message-received":
+        // Switch to messages tab and open conversation
+        if (n["conversationId"]) {
+          inboxState.setTab("messages");
+          // The ConversationList will be shown, user can click the conversation
+        }
+        break;
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === "Enter" || e.key === " ") {
-			e.preventDefault();
-			handleClick();
-		}
-	}
+      case "achievement-unlocked":
+        // Navigate to dashboard (achievements are shown via gamification panel)
+        inboxState.close();
+        await handleModuleChange("dashboard", "overview");
+        break;
 
-	function handleDismissClick(e: MouseEvent) {
-		e.stopPropagation();
-		// Trigger fade-out animation before dismissing
-		isDismissing = true;
-		setTimeout(() => {
-			onDismiss();
-		}, 200);
-	}
+      default:
+        // No specific navigation for other types
+        break;
+    }
+  }
 
-	function handleDismissKeydown(e: KeyboardEvent) {
-		if (e.key === "Enter" || e.key === " ") {
-			e.preventDefault();
-			e.stopPropagation();
-			isDismissing = true;
-			setTimeout(() => {
-				onDismiss();
-			}, 200);
-		}
-	}
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  }
+
+  function handleDismissClick(e: MouseEvent) {
+    e.stopPropagation();
+    hapticService?.trigger("selection");
+    // Trigger fade-out animation before dismissing
+    isDismissing = true;
+    setTimeout(() => {
+      onDismiss();
+    }, 200);
+  }
+
+  function handleDismissKeydown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      e.stopPropagation();
+      isDismissing = true;
+      setTimeout(() => {
+        onDismiss();
+      }, 200);
+    }
+  }
 </script>
 
 <div
-	class="notification-item"
-	class:unread={!notification.read}
-	class:dismissing={isDismissing}
-	onclick={handleClick}
-	onkeydown={handleKeydown}
-	role="button"
-	tabindex="0"
-	aria-label="{notification.message}{!notification.read ? ' (unread)' : ''}"
+  class="notification-item"
+  class:unread={!notification.read}
+  class:dismissing={isDismissing}
+  onclick={handleClick}
+  onkeydown={handleKeydown}
+  role="button"
+  tabindex="0"
+  aria-label="{notification.message}{!notification.read ? ' (unread)' : ''}"
 >
-	<!-- Unread indicator -->
-	{#if !notification.read}
-		<span class="unread-dot" aria-hidden="true"></span>
-	{/if}
+  <!-- Unread indicator -->
+  {#if !notification.read}
+    <span class="unread-dot" aria-hidden="true"></span>
+  {/if}
 
-	<!-- Icon -->
-	<div class="icon" style="--icon-color: {getColor(notification.type)}">
-		<i class="fas {getIcon(notification.type)}"></i>
-	</div>
+  <!-- Icon -->
+  <div class="icon" style="--icon-color: {getColor(notification.type)}">
+    <i class="fas {getIcon(notification.type)}"></i>
+  </div>
 
-	<!-- Content -->
-	<div class="content">
-		<p class="message">{notification.message}</p>
-		<span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span>
-	</div>
+  <!-- Content -->
+  <div class="content">
+    <p class="message">{notification.message}</p>
+    <span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span
+    >
+  </div>
 
-	<!-- Dismiss button -->
-	<button
-		class="dismiss-btn"
-		onclick={handleDismissClick}
-		onkeydown={handleDismissKeydown}
-		aria-label="Dismiss notification"
-		tabindex="0"
-	>
-		<i class="fas fa-times"></i>
-	</button>
+  <!-- Dismiss button -->
+  <button
+    class="dismiss-btn"
+    onclick={handleDismissClick}
+    onkeydown={handleDismissKeydown}
+    aria-label="Dismiss notification"
+    tabindex="0"
+  >
+    <i class="fas fa-times"></i>
+  </button>
 </div>
 
 <style>
-	.notification-item {
-		position: relative;
-		display: flex;
-		align-items: flex-start;
-		gap: 12px;
-		width: 100%;
-		padding: 12px 16px;
-		background: transparent;
-		border: none;
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
-		text-align: left;
-		cursor: pointer;
-		transition:
-			background 0.2s ease,
-			transform 0.2s ease,
-			opacity 0.2s ease;
-	}
+  .notification-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    min-height: 64px;
+    padding: 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
 
-	.notification-item:hover {
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-	}
+  .notification-item:hover {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+  }
 
-	.notification-item:active {
-		transform: scale(0.995);
-	}
+  .notification-item:active {
+    transform: scale(0.995);
+  }
 
-	.notification-item:focus-visible {
-		outline: none;
-		background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-		box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
-	}
+  .notification-item:focus-visible {
+    outline: none;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    box-shadow: inset 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+  }
 
-	.notification-item.unread {
-		background: color-mix(in srgb, var(--theme-accent) 5%, transparent);
-	}
+  .notification-item.unread {
+    background: color-mix(in srgb, var(--theme-accent) 5%, transparent);
+  }
 
-	/* Dismiss animation */
-	.notification-item.dismissing {
-		opacity: 0;
-		transform: translateX(20px) scale(0.95);
-		pointer-events: none;
-	}
+  /* Dismiss animation */
+  .notification-item.dismissing {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+    pointer-events: none;
+  }
 
-	/* Unread dot indicator */
-	.unread-dot {
-		position: absolute;
-		left: 6px;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 6px;
-		height: 6px;
-		background: var(--theme-accent, #3b82f6);
-		border-radius: 50%;
-		animation: dotPulse 2s ease-in-out infinite;
-	}
+  /* Unread dot indicator */
+  .unread-dot {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--theme-accent, #3b82f6);
+    border-radius: 50%;
+    animation: dotPulse 2s ease-in-out infinite;
+  }
 
-	@keyframes dotPulse {
-		0%,
-		100% {
-			opacity: 1;
-			transform: translateY(-50%) scale(1);
-		}
-		50% {
-			opacity: 0.7;
-			transform: translateY(-50%) scale(1.2);
-		}
-	}
+  @keyframes dotPulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: translateY(-50%) scale(1.2);
+    }
+  }
 
-	/* Icon */
-	.icon {
-		flex-shrink: 0;
-		width: 36px;
-		height: 36px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: color-mix(in srgb, var(--icon-color) 15%, transparent);
-		border-radius: 50%;
-		font-size: 14px;
-		color: var(--icon-color);
-		transition: transform 0.2s ease;
-	}
+  /* Icon */
+  .icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--icon-color) 15%, transparent);
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--icon-color);
+    transition: transform 0.2s ease;
+  }
 
-	.notification-item:hover .icon {
-		transform: scale(1.1);
-	}
+  .notification-item:hover .icon {
+    transform: scale(1.1);
+  }
 
-	/* Content */
-	.content {
-		flex: 1;
-		min-width: 0;
-	}
+  /* Content */
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
 
-	.message {
-		margin: 0 0 4px;
-		font-size: 14px;
-		line-height: 1.4;
-		color: var(--theme-text, #ffffff);
-	}
+  .message {
+    margin: 0 0 4px;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--theme-text, #ffffff);
+  }
 
-	.unread .message {
-		font-weight: 500;
-	}
+  .unread .message {
+    font-weight: 500;
+  }
 
-	.time {
-		font-size: 12px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-	}
+  .time {
+    font-size: var(--font-size-compact, 12px); /* Supplementary timestamp */
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
 
-	/* Dismiss button */
-	.dismiss-btn {
-		flex-shrink: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 28px;
-		height: 28px;
-		padding: 0;
-		background: transparent;
-		border: none;
-		border-radius: 6px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-		cursor: pointer;
-		opacity: 0;
-		transition: all 0.2s ease;
-	}
+  /* Dismiss button */
+  .dismiss-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+  }
 
-	.notification-item:hover .dismiss-btn,
-	.notification-item:focus-within .dismiss-btn {
-		opacity: 1;
-	}
+  .notification-item:hover .dismiss-btn,
+  .notification-item:focus-within .dismiss-btn {
+    opacity: 1;
+  }
 
-	.dismiss-btn:hover {
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-		color: var(--semantic-error, #ef4444);
-	}
+  .dismiss-btn:hover {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: var(--semantic-error, #ef4444);
+  }
 
-	.dismiss-btn:focus-visible {
-		opacity: 1;
-		outline: none;
-		box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
-	}
+  .dismiss-btn:focus-visible {
+    opacity: 1;
+    outline: none;
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+  }
 
-	/* Reduced motion */
-	@media (prefers-reduced-motion: reduce) {
-		.notification-item,
-		.icon,
-		.dismiss-btn,
-		.unread-dot {
-			transition: none !important;
-			animation: none !important;
-		}
-	}
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .notification-item,
+    .icon,
+    .dismiss-btn,
+    .unread-dot {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
 </style>

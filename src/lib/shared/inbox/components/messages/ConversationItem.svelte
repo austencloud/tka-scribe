@@ -5,13 +5,13 @@
 	 * Single conversation row in the list with enhanced visual polish
 	 */
 
+	import { onMount } from "svelte";
 	import type { ConversationPreview } from "$lib/shared/messaging";
-	import {
-		formatRelativeTime,
-		getInitials,
-		truncateText,
-		getAvatarColor
-	} from "../../utils/format";
+	import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
+	import { formatRelativeTime, truncateText } from "../../utils/format";
+	import { resolve } from "$lib/shared/inversify/di";
+	import { TYPES } from "$lib/shared/inversify/types";
+	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
 	interface Props {
 		conversation: ConversationPreview;
@@ -20,16 +20,23 @@
 
 	let { conversation, onclick }: Props = $props();
 
-	// Derive avatar color from participant ID
-	const avatarColor = $derived(
-		getAvatarColor(conversation.otherParticipant.userId || conversation.id)
-	);
+	// Haptic feedback service
+	let hapticService: IHapticFeedbackService | undefined;
+
+	onMount(() => {
+		hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	});
+
+	function handleClick() {
+		hapticService?.trigger("selection");
+		onclick();
+	}
 </script>
 
 <button
 	class="conversation-item"
 	class:unread={conversation.unreadCount > 0}
-	{onclick}
+	onclick={handleClick}
 	aria-label="Conversation with {conversation.otherParticipant.displayName}{conversation.unreadCount > 0 ? `, ${conversation.unreadCount} unread` : ''}"
 >
 	<!-- Unread accent bar -->
@@ -38,12 +45,13 @@
 	{/if}
 
 	<!-- Avatar -->
-	<div class="avatar" style="--avatar-bg: {avatarColor}">
-		{#if conversation.otherParticipant.avatar}
-			<img src={conversation.otherParticipant.avatar} alt="" loading="lazy" />
-		{:else}
-			<span class="initials">{getInitials(conversation.otherParticipant.displayName)}</span>
-		{/if}
+	<div class="avatar-wrapper">
+		<RobustAvatar
+			src={conversation.otherParticipant.avatar}
+			name={conversation.otherParticipant.displayName}
+			alt="Avatar for {conversation.otherParticipant.displayName}"
+			customSize={44}
+		/>
 		{#if conversation.unreadCount > 0}
 			<span class="online-dot" aria-hidden="true"></span>
 		{/if}
@@ -130,36 +138,15 @@
 		}
 	}
 
-	/* Avatar */
-	.avatar {
+	/* Avatar wrapper for positioning online dot */
+	.avatar-wrapper {
 		position: relative;
 		flex-shrink: 0;
-		width: 44px;
-		height: 44px;
-		border-radius: 50%;
-		background: var(--avatar-bg, var(--theme-accent, #3b82f6));
-		overflow: hidden;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 		transition: transform 0.2s ease;
 	}
 
-	.conversation-item:hover .avatar {
+	.conversation-item:hover .avatar-wrapper {
 		transform: scale(1.05);
-	}
-
-	.avatar img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-
-	.avatar .initials {
-		color: white;
-		font-size: 14px;
-		font-weight: 600;
-		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 	}
 
 	.online-dot {
@@ -171,6 +158,7 @@
 		background: var(--theme-accent, #3b82f6);
 		border: 2px solid var(--theme-panel-bg, #1a1a1a);
 		border-radius: 50%;
+		z-index: 1;
 	}
 
 	/* Content */
@@ -233,15 +221,15 @@
 	/* Unread badge */
 	.unread-badge {
 		flex-shrink: 0;
-		min-width: 20px;
-		height: 20px;
+		min-width: 22px;
+		height: 22px;
 		padding: 0 6px;
 		background: var(--theme-accent, #3b82f6);
-		border-radius: 10px;
+		border-radius: 11px;
 		color: white;
-		font-size: 11px;
+		font-size: 12px;
 		font-weight: 600;
-		line-height: 20px;
+		line-height: 22px;
 		text-align: center;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 	}
@@ -249,7 +237,7 @@
 	/* Reduced motion */
 	@media (prefers-reduced-motion: reduce) {
 		.conversation-item,
-		.avatar,
+		.avatar-wrapper,
 		.unread-accent {
 			transition: none !important;
 			animation: none !important;

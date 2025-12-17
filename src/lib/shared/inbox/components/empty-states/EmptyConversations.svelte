@@ -6,7 +6,7 @@
 	 */
 </script>
 
-<div class="empty-state">
+<div class="empty-state" role="status" aria-label="No messages">
 	<div class="illustration">
 		<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<!-- Chat bubbles -->

@@ -31,14 +31,14 @@ class InboxState {
 	// Notification state
 	notifications = $state<UserNotification[]>([]);
 
-	// Derived unread counts from actual data
-	get unreadMessageCount() {
+	// Derived unread counts from actual data - using arrow functions for reactivity
+	unreadMessageCount = $derived.by(() => {
 		return this.conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
-	}
+	});
 
-	get unreadNotificationCount() {
+	unreadNotificationCount = $derived.by(() => {
 		return this.notifications.filter((n) => !n.read).length;
-	}
+	});
 
 	// Loading states
 	isLoadingConversations = $state(false);
@@ -49,14 +49,14 @@ class InboxState {
 	composeRecipientId = $state<string | null>(null);
 	composeRecipientName = $state<string | null>(null);
 
-	// Derived state
-	get totalUnreadCount() {
+	// Derived state - using $derived.by for proper reactivity
+	totalUnreadCount = $derived.by(() => {
 		return this.unreadMessageCount + this.unreadNotificationCount;
-	}
+	});
 
-	get hasUnread() {
+	hasUnread = $derived.by(() => {
 		return this.totalUnreadCount > 0;
-	}
+	});
 
 	// Actions
 	open(tab?: InboxTab) {

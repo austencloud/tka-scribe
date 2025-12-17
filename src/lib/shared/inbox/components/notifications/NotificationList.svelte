@@ -168,13 +168,14 @@
 	.action-btn {
 		display: flex;
 		align-items: center;
-		gap: 6px;
-		padding: 6px 12px;
+		gap: 8px;
+		min-height: var(--min-touch-target);
+		padding: 12px 16px;
 		background: transparent;
 		border: none;
-		border-radius: 6px;
+		border-radius: 12px;
 		color: var(--theme-accent, #3b82f6);
-		font-size: 13px;
+		font-size: 14px;
 		cursor: pointer;
 		transition:
 			background 0.2s ease,
