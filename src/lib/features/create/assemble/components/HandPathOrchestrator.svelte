@@ -151,7 +151,7 @@ Integrates all Assembly components and manages state transitions.
 
   // Update header text when phase changes
   $effect(() => {
-    if (!hasStarted) {
+    if (showStartScreen) {
       onHeaderTextChange?.("Hand Path Builder");
       return;
     }
@@ -174,15 +174,24 @@ Integrates all Assembly components and manages state transitions.
     onHeaderTextChange?.(text);
   });
 
-  // Handle starting from welcome screen
-  function handleStart() {
-    hasStarted = true;
+  // Handle starting from start screen
+  function handleStartNew() {
+    onStartNew?.();
   }
 
-  // Handle grid mode change (from welcome screen)
+  // Handle continuing from draft
+  function handleContinueDraft(draft: CreateTabDraft) {
+    onContinueDraft?.(draft);
+  }
+
+  // Handle deleting draft
+  function handleDeleteDraft(draft: CreateTabDraft) {
+    onDeleteDraft?.(draft);
+  }
+
+  // Handle grid mode change (from start screen)
   function handleGridModeChange(mode: GridMode) {
-    localGridMode = mode;
-    assemblyState = createHandPathAssembleState({ gridMode: mode });
+    onGridModeChange?.(mode);
   }
 
   // Handle position selection on grid
@@ -314,14 +323,29 @@ Integrates all Assembly components and manages state transitions.
 </script>
 
 <div class="handpath-orchestrator">
-  {#if showWelcome}
-    <!-- Welcome Screen -->
-    <div class="welcome-phase" in:fade={{ duration: 300 }}>
-      <AssemblyWelcome
-        gridMode={localGridMode}
-        onStart={handleStart}
+  {#if showStartScreen}
+    <!-- Start Screen -->
+    <div class="start-screen-phase" in:fade={{ duration: 300 }}>
+      <CreationStartScreen
+        title="Hand Path Builder"
+        description="Build sequences by tracing hand paths on the grid"
+        accentColor={ASSEMBLE_ACCENT}
+        howItWorksSteps={howItWorksSteps}
+        draft={currentDraft}
+        onContinueDraft={handleContinueDraft}
+        onDeleteDraft={handleDeleteDraft}
+        gridMode={gridMode}
         onGridModeChange={handleGridModeChange}
-      />
+        onStartNew={handleStartNew}
+        startButtonLabel="Start Building"
+      >
+        {#snippet icon()}
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4m-18 0v10a2 2 0 0 0 2 2h4m-6-12h18m-18 6h18M9 21h10a2 2 0 0 0 2-2v-4m-12 6V9" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.3"/>
+          </svg>
+        {/snippet}
+      </CreationStartScreen>
     </div>
   {:else}
     <!-- Building Phases -->

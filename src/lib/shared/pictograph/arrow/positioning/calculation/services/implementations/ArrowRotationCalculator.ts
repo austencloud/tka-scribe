@@ -144,8 +144,6 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       endOrientation === Orientation.IN ||
       endOrientation === Orientation.OUT;
 
-    // DEBUG: Log orientation and radial determination for each motion
-    console.log(`🔄 [StaticRotation] ${motion.color} motion: startOri="${startOrientation}" (radial=${isStartRadial}), endOri="${endOrientation}" (radial=${isEndRadial}), rotDir="${rotationDirection}", location=${location}`);
 
     // STEP 1: Check for rotation override (uses END orientation to match data organization)
     const overrideRotation = await this.checkRotationOverride(
@@ -156,7 +154,6 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     );
 
     if (overrideRotation !== null) {
-      console.log(`🔄 [StaticRotation] ${motion.color} → OVERRIDE angle: ${overrideRotation} (using endOri-based isRadial=${isEndRadial})`);
       return overrideRotation;
     }
 
@@ -167,7 +164,6 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     );
 
     const finalAngle = rotationMap[location] || 0.0;
-    console.log(`🔄 [StaticRotation] ${motion.color} → NORMAL map (isStartRadial=${isStartRadial}, rotDir=${rotationDirection}) angle: ${finalAngle}`);
     return finalAngle;
   }
 
