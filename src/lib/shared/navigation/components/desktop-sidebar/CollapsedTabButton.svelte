@@ -32,8 +32,8 @@
      COLLAPSED TAB BUTTON - VS CODE STYLE
      ============================================================================ */
   .collapsed-tab-button {
-    width: 52px; /* Slightly smaller to emphasize nesting */
-    height: 52px;
+    width: var(--min-touch-target); /* Slightly smaller to emphasize nesting */
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,7 +62,8 @@
       --theme-card-hover-bg,
       rgba(255, 255, 255, 0.18)
     ); /* More prominent to show active selection */
-    box-shadow: inset 0 0 0 1px var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    box-shadow: inset 0 0 0 1px
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
   }
 
   .collapsed-tab-button.disabled {
@@ -103,7 +104,7 @@
   /* Hover Label - slides in from right */
   .hover-label {
     position: absolute;
-    left: 52px;
+    left: 48px;
     padding: 5px 10px;
     background: var(--theme-panel-bg, rgba(20, 20, 30, 0.95));
     backdrop-filter: blur(10px);

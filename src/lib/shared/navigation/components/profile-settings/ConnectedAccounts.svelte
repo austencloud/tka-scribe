@@ -13,33 +13,32 @@
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import EmailLinkingDrawer from "../../../auth/components/EmailLinkingDrawer.svelte";
+  import {
+    PROVIDERS,
+    type ProviderConfig,
+    type ProviderId,
+  } from "./connectedAccounts.providers";
 
-  // Provider configuration
-  const PROVIDERS = {
-    "google.com": {
-      name: "Google",
-      icon: "fab fa-google",
-      color: "#4285f4",
-      bgColor: "rgba(66, 133, 244, 0.15)",
-      borderColor: "rgba(66, 133, 244, 0.3)",
-    },
-    "facebook.com": {
-      name: "Facebook",
-      icon: "fab fa-facebook-f",
-      color: "#1877f2",
-      bgColor: "rgba(24, 119, 242, 0.15)",
-      borderColor: "rgba(24, 119, 242, 0.3)",
-    },
-    password: {
-      name: "Email",
-      icon: "fas fa-envelope",
-      color: "#8b5cf6",
-      bgColor: "rgba(139, 92, 246, 0.15)",
-      borderColor: "rgba(139, 92, 246, 0.3)",
-    },
-  } as const;
+  interface Props {
+    onProviderSelect?: (
+      providerId: ProviderId,
+      config: ProviderConfig,
+      email: string | null
+    ) => void;
+    onDisconnectRequest?: (providerId: ProviderId) => void;
+  }
 
-  type ProviderId = keyof typeof PROVIDERS;
+  let { onProviderSelect, onDisconnectRequest }: Props = $props();
+
+  // Expose disconnect function for parent to call
+  export function requestDisconnect(providerId: ProviderId) {
+    unlinkProvider(providerId);
+  }
+
+  // Expose canUnlink status
+  export function getCanUnlink() {
+    return linkedProviders.length > 1;
+  }
 
   // Services
   let authService = $state<IAuthService | null>(null);
@@ -52,6 +51,7 @@
 
   // Email linking drawer state
   let showEmailLinkingDrawer = $state(false);
+
 
   onMount(() => {
     authService = resolve<IAuthService>(TYPES.IAuthService);
@@ -167,6 +167,14 @@
     hapticService?.trigger("success");
   }
 
+  // Open provider details (calls parent callback for drawer)
+  function handleProviderTap(providerId: ProviderId) {
+    hapticService?.trigger("selection");
+    const config = PROVIDERS[providerId];
+    const email = getProviderEmail(providerId);
+    onProviderSelect?.(providerId, config, email);
+  }
+
   // Check if email is verified
   const isEmailVerified = $derived(authState.user?.emailVerified ?? false);
 </script>
@@ -200,9 +208,11 @@
           {@const email = getProviderEmail(providerId)}
           {@const isUnlinking = unlinkingProvider === providerId}
           {#if config}
-            <div
+            <button
               class="provider-card linked"
               style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
+              onclick={() => handleProviderTap(providerId as ProviderId)}
+              type="button"
             >
               <div class="provider-icon">
                 <i class={config.icon}></i>
@@ -217,20 +227,23 @@
                 {#if providerId === "password" && !isEmailVerified}
                   <span class="verification-badge pending">
                     <i class="fas fa-clock"></i>
-                    Unverified
+                    <span class="badge-text">Unverified</span>
                   </span>
                 {:else}
                   <span class="connected-badge">
                     <i class="fas fa-check-circle"></i>
-                    Connected
+                    <span class="badge-text">Connected</span>
                   </span>
                 {/if}
               </div>
+              <!-- Desktop: show unlink button inline -->
               {#if canUnlink}
-                <button
-                  class="unlink-btn"
-                  onclick={() => unlinkProvider(providerId as ProviderId)}
-                  disabled={isUnlinking}
+                <span
+                  class="unlink-btn desktop-only"
+                  role="button"
+                  tabindex="-1"
+                  onclick={(e) => { e.stopPropagation(); unlinkProvider(providerId as ProviderId); }}
+                  onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); unlinkProvider(providerId as ProviderId); }}}
                   aria-label="Disconnect {config.name}"
                 >
                   {#if isUnlinking}
@@ -238,9 +251,13 @@
                   {:else}
                     <i class="fas fa-unlink"></i>
                   {/if}
-                </button>
+                </span>
               {/if}
-            </div>
+              <!-- Mobile: show chevron hint -->
+              <span class="mobile-chevron">
+                <i class="fas fa-chevron-right"></i>
+              </span>
+            </button>
           {/if}
         {/each}
       </div>
@@ -334,11 +351,14 @@
   onSuccess={handleEmailLinkingSuccess}
 />
 
+
 <style>
   .connected-accounts {
+    container-type: inline-size;
+    container-name: connected-accounts;
     display: flex;
     flex-direction: column;
-    gap: 2cqh;
+    gap: 16px;
   }
 
   /* Error Banner */
@@ -424,7 +444,19 @@
   }
 
   .provider-card.linked {
-    cursor: default;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+
+  .provider-card.linked:hover {
+    background: color-mix(in srgb, var(--provider-bg) 100%, white 5%);
+    border-color: var(--provider-color);
+  }
+
+  .provider-card.linked:active {
+    transform: scale(0.99);
   }
 
   .provider-card.available {
@@ -531,10 +563,10 @@
     font-size: 12px;
   }
 
-  /* Unlink Button */
+  /* Unlink Button - Desktop only */
   .unlink-btn {
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -547,19 +579,24 @@
     flex-shrink: 0;
   }
 
-  .unlink-btn:hover:not(:disabled) {
+  .unlink-btn:hover {
     background: rgba(239, 68, 68, 0.15);
     border-color: rgba(239, 68, 68, 0.3);
     color: #ef4444;
   }
 
-  .unlink-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   .unlink-btn i {
     font-size: 14px;
+  }
+
+  /* Mobile chevron - shows on mobile to indicate tappable */
+  .mobile-chevron {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: 14px;
+    flex-shrink: 0;
   }
 
   /* Link Icon (for available providers) */
@@ -617,11 +654,11 @@
     font-size: 14px;
   }
 
-  /* Responsive - Compact on smaller containers */
-  @container settings-panel-body (max-width: 400px) {
+  /* Mobile - compact layout, use tap-to-manage pattern */
+  @container connected-accounts (max-width: 400px) {
     .provider-card {
       padding: 12px 14px;
-      gap: 12px;
+      gap: 10px;
     }
 
     .provider-icon {
@@ -633,26 +670,40 @@
       font-size: 16px;
     }
 
-    .connected-badge {
-      padding: 4px 8px;
+    .provider-name {
+      font-size: 14px;
+    }
+
+    .provider-email,
+    .provider-description {
+      font-size: 12px;
+    }
+
+    .connected-badge,
+    .verification-badge {
+      padding: 5px 8px;
       font-size: 11px;
+      gap: 4px;
     }
 
-    /* Visual size compact but touch target maintained */
-    .unlink-btn {
-      width: 36px;
-      height: 36px;
-      position: relative;
+    /* Hide badge text on mobile to prevent overflow */
+    .badge-text {
+      display: none;
     }
 
-    .unlink-btn::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      min-width: 52px;
-      min-height: 52px;
+    /* Hide desktop unlink button on mobile - use drawer instead */
+    .unlink-btn.desktop-only {
+      display: none;
+    }
+
+    /* Show chevron on mobile to indicate tappable */
+    .mobile-chevron {
+      display: flex;
+    }
+
+    /* Hide hint on mobile - drawer explains it */
+    .hint {
+      display: none;
     }
   }
 
@@ -686,6 +737,7 @@
 
   /* Focus States */
   .provider-card.available:focus-visible,
+  .provider-card.linked:focus-visible,
   .unlink-btn:focus-visible,
   .dismiss-btn:focus-visible {
     outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);

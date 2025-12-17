@@ -35,7 +35,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 14px;
     background: transparent;
     border: 1px solid transparent;

@@ -23,6 +23,7 @@ import { TYPES } from "../../inversify/types";
     showSettings = true,
     isUIVisible = true,
     onRevealNav = () => {},
+    isDashboard = false,
   } = $props<{
     sections: Section[];
     currentSection: string;
@@ -34,6 +35,7 @@ import { TYPES } from "../../inversify/types";
     showSettings?: boolean;
     isUIVisible?: boolean;
     onRevealNav?: () => void;
+    isDashboard?: boolean;
   }>();
 
   // Services
@@ -117,5 +119,6 @@ import { TYPES } from "../../inversify/types";
     {isSettingsActive}
     {isUIVisible}
     {onRevealNav}
+    {isDashboard}
   />
 {/if}

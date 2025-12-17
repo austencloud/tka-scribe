@@ -17,6 +17,7 @@
   import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
   import { resolve, TYPES, preloadFeatureModule } from "../../inversify/di";
   import { onMount } from "svelte";
+  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
   let {
     currentModule,
@@ -163,6 +164,24 @@
       hoverTimers.delete(moduleId);
     }
   }
+
+  /**
+   * Get badge count for a module (only inbox has badges)
+   */
+  function getModuleBadgeCount(moduleId: ModuleId): number {
+    if (moduleId === "inbox") {
+      return inboxState.totalUnreadCount;
+    }
+    return 0;
+  }
+
+  /**
+   * Format badge count for display
+   */
+  function formatBadgeCount(count: number): string {
+    if (count > 99) return "99+";
+    return count.toString();
+  }
 </script>
 
 <!-- Main Modules Section - Compact 2-Column Grid -->
@@ -173,11 +192,13 @@
       {@const moduleColor = module.color || extractModuleColor(module.icon)}
       {@const isActive = currentModule === module.id}
       {@const isDisabled = module.disabled ?? false}
+      {@const badgeCount = getModuleBadgeCount(module.id)}
 
       <button
         class="module-cell"
         class:active={isActive}
         class:disabled={isDisabled}
+        class:has-badge={badgeCount > 0}
         onpointerdown={handlePointerDown}
         onpointermove={handlePointerMove}
         onclick={(e) => handleModuleClick(module.id, e, isDisabled)}
@@ -195,6 +216,13 @@
         <div class="cell-content">
           <span class="cell-icon">{@html module.icon}</span>
           <span class="cell-label">{module.label}</span>
+
+          <!-- Unread badge -->
+          {#if badgeCount > 0}
+            <span class="unread-badge" aria-label="{badgeCount} unread">
+              {formatBadgeCount(badgeCount)}
+            </span>
+          {/if}
 
           <!-- Disabled badge or active indicator -->
           {#if isDisabled && module.disabledMessage}
@@ -256,7 +284,7 @@
      ============================================================================ */
 
   .module-section {
-    margin-bottom: 24px; /* More generous section spacing */
+    margin-bottom: 16px; /* Compact section spacing */
     display: flex;
     flex-direction: column;
   }
@@ -286,16 +314,16 @@
   }
 
   /* ============================================================================
-     2-COLUMN GRID LAYOUT - Fills available space
+     2-COLUMN GRID LAYOUT - Compact to fit all modules
      ============================================================================ */
   .module-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 18px; /* More generous spacing for modern aesthetics */
+    gap: 10px; /* Compact spacing to fit more modules */
     flex: 1;
     min-height: 0;
-    align-content: stretch; /* Stretch rows to fill all vertical space */
-    grid-auto-rows: 1fr; /* Make all rows equal height and fill available space */
+    align-content: start; /* Align content to top to allow scrolling */
+    grid-auto-rows: minmax(72px, auto); /* Min row height with auto expansion */
   }
 
   /* Developer grid - single column if only one item */
@@ -314,13 +342,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    /* Fluid height with generous expansion: min 100px, preferred 15vh, max 200px */
-    min-height: clamp(100px, 15vh, 200px);
+    /* Reduced min-height to fit more modules: min 72px, preferred 10vh, max 120px */
+    min-height: clamp(72px, 10vh, 120px);
     height: 100%; /* Fill the grid cell to expand vertically */
     padding: 0;
     background: transparent;
     border: none;
-    border-radius: 16px; /* Slightly larger radius for modern feel */
+    border-radius: 14px;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     cursor: pointer;
     text-align: center;
@@ -366,8 +394,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px; /* More breathing room between icon and label */
-    padding: 20px 12px; /* More generous vertical padding */
+    gap: 6px; /* Compact spacing */
+    padding: 12px 8px; /* Reduced padding for compact design */
     width: 100%;
     height: 100%;
     z-index: 2;
@@ -419,13 +447,13 @@
   }
 
   /* ============================================================================
-     ICON STYLING - Fluid sizing with viewport
+     ICON STYLING - Compact sizing for dense grid
      ============================================================================ */
   .cell-icon {
-    /* Larger icons for more prominent display: min 32px, preferred 4.5vh, max 50px */
-    font-size: clamp(32px, 4.5vh, 50px);
-    width: clamp(50px, 6vh, 52px);
-    height: clamp(50px, 6vh, 52px);
+    /* Compact icons: min 24px, preferred 3.5vh, max 36px */
+    font-size: clamp(24px, 3.5vh, 36px);
+    width: clamp(36px, 5vh, 44px);
+    height: clamp(36px, 5vh, 44px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -450,11 +478,11 @@
   }
 
   /* ============================================================================
-     LABEL STYLING - Fluid sizing with viewport
+     LABEL STYLING - Compact sizing for dense grid
      ============================================================================ */
   .cell-label {
-    /* Slightly larger labels: min 14px, preferred 2vh, max 17px */
-    font-size: clamp(14px, 2vh, 17px);
+    /* Compact labels: min 11px, preferred 1.6vh, max 14px */
+    font-size: clamp(11px, 1.6vh, 14px);
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.88));
     letter-spacing: 0.01em;
@@ -483,6 +511,40 @@
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     letter-spacing: 0.4px;
     z-index: 3;
+  }
+
+  /* ============================================================================
+     UNREAD BADGE (for inbox module)
+     ============================================================================ */
+  .unread-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: var(--semantic-error, #ef4444);
+    border-radius: 9px;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: badgePop 0.3s ease;
+    z-index: 3;
+  }
+
+  @keyframes badgePop {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   /* ============================================================================

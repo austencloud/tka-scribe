@@ -15,6 +15,7 @@
     type = "section", // 'section' | 'special'
     onClick = () => {},
     ariaLabel = "",
+    badgeCount = 0,
   } = $props<{
     icon: string;
     label: string;
@@ -25,7 +26,13 @@
     type?: "section" | "special";
     onClick?: () => void;
     ariaLabel?: string;
+    badgeCount?: number;
   }>();
+
+  function formatBadgeCount(count: number): string {
+    if (count > 99) return "99+";
+    return count.toString();
+  }
 
   // Services
   let hapticService: IHapticFeedbackService | undefined;
@@ -56,15 +63,21 @@
   class="nav-button"
   class:active
   class:disabled
+  class:has-badge={badgeCount > 0}
   class:section={type === "section"}
   class:special={type === "special"}
   onclick={handleClick}
   ontouchend={handleClick}
   {disabled}
-  aria-label={ariaLabel || label}
+  aria-label="{ariaLabel || label}{badgeCount > 0 ? `, ${badgeCount} unread` : ''}"
   style="--section-color: {color}; --section-gradient: {gradient};"
 >
   <span class="nav-icon">{@html icon}</span>
+  {#if badgeCount > 0}
+    <span class="nav-badge" aria-hidden="true">
+      {formatBadgeCount(badgeCount)}
+    </span>
+  {/if}
   <span class="nav-label nav-label-full">{fullLabel}</span>
   <span class="nav-label nav-label-compact">{compactLabel}</span>
 </button>
@@ -224,6 +237,39 @@
     display: none;
   }
 
+  /* Unread badge */
+  .nav-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: var(--semantic-error, #ef4444);
+    border-radius: 8px;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 16px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    animation: badgePop 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes badgePop {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .nav-button:focus-visible {
@@ -249,6 +295,10 @@
 
     .nav-icon {
       transition: none;
+    }
+
+    .nav-badge {
+      animation: none;
     }
   }
 </style>

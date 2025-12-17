@@ -266,12 +266,13 @@
 
   .button {
     width: 100%;
+    max-width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 14px 24px;
-    min-height: 52px;
+    padding: clamp(10px, 3cqi, 14px) clamp(12px, 4cqi, 24px);
+    min-height: var(--min-touch-target);
     border-radius: 10px;
     font-size: 15px;
     font-weight: 600;

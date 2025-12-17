@@ -86,10 +86,21 @@
   > | null = null;
   const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
 
-  // Primary navigation visibility - only hide in Explorer module during scroll
-  const isPrimaryNavVisible = $derived(
-    currentModule() === "discover" ? discoverScrollState.isUIVisible : true
-  );
+  // Primary navigation visibility - hide during:
+  // 1. Explorer module during scroll
+  // 2. Create module tutorial (onboarding selector visible)
+  const isPrimaryNavVisible = $derived(() => {
+    const module = currentModule();
+    // Hide during Create module onboarding tutorial
+    if (module === "create" && navigationState.isCreationMethodSelectorVisible) {
+      return false;
+    }
+    // Hide during Discover module scroll
+    if (module === "discover") {
+      return discoverScrollState.isUIVisible;
+    }
+    return true;
+  });
 
   // Sync state to coordinators
   $effect(() => {
@@ -210,7 +221,7 @@
     <!-- Main Content Area -->
     <main
       class="content-area"
-      class:nav-hidden={!isPrimaryNavVisible}
+      class:nav-hidden={!isPrimaryNavVisible()}
       class:nav-landscape={layoutState.isPrimaryNavLandscape}
     >
       <ModuleRenderer
@@ -234,8 +245,9 @@
         }}
         onLayoutChange={setPrimaryNavLandscape}
         onHeightChange={setPrimaryNavHeight}
-        isUIVisible={isPrimaryNavVisible}
+        isUIVisible={isPrimaryNavVisible()}
         onRevealNav={handleRevealNav}
+        isDashboard={currentModule() === "dashboard"}
       />
     {/if}
   </div>

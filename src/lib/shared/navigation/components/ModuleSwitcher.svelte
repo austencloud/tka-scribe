@@ -260,13 +260,16 @@
 
   .module-name {
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.75)); /* Slightly more prominent */
+    color: var(
+      --theme-text,
+      rgba(255, 255, 255, 0.75)
+    ); /* Slightly more prominent */
   }
 
   /* Close button - accessible touch target (50px minimum) */
   .close-button {
-    width: 52px; /* Increased from 36px for proper touch target */
-    height: 52px; /* Increased from 36px for proper touch target */
+    width: var(--min-touch-target); /* Increased from 36px for proper touch target */
+    height: var(--min-touch-target); /* Increased from 36px for proper touch target */
     border-radius: 12px; /* Slightly larger to match new size */
     background: transparent;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
@@ -308,7 +311,8 @@
 
     /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15))
+      transparent;
   }
 
   .module-switcher-content::-webkit-scrollbar {

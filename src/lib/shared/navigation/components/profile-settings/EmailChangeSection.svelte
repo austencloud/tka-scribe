@@ -275,7 +275,11 @@
 
   .input:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 60%,
+      transparent
+    );
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
@@ -335,7 +339,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(12px, 1.8vh, 16px) clamp(20px, 3vw, 28px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 10px;
     font-size: clamp(14px, 1.9vh, 17px);
     font-weight: 600;
@@ -346,7 +350,7 @@
 
   .email-change-section.compact .button {
     padding: 11px 20px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -354,7 +358,7 @@
 
   .email-change-section.very-compact .button {
     padding: 11px 18px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;
@@ -373,15 +377,25 @@
   }
 
   .button--primary {
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1),
+      var(--theme-accent-strong, #4f46e5)
+    );
     color: white;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #4f46e5), color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #4f46e5),
+      color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black)
+    );
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .button--secondary {
@@ -419,12 +433,14 @@
 
   /* Accessibility - Focus Indicators */
   .input:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    outline: 3px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
   }
 
   .button:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    outline: 3px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
   }
 

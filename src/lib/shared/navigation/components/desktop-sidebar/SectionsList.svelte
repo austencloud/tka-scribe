@@ -1,29 +1,54 @@
 <!-- Sections List Component -->
 <!-- Container for section buttons that can slide in/out -->
 <script lang="ts">
-  import { slide } from "svelte/transition";
+  import { slide, fly, scale } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import type { Section } from "../../domain/types";
   import SectionButton from "./SectionButton.svelte";
 
-  let { sections, currentSection, moduleId, isActive, onSectionClick } =
-    $props<{
-      sections: Section[];
-      currentSection: string;
-      moduleId: string;
-      isActive: boolean;
-      onSectionClick: (moduleId: string, section: Section) => void;
-    }>();
+  let {
+    sections,
+    currentSection,
+    moduleId,
+    isActive,
+    onSectionClick,
+    celebrateAppearance = false,
+  } = $props<{
+    sections: Section[];
+    currentSection: string;
+    moduleId: string;
+    isActive: boolean;
+    onSectionClick: (moduleId: string, section: Section) => void;
+    celebrateAppearance?: boolean;
+  }>();
 </script>
 
-<div class="sections-list" transition:slide={{ duration: 200 }}>
-  {#each sections as section}
+<div
+  class="sections-list"
+  class:celebrate={celebrateAppearance}
+  transition:slide={{ duration: 200 }}
+>
+  {#each sections as section, i}
     {@const isSectionActive = currentSection === section.id && isActive}
 
-    <SectionButton
-      {section}
-      isActive={isSectionActive}
-      onClick={() => onSectionClick(moduleId, section)}
-    />
+    <div
+      class="section-item"
+      class:celebrate={celebrateAppearance}
+      style="--item-index: {i};"
+      in:fly={{
+        x: celebrateAppearance ? -30 : -10,
+        y: celebrateAppearance ? 10 : 0,
+        delay: celebrateAppearance ? 150 + i * 100 : 50 + i * 30,
+        duration: celebrateAppearance ? 400 : 200,
+        easing: cubicOut,
+      }}
+    >
+      <SectionButton
+        {section}
+        isActive={isSectionActive}
+        onClick={() => onSectionClick(moduleId, section)}
+      />
+    </div>
   {/each}
 </div>
 
@@ -34,6 +59,58 @@
   .sections-list {
     margin-top: 6px;
     padding-left: 8px;
+  }
+
+  .section-item {
+    /* Normal appearance */
+  }
+
+  /* Celebrate animation - tabs revealed after tutorial */
+  .section-item.celebrate {
+    animation: sectionCelebrate 0.6s ease-out forwards;
+    animation-delay: calc(0.15s + var(--item-index, 0) * 0.1s);
+  }
+
+  @keyframes sectionCelebrate {
+    0% {
+      opacity: 0;
+      transform: translateX(-20px) scale(0.9);
+    }
+    50% {
+      transform: translateX(4px) scale(1.05);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  /* Glow effect on celebrate */
+  .sections-list.celebrate {
+    position: relative;
+  }
+
+  .sections-list.celebrate::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    background: radial-gradient(
+      ellipse at left center,
+      color-mix(in srgb, var(--module-color, #a855f7) 20%, transparent),
+      transparent 70%
+    );
+    border-radius: 16px;
+    opacity: 0;
+    animation: glowFadeIn 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @keyframes glowFadeIn {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
   }
 
   /* ============================================================================

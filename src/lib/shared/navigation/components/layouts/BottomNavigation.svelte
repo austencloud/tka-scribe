@@ -6,7 +6,6 @@
   import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
   import SettingsButton from "$lib/shared/navigation/components/buttons/SettingsButton.svelte";
   import TabOverflowSelector from "$lib/shared/navigation/components/TabOverflowSelector.svelte";
-  import InboxButton from "$lib/shared/inbox/components/InboxButton.svelte";
   import { shouldHideUIForPanels } from "../../../application/state/animation-visibility-state.svelte";
   import {
     navigationState,
@@ -14,7 +13,7 @@
   } from "../../state/navigation-state.svelte";
   import { galleryPanelManager } from "$lib/features/discover/shared/state/gallery-panel-state.svelte";
   import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
-  import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
   // Get current module color for themed navigation (fixed: was returning function)
   let moduleColor = $derived(
@@ -34,6 +33,7 @@
     isSettingsActive = false,
     isUIVisible = true,
     onRevealNav = () => {},
+    isDashboard = false,
   } = $props<{
     sections: Section[];
     currentSection: string;
@@ -46,14 +46,29 @@
     isSettingsActive?: boolean;
     isUIVisible?: boolean;
     onRevealNav?: () => void;
+    isDashboard?: boolean;
   }>();
 
   let navElement = $state<HTMLElement | null>(null);
   let peekHasAnimated = $state(false);
+  let availableWidth = $state(0);
 
-  // Detect if we should use overflow selector (>4 tabs on mobile)
-  // This activates for modules with many tabs (admin, settings, etc.)
-  let shouldUseOverflowSelector = $derived(sections.length > 4);
+  // Calculate required width for all tabs
+  // Each section button needs: min 48px base + 8px gap
+  // Left buttons (module switcher): 48px
+  // Right buttons (settings only): ~60px (48px + gap)
+  // Padding and spacing: ~30px
+  let requiredWidth = $derived(() => {
+    const buttonWidth = 60; // 48px min + gap
+    const tabsWidth = sections.length * buttonWidth;
+    const fixedButtonsWidth = 140; // Module switcher + settings + gaps + padding
+    return tabsWidth + fixedButtonsWidth;
+  });
+
+  // Use overflow selector when tabs don't fit in available space
+  let shouldUseOverflowSelector = $derived(
+    availableWidth > 0 && availableWidth < requiredWidth()
+  );
 
   // Handle tap on peek indicator to reveal navigation
   function handlePeekTap() {
@@ -82,23 +97,51 @@
     quickFeedbackState.open();
   }
 
+  // Derived badge counts for inbox tabs - must be $derived for reactivity
+  const isInboxModule = $derived(navigationState.currentModule === "inbox");
+  const messagesBadgeCount = $derived(
+    isInboxModule ? inboxState.unreadMessageCount : 0
+  );
+  const notificationsBadgeCount = $derived(
+    isInboxModule ? inboxState.unreadNotificationCount : 0
+  );
+
+  /**
+   * Get badge count for a section (only inbox tabs have badges)
+   */
+  function getSectionBadgeCount(sectionId: string): number {
+    if (sectionId === "messages") {
+      return messagesBadgeCount;
+    }
+    if (sectionId === "notifications") {
+      return notificationsBadgeCount;
+    }
+    return 0;
+  }
+
   onMount(() => {
-    // Set up ResizeObserver to measure and report navigation height
+    // Set up ResizeObserver to measure navigation height and width
     let resizeObserver: ResizeObserver | null = null;
     if (navElement) {
       resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const height =
             entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height;
+          const width =
+            entry.borderBoxSize?.[0]?.inlineSize ?? entry.contentRect.width;
           onHeightChange(height);
+          availableWidth = width;
         }
       });
       resizeObserver.observe(navElement);
 
-      // Report initial height
-      const initialHeight = navElement.getBoundingClientRect().height;
-      if (initialHeight > 0) {
-        onHeightChange(initialHeight);
+      // Report initial measurements
+      const rect = navElement.getBoundingClientRect();
+      if (rect.height > 0) {
+        onHeightChange(rect.height);
+      }
+      if (rect.width > 0) {
+        availableWidth = rect.width;
       }
     }
 
@@ -124,6 +167,7 @@
 <nav
   class="bottom-navigation"
   class:hidden={!isUIVisible}
+  class:floating={isDashboard}
   bind:this={navElement}
   style="--module-color: {moduleColor}"
 >
@@ -157,6 +201,11 @@
           type="section"
           onClick={() => handleSectionClick(section)}
           ariaLabel={section.label}
+          badgeCount={section.id === "messages"
+            ? messagesBadgeCount
+            : section.id === "notifications"
+              ? notificationsBadgeCount
+              : 0}
         />
       {/each}
     </div>
@@ -164,13 +213,17 @@
 
   <!-- Right side buttons -->
   <div class="right-buttons">
-    <!-- Inbox Button (only when authenticated) -->
-    {#if authState.isAuthenticated}
-      <InboxButton />
-    {/if}
-
-    <!-- Settings Button - hidden when in settings -->
-    {#if showSettings && !isSettingsActive}
+    {#if isSettingsActive}
+      <!-- Back Button - shown when in settings to return to previous module -->
+      <button
+        class="nav-back-button"
+        onclick={onSettingsTap}
+        aria-label="Go back"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    {:else if showSettings}
+      <!-- Settings Button - shown when not in settings -->
       <SettingsButton
         active={isSettingsActive}
         onClick={onSettingsTap}
@@ -192,7 +245,7 @@
     --nav-min-height: 64px;
 
     /* Button tokens */
-    --section-button-min: 52px;
+    --section-button-min: 48px;
     --section-button-max: 72px;
 
     /* Typography tokens */
@@ -256,6 +309,43 @@
   }
 
   /* ============================================================================
+     FLOATING MODE (Dashboard) - Transparent, fixed position with floating buttons
+     ============================================================================ */
+  .bottom-navigation.floating {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    border-top: none;
+    box-shadow: none;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    pointer-events: none; /* Let clicks pass through the bar itself */
+  }
+
+  /* Re-enable pointer events on interactive children */
+  .bottom-navigation.floating :global(.nav-button),
+  .bottom-navigation.floating :global(.menu-button) {
+    pointer-events: auto;
+  }
+
+  /* Give floating buttons a subtle backdrop for visibility */
+  .bottom-navigation.floating :global(.nav-button.special),
+  .bottom-navigation.floating :global(.menu-button) {
+    background: hsl(0 0% 0% / 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow:
+      0 4px 12px hsl(0 0% 0% / 0.4),
+      0 0 0 1px hsl(0 0% 100% / 0.05);
+  }
+
+  .bottom-navigation.floating :global(.nav-button.special),
+  .bottom-navigation.floating :global(.menu-button) {
+    border-color: hsl(0 0% 100% / 0.15);
+  }
+
+  /* ============================================================================
      SECTIONS CONTAINER
      ============================================================================ */
   .sections {
@@ -266,7 +356,7 @@
     justify-content: center;
     align-items: center;
     min-width: 0;
-    /* Leave room for 52px avatar + 52px settings + gaps */
+    /* Leave room for 48px avatar + 48px settings + gaps */
     max-width: calc(100% - 104px - (var(--nav-gap) * 2));
     opacity: 1;
     transition: opacity var(--transition-smooth);
@@ -301,7 +391,7 @@
   }
 
   /* ============================================================================
-     RIGHT BUTTONS CONTAINER (Inbox + Settings)
+     RIGHT BUTTONS CONTAINER (Settings)
      ============================================================================ */
   .right-buttons {
     display: flex;
@@ -309,6 +399,50 @@
     align-items: center;
     gap: 4px;
     flex-shrink: 0;
+  }
+
+  /* ============================================================================
+     BACK BUTTON - Shown when in Settings module
+     ============================================================================ */
+  .nav-back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--module-color, #667eea);
+    border-radius: 50%;
+    color: var(--module-color, #667eea);
+    cursor: pointer;
+    box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      opacity 0.15s ease,
+      transform 0.1s ease,
+      background 0.15s ease;
+  }
+
+  .nav-back-button:hover {
+    opacity: 0.85;
+    background: color-mix(in srgb, var(--module-color, #667eea) 15%, transparent);
+  }
+
+  .nav-back-button:active {
+    transform: scale(0.95);
+  }
+
+  .nav-back-button:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .nav-back-button i {
+    font-size: 18px;
   }
 
   /* ============================================================================
@@ -328,10 +462,10 @@
   /* Special buttons (Settings) - solid module-colored */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
     border: 1px solid var(--module-color, #667eea);
@@ -422,7 +556,7 @@
   /* Icons only mode (<400px) - iPhone SE territory */
   @container bottom-nav (max-width: 399px) {
     .bottom-navigation :global(.nav-button.section) {
-      max-width: 52px;
+      max-width: var(--min-touch-target);
       padding: 6px 4px;
     }
 
@@ -466,7 +600,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 52px;
+    height: var(--min-touch-target);
     display: flex;
     align-items: flex-end;
     justify-content: center;

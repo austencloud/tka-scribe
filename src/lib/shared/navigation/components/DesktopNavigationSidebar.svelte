@@ -69,6 +69,23 @@
   // Check if we're in settings mode (hides main modules)
   const isInSettings = $derived(navigationState.currentModule === "settings");
 
+  // Check if Create module tutorial is active (hides Create tabs until choice step)
+  // We check localStorage directly to avoid flash of tabs before state initializes
+  const hasCompletedTutorial = $derived(() => {
+    if (typeof localStorage === "undefined") return true;
+    return localStorage.getItem("tka-create-method-selected") === "true";
+  });
+
+  // Tutorial is active when in Create module AND (selector visible OR tutorial not completed yet)
+  // This prevents the flash of tabs on initial load
+  const isCreateTutorialActive = $derived(
+    navigationState.currentModule === "create" &&
+      (navigationState.isCreationMethodSelectorVisible || !hasCompletedTutorial())
+  );
+  const isOnTutorialChoiceStep = $derived(
+    navigationState.isCreateTutorialOnChoiceStep
+  );
+
   // Get filtered settings sections using feature flag service
   const filteredSettingsSections = $derived(
     SETTINGS_TABS.filter((section) => {
@@ -179,7 +196,12 @@
 
   // Filter sections based on module-specific rules (e.g., admin-only tabs)
   // Uses featureFlagService.canAccessTab() for role-based access control
+  // For Create module: tabs hidden during tutorial, revealed on choice step
   function getFilteredSections(module: ModuleDefinition): Section[] {
+    // Hide Create module tabs during tutorial (until choice step)
+    if (module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep) {
+      return [];
+    }
     return module.sections.filter((section) => {
       return featureFlagService.canAccessTab(module.id, section.id);
     });
@@ -358,6 +380,8 @@
             {@const isExpanded = expandedModules.has(module.id)}
             {@const moduleColor = module.color || "#a855f7"}
             {@const filteredSections = getFilteredSections(module)}
+            {@const shouldCelebrate = module.id === "create" && isOnTutorialChoiceStep && filteredSections.length > 0}
+            {@const isCreateInTutorial = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
 
             <ModuleGroup
               module={{ ...module, sections: filteredSections }}
@@ -369,6 +393,8 @@
               {moduleColor}
               onModuleClick={handleModuleTap}
               onSectionClick={handleSectionTap}
+              celebrateAppearance={shouldCelebrate}
+              forceActiveStyle={isCreateInTutorial}
             />
           {/each}
         {/if}
@@ -478,8 +504,8 @@
   }
 
   .settings-back-button.collapsed {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     justify-content: center;
     margin-bottom: 8px;
@@ -490,7 +516,7 @@
     height: 32px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify 48pxent: center;
     font-size: 16px;
     border-radius: 8px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -533,7 +559,7 @@
 
   .section-button {
     width: 100%;
-    min-height: 52px; /* WCAG touch target minimum */
+    min-height: var(--min-touch-target); /* WCAG touch target minimum */
     display: flex;
     align-items: center;
     gap: clamp(10px, 6cqw, 14px);
@@ -544,7 +570,7 @@
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: clamp(13px, 7.5cqw, 15px);
+    font-size:  48px(13px, 7.5cqw, 15px);
     font-weight: 600;
     text-align: left;
   }

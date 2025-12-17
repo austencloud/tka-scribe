@@ -72,7 +72,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: left;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     width: 100%;
   }
 

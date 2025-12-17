@@ -1,6 +1,9 @@
 <!-- TabOverflowSelector - 2026-ready tab overflow handler using Popover API -->
 <script lang="ts">
   import type { Section } from "$lib/shared/navigation/domain/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   let {
@@ -17,14 +20,20 @@
 
   let popoverElement: HTMLElement | null = null;
   let isOpen = $state(false);
+  let hapticService: IHapticFeedbackService | null = null;
 
   // Find current section
   let currentSectionData = $derived(
     sections.find((s: Section) => s.id === currentSection) || sections[0]
   );
 
+  function handleTriggerClick() {
+    hapticService?.trigger("selection");
+  }
+
   function handleSectionClick(section: Section) {
     if (!section.disabled) {
+      hapticService?.trigger("selection");
       onSectionChange(section.id);
       // Popover auto-closes via popovertarget, but close manually for fallback
       if (popoverElement && typeof popoverElement.hidePopover === "function") {
@@ -39,6 +48,9 @@
 
   // Set up toggle event listener for chevron rotation
   onMount(() => {
+    // Resolve haptic service
+    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+
     const element = popoverElement;
     if (!element) return;
 
@@ -61,6 +73,7 @@
   aria-label="Select tab"
   aria-expanded={isOpen}
   style="--module-color: {moduleColor}"
+  onclick={handleTriggerClick}
 >
   <span class="current-tab-icon">{@html currentSectionData?.icon || ""}</span>
   <span class="current-tab-label">{currentSectionData?.label || "Select"}</span>
@@ -108,12 +121,9 @@
     justify-content: center;
     gap: 8px;
     padding: 10px 16px;
-    min-height: 48px;
+    min-height: var(--min-touch-target);
     flex: 1 1 0%;
     max-width: 240px;
-
-    /* Anchor for popover positioning */
-    anchor-name: --tab-picker;
 
     /* 2026 design: Solid surface with subtle module tint */
     background: color-mix(
@@ -195,21 +205,23 @@
 
   /* ============================================================================
      POPOVER - Native Popover API with 2026 styling
+     Use :global() because popovers render in the top layer outside normal DOM
      ============================================================================ */
-  .tab-overflow-popover {
-    /* Anchor positioning - positions directly above trigger button */
-    position-anchor: --tab-picker;
-    position: fixed;
+  :global(#tab-overflow-popover) {
+    /* Fixed positioning at very bottom, covering bottom nav */
+    position: fixed !important;
+    inset: auto !important; /* Reset all inset properties */
+    bottom: 0 !important; /* Flush with bottom edge */
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    transform: none;
+    margin: 0 !important;
 
-    /* Position using anchor (with fallback) */
-    bottom: anchor(top);
-    left: anchor(center);
-    translate: -50% -12px; /* Center horizontally, add gap above button */
-    margin: 0;
-
-    /* Size constraints */
-    width: min(calc(100vw - 24px), 400px);
-    max-height: 50vh;
+    /* Full width at bottom, like an action sheet */
+    width: 100%;
+    max-width: 100%;
+    max-height: 60vh;
     overflow-y: auto;
 
     /* 2026 design: Elevated glass morphism */
@@ -223,8 +235,9 @@
 
     border: 1px solid
       color-mix(in srgb, var(--module-color, #667eea) 25%, hsl(0 0% 100% / 0.1));
-    border-radius: 16px;
-    padding: 12px;
+    border-radius: 16px 16px 0 0; /* Round top corners only */
+    border-bottom: none; /* No border at bottom edge */
+    padding: 16px 12px calc(12px + env(safe-area-inset-bottom, 0px)); /* Safe area for home indicator */
 
     /* Shadows for depth */
     box-shadow:
@@ -244,27 +257,18 @@
 
   /* Starting style for smooth open animation - @starting-style is valid CSS */
   @starting-style {
-    .tab-overflow-popover:popover-open {
+    :global(#tab-overflow-popover:popover-open) {
       opacity: 0;
       scale: 0.95;
     }
   }
 
   /* Closing animation */
-  .tab-overflow-popover:not(:popover-open) {
+  :global(#tab-overflow-popover:not(:popover-open)) {
     opacity: 0;
     scale: 0.95;
   }
 
-  /* Fallback for browsers without anchor positioning */
-  @supports not (anchor-name: --tab-picker) {
-    .tab-overflow-popover {
-      /* Position above bottom nav (fallback) */
-      bottom: calc(56px + 12px); /* Nav height + gap */
-      left: 50%;
-      translate: -50% 0;
-    }
-  }
 
   /* ============================================================================
      TAB GRID - Responsive grid layout

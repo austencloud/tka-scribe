@@ -1,30 +1,19 @@
 <!-- Sidebar Footer Component -->
-<!-- Footer with inbox button and settings gear/back button -->
+<!-- Footer with settings gear/back button -->
 <script lang="ts">
-  import InboxButton from "$lib/shared/inbox/components/InboxButton.svelte";
-  import { authState } from "$lib/shared/auth/state/authState.svelte";
-
   let { isCollapsed, isSettingsActive, onSettingsClick } = $props<{
     isCollapsed: boolean;
     isSettingsActive: boolean;
     onSettingsClick?: () => void;
   }>();
-
-  // Only show inbox button for authenticated users
-  const showInbox = $derived(authState.isAuthenticated);
 </script>
 
-<!-- Footer with inbox and settings -->
+<!-- Footer with settings -->
 <div
   class="sidebar-footer"
   class:collapsed={isCollapsed}
   style="--button-accent-color: #64748b;"
 >
-  <!-- Inbox Button (only when authenticated) -->
-  {#if showInbox}
-    <InboxButton {isCollapsed} />
-  {/if}
-
   <!-- Settings Button -->
   <button
     class="settings-button"
@@ -105,8 +94,8 @@
   }
 
   .settings-button.collapsed {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     justify-content: center;
     border-radius: 12px;

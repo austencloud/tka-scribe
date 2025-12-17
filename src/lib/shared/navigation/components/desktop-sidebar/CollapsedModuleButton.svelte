@@ -98,8 +98,8 @@
      COLLAPSED MODULE BUTTON - VS CODE ACTIVITY BAR STYLE
      ============================================================================ */
   .collapsed-module-button {
-    width: 52px; /* Larger than tabs for visual hierarchy */
-    height: 52px;
+    width: var(--min-touch-target); /* Larger than tabs for visual hierarchy */
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

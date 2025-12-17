@@ -178,20 +178,20 @@
      ============================================================================ */
   .side-navigation :global(.nav-button.section) {
     padding: 8px;
-    min-width: 52px;
-    min-height: 52px;
-    width: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
+    width: var(--min-touch-target);
     flex: 0 0 auto;
   }
 
   /* Menu and Settings buttons - circular with visible background */
   .side-navigation :global(.nav-button.special) {
     flex: 0 0 auto !important;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
-    max-width: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
+    max-width: var(--min-touch-target);
     padding: 0;
     /* Glass background to make button clearly tappable */
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));

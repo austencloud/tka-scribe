@@ -120,10 +120,10 @@
      DASHBOARD BUTTON - 50px minimum (WCAG AAA)
      ============================================================================ */
   .dashboard-button {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     background: transparent;
@@ -147,7 +147,8 @@
   }
 
   .dashboard-button:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -160,8 +161,8 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     overflow: hidden;
     display: flex;

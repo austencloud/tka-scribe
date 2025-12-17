@@ -273,7 +273,7 @@
     justify-content: center;
     gap: 10px;
     padding: 12px 20px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;

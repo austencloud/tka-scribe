@@ -259,10 +259,10 @@
   }
 
   .privacy-sheet__close {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));

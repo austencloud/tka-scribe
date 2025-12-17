@@ -125,10 +125,10 @@
      PROFILE BUTTON - 50px minimum (WCAG AAA)
      ============================================================================ */
   .profile-button {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
@@ -153,7 +153,7 @@
   }
 
   .profile-button.with-label.sidebar-collapsed {
-    width: 52px;
+    width: var(--min-touch-target);
     justify-content: center;
     padding: 0;
   }
@@ -174,10 +174,10 @@
 
   /* Icon wrapper - contains avatar or icon */
   .profile-icon-wrapper {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -205,8 +205,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   /* Profile avatar image - minimal, no border for cleaner look */
@@ -231,7 +231,10 @@
     font-size: 16px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: var(--theme-accent-strong, #8b5cf6); /* Simplified, more subtle */
+    background: var(
+      --theme-accent-strong,
+      #8b5cf6
+    ); /* Simplified, more subtle */
   }
 
   /* Smaller font in labeled button */
@@ -297,7 +300,7 @@
 
   /* Collapsed sidebar - center icon only */
   .profile-button.variant-sidebar.sidebar-collapsed {
-    width: 52px;
+    width: var(--min-touch-target);
     justify-content: center;
     padding: 0;
   }

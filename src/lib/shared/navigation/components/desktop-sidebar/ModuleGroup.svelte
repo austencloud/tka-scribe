@@ -16,6 +16,8 @@
     moduleColor,
     onModuleClick,
     onSectionClick,
+    celebrateAppearance = false,
+    forceActiveStyle = false,
   } = $props<{
     module: ModuleDefinition;
     currentModule: string;
@@ -26,6 +28,8 @@
     moduleColor?: string;
     onModuleClick: (moduleId: string, isDisabled: boolean) => void;
     onSectionClick: (moduleId: string, section: Section) => void;
+    celebrateAppearance?: boolean;
+    forceActiveStyle?: boolean;
   }>();
 
   // Reference to the module group element
@@ -34,6 +38,8 @@
   const isActive = $derived(currentModule === module.id);
   const isDisabled = $derived(module.disabled ?? false);
   const hasSections = $derived(isExpanded && module.sections.length > 0);
+  // Show active styling if we have sections OR if forced (e.g., during tutorial)
+  const showActiveStyle = $derived(hasSections || forceActiveStyle);
 
   // Scroll the expanded module into view when it expands
   $effect(() => {
@@ -56,7 +62,7 @@
   bind:this={moduleGroupElement}
   class="module-group"
   class:active={isActive}
-  class:has-sections={hasSections}
+  class:has-sections={showActiveStyle}
   style="--module-color: {moduleColor || '#a855f7'};"
 >
   <!-- Module Button -->
@@ -77,6 +83,7 @@
       moduleId={module.id}
       {isActive}
       {onSectionClick}
+      {celebrateAppearance}
     />
   {/if}
 </div>

@@ -92,7 +92,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     height: 100%;
     padding: 0 var(--spacing-sm);
     background: rgba(100, 116, 139, 0.8);
@@ -105,8 +105,8 @@
   }
 
   .nav-action.layout-left {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
     padding: 0;
   }

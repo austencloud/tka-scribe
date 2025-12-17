@@ -327,7 +327,7 @@
     justify-content: center;
     gap: clamp(8px, 1.2vh, 12px);
     padding: clamp(10px, 1.5vh, 14px) clamp(18px, 2.5vw, 24px);
-    min-height: 52px; /* WCAG minimum */
+    min-height: var(--min-touch-target); /* WCAG minimum */
     border-radius: 8px;
     font-size: clamp(13px, 1.7vh, 16px);
     font-weight: 600;
@@ -338,14 +338,14 @@
 
   .section.compact .button {
     padding: 10px 18px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 13px;
     gap: 8px;
   }
 
   .section.very-compact .button {
     padding: 8px 16px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 13px;
     gap: 6px;
   }

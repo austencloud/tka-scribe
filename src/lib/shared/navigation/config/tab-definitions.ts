@@ -124,6 +124,26 @@ export const LIBRARY_TABS: Section[] = [
   },
 ];
 
+// Inbox tabs configuration - Messages and notifications
+export const INBOX_TABS: Section[] = [
+  {
+    id: "messages",
+    label: "Messages",
+    icon: '<i class="fas fa-envelope"></i>',
+    description: "Conversations with other users",
+    color: "#3b82f6",
+    gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
+  },
+  {
+    id: "notifications",
+    label: "Notifications",
+    icon: '<i class="fas fa-bell"></i>',
+    description: "System alerts and updates",
+    color: "#f59e0b",
+    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+  },
+];
+
 // Community tabs configuration
 export const COMMUNITY_TABS: Section[] = [
   {
@@ -276,14 +296,6 @@ export const ML_TRAINING_TABS: Section[] = [
 
 // Admin tabs configuration
 export const ADMIN_TABS: Section[] = [
-  {
-    id: "health",
-    label: "Health",
-    icon: '<i class="fas fa-heartbeat"></i>',
-    description: "System health and operations",
-    color: "#ef4444",
-    gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
-  },
   {
     id: "users",
     label: "Users",

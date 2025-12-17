@@ -92,6 +92,10 @@ export function createNavigationState() {
   // Creation method selector visibility (for hiding tabs when selector is shown)
   let isCreationMethodSelectorVisible = $state<boolean>(false);
 
+  // Track when user reaches the choice step of the Create tutorial
+  // At this point, tabs should animate in to show they're available
+  let isCreateTutorialOnChoiceStep = $state<boolean>(false);
+
   // Track previous module for settings toggle behavior
   let previousModule = $state<ModuleId | null>(loadPreviousModuleFromSession());
 
@@ -336,6 +340,8 @@ export function createNavigationState() {
           [moduleId]: nextTab,
         };
       } else {
+        // Module has no sections (e.g., dashboard) - clear the active tab
+        nextTab = "";
         const updatedMap = { ...lastTabByModule };
         delete updatedMap[moduleId];
         lastTabByModule = updatedMap;
@@ -372,6 +378,9 @@ export function createNavigationState() {
         localStorage.setItem(CURRENT_MODULE_KEY, moduleId);
         if (nextTab) {
           localStorage.setItem(ACTIVE_TAB_KEY, nextTab);
+        } else {
+          // Clear persisted tab when module has no tabs (e.g., dashboard)
+          localStorage.removeItem(ACTIVE_TAB_KEY);
         }
       }
 
@@ -571,6 +580,18 @@ export function createNavigationState() {
     },
     setCreationMethodSelectorVisible(visible: boolean) {
       isCreationMethodSelectorVisible = visible;
+      // Reset choice step when tutorial visibility changes
+      if (!visible) {
+        isCreateTutorialOnChoiceStep = false;
+      }
+    },
+
+    // Track when user reaches the choice step of the Create tutorial
+    get isCreateTutorialOnChoiceStep() {
+      return isCreateTutorialOnChoiceStep;
+    },
+    setCreateTutorialOnChoiceStep(onChoiceStep: boolean) {
+      isCreateTutorialOnChoiceStep = onChoiceStep;
     },
 
     // Panel persistence per tab (key format: "moduleId:tabId")
