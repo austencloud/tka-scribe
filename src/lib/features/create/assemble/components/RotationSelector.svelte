@@ -206,7 +206,7 @@ for SHIFT motions in the completed hand paths.
     }
 
     .rotation-button .icon {
-      font-size: 52px;
+      font-size: 48px;
     }
 
     .rotation-button .label {

@@ -61,8 +61,8 @@
   }
 
   .metric-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 12px;
     background: color-mix(in srgb, var(--accent-color) 20%, transparent);
     display: flex;

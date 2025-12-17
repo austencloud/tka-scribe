@@ -148,7 +148,7 @@ Transform tools moved to edit tab.
     .sequence-toolbar {
       gap: var(--spacing-xs);
       padding: var(--spacing-xs);
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .separator {
@@ -162,7 +162,7 @@ Transform tools moved to edit tab.
     .sequence-toolbar {
       gap: 2px;
       padding: 4px;
-      min-height: 52px; /* Minimum touch target size */
+      min-height: var(--min-touch-target); /* Minimum touch target size */
     }
 
     .separator {

@@ -230,8 +230,8 @@ Features:
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -250,7 +250,7 @@ Features:
   }
 
   .close-button-spacer {
-    height: 52px;
+    height: var(--min-touch-target);
     flex-shrink: 0;
   }
 
@@ -432,7 +432,7 @@ Features:
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .action-btn:hover {

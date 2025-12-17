@@ -15,6 +15,7 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackEditDrawer from "./FeedbackEditDrawer.svelte";
   import FeedbackReplyPanel from "./FeedbackReplyPanel.svelte";
+  import ImageViewerModal from "./ImageViewerModal.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
@@ -101,6 +102,15 @@
 
   let isReplySubmitting = $state(false);
 
+  // Image viewer state
+  let isImageViewerOpen = $state(false);
+  let imageViewerIndex = $state(0);
+
+  function openImageViewer(index: number) {
+    imageViewerIndex = index;
+    isImageViewerOpen = true;
+  }
+
   function formatDate(date: Date): string {
     return date.toLocaleDateString("en-US", {
       month: "short",
@@ -161,59 +171,61 @@
     <div class="detail-container">
       <!-- Header -->
       <header class="panel-header">
-        <div class="header-actions">
-          {#if canEdit}
-            <button
-              class="action-button edit"
-              onclick={() => (isEditDrawerOpen = true)}
-              type="button"
-              aria-label="Edit feedback"
-            >
-              <i class="fas fa-pen"></i>
-            </button>
-          {/if}
-          {#if canDelete}
-            <button
-              class="action-button delete"
-              onclick={() => (showDeleteConfirm = true)}
-              type="button"
-              aria-label="Delete feedback"
-            >
-              <i class="fas fa-trash"></i>
-            </button>
-          {/if}
-          <button
-            class="action-button close"
-            onclick={handleClose}
-            type="button"
-            aria-label="Close detail panel"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="header-meta">
-          <span class="type-badge" style="--badge-color: {typeConfig.color}">
-            <i class="fas {typeConfig.icon}"></i>
-            {typeConfig.label}
-          </span>
-          <span class="status-badge" style="--badge-color: {statusConfig.color}">
-            <i class="fas {statusConfig.icon}"></i>
-            {statusConfig.label}
-          </span>
-          {#if priorityConfig}
-            <span
-              class="priority-badge"
-              style="--badge-color: {priorityConfig.color}"
-            >
-              <i class="fas {priorityConfig.icon}"></i>
-              {priorityConfig.label}
+        <div class="header-row">
+          <div class="header-meta">
+            <span class="type-badge" style="--badge-color: {typeConfig.color}">
+              <i class="fas {typeConfig.icon}"></i>
+              <span class="badge-label">{typeConfig.label}</span>
             </span>
-          {/if}
+            <span class="status-badge" style="--badge-color: {statusConfig.color}">
+              <i class="fas {statusConfig.icon}"></i>
+              <span class="badge-label">{statusConfig.label}</span>
+            </span>
+            {#if priorityConfig}
+              <span
+                class="priority-badge"
+                style="--badge-color: {priorityConfig.color}"
+              >
+                <i class="fas {priorityConfig.icon}"></i>
+                <span class="badge-label">{priorityConfig.label}</span>
+              </span>
+            {/if}
+          </div>
+          <div class="header-actions">
+            {#if canEdit}
+              <button
+                class="action-button edit"
+                onclick={() => (isEditDrawerOpen = true)}
+                type="button"
+                aria-label="Edit feedback"
+              >
+                <i class="fas fa-pen"></i>
+              </button>
+            {/if}
+            {#if canDelete}
+              <button
+                class="action-button delete"
+                onclick={() => (showDeleteConfirm = true)}
+                type="button"
+                aria-label="Delete feedback"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            {/if}
+            <button
+              class="action-button close"
+              onclick={handleClose}
+              type="button"
+              aria-label="Close detail panel"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
       </header>
 
       <!-- Content -->
-      <div class="panel-content">
+      <div class="feedback-detail-body">
         <h2 class="item-title">{item.title}</h2>
 
         <div class="meta-row">
@@ -237,14 +249,17 @@
         <!-- Screenshots -->
         {#if item.imageUrls && item.imageUrls.length > 0}
           <div class="screenshots-section">
-            <h3>Screenshots ({item.imageUrls.length})</h3>
+            <h3>
+              <i class="fas fa-images"></i>
+              Screenshots ({item.imageUrls.length})
+            </h3>
             <div class="screenshots-grid">
               {#each item.imageUrls as imageUrl, index}
-                <a
-                  href={imageUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="screenshot-link"
+                <button
+                  type="button"
+                  class="screenshot-btn"
+                  onclick={() => openImageViewer(index)}
+                  aria-label="View screenshot {index + 1}"
                 >
                   <img
                     src={imageUrl}
@@ -252,9 +267,9 @@
                     class="screenshot-thumb"
                   />
                   <div class="screenshot-overlay">
-                    <i class="fas fa-search-plus"></i>
+                    <i class="fas fa-expand"></i>
                   </div>
-                </a>
+                </button>
               {/each}
             </div>
           </div>
@@ -371,6 +386,16 @@
         appendMode={isAppendMode}
         onSave={handleSave}
       />
+
+      <!-- Image Viewer Modal -->
+      {#if item.imageUrls && item.imageUrls.length > 0}
+        <ImageViewerModal
+          images={item.imageUrls}
+          initialIndex={imageViewerIndex}
+          isOpen={isImageViewerOpen}
+          onClose={() => (isImageViewerOpen = false)}
+        />
+      {/if}
     </div>
   {/if}
 </Drawer>
@@ -411,16 +436,23 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 16px;
+    padding: 12px 16px;
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     flex-shrink: 0;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .header-actions {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   .action-button {
@@ -458,8 +490,10 @@
 
   .header-meta {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-wrap: nowrap;
+    gap: 6px;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .type-badge,
@@ -467,7 +501,7 @@
   .priority-badge {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     padding: 4px 10px;
     background: linear-gradient(
       135deg,
@@ -480,10 +514,36 @@
     font-weight: 500;
     color: var(--badge-color);
     box-shadow: 0 2px 6px color-mix(in srgb, var(--badge-color) 20%, var(--theme-shadow-color, black));
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .badge-label {
+    display: inline;
+  }
+
+  /* Mobile: compact badges - hide labels, show only icons */
+  @media (max-width: 420px) {
+    .type-badge,
+    .status-badge,
+    .priority-badge {
+      padding: 6px 8px;
+      gap: 0;
+    }
+
+    .badge-label {
+      display: none;
+    }
+
+    .action-button {
+      width: 28px;
+      height: 28px;
+      font-size: 0.75rem;
+    }
   }
 
   /* Content */
-  .panel-content {
+  .feedback-detail-body {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
@@ -626,38 +686,48 @@
 
   /* Screenshots */
   .screenshots-section {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .screenshots-section h3 {
-    margin: 0 0 12px 0;
-    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 10px 0;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.05em;
   }
 
   .screenshots-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  .screenshot-link {
+  .screenshot-btn {
     position: relative;
     display: block;
-    aspect-ratio: 1;
+    width: 64px;
+    height: 64px;
+    padding: 0;
     border-radius: 8px;
     overflow: hidden;
     background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    cursor: pointer;
     transition: all 200ms ease;
   }
 
-  .screenshot-link:hover {
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 50%, transparent);
+  .screenshot-btn:hover {
+    border-color: var(--theme-accent, #3b82f6);
     transform: scale(1.05);
+  }
+
+  .screenshot-btn:active {
+    transform: scale(0.98);
   }
 
   .screenshot-thumb {
@@ -672,30 +742,41 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     opacity: 0;
     transition: opacity 200ms ease;
   }
 
-  .screenshot-link:hover .screenshot-overlay {
+  .screenshot-btn:hover .screenshot-overlay {
     opacity: 1;
   }
 
   .screenshot-overlay i {
-    font-size: 1.5rem;
+    font-size: 1.125rem;
     color: white;
   }
 
+  /* On mobile, always show the overlay slightly for discoverability */
+  @media (max-width: 768px) {
+    .screenshot-overlay {
+      opacity: 0.4;
+    }
+
+    .screenshot-btn:active .screenshot-overlay {
+      opacity: 0.8;
+    }
+  }
+
   /* Scrollbar */
-  .panel-content::-webkit-scrollbar {
+  .feedback-detail-body::-webkit-scrollbar {
     width: 6px;
   }
 
-  .panel-content::-webkit-scrollbar-track {
+  .feedback-detail-body::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .panel-content::-webkit-scrollbar-thumb {
+  .feedback-detail-body::-webkit-scrollbar-thumb {
     background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 3px;
   }
@@ -750,8 +831,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: rgba(239, 68, 68, 0.15);
     border-radius: 12px;
     color: #ef4444;

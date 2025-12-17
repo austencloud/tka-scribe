@@ -8,9 +8,24 @@
   };
 
   const sections = [
-    { id: "gallery", label: "Gallery", icon: '<i class="fas fa-layer-group"></i>', color: "#a855f7" },
-    { id: "collections", label: "Collections", icon: '<i class="fas fa-folder"></i>', color: "#d946ef" },
-    { id: "creators", label: "Creators", icon: '<i class="fas fa-users"></i>', color: "#06b6d4" },
+    {
+      id: "gallery",
+      label: "Gallery",
+      icon: '<i class="fas fa-layer-group"></i>',
+      color: "#a855f7",
+    },
+    {
+      id: "collections",
+      label: "Collections",
+      icon: '<i class="fas fa-folder"></i>',
+      color: "#d946ef",
+    },
+    {
+      id: "creators",
+      label: "Creators",
+      icon: '<i class="fas fa-users"></i>',
+      color: "#06b6d4",
+    },
   ];
 
   let activeSection = $state("gallery");
@@ -39,7 +54,7 @@
           class="color-btn"
           class:active={themeColor === preset.value}
           style="--color: {preset.value}"
-          onclick={() => themeColor = preset.value}
+          onclick={() => (themeColor = preset.value)}
         >
           {preset.label}
         </button>
@@ -66,7 +81,7 @@
             <button
               class="variant-a-section"
               class:active={activeSection === section.id}
-              onclick={() => activeSection = section.id}
+              onclick={() => (activeSection = section.id)}
               style="--section-color: {section.color}"
             >
               <span class="icon">{@html section.icon}</span>
@@ -96,7 +111,7 @@
               <button
                 class="variant-b-section"
                 class:active={activeSection === section.id}
-                onclick={() => activeSection = section.id}
+                onclick={() => (activeSection = section.id)}
                 style="--section-color: {section.color}"
               >
                 <span class="icon">{@html section.icon}</span>
@@ -111,7 +126,9 @@
     <!-- OPTION C: No nesting visual -->
     <div class="variant-card">
       <h2>Option C: Header Style</h2>
-      <p class="description">Module as header, no dropdown look, no outer card</p>
+      <p class="description">
+        Module as header, no dropdown look, no outer card
+      </p>
 
       <div class="sidebar-mock" style="--module-color: {themeColor}">
         <div class="variant-c-module">
@@ -124,7 +141,7 @@
             <button
               class="variant-c-section"
               class:active={activeSection === section.id}
-              onclick={() => activeSection = section.id}
+              onclick={() => (activeSection = section.id)}
               style="--section-color: {section.color}"
             >
               <span class="active-indicator"></span>
@@ -154,7 +171,7 @@
               <button
                 class="variant-d-section"
                 class:active={activeSection === section.id}
-                onclick={() => activeSection = section.id}
+                onclick={() => (activeSection = section.id)}
                 style="--section-color: {section.color}"
               >
                 <span class="icon">{@html section.icon}</span>
@@ -207,7 +224,7 @@
 
   .color-btn {
     padding: 14px 20px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 10px;
     border: 2px solid transparent;
     background: color-mix(in srgb, var(--color) 20%, transparent);
@@ -270,7 +287,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 10px;
@@ -327,7 +344,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 10px;
@@ -376,7 +393,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 10px;
@@ -431,7 +448,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 10px;
@@ -499,7 +516,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 10px;
@@ -567,7 +584,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 10px;
@@ -611,7 +628,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 10px;

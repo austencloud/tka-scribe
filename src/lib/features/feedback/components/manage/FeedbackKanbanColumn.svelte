@@ -321,8 +321,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(52px, 12cqi, 64px);
-    height: clamp(52px, 12cqi, 64px);
+    width: clamp(48px, 12cqi, 64px);
+    height: clamp(48px, 12cqi, 64px);
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--column-color) 20%, transparent) 0%,

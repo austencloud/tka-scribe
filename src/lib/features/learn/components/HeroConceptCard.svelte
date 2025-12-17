@@ -175,8 +175,8 @@ Clean design with:
   }
 
   .icon-wrapper {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -259,7 +259,7 @@ Clean design with:
     gap: 0.375rem;
     padding: 0.875rem 1.25rem;
     min-width: 80px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: var(--category-color);
     border-radius: 12px;
     box-shadow: 0 4px 12px

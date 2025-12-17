@@ -120,10 +120,10 @@
 <style>
   .gamification-button {
     /* Match ProfileButton sizing - WCAG AAA minimum touch target */
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
@@ -181,7 +181,11 @@
     position: absolute;
     top: -2px;
     right: -2px;
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, var(--theme-accent-strong, #8b5cf6) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1) 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     border-radius: 50%;
     width: 16px;
     height: 16px;

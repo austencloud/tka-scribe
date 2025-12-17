@@ -20,14 +20,14 @@
       isLoading: boolean;
     }>();
 
-  // Filter state
-  let selectedStatus = $state<FeedbackStatus | "all">("all");
+  // Filter state - default to "new" as most actionable
+  let selectedStatus = $state<FeedbackStatus>("new");
 
   // Load persisted filter state on mount
   onMount(() => {
     const stored = localStorage.getItem("my-feedback-filter");
-    if (stored && (stored === "all" || ["new", "in-progress", "in-review", "completed", "archived"].includes(stored))) {
-      selectedStatus = stored as FeedbackStatus | "all";
+    if (stored && ["new", "in-progress", "in-review", "completed", "archived"].includes(stored)) {
+      selectedStatus = stored as FeedbackStatus;
     }
   });
 
@@ -38,9 +38,7 @@
 
   // Filtered items based on status
   const filteredItems = $derived(
-    selectedStatus === "all"
-      ? items
-      : items.filter((item: FeedbackItem) => item.status === selectedStatus)
+    items.filter((item: FeedbackItem) => item.status === selectedStatus)
   );
 
   // Status order for sorting
@@ -56,14 +54,6 @@
 <div class="feedback-list">
   <!-- Filter controls -->
   <div class="filter-bar">
-    <button
-      class="filter-chip"
-      class:active={selectedStatus === "all"}
-      onclick={() => (selectedStatus = "all")}
-    >
-      <span>All</span>
-      <span class="count">{items.length}</span>
-    </button>
     {#each statusOrder as status}
       {@const count = items.filter(
         (item: FeedbackItem) => item.status === status
@@ -86,11 +76,7 @@
   <section class="all-section">
     <header class="section-header">
       <i class="fas fa-list"></i>
-      <span>
-        {selectedStatus === "all"
-          ? "Your Feedback"
-          : STATUS_CONFIG[selectedStatus].label}
-      </span>
+      <span>{STATUS_CONFIG[selectedStatus].label}</span>
       <span class="count">{filteredItems.length}</span>
     </header>
 
@@ -107,11 +93,7 @@
     {#if filteredItems.length === 0 && !isLoading}
       <div class="empty-filter">
         <i class="fas fa-filter"></i>
-        <span
-          >No {selectedStatus === "all"
-            ? ""
-            : STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span
-        >
+        <span>No {STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span>
       </div>
     {/if}
 

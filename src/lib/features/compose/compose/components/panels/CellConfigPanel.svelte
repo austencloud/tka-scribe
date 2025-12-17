@@ -27,7 +27,9 @@
 
   // Responsive placement detection
   let isDesktop = $state(false);
-  const placement = $derived<"right" | "bottom">(isDesktop ? "right" : "bottom");
+  const placement = $derived<"right" | "bottom">(
+    isDesktop ? "right" : "bottom"
+  );
 
   function updateDesktopState() {
     isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
@@ -58,12 +60,13 @@
   ];
 
   // Media display type options
-  const mediaTypes: { value: MediaDisplayType; label: string; icon: string }[] = [
-    { value: "animation", label: "Animation", icon: "fa-play-circle" },
-    { value: "video", label: "Video", icon: "fa-video" },
-    { value: "beatGrid", label: "Beat Grid", icon: "fa-th" },
-    { value: "image", label: "Image", icon: "fa-image" },
-  ];
+  const mediaTypes: { value: MediaDisplayType; label: string; icon: string }[] =
+    [
+      { value: "animation", label: "Animation", icon: "fa-play-circle" },
+      { value: "video", label: "Video", icon: "fa-video" },
+      { value: "beatGrid", label: "Beat Grid", icon: "fa-th" },
+      { value: "image", label: "Image", icon: "fa-image" },
+    ];
 
   // Rotation options
   const rotationOptions = [0, 90, 180, 270];
@@ -125,14 +128,14 @@
 </script>
 
 <Drawer
-  isOpen={isOpen}
+  {isOpen}
   {placement}
   ariaLabel="Configure cell"
   class="cell-config-panel"
   showHandle={true}
   onclose={handleClose}
 >
-  <div class="panel-content">
+  <div class="cell-config-body">
     {#if cell}
       <!-- Header -->
       <header class="panel-header">
@@ -309,7 +312,7 @@
     max-height: 85vh !important;
   }
 
-  .panel-content {
+  .cell-config-body {
     display: flex;
     flex-direction: column;
     gap: clamp(12px, 3cqi, 20px);
@@ -339,8 +342,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.5);
@@ -431,7 +434,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1.5cqi, 8px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(8px, 2cqi, 12px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -448,8 +451,16 @@
   }
 
   .type-chip.selected {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
   }
 
@@ -469,7 +480,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1.5cqi, 8px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(8px, 2cqi, 12px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -486,8 +497,16 @@
   }
 
   .type-btn.selected {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
   }
 
@@ -502,7 +521,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(8px, 2cqi, 12px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -521,8 +540,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.4);
@@ -542,7 +561,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(6px, 2cqi, 10px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 14px);
     background: rgba(16, 185, 129, 0.15);
     border: 1px dashed rgba(16, 185, 129, 0.4);
@@ -573,7 +592,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(2px, 1cqi, 4px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(6px, 2cqi, 10px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -589,8 +608,16 @@
   }
 
   .rotation-btn.selected {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
   }
 
@@ -618,7 +645,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(6px, 2cqi, 10px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 14px);
     border-radius: clamp(6px, 2cqi, 10px);
     font-size: clamp(0.8rem, 2.8cqi, 0.95rem);

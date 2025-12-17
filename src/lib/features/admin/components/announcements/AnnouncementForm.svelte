@@ -420,8 +420,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     background: var(
       --theme-card-bg,
       linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%)
@@ -486,7 +486,7 @@
   .text-input {
     width: 100%;
     padding: 16px 20px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: linear-gradient(135deg, #1a1a24 0%, #16161e 100%);
     border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 12px;
@@ -544,7 +544,7 @@
     align-items: center;
     gap: 10px;
     padding: 14px 20px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: var(
       --theme-card-bg,
       linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
@@ -645,7 +645,7 @@
     justify-content: center;
     gap: 10px;
     padding: 16px 28px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 12px;
     font-size: 15px;
     font-weight: 600;
@@ -730,7 +730,7 @@
     .toggle-chip {
       padding: 12px 16px;
       font-size: 13px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .form-actions {

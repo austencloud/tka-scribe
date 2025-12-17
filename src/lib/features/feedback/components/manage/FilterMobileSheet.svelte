@@ -378,8 +378,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     margin: calc(-1 * 13px);
     margin-left: 0;
     background: none;
@@ -455,7 +455,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 52px;
+    height: var(--min-touch-target);
     border: none;
     border-radius: 12px;
     font-size: 0.875rem;

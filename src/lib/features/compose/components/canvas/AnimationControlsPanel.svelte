@@ -439,7 +439,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 14px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

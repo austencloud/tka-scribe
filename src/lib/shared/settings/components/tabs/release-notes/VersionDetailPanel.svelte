@@ -298,7 +298,7 @@
   {#if version}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      class="panel-content"
+      class="version-detail-body"
       onclick={handlePanelClick}
       onkeydown={() => {}}
       role="presentation"
@@ -386,7 +386,7 @@
 {/if}
 
 <style>
-  .panel-content {
+  .version-detail-body {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -415,7 +415,7 @@
   }
 
   @media (max-width: 768px) {
-    .panel-content {
+    .version-detail-body {
       padding: 16px;
       max-height: 85vh;
     }

@@ -313,7 +313,11 @@
     font-weight: 600;
     font-size: 0.9rem;
     color: #93c5fd;
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 18%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 18%,
+      transparent
+    );
   }
   .chip.recording {
     background: #ef4444;
@@ -455,8 +459,8 @@
   }
 
   .ghost {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: grid;
     place-items: center;
     background: rgba(255, 255, 255, 0.08);
@@ -485,8 +489,8 @@
   }
 
   .main-buttons button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     color: #fff;
@@ -505,7 +509,11 @@
     background: linear-gradient(135deg, #f59e0b, #d97706);
   }
   .main-buttons .snapshot {
-    background: linear-gradient(135deg, var(--theme-accent, #3b82f6), var(--theme-accent-strong, #2563eb));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #3b82f6),
+      var(--theme-accent-strong, #2563eb)
+    );
   }
   .main-buttons .stop {
     background: linear-gradient(135deg, #6b7280, #4b5563);
@@ -520,7 +528,11 @@
   .prop-tag {
     justify-self: end;
     padding: 8px 12px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 18%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 18%,
+      transparent
+    );
     border-radius: 12px;
     color: #a5b4fc;
     text-transform: capitalize;
@@ -577,7 +589,8 @@
   }
   input:focus,
   select:focus {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
   }
 
   .hint {
@@ -696,8 +709,8 @@
       height: 64px;
     }
     .main-buttons button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
     .video-overlay.top-bar {
       grid-template-columns: 1fr;

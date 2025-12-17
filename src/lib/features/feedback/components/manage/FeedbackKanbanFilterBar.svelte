@@ -117,8 +117,8 @@
     --fb-text-sm: clamp(0.875rem, 2.5cqi, 1rem);
 
     /* ===== FLUID SIZING ===== */
-    --fb-touch-target: clamp(44px, 11cqi, 52px);
-    --fb-icon-btn: clamp(40px, 10cqi, 52px);
+    --fb-touch-target: clamp(44px, 11cqi, 48px);
+    --fb-icon-btn: clamp(40px, 10cqi, 48px);
 
     display: flex;
     align-items: center;

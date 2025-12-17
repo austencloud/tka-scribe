@@ -339,8 +339,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .search-button {
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     padding: 14px 20px;
     background: color-mix(in srgb, var(--semantic-info, #007bff) 20%, transparent);
     border: 2px solid color-mix(in srgb, var(--semantic-info, #007bff) 40%, transparent);
@@ -376,7 +376,7 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .filter-tab {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 12px 18px;
     background: var(--theme-panel-bg);
     border: var(--theme-stroke);
@@ -431,7 +431,7 @@ Allows natural language queries to find sequences, users, and collections.
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 12px 16px;
     background: var(--theme-card-bg);
     border: var(--theme-stroke);
@@ -542,8 +542,8 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .result-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -639,12 +639,12 @@ Allows natural language queries to find sequences, users, and collections.
     .search-input {
       font-size: 14px;
       padding: 12px 12px 12px 50px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .search-button {
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       padding: 12px 16px;
     }
 
@@ -655,7 +655,7 @@ Allows natural language queries to find sequences, users, and collections.
     .result-item {
       padding: 12px;
       gap: 12px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     /* Visual size reduced but icon is not the touch target - result-item is */

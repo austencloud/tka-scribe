@@ -93,8 +93,8 @@
     padding: 8px;
     opacity: 0.7;
     transition: opacity 0.2s;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

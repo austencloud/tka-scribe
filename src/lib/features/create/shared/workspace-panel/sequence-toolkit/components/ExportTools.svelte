@@ -90,8 +90,8 @@ Pure presentation component that delegates to sequence export services.
   }
 
   .tool-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 10px;
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -151,8 +151,8 @@ Pure presentation component that delegates to sequence export services.
     }
 
     .tool-btn {
-      width: 52px; /* Larger touch targets on mobile */
-      height: 52px;
+      width: var(--min-touch-target); /* Larger touch targets on mobile */
+      height: var(--min-touch-target);
       font-size: 18px;
     }
   }
@@ -164,13 +164,13 @@ Pure presentation component that delegates to sequence export services.
     }
 
     .tool-btn {
-      width: 52px; /* Minimum touch target size */
-      height: 52px;
+      width: var(--min-touch-target); /* Minimum touch target size */
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }
 
-  /* Z Fold 6 cover screen optimization - compact visual with 52px touch target */
+  /* Z Fold 6 cover screen optimization - compact visual with 48px touch target */
   @media (max-width: 320px) {
     .export-tools {
       gap: 2px;
@@ -190,8 +190,8 @@ Pure presentation component that delegates to sequence export services.
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
     }
   }
 </style>

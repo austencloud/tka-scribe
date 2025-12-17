@@ -158,8 +158,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -209,8 +209,8 @@
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .fullscreen-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
   }
 
@@ -218,10 +218,10 @@
     .fullscreen-button {
       top: 12px;
       right: 12px;
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
     }
   }
 
@@ -230,10 +230,10 @@
     .fullscreen-button {
       top: 8px;
       right: 8px;
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
     }
   }
 </style>

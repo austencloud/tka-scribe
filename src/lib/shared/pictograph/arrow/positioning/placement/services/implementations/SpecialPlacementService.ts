@@ -147,6 +147,7 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     // Step 3: Generate turns tuple
     const turnsTuple = this.tupleGenerator.generateTurnsTuple(pictographData);
 
+
     // Step 4: Check localStorage for user overrides (takes priority)
     const localStorageOverride = this.checkLocalStorageOverride(
       gridMode,
@@ -170,12 +171,29 @@ export class SpecialPlacementService implements ISpecialPlacementService {
       return false;
     }
 
+
     // Step 6: Lookup rotation override in JSON data
-    return this.lookupService.lookupRotationOverride(
+    // Try motion-type-based key first (e.g., static_rot_angle_override)
+    let result = this.lookupService.lookupRotationOverride(
       letterData,
       turnsTuple,
       rotationOverrideKey
     );
+
+    // FALLBACK: If not found, try color-based key (e.g., red_rot_angle_override)
+    // Some JSON files use color-based keys instead of motion-type-based keys
+    if (!result && motionData.color) {
+      const colorBasedKey = `${motionData.color.toLowerCase()}_rot_angle_override`;
+      if (colorBasedKey !== rotationOverrideKey) {
+        result = this.lookupService.lookupRotationOverride(
+          letterData,
+          turnsTuple,
+          colorBasedKey
+        );
+      }
+    }
+
+    return result;
   }
 
   /**

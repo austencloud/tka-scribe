@@ -5,12 +5,10 @@
 	Main area for viewing and interacting with the sequence.
 -->
 <script lang="ts">
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
-  import MultiSelectOverlay from "../components/MultiSelectOverlay.svelte";
-  import SelectionToolbar from "../components/SelectionToolbar.svelte";
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
   import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
@@ -27,9 +25,6 @@ import { TYPES } from "$lib/shared/inversify/types";
     animatingBeatNumber = null,
     shouldOrbitAroundCenter = false,
 
-    // Multi-select props
-    onBatchEdit,
-
     // Animation state ref (for animate tab)
     animationStateRef = null,
 
@@ -44,9 +39,6 @@ import { TYPES } from "$lib/shared/inversify/types";
     practiceBeatIndex?: number | null;
     animatingBeatNumber?: number | null;
     shouldOrbitAroundCenter?: boolean;
-
-    // Multi-select props
-    onBatchEdit?: () => void;
 
     // Animation state ref
     animationStateRef?: any | null;
@@ -79,13 +71,6 @@ import { TYPES } from "$lib/shared/inversify/types";
       localSelectedBeatNumber = globalSelection;
     }
   });
-
-  // Multi-select state - use the actual mode from selection state
-  const isMultiSelectMode = $derived(sequenceState?.isMultiSelectMode ?? false);
-  const selectionCount = $derived(sequenceState?.selectionCount ?? 0);
-  const totalBeats = $derived(
-    sequenceState?.currentSequence?.beats?.length ?? 0
-  );
 
   // Toast message for validation errors
   let toastMessage = $state<string | null>(null);
@@ -133,34 +118,6 @@ import { TYPES } from "$lib/shared/inversify/types";
 
     // Note: We no longer switch to edit tab! The edit slide panel will open instead.
     // This is handled by an effect in CreateModule.svelte that watches for start position selection.
-  }
-
-  // Multi-select handlers
-  function handleBeatLongPress(beatNumber: number) {
-    if (!sequenceState) return;
-    sequenceState.enterMultiSelectMode(beatNumber);
-  }
-
-  function handleExitMultiSelect() {
-    if (!sequenceState) return;
-    sequenceState.exitMultiSelectMode();
-    localSelectedBeatNumber = null;
-  }
-
-  function handleMultiSelectToggle(beatNumber: number) {
-    if (!sequenceState) return;
-    const result = sequenceState.toggleBeatInMultiSelect(beatNumber);
-    if (!result.success) {
-      // Show toast error
-      toastMessage = result.error ?? null;
-      setTimeout(() => (toastMessage = null), 3000);
-    }
-  }
-
-  function handleBatchEdit() {
-    if (onBatchEdit) {
-      onBatchEdit();
-    }
   }
 
   // Handle beat deletion via keyboard
@@ -214,47 +171,23 @@ import { TYPES } from "$lib/shared/inversify/types";
       <div class="sequence-display-container">
         <SequenceDisplay
           {sequenceState}
-          onBeatSelected={isMultiSelectMode
-            ? handleMultiSelectToggle
-            : handleBeatSelected}
+          onBeatSelected={handleBeatSelected}
           onStartPositionSelected={handleStartPositionSelected}
           onBeatDelete={handleBeatDelete}
           selectedBeatNumber={localSelectedBeatNumber}
           practiceBeatNumber={practiceBeatIndex}
           {isSideBySideLayout}
           {shouldOrbitAroundCenter}
-          {isMultiSelectMode}
-          selectedBeatNumbers={sequenceState?.selectedBeatNumbers ??
-            new Set<number>()}
-          onBeatLongPress={handleBeatLongPress}
-          onStartLongPress={() => handleBeatLongPress(0)}
           activeMode={createModuleState?.activeSection ?? null}
           {currentDisplayWord}
         />
       </div>
-
-      <!-- Selection Toolbar (appears in multi-select mode) -->
-      {#if isMultiSelectMode}
-        <div class="selection-toolbar-container">
-          <SelectionToolbar
-            {selectionCount}
-            {totalBeats}
-            onEdit={handleBatchEdit}
-            onCancel={handleExitMultiSelect}
-          />
-        </div>
-      {/if}
 
       <!-- Toast for validation errors -->
       <Toast
         message={toastMessage ?? ""}
         onDismiss={() => (toastMessage = null)}
       />
-
-      <!-- Multi-select mode overlay -->
-      {#if isMultiSelectMode}
-        <MultiSelectOverlay onCancel={handleExitMultiSelect} />
-      {/if}
     </div>
   {/if}
 {:else}
@@ -284,16 +217,6 @@ import { TYPES } from "$lib/shared/inversify/types";
     flex-direction: column;
     overflow: hidden;
     position: relative;
-    z-index: 10; /* Above multi-select overlay */
-  }
-
-  .selection-toolbar-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 0;
-    width: 100%;
-    flex-shrink: 0; /* Prevent toolbar from shrinking */
   }
 
   .workspace-panel.loading {

@@ -54,7 +54,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .panel-btn:disabled {

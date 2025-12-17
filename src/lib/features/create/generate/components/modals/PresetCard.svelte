@@ -332,8 +332,8 @@ Displays a single preset with icon, name, summary, and action buttons
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -369,8 +369,8 @@ Displays a single preset with icon, name, summary, and action buttons
     padding: 10px;
     border-radius: 8px;
     transition: all 0.2s ease;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -431,8 +431,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       padding: 9px;
     }
 
@@ -476,8 +476,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       padding: 8px;
     }
 
@@ -538,8 +538,8 @@ Displays a single preset with icon, name, summary, and action buttons
 
     .edit-button,
     .delete-button {
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       padding: 7px;
       border-radius: 7px;
     }

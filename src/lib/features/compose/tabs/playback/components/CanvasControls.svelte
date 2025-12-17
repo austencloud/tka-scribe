@@ -38,8 +38,8 @@
   }
 
   .settings-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,8 +73,8 @@
     }
 
     .settings-btn {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 1.1rem;
     }
   }

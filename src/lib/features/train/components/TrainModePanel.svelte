@@ -547,7 +547,7 @@
 <div class="train-mode-panel">
 
   <!-- Unified Bento Layout - Everything in flow, no floaters! -->
-  <div class="panel-content">
+  <div class="training-mode-body">
     <PracticeBentoLayout
       sequence={trainState.sequence}
       currentBeatIndex={displayBeatIndex}
@@ -685,7 +685,7 @@
   }
 
   /* Main Content Area */
-  .panel-content {
+  .training-mode-body {
     flex: 1;
     display: flex;
     flex-direction: column;

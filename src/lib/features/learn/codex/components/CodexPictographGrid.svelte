@@ -269,7 +269,7 @@
       width: var(--cell-size);
       height: var(--cell-size);
       min-width: 36px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 
@@ -282,8 +282,8 @@
     }
 
     .pictograph-row > * {
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
     }
   }
 

@@ -17,6 +17,7 @@ export interface BeatGenerationOptions {
   blueRotationDirection: string;
   redRotationDirection: string;
   gridMode: GridMode;
+  propType: string;
   /** Optional: Required end position for this beat (used for last beat with end position constraint) */
   requiredEndPosition?: string;
 }

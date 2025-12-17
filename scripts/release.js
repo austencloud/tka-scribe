@@ -673,7 +673,7 @@ async function main() {
   const fromMain = args.includes('--from-main');
 
   // Admin user ID for announcement creation (defaults to Austen's ID)
-  const ADMIN_USER_ID = 'wJY6RSmdY7WQaAfnCniSHRpCLs22'; // austencloud
+  const ADMIN_USER_ID = 'PBp3GSBO6igCKPwJyLZNmVEmamI3'; // austencloud
 
   // Show last release mode
   if (showLast) {

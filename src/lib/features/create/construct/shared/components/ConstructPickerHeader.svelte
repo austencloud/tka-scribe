@@ -127,7 +127,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .header-right {
@@ -141,7 +141,7 @@
     text-align: center;
     min-width: 0;
     overflow: visible;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   /* Compact mode: Reduced height for tight spaces */
@@ -152,7 +152,7 @@
   .construct-picker-header.compact .header-left,
   .construct-picker-header.compact .header-right,
   .construct-picker-header.compact .header-center {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   /* Mobile optimizations */
@@ -170,7 +170,7 @@
     .construct-picker-header.compact .header-left,
     .construct-picker-header.compact .header-right,
     .construct-picker-header.compact .header-center {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 </style>

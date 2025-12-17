@@ -15,17 +15,25 @@
     onSelect: (userId: string, displayName: string, email: string) => void;
   }
 
-  let { selectedUserId = "", selectedUserDisplay = "", onSelect }: Props = $props();
+  let {
+    selectedUserId = "",
+    selectedUserDisplay = "",
+    onSelect,
+  }: Props = $props();
 
   let announcementService: IAnnouncementService | null = null;
   let searchQuery = $state("");
-  let searchResults = $state<Array<{ uid: string; displayName: string; email: string }>>([]);
+  let searchResults = $state<
+    Array<{ uid: string; displayName: string; email: string }>
+  >([]);
   let isSearching = $state(false);
   let showResults = $state(false);
   let searchTimeout: number | null = null;
 
   onMount(() => {
-    announcementService = resolve<IAnnouncementService>(TYPES.IAnnouncementService);
+    announcementService = resolve<IAnnouncementService>(
+      TYPES.IAnnouncementService
+    );
 
     // Pre-fill if we have a selected user
     if (selectedUserDisplay) {
@@ -63,7 +71,11 @@
     }, 300);
   }
 
-  function handleSelectUser(user: { uid: string; displayName: string; email: string }) {
+  function handleSelectUser(user: {
+    uid: string;
+    displayName: string;
+    email: string;
+  }) {
     searchQuery = user.displayName || user.email;
     showResults = false;
     searchResults = [];
@@ -163,7 +175,7 @@
 
   .search-input {
     width: 100%;
-    min-height: 52px;
+    min-height: 48px;
     padding: 0 48px 0 48px;
     background: linear-gradient(135deg, #2d2d3a 0%, #25252f 100%);
     border: 2px solid rgba(255, 255, 255, 0.15);
@@ -177,7 +189,8 @@
   .search-input:focus {
     outline: none;
     border-color: var(--theme-accent, #6366f1);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .search-input::placeholder {
@@ -221,7 +234,11 @@
   }
 
   .result-item:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
   }
 
   .result-info {

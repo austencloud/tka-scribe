@@ -177,7 +177,7 @@
   .field-toggle {
     position: relative;
     display: inline-block;
-    width: 52px;
+    width: var(--min-touch-target);
     height: 24px;
     cursor: pointer;
   }

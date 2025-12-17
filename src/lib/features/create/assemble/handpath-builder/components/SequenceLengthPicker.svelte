@@ -126,8 +126,8 @@ Compact inline panel for configuring sequence length and grid mode.
   }
 
   .adjust-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     background: linear-gradient(
       135deg,
@@ -246,8 +246,8 @@ Compact inline panel for configuring sequence length and grid mode.
     }
 
     .adjust-btn {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
 
     .grid-btn {

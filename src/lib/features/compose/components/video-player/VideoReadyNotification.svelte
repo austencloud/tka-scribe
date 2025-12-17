@@ -52,7 +52,7 @@
     border: none;
     color: white;
     padding: 12px 16px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;

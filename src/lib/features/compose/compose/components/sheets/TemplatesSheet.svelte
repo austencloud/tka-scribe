@@ -190,13 +190,13 @@
     letter-spacing: 0.5px;
   }
 
-  /* Section toggle - 52px minimum touch target */
+  /* Section toggle - 48px minimum touch target */
   .section-toggle {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 14px) 0;
     background: transparent;
     border: none;

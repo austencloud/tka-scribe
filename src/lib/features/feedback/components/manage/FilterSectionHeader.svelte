@@ -32,7 +32,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 21px;
     background: none;
     border: none;

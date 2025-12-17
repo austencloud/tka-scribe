@@ -17,10 +17,14 @@
   import { getInstagramLink } from "../domain/models/InstagramLink";
   import type { InstagramLink } from "../domain/models/InstagramLink";
   import { createServiceResolver } from "../../utils/service-resolver.svelte";
+  import { getSettings } from "../../application/state/app-state.svelte";
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
   let sequenceEncoderService: ISequenceEncoderService | null = $state(null);
+
+  // Reactive settings - properly tracks changes
+  let settings = $derived(getSettings());
 
   let {
     currentSequence = null,
@@ -92,12 +96,20 @@
     }
   });
 
-  // Generate image preview
+  // Generate image preview - regenerates when sequence, options, OR prop types change
   $effect(() => {
     if (providedShareState) return;
     if (!shareState || !currentSequence || currentSequence.beats?.length === 0)
       return;
-    void shareState.options;
+
+    // Track dependencies: options AND current prop types from settings
+    // Using $derived(getSettings()) properly tracks reactive changes
+    const options = shareState.options;
+    const blueProp = settings.bluePropType;
+    const redProp = settings.redPropType;
+    const legacyProp = settings.propType;
+
+    // Regenerate preview when any dependency changes
     shareState.generatePreview(currentSequence);
   });
 
@@ -444,8 +456,8 @@
     position: absolute;
     bottom: 8px;
     right: 8px;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -497,7 +509,7 @@
     justify-content: center;
     gap: 6px;
     padding: 14px 16px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -542,7 +554,7 @@
     align-items: center;
     gap: 6px;
     padding: 14px 18px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
@@ -627,9 +639,16 @@
 
   /* Download Button - Blue theme */
   .download-btn {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.12) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15) 0%,
+      rgba(37, 99, 235, 0.12) 100%
+    );
     border: 1.5px solid rgba(59, 130, 246, 0.3);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12), 0 0 16px rgba(59, 130, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 2px 8px rgba(59, 130, 246, 0.12),
+      0 0 16px rgba(59, 130, 246, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .download-btn i {
@@ -638,9 +657,16 @@
 
   /* Share Button - Pink/Magenta theme */
   .share-btn {
-    background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(219, 39, 119, 0.12) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(236, 72, 153, 0.15) 0%,
+      rgba(219, 39, 119, 0.12) 100%
+    );
     border: 1.5px solid rgba(236, 72, 153, 0.3);
-    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.12), 0 0 16px rgba(236, 72, 153, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 2px 8px rgba(236, 72, 153, 0.12),
+      0 0 16px rgba(236, 72, 153, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .share-btn i {
@@ -649,9 +675,16 @@
 
   /* Link Button - Green theme */
   .link-btn {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.12) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.15) 0%,
+      rgba(5, 150, 105, 0.12) 100%
+    );
     border: 1.5px solid rgba(16, 185, 129, 0.3);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12), 0 0 16px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 2px 8px rgba(16, 185, 129, 0.12),
+      0 0 16px rgba(16, 185, 129, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .link-btn i {
@@ -660,9 +693,17 @@
 
   /* Instagram Button - Gradient theme */
   .instagram-btn {
-    background: linear-gradient(135deg, rgba(245, 96, 64, 0.15) 0%, rgba(193, 53, 132, 0.12) 50%, rgba(131, 58, 180, 0.12) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(245, 96, 64, 0.15) 0%,
+      rgba(193, 53, 132, 0.12) 50%,
+      rgba(131, 58, 180, 0.12) 100%
+    );
     border: 1.5px solid rgba(193, 53, 132, 0.3);
-    box-shadow: 0 2px 8px rgba(193, 53, 132, 0.12), 0 0 16px rgba(193, 53, 132, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 2px 8px rgba(193, 53, 132, 0.12),
+      0 0 16px rgba(193, 53, 132, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .instagram-btn i {
@@ -672,31 +713,60 @@
   /* Hover states */
   @media (hover: hover) and (pointer: fine) {
     .download-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(37, 99, 235, 0.2) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(59, 130, 246, 0.25) 0%,
+        rgba(37, 99, 235, 0.2) 100%
+      );
       border-color: rgba(59, 130, 246, 0.5);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2), 0 0 24px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 4px 16px rgba(59, 130, 246, 0.2),
+        0 0 24px rgba(59, 130, 246, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .share-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(219, 39, 119, 0.2) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.25) 0%,
+        rgba(219, 39, 119, 0.2) 100%
+      );
       border-color: rgba(236, 72, 153, 0.5);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(236, 72, 153, 0.2), 0 0 24px rgba(236, 72, 153, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 4px 16px rgba(236, 72, 153, 0.2),
+        0 0 24px rgba(236, 72, 153, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .link-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.2) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(16, 185, 129, 0.25) 0%,
+        rgba(5, 150, 105, 0.2) 100%
+      );
       border-color: rgba(16, 185, 129, 0.5);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2), 0 0 24px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 4px 16px rgba(16, 185, 129, 0.2),
+        0 0 24px rgba(16, 185, 129, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .instagram-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(245, 96, 64, 0.25) 0%, rgba(193, 53, 132, 0.2) 50%, rgba(131, 58, 180, 0.2) 100%);
+      background: linear-gradient(
+        135deg,
+        rgba(245, 96, 64, 0.25) 0%,
+        rgba(193, 53, 132, 0.2) 50%,
+        rgba(131, 58, 180, 0.2) 100%
+      );
       border-color: rgba(193, 53, 132, 0.5);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(193, 53, 132, 0.2), 0 0 24px rgba(193, 53, 132, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 4px 16px rgba(193, 53, 132, 0.2),
+        0 0 24px rgba(193, 53, 132, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .action-btn:hover i {

@@ -16,9 +16,6 @@
     isSelected = false,
     isPracticeBeat = false,
     shouldOrbitAroundCenter = false,
-    // Multi-select props
-    isMultiSelectMode = false,
-    onLongPress,
     // Active mode for context-aware messaging
     activeMode = null,
   } = $props<{
@@ -30,9 +27,6 @@
     isSelected?: boolean;
     isPracticeBeat?: boolean;
     shouldOrbitAroundCenter?: boolean;
-    // Multi-select
-    isMultiSelectMode?: boolean;
-    onLongPress?: () => void;
     // Active mode
     activeMode?: BuildModeId | null;
   }>();
@@ -165,44 +159,7 @@
     };
   });
 
-  // Long-press detection
-  let longPressTimer: number | null = $state(null);
-  let longPressTriggered = $state(false);
-  const LONG_PRESS_DURATION = 500; // ms
-
-  function handlePointerDown(_event: PointerEvent) {
-    longPressTriggered = false;
-
-    longPressTimer = window.setTimeout(() => {
-      // Long-press detected
-      longPressTriggered = true;
-      hapticService?.trigger("selection"); // Haptic at 500ms
-      onLongPress?.();
-    }, LONG_PRESS_DURATION);
-  }
-
-  function handlePointerUp() {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      longPressTimer = null;
-    }
-  }
-
-  function handlePointerCancel() {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      longPressTimer = null;
-    }
-    longPressTriggered = false;
-  }
-
   function handleClick() {
-    // Don't trigger regular click if long-press was triggered
-    if (longPressTriggered) {
-      longPressTriggered = false;
-      return;
-    }
-
     // Trigger haptic feedback for beat selection
     hapticService?.trigger("selection");
     onClick?.();
@@ -232,7 +189,6 @@
   class:animate={shouldAnimateIn}
   class:selected={isSelected}
   class:practice-beat={isPracticeBeat}
-  class:multi-select-mode={isMultiSelectMode}
   class:anim-gentleBloom={currentAnimationName === "gentleBloom"}
   class:anim-softCascade={currentAnimationName === "softCascade"}
   class:anim-springPop={currentAnimationName === "springPop"}
@@ -240,9 +196,6 @@
   class:anim-glassBlur={currentAnimationName === "glassBlur"}
   onclick={handleClick}
   onkeydown={handleKeyDown}
-  onpointerdown={handlePointerDown}
-  onpointerup={handlePointerUp}
-  onpointercancel={handlePointerCancel}
   onanimationend={handleAnimationEnd}
   role="button"
   tabindex="0"
@@ -352,7 +305,7 @@
     transform: scale(1.12);
     box-shadow:
       0 0 30px rgba(251, 191, 36, 0.7),
-      0 12px 52px rgba(251, 191, 36, 0.4),
+      0 12px 48px rgba(251, 191, 36, 0.4),
       0 0 0 1px rgba(251, 191, 36, 0.3);
   }
 

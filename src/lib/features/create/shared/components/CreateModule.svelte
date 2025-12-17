@@ -168,33 +168,18 @@
   // ============================================================================
 
   // Sync creation method selector visibility to navigation
-  // Show selector ONLY if:
-  // 1. User has never selected a creation method AND
-  // 2. We're NOT currently on a creation method tab AND
-  // 3. Workspace is empty
+  // Show onboarding tutorial for first-time users who haven't selected a creation method yet
   $effect(() => {
     if (
       !CreateModuleState?.isPersistenceInitialized ||
       !creationMethodPersistence
-    )
+    ) {
       return;
-
-    // Check if we're on a creation method tab
-    const activeTab = navigationState.activeTab;
-    const isOnCreationMethodTab =
-      activeTab === "assembler" ||
-      activeTab === "constructor" ||
-      activeTab === "generator";
-
-    // If we're on a creation method tab, ensure the flag is set
-    if (isOnCreationMethodTab && !hasSelectedCreationMethod) {
-      hasSelectedCreationMethod = true;
-      creationMethodPersistence.markMethodSelected();
     }
 
-    // Only show selector if NOT on a creation tab and method never selected
-    const shouldShow = !hasSelectedCreationMethod && !isOnCreationMethodTab;
-
+    // Show the onboarding selector if user has never completed the tutorial
+    // Once they select a method, they're on their own with normal tab navigation
+    const shouldShow = !hasSelectedCreationMethod;
     navigationState.setCreationMethodSelectorVisible(shouldShow);
   });
 
@@ -528,8 +513,8 @@
           panelState,
         });
 
-        hasSelectedCreationMethod =
-          creationMethodPersistence.hasUserSelectedMethod();
+        const fromStorage = creationMethodPersistence.hasUserSelectedMethod();
+        hasSelectedCreationMethod = fromStorage;
         servicesInitialized = true;
 
         initService.configureEventCallbacks(CreateModuleState, panelState);
@@ -569,17 +554,6 @@
           }
         } else {
           logger.info("Session management skipped (user not authenticated)");
-        }
-
-        // Auto-detect if method was already selected (handles page refreshes)
-        const detectedSelection = initService.detectCreationMethodSelection(
-          navigationState.activeTab,
-          CreateModuleState.isWorkspaceEmpty(),
-          hasSelectedCreationMethod
-        );
-        if (detectedSelection && !hasSelectedCreationMethod) {
-          hasSelectedCreationMethod = true;
-          creationMethodPersistence.markMethodSelected();
         }
 
         logger.success("CreateModule initialized successfully");

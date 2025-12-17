@@ -178,6 +178,7 @@ export async function handleModuleChange(
   const doc = document as any;
 
   // Coming FROM dashboard - skip (Dashboard.svelte handles dive-in animation)
+  // Exception: settings portal has its own animation that should always play
   const isLeavingDashboard = currentMod === 'dashboard';
 
   // Going TO dashboard - use pull-out animation
@@ -187,7 +188,12 @@ export async function handleModuleChange(
   const isEnteringSettings = moduleId === 'settings';
   const isExitingSettings = currentMod === 'settings';
 
-  if (typeof doc.startViewTransition === 'function' && !isLeavingDashboard) {
+  // Allow view transitions when:
+  // 1. Not leaving dashboard (normal case)
+  // 2. OR entering/exiting settings (settings portal always animates)
+  const shouldUseViewTransition = !isLeavingDashboard || isEnteringSettings || isExitingSettings;
+
+  if (typeof doc.startViewTransition === 'function' && shouldUseViewTransition) {
     if (isEnteringSettings) {
       // ENTERING SETTINGS - Portal expand animation
       // Store where we came from for the return journey (persist to survive HMR)
@@ -402,9 +408,52 @@ function pushHistoryState(moduleId: ModuleId, sectionId?: string) {
 
 let historyInitialized = false;
 
+/**
+ * Parse the URL hash and extract module/section IDs
+ * Expected format: #moduleId or #moduleId/sectionId
+ */
+function parseHashNavigation(): { moduleId: ModuleId; sectionId?: string } | null {
+  if (typeof window === "undefined") return null;
+
+  const hash = window.location.hash;
+  if (!hash || hash === "#") return null;
+
+  // Remove leading # and split by /
+  const parts = hash.substring(1).split("/");
+  const moduleId = parts[0] as ModuleId;
+  const sectionId = parts[1];
+
+  // Validate module exists
+  const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
+  if (!moduleDefinition) return null;
+
+  // If section is provided, validate it exists for this module
+  if (sectionId) {
+    const validSection = moduleDefinition.sections.some((s) => s.id === sectionId);
+    if (!validSection) {
+      // Module is valid but section isn't - return module only
+      return { moduleId };
+    }
+    return { moduleId, sectionId };
+  }
+
+  return { moduleId };
+}
+
 export function initializeNavigationHistory() {
   if (historyInitialized || typeof window === "undefined") return;
   historyInitialized = true;
+
+  // First, parse the URL hash to see if user navigated directly to a specific module/tab
+  const hashNav = parseHashNavigation();
+  if (hashNav) {
+    // URL has a valid module/section - navigate to it (overrides localStorage)
+    if (hashNav.moduleId !== navigationState.currentModule) {
+      navigationState.setCurrentModule(hashNav.moduleId, hashNav.sectionId);
+    } else if (hashNav.sectionId && hashNav.sectionId !== navigationState.activeTab) {
+      navigationState.setActiveTab(hashNav.sectionId);
+    }
+  }
 
   // Seed initial state so back/forward has a valid entry
   replaceHistoryState(navigationState.currentModule, navigationState.activeTab);

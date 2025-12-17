@@ -161,12 +161,17 @@
       color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent)
     );
     border-radius: 20px;
-    border: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .icon-container i {
     font-size: 2.5rem;
-    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #3b82f6),
+      var(--theme-accent-strong, #8b5cf6)
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -176,7 +181,11 @@
     font-size: 2rem;
     font-weight: 800;
     margin: 0 0 0.75rem 0;
-    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #3b82f6),
+      var(--theme-accent-strong, #8b5cf6)
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -228,7 +237,11 @@
   .select-sequence-button {
     width: 100%;
     padding: 1.25rem 2rem;
-    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #3b82f6),
+      var(--theme-accent-strong, #8b5cf6)
+    );
     border: none;
     border-radius: 12px;
     color: var(--theme-text, white);
@@ -240,12 +253,14 @@
     justify-content: center;
     gap: 0.75rem;
     transition: all 0.2s;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .select-sequence-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .select-sequence-button i {
@@ -269,8 +284,8 @@
   }
 
   .loading-spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-top-color: var(--semantic-info, #3b82f6);
     border-radius: 50%;

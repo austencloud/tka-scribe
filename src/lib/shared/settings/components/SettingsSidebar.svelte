@@ -126,7 +126,7 @@
     align-items: center;
     gap: clamp(10px, 3cqi, 14px);
     padding: 14px 16px; /* Consistent padding for predictable sizing */
-    min-height: 52px; /* WCAG AAA: 52px minimum, we use 52px for comfort */
+    min-height: var(--min-touch-target); /* WCAG AAA: 48px minimum, we use 48px for comfort */
     flex: 1; /* Allow items to grow and fill space evenly */
     max-height: 72px; /* Cap growth so items don't get too tall */
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
@@ -149,7 +149,7 @@
       justify-content: center;
       gap: 0;
       padding: 16px; /* Maintain touch target size */
-      min-height: 52px; /* Slightly taller for icon-only */
+      min-height: var(--min-touch-target); /* Slightly taller for icon-only */
     }
 
     .sidebar-label {
@@ -193,13 +193,15 @@
     background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
     border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
     font-weight: 600; /* Emphasize active tab */
   }
 
   .settings-sidebar-item.active:hover {
     background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
-    box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 0 16px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .sidebar-icon {
@@ -338,7 +340,7 @@
 
     .settings-sidebar-item {
       padding: 5px 3px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       gap: 2px;
     }
 
@@ -362,7 +364,7 @@
     }
 
     .settings-sidebar-item {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: 4px 4px;
       gap: 2px;
     }

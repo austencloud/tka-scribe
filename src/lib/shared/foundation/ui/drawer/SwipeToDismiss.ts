@@ -39,7 +39,67 @@ export class SwipeToDismiss {
   private justDragged = false;
   private cleanupFn: (() => void) | null = null;
 
+  // Scroll-aware dismiss: track scrollable container state
+  private scrollableContainer: HTMLElement | null = null;
+  private scrollAtBoundary = true; // True if scroll is at the edge where dismiss would occur
+
   constructor(private options: SwipeToDismissOptions) {}
+
+  /**
+   * Find the nearest scrollable ancestor from the touch target
+   */
+  private findScrollableAncestor(target: HTMLElement): HTMLElement | null {
+    let current: HTMLElement | null = target;
+    while (current && current !== this.element) {
+      // Skip form elements - they have overflow:auto by default but shouldn't block dismiss
+      const tagName = current.tagName.toLowerCase();
+      if (tagName === 'textarea' || tagName === 'input' || tagName === 'select') {
+        current = current.parentElement;
+        continue;
+      }
+
+      const style = window.getComputedStyle(current);
+      const overflowY = style.overflowY;
+      const overflowX = style.overflowX;
+
+      // Check if this element is scrollable
+      const isScrollableY = (overflowY === 'auto' || overflowY === 'scroll') && current.scrollHeight > current.clientHeight;
+      const isScrollableX = (overflowX === 'auto' || overflowX === 'scroll') && current.scrollWidth > current.clientWidth;
+
+      if (isScrollableY || isScrollableX) {
+        return current;
+      }
+      current = current.parentElement;
+    }
+    return null;
+  }
+
+  /**
+   * Check if scroll is at the boundary where dismiss gesture would occur
+   * For bottom placement: scrollTop === 0 (at top)
+   * For top placement: scrollTop === maxScroll (at bottom)
+   * For right placement: scrollLeft === 0 (at left)
+   * For left placement: scrollLeft === maxScroll (at right)
+   */
+  private isScrollAtDismissBoundary(container: HTMLElement): boolean {
+    const { placement } = this.options;
+
+    if (placement === 'bottom') {
+      // For bottom sheet, dismiss happens on swipe down, which conflicts with scrolling up
+      // Only allow dismiss when already at the top (scrollTop === 0)
+      return container.scrollTop <= 1; // Allow 1px tolerance
+    } else if (placement === 'top') {
+      // For top sheet, dismiss happens on swipe up, which conflicts with scrolling down
+      const maxScroll = container.scrollHeight - container.clientHeight;
+      return container.scrollTop >= maxScroll - 1;
+    } else if (placement === 'right') {
+      return container.scrollLeft <= 1;
+    } else if (placement === 'left') {
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      return container.scrollLeft >= maxScroll - 1;
+    }
+    return true;
+  }
 
   /**
    * Attach event listeners to the target element
@@ -146,6 +206,8 @@ export class SwipeToDismiss {
     this.currentY = 0;
     this.startX = 0;
     this.currentX = 0;
+    this.scrollableContainer = null;
+    this.scrollAtBoundary = true;
   }
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
@@ -165,6 +227,12 @@ export class SwipeToDismiss {
       target.closest("select") ||
       target.closest("textarea")
     );
+
+    // Find scrollable container and check if we're at the dismiss boundary
+    this.scrollableContainer = this.findScrollableAncestor(target);
+    this.scrollAtBoundary = this.scrollableContainer
+      ? this.isScrollAtDismissBoundary(this.scrollableContainer)
+      : true;
 
     if (event instanceof TouchEvent) {
       const touch = event.touches[0]!;
@@ -198,26 +266,51 @@ export class SwipeToDismiss {
       this.currentX = event.clientX;
     }
 
-    const deltaY = Math.abs(this.currentY - this.startY);
-    const deltaX = Math.abs(this.currentX - this.startX);
+    const deltaY = this.currentY - this.startY;
+    const deltaX = this.currentX - this.startX;
+    const absDeltaY = Math.abs(deltaY);
+    const absDeltaX = Math.abs(deltaX);
     const movementThreshold = 5;
 
-    if (deltaY > movementThreshold || deltaX > movementThreshold) {
+    // Check if user is swiping in the dismiss direction
+    const isSwipingInDismissDirection =
+      (this.options.placement === "bottom" && deltaY > 0) ||
+      (this.options.placement === "top" && deltaY < 0) ||
+      (this.options.placement === "right" && deltaX > 0) ||
+      (this.options.placement === "left" && deltaX < 0);
+
+    // If there's a scrollable container and scroll is NOT at the dismiss boundary,
+    // and user is swiping in the dismiss direction, abort the drag and let scroll happen
+    if (this.scrollableContainer && !this.scrollAtBoundary && isSwipingInDismissDirection) {
+      // Re-check boundary in case user scrolled to top during this gesture
+      this.scrollAtBoundary = this.isScrollAtDismissBoundary(this.scrollableContainer);
+
+      if (!this.scrollAtBoundary) {
+        // Abort drag - let native scroll take over
+        this.isDragging = false;
+        this.options.onDragChange?.(0, 1, false);
+        return;
+      }
+    }
+
+    if (absDeltaY > movementThreshold || absDeltaX > movementThreshold) {
       this.hasMoved = true;
       if (this.startedOnInteractive) {
         event.preventDefault();
       }
     }
 
-    // Prevent default for valid drag directions
-    if (this.options.placement === "bottom" && this.currentY - this.startY > 0) {
-      event.preventDefault();
-    } else if (this.options.placement === "top" && this.currentY - this.startY < 0) {
-      event.preventDefault();
-    } else if (this.options.placement === "right" && this.currentX - this.startX > 0) {
-      event.preventDefault();
-    } else if (this.options.placement === "left" && this.currentX - this.startX < 0) {
-      event.preventDefault();
+    // Prevent default for valid drag directions (only if scroll is at boundary)
+    if (this.scrollAtBoundary || !this.scrollableContainer) {
+      if (this.options.placement === "bottom" && deltaY > 0) {
+        event.preventDefault();
+      } else if (this.options.placement === "top" && deltaY < 0) {
+        event.preventDefault();
+      } else if (this.options.placement === "right" && deltaX > 0) {
+        event.preventDefault();
+      } else if (this.options.placement === "left" && deltaX < 0) {
+        event.preventDefault();
+      }
     }
 
     // Report drag progress

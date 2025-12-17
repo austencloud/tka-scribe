@@ -71,8 +71,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: var(--theme-card-bg, rgba(42, 42, 42, 0.95));
     backdrop-filter: blur(12px);
     border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
@@ -107,13 +107,13 @@
     transform: translateX(-2px);
   }
 
-  /* Mobile responsive - maintain 52px touch target */
+  /* Mobile responsive - maintain 48px touch target */
   @media (max-width: 768px) {
     .back-button {
       top: 0.5rem;
       left: 0.5rem;
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
 
     .back-button svg {

@@ -134,7 +134,7 @@ Combines video feed with playback controls for practicing sequences.
 
 <div class="record-panel">
   {#if recordState.hasSequence}
-    <div class="panel-content">
+    <div class="record-controls-body">
       <!-- Video feed -->
       <div class="video-section">
         <VideoFeedPanel
@@ -196,7 +196,7 @@ Combines video feed with playback controls for practicing sequences.
     overflow-y: auto;
   }
 
-  .panel-content {
+  .record-controls-body {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -253,7 +253,7 @@ Combines video feed with playback controls for practicing sequences.
     justify-content: center;
     height: 100%;
     text-align: center;
-    padding: var(--spacing-xl, 52px);
+    padding: var(--spacing-xl, 48px);
     color: var(--theme-text, var(--foreground, #ffffff));
   }
 

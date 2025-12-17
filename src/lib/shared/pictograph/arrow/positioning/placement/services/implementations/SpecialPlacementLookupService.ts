@@ -88,18 +88,49 @@ export class SpecialPlacementLookupService
         ? (letterSpecificData as Record<string, unknown>)
         : letterData;
 
-    // Get turn-specific data
-    const turnData = actualLetterData[turnsTuple] as
-      | Record<string, unknown>
-      | undefined;
+    // Try exact tuple first
+    let turnData = actualLetterData[turnsTuple] as Record<string, unknown> | undefined;
+
+    // FALLBACK: If not found and tuple has direction prefix, try without it
+    // JSON data sometimes omits direction prefix for whole-number turns
+    if (!turnData) {
+      const fallbackTuple = this.tryAlternativeTupleFormat(turnsTuple);
+      if (fallbackTuple && fallbackTuple !== turnsTuple) {
+        turnData = actualLetterData[fallbackTuple] as Record<string, unknown> | undefined;
+      }
+    }
 
     if (!turnData) {
       return false;
     }
 
+
     // Check if rotation override flag exists and is true
     const overrideFlag = turnData[rotationOverrideKey];
     return overrideFlag === true;
+  }
+
+  /**
+   * Try alternative tuple format for legacy JSON compatibility.
+   * Desktop JSON files sometimes use different direction prefix rules.
+   */
+  private tryAlternativeTupleFormat(turnsTuple: string): string | null {
+    // Pattern: "(direction, num1, num2)" or "(direction, num1, num2, state1, state2)"
+    const withDirectionMatch = turnsTuple.match(/^\(([so]),\s*(.+)\)$/);
+    if (withDirectionMatch) {
+      // Has direction prefix - try without it: "(num1, num2)"
+      return `(${withDirectionMatch[2]})`;
+    }
+
+    // Pattern: "(num1, num2)" - try adding direction prefixes
+    const withoutDirectionMatch = turnsTuple.match(/^\((\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)\)$/);
+    if (withoutDirectionMatch) {
+      // Could try with 's' or 'o' prefix, but since we don't know which,
+      // just return null - the caller should handle both cases
+      return null;
+    }
+
+    return null;
   }
 
   /**

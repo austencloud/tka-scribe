@@ -87,8 +87,8 @@
   }
 
   .stat-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 12px;
     display: flex;
     align-items: center;

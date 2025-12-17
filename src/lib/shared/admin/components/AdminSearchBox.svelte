@@ -58,7 +58,7 @@
     border-radius: 10px;
     padding: 10px 12px;
     transition: all 0.2s;
-    min-height: 52px; /* Touch target */
+    min-height: var(--min-touch-target); /* Touch target */
     box-sizing: border-box;
   }
 
@@ -72,7 +72,8 @@
   .admin-search-box:focus-within {
     border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 10%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .search-icon {
@@ -113,8 +114,8 @@
     flex-shrink: 0;
     transition: all 0.2s;
     border-radius: 6px;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   @media (hover: hover) {

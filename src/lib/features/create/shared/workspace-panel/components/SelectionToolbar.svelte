@@ -109,14 +109,14 @@ Shows:
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 52px; /* Touch target */
+    min-height: var(--min-touch-target); /* Touch target */
   }
 
   .cancel-button {
     background: transparent;
     color: hsl(var(--muted-foreground));
     padding: var(--spacing-sm);
-    min-width: 52px;
+    min-width: var(--min-touch-target);
   }
 
   .cancel-button:hover {

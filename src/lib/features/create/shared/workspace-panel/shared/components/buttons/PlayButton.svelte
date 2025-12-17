@@ -43,9 +43,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Desktop: 52px, Mobile: 52px minimum (iOS/Android touch target guidelines) */
-    width: 52px;
-    height: 52px;
+    /* Desktop: 48px, Mobile: 48px minimum (iOS/Android touch target guidelines) */
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: none;
     background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent); /* Subtle blue tint for primary action */
     backdrop-filter: blur(10px);
@@ -85,20 +85,20 @@
     font-size: 18px;
   }
 
-  /* Mobile responsive adjustments - ALWAYS 52px minimum per iOS/Android guidelines */
+  /* Mobile responsive adjustments - ALWAYS 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .play-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }
 
-  /* Keep 52px on all smaller screens - reduce gaps instead of buttons */
+  /* Keep 48px on all smaller screens - reduce gaps instead of buttons */
   @media (max-width: 480px) {
     .play-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
 
@@ -109,8 +109,8 @@
 
   @media (max-width: 320px) {
     .play-button {
-      width: 52px; /* NEVER below 52px for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* NEVER below 48px for accessibility */
+      height: var(--min-touch-target);
       font-size: 16px;
     }
 
@@ -119,11 +119,11 @@
     }
   }
 
-  /* Landscape mobile: Maintain 52px minimum */
+  /* Landscape mobile: Maintain 48px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .play-button {
-      width: 52px; /* Maintain 52px minimum for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      height: var(--min-touch-target);
     }
 
     .play-button i {

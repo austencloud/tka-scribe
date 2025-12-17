@@ -173,8 +173,7 @@
         {/if}
       </section>
     {/if}
-
-    </div>
+  </div>
 
   <DashboardMobileDrawers
     challengeDrawerOpen={dashboardState.challengeDrawerOpen}
@@ -197,14 +196,16 @@
      ======================================== */
 
   /* Old page (dashboard) zooms out and fades */
-  :global(::view-transition-old(root)) {
+  /* Exclude settings portal transitions - they have their own animations in view-transitions.css */
+  :global(:root:not(.settings-portal-enter):not(.settings-portal-exit)::view-transition-old(root)) {
     animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-out-fade;
     transform-origin: var(--transition-origin-x, 50%)
       var(--transition-origin-y, 50%);
   }
 
   /* New page (module) zooms in from card position */
-  :global(::view-transition-new(root)) {
+  /* Exclude settings portal transitions - they have their own animations in view-transitions.css */
+  :global(:root:not(.settings-portal-enter):not(.settings-portal-exit)::view-transition-new(root)) {
     animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-in-reveal;
     transform-origin: var(--transition-origin-x, 50%)
       var(--transition-origin-y, 50%);
@@ -351,20 +352,28 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 14px;
     font-size: 20px;
     flex-shrink: 0;
   }
 
   .teaser-icon.challenge {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 15%,
+      transparent
+    );
     color: var(--semantic-warning, #f59e0b);
   }
 
   .teaser-icon.support {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 15%,
+      transparent
+    );
     color: var(--theme-accent-strong, #8b5cf6);
   }
 

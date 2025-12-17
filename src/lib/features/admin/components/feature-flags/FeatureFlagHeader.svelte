@@ -99,7 +99,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    min-height: 52px; /* Touch target */
+    min-height: var(--min-touch-target); /* Touch target */
   }
 
   .toggle-btn:hover {

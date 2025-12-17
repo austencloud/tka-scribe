@@ -56,8 +56,8 @@
     font-size: 0.9rem;
     font-weight: 500;
     transition: all 0.15s ease;
-    height: 52px;
-    min-width: 52px;
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
   }
 
   .mode-btn:hover {
@@ -74,8 +74,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);

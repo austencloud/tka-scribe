@@ -4,7 +4,10 @@
   Bottom control bar with play/pause, stop, speed, and loop controls.
 -->
 <script lang="ts">
-  import type { PlaybackMode, StepPlaybackStepSize } from "../../../state/animation-panel-state.svelte";
+  import type {
+    PlaybackMode,
+    StepPlaybackStepSize,
+  } from "../../../state/animation-panel-state.svelte";
   const STEP_PAUSE_PRESETS = [
     { label: "None", ms: 0 },
     { label: "Short", ms: 150 },
@@ -109,14 +112,19 @@
       class:active={playbackMode === "step"}
       onclick={toggleStepMode}
       disabled={isPlaying}
-      aria-label={playbackMode === "step" ? "Disable step mode" : "Enable step mode"}
+      aria-label={playbackMode === "step"
+        ? "Disable step mode"
+        : "Enable step mode"}
       title={isPlaying ? "Pause playback to change mode" : "Toggle step mode"}
     >
       <i class="fas fa-shoe-prints"></i>
       <span class="mode-label">Step</span>
     </button>
 
-    <div class="step-settings" class:disabled={playbackMode !== "step" || isPlaying}>
+    <div
+      class="step-settings"
+      class:disabled={playbackMode !== "step" || isPlaying}
+    >
       <div class="step-size">
         <button
           class="mini-btn"
@@ -203,8 +211,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-width: 52px;
-    height: 52px;
+    min-width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0 1rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -275,7 +283,7 @@
   }
 
   .mini-btn {
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 0.65rem;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -321,7 +329,7 @@
   }
 
   .pause-chip {
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 0.65rem;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -360,7 +368,7 @@
   }
 
   .speed-btn {
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     height: 36px;
     padding: 0 0.75rem;
     background: rgba(255, 255, 255, 0.04);
@@ -409,7 +417,7 @@
 
     .mini-btn,
     .pause-chip {
-      height: 52px;
+      height: var(--min-touch-target);
     }
 
     .speed-label {

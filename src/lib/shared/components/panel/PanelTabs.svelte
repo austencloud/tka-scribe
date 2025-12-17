@@ -79,7 +79,7 @@
     justify-content: center;
     gap: 6px;
     padding: 14px 18px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: transparent;
     border: none;
     border-radius: 100px;
@@ -93,11 +93,19 @@
 
   .panel-tab:hover {
     color: var(--theme-text, rgba(255, 255, 255, 0.85));
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 10%,
+      transparent
+    );
   }
 
   .panel-tab--active {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 25%,
+      transparent
+    );
     color: var(--theme-text, rgba(255, 255, 255, 0.98));
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
@@ -117,7 +125,7 @@
 
     .panel-tab {
       padding: 14px 16px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .panel-tab i {

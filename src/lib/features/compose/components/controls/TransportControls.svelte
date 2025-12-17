@@ -141,8 +141,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
     background: linear-gradient(
       135deg,
@@ -211,8 +211,8 @@
 
   /* Larger play button in expanded mode */
   .play-pause-btn.large {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     font-size: 18px;
   }
 
@@ -238,8 +238,8 @@
     }
 
     .play-pause-btn {
-      width: 48px;
-      height: 48px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 15px;
     }
   }

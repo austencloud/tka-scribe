@@ -78,8 +78,8 @@
     align-items: center;
     justify-content: center;
     gap: 0.625rem;
-    min-height: 52px;
-    min-width: 52px;
+    min-height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
     padding: 0.5rem 1rem;
     background: transparent;
     border: none;
@@ -96,8 +96,13 @@
   }
 
   .mode-button.active {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 25%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
     color: var(--theme-text, #ffffff);
   }
 

@@ -142,7 +142,8 @@
     padding: 24px;
     background: linear-gradient(
       145deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent)
+        0%,
       color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
     );
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -161,8 +162,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: linear-gradient(
       135deg,
       var(--theme-accent, #6366f1) 0%,
@@ -212,7 +213,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 14px 20px;
     background: var(--btn-bg);
     border: none;
@@ -228,7 +229,8 @@
   .donate-btn:hover {
     background: var(--btn-hover);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
   }
 
   .donate-btn:active {
@@ -273,8 +275,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
@@ -318,7 +320,7 @@
     }
 
     .donate-btn {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: 12px 16px;
       font-size: 0.9375rem;
     }

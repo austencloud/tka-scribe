@@ -50,8 +50,8 @@ Handles click events and accessibility.
   }
 
   .favorite {
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border: none;
     border-radius: 999px;
     background: color-mix(in srgb, var(--theme-panel-bg, #11111f) 70%, transparent);
@@ -93,8 +93,8 @@ Handles click events and accessibility.
 
   @container sequence-card (min-width: 250px) and (max-width: 299px) {
     .favorite {
-      min-width: 48px;
-      min-height: 48px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       font-size: 1.15rem;
     }
   }

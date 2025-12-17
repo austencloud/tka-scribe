@@ -27,6 +27,7 @@
   import TransformsGridMode from "./TransformsGridMode.svelte";
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
   import TurnPatternDrawer from "./TurnPatternDrawer.svelte";
+  import PictographInspectModal from "./PictographInspectModal.svelte";
   import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import { setGridRotationDirection } from "$lib/shared/pictograph/grid/state/grid-rotation-state.svelte";
@@ -78,6 +79,7 @@
   let pendingSequenceTransfer = $state<any>(null);
   let showHelpSheet = $state(false);
   let showTurnPatternDrawer = $state(false);
+  let showInspectModal = $state(false);
   let lastTrackedBeatNumber = $state<number | null>(null);
 
   // Sync isOpen with show prop
@@ -430,6 +432,16 @@
       {/if}
 
       <div class="header-actions">
+        {#if currentMode === "turns" && hasSelection && selectedBeatData}
+          <button
+            class="icon-btn inspect"
+            onclick={() => (showInspectModal = true)}
+            aria-label="Inspect pictograph metadata"
+            title="Inspect"
+          >
+            <i class="fas fa-magnifying-glass"></i>
+          </button>
+        {/if}
         {#if currentMode === "transforms"}
           <button
             class="icon-btn help"
@@ -537,6 +549,12 @@
   onApply={handleTurnPatternApply}
 />
 
+<PictographInspectModal
+  show={showInspectModal}
+  beatData={selectedBeatData}
+  onClose={() => (showInspectModal = false)}
+/>
+
 <style>
   .editor-panel {
     display: flex;
@@ -554,7 +572,7 @@
     padding: 4px 12px;
     background: rgba(15, 20, 30, 0.95);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    height: 52px;
+    height: var(--min-touch-target);
     flex-shrink: 0;
   }
 
@@ -578,8 +596,8 @@
     font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.15s ease;
-    height: 52px;
-    min-width: 52px;
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
   }
 
   .mode-btn:hover {
@@ -619,8 +637,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     cursor: pointer;
     font-size: 16px;
@@ -636,6 +654,18 @@
   .icon-btn.help:hover {
     background: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.9);
+  }
+
+  .icon-btn.inspect {
+    background: rgba(6, 182, 212, 0.15);
+    color: rgba(6, 182, 212, 0.8);
+    border-color: rgba(6, 182, 212, 0.3);
+  }
+
+  .icon-btn.inspect:hover {
+    background: rgba(6, 182, 212, 0.25);
+    color: #06b6d4;
+    border-color: rgba(6, 182, 212, 0.5);
   }
 
   .icon-btn.close {
@@ -663,8 +693,8 @@
 
     .mode-btn {
       padding: 0 10px;
-      height: 48px;
-      min-width: 48px;
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
     }
 
     .compact-header {
@@ -672,8 +702,8 @@
     }
 
     .icon-btn {
-      width: 48px;
-      height: 48px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 14px;
     }
   }

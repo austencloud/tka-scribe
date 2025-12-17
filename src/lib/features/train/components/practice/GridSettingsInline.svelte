@@ -203,7 +203,7 @@
   }
 
   .scale-value {
-    min-width: 48px;
+    min-width: var(--min-touch-target);
     text-align: center;
     font-size: 0.85rem;
     font-weight: 600;

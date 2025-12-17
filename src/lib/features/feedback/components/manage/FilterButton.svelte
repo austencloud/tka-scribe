@@ -44,7 +44,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 21px;
     background: transparent;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

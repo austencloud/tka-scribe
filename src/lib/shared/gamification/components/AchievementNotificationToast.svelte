@@ -127,29 +127,47 @@
     from {
       box-shadow:
         0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
-        0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+        0 0 20px
+          color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     }
     to {
       box-shadow:
         0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.4)),
-        0 0 40px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+        0 0 40px
+          color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
     }
   }
 
   .toast.achievement {
-    border-color: color-mix(in srgb, var(--semantic-warning, #ffd700) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-warning, #ffd700) 50%,
+      transparent
+    );
   }
 
   .toast.level_up {
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
   }
 
   .toast.challenge_complete {
-    border-color: color-mix(in srgb, var(--semantic-success, #4caf50) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #4caf50) 50%,
+      transparent
+    );
   }
 
   .toast.streak_milestone {
-    border-color: color-mix(in srgb, var(--semantic-error, #ff5722) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ff5722) 50%,
+      transparent
+    );
   }
 
   .toast-icon {
@@ -187,8 +205,8 @@
   }
 
   .toast-close {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));

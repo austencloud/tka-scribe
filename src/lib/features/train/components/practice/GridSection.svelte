@@ -93,14 +93,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
       color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
     border-radius: 12px;
     color: color-mix(in srgb, var(--semantic-info, #60a5fa) 80%, transparent);
     font-size: 1.25rem;
@@ -123,7 +124,8 @@
       color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
       color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 8px;
     color: color-mix(in srgb, var(--semantic-info, #93c5fd) 90%, white);
     font-size: 0.8125rem;
@@ -138,7 +140,11 @@
       color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent),
       color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent)
     );
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 50%,
+      transparent
+    );
     transform: translateY(-1px);
   }
 </style>

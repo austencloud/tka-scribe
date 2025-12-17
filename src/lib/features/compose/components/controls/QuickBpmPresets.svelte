@@ -42,7 +42,7 @@
   .quick-preset-btn {
     flex: 1;
     min-width: 0;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 8px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

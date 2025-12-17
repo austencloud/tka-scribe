@@ -110,7 +110,7 @@
   </header>
 
   {#if !showConfirm}
-    <div class="panel-content">
+    <div class="release-prep-body">
       <!-- Stats -->
       <div class="stats-section">
         <div class="stat">
@@ -341,7 +341,7 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
-  .panel-content {
+  .release-prep-body {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
@@ -390,7 +390,7 @@
   }
 
   .empty-state i {
-    font-size: 52px;
+    font-size: 48px;
     color: #10b981;
     margin-bottom: 16px;
   }

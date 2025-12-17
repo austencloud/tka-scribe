@@ -154,7 +154,7 @@
     transition: all var(--transition-fast);
     font-size: var(--font-size-sm);
     font-weight: 500;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .rotation-override-button:hover:not(:disabled) {

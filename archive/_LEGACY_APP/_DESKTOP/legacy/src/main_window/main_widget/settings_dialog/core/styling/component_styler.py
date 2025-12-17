@@ -154,7 +154,7 @@ class ComponentStyler:
         }}
 
         QCheckBox::indicator {{
-            width: 52px;
+            width: 48px;
             height: 24px;
             border-radius: 12px;
             background-color: {bg_color};

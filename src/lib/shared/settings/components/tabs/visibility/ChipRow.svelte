@@ -83,22 +83,41 @@
 
   /* Active (On) State - Theme Accent */
   .chip.active {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 40%,
+      transparent
+    );
     color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .chip.active:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 50%,
+      transparent
+    );
     color: var(--theme-accent, #93c5fd);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
-      0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   /* Disabled State */
@@ -124,7 +143,8 @@
 
   /* Focus State */
   .chip:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -132,7 +152,7 @@
   @container settings-panel-body (max-height: 552px) {
     .chip {
       padding: 10px 6px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       border-radius: 10px;
     }
 
@@ -149,7 +169,7 @@
   @container settings-panel-body (max-height: 480px) {
     .chip {
       padding: 8px 4px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       border-radius: 10px;
       gap: 1px;
     }

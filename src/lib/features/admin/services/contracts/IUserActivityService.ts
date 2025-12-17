@@ -82,10 +82,11 @@ export interface IUserActivityService {
   getSessionActivity(userId: string, sessionId: string): Promise<ActivityEvent[]>;
 
   /**
-   * Get presence stats (online counts, by module, etc.)
+   * Get presence stats (active/inactive counts, by module, etc.)
    */
   getPresenceStats(): Promise<{
-    onlineCount: number;
+    activeCount: number;
+    inactiveCount: number;
     byModule: Record<string, number>;
     byDevice: Record<string, number>;
   }>;

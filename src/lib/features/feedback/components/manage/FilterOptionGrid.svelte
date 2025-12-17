@@ -63,7 +63,7 @@
     display: flex;
     align-items: center;
     gap: 13px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 21px;
     background: transparent;
     border: none;

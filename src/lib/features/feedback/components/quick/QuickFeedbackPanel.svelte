@@ -255,15 +255,15 @@
     letter-spacing: -0.02em;
   }
 
-  /* Close button - 52px minimum touch target */
+  /* Close button - 48px minimum touch target */
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 52px;
-    min-height: 52px;
-    width: clamp(52px, 12cqi, 52px);
-    height: clamp(52px, 12cqi, 52px);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
+    width: clamp(48px, 12cqi, 48px);
+    height: clamp(48px, 12cqi, 48px);
     background: var(--bg-subtle);
     border: 1px solid var(--border-subtle);
     border-radius: clamp(8px, 2cqi, 12px);

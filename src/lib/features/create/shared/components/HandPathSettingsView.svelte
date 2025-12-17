@@ -181,7 +181,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
     }
 
     .start-drawing-btn {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 

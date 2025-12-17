@@ -543,8 +543,8 @@
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
@@ -580,8 +580,8 @@
     position: fixed;
     bottom: 2rem;
     left: 2rem;
-    width: 48px;
-    height: 48px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));

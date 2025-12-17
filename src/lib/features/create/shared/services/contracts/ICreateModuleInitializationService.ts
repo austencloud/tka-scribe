@@ -107,12 +107,12 @@ export interface ICreateModuleInitializationService {
 
   /**
    * Check if creation method was already selected based on current state.
-   * Auto-detects based on active tab or workspace content.
+   * Auto-detects based on workspace content (not tab - we want tutorial to show).
    *
-   * @param activeTab Current active navigation tab
+   * @param activeTab Current active navigation tab (unused, kept for API compatibility)
    * @param isWorkspaceEmpty Whether the workspace has content
    * @param currentSelection Current selection state from persistence
-   * @returns Whether method should be considered selected
+   * @returns Whether method should be considered selected (skip tutorial)
    */
   detectCreationMethodSelection(
     activeTab: string,

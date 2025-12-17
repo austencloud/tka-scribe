@@ -134,8 +134,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: color-mix(in srgb, var(--theme-text, #ffffff) 20%, transparent);
     border-radius: 14px;
     font-size: 24px;

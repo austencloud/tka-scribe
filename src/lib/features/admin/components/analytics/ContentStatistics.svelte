@@ -192,7 +192,7 @@
 
   .skeleton-stat-value {
     display: block;
-    width: 52px;
+    width: var(--min-touch-target);
     height: 16px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;

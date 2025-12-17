@@ -176,7 +176,7 @@
 
   .label {
     font-weight: 600;
-    min-width: 52px;
+    min-width: var(--min-touch-target);
   }
 
   .label.blue {

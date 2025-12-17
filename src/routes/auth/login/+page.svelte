@@ -306,7 +306,10 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    background: var(--gradient-cosmic, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
+    background: var(
+      --gradient-cosmic,
+      linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+    );
   }
 
   .login-card {
@@ -347,9 +350,10 @@
   }
 
   .loading-state .spinner {
-    width: 52px;
-    height: 52px;
-    border: 4px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    width: 48px;
+    height: 48px;
+    border: 4px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
     border-top-color: var(--theme-accent, #6366f1);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -373,7 +377,8 @@
     gap: 0.75rem;
     padding: 1rem;
     background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: 0.5rem;
     color: var(--semantic-error, #dc2626);
     font-size: 0.875rem;
@@ -439,7 +444,8 @@
   .auth-mode-toggle button.active {
     background: var(--theme-panel-elevated-bg, rgba(20, 20, 28, 0.98));
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    box-shadow: 0 1px 3px color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
+    box-shadow: 0 1px 3px
+      color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
   }
 
   .login-footer {

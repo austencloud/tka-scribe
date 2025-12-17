@@ -32,7 +32,9 @@
   let hapticService: IHapticFeedbackService;
 
   // Get popularity count reactively from the singleton
-  const popularityCount = $derived(backgroundPopularity.counts[background.type] ?? 0);
+  const popularityCount = $derived(
+    backgroundPopularity.counts[background.type] ?? 0
+  );
 
   onMount(async () => {
     hapticService = await resolve<IHapticFeedbackService>(
@@ -105,7 +107,10 @@
 
     <!-- Popularity counter badge -->
     {#if popularityCount > 0}
-      <div class="popularity-badge" title="{popularityCount} users using this background">
+      <div
+        class="popularity-badge"
+        title="{popularityCount} users using this background"
+      >
         <svg
           width="12"
           height="12"
@@ -113,7 +118,9 @@
           fill="currentColor"
           aria-hidden="true"
         >
-          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+          />
         </svg>
         <span class="popularity-count">{popularityCount}</span>
       </div>
@@ -156,8 +163,10 @@
     border-color: var(--theme-accent, #6366f1);
     border-width: 3px;
     box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
-      0 8px 32px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
+      0 0 0 2px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
+      0 8px 32px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
       0 0 24px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     transform: scale(1.03);
   }
@@ -505,7 +514,7 @@
       70px 120px,
       152px 30px,
       90px 152px,
-      200px 52px,
+      200px 48px,
       160px 110px;
     background-repeat: repeat;
     animation: twinkle 3s ease-in-out infinite;
@@ -707,7 +716,13 @@
 
   /* ===== FIREFLY FOREST BACKGROUND ===== */
   .background-preview[data-background="fireflyForest"] {
-    background: linear-gradient(180deg, #0a1a0d 0%, #0d2412 40%, #1a3d1f 70%, #0f2914 100%);
+    background: linear-gradient(
+      180deg,
+      #0a1a0d 0%,
+      #0d2412 40%,
+      #1a3d1f 70%,
+      #0f2914 100%
+    );
   }
 
   /* Tree silhouettes */
@@ -720,14 +735,63 @@
     height: 70%;
     background:
       /* Far trees - lighter, smaller */
-      linear-gradient(135deg, transparent 45%, #051208 45%, #051208 55%, transparent 55%) 0% 100% / 25% 35% no-repeat,
-      linear-gradient(225deg, transparent 45%, #051208 45%, #051208 55%, transparent 55%) 25% 100% / 25% 35% no-repeat,
-      linear-gradient(135deg, transparent 45%, #061509 45%, #061509 55%, transparent 55%) 50% 100% / 20% 30% no-repeat,
-      linear-gradient(225deg, transparent 45%, #061509 45%, #061509 55%, transparent 55%) 70% 100% / 22% 32% no-repeat,
+      linear-gradient(
+          135deg,
+          transparent 45%,
+          #051208 45%,
+          #051208 55%,
+          transparent 55%
+        )
+        0% 100% / 25% 35% no-repeat,
+      linear-gradient(
+          225deg,
+          transparent 45%,
+          #051208 45%,
+          #051208 55%,
+          transparent 55%
+        )
+        25% 100% / 25% 35% no-repeat,
+      linear-gradient(
+          135deg,
+          transparent 45%,
+          #061509 45%,
+          #061509 55%,
+          transparent 55%
+        )
+        50% 100% / 20% 30% no-repeat,
+      linear-gradient(
+          225deg,
+          transparent 45%,
+          #061509 45%,
+          #061509 55%,
+          transparent 55%
+        )
+        70% 100% / 22% 32% no-repeat,
       /* Near trees - darker, larger */
-      linear-gradient(135deg, transparent 42%, #030a05 42%, #030a05 58%, transparent 58%) 10% 100% / 30% 55% no-repeat,
-      linear-gradient(225deg, transparent 42%, #030a05 42%, #030a05 58%, transparent 58%) 60% 100% / 35% 60% no-repeat,
-      linear-gradient(135deg, transparent 43%, #040c06 43%, #040c06 57%, transparent 57%) 85% 100% / 28% 50% no-repeat;
+        linear-gradient(
+          135deg,
+          transparent 42%,
+          #030a05 42%,
+          #030a05 58%,
+          transparent 58%
+        )
+        10% 100% / 30% 55% no-repeat,
+      linear-gradient(
+          225deg,
+          transparent 42%,
+          #030a05 42%,
+          #030a05 58%,
+          transparent 58%
+        )
+        60% 100% / 35% 60% no-repeat,
+      linear-gradient(
+          135deg,
+          transparent 43%,
+          #040c06 43%,
+          #040c06 57%,
+          transparent 57%
+        )
+        85% 100% / 28% 50% no-repeat;
     opacity: 0.85;
   }
 
@@ -741,11 +805,23 @@
     height: 100%;
     background-image:
       radial-gradient(circle, rgba(190, 242, 100, 0.9) 2px, transparent 2px),
-      radial-gradient(circle, rgba(163, 230, 53, 0.85) 2.5px, transparent 2.5px),
+      radial-gradient(
+        circle,
+        rgba(163, 230, 53, 0.85) 2.5px,
+        transparent 2.5px
+      ),
       radial-gradient(circle, rgba(253, 224, 71, 0.8) 2px, transparent 2px),
-      radial-gradient(circle, rgba(190, 242, 100, 0.75) 1.5px, transparent 1.5px),
+      radial-gradient(
+        circle,
+        rgba(190, 242, 100, 0.75) 1.5px,
+        transparent 1.5px
+      ),
       radial-gradient(circle, rgba(163, 230, 53, 0.9) 2px, transparent 2px),
-      radial-gradient(circle, rgba(190, 242, 100, 0.7) 1.5px, transparent 1.5px),
+      radial-gradient(
+        circle,
+        rgba(190, 242, 100, 0.7) 1.5px,
+        transparent 1.5px
+      ),
       radial-gradient(circle, rgba(253, 224, 71, 0.85) 2px, transparent 2px),
       radial-gradient(circle, rgba(163, 230, 53, 0.8) 2.5px, transparent 2.5px);
     background-size:
@@ -771,7 +847,8 @@
   }
 
   @keyframes firefly-float {
-    0%, 100% {
+    0%,
+    100% {
       transform: translate(0, 0);
       opacity: 0.7;
     }
@@ -832,8 +909,8 @@
   /* Ultra-compact mode: smaller than 100px */
   @container (max-width: 100px) {
     .background-thumbnail {
-      min-height: 52px;
-      min-width: 52px;
+      min-height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
       border-radius: clamp(6px, 1.5cqi, 10px);
       border-width: 1px;
     }
@@ -873,7 +950,11 @@
     .background-thumbnail.selected {
       border-color: var(--theme-accent, #6366f1);
       border-width: 4px;
-      background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--theme-accent, #6366f1) 15%,
+        transparent
+      );
     }
 
     .thumbnail-overlay {

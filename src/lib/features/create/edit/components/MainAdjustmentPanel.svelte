@@ -83,7 +83,7 @@
 </script>
 
 <div class="main-adjustment-panel" data-testid="main-adjustment-panel">
-  <div class="panel-content">
+  <div class="adjustment-controls-body">
     {#if activePanel === "orientation"}
       <OrientationControlPanel
         {currentBeatData}
@@ -123,7 +123,7 @@
     transition: height var(--transition-normal);
   }
 
-  .panel-content {
+  .adjustment-controls-body {
     flex: 1;
     overflow: auto;
     min-height: 0;

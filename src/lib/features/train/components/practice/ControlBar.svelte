@@ -164,12 +164,15 @@
     justify-content: center;
     gap: 0.25rem;
     flex: 1;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: var(--space-2026-xs, 6px);
     background: var(--theme-panel-bg, #252532);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
     border-radius: var(--radius-2026-md, 14px);
-    box-shadow: var(--shadow-2026-sm, 0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.06)));
+    box-shadow: var(
+      --shadow-2026-sm,
+      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.06))
+    );
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     font-size: 1rem;
     cursor: pointer;
@@ -221,7 +224,11 @@
       color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
       color-mix(in srgb, var(--semantic-success, #16a34a) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 30%,
+      transparent
+    );
     color: color-mix(in srgb, var(--semantic-success, #86efac) 95%, white);
   }
 
@@ -231,7 +238,11 @@
       color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent) 0%,
       color-mix(in srgb, var(--semantic-success, #16a34a) 25%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 50%,
+      transparent
+    );
     color: var(--semantic-success, #86efac);
   }
 
@@ -248,7 +259,11 @@
       color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
       color-mix(in srgb, var(--semantic-error, #dc2626) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
     color: color-mix(in srgb, var(--semantic-error, #f87171) 95%, white);
   }
 
@@ -258,7 +273,11 @@
       color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent) 0%,
       color-mix(in srgb, var(--semantic-error, #dc2626) 25%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 50%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
   }
 
@@ -269,7 +288,11 @@
       color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent) 0%,
       color-mix(in srgb, var(--theme-accent, #7c3aed) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
     color: color-mix(in srgb, var(--theme-accent, #c4b5fd) 95%, white);
   }
 
@@ -279,7 +302,11 @@
       color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent) 0%,
       color-mix(in srgb, var(--theme-accent, #7c3aed) 25%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 50%,
+      transparent
+    );
     color: var(--theme-accent, #c4b5fd);
   }
 
@@ -290,7 +317,11 @@
       color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent) 0%,
       color-mix(in srgb, var(--semantic-info, #2563eb) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 30%,
+      transparent
+    );
     color: color-mix(in srgb, var(--semantic-info, #93c5fd) 95%, white);
   }
 
@@ -300,7 +331,11 @@
       color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent) 0%,
       color-mix(in srgb, var(--semantic-info, #2563eb) 25%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 50%,
+      transparent
+    );
     color: var(--semantic-info, #93c5fd);
   }
 
@@ -311,7 +346,11 @@
       color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
       color-mix(in srgb, var(--semantic-success, #16a34a) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 30%,
+      transparent
+    );
     color: color-mix(in srgb, var(--semantic-success, #86efac) 95%, white);
   }
 
@@ -321,7 +360,11 @@
       color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent) 0%,
       color-mix(in srgb, var(--semantic-success, #16a34a) 25%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 50%,
+      transparent
+    );
     color: var(--semantic-success, #86efac);
   }
 
@@ -332,7 +375,11 @@
       color-mix(in srgb, var(--semantic-warning, #fbbf24) 15%, transparent) 0%,
       color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-warning, #fbbf24) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-warning, #fbbf24) 30%,
+      transparent
+    );
     color: color-mix(in srgb, var(--semantic-warning, #fde047) 95%, white);
   }
 
@@ -342,7 +389,11 @@
       color-mix(in srgb, var(--semantic-warning, #fbbf24) 25%, transparent) 0%,
       color-mix(in srgb, var(--semantic-warning, #f59e0b) 25%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-warning, #fbbf24) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-warning, #fbbf24) 50%,
+      transparent
+    );
     color: var(--semantic-warning, #fde047);
   }
 
@@ -355,7 +406,7 @@
     }
 
     .control-btn {
-      min-width: 52px;
+      min-width: var(--min-touch-target);
       padding: var(--space-2026-xs, 6px);
     }
   }
@@ -391,7 +442,7 @@
     .control-btn {
       flex-direction: row;
       gap: var(--space-2026-sm, 12px);
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: var(--space-2026-sm, 12px) var(--space-2026-md, 20px);
     }
 

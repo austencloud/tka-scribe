@@ -20,6 +20,7 @@ import { resolve } from "$lib/shared/inversify/di";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
+  import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 
   const logger = createComponentLogger("ShareCoordinator");
 
@@ -54,7 +55,10 @@ import { resolve } from "$lib/shared/inversify/di";
     }
   });
 
-  // Effect: Render share preview when sequence or options change
+  // Reactive settings - properly tracks changes
+  let settings = $derived(getSettings());
+
+  // Effect: Render share preview when sequence, options, OR prop types change
   // Renders both when panel is closed (pre-render) AND when panel is open (live updates)
   // Cache hits are INSTANT, only cache misses are debounced
   $effect(() => {
@@ -66,6 +70,29 @@ import { resolve } from "$lib/shared/inversify/di";
     const options = backgroundShareState.options;
     // Track panel open state for logging purposes
     const isPanelOpen = panelState.isSharePanelOpen;
+
+    // Track prop types from settings - regenerate preview when they change
+    // Using $derived(getSettings()) properly tracks reactive changes
+    const blueProp = settings.bluePropType;
+    const redProp = settings.redPropType;
+    const legacyProp = settings.propType;
+
+    // Debug: Check what prop types are actually in the sequence beats
+    const sequencePropTypes = sequence.beats?.length > 0 && sequence.beats[0]?.motions
+      ? {
+          blue: sequence.beats[0].motions.blue?.propType,
+          red: sequence.beats[0].motions.red?.propType
+        }
+      : null;
+
+    logger.log('🔄 [ShareCoordinator] Effect running:', {
+      sequenceId: sequence.id,
+      sequenceWord: sequence.word,
+      settingsPropTypes: { blue: blueProp, red: redProp, legacy: legacyProp },
+      sequencePropTypes,
+      isPanelOpen,
+      optionsKeys: Object.keys(options)
+    });
 
     // Clear any pending debounce timer
     if (previewDebounceTimer) {
@@ -251,11 +278,24 @@ import { resolve } from "$lib/shared/inversify/di";
     // Mark deep link as processed (allow URL syncing/clearing now)
     deepLinkProcessed = true;
 
+    // Debug: Expose cache clearing function globally
+    if (browser && backgroundShareState) {
+      (window as any).clearShareCache = () => {
+        logger.log('🗑️ Manually clearing share cache from console');
+        backgroundShareState?.clearCache();
+      };
+      logger.log('💡 Debug: Type clearShareCache() in console to clear cache');
+    }
+
     // Cleanup function - clear debounce timer on unmount
     return () => {
       if (previewDebounceTimer) {
         clearTimeout(previewDebounceTimer);
         previewDebounceTimer = null;
+      }
+      // Clean up global debug function
+      if (browser) {
+        delete (window as any).clearShareCache;
       }
     };
   });

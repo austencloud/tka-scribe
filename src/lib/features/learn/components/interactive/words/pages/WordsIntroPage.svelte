@@ -168,8 +168,8 @@
   }
 
   .point-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -207,8 +207,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: rgba(80, 200, 120, 0.2);
     border: 2px solid rgba(80, 200, 120, 0.4);
     border-radius: 10px;
@@ -239,7 +239,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     margin-left: auto;
   }
 

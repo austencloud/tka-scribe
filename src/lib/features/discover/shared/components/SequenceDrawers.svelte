@@ -338,7 +338,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
-    height: 52px;
+    height: var(--min-touch-target);
     background: linear-gradient(
       to bottom,
       transparent 0%,
@@ -450,8 +450,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   :global(.drawer-content) .drawer-close-btn:hover {
@@ -502,7 +502,7 @@
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
-    height: 52px;
+    height: var(--min-touch-target);
     background: linear-gradient(
       to bottom,
       transparent 0%,
@@ -540,8 +540,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px !important;
-    min-height: 52px !important;
+    min-width: var(--min-touch-target) !important;
+    min-height: var(--min-touch-target) !important;
   }
 
   :global(.filters-drawer .close-button:hover) {

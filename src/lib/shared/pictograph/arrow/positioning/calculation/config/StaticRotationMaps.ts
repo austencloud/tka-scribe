@@ -9,10 +9,10 @@ import { GridLocation } from "../../../../grid/domain/enums/grid-enums.ts";
 
 // Static arrow rotation for RADIAL orientations (IN/OUT) - Diamond Mode
 export const staticRadialClockwiseMap: Record<GridLocation, number> = {
-  [GridLocation.NORTH]: 0,
-  [GridLocation.EAST]: 90,
-  [GridLocation.SOUTH]: 180,
-  [GridLocation.WEST]: 270,
+  [GridLocation.NORTH]: 180,
+  [GridLocation.EAST]: 270,
+  [GridLocation.SOUTH]: 0,
+  [GridLocation.WEST]: 90,
   [GridLocation.NORTHEAST]: 45,
   [GridLocation.SOUTHEAST]: 135,
   [GridLocation.SOUTHWEST]: 225,
@@ -20,9 +20,9 @@ export const staticRadialClockwiseMap: Record<GridLocation, number> = {
 };
 
 export const staticRadialCounterClockwiseMap: Record<GridLocation, number> = {
-  [GridLocation.NORTH]: 0,
+  [GridLocation.NORTH]: 180,
   [GridLocation.EAST]: 270,
-  [GridLocation.SOUTH]: 180,
+  [GridLocation.SOUTH]: 0,
   [GridLocation.WEST]: 90,
   [GridLocation.NORTHEAST]: 45,
   [GridLocation.SOUTHEAST]: 135,
@@ -65,10 +65,10 @@ export const staticRadialOverrideMap: Record<
   GridLocation,
   Record<string, number>
 > = {
-  [GridLocation.NORTH]: { cw: 180, ccw: 180 },
-  [GridLocation.EAST]: { cw: 270, ccw: 270 },
-  [GridLocation.SOUTH]: { cw: 0, ccw: 0 },
-  [GridLocation.WEST]: { cw: 90, ccw: 90 },
+  [GridLocation.NORTH]: { cw: 0, ccw: 180 },
+  [GridLocation.EAST]: { cw: 90, ccw: 270 },
+  [GridLocation.SOUTH]: { cw: 180, ccw: 0 },
+  [GridLocation.WEST]: { cw: 270, ccw: 90 },
   [GridLocation.NORTHEAST]: { cw: 225, ccw: 135 },
   [GridLocation.SOUTHEAST]: { cw: 315, ccw: 45 },
   [GridLocation.SOUTHWEST]: { cw: 45, ccw: 315 },

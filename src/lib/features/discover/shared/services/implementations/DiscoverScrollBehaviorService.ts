@@ -10,7 +10,7 @@
  * Algorithm:
  * 1. Track scroll position changes
  * 2. Calculate scroll delta (positive = down, negative = up)
- * 3. Apply threshold check (min 52px movement to trigger)
+ * 3. Apply threshold check (min 48px movement to trigger)
  * 4. Check minimum scroll position (only hide if > 100px from top)
  * 5. Update visibility:
  *    - Scrolling DOWN + past minimum → HIDE UI

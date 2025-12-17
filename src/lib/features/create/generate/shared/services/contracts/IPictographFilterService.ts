@@ -1,6 +1,7 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
 export interface IPictographFilterService {
   filterByContinuity(
@@ -18,6 +19,11 @@ export interface IPictographFilterService {
   filterByEndPosition(
     options: PictographData[],
     requiredEndPosition: string
+  ): PictographData[];
+  /** Filter pictographs by prop type */
+  filterByPropType(
+    options: PictographData[],
+    propType: PropType
   ): PictographData[];
   selectRandom<T>(array: T[]): T;
 }

@@ -518,7 +518,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 20px;
     background: color-mix(
       in srgb,
@@ -597,7 +597,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(6px, 1.5cqi, 10px) clamp(8px, 2cqi, 14px);
     background: transparent;
     border: 1.5px solid transparent;
@@ -749,7 +749,7 @@
   .field-textarea {
     width: 100%;
     padding: clamp(8px, 2cqi, 12px) clamp(10px, 2.5cqi, 16px);
-    padding-right: clamp(52px, 10cqi, 60px); /* Make room for voice button */
+    padding-right: clamp(48px, 10cqi, 60px); /* Make room for voice button */
     background: transparent;
     border: none;
     color: var(--fb-text);
@@ -925,7 +925,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(8px, 2cqi, 12px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 14px) clamp(18px, 4cqi, 28px);
     background: linear-gradient(
       135deg,

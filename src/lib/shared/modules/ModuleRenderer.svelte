@@ -50,6 +50,7 @@
     animate: () => import("../../features/compose/ComposeModule.svelte"),
     train: () => import("../../features/train/components/TrainModule.svelte"),
     library: () => import("../../features/library/LibraryModule.svelte"),
+    inbox: () => import("../../features/inbox/InboxModule.svelte"),
     edit: () => import("../../features/edit/EditModule.svelte"),
     word_card: () =>
       import("../../features/word-card/components/WordCardTab.svelte"),
@@ -170,8 +171,8 @@
   }
 
   .loading-spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-top: 3px solid var(--theme-accent, #007bff);
     border-radius: 50%;
@@ -180,7 +181,7 @@
   }
 
   @keyframes spin {
-    0% {
+    0% { 48px
       transform: rotate(0deg);
     }
     100% {

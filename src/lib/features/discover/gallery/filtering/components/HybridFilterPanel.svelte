@@ -383,7 +383,7 @@
   }
 
   .quick-chip {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 clamp(12px, 3cqi, 18px);
     background: var(--theme-card-bg, #252532);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -504,7 +504,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(52px, 14cqi, 72px);
+    min-height: clamp(48px, 14cqi, 72px);
     padding: clamp(12px, 3cqi, 18px);
     background: var(--level-bg);
     border: 2px solid transparent;
@@ -563,7 +563,7 @@
   }
 
   .letter-btn {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     min-width: 44px;
     padding: 0;
     background: var(--theme-card-bg, #252532);
@@ -595,7 +595,7 @@
 
   .length-chip,
   .position-chip {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 clamp(14px, 3.5cqi, 20px);
     background: var(--theme-card-bg, #252532);
     border: 1px solid transparent;

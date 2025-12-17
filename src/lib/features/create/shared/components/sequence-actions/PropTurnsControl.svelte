@@ -164,8 +164,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 10px;
     border: 1px solid;
     cursor: pointer;
@@ -181,7 +181,7 @@
     font-size: 1.75rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     text-align: center;
   }
 
@@ -233,8 +233,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 10px;
     border: 1px solid;
     cursor: pointer;

@@ -61,6 +61,15 @@ export interface IPictographFilterService {
   ): PictographData[];
 
   /**
+   * Filter pictographs by prop type
+   * Ensures both motions match the specified prop type
+   */
+  filterByPropType(
+    options: PictographData[],
+    propType: string
+  ): PictographData[];
+
+  /**
    * Select random item from array
    */
   selectRandom<T>(array: T[]): T;
@@ -214,6 +223,38 @@ export class PictographFilterService implements IPictographFilterService {
       console.warn(
         `⚠️ No pictographs end at position "${requiredEndPosition}". Cannot satisfy end position constraint.`
       );
+    }
+
+    return filtered;
+  }
+
+  /**
+   * Filter pictographs by prop type.
+   * Ensures both blue and red motions match the specified prop type.
+   */
+  filterByPropType(
+    options: PictographData[],
+    propType: string
+  ): PictographData[] {
+    const filtered = options.filter((option: PictographData) => {
+      const blueMotion = option.motions.blue;
+      const redMotion = option.motions.red;
+
+      if (!blueMotion || !redMotion) return false;
+
+      // Both motions must match the specified prop type
+      return (
+        blueMotion.propType === propType && redMotion.propType === propType
+      );
+    });
+
+    // If filtering eliminates all options, return original options (legacy behavior)
+    // This ensures generation doesn't fail if prop filtering is too restrictive
+    if (filtered.length === 0) {
+      console.warn(
+        `⚠️ No options match prop type "${propType}", using all options`
+      );
+      return options;
     }
 
     return filtered;

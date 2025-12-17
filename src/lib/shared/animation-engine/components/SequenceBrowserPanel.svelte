@@ -329,8 +329,16 @@
   /* Glass morphism styling for sequence browser */
   :global(.drawer-content.sequence-browser-panel) {
     max-width: 500px;
-    --sheet-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40));
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40)) !important;
+    --sheet-bg: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.4)
+    );
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.4)
+    ) !important;
     backdrop-filter: blur(24px) !important;
     -webkit-backdrop-filter: blur(24px) !important;
   }
@@ -367,8 +375,8 @@
     top: 50%;
     right: var(--spacing-lg);
     transform: translateY(-50%);
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -525,8 +533,8 @@
   }
 
   .spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: #ec4899;
     border-radius: 50%;

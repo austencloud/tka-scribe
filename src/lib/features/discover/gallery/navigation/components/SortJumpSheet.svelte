@@ -190,8 +190,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
     font-size: 18px;

@@ -206,7 +206,7 @@
     width: auto;
     height: 100%;
     max-height: clamp(58px, 8.5cqh, 78px);
-    max-width: clamp(42px, 6cqw, 52px);
+    max-width: clamp(42px, 6cqw, 48px);
     opacity: 0.92;
   }
 
@@ -216,8 +216,8 @@
   }
 
   .prop-preview-container.dual .prop-preview {
-    max-height: clamp(52px, 8cqh, 70px);
-    max-width: clamp(38px, 5.5cqw, 52px);
+    max-height: clamp(48px, 8cqh, 70px);
+    max-width: clamp(38px, 5.5cqw, 48px);
   }
 
   .card-content {
@@ -282,8 +282,8 @@
     align-items: center;
     justify-content: center;
     gap: clamp(8px, 1cqw, 12px);
-    min-height: 52px;
-    min-width: 52px;
+    min-height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
     padding: clamp(10px, 1.5cqh, 14px) clamp(16px, 2.5cqw, 24px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
@@ -308,7 +308,8 @@
   }
 
   .variation-toggle:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -328,7 +329,8 @@
 
   .variation-dot.active {
     background: var(--theme-accent, rgba(99, 102, 241, 0.9));
-    box-shadow: 0 0 6px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    box-shadow: 0 0 6px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
   }
 
   .variation-text {

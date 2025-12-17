@@ -922,7 +922,7 @@
   }
 
   .empty-state i {
-    font-size: 52px;
+    font-size: 48px;
     color: color-mix(in srgb, var(--theme-text-dim, #6b7280) 40%, transparent);
     margin-bottom: 16px;
   }
@@ -955,7 +955,7 @@
     justify-content: center;
     gap: 12px;
     height: 100%;
-    padding: 52px 24px;
+    padding: 48px 24px;
     text-align: center;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }

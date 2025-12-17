@@ -524,8 +524,8 @@
   }
 
   .add-tag-button {
-    width: 48px;
-    height: 48px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
     background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);

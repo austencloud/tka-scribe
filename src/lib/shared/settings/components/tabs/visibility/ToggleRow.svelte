@@ -49,7 +49,7 @@
     align-items: center;
     justify-content: space-between;
     gap: clamp(8px, 2cqi, 16px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 16px) 0;
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     transition: opacity 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -99,7 +99,7 @@
     position: relative;
     display: inline-block;
     width: 72px; /* Ensure 50px minimum height while keeping proportionally wider track */
-    height: 52px;
+    height: var(--min-touch-target);
     cursor: pointer;
   }
 

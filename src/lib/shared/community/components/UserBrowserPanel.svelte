@@ -278,7 +278,7 @@
     align-items: center;
     justify-content: center;
     padding: 16px 0 8px;
-    min-height: 52px;
+    min-height: 48px;
   }
 
   .panel-title {

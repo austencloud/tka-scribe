@@ -237,8 +237,8 @@
   }
 
   .loading-spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-top: 4px solid var(--primary-color);
     border-radius: 50%;
@@ -257,7 +257,7 @@
 
   .error-icon,
   .empty-icon {
-    font-size: 52px;
+    font-size: 48px;
     margin-bottom: var(--spacing-lg);
   }
 
@@ -339,7 +339,7 @@
 
   .page-content {
     /* Legacy desktop margins: 18pt left/right, 36pt top/bottom */
-    /* Convert points to pixels: 18pt = 24px, 36pt = 52px at 96 DPI */
+    /* Convert points to pixels: 18pt = 24px, 36pt = 48px at 96 DPI */
     /* But reduce top padding to eliminate space above images */
     padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-2xl)
       var(--spacing-xl);

@@ -1,4 +1,4 @@
-<!-- ActiveUsersPanel.svelte - Admin view of all users with presence and activity -->
+<!-- ActiveUsersPanel.svelte - Admin view of all users with activity-based presence -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
@@ -8,6 +8,7 @@
   import UserPresenceCard from "./active-users/UserPresenceCard.svelte";
   import UserActivityDetail from "./active-users/UserActivityDetail.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import PanelGrid from "$lib/shared/components/panel/PanelGrid.svelte";
 
   // Services
   let userActivityService: IUserActivityService | null = null;
@@ -19,13 +20,30 @@
   let error = $state<string | null>(null);
   let drawerOpen = $state(false);
 
+  // Filter state: "all" | "active" | "inactive"
+  let statusFilter = $state<"all" | "active" | "inactive">("all");
+
   // Responsive layout
   let isMobile = $state(false);
   const drawerPlacement = $derived(isMobile ? "bottom" : "right");
 
-  // Stats
-  let onlineCount = $state(0);
-  let totalUsers = $state(0);
+  // Stats computed from activity status
+  let activeCount = $derived(
+    users.filter((u) => u.activityStatus === "active").length
+  );
+  let inactiveCount = $derived(
+    users.filter((u) => u.activityStatus !== "active").length
+  );
+  let totalUsers = $derived(users.length);
+
+  // Filtered users based on status filter
+  let filteredUsers = $derived(
+    statusFilter === "all"
+      ? users
+      : statusFilter === "active"
+        ? users.filter((u) => u.activityStatus === "active")
+        : users.filter((u) => u.activityStatus !== "active")
+  );
 
   // Unsubscribe function
   let unsubscribe: (() => void) | null = null;
@@ -43,15 +61,17 @@
     resizeListener = checkMobile;
 
     try {
-      userActivityService = resolve<IUserActivityService>(TYPES.IUserActivityService);
+      userActivityService = resolve<IUserActivityService>(
+        TYPES.IUserActivityService
+      );
 
       // Subscribe to real-time presence updates
-      unsubscribe = userActivityService.subscribeToAllPresence((presenceUsers) => {
-        users = presenceUsers;
-        onlineCount = presenceUsers.filter((u) => u.online).length;
-        totalUsers = presenceUsers.length;
-        isLoading = false;
-      });
+      unsubscribe = userActivityService.subscribeToAllPresence(
+        (presenceUsers) => {
+          users = presenceUsers;
+          isLoading = false;
+        }
+      );
     } catch (e) {
       console.error("Failed to initialize user activity service:", e);
       error = "Failed to load user data";
@@ -83,16 +103,8 @@
     drawerOpen = false;
   }
 
-  function formatLastSeen(timestamp: number): string {
-    if (!timestamp) return "Never";
-
-    const now = Date.now();
-    const diff = now - timestamp;
-
-    if (diff < 60000) return "Just now";
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-    return new Date(timestamp).toLocaleDateString();
+  function setFilter(filter: "all" | "active" | "inactive") {
+    statusFilter = filter;
   }
 </script>
 
@@ -100,21 +112,42 @@
   <header class="panel-header">
     <div class="header-content">
       <h2>Active Users</h2>
-      <p class="subtitle">Real-time user presence and activity monitoring</p>
+      <p class="subtitle">Real-time activity-based presence monitoring</p>
     </div>
     <div class="stats-row">
-      <div class="stat">
-        <span class="stat-value online">{onlineCount}</span>
-        <span class="stat-label">Online</span>
-      </div>
-      <div class="stat">
-        <span class="stat-value">{totalUsers}</span>
-        <span class="stat-label">Total</span>
-      </div>
+      <button
+        class="stat-button"
+        class:selected={statusFilter === "active"}
+        onclick={() => setFilter(statusFilter === "active" ? "all" : "active")}
+      >
+        <span class="stat-value active">{activeCount}</span>
+        <span class="stat-label">Active</span>
+      </button>
+      <button
+        class="stat-button"
+        class:selected={statusFilter === "inactive"}
+        onclick={() => setFilter(statusFilter === "inactive" ? "all" : "inactive")}
+      >
+        <span class="stat-value inactive">{inactiveCount}</span>
+        <span class="stat-label">Inactive</span>
+      </button>
     </div>
   </header>
 
-  <div class="panel-content">
+  <!-- Filter indicator -->
+  {#if statusFilter !== "all"}
+    <div class="filter-bar">
+      <span class="filter-label">
+        Showing: <strong>{statusFilter}</strong> users ({filteredUsers.length})
+      </span>
+      <button class="clear-filter" onclick={() => setFilter("all")}>
+        <i class="fas fa-times"></i>
+        Show all
+      </button>
+    </div>
+  {/if}
+
+  <div class="active-users-body">
     {#if isLoading}
       <div class="loading">
         <div class="spinner"></div>
@@ -131,16 +164,25 @@
         <span>No users found</span>
         <p>Users will appear here when they sign in</p>
       </div>
+    {:else if filteredUsers.length === 0}
+      <div class="empty">
+        <i class="fas fa-filter"></i>
+        <span>No {statusFilter} users</span>
+        <button class="link-button" onclick={() => setFilter("all")}>
+          Show all users
+        </button>
+      </div>
     {:else}
-      <div class="users-list">
-        {#each users as user}
-          <UserPresenceCard
-            {user}
-            isSelected={selectedUserId === user.userId && drawerOpen}
-            onSelect={() => selectUser(user.userId)}
-            {formatLastSeen}
-          />
-        {/each}
+      <div class="users-grid-container">
+        <PanelGrid minCardWidth="200px" gap="16px">
+          {#each filteredUsers as user}
+            <UserPresenceCard
+              {user}
+              isSelected={selectedUserId === user.userId && drawerOpen}
+              onSelect={() => selectUser(user.userId)}
+            />
+          {/each}
+        </PanelGrid>
       </div>
     {/if}
   </div>
@@ -191,34 +233,103 @@
 
   .stats-row {
     display: flex;
-    gap: 1.5rem;
+    gap: 0.5rem;
   }
 
-  .stat {
+  .stat-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .stat-button:hover {
+    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
+  }
+
+  .stat-button.selected {
+    background: var(--theme-accent-bg, rgba(99, 102, 241, 0.15));
+    border-color: var(--theme-accent, #6366f1);
   }
 
   .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--theme-text, #fff);
   }
 
-  .stat-value.online {
+  .stat-value.active {
     color: var(--semantic-success, #22c55e);
   }
 
+  .stat-value.inactive {
+    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.5));
+  }
+
   .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
-  .panel-content {
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1.5rem;
+    background: var(--theme-accent-bg, rgba(99, 102, 241, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  }
+
+  .filter-label {
+    font-size: 0.875rem;
+    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.7));
+  }
+
+  .filter-label strong {
+    color: var(--theme-accent, #6366f1);
+    text-transform: capitalize;
+  }
+
+  .clear-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .clear-filter:hover {
+    color: var(--theme-text, #fff);
+  }
+
+  .link-button {
+    background: transparent;
+    border: none;
+    color: var(--theme-accent, #6366f1);
+    font-size: 0.875rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+
+  .link-button:hover {
+    color: var(--theme-accent-hover, #818cf8);
+  }
+
+  .active-users-body {
     flex: 1;
     min-height: 0;
     overflow: hidden;
@@ -268,10 +379,7 @@
     opacity: 0.7;
   }
 
-  .users-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  .users-grid-container {
     padding: 1rem;
     overflow-y: auto;
     height: 100%;

@@ -206,23 +206,19 @@ export class CreateModuleInitializationService
   }
 
   detectCreationMethodSelection(
-    activeTab: string,
+    _activeTab: string,
     isWorkspaceEmpty: boolean,
     currentSelection: boolean
   ): boolean {
-    // If already selected, keep it
+    // If already selected (from localStorage), keep it
     if (currentSelection) {
       return true;
     }
 
-    // Check if on a creation method tab
-    const isCreationMethodTab =
-      activeTab === "assembler" ||
-      activeTab === "constructor" ||
-      activeTab === "generator";
-
-    // Auto-select if on creation tab or workspace has content
-    return isCreationMethodTab || !isWorkspaceEmpty;
+    // Only auto-skip tutorial if workspace has content (deep link, restored sequence)
+    // This indicates an existing user, not a first-timer
+    // Don't skip based on current tab - let the tutorial show for new users
+    return !isWorkspaceEmpty;
   }
 
   configureEventCallbacks(

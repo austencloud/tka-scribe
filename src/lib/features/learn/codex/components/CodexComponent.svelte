@@ -169,8 +169,8 @@
   }
 
   .codex-component.collapsed {
-    width: 52px;
-    min-width: 52px;
+    width: var(--min-touch-target);
+    min-width: var(--min-touch-target);
   }
 
   /* Content wrapper for glass scroll container */

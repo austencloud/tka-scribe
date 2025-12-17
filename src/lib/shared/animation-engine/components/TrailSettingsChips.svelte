@@ -119,7 +119,7 @@
   }
 
   .section-label {
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px); /* Supplementary label */
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -138,12 +138,12 @@
     align-items: center;
     gap: 6px;
     padding: 14px 18px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    font-size: var(--font-size-min, 14px); /* Essential control text */
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -178,16 +178,16 @@
 
   .bpm-chip {
     padding: 12px 16px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    font-size: var(--font-size-min, 14px); /* Essential control text */
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     text-align: center;
   }
 
@@ -205,7 +205,7 @@
   .bpm-input {
     width: 75px;
     padding: 12px 14px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
@@ -239,12 +239,12 @@
     justify-content: center;
     gap: 8px;
     padding: 14px 18px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    font-size: var(--font-size-min, 14px); /* Essential control text */
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;

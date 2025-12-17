@@ -169,8 +169,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     margin-left: auto;
     margin-right: calc(-1 * 13px);
     background: none;

@@ -470,14 +470,14 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     TYPE COLUMN - 52px touch target
+     TYPE COLUMN - 48px touch target
      ═══════════════════════════════════════════════════════════════════════════ */
   .card-type {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
     background: color-mix(in srgb, var(--type-color) 15%, transparent);
     border-radius: var(--fb-radius-sm);
@@ -634,8 +634,8 @@
   /* Tablet+ */
   @media (min-width: 768px) {
     .card-type {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 20px;
     }
 

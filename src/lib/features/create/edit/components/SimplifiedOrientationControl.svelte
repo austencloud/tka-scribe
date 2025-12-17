@@ -138,7 +138,7 @@ Research-backed design for 352px portrait (Z Fold):
 <style>
   .simplified-orientation-control {
     display: grid;
-    /* Flexible grid - allows side columns to shrink below 52px if needed */
+    /* Flexible grid - allows side columns to shrink below 48px if needed */
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 10px; /* Reduced from 12px for tighter spacing */
@@ -196,10 +196,10 @@ Research-backed design for 352px portrait (Z Fold):
 
   /* Stepper buttons - Reduced from 44x52px for better fit */
   .stepper-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 8px;
     border: 2px solid;
     background: white;
@@ -268,7 +268,7 @@ Research-backed design for 352px portrait (Z Fold):
     letter-spacing: 0.3px; /* Reduced from 0.5px */
     color: #666;
     white-space: nowrap;
-    min-width: 52px; /* Reduced from 60px */
+    min-width: var(--min-touch-target); /* Reduced from 60px */
     text-align: center;
     justify-self: center; /* Center within the right column */
   }
@@ -282,7 +282,7 @@ Research-backed design for 352px portrait (Z Fold):
 
     .color-label {
       font-size: 14px;
-      min-width: 52px;
+      min-width: var(--min-touch-target);
     }
 
     .orientation-display {

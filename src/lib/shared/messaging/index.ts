@@ -14,6 +14,7 @@ export type {
 	MessagePreview,
 	MessageAttachment,
 	MessageAttachmentType,
+	FeedbackAttachmentMetadata,
 } from "./domain/models/message-models";
 
 // Services

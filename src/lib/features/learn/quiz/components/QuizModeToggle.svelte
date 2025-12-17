@@ -230,7 +230,7 @@ Fixed Questions mode (set number) and Countdown mode (timed challenge).
     .segment {
       padding: 14px 16px;
       font-size: 0.875rem;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       gap: 6px;
     }
 
@@ -253,7 +253,7 @@ Fixed Questions mode (set number) and Countdown mode (timed challenge).
     .segment {
       padding: 16px 12px;
       font-size: 0.8125rem;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       flex-direction: column;
       gap: 4px;
     }

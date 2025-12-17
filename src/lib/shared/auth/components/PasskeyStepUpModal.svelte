@@ -4,7 +4,10 @@
     reauthenticateWithCredential,
   } from "firebase/auth";
   import { auth } from "../firebase";
-  import { registerPasskey, stepUpWithPasskey } from "../webauthn/passkeysClient";
+  import {
+    registerPasskey,
+    stepUpWithPasskey,
+  } from "../webauthn/passkeysClient";
 
   interface Props {
     isOpen: boolean;
@@ -102,7 +105,10 @@
         return;
       }
 
-      if (code === "auth/invalid-credential" || code === "auth/wrong-password") {
+      if (
+        code === "auth/invalid-credential" ||
+        code === "auth/wrong-password"
+      ) {
         error = "Incorrect password. Try again, or use a passkey.";
       } else {
         error = e instanceof Error ? e.message : "Password verification failed";
@@ -133,7 +139,11 @@
   >
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div class="modal-content" onclick={(e) => e.stopPropagation()} role="document">
+    <div
+      class="modal-content"
+      onclick={(e) => e.stopPropagation()}
+      role="document"
+    >
       <header class="modal-header">
         <div class="header-icon">
           <i class="fas fa-fingerprint"></i>
@@ -146,13 +156,15 @@
 
       <div class="modal-body">
         <p class="info">
-          This is required for sensitive actions (password, email, account deletion).
+          This is required for sensitive actions (password, email, account
+          deletion).
         </p>
 
         {#if showPasskeySetup}
           <div class="setup">
             <p class="setup-text">
-              Create a passkey on this device to verify quickly next time (Face ID / Touch ID / Windows Hello).
+              Create a passkey on this device to verify quickly next time (Face
+              ID / Touch ID / Windows Hello).
             </p>
             <button
               type="button"
@@ -168,7 +180,9 @@
 
         {#if allowPassword}
           <div class="password">
-            <label class="label" for="verify-password">Password (optional)</label>
+            <label class="label" for="verify-password"
+              >Password (optional)</label
+            >
             <div class="pw-wrap">
               <input
                 id="verify-password"
@@ -201,7 +215,12 @@
       </div>
 
       <footer class="modal-footer">
-        <button type="button" class="cancel-button" onclick={handleCancel} disabled={isSubmitting}>
+        <button
+          type="button"
+          class="cancel-button"
+          onclick={handleCancel}
+          disabled={isSubmitting}
+        >
           Cancel
         </button>
 
@@ -221,7 +240,12 @@
           </button>
         {/if}
 
-        <button type="button" class="verify-button" onclick={handlePasskeyVerify} disabled={isSubmitting}>
+        <button
+          type="button"
+          class="verify-button"
+          onclick={handlePasskeyVerify}
+          disabled={isSubmitting}
+        >
           {#if isSubmitting}
             <span class="spinner"></span>
             Verifying...
@@ -291,8 +315,8 @@
   }
 
   .header-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -403,7 +427,11 @@
     gap: 8px;
     margin: 16px 0 0;
     padding: 12px 16px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
     border: 1px solid var(--semantic-error, #ef4444);
     border-radius: 10px;
     color: var(--semantic-error, #ef4444);

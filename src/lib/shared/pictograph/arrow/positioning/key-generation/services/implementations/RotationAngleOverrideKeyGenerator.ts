@@ -32,10 +32,13 @@ export class RotationAngleOverrideKeyGenerator
    * Generate rotation angle override key for special placement lookup.
    *
    * Follows exact logic from legacy ArrowRotAngleOverrideKeyGenerator:
-   * 1. Special letters (α, β, Γ, Φ-, Ψ-, Λ-) use color-based key
-   * 2. Mixed orientation uses motion_type_from_layer
-   * 3. Standard→Mixed uses motion_type_to_layer
+   * 1. Mixed orientation ALWAYS uses motion_type_from_layer (takes priority)
+   * 2. Special letters (α, β, Γ, Φ-, Ψ-, Λ-) in standard orientation use color-based key
+   * 3. Standard→Mixed uses motion_type_from_layer
    * 4. Default uses motion_type only
+   *
+   * IMPORTANT: Mixed orientation check must happen BEFORE special letter check
+   * because layer3 JSON files use layer-based keys even for special letters.
    */
   generateRotationAngleOverrideKey(
     motionData: MotionData,
@@ -45,25 +48,26 @@ export class RotationAngleOverrideKeyGenerator
     const letter = pictographData.letter || "";
     const color = motionData.color || "";
 
-    // Special letters use color-based override key
-    const specialLetters = ["α", "β", "Γ", "Φ-", "Ψ-", "Λ-"];
-    if (specialLetters.includes(letter)) {
-      return `${color}_rot_angle_override`;
-    }
-
-    // Check if starts from mixed orientation
+    // PRIORITY 1: Mixed orientation uses layer-based key (even for special letters)
+    // This must be checked FIRST because layer3 JSON files use layer-based keys
     if (this.startsFromMixedOrientation(pictographData)) {
       const startOriLayer = this.getStartOriLayer(motionData);
       return `${motionType}_from_${startOriLayer}_rot_angle_override`;
     }
 
-    // Check if starts from standard and ends in mixed orientation
+    // PRIORITY 2: Standard→Mixed uses layer-based key
     if (
       this.startsFromStandardOrientation(pictographData) &&
       this.endsInMixedOrientation(pictographData)
     ) {
-      const endOriLayer = this.getEndOriLayer(motionData);
-      return `${motionType}_to_${endOriLayer}_rot_angle_override`;
+      const startOriLayer = this.getStartOriLayer(motionData);
+      return `${motionType}_from_${startOriLayer}_rot_angle_override`;
+    }
+
+    // PRIORITY 3: Special letters in standard orientation use color-based key
+    const specialLetters = ["α", "β", "Γ", "Φ-", "Ψ-", "Λ-"];
+    if (specialLetters.includes(letter)) {
+      return `${color}_rot_angle_override`;
     }
 
     // Default: just motion type

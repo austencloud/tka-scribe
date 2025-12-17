@@ -59,7 +59,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     gap: 8px;
 
     /* Bigger touch target */
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 20px;
 
     /* Glass morphism styling */
@@ -136,7 +136,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   /* Mobile responsive */
   @media (max-width: 600px) {
     .grid-mode-toggle {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: 0 16px;
     }
 

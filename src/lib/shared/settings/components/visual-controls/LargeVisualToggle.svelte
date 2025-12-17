@@ -185,8 +185,8 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: transparent;
     /* Container query aware sizing with 50px min touch target */
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -299,7 +299,7 @@
   @container visual-toggle (max-width: 200px) {
     .visual-setting-toggle.large .toggle-track,
     .visual-setting-toggle.standard .toggle-track {
-      width: 52px;
+      width: var(--min-touch-target);
       height: 28px;
     }
 

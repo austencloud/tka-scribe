@@ -70,7 +70,7 @@
   }
 
   .placeholder i {
-    font-size: 52px;
+    font-size: 48px;
     color: var(--semantic-success, #10b981);
   }
 

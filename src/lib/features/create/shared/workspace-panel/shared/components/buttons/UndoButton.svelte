@@ -116,8 +116,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -163,36 +163,36 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
-  /* Mobile responsive - 52px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .undo-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .undo-button {
-      width: 52px; /* Maintain 52px minimum */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum */
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .undo-button {
-      width: 52px; /* NEVER below 52px for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* NEVER below 48px for accessibility */
+      height: var(--min-touch-target);
       font-size: 14px;
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 52px minimum for accessibility */
+  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .undo-button {
-      width: 52px; /* Maintain 52px minimum for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      height: var(--min-touch-target);
       font-size: 14px;
     }
   }

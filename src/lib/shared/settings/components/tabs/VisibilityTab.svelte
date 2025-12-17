@@ -19,10 +19,19 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { GridLocation, GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridLocation,
+    GridMode,
+    GridPosition,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import PictographWithVisibility from "$lib/shared/pictograph/shared/components/PictographWithVisibility.svelte";
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-  import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    MotionType,
+    RotationDirection,
+    Orientation,
+    MotionColor,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import VisibilityHelpModal from "./visibility/VisibilityHelpModal.svelte";
 
   interface Props {
@@ -30,7 +39,10 @@
     onSettingUpdate: (event: { key: string; value: unknown }) => void;
   }
 
-  let { currentSettings: _currentSettings, onSettingUpdate: _onSettingUpdate }: Props = $props();
+  let {
+    currentSettings: _currentSettings,
+    onSettingUpdate: _onSettingUpdate,
+  }: Props = $props();
 
   // State managers
   const visibilityManager = getVisibilityStateManager();
@@ -38,14 +50,16 @@
   const imageCompositionManager = getImageCompositionManager();
 
   // Mobile mode selection (only used on small screens)
-  let mobileMode = $state<'pictograph' | 'animation' | 'image'>('pictograph');
+  let mobileMode = $state<"pictograph" | "animation" | "image">("pictograph");
   let isVisible = $state(false);
 
   // Help modal state
-  let helpModalPanel = $state<'pictograph' | 'animation' | 'image' | null>(null);
+  let helpModalPanel = $state<"pictograph" | "animation" | "image" | null>(
+    null
+  );
   let isHelpModalOpen = $state(false);
 
-  function openHelpModal(panel: 'pictograph' | 'animation' | 'image') {
+  function openHelpModal(panel: "pictograph" | "animation" | "image") {
     triggerHaptic();
     helpModalPanel = panel;
     isHelpModalOpen = true;
@@ -126,24 +140,32 @@
   };
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Load pictograph visibility
     tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
     vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
-    elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
-    positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
-    reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
+    elementalGlyphVisible =
+      visibilityManager.getRawGlyphVisibility("elementalGlyph");
+    positionsGlyphVisible =
+      visibilityManager.getRawGlyphVisibility("positionsGlyph");
+    reversalIndicatorsVisible =
+      visibilityManager.getRawGlyphVisibility("reversalIndicators");
     turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
 
     // Load animation visibility
     animGridVisible = animationVisibilityManager.getVisibility("grid");
-    animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+    animBeatNumbersVisible =
+      animationVisibilityManager.getVisibility("beatNumbers");
     animTrailsVisible = animationVisibilityManager.getVisibility("trails");
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
-    animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
-    animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+    animReversalIndicatorsVisible =
+      animationVisibilityManager.getVisibility("reversalIndicators");
+    animTurnNumbersVisible =
+      animationVisibilityManager.getVisibility("turnNumbers");
 
     // Load image composition settings
     imgAddWord = imageCompositionManager.addWord;
@@ -155,20 +177,28 @@
     const pictographObserver = () => {
       tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");
       vtgGlyphVisible = visibilityManager.getRawGlyphVisibility("vtgGlyph");
-      elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
-      positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
-      reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
-      turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
+      elementalGlyphVisible =
+        visibilityManager.getRawGlyphVisibility("elementalGlyph");
+      positionsGlyphVisible =
+        visibilityManager.getRawGlyphVisibility("positionsGlyph");
+      reversalIndicatorsVisible =
+        visibilityManager.getRawGlyphVisibility("reversalIndicators");
+      turnNumbersVisible =
+        visibilityManager.getRawGlyphVisibility("turnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
     };
 
     const animationObserver = () => {
       animGridVisible = animationVisibilityManager.getVisibility("grid");
-      animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
+      animBeatNumbersVisible =
+        animationVisibilityManager.getVisibility("beatNumbers");
       animTrailsVisible = animationVisibilityManager.getVisibility("trails");
-      animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
-      animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
-      animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+      animTkaGlyphVisible =
+        animationVisibilityManager.getVisibility("tkaGlyph");
+      animReversalIndicatorsVisible =
+        animationVisibilityManager.getVisibility("reversalIndicators");
+      animTurnNumbersVisible =
+        animationVisibilityManager.getVisibility("turnNumbers");
     };
 
     const imageCompositionObserver = () => {
@@ -184,7 +214,7 @@
     imageCompositionManager.registerObserver(imageCompositionObserver);
 
     // Entry animation
-    setTimeout(() => isVisible = true, 30);
+    setTimeout(() => (isVisible = true), 30);
 
     return () => {
       visibilityManager.unregisterObserver(pictographObserver);
@@ -197,13 +227,43 @@
   function togglePicto(key: string) {
     triggerHaptic();
     switch (key) {
-      case 'tka': tkaGlyphVisible = !tkaGlyphVisible; visibilityManager.setGlyphVisibility("tkaGlyph", tkaGlyphVisible); break;
-      case 'vtg': vtgGlyphVisible = !vtgGlyphVisible; visibilityManager.setGlyphVisibility("vtgGlyph", vtgGlyphVisible); break;
-      case 'elemental': elementalGlyphVisible = !elementalGlyphVisible; visibilityManager.setGlyphVisibility("elementalGlyph", elementalGlyphVisible); break;
-      case 'positions': positionsGlyphVisible = !positionsGlyphVisible; visibilityManager.setGlyphVisibility("positionsGlyph", positionsGlyphVisible); break;
-      case 'reversals': reversalIndicatorsVisible = !reversalIndicatorsVisible; visibilityManager.setGlyphVisibility("reversalIndicators", reversalIndicatorsVisible); break;
-      case 'turnNumbers': turnNumbersVisible = !turnNumbersVisible; visibilityManager.setGlyphVisibility("turnNumbers", turnNumbersVisible); break;
-      case 'nonRadial': nonRadialVisible = !nonRadialVisible; visibilityManager.setNonRadialVisibility(nonRadialVisible); break;
+      case "tka":
+        tkaGlyphVisible = !tkaGlyphVisible;
+        visibilityManager.setGlyphVisibility("tkaGlyph", tkaGlyphVisible);
+        break;
+      case "vtg":
+        vtgGlyphVisible = !vtgGlyphVisible;
+        visibilityManager.setGlyphVisibility("vtgGlyph", vtgGlyphVisible);
+        break;
+      case "elemental":
+        elementalGlyphVisible = !elementalGlyphVisible;
+        visibilityManager.setGlyphVisibility(
+          "elementalGlyph",
+          elementalGlyphVisible
+        );
+        break;
+      case "positions":
+        positionsGlyphVisible = !positionsGlyphVisible;
+        visibilityManager.setGlyphVisibility(
+          "positionsGlyph",
+          positionsGlyphVisible
+        );
+        break;
+      case "reversals":
+        reversalIndicatorsVisible = !reversalIndicatorsVisible;
+        visibilityManager.setGlyphVisibility(
+          "reversalIndicators",
+          reversalIndicatorsVisible
+        );
+        break;
+      case "turnNumbers":
+        turnNumbersVisible = !turnNumbersVisible;
+        visibilityManager.setGlyphVisibility("turnNumbers", turnNumbersVisible);
+        break;
+      case "nonRadial":
+        nonRadialVisible = !nonRadialVisible;
+        visibilityManager.setNonRadialVisibility(nonRadialVisible);
+        break;
     }
   }
 
@@ -211,12 +271,42 @@
   function toggleAnim(key: string) {
     triggerHaptic();
     switch (key) {
-      case 'grid': animGridVisible = !animGridVisible; animationVisibilityManager.setVisibility("grid", animGridVisible); break;
-      case 'beatNumbers': animBeatNumbersVisible = !animBeatNumbersVisible; animationVisibilityManager.setVisibility("beatNumbers", animBeatNumbersVisible); break;
-      case 'trails': animTrailsVisible = !animTrailsVisible; animationVisibilityManager.setVisibility("trails", animTrailsVisible); break;
-      case 'tka': animTkaGlyphVisible = !animTkaGlyphVisible; animationVisibilityManager.setVisibility("tkaGlyph", animTkaGlyphVisible); break;
-      case 'reversals': animReversalIndicatorsVisible = !animReversalIndicatorsVisible; animationVisibilityManager.setVisibility("reversalIndicators", animReversalIndicatorsVisible); break;
-      case 'turnNumbers': animTurnNumbersVisible = !animTurnNumbersVisible; animationVisibilityManager.setVisibility("turnNumbers", animTurnNumbersVisible); break;
+      case "grid":
+        animGridVisible = !animGridVisible;
+        animationVisibilityManager.setVisibility("grid", animGridVisible);
+        break;
+      case "beatNumbers":
+        animBeatNumbersVisible = !animBeatNumbersVisible;
+        animationVisibilityManager.setVisibility(
+          "beatNumbers",
+          animBeatNumbersVisible
+        );
+        break;
+      case "trails":
+        animTrailsVisible = !animTrailsVisible;
+        animationVisibilityManager.setVisibility("trails", animTrailsVisible);
+        break;
+      case "tka":
+        animTkaGlyphVisible = !animTkaGlyphVisible;
+        animationVisibilityManager.setVisibility(
+          "tkaGlyph",
+          animTkaGlyphVisible
+        );
+        break;
+      case "reversals":
+        animReversalIndicatorsVisible = !animReversalIndicatorsVisible;
+        animationVisibilityManager.setVisibility(
+          "reversalIndicators",
+          animReversalIndicatorsVisible
+        );
+        break;
+      case "turnNumbers":
+        animTurnNumbersVisible = !animTurnNumbersVisible;
+        animationVisibilityManager.setVisibility(
+          "turnNumbers",
+          animTurnNumbersVisible
+        );
+        break;
     }
   }
 
@@ -224,15 +314,32 @@
   function toggleImage(key: string) {
     triggerHaptic();
     switch (key) {
-      case 'word': imgAddWord = !imgAddWord; imageCompositionManager.setAddWord(imgAddWord); break;
-      case 'beatNumbers': imgAddBeatNumbers = !imgAddBeatNumbers; imageCompositionManager.setAddBeatNumbers(imgAddBeatNumbers); break;
-      case 'difficulty': imgAddDifficultyLevel = !imgAddDifficultyLevel; imageCompositionManager.setAddDifficultyLevel(imgAddDifficultyLevel); break;
-      case 'startPosition': imgIncludeStartPosition = !imgIncludeStartPosition; imageCompositionManager.setIncludeStartPosition(imgIncludeStartPosition); break;
-      case 'userInfo': imgAddUserInfo = !imgAddUserInfo; imageCompositionManager.setAddUserInfo(imgAddUserInfo); break;
+      case "word":
+        imgAddWord = !imgAddWord;
+        imageCompositionManager.setAddWord(imgAddWord);
+        break;
+      case "beatNumbers":
+        imgAddBeatNumbers = !imgAddBeatNumbers;
+        imageCompositionManager.setAddBeatNumbers(imgAddBeatNumbers);
+        break;
+      case "difficulty":
+        imgAddDifficultyLevel = !imgAddDifficultyLevel;
+        imageCompositionManager.setAddDifficultyLevel(imgAddDifficultyLevel);
+        break;
+      case "startPosition":
+        imgIncludeStartPosition = !imgIncludeStartPosition;
+        imageCompositionManager.setIncludeStartPosition(
+          imgIncludeStartPosition
+        );
+        break;
+      case "userInfo":
+        imgAddUserInfo = !imgAddUserInfo;
+        imageCompositionManager.setAddUserInfo(imgAddUserInfo);
+        break;
     }
   }
 
-  function setMobileMode(mode: 'pictograph' | 'animation' | 'image') {
+  function setMobileMode(mode: "pictograph" | "animation" | "image") {
     triggerHaptic();
     mobileMode = mode;
   }
@@ -243,24 +350,24 @@
   <div class="mobile-segment-control">
     <button
       class="segment-btn"
-      class:active={mobileMode === 'pictograph'}
-      onclick={() => setMobileMode('pictograph')}
+      class:active={mobileMode === "pictograph"}
+      onclick={() => setMobileMode("pictograph")}
     >
       <i class="fas fa-image"></i>
       <span>Pictograph</span>
     </button>
     <button
       class="segment-btn"
-      class:active={mobileMode === 'animation'}
-      onclick={() => setMobileMode('animation')}
+      class:active={mobileMode === "animation"}
+      onclick={() => setMobileMode("animation")}
     >
       <i class="fas fa-film"></i>
       <span>Animation</span>
     </button>
     <button
       class="segment-btn"
-      class:active={mobileMode === 'image'}
-      onclick={() => setMobileMode('image')}
+      class:active={mobileMode === "image"}
+      onclick={() => setMobileMode("image")}
     >
       <i class="fas fa-download"></i>
       <span>Image</span>
@@ -272,14 +379,16 @@
     <!-- Pictograph Panel -->
     <section
       class="settings-panel pictograph-panel"
-      class:mobile-hidden={mobileMode !== 'pictograph'}
+      class:mobile-hidden={mobileMode !== "pictograph"}
     >
       <header class="panel-header">
-        <span class="panel-icon pictograph-icon"><i class="fas fa-image"></i></span>
+        <span class="panel-icon pictograph-icon"
+          ><i class="fas fa-image"></i></span
+        >
         <h3 class="panel-title">Pictograph</h3>
         <button
           class="help-btn"
-          onclick={() => openHelpModal('pictograph')}
+          onclick={() => openHelpModal("pictograph")}
           aria-label="Learn about pictograph options"
           type="button"
         >
@@ -293,12 +402,12 @@
           pictographData={examplePictographData}
           forceShowAll={true}
           previewMode={true}
-          onToggleTKA={() => togglePicto('tka')}
-          onToggleVTG={() => togglePicto('vtg')}
-          onToggleElemental={() => togglePicto('elemental')}
-          onTogglePositions={() => togglePicto('positions')}
-          onToggleReversals={() => togglePicto('reversals')}
-          onToggleNonRadial={() => togglePicto('nonRadial')}
+          onToggleTKA={() => togglePicto("tka")}
+          onToggleVTG={() => togglePicto("vtg")}
+          onToggleElemental={() => togglePicto("elemental")}
+          onTogglePositions={() => togglePicto("positions")}
+          onToggleReversals={() => togglePicto("reversals")}
+          onToggleNonRadial={() => togglePicto("nonRadial")}
         />
       </div>
 
@@ -306,19 +415,47 @@
         <div class="control-group">
           <span class="group-label">Glyphs</span>
           <div class="toggle-grid">
-            <button class="toggle-btn" class:active={tkaGlyphVisible} onclick={() => togglePicto('tka')}>TKA</button>
-            <button class="toggle-btn" class:active={vtgGlyphVisible} onclick={() => togglePicto('vtg')}>VTG</button>
-            <button class="toggle-btn" class:active={elementalGlyphVisible} onclick={() => togglePicto('elemental')}>Elemental</button>
-            <button class="toggle-btn" class:active={positionsGlyphVisible} onclick={() => togglePicto('positions')}>Positions</button>
+            <button
+              class="toggle-btn"
+              class:active={tkaGlyphVisible}
+              onclick={() => togglePicto("tka")}>TKA</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={vtgGlyphVisible}
+              onclick={() => togglePicto("vtg")}>VTG</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={elementalGlyphVisible}
+              onclick={() => togglePicto("elemental")}>Elemental</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={positionsGlyphVisible}
+              onclick={() => togglePicto("positions")}>Positions</button
+            >
           </div>
         </div>
 
         <div class="control-group">
           <span class="group-label">Details</span>
           <div class="toggle-grid">
-            <button class="toggle-btn" class:active={reversalIndicatorsVisible} onclick={() => togglePicto('reversals')}>Reversals</button>
-            <button class="toggle-btn" class:active={turnNumbersVisible} onclick={() => togglePicto('turnNumbers')}>Turn #s</button>
-            <button class="toggle-btn" class:active={nonRadialVisible} onclick={() => togglePicto('nonRadial')}>Non-Radial</button>
+            <button
+              class="toggle-btn"
+              class:active={reversalIndicatorsVisible}
+              onclick={() => togglePicto("reversals")}>Reversals</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={turnNumbersVisible}
+              onclick={() => togglePicto("turnNumbers")}>Turn #s</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={nonRadialVisible}
+              onclick={() => togglePicto("nonRadial")}>Non-Radial</button
+            >
           </div>
         </div>
       </div>
@@ -327,14 +464,16 @@
     <!-- Animation Panel -->
     <section
       class="settings-panel animation-panel"
-      class:mobile-hidden={mobileMode !== 'animation'}
+      class:mobile-hidden={mobileMode !== "animation"}
     >
       <header class="panel-header">
-        <span class="panel-icon animation-icon"><i class="fas fa-film"></i></span>
+        <span class="panel-icon animation-icon"
+          ><i class="fas fa-film"></i></span
+        >
         <h3 class="panel-title">Animation</h3>
         <button
           class="help-btn"
-          onclick={() => openHelpModal('animation')}
+          onclick={() => openHelpModal("animation")}
           aria-label="Learn about animation options"
           type="button"
         >
@@ -354,18 +493,42 @@
         <div class="control-group">
           <span class="group-label">Canvas</span>
           <div class="toggle-grid">
-            <button class="toggle-btn" class:active={animGridVisible} onclick={() => toggleAnim('grid')}>Grid</button>
-            <button class="toggle-btn" class:active={animBeatNumbersVisible} onclick={() => toggleAnim('beatNumbers')}>Beat #s</button>
-            <button class="toggle-btn" class:active={animTrailsVisible} onclick={() => toggleAnim('trails')}>Trails</button>
+            <button
+              class="toggle-btn"
+              class:active={animGridVisible}
+              onclick={() => toggleAnim("grid")}>Grid</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={animBeatNumbersVisible}
+              onclick={() => toggleAnim("beatNumbers")}>Beat #s</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={animTrailsVisible}
+              onclick={() => toggleAnim("trails")}>Trails</button
+            >
           </div>
         </div>
 
         <div class="control-group">
           <span class="group-label">Overlays</span>
           <div class="toggle-grid">
-            <button class="toggle-btn" class:active={animTkaGlyphVisible} onclick={() => toggleAnim('tka')}>TKA Glyph</button>
-            <button class="toggle-btn" class:active={animReversalIndicatorsVisible} onclick={() => toggleAnim('reversals')}>Reversals</button>
-            <button class="toggle-btn" class:active={animTurnNumbersVisible} onclick={() => toggleAnim('turnNumbers')}>Turn #s</button>
+            <button
+              class="toggle-btn"
+              class:active={animTkaGlyphVisible}
+              onclick={() => toggleAnim("tka")}>TKA Glyph</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={animReversalIndicatorsVisible}
+              onclick={() => toggleAnim("reversals")}>Reversals</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={animTurnNumbersVisible}
+              onclick={() => toggleAnim("turnNumbers")}>Turn #s</button
+            >
           </div>
         </div>
       </div>
@@ -374,14 +537,16 @@
     <!-- Image Export Panel -->
     <section
       class="settings-panel image-panel"
-      class:mobile-hidden={mobileMode !== 'image'}
+      class:mobile-hidden={mobileMode !== "image"}
     >
       <header class="panel-header">
-        <span class="panel-icon image-icon"><i class="fas fa-download"></i></span>
+        <span class="panel-icon image-icon"
+          ><i class="fas fa-download"></i></span
+        >
         <h3 class="panel-title">Image Export</h3>
         <button
           class="help-btn"
-          onclick={() => openHelpModal('image')}
+          onclick={() => openHelpModal("image")}
           aria-label="Learn about image export options"
           type="button"
         >
@@ -401,11 +566,31 @@
         <div class="control-group">
           <span class="group-label">Include in Image</span>
           <div class="toggle-grid">
-            <button class="toggle-btn" class:active={imgAddWord} onclick={() => toggleImage('word')}>Word</button>
-            <button class="toggle-btn" class:active={imgAddBeatNumbers} onclick={() => toggleImage('beatNumbers')}>Beat #s</button>
-            <button class="toggle-btn" class:active={imgIncludeStartPosition} onclick={() => toggleImage('startPosition')}>Start Pos</button>
-            <button class="toggle-btn" class:active={imgAddDifficultyLevel} onclick={() => toggleImage('difficulty')}>Difficulty</button>
-            <button class="toggle-btn" class:active={imgAddUserInfo} onclick={() => toggleImage('userInfo')}>User Info</button>
+            <button
+              class="toggle-btn"
+              class:active={imgAddWord}
+              onclick={() => toggleImage("word")}>Word</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={imgAddBeatNumbers}
+              onclick={() => toggleImage("beatNumbers")}>Beat #s</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={imgIncludeStartPosition}
+              onclick={() => toggleImage("startPosition")}>Start Pos</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={imgAddDifficultyLevel}
+              onclick={() => toggleImage("difficulty")}>Difficulty</button
+            >
+            <button
+              class="toggle-btn"
+              class:active={imgAddUserInfo}
+              onclick={() => toggleImage("userInfo")}>User Info</button
+            >
           </div>
         </div>
       </div>
@@ -467,7 +652,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 12px 14px;
     background: transparent;
     border: 1px solid transparent;
@@ -475,7 +660,8 @@
     color: var(--theme-text-dim);
     font-size: 14px;
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -493,12 +679,22 @@
   }
 
   .segment-btn.active {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 40%,
+      transparent
+    );
     color: white;
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
-      0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+      0 4px 16px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .segment-btn.active i {
@@ -629,7 +825,8 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
     white-space: nowrap;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     flex: 1;
   }
 
@@ -642,8 +839,17 @@
     height: 32px;
     padding: 0;
     margin-left: auto;
-    background: color-mix(in srgb, var(--icon-color, var(--theme-accent)) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--icon-color, var(--theme-accent)) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--icon-color, var(--theme-accent)) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--icon-color, var(--theme-accent)) 30%,
+        transparent
+      );
     border-radius: 50%;
     color: var(--icon-color, var(--theme-accent, #6366f1));
     font-size: 20px;
@@ -653,9 +859,22 @@
   }
 
   .help-btn:hover {
-    background: color-mix(in srgb, var(--icon-color, var(--theme-accent)) 25%, transparent);
-    border-color: color-mix(in srgb, var(--icon-color, var(--theme-accent)) 45%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--icon-color, var(--theme-accent)) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--icon-color, var(--theme-accent)) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--icon-color, var(--theme-accent)) 45%,
+      transparent
+    );
+    box-shadow: 0 0 12px
+      color-mix(
+        in srgb,
+        var(--icon-color, var(--theme-accent)) 25%,
+        transparent
+      );
   }
 
   .help-btn:active {
@@ -663,9 +882,15 @@
   }
 
   /* Inherit panel icon color */
-  .pictograph-panel .help-btn { --icon-color: #818cf8; }
-  .animation-panel .help-btn { --icon-color: #f472b6; }
-  .image-panel .help-btn { --icon-color: #34d399; }
+  .pictograph-panel .help-btn {
+    --icon-color: #818cf8;
+  }
+  .animation-panel .help-btn {
+    --icon-color: #f472b6;
+  }
+  .image-panel .help-btn {
+    --icon-color: #34d399;
+  }
 
   /* ========================================
      PREVIEW FRAME - Square, centered
@@ -764,7 +989,8 @@
     letter-spacing: 0.5px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     padding-left: 2px;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   /* ========================================
@@ -787,7 +1013,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 12px 10px;
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
@@ -795,7 +1021,8 @@
     color: var(--theme-text-dim);
     font-size: 13px;
     font-weight: 600;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -815,20 +1042,40 @@
 
   /* Active state - theme accent with glow */
   .toggle-btn.active {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 45%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 45%,
+      transparent
+    );
     color: white;
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent),
-      0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
   }
 
   .toggle-btn.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 55%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 35%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 55%,
+      transparent
+    );
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
-      0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+      0 4px 16px
+        color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
   }
 
   /* ========================================
@@ -843,7 +1090,11 @@
   }
 
   .visibility-tab::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
     border-radius: 3px;
   }
 
@@ -853,7 +1104,8 @@
   .toggle-btn:focus-visible,
   .segment-btn:focus-visible,
   .help-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
     outline-offset: 2px;
   }
 

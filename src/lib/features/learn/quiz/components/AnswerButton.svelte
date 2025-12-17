@@ -235,7 +235,7 @@
 
   @media (max-width: 480px) {
     .answer-button {
-      height: 52px;
+      height: var(--min-touch-target);
       font-size: 1.25rem;
     }
 

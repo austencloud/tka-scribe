@@ -21,7 +21,7 @@ export const BUTTON_STYLES = {
 
   // Base button specifications
   base: {
-    size: "52px",
+    size: "48px",
     borderRadius: "50%",
     iconSize: "18px",
   },

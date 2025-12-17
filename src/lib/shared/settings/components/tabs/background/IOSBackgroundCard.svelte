@@ -130,16 +130,30 @@
   /* Selected - iOS subtle tint, NO thick borders - Pixel Perfect */
   .ios-background-card.selected {
     /* Subtle accent tint - uses theme accent with iOS-style opacity */
-    background: color-mix(in srgb, var(--theme-accent, #007aff) 6%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #007aff) 28%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #007aff) 6%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #007aff) 28%,
+      transparent
+    );
     box-shadow:
-      0 4px 14px color-mix(in srgb, var(--theme-accent, #007aff) 12%, transparent),
+      0 4px 14px
+        color-mix(in srgb, var(--theme-accent, #007aff) 12%, transparent),
       0 1px 3px color-mix(in srgb, var(--theme-accent, #007aff) 8%, transparent),
-      inset 0 0 0 0.5px color-mix(in srgb, var(--theme-accent, #007aff) 10%, transparent); /* Subtle inner glow */
+      inset 0 0 0 0.5px
+        color-mix(in srgb, var(--theme-accent, #007aff) 10%, transparent); /* Subtle inner glow */
   }
 
   .ios-background-card.selected:hover {
-    background: color-mix(in srgb, var(--theme-accent, #007aff) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #007aff) 12%,
+      transparent
+    );
     transform: scale(1.02);
   }
 
@@ -195,7 +209,7 @@
       0 2px 8px rgba(0, 0, 0, 0.6),
       0 0 4px rgba(0, 0, 0, 0.8);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-    font-size: clamp(24px, 7cqi, 52px);
+    font-size: clamp(24px, 7cqi, 48px);
     transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
@@ -231,7 +245,10 @@
     width: 24px; /* iOS exact checkmark badge size */
     height: 24px; /* iOS exact checkmark badge size */
     border-radius: 50%;
-    background: var(--theme-accent, #007aff); /* Theme accent with iOS blue fallback */
+    background: var(
+      --theme-accent,
+      #007aff
+    ); /* Theme accent with iOS blue fallback */
     backdrop-filter: blur(10px) saturate(180%);
     -webkit-backdrop-filter: blur(10px) saturate(180%);
     display: flex;
@@ -240,7 +257,8 @@
     color: white;
     font-size: 12px; /* iOS checkmark icon size */
     box-shadow:
-      0 2px 6px color-mix(in srgb, var(--theme-accent, #007aff) 30%, transparent),
+      0 2px 6px
+        color-mix(in srgb, var(--theme-accent, #007aff) 30%, transparent),
       0 1px 2px rgba(0, 0, 0, 0.2);
     /* iOS spring animation */
     animation: ios-checkmark-appear 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -464,7 +482,7 @@
       70px 120px,
       152px 30px,
       90px 152px,
-      200px 52px,
+      200px 48px,
       160px 110px;
     background-repeat: repeat;
     animation: twinkle 3s ease-in-out infinite;
@@ -745,7 +763,8 @@
   }
 
   @keyframes ember-glow-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.6;
       transform: scaleY(1);
     }
@@ -778,11 +797,36 @@
     height: 200%;
     /* Larger, more saturated pink petals with soft edges */
     background-image:
-      radial-gradient(ellipse 18px 12px, rgba(255, 140, 170, 0.95) 0%, rgba(255, 180, 200, 0.6) 40%, transparent 70%),
-      radial-gradient(ellipse 14px 10px, rgba(255, 130, 165, 0.9) 0%, rgba(255, 170, 195, 0.5) 40%, transparent 70%),
-      radial-gradient(ellipse 20px 14px, rgba(255, 150, 180, 0.85) 0%, rgba(255, 190, 210, 0.5) 40%, transparent 70%),
-      radial-gradient(ellipse 16px 11px, rgba(255, 135, 168, 0.9) 0%, rgba(255, 175, 198, 0.55) 40%, transparent 70%),
-      radial-gradient(ellipse 12px 9px, rgba(255, 145, 175, 0.85) 0%, rgba(255, 185, 205, 0.5) 40%, transparent 70%);
+      radial-gradient(
+        ellipse 18px 12px,
+        rgba(255, 140, 170, 0.95) 0%,
+        rgba(255, 180, 200, 0.6) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 14px 10px,
+        rgba(255, 130, 165, 0.9) 0%,
+        rgba(255, 170, 195, 0.5) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 20px 14px,
+        rgba(255, 150, 180, 0.85) 0%,
+        rgba(255, 190, 210, 0.5) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 16px 11px,
+        rgba(255, 135, 168, 0.9) 0%,
+        rgba(255, 175, 198, 0.55) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 12px 9px,
+        rgba(255, 145, 175, 0.85) 0%,
+        rgba(255, 185, 205, 0.5) 40%,
+        transparent 70%
+      );
     background-size:
       80px 90px,
       110px 100px,
@@ -809,10 +853,30 @@
     height: 200%;
     /* Background layer - slightly smaller, more transparent */
     background-image:
-      radial-gradient(ellipse 14px 10px, rgba(255, 160, 185, 0.7) 0%, rgba(255, 190, 210, 0.4) 40%, transparent 70%),
-      radial-gradient(ellipse 16px 11px, rgba(255, 150, 178, 0.65) 0%, rgba(255, 185, 205, 0.35) 40%, transparent 70%),
-      radial-gradient(ellipse 12px 9px, rgba(255, 155, 182, 0.6) 0%, rgba(255, 188, 208, 0.35) 40%, transparent 70%),
-      radial-gradient(ellipse 15px 10px, rgba(255, 145, 175, 0.65) 0%, rgba(255, 182, 202, 0.4) 40%, transparent 70%);
+      radial-gradient(
+        ellipse 14px 10px,
+        rgba(255, 160, 185, 0.7) 0%,
+        rgba(255, 190, 210, 0.4) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 16px 11px,
+        rgba(255, 150, 178, 0.65) 0%,
+        rgba(255, 185, 205, 0.35) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 12px 9px,
+        rgba(255, 155, 182, 0.6) 0%,
+        rgba(255, 188, 208, 0.35) 40%,
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 15px 10px,
+        rgba(255, 145, 175, 0.65) 0%,
+        rgba(255, 182, 202, 0.4) 40%,
+        transparent 70%
+      );
     background-size:
       95px 88px,
       130px 105px,
@@ -879,8 +943,16 @@
     }
 
     .ios-background-card.selected {
-      background: color-mix(in srgb, var(--theme-accent, #007aff) 6%, transparent);
-      border-color: color-mix(in srgb, var(--theme-accent, #007aff) 30%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--theme-accent, #007aff) 6%,
+        transparent
+      );
+      border-color: color-mix(
+        in srgb,
+        var(--theme-accent, #007aff) 30%,
+        transparent
+      );
     }
   }
 
@@ -920,7 +992,11 @@
 
     .ios-background-card.selected {
       border: 2px solid var(--theme-accent, #0a84ff);
-      background: color-mix(in srgb, var(--theme-accent, #0a84ff) 15%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--theme-accent, #0a84ff) 15%,
+        transparent
+      );
     }
   }
 

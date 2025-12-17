@@ -195,17 +195,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 10px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent)
+        0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent)
+        100%
     );
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     color: var(--theme-accent-strong, #8b5cf6);
     font-size: 18px;
     flex-shrink: 0;
@@ -233,8 +236,10 @@
     gap: 6px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent)
+        0%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent)
+        100%
     );
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -245,20 +250,23 @@
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
   }
 
   .install-btn:hover,
   .learn-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
     background: var(--theme-accent-strong, #8b5cf6);
   }
 
   .install-btn:active,
   .learn-btn:active {
     transform: translateY(0);
-    box-shadow: 0 1px 4px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    box-shadow: 0 1px 4px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
   }
 
   .install-btn:disabled {
@@ -271,10 +279,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 8px;
@@ -313,10 +321,10 @@
 
     /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       font-size: 16px;
     }
 
@@ -329,14 +337,14 @@
       padding: 7px 14px;
       font-size: 12px;
       gap: 5px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .dismiss-btn {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       font-size: 13px;
     }
   }
@@ -353,10 +361,10 @@
 
     /* Keep 50px minimum for accessibility */
     .banner-icon {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       font-size: 14px;
     }
 
@@ -368,7 +376,7 @@
     .learn-btn {
       padding: 6px 12px;
       font-size: 11px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .install-btn span,
@@ -377,10 +385,10 @@
     }
 
     .dismiss-btn {
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
     }
   }
 </style>

@@ -1,6 +1,7 @@
 <!-- FeedbackDetailPanel - Refactored with service-based architecture and Svelte 5 runes -->
 <script lang="ts">
-  import type { FeedbackItem } from "../../domain/models/feedback-models";
+  import { onMount } from "svelte";
+  import type { FeedbackItem, FeedbackPriority } from "../../domain/models/feedback-models";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { createFeedbackDetailState } from "../../state/feedback-detail-state.svelte";
   import { PRIORITY_CONFIG } from "../../domain/models/feedback-models";
@@ -9,6 +10,7 @@
   import FeedbackSubtaskPanel from "./detail/FeedbackSubtaskPanel.svelte";
   import FeedbackStatusSelector from "./detail/FeedbackStatusSelector.svelte";
   import FeedbackActionBar from "./detail/FeedbackActionBar.svelte";
+  import ImageViewerModal from "../my-feedback/ImageViewerModal.svelte";
 
   interface Props {
     item: FeedbackItem;
@@ -26,6 +28,41 @@
 
   // Create state wrapper - orchestrates services and reactive state
   const detailState = createFeedbackDetailState(item, manageState, readOnly);
+
+  // Mobile detection
+  let isMobile = $state(false);
+  onMount(() => {
+    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    isMobile = mediaQuery.matches;
+    const handler = (e: MediaQueryListEvent) => (isMobile = e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  });
+
+  // Image viewer state
+  let isImageViewerOpen = $state(false);
+  let imageViewerIndex = $state(0);
+
+  function openImageViewer(index: number = 0) {
+    imageViewerIndex = index;
+    isImageViewerOpen = true;
+  }
+
+  // Priority cycling for mobile
+  const priorityOrder: (FeedbackPriority | "")[] = ["", "low", "medium", "high", "critical"];
+  const currentPriorityIndex = $derived(priorityOrder.indexOf(detailState.editPriority || ""));
+
+  function cyclePriority(direction: "up" | "down") {
+    const newIndex = direction === "up"
+      ? Math.min(currentPriorityIndex + 1, priorityOrder.length - 1)
+      : Math.max(currentPriorityIndex - 1, 0);
+    detailState.editPriority = priorityOrder[newIndex] as FeedbackPriority;
+    void detailState.saveChanges();
+  }
+
+  const currentPriorityConfig = $derived(
+    detailState.editPriority ? PRIORITY_CONFIG[detailState.editPriority as FeedbackPriority] : null
+  );
 
   // Update state when item changes (real-time updates from parent)
   $effect(() => {
@@ -51,7 +88,7 @@
 <div class="detail-panel">
   <FeedbackHeader {detailState} {readOnly} {onClose} />
 
-  <div class="panel-content">
+  <div class="admin-feedback-body">
     <!-- Title - Simple inline edit at top, click to edit -->
     <input
       type="text"
@@ -63,7 +100,7 @@
     />
 
     <!-- Metadata Card - User info -->
-    <FeedbackMetadataCard {detailState} />
+    <FeedbackMetadataCard {detailState} {isMobile} />
 
     <!-- Resolution Summary - Show for completed/archived feedback -->
     {#if (item.status === "completed" || item.status === "archived") && (item.resolutionNotes || item.adminNotes)}
@@ -104,67 +141,116 @@
 
     <!-- Screenshots Section -->
     {#if item.imageUrls && item.imageUrls.length > 0}
-      <section class="section">
-        <h3 class="section-title">Screenshots ({item.imageUrls.length})</h3>
-        <div class="screenshots-grid">
-          {#each item.imageUrls as imageUrl, index}
-            <a
-              href={imageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="screenshot-link"
-            >
-              <img
-                src={imageUrl}
-                alt="Screenshot {index + 1}"
-                class="screenshot-thumb"
-              />
-              <div class="screenshot-overlay">
-                <i class="fas fa-search-plus"></i>
-              </div>
-            </a>
-          {/each}
-        </div>
+      <section class="section screenshots-section">
+        {#if isMobile}
+          <!-- Mobile: Button to open image viewer -->
+          <button
+            type="button"
+            class="screenshots-button"
+            onclick={() => openImageViewer(0)}
+          >
+            <i class="fas fa-images"></i>
+            <span>View {item.imageUrls.length} screenshot{item.imageUrls.length > 1 ? "s" : ""}</span>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        {:else}
+          <!-- Desktop: Inline grid -->
+          <h3 class="section-title">Screenshots ({item.imageUrls.length})</h3>
+          <div class="screenshots-grid">
+            {#each item.imageUrls as imageUrl, index}
+              <button
+                type="button"
+                class="screenshot-btn"
+                onclick={() => openImageViewer(index)}
+              >
+                <img
+                  src={imageUrl}
+                  alt="Screenshot {index + 1}"
+                  class="screenshot-thumb"
+                />
+                <div class="screenshot-overlay">
+                  <i class="fas fa-expand"></i>
+                </div>
+              </button>
+            {/each}
+          </div>
+        {/if}
       </section>
     {/if}
 
     <!-- Status Selector - Click to change -->
-    <FeedbackStatusSelector {detailState} {readOnly} />
+    <FeedbackStatusSelector {detailState} {readOnly} {isMobile} />
 
-    <!-- Priority Section - Compact single row -->
+    <!-- Priority Section -->
     <section class="section">
       <h3 class="section-title">
         <i class="fas fa-exclamation-circle"></i>
         Priority
       </h3>
-      <div class="priority-row">
-        <button
-          type="button"
-          class="priority-chip"
-          class:active={detailState.editPriority === ""}
-          onclick={() => {
-            detailState.editPriority = "";
-            void detailState.saveChanges();
-          }}
-        >
-          None
-        </button>
-        {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
+      {#if isMobile}
+        <!-- Mobile: Arrow cycling -->
+        <div class="priority-cycling">
+          <button
+            type="button"
+            class="cycle-btn"
+            onclick={() => cyclePriority("down")}
+            disabled={readOnly || currentPriorityIndex <= 0}
+            aria-label="Lower priority"
+          >
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <span
+            class="priority-value"
+            style="--priority-color: {currentPriorityConfig?.color || '#6b7280'}"
+          >
+            {#if currentPriorityConfig}
+              <i class="fas {currentPriorityConfig.icon}"></i>
+              {currentPriorityConfig.label}
+            {:else}
+              None
+            {/if}
+          </span>
+          <button
+            type="button"
+            class="cycle-btn"
+            onclick={() => cyclePriority("up")}
+            disabled={readOnly || currentPriorityIndex >= priorityOrder.length - 1}
+            aria-label="Raise priority"
+          >
+            <i class="fas fa-chevron-up"></i>
+          </button>
+        </div>
+      {:else}
+        <!-- Desktop: Chip row -->
+        <div class="priority-row">
           <button
             type="button"
             class="priority-chip"
-            class:active={detailState.editPriority === priority}
-            style="--priority-color: {config.color}"
+            class:active={detailState.editPriority === ""}
             onclick={() => {
-              detailState.editPriority = priority as any;
+              detailState.editPriority = "";
               void detailState.saveChanges();
             }}
           >
-            <i class="fas {config.icon}"></i>
-            {config.label}
+            None
           </button>
-        {/each}
-      </div>
+          {#each Object.entries(PRIORITY_CONFIG) as [priority, config]}
+            <button
+              type="button"
+              class="priority-chip"
+              class:active={detailState.editPriority === priority}
+              style="--priority-color: {config.color}"
+              onclick={() => {
+                detailState.editPriority = priority as any;
+                void detailState.saveChanges();
+              }}
+            >
+              <i class="fas {config.icon}"></i>
+              {config.label}
+            </button>
+          {/each}
+        </div>
+      {/if}
     </section>
 
     <!-- Subtasks Panel -->
@@ -173,6 +259,16 @@
     <!-- Action Bar - Delete functionality -->
     <FeedbackActionBar {detailState} {readOnly} />
   </div>
+
+  <!-- Image Viewer Modal -->
+  {#if item.imageUrls && item.imageUrls.length > 0}
+    <ImageViewerModal
+      images={item.imageUrls}
+      initialIndex={imageViewerIndex}
+      isOpen={isImageViewerOpen}
+      onClose={() => (isImageViewerOpen = false)}
+    />
+  {/if}
 </div>
 
 <style>
@@ -218,7 +314,7 @@
   /* ═══════════════════════════════════════════════════════════════════════════
      CONTENT
      ═══════════════════════════════════════════════════════════════════════════ */
-  .panel-content {
+  .admin-feedback-body {
     flex: 1;
     overflow-y: auto;
     padding: var(--fb-space-md);
@@ -228,10 +324,24 @@
     gap: var(--fb-space-lg);
   }
 
+  /* Mobile: Tighter spacing */
+  @media (max-width: 500px) {
+    .admin-feedback-body {
+      padding: var(--fb-space-sm);
+      gap: var(--fb-space-md);
+    }
+  }
+
   .section {
     display: flex;
     flex-direction: column;
     gap: var(--fb-space-sm);
+  }
+
+  @media (max-width: 500px) {
+    .section {
+      gap: var(--fb-space-xs);
+    }
   }
 
   .section-title {
@@ -293,7 +403,7 @@
     font-size: var(--fb-text-base);
     font-family: inherit;
     resize: none;
-    min-height: 120px;
+    min-height: 80px;
     transition: all 0.2s ease;
   }
 
@@ -306,6 +416,15 @@
   .inline-edit-textarea:readonly {
     opacity: 0.6;
     cursor: default;
+  }
+
+  /* Mobile: smaller min-height for textarea */
+  @media (max-width: 500px) {
+    .inline-edit-textarea {
+      min-height: 60px;
+      padding: var(--fb-space-xs);
+      font-size: var(--fb-text-sm);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -393,24 +512,70 @@
   /* ═══════════════════════════════════════════════════════════════════════════
      SCREENSHOTS
      ═══════════════════════════════════════════════════════════════════════════ */
-  .screenshots-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: var(--fb-space-sm);
+  .screenshots-section {
+    margin-bottom: 0;
   }
 
-  .screenshot-link {
-    position: relative;
-    display: block;
-    aspect-ratio: 1;
+  /* Mobile: Button to open viewer */
+  .screenshots-button {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-sm);
+    width: 100%;
+    padding: var(--fb-space-sm) var(--fb-space-md);
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
     border-radius: var(--fb-radius-md);
-    overflow: hidden;
-    text-decoration: none;
+    color: var(--fb-text);
+    font-size: var(--fb-text-sm);
+    font-weight: 500;
+    cursor: pointer;
     transition: all 0.2s ease;
   }
 
-  .screenshot-link:hover {
+  .screenshots-button:hover {
+    background: var(--fb-surface-hover);
+    border-color: var(--fb-purple);
+  }
+
+  .screenshots-button span {
+    flex: 1;
+    text-align: left;
+  }
+
+  .screenshots-button i:first-child {
+    color: var(--fb-purple);
+  }
+
+  .screenshots-button i:last-child {
+    color: var(--fb-text-muted);
+    font-size: 0.75em;
+  }
+
+  /* Desktop: Grid of thumbnails */
+  .screenshots-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--fb-space-xs);
+  }
+
+  .screenshot-btn {
+    position: relative;
+    display: block;
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border-radius: var(--fb-radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--fb-border);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .screenshot-btn:hover {
     transform: scale(1.05);
+    border-color: var(--fb-purple);
   }
 
   .screenshot-thumb {
@@ -431,13 +596,64 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.5em;
+    font-size: 1rem;
     opacity: 0;
     transition: opacity 0.2s ease;
   }
 
-  .screenshot-link:hover .screenshot-overlay {
+  .screenshot-btn:hover .screenshot-overlay {
     opacity: 1;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     PRIORITY CYCLING (Mobile)
+     ═══════════════════════════════════════════════════════════════════════════ */
+  .priority-cycling {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-sm);
+    justify-content: center;
+  }
+
+  .cycle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--fb-surface);
+    border: 1px solid var(--fb-border);
+    border-radius: var(--fb-radius-sm);
+    color: var(--fb-text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .cycle-btn:hover:not(:disabled) {
+    background: var(--fb-surface-hover);
+    border-color: var(--fb-purple);
+    color: var(--fb-purple);
+  }
+
+  .cycle-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .priority-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    min-width: 100px;
+    justify-content: center;
+    background: color-mix(in srgb, var(--priority-color) 15%, transparent);
+    border: 1px solid var(--priority-color);
+    border-radius: var(--fb-radius-md);
+    color: var(--priority-color);
+    font-size: var(--fb-text-sm);
+    font-weight: 600;
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════

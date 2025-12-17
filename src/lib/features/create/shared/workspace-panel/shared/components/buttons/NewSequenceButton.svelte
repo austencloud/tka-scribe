@@ -51,8 +51,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -98,8 +98,8 @@
 
   @media (max-width: 768px) {
     .panel-button {
-      width: 48px;
-      height: 48px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }

@@ -449,7 +449,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 52px;
+    height: var(--min-touch-target);
     background: var(--fb-surface);
     border: 1px solid var(--fb-border);
     border-radius: var(--fb-radius-md);

@@ -56,6 +56,7 @@ export class ArrowLifecycleManager implements IArrowLifecycleManager {
         motionData
       );
 
+
     // Apply manual adjustments from keyboard controls (WASD)
     const manualAdjustX = motionData.arrowPlacementData.manualAdjustmentX || 0;
     const manualAdjustY = motionData.arrowPlacementData.manualAdjustmentY || 0;

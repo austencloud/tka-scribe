@@ -217,6 +217,19 @@ export function initializeAuthListener() {
           // Silently fail - activity logging is non-critical
         }
 
+        // Initialize presence tracking (non-blocking)
+        try {
+          void import("../../inversify/di").then(async ({ ensureContainerInitialized, tryResolve: resolve }) => {
+            await ensureContainerInitialized(); // Ensure Tier 1 modules (including presence) are loaded
+            const presenceService = resolve<{ initialize: () => Promise<void> }>(TYPES.IPresenceService);
+            if (presenceService) {
+              void presenceService.initialize();
+            }
+          });
+        } catch {
+          // Silently fail - presence is non-critical
+        }
+
         // Initialize settings Firebase sync (non-blocking)
         try {
           void import("../../settings/state/SettingsState.svelte").then(
@@ -295,6 +308,16 @@ export async function signOut() {
       resetUIState();
     } catch {
       // Profile settings may not be loaded - that's ok
+    }
+
+    // Mark user as offline in presence system before signing out
+    try {
+      const presenceService = tryResolve<{ goOffline: () => Promise<void> }>(TYPES.IPresenceService);
+      if (presenceService) {
+        await presenceService.goOffline();
+      }
+    } catch {
+      // Silently fail - presence is non-critical
     }
 
     // Sign out from Firebase

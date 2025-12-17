@@ -110,6 +110,7 @@ export const PRODUCTION_MODULES: Record<ModuleId, boolean> = {
   create: true,
   discover: true,
   feedback: true,
+  inbox: true, // Inbox for messages and notifications
   // Unreleased modules
   learn: false,
   library: false,

@@ -420,8 +420,8 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .add-tag-button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
     background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);

@@ -97,7 +97,7 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    min-height: 52px; /* iOS minimum touch target */
+    min-height: var(--min-touch-target); /* iOS minimum touch target */
     min-width: 130px;
   }
 

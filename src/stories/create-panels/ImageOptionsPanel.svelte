@@ -227,7 +227,7 @@
 
   .image-option-toggle {
     position: relative;
-    width: 52px;
+    width: var(--min-touch-target);
     height: 28px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 14px;

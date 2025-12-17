@@ -100,7 +100,7 @@
     cursor: pointer;
     text-align: left;
     transition: background var(--transition-fast);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .module-header:hover {

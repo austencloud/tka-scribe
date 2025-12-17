@@ -99,7 +99,7 @@ Shows "Select Items" banner and makes escape prominent.
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .cancel-button:hover {
@@ -138,7 +138,7 @@ Shows "Select Items" banner and makes escape prominent.
   /* Mobile adjustments */
   @media (max-width: 768px) {
     .mode-banner {
-      top: 52px; /* Smaller header on mobile */
+      top: 48px; /* Smaller header on mobile */
       padding: var(--spacing-sm) var(--spacing-md);
     }
 
@@ -149,7 +149,7 @@ Shows "Select Items" banner and makes escape prominent.
     .cancel-button {
       padding: var(--spacing-xs) var(--spacing-md);
       font-size: var(--font-size-sm);
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 </style>

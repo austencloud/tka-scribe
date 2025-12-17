@@ -2,13 +2,15 @@
  * Presence Service Implementation
  *
  * Manages real-time user presence using Firebase Realtime Database.
- * Uses onDisconnect() for automatic offline detection.
+ * Uses activity-based detection (like Facebook) to show actual user engagement,
+ * not just whether they have the app open.
  */
 
 import { injectable, inject } from "inversify";
 import {
   ref,
   set,
+  update,
   onValue,
   onDisconnect,
   serverTimestamp,
@@ -23,13 +25,17 @@ import type {
   UserPresence,
   UserPresenceWithId,
   PresenceStats,
+  ActivityStatus,
 } from "../../domain/models/presence-models";
+import { computeActivityStatus } from "../../domain/models/presence-models";
+import { ActivityTracker } from "../../utils/activity-tracker";
 
 @injectable()
 export class PresenceService implements IPresenceService {
   private currentPresence: UserPresence | null = null;
   private initialized = false;
   private presenceRef: ReturnType<typeof ref> | null = null;
+  private activityTracker: ActivityTracker | null = null;
 
   constructor(
     @inject(TYPES.ISessionTrackingService)
@@ -48,10 +54,14 @@ export class PresenceService implements IPresenceService {
     // Get session info
     const sessionInfo = this.sessionTrackingService.getSessionInfo();
 
-    // Create presence data
+    const now = Date.now();
+
+    // Create presence data with activity tracking
     this.currentPresence = {
       online: true,
-      lastSeen: Date.now(),
+      activityStatus: "active",
+      lastActivity: now,
+      lastSeen: now,
       currentModule: "dashboard",
       currentTab: null,
       sessionId: sessionInfo.sessionId,
@@ -65,7 +75,9 @@ export class PresenceService implements IPresenceService {
     // This ensures we mark as offline even if the browser crashes
     const disconnectData: Record<string, unknown> = {
       online: false,
+      activityStatus: "offline",
       lastSeen: serverTimestamp(),
+      lastActivity: serverTimestamp(),
     };
 
     await onDisconnect(this.presenceRef).update(disconnectData);
@@ -74,9 +86,47 @@ export class PresenceService implements IPresenceService {
     await set(this.presenceRef, {
       ...this.currentPresence,
       lastSeen: serverTimestamp(),
+      lastActivity: serverTimestamp(),
     });
 
+    // Start activity tracking
+    this.startActivityTracking();
+
     this.initialized = true;
+  }
+
+  /** Start tracking user interactions for activity-based presence */
+  private startActivityTracking(): void {
+    if (this.activityTracker) return;
+
+    this.activityTracker = new ActivityTracker({
+      onActivity: () => this.handleUserActivity(),
+    });
+
+    this.activityTracker.start();
+  }
+
+  /** Stop activity tracking */
+  private stopActivityTracking(): void {
+    if (this.activityTracker) {
+      this.activityTracker.stop();
+      this.activityTracker = null;
+    }
+  }
+
+  /** Handle detected user activity */
+  private async handleUserActivity(): Promise<void> {
+    if (!this.presenceRef || !this.currentPresence) return;
+
+    const now = Date.now();
+    this.currentPresence.lastActivity = now;
+    this.currentPresence.activityStatus = "active";
+
+    // Update only activity-related fields to minimize writes
+    await update(this.presenceRef, {
+      lastActivity: serverTimestamp(),
+      activityStatus: "active",
+    });
   }
 
   async updateLocation(module: string, tab?: string | null): Promise<void> {
@@ -86,22 +136,36 @@ export class PresenceService implements IPresenceService {
       if (!this.presenceRef || !this.currentPresence) return;
     }
 
+    const now = Date.now();
     this.currentPresence.currentModule = module;
     this.currentPresence.currentTab = tab ?? null;
-    this.currentPresence.lastSeen = Date.now();
+    this.currentPresence.lastSeen = now;
+    this.currentPresence.lastActivity = now;
+    this.currentPresence.activityStatus = "active";
+
+    // Navigation counts as activity
+    if (this.activityTracker) {
+      this.activityTracker.forceActivityUpdate();
+    }
 
     await set(this.presenceRef, {
       ...this.currentPresence,
       lastSeen: serverTimestamp(),
+      lastActivity: serverTimestamp(),
     });
   }
 
   async goOffline(): Promise<void> {
+    // Stop activity tracking first
+    this.stopActivityTracking();
+
     if (!this.presenceRef) return;
 
-    await set(this.presenceRef, {
+    await update(this.presenceRef, {
       online: false,
+      activityStatus: "offline",
       lastSeen: serverTimestamp(),
+      lastActivity: serverTimestamp(),
     });
 
     this.currentPresence = null;
@@ -125,18 +189,34 @@ export class PresenceService implements IPresenceService {
       }
 
       const users: UserPresenceWithId[] = Object.entries(data).map(
-        ([userId, presence]) => ({
-          userId,
-          ...presence,
-        })
+        ([userId, presence]) => {
+          // Compute real-time activity status based on lastActivity
+          const computedStatus = computeActivityStatus(
+            presence.lastActivity ?? presence.lastSeen,
+            presence.online
+          );
+          return {
+            userId,
+            ...presence,
+            // Override stored status with computed status for accuracy
+            activityStatus: computedStatus,
+          };
+        }
       );
 
-      // Sort: online first, then by lastSeen (most recent first)
+      // Sort: active first, then offline, then by lastActivity (most recent first)
       users.sort((a, b) => {
-        if (a.online !== b.online) {
-          return a.online ? -1 : 1;
+        const statusA = a.activityStatus ?? "offline";
+        const statusB = b.activityStatus ?? "offline";
+
+        // Active users first
+        if (statusA !== statusB) {
+          return statusA === "active" ? -1 : 1;
         }
-        return b.lastSeen - a.lastSeen;
+        // Within same status, sort by most recent activity
+        const activityA = a.lastActivity ?? a.lastSeen;
+        const activityB = b.lastActivity ?? b.lastSeen;
+        return activityB - activityA;
       });
 
       callback(users);
@@ -173,24 +253,34 @@ export class PresenceService implements IPresenceService {
 
     if (!data) {
       return {
-        onlineCount: 0,
+        activeCount: 0,
+        inactiveCount: 0,
         byModule: {},
         byDevice: { desktop: 0, mobile: 0, tablet: 0 },
       };
     }
 
     const stats: PresenceStats = {
-      onlineCount: 0,
+      activeCount: 0,
+      inactiveCount: 0,
       byModule: {},
       byDevice: { desktop: 0, mobile: 0, tablet: 0 },
     };
 
     for (const presence of Object.values(data)) {
-      if (presence.online) {
-        stats.onlineCount++;
+      // Compute real-time activity status
+      const status = computeActivityStatus(
+        presence.lastActivity ?? presence.lastSeen,
+        presence.online
+      );
+
+      if (status === "active") {
+        stats.activeCount++;
         stats.byModule[presence.currentModule] =
           (stats.byModule[presence.currentModule] ?? 0) + 1;
         stats.byDevice[presence.device]++;
+      } else {
+        stats.inactiveCount++;
       }
     }
 
@@ -201,6 +291,28 @@ export class PresenceService implements IPresenceService {
     const userPresenceRef = ref(database, `presence/${userId}`);
     const snapshot = await get(userPresenceRef);
     const presence = snapshot.val() as UserPresence | null;
-    return presence?.online ?? false;
+
+    if (!presence) return false;
+
+    // Use activity-based status, not just connection status
+    const status = computeActivityStatus(
+      presence.lastActivity ?? presence.lastSeen,
+      presence.online
+    );
+    return status === "active";
+  }
+
+  /** Get detailed activity status for a user */
+  async getUserActivityStatus(userId: string): Promise<ActivityStatus> {
+    const userPresenceRef = ref(database, `presence/${userId}`);
+    const snapshot = await get(userPresenceRef);
+    const presence = snapshot.val() as UserPresence | null;
+
+    if (!presence) return "offline";
+
+    return computeActivityStatus(
+      presence.lastActivity ?? presence.lastSeen,
+      presence.online
+    );
   }
 }

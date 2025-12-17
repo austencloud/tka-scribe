@@ -151,7 +151,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 52px 24px;
+    padding: 48px 24px;
     gap: 12px;
     color: var(--theme-text-dim);
   }
@@ -161,8 +161,8 @@
   }
 
   .user-avatar {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     overflow: hidden;
     display: flex;

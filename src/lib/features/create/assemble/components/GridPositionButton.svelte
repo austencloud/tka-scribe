@@ -61,8 +61,8 @@ Supports enabled/disabled states and highlights current position.
     /* Size */
     width: 100%;
     height: 100%;
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
 
     /* Typography */
     font-size: 16px;

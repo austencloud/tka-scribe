@@ -334,7 +334,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -390,7 +390,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     text-align: center;
     justify-self: center;
   }
@@ -427,7 +427,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .cancel-button {
@@ -493,7 +493,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     .value-btn {
       padding: 6px 2px;
       font-size: 12px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       border-width: 1.5px;
     }
 
@@ -510,7 +510,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     .action-button {
       padding: 10px 16px;
       font-size: 14px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 
@@ -542,7 +542,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     .value-btn {
       padding: 4px 1px;
       font-size: 11px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       border-width: 1px;
     }
 
@@ -559,7 +559,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     .action-button {
       padding: 8px 12px;
       font-size: 13px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 
@@ -592,7 +592,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     .value-btn {
       padding: 3px 1px;
       font-size: 10px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       border-width: 1px;
       border-radius: 6px;
     }
@@ -612,7 +612,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     .action-button {
       padding: 6px 10px;
       font-size: 12px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       border-radius: 6px;
     }
   }

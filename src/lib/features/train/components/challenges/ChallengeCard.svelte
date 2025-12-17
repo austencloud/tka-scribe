@@ -399,7 +399,7 @@
   .card-footer {
     display: flex;
     justify-content: flex-end;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     align-items: center;
     margin-top: auto;
   }
@@ -408,7 +408,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 18px;
     background: color-mix(in srgb, var(--accent-color) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent-color) 25%, transparent);
@@ -438,7 +438,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 16px;
     border-radius: 12px;
     font-size: 13px;
@@ -534,7 +534,7 @@
       font-size: 13px;
     }
 
-    /* Visual size compact but touch target maintained at 52px */
+    /* Visual size compact but touch target maintained at 48px */
     .action-hint,
     .status-badge {
       height: 40px;
@@ -550,7 +550,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       min-width: 100%;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 

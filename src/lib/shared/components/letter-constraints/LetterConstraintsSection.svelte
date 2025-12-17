@@ -373,7 +373,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
 
   .tab-button {
     flex: 1;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

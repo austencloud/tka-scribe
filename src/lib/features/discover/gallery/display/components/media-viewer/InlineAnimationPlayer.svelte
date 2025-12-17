@@ -304,8 +304,8 @@
   }
 
   .play-btn {
-    width: 48px;
-    height: 48px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     border-color: transparent;
   }

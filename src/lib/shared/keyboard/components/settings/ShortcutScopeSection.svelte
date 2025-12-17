@@ -134,7 +134,7 @@
     align-items: center;
     gap: 12px;
     width: 100%;
-    min-height: 52px; /* Touch target */
+    min-height: var(--min-touch-target); /* Touch target */
     padding: 14px 16px;
     background: transparent;
     border: none;

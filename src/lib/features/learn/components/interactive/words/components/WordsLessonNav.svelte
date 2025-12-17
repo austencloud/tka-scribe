@@ -72,7 +72,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     margin-left: auto;
   }
 

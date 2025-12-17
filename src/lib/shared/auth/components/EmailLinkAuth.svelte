@@ -287,7 +287,7 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
   }
 

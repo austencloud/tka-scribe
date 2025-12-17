@@ -2,31 +2,48 @@
   import type { FeedbackDetailState } from "../../../state/feedback-detail-state.svelte";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
 
-  const { detailState } = $props<{ detailState: FeedbackDetailState }>();
+  interface Props {
+    detailState: FeedbackDetailState;
+    isMobile?: boolean;
+  }
+
+  const { detailState, isMobile = false }: Props = $props();
 </script>
 
-<section class="section">
-  <h3 class="section-title">Submitted By</h3>
-  <div class="user-card">
-    <RobustAvatar
-      src={detailState.item.userPhotoURL}
-      name={detailState.item.userDisplayName}
-      alt="{detailState.item.userDisplayName}'s avatar"
-      size="lg"
-    />
-    <div class="user-info">
+<section class="section" class:mobile={isMobile}>
+  {#if isMobile}
+    <!-- Mobile: Compact single row -->
+    <div class="user-card-compact">
+      <RobustAvatar
+        src={detailState.item.userPhotoURL}
+        name={detailState.item.userDisplayName}
+        alt="{detailState.item.userDisplayName}'s avatar"
+        size="sm"
+      />
       <span class="user-name">{detailState.item.userDisplayName}</span>
-      <span class="user-email">{detailState.item.userEmail}</span>
+      <span class="separator">•</span>
+      <span class="time-relative">{detailState.formatRelativeTime(detailState.item.createdAt)}</span>
     </div>
-    <div class="user-time">
-      <span class="time-relative"
-        >{detailState.formatRelativeTime(detailState.item.createdAt)}</span
-      >
-      <span class="time-absolute"
-        >{detailState.formatDate(detailState.item.createdAt)}</span
-      >
+  {:else}
+    <!-- Desktop: Full card -->
+    <h3 class="section-title">Submitted By</h3>
+    <div class="user-card">
+      <RobustAvatar
+        src={detailState.item.userPhotoURL}
+        name={detailState.item.userDisplayName}
+        alt="{detailState.item.userDisplayName}'s avatar"
+        size="lg"
+      />
+      <div class="user-info">
+        <span class="user-name">{detailState.item.userDisplayName}</span>
+        <span class="user-email">{detailState.item.userEmail}</span>
+      </div>
+      <div class="user-time">
+        <span class="time-relative">{detailState.formatRelativeTime(detailState.item.createdAt)}</span>
+        <span class="time-absolute">{detailState.formatDate(detailState.item.createdAt)}</span>
+      </div>
     </div>
-  </div>
+  {/if}
 </section>
 
 <style>
@@ -48,6 +65,7 @@
     letter-spacing: 0.05em;
   }
 
+  /* Desktop: Full card */
   .user-card {
     display: flex;
     align-items: center;
@@ -57,8 +75,6 @@
     border: 1px solid var(--fb-border);
     border-radius: var(--fb-radius-md);
   }
-
-  /* RobustAvatar handles its own sizing via size="lg" (64px) */
 
   .user-info {
     display: flex;
@@ -102,5 +118,33 @@
   .time-absolute {
     font-size: var(--fb-text-xs);
     color: var(--fb-text-muted);
+  }
+
+  /* Mobile: Compact single row */
+  .user-card-compact {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-xs, 8px);
+    padding: var(--fb-space-xs, 8px) 0;
+    color: var(--fb-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--fb-text-xs, 0.75rem);
+  }
+
+  .user-card-compact .user-name {
+    font-size: var(--fb-text-xs, 0.75rem);
+    font-weight: 500;
+  }
+
+  .separator {
+    opacity: 0.5;
+  }
+
+  .user-card-compact .time-relative {
+    font-weight: 400;
+    color: var(--fb-text-muted, rgba(255, 255, 255, 0.6));
+  }
+
+  .section.mobile {
+    gap: 0;
   }
 </style>

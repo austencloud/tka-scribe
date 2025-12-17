@@ -171,7 +171,7 @@
     font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     overflow: hidden;
     isolation: isolate;
 
@@ -410,7 +410,7 @@
 
     .action-btn {
       padding: 10px 12px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 </style>

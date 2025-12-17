@@ -7,6 +7,7 @@
   import MigrationChecker from "../../migration/components/MigrationChecker.svelte";
   import ErrorModal from "../../error/components/ErrorModal.svelte";
   import InboxDrawer from "../../inbox/components/InboxDrawer.svelte";
+  import InboxSubscriptionProvider from "../../inbox/components/InboxSubscriptionProvider.svelte";
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
   import { myFeedbackDetailState } from "$lib/features/feedback/state/my-feedback-detail-state.svelte";
 
@@ -390,6 +391,9 @@
     <!-- Gamification Toast Notifications -->
     <AchievementNotificationToast />
     <XPToast />
+
+    <!-- Inbox Subscriptions (for badge counts) -->
+    <InboxSubscriptionProvider />
 
     <!-- Inbox Drawer (messages + notifications) -->
     <InboxDrawer />

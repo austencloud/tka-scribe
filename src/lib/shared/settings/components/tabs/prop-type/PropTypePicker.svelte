@@ -178,8 +178,8 @@
   }
 
   .close-button {
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     border-radius: 50%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border: none;

@@ -38,8 +38,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 1px solid color-mix(in srgb, var(--semantic-info, #06b6d4) 30%, transparent);
     background: linear-gradient(135deg, var(--semantic-info, #06b6d4) 0%, color-mix(in srgb, var(--semantic-info, #06b6d4) 85%, #0e7490) 100%);
     border-radius: 50%;
@@ -69,36 +69,36 @@
     font-size: 18px;
   }
 
-  /* Mobile responsive - 52px minimum per iOS/Android guidelines */
+  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .sequence-actions-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .sequence-actions-button {
-      width: 52px; /* Maintain 52px minimum */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum */
+      height: var(--min-touch-target);
       font-size: 16px;
     }
   }
 
   @media (max-width: 320px) {
     .sequence-actions-button {
-      width: 52px; /* NEVER below 52px for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* NEVER below 48px for accessibility */
+      height: var(--min-touch-target);
       font-size: 14px;
     }
   }
 
-  /* Landscape mobile: Maintain 52px minimum */
+  /* Landscape mobile: Maintain 48px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .sequence-actions-button {
-      width: 52px; /* Maintain 52px minimum for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      height: var(--min-touch-target);
     }
 
     .sequence-actions-button i {

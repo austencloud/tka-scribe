@@ -104,7 +104,7 @@
 
   input[type="text"],
   select {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0.75rem;
     background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
@@ -125,7 +125,7 @@
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0.5rem 0;
   }
 

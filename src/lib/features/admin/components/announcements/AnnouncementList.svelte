@@ -120,7 +120,7 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    padding: 52px 24px;
+    padding: 48px 24px;
     color: rgba(255, 255, 255, 0.5);
     text-align: center;
   }
@@ -199,8 +199,13 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 6px;
     color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
     font-size: 11px;
@@ -238,8 +243,16 @@
   }
 
   .action-button.edit:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 40%,
+      transparent
+    );
     color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
   }
 

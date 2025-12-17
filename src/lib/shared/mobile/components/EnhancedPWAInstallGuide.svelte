@@ -155,7 +155,7 @@
 
   /* Handle bar for swipe affordance */
   .sheet-handle {
-    width: 52px;
+    width: var(--min-touch-target);
     height: 5px;
     background: rgba(255, 255, 255, 0.3);
     border-radius: 3px;
@@ -210,10 +210,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 8px;
@@ -272,7 +272,8 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .compact .got-it-btn {
@@ -282,7 +283,8 @@
 
   .got-it-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .got-it-btn:active {

@@ -167,8 +167,8 @@
   }
 
   .close-button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -238,7 +238,11 @@
 
   .error-state button {
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #3b82f6),
+      var(--theme-accent-strong, #8b5cf6)
+    );
     border: none;
     border-radius: 8px;
     color: var(--theme-text, white);
@@ -249,7 +253,8 @@
 
   .error-state button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .sequences-grid {
@@ -275,7 +280,11 @@
 
   .sequence-card:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 40%,
+      transparent
+    );
     transform: translateX(4px);
   }
 

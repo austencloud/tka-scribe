@@ -183,7 +183,7 @@
 
   <!-- Row 2: BPM Control -->
   <div class="control-row bpm-row">
-    <BpmChips bpm={bpm} onBpmChange={handleBpmChange} />
+    <BpmChips {bpm} onBpmChange={handleBpmChange} />
   </div>
 </div>
 
@@ -218,13 +218,13 @@
     gap: clamp(2px, 1cqi, 8px);
   }
 
-  /* Control buttons - 52px minimum touch target */
+  /* Control buttons - 48px minimum touch target */
   .control-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(8px, 2cqi, 14px) clamp(10px, 2.5cqi, 18px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -255,11 +255,11 @@
     font-size: 1em;
   }
 
-  /* Play button - 52px minimum */
+  /* Play button - 48px minimum */
   .play-btn {
     background: rgba(16, 185, 129, 0.3);
     border-color: rgba(16, 185, 129, 0.5);
-    min-width: 52px;
+    min-width: var(--min-touch-target);
   }
 
   .play-btn:hover:not(:disabled) {
@@ -301,7 +301,7 @@
 
   /* Fullscreen button */
   .fullscreen-btn {
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.15);
   }
@@ -326,7 +326,10 @@
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: clamp(6px, 1.5cqi, 10px);
     padding: clamp(3px, 1cqi, 6px);
-    box-shadow: var(--theme-shadow, 0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px) rgba(0, 0, 0, 0.5));
+    box-shadow: var(
+      --theme-shadow,
+      0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px) rgba(0, 0, 0, 0.5)
+    );
     backdrop-filter: blur(12px);
     z-index: 100;
     display: grid;
@@ -335,13 +338,13 @@
     min-width: clamp(140px, 35cqi, 200px);
   }
 
-  /* Dropdown items - 52px minimum touch target */
+  /* Dropdown items - 48px minimum touch target */
   .dropdown-item {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 1cqi, 8px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 14px);
     background: transparent;
     border: 1px solid transparent;

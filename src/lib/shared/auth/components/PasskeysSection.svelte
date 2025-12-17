@@ -170,6 +170,7 @@
   .actions {
     display: flex;
     gap: 10px;
+    max-width: 100%;
   }
 
   .primary,
@@ -186,6 +187,7 @@
     color: var(--theme-text, #fff);
     font-weight: 600;
     flex: 1;
+    min-width: 0;
   }
 
   .primary {

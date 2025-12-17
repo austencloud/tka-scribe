@@ -288,7 +288,7 @@
   /* Responsive Design */
   @media (max-width: 768px) {
     .category-button {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: var(--spacing-sm);
       font-size: var(--font-size-xs);
     }

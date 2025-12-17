@@ -185,7 +185,7 @@
   }
 
   .mode-glyph {
-    width: 48px;
+    width: var(--min-touch-target);
     height: 32px;
     display: flex;
     align-items: center;
@@ -268,7 +268,7 @@
   }
 
   .details-glyph {
-    width: 48px;
+    width: var(--min-touch-target);
     height: 32px;
     object-fit: contain;
     filter: brightness(0) invert(1) drop-shadow(0 0 4px var(--elemental-color));

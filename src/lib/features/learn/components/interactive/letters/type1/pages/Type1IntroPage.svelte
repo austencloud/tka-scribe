@@ -252,7 +252,7 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
 		font-weight: 700;
 		cursor: pointer;
 		transition: all 0.3s;
-		min-height: 52px;
+		min-height: var(--min-touch-target);
 		background: linear-gradient(
 			135deg,
 			rgba(34, 211, 238, 0.3) 0%,

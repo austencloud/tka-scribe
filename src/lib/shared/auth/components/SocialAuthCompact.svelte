@@ -105,7 +105,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 16px;
     border-radius: 8px;
     font-size: 14px;

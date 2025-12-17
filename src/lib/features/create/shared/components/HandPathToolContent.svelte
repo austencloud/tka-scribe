@@ -105,7 +105,7 @@ Contains sequence settings, hand indicator, and action buttons.
     align-items: center;
     justify-content: center;
     gap: clamp(0.375rem, 2cqi, 0.625rem);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
     flex-shrink: 0;
   }
@@ -143,7 +143,7 @@ Contains sequence settings, hand indicator, and action buttons.
     align-items: center;
     justify-content: center;
     gap: clamp(0.375rem, 1.5cqi, 0.625rem);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .action-btn.primary {

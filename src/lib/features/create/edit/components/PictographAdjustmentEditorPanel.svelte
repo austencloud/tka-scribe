@@ -198,7 +198,7 @@ Features:
     </div>
 
     <!-- Main content area -->
-    <div class="panel-content">
+    <div class="pictograph-editor-body">
       <!-- Pictograph display with clickable arrows -->
       <div class="pictograph-section">
         {#if selectedBeatData && !selectedBeatData.isBlank}
@@ -358,8 +358,8 @@ Features:
   }
 
   .close-button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
     background: hsl(var(--muted));
@@ -381,7 +381,7 @@ Features:
   }
 
   /* Content */
-  .panel-content {
+  .pictograph-editor-body {
     flex: 1;
     display: grid;
     grid-template-columns: 1fr 400px;
@@ -564,7 +564,7 @@ Features:
 
   /* Mobile responsive */
   @media (max-width: 1024px) {
-    .panel-content {
+    .pictograph-editor-body {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr auto;
     }

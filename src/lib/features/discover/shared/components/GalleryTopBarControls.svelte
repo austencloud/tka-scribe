@@ -151,7 +151,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
 
 <style>
   .gallery-topbar-controls {
-    --control-height: 52px;
+    --control-height: var(--min-touch-target);
     --padding-vertical: 10px;
 
     display: flex;

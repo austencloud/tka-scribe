@@ -761,7 +761,7 @@ Tests understanding of:
     justify-content: center;
     gap: 0.5rem;
     padding: 0.875rem 1.25rem;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
@@ -822,7 +822,7 @@ Tests understanding of:
       flex-direction: row;
       justify-content: center;
       gap: 0.75rem;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: 0.875rem 1rem;
     }
 

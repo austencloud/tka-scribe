@@ -598,8 +598,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.3));
     border-top-color: var(--theme-text, #fff);
     border-radius: 50%;
@@ -701,8 +701,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .main-controls button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -758,8 +758,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   .btn-settings {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

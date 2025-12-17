@@ -279,7 +279,11 @@
     align-items: flex-start;
     padding: 1.5rem;
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 5%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 5%,
+      transparent
+    );
   }
 
   .shortcuts-help__title {
@@ -296,8 +300,8 @@
   }
 
   .shortcuts-help__close {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -384,8 +388,13 @@
   .shortcuts-help__item-keys {
     font-size: 12px;
     padding: 6px 12px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
     border-radius: 6px;
     color: var(--theme-accent-strong, #a78bfa);
     font-family: ui-monospace, "SF Mono", monospace;
@@ -409,8 +418,13 @@
 
   .shortcuts-help__footer kbd {
     padding: 4px 8px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 12%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border-radius: 5px;
     font-family: ui-monospace, "SF Mono", monospace;
     font-size: 11px;
@@ -427,7 +441,11 @@
   }
 
   .shortcuts-help__content::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
     border-radius: 3px;
   }
 

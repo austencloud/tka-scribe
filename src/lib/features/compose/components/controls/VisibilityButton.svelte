@@ -41,9 +41,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
-    min-width: 52px;
-    width: 52px;
+    min-height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    width: var(--min-touch-target);
     padding: 0;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

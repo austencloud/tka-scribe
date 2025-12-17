@@ -274,8 +274,8 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .restart-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     background: linear-gradient(
       135deg,
@@ -349,7 +349,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
   }
 
@@ -393,7 +393,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .action-btn.primary {
@@ -443,7 +443,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 0.9rem;
   }
 

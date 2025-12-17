@@ -8,7 +8,6 @@
   import { onMount } from "svelte";
   import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import type { IAdminChallengeService } from "../services/contracts/IAdminChallengeService";
-  import SystemHealthDashboard from "./SystemHealthDashboard.svelte";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import TrainChallengeManager from "./TrainChallengeManager.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
@@ -52,15 +51,7 @@
   {:else}
     <!-- Content Area -->
     <main class="admin-content">
-      {#if !activeSection || activeSection === "health"}
-        <div
-          id="health-panel"
-          role="tabpanel"
-          aria-labelledby="health-tab"
-        >
-          <SystemHealthDashboard />
-        </div>
-      {:else if activeSection === "users"}
+      {#if !activeSection || activeSection === "users"}
         <div
           id="users-panel"
           role="tabpanel"

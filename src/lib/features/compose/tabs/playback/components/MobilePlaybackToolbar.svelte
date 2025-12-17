@@ -25,10 +25,7 @@
 
 <div class="mobile-toolbar">
   <div class="toolbar-left">
-    <MobileToolViewToggle
-      {activeView}
-      onToggle={onToggleView}
-    />
+    <MobileToolViewToggle {activeView} onToggle={onToggleView} />
   </div>
 
   <div class="toolbar-center">
@@ -43,11 +40,7 @@
   </div>
 
   <div class="toolbar-right">
-    <button
-      class="close-btn"
-      onclick={onClose}
-      aria-label="Close playback"
-    >
+    <button class="close-btn" onclick={onClose} aria-label="Close playback">
       <i class="fas fa-chevron-down"></i>
     </button>
   </div>
@@ -136,8 +129,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
     border: 1.5px solid rgba(255, 255, 255, 0.15);

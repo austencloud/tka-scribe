@@ -293,7 +293,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: clamp(36px, 14cqi, 52px);
+    min-height: clamp(36px, 14cqi, 48px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: clamp(4px, 2cqi, 8px);
@@ -308,8 +308,16 @@
   }
 
   .type-btn.selected {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
   }
 
@@ -362,7 +370,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(4px, 2cqi, 8px);
-    min-height: clamp(36px, 14cqi, 52px);
+    min-height: clamp(36px, 14cqi, 48px);
     padding: clamp(6px, 2.5cqi, 12px);
     background: rgba(16, 185, 129, 0.15);
     border: 1px dashed rgba(16, 185, 129, 0.4);
@@ -425,8 +433,16 @@
   }
 
   .rotation-btn.selected {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
   }
 

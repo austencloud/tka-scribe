@@ -45,8 +45,8 @@
     transition: all 0.2s ease;
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
     -webkit-tap-highlight-color: transparent;
-    min-height: 52px;
-    min-width: 52px;
+    min-height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
     user-select: none;
   }
 

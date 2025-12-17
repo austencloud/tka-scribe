@@ -331,8 +331,8 @@
     color: white;
     font-weight: bold;
     font-size: var(--font-size-sm);
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     cursor: pointer;
     transition: all var(--transition-normal);
     display: flex;
@@ -390,8 +390,8 @@
     }
 
     .control-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: var(--font-size-xs);
     }
   }
@@ -404,17 +404,17 @@
 
     .title,
     .status {
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px); /* Supplementary, compact minimum */
     }
 
     .time-display {
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px); /* Supplementary, compact minimum */
     }
 
     .control-button {
-      width: 24px;
-      height: 20px;
-      font-size: 10px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      font-size: var(--font-size-compact, 12px); /* Touch target maintained */
     }
   }
 </style>

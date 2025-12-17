@@ -82,7 +82,7 @@
   showHandle={isMobile}
   ariaLabel={feedback ? `Feedback: ${feedback.title}` : "Feedback details"}
 >
-  <div class="panel-content">
+  <div class="feedback-view-body">
     <!-- Header -->
     <header class="panel-header">
       <button
@@ -197,7 +197,7 @@
 </Drawer>
 
 <style>
-  .panel-content {
+  .feedback-view-body {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -219,10 +219,10 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -415,8 +415,13 @@
   /* Response */
   .response-card {
     padding: 16px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 10%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
     border-radius: 12px;
   }
 
@@ -435,7 +440,7 @@
 
   /* Mobile adjustments */
   @media (max-width: 768px) {
-    .panel-content {
+    .feedback-view-body {
       padding: 16px;
       max-height: 85vh;
     }

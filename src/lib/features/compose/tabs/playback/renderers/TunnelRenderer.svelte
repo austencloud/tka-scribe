@@ -104,9 +104,10 @@
         primaryPlaybackController = container.get<IAnimationPlaybackController>(
           TYPES.IAnimationPlaybackController
         );
-        secondaryPlaybackController = container.get<IAnimationPlaybackController>(
-          TYPES.IAnimationPlaybackController
-        );
+        secondaryPlaybackController =
+          container.get<IAnimationPlaybackController>(
+            TYPES.IAnimationPlaybackController
+          );
         settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
 
         // Load Pixi module on-demand
@@ -264,14 +265,23 @@
 
   // Sync loop + step playback preferences to both per-renderer animation states
   $effect(() => {
-    if (!primaryAnimationState.sequenceData || !secondaryAnimationState.sequenceData) return;
+    if (
+      !primaryAnimationState.sequenceData ||
+      !secondaryAnimationState.sequenceData
+    )
+      return;
     primaryAnimationState.setShouldLoop(shouldLoop);
     secondaryAnimationState.setShouldLoop(shouldLoop);
   });
 
   $effect(() => {
-    if (!primaryAnimationState.sequenceData || !secondaryAnimationState.sequenceData) return;
-    if (primaryAnimationState.isPlaying || secondaryAnimationState.isPlaying) return;
+    if (
+      !primaryAnimationState.sequenceData ||
+      !secondaryAnimationState.sequenceData
+    )
+      return;
+    if (primaryAnimationState.isPlaying || secondaryAnimationState.isPlaying)
+      return;
     primaryAnimationState.setPlaybackMode(playbackMode);
     primaryAnimationState.setStepPlaybackPauseMs(stepPlaybackPauseMs);
     primaryAnimationState.setStepPlaybackStepSize(stepPlaybackStepSize);
@@ -445,8 +455,8 @@
   }
 
   .spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-top-color: #ec4899;
     border-radius: 50%;

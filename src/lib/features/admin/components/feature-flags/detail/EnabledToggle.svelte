@@ -48,12 +48,12 @@
     background: transparent;
     cursor: pointer;
     color: var(--theme-text-dim);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .toggle-track {
     position: relative;
-    width: 52px;
+    width: var(--min-touch-target);
     height: 28px;
     background: var(--surface-2026-active);
     border-radius: var(--radius-2026-md);

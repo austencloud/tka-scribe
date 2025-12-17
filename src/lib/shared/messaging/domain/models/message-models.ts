@@ -5,10 +5,21 @@
 /**
  * Attachment types that can be included in messages
  */
-export type MessageAttachmentType = "image" | "sequence" | "link";
+export type MessageAttachmentType = "image" | "sequence" | "link" | "feedback";
 
 /**
- * An attachment on a message (images, sequence links, etc.)
+ * Feedback-specific metadata for message attachments
+ */
+export interface FeedbackAttachmentMetadata {
+	feedbackId: string;
+	feedbackTitle: string;
+	feedbackType: "bug" | "feature" | "general";
+	feedbackStatus: string;
+	feedbackDescription?: string;
+}
+
+/**
+ * An attachment on a message (images, sequence links, feedback, etc.)
  */
 export interface MessageAttachment {
 	type: MessageAttachmentType;
@@ -20,6 +31,12 @@ export interface MessageAttachment {
 		width?: number;
 		height?: number;
 		sequenceId?: string;
+		// Feedback-specific fields
+		feedbackId?: string;
+		feedbackTitle?: string;
+		feedbackType?: "bug" | "feature" | "general";
+		feedbackStatus?: string;
+		feedbackDescription?: string;
 	};
 }
 

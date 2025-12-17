@@ -176,7 +176,7 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
     /* Container for aspect-ratio detection */
     container-type: size;
     /* Add generous padding around the content */
-    padding: clamp(24px, 5vmin, 52px);
+    padding: clamp(24px, 5vmin, 48px);
     box-sizing: border-box;
     gap: clamp(16px, 3vmin, 32px);
   }

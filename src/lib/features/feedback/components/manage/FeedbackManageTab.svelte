@@ -4,6 +4,8 @@
   import { createFeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { createVersionState } from "../../state/version-state.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
+  import { notificationTargetState, getNotificationTargetFeedback, setNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
+  import { onMount } from "svelte";
   import FeedbackKanbanBoard from "./FeedbackKanbanBoard.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
   import PrepareReleasePanel from "./PrepareReleasePanel.svelte";
@@ -21,6 +23,35 @@
   // Archive view toggle
   let showArchive = $state(false);
 
+  // Track pending target for selection
+  let pendingTargetId = $state<string | null>(null);
+
+  // Check for target on mount (handles navigation from other pages)
+  onMount(() => {
+    // Check URL param first (from FeedbackMessageCard navigation)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlFeedbackId = urlParams.get("openFeedback");
+
+    if (urlFeedbackId) {
+      console.log("[FeedbackManageTab] onMount: Found URL param openFeedback:", urlFeedbackId);
+      pendingTargetId = urlFeedbackId;
+      // Clear the URL param
+      urlParams.delete("openFeedback");
+      const newUrl = urlParams.toString()
+        ? `${window.location.pathname}?${urlParams.toString()}`
+        : window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    } else {
+      // Fallback to notification target state
+      const targetId = getNotificationTargetFeedback();
+      if (targetId) {
+        console.log("[FeedbackManageTab] onMount: Found notification target:", targetId);
+        pendingTargetId = targetId;
+        setNotificationTargetFeedback(null);
+      }
+    }
+  });
+
   // Subscribe to real-time feedback updates when admin status is confirmed
   $effect(() => {
     if (isAdmin) {
@@ -33,6 +64,33 @@
       };
     }
     return undefined;
+  });
+
+  // Watch for notification target changes (handles navigation while already mounted)
+  $effect(() => {
+    const targetId = notificationTargetState.feedbackId;
+    if (targetId) {
+      pendingTargetId = targetId;
+      setNotificationTargetFeedback(null);
+    }
+  });
+
+  // Watch for pendingTargetId and select when we have items
+  $effect(() => {
+    const target = pendingTargetId;
+    if (!target) return;
+
+    // We have a target - try to select it if we have items
+    const itemCount = manageState.allItems.length;
+    if (itemCount === 0) return;
+
+    // Clear pending immediately to prevent re-runs
+    pendingTargetId = null;
+
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      manageState.selectItemById(target);
+    }, 50);
   });
 </script>
 

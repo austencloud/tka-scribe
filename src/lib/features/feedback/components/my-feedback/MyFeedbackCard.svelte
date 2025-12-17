@@ -225,7 +225,7 @@
     );
     border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
     border-radius: 12px;
-    font-size: 0.6875rem;
+    font-size: var(--font-size-compact, 0.75rem); /* Supplementary badge */
     font-weight: 500;
     color: var(--badge-color);
     white-space: nowrap;
@@ -233,7 +233,7 @@
   }
 
   .status-badge i {
-    font-size: 0.625rem;
+    font-size: 0.75rem; /* Icon minimum */
   }
 
   .card-description {
@@ -254,12 +254,12 @@
     align-items: center;
     gap: 4px;
     margin-top: 6px;
-    font-size: 0.6875rem;
+    font-size: var(--font-size-compact, 0.75rem); /* Supplementary text */
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .screenshot-indicator i {
-    font-size: 0.625rem;
+    font-size: 0.75rem; /* Icon minimum */
     color: var(--type-color);
   }
 
@@ -280,7 +280,7 @@
   }
 
   .has-response i {
-    font-size: 0.6875rem;
+    font-size: 0.75rem; /* Icon minimum */
   }
 
   /* Selection indicator */

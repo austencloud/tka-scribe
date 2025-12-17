@@ -73,8 +73,6 @@
     display: flex;
     justify-content: center;
     padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .steps-container {

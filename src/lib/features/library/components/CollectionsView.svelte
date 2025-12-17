@@ -249,8 +249,8 @@
     }
 
     .card-icon {
-      width: 48px;
-      height: 48px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
 
     .card-icon i {

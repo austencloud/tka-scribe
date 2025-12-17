@@ -142,11 +142,19 @@
 
   .composition-cell:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 60%,
+      transparent
+    );
   }
 
   .composition-cell.selected {
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 80%,
+      transparent
+    );
   }
 
   .composition-cell.configured {
@@ -154,7 +162,11 @@
   }
 
   .composition-cell.tunnel {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, var(--theme-card-bg, rgba(255, 255, 255, 0.04)));
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 10%,
+      var(--theme-card-bg, rgba(255, 255, 255, 0.04))
+    );
   }
 
   .composition-cell.playing {
@@ -240,8 +252,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(24px, 20cqi, 52px);
-    height: clamp(24px, 20cqi, 52px);
+    width: clamp(24px, 20cqi, var(--min-touch-target));
+    height: clamp(24px, 20cqi, var(--min-touch-target));
     border: clamp(1px, 0.5cqi, 3px) dashed currentColor;
     border-radius: 50%;
     font-size: clamp(0.75rem, 8cqi, 1.5rem);
@@ -256,7 +268,8 @@
   .selection-ring {
     position: absolute;
     inset: -2px;
-    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
     border-radius: 0;
     pointer-events: none;
     animation: pulse-ring 1.5s ease-in-out infinite;

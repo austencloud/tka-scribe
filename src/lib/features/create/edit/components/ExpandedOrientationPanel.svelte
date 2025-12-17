@@ -255,26 +255,26 @@
   }
 
   .orientation-panel.compact .close-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 14px;
   }
 
   .orientation-panel.balanced .close-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 16px;
   }
 
   .orientation-panel.comfortable .close-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 18px;
   }
 
@@ -322,19 +322,19 @@
   }
 
   .orientation-panel.compact .orientation-btn {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 12px;
     border-width: 2px;
   }
 
   .orientation-panel.balanced .orientation-btn {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 13px;
     border-width: 3px;
   }
 
   .orientation-panel.comfortable .orientation-btn {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     font-size: 14px;
     border-width: 4px;
   }

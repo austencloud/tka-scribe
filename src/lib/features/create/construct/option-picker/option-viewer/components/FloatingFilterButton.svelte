@@ -119,10 +119,10 @@ that triggers the filter panel dropdown.
     z-index: 100;
 
     /* Size - optimized for touch targets */
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
 
     display: flex;
     align-items: center;
@@ -220,10 +220,10 @@ that triggers the filter panel dropdown.
   @media (max-width: 375px) {
     .floating-filter-button {
       /* Note: padding already set to 0 via buttonPadding logic */
-      width: 52px;
-      height: 52px;
-      min-width: 52px;
-      min-height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
       font-size: 1rem;
     }
 

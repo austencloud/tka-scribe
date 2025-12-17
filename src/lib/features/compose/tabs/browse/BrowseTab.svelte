@@ -276,7 +276,7 @@ Features:
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
-    height: 52px;
+    height: var(--min-touch-target);
     background: linear-gradient(
       to bottom,
       transparent 0%,

@@ -104,7 +104,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 12px 16px;
     border-radius: 10px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));

@@ -186,7 +186,7 @@
         trapFocus={focusTrap}
         preventScroll={lockScroll}
       >
-        <div class="panel-content" style={panelHeightStyle}>
+        <div class="create-drawer-body" style={panelHeightStyle}>
           {@render children()}
         </div>
       </Drawer>
@@ -208,7 +208,7 @@
       trapFocus={focusTrap}
       preventScroll={lockScroll}
     >
-      <div class="panel-content" style={panelHeightStyle}>
+      <div class="create-drawer-body" style={panelHeightStyle}>
         {@render children()}
       </div>
     </Drawer>
@@ -259,10 +259,10 @@
 
   /*
    * Mobile/Stacked layout: Panels slide from bottom
-   * Height determined by combinedPanelHeight prop via .panel-content
+   * Height determined by combinedPanelHeight prop via .create-drawer-body
    * Let base Drawer handle positioning from bottom
    * Width is already set by base Drawer
-   * Height is controlled by .panel-content below
+   * Height is controlled by .create-drawer-body below
    */
   :global(
     .drawer-content[class*="-panel-container"][data-placement="bottom"]
@@ -273,7 +273,7 @@
     height: var(--panel-full-height, auto);
     display: flex;
     flex-direction: column;
-    /* Height will be determined by panel-content child */
+    /* Height will be determined by .create-drawer-body child */
   }
 
   /*
@@ -317,7 +317,7 @@
    * ============================================================================
    */
 
-  .panel-content {
+  .create-drawer-body {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -336,7 +336,7 @@
 
   /* Reduced motion preference - disable height transitions */
   @media (prefers-reduced-motion: reduce) {
-    .panel-content {
+    .create-drawer-body {
       transition: none;
     }
 

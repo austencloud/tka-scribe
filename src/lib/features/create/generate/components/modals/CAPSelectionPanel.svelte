@@ -274,7 +274,7 @@ Refactored to use Drawer component for consistent behavior
     top: 50%;
     left: 18px;
     width: 4px;
-    height: 52px;
+    height: var(--min-touch-target);
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
@@ -322,7 +322,7 @@ Refactored to use Drawer component for consistent behavior
     margin: 0 auto;
     width: 100%;
     padding: 14px 24px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
 
     background: color-mix(in srgb, var(--theme-text, #fff) 25%, transparent);
     border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));

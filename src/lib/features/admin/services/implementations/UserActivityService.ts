@@ -203,7 +203,8 @@ export class UserActivityService implements IUserActivityService {
   }
 
   async getPresenceStats(): Promise<{
-    onlineCount: number;
+    activeCount: number;
+    inactiveCount: number;
     byModule: Record<string, number>;
     byDevice: Record<string, number>;
   }> {

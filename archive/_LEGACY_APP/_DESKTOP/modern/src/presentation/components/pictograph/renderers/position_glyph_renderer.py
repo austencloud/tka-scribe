@@ -197,6 +197,6 @@ class PositionGlyphRenderer:
 
         # Center horizontally using legacy's calculation (integer division for exact match)
         x_position = self.SCENE_SIZE // 2 - total_width // 2
-        y_position = 50  # 52px from top
+        y_position = 50 
 
         position_group.setPos(x_position, y_position)

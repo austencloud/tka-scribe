@@ -168,14 +168,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(52px, 14vw, 80px);
-    height: clamp(52px, 14vw, 80px);
+    width: clamp(48px, 14vw, 80px);
+    height: clamp(48px, 14vw, 80px);
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
       color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent)
     );
-    border: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: clamp(14px, 4vw, 20px);
     color: var(--semantic-info, #60a5fa);
     font-size: clamp(1.5rem, 5vw, 2rem);
@@ -229,7 +230,7 @@
     flex-direction: column;
     justify-content: center;
     gap: clamp(0.25rem, 1vw, 0.375rem);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(0.75rem, 3vw, 1rem);
     background: linear-gradient(
       135deg,
@@ -244,11 +245,16 @@
   }
 
   .recent-card:hover {
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 50%,
+      transparent
+    );
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent)
+        100%
     );
     transform: translateY(-2px);
   }
@@ -293,10 +299,14 @@
     justify-content: center;
     gap: clamp(0.5rem, 2vw, 0.75rem);
     width: 100%;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(0.875rem, 3.5vw, 1.125rem) clamp(1rem, 4vw, 1.5rem);
     margin-top: clamp(0.5rem, 2vw, 0.75rem);
-    background: linear-gradient(135deg, var(--semantic-info, #3b82f6), var(--theme-accent-strong, #8b5cf6));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #3b82f6),
+      var(--theme-accent-strong, #8b5cf6)
+    );
     border: none;
     border-radius: clamp(0.625rem, 2.5vw, 0.875rem);
     color: var(--theme-text, white);
@@ -308,7 +318,8 @@
 
   .browse-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .browse-button:active {

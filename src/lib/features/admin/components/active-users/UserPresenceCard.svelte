@@ -1,48 +1,94 @@
-<!-- UserPresenceCard.svelte - Compact user card with presence indicator -->
+<!-- UserPresenceCard.svelte - Vertical user card with avatar-based color theming -->
 <script lang="ts">
   import type { UserPresenceWithId } from "$lib/shared/presence/domain/models/presence-models";
+  import { formatActivityTime } from "$lib/shared/presence/domain/models/presence-models";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
+  import {
+    extractDominantColor,
+    getCachedOrFallbackColor,
+  } from "$lib/shared/foundation/utils/color-extractor";
 
   interface Props {
     user: UserPresenceWithId;
     isSelected: boolean;
     onSelect: () => void;
-    formatLastSeen: (timestamp: number) => string;
   }
 
-  let { user, isSelected, onSelect, formatLastSeen }: Props = $props();
+  let { user, isSelected, onSelect }: Props = $props();
+
+  // Color extracted from avatar
+  let cardColor = $state<string | null>(null);
+
+  // Compute activity status display
+  let isActive = $derived(user.activityStatus === "active");
+  let lastActivity = $derived(user.lastActivity ?? user.lastSeen);
+  let activityText = $derived(formatActivityTime(lastActivity, user.online));
+
+  // Get the accent color - extracted or fallback
+  let accentColor = $derived(
+    cardColor ?? getCachedOrFallbackColor(user.photoURL ?? undefined, user.displayName ?? "User")
+  );
+
+  /**
+   * Handle avatar image load - extract dominant color
+   */
+  async function handleAvatarLoad(imgElement: HTMLImageElement) {
+    if (cardColor) return; // Already extracted
+    try {
+      const color = await extractDominantColor(
+        user.photoURL ?? undefined,
+        user.displayName ?? "User"
+      );
+      cardColor = color;
+    } catch {
+      // Use fallback
+    }
+  }
 </script>
 
 <button
   class="user-card"
   class:selected={isSelected}
-  class:online={user.online}
+  class:active={isActive}
+  style="--card-accent: {accentColor}"
   onclick={onSelect}
 >
-  <div class="avatar">
-    <RobustAvatar
-      src={user.photoURL}
-      alt={user.displayName ?? "User"}
-      name={user.displayName}
-      customSize={40}
-    />
-    <span class="presence-dot" class:online={user.online}></span>
+  <!-- Avatar with presence indicator -->
+  <div class="avatar-container">
+    <div class="avatar-ring">
+      <RobustAvatar
+        src={user.photoURL}
+        alt={user.displayName ?? "User"}
+        name={user.displayName}
+        customSize={56}
+        onload={handleAvatarLoad}
+      />
+    </div>
+    <span class="presence-dot" class:active={isActive}></span>
   </div>
 
+  <!-- User info -->
   <div class="info">
     <span class="name">{user.displayName ?? "Unknown"}</span>
     <span class="email">{user.email ?? ""}</span>
-    {#if user.online && user.currentModule}
+  </div>
+
+  <!-- Status section -->
+  <div class="status-section">
+    {#if isActive && user.currentModule}
       <span class="location">
         <i class="fas fa-location-dot"></i>
         {user.currentModule}{user.currentTab ? ` / ${user.currentTab}` : ""}
       </span>
     {:else}
-      <span class="last-seen">{formatLastSeen(user.lastSeen)}</span>
+      <span class="activity-status">
+        {activityText}
+      </span>
     {/if}
   </div>
 
-  <div class="device">
+  <!-- Device indicator -->
+  <div class="device-badge">
     {#if user.device === "mobile"}
       <i class="fas fa-mobile-screen"></i>
     {:else if user.device === "tablet"}
@@ -55,65 +101,106 @@
 
 <style>
   .user-card {
+    /* Dynamic color from avatar */
+    --card-accent: var(--theme-accent-strong, #8b5cf6);
+    --card-accent-light: color-mix(in srgb, var(--card-accent) 80%, #fff);
+    --card-accent-glow: color-mix(in srgb, var(--card-accent) 25%, transparent);
+
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: 0.5rem;
+    gap: 10px;
+    padding: 16px;
+    /* Soft gradient fill using extracted color */
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-accent) 10%, rgba(255, 255, 255, 0.03)) 0%,
+      color-mix(in srgb, var(--card-accent) 5%, rgba(255, 255, 255, 0.02)) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--card-accent) 18%, transparent);
+    border-radius: 14px;
+    transition:
+      background 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
     cursor: pointer;
-    transition: all 0.15s ease;
-    width: 100%;
-    text-align: left;
+    text-align: center;
   }
 
   .user-card:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-hover, rgba(255, 255, 255, 0.2));
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--card-accent) 16%, rgba(255, 255, 255, 0.05)) 0%,
+      color-mix(in srgb, var(--card-accent) 10%, rgba(255, 255, 255, 0.03)) 100%
+    );
+    border-color: color-mix(in srgb, var(--card-accent) 40%, transparent);
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 24px var(--card-accent-glow),
+      0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .user-card.selected {
-    background: var(--theme-accent-bg, rgba(99, 102, 241, 0.15));
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--card-accent);
+    box-shadow:
+      0 0 0 2px var(--card-accent-glow),
+      0 8px 24px var(--card-accent-glow);
   }
 
-  .user-card.online {
-    border-left: 3px solid var(--semantic-success, #22c55e);
+  /* Active user gets green accent on presence dot */
+  .user-card.active {
+    border-top: 3px solid var(--semantic-success, #22c55e);
   }
 
-  .avatar {
+  /* Avatar with colored ring */
+  .avatar-container {
     position: relative;
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
+  }
+
+  .avatar-ring {
+    padding: 3px;
+    background: linear-gradient(
+      135deg,
+      var(--card-accent) 0%,
+      var(--card-accent-light) 100%
+    );
+    border-radius: 50%;
+    transition: background 0.3s ease;
+  }
+
+  .avatar-ring :global(.robust-avatar) {
+    border: 2px solid rgba(0, 0, 0, 0.3);
   }
 
   .presence-dot {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 12px;
-    height: 12px;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: var(--theme-text-secondary, rgba(255, 255, 255, 0.4));
-    border: 2px solid var(--theme-card-bg, #1a1a1a);
+    border: 2px solid rgba(0, 0, 0, 0.4);
+    z-index: 1;
   }
 
-  .presence-dot.online {
+  .presence-dot.active {
     background: var(--semantic-success, #22c55e);
+    box-shadow: 0 0 8px var(--semantic-success, #22c55e);
   }
 
   .info {
-    flex: 1;
-    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: 2px;
+    min-width: 0;
+    width: 100%;
   }
 
   .name {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 14px;
     color: var(--theme-text, #fff);
     white-space: nowrap;
     overflow: hidden;
@@ -121,28 +208,87 @@
   }
 
   .email {
-    font-size: 0.75rem;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact, 12px); /* Supplementary metadata */
+    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.5));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
+  .status-section {
+    min-height: 20px;
+  }
+
   .location {
-    font-size: 0.75rem;
+    font-size: 12px;
     color: var(--semantic-success, #22c55e);
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    justify-content: center;
+    gap: 4px;
   }
 
-  .last-seen {
-    font-size: 0.75rem;
+  .location i {
+    font-size: 10px;
+  }
+
+  .activity-status {
+    font-size: 12px;
     color: var(--theme-text-secondary, rgba(255, 255, 255, 0.5));
   }
 
-  .device {
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.4));
-    font-size: 1rem;
+  .device-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--card-accent) 15%, transparent);
+    color: var(--card-accent);
+    font-size: 12px;
+    transition: background 0.2s ease;
+  }
+
+  .user-card:hover .device-badge {
+    background: color-mix(in srgb, var(--card-accent) 25%, transparent);
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 640px) {
+    .user-card {
+      padding: 12px;
+      gap: 8px;
+      border-radius: 12px;
+    }
+
+    .avatar-ring {
+      padding: 2px;
+    }
+
+    .name {
+      font-size: var(--font-size-min, 14px); /* Essential text */
+    }
+
+    .email {
+      font-size: var(--font-size-compact, 12px); /* Supplementary minimum */
+    }
+
+    .device-badge {
+      width: 24px;
+      height: 24px;
+      font-size: 10px; /* Icon only, not text */
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .user-card {
+      transition: none;
+    }
+
+    .user-card:hover {
+      transform: none;
+    }
   }
 </style>

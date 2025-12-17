@@ -1,6 +1,6 @@
 <!--
 CustomizeSheet.svelte - Sheet for configuring customize generation options
-Follows modern 2026 Material Design patterns with 52px touch targets
+Follows modern 2026 Material Design patterns with 48px touch targets
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -278,7 +278,7 @@ Follows modern 2026 Material Design patterns with 52px touch targets
     top: 50%;
     left: 18px;
     width: 4px;
-    height: 52px;
+    height: var(--min-touch-target);
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
@@ -309,7 +309,7 @@ Follows modern 2026 Material Design patterns with 52px touch targets
   }
 
   .clear-button {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -333,8 +333,8 @@ Follows modern 2026 Material Design patterns with 52px touch targets
   }
 
   .close-button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

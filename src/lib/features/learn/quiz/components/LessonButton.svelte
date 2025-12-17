@@ -290,8 +290,8 @@ and smooth hover animations.
   /* Icon area */
   .card-icon {
     flex-shrink: 0;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -402,8 +402,8 @@ and smooth hover animations.
     }
 
     .card-icon {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       border-radius: 12px;
     }
 
@@ -429,8 +429,8 @@ and smooth hover animations.
     }
 
     .card-icon {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       border-radius: 10px;
     }
 
@@ -460,8 +460,8 @@ and smooth hover animations.
     }
 
     .card-icon {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
 
     .card-icon svg {

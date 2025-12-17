@@ -72,7 +72,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-fast);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   @media (min-width: 480px) {

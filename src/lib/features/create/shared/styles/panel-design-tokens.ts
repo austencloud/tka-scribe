@@ -27,7 +27,7 @@ export const PanelShadows = {
   default:
     "0 -8px 32px rgba(0, 0, 0, 0.5), 0 -2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
   soft: "0 4px 16px rgba(0, 0, 0, 0.2)",
-  dramatic: "0 16px 52px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4)",
+  dramatic: "0 16px 48px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4)",
   ambientBlue:
     "0 0 60px rgba(59, 130, 246, 0.15), 0 8px 32px rgba(0, 0, 0, 0.6)",
   ambientPurple:

@@ -242,8 +242,8 @@
   }
 
   .loading-spinner {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;
@@ -262,8 +262,8 @@
   .retry-button {
     margin-top: 8px;
     padding: 10px 20px;
-    min-height: 52px;
-    min-width: 52px;
+    min-height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     border: none;
@@ -325,7 +325,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     cursor: pointer;
     padding: 12px 16px;
     background: linear-gradient(
@@ -357,7 +357,7 @@
   .export-option-toggle {
     position: relative;
     width: 64px;
-    height: 52px;
+    height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.15);
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.2);

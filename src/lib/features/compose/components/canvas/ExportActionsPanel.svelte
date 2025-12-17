@@ -97,7 +97,10 @@
 
         {#if exportProgress?.stage === "capturing"}
           <div class="progress-bar">
-            <div class="progress-fill" style="width: {exportProgress.progress * 100}%"></div>
+            <div
+              class="progress-fill"
+              style="width: {exportProgress.progress * 100}%"
+            ></div>
           </div>
         {/if}
       </button>
@@ -187,7 +190,9 @@
             <i class="fas fa-info-circle section-icon muted"></i>
             <div class="section-info">
               <h4 class="section-title muted">Loop Count</h4>
-              <p class="section-desc">Not available - sequence doesn't loop seamlessly</p>
+              <p class="section-desc">
+                Not available - sequence doesn't loop seamlessly
+              </p>
             </div>
           </div>
         </section>
@@ -288,7 +293,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
+    width: var(--min-touch-target);
     flex-shrink: 0;
     border-radius: 14px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -625,7 +630,7 @@
     }
 
     .settings-btn {
-      width: 48px;
+      width: var(--min-touch-target);
       font-size: 16px;
     }
 

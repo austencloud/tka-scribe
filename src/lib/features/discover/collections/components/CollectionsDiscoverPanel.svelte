@@ -205,7 +205,7 @@ Uses singleton state for caching - data persists across tab switches.
     padding: 10px 0;
     background: transparent;
     width: 100%;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .nav-section {

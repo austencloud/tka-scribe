@@ -367,8 +367,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -417,7 +417,7 @@
   .preset-chip {
     flex: 1;
     min-width: 0;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 8px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

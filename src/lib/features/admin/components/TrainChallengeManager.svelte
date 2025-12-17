@@ -637,7 +637,7 @@
   }
 
   .empty-state i {
-    font-size: 52px;
+    font-size: 48px;
     color: rgba(255, 255, 255, 0.2);
   }
 

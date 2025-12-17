@@ -253,7 +253,7 @@
     top: 50%;
     left: 18px;
     width: 4px;
-    height: 52px;
+    height: 48px;
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
@@ -266,7 +266,7 @@
     top: 50%;
     right: 18px;
     width: 4px;
-    height: 52px;
+    height: 48px;
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);

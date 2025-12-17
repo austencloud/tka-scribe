@@ -375,8 +375,8 @@
   }
 
   .select-sequence-btn .btn-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 8px;
     display: flex;
@@ -418,16 +418,16 @@
   }
 
   .sequence-thumbnail {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 8px;
     object-fit: cover;
     background: rgba(0, 0, 0, 0.2);
   }
 
   .sequence-icon-large {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     display: flex;

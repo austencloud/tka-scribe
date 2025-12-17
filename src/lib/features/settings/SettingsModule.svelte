@@ -56,11 +56,10 @@
   // Haptic feedback service
   let hapticService: IHapticFeedbackService | null = null;
 
-  // Show back header only on mobile/tablet (no sidebar)
-  // Desktop has sidebar with its own back button, so header is redundant there
-  let showBackHeader = $derived(
-    responsiveSettings ? !responsiveSettings.isDesktop : true
-  );
+  // Back header is no longer needed on mobile/tablet since back button is now in bottom nav
+  // Desktop has sidebar with its own back button
+  // Keep this false - back functionality is handled by navigation
+  let showBackHeader = $derived(false);
 
   onMount(() => {
     let deviceCleanup: (() => void) | undefined;
@@ -308,10 +307,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     padding: 0;
     /* Subtle glass button */
     background: rgba(255, 255, 255, 0.06);
@@ -420,7 +419,7 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 52px;
+    width: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

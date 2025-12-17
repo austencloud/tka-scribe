@@ -106,7 +106,7 @@
 
   input[type="range"] {
     width: 100%;
-    height: 52px;
+    height: var(--min-touch-target);
     background: transparent;
     outline: none;
     appearance: none;
@@ -159,7 +159,7 @@
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 0.5rem 0;
   }
 

@@ -87,7 +87,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 52px; /* iOS minimum touch target */
+    min-height: var(--min-touch-target); /* iOS minimum touch target */
     padding: 11px 16px;
     background: transparent;
     border: none;

@@ -136,8 +136,8 @@ Modern, touch-friendly interface for selecting view presets
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: color-mix(in srgb, var(--theme-text, white) 10%, transparent);
     border-radius: 12px;
     font-size: 20px;

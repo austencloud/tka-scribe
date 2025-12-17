@@ -456,7 +456,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 16px 32px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
@@ -508,7 +508,7 @@
 
     .start-button {
       font-size: 1rem;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 
@@ -528,7 +528,7 @@
     }
 
     .start-button {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: 14px 24px;
       font-size: 0.9375rem;
     }

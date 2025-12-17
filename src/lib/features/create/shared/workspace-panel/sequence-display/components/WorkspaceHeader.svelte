@@ -72,7 +72,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     z-index: 10;
     pointer-events: none; /* Allow clicks to pass through to word label */
   }
@@ -103,7 +103,7 @@
   /* 🎯 LANDSCAPE MOBILE */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .workspace-header {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
   }
 </style>

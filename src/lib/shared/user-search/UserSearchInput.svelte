@@ -7,6 +7,11 @@
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { onMount } from "svelte";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
 
   interface UserResult {
     uid: string;
@@ -47,6 +52,15 @@
   let searchTimeout: number | null = null;
   let wasCleared = $state(false); // Track if user intentionally cleared
 
+  // Haptic feedback service
+  let hapticService: IHapticFeedbackService | undefined;
+
+  onMount(() => {
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+  });
+
   // Pre-fill if we have a selected user (but not if user cleared it)
   $effect(() => {
     if (selectedUserDisplay && !searchQuery && !wasCleared) {
@@ -56,7 +70,11 @@
 
   // Debug effect to track rendering state
   $effect(() => {
-    console.log("[UserSearch] Render state:", { showResults, resultsCount: searchResults.length, inlineResults });
+    console.log("[UserSearch] Render state:", {
+      showResults,
+      resultsCount: searchResults.length,
+      inlineResults,
+    });
   });
 
   async function searchUsers(queryText: string): Promise<UserResult[]> {
@@ -78,7 +96,7 @@
         return [];
       }
 
-      const data = await res.json() as Array<{
+      const data = (await res.json()) as Array<{
         id: string;
         displayName?: string;
         email?: string;
@@ -125,7 +143,12 @@
       try {
         searchResults = await searchUsers(q);
         showResults = true;
-        console.log("[UserSearch] Setting showResults=true, results:", searchResults.length, "inlineResults:", inlineResults);
+        console.log(
+          "[UserSearch] Setting showResults=true, results:",
+          searchResults.length,
+          "inlineResults:",
+          inlineResults
+        );
         if (!inlineResults) {
           updateDropdownPosition();
           console.log("[UserSearch] dropdownStyle:", dropdownStyle);
@@ -140,6 +163,7 @@
   }
 
   function handleSelectUser(user: UserResult) {
+    hapticService?.trigger("selection");
     searchQuery = user.displayName || user.email;
     showResults = false;
     searchResults = [];
@@ -178,6 +202,7 @@
   }
 
   function clearSelection() {
+    hapticService?.trigger("selection");
     wasCleared = true;
     searchQuery = "";
     searchResults = [];
@@ -219,7 +244,12 @@
   </div>
 
   {#if showResults && searchResults.length > 0}
-    <div class="search-results" class:fixed-position={useFixedPosition} class:inline={inlineResults} style={inlineResults ? "" : dropdownStyle}>
+    <div
+      class="search-results"
+      class:fixed-position={useFixedPosition}
+      class:inline={inlineResults}
+      style={inlineResults ? "" : dropdownStyle}
+    >
       {#each searchResults as user (user.uid)}
         <button
           type="button"
@@ -227,13 +257,12 @@
           class:selected={user.uid === selectedUserId}
           onclick={() => handleSelectUser(user)}
         >
-          {#if user.photoURL}
-            <img src={user.photoURL} alt="" class="result-avatar" />
-          {:else}
-            <div class="result-avatar-placeholder">
-              <i class="fas fa-user"></i>
-            </div>
-          {/if}
+          <RobustAvatar
+            src={user.photoURL}
+            name={user.displayName || user.email}
+            alt=""
+            customSize={36}
+          />
           <div class="result-info">
             <span class="result-name">{user.displayName || "No name"}</span>
             <span class="result-email">{user.email}</span>
@@ -245,7 +274,12 @@
   {/if}
 
   {#if showResults && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching}
-    <div class="search-results" class:fixed-position={useFixedPosition} class:inline={inlineResults} style={inlineResults ? "" : dropdownStyle}>
+    <div
+      class="search-results"
+      class:fixed-position={useFixedPosition}
+      class:inline={inlineResults}
+      style={inlineResults ? "" : dropdownStyle}
+    >
       <div class="no-results">
         <i class="fas fa-user-slash"></i>
         No users found
@@ -284,8 +318,8 @@
   .clear-btn {
     position: absolute;
     right: 0;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -299,7 +333,7 @@
   }
 
   .clear-btn::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 28px;
     height: 28px;
@@ -323,9 +357,12 @@
 
   .search-input {
     width: 100%;
-    min-height: 52px;
-    padding: 0 52px;
-    background: var(--theme-card-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    min-height: var(--min-touch-target);
+    padding: 0 48px;
+    background: var(
+      --theme-card-bg,
+      linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
+    );
     border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
@@ -337,7 +374,8 @@
   .search-input:focus {
     outline: none;
     border-color: var(--theme-accent, #6366f1);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .search-input::placeholder {
@@ -355,7 +393,10 @@
     top: calc(100% + 8px);
     left: 0;
     right: 0;
-    background: var(--theme-panel-bg, linear-gradient(135deg, #2d2d3a 0%, #25252f 100%));
+    background: var(
+      --theme-panel-bg,
+      linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
+    );
     border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 12px;
     overflow: hidden;
@@ -382,7 +423,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 16px;
     background: transparent;
     border: none;
@@ -404,23 +445,8 @@
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
-  .result-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  .result-avatar-placeholder {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.5);
+  /* RobustAvatar wrapper styles */
+  .result-item :global(.robust-avatar) {
     flex-shrink: 0;
   }
 

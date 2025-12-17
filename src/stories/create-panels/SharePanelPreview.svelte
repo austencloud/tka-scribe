@@ -105,7 +105,7 @@
     </button>
   </div>
 
-  <div class="panel-content">
+  <div class="share-preview-body">
     <ContentTypeSelector
       {contentTypes}
       {selectedTypes}
@@ -207,8 +207,8 @@
   }
 
   .close-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -244,7 +244,7 @@
     transform: scale(0.95) rotate(90deg);
   }
 
-  .panel-content {
+  .share-preview-body {
     display: flex;
     flex-direction: column;
     gap: 24px;

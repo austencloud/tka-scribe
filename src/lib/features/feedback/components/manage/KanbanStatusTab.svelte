@@ -40,7 +40,7 @@
     align-items: center;
     justify-content: center;
     gap: clamp(2px, 0.5cqi, 6px);
-    min-height: clamp(52px, 14cqi, 64px);
+    min-height: clamp(48px, 14cqi, 64px);
     padding: clamp(8px, 2cqi, 12px) clamp(6px, 1.5cqi, 12px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border: none;

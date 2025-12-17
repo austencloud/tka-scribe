@@ -109,8 +109,8 @@ Contains:
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -142,8 +142,8 @@ Contains:
   /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     .adjust-arrows-button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
 
@@ -160,8 +160,8 @@ Contains:
 
   @media (max-width: 480px) {
     .adjust-arrows-button {
-      width: 52px; /* Maintain 52px minimum for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      height: var(--min-touch-target);
       font-size: 14px;
     }
   }
@@ -242,8 +242,8 @@ Contains:
     }
 
     .close-button {
-      width: 52px; /* Maintain 52px minimum for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      height: var(--min-touch-target);
     }
   }
 </style>

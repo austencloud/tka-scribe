@@ -75,7 +75,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .header-right {
@@ -89,7 +89,7 @@
     text-align: center;
     min-width: 0;
     overflow: visible;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .header-title {
@@ -104,8 +104,8 @@
   }
 
   .back-button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

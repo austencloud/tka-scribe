@@ -37,11 +37,6 @@
     practiceBeatNumber = null, // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout = false,
     shouldOrbitAroundCenter = false,
-    // Multi-select props
-    isMultiSelectMode = false,
-    selectedBeatNumbers = new Set<number>(),
-    onBeatLongPress,
-    onStartLongPress,
     activeMode = null,
     // Spotlight mode: maximize cell size to fill viewport
     isSpotlightMode = false,
@@ -60,12 +55,7 @@
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
     shouldOrbitAroundCenter?: boolean;
-    // Multi-select
-    isMultiSelectMode?: boolean;
-    selectedBeatNumbers?: Set<number>;
-    onBeatLongPress?: (beatNumber: number) => void;
     activeMode?: BuildModeId | null;
-    onStartLongPress?: () => void;
     // Spotlight mode: maximize cell size to fill viewport (no max constraint)
     isSpotlightMode?: boolean;
     // Manual column override (null = auto)
@@ -382,13 +372,9 @@
               beat={startPosition}
               index={-1}
               shouldAnimate={displayState.shouldAnimateStartPosition}
-              isSelected={isMultiSelectMode
-                ? selectedBeatNumbers.has(0)
-                : selectedBeatNumber === 0}
-              {isMultiSelectMode}
+              isSelected={selectedBeatNumber === 0}
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === 0}
-              onLongPress={onStartLongPress}
               {activeMode}
             />
           </div>
@@ -423,13 +409,9 @@
               onClick={() => handleBeatClick(beat.beatNumber)}
               onDelete={() => onBeatDelete?.(beat.beatNumber)}
               shouldAnimate={shouldAnimateBeat}
-              isSelected={isMultiSelectMode
-                ? selectedBeatNumbers.has(beat.beatNumber)
-                : selectedBeatNumber === beat.beatNumber}
+              isSelected={selectedBeatNumber === beat.beatNumber}
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === beat.beatNumber}
-              {isMultiSelectMode}
-              onLongPress={() => onBeatLongPress?.(beat.beatNumber)}
               {activeMode}
             />
           </div>
@@ -472,13 +454,9 @@
               beat={startPosition}
               index={-1}
               shouldAnimate={displayState.shouldAnimateStartPosition}
-              isSelected={isMultiSelectMode
-                ? selectedBeatNumbers.has(0)
-                : selectedBeatNumber === 0}
-              {isMultiSelectMode}
+              isSelected={selectedBeatNumber === 0}
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === 0}
-              onLongPress={onStartLongPress}
               {activeMode}
             />
           </div>
@@ -513,13 +491,9 @@
               onClick={() => handleBeatClick(beat.beatNumber)}
               onDelete={() => onBeatDelete?.(beat.beatNumber)}
               shouldAnimate={shouldAnimateBeat}
-              isSelected={isMultiSelectMode
-                ? selectedBeatNumbers.has(beat.beatNumber)
-                : selectedBeatNumber === beat.beatNumber}
+              isSelected={selectedBeatNumber === beat.beatNumber}
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === beat.beatNumber}
-              {isMultiSelectMode}
-              onLongPress={() => onBeatLongPress?.(beat.beatNumber)}
               {activeMode}
             />
           </div>

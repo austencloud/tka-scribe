@@ -89,7 +89,7 @@ Uses grid layout for perfect centering with multi-select toggle
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .cap-modal-header h2 {
@@ -124,8 +124,8 @@ Uses grid layout for perfect centering with multi-select toggle
     justify-content: center;
     transition: all 0.3s ease;
     padding: 10px;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
   }
 
@@ -162,8 +162,8 @@ Uses grid layout for perfect centering with multi-select toggle
     justify-content: center;
     transition: all 0.2s ease;
     padding: 10px;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
   }
 

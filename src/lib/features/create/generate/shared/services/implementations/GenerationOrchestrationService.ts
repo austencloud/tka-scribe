@@ -113,6 +113,7 @@ export class GenerationOrchestrationService
       blueRotationDirection: rotationDirections.blueRotationDirection,
       redRotationDirection: rotationDirections.redRotationDirection,
       gridMode: options.gridMode,
+      propType: options.propType,
     };
 
     let generatedBeats: BeatData[];

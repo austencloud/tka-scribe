@@ -127,7 +127,7 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    padding: 52px;
+    padding: 48px;
     color: rgba(255, 255, 255, 0.5);
   }
 

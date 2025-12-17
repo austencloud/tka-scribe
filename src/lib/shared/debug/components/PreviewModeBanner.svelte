@@ -192,7 +192,7 @@
   }
 
   .banner-label {
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px); /* Supplementary label */
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -219,7 +219,7 @@
     background: rgba(251, 191, 36, 0.2);
     border: 1px solid rgba(251, 191, 36, 0.4);
     border-radius: 4px;
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
     font-weight: 700;
     text-transform: uppercase;
     color: #fcd34d;
@@ -243,7 +243,7 @@
     background: rgba(245, 158, 11, 0.2);
     border: 1px solid rgba(245, 158, 11, 0.4);
     border-radius: 4px;
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
     font-weight: 700;
     text-transform: capitalize;
     color: #fbbf24;
@@ -269,7 +269,7 @@
 
   .stat i {
     color: #93c5fd;
-    font-size: 11px;
+    font-size: 12px; /* Icon minimum */
   }
 
   .banner-actions {
@@ -287,7 +287,7 @@
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 6px;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
     font-weight: 700;
     text-transform: uppercase;
     color: #fca5a5;
@@ -301,7 +301,7 @@
     background: rgba(168, 85, 247, 0.15);
     border: 1px solid rgba(168, 85, 247, 0.3);
     border-radius: 6px;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
     font-weight: 700;
     text-transform: uppercase;
     color: #c4b5fd;
@@ -330,7 +330,7 @@
   /* Responsive */
   @media (max-width: 768px) {
     .preview-banner {
-      height: 48px; /* Smaller on mobile */
+      height: 48px; /* Compact banner height on mobile */
     }
 
     .banner-content {
@@ -354,7 +354,7 @@
 
     .read-only-badge {
       padding: 4px 8px;
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px); /* Supplementary minimum */
     }
 
     .clear-btn {

@@ -44,9 +44,9 @@ Displays modal title and close button
   }
 
   .close-button {
-    /* 52px minimum for touch targets on mobile */
-    width: 52px;
-    height: 52px;
+    /* 48px minimum for touch targets on mobile */
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
@@ -75,7 +75,7 @@ Displays modal title and close button
     transform: scale(0.95);
   }
 
-  /* Mobile responsive - maintain 52px minimum */
+  /* Mobile responsive - maintain 48px minimum */
   @media (max-width: 640px) {
     .modal-header {
       padding: 16px 20px 12px;
@@ -86,8 +86,8 @@ Displays modal title and close button
     }
 
     .close-button {
-      width: 52px; /* Maintain 52px minimum */
-      height: 52px;
+      width: var(--min-touch-target); /* Maintain 48px minimum */
+      height: var(--min-touch-target);
     }
 
     .close-button svg {
@@ -96,7 +96,7 @@ Displays modal title and close button
     }
   }
 
-  /* Optimize for very narrow devices - still 52px minimum */
+  /* Optimize for very narrow devices - still 48px minimum */
   @media (max-width: 380px) {
     .modal-header {
       padding: 14px 16px 10px;
@@ -107,8 +107,8 @@ Displays modal title and close button
     }
 
     .close-button {
-      width: 52px; /* NEVER below 52px for accessibility */
-      height: 52px;
+      width: var(--min-touch-target); /* NEVER below 48px for accessibility */
+      height: var(--min-touch-target);
     }
 
     .close-button svg {

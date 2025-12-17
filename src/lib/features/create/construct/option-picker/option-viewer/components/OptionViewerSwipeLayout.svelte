@@ -117,7 +117,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
         data-panel-index={index}
         data-section-type={section.type || "individual"}
       >
-        <div class="panel-content">
+        <div class="option-viewer-body">
           {#if section.title === "Types 4-6" || section.type === "grouped"}
             <!-- Grouped section (Types 4-6) -->
             <OptionPicker456Group
@@ -167,7 +167,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     flex-direction: column;
   }
 
-  .panel-content {
+  .option-viewer-body {
     width: 100%;
     height: 100%;
     display: flex;

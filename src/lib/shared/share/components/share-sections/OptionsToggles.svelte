@@ -95,7 +95,7 @@
     align-items: center;
     gap: clamp(6px, 0.8cqw, 8px);
     padding: clamp(14px, 1.4cqh, 16px) clamp(16px, 2cqw, 20px);
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
@@ -166,7 +166,7 @@
   @container options (max-width: 280px) {
     .toggle-chip {
       padding: 12px 14px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .toggle-chip span {

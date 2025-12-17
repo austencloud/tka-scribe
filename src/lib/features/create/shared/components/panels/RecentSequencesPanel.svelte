@@ -118,7 +118,7 @@
         <span>Loading...</span>
       </div>
     {:else}
-      <div class="panel-content">
+      <div class="recent-sequences-body">
         <!-- Unsaved Drafts -->
         {#if drafts.length > 0}
           <section class="section">
@@ -266,7 +266,7 @@
     color: var(--text-secondary);
   }
 
-  .panel-content {
+  .recent-sequences-body {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;

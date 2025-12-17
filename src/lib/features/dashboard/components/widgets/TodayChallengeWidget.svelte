@@ -175,7 +175,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 14px 20px;
     background: linear-gradient(
       135deg,

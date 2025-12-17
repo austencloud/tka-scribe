@@ -342,14 +342,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: clamp(24px, 6cqi, 52px);
+    padding: clamp(24px, 6cqi, 48px);
     text-align: center;
     gap: clamp(12px, 3cqi, 16px);
   }
 
   .spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 4px solid rgba(255, 255, 255, 0.2);
     border-top-color: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
@@ -364,7 +364,7 @@
 
   .auth-required i,
   .empty-state i {
-    font-size: clamp(32px, 8cqi, 52px);
+    font-size: clamp(32px, 8cqi, 48px);
     opacity: 0.5;
   }
 
@@ -542,8 +542,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(52px, 12cqi, 60px);
-    height: clamp(52px, 12cqi, 60px);
+    width: clamp(48px, 12cqi, 60px);
+    height: clamp(48px, 12cqi, 60px);
   }
 
   .achievement-info {

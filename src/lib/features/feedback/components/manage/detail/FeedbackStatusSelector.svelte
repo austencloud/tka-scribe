@@ -6,12 +6,26 @@
   interface Props {
     detailState: FeedbackDetailState;
     readOnly?: boolean;
+    isMobile?: boolean;
   }
 
-  const { detailState, readOnly = false }: Props = $props();
+  const { detailState, readOnly = false, isMobile = false }: Props = $props();
 
   const statusConfig = $derived(STATUS_CONFIG[detailState.item.status as FeedbackStatus]);
   const statuses = Object.entries(STATUS_CONFIG) as [FeedbackStatus, typeof statusConfig][];
+
+  // Status cycling for mobile
+  const statusOrder: FeedbackStatus[] = ["new", "in-progress", "in-review", "completed", "archived"];
+  const currentStatusIndex = $derived(statusOrder.indexOf(detailState.item.status as FeedbackStatus));
+  const currentConfig = $derived(STATUS_CONFIG[detailState.item.status as FeedbackStatus]);
+
+  function cycleStatus(direction: "prev" | "next") {
+    if (readOnly) return;
+    const newIndex = direction === "next"
+      ? Math.min(currentStatusIndex + 1, statusOrder.length - 1)
+      : Math.max(currentStatusIndex - 1, 0);
+    detailState.handleStatusChange(statusOrder[newIndex]);
+  }
 </script>
 
 <section class="section">
@@ -19,25 +33,57 @@
     <i class="fas fa-tasks"></i>
     Status
   </h3>
-  <div class="status-row">
-    {#each statuses as [status, config]}
+  {#if isMobile}
+    <!-- Mobile: Arrow cycling -->
+    <div class="status-cycling">
       <button
         type="button"
-        class="status-chip"
-        class:active={detailState.item.status === status}
-        style="--status-color: {config.color}"
-        onclick={() => {
-          if (!readOnly) {
-            detailState.handleStatusChange(status);
-          }
-        }}
-        disabled={readOnly}
+        class="cycle-btn"
+        onclick={() => cycleStatus("prev")}
+        disabled={readOnly || currentStatusIndex <= 0}
+        aria-label="Previous status"
       >
-        <i class="fas {config.icon}"></i>
-        <span class="status-label">{config.label}</span>
+        <i class="fas fa-chevron-left"></i>
       </button>
-    {/each}
-  </div>
+      <span
+        class="status-value"
+        style="--status-color: {currentConfig.color}"
+      >
+        <i class="fas {currentConfig.icon}"></i>
+        {currentConfig.label}
+      </span>
+      <button
+        type="button"
+        class="cycle-btn"
+        onclick={() => cycleStatus("next")}
+        disabled={readOnly || currentStatusIndex >= statusOrder.length - 1}
+        aria-label="Next status"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  {:else}
+    <!-- Desktop: Chip row -->
+    <div class="status-row">
+      {#each statuses as [status, config]}
+        <button
+          type="button"
+          class="status-chip"
+          class:active={detailState.item.status === status}
+          style="--status-color: {config.color}"
+          onclick={() => {
+            if (!readOnly) {
+              detailState.handleStatusChange(status);
+            }
+          }}
+          disabled={readOnly}
+        >
+          <i class="fas {config.icon}"></i>
+          <span class="status-label">{config.label}</span>
+        </button>
+      {/each}
+    </div>
+  {/if}
 </section>
 
 <style>
@@ -59,6 +105,7 @@
     letter-spacing: 0.05em;
   }
 
+  /* Desktop: Chip row */
   .status-row {
     display: flex;
     flex-wrap: wrap;
@@ -102,11 +149,52 @@
     white-space: nowrap;
   }
 
-  /* On very small screens, wrap labels */
-  @media (max-width: 400px) {
-    .status-chip {
-      padding: 5px 8px;
-      font-size: 0.7rem;
-    }
+  /* Mobile: Arrow cycling */
+  .status-cycling {
+    display: flex;
+    align-items: center;
+    gap: var(--fb-space-sm, 13px);
+    justify-content: center;
+  }
+
+  .cycle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--fb-surface, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--fb-border, rgba(255, 255, 255, 0.08));
+    border-radius: var(--fb-radius-sm, 8px);
+    color: var(--fb-text, rgba(255, 255, 255, 0.95));
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .cycle-btn:hover:not(:disabled) {
+    background: var(--fb-surface-hover, rgba(255, 255, 255, 0.08));
+    border-color: var(--fb-purple, #8b5cf6);
+    color: var(--fb-purple, #8b5cf6);
+  }
+
+  .cycle-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .status-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    min-width: 120px;
+    justify-content: center;
+    background: color-mix(in srgb, var(--status-color) 15%, transparent);
+    border: 1px solid var(--status-color);
+    border-radius: var(--fb-radius-md, 12px);
+    color: var(--status-color);
+    font-size: var(--fb-text-sm, 0.875rem);
+    font-weight: 600;
   }
 </style>

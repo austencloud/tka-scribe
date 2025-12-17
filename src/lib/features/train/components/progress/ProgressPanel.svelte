@@ -279,10 +279,12 @@
   @keyframes pulse-glow {
     0%,
     100% {
-      box-shadow: 0 0 20px color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+      box-shadow: 0 0 20px
+        color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
     }
     50% {
-      box-shadow: 0 0 30px color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+      box-shadow: 0 0 30px
+        color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
     }
   }
 
@@ -335,22 +337,38 @@
   }
 
   .stat-icon.sessions {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 12%,
+      transparent
+    );
     color: var(--semantic-error, #ef4444);
   }
 
   .stat-icon.time {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 12%,
+      transparent
+    );
     color: var(--semantic-info, #3b82f6);
   }
 
   .stat-icon.accuracy {
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 12%,
+      transparent
+    );
     color: var(--semantic-success, #10b981);
   }
 
   .stat-icon.combo {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 12%,
+      transparent
+    );
     color: var(--semantic-warning, #f59e0b);
   }
 
@@ -386,7 +404,11 @@
 
   .preview-section {
     padding: 20px;
-    background: color-mix(in srgb, var(--theme-card-bg, white) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-card-bg, white) 50%,
+      transparent
+    );
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
     border-radius: 16px;
   }
@@ -464,9 +486,13 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 16px 28px;
-    background: linear-gradient(135deg, var(--semantic-error, #ef4444) 0%, var(--semantic-error, #dc2626) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error, #ef4444) 0%,
+      var(--semantic-error, #dc2626) 100%
+    );
     border: none;
     border-radius: 16px;
     color: var(--theme-text, white);
@@ -492,7 +518,8 @@
 
   .start-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 32px color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
+    box-shadow: 0 12px 32px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
   }
 
   .start-btn:active {
@@ -542,8 +569,8 @@
     }
 
     .header-icon {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
 
     .header-icon i {
@@ -578,7 +605,7 @@
     }
 
     .start-btn {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
       padding: 14px 24px;
       font-size: 0.95rem;
       width: 100%;

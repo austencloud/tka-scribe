@@ -215,7 +215,12 @@
 
           <!-- Popularity counter badge -->
           {#if getPresetPopularity(preset.id) > 0}
-            <div class="popularity-badge" title="{getPresetPopularity(preset.id)} users using this background">
+            <div
+              class="popularity-badge"
+              title="{getPresetPopularity(
+                preset.id
+              )} users using this background"
+            >
               <svg
                 width="12"
                 height="12"
@@ -223,9 +228,13 @@
                 fill="currentColor"
                 aria-hidden="true"
               >
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                />
               </svg>
-              <span class="popularity-count">{getPresetPopularity(preset.id)}</span>
+              <span class="popularity-count"
+                >{getPresetPopularity(preset.id)}</span
+              >
             </div>
           {/if}
         </div>
@@ -305,8 +314,13 @@
 
   .background-card:hover {
     transform: scale(1.05);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 60%,
+      transparent
+    );
+    box-shadow: 0 0 20px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .background-card:active {
@@ -316,7 +330,8 @@
   .background-card.selected {
     border-color: var(--theme-accent, #6366f1);
     border-width: 3px;
-    box-shadow: 0 0 24px color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    box-shadow: 0 0 24px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
   }
 
   .background-preview {
@@ -354,8 +369,8 @@
   }
 
   .card-icon {
-    /* Use clamp for intelligent sizing: min 24px, preferred 12cqi, max 52px */
-    font-size: clamp(24px, 12cqi, 52px);
+    /* Use clamp for intelligent sizing: min 24px, preferred 12cqi, max 48px */
+    font-size: clamp(24px, 12cqi, 48px);
     color: white;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));

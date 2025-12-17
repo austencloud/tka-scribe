@@ -39,6 +39,8 @@ export class RotationOverrideChecker {
           pictographData
         );
 
+
+
       const hasOverride =
         await specialPlacementService.hasRotationAngleOverride(
           motion,
@@ -46,12 +48,18 @@ export class RotationOverrideChecker {
           overrideKey
         );
 
+      console.log(`>>> hasRotationAngleOverride returned: ${hasOverride} for key="${overrideKey}"`);
+
       if (hasOverride) {
-        return this.getRotationFromOverrideMap(
+        const overrideAngle = this.getRotationFromOverrideMap(
           isRadial,
           location,
           motion.rotationDirection
         );
+        console.log(`🎯 OVERRIDE APPLIED! Angle: ${overrideAngle}° (isRadial=${isRadial}, location=${location}, rotDir=${motion.rotationDirection})`);
+        return overrideAngle;
+      } else {
+        console.log(`❌ No override found - will use normal rotation map`);
       }
     } catch (error) {
       // If override check fails, return null to fall through to normal rotation

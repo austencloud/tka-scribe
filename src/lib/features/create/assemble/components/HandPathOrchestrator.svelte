@@ -2,7 +2,7 @@
 HandPathOrchestrator.svelte - Main orchestrator for hand path assembly
 
 Complete user flow:
-1. Welcome screen (empty state) - explains the mode and lets user start
+1. Start screen (with draft/grid mode selection) - lets user start or continue
 2. Blue hand phase - tap positions on grid to build blue hand path
 3. Red hand phase - tap positions to build red hand path (must match blue length)
 4. Rotation selection - choose CW or CCW for shift motions
@@ -27,7 +27,9 @@ Integrates all Assembly components and manages state transitions.
   import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
   import { createHandPathAssembleState, type HandPathAssembleState } from "../state/handpath-assemble-state.svelte";
-  import AssemblyWelcome from "./AssemblyWelcome.svelte";
+  import type { CreateTabDraft } from "../../shared/domain/models/CreateTabDraft";
+  import CreationStartScreen from "../../shared/components/start-screen/CreationStartScreen.svelte";
+  import type { HowItWorksStep } from "../../shared/components/start-screen/HowItWorksSection.svelte";
   import AssemblyPhaseHeader from "./AssemblyPhaseHeader.svelte";
   import AssemblyControls from "./AssemblyControls.svelte";
   import HandPathGrid from "./HandPathGrid.svelte";
@@ -39,6 +41,15 @@ Integrates all Assembly components and manages state transitions.
     hasExistingSequence = false,
     existingStartPositionBeat = null,
     existingBeats = [],
+    // Start screen props
+    showStartScreen = true,
+    gridMode = GridMode.DIAMOND,
+    currentDraft = null,
+    onStartNew,
+    onContinueDraft,
+    onDeleteDraft,
+    onGridModeChange,
+    // Sequence callbacks
     onSequenceComplete,
     onSequenceUpdate,
     onHeaderTextChange,
@@ -48,11 +59,30 @@ Integrates all Assembly components and manages state transitions.
     hasExistingSequence?: boolean;
     existingStartPositionBeat?: PictographData | null;
     existingBeats?: PictographData[];
+    // Start screen props
+    showStartScreen?: boolean;
+    gridMode?: GridMode;
+    currentDraft?: CreateTabDraft | null;
+    onStartNew?: () => void;
+    onContinueDraft?: (draft: CreateTabDraft) => void;
+    onDeleteDraft?: (draft: CreateTabDraft) => void;
+    onGridModeChange?: (mode: GridMode) => void;
+    // Sequence callbacks
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onSequenceUpdate?: (sequence: PictographData[]) => void;
     onHeaderTextChange?: (text: string) => void;
     onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
+
+  // Assemble tab accent color
+  const ASSEMBLE_ACCENT = "#f97316"; // Orange for Assemble
+
+  // How it works steps for Assemble mode
+  const howItWorksSteps: HowItWorksStep[] = [
+    { number: 1, text: "Trace blue hand path", color: "#3b82f6" },
+    { number: 2, text: "Trace red hand path", color: "#ef4444" },
+    { number: 3, text: "Choose rotation direction", color: "#a855f7" },
+  ];
 
   // Extract GridLocation from a pictograph's blue motion
   function extractBlueLocation(pictograph: PictographData | null | undefined, useEnd: boolean = false): GridLocation | null {
@@ -92,22 +122,21 @@ Integrates all Assembly components and manages state transitions.
   // Get initial blue hand path from existing data
   const initialBlueHandPath = hasExistingSequence ? reconstructBlueHandPath() : [];
 
-  // Local state for welcome screen
-  // If there's existing sequence data, skip the welcome screen
-  let hasStarted = $state(hasExistingSequence);
-  let localGridMode = $state<GridMode>(initialGridMode);
-
   // Create state manager with restored state if available
   // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
   let assemblyState: HandPathAssembleState = $state(
     createHandPathAssembleState({
-      gridMode: initialGridMode,
+      gridMode: gridMode,
       initialBlueHandPath: initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
     })
   );
 
-  // Derived values for UI
-  const showWelcome = $derived(!hasStarted);
+  // Re-create state when gridMode changes from parent
+  $effect(() => {
+    if (gridMode !== assemblyState.gridMode) {
+      assemblyState = createHandPathAssembleState({ gridMode });
+    }
+  });
   const currentPhase = $derived(assemblyState.currentPhase);
   const bluePathLength = $derived(assemblyState.blueHandPath.length);
   const redPathLength = $derived(assemblyState.redHandPath.length);

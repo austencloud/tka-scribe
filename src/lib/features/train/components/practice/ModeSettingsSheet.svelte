@@ -142,7 +142,11 @@
 <style>
   /* Backdrop styling */
   :global(.mode-settings-backdrop) {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--theme-shadow, #000) 70%,
+      transparent
+    ) !important;
   }
 
   /* Drawer content styling */
@@ -174,7 +178,11 @@
     margin-bottom: 20px;
     position: sticky;
     top: 0;
-    background: color-mix(in srgb, var(--theme-panel-bg, #141923) 98%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #141923) 98%,
+      transparent
+    );
     z-index: 1;
   }
 
@@ -184,8 +192,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 12px;
     flex-shrink: 0;
   }
@@ -214,8 +227,8 @@
   }
 
   .close-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -250,7 +263,8 @@
 
   /* Focus states */
   .close-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
     outline-offset: 2px;
   }
 

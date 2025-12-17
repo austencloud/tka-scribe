@@ -111,7 +111,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: clamp(0.5rem, 1.5cqi, 0.75rem) clamp(1rem, 3cqi, 1.5rem);
     font-size: clamp(0.875rem, 2cqi, 1rem);
     min-width: clamp(80px, 15cqi, 120px);

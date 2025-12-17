@@ -182,7 +182,7 @@
 
   .search-input {
     width: 100%;
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 34px 0 calc(13px + 24px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -232,8 +232,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   .search-clear:hover {
@@ -262,7 +262,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0 21px;
     background: none;
     border: none;

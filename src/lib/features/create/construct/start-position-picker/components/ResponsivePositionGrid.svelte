@@ -109,7 +109,7 @@
     // This prevents overflow in non-square containers
     const maxSize = Math.min(maxWidthPerItem, maxHeightPerItem);
 
-    // Clamp between minimum touch target (52px) and maximum size
+    // Clamp between minimum touch target (48px) and maximum size
     const clampedSize = Math.max(Math.min(maxSize, 200), 44);
 
     return clampedSize + "px";

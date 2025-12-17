@@ -232,7 +232,7 @@
     --kb-space-sm: clamp(10px, 2.5cqi, 16px);
     --kb-space-md: clamp(14px, 3.5cqi, 24px);
     --kb-space-lg: clamp(20px, 5cqi, 32px);
-    --kb-space-xl: clamp(28px, 7cqi, 52px);
+    --kb-space-xl: clamp(28px, 7cqi, 48px);
 
     /* ===== FLUID TYPOGRAPHY - Accessible minimum sizes ===== */
     --kb-text-xs: clamp(0.8125rem, 2cqi, 0.875rem); /* min 13px */
@@ -320,7 +320,7 @@
   }
 
   .skeleton-body {
-    height: clamp(36px, 9cqi, 52px);
+    height: clamp(36px, 9cqi, 48px);
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     border-radius: var(--kb-radius-sm);
   }

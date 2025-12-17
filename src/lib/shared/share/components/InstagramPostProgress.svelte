@@ -353,8 +353,8 @@
     }
 
     .status-icon {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
     }
 
     .status-icon i {

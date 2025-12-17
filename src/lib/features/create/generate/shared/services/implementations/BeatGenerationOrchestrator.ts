@@ -74,8 +74,14 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     turnRed: number | "fl"
   ): Promise<BeatData> {
     // Get all options
-    const allOptions = await this.letterQueryHandler.getAllPictographVariations(
+    let allOptions = await this.letterQueryHandler.getAllPictographVariations(
       options.gridMode
+    );
+
+    // Filter by prop type to ensure consistency with selected prop
+    allOptions = this.pictographFilterService.filterByPropType(
+      allOptions,
+      options.propType
     );
 
     // Apply filters

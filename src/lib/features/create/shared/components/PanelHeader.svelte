@@ -124,16 +124,16 @@
    * ============================================================================
    */
 
-  /* Base styling for all header buttons - circular with 52px touch targets */
+  /* Base styling for all header buttons - circular with 48px touch targets */
   :global(.panel-header .action-button),
   .close-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 52px;
-    min-height: 52px;
-    width: 52px;
-    height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     border: none;
     border-radius: 50%; /* Circular buttons */
@@ -258,9 +258,9 @@
       0 10px 26px rgba(236, 72, 153, 0.4);
   }
 
-  /* Mobile adjustments - maintain accessible touch targets (52px minimum) */
+  /* Mobile adjustments - maintain accessible touch targets (48px minimum) */
   .panel-header.mobile {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 10px 12px;
   }
 
@@ -272,14 +272,14 @@
     font-size: 12px;
   }
 
-  /* Mobile buttons: 52px per iOS/Android accessibility guidelines */
+  /* Mobile buttons: 48px per iOS/Android accessibility guidelines */
   @media (max-width: 768px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: 52px;
-      min-height: 52px;
-      width: 52px;
-      height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
 
@@ -292,10 +292,10 @@
   @media (max-width: 480px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: 52px;
-      min-height: 52px;
-      width: 52px;
-      height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       font-size: 16px;
     }
 
@@ -308,10 +308,10 @@
   @media (max-width: 320px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: 52px; /* NEVER below 52px for accessibility */
-      min-height: 52px;
-      width: 52px;
-      height: 52px;
+      min-width: var(--min-touch-target); /* NEVER below 48px for accessibility */
+      min-height: var(--min-touch-target);
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
 
     :global(.panel-header .action-button i),

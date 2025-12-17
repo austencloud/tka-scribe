@@ -304,7 +304,7 @@
 
   .submit {
     width: 100%;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 12px;
     border: none;
     background: linear-gradient(135deg, var(--theme-accent, #6366f1), color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000));

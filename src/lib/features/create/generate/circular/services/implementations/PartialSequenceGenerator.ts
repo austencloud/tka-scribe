@@ -100,7 +100,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       turns: 0,
       color: MotionColor.BLUE,
       isVisible: true,
-      propType: PropType.STAFF,
+      propType: options.propType,
       arrowLocation: blueLocation,
       gridMode: options.gridMode, // Pass grid mode from options
     });
@@ -115,7 +115,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       turns: 0,
       color: MotionColor.RED,
       isVisible: true,
-      propType: PropType.STAFF,
+      propType: options.propType,
       arrowLocation: redLocation,
       gridMode: options.gridMode, // Pass grid mode from options
     });
@@ -148,8 +148,14 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     const sequence: BeatData[] = [startBeat];
 
     // Now get all options for generating the rest of the sequence
-    const allOptions = await this.letterQueryHandler.getAllPictographVariations(
+    let allOptions = await this.letterQueryHandler.getAllPictographVariations(
       options.gridMode
+    );
+
+    // Filter by prop type to ensure consistency with selected prop
+    allOptions = this.pictographFilterService.filterByPropType(
+      allOptions,
+      options.propType
     );
 
     // Step 2: Calculate word length (legacy formula)
@@ -193,9 +199,11 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     const level = this.metadataService.mapDifficultyToLevel(options.difficulty);
     const turnIntensity = options.turnIntensity ?? 1;
 
-    // Calculate turn allocation for the beats we're generating
+    // Calculate turn allocation for ALL beats we're generating (intermediate + final)
+    // We need at least 1 turn allocation for the final beat, even if beatsToGenerate is 0
+    const totalBeatsNeedingTurns = Math.max(1, beatsToGenerate + 1);
     const turnAllocation = await this._allocateTurns(
-      beatsToGenerate,
+      totalBeatsNeedingTurns,
       level,
       turnIntensity
     );
@@ -229,6 +237,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         blueRotationDirection,
         redRotationDirection,
         options.gridMode,
+        options.propType,
         avoidPosition
       );
       sequence.push(nextBeat);
@@ -283,17 +292,16 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
 
     // Set turns if level 2 or 3
-    const finalTurnIndex = Math.min(
-      sequence.length - 1,
-      turnAllocation.blue.length - 1
-    );
+    // The final beat uses the last turn allocation (index = beatsToGenerate, since we allocated beatsToGenerate + 1 turns)
     if (level === 2 || level === 3) {
+      const finalTurnIndex = beatsToGenerate;
       const blueTurn = turnAllocation.blue[finalTurnIndex];
       const redTurn = turnAllocation.red[finalTurnIndex];
 
       if (blueTurn === undefined || redTurn === undefined) {
         throw new Error(
-          `Missing turn allocation at final index ${finalTurnIndex}`
+          `Missing turn allocation at final index ${finalTurnIndex}. ` +
+          `beatsToGenerate=${beatsToGenerate}, turnAllocation.length=${turnAllocation.blue.length}`
         );
       }
 
@@ -366,11 +374,18 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     blueRotationDirection: string,
     redRotationDirection: string,
     gridMode: GridMode,
+    propType: string,
     avoidEndPosition?: GridPosition
   ): Promise<BeatData> {
     // Get all options
-    const allOptions =
+    let allOptions =
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
+
+    // Filter by prop type to ensure consistency with selected prop
+    allOptions = this.pictographFilterService.filterByPropType(
+      allOptions,
+      propType
+    );
 
     // Apply filters - track counts at each step for diagnostics
     let filteredOptions = allOptions;

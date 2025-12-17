@@ -59,6 +59,7 @@ export function moduleHasPrimaryNav(moduleId: string): boolean {
     moduleId === "compose" ||   // Compose, Playback, Browse tabs
     moduleId === "train" ||     // Challenges, Sessions tabs
     moduleId === "library" ||   // Sequences, Collections, Compositions tabs
+    moduleId === "inbox" ||     // Messages, Notifications tabs
     moduleId === "feedback" ||  // Submit, Manage tabs
     moduleId === "ml-training" || // ML Training - no tabs, full page
     moduleId === "admin" ||     // Various admin tabs

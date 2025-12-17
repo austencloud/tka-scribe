@@ -135,7 +135,7 @@
     text-align: left;
     width: 100%;
     height: 100%;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     container-type: size;
   }
 

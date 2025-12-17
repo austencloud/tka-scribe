@@ -55,7 +55,7 @@
   }
 
   .open-button {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 16px 32px;
     font-size: 16px;
     font-weight: 600;

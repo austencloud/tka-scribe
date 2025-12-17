@@ -203,7 +203,11 @@
     gap: 0.35rem;
     padding: 0.3rem 0.6rem;
     background: color-mix(in srgb, var(--cell-color) 25%, transparent);
-    border: 1px solid var(--cell-color, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent));
+    border: 1px solid
+      var(
+        --cell-color,
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent)
+      );
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 600;
@@ -232,8 +236,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   .grid-cell:hover .remove-btn {
@@ -314,8 +318,8 @@
   }
 
   .empty-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

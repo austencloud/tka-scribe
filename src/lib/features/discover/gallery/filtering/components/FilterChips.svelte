@@ -123,7 +123,7 @@ Shows visual feedback of active filters with easy removal.
     align-items: center;
     gap: 12px;
     padding: 12px 14px 12px 20px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     background: color-mix(in srgb, var(--chip-color) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--chip-color) 30%, transparent);
     border-radius: 100px;
@@ -178,8 +178,8 @@ Shows visual feedback of active filters with easy removal.
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   .chip-remove:hover {
@@ -203,7 +203,7 @@ Shows visual feedback of active filters with easy removal.
       padding: 12px 12px 12px 16px;
       font-size: 13px;
       gap: 10px;
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .chip-label {
@@ -220,8 +220,8 @@ Shows visual feedback of active filters with easy removal.
     }
 
     .chip-remove::before {
-      min-width: 52px;
-      min-height: 52px;
+      min-width: var(--min-touch-target);
+      min-height: var(--min-touch-target);
     }
   }
 

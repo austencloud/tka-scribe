@@ -124,7 +124,7 @@
     text-align: left;
     width: 100%;
     color: inherit;
-    height: 52px;
+    height: var(--min-touch-target);
     flex-shrink: 0;
   }
 

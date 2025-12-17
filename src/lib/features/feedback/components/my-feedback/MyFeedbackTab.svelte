@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from "svelte";
   import { createMyFeedbackState } from "../../state/my-feedback-state.svelte";
   import { myFeedbackDetailState } from "../../state/my-feedback-detail-state.svelte";
-  import { takeNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
+  import { notificationTargetState, takeNotificationTargetFeedback, setNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import MyFeedbackList from "./MyFeedbackList.svelte";
@@ -82,8 +82,25 @@
     // Register handlers with the shared detail state
     myFeedbackDetailState.setHandlers(state.updateItem, state.deleteItem);
 
-    // Check if a specific feedback should be opened (from notification or URL)
-    const targetFeedbackId = takeNotificationTargetFeedback() || myFeedbackDetailState.getPersistedFeedbackId();
+    // Check URL param first (from FeedbackMessageCard navigation)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlFeedbackId = urlParams.get("openFeedback");
+
+    let targetFeedbackId: string | null = null;
+
+    if (urlFeedbackId) {
+      console.log("[MyFeedbackTab] onMount: Found URL param openFeedback:", urlFeedbackId);
+      targetFeedbackId = urlFeedbackId;
+      // Clear the URL param
+      urlParams.delete("openFeedback");
+      const newUrl = urlParams.toString()
+        ? `${window.location.pathname}?${urlParams.toString()}`
+        : window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    } else {
+      // Fallback to notification target state or persisted ID
+      targetFeedbackId = takeNotificationTargetFeedback() || myFeedbackDetailState.getPersistedFeedbackId();
+    }
 
     // First, ensure auth is ready, then load feedback
     loadWhenReady().then(() => {
@@ -104,6 +121,18 @@
       lastPreviewUserId = currentPreviewUserId;
       state.cleanup();
       state.loadMyFeedback(true);
+    }
+  });
+
+  // Watch for notification target changes (handles navigation while already mounted)
+  $effect(() => {
+    const targetId = notificationTargetState.feedbackId;
+    if (targetId) {
+      console.log("[MyFeedbackTab] Notification target changed:", targetId);
+      // Clear it immediately so we don't keep re-triggering
+      setNotificationTargetFeedback(null);
+      // Set up the target check to find and select the item
+      setupTargetCheck(targetId);
     }
   });
 
@@ -326,7 +355,7 @@
   }
 
   .empty-state i {
-    font-size: 52px;
+    font-size: 48px;
     color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 

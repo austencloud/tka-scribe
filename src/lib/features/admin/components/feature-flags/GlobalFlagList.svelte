@@ -132,7 +132,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 52px 24px;
+    padding: 48px 24px;
     gap: var(--space-2026-sm);
     color: var(--theme-text-dim);
   }

@@ -58,7 +58,7 @@
   --panel-shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.2);
 
   --panel-shadow-dramatic:
-    0 16px 52px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
+    0 16px 48px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4);
 
   --panel-shadow-ambient-blue:
     0 0 60px rgba(59, 130, 246, 0.15), 0 8px 32px rgba(0, 0, 0, 0.6);
@@ -100,8 +100,8 @@
   --btn-danger-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 
   /* Header circular buttons (current style) */
-  --btn-header-size: 52px;
-  --btn-header-size-mobile: 52px;
+  --btn-header-size: 48px;
+  --btn-header-size-mobile: 48px;
   --btn-header-bg-neutral: linear-gradient(
     135deg,
     rgba(100, 100, 120, 0.85),

@@ -164,7 +164,7 @@ Shows all 4 orientations: in, out, clock, counter
   }
 
   .clear-button {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 12px 24px;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);

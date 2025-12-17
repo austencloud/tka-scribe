@@ -147,6 +147,19 @@ export function createFeedbackManageState() {
     selectedItem = item;
   }
 
+  /**
+   * Select a feedback item by ID
+   * Returns true if found and selected, false otherwise
+   */
+  function selectItemById(feedbackId: string): boolean {
+    const item = items.find((i) => i.id === feedbackId);
+    if (item) {
+      selectedItem = item;
+      return true;
+    }
+    return false;
+  }
+
   async function updateStatus(feedbackId: string, status: FeedbackStatus) {
     try {
       await feedbackService.updateStatus(feedbackId, status);
@@ -366,6 +379,7 @@ export function createFeedbackManageState() {
     setFilter,
     setSearchQuery,
     selectItem,
+    selectItemById,
     updateStatus,
     updateAdminNotes,
     updateFeedback,

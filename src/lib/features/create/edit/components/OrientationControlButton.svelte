@@ -109,13 +109,13 @@
 
   /* Balanced mode - Tablet landscape */
   .orientation-control-button.balanced {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-width: 3px;
   }
 
   /* Compact mode - Desktop, minimal vertical space */
   .orientation-control-button.compact {
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-width: 2px;
     border-radius: 8px;
   }
@@ -253,7 +253,7 @@
   /* Responsive adjustments for very small screens */
   @media (max-width: 400px) {
     .orientation-control-button {
-      min-height: 52px;
+      min-height: var(--min-touch-target);
     }
 
     .preview-text {

@@ -48,7 +48,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 <div class="construct-tab-content" data-testid="construct-tab-content" data-picker-mode={shouldShowStartPositionPicker ? "start-position" : "options"}>
   <!-- Main Content (always visible) -->
   <div class="content-container">
-    <div class="panel-content transparent-scroll">
+    <div class="construct-scroll-area transparent-scroll">
       <!-- Instant swap - workspace expansion is the visual transition -->
       <div class="picker-wrapper">
         {#if shouldShowStartPositionPicker}
@@ -96,7 +96,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     min-height: 0;
   }
 
-  .panel-content {
+  .construct-scroll-area {
     flex: 1;
     overflow: hidden;
     min-height: 0;
@@ -104,7 +104,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     flex-direction: column;
   }
 
-  .panel-content.transparent-scroll {
+  .construct-scroll-area.transparent-scroll {
     background: transparent;
   }
 

@@ -412,8 +412,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -436,7 +436,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
-    min-width: 52px;
+    min-width: var(--min-touch-target);
     text-align: center;
   }
 

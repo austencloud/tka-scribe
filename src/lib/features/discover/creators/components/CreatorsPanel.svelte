@@ -346,7 +346,7 @@
     padding: 16px 0 8px;
     background: transparent;
     width: 100%;
-    min-height: 52px;
+    min-height: 48px;
   }
 
   .nav-section {

@@ -236,8 +236,8 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
   }
 
   .motion-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -337,8 +337,8 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
   }
 
   .nav-button {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -383,8 +383,8 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
   }
 
   .letter-chip {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -505,7 +505,7 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
   }
 
   .next-button {

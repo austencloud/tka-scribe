@@ -58,8 +58,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 52px;
-    min-width: 52px;
+    min-height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
     padding: 0;
     width: 100%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
@@ -98,7 +98,11 @@
       color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent) 0%,
       color-mix(in srgb, var(--prop-blue, #2e3192) 16%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--prop-blue, #2e3192) 55%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--prop-blue, #2e3192) 55%,
+      transparent
+    );
     color: color-mix(in srgb, var(--prop-blue, #2e3192) 35%, white);
     box-shadow:
       0 2px 12px color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent),
@@ -113,9 +117,14 @@
         color-mix(in srgb, var(--prop-blue, #2e3192) 32%, transparent) 0%,
         color-mix(in srgb, var(--prop-blue, #2e3192) 24%, transparent) 100%
       );
-      border-color: color-mix(in srgb, var(--prop-blue, #2e3192) 70%, transparent);
+      border-color: color-mix(
+        in srgb,
+        var(--prop-blue, #2e3192) 70%,
+        transparent
+      );
       box-shadow:
-        0 4px 16px color-mix(in srgb, var(--prop-blue, #2e3192) 30%, transparent),
+        0 4px 16px
+          color-mix(in srgb, var(--prop-blue, #2e3192) 30%, transparent),
         0 0 20px color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent),
         inset 0 1px 0 rgba(255, 255, 255, 0.12);
     }
@@ -143,7 +152,11 @@
         color-mix(in srgb, var(--prop-red, #ed1c24) 32%, transparent) 0%,
         color-mix(in srgb, var(--prop-red, #ed1c24) 24%, transparent) 100%
       );
-      border-color: color-mix(in srgb, var(--prop-red, #ed1c24) 70%, transparent);
+      border-color: color-mix(
+        in srgb,
+        var(--prop-red, #ed1c24) 70%,
+        transparent
+      );
       box-shadow:
         0 4px 16px color-mix(in srgb, var(--prop-red, #ed1c24) 30%, transparent),
         0 0 20px color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent),

@@ -90,7 +90,7 @@
     border: none;
     color: white;
     padding: 10px 14px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     border-radius: 6px;
     cursor: pointer;
     font-size: 12px;

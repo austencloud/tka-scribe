@@ -280,8 +280,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -339,8 +339,8 @@
   }
 
   .loading-spinner {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-left-color: var(--theme-accent, #667eea);
     border-radius: 50%;
@@ -441,7 +441,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 52px;
+    height: var(--min-touch-target);
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.06);
     border: 1.5px solid rgba(255, 255, 255, 0.12);

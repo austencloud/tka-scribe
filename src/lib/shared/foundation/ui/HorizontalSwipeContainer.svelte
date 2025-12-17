@@ -368,8 +368,8 @@
     border: none;
     padding: 0;
     margin: 0;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     z-index: 1;
     border-radius: 50%;
     position: absolute;
@@ -429,8 +429,8 @@
   /* Mobile responsive - maintain 50px minimum per iOS/Android guidelines */
   @media (max-width: 768px) {
     .embla__button {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
     }
   }
 
@@ -469,8 +469,8 @@
     border: 0;
     padding: 0;
     margin: 0;
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

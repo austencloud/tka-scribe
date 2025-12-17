@@ -415,7 +415,7 @@
   }
 
   .error-state i {
-    font-size: 52px;
+    font-size: 48px;
     color: #ef4444;
   }
 

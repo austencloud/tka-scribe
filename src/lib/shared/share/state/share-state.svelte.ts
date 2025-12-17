@@ -12,6 +12,8 @@ import { tryResolve, TYPES } from '../../inversify/di';
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 import { createPersistenceHelper } from '../../state/utils/persistent-state';
 import { getUser } from '../../auth/state/authState.svelte';
+import { settingsService } from '../../settings/state/SettingsState.svelte';
+import { PropType } from '../../pictograph/prop/domain/enums/PropType';
 
 // Persisted content options (the toggleable chips in the share panel)
 interface PersistedShareOptions {
@@ -59,6 +61,7 @@ export interface ShareState {
 
   // Cache access - for instant preview switching
   tryLoadFromCache: (sequence: SequenceData) => boolean;
+  clearCache: () => void;
 }
 
 export function createShareState(shareService: IShareService): ShareState {
@@ -95,11 +98,46 @@ export function createShareState(shareService: IShareService): ShareState {
   const previewCache = new Map<string, string>();
 
   /**
+   * Get current prop types from settings (with fallback to default)
+   */
+  function getCurrentPropTypes(): { blue: string; red: string } {
+    const settings = settingsService.settings;
+    const defaultPropType = PropType.STAFF;
+
+    // Get bluePropType, falling back to propType (legacy), then default
+    const bluePropType = settings.bluePropType || settings.propType || defaultPropType;
+
+    // Get redPropType, falling back to propType (legacy), then default
+    const redPropType = settings.redPropType || settings.propType || defaultPropType;
+
+    console.log('🎯 [ShareState] getCurrentPropTypes():', {
+      bluePropType,
+      redPropType,
+      settingsBlueProp: settings.bluePropType,
+      settingsRedProp: settings.redPropType,
+      settingsLegacyProp: settings.propType
+    });
+
+    return {
+      blue: bluePropType,
+      red: redPropType
+    };
+  }
+
+  /**
    * Generate cache key from sequence ID and relevant options
-   * IMPORTANT: All toggle options must be included to avoid stale cache
+   * IMPORTANT: All toggle options AND prop types must be included to avoid stale cache
+   * Include prop types so changing props in settings invalidates the cache
    */
   function getCacheKey(sequenceId: string, opts: ShareOptions): string {
-    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}-${opts.addUserInfo}`;
+    const propTypes = getCurrentPropTypes();
+    const key = `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}-${opts.addUserInfo}-${propTypes.blue}-${propTypes.red}`;
+    console.log('🔑 [ShareState] getCacheKey():', {
+      sequenceId,
+      propTypes,
+      fullKey: key
+    });
+    return key;
   }
 
   return {
@@ -193,9 +231,54 @@ export function createShareState(shareService: IShareService): ShareState {
           throw new Error(`Invalid options: ${validation.errors.join(", ")}`);
         }
 
-        // Generate preview (passing forceRegenerate to bypass IndexedDB cache)
+        // CRITICAL FIX: Override sequence prop types with current settings
+        // The sequence may have been generated with different prop types,
+        // but we want the preview to always match the current settings
+        const currentPropTypes = getCurrentPropTypes();
+
+        // Helper to update motions prop types
+        const updateMotionsPropTypes = (data: any) => {
+          if (!data?.motions) return data;
+          return {
+            ...data,
+            motions: {
+              ...data.motions,
+              blue: data.motions.blue ? {
+                ...data.motions.blue,
+                propType: currentPropTypes.blue
+              } : data.motions.blue,
+              red: data.motions.red ? {
+                ...data.motions.red,
+                propType: currentPropTypes.red
+              } : data.motions.red,
+            }
+          };
+        };
+
+        const sequenceWithCurrentProps = {
+          ...sequence,
+          // Update all beats
+          beats: sequence.beats?.map(beat => updateMotionsPropTypes(beat)) || [],
+          // Update BOTH start position fields (primary and legacy)
+          ...(sequence.startPosition && {
+            startPosition: updateMotionsPropTypes(sequence.startPosition)
+          }),
+          ...(sequence.startingPositionBeat && {
+            startingPositionBeat: updateMotionsPropTypes(sequence.startingPositionBeat)
+          })
+        };
+
+        console.log('🎨 [ShareState] Generating preview with overridden prop types:', {
+          originalPropTypes: sequence.beats?.[0]?.motions ? {
+            blue: sequence.beats[0].motions.blue?.propType,
+            red: sequence.beats[0].motions.red?.propType
+          } : null,
+          overriddenPropTypes: currentPropTypes
+        });
+
+        // Generate preview with the prop-type-overridden sequence
         const newPreviewUrl = await shareService.generatePreview(
-          sequence,
+          sequenceWithCurrentProps,
           options,
           forceRegenerate
         );
@@ -235,8 +318,43 @@ export function createShareState(shareService: IShareService): ShareState {
           throw new Error(`Invalid options: ${validation.errors.join(", ")}`);
         }
 
-        // Download image
-        await shareService.downloadImage(sequence, options, filename);
+        // CRITICAL FIX: Override sequence prop types with current settings (same as preview)
+        const currentPropTypes = getCurrentPropTypes();
+
+        // Helper to update motions prop types (same as in generatePreview)
+        const updateMotionsPropTypes = (data: any) => {
+          if (!data?.motions) return data;
+          return {
+            ...data,
+            motions: {
+              ...data.motions,
+              blue: data.motions.blue ? {
+                ...data.motions.blue,
+                propType: currentPropTypes.blue
+              } : data.motions.blue,
+              red: data.motions.red ? {
+                ...data.motions.red,
+                propType: currentPropTypes.red
+              } : data.motions.red,
+            }
+          };
+        };
+
+        const sequenceWithCurrentProps = {
+          ...sequence,
+          // Update all beats
+          beats: sequence.beats?.map(beat => updateMotionsPropTypes(beat)) || [],
+          // Update BOTH start position fields (primary and legacy)
+          ...(sequence.startPosition && {
+            startPosition: updateMotionsPropTypes(sequence.startPosition)
+          }),
+          ...(sequence.startingPositionBeat && {
+            startingPositionBeat: updateMotionsPropTypes(sequence.startingPositionBeat)
+          })
+        };
+
+        // Download image with the prop-type-overridden sequence
+        await shareService.downloadImage(sequenceWithCurrentProps, options, filename);
 
         // Track successful download
         lastDownloadedFile =
@@ -276,13 +394,31 @@ export function createShareState(shareService: IShareService): ShareState {
       const cacheKey = getCacheKey(sequence.id, options);
       const cachedPreview = previewCache.get(cacheKey);
 
+      console.log('💾 [ShareState] tryLoadFromCache():', {
+        sequenceId: sequence.id,
+        sequenceWord: sequence.word,
+        cacheKey,
+        cacheHit: !!cachedPreview,
+        cacheSize: previewCache.size,
+        allCacheKeys: Array.from(previewCache.keys())
+      });
+
       if (cachedPreview) {
         previewUrl = cachedPreview;
         previewError = null;
+        console.log('✅ [ShareState] Cache HIT - using cached preview');
         return true; // Cache hit - preview updated instantly
       }
 
+      console.log('❌ [ShareState] Cache MISS - need to generate');
       return false; // Cache miss - caller should generate
+    },
+
+    // Clear the preview cache (useful for debugging or forcing regeneration)
+    clearCache: () => {
+      console.log('🗑️ [ShareState] Clearing preview cache');
+      previewCache.clear();
+      previewUrl = null;
     },
   };
 }

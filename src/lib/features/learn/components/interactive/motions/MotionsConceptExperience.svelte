@@ -510,8 +510,8 @@ Page 7: Interactive quiz
   }
 
   .fundamental-card .motion-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -573,8 +573,8 @@ Page 7: Interactive quiz
   }
 
   .type-icon {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;

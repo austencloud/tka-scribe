@@ -78,8 +78,8 @@
     background: rgba(118, 118, 128, 0.24); /* iOS fill tertiary dark */
     border-radius: 9px; /* iOS standard corner radius */
     padding: 2px;
-    height: 52px; /* 50px minimum for accessibility */
-    min-height: 52px;
+    height: var(--min-touch-target); /* 50px minimum for accessibility */
+    min-height: var(--min-touch-target);
     width: fit-content;
     min-width: 240px;
     max-width: 100%;

@@ -23,7 +23,11 @@
     redPropType?: PropType | string | null;
   }
 
-  let { propType = null, bluePropType = null, redPropType = null }: Props = $props();
+  let {
+    propType = null,
+    bluePropType = null,
+    redPropType = null,
+  }: Props = $props();
 
   // Check if EITHER prop is bilateral (staff, buugeng, etc.)
   // This allows users to track both ends even with mixed props
@@ -53,7 +57,9 @@
   });
 
   // Only show the bilateral toggle when trails are enabled
-  const showEndToggle = $derived(showBilateralToggle && currentPreset !== "none");
+  const showEndToggle = $derived(
+    showBilateralToggle && currentPreset !== "none"
+  );
 
   function setPreset(preset: TrailPreset) {
     switch (preset) {
@@ -82,7 +88,9 @@
   }
 
   function toggleBothEnds() {
-    const newMode = isBothEnds ? TrackingMode.RIGHT_END : TrackingMode.BOTH_ENDS;
+    const newMode = isBothEnds
+      ? TrackingMode.RIGHT_END
+      : TrackingMode.BOTH_ENDS;
     animationSettings.setTrackingMode(newMode);
   }
 </script>
@@ -124,7 +132,10 @@
       type="button"
       title={isBothEnds ? "Trailing both ends" : "Trailing one end"}
     >
-      <i class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}" aria-hidden="true"></i>
+      <i
+        class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}"
+        aria-hidden="true"
+      ></i>
       <span class="ends-label">{isBothEnds ? "Both" : "One"}</span>
     </button>
   {/if}
@@ -166,7 +177,7 @@
 
   .preset-btn {
     flex: 1;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 8px 12px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -202,12 +213,18 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 18%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 18%, transparent)
+        100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 55%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 55%,
+      transparent
+    );
     color: color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, white);
     box-shadow:
-      0 2px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent),
+      0 2px 12px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent),
       0 0 16px color-mix(in srgb, var(--theme-accent, #3b82f6) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
@@ -221,7 +238,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    min-height: 52px;
+    min-height: var(--min-touch-target);
     padding: 8px 14px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -263,14 +280,22 @@
   .ends-toggle.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #7c3aed) 18%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent)
+        0%,
+      color-mix(in srgb, var(--theme-accent-strong, #7c3aed) 18%, transparent)
+        100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 55%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 55%,
+      transparent
+    );
     color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, white);
     box-shadow:
-      0 2px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent),
-      0 0 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 16%, transparent),
+      0 2px 12px
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent),
+      0 0 16px
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 16%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 

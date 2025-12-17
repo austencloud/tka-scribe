@@ -340,8 +340,8 @@
 
   /* Placeholder keeps layout balanced when rotation buttons are hidden */
   .rotation-placeholder {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     flex-shrink: 0;
   }
 
@@ -406,26 +406,26 @@
   }
 
   .turn-panel.compact .close-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 14px;
   }
 
   .turn-panel.balanced .close-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 16px;
   }
 
   .turn-panel.comfortable .close-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 18px;
   }
 
@@ -461,24 +461,24 @@
   }
 
   .turn-panel.compact .turn-btn {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     font-size: 16px;
     border-width: 2px;
   }
 
   .turn-panel.balanced .turn-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     font-size: 18px;
     border-width: 3px;
   }
 
   .turn-panel.comfortable .turn-btn {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     font-size: 20px;
     border-width: 4px;
   }
@@ -522,16 +522,16 @@
   }
 
   .turn-panel.compact .turn-display {
-    min-width: 52px;
-    height: 52px;
+    min-width: var(--min-touch-target);
+    height: var(--min-touch-target);
     font-size: 24px;
     border-width: 2px;
     border-radius: 8px;
   }
 
   .turn-panel.balanced .turn-display {
-    min-width: 52px;
-    height: 52px;
+    min-width: var(--min-touch-target);
+    height: var(--min-touch-target);
     font-size: 28px;
     border-width: 3px;
     border-radius: 10px;
@@ -577,11 +577,11 @@
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 16px;
-    /* Minimum 52px touch target for accessibility */
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    min-height: 52px;
+    /* Minimum 48px touch target for accessibility */
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     flex-shrink: 0;
     box-shadow: 0 2px 6px var(--theme-shadow, rgba(0, 0, 0, 0.1));
   }

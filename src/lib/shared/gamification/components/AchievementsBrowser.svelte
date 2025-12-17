@@ -5,7 +5,7 @@
    * Full-screen achievement browser panel with:
    * - Container query support for adaptive layouts
    * - Fluid typography using clamp()
-   * - WCAG AAA touch targets (52px minimum)
+   * - WCAG AAA touch targets (48px minimum)
    * - ResizeObserver for dynamic sizing
    * - Compact/extra-compact modes for mobile
    * - Full accessibility support
@@ -399,12 +399,12 @@
     gap: clamp(8px, 2cqi, 12px);
   }
 
-  /* WCAG AAA Touch target (52px minimum) */
+  /* WCAG AAA Touch target (48px minimum) */
   .close-button {
-    min-width: var(--min-touch-target, 52px);
-    min-height: var(--min-touch-target, 52px);
-    width: clamp(52px, 10cqi, 52px);
-    height: clamp(52px, 10cqi, 52px);
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
+    width: clamp(48px, 10cqi, 48px);
+    height: clamp(48px, 10cqi, 48px);
     border-radius: 50%;
     border: none;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
@@ -441,8 +441,8 @@
   }
 
   .spinner-large {
-    width: 52px;
-    height: 52px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-top-color: var(--theme-text, rgba(255, 255, 255, 0.8));
     border-radius: 50%;
@@ -650,7 +650,7 @@
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 8px);
     padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
-    min-height: var(--min-touch-target, 52px);
+    min-height: var(--min-touch-target, 48px);
     border-radius: clamp(10px, 2.5cqi, 14px);
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -704,7 +704,7 @@
     }
 
     .category-tab {
-      min-width: var(--min-touch-target, 52px);
+      min-width: var(--min-touch-target, 48px);
       padding: clamp(8px, 2cqi, 10px);
     }
   }
@@ -764,8 +764,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(40px, 10cqi, 52px);
-    height: clamp(40px, 10cqi, 52px);
+    width: clamp(40px, 10cqi, 48px);
+    height: clamp(40px, 10cqi, 48px);
   }
 
   .achievement-content {

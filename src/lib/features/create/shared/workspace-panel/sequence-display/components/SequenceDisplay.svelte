@@ -22,10 +22,6 @@
     practiceBeatNumber = null,
     isSideBySideLayout = false,
     shouldOrbitAroundCenter = false,
-    isMultiSelectMode = false,
-    selectedBeatNumbers = new Set<number>(),
-    onBeatLongPress,
-    onStartLongPress,
     activeMode = null,
     currentDisplayWord = "",
   } = $props<{
@@ -37,11 +33,7 @@
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
     shouldOrbitAroundCenter?: boolean;
-    isMultiSelectMode?: boolean;
-    selectedBeatNumbers?: Set<number>;
-    onBeatLongPress?: (beatNumber: number) => void;
     activeMode?: BuildModeId | null;
-    onStartLongPress?: () => void;
     currentDisplayWord?: string;
   }>();
 
@@ -139,10 +131,6 @@
           {shouldOrbitAroundCenter}
           {practiceBeatNumber}
           {isSideBySideLayout}
-          {isMultiSelectMode}
-          {selectedBeatNumbers}
-          {onBeatLongPress}
-          {onStartLongPress}
           {activeMode}
         />
       </div>

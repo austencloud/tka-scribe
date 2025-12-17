@@ -12,8 +12,13 @@
     uiState,
   } from "../../../navigation/state/profile-settings-state.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
+  import {
+    type ProviderConfig,
+    type ProviderId,
+  } from "../../../navigation/components/profile-settings/connectedAccounts.providers";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
+  import Drawer from "../../../foundation/ui/Drawer.svelte";
   import AccountSecuritySection from "../../../auth/components/AccountSecuritySection.svelte";
   import RobustAvatar from "../../../components/avatar/RobustAvatar.svelte";
 
@@ -55,6 +60,21 @@
   let showStepUpModal = $state(false);
   let pendingAction = $state<(() => Promise<void>) | null>(null);
 
+  // Provider drawer state (for mobile tap-to-manage)
+  let showProviderDrawer = $state(false);
+  let selectedProviderId = $state<ProviderId | null>(null);
+  let selectedProviderConfig = $state<ProviderConfig | null>(null);
+  let selectedProviderEmail = $state<string | null>(null);
+  let connectedAccountsRef = $state<{
+    requestDisconnect: (id: ProviderId) => void;
+    getCanUnlink: () => boolean;
+  } | null>(null);
+
+  // Computed: can user unlink providers?
+  const canUnlinkProviders = $derived(
+    authState.user?.providerData && authState.user.providerData.length > 1
+  );
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
@@ -95,9 +115,12 @@
         throw new Error("Password must be at least 8 characters");
       }
 
-      await withSensitiveAuth(async () => {
-        await authedApi("/api/account/update-password", { newPassword });
-      }, { allowPasswordReauth: true, password: passwordState.current });
+      await withSensitiveAuth(
+        async () => {
+          await authedApi("/api/account/update-password", { newPassword });
+        },
+        { allowPasswordReauth: true, password: passwordState.current }
+      );
 
       // Also update client auth password so Firebase doesn't immediately desync
       if (authState.user) {
@@ -105,7 +128,9 @@
       }
 
       hapticService?.trigger("success");
-      alert("Password updated. For security, you may be signed out on other devices.");
+      alert(
+        "Password updated. For security, you may be signed out on other devices."
+      );
       uiState.showPasswordSection = false;
       resetPasswordForm();
     } catch (error) {
@@ -122,9 +147,12 @@
     hapticService?.trigger("warning");
 
     try {
-      await withSensitiveAuth(async () => {
-        await authedApi("/api/account/delete");
-      }, { allowPasswordReauth: true });
+      await withSensitiveAuth(
+        async () => {
+          await authedApi("/api/account/delete");
+        },
+        { allowPasswordReauth: true }
+      );
 
       await authState.signOut().catch(() => {});
       alert("Account deleted successfully.");
@@ -163,7 +191,10 @@
     if (!authState.user?.email) return false;
     if (!hasPasswordProvider()) return false;
 
-    const credential = EmailAuthProvider.credential(authState.user.email, password);
+    const credential = EmailAuthProvider.credential(
+      authState.user.email,
+      password
+    );
     await reauthenticateWithCredential(authState.user, credential);
     await authState.user.getIdToken(true);
     return true;
@@ -177,12 +208,15 @@
       await action();
       return;
     } catch (e: unknown) {
-      const code = typeof e === "object" && e && "code" in e ? (e as any).code : null;
+      const code =
+        typeof e === "object" && e && "code" in e ? (e as any).code : null;
       if (code !== "step_up_required") throw e;
     }
 
     if (options?.allowPasswordReauth) {
-      const did = await passwordReauthIfPossible(options.password).catch(() => false);
+      const did = await passwordReauthIfPossible(options.password).catch(
+        () => false
+      );
       if (did) {
         await action();
         return;
@@ -201,7 +235,9 @@
       await action();
     } catch (e) {
       console.error("Sensitive action failed after verification:", e);
-      alert("Verification succeeded, but the action still failed. Please try again.");
+      alert(
+        "Verification succeeded, but the action still failed. Please try again."
+      );
     }
   }
 
@@ -234,6 +270,32 @@
       alert("Failed to clear cache. Please try again.");
       clearingCache = false;
     }
+  }
+
+  // Provider drawer handlers
+  function handleProviderSelect(
+    providerId: ProviderId,
+    config: ProviderConfig,
+    email: string | null
+  ) {
+    selectedProviderId = providerId;
+    selectedProviderConfig = config;
+    selectedProviderEmail = email;
+    showProviderDrawer = true;
+  }
+
+  function closeProviderDrawer() {
+    showProviderDrawer = false;
+  }
+
+  function handleDisconnectFromDrawer() {
+    if (!selectedProviderId || !connectedAccountsRef) return;
+    const providerToDisconnect = selectedProviderId;
+    closeProviderDrawer();
+    // Small delay to let drawer close
+    setTimeout(() => {
+      connectedAccountsRef?.requestDisconnect(providerToDisconnect);
+    }, 150);
   }
 </script>
 
@@ -281,7 +343,10 @@
             </div>
           </header>
           <div class="card-content">
-            <ConnectedAccounts />
+            <ConnectedAccounts
+              bind:this={connectedAccountsRef}
+              onProviderSelect={handleProviderSelect}
+            />
           </div>
         </section>
 
@@ -352,7 +417,6 @@
             </div>
           </div>
         </section>
-
       </div>
 
       <!-- Danger Zone - Full width, separated from grid -->
@@ -415,6 +479,56 @@
   onCancel={handleStepUpCancel}
 />
 
+<!-- Provider Details Drawer (mobile tap-to-manage) -->
+<Drawer
+  bind:isOpen={showProviderDrawer}
+  placement="bottom"
+  ariaLabel="Manage connected account"
+>
+  {#if selectedProviderConfig}
+    <div class="provider-drawer-content">
+      <div class="drawer-provider-header">
+        <div
+          class="drawer-provider-icon"
+          style="--provider-color: {selectedProviderConfig.color}; --provider-bg: {selectedProviderConfig.bgColor};"
+        >
+          <i class={selectedProviderConfig.icon}></i>
+        </div>
+        <div class="drawer-provider-info">
+          <h3 class="drawer-provider-name">{selectedProviderConfig.name}</h3>
+          {#if selectedProviderEmail}
+            <p class="drawer-provider-email">{selectedProviderEmail}</p>
+          {/if}
+        </div>
+        <span class="connected-badge-drawer">
+          <i class="fas fa-check-circle"></i>
+          <span>Connected</span>
+        </span>
+      </div>
+
+      <div class="drawer-actions">
+        {#if canUnlinkProviders}
+          <button class="disconnect-btn" onclick={handleDisconnectFromDrawer}>
+            <i class="fas fa-unlink"></i>
+            <span>Disconnect {selectedProviderConfig.name}</span>
+          </button>
+          <p class="disconnect-warning">
+            You won't be able to sign in with {selectedProviderConfig.name} after
+            disconnecting.
+          </p>
+        {:else}
+          <p class="cannot-disconnect-msg">
+            <i class="fas fa-info-circle"></i>
+            This is your only sign-in method. Link another account before disconnecting.
+          </p>
+        {/if}
+      </div>
+
+      <button class="cancel-btn" onclick={closeProviderDrawer}> Cancel </button>
+    </div>
+  {/if}
+</Drawer>
+
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════
      PROFILE TAB - Theme-Aware Glassmorphism
@@ -429,9 +543,10 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: clamp(16px, 3cqi, 24px);
-    gap: clamp(14px, 2cqi, 20px);
+    padding: clamp(12px, 3cqi, 24px);
+    gap: clamp(12px, 2cqi, 20px);
     overflow-y: auto;
+    overflow-x: hidden;
 
     opacity: 0;
     transition: opacity 200ms ease;
@@ -444,7 +559,8 @@
   .profile-content {
     display: flex;
     flex-direction: column;
-    gap: clamp(14px, 2cqi, 20px);
+    gap: clamp(12px, 2cqi, 20px);
+    max-width: 100%;
   }
 
   /* ========================================
@@ -453,12 +569,14 @@
   .settings-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(14px, 2cqi, 20px);
+    gap: clamp(10px, 2cqi, 20px);
+    max-width: 100%;
   }
 
   .settings-grid .glass-card {
     /* Cards should stretch to fill their grid cell */
     height: 100%;
+    min-width: 0;
   }
 
   /* Single column on narrow screens */
@@ -468,15 +586,31 @@
     }
   }
 
+  /* Tighter spacing on very small screens */
+  @container profile-tab (max-width: 360px) {
+    .settings-grid {
+      gap: 8px;
+    }
+
+    .glass-card {
+      padding: 12px;
+      gap: 10px;
+    }
+
+    .card-header {
+      gap: 8px;
+    }
+  }
+
   /* ========================================
      GLASS CARD BASE - Theme-aware
      ======================================== */
   .glass-card {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: clamp(16px, 2.5cqi, 24px);
-    border-radius: 16px;
+    gap: clamp(12px, 2.5cqi, 16px);
+    padding: clamp(14px, 2.5cqi, 24px);
+    border-radius: clamp(12px, 3cqi, 16px);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     background: var(--theme-card-bg);
@@ -501,13 +635,13 @@
   .profile-hero {
     display: flex;
     align-items: center;
-    gap: clamp(14px, 2.5cqi, 24px);
+    gap: clamp(12px, 2.5cqi, 24px);
     flex-wrap: wrap;
   }
 
   .avatar-wrapper {
-    width: clamp(72px, 14cqi, 100px);
-    height: clamp(72px, 14cqi, 100px);
+    width: clamp(64px, 14cqi, 100px);
+    height: clamp(64px, 14cqi, 100px);
     border-radius: 50%;
     overflow: hidden;
     padding: 3px;
@@ -532,7 +666,7 @@
   }
 
   .profile-name {
-    font-size: clamp(20px, 3.5cqi, 28px);
+    font-size: clamp(18px, 3.5cqi, 28px);
     font-weight: 700;
     color: var(--theme-text);
     margin: 0 0 4px 0;
@@ -541,7 +675,7 @@
   }
 
   .profile-email {
-    font-size: clamp(13px, 2cqi, 15px);
+    font-size: clamp(12px, 2cqi, 15px);
     color: var(--theme-text-dim);
     margin: 0;
   }
@@ -551,7 +685,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 48px;
+    min-height: var(--min-touch-target);
     padding: 12px 20px;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.4);
@@ -581,6 +715,7 @@
     .profile-hero {
       flex-direction: column;
       text-align: center;
+      gap: 16px;
     }
 
     .profile-info {
@@ -589,6 +724,21 @@
 
     .sign-out-btn {
       width: 100%;
+    }
+  }
+
+  /* Very small screens: more compact profile hero */
+  @container profile-tab (max-width: 360px) {
+    .profile-hero {
+      gap: 12px;
+    }
+
+    .profile-name {
+      font-size: 16px;
+    }
+
+    .profile-email {
+      font-size: 11px;
     }
   }
 
@@ -646,17 +796,17 @@
   .card-header {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: clamp(10px, 2cqi, 14px);
   }
 
   .card-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 18px;
+    width: clamp(36px, 8cqi, 44px);
+    height: clamp(36px, 8cqi, 44px);
+    border-radius: clamp(8px, 2cqi, 12px);
+    font-size: clamp(16px, 3cqi, 18px);
     flex-shrink: 0;
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     color: var(--theme-accent);
@@ -668,7 +818,7 @@
   }
 
   .card-title {
-    font-size: 17px;
+    font-size: clamp(15px, 3cqi, 17px);
     font-weight: 600;
     margin: 0;
     color: var(--theme-text);
@@ -677,7 +827,7 @@
   }
 
   .card-subtitle {
-    font-size: 13px;
+    font-size: clamp(11px, 2cqi, 13px);
     color: var(--theme-text-dim);
     margin: 3px 0 0 0;
   }
@@ -692,22 +842,22 @@
   .storage-content {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(8px, 2cqi, 12px);
   }
 
   .action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: clamp(8px, 2cqi, 10px);
     width: 100%;
-    min-height: 52px;
-    padding: 14px 24px;
+    min-height: var(--min-touch-target);
+    padding: clamp(12px, 2.5cqi, 14px) clamp(16px, 3cqi, 24px);
     background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    border-radius: 10px;
+    border-radius: clamp(8px, 2cqi, 10px);
     color: var(--theme-accent);
-    font-size: 15px;
+    font-size: clamp(14px, 2.5cqi, 15px);
     font-weight: 600;
     cursor: pointer;
     transition: all 150ms ease;
@@ -731,7 +881,7 @@
   }
 
   .hint-text {
-    font-size: 13px;
+    font-size: clamp(11px, 2cqi, 13px);
     color: var(--theme-text-dim);
     margin: 0;
     line-height: 1.5;
@@ -744,8 +894,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(28px, 5cqi, 48px);
-    padding: clamp(24px, 5cqi, 48px);
+    gap: clamp(20px, 5cqi, 48px);
+    padding: clamp(16px, 5cqi, 48px);
     max-width: 440px;
     margin: 0 auto;
     width: 100%;
@@ -755,7 +905,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: clamp(14px, 3cqi, 20px);
     text-align: center;
   }
 
@@ -763,23 +913,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
-    border-radius: 24px;
+    width: clamp(64px, 12cqi, 80px);
+    height: clamp(64px, 12cqi, 80px);
+    border-radius: clamp(16px, 4cqi, 24px);
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent) 25%, transparent),
       color-mix(in srgb, var(--theme-accent-strong) 25%, transparent)
     );
     border: 2px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    font-size: 32px;
+    font-size: clamp(26px, 5cqi, 32px);
     color: var(--theme-accent);
     box-shadow: 0 0 40px
       color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .auth-title {
-    font-size: clamp(22px, 4.5cqi, 30px);
+    font-size: clamp(20px, 4.5cqi, 30px);
     font-weight: 700;
     color: var(--theme-text);
     margin: 0;
@@ -788,7 +938,7 @@
   }
 
   .auth-subtitle {
-    font-size: clamp(14px, 2.5cqi, 16px);
+    font-size: clamp(13px, 2.5cqi, 16px);
     color: var(--theme-text-dim);
     margin: 0;
     max-width: 340px;
@@ -798,7 +948,7 @@
   .auth-form-container {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: clamp(18px, 4cqi, 24px);
     width: 100%;
   }
 
@@ -816,9 +966,9 @@
   }
 
   .auth-divider span {
-    padding: 0 16px;
+    padding: 0 clamp(12px, 3cqi, 16px);
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: clamp(12px, 2cqi, 13px);
     font-weight: 500;
   }
 
@@ -875,5 +1025,157 @@
   .action-btn:focus-visible {
     outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
+  }
+
+  /* ========================================
+     PROVIDER DRAWER CONTENT
+     ======================================== */
+  .provider-drawer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 8px 4px 16px;
+  }
+
+  .drawer-provider-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .drawer-provider-icon {
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--provider-bg);
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  .drawer-provider-icon i {
+    font-size: 22px;
+    color: var(--provider-color);
+  }
+
+  .drawer-provider-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .drawer-provider-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+  }
+
+  .drawer-provider-email {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .connected-badge-drawer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(34, 197, 94, 0.15);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #4ade80;
+    flex-shrink: 0;
+  }
+
+  .drawer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .disconnect-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: var(--min-touch-target);
+    padding: 14px 20px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 12px;
+    color: #fca5a5;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .disconnect-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #fecaca;
+  }
+
+  .disconnect-btn:active {
+    transform: scale(0.98);
+  }
+
+  .disconnect-warning {
+    margin: 0;
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .cannot-disconnect-msg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 14px 16px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    line-height: 1.4;
+  }
+
+  .cannot-disconnect-msg i {
+    color: var(--theme-accent, #6366f1);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .cancel-btn {
+    width: 100%;
+    min-height: var(--min-touch-target);
+    padding: 12px 20px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .cancel-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+  }
+
+  .cancel-btn:active {
+    transform: scale(0.98);
   }
 </style>

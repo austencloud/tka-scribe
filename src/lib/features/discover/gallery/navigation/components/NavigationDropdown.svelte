@@ -454,7 +454,7 @@ Responsive behavior:
     max-height: 340px;
     overflow-y: auto;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
     gap: 6px;
   }
 

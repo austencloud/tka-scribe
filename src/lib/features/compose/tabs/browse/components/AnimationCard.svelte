@@ -266,7 +266,7 @@ Features:
 
   .animation-card:hover {
     transform: scale(1.02);
-    box-shadow: 0 14px 52px rgba(0, 0, 0, 0.38);
+    box-shadow: 0 14px 48px rgba(0, 0, 0, 0.38);
     border-color: rgba(255, 255, 255, 0.12);
   }
 

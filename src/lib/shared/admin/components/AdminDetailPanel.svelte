@@ -134,8 +134,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 52px;
-    min-height: 52px;
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
   }
 
   .close-btn:hover {
@@ -223,8 +223,8 @@
     }
 
     .header-icon {
-      width: 52px;
-      height: 52px;
+      width: var(--min-touch-target);
+      height: var(--min-touch-target);
       margin: 0 auto 12px;
       font-size: 22px;
     }

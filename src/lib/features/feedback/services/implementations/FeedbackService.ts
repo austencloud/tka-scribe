@@ -27,6 +27,7 @@ import { firestore, getStorageInstance } from "$lib/shared/auth/firebase";
 import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
 import type { FirebaseStorage } from "firebase/storage";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
+import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 import type { IFeedbackService } from "../contracts/IFeedbackService";
 import type {
   FeedbackItem,
@@ -39,6 +40,12 @@ import type {
 } from "../../domain/models/feedback-models";
 import type { NotificationType } from "../../domain/models/notification-models";
 import { notificationTriggerService } from "./NotificationTriggerService";
+import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
+import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
+import type { MessageAttachment } from "$lib/shared/messaging/domain/models/message-models";
+
+// Admin user ID for feedback conversations (austencloud)
+const ADMIN_USER_ID = "PBp3GSBO6igCKPwJyLZNmVEmamI3";
 
 const COLLECTION_NAME = "feedback";
 
@@ -100,15 +107,30 @@ export class FeedbackService implements IFeedbackService {
       throw new Error("User must be authenticated to submit feedback");
     }
 
+    // Use effective user (respects preview mode for proper attribution)
+    const effectiveUser = userPreviewState.isActive && userPreviewState.data.profile
+      ? {
+          uid: userPreviewState.data.profile.uid,
+          email: userPreviewState.data.profile.email || "",
+          displayName: userPreviewState.data.profile.displayName || "Unknown User",
+          photoURL: userPreviewState.data.profile.photoURL || null,
+        }
+      : {
+          uid: user.uid,
+          email: user.email || "",
+          displayName: user.displayName || user.email || "Anonymous",
+          photoURL: user.photoURL || null,
+        };
+
     // Generate title from description if not provided
     const title = formData.title?.trim() || this.generateTitleFromDescription(formData.description);
 
     const feedbackData = {
-      // User info
-      userId: user.uid,
-      userEmail: user.email || "",
-      userDisplayName: user.displayName || user.email || "Anonymous",
-      userPhotoURL: user.photoURL || null,
+      // User info (use effective user for proper attribution in preview mode)
+      userId: effectiveUser.uid,
+      userEmail: effectiveUser.email,
+      userDisplayName: effectiveUser.displayName,
+      userPhotoURL: effectiveUser.photoURL,
 
       // Feedback content
       type: formData.type,
@@ -151,7 +173,83 @@ export class FeedbackService implements IFeedbackService {
       feedbackType: formData.type,
     }).catch((err) => console.warn("Failed to track feedback XP:", err));
 
+    // Send message to admin with feedback attachment (don't await - non-blocking)
+    // Use effective user ID (respects preview mode)
+    const effectiveUserId = userPreviewState.isActive && userPreviewState.data.profile
+      ? userPreviewState.data.profile.uid
+      : user.uid;
+
+    // Only send if the effective user is not the admin themselves
+    if (effectiveUserId !== ADMIN_USER_ID) {
+      console.log("[FeedbackService] User is not admin, sending feedback message...", {
+        effectiveUserId,
+        authUserId: user.uid,
+        adminId: ADMIN_USER_ID,
+        isPreviewMode: userPreviewState.isActive,
+        feedbackId: docRef.id
+      });
+      this.sendFeedbackMessage(docRef.id, title, formData.type, formData.description)
+        .then(() => console.log("[FeedbackService] ✓ Feedback message sent successfully"))
+        .catch((err) => console.error("[FeedbackService] ✗ Failed to send feedback message:", err));
+    } else {
+      console.log("[FeedbackService] User is admin, skipping feedback message", {
+        effectiveUserId,
+        isPreviewMode: userPreviewState.isActive
+      });
+    }
+
     return docRef.id;
+  }
+
+  /**
+   * Send a message to admin with the feedback as an attachment
+   * Creates or uses existing conversation with admin
+   */
+  private async sendFeedbackMessage(
+    feedbackId: string,
+    title: string,
+    type: FeedbackFormData["type"],
+    description: string
+  ): Promise<void> {
+    try {
+      console.log("[FeedbackService] Getting/creating conversation with admin...");
+
+      // Get or create conversation with admin
+      const { conversation, isNew } = await conversationService.getOrCreateConversation(ADMIN_USER_ID);
+
+      console.log("[FeedbackService] Conversation ready:", {
+        conversationId: conversation.id,
+        isNew,
+        participants: conversation.participants
+      });
+
+      // Create feedback attachment
+      const feedbackAttachment: MessageAttachment = {
+        type: "feedback",
+        url: `/feedback/${feedbackId}`, // Internal link
+        metadata: {
+          feedbackId,
+          feedbackTitle: title,
+          feedbackType: type,
+          feedbackStatus: "new",
+          feedbackDescription: description.slice(0, 200), // Preview only
+        },
+      };
+
+      console.log("[FeedbackService] Sending message with feedback attachment...");
+
+      // Send message with attachment
+      await messagingService.sendMessage({
+        conversationId: conversation.id,
+        content: "[Feedback submitted]",
+        attachments: [feedbackAttachment],
+      });
+
+      console.log("[FeedbackService] ✓ Message sent to conversation:", conversation.id);
+    } catch (error) {
+      console.error("[FeedbackService] ✗ Failed to send feedback message:", error);
+      throw error;
+    }
   }
 
   async loadFeedback(
