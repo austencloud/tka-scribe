@@ -24,10 +24,10 @@ export class AnimationVisibilitySyncService implements IAnimationVisibilitySyncS
 
 	getState(): AnimationVisibilityState {
 		return {
-			grid: this.manager.getVisibility("grid"),
+			grid: this.manager.isGridVisible(),
 			beatNumbers: this.manager.getVisibility("beatNumbers"),
 			props: this.manager.getVisibility("props"),
-			trails: this.manager.getVisibility("trails"),
+			trails: this.manager.isTrailsVisible(),
 			tkaGlyph: this.manager.getVisibility("tkaGlyph"),
 			turnNumbers: this.manager.getVisibility("turnNumbers"),
 			blueMotion: this.manager.getVisibility("blueMotion"),

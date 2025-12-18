@@ -56,11 +56,19 @@
   }
 
   .presets-container {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(72px, clamp(72px, 18cqi, 120px)));
+    display: flex;
     gap: 12px;
     align-items: stretch;
-    justify-content: center;
+    width: 100%;
+    container-type: inline-size;
+    --preset-slot-aspect: 1 / 1;
+  }
+
+  /* On very small containers, allow a slightly wider-than-tall slot */
+  @container (max-width: 360px) {
+    .presets-container {
+      --preset-slot-aspect: 6 / 5;
+    }
   }
 
   .preset-hint {

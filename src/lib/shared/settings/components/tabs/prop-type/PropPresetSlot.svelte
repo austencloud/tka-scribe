@@ -76,8 +76,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    inline-size: 100%;
-    aspect-ratio: 1;
+    flex: 1;
+    min-width: 0;
+    aspect-ratio: var(--preset-slot-aspect, 1 / 1);
+    min-height: var(--min-touch-target, 48px);
     padding: 4px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

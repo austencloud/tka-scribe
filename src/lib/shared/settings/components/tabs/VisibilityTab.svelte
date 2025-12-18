@@ -12,7 +12,11 @@
 -->
 <script lang="ts">
   import { getVisibilityStateManager } from "$lib/shared/pictograph/shared/state/visibility-state.svelte";
-  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import {
+    getAnimationVisibilityManager,
+    type TrailStyle,
+    type GridMode as AnimGridMode,
+  } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
@@ -33,6 +37,10 @@
     MotionColor,
   } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import VisibilityHelpModal from "./visibility/VisibilityHelpModal.svelte";
+  import CyclingButton from "./visibility/CyclingButton.svelte";
+  import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
+  import ImageExportPreview from "./visibility/ImageExportPreview.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   interface Props {
     currentSettings: unknown;
@@ -90,9 +98,9 @@
   let nonRadialVisible = $state(false);
 
   // Animation visibility
-  let animGridVisible = $state(true);
+  let animGridMode = $state<AnimGridMode>("diamond");
   let animBeatNumbersVisible = $state(true);
-  let animTrailsVisible = $state(true);
+  let animTrailStyle = $state<TrailStyle>("subtle");
   let animTkaGlyphVisible = $state(true);
   let animReversalIndicatorsVisible = $state(false);
   let animTurnNumbersVisible = $state(true);
@@ -139,6 +147,19 @@
     },
   };
 
+  // Example sequence data for animation preview (matches pictograph)
+  const exampleSequenceData: SequenceData = {
+    id: "visibility-preview-seq",
+    name: "Preview",
+    word: "A",
+    beats: [
+      {
+        ...examplePictographData,
+        beatNumber: 1,
+      },
+    ],
+  };
+
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
@@ -157,10 +178,10 @@
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
 
     // Load animation visibility
-    animGridVisible = animationVisibilityManager.getVisibility("grid");
+    animGridMode = animationVisibilityManager.getGridMode();
     animBeatNumbersVisible =
       animationVisibilityManager.getVisibility("beatNumbers");
-    animTrailsVisible = animationVisibilityManager.getVisibility("trails");
+    animTrailStyle = animationVisibilityManager.getTrailStyle();
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
     animReversalIndicatorsVisible =
       animationVisibilityManager.getVisibility("reversalIndicators");
@@ -189,10 +210,10 @@
     };
 
     const animationObserver = () => {
-      animGridVisible = animationVisibilityManager.getVisibility("grid");
+      animGridMode = animationVisibilityManager.getGridMode();
       animBeatNumbersVisible =
         animationVisibilityManager.getVisibility("beatNumbers");
-      animTrailsVisible = animationVisibilityManager.getVisibility("trails");
+      animTrailStyle = animationVisibilityManager.getTrailStyle();
       animTkaGlyphVisible =
         animationVisibilityManager.getVisibility("tkaGlyph");
       animReversalIndicatorsVisible =
@@ -271,20 +292,12 @@
   function toggleAnim(key: string) {
     triggerHaptic();
     switch (key) {
-      case "grid":
-        animGridVisible = !animGridVisible;
-        animationVisibilityManager.setVisibility("grid", animGridVisible);
-        break;
       case "beatNumbers":
         animBeatNumbersVisible = !animBeatNumbersVisible;
         animationVisibilityManager.setVisibility(
           "beatNumbers",
           animBeatNumbersVisible
         );
-        break;
-      case "trails":
-        animTrailsVisible = !animTrailsVisible;
-        animationVisibilityManager.setVisibility("trails", animTrailsVisible);
         break;
       case "tka":
         animTkaGlyphVisible = !animTkaGlyphVisible;
@@ -308,6 +321,17 @@
         );
         break;
     }
+  }
+
+  // Handlers for 3-state cycling buttons
+  function handleGridModeChange(newMode: string) {
+    triggerHaptic();
+    animationVisibilityManager.setGridMode(newMode as AnimGridMode);
+  }
+
+  function handleTrailStyleChange(newStyle: string) {
+    triggerHaptic();
+    animationVisibilityManager.setTrailStyle(newStyle as TrailStyle);
   }
 
   // Toggle functions - Image Composition
@@ -484,31 +508,36 @@
 
       <!-- Animation Preview -->
       <div class="preview-frame animation-preview">
-        <div class="animation-placeholder">
-          <i class="fas fa-play-circle"></i>
-          <span>Animation Preview</span>
-        </div>
+        <AnimatorCanvas
+          sequenceData={exampleSequenceData}
+          autoPlay={true}
+          loop={true}
+          showControls={false}
+          visibilityManager={animationVisibilityManager}
+        />
       </div>
 
       <div class="panel-controls">
         <div class="control-group">
           <span class="group-label">Canvas</span>
           <div class="toggle-grid">
-            <button
-              class="toggle-btn"
-              class:active={animGridVisible}
-              onclick={() => toggleAnim("grid")}>Grid</button
-            >
+            <CyclingButton
+              value={animGridMode}
+              options={["none", "diamond", "box"]}
+              onValueChange={handleGridModeChange}
+              ariaLabel="Grid mode"
+            />
             <button
               class="toggle-btn"
               class:active={animBeatNumbersVisible}
               onclick={() => toggleAnim("beatNumbers")}>Beat #s</button
             >
-            <button
-              class="toggle-btn"
-              class:active={animTrailsVisible}
-              onclick={() => toggleAnim("trails")}>Trails</button
-            >
+            <CyclingButton
+              value={animTrailStyle}
+              options={["off", "subtle", "vivid"]}
+              onValueChange={handleTrailStyleChange}
+              ariaLabel="Trail style"
+            />
           </div>
         </div>
 
@@ -557,10 +586,7 @@
 
       <!-- Export Preview -->
       <div class="preview-frame image-preview">
-        <div class="image-placeholder">
-          <i class="fas fa-file-image"></i>
-          <span>Export Preview</span>
-        </div>
+        <ImageExportPreview beatData={examplePictographData} />
       </div>
 
       <div class="panel-controls">

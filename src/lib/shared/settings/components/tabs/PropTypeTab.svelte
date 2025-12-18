@@ -397,12 +397,14 @@
     container-name: prop-type-tab;
     display: flex;
     flex-direction: column;
+    flex: 1;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: clamp(8px, 2cqi, 16px);
     gap: clamp(10px, 1.5cqi, 14px);
     height: 100%;
+    min-height: 0;
     opacity: 0;
     transition: opacity 200ms ease;
   }
@@ -420,6 +422,8 @@
     backdrop-filter: blur(12px);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
+    flex: 1;
+    min-height: 0;
   }
 
   /* Panel Header */
@@ -494,7 +498,10 @@
   /* Prop Display */
   .prop-display {
     display: flex;
-    gap: 12px;
+    gap: clamp(10px, 2cqi, 16px);
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
   }
 
   .prop-display.single {
@@ -507,12 +514,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 20px;
+    gap: clamp(10px, 2cqi, 14px);
+    padding: clamp(16px, 2.5cqi, 24px);
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
-    min-height: 140px;
+    min-height: clamp(140px, 18cqi, 220px);
+    height: 100%;
     cursor: pointer;
     transition: all 0.2s ease;
   }

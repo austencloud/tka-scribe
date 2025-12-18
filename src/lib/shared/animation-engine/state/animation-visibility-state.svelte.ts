@@ -7,12 +7,16 @@
 
 type VisibilityObserver = () => void;
 
+// 3-state enums for multi-option settings
+export type TrailStyle = "off" | "subtle" | "vivid";
+export type GridMode = "none" | "diamond" | "box";
+
 interface AnimationVisibilitySettings {
   // Animation-specific elements (no pictograph equivalent)
-  grid: boolean;
+  gridMode: GridMode; // Grid visualization mode (3-state)
   beatNumbers: boolean; // "Beat 1, 2, 3..." overlay at top-left
   props: boolean; // Show props vs trails-only mode
-  trails: boolean; // Show trails
+  trailStyle: TrailStyle; // Trail visualization style (3-state)
 
   // Shared with pictograph visibility (can sync)
   tkaGlyph: boolean;
@@ -32,10 +36,10 @@ export class AnimationVisibilityStateManager {
     // Load from localStorage or use defaults
     this.settings = this.loadFromStorage() || {
       // Animation-specific defaults
-      grid: true,
+      gridMode: "diamond", // Default to diamond grid
       beatNumbers: true,
       props: true,
-      trails: true,
+      trailStyle: "subtle", // Default to subtle trails
 
       // Shared elements - defaults optimized for animation viewing
       tkaGlyph: true,
@@ -108,9 +112,12 @@ export class AnimationVisibilityStateManager {
   // ============================================================================
 
   /**
-   * Get specific visibility setting
+   * Get specific boolean visibility setting
+   * (For gridMode and trailStyle, use getGridMode() and getTrailStyle())
    */
-  getVisibility(key: keyof AnimationVisibilitySettings): boolean {
+  getVisibility(
+    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle">
+  ): boolean {
     return this.settings[key];
   }
 
@@ -126,9 +133,13 @@ export class AnimationVisibilityStateManager {
   // ============================================================================
 
   /**
-   * Set specific visibility setting
+   * Set specific boolean visibility setting
+   * (For gridMode and trailStyle, use setGridMode() and setTrailStyle())
    */
-  setVisibility(key: keyof AnimationVisibilitySettings, visible: boolean): void {
+  setVisibility(
+    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle">,
+    visible: boolean
+  ): void {
     this.settings[key] = visible;
     this.saveToStorage();
     this.notifyObservers();
@@ -169,10 +180,10 @@ export class AnimationVisibilityStateManager {
    */
   resetToDefaults(): void {
     this.settings = {
-      grid: true,
+      gridMode: "diamond",
       beatNumbers: true,
       props: true,
-      trails: true,
+      trailStyle: "subtle",
       tkaGlyph: true,
       reversalIndicators: false,
       turnNumbers: true,
@@ -181,6 +192,56 @@ export class AnimationVisibilityStateManager {
     };
     this.saveToStorage();
     this.notifyObservers();
+  }
+
+  // ============================================================================
+  // SPECIFIC GETTERS/SETTERS FOR 3-STATE SETTINGS
+  // ============================================================================
+
+  /**
+   * Get current trail style
+   */
+  getTrailStyle(): TrailStyle {
+    return this.settings.trailStyle;
+  }
+
+  /**
+   * Set trail style
+   */
+  setTrailStyle(style: TrailStyle): void {
+    this.settings.trailStyle = style;
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * Get current grid mode
+   */
+  getGridMode(): GridMode {
+    return this.settings.gridMode;
+  }
+
+  /**
+   * Set grid mode
+   */
+  setGridMode(mode: GridMode): void {
+    this.settings.gridMode = mode;
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * Check if trails are visible (any style except 'off')
+   */
+  isTrailsVisible(): boolean {
+    return this.settings.trailStyle !== "off";
+  }
+
+  /**
+   * Check if grid is visible (any mode except 'none')
+   */
+  isGridVisible(): boolean {
+    return this.settings.gridMode !== "none";
   }
 }
 
