@@ -369,8 +369,11 @@ export const featureFlagService = {
   /**
    * Initialize the feature flag service for a user
    * Call this after authentication is confirmed
+   *
+   * @param userId - The user ID to initialize for (null for anonymous)
+   * @param initialRole - The user's role from auth token claims (if available)
    */
-  async initialize(userId: string | null): Promise<void> {
+  async initialize(userId: string | null, initialRole?: UserRole): Promise<void> {
     _state.loading = true;
 
     try {
@@ -378,7 +381,14 @@ export const featureFlagService = {
       this.cleanup();
 
       if (userId) {
-        // Fetch user role and overrides
+        // If we have an initial role from auth token, use it immediately
+        // This prevents race condition with Firestore writes
+        if (initialRole) {
+          _state.userRole = initialRole;
+        }
+
+        // Fetch user role and overrides from Firestore
+        // This will override if Firestore has different data, but initialRole prevents flash of wrong permissions
         await this.fetchUserData(userId);
 
         // Subscribe to real-time updates
@@ -398,8 +408,8 @@ export const featureFlagService = {
       _state.initialized = true;
     } catch (error) {
       console.error("❌ [FeatureFlagService] Initialization failed:", error);
-      // Fall back to defaults
-      _state.userRole = "user";
+      // Fall back to defaults (or initialRole if provided)
+      _state.userRole = initialRole || "user";
       _state.initialized = true;
     } finally {
       _state.loading = false;

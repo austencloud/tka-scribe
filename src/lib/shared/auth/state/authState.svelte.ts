@@ -192,8 +192,9 @@ export function initializeAuthListener() {
           }
 
           // Initialize feature flags for this user
+          // Pass the role from auth token to prevent race condition with Firestore
           try {
-            await featureFlagService.initialize(user.uid);
+            await featureFlagService.initialize(user.uid, role);
           } catch (_error) {
             console.warn("⚠️ [authState] Failed to initialize feature flags:", _error);
           }
