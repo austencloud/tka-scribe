@@ -29,7 +29,7 @@ export const transformHelpContent: TransformHelpItem[] = [
     id: "flip",
     icon: "fa-up-down",
     name: "Flip",
-    color: "#14b8a6",
+    color: "#6366f1",
     shortDesc: "Flip up & down",
     fullDesc:
       "Flips your sequence vertically, as if mirrored across the horizontal center line. All movements that go up (north) now go down (south), and vice versa. Clockwise turns become counter-clockwise. Great for creating vertical variations of your sequences.",
@@ -38,7 +38,7 @@ export const transformHelpContent: TransformHelpItem[] = [
     id: "invert",
     icon: "fa-repeat",
     name: "Invert",
-    color: "#06b6d4",
+    color: "#eab308",
     shortDesc: "Flip rotation & motion type",
     fullDesc:
       "Inverts all rotation directions and motion types in your sequence. Every clockwise turn becomes counter-clockwise (and vice versa), and every PRO motion becomes ANTI (and vice versa). The movement paths stay the same, but the way you spin changes. This creates new letters since rotation direction and motion type are part of what defines each letter.",

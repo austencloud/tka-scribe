@@ -4,6 +4,7 @@ import type {
 } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 /**
  * Sequence Transformation Service
  *
@@ -22,7 +23,7 @@ import type { StartPositionData } from "../../domain/models/StartPositionData";
 // isStartPosition not used but isBeat is exported from same module
 import { isBeat } from "../../domain/type-guards/pictograph-type-guards";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionType, MotionColor, RotationDirection, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { resolve } from "$lib/shared/inversify/di";
 import { inject, injectable } from "inversify";
@@ -38,7 +39,9 @@ export class SequenceTransformationService
 {
   constructor(
     @inject(TYPES.IMotionQueryHandler)
-    private readonly motionQueryHandler: IMotionQueryHandler
+    private readonly motionQueryHandler: IMotionQueryHandler,
+    @inject(TYPES.IOrientationCalculator)
+    private readonly orientationCalculator: IOrientationCalculator
   ) {}
 
   /**
@@ -535,20 +538,25 @@ export class SequenceTransformationService
     }
 
     // Also invert the start position if it exists
-    const invertedStartPosition = sequence.startPosition
+    // Note: startPosition can be BeatData | StartPositionData for legacy compatibility
+    const invertedStartPosition = sequence.startPosition && !isBeat(sequence.startPosition)
       ? this.invertStartPosition(sequence.startPosition)
-      : undefined;
-    const invertedStartingPositionBeat = sequence.startingPositionBeat
+      : sequence.startPosition; // Keep as-is if it's BeatData (legacy)
+    const invertedStartingPositionBeat = sequence.startingPositionBeat && !isBeat(sequence.startingPositionBeat)
       ? this.invertStartPosition(sequence.startingPositionBeat)
-      : undefined;
+      : sequence.startingPositionBeat; // Keep as-is if it's BeatData (legacy)
 
-    return updateSequenceData(sequence, {
+    // Create sequence with inverted motions
+    const invertedSequence = updateSequenceData(sequence, {
       beats: invertedBeats,
       ...(invertedStartPosition && { startPosition: invertedStartPosition }),
       ...(invertedStartingPositionBeat && {
         startingPositionBeat: invertedStartingPositionBeat,
       }),
     });
+
+    // Recalculate all prop orientations to match the new motions
+    return this.recalculateAllOrientations(invertedSequence);
   }
 
   /**
@@ -634,32 +642,51 @@ export class SequenceTransformationService
   }
 
   /**
-   * Invert a start position's rotation directions and motion types (no letter lookup needed)
+   * Invert a start position's rotation directions and motion types
+   * Also recalculates endOrientation based on the new motion type and rotation
    */
   private invertStartPosition(startPos: StartPositionData): StartPositionData {
     const invertedMotions = { ...startPos.motions };
 
-    // Invert blue motion
+    // Invert blue motion and recalculate endOrientation
     if (startPos.motions[MotionColor.BLUE]) {
       const blueMotion = startPos.motions[MotionColor.BLUE];
-      invertedMotions[MotionColor.BLUE] = {
+      const invertedBlueMotion = createMotionData({
         ...blueMotion,
         motionType: this.invertMotionType(blueMotion.motionType),
         rotationDirection: this.reverseRotationDirection(
           blueMotion.rotationDirection
         ),
+      });
+      // Recalculate endOrientation based on inverted motion
+      const newEndOrientation = this.orientationCalculator.calculateEndOrientation(
+        invertedBlueMotion,
+        MotionColor.BLUE
+      );
+      invertedMotions[MotionColor.BLUE] = {
+        ...invertedBlueMotion,
+        endOrientation: newEndOrientation,
       };
     }
 
-    // Invert red motion
+    // Invert red motion and recalculate endOrientation
     if (startPos.motions[MotionColor.RED]) {
       const redMotion = startPos.motions[MotionColor.RED];
-      invertedMotions[MotionColor.RED] = {
+      const invertedRedMotion = createMotionData({
         ...redMotion,
         motionType: this.invertMotionType(redMotion.motionType),
         rotationDirection: this.reverseRotationDirection(
           redMotion.rotationDirection
         ),
+      });
+      // Recalculate endOrientation based on inverted motion
+      const newEndOrientation = this.orientationCalculator.calculateEndOrientation(
+        invertedRedMotion,
+        MotionColor.RED
+      );
+      invertedMotions[MotionColor.RED] = {
+        ...invertedRedMotion,
+        endOrientation: newEndOrientation,
       };
     }
 
@@ -667,6 +694,89 @@ export class SequenceTransformationService
       ...startPos,
       motions: invertedMotions,
     });
+  }
+
+  /**
+   * Recalculate all prop orientations through the entire sequence
+   * Uses the start position orientations as the baseline and propagates through all beats
+   */
+  private recalculateAllOrientations(sequence: SequenceData): SequenceData {
+    if (sequence.beats.length === 0 || !sequence.startPosition) {
+      return sequence;
+    }
+
+    const startPosition = sequence.startPosition;
+    let updatedBeats = [...sequence.beats];
+
+    // Recalculate orientations for blue prop
+    if (startPosition.motions[MotionColor.BLUE]) {
+      const blueStartOrientation = startPosition.motions[MotionColor.BLUE].endOrientation;
+      updatedBeats = this.propagateOrientationsForColor(
+        updatedBeats,
+        MotionColor.BLUE,
+        blueStartOrientation
+      );
+    }
+
+    // Recalculate orientations for red prop
+    if (startPosition.motions[MotionColor.RED]) {
+      const redStartOrientation = startPosition.motions[MotionColor.RED].endOrientation;
+      updatedBeats = this.propagateOrientationsForColor(
+        updatedBeats,
+        MotionColor.RED,
+        redStartOrientation
+      );
+    }
+
+    return updateSequenceData(sequence, { beats: updatedBeats });
+  }
+
+  /**
+   * Propagate orientations for a single color through all beats
+   */
+  private propagateOrientationsForColor(
+    beats: BeatData[],
+    color: MotionColor,
+    initialOrientation: Orientation
+  ): BeatData[] {
+    const updatedBeats = [...beats];
+    let previousEndOrientation: Orientation = initialOrientation;
+
+    for (let i = 0; i < updatedBeats.length; i++) {
+      const beat = updatedBeats[i];
+      if (!beat?.motions) continue;
+
+      const motion = beat.motions[color];
+      if (!motion) continue;
+
+      // Calculate new end orientation based on this beat's motion
+      const tempMotionData = createMotionData({
+        ...motion,
+        startOrientation: previousEndOrientation,
+      });
+
+      const newEndOrientation = this.orientationCalculator.calculateEndOrientation(
+        tempMotionData,
+        color
+      );
+
+      // Update this beat with correct orientations
+      updatedBeats[i] = {
+        ...beat,
+        motions: {
+          ...beat.motions,
+          [color]: {
+            ...motion,
+            startOrientation: previousEndOrientation,
+            endOrientation: newEndOrientation,
+          },
+        },
+      };
+
+      previousEndOrientation = newEndOrientation;
+    }
+
+    return updatedBeats;
   }
 
   /**

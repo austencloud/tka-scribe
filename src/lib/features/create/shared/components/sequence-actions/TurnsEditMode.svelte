@@ -30,6 +30,7 @@
     onTurnsChange,
     onRotationChange,
   }: Props = $props();
+
 </script>
 
 {#if !hasSelection}
@@ -87,6 +88,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 16px;
   }
 
   .prop-row {

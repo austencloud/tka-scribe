@@ -277,89 +277,115 @@
     }
   }
 
+  /* ===== RAINBOW COLORED GLASS BACKGROUNDS ===== */
+
   /* Mirror - Purple */
   .grid-btn.mirror {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0.08) 100%);
-    border: 1px solid rgba(168, 85, 247, 0.35);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.05));
+    border: 1px solid rgba(168, 85, 247, 0.3);
+  }
+  .grid-btn.mirror:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(168, 85, 247, 0.1));
+    border-color: rgba(168, 85, 247, 0.5);
+    box-shadow: 0 4px 16px rgba(168, 85, 247, 0.2);
   }
   .grid-btn.mirror .btn-icon { background: #a855f7; color: white; }
-  .grid-btn.mirror:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(168, 85, 247, 0.15) 100%);
-    border-color: rgba(168, 85, 247, 0.5);
-    box-shadow: 0 4px 16px rgba(168, 85, 247, 0.25);
+
+  /* Flip - Indigo */
+  .grid-btn.flip {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
+    border: 1px solid rgba(99, 102, 241, 0.3);
   }
+  .grid-btn.flip:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.1));
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+  }
+  .grid-btn.flip .btn-icon { background: #6366f1; color: white; }
 
   /* Rotate - Orange */
   .grid-btn.rotate {
-    background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(251, 146, 60, 0.08) 100%);
-    border: 1px solid rgba(251, 146, 60, 0.35);
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(251, 146, 60, 0.05));
+    border: 1px solid rgba(251, 146, 60, 0.3);
+  }
+  .grid-btn.rotate:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.25), rgba(251, 146, 60, 0.1));
+    border-color: rgba(251, 146, 60, 0.5);
+    box-shadow: 0 4px 16px rgba(251, 146, 60, 0.2);
   }
   .grid-btn.rotate .btn-icon { background: #fb923c; color: white; }
-  .grid-btn.rotate:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(251, 146, 60, 0.15) 100%);
-    border-color: rgba(251, 146, 60, 0.5);
-    box-shadow: 0 4px 16px rgba(251, 146, 60, 0.25);
-  }
 
   /* Swap - Green */
   .grid-btn.swap {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.08) 100%);
-    border: 1px solid rgba(34, 197, 94, 0.35);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+  .grid-btn.swap:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(34, 197, 94, 0.1));
+    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
   }
   .grid-btn.swap .btn-icon { background: #22c55e; color: white; }
-  .grid-btn.swap:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.15) 100%);
-    border-color: rgba(34, 197, 94, 0.5);
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+
+  /* Invert - Yellow */
+  .grid-btn.invert {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.05));
+    border: 1px solid rgba(234, 179, 8, 0.3);
   }
+  .grid-btn.invert:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(234, 179, 8, 0.1));
+    border-color: rgba(234, 179, 8, 0.5);
+    box-shadow: 0 4px 16px rgba(234, 179, 8, 0.2);
+  }
+  .grid-btn.invert .btn-icon { background: #eab308; color: white; }
 
   /* Rewind - Rose */
   .grid-btn.rewind {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(244, 63, 94, 0.08) 100%);
-    border: 1px solid rgba(244, 63, 94, 0.35);
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(244, 63, 94, 0.05));
+    border: 1px solid rgba(244, 63, 94, 0.3);
+  }
+  .grid-btn.rewind:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.25), rgba(244, 63, 94, 0.1));
+    border-color: rgba(244, 63, 94, 0.5);
+    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.2);
   }
   .grid-btn.rewind .btn-icon { background: #f43f5e; color: white; }
-  .grid-btn.rewind:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.3) 0%, rgba(244, 63, 94, 0.15) 100%);
-    border-color: rgba(244, 63, 94, 0.5);
-    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.25);
-  }
 
   /* Preview - Cyan */
   .grid-btn.preview {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(6, 182, 212, 0.08) 100%);
-    border: 1px solid rgba(6, 182, 212, 0.35);
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05));
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+  .grid-btn.preview:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(6, 182, 212, 0.1));
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
   }
   .grid-btn.preview .btn-icon { background: #06b6d4; color: white; }
-  .grid-btn.preview:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(6, 182, 212, 0.15) 100%);
-    border-color: rgba(6, 182, 212, 0.5);
-    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.25);
-  }
 
-  /* Turns - Teal */
+  /* Turn Pattern - Teal */
   .grid-btn.turns {
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(20, 184, 166, 0.08) 100%);
-    border: 1px solid rgba(20, 184, 166, 0.35);
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(20, 184, 166, 0.05));
+    border: 1px solid rgba(20, 184, 166, 0.3);
+  }
+  .grid-btn.turns:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25), rgba(20, 184, 166, 0.1));
+    border-color: rgba(20, 184, 166, 0.5);
+    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.2);
   }
   .grid-btn.turns .btn-icon { background: #14b8a6; color: white; }
-  .grid-btn.turns:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.3) 0%, rgba(20, 184, 166, 0.15) 100%);
-    border-color: rgba(20, 184, 166, 0.5);
-    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.25);
-  }
 
   /* Edit - Blue */
   .grid-btn.edit {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.08) 100%);
-    border: 1px solid rgba(59, 130, 246, 0.35);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+  .grid-btn.edit:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.1));
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
   }
   .grid-btn.edit .btn-icon { background: #3b82f6; color: white; }
-  .grid-btn.edit:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0.15) 100%);
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
-  }
 
   /* Extra narrow: Reduce gaps */
   @media (max-width: 360px) {

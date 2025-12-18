@@ -788,6 +788,12 @@
     // THEN: Mark as selected (which triggers the crossfade via effect)
     hasSelectedCreationMethod = true;
     creationMethodPersistence.markMethodSelected();
+
+    // Explicitly hide the onboarding selector to ensure tabs remain visible
+    navigationState.setCreationMethodSelectorVisible(false);
+
+    // Reset the choice step flag (no longer needed after selection)
+    navigationState.setCreateTutorialOnChoiceStep(false);
   }
 
   async function handleClearSequence() {

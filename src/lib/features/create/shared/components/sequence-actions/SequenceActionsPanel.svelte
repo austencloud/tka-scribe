@@ -19,6 +19,10 @@
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
   import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
+  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
+  import { isTesterOrAbove } from "$lib/shared/auth/domain/models/UserRole";
+  import { toast } from "$lib/shared/toast/state/toast-state.svelte";
+  import { areSequencesEqual } from "../../utils/sequence-comparison";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
   import SequencePreviewDialog from "./SequencePreviewDialog.svelte";
@@ -59,6 +63,9 @@
     navigationState.currentCreateMode === "constructor"
   );
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
+
+  // Check if user can see inspector (admin or tester only)
+  const canViewInspector = $derived(isTesterOrAbove(featureFlagService.effectiveRole));
 
   // Panel height for drawer content
   // On desktop: only used for reference (drawer uses CSS top/bottom positioning)
@@ -367,6 +374,17 @@
     const constructTabState = ctx.constructTabState;
     if (!constructTabState?.sequenceState) return;
 
+    const currentConstructorSequence = constructTabState.sequenceState.currentSequence;
+
+    // Check if sequences are identical - if so, skip modal and just navigate
+    if (areSequencesEqual(sequence, currentConstructorSequence)) {
+      toast.info("Sequence already loaded in Constructor");
+      handleClose();
+      navigationState.setActiveTab("constructor");
+      return;
+    }
+
+    // Different sequences - show modal if constructor has content
     if (constructTabState.sequenceState.hasSequence()) {
       pendingSequenceTransfer = sequence;
       showConfirmDialog = true;
@@ -399,7 +417,11 @@
 
     constructTabState.syncPickerStateWithSequence?.();
 
-    // Close panel and switch tab AFTER state is already set
+    // CRITICAL: Save to persistence BEFORE switching tabs!
+    // Otherwise restoreStateForTab will load the OLD persisted sequence and overwrite our new one
+    await constructTabState.sequenceState.saveCurrentState("constructor");
+
+    // Close panel and switch tab AFTER state is saved
     handleClose();
     navigationState.setActiveTab("constructor");
   }
@@ -412,6 +434,25 @@
   function handleBeatSelect(beatNumber: number) {
     hapticService?.trigger("selection");
     activeSequenceState.selectBeat(beatNumber);
+  }
+
+  function handleBeatDelete() {
+    if (selectedBeatNumber === null || !beatOperationsService) return;
+    hapticService?.trigger("warning");
+
+    // For start position (0), clear the start position
+    if (selectedBeatNumber === 0) {
+      activeSequenceState.setStartPosition(null);
+      activeSequenceState.clearSelection();
+      return;
+    }
+
+    // For regular beats, remove the beat
+    const beatIndex = selectedBeatNumber - 1;
+    beatOperationsService.removeBeat(beatIndex, CreateModuleState);
+
+    // Clear selection after deletion
+    activeSequenceState.clearSelection();
   }
 </script>
 
@@ -428,6 +469,18 @@
   onClose={handleClose}
 >
   <div class="editor-panel">
+    <!-- Delete button for turns mode - positioned at top right of entire panel -->
+    {#if currentMode === "turns" && hasSelection}
+      <button
+        class="panel-delete-button"
+        onclick={handleBeatDelete}
+        aria-label={isStartPositionSelected ? "Delete start position" : "Delete selected beat"}
+        title={isStartPositionSelected ? "Delete start position" : "Delete this beat"}
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    {/if}
+
     <!-- Compact header: mode toggle + beat label + actions in one row -->
     <div class="compact-header">
       <div class="mode-toggle">
@@ -454,7 +507,7 @@
       {/if}
 
       <div class="header-actions">
-        {#if currentMode === "turns" && hasSelection && selectedBeatData}
+        {#if currentMode === "turns" && hasSelection && selectedBeatData && canViewInspector}
           <button
             class="icon-btn inspect"
             onclick={() => (showInspectModal = true)}
@@ -573,11 +626,13 @@
   onApply={handleTurnPatternApply}
 />
 
-<PictographInspectModal
-  show={showInspectModal}
-  beatData={selectedBeatData}
-  onClose={() => (showInspectModal = false)}
-/>
+{#if canViewInspector}
+  <PictographInspectModal
+    show={showInspectModal}
+    beatData={selectedBeatData}
+    onClose={() => (showInspectModal = false)}
+  />
+{/if}
 
 <style>
   .editor-panel {
@@ -585,6 +640,41 @@
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    position: relative;
+  }
+
+  .panel-delete-button {
+    position: absolute;
+    top: 60px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    z-index: 10;
+
+    background: linear-gradient(135deg, var(--semantic-warning, #ff9800) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%);
+    border: 1px solid color-mix(in srgb, var(--semantic-warning, #ff9800) 30%, transparent);
+    color: white;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-warning, #ff9800) 40%, transparent);
+  }
+
+  .panel-delete-button:hover {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, transparent);
+    transform: scale(1.05);
+  }
+
+  .panel-delete-button:active {
+    transform: scale(0.95);
+  }
+
+  .panel-delete-button i {
+    font-size: 1.1rem;
   }
 
   /* Compact header - saves ~60px vs separate header rows */
@@ -764,8 +854,8 @@
   .preview-pictograph {
     width: 100%;
     height: 100%;
-    max-width: 280px;
-    max-height: 280px;
+    max-width: 400px;
+    max-height: 400px;
     aspect-ratio: 1;
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -789,8 +879,13 @@
 
   @media (prefers-reduced-motion: reduce) {
     .mode-btn,
-    .icon-btn {
+    .icon-btn,
+    .panel-delete-button {
       transition: none;
+    }
+    .panel-delete-button:hover,
+    .panel-delete-button:active {
+      transform: none;
     }
   }
 </style>
