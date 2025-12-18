@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { IFeedbackSubtaskService } from "../contracts/IFeedbackSubtaskService";
 import type { FeedbackSubtask, SubtaskStatus } from "../../domain/models/feedback-models";
 
@@ -20,6 +20,7 @@ export class FeedbackSubtaskService implements IFeedbackSubtaskService {
     feedbackId: string,
     subtask: Omit<FeedbackSubtask, "id">
   ): Promise<FeedbackSubtask> {
+    const firestore = await getFirestoreInstance();
     const newSubtask: FeedbackSubtask = {
       ...subtask,
       id: this.generateSubtaskId(),

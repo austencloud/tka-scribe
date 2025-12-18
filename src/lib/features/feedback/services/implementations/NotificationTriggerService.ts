@@ -50,7 +50,7 @@ import {
   limit,
   Timestamp,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type {
   NotificationType,
   FeedbackNotification,
@@ -132,6 +132,7 @@ export class NotificationTriggerService {
     type: NotificationType
   ): Promise<boolean> {
     try {
+      const firestore = await getFirestoreInstance();
       const cutoffTime = new Date(Date.now() - DEDUP_WINDOW_MS);
       const userNotificationsRef = collection(
         firestore,
@@ -352,6 +353,7 @@ export class NotificationTriggerService {
     userId: string,
     notification: Omit<FeedbackNotification | SequenceNotification | SocialNotification | MessageNotification | SystemNotification, "id">
   ): Promise<string> {
+    const firestore = await getFirestoreInstance();
     const userNotificationsRef = collection(
       firestore,
       USERS_COLLECTION,

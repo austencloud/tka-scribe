@@ -24,7 +24,7 @@ import {
 	type Unsubscribe,
 	type DocumentData,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
@@ -140,6 +140,7 @@ export class LibraryService implements ILibraryService {
 	// ============================================================
 
 	async saveSequence(sequence: SequenceData): Promise<LibrarySequence> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const sequenceId = sequence.id || crypto.randomUUID();
 
@@ -230,6 +231,7 @@ export class LibraryService implements ILibraryService {
 	}
 
 	async getSequence(sequenceId: string): Promise<LibrarySequence | null> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
 		const docSnap = await getDoc(docRef);
@@ -245,6 +247,7 @@ export class LibraryService implements ILibraryService {
 		sequenceId: string,
 		updates: Partial<LibrarySequence>
 	): Promise<LibrarySequence> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
 
@@ -281,6 +284,7 @@ export class LibraryService implements ILibraryService {
 	}
 
 	async deleteSequence(sequenceId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const existing = await this.getSequence(sequenceId);
 
@@ -320,6 +324,7 @@ export class LibraryService implements ILibraryService {
 		userId: string,
 		options?: LibraryQueryOptions
 	): Promise<LibrarySequence[]> {
+		const firestore = await getFirestoreInstance();
 		const sequencesRef = collection(firestore, getUserSequencesPath(userId));
 
 		// Build query
@@ -422,29 +427,39 @@ export class LibraryService implements ILibraryService {
 		options?: LibraryQueryOptions
 	): () => void {
 		const userId = this.getUserId();
-		const sequencesRef = collection(firestore, getUserSequencesPath(userId));
+		let unsubscribe: Unsubscribe | null = null;
 
-		let q = query(sequencesRef, orderBy("updatedAt", "desc"));
+		// Initialize subscription asynchronously
+		getFirestoreInstance().then((firestore) => {
+			const sequencesRef = collection(firestore, getUserSequencesPath(userId));
 
-		if (options?.limit) {
-			q = query(q, firestoreLimit(options.limit));
-		}
+			let q = query(sequencesRef, orderBy("updatedAt", "desc"));
 
-		const unsubscribe: Unsubscribe = onSnapshot(
-			q,
-			(snapshot) => {
-				const sequences: LibrarySequence[] = [];
-				snapshot.forEach((doc) => {
-					sequences.push(this.mapDocToLibrarySequence(doc.data(), doc.id));
-				});
-				callback(sequences);
-			},
-			(error) => {
-				console.error("LibraryService: Subscription error", error);
+			if (options?.limit) {
+				q = query(q, firestoreLimit(options.limit));
 			}
-		);
 
-		return unsubscribe;
+			unsubscribe = onSnapshot(
+				q,
+				(snapshot) => {
+					const sequences: LibrarySequence[] = [];
+					snapshot.forEach((doc) => {
+						sequences.push(this.mapDocToLibrarySequence(doc.data(), doc.id));
+					});
+					callback(sequences);
+				},
+				(error) => {
+					console.error("LibraryService: Subscription error", error);
+				}
+			);
+		});
+
+		// Return cleanup function
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
+			}
+		};
 	}
 
 	subscribeToSequence(
@@ -452,23 +467,33 @@ export class LibraryService implements ILibraryService {
 		callback: (sequence: LibrarySequence | null) => void
 	): () => void {
 		const userId = this.getUserId();
-		const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
+		let unsubscribe: Unsubscribe | null = null;
 
-		const unsubscribe: Unsubscribe = onSnapshot(
-			docRef,
-			(docSnap) => {
-				if (docSnap.exists()) {
-					callback(this.mapDocToLibrarySequence(docSnap.data(), sequenceId));
-				} else {
-					callback(null);
+		// Initialize subscription asynchronously
+		getFirestoreInstance().then((firestore) => {
+			const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
+
+			unsubscribe = onSnapshot(
+				docRef,
+				(docSnap) => {
+					if (docSnap.exists()) {
+						callback(this.mapDocToLibrarySequence(docSnap.data(), sequenceId));
+					} else {
+						callback(null);
+					}
+				},
+				(error) => {
+					console.error("LibraryService: Sequence subscription error", error);
 				}
-			},
-			(error) => {
-				console.error("LibraryService: Sequence subscription error", error);
-			}
-		);
+			);
+		});
 
-		return unsubscribe;
+		// Return cleanup function
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
+			}
+		};
 	}
 
 	// ============================================================
@@ -499,6 +524,7 @@ export class LibraryService implements ILibraryService {
 	// ============================================================
 
 	async deleteSequences(sequenceIds: string[]): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const batch = writeBatch(firestore);
 
@@ -535,6 +561,7 @@ export class LibraryService implements ILibraryService {
 		sequenceIds: string[],
 		collectionId: string
 	): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const batch = writeBatch(firestore);
 
@@ -555,6 +582,7 @@ export class LibraryService implements ILibraryService {
 		sequenceIds: string[],
 		tagIds: string[]
 	): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const batch = writeBatch(firestore);
 
@@ -611,6 +639,7 @@ export class LibraryService implements ILibraryService {
 		sequence: LibrarySequence,
 		userId: string
 	): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		try {
 			// Get user display info for denormalization
 			const userDoc = await getDoc(doc(firestore, `users/${userId}`));
@@ -649,6 +678,7 @@ export class LibraryService implements ILibraryService {
 	 * Remove a sequence from the public index
 	 */
 	private async removeFromPublicIndex(sequenceId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		try {
 			await deleteDoc(doc(firestore, getPublicSequencePath(sequenceId)));
 		} catch (error) {

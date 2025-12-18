@@ -15,7 +15,7 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import type {
   IAuditLogService,
   AuditLogEntry,
@@ -33,6 +33,7 @@ export class AuditLogService implements IAuditLogService {
     affectedUserId?: string,
     details?: Record<string, unknown>
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     if (!firestore || !auth.currentUser) {
       return;
     }
@@ -57,6 +58,7 @@ export class AuditLogService implements IAuditLogService {
    * Get recent audit log entries
    */
   async getRecentActions(limitCount: number): Promise<AuditLogEntry[]> {
+    const firestore = await getFirestoreInstance();
     if (!firestore) {
       return [];
     }
@@ -98,6 +100,7 @@ export class AuditLogService implements IAuditLogService {
    * Get audit log entries for a specific user
    */
   async getUserActions(userId: string, limitCount: number): Promise<AuditLogEntry[]> {
+    const firestore = await getFirestoreInstance();
     if (!firestore) {
       return [];
     }
@@ -143,6 +146,7 @@ export class AuditLogService implements IAuditLogService {
     actionType: AuditActionType,
     limitCount: number
   ): Promise<AuditLogEntry[]> {
+    const firestore = await getFirestoreInstance();
     if (!firestore) {
       return [];
     }

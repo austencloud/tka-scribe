@@ -15,7 +15,7 @@ import {
   serverTimestamp,
   type Unsubscribe,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import type {
   IOnboardingPersistenceService,
@@ -48,11 +48,12 @@ export class OnboardingPersistenceService
   /**
    * Get the Firestore document reference for onboarding status
    */
-  private getOnboardingDocRef() {
+  private async getOnboardingDocRef() {
     const userId = authState.effectiveUserId;
     if (!userId) {
       return null;
     }
+    const firestore = await getFirestoreInstance();
     return doc(firestore, `users/${userId}/onboarding/status`);
   }
 
@@ -152,7 +153,7 @@ export class OnboardingPersistenceService
    * Load onboarding status from Firebase or localStorage
    */
   async loadStatus(): Promise<OnboardingStatus> {
-    const docRef = this.getOnboardingDocRef();
+    const docRef = await this.getOnboardingDocRef();
 
     // Not authenticated - use localStorage
     if (!docRef) {
@@ -205,7 +206,7 @@ export class OnboardingPersistenceService
     this.saveToLocalStorage(status);
     this.cachedStatus = status;
 
-    const docRef = this.getOnboardingDocRef();
+    const docRef = await this.getOnboardingDocRef();
     if (!docRef) {
       // Not authenticated - localStorage only
       return;
@@ -319,8 +320,8 @@ export class OnboardingPersistenceService
   /**
    * Subscribe to real-time updates
    */
-  subscribe(callback: (status: OnboardingStatus) => void): () => void {
-    const docRef = this.getOnboardingDocRef();
+  async subscribe(callback: (status: OnboardingStatus) => void): Promise<() => void> {
+    const docRef = await this.getOnboardingDocRef();
     if (!docRef) {
       // Not authenticated - just return current status
       callback(this.cachedStatus || this.loadFromLocalStorage());
@@ -368,7 +369,7 @@ export class OnboardingPersistenceService
    * Sync localStorage to Firebase when user authenticates
    */
   async syncLocalToCloud(): Promise<void> {
-    const docRef = this.getOnboardingDocRef();
+    const docRef = await this.getOnboardingDocRef();
     if (!docRef) return;
 
     const localStatus = this.loadFromLocalStorage();

@@ -17,7 +17,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { db } from "$lib/shared/persistence/database/TKADatabase";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { DailyChallenge } from "$lib/shared/gamification/domain/models/achievement-models";
@@ -43,6 +43,7 @@ export class AdminChallengeService implements IAdminChallengeService {
     startDate: Date,
     endDate: Date
   ): Promise<ChallengeScheduleEntry[]> {
+    const firestore = await getFirestoreInstance();
     // Build date strings for the range
     const startDateStr = startDate.toISOString().split("T")[0] ?? "";
     const endDateStr = endDate.toISOString().split("T")[0] ?? "";
@@ -91,6 +92,7 @@ export class AdminChallengeService implements IAdminChallengeService {
    * Create a new daily challenge
    */
   async createChallenge(formData: ChallengeFormData): Promise<DailyChallenge> {
+    const firestore = await getFirestoreInstance();
     const challengeId = `challenge_${formData.date}`;
 
     // Create end-of-day expiration
@@ -140,6 +142,7 @@ export class AdminChallengeService implements IAdminChallengeService {
     challengeId: string,
     formData: Partial<ChallengeFormData>
   ): Promise<DailyChallenge> {
+    const firestore = await getFirestoreInstance();
     const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
     const challengeDoc = await getDoc(challengeDocRef);
 
@@ -179,6 +182,7 @@ export class AdminChallengeService implements IAdminChallengeService {
    * Delete a daily challenge
    */
   async deleteChallenge(challengeId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
     await deleteDoc(challengeDocRef);
 
@@ -202,6 +206,7 @@ export class AdminChallengeService implements IAdminChallengeService {
    * Get a specific challenge by date
    */
   async getChallengeByDate(date: string): Promise<DailyChallenge | null> {
+    const firestore = await getFirestoreInstance();
     const challengeId = `challenge_${date}`;
     const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
 

@@ -12,7 +12,7 @@
  */
 
 import { injectable } from "inversify";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import {
   collection,
   doc,
@@ -177,6 +177,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   // ============================================================================
 
   async saveVideo(video: CollaborativeVideo): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
 
     // Ensure current user is the creator
@@ -191,6 +192,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async getVideo(videoId: string): Promise<CollaborativeVideo | null> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
     const docSnap = await getDoc(docRef);
 
@@ -202,6 +204,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async deleteVideo(videoId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const video = await this.getVideo(videoId);
 
@@ -223,6 +226,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
     videoId: string,
     updates: Partial<Pick<CollaborativeVideo, "visibility" | "description">>
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const video = await this.getVideo(videoId);
 
@@ -253,6 +257,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
     userId: string,
     displayName?: string
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const currentUserId = this.getUserId();
     const video = await this.getVideo(videoId);
 
@@ -301,6 +306,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async acceptInvite(videoId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userInfo = this.getUserInfo();
     const video = await this.getVideo(videoId);
 
@@ -359,6 +365,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async declineInvite(videoId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const video = await this.getVideo(videoId);
 
@@ -398,6 +405,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async removeCollaborator(videoId: string, userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const currentUserId = this.getUserId();
     const video = await this.getVideo(videoId);
 
@@ -441,6 +449,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   // ============================================================================
 
   async getVideosForSequence(sequenceId: string): Promise<CollaborativeVideo[]> {
+    const firestore = await getFirestoreInstance();
     const collectionRef = collection(firestore, VIDEOS_COLLECTION);
     const q = query(
       collectionRef,
@@ -453,6 +462,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async getUserVideoLibrary(): Promise<UserVideoLibrary> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionRef = collection(firestore, VIDEOS_COLLECTION);
 
@@ -488,6 +498,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async getPendingInvites(): Promise<CollaborativeVideo[]> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionRef = collection(firestore, VIDEOS_COLLECTION);
 
@@ -501,6 +512,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   }
 
   async getPublicVideos(limit = 50): Promise<CollaborativeVideo[]> {
+    const firestore = await getFirestoreInstance();
     const collectionRef = collection(firestore, VIDEOS_COLLECTION);
 
     const q = query(

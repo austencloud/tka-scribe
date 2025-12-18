@@ -13,7 +13,7 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { AdminNotification } from "$lib/features/feedback/domain/models/notification-models";
 import { getPreferenceKeyForType } from "$lib/features/feedback/domain/models/notification-models";
 import { notificationPreferencesService } from "$lib/features/feedback/services/implementations/NotificationPreferencesService";
@@ -54,6 +54,7 @@ export class AdminNotificationService {
    * Get all admin user IDs
    */
   private async getAdminUserIds(): Promise<string[]> {
+    const firestore = await getFirestoreInstance();
     const usersRef = collection(firestore, USERS_COLLECTION);
 
     // Query for users with admin role or isAdmin flag
@@ -103,6 +104,7 @@ export class AdminNotificationService {
       newUserDisplayName,
     };
 
+    const firestore = await getFirestoreInstance();
     const userNotificationsRef = collection(
       firestore,
       USERS_COLLECTION,

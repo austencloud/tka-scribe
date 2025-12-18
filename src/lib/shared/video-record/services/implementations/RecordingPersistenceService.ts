@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import {
   collection,
   doc,
@@ -92,6 +92,7 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   }
 
   async saveRecording(recording: RecordingMetadata): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionPath = this.getRecordingsCollectionPath(userId);
     const docRef = doc(firestore, collectionPath, recording.id);
@@ -126,6 +127,7 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   }
 
   async getRecording(recordingId: string): Promise<RecordingMetadata | null> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionPath = this.getRecordingsCollectionPath(userId);
     const docRef = doc(firestore, collectionPath, recordingId);
@@ -139,6 +141,7 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   }
 
   async getRecordingsForSequence(sequenceId: string): Promise<RecordingMetadata[]> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionPath = this.getRecordingsCollectionPath(userId);
     const collectionRef = collection(firestore, collectionPath);
@@ -154,6 +157,7 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   }
 
   async getAllRecordings(limitCount = 50): Promise<RecordingMetadata[]> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionPath = this.getRecordingsCollectionPath(userId);
     const collectionRef = collection(firestore, collectionPath);
@@ -169,6 +173,7 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   }
 
   async deleteRecording(recordingId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionPath = this.getRecordingsCollectionPath(userId);
     const docRef = doc(firestore, collectionPath, recordingId);

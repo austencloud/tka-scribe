@@ -22,7 +22,7 @@ import {
 	type Unsubscribe,
 	type DocumentData,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import type { ITagService } from "../contracts/ITagService";
 import type { LibraryTag, CreateTagOptions } from "../../domain/models/Tag";
@@ -90,6 +90,7 @@ export class TagService implements ITagService {
 	// ============================================================
 
 	async createTag(name: string, options: CreateTagOptions = {}): Promise<LibraryTag> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const normalizedName = this.normalizeTagName(name);
 
@@ -114,6 +115,7 @@ export class TagService implements ITagService {
 	}
 
 	async getTag(tagId: string): Promise<LibraryTag | null> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(firestore, getUserTagPath(userId, tagId));
 		const docSnap = await getDoc(docRef);
@@ -126,6 +128,7 @@ export class TagService implements ITagService {
 	}
 
 	async getAllTags(): Promise<LibraryTag[]> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const tagsRef = collection(firestore, getUserTagsPath(userId));
 		const q = query(tagsRef, orderBy("name", "asc"));
@@ -144,6 +147,7 @@ export class TagService implements ITagService {
 		tagId: string,
 		updates: Partial<Pick<LibraryTag, "name" | "color" | "icon">>
 	): Promise<LibraryTag> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(firestore, getUserTagPath(userId, tagId));
 
@@ -173,6 +177,7 @@ export class TagService implements ITagService {
 	}
 
 	async deleteTag(tagId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const existing = await this.getTag(tagId);
 
@@ -192,6 +197,7 @@ export class TagService implements ITagService {
 	}
 
 	async findTagByName(name: string): Promise<LibraryTag | null> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const normalizedName = this.normalizeTagName(name);
 		const tagsRef = collection(firestore, getUserTagsPath(userId));
@@ -216,6 +222,7 @@ export class TagService implements ITagService {
 	// ============================================================
 
 	async incrementUseCount(tagId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(firestore, getUserTagPath(userId, tagId));
 
@@ -225,6 +232,7 @@ export class TagService implements ITagService {
 	}
 
 	async decrementUseCount(tagId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(firestore, getUserTagPath(userId, tagId));
 
@@ -239,23 +247,33 @@ export class TagService implements ITagService {
 
 	subscribeToTags(callback: (tags: LibraryTag[]) => void): () => void {
 		const userId = this.getUserId();
-		const tagsRef = collection(firestore, getUserTagsPath(userId));
-		const q = query(tagsRef, orderBy("name", "asc"));
+		let unsubscribe: Unsubscribe | null = null;
 
-		const unsubscribe: Unsubscribe = onSnapshot(
-			q,
-			(snapshot) => {
-				const tags: LibraryTag[] = [];
-				snapshot.forEach((doc) => {
-					tags.push(this.mapDocToTag(doc.data(), doc.id));
-				});
-				callback(tags);
-			},
-			(error) => {
-				console.error("TagService: Subscription error", error);
+		// Initialize subscription asynchronously
+		getFirestoreInstance().then((firestore) => {
+			const tagsRef = collection(firestore, getUserTagsPath(userId));
+			const q = query(tagsRef, orderBy("name", "asc"));
+
+			unsubscribe = onSnapshot(
+				q,
+				(snapshot) => {
+					const tags: LibraryTag[] = [];
+					snapshot.forEach((doc) => {
+						tags.push(this.mapDocToTag(doc.data(), doc.id));
+					});
+					callback(tags);
+				},
+				(error) => {
+					console.error("TagService: Subscription error", error);
+				}
+			);
+		});
+
+		// Return cleanup function
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
 			}
-		);
-
-		return unsubscribe;
+		};
 	}
 }

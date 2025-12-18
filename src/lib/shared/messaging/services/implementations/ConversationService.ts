@@ -21,7 +21,7 @@ import {
 	onSnapshot,
 	serverTimestamp
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 import type {
@@ -92,6 +92,7 @@ export class ConversationService implements IConversationService {
 	 */
 	private async fetchUserInfo(userId: string): Promise<{ displayName: string; photoURL?: string }> {
 		try {
+			const firestore = await getFirestoreInstance();
 			const userRef = doc(firestore, "users", userId);
 			const userDoc = await getDoc(userRef);
 			if (userDoc.exists()) {
@@ -121,6 +122,7 @@ export class ConversationService implements IConversationService {
 	async getOrCreateConversation(
 		otherUserId: string
 	): Promise<GetOrCreateConversationResult> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const conversationId = this.generateConversationId(currentUserId, otherUserId);
 
@@ -179,6 +181,7 @@ export class ConversationService implements IConversationService {
 	 * Get a specific conversation by ID
 	 */
 	async getConversation(conversationId: string): Promise<Conversation | null> {
+		const firestore = await getFirestoreInstance();
 		const conversationRef = doc(firestore, CONVERSATIONS_COLLECTION, conversationId);
 		const snapshot = await getDoc(conversationRef);
 
@@ -195,6 +198,7 @@ export class ConversationService implements IConversationService {
 	async getConversations(
 		options?: ConversationFetchOptions
 	): Promise<ConversationPreview[]> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const maxCount = options?.limit ?? 50;
 
@@ -224,28 +228,39 @@ export class ConversationService implements IConversationService {
 		}
 
 		const currentUserId = this.getCurrentUserId();
-		const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-		const q = query(
-			conversationsRef,
-			where("participants", "array-contains", currentUserId),
-			orderBy("updatedAt", "desc"),
-			limit(50)
-		);
 
-		this.conversationsUnsubscribe = onSnapshot(q, (snapshot) => {
-			const conversations = snapshot.docs
-				.map((docSnap) => this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId))
-				.filter((preview): preview is ConversationPreview => preview !== null);
-			callback(conversations);
-		});
+		// Use async IIFE to get firestore instance
+		void (async () => {
+			const firestore = await getFirestoreInstance();
+			const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+			const q = query(
+				conversationsRef,
+				where("participants", "array-contains", currentUserId),
+				orderBy("updatedAt", "desc"),
+				limit(50)
+			);
 
-		return this.conversationsUnsubscribe;
+			this.conversationsUnsubscribe = onSnapshot(q, (snapshot) => {
+				const conversations = snapshot.docs
+					.map((docSnap) => this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId))
+					.filter((preview): preview is ConversationPreview => preview !== null);
+				callback(conversations);
+			});
+		})();
+
+		return () => {
+			if (this.conversationsUnsubscribe) {
+				this.conversationsUnsubscribe();
+				this.conversationsUnsubscribe = null;
+			}
+		};
 	}
 
 	/**
 	 * Get total unread message count across all conversations
 	 */
 	async getTotalUnreadCount(): Promise<number> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
 		const q = query(
@@ -277,31 +292,42 @@ export class ConversationService implements IConversationService {
 		}
 
 		const currentUserId = this.getCurrentUserId();
-		const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-		const q = query(
-			conversationsRef,
-			where("participants", "array-contains", currentUserId)
-		);
 
-		this.unreadCountUnsubscribe = onSnapshot(q, (snapshot) => {
-			let total = 0;
-			snapshot.docs.forEach((docSnap) => {
-				const data = docSnap.data();
-				const unreadCount = data["unreadCount"] as Record<string, number> | undefined;
-				if (unreadCount?.[currentUserId]) {
-					total += unreadCount[currentUserId];
-				}
+		// Use async IIFE to get firestore instance
+		void (async () => {
+			const firestore = await getFirestoreInstance();
+			const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+			const q = query(
+				conversationsRef,
+				where("participants", "array-contains", currentUserId)
+			);
+
+			this.unreadCountUnsubscribe = onSnapshot(q, (snapshot) => {
+				let total = 0;
+				snapshot.docs.forEach((docSnap) => {
+					const data = docSnap.data();
+					const unreadCount = data["unreadCount"] as Record<string, number> | undefined;
+					if (unreadCount?.[currentUserId]) {
+						total += unreadCount[currentUserId];
+					}
+				});
+				callback(total);
 			});
-			callback(total);
-		});
+		})();
 
-		return this.unreadCountUnsubscribe;
+		return () => {
+			if (this.unreadCountUnsubscribe) {
+				this.unreadCountUnsubscribe();
+				this.unreadCountUnsubscribe = null;
+			}
+		};
 	}
 
 	/**
 	 * Check if a conversation exists between current user and another user
 	 */
 	async conversationExists(otherUserId: string): Promise<string | null> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const conversationId = this.generateConversationId(currentUserId, otherUserId);
 		const conversationRef = doc(firestore, CONVERSATIONS_COLLECTION, conversationId);
@@ -313,6 +339,7 @@ export class ConversationService implements IConversationService {
 	 * Archive a conversation (future implementation)
 	 */
 	async archiveConversation(conversationId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const conversationRef = doc(firestore, CONVERSATIONS_COLLECTION, conversationId);
 		await updateDoc(conversationRef, {
@@ -324,6 +351,7 @@ export class ConversationService implements IConversationService {
 	 * Unarchive a conversation (future implementation)
 	 */
 	async unarchiveConversation(conversationId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const conversationRef = doc(firestore, CONVERSATIONS_COLLECTION, conversationId);
 		await updateDoc(conversationRef, {
@@ -335,6 +363,7 @@ export class ConversationService implements IConversationService {
 	 * Mark all conversations as read for current user
 	 */
 	async markAllAsRead(): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 		const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
 		const q = query(
@@ -440,6 +469,7 @@ export class ConversationService implements IConversationService {
 	 */
 	private async refreshParticipantInfo(conversationId: string, userId: string): Promise<void> {
 		try {
+			const firestore = await getFirestoreInstance();
 			const userInfo = await this.fetchUserInfo(userId);
 			const conversationRef = doc(firestore, CONVERSATIONS_COLLECTION, conversationId);
 			await updateDoc(conversationRef, {

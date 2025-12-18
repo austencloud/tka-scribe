@@ -18,7 +18,7 @@ import {
   collectionGroup,
 } from "firebase/firestore";
 import { logEvent } from "firebase/analytics";
-import { firestore, auth, analytics } from "../../../auth/firebase";
+import { getFirestoreInstance, auth, analytics } from "../../../auth/firebase";
 import { TYPES } from "../../../inversify/types";
 import type {
   IActivityLogService,
@@ -65,7 +65,7 @@ export class ActivityLogService implements IActivityLogService {
    * Check if logging is available (user authenticated and Firestore ready)
    */
   private isAvailable(): boolean {
-    return firestore !== null && auth.currentUser !== null;
+    return auth.currentUser !== null;
   }
 
   /**
@@ -176,6 +176,8 @@ export class ActivityLogService implements IActivityLogService {
 
     const eventsToWrite = [...this.writeBuffer];
     this.writeBuffer = [];
+
+    const firestore = await getFirestoreInstance();
 
     // Write each event (could be optimized with batch writes)
     for (const event of eventsToWrite) {
@@ -350,6 +352,7 @@ export class ActivityLogService implements IActivityLogService {
    * Query events for a specific user
    */
   private async queryUserEvents(options: ActivityQueryOptions): Promise<ActivityEvent[]> {
+    const firestore = await getFirestoreInstance();
     const activityRef = collection(
       firestore,
       `users/${options.userId}/activityLog`
@@ -416,6 +419,7 @@ export class ActivityLogService implements IActivityLogService {
     const FIRESTORE_MAX_LIMIT = 10000;
 
     try {
+      const firestore = await getFirestoreInstance();
       // Collection group query for activityLog across all users
       const activityGroupRef = collectionGroup(firestore, "activityLog");
 

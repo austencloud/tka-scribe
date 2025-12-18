@@ -69,6 +69,8 @@ let firestoreInstance: Firestore | null = null;
 let firestoreInitPromise: Promise<Firestore> | null = null;
 // Track if we're using fallback memory cache (for debugging)
 let usingMemoryCache = false;
+// Track if Firestore was terminated (for HMR recovery)
+let firestoreTerminated = false;
 
 /**
  * Check if an error is the known IndexedDB/persistence corruption error
@@ -80,10 +82,69 @@ function isFirestoreCorruptionError(error: unknown): boolean {
       message.includes("INTERNAL ASSERTION FAILED") ||
       message.includes("Unexpected state") ||
       message.includes("IndexedDB") ||
-      message.includes("persistence")
+      message.includes("persistence") ||
+      message.includes("asyncQueue") ||
+      message.includes("Cannot read properties of undefined")
     );
   }
   return false;
+}
+
+/**
+ * Clear corrupted Firestore IndexedDB databases
+ * Called when persistent cache initialization fails
+ */
+async function clearFirestoreIndexedDB(): Promise<void> {
+  if (typeof indexedDB === "undefined") return;
+
+  try {
+    // Get all databases
+    const databases = await indexedDB.databases();
+    const firestoreDbs = databases.filter(db =>
+      db.name?.includes("firestore") ||
+      db.name?.includes("firebase")
+    );
+
+    // Delete Firestore-related databases
+    for (const db of firestoreDbs) {
+      if (db.name) {
+        debug.warn(`Deleting corrupted IndexedDB: ${db.name}`);
+        await new Promise<void>((resolve, reject) => {
+          const request = indexedDB.deleteDatabase(db.name!);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+          request.onblocked = () => {
+            debug.warn(`IndexedDB deletion blocked: ${db.name}`);
+            resolve(); // Continue anyway
+          };
+        });
+      }
+    }
+
+    debug.success("Cleared corrupted Firestore IndexedDB databases");
+  } catch (error) {
+    debug.error("Failed to clear IndexedDB:", error);
+  }
+}
+
+/**
+ * Terminate Firestore instance (for HMR cleanup)
+ * This must be called before re-initializing to avoid corruption
+ */
+async function terminateFirestore(): Promise<void> {
+  if (!firestoreInstance) return;
+
+  try {
+    const { terminate } = await import("firebase/firestore");
+    await terminate(firestoreInstance);
+    debug.info("Firestore terminated for cleanup");
+  } catch (error) {
+    debug.warn("Failed to terminate Firestore:", error);
+  } finally {
+    firestoreInstance = null;
+    firestoreInitPromise = null;
+    firestoreTerminated = true;
+  }
 }
 
 export async function getFirestoreInstance(): Promise<Firestore> {
@@ -99,20 +160,66 @@ export async function getFirestoreInstance(): Promise<Firestore> {
 
   // Start initialization - MUST only happen once
   firestoreInitPromise = (async () => {
-    const { getFirestore } = await import("firebase/firestore");
+    const { getFirestore, initializeFirestore, memoryLocalCache } = await import("firebase/firestore");
 
-    // Try to get existing instance first (if already initialized elsewhere)
+    // DEVELOPMENT: Always use memory cache to avoid HMR/IndexedDB corruption issues
+    // The persistent cache with multi-tab manager causes "asyncQueue undefined" errors
+    // when Vite hot-reloads modules, corrupting the Firestore internal state
+    if (import.meta.env.DEV) {
+      try {
+        // Try to get existing instance first
+        const existingInstance = getFirestore(app);
+
+        // CRITICAL: Validate the instance is actually usable
+        // After HMR terminate(), getFirestore() returns a corrupt instance
+        // that still exists but has undefined internal properties
+        if (existingInstance && typeof existingInstance === 'object') {
+          // Check if the instance has the expected internal structure
+          // @ts-expect-error - accessing internal Firebase property for validation
+          const hasAsyncQueue = existingInstance._firestoreClient !== undefined ||
+            // @ts-expect-error - checking another internal property
+            existingInstance._queue !== undefined;
+
+          if (!hasAsyncQueue) {
+            debug.warn("Firestore instance exists but appears corrupted, will reinitialize");
+            throw new Error("Corrupted instance detected");
+          }
+        }
+
+        firestoreInstance = existingInstance;
+        debug.success("Firestore instance retrieved (dev mode)");
+        return firestoreInstance;
+      } catch {
+        // Not initialized yet OR instance is corrupted - create with memory cache
+        try {
+          firestoreInstance = initializeFirestore(app, {
+            localCache: memoryLocalCache(),
+          });
+          usingMemoryCache = true;
+          debug.success("Firestore initialized with memory cache (dev mode)");
+          return firestoreInstance;
+        } catch (initError) {
+          // initializeFirestore throws if already initialized - fall back to getFirestore
+          debug.warn("initializeFirestore failed, using existing instance:", initError);
+          firestoreInstance = getFirestore(app);
+          return firestoreInstance;
+        }
+      }
+    }
+
+    // PRODUCTION: Use persistent cache for offline support
     try {
+      // Try to get existing instance first
       firestoreInstance = getFirestore(app);
       debug.success("Firestore instance retrieved");
       return firestoreInstance;
     } catch {
-      // Not initialized yet, need to create new instance
+      // Not initialized yet
     }
 
-    // Try persistent cache first, fall back to memory cache if it fails
+    // Initialize with persistent cache for production
     try {
-      const { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } =
+      const { persistentLocalCache, persistentMultipleTabManager } =
         await import("firebase/firestore");
 
       firestoreInstance = initializeFirestore(app, {
@@ -125,19 +232,10 @@ export async function getFirestoreInstance(): Promise<Firestore> {
     } catch (persistentError) {
       // Check if this is the known corruption error
       if (isFirestoreCorruptionError(persistentError)) {
-        debug.warn(
-          "Persistent cache failed (IndexedDB corruption), falling back to memory cache. " +
-          "Clear browser data to restore offline support."
-        );
-        console.warn(
-          "⚠️ Firestore persistent cache unavailable due to IndexedDB corruption. " +
-          "Using memory cache - offline data will not persist. " +
-          "To fix: Clear site data in browser settings."
-        );
+        debug.warn("Persistent cache failed, falling back to memory cache");
+        await clearFirestoreIndexedDB();
 
-        // Fall back to memory cache
         try {
-          const { initializeFirestore, memoryLocalCache } = await import("firebase/firestore");
           firestoreInstance = initializeFirestore(app, {
             localCache: memoryLocalCache(),
           });
@@ -145,7 +243,7 @@ export async function getFirestoreInstance(): Promise<Firestore> {
           debug.success("Firestore initialized with memory cache (fallback)");
           return firestoreInstance;
         } catch (memoryError) {
-          // Even memory cache failed - try bare getFirestore as last resort
+          // Last resort
           debug.error("Memory cache also failed, trying bare Firestore");
           firestoreInstance = getFirestore(app);
           usingMemoryCache = true;
@@ -153,7 +251,6 @@ export async function getFirestoreInstance(): Promise<Firestore> {
         }
       }
 
-      // Not a corruption error - rethrow
       firestoreInitPromise = null;
       throw persistentError;
     }
@@ -267,48 +364,6 @@ if (typeof window !== "undefined") {
  */
 export { app };
 
-/**
- * DEPRECATED: Backward-compatible firestore export
- * For top-level await support in legacy code.
- * New code should use getFirestoreInstance() instead.
- *
- * CRITICAL: Returns the Firestore instance directly (not a Proxy).
- * Code using this MUST ensure Firestore is initialized first via getFirestoreInstance().
- */
-export const firestore: Firestore = new Proxy({} as Firestore, {
-  get(target, prop, receiver) {
-    // If Firestore is initialized, delegate ALL operations to the real instance
-    if (firestoreInstance) {
-      const value = Reflect.get(firestoreInstance, prop, firestoreInstance);
-      // If it's a function, bind it to the real Firestore instance (not the Proxy)
-      if (typeof value === 'function') {
-        return value.bind(firestoreInstance);
-      }
-      return value;
-    }
-
-    // Not initialized - throw error
-    throw new Error(
-      `❌ Firestore accessed before initialization (property: ${String(prop)}). ` +
-      `Call 'await getFirestoreInstance()' in your initialization code.`
-    );
-  },
-  // Make instanceof checks work correctly
-  getPrototypeOf(target) {
-    return firestoreInstance ? Object.getPrototypeOf(firestoreInstance) : Object.getPrototypeOf(target);
-  },
-  // Pass through all descriptor checks to the real instance
-  getOwnPropertyDescriptor(target, prop) {
-    return firestoreInstance ? Object.getOwnPropertyDescriptor(firestoreInstance, prop) : Object.getOwnPropertyDescriptor(target, prop);
-  },
-  has(target, prop) {
-    return firestoreInstance ? prop in firestoreInstance : prop in target;
-  },
-  ownKeys(target) {
-    return firestoreInstance ? Reflect.ownKeys(firestoreInstance) : Reflect.ownKeys(target);
-  }
-});
-
 // Initialize firestore asynchronously (browser only)
 if (typeof window !== "undefined") {
   getFirestoreInstance().catch((error) => {
@@ -362,5 +417,31 @@ if (typeof window !== "undefined") {
   }).catch(() => {
     // Silently handle analytics initialization failure
     console.debug("[Firebase] Analytics not available");
+  });
+}
+
+/**
+ * HMR Cleanup - Force page reload when firebase.ts changes
+ *
+ * The Firebase SDK caches Firestore instances internally. After calling terminate(),
+ * getFirestore(app) still returns the terminated (corrupt) instance, causing
+ * "asyncQueue undefined" and "INTERNAL ASSERTION FAILED" errors.
+ *
+ * The only reliable fix is to force a full page reload when this module changes.
+ * This ensures a clean Firebase initialization from scratch.
+ */
+if (import.meta.hot) {
+  // Accept the module update but force a page reload
+  // This is necessary because Firebase SDK's internal Firestore cache persists
+  // across HMR and returns terminated instances
+  import.meta.hot.accept(() => {
+    debug.warn("HMR: firebase.ts changed - forcing page reload for clean state");
+    window.location.reload();
+  });
+
+  // Also handle dispose for cleanup (may not reach if reload happens first)
+  import.meta.hot.dispose(async () => {
+    debug.info("HMR: Cleaning up Firebase instances...");
+    await terminateFirestore();
   });
 }

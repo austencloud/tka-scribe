@@ -23,7 +23,7 @@ import {
   onSnapshot,
   type Unsubscribe,
 } from "firebase/firestore";
-import { firestore, getStorageInstance } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, getStorageInstance } from "$lib/shared/auth/firebase";
 import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
 import type { FirebaseStorage } from "firebase/storage";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
@@ -105,6 +105,7 @@ export class FeedbackService implements IFeedbackService {
     capturedTab: string,
     images?: File[]
   ): Promise<string> {
+    const firestore = await getFirestoreInstance();
     const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated to submit feedback");
@@ -268,6 +269,7 @@ export class FeedbackService implements IFeedbackService {
     lastDocId: string | null;
     hasMore: boolean;
   }> {
+    const firestore = await getFirestoreInstance();
     // Build query with filters
     const constraints: Parameters<typeof query>[1][] = [];
 
@@ -313,6 +315,7 @@ export class FeedbackService implements IFeedbackService {
   }
 
   async getFeedback(feedbackId: string): Promise<FeedbackItem | null> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
     const docSnap = await getDoc(docRef);
 
@@ -324,6 +327,7 @@ export class FeedbackService implements IFeedbackService {
   }
 
   async updateStatus(feedbackId: string, status: FeedbackStatus): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
 
     // Get current feedback to check existing status and history
@@ -396,6 +400,7 @@ export class FeedbackService implements IFeedbackService {
   }
 
   async updateAdminNotes(feedbackId: string, notes: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
     await updateDoc(docRef, {
       adminNotes: notes,
@@ -404,6 +409,7 @@ export class FeedbackService implements IFeedbackService {
   }
 
   async deferFeedback(feedbackId: string, deferredUntil: Date, notes: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
     await updateDoc(docRef, {
       status: "archived",
@@ -415,6 +421,7 @@ export class FeedbackService implements IFeedbackService {
   }
 
   async deleteFeedback(feedbackId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
     await deleteDoc(docRef);
   }
@@ -428,6 +435,7 @@ export class FeedbackService implements IFeedbackService {
       | "priority"
     >>
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
 
     // Build update object, converting undefined to null for Firestore
@@ -452,6 +460,7 @@ export class FeedbackService implements IFeedbackService {
     lastDocId: string | null;
     hasMore: boolean;
   }> {
+    const firestore = await getFirestoreInstance();
     const constraints: Parameters<typeof query>[1][] = [];
 
     // Filter by user
@@ -492,6 +501,7 @@ export class FeedbackService implements IFeedbackService {
     message: string,
     notifyTester: boolean = true
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated");
@@ -532,6 +542,7 @@ export class FeedbackService implements IFeedbackService {
     status: TesterConfirmationStatus,
     comment?: string
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const testerConfirmation: TesterConfirmation = {
       status,
       respondedAt: new Date(),
@@ -554,6 +565,7 @@ export class FeedbackService implements IFeedbackService {
   }
 
   async countPendingConfirmations(userId: string): Promise<number> {
+    const firestore = await getFirestoreInstance();
     const q = query(
       collection(firestore, COLLECTION_NAME),
       where("userId", "==", userId),
@@ -617,6 +629,7 @@ export class FeedbackService implements IFeedbackService {
     feedbackId: string,
     message?: string
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const feedback = await this.getFeedback(feedbackId);
     if (!feedback) return;
 
@@ -648,68 +661,76 @@ export class FeedbackService implements IFeedbackService {
     onUpdate: (items: FeedbackItem[]) => void,
     onError?: (error: Error) => void
   ): Unsubscribe {
-    // Query all non-archived feedback ordered by createdAt
-    // We fetch all to support the kanban view
-    const q = query(
-      collection(firestore, COLLECTION_NAME),
-      orderBy("createdAt", "desc"),
-      limit(200) // Reasonable limit for admin dashboard
-    );
-
     let unsubscribed = false;
+    let firestoreUnsubscribe: Unsubscribe | null = null;
 
-    // First, do an initial server fetch to ensure fresh data
-    // getDocsFromServer bypasses the local cache entirely
-    getDocsFromServer(q)
-      .then((snapshot) => {
-        if (unsubscribed) return;
+    // Initialize subscription asynchronously
+    void (async () => {
+      const firestore = await getFirestoreInstance();
 
-        const items: FeedbackItem[] = [];
-        snapshot.docs.forEach((docSnap) => {
-          try {
-            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
-            items.push(item);
-          } catch (err) {
-            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
-          }
+      // Query all non-archived feedback ordered by createdAt
+      // We fetch all to support the kanban view
+      const q = query(
+        collection(firestore, COLLECTION_NAME),
+        orderBy("createdAt", "desc"),
+        limit(200) // Reasonable limit for admin dashboard
+      );
+
+      // First, do an initial server fetch to ensure fresh data
+      // getDocsFromServer bypasses the local cache entirely
+      getDocsFromServer(q)
+        .then((snapshot) => {
+          if (unsubscribed) return;
+
+          const items: FeedbackItem[] = [];
+          snapshot.docs.forEach((docSnap) => {
+            try {
+              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              items.push(item);
+            } catch (err) {
+              console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+            }
+          });
+          onUpdate(items);
+        })
+        .catch((error) => {
+          console.error("Initial feedback fetch error:", error);
+          // Continue to set up the listener even if initial fetch fails
+          // The listener will provide cached data and retry server connection
         });
-        onUpdate(items);
-      })
-      .catch((error) => {
-        console.error("Initial feedback fetch error:", error);
-        // Continue to set up the listener even if initial fetch fails
-        // The listener will provide cached data and retry server connection
-      });
 
-    // Then set up the real-time listener for ongoing updates
-    // includeMetadataChanges: false means we only get notified of actual data changes
-    const unsubscribe = onSnapshot(
-      q,
-      { includeMetadataChanges: false },
-      (snapshot) => {
-        if (unsubscribed) return;
+      // Then set up the real-time listener for ongoing updates
+      // includeMetadataChanges: false means we only get notified of actual data changes
+      firestoreUnsubscribe = onSnapshot(
+        q,
+        { includeMetadataChanges: false },
+        (snapshot) => {
+          if (unsubscribed) return;
 
-        const items: FeedbackItem[] = [];
-        snapshot.docs.forEach((docSnap) => {
-          try {
-            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
-            items.push(item);
-          } catch (err) {
-            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
-          }
-        });
-        onUpdate(items);
-      },
-      (error) => {
-        console.error("Feedback subscription error:", error);
-        onError?.(error);
-      }
-    );
+          const items: FeedbackItem[] = [];
+          snapshot.docs.forEach((docSnap) => {
+            try {
+              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              items.push(item);
+            } catch (err) {
+              console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+            }
+          });
+          onUpdate(items);
+        },
+        (error) => {
+          console.error("Feedback subscription error:", error);
+          onError?.(error);
+        }
+      );
+    })();
 
     // Return combined unsubscribe function
     return () => {
       unsubscribed = true;
-      unsubscribe();
+      if (firestoreUnsubscribe) {
+        firestoreUnsubscribe();
+      }
     };
   }
 
@@ -718,6 +739,7 @@ export class FeedbackService implements IFeedbackService {
     updates: Partial<Pick<FeedbackItem, "type" | "description">>,
     appendMode: boolean = false
   ): Promise<FeedbackItem> {
+    const firestore = await getFirestoreInstance();
     const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated to update feedback");
@@ -792,68 +814,77 @@ export class FeedbackService implements IFeedbackService {
     onUpdate: (items: FeedbackItem[]) => void,
     onError?: (error: Error) => void
   ): Unsubscribe {
-    // Query all feedback for this user, ordered by createdAt
-    const q = query(
-      collection(firestore, COLLECTION_NAME),
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc")
-    );
-
     let unsubscribed = false;
+    let firestoreUnsubscribe: Unsubscribe | null = null;
 
-    // First, do an initial server fetch to ensure fresh data
-    getDocsFromServer(q)
-      .then((snapshot) => {
-        if (unsubscribed) return;
+    // Initialize subscription asynchronously
+    void (async () => {
+      const firestore = await getFirestoreInstance();
 
-        const items: FeedbackItem[] = [];
-        snapshot.docs.forEach((docSnap) => {
-          try {
-            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
-            items.push(item);
-          } catch (err) {
-            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
-          }
+      // Query all feedback for this user, ordered by createdAt
+      const q = query(
+        collection(firestore, COLLECTION_NAME),
+        where("userId", "==", userId),
+        orderBy("createdAt", "desc")
+      );
+
+      // First, do an initial server fetch to ensure fresh data
+      getDocsFromServer(q)
+        .then((snapshot) => {
+          if (unsubscribed) return;
+
+          const items: FeedbackItem[] = [];
+          snapshot.docs.forEach((docSnap) => {
+            try {
+              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              items.push(item);
+            } catch (err) {
+              console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+            }
+          });
+          onUpdate(items);
+        })
+        .catch((error) => {
+          console.error("Initial user feedback fetch error:", error);
+          // Continue to set up the listener even if initial fetch fails
         });
-        onUpdate(items);
-      })
-      .catch((error) => {
-        console.error("Initial user feedback fetch error:", error);
-        // Continue to set up the listener even if initial fetch fails
-      });
 
-    // Then set up the real-time listener for ongoing updates
-    const unsubscribe = onSnapshot(
-      q,
-      { includeMetadataChanges: false },
-      (snapshot) => {
-        if (unsubscribed) return;
+      // Then set up the real-time listener for ongoing updates
+      firestoreUnsubscribe = onSnapshot(
+        q,
+        { includeMetadataChanges: false },
+        (snapshot) => {
+          if (unsubscribed) return;
 
-        const items: FeedbackItem[] = [];
-        snapshot.docs.forEach((docSnap) => {
-          try {
-            const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
-            items.push(item);
-          } catch (err) {
-            console.error(`Failed to map feedback item ${docSnap.id}:`, err);
-          }
-        });
-        onUpdate(items);
-      },
-      (error) => {
-        console.error("User feedback subscription error:", error);
-        onError?.(error);
-      }
-    );
+          const items: FeedbackItem[] = [];
+          snapshot.docs.forEach((docSnap) => {
+            try {
+              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              items.push(item);
+            } catch (err) {
+              console.error(`Failed to map feedback item ${docSnap.id}:`, err);
+            }
+          });
+          onUpdate(items);
+        },
+        (error) => {
+          console.error("User feedback subscription error:", error);
+          onError?.(error);
+        }
+      );
+    })();
 
     // Return combined unsubscribe function
     return () => {
       unsubscribed = true;
-      unsubscribe();
+      if (firestoreUnsubscribe) {
+        firestoreUnsubscribe();
+      }
     };
   }
 
   async deleteUserFeedback(feedbackId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const user = authState.user;
     if (!user) {
       throw new Error("User must be authenticated to delete feedback");

@@ -24,7 +24,7 @@ import {
 	type Unsubscribe,
 	type DocumentData,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import type { ICollectionService } from "../contracts/ICollectionService";
 import type {
@@ -131,6 +131,7 @@ export class CollectionService implements ICollectionService {
 	// ============================================================
 
 	async ensureSystemCollections(): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 
 		// Check and create each system collection type
@@ -161,6 +162,7 @@ export class CollectionService implements ICollectionService {
 	async getSystemCollection(
 		type: SystemCollectionType
 	): Promise<LibraryCollection> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const collectionId = SYSTEM_COLLECTION_IDS[type];
 
@@ -198,6 +200,7 @@ export class CollectionService implements ICollectionService {
 		name: string,
 		description?: string
 	): Promise<LibraryCollection> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const collectionId = crypto.randomUUID();
 
@@ -223,6 +226,7 @@ export class CollectionService implements ICollectionService {
 	}
 
 	async getCollection(collectionId: string): Promise<LibraryCollection | null> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(
 			firestore,
@@ -246,6 +250,7 @@ export class CollectionService implements ICollectionService {
 			>
 		>
 	): Promise<LibraryCollection> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const existing = await this.getCollection(collectionId);
 
@@ -283,6 +288,7 @@ export class CollectionService implements ICollectionService {
 	}
 
 	async deleteCollection(collectionId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const existing = await this.getCollection(collectionId);
 
@@ -317,6 +323,7 @@ export class CollectionService implements ICollectionService {
 	}
 
 	async getCollections(): Promise<LibraryCollection[]> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const collectionsRef = collection(
 			firestore,
@@ -342,6 +349,7 @@ export class CollectionService implements ICollectionService {
 		collectionId: string,
 		sequenceId: string
 	): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 
 		// Update collection
@@ -367,6 +375,7 @@ export class CollectionService implements ICollectionService {
 		collectionId: string,
 		sequenceId: string
 	): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const existing = await this.getCollection(collectionId);
 
@@ -396,6 +405,7 @@ export class CollectionService implements ICollectionService {
 	async getCollectionSequences(
 		collectionId: string
 	): Promise<LibrarySequence[]> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const collectionData = await this.getCollection(collectionId);
 
@@ -420,6 +430,7 @@ export class CollectionService implements ICollectionService {
 		collectionId: string,
 		sequenceIds: string[]
 	): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const docRef = doc(
 			firestore,
@@ -449,27 +460,37 @@ export class CollectionService implements ICollectionService {
 		callback: (collections: LibraryCollection[]) => void
 	): () => void {
 		const userId = this.getUserId();
-		const collectionsRef = collection(
-			firestore,
-			getUserCollectionsPath(userId)
-		);
-		const q = query(collectionsRef, orderBy("sortOrder", "asc"));
+		let unsubscribe: Unsubscribe | null = null;
 
-		const unsubscribe: Unsubscribe = onSnapshot(
-			q,
-			(snapshot) => {
-				const collections: LibraryCollection[] = [];
-				snapshot.forEach((doc) => {
-					collections.push(this.mapDocToCollection(doc.data(), doc.id));
-				});
-				callback(collections);
-			},
-			(error) => {
-				console.error("[CollectionService] Subscription error:", error);
+		// Initialize subscription asynchronously
+		getFirestoreInstance().then((firestore) => {
+			const collectionsRef = collection(
+				firestore,
+				getUserCollectionsPath(userId)
+			);
+			const q = query(collectionsRef, orderBy("sortOrder", "asc"));
+
+			unsubscribe = onSnapshot(
+				q,
+				(snapshot) => {
+					const collections: LibraryCollection[] = [];
+					snapshot.forEach((doc) => {
+						collections.push(this.mapDocToCollection(doc.data(), doc.id));
+					});
+					callback(collections);
+				},
+				(error) => {
+					console.error("[CollectionService] Subscription error:", error);
+				}
+			);
+		});
+
+		// Return cleanup function
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
 			}
-		);
-
-		return unsubscribe;
+		};
 	}
 
 	subscribeToCollection(
@@ -477,29 +498,39 @@ export class CollectionService implements ICollectionService {
 		callback: (collection: LibraryCollection | null) => void
 	): () => void {
 		const userId = this.getUserId();
-		const docRef = doc(
-			firestore,
-			getUserCollectionPath(userId, collectionId)
-		);
+		let unsubscribe: Unsubscribe | null = null;
 
-		const unsubscribe: Unsubscribe = onSnapshot(
-			docRef,
-			(docSnap) => {
-				if (docSnap.exists()) {
-					callback(this.mapDocToCollection(docSnap.data(), collectionId));
-				} else {
-					callback(null);
+		// Initialize subscription asynchronously
+		getFirestoreInstance().then((firestore) => {
+			const docRef = doc(
+				firestore,
+				getUserCollectionPath(userId, collectionId)
+			);
+
+			unsubscribe = onSnapshot(
+				docRef,
+				(docSnap) => {
+					if (docSnap.exists()) {
+						callback(this.mapDocToCollection(docSnap.data(), collectionId));
+					} else {
+						callback(null);
+					}
+				},
+				(error) => {
+					console.error(
+						"[CollectionService] Collection subscription error:",
+						error
+					);
 				}
-			},
-			(error) => {
-				console.error(
-					"[CollectionService] Collection subscription error:",
-					error
-				);
-			}
-		);
+			);
+		});
 
-		return unsubscribe;
+		// Return cleanup function
+		return () => {
+			if (unsubscribe) {
+				unsubscribe();
+			}
+		};
 	}
 
 	// ============================================================
@@ -507,6 +538,7 @@ export class CollectionService implements ICollectionService {
 	// ============================================================
 
 	async reorderCollections(collectionIds: string[]): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const userId = this.getUserId();
 		const batch = writeBatch(firestore);
 
@@ -561,6 +593,7 @@ export class CollectionService implements ICollectionService {
 	// ============================================================
 
 	async getUserPublicCollections(userId: string): Promise<LibraryCollection[]> {
+		const firestore = await getFirestoreInstance();
 		const collectionsRef = collection(
 			firestore,
 			getUserCollectionsPath(userId)
@@ -585,6 +618,7 @@ export class CollectionService implements ICollectionService {
 		userId: string,
 		collectionId: string
 	): Promise<LibrarySequence[]> {
+		const firestore = await getFirestoreInstance();
 		// First verify the collection is public
 		const collectionRef = doc(
 			firestore,

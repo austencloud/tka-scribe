@@ -21,7 +21,7 @@ import {
 	getDoc,
 	writeBatch
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 // Note: Message notifications removed - messages and notifications share same inbox panel
@@ -87,6 +87,7 @@ export class MessagingService implements IMessagingService {
 	 * Send a new message in a conversation
 	 */
 	async sendMessage(input: CreateMessageInput): Promise<Message> {
+		const firestore = await getFirestoreInstance();
 		const effectiveUser = this.getEffectiveUserInfo();
 
 		const { conversationId, content, attachments } = input;
@@ -179,6 +180,7 @@ export class MessagingService implements IMessagingService {
 		conversationId: string,
 		options?: MessageFetchOptions
 	): Promise<Message[]> {
+		const firestore = await getFirestoreInstance();
 		const maxCount = options?.limit ?? 50;
 
 		const messagesRef = collection(
@@ -225,32 +227,46 @@ export class MessagingService implements IMessagingService {
 			existingUnsubscribe();
 		}
 
-		const messagesRef = collection(
-			firestore,
-			CONVERSATIONS_COLLECTION,
-			conversationId,
-			MESSAGES_SUBCOLLECTION
-		);
+		// Use async IIFE to get firestore instance
+		void (async () => {
+			const firestore = await getFirestoreInstance();
+
+			const messagesRef = collection(
+				firestore,
+				CONVERSATIONS_COLLECTION,
+				conversationId,
+				MESSAGES_SUBCOLLECTION
+			);
 
 		const q = query(messagesRef, orderBy("createdAt", "desc"), limit(100));
 
-		const unsubscribe = onSnapshot(q, (snapshot) => {
-			const messages = snapshot.docs
-				.map((docSnap) => this.mapDocToMessage(docSnap.id, conversationId, docSnap.data()))
-				.reverse(); // Chronological order
-			callback(messages);
-		}, (error) => {
-			console.error("[MessagingService] Error subscribing to messages:", error);
-		});
+			const unsubscribe = onSnapshot(q, (snapshot) => {
+				const messages = snapshot.docs
+					.map((docSnap) => this.mapDocToMessage(docSnap.id, conversationId, docSnap.data()))
+					.reverse(); // Chronological order
+				callback(messages);
+			}, (error) => {
+				console.error("[MessagingService] Error subscribing to messages:", error);
+			});
 
-		this.messageSubscriptions.set(conversationId, unsubscribe);
-		return unsubscribe;
+			this.messageSubscriptions.set(conversationId, unsubscribe);
+		})();
+
+		// Return a cleanup function that will unsubscribe when ready
+		return () => {
+			const unsubscribe = this.messageSubscriptions.get(conversationId);
+			if (unsubscribe) {
+				unsubscribe();
+				this.messageSubscriptions.delete(conversationId);
+			}
+		};
 	}
 
 	/**
 	 * Mark all messages in a conversation as read for the current user
 	 */
 	async markAsRead(conversationId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 
 		// Reset unread count for current user in conversation
@@ -287,6 +303,7 @@ export class MessagingService implements IMessagingService {
 	 * Mark a specific message as read
 	 */
 	async markMessageAsRead(conversationId: string, messageId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 
 		const messageRef = doc(
@@ -316,6 +333,7 @@ export class MessagingService implements IMessagingService {
 	 * Soft delete a message (sender only)
 	 */
 	async deleteMessage(conversationId: string, messageId: string): Promise<void> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 
 		const messageRef = doc(
@@ -350,6 +368,7 @@ export class MessagingService implements IMessagingService {
 		messageId: string,
 		newContent: string
 	): Promise<Message> {
+		const firestore = await getFirestoreInstance();
 		const currentUserId = this.getCurrentUserId();
 
 		const messageRef = doc(

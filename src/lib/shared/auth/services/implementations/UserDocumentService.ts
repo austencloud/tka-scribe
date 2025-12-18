@@ -8,7 +8,7 @@
 import { injectable, inject } from "inversify";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { type User } from "firebase/auth";
-import { firestore } from "../../firebase";
+import { getFirestoreInstance } from "../../firebase";
 import type { IUserDocumentService } from "../contracts/IUserDocumentService";
 import type { IProfilePictureService } from "../contracts/IProfilePictureService";
 import { TYPES } from "../../../inversify/types";
@@ -31,6 +31,7 @@ export class UserDocumentService implements IUserDocumentService {
    */
   async createOrUpdateUserDocument(user: User): Promise<void> {
     try {
+      const firestore = await getFirestoreInstance();
       const userDocRef = doc(firestore, `users/${user.uid}`);
       const userDoc = await getDoc(userDocRef);
 

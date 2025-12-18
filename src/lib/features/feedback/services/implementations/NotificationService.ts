@@ -18,7 +18,7 @@ import {
   Timestamp,
   serverTimestamp,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { UserNotification, TesterNotification } from "../../domain/models/notification-models";
 
 const USERS_COLLECTION = "users";
@@ -31,6 +31,7 @@ export class NotificationService {
    * Get unread notification count for a user
    */
   async getUnreadCount(userId: string): Promise<number> {
+    const firestore = await getFirestoreInstance();
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -51,6 +52,7 @@ export class NotificationService {
     userId: string,
     maxCount: number = 20
   ): Promise<UserNotification[]> {
+    const firestore = await getFirestoreInstance();
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -140,6 +142,7 @@ export class NotificationService {
    * Mark a notification as read
    */
   async markAsRead(userId: string, notificationId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const notificationRef = doc(
       firestore,
       USERS_COLLECTION,
@@ -158,6 +161,7 @@ export class NotificationService {
    * Mark a notification as unread
    */
   async markAsUnread(userId: string, notificationId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const notificationRef = doc(
       firestore,
       USERS_COLLECTION,
@@ -176,6 +180,7 @@ export class NotificationService {
    * Mark all notifications as read
    */
   async markAllAsRead(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -197,6 +202,7 @@ export class NotificationService {
    * Delete a single notification
    */
   async deleteNotification(userId: string, notificationId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const notificationRef = doc(
       firestore,
       USERS_COLLECTION,
@@ -212,6 +218,7 @@ export class NotificationService {
    * Delete all read notifications
    */
   async deleteAllReadNotifications(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -233,6 +240,7 @@ export class NotificationService {
    * Delete all notifications
    */
   async deleteAllNotifications(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const notificationsRef = collection(
       firestore,
       USERS_COLLECTION,
@@ -265,26 +273,34 @@ export class NotificationService {
       this.unsubscribe();
     }
 
-    const notificationsRef = collection(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
-    );
-
-    // Build query with or without limit based on maxCount
-    const q = maxCount > 0
-      ? query(notificationsRef, orderBy("createdAt", "desc"), limit(maxCount))
-      : query(notificationsRef, orderBy("createdAt", "desc"));
-
-    this.unsubscribe = onSnapshot(q, (snapshot) => {
-      const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
-        this.mapDocToNotification(docSnap.id, docSnap.data())
+    // Initialize subscription asynchronously
+    void (async () => {
+      const firestore = await getFirestoreInstance();
+      const notificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
       );
-      callback(notifications);
-    });
 
-    return this.unsubscribe;
+      // Build query with or without limit based on maxCount
+      const q = maxCount > 0
+        ? query(notificationsRef, orderBy("createdAt", "desc"), limit(maxCount))
+        : query(notificationsRef, orderBy("createdAt", "desc"));
+
+      this.unsubscribe = onSnapshot(q, (snapshot) => {
+        const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
+          this.mapDocToNotification(docSnap.id, docSnap.data())
+        );
+        callback(notifications);
+      });
+    })();
+
+    return () => {
+      if (this.unsubscribe) {
+        this.unsubscribe();
+      }
+    };
   }
 
   /**

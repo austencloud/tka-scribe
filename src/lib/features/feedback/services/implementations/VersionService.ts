@@ -19,7 +19,7 @@ import {
   limit,
   getDoc,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { IVersionService } from "../contracts/IVersionService";
 import type {
   AppVersion,
@@ -35,6 +35,7 @@ const FEEDBACK_COLLECTION = "feedback";
 
 export class VersionService implements IVersionService {
   async getVersions(): Promise<AppVersion[]> {
+    const firestore = await getFirestoreInstance();
     const q = query(
       collection(firestore, VERSIONS_COLLECTION),
       orderBy("releasedAt", "desc")
@@ -49,6 +50,7 @@ export class VersionService implements IVersionService {
   }
 
   async getVersionFeedback(version: string): Promise<VersionFeedbackItem[]> {
+    const firestore = await getFirestoreInstance();
     // Simple query - items with fixedInVersion are already archived
     const q = query(
       collection(firestore, FEEDBACK_COLLECTION),
@@ -80,6 +82,7 @@ export class VersionService implements IVersionService {
   }
 
   async getLatestVersion(): Promise<string | null> {
+    const firestore = await getFirestoreInstance();
     const q = query(
       collection(firestore, VERSIONS_COLLECTION),
       orderBy("releasedAt", "desc"),
@@ -97,6 +100,7 @@ export class VersionService implements IVersionService {
   }
 
   async prepareRelease(version: string, changelogEntries?: ChangelogEntry[]): Promise<void> {
+    const firestore = await getFirestoreInstance();
     // 1. Get all completed feedback (ready for release)
     const q2 = query(
       collection(firestore, FEEDBACK_COLLECTION),
@@ -148,16 +152,19 @@ export class VersionService implements IVersionService {
   }
 
   async updateReleaseNotes(version: string, releaseNotes: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     await updateDoc(versionRef, { releaseNotes });
   }
 
   async updateChangelogEntries(version: string, changelogEntries: ChangelogEntry[]): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     await updateDoc(versionRef, { changelogEntries });
   }
 
   async updateChangelogEntry(version: string, index: number, updatedEntry: ChangelogEntry): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     const versionDoc = await getDoc(versionRef);
 
@@ -179,6 +186,7 @@ export class VersionService implements IVersionService {
   }
 
   async addChangelogEntry(version: string, entry: ChangelogEntry): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     const versionDoc = await getDoc(versionRef);
 
@@ -195,6 +203,7 @@ export class VersionService implements IVersionService {
   }
 
   async deleteChangelogEntry(version: string, index: number): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     const versionDoc = await getDoc(versionRef);
 
@@ -219,6 +228,7 @@ export class VersionService implements IVersionService {
    * Call this once to populate the initial changelog
    */
   async seedV010Changelog(): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const changelogEntries: ChangelogEntry[] = [
       // Bug Fixes
       { category: 'fixed', text: 'Sequences now load correctly when you open them from the gallery' },
@@ -243,6 +253,7 @@ export class VersionService implements IVersionService {
   }
 
   async getCompletedCount(): Promise<number> {
+    const firestore = await getFirestoreInstance();
     const q = query(
       collection(firestore, FEEDBACK_COLLECTION),
       where("status", "==", "completed")
@@ -253,6 +264,7 @@ export class VersionService implements IVersionService {
   }
 
   async getCompletedFeedback(): Promise<VersionFeedbackItem[]> {
+    const firestore = await getFirestoreInstance();
     const q = query(
       collection(firestore, FEEDBACK_COLLECTION),
       where("status", "==", "completed")
@@ -287,6 +299,7 @@ export class VersionService implements IVersionService {
   }
 
   async tagExistingAsPreRelease(): Promise<number> {
+    const firestore = await getFirestoreInstance();
     // Get all archived feedback without a version
     const q = query(
       collection(firestore, FEEDBACK_COLLECTION),

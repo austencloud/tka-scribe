@@ -14,7 +14,7 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IPresenceService } from "$lib/shared/presence/services/contracts/IPresenceService";
 import type {
@@ -35,6 +35,7 @@ export class UserActivityService implements IUserActivityService {
 
   async getAllUsersWithPresence(): Promise<UserWithActivity[]> {
     try {
+      const firestore = await getFirestoreInstance();
       // Get all users from Firestore
       const usersRef = collection(firestore, "users");
       const usersSnapshot = await getDocs(usersRef);
@@ -80,6 +81,7 @@ export class UserActivityService implements IUserActivityService {
     options: UserActivityQueryOptions
   ): Promise<ActivityEvent[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const activityRef = collection(
         firestore,
         `users/${options.userId}/activityLog`

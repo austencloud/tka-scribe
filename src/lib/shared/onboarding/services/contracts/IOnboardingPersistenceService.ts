@@ -74,7 +74,7 @@ export interface IOnboardingPersistenceService {
    * Subscribe to real-time updates (for cross-device sync).
    * Returns unsubscribe function.
    */
-  subscribe(callback: (status: OnboardingStatus) => void): () => void;
+  subscribe(callback: (status: OnboardingStatus) => void): Promise<() => void>;
 
   /**
    * Sync localStorage to Firebase when user authenticates.

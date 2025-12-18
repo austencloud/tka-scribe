@@ -18,7 +18,7 @@ import {
   orderBy,
   Timestamp,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { IAnnouncementService } from "../contracts/IAnnouncementService";
 import type { Announcement } from "../../domain/models/announcement-models";
 
@@ -66,6 +66,7 @@ export class AnnouncementService implements IAnnouncementService {
   async createAnnouncement(
     announcement: Omit<Announcement, "id" | "createdAt">
   ): Promise<string> {
+    const firestore = await getFirestoreInstance();
     const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
     const newDoc = doc(announcementsRef);
 
@@ -105,6 +106,7 @@ export class AnnouncementService implements IAnnouncementService {
     id: string,
     updates: Partial<Announcement>
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
 
     // Build update data, excluding undefined fields
@@ -130,6 +132,7 @@ export class AnnouncementService implements IAnnouncementService {
    * Delete an announcement
    */
   async deleteAnnouncement(id: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
     await deleteDoc(docRef);
   }
@@ -138,6 +141,7 @@ export class AnnouncementService implements IAnnouncementService {
    * Get all announcements (admin view)
    */
   async getAllAnnouncements(): Promise<Announcement[]> {
+    const firestore = await getFirestoreInstance();
     const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
     const q = query(announcementsRef, orderBy("createdAt", "desc"));
 
@@ -149,6 +153,7 @@ export class AnnouncementService implements IAnnouncementService {
    * Get active announcements for a user (excludes expired, applies targeting)
    */
   async getActiveAnnouncementsForUser(userId: string): Promise<Announcement[]> {
+    const firestore = await getFirestoreInstance();
     const now = Timestamp.now();
     const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
 
@@ -198,6 +203,7 @@ export class AnnouncementService implements IAnnouncementService {
     userId: string,
     announcementId: string
   ): Promise<boolean> {
+    const firestore = await getFirestoreInstance();
     const dismissalRef = doc(
       firestore,
       `users/${userId}/dismissedAnnouncements/${announcementId}`
@@ -213,6 +219,7 @@ export class AnnouncementService implements IAnnouncementService {
     userId: string,
     announcementId: string
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const dismissalRef = doc(
       firestore,
       `users/${userId}/dismissedAnnouncements/${announcementId}`
@@ -256,6 +263,7 @@ export class AnnouncementService implements IAnnouncementService {
       return [];
     }
 
+    const firestore = await getFirestoreInstance();
     const usersRef = collection(firestore, "users");
     const snapshot = await getDocs(usersRef);
 

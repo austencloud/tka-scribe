@@ -19,7 +19,7 @@ import {
 	serverTimestamp,
 	Timestamp,
 } from "firebase/firestore";
-import { auth, firestore } from "$lib/shared/auth/firebase";
+import { auth, getFirestoreInstance } from "$lib/shared/auth/firebase";
 import {
 	getTrainChallengesPath,
 	getUserTrainProgressPath,
@@ -55,6 +55,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 
 	async getActiveChallenges(): Promise<TrainChallenge[]> {
 		try {
+			const firestore = await getFirestoreInstance();
 			const challengesPath = getTrainChallengesPath();
 			const challengesQuery = query(
 				collection(firestore, challengesPath),
@@ -84,6 +85,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 
 		async getChallengeById(challengeId: string): Promise<TrainChallenge | null> {
 		try {
+			const firestore = await getFirestoreInstance();
 			const challengesPath = getTrainChallengesPath();
 			const challengeDocRef = doc(firestore, `${challengesPath}/${challengeId}`);
 			const challengeDoc = await getDoc(challengeDocRef);
@@ -168,6 +170,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 		if (!user) return [];
 
 		try {
+			const firestore = await getFirestoreInstance();
 			const progressPath = getUserTrainProgressPath(user.uid);
 			const progressSnapshot = await getDocs(collection(firestore, progressPath));
 
@@ -191,6 +194,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 		if (!user) return null;
 
 		try {
+			const firestore = await getFirestoreInstance();
 			const progressPath = getUserTrainProgressPath(user.uid);
 			const progressDocRef = doc(firestore, `${progressPath}/${challengeId}`);
 			const progressDoc = await getDoc(progressDocRef);
@@ -217,6 +221,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 			return; // Already started
 		}
 
+		const firestore = await getFirestoreInstance();
 		const initialProgress: Partial<UserTrainChallengeProgress> = {
 			id: challengeId,
 			challengeId,
@@ -264,6 +269,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 			return;
 		}
 
+		const firestore = await getFirestoreInstance();
 		const newProgress = progress.progress + increment;
 		const updatedAttempts = progress.attempts + 1;
 
@@ -314,6 +320,7 @@ export class TrainChallengeService implements ITrainChallengeService {
 			return 0;
 		}
 
+		const firestore = await getFirestoreInstance();
 		// Check if bonus condition is met (if applicable)
 		const bonusEarned = this._checkBonusCondition(challenge, finalScore);
 

@@ -16,7 +16,7 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { ILeaderboardService } from "../contracts/ILeaderboardService";
 import type {
   LeaderboardCategory,
@@ -153,6 +153,7 @@ export class LeaderboardService implements ILeaderboardService {
     options?: LeaderboardQueryOptions
   ): Promise<LeaderboardData> {
     try {
+      const firestore = await getFirestoreInstance();
       const auth = getAuth();
       const currentUserId = auth.currentUser?.uid;
 
@@ -218,6 +219,7 @@ export class LeaderboardService implements ILeaderboardService {
     category: LeaderboardCategory
   ): Promise<number | null> {
     try {
+      const firestore = await getFirestoreInstance();
       const orderByField = this.getOrderByField(category);
 
       // Get all users ordered by the metric
@@ -249,61 +251,67 @@ export class LeaderboardService implements ILeaderboardService {
     options?: LeaderboardQueryOptions
   ): () => void {
     try {
-      const auth = getAuth();
-      const currentUserId = auth.currentUser?.uid;
+      // Use async IIFE to get firestore instance
+      void (async () => {
+        const firestore = await getFirestoreInstance();
+        const auth = getAuth();
+        const currentUserId = auth.currentUser?.uid;
 
-      const limitCount = options?.limit ?? 100;
-      const orderByField = this.getOrderByField(category);
+        const limitCount = options?.limit ?? 100;
+        const orderByField = this.getOrderByField(category);
 
-      const usersRef = collection(firestore, "users");
-      const q = query(
-        usersRef,
-        orderBy(orderByField, "desc"),
-        limit(limitCount)
-      );
+        const usersRef = collection(firestore, "users");
+        const q = query(
+          usersRef,
+          orderBy(orderByField, "desc"),
+          limit(limitCount)
+        );
 
-      const unsubscribe: Unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const entries: LeaderboardEntry[] = [];
-          let currentUserRank: number | undefined;
-          let rank = (options?.offset ?? 0) + 1;
+        const unsubscribe: Unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const entries: LeaderboardEntry[] = [];
+            let currentUserRank: number | undefined;
+            let rank = (options?.offset ?? 0) + 1;
 
-          snapshot.forEach((doc) => {
-            const entry = this.mapToLeaderboardEntry(
-              doc,
-              rank,
+            snapshot.forEach((doc) => {
+              const entry = this.mapToLeaderboardEntry(
+                doc,
+                rank,
+                category,
+                currentUserId
+              );
+              entries.push(entry);
+
+              if (entry.isCurrentUser) {
+                currentUserRank = rank;
+              }
+
+              rank++;
+            });
+
+            const leaderboardData: LeaderboardData = {
               category,
-              currentUserId
+              entries,
+              ...(currentUserRank !== undefined && { currentUserRank }),
+              totalUsers: snapshot.size,
+              lastUpdated: new Date(),
+            };
+
+            callback(leaderboardData);
+          },
+          (error) => {
+            console.error(
+              "LeaderboardService: Error in leaderboard subscription",
+              error
             );
-            entries.push(entry);
+          }
+        );
 
-            if (entry.isCurrentUser) {
-              currentUserRank = rank;
-            }
+        return unsubscribe;
+      })();
 
-            rank++;
-          });
-
-          const leaderboardData: LeaderboardData = {
-            category,
-            entries,
-            ...(currentUserRank !== undefined && { currentUserRank }),
-            totalUsers: snapshot.size,
-            lastUpdated: new Date(),
-          };
-
-          callback(leaderboardData);
-        },
-        (error) => {
-          console.error(
-            "LeaderboardService: Error in leaderboard subscription",
-            error
-          );
-        }
-      );
-
-      return unsubscribe;
+      return () => {};
     } catch (error) {
       console.error(
         "LeaderboardService: Error subscribing to leaderboard",

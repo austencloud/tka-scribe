@@ -13,7 +13,7 @@ import {
   where,
   Timestamp,
 } from "firebase/firestore";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
 import type {
@@ -54,7 +54,8 @@ export class SystemStateService implements ISystemStateService {
   /**
    * Check if Firestore is available
    */
-  private isFirestoreAvailable(): boolean {
+  private async isFirestoreAvailable(): Promise<boolean> {
+    const firestore = await getFirestoreInstance();
     return firestore !== null && firestore !== undefined && auth.currentUser !== null;
   }
 
@@ -67,7 +68,7 @@ export class SystemStateService implements ISystemStateService {
       return this.cachedState;
     }
 
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return this.getEmptySystemState();
     }
 
@@ -104,6 +105,7 @@ export class SystemStateService implements ISystemStateService {
    */
   private async loadUsers(): Promise<CachedUserMetadata[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const usersRef = collection(firestore, "users");
       const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
 
@@ -185,6 +187,7 @@ export class SystemStateService implements ISystemStateService {
    */
   private async loadDailyChallenges(): Promise<CachedChallenge[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const challengesRef = collection(firestore, "daily_challenges");
       const snapshot = await withTimeout(getDocs(challengesRef), QUERY_TIMEOUT_MS, null);
 
@@ -232,6 +235,7 @@ export class SystemStateService implements ISystemStateService {
    */
   private async loadTrainChallenges(): Promise<CachedChallenge[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const challengesRef = collection(firestore, "train_challenges");
       const snapshot = await withTimeout(getDocs(challengesRef), QUERY_TIMEOUT_MS, null);
 
@@ -273,6 +277,7 @@ export class SystemStateService implements ISystemStateService {
    */
   private async loadAnnouncements(): Promise<CachedAnnouncement[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const announcementsRef = collection(firestore, "announcements");
       const snapshot = await withTimeout(getDocs(announcementsRef), QUERY_TIMEOUT_MS, null);
 

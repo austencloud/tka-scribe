@@ -20,7 +20,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import type { Timestamp, DocumentData } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { getUserAchievementsPath } from "$lib/shared/gamification/data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from "$lib/shared/gamification/domain/constants/achievement-definitions";
 import type { Achievement, UserAchievement } from "$lib/shared/gamification/domain/models/achievement-models";
@@ -79,6 +79,7 @@ export class UserService implements IUserService {
     currentUserId?: string
   ): Promise<EnhancedUserProfile | null> {
     try {
+      const firestore = await getFirestoreInstance();
       const userDocRef = doc(firestore, this.USERS_COLLECTION, userId);
       const userDoc = await getDoc(userDocRef);
 
@@ -112,6 +113,7 @@ export class UserService implements IUserService {
     currentUserId?: string
   ): Promise<EnhancedUserProfile[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const usersRef = collection(firestore, this.USERS_COLLECTION);
       let q = query(usersRef);
 
@@ -172,15 +174,18 @@ export class UserService implements IUserService {
     options?: CreatorQueryOptions,
     currentUserId?: string
   ): () => void {
-    const usersRef = collection(firestore, this.USERS_COLLECTION);
-    const limitValue = options?.limit ?? 100;
-    const q = query(usersRef, firestoreLimit(limitValue));
+    // Use async IIFE to get firestore instance
+    void (async () => {
+      const firestore = await getFirestoreInstance();
+      const usersRef = collection(firestore, this.USERS_COLLECTION);
+      const limitValue = options?.limit ?? 100;
+      const q = query(usersRef, firestoreLimit(limitValue));
 
-    const unsubscribe = onSnapshot(
-      q,
-      (querySnapshot) => {
-        // Process async operations without blocking
-        void (async () => {
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          // Process async operations without blocking
+          void (async () => {
           // Get list of users current user is following
           let followingSet = new Set<string>();
           if (currentUserId) {
@@ -207,15 +212,18 @@ export class UserService implements IUserService {
           let filteredUsers = this.applyFilters(users, options);
           filteredUsers = this.applySorting(filteredUsers, options);
 
-          callback(filteredUsers);
-        })();
-      },
-      (error) => {
-        console.error("[UserService] Real-time subscription error:", error);
-      }
-    );
+            callback(filteredUsers);
+          })();
+        },
+        (error) => {
+          console.error("[UserService] Real-time subscription error:", error);
+        }
+      );
 
-    return unsubscribe;
+      return unsubscribe;
+    })();
+
+    return () => {};
   }
 
   /**
@@ -258,6 +266,7 @@ export class UserService implements IUserService {
     }
 
     try {
+      const firestore = await getFirestoreInstance();
       await runTransaction(firestore, async (transaction) => {
         // Document references
         const followingRef = doc(
@@ -324,6 +333,7 @@ export class UserService implements IUserService {
     }
 
     try {
+      const firestore = await getFirestoreInstance();
       await runTransaction(firestore, async (transaction) => {
         // Document references
         const followingRef = doc(
@@ -381,6 +391,7 @@ export class UserService implements IUserService {
     }
 
     try {
+      const firestore = await getFirestoreInstance();
       const followingRef = doc(
         firestore,
         `${this.USERS_COLLECTION}/${currentUserId}/following/${targetUserId}`
@@ -398,6 +409,7 @@ export class UserService implements IUserService {
    */
   async getFollowing(userId: string, limit = 50): Promise<UserProfile[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const followingRef = collection(
         firestore,
         `${this.USERS_COLLECTION}/${userId}/following`
@@ -425,6 +437,7 @@ export class UserService implements IUserService {
    */
   async getFollowers(userId: string, limit = 50): Promise<UserProfile[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const followersRef = collection(
         firestore,
         `${this.USERS_COLLECTION}/${userId}/followers`
@@ -461,23 +474,29 @@ export class UserService implements IUserService {
       return () => {};
     }
 
-    const followingRef = doc(
-      firestore,
-      `${this.USERS_COLLECTION}/${currentUserId}/following/${targetUserId}`
-    );
+    // Use async IIFE to get firestore instance
+    void (async () => {
+      const firestore = await getFirestoreInstance();
+      const followingRef = doc(
+        firestore,
+        `${this.USERS_COLLECTION}/${currentUserId}/following/${targetUserId}`
+      );
 
-    const unsubscribe = onSnapshot(
-      followingRef,
-      (docSnap) => {
-        callback(docSnap.exists());
-      },
-      (error) => {
-        console.error(`[UserService] Follow status subscription error:`, error);
-        callback(false);
-      }
-    );
+      const unsubscribe = onSnapshot(
+        followingRef,
+        (docSnap) => {
+          callback(docSnap.exists());
+        },
+        (error) => {
+          console.error(`[UserService] Follow status subscription error:`, error);
+          callback(false);
+        }
+      );
 
-    return unsubscribe;
+      return unsubscribe;
+    })();
+
+    return () => {};
   }
 
   // ============================================================================
@@ -489,6 +508,7 @@ export class UserService implements IUserService {
    */
   private async getFollowingIds(userId: string): Promise<Set<string>> {
     try {
+      const firestore = await getFirestoreInstance();
       const followingRef = collection(
         firestore,
         `${this.USERS_COLLECTION}/${userId}/following`
@@ -576,6 +596,7 @@ export class UserService implements IUserService {
    */
   private async fetchUserTopAchievements(userId: string): Promise<Achievement[]> {
     try {
+      const firestore = await getFirestoreInstance();
       // Get user's unlocked achievements from subcollection
       const achievementsPath = getUserAchievementsPath(userId);
       const achievementsRef = collection(firestore, achievementsPath);

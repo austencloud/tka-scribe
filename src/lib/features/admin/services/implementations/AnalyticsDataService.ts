@@ -14,7 +14,7 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ISystemStateService } from "../contracts/ISystemStateService";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
@@ -59,7 +59,8 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Check if Firebase is properly initialized and user is authenticated
    * Silent check - returns false gracefully without logging
    */
-  private isFirestoreAvailable(): boolean {
+  private async isFirestoreAvailable(): Promise<boolean> {
+    const firestore = await getFirestoreInstance();
     return firestore !== null && firestore !== undefined && auth.currentUser !== null;
   }
 
@@ -73,7 +74,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    */
   async getSummaryMetrics(_timeRange: AnalyticsTimeRange): Promise<SummaryMetrics> {
     // Return empty metrics if Firebase is not available
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return this.getEmptySummaryMetrics();
     }
 
@@ -126,7 +127,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Fallback: Uses lastActivityDate from user documents
    */
   async getUserActivity(timeRange: AnalyticsTimeRange): Promise<UserActivityPoint[]> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return [];
     }
 
@@ -170,6 +171,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     days: number
   ): Promise<UserActivityPoint[]> {
     try {
+      const firestore = await getFirestoreInstance();
       const usersRef = collection(firestore, "users");
       const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
 
@@ -245,7 +247,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * OPTIMIZED: Uses SystemStateService for unified data hub
    */
   async getContentStatistics(): Promise<ContentStatistics> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return { totalSequences: 0, publicSequences: 0, totalViews: 0, totalShares: 0 };
     }
 
@@ -276,13 +278,14 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Get top sequences by views
    */
   async getTopSequences(limitCount: number): Promise<TopSequenceData[]> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return [];
     }
 
     // Try to get top sequences from a sequences collection if it exists
     // Otherwise, aggregate from user data
     try {
+      const firestore = await getFirestoreInstance();
       const sequencesRef = collection(firestore, "publicSequences");
       const q = query(sequencesRef, orderBy("views", "desc"), limit(limitCount));
       const snapshot = await withTimeout(getDocs(q), QUERY_TIMEOUT_MS, null);
@@ -317,7 +320,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * OPTIMIZED: Uses SystemStateService for unified data hub
    */
   async getEngagementMetrics(): Promise<EngagementMetrics> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return {
         challengeParticipants: 0,
         achievementsUnlocked: 0,
@@ -373,7 +376,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Get activity event breakdown by type for the time range
    */
   async getEventTypeBreakdown(timeRange: AnalyticsTimeRange): Promise<EventTypeBreakdown[]> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return [];
     }
 
@@ -424,7 +427,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Now supports module:tab format (e.g., "create:generator")
    */
   async getModuleUsage(timeRange: AnalyticsTimeRange): Promise<ModuleUsageData[]> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return [];
     }
 
@@ -523,7 +526,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Get recent activity events (across all users) with user details
    */
   async getRecentActivity(limitCount: number): Promise<RecentActivityEvent[]> {
-    if (!this.isFirestoreAvailable()) {
+    if (!(await this.isFirestoreAvailable())) {
       return [];
     }
 
@@ -565,6 +568,7 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     if (userIds.length === 0) return userMap;
 
     try {
+      const firestore = await getFirestoreInstance();
       // Fetch user documents in parallel
       const userPromises = userIds.map(async (userId) => {
         try {

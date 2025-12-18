@@ -10,7 +10,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { NotificationPreferences } from "../../domain/models/notification-models";
 import { DEFAULT_NOTIFICATION_PREFERENCES } from "../../domain/models/notification-models";
 
@@ -24,6 +24,7 @@ export class NotificationPreferencesService {
    */
   async getPreferences(userId: string): Promise<NotificationPreferences> {
     try {
+      const firestore = await getFirestoreInstance();
       const userRef = doc(firestore, USERS_COLLECTION, userId);
       const userDoc = await getDoc(userRef);
 
@@ -57,6 +58,7 @@ export class NotificationPreferencesService {
     preferences: NotificationPreferences
   ): Promise<void> {
     try {
+      const firestore = await getFirestoreInstance();
       const userRef = doc(firestore, USERS_COLLECTION, userId);
       const userDoc = await getDoc(userRef);
 
