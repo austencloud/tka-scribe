@@ -28,6 +28,8 @@ import { firestore } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
+import type { ITagService } from "../contracts/ITagService";
+import { migrateSequenceTags } from "../migrations/tag-migration";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
 	ILibraryService,
@@ -69,7 +71,9 @@ export class LibraryError extends Error {
 export class LibraryService implements ILibraryService {
 	constructor(
 		@inject(TYPES.IAchievementService)
-		private achievementService: IAchievementService
+		private achievementService: IAchievementService,
+		@inject(TYPES.ITagService)
+		private tagService: ITagService
 	) {}
 
 	/**
@@ -102,9 +106,14 @@ export class LibraryService implements ILibraryService {
 	private mapDocToLibrarySequence(doc: DocumentData, id: string): LibrarySequence {
 		const data = doc;
 		const forkAttr = data["forkAttribution"];
+
+		// Ensure sequenceTags exists (for backward compatibility)
+		const sequenceTags = data["sequenceTags"] || [];
+
 		return {
 			...data,
 			id,
+			sequenceTags,
 			createdAt: this.toDate(data["createdAt"]),
 			updatedAt: this.toDate(data["updatedAt"]),
 			// Convert dateAdded if present (legacy field from SequenceData)
@@ -169,6 +178,21 @@ export class LibraryService implements ILibraryService {
 				});
 			} catch (_e) {
 				console.warn("Failed to track achievement:", _e);
+			}
+		}
+
+		// Migrate tags to sequenceTags if needed
+		if (!librarySequence.sequenceTags || librarySequence.sequenceTags.length === 0) {
+			try {
+				const migrationResult = await migrateSequenceTags(librarySequence, this.tagService);
+				librarySequence = {
+					...librarySequence,
+					sequenceTags: migrationResult.sequenceTags,
+					tagIds: migrationResult.tagIds,
+				};
+			} catch (error) {
+				console.error("[LibraryService] Tag migration failed:", error);
+				// Continue with save even if migration fails
 			}
 		}
 
@@ -340,7 +364,8 @@ export class LibraryService implements ILibraryService {
 			return sequences.filter(
 				(seq) =>
 					seq.name.toLowerCase().includes(searchLower) ||
-					seq.word.toLowerCase().includes(searchLower)
+					seq.word.toLowerCase().includes(searchLower) ||
+					seq.displayName?.toLowerCase().includes(searchLower)
 			);
 		}
 
@@ -598,6 +623,7 @@ export class LibraryService implements ILibraryService {
 				ownerDisplayName: userData["displayName"] ?? "Unknown",
 				ownerAvatarUrl: userData["photoURL"],
 				name: sequence.name,
+				displayName: sequence.displayName, // User's custom display name
 				word: sequence.word,
 				thumbnails: sequence.thumbnails.slice(0, 3) ?? [],
 				sequenceLength: sequence.beats.length ?? 0,

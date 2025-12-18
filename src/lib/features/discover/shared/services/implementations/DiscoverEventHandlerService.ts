@@ -14,9 +14,10 @@ import type {
 } from "../contracts/IDiscoverEventHandlerService";
 import { openSpotlightViewer } from "../../../../../shared/application/state/ui/ui-state.svelte";
 import type { IDiscoverThumbnailService } from "../../../gallery/display/services/contracts/IDiscoverThumbnailService";
+import type { IDiscoverLoader } from "../../../gallery/display/services/contracts/IDiscoverLoader";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
 import type { ISheetRouterService } from "../../../../../shared/navigation/services/contracts/ISheetRouterService";
-import { navigationState } from "../../../../../shared/navigation/state/navigation-state.svelte";
+import { handleModuleChange } from "../../../../../shared/navigation-coordinator/navigation-coordinator.svelte";
 @injectable()
 export class DiscoverEventHandlerService implements IDiscoverEventHandlerService {
   private params: ExploreEventHandlerParams | null = null;
@@ -27,7 +28,11 @@ export class DiscoverEventHandlerService implements IDiscoverEventHandlerService
 
     @inject(TYPES.ISheetRouterService)
     @optional()
-    private sheetRouterService: ISheetRouterService | null
+    private sheetRouterService: ISheetRouterService | null,
+
+    @inject(TYPES.IDiscoverLoader)
+    @optional()
+    private loaderService: IDiscoverLoader | null
   ) {}
 
   /**
@@ -95,26 +100,36 @@ export class DiscoverEventHandlerService implements IDiscoverEventHandlerService
     galleryPanelManager.close();
   }
 
-  handleEditSequence(sequence: SequenceData): void {
+  async handleEditSequence(sequence: SequenceData): Promise<void> {
     this.ensureInitialized();
 
     try {
-      // Store the sequence data in localStorage for the Create module to pick up
+      // Gallery sequences have empty beats - need to load full sequence data
+      let fullSequence = sequence;
+      if (!sequence.beats || sequence.beats.length === 0) {
+        if (this.loaderService) {
+          const sequenceName = sequence.word || sequence.id;
+          const loaded = await this.loaderService.loadFullSequenceData(sequenceName);
+          if (loaded) {
+            fullSequence = loaded;
+          }
+        }
+      }
+
+      // Store the full sequence data in localStorage for the Create module to pick up
       localStorage.setItem(
         "tka-pending-edit-sequence",
-        JSON.stringify(sequence)
+        JSON.stringify(fullSequence)
       );
 
       // Close the detail panel if open
       this.handleCloseDetailPanel();
 
-      // Navigate to Create module's construct tab
-      navigationState.setCurrentModule("create");
-      navigationState.setCurrentSection("construct");
-
-      console.log("🖊️ Navigating to edit sequence:", sequence.id);
+      // Navigate to Create module's constructor tab using coordinator
+      // (handleModuleChange does both state update AND module switch)
+      void handleModuleChange("create", "constructor");
     } catch (err) {
-      console.error("❌ Failed to initiate edit:", err);
+      console.error("Failed to initiate edit:", err);
       this.params!.setError(
         err instanceof Error
           ? err.message

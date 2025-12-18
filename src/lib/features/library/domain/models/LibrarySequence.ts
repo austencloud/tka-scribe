@@ -6,6 +6,7 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { SequenceTag } from "./SequenceTag";
 
 /**
  * How the sequence entered the user's library
@@ -77,8 +78,11 @@ export interface LibrarySequence extends SequenceData {
 	/** Collection IDs this sequence belongs to */
 	readonly collectionIds: readonly string[];
 
-	/** User-defined tag IDs */
+	/** User-defined tag IDs (legacy - use sequenceTags instead) */
 	readonly tagIds: readonly string[];
+
+	/** Structured tags with source tracking (replaces tagIds) */
+	readonly sequenceTags: readonly SequenceTag[];
 
 	/** User's personal notes about this sequence */
 	readonly notes?: string;
@@ -119,6 +123,7 @@ export interface CreateLibrarySequenceOptions {
 	visibility?: SequenceVisibility;
 	collectionIds?: string[];
 	tagIds?: string[];
+	sequenceTags?: SequenceTag[];
 	notes?: string;
 }
 
@@ -140,6 +145,7 @@ export function createLibrarySequence(
 		visibility: options.visibility ?? "public",
 		collectionIds: options.collectionIds ?? [],
 		tagIds: options.tagIds ?? [],
+		sequenceTags: options.sequenceTags ?? [],
 		notes: options.notes,
 		forkCount: 0,
 		viewCount: 0,

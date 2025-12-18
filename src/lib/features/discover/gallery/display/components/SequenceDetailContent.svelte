@@ -145,10 +145,13 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   <!-- Metadata -->
   <div class="metadata">
-    <h2 class="viewer-word-label">{sequence.name || sequence.word}</h2>
+    <h2 class="viewer-word-label">{sequence.displayName || sequence.word}</h2>
     <div class="metadata-row">
-      <span class="metadata-item">Length: {sequence.sequenceLength} beats</span>
-      <span class="metadata-item">Level: {sequence.difficultyLevel}</span>
+      <span class="metadata-item">{sequence.sequenceLength} beats</span>
+      <span class="metadata-item">{sequence.difficultyLevel}</span>
+      {#if sequence.displayName}
+        <span class="metadata-item tka-indicator">TKA: {sequence.word}</span>
+      {/if}
     </div>
     {#if hasCreatorInfo || sequence.author}
       <div class="metadata-row">
@@ -443,6 +446,13 @@ Used by both desktop side panel and mobile slide-up overlay.
   .metadata-item {
     font-size: clamp(12px, 3cqi, 14px);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+  }
+
+  .tka-indicator {
+    color: var(--theme-accent, #a78bfa);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .creator-link {

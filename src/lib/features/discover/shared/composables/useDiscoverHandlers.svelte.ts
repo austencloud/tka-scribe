@@ -1,10 +1,13 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { IDiscoverThumbnailService } from "../../gallery/display/services/contracts/IDiscoverThumbnailService";
 import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
-import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+import type { IDiscoverLoader } from "../../gallery/display/services/contracts/IDiscoverLoader";
+import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 import type { createExploreState } from "../state/discover-state-factory.svelte";
 import { openSpotlightViewer } from "../../../../shared/application/state/ui/ui-state.svelte";
+import { tryResolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
 
 type ExploreState = ReturnType<typeof createExploreState>;
 
@@ -70,24 +73,32 @@ export function useDiscoverHandlers({
     galleryPanelManager.close();
   }
 
-  function handleEditSequence(sequence: SequenceData) {
+  async function handleEditSequence(sequence: SequenceData) {
     try {
-      // Store the sequence data in localStorage for the Create module to pick up
-      localStorage.setItem(
-        "tka-pending-edit-sequence",
-        JSON.stringify(sequence)
-      );
+      // Gallery sequences have empty beats - need to load full sequence data
+      let fullSequence = sequence;
+      if (!sequence.beats || sequence.beats.length === 0) {
+        const loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
+        if (loaderService) {
+          const sequenceName = sequence.word || sequence.id;
+          const loaded = await loaderService.loadFullSequenceData(sequenceName);
+          if (loaded) {
+            fullSequence = loaded;
+          }
+        }
+      }
+
+      // Store the full sequence data in localStorage for the Create module to pick up
+      localStorage.setItem("tka-pending-edit-sequence", JSON.stringify(fullSequence));
 
       // Close the detail panel if open
       handleCloseDetailPanel();
 
-      // Navigate to Create module's construct tab
-      navigationState.setCurrentModule("create");
-      navigationState.setCurrentSection("construct");
-
-      console.log("🖊️ Navigating to edit sequence:", sequence.id);
+      // Navigate to Create module's constructor tab using coordinator
+      // (handleModuleChange does both state update AND module switch)
+      void handleModuleChange("create", "constructor");
     } catch (err: unknown) {
-      console.error("❌ Failed to initiate edit:", err);
+      console.error("Failed to initiate edit:", err);
       setError(
         err instanceof Error
           ? err.message

@@ -124,8 +124,10 @@ export class DiscoverFilterService implements IDiscoverFilterService {
     }
 
     const searchTerm = filterValue.toLowerCase();
-    return sequences.filter((seq) =>
-      seq.word.toLowerCase().includes(searchTerm)
+    return sequences.filter(
+      (seq) =>
+        seq.word.toLowerCase().includes(searchTerm) ||
+        seq.displayName?.toLowerCase().includes(searchTerm)
     );
   }
 

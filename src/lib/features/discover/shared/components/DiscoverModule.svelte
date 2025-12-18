@@ -4,9 +4,15 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
-  import { onMount, setContext } from "svelte";
+  import { onMount, setContext, untrack } from "svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
+  import ModuleOnboarding from "$lib/shared/onboarding/components/ModuleOnboarding.svelte";
+  import { DISCOVER_ONBOARDING } from "$lib/shared/onboarding/config/module-onboarding-content";
+  import {
+    hasCompletedModuleOnboarding,
+    markModuleOnboardingComplete,
+  } from "$lib/shared/onboarding/config/storage-keys";
 
   import type { IDiscoverEventHandlerService } from "../services/contracts/IDiscoverEventHandlerService";
   import CollectionsDiscoverPanel from "../../collections/components/CollectionsDiscoverPanel.svelte";
@@ -40,6 +46,48 @@
 
   // Service resolved lazily in onMount to ensure feature module is loaded
   let eventHandlerService: IDiscoverEventHandlerService | null = null;
+
+  // ============================================================================
+  // ONBOARDING STATE
+  // ============================================================================
+  let showOnboarding = $state(false);
+
+  // Check onboarding status on initialization
+  $effect(() => {
+    // Only run once on mount (not reactive to anything)
+    if (typeof window !== "undefined") {
+      showOnboarding = !hasCompletedModuleOnboarding("discover");
+    }
+  });
+
+  // Sync onboarding visibility with navigation state (for desktop sidebar tab hiding)
+  $effect(() => {
+    const visible = showOnboarding;
+    untrack(() => {
+      navigationState.setModuleOnboardingVisible("discover", visible);
+    });
+  });
+
+  function handleOnboardingChoiceStepReached() {
+    navigationState.setModuleOnboardingOnChoiceStep("discover", true);
+  }
+
+  function handleOnboardingTabSelected(tabId: string) {
+    markModuleOnboardingComplete("discover");
+    showOnboarding = false;
+    navigationState.setModuleOnboardingVisible("discover", false);
+
+    // Navigate to the selected tab
+    // Map tab IDs to navigation state values
+    const navTab = tabId === "gallery" ? "sequences" : tabId;
+    navigationState.setActiveTab(navTab);
+  }
+
+  function handleOnboardingSkip() {
+    markModuleOnboardingComplete("discover");
+    showOnboarding = false;
+    navigationState.setModuleOnboardingVisible("discover", false);
+  }
 
   // ✅ PURE RUNES: Local state
   let _selectedSequence = $state<SequenceData | null>(null);
@@ -344,34 +392,52 @@
   });
 </script>
 
-<!-- Error banner -->
-{#if error}
-  <ErrorBanner
-    message={error}
-    onDismiss={() => eventHandlerService?.handleErrorDismiss()}
-    onRetry={() => eventHandlerService?.handleRetry()}
+<!-- Module Onboarding (first-time users) -->
+{#if showOnboarding}
+  <div class="onboarding-wrapper">
+    <ModuleOnboarding
+      moduleId={DISCOVER_ONBOARDING.moduleId}
+      moduleName={DISCOVER_ONBOARDING.moduleName}
+      moduleIcon={DISCOVER_ONBOARDING.moduleIcon}
+      moduleColor={DISCOVER_ONBOARDING.moduleColor}
+      welcomeTitle={DISCOVER_ONBOARDING.welcomeTitle}
+      welcomeSubtitle={DISCOVER_ONBOARDING.welcomeSubtitle}
+      welcomeDescription={DISCOVER_ONBOARDING.welcomeDescription}
+      tabs={DISCOVER_ONBOARDING.tabs}
+      onTabSelected={handleOnboardingTabSelected}
+      onSkip={handleOnboardingSkip}
+      onChoiceStepReached={handleOnboardingChoiceStepReached}
+    />
+  </div>
+{:else}
+  <!-- Error banner -->
+  {#if error}
+    <ErrorBanner
+      message={error}
+      onDismiss={() => eventHandlerService?.handleErrorDismiss()}
+      onRetry={() => eventHandlerService?.handleRetry()}
+    />
+  {/if}
+
+  <!-- Delete confirmation dialog -->
+  {#if deleteConfirmationData}
+    <DiscoverDeleteDialog
+      show={true}
+      confirmationData={deleteConfirmationData}
+      onConfirm={() =>
+        eventHandlerService?.handleDeleteConfirm(deleteConfirmationData)}
+      onCancel={() => eventHandlerService?.handleDeleteCancel()}
+    />
+  {/if}
+
+  <!-- Animation Sheet Coordinator -->
+  <AnimationSheetCoordinator
+    sequence={galleryState.sequenceToAnimate}
+    bind:isOpen={showAnimator}
   />
-{/if}
 
-<!-- Delete confirmation dialog -->
-{#if deleteConfirmationData}
-  <DiscoverDeleteDialog
-    show={true}
-    confirmationData={deleteConfirmationData}
-    onConfirm={() =>
-      eventHandlerService?.handleDeleteConfirm(deleteConfirmationData)}
-    onCancel={() => eventHandlerService?.handleDeleteCancel()}
-  />
-{/if}
-
-<!-- Animation Sheet Coordinator -->
-<AnimationSheetCoordinator
-  sequence={galleryState.sequenceToAnimate}
-  bind:isOpen={showAnimator}
-/>
-
-<!-- Main layout - shows immediately with skeletons while data loads -->
-<div class="explore-content">
+  <!-- Main layout - shows immediately with skeletons while data loads -->
+  <div class="explore-content">
   <!-- Tab Content - Bottom navigation controls the active tab -->
   <!-- Note: We keep all tabs mounted but hidden to preserve state and avoid refetching -->
   <div class="explore-tab-content">
@@ -406,8 +472,19 @@
     </div>
   </div>
 </div>
+{/if}
 
 <style>
+  .onboarding-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.95));
+  }
+
   .explore-content {
     display: flex;
     flex-direction: column;
