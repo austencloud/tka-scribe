@@ -17,6 +17,9 @@ import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
 export interface SequenceData {
   readonly id: string;
   readonly name: string;
+  /** User's custom display name (optional). When set, shown as primary name in UI. */
+  readonly displayName?: string;
+  /** TKA word - auto-generated from sequence letters, immutable */
   readonly word: string;
   readonly beats: readonly BeatData[]; // Only actual beats (beatNumber >= 1), never start position
 
@@ -70,6 +73,7 @@ export function createSequenceData(
     name: data.name ?? "",
     word: data.word ?? "",
     beats: data.beats ?? [],
+    ...(data.displayName !== undefined && { displayName: data.displayName }),
     thumbnails: data.thumbnails ?? [],
     isFavorite: data.isFavorite ?? false,
     isCircular: data.isCircular ?? false,

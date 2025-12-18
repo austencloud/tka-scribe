@@ -93,6 +93,69 @@ export class PreviewCacheService {
   }
 
   /**
+   * Get cached preview blob directly (for reuse in SaveToLibrary, etc.)
+   * Returns the blob without converting to object URL
+   */
+  async getCachedBlob(
+    sequence: SequenceData,
+    options: ShareOptions
+  ): Promise<Blob | null> {
+    if (!browser) return null;
+
+    try {
+      await this.init();
+      if (!this.db) return null;
+
+      const key = this.getCacheKey(sequence.id, options);
+      const sequenceHash = this.hashSequence(sequence);
+
+      return new Promise((resolve) => {
+        const transaction = this.db!.transaction(STORE_NAME, "readonly");
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(key);
+
+        request.onsuccess = () => {
+          const cached = request.result as
+            | (CachedPreview & { key: string })
+            | undefined;
+
+          if (!cached) {
+            resolve(null);
+            return;
+          }
+
+          // Check if sequence has changed
+          if (cached.sequenceHash !== sequenceHash) {
+            debug.log("Sequence changed, cache invalid");
+            resolve(null);
+            return;
+          }
+
+          // Check if cache is stale (older than 7 days)
+          const age = Date.now() - cached.timestamp;
+          if (age > MAX_CACHE_AGE_MS) {
+            debug.log("Cache expired, regenerating");
+            resolve(null);
+            return;
+          }
+
+          // Return the blob directly
+          debug.success("Retrieved cached blob from IndexedDB");
+          resolve(cached.imageBlob);
+        };
+
+        request.onerror = () => {
+          console.error("Failed to get cached blob:", request.error);
+          resolve(null);
+        };
+      });
+    } catch (error) {
+      console.error("Error accessing preview cache:", error);
+      return null;
+    }
+  }
+
+  /**
    * Get cached preview if it exists and hasn't changed
    */
   async getCachedPreview(

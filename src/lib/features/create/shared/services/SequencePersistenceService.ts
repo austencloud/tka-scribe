@@ -27,6 +27,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
  */
 export interface SaveSequenceMetadata {
   name: string;
+  /** User's custom display name (optional). When set, shown as primary name in UI. */
+  displayName?: string;
   description?: string;
   tags?: string[];
   notes?: string;
@@ -89,6 +91,7 @@ export class SequencePersistenceService {
       id: sequenceId,
       userId: user.uid,
       name: metadata.name,
+      displayName: metadata.displayName, // User's custom display name
       word: sequenceData.word,
       beats: sequenceData.beats,
       visibility: metadata.visibility,
@@ -139,6 +142,7 @@ export class SequencePersistenceService {
     };
     
     if (metadata.name !== undefined) updates.name = metadata.name;
+    if (metadata.displayName !== undefined) updates.displayName = metadata.displayName;
     if (metadata.description !== undefined) updates.description = metadata.description;
     if (metadata.visibility !== undefined) updates.visibility = metadata.visibility;
     if (metadata.tags !== undefined) updates.tags = metadata.tags;

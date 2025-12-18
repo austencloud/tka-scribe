@@ -7,6 +7,7 @@
 
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
+import type { CompositionProgressCallback } from "./IImageCompositionService";
 
 export interface ISequenceRenderService {
   /**
@@ -15,7 +16,8 @@ export interface ISequenceRenderService {
    */
   renderSequenceToCanvas(
     sequence: SequenceData,
-    options?: Partial<SequenceExportOptions>
+    options?: Partial<SequenceExportOptions>,
+    onProgress?: CompositionProgressCallback
   ): Promise<HTMLCanvasElement>;
 
   /**
@@ -24,7 +26,8 @@ export interface ISequenceRenderService {
    */
   renderSequenceToBlob(
     sequence: SequenceData,
-    options?: Partial<SequenceExportOptions>
+    options?: Partial<SequenceExportOptions>,
+    onProgress?: CompositionProgressCallback
   ): Promise<Blob>;
 
   /**

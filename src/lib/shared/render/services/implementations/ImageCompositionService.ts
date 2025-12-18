@@ -19,7 +19,7 @@ import { getVisibilityStateManager } from "../../../pictograph/shared/state/visi
 import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
 import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
-import type { IImageCompositionService } from "../contracts/IImageCompositionService";
+import type { CompositionProgressCallback, IImageCompositionService } from "../contracts/IImageCompositionService";
 import type { ILayoutCalculationService } from "../contracts/ILayoutCalculationService";
 import type { ITextRenderingService } from "../contracts/ITextRenderingService";
 
@@ -62,10 +62,12 @@ export class ImageCompositionService implements IImageCompositionService {
 
   /**
    * Compose complete sequence image from sequence data
+   * @param onProgress Optional callback for progress tracking during rendering
    */
   async composeSequenceImage(
     sequence: SequenceData,
-    options: SequenceExportOptions
+    options: SequenceExportOptions,
+    onProgress?: CompositionProgressCallback
   ): Promise<HTMLCanvasElement> {
     if (!sequence.beats || sequence.beats.length === 0) {
       throw new Error("Sequence must have at least one beat");
@@ -132,9 +134,17 @@ export class ImageCompositionService implements IImageCompositionService {
     ctx.fillStyle = "white";
     ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
 
+    // Calculate total items to render for progress tracking
+    const hasStartPosition = options.includeStartPosition && sequence.startPosition;
+    const totalItems = sequence.beats.length + (hasStartPosition ? 1 : 0);
+    let renderedCount = 0;
+
+    // Report initial progress
+    onProgress?.({ current: 0, total: totalItems, stage: "rendering" });
+
     // Step 4: Render each pictograph directly onto the canvas (offset by header height)
     // Render start position if needed (always at column 0, row 0)
-    if (options.includeStartPosition && sequence.startPosition) {
+    if (hasStartPosition && sequence.startPosition) {
       // Only pass beat number 0 if addBeatNumbers is true (shows "Start" text)
       const startBeatNumber = options.addBeatNumbers ? 0 : undefined;
       // Apply prop type override if provided
@@ -151,6 +161,8 @@ export class ImageCompositionService implements IImageCompositionService {
         headerHeight, // Offset grid below header
         visibilitySettings // Pass visibility settings
       );
+      renderedCount++;
+      onProgress?.({ current: renderedCount, total: totalItems, stage: "rendering" });
     }
 
     // Step 5: Render all beats in the grid
@@ -180,6 +192,8 @@ export class ImageCompositionService implements IImageCompositionService {
         headerHeight, // Offset grid below header
         visibilitySettings // Pass visibility settings
       );
+      renderedCount++;
+      onProgress?.({ current: renderedCount, total: totalItems, stage: "rendering" });
     }
 
     // Step 6: Draw cell borders only between occupied cells

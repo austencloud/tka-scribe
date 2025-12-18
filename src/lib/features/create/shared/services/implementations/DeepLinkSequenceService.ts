@@ -21,6 +21,13 @@ import type { IPositionDeriverService } from "$lib/shared/navigation/services/co
 
 const PENDING_EDIT_KEY = "tka-pending-edit-sequence";
 
+/**
+ * Session-level flag indicating a pending edit was processed this session.
+ * This survives localStorage clearing and prevents persistence restoration
+ * from overwriting the loaded sequence.
+ */
+let pendingEditProcessedThisSession = false;
+
 @injectable()
 export class DeepLinkSequenceService implements IDeepLinkSequenceService {
   constructor(
@@ -47,6 +54,15 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * Check if a pending edit was processed this session.
+   * This flag survives localStorage clearing and can be used by persistence
+   * restoration code to avoid overwriting the loaded sequence.
+   */
+  wasPendingEditProcessedThisSession(): boolean {
+    return pendingEditProcessedThisSession;
   }
 
   async loadFromDeepLink(
@@ -84,13 +100,18 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
   ): Promise<DeepLinkLoadResult> {
     try {
       const pendingData = localStorage.getItem(PENDING_EDIT_KEY);
-
       if (!pendingData) {
         return { loaded: false };
       }
 
       const sequence = JSON.parse(pendingData) as SequenceData;
       setSequence(sequence);
+
+      // Set session flag BEFORE clearing localStorage
+      // This flag survives localStorage clearing and prevents persistence restoration
+      // from overwriting the loaded sequence
+      pendingEditProcessedThisSession = true;
+
       this.clearPendingEdit();
 
       return {

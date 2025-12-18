@@ -10,32 +10,10 @@ import { SHARE_PRESETS, DEFAULT_SHARE_OPTIONS } from '../domain/models/ShareOpti
 import type { IShareService } from '../services/contracts/IShareService';
 import { tryResolve, TYPES } from '../../inversify/di';
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
-import { createPersistenceHelper } from '../../state/utils/persistent-state';
 import { getUser } from '../../auth/state/authState.svelte';
 import { settingsService } from '../../settings/state/SettingsState.svelte';
 import { PropType } from '../../pictograph/prop/domain/enums/PropType';
-
-// Persisted content options (the toggleable chips in the share panel)
-interface PersistedShareOptions {
-  addWord: boolean;
-  addBeatNumbers: boolean;
-  addDifficultyLevel: boolean;
-  includeStartPosition: boolean;
-  addUserInfo: boolean;
-}
-
-const DEFAULT_PERSISTED_OPTIONS: PersistedShareOptions = {
-  addWord: DEFAULT_SHARE_OPTIONS.addWord,
-  addBeatNumbers: DEFAULT_SHARE_OPTIONS.addBeatNumbers,
-  addDifficultyLevel: DEFAULT_SHARE_OPTIONS.addDifficultyLevel,
-  includeStartPosition: DEFAULT_SHARE_OPTIONS.includeStartPosition,
-  addUserInfo: DEFAULT_SHARE_OPTIONS.addUserInfo,
-};
-
-const shareOptionsPersistence = createPersistenceHelper({
-  key: 'tka_share_prefs',
-  defaultValue: DEFAULT_PERSISTED_OPTIONS,
-});
+import { getImageCompositionManager } from './image-composition-state.svelte';
 
 export interface ShareState {
   // Current options
@@ -65,8 +43,9 @@ export interface ShareState {
 }
 
 export function createShareState(shareService: IShareService): ShareState {
-  // Load persisted content options
-  const persistedOptions = shareOptionsPersistence.load();
+  // Get image composition settings from the global settings manager
+  // This is the single source of truth - shared with Settings > Visibility tab
+  const imageCompositionManager = getImageCompositionManager();
 
   // Reactive state using Svelte 5 runes
   const socialPreset = SHARE_PRESETS["social"];
@@ -78,13 +57,13 @@ export function createShareState(shareService: IShareService): ShareState {
   const user = getUser();
   const userName = user?.displayName || "";
 
-  // Merge persisted content options with the base preset and user info
+  // Initialize options from global image composition settings
   let options = $state<ShareOptions>({
     ...socialPreset.options,
-    ...persistedOptions,
+    ...imageCompositionManager.getSettings(), // Read from global settings
     userName,
   });
-  let selectedPreset = $state<string>("custom"); // Start as custom since we loaded persisted options
+  let selectedPreset = $state<string>("custom"); // Start as custom
 
   let previewUrl = $state<string | null>(null);
   let isGeneratingPreview = $state<boolean>(false);
@@ -96,6 +75,17 @@ export function createShareState(shareService: IShareService): ShareState {
 
   // Preview cache for instant retrieval on repeated views
   const previewCache = new Map<string, string>();
+
+  // Keep options in sync when Settings > Visibility changes
+  // This ensures the share panel reflects global settings changes
+  const syncWithGlobalSettings = () => {
+    const globalSettings = imageCompositionManager.getSettings();
+    options = {
+      ...options,
+      ...globalSettings,
+    };
+  };
+  imageCompositionManager.registerObserver(syncWithGlobalSettings);
 
   /**
    * Get current prop types from settings (with fallback to default)
@@ -110,14 +100,6 @@ export function createShareState(shareService: IShareService): ShareState {
     // Get redPropType, falling back to propType (legacy), then default
     const redPropType = settings.redPropType || settings.propType || defaultPropType;
 
-    console.log('🎯 [ShareState] getCurrentPropTypes():', {
-      bluePropType,
-      redPropType,
-      settingsBlueProp: settings.bluePropType,
-      settingsRedProp: settings.redPropType,
-      settingsLegacyProp: settings.propType
-    });
-
     return {
       blue: bluePropType,
       red: redPropType
@@ -131,13 +113,7 @@ export function createShareState(shareService: IShareService): ShareState {
    */
   function getCacheKey(sequenceId: string, opts: ShareOptions): string {
     const propTypes = getCurrentPropTypes();
-    const key = `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}-${opts.addUserInfo}-${propTypes.blue}-${propTypes.red}`;
-    console.log('🔑 [ShareState] getCacheKey():', {
-      sequenceId,
-      propTypes,
-      fullKey: key
-    });
-    return key;
+    return `${sequenceId}-${opts.format}-${opts.addWord}-${opts.addBeatNumbers}-${opts.includeStartPosition}-${opts.addDifficultyLevel}-${opts.addUserInfo}-${propTypes.blue}-${propTypes.red}`;
   }
 
   return {
@@ -172,17 +148,24 @@ export function createShareState(shareService: IShareService): ShareState {
       options = { ...options, ...newOptions };
       selectedPreset = "custom"; // Mark as custom when manually changed
       previewError = null; // Clear preview error when options change
-      // Note: We don't clear the cache here - it will simply miss on the next generatePreview call
-      // This allows switching between presets without losing cached previews
 
-      // Persist the content options (the toggleable chips)
-      shareOptionsPersistence.save({
-        addWord: options.addWord,
-        addBeatNumbers: options.addBeatNumbers,
-        addDifficultyLevel: options.addDifficultyLevel,
-        includeStartPosition: options.includeStartPosition,
-        addUserInfo: options.addUserInfo,
-      });
+      // Update the global image composition settings (persists automatically)
+      // This ensures Settings > Visibility and Share panel stay in sync
+      if (newOptions.addWord !== undefined) {
+        imageCompositionManager.setAddWord(newOptions.addWord);
+      }
+      if (newOptions.addBeatNumbers !== undefined) {
+        imageCompositionManager.setAddBeatNumbers(newOptions.addBeatNumbers);
+      }
+      if (newOptions.addDifficultyLevel !== undefined) {
+        imageCompositionManager.setAddDifficultyLevel(newOptions.addDifficultyLevel);
+      }
+      if (newOptions.includeStartPosition !== undefined) {
+        imageCompositionManager.setIncludeStartPosition(newOptions.includeStartPosition);
+      }
+      if (newOptions.addUserInfo !== undefined) {
+        imageCompositionManager.setAddUserInfo(newOptions.addUserInfo);
+      }
     },
 
     selectPreset: (presetName: string) => {
@@ -195,14 +178,12 @@ export function createShareState(shareService: IShareService): ShareState {
         selectedPreset = presetName;
         previewError = null;
 
-        // Persist the content options (the toggleable chips)
-        shareOptionsPersistence.save({
-          addWord: options.addWord,
-          addBeatNumbers: options.addBeatNumbers,
-          addDifficultyLevel: options.addDifficultyLevel,
-          includeStartPosition: options.includeStartPosition,
-          addUserInfo: options.addUserInfo,
-        });
+        // Update the global image composition settings with preset values
+        imageCompositionManager.setAddWord(options.addWord);
+        imageCompositionManager.setAddBeatNumbers(options.addBeatNumbers);
+        imageCompositionManager.setAddDifficultyLevel(options.addDifficultyLevel);
+        imageCompositionManager.setIncludeStartPosition(options.includeStartPosition);
+        imageCompositionManager.setAddUserInfo(options.addUserInfo);
       }
     },
 
@@ -267,14 +248,6 @@ export function createShareState(shareService: IShareService): ShareState {
             startingPositionBeat: updateMotionsPropTypes(sequence.startingPositionBeat)
           })
         };
-
-        console.log('🎨 [ShareState] Generating preview with overridden prop types:', {
-          originalPropTypes: sequence.beats?.[0]?.motions ? {
-            blue: sequence.beats[0].motions.blue?.propType,
-            red: sequence.beats[0].motions.red?.propType
-          } : null,
-          overriddenPropTypes: currentPropTypes
-        });
 
         // Generate preview with the prop-type-overridden sequence
         const newPreviewUrl = await shareService.generatePreview(
@@ -394,29 +367,17 @@ export function createShareState(shareService: IShareService): ShareState {
       const cacheKey = getCacheKey(sequence.id, options);
       const cachedPreview = previewCache.get(cacheKey);
 
-      console.log('💾 [ShareState] tryLoadFromCache():', {
-        sequenceId: sequence.id,
-        sequenceWord: sequence.word,
-        cacheKey,
-        cacheHit: !!cachedPreview,
-        cacheSize: previewCache.size,
-        allCacheKeys: Array.from(previewCache.keys())
-      });
-
       if (cachedPreview) {
         previewUrl = cachedPreview;
         previewError = null;
-        console.log('✅ [ShareState] Cache HIT - using cached preview');
         return true; // Cache hit - preview updated instantly
       }
 
-      console.log('❌ [ShareState] Cache MISS - need to generate');
       return false; // Cache miss - caller should generate
     },
 
     // Clear the preview cache (useful for debugging or forcing regeneration)
     clearCache: () => {
-      console.log('🗑️ [ShareState] Clearing preview cache');
       previewCache.clear();
       previewUrl = null;
     },

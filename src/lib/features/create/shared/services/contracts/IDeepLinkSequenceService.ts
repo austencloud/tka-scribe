@@ -34,6 +34,13 @@ export interface IDeepLinkSequenceService {
   hasPendingEdit(): boolean;
 
   /**
+   * Check if a pending edit was processed this session.
+   * This flag survives localStorage clearing and can be used by persistence
+   * restoration code to avoid overwriting the loaded sequence.
+   */
+  wasPendingEditProcessedThisSession(): boolean;
+
+  /**
    * Load sequence from deep link store and enrich with derived data.
    * Handles position derivation, letter derivation, and merging.
    *

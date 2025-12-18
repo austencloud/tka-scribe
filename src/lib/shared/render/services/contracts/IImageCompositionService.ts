@@ -3,16 +3,27 @@ import type { CompositionOptions, LayoutData } from "../../domain/models/Sequenc
 import type { ImageRenderOptions } from "./IDimensionCalculationService";
 
 /**
+ * Progress callback for tracking image composition
+ */
+export type CompositionProgressCallback = (progress: {
+  current: number;
+  total: number;
+  stage: "preparing" | "rendering" | "finalizing";
+}) => void;
+
+/**
  * Image composition service for assembling final images
  * Equivalent to desktop ImageCreator
  */
 export interface IImageCompositionService {
   /**
    * Compose complete sequence image from rendered beats
+   * @param onProgress Optional callback for progress tracking
    */
   composeSequenceImage(
     sequence: SequenceData,
-    options: ImageRenderOptions
+    options: ImageRenderOptions,
+    onProgress?: CompositionProgressCallback
   ): Promise<HTMLCanvasElement>;
 
   /**

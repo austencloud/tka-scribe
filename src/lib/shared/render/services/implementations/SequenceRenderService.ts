@@ -12,7 +12,7 @@ import { inject, injectable } from "inversify";
 import type { ISequenceRenderService } from "../contracts/ISequenceRenderService";
 import { LayoutCalculationService } from "./LayoutCalculationService";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
-import type { IImageCompositionService } from "../contracts/IImageCompositionService";
+import type { CompositionProgressCallback, IImageCompositionService } from "../contracts/IImageCompositionService";
 import type { IImageFormatConverterService } from "../contracts/IImageFormatConverterService";
 
 @injectable()
@@ -30,7 +30,8 @@ export class SequenceRenderService implements ISequenceRenderService {
    */
   async renderSequenceToCanvas(
     sequence: SequenceData,
-    options: Partial<SequenceExportOptions> = {}
+    options: Partial<SequenceExportOptions> = {},
+    onProgress?: CompositionProgressCallback
   ): Promise<HTMLCanvasElement> {
     if (!sequence) {
       throw new Error("Sequence data is required for rendering");
@@ -48,10 +49,11 @@ export class SequenceRenderService implements ISequenceRenderService {
         );
       }
 
-      // Render the sequence using composition service
+      // Render the sequence using composition service (with progress callback)
       const canvas = await this.compositionService.composeSequenceImage(
         sequence,
-        fullOptions
+        fullOptions,
+        onProgress
       );
 
       return canvas;
@@ -68,7 +70,8 @@ export class SequenceRenderService implements ISequenceRenderService {
    */
   async renderSequenceToBlob(
     sequence: SequenceData,
-    options: Partial<SequenceExportOptions> = {}
+    options: Partial<SequenceExportOptions> = {},
+    onProgress?: CompositionProgressCallback
   ): Promise<Blob> {
     if (!sequence) {
       throw new Error("Sequence data is required for rendering");
@@ -78,8 +81,8 @@ export class SequenceRenderService implements ISequenceRenderService {
       // Get full options with defaults
       const fullOptions = this.mergeWithDefaults(options);
 
-      // Render to canvas first
-      const canvas = await this.renderSequenceToCanvas(sequence, fullOptions);
+      // Render to canvas first (with progress callback)
+      const canvas = await this.renderSequenceToCanvas(sequence, fullOptions, onProgress);
 
       // Convert to blob using format service
       const blob = await this.formatService.canvasToBlob(canvas, {

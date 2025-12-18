@@ -8,6 +8,15 @@
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { ShareOptions } from '../../domain/models/ShareOptions';
 
+/**
+ * Progress callback for image generation
+ */
+export type ImageGenerationProgressCallback = (progress: {
+  current: number;
+  total: number;
+  stage: "preparing" | "rendering" | "finalizing";
+}) => void;
+
 export interface IShareService {
   /**
    * Generate a preview image for the share interface
@@ -33,8 +42,13 @@ export interface IShareService {
   /**
    * Get image as blob for future sharing features
    * Prepares for social media integration
+   * @param onProgress - Optional callback for progress tracking during rendering
    */
-  getImageBlob(sequence: SequenceData, options: ShareOptions): Promise<Blob>;
+  getImageBlob(
+    sequence: SequenceData,
+    options: ShareOptions,
+    onProgress?: ImageGenerationProgressCallback
+  ): Promise<Blob>;
 
   /**
    * Generate appropriate filename for the sequence
@@ -51,4 +65,14 @@ export interface IShareService {
    * Handles Web Share API with file sharing and fallbacks
    */
   shareViaDevice(sequence: SequenceData, options: ShareOptions): Promise<void>;
+
+  /**
+   * Try to get a cached image blob if available for the given sequence and options
+   * Returns null if no cached version exists or options don't match
+   * This allows reusing already-generated previews without re-composing
+   */
+  getCachedBlobIfAvailable(
+    sequence: SequenceData,
+    options: ShareOptions
+  ): Promise<Blob | null>;
 }

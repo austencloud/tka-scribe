@@ -10,7 +10,7 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { ShareOptions } from "../../domain/models/ShareOptions";
-import type { IShareService } from "../contracts/IShareService";
+import type { ImageGenerationProgressCallback, IShareService } from "../contracts/IShareService";
 import { PreviewCacheService } from "./PreviewCacheService";
 
 @injectable()
@@ -77,15 +77,17 @@ export class ShareService implements IShareService {
 
   async getImageBlob(
     sequence: SequenceData,
-    options: ShareOptions
+    options: ShareOptions,
+    onProgress?: ImageGenerationProgressCallback
   ): Promise<Blob> {
     // Convert ShareOptions to SequenceExportOptions for render service
     const renderOptions = this.convertToRenderOptions(options);
 
-    // Use render service to generate blob
+    // Use render service to generate blob (with progress callback)
     return await this.renderService.renderSequenceToBlob(
       sequence,
-      renderOptions
+      renderOptions,
+      onProgress
     );
   }
 
@@ -127,6 +129,15 @@ export class ShareService implements IShareService {
       valid: errors.length === 0,
       errors,
     };
+  }
+
+  async getCachedBlobIfAvailable(
+    sequence: SequenceData,
+    options: ShareOptions
+  ): Promise<Blob | null> {
+    // Check IndexedDB cache for a matching preview
+    // This allows reusing already-generated images without re-composition
+    return await this.previewCache.getCachedBlob(sequence, options);
   }
 
   async shareViaDevice(
