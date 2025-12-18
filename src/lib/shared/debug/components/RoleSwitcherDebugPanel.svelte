@@ -21,6 +21,7 @@
     clearUserPreview,
   } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { roleSwitcherState } from "$lib/shared/debug/state/role-switcher-state.svelte";
+  import NotificationTrigger from "./NotificationTrigger.svelte";
 
   // Quick access users storage
   const QUICK_ACCESS_KEY = "tka-quick-access-users";
@@ -387,6 +388,11 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Notification Trigger Section -->
+      <div class="notification-section">
+        <NotificationTrigger />
       </div>
 
       <div class="hint">
@@ -937,5 +943,12 @@
   .preview-actions .remove-quick:hover:not(:disabled) {
     background: rgba(251, 191, 36, 0.1);
     border-color: rgba(251, 191, 36, 0.5);
+  }
+
+  /* Notification Section */
+  .notification-section {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 </style>
