@@ -16,6 +16,7 @@ import {
   where,
   onSnapshot,
   Timestamp,
+  serverTimestamp,
 } from "firebase/firestore";
 import { firestore } from "$lib/shared/auth/firebase";
 import type { UserNotification, TesterNotification } from "../../domain/models/notification-models";
@@ -149,7 +150,25 @@ export class NotificationService {
 
     await updateDoc(notificationRef, {
       read: true,
-      readAt: new Date(),
+      readAt: serverTimestamp(),
+    });
+  }
+
+  /**
+   * Mark a notification as unread
+   */
+  async markAsUnread(userId: string, notificationId: string): Promise<void> {
+    const notificationRef = doc(
+      firestore,
+      USERS_COLLECTION,
+      userId,
+      NOTIFICATIONS_SUBCOLLECTION,
+      notificationId
+    );
+
+    await updateDoc(notificationRef, {
+      read: false,
+      readAt: null,
     });
   }
 
@@ -168,7 +187,7 @@ export class NotificationService {
     const snapshot = await getDocs(q);
 
     const updates = snapshot.docs.map((docSnap) =>
-      updateDoc(docSnap.ref, { read: true, readAt: new Date() })
+      updateDoc(docSnap.ref, { read: true, readAt: serverTimestamp() })
     );
 
     await Promise.all(updates);
@@ -232,10 +251,14 @@ export class NotificationService {
 
   /**
    * Subscribe to real-time notification updates
+   * @param userId - User ID to subscribe to
+   * @param callback - Callback function to receive notifications
+   * @param maxCount - Maximum number of notifications to retrieve (default: 20, set to 0 for all)
    */
   subscribeToNotifications(
     userId: string,
-    callback: (notifications: UserNotification[]) => void
+    callback: (notifications: UserNotification[]) => void,
+    maxCount: number = 20
   ): () => void {
     // Clean up previous subscription
     if (this.unsubscribe) {
@@ -249,7 +272,10 @@ export class NotificationService {
       NOTIFICATIONS_SUBCOLLECTION
     );
 
-    const q = query(notificationsRef, orderBy("createdAt", "desc"), limit(20));
+    // Build query with or without limit based on maxCount
+    const q = maxCount > 0
+      ? query(notificationsRef, orderBy("createdAt", "desc"), limit(maxCount))
+      : query(notificationsRef, orderBy("createdAt", "desc"));
 
     this.unsubscribe = onSnapshot(q, (snapshot) => {
       const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>

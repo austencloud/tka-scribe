@@ -60,12 +60,13 @@
       }
     );
 
-    // Subscribe to notifications for unread notification counts
+    // Subscribe to notifications (all notifications, no limit for Inbox)
     unsubscribeNotifications = notificationService.subscribeToNotifications(
       userId,
       (notifications) => {
         inboxState.setNotifications(notifications);
-      }
+      },
+      0 // No limit - load all notifications for Inbox
     );
 
     return cleanup;

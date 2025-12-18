@@ -10,6 +10,9 @@
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+	import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
+	import { authState } from "$lib/shared/auth/state/authState.svelte";
+	import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 
 	interface Props {
 		class?: string;
@@ -27,6 +30,36 @@
 
 	onMount(() => {
 		hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	});
+
+	// Auto-mark notifications as read when viewing the notifications tab (Facebook-style glance)
+	$effect(() => {
+		// Only run when notifications tab is active
+		if (inboxState.activeTab !== "notifications") return;
+
+		// Get effective user ID (preview mode or actual)
+		const userId = userPreviewState.isActive && userPreviewState.data.profile
+			? userPreviewState.data.profile.uid
+			: authState.user?.uid;
+
+		if (!userId) {
+			console.log("No userId available for auto-mark-as-read");
+			return;
+		}
+
+		// Check if there are unread notifications
+		const unreadCount = inboxState.unreadNotificationCount;
+		console.log("Notifications tab active, unread count:", unreadCount);
+
+		if (unreadCount > 0) {
+			console.log("Auto-marking all notifications as read for user:", userId);
+			// Mark all notifications as read when viewing the tab
+			notificationService.markAllAsRead(userId).then(() => {
+				console.log("Successfully marked all notifications as read");
+			}).catch((error) => {
+				console.error("Failed to auto-mark notifications as read:", error);
+			});
+		}
 	});
 
 	function handleTabClick(tab: InboxTab) {

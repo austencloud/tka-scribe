@@ -20,9 +20,10 @@
     notification: UserNotification;
     onDismiss: () => void;
     onMarkAsRead: () => void;
+    onMarkAsUnread: () => void;
   }
 
-  let { notification, onDismiss, onMarkAsRead }: Props = $props();
+  let { notification, onDismiss, onMarkAsRead, onMarkAsUnread }: Props = $props();
 
   // Track dismissing state for animation
   let isDismissing = $state(false);
@@ -171,6 +172,28 @@
       }, 200);
     }
   }
+
+  function handleToggleRead(e: MouseEvent) {
+    e.stopPropagation();
+    hapticService?.trigger("selection");
+    if (notification.read) {
+      onMarkAsUnread();
+    } else {
+      onMarkAsRead();
+    }
+  }
+
+  function handleToggleReadKeydown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      e.stopPropagation();
+      if (notification.read) {
+        onMarkAsUnread();
+      } else {
+        onMarkAsRead();
+      }
+    }
+  }
 </script>
 
 <div
@@ -199,6 +222,18 @@
     <span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span
     >
   </div>
+
+  <!-- Toggle read/unread button -->
+  <button
+    class="toggle-read-btn"
+    onclick={handleToggleRead}
+    onkeydown={handleToggleReadKeydown}
+    aria-label={notification.read ? "Mark as unread" : "Mark as read"}
+    tabindex="0"
+    title={notification.read ? "Mark as unread" : "Mark as read"}
+  >
+    <i class="fas {notification.read ? 'fa-envelope' : 'fa-envelope-open'}"></i>
+  </button>
 
   <!-- Dismiss button -->
   <button
@@ -322,6 +357,41 @@
   .time {
     font-size: var(--font-size-compact, 12px); /* Supplementary timestamp */
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
+
+  /* Toggle read/unread button */
+  .toggle-read-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+  }
+
+  .notification-item:hover .toggle-read-btn,
+  .notification-item:focus-within .toggle-read-btn {
+    opacity: 1;
+  }
+
+  .toggle-read-btn:hover {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-accent, #3b82f6);
+  }
+
+  .toggle-read-btn:focus-visible {
+    opacity: 1;
+    outline: none;
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   /* Dismiss button */

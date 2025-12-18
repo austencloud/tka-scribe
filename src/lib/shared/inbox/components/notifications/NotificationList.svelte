@@ -13,6 +13,9 @@
 	import InboxNotificationItem from "./InboxNotificationItem.svelte";
 	import NotificationSkeleton from "../skeletons/NotificationSkeleton.svelte";
 	import EmptyNotifications from "../empty-states/EmptyNotifications.svelte";
+	import NotificationFilter, {
+		type FilterState,
+	} from "./NotificationFilter.svelte";
 
 	interface Props {
 		notifications: UserNotification[];
@@ -22,7 +25,13 @@
 	let { notifications, isLoading }: Props = $props();
 
 	let isClearingAll = $state(false);
+	let isClearingRead = $state(false);
 	let isMarkingAllRead = $state(false);
+	let filters = $state<FilterState>({
+		readStatus: "all",
+		type: "all",
+		searchQuery: "",
+	});
 
 	// Get effective user ID (preview mode or actual)
 	function getEffectiveUserId(): string | null {
@@ -64,6 +73,22 @@
 		}
 	}
 
+	async function handleClearAllRead() {
+		const userId = getEffectiveUserId();
+		if (!userId || isClearingRead) return;
+
+		isClearingRead = true;
+		try {
+			await notificationService.deleteAllReadNotifications(userId);
+			toast.success("Read notifications cleared");
+		} catch (error) {
+			console.error("Failed to clear read notifications:", error);
+			toast.error("Failed to clear read notifications");
+		} finally {
+			isClearingRead = false;
+		}
+	}
+
 	async function handleDismiss(notificationId: string) {
 		const userId = getEffectiveUserId();
 		if (!userId) return;
@@ -88,11 +113,55 @@
 		}
 	}
 
-	// Check if there are any unread notifications
-	const hasUnread = $derived(notifications.some((n) => !n.read));
+	async function handleMarkAsUnread(notificationId: string) {
+		const userId = getEffectiveUserId();
+		if (!userId) return;
+
+		try {
+			await notificationService.markAsUnread(userId, notificationId);
+		} catch (error) {
+			console.error("Failed to mark as unread:", error);
+			toast.error("Failed to mark notification as unread");
+		}
+	}
+
+	// Filter notifications based on current filters
+	const filteredNotifications = $derived.by(() => {
+		let result = notifications;
+
+		// Filter by read status
+		if (filters.readStatus === "unread") {
+			result = result.filter((n) => !n.read);
+		} else if (filters.readStatus === "read") {
+			result = result.filter((n) => n.read);
+		}
+
+		// Filter by type
+		if (filters.type !== "all") {
+			result = result.filter((n) => n.type === filters.type);
+		}
+
+		// Filter by search query
+		if (filters.searchQuery.trim()) {
+			const query = filters.searchQuery.toLowerCase();
+			result = result.filter((n) =>
+				n.message.toLowerCase().includes(query)
+			);
+		}
+
+		return result;
+	});
+
+	// Check if there are any unread notifications (in filtered set)
+	const hasUnread = $derived(filteredNotifications.some((n) => !n.read));
+	// Check if there are any read notifications (in filtered set)
+	const hasRead = $derived(filteredNotifications.some((n) => n.read));
 </script>
 
 <div class="notification-list" role="region" aria-label="Notifications">
+	<!-- Filter UI -->
+	<NotificationFilter onFilterChange={(newFilters) => (filters = newFilters)} />
+
 	<!-- Header actions -->
 	{#if notifications.length > 0}
 		<div class="header-actions">
@@ -109,6 +178,21 @@
 						<i class="fas fa-check-double" aria-hidden="true"></i>
 					{/if}
 					<span>Mark all read</span>
+				</button>
+			{/if}
+			{#if hasRead}
+				<button
+					class="action-btn clear-read"
+					onclick={handleClearAllRead}
+					disabled={isClearingRead}
+					aria-label="Clear all read notifications"
+				>
+					{#if isClearingRead}
+						<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+					{:else}
+						<i class="fas fa-check" aria-hidden="true"></i>
+					{/if}
+					<span>Clear read</span>
 				</button>
 			{/if}
 			<button
@@ -129,11 +213,18 @@
 
 	{#if isLoading}
 		<NotificationSkeleton count={5} />
-	{:else if notifications.length === 0}
-		<EmptyNotifications />
+	{:else if filteredNotifications.length === 0}
+		{#if notifications.length === 0}
+			<EmptyNotifications />
+		{:else}
+			<div class="empty-state">
+				<i class="fas fa-filter" aria-hidden="true"></i>
+				<p>No notifications match your filters</p>
+			</div>
+		{/if}
 	{:else}
 		<div class="notifications" role="list" aria-label="Notification list">
-			{#each notifications as notification, index (notification.id)}
+			{#each filteredNotifications as notification, index (notification.id)}
 				<div
 					class="notification-wrapper"
 					style="--stagger-index: {Math.min(index, 10)}"
@@ -143,6 +234,7 @@
 						{notification}
 						onDismiss={() => handleDismiss(notification.id)}
 						onMarkAsRead={() => handleMarkAsRead(notification.id)}
+						onMarkAsUnread={() => handleMarkAsUnread(notification.id)}
 					/>
 				</div>
 			{/each}
@@ -197,12 +289,39 @@
 		box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
 	}
 
+	.action-btn.clear-read {
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+	}
+
+	.action-btn.clear-read:hover:not(:disabled) {
+		color: var(--semantic-warning, #f59e0b);
+	}
+
 	.action-btn.clear-all {
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
 	}
 
 	.action-btn.clear-all:hover:not(:disabled) {
 		color: var(--semantic-error, #ef4444);
+	}
+
+	.empty-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 48px 24px;
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+		gap: 12px;
+	}
+
+	.empty-state i {
+		font-size: 32px;
+	}
+
+	.empty-state p {
+		margin: 0;
+		font-size: var(--font-size-min, 14px);
 	}
 
 	.notifications {

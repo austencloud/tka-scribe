@@ -58,8 +58,15 @@
         testPreviewState.notifications as unknown as UserNotification[];
       unreadCount = notifications.filter((n) => !n.read).length;
       isLoading = testPreviewState.isLoading;
+      // Show popup for important notification types
       activePopup = notifications.find(
-        (n) => n.type === "feedback-resolved" && !n.read
+        (n) => !n.read && (
+          n.type === "feedback-resolved" ||
+          n.type === "feedback-needs-info" ||
+          n.type === "achievement-unlocked" ||
+          n.type === "system-announcement" ||
+          n.type === "message-received"
+        )
       ) as UserNotification | null;
       return;
     }
@@ -76,8 +83,15 @@
         unreadCount = updated.filter((n) => !n.read).length;
         isLoading = false;
 
+        // Show popup for important notification types
         const candidate = updated.find(
-          (n) => n.type === "feedback-resolved" && !n.read
+          (n) => !n.read && (
+            n.type === "feedback-resolved" ||
+            n.type === "feedback-needs-info" ||
+            n.type === "achievement-unlocked" ||
+            n.type === "system-announcement" ||
+            n.type === "message-received"
+          )
         );
         if (candidate && candidate.id !== activePopup?.id) {
           activePopup = candidate;
@@ -106,7 +120,7 @@
     return `${days}d ago`;
   }
 
-  // Mark notification as read without navigation (dismiss) - with animation
+  // Delete notification (dismiss) - with animation
   async function handleDismiss(notificationId: string, e?: MouseEvent) {
     if (e) {
       e.stopPropagation();
@@ -123,13 +137,11 @@
     if (!isPreview) {
       const user = authState.user;
       if (user) {
-        await notificationService.markAsRead(user.uid, notificationId);
+        await notificationService.deleteNotification(user.uid, notificationId);
       }
 
-      // Optimistic update
-      notifications = notifications.map((n) =>
-        n.id === notificationId ? { ...n, read: true, readAt: new Date() } : n
-      );
+      // Optimistic update - remove from list
+      notifications = notifications.filter((n) => n.id !== notificationId);
       unreadCount = notifications.filter((n) => !n.read).length;
       if (activePopup?.id === notificationId) {
         activePopup = null;
