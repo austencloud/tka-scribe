@@ -9,6 +9,9 @@
   import { onMount } from "svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
+  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import MessagesTab from "./components/MessagesTab.svelte";
   import NotificationsTab from "./components/NotificationsTab.svelte";
 
@@ -32,6 +35,36 @@
 
       // Also sync inbox state for consistency
       inboxState.setTab(section);
+    }
+  });
+
+  // Auto-mark notifications as read when viewing the notifications tab (Facebook-style glance)
+  $effect(() => {
+    // Only run when notifications tab is active
+    if (activeTab !== "notifications") return;
+
+    // Get effective user ID (preview mode or actual)
+    const userId = userPreviewState.isActive && userPreviewState.data.profile
+      ? userPreviewState.data.profile.uid
+      : authState.user?.uid;
+
+    if (!userId) {
+      console.log("[InboxModule] No userId available for auto-mark-as-read");
+      return;
+    }
+
+    // Check if there are unread notifications
+    const unreadCount = inboxState.unreadNotificationCount;
+    console.log("[InboxModule] Notifications tab active, unread count:", unreadCount);
+
+    if (unreadCount > 0) {
+      console.log("[InboxModule] Auto-marking all notifications as read for user:", userId);
+      // Mark all notifications as read when viewing the tab
+      notificationService.markAllAsRead(userId).then(() => {
+        console.log("[InboxModule] Successfully marked all notifications as read");
+      }).catch((error) => {
+        console.error("[InboxModule] Failed to auto-mark notifications as read:", error);
+      });
     }
   });
 

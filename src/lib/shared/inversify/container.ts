@@ -493,6 +493,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await loadIfNeeded("messaging", () => import("./modules/messaging.module"));
         break;
 
+      case "inbox":
+        // Inbox uses messaging and notification services (loaded in Tier 2)
+        await loadIfNeeded("inbox", () => import("./modules/inbox.module"));
+        break;
+
       default:
         // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
         console.warn(`Unknown feature module: ${feature}`);
