@@ -26,6 +26,21 @@
 		searchQuery: "",
 	});
 
+	// Track which notifications were unread when first rendered
+	// This allows us to animate them when they get marked as read
+	let unreadSnapshot = $state<Set<string>>(new Set());
+
+	// Capture unread notifications when list first loads or updates
+	$effect(() => {
+		const currentUnreadIds = new Set(
+			notifications.filter((n) => !n.read).map((n) => n.id)
+		);
+		// Only update snapshot if we have new unread items
+		if (currentUnreadIds.size > 0) {
+			unreadSnapshot = currentUnreadIds;
+		}
+	});
+
 	// Filter notifications based on current filters
 	const filteredNotifications = $derived.by(() => {
 		let result = notifications;
@@ -51,42 +66,6 @@
 	<!-- Filter UI -->
 	<NotificationFilter onFilterChange={(newFilters) => (filters = newFilters)} />
 
-	<!-- Header actions -->
-	{#if notifications.length > 0}
-		<div class="header-actions">
-			{#if hasUnread}
-				<button
-					class="action-btn"
-					onclick={handleMarkAllRead}
-					disabled={isMarkingAllRead}
-					aria-label="Mark all notifications as read"
-				>
-					{#if isMarkingAllRead}
-						<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-					{:else}
-						<i class="fas fa-check-double" aria-hidden="true"></i>
-					{/if}
-					<span>Mark all read</span>
-				</button>
-			{/if}
-			{#if hasRead}
-				<button
-					class="action-btn delete-read"
-					onclick={handleClearAllRead}
-					disabled={isClearingRead}
-					aria-label="Delete all read notifications"
-				>
-					{#if isClearingRead}
-						<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-					{:else}
-						<i class="fas fa-trash-alt" aria-hidden="true"></i>
-					{/if}
-					<span>Delete read</span>
-				</button>
-			{/if}
-		</div>
-	{/if}
-
 	{#if isLoading}
 		<NotificationSkeleton count={5} />
 	{:else if filteredNotifications.length === 0}
@@ -108,9 +87,7 @@
 				>
 					<InboxNotificationItem
 						{notification}
-						onDismiss={() => handleDismiss(notification.id)}
-						onMarkAsRead={() => handleMarkAsRead(notification.id)}
-						onMarkAsUnread={() => handleMarkAsUnread(notification.id)}
+						wasUnread={unreadSnapshot.has(notification.id)}
 					/>
 				</div>
 			{/each}
@@ -123,54 +100,6 @@
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-	}
-
-	.header-actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 8px;
-		padding: 8px 16px;
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
-	}
-
-	.action-btn {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		min-height: var(--min-touch-target);
-		padding: 12px 16px;
-		background: transparent;
-		border: none;
-		border-radius: 12px;
-		color: var(--theme-accent, #3b82f6);
-		font-size: 14px;
-		cursor: pointer;
-		transition:
-			background 0.2s ease,
-			color 0.2s ease,
-			opacity 0.2s ease;
-	}
-
-	.action-btn:hover:not(:disabled) {
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-	}
-
-	.action-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.action-btn:focus-visible {
-		outline: none;
-		box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
-	}
-
-	.action-btn.delete-read {
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-	}
-
-	.action-btn.delete-read:hover:not(:disabled) {
-		color: var(--semantic-error, #ef4444);
 	}
 
 	.empty-state {
@@ -215,7 +144,6 @@
 
 	/* Reduced motion */
 	@media (prefers-reduced-motion: reduce) {
-		.action-btn,
 		.notification-wrapper {
 			transition: none !important;
 			animation: none !important;

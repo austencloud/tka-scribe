@@ -2,7 +2,7 @@
  * Audio Library Persistence
  *
  * Uses IndexedDB to cache audio files locally for instant playback.
- * Supports any audio source (uploads, YouTube, etc.)
+ * Supports any audio source (uploads, etc.)
  */
 
 const DB_NAME = "tka-audio-library";

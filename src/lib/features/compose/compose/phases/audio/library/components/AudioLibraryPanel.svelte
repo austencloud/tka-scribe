@@ -6,7 +6,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { container } from "../../../../../../../shared/inversify/container";
-  import { AudioTypes } from "../../../../../../../shared/inversify/types/youtube.types.ts";
+  import { AudioTypes } from "../../../../../../../shared/inversify/types/audio.types";
   import type { IAudioLibraryService } from "../services/contracts/IAudioLibraryService";
   import type { AudioTrackLocal } from "../domain/models/AudioTrack";
 

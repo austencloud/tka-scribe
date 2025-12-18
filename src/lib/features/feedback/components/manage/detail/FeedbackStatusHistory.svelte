@@ -34,7 +34,7 @@
     </h3>
     <div class="timeline">
       {#each sortedHistory as entry}
-        {@const config = STATUS_CONFIG[entry.status]}
+        {@const config = STATUS_CONFIG[entry.status as keyof typeof STATUS_CONFIG]}
         <div class="timeline-entry">
           <div class="timeline-dot" style="background: {config.color}">
             <i class="fas {config.icon}"></i>

@@ -42,6 +42,7 @@
 import { AdminTypes } from "./admin.types";
 import { AnimationTypes } from "./animation.types";
 import { ArrowTypes } from "./arrow.types";
+import { AudioTypes } from "./audio.types";
 import { AuthTypes } from "./auth.types";
 import { BackgroundTypes } from "./background.types";
 import { CoreTypes } from "./core.types";
@@ -63,6 +64,7 @@ export {
   AdminTypes,
   AnimationTypes,
   ArrowTypes,
+  AudioTypes,
   AuthTypes,
   BackgroundTypes,
   CoreTypes,
@@ -101,6 +103,7 @@ export const TYPES = {
   ...CreateTypes,
   ...RenderingTypes,
   ...ArrowTypes,
+  ...AudioTypes,
   ...DiscoverTypes,
   ...ExportTypes,
   ...GenerationTypes,

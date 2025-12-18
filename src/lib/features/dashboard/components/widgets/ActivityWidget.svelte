@@ -22,7 +22,6 @@
 
   // Derived from library state - these are meaningful to users!
   const totalSequences = $derived(libraryState.sequences.length);
-  const favoriteCount = $derived(libraryState.sequences.filter(s => s.isFavorite).length);
 
   // Get recently created sequences (last 7 days)
   const recentSequences = $derived.by(() => {
@@ -31,6 +30,38 @@
       const createdAt = s.createdAt instanceof Date ? s.createdAt : new Date(s.createdAt);
       return createdAt > weekAgo;
     });
+  });
+
+  // "On This Day" style revisit - find sequences from 1 week, 1 month, or 1 year ago
+  const revisitSequence = $derived.by(() => {
+    if (libraryState.sequences.length === 0) return null;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // Check for sequences created around these anniversaries (with tolerance)
+    const timeframes = [
+      { label: "1 year ago", days: 365, tolerance: 3 },
+      { label: "1 month ago", days: 30, tolerance: 2 },
+      { label: "1 week ago", days: 7, tolerance: 1 },
+    ];
+
+    for (const { label, days, tolerance } of timeframes) {
+      const targetDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
+      const minDate = new Date(targetDate.getTime() - tolerance * 24 * 60 * 60 * 1000);
+      const maxDate = new Date(targetDate.getTime() + tolerance * 24 * 60 * 60 * 1000);
+
+      const match = libraryState.sequences.find(s => {
+        const createdAt = s.createdAt instanceof Date ? s.createdAt : new Date(s.createdAt);
+        return createdAt >= minDate && createdAt <= maxDate;
+      });
+
+      if (match) {
+        return { sequence: match, label };
+      }
+    }
+
+    return null;
   });
 
   // Most recent sequence for "continue" feature
@@ -82,6 +113,13 @@
     }
   }
 
+  async function revisitOldSequence() {
+    if (revisitSequence) {
+      // Navigate to discover/gallery where they can find the sequence
+      await handleModuleChange("discover", "gallery");
+    }
+  }
+
   async function createNew() {
     await handleModuleChange("create", "constructor");
   }
@@ -119,12 +157,6 @@
             <div class="stat-value">{totalSequences}</div>
             <div class="stat-label">{totalSequences === 1 ? 'sequence' : 'sequences'}</div>
           </div>
-          {#if favoriteCount > 0}
-            <div class="stat-item favorites">
-              <div class="stat-value">{favoriteCount}</div>
-              <div class="stat-label">{favoriteCount === 1 ? 'favorite' : 'favorites'}</div>
-            </div>
-          {/if}
           {#if recentSequences.length > 0}
             <div class="stat-item recent">
               <div class="stat-value">{recentSequences.length}</div>
@@ -140,10 +172,24 @@
               <i class="fas fa-play"></i>
             </div>
             <div class="continue-info">
-              <span class="continue-label">Recent</span>
+              <span class="continue-label">Continue</span>
               <span class="continue-name">{mostRecentSequence.name || mostRecentSequence.word || 'Untitled'}</span>
             </div>
             <i class="fas fa-chevron-right continue-arrow"></i>
+          </button>
+        {/if}
+
+        <!-- "On This Day" Revisit -->
+        {#if revisitSequence}
+          <button class="revisit-card" onclick={revisitOldSequence}>
+            <div class="revisit-icon">
+              <i class="fas fa-clock-rotate-left"></i>
+            </div>
+            <div class="revisit-info">
+              <span class="revisit-label">{revisitSequence.label}</span>
+              <span class="revisit-name">{revisitSequence.sequence.name || revisitSequence.sequence.word || 'Untitled'}</span>
+            </div>
+            <i class="fas fa-chevron-right revisit-arrow"></i>
           </button>
         {/if}
 
@@ -306,10 +352,6 @@
     letter-spacing: 0.03em;
   }
 
-  .stat-item.favorites .stat-value {
-    color: var(--semantic-warning, #f59e0b);
-  }
-
   .stat-item.recent .stat-value {
     color: var(--semantic-success, #22c55e);
   }
@@ -371,6 +413,68 @@
   }
 
   .continue-arrow {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: 12px;
+  }
+
+  /* Revisit Card - "On This Day" style */
+  .revisit-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .revisit-card:hover {
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 16%, transparent);
+    transform: translateX(2px);
+  }
+
+  .revisit-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
+    border-radius: 8px;
+    color: var(--semantic-warning, #f59e0b);
+    font-size: 14px;
+  }
+
+  .revisit-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    text-align: left;
+    min-width: 0;
+  }
+
+  .revisit-label {
+    font-size: 0.6875rem;
+    color: var(--semantic-warning, #f59e0b);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+  }
+
+  .revisit-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .revisit-arrow {
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     font-size: 12px;
   }
@@ -475,12 +579,14 @@
     }
 
     .view-all-btn,
-    .continue-card {
+    .continue-card,
+    .revisit-card {
       transition: none;
     }
 
     .view-all-btn:hover,
-    .continue-card:hover {
+    .continue-card:hover,
+    .revisit-card:hover {
       transform: none;
     }
   }

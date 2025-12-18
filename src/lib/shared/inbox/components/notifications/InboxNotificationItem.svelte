@@ -18,9 +18,24 @@
 
   interface Props {
     notification: UserNotification;
+    wasUnread?: boolean; // Track if it was unread when first rendered
   }
 
-  let { notification }: Props = $props();
+  let { notification, wasUnread = false }: Props = $props();
+
+  // Track if this notification just became read (for animation)
+  let justMarkedRead = $state(false);
+
+  // Watch for read state changes to trigger animation
+  $effect(() => {
+    if (wasUnread && notification.read && !justMarkedRead) {
+      justMarkedRead = true;
+      // Reset after animation completes (1.8s total)
+      setTimeout(() => {
+        justMarkedRead = false;
+      }, 1800);
+    }
+  });
 
   // Haptic feedback service
   let hapticService: IHapticFeedbackService | undefined;
@@ -164,15 +179,20 @@
 <div
   class="notification-item"
   class:unread={!notification.read}
+  class:just-marked-read={justMarkedRead}
   onclick={handleCardClick}
   onkeydown={handleCardKeydown}
   role="button"
   tabindex="0"
   aria-label="{notification.message}{!notification.read ? ' (unread)' : ''}"
 >
-  <!-- Unread indicator -->
-  {#if !notification.read}
-    <span class="unread-dot" aria-hidden="true"></span>
+  <!-- Unread indicator (animates out when marked as read) -->
+  {#if !notification.read || justMarkedRead}
+    <span
+      class="unread-dot"
+      class:fading-out={justMarkedRead}
+      aria-hidden="true"
+    ></span>
   {/if}
 
   <!-- Icon -->
@@ -230,6 +250,30 @@
     background: color-mix(in srgb, var(--theme-accent) 5%, transparent);
   }
 
+  /* Animation when notification is marked as read */
+  .notification-item.just-marked-read {
+    animation: markAsRead 1.8s ease-out;
+  }
+
+  @keyframes markAsRead {
+    0% {
+      background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+      transform: scale(1.03);
+    }
+    40% {
+      background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+      transform: scale(1.02);
+    }
+    70% {
+      background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+      transform: scale(1.01);
+    }
+    100% {
+      background: transparent;
+      transform: scale(1);
+    }
+  }
+
   /* Unread dot indicator */
   .unread-dot {
     position: absolute;
@@ -240,18 +284,21 @@
     height: 6px;
     background: var(--theme-accent, #3b82f6);
     border-radius: 50%;
-    animation: dotPulse 2s ease-in-out infinite;
+    /* No pulsing animation - static dot */
   }
 
-  @keyframes dotPulse {
-    0%,
-    100% {
+  .unread-dot.fading-out {
+    animation: dotFadeOut 0.8s ease-out forwards;
+  }
+
+  @keyframes dotFadeOut {
+    0% {
       opacity: 1;
       transform: translateY(-50%) scale(1);
     }
-    50% {
-      opacity: 0.7;
-      transform: translateY(-50%) scale(1.2);
+    100% {
+      opacity: 0;
+      transform: translateY(-50%) scale(0);
     }
   }
 
@@ -285,10 +332,24 @@
     font-size: var(--font-size-min, 14px);
     line-height: 1.4;
     color: var(--theme-text, #ffffff);
+    transition: font-weight 0.3s ease;
   }
 
   .unread .message {
     font-weight: 500;
+  }
+
+  .just-marked-read .message {
+    animation: messageUnbold 0.8s ease-out forwards;
+  }
+
+  @keyframes messageUnbold {
+    0% {
+      font-weight: 500;
+    }
+    100% {
+      font-weight: 400;
+    }
   }
 
   .time {
@@ -319,9 +380,23 @@
     .notification-item,
     .icon,
     .chevron,
-    .unread-dot {
+    .unread-dot,
+    .message {
       transition: none !important;
       animation: none !important;
+    }
+
+    .notification-item.just-marked-read {
+      animation: none !important;
+    }
+
+    .unread-dot.fading-out {
+      display: none;
+    }
+
+    .just-marked-read .message {
+      animation: none !important;
+      font-weight: 400;
     }
   }
 </style>

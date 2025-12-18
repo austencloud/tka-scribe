@@ -27,7 +27,7 @@ import {
   updateTrackMetadata,
 } from "../../persistence/audio-library-metadata-sync";
 import type { IAudioStorageService } from "../contracts/IAudioStorageService";
-import { AudioTypes } from "../../../../../../../../shared/inversify/types/youtube.types";
+import { AudioTypes } from "../../../../../../../../shared/inversify/types/audio.types";
 
 /**
  * Generate unique track ID

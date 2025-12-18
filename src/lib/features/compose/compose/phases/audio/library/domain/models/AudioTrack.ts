@@ -4,13 +4,13 @@
  * Represents audio files in the user's library.
  */
 
-export type AudioSource = "upload" | "youtube" | "spotify";
+export type AudioSource = "upload" | "spotify";
 
 /**
  * Audio track stored in Firestore (without local availability info)
  */
 export interface AudioTrack {
-  /** Unique track ID (generated UUID for uploads, videoId for YouTube) */
+  /** Unique track ID (generated UUID for uploads) */
   trackId: string;
 
   /** Display title */
