@@ -66,10 +66,6 @@ function clearPersistedFormData(): void {
  * Creates feedback submit form state
  */
 export function createFeedbackSubmitState() {
-  // Capture context at creation time (before user navigates to feedback)
-  const initialCapturedModule = getCapturedModule();
-  const initialCapturedTab = getCapturedTab();
-
   // Restore from localStorage if available
   const persisted = getPersistedFormData();
 
@@ -191,12 +187,12 @@ export function createFeedbackSubmitState() {
       // Compute directly to survive HMR - don't use $derived
       return formData.description.trim().length >= 10;
     },
-    // Captured context (frozen at state creation time)
+    // Captured context (evaluated dynamically when accessed)
     get capturedModule() {
-      return initialCapturedModule;
+      return getCapturedModule();
     },
     get capturedTab() {
-      return initialCapturedTab;
+      return getCapturedTab();
     },
 
     // Actions

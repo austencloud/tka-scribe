@@ -403,7 +403,7 @@
 <style>
   /* Drawer sizing and z-index (must be above bottom nav z-index: 100) */
   :global(.drawer-content.feedback-detail-drawer) {
-    --sheet-width: min(420px, 95vw);
+    --sheet-width: min(520px, 95vw);
     --sheet-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40));
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40)) !important;
     width: var(--sheet-width) !important;

@@ -217,6 +217,14 @@
     interimText = "";
   }
 
+  function handleClearText() {
+    hapticService?.trigger("selection");
+    formState.updateField("description", "");
+    formState.updateField("title", "");
+    interimText = "";
+    lastVoiceCommit = "";
+  }
+
   function handleKeydown(event: KeyboardEvent) {
     // Submit on Shift+Enter
     if (event.key === "Enter" && event.shiftKey) {
@@ -295,6 +303,19 @@
           placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}${isMobileDevice ? "" : " (Shift+Enter to submit)"}`}
           rows="6"
         ></textarea>
+        {#if displayText.trim().length > 0}
+          <div class="clear-wrapper">
+            <button
+              type="button"
+              class="clear-text-btn"
+              onclick={handleClearText}
+              aria-label="Clear feedback text"
+              title="Clear text"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        {/if}
         <div class="voice-input-wrapper">
           <VoiceInputButton
             onTranscript={handleVoiceTranscript}
@@ -768,10 +789,65 @@
     color: var(--fb-text-subtle);
   }
 
+  .clear-wrapper {
+    position: absolute;
+    bottom: clamp(10px, 2.5cqi, 16px);
+    left: clamp(10px, 2.5cqi, 16px);
+    z-index: 1;
+  }
+
+  .clear-text-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(32px, 8cqi, 40px);
+    height: clamp(32px, 8cqi, 40px);
+    background: transparent;
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--semantic-error, #ff4444) 40%,
+        var(--theme-stroke, rgba(255, 255, 255, 0.15))
+      );
+    border-radius: clamp(6px, 1.5cqi, 8px);
+    color: color-mix(
+      in srgb,
+      var(--semantic-error, #ff4444) 70%,
+      var(--fb-text-muted)
+    );
+    cursor: pointer;
+    transition:
+      all 150ms ease,
+      border-color 150ms ease;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .clear-text-btn:hover {
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ff4444) 15%,
+      transparent
+    );
+    border-color: var(--semantic-error, #ff4444);
+    color: var(--semantic-error, #ff4444);
+  }
+
+  .clear-text-btn:active {
+    transform: scale(0.95);
+  }
+
+  .clear-text-btn i {
+    font-size: clamp(0.8rem, 2cqi, 0.95rem);
+  }
+
   .voice-input-wrapper {
     position: absolute;
     bottom: clamp(10px, 2.5cqi, 16px);
     right: clamp(10px, 2.5cqi, 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1;
   }
 
