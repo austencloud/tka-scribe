@@ -171,6 +171,12 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 
 **Then and only then** proceed with your assessment, interpretation, and recommendations.
 
+**MANDATORY: Get confirmation before proceeding**
+- After displaying feedback and providing your assessment, you MUST ask for explicit confirmation
+- NEVER start working or delegating to subagents without user approval
+- This applies to ALL feedback items (trivial, medium, and complex)
+- Example: "Should I proceed with implementing this?" or "Would you like me to delegate this to Haiku?"
+
 - **After implementing feedback**, provide clear testing instructions:
   - Summarize what was changed
   - List specific steps to verify the fix works

@@ -713,7 +713,8 @@
       "Bash(cmd //c \"tasklist /FI \"\"IMAGENAME eq node.exe\"\"\")",
       "Bash(firebase init:*)",
       "Bash(firebase functions:list:*)",
-      "Bash(firebase functions:log:*)"
+      "Bash(firebase functions:log:*)",
+      "Bash(netlify status:*)"
     ],
     "deny": [],
     "ask": []

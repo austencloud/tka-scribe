@@ -10,6 +10,7 @@
   import FeedbackSubtaskPanel from "./detail/FeedbackSubtaskPanel.svelte";
   import FeedbackStatusSelector from "./detail/FeedbackStatusSelector.svelte";
   import FeedbackActionBar from "./detail/FeedbackActionBar.svelte";
+  import FeedbackStatusHistory from "./detail/FeedbackStatusHistory.svelte";
   import ImageViewerModal from "../my-feedback/ImageViewerModal.svelte";
 
   interface Props {
@@ -255,6 +256,9 @@
 
     <!-- Subtasks Panel -->
     <FeedbackSubtaskPanel subtasks={item.subtasks || []} />
+
+    <!-- Status History -->
+    <FeedbackStatusHistory history={item.statusHistory} />
 
     <!-- Action Bar - Delete functionality -->
     <FeedbackActionBar {detailState} {readOnly} />

@@ -128,6 +128,9 @@ export interface FeedbackItem {
   deferredUntil?: Date; // When to reactivate this item
   reactivatedAt?: Date; // When this was reactivated from deferment
   reactivatedFrom?: Date; // Original deferredUntil date when reactivated
+
+  // Status change history
+  statusHistory?: StatusHistoryEntry[];
 }
 
 /**
@@ -146,6 +149,15 @@ export interface TesterConfirmation {
   status: TesterConfirmationStatus;
   comment?: string;
   respondedAt?: Date;
+}
+
+/**
+ * Status change history entry
+ */
+export interface StatusHistoryEntry {
+  status: FeedbackStatus;
+  timestamp: Date;
+  fromStatus?: FeedbackStatus;
 }
 
 /**

@@ -425,11 +425,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "compose":
       case "animate":
-        // Compose/Animate needs discover (for sequence browser), animator, and youtube
+        // Compose/Animate needs discover (for sequence browser) and animator
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("animator", () => import("./modules/animator.module")),
-          loadIfNeeded("youtube", () => import("./modules/youtube.module"))
+          loadIfNeeded("animator", () => import("./modules/animator.module"))
         ]);
         break;
 

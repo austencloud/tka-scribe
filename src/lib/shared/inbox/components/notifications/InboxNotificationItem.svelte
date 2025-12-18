@@ -2,7 +2,7 @@
   /**
    * InboxNotificationItem
    *
-   * Single notification row with enhanced accessibility and microinteractions
+   * Simple notification card - Facebook/Instagram style
    */
 
   import { onMount } from "svelte";
@@ -18,15 +18,9 @@
 
   interface Props {
     notification: UserNotification;
-    onDismiss: () => void;
-    onMarkAsRead: () => void;
-    onMarkAsUnread: () => void;
   }
 
-  let { notification, onDismiss, onMarkAsRead, onMarkAsUnread }: Props = $props();
-
-  // Track dismissing state for animation
-  let isDismissing = $state(false);
+  let { notification }: Props = $props();
 
   // Haptic feedback service
   let hapticService: IHapticFeedbackService | undefined;
@@ -87,11 +81,9 @@
     }
   }
 
-  async function handleClick() {
+  // Handle card click - navigate directly (Facebook/Instagram pattern)
+  async function handleCardClick() {
     hapticService?.trigger("selection");
-    if (!notification.read) {
-      onMarkAsRead();
-    }
 
     // Deep-link to relevant content based on notification type
     const n = notification as unknown as Record<string, unknown>;
@@ -139,59 +131,32 @@
         await handleModuleChange("dashboard", "overview");
         break;
 
+      case "admin-new-user-signup":
+        // Navigate to the new user's profile
+        if (n["newUserId"]) {
+          inboxState.close();
+          goto(`/profile/${n["newUserId"]}`);
+        }
+        break;
+
+      case "system-announcement":
+        // Navigate to action URL if provided
+        if (n["actionUrl"]) {
+          inboxState.close();
+          goto(n["actionUrl"] as string);
+        }
+        break;
+
       default:
         // No specific navigation for other types
         break;
     }
   }
 
-  function handleKeydown(e: KeyboardEvent) {
+  function handleCardKeydown(e: KeyboardEvent) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      handleClick();
-    }
-  }
-
-  function handleDismissClick(e: MouseEvent) {
-    e.stopPropagation();
-    hapticService?.trigger("selection");
-    // Trigger fade-out animation before dismissing
-    isDismissing = true;
-    setTimeout(() => {
-      onDismiss();
-    }, 200);
-  }
-
-  function handleDismissKeydown(e: KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      e.stopPropagation();
-      isDismissing = true;
-      setTimeout(() => {
-        onDismiss();
-      }, 200);
-    }
-  }
-
-  function handleToggleRead(e: MouseEvent) {
-    e.stopPropagation();
-    hapticService?.trigger("selection");
-    if (notification.read) {
-      onMarkAsUnread();
-    } else {
-      onMarkAsRead();
-    }
-  }
-
-  function handleToggleReadKeydown(e: KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      e.stopPropagation();
-      if (notification.read) {
-        onMarkAsUnread();
-      } else {
-        onMarkAsRead();
-      }
+      handleCardClick();
     }
   }
 </script>
@@ -199,9 +164,8 @@
 <div
   class="notification-item"
   class:unread={!notification.read}
-  class:dismissing={isDismissing}
-  onclick={handleClick}
-  onkeydown={handleKeydown}
+  onclick={handleCardClick}
+  onkeydown={handleCardKeydown}
   role="button"
   tabindex="0"
   aria-label="{notification.message}{!notification.read ? ' (unread)' : ''}"
@@ -219,39 +183,20 @@
   <!-- Content -->
   <div class="content">
     <p class="message">{notification.message}</p>
-    <span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span
-    >
+    <span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span>
   </div>
 
-  <!-- Toggle read/unread button -->
-  <button
-    class="toggle-read-btn"
-    onclick={handleToggleRead}
-    onkeydown={handleToggleReadKeydown}
-    aria-label={notification.read ? "Mark as unread" : "Mark as read"}
-    tabindex="0"
-    title={notification.read ? "Mark as unread" : "Mark as read"}
-  >
-    <i class="fas {notification.read ? 'fa-envelope' : 'fa-envelope-open'}"></i>
-  </button>
-
-  <!-- Dismiss button -->
-  <button
-    class="dismiss-btn"
-    onclick={handleDismissClick}
-    onkeydown={handleDismissKeydown}
-    aria-label="Dismiss notification"
-    tabindex="0"
-  >
-    <i class="fas fa-times"></i>
-  </button>
+  <!-- Chevron indicator -->
+  <div class="chevron">
+    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+  </div>
 </div>
 
 <style>
   .notification-item {
     position: relative;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
     width: 100%;
     min-height: 64px;
@@ -263,8 +208,7 @@
     cursor: pointer;
     transition:
       background 0.2s ease,
-      transform 0.2s ease,
-      opacity 0.2s ease;
+      transform 0.2s ease;
   }
 
   .notification-item:hover {
@@ -284,13 +228,6 @@
 
   .notification-item.unread {
     background: color-mix(in srgb, var(--theme-accent) 5%, transparent);
-  }
-
-  /* Dismiss animation */
-  .notification-item.dismissing {
-    opacity: 0;
-    transform: translateX(20px) scale(0.95);
-    pointer-events: none;
   }
 
   /* Unread dot indicator */
@@ -345,7 +282,7 @@
 
   .message {
     margin: 0 0 4px;
-    font-size: 14px;
+    font-size: var(--font-size-min, 14px);
     line-height: 1.4;
     color: var(--theme-text, #ffffff);
   }
@@ -355,85 +292,33 @@
   }
 
   .time {
-    font-size: var(--font-size-compact, 12px); /* Supplementary timestamp */
+    font-size: var(--font-size-compact, 12px);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
-  /* Toggle read/unread button */
-  .toggle-read-btn {
+  /* Chevron indicator */
+  .chevron {
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    cursor: pointer;
-    opacity: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: 12px;
     transition: all 0.2s ease;
   }
 
-  .notification-item:hover .toggle-read-btn,
-  .notification-item:focus-within .toggle-read-btn {
-    opacity: 1;
-  }
-
-  .toggle-read-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-accent, #3b82f6);
-  }
-
-  .toggle-read-btn:focus-visible {
-    opacity: 1;
-    outline: none;
-    box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
-  }
-
-  /* Dismiss button */
-  .dismiss-btn {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
-    padding: 0;
-    background: transparent;
-    border: none;
-    border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    cursor: pointer;
-    opacity: 0;
-    transition: all 0.2s ease;
-  }
-
-  .notification-item:hover .dismiss-btn,
-  .notification-item:focus-within .dismiss-btn {
-    opacity: 1;
-  }
-
-  .dismiss-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--semantic-error, #ef4444);
-  }
-
-  .dismiss-btn:focus-visible {
-    opacity: 1;
-    outline: none;
-    box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+  .notification-item:hover .chevron {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    transform: translateX(2px);
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .notification-item,
     .icon,
-    .dismiss-btn,
+    .chevron,
     .unread-dot {
       transition: none !important;
       animation: none !important;

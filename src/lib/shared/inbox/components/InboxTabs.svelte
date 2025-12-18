@@ -32,7 +32,7 @@
 		hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 	});
 
-	// Auto-mark notifications as read when viewing the notifications tab (Facebook-style glance)
+	// Auto-mark notifications as read when viewing (Facebook/Instagram pattern)
 	$effect(() => {
 		// Only run when notifications tab is active
 		if (inboxState.activeTab !== "notifications") return;
@@ -42,21 +42,14 @@
 			? userPreviewState.data.profile.uid
 			: authState.user?.uid;
 
-		if (!userId) {
-			console.log("No userId available for auto-mark-as-read");
-			return;
-		}
+		if (!userId) return;
 
 		// Check if there are unread notifications
 		const unreadCount = inboxState.unreadNotificationCount;
-		console.log("Notifications tab active, unread count:", unreadCount);
 
 		if (unreadCount > 0) {
-			console.log("Auto-marking all notifications as read for user:", userId);
-			// Mark all notifications as read when viewing the tab
-			notificationService.markAllAsRead(userId).then(() => {
-				console.log("Successfully marked all notifications as read");
-			}).catch((error) => {
+			// Mark all notifications as read when viewing the tab (social media pattern)
+			notificationService.markAllAsRead(userId).catch((error) => {
 				console.error("Failed to auto-mark notifications as read:", error);
 			});
 		}

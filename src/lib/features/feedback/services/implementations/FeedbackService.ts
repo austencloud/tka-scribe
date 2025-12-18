@@ -38,6 +38,7 @@ import type {
   AdminResponse,
   TesterConfirmation,
   DeviceContext,
+  StatusHistoryEntry,
 } from "../../domain/models/feedback-models";
 import type { NotificationType } from "../../domain/models/notification-models";
 import { notificationTriggerService } from "./NotificationTriggerService";
@@ -324,6 +325,13 @@ export class FeedbackService implements IFeedbackService {
 
   async updateStatus(feedbackId: string, status: FeedbackStatus): Promise<void> {
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
+
+    // Get current feedback to check existing status and history
+    const feedback = await this.getFeedback(feedbackId);
+    if (!feedback) {
+      throw new Error("Feedback not found");
+    }
+
     const updateData: Record<string, unknown> = {
       status,
       updatedAt: serverTimestamp(),
@@ -334,7 +342,57 @@ export class FeedbackService implements IFeedbackService {
       updateData["archivedAt"] = serverTimestamp();
     }
 
+    // Track status change in history (with 60s debounce)
+    const shouldRecordStatusChange = this.shouldRecordStatusChange(
+      feedback.statusHistory || [],
+      feedback.status,
+      status
+    );
+
+    if (shouldRecordStatusChange) {
+      const newEntry = {
+        status,
+        timestamp: new Date(),
+        fromStatus: feedback.status,
+      };
+
+      const updatedHistory = [...(feedback.statusHistory || []), newEntry];
+      updateData["statusHistory"] = updatedHistory;
+    }
+
     await updateDoc(docRef, updateData);
+  }
+
+  /**
+   * Check if status change should be recorded in history
+   * Skip if same transition happened within last 60 seconds
+   */
+  private shouldRecordStatusChange(
+    history: FeedbackItem["statusHistory"] = [],
+    fromStatus: FeedbackStatus,
+    toStatus: FeedbackStatus
+  ): boolean {
+    // Always record if there's no history
+    if (history.length === 0) return true;
+
+    // Get the most recent entry
+    const lastEntry = history[history.length - 1];
+    if (!lastEntry) return true;
+
+    // Check if this is the same transition
+    const isSameTransition =
+      lastEntry.fromStatus === fromStatus &&
+      lastEntry.status === toStatus;
+
+    if (!isSameTransition) return true;
+
+    // Check if last entry was within 60 seconds
+    const now = new Date();
+    const timeSinceLastEntry = now.getTime() - lastEntry.timestamp.getTime();
+    const DEBOUNCE_MS = 60 * 1000; // 60 seconds
+
+    // Skip if same transition happened within debounce window
+    return timeSinceLastEntry >= DEBOUNCE_MS;
   }
 
   async updateAdminNotes(feedbackId: string, notes: string): Promise<void> {
@@ -865,6 +923,14 @@ export class FeedbackService implements IFeedbackService {
         }
       : undefined;
 
+    // Map status history if present
+    const statusHistoryData = data["statusHistory"] as Array<Record<string, unknown>> | undefined;
+    const statusHistory: StatusHistoryEntry[] | undefined = statusHistoryData?.map((entry) => ({
+      status: entry["status"] as FeedbackStatus,
+      timestamp: (entry["timestamp"] as Timestamp)?.toDate() || new Date(),
+      fromStatus: entry["fromStatus"] as FeedbackStatus | undefined,
+    }));
+
     return {
       id,
       userId: data["userId"] as string,
@@ -891,6 +957,7 @@ export class FeedbackService implements IFeedbackService {
       deferredUntil: (data["deferredUntil"] as Timestamp)?.toDate() || undefined,
       reactivatedAt: (data["reactivatedAt"] as Timestamp)?.toDate() || undefined,
       reactivatedFrom: (data["reactivatedFrom"] as Timestamp)?.toDate() || undefined,
+      statusHistory,
       isDeleted: data["isDeleted"] as boolean | undefined,
       deletedAt: (data["deletedAt"] as Timestamp)?.toDate() || undefined,
       deletedBy: data["deletedBy"] as string | undefined,

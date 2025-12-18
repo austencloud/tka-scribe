@@ -24,6 +24,7 @@
   import DashboardSignInToast from "./DashboardSignInToast.svelte";
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
   import SupportWidget from "./widgets/SupportWidget.svelte";
+  import ActivityWidget from "./widgets/ActivityWidget.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
 
   // Services
@@ -108,6 +109,11 @@
     hapticService?.trigger("selection");
     dashboardState.supportDrawerOpen = true;
   }
+
+  function openActivityDrawer() {
+    hapticService?.trigger("selection");
+    dashboardState.activityDrawerOpen = true;
+  }
 </script>
 
 <div class="dashboard" class:visible={dashboardState.isVisible}>
@@ -173,15 +179,46 @@
         {/if}
       </section>
     {/if}
+
+    <!-- Activity Card -->
+    {#if dashboardState.isVisible}
+      <section
+        class="bento-activity"
+        transition:fly={{
+          y: 12,
+          duration: 200,
+          delay: 400,
+          easing: cubicOut,
+        }}
+      >
+        {#if isMobile}
+          <button class="teaser-card" onclick={openActivityDrawer}>
+            <div class="teaser-icon activity">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="teaser-content">
+              <span class="teaser-title">Your Creations</span>
+              <span class="teaser-subtitle">Sequences & favorites</span>
+            </div>
+            <i class="fas fa-chevron-right teaser-arrow"></i>
+          </button>
+        {:else}
+          <ActivityWidget />
+        {/if}
+      </section>
+    {/if}
   </div>
 
   <DashboardMobileDrawers
     challengeDrawerOpen={dashboardState.challengeDrawerOpen}
     supportDrawerOpen={dashboardState.supportDrawerOpen}
+    activityDrawerOpen={dashboardState.activityDrawerOpen}
     onChallengeDrawerChange={(open: boolean) =>
       (dashboardState.challengeDrawerOpen = open)}
     onSupportDrawerChange={(open: boolean) =>
       (dashboardState.supportDrawerOpen = open)}
+    onActivityDrawerChange={(open: boolean) =>
+      (dashboardState.activityDrawerOpen = open)}
   />
 
   <DashboardSignInToast
@@ -324,7 +361,8 @@
      ======================================== */
 
   .bento-challenge,
-  .bento-support {
+  .bento-support,
+  .bento-activity {
     min-height: auto;
   }
 
@@ -375,6 +413,15 @@
       transparent
     );
     color: var(--theme-accent-strong, #8b5cf6);
+  }
+
+  .teaser-icon.activity {
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
+    color: var(--theme-accent, #6366f1);
   }
 
   .teaser-content {

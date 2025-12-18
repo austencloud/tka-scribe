@@ -86,16 +86,20 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 ```
 1. Display feedback verbatim ↓
 2. Assess complexity (TRIVIAL / MEDIUM / COMPLEX) ↓
-3. Route decision:
+3. Express your thoughts and interpretation ↓
+4. ASK FOR CONFIRMATION before proceeding ↓
+5. After user approves, route decision:
    ├─ TRIVIAL → Delegate to Haiku (do NOT implement yourself)
    ├─ MEDIUM → Delegate to Sonnet (do NOT implement yourself)
    └─ COMPLEX → Handle as Opus (follow Standard Workflow)
-4. Review delegated results (if applicable)
-5. Move to in-review with admin notes
-6. Offer to mark complete (wait for user confirmation)
+6. Review delegated results (if applicable)
+7. Move to in-review with admin notes
+8. Offer to mark complete (wait for user confirmation)
 ```
 
 **Key principle:** Save tokens by routing work to cheaper models. Opus is for coordination, not CSS tweaks.
+
+**CRITICAL: NEVER start working or delegating without explicit user confirmation. This applies to ALL complexity levels.**
 
 ---
 
@@ -176,7 +180,28 @@ Evaluate the feedback against these criteria:
 **Reasoning:** Simple CSS overflow fix in a single component. Pattern already exists elsewhere.
 ```
 
-### Step 3: Execute Based on Triage
+### Step 3: Get Confirmation Before Proceeding
+
+**MANDATORY:** After announcing your triage decision, you MUST:
+
+1. **Express your interpretation** - Explain what you understand the feedback to be asking for
+2. **Share your assessment** - Is this a good idea? Any concerns? Any clarifications needed?
+3. **ASK FOR EXPLICIT CONFIRMATION** - "Should I proceed?" or "Would you like me to implement this?"
+
+**DO NOT:**
+- Start working without confirmation
+- Delegate to a subagent without confirmation
+- Assume approval based on the feedback being in the queue
+- Skip this step for "simple" tasks
+
+**Example:**
+```
+Based on this feedback, I understand you want to change the submit button icon from "send" to "paper airplane". This seems straightforward and should improve the visual metaphor for submission.
+
+Should I proceed with delegating this to Haiku?
+```
+
+### Step 4: Execute Based on Triage (Only After Confirmation)
 
 #### For TRIVIAL tasks (DELEGATE to Haiku):
 **DO NOT implement yourself.** Use the Task tool with:
@@ -212,7 +237,7 @@ Task tool parameters:
 #### For COMPLEX tasks (Handle as Opus):
 **DO NOT delegate.** Handle directly following the Standard Workflow below.
 
-### Step 4: Review Delegated Results (TRIVIAL/MEDIUM only)
+### Step 5: Review Delegated Results (TRIVIAL/MEDIUM only)
 
 When a Haiku/Sonnet agent completes:
 1. Read their implementation summary
@@ -229,7 +254,9 @@ When a Haiku/Sonnet agent completes:
 
 ## Standard Workflow (for COMPLEX items handled as Opus)
 
-**Note:** If you reached this section, you already completed Model Triage and determined this is a COMPLEX task requiring Opus.
+**Note:** If you reached this section, you already:
+1. Completed Model Triage and determined this is a COMPLEX task requiring Opus
+2. Got user confirmation to proceed
 
 ### Implementation Process
 
@@ -437,7 +464,14 @@ Model Routing: Delegating to Haiku
 Reasoning: Simple icon swap in a single component. No logic changes.
 ```
 
-**Action:**
+**Confirmation Step:**
+```
+This is a straightforward icon change in the feedback submit button. Changing from a "send" icon to a "paper airplane" icon should improve the visual metaphor for submission. This is a purely cosmetic change with no logic implications.
+
+Should I proceed with delegating this to Haiku?
+```
+
+**Action (after user confirms):**
 ```typescript
 Task({
   subagent_type: "general-purpose",
@@ -469,7 +503,17 @@ Model Routing: Delegating to Sonnet
 Reasoning: Clear feature request. Requires state management and persistence logic, but scope is well-defined (1-2 files).
 ```
 
-**Action:**
+**Confirmation Step:**
+```
+This is a quality-of-life improvement that prevents users from losing their work when they accidentally close the feedback panel. The implementation would involve:
+- Persisting draft text to localStorage on panel close
+- Restoring it when the panel reopens
+- Clearing the draft after successful submission
+
+This is a good UX enhancement with clear scope. Should I proceed with delegating this to Sonnet?
+```
+
+**Action (after user confirms):**
 ```typescript
 Task({
   subagent_type: "general-purpose",
@@ -514,9 +558,23 @@ Model Routing: Handling as Opus
 Reasoning: Ambiguous requirements, multi-module feature (auth, settings, notifications), requires UX decisions (how intrusive? dismissible? persistent?), touches 4+ files, needs architectural planning.
 ```
 
-**Action:** Handle directly as Opus. Follow Standard Workflow:
-1. Assign title
-2. Assess honestly (is this feature creep? does it align with product vision?)
-3. Interpret requirements (modal? banner? toast? settings toggle?)
-4. **Get confirmation** from Austen before implementing
-5. Implement after approval
+**Confirmation Step:**
+```
+This is a significant feature that would help users stay informed about new capabilities. However, there are several architectural decisions to make:
+
+1. **Display method**: Modal (blocking), banner (dismissible), toast (auto-hide), or settings tab entry?
+2. **Trigger**: Show once per version, on every login until dismissed, or user-toggled?
+3. **Persistence**: How do we track which releases the user has seen?
+4. **Scope**: Full release notes, highlights only, or link to external changelog?
+
+**Assessment**: This is a valuable feature for user engagement, but we need to be careful about:
+- Not being intrusive (avoid blocking critical workflows)
+- Giving users control (dismissible + settings toggle)
+- Keeping implementation maintainable
+
+**Recommendation**: I'd suggest starting with a non-intrusive banner in the dashboard that shows on first login after an update, with a link to full release notes in settings.
+
+Does this sound like the right approach, or would you prefer a different UX pattern?
+```
+
+**Action (after user confirms approach):** Handle directly as Opus, following Standard Workflow steps 1-8.

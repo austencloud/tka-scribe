@@ -67,6 +67,24 @@ export const auth: Auth = getAuth(app);
 let firestoreInstance: Firestore | null = null;
 // Initialization promise to prevent race conditions
 let firestoreInitPromise: Promise<Firestore> | null = null;
+// Track if we're using fallback memory cache (for debugging)
+let usingMemoryCache = false;
+
+/**
+ * Check if an error is the known IndexedDB/persistence corruption error
+ */
+function isFirestoreCorruptionError(error: unknown): boolean {
+  if (error instanceof Error) {
+    const message = error.message || "";
+    return (
+      message.includes("INTERNAL ASSERTION FAILED") ||
+      message.includes("Unexpected state") ||
+      message.includes("IndexedDB") ||
+      message.includes("persistence")
+    );
+  }
+  return false;
+}
 
 export async function getFirestoreInstance(): Promise<Firestore> {
   // If already initialized, return immediately
@@ -81,35 +99,72 @@ export async function getFirestoreInstance(): Promise<Firestore> {
 
   // Start initialization - MUST only happen once
   firestoreInitPromise = (async () => {
+    const { getFirestore } = await import("firebase/firestore");
+
+    // Try to get existing instance first (if already initialized elsewhere)
     try {
-      const { getFirestore } = await import("firebase/firestore");
+      firestoreInstance = getFirestore(app);
+      debug.success("Firestore instance retrieved");
+      return firestoreInstance;
+    } catch {
+      // Not initialized yet, need to create new instance
+    }
 
-      // Try to get existing instance first (if already initialized elsewhere)
-      try {
-        firestoreInstance = getFirestore(app);
-        debug.success("Firestore instance retrieved");
-      } catch {
-        // Not initialized yet, create new instance
-        const { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } =
-          await import("firebase/firestore");
+    // Try persistent cache first, fall back to memory cache if it fails
+    try {
+      const { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } =
+        await import("firebase/firestore");
 
-        firestoreInstance = initializeFirestore(app, {
-          localCache: persistentLocalCache({
-            tabManager: persistentMultipleTabManager(),
-          }),
-        });
-        debug.success("Firestore initialized with persistent cache");
+      firestoreInstance = initializeFirestore(app, {
+        localCache: persistentLocalCache({
+          tabManager: persistentMultipleTabManager(),
+        }),
+      });
+      debug.success("Firestore initialized with persistent cache");
+      return firestoreInstance;
+    } catch (persistentError) {
+      // Check if this is the known corruption error
+      if (isFirestoreCorruptionError(persistentError)) {
+        debug.warn(
+          "Persistent cache failed (IndexedDB corruption), falling back to memory cache. " +
+          "Clear browser data to restore offline support."
+        );
+        console.warn(
+          "⚠️ Firestore persistent cache unavailable due to IndexedDB corruption. " +
+          "Using memory cache - offline data will not persist. " +
+          "To fix: Clear site data in browser settings."
+        );
+
+        // Fall back to memory cache
+        try {
+          const { initializeFirestore, memoryLocalCache } = await import("firebase/firestore");
+          firestoreInstance = initializeFirestore(app, {
+            localCache: memoryLocalCache(),
+          });
+          usingMemoryCache = true;
+          debug.success("Firestore initialized with memory cache (fallback)");
+          return firestoreInstance;
+        } catch (memoryError) {
+          // Even memory cache failed - try bare getFirestore as last resort
+          debug.error("Memory cache also failed, trying bare Firestore");
+          firestoreInstance = getFirestore(app);
+          usingMemoryCache = true;
+          return firestoreInstance;
+        }
       }
 
-      return firestoreInstance;
-    } catch (error) {
-      // Clear the promise so we can retry
+      // Not a corruption error - rethrow
       firestoreInitPromise = null;
-      throw error;
+      throw persistentError;
     }
   })();
 
   return firestoreInitPromise;
+}
+
+/** Check if Firestore is running in degraded (memory-only) mode */
+export function isFirestoreUsingMemoryCache(): boolean {
+  return usingMemoryCache;
 }
 
 /**
