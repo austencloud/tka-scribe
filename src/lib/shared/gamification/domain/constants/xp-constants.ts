@@ -11,15 +11,11 @@
 export const XP_REWARDS = {
   // Creation actions
   SEQUENCE_CREATED: 10,
-  SEQUENCE_GENERATED: 5,
   SEQUENCE_PUBLISHED: 50,
 
   // Learning actions
   CONCEPT_LEARNED: 20,
   DRILL_COMPLETED: 5,
-
-  // Exploration actions
-  SEQUENCE_EXPLORED: 2,
 
   // Daily engagement
   DAILY_LOGIN: 15,

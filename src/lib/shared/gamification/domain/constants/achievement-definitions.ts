@@ -26,45 +26,6 @@ const CREATOR_ACHIEVEMENTS: Achievement[] = [
     },
   },
   {
-    id: "sequences_10",
-    title: "Sequence Builder",
-    description: "Create 10 sequences",
-    category: "creator",
-    tier: "silver",
-    xpReward: 100,
-    icon: "fa-hammer",
-    requirement: {
-      type: "sequence_count",
-      target: 10,
-    },
-  },
-  {
-    id: "sequences_50",
-    title: "Flow Composer",
-    description: "Create 50 sequences",
-    category: "creator",
-    tier: "gold",
-    xpReward: 250,
-    icon: "fa-palette",
-    requirement: {
-      type: "sequence_count",
-      target: 50,
-    },
-  },
-  {
-    id: "sequences_100",
-    title: "Master Choreographer",
-    description: "Create 100 sequences",
-    category: "creator",
-    tier: "platinum",
-    xpReward: 500,
-    icon: "fa-crown",
-    requirement: {
-      type: "sequence_count",
-      target: 100,
-    },
-  },
-  {
     id: "spell_name",
     title: "Personal Touch",
     description: "Create a sequence that spells your name",
@@ -122,32 +83,6 @@ const SCHOLAR_ACHIEVEMENTS: Achievement[] = [
     requirement: {
       type: "concept_completion",
       target: 1,
-    },
-  },
-  {
-    id: "concepts_5",
-    title: "Dedicated Student",
-    description: "Complete 5 concepts",
-    category: "scholar",
-    tier: "silver",
-    xpReward: 100,
-    icon: "fa-graduation-cap",
-    requirement: {
-      type: "concept_completion",
-      target: 5,
-    },
-  },
-  {
-    id: "concepts_15",
-    title: "Scholar",
-    description: "Complete 15 concepts",
-    category: "scholar",
-    tier: "gold",
-    xpReward: 250,
-    icon: "fa-book",
-    requirement: {
-      type: "concept_completion",
-      target: 15,
     },
   },
   {
@@ -244,34 +179,6 @@ const TRAINER_ACHIEVEMENTS: Achievement[] = [
     },
   },
   {
-    id: "challenge_5",
-    title: "Rising Trainee",
-    description: "Complete 5 training challenges",
-    category: "trainer",
-    tier: "silver",
-    xpReward: 125,
-    icon: "fa-fire",
-    requirement: {
-      type: "challenge_count",
-      target: 5,
-      metadata: { challengeType: "train" },
-    },
-  },
-  {
-    id: "challenge_15",
-    title: "Dedicated Trainer",
-    description: "Complete 15 training challenges",
-    category: "trainer",
-    tier: "gold",
-    xpReward: 300,
-    icon: "fa-trophy",
-    requirement: {
-      type: "challenge_count",
-      target: 15,
-      metadata: { challengeType: "train" },
-    },
-  },
-  {
     id: "perfect_practice",
     title: "Perfectionist",
     description: "Complete a training session with 100% accuracy",
@@ -331,95 +238,8 @@ const TRAINER_ACHIEVEMENTS: Achievement[] = [
 
 // ============================================================================
 // EXPLORER ACHIEVEMENTS (Browsing Gallery)
+// Removed: explore_10/50/100 were pure quantity spam with no skill component
 // ============================================================================
-
-const EXPLORER_ACHIEVEMENTS: Achievement[] = [
-  {
-    id: "explore_10",
-    title: "Window Shopping",
-    description: "Discover 10 sequences",
-    category: "explorer",
-    tier: "bronze",
-    xpReward: 50,
-    icon: "fa-magnifying-glass",
-    requirement: {
-      type: "gallery_exploration",
-      target: 10,
-    },
-  },
-  {
-    id: "explore_50",
-    title: "Gallery Enthusiast",
-    description: "Discover 50 sequences",
-    category: "explorer",
-    tier: "silver",
-    xpReward: 100,
-    icon: "fa-images",
-    requirement: {
-      type: "gallery_exploration",
-      target: 50,
-    },
-  },
-  {
-    id: "explore_100",
-    title: "Sequence Connoisseur",
-    description: "Discover 100 sequences",
-    category: "explorer",
-    tier: "gold",
-    xpReward: 200,
-    icon: "fa-wand-sparkles",
-    requirement: {
-      type: "gallery_exploration",
-      target: 100,
-    },
-  },
-];
-
-// ============================================================================
-// GENERATION ACHIEVEMENTS (Using Auto-Generate)
-// ============================================================================
-
-const GENERATION_ACHIEVEMENTS: Achievement[] = [
-  {
-    id: "generate_first",
-    title: "Lucky Roll",
-    description: "Generate your first sequence",
-    category: "creator",
-    tier: "bronze",
-    xpReward: 25,
-    icon: "fa-dice",
-    requirement: {
-      type: "generation_count",
-      target: 1,
-    },
-  },
-  {
-    id: "generate_25",
-    title: "Idea Generator",
-    description: "Generate 25 sequences",
-    category: "creator",
-    tier: "silver",
-    xpReward: 75,
-    icon: "fa-lightbulb",
-    requirement: {
-      type: "generation_count",
-      target: 25,
-    },
-  },
-  {
-    id: "generate_100",
-    title: "Inspiration Engine",
-    description: "Generate 100 sequences",
-    category: "creator",
-    tier: "gold",
-    xpReward: 200,
-    icon: "fa-gear",
-    requirement: {
-      type: "generation_count",
-      target: 100,
-    },
-  },
-];
 
 // ============================================================================
 // CONTRIBUTOR ACHIEVEMENTS (Feedback Submission)
@@ -439,45 +259,6 @@ const CONTRIBUTOR_ACHIEVEMENTS: Achievement[] = [
       target: 1,
     },
   },
-  {
-    id: "feedback_5",
-    title: "Active Contributor",
-    description: "Submit 5 feedback items",
-    category: "contributor",
-    tier: "silver",
-    xpReward: 100,
-    icon: "fa-comments",
-    requirement: {
-      type: "feedback_count",
-      target: 5,
-    },
-  },
-  {
-    id: "feedback_15",
-    title: "Community Champion",
-    description: "Submit 15 feedback items",
-    category: "contributor",
-    tier: "gold",
-    xpReward: 250,
-    icon: "fa-medal",
-    requirement: {
-      type: "feedback_count",
-      target: 15,
-    },
-  },
-  {
-    id: "feedback_50",
-    title: "Product Shaper",
-    description: "Submit 50 feedback items",
-    category: "contributor",
-    tier: "platinum",
-    xpReward: 500,
-    icon: "fa-crown",
-    requirement: {
-      type: "feedback_count",
-      target: 50,
-    },
-  },
 ];
 
 // ============================================================================
@@ -489,8 +270,6 @@ export const ALL_ACHIEVEMENTS: Achievement[] = [
   ...SCHOLAR_ACHIEVEMENTS,
   ...PRACTITIONER_ACHIEVEMENTS,
   ...TRAINER_ACHIEVEMENTS,
-  ...EXPLORER_ACHIEVEMENTS,
-  ...GENERATION_ACHIEVEMENTS,
   ...CONTRIBUTOR_ACHIEVEMENTS,
 ];
 

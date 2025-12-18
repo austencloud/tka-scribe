@@ -12,7 +12,7 @@ import {
   increment,
   serverTimestamp,
 } from "firebase/firestore";
-import { firestore } from "../../../../auth/firebase";
+import { getFirestoreInstance } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import { getUserAchievementsPath } from "../../../data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from '../../../domain/constants/achievement-definitions';
@@ -28,11 +28,9 @@ export class AchievementProgressManager {
       Achievement["requirement"]["type"][]
     > = {
       sequence_created: ["sequence_count", "letter_usage", "sequence_length"],
-      sequence_generated: ["generation_count"],
       sequence_published: ["specific_action"],
       concept_learned: ["concept_completion"],
       drill_completed: ["specific_action"],
-      sequence_explored: ["gallery_exploration"],
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
@@ -71,14 +69,8 @@ export class AchievementProgressManager {
       case "sequence_count":
         return action === "sequence_created" ? 1 : 0;
 
-      case "generation_count":
-        return action === "sequence_generated" ? 1 : 0;
-
       case "concept_completion":
         return action === "concept_learned" ? 1 : 0;
-
-      case "gallery_exploration":
-        return action === "sequence_explored" ? 1 : 0;
 
       case "daily_streak":
         // Handled by StreakService, check metadata
@@ -129,6 +121,7 @@ export class AchievementProgressManager {
     action: XPActionType,
     metadata?: XPEventMetadata
   ): Promise<boolean> {
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementDocRef = doc(
       firestore,

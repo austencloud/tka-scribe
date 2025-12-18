@@ -6,7 +6,7 @@
 
 import { injectable } from "inversify";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { auth, firestore } from "../../../auth/firebase";
+import { auth, getFirestoreInstance } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserStreakPath } from "../../data/firestore-collections";
 import type { UserStreak } from '../../domain/models/achievement-models';
@@ -40,6 +40,7 @@ export class StreakService implements IStreakService {
    * Initialize user streak document in Firestore if it doesn't exist
    */
   private async initializeUserStreak(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const streakDocRef = doc(firestore, getUserStreakPath(userId));
     const streakDoc = await getDoc(streakDocRef);
 
@@ -84,6 +85,7 @@ export class StreakService implements IStreakService {
     const today = new Date().toISOString().split("T")[0]!;
 
     // Get current streak
+    const firestore = await getFirestoreInstance();
     const streakDocRef = doc(firestore, getUserStreakPath(user.uid));
     const streakDoc = await getDoc(streakDocRef);
 
@@ -180,6 +182,7 @@ export class StreakService implements IStreakService {
     }
 
     // Fall back to Firestore
+    const firestore = await getFirestoreInstance();
     const streakDocRef = doc(firestore, getUserStreakPath(user.uid));
     const streakDoc = await getDoc(streakDocRef);
 

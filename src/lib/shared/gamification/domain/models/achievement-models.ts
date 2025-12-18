@@ -132,11 +132,9 @@ export interface XPGainEvent {
 
 export type XPActionType =
   | "sequence_created"
-  | "sequence_generated"
   | "sequence_published"
   | "concept_learned"
   | "drill_completed"
-  | "sequence_explored"
   | "daily_challenge_completed"
   | "achievement_unlocked"
   | "daily_login"

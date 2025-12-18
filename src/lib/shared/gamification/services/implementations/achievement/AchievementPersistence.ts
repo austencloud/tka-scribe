@@ -18,7 +18,7 @@ import {
   Timestamp,
   serverTimestamp,
 } from "firebase/firestore";
-import { firestore } from "../../../../auth/firebase";
+import { getFirestoreInstance } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import {
   getUserAchievementsPath,
@@ -32,6 +32,7 @@ export class AchievementPersistence {
    * Initialize user XP document in Firestore if it doesn't exist
    */
   async initializeUserXP(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const xpDocRef = doc(firestore, getUserXPPath(userId));
     const xpDoc = await getDoc(xpDocRef);
 
@@ -72,6 +73,7 @@ export class AchievementPersistence {
    * Uses a single batch query instead of individual reads for each achievement
    */
   async initializeUserAchievements(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementsCollectionRef = collection(firestore, achievementsPath);
 
@@ -132,6 +134,7 @@ export class AchievementPersistence {
     }
 
     // Fall back to Firestore
+    const firestore = await getFirestoreInstance();
     const xpDocRef = doc(firestore, getUserXPPath(userId));
     const xpDoc = await getDoc(xpDocRef);
 
@@ -163,6 +166,7 @@ export class AchievementPersistence {
       return ALL_ACHIEVEMENTS.map((a) => ({ ...a, userProgress: null }));
     }
 
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementsSnapshot = await getDocs(
       collection(firestore, achievementsPath)
@@ -195,6 +199,7 @@ export class AchievementPersistence {
    * Get recent achievements (last 7 days)
    */
   async getRecentAchievements(userId: string): Promise<UserAchievement[]> {
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
@@ -219,6 +224,7 @@ export class AchievementPersistence {
     userId: string,
     achievementId: string
   ): Promise<UserAchievement | null> {
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementDocRef = doc(
       firestore,

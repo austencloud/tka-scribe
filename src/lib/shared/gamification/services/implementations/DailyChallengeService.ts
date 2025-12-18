@@ -16,7 +16,7 @@ import {
   where,
   serverTimestamp,
 } from "firebase/firestore";
-import { auth, firestore } from "../../../auth/firebase";
+import { auth, getFirestoreInstance } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import {
   getDailyChallengesPath,
@@ -77,6 +77,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
     // Read from Firestore (admin pre-created challenges only)
     try {
+      const firestore = await getFirestoreInstance();
       const challengesPath = getDailyChallengesPath();
       const challengeDocRef = doc(
         firestore,
@@ -115,6 +116,7 @@ export class DailyChallengeService implements IDailyChallengeService {
 
     if (!challenge) return null;
 
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserChallengeProgressPath(user.uid);
     const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
     const progressDoc = await getDoc(progressDocRef);
@@ -175,6 +177,7 @@ export class DailyChallengeService implements IDailyChallengeService {
     const newProgress = currentProgress.progress + progressDelta;
     const isNowCompleted = newProgress >= challenge.requirement.target;
 
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserChallengeProgressPath(user.uid);
     const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
 
@@ -307,6 +310,7 @@ export class DailyChallengeService implements IDailyChallengeService {
       };
     }
 
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserChallengeProgressPath(user.uid);
     const completedQuery = query(
       collection(firestore, progressPath),

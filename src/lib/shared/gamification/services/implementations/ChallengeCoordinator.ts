@@ -631,10 +631,9 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     action: XPActionType
   ): boolean {
     const mappings: Record<string, XPActionType[]> = {
-      sequence_creation: ["sequence_created", "sequence_generated"],
-      exploration: ["sequence_explored"],
+      sequence_creation: ["sequence_created"],
       learning: ["concept_learned", "drill_completed"],
-      practice: ["sequence_created", "sequence_generated", "daily_login"],
+      practice: ["sequence_created", "daily_login"],
     };
 
     return mappings[challengeType]?.includes(action) ?? false;
@@ -648,11 +647,9 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
       SkillProgressActionType
     > = {
       sequence_created: "sequence_created",
-      sequence_generated: "sequence_created",
       sequence_published: "sequence_created",
       concept_learned: "drill_completed",
       drill_completed: "drill_completed",
-      sequence_explored: "exploration_complete",
       daily_challenge_completed: "challenge_completed",
       weekly_challenge_completed: "challenge_completed",
       weekly_challenge_bonus: "challenge_completed",

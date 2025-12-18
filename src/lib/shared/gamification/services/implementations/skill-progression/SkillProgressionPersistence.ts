@@ -7,7 +7,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { firestore } from "../../../../auth/firebase";
+import { getFirestoreInstance } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import { getUserSkillProgressPath } from "../../../data/firestore-collections";
 import type { UserSkillProgress } from "../../../domain/models/challenge-models";
@@ -32,6 +32,7 @@ export async function loadAllUserSkillProgress(params: {
   }
 
   try {
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserSkillProgressPath(userId);
     const progressQuery = query(collection(firestore, progressPath));
     const snapshot = await getDocs(progressQuery);
@@ -63,6 +64,7 @@ export async function persistStartedSkill(params: {
 }): Promise<void> {
   const { userId, skillId, progress, cache } = params;
 
+  const firestore = await getFirestoreInstance();
   const progressPath = getUserSkillProgressPath(userId);
   const progressDocRef = doc(firestore, `${progressPath}/${skillId}`);
 
@@ -87,6 +89,7 @@ export async function persistSkillProgressLevelCompletion(params: {
   const { userId, skillId, updatedProgress, completedLevels, skillCompleted, cache } =
     params;
 
+  const firestore = await getFirestoreInstance();
   const progressPath = getUserSkillProgressPath(userId);
   const progressDocRef = doc(firestore, `${progressPath}/${skillId}`);
 
@@ -112,6 +115,7 @@ export async function persistSkillProgressIncrement(params: {
 }): Promise<void> {
   const { userId, skillId, updatedProgress, newLevelProgress, cache } = params;
 
+  const firestore = await getFirestoreInstance();
   const progressPath = getUserSkillProgressPath(userId);
   const progressDocRef = doc(firestore, `${progressPath}/${skillId}`);
 

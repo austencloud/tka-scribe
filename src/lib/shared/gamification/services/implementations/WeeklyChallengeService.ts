@@ -18,7 +18,7 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
-import { auth, firestore } from "../../../auth/firebase";
+import { auth, getFirestoreInstance } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import {
   getWeeklyChallengesPath,
@@ -93,6 +93,7 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
 
     // Read from Firestore
     try {
+      const firestore = await getFirestoreInstance();
       const challengesPath = getWeeklyChallengesPath();
       const challengeDocRef = doc(
         firestore,
@@ -130,6 +131,7 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
     const challenge = await this.getCurrentWeekChallenge();
     if (!challenge) return null;
 
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserWeeklyProgressPath(user.uid);
     const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
     const progressDoc = await getDoc(progressDocRef);
@@ -210,6 +212,7 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
       bonusEarned = new Date() < new Date(challenge.bonusDeadline);
     }
 
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserWeeklyProgressPath(user.uid);
     const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
 
@@ -382,6 +385,7 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
       };
     }
 
+    const firestore = await getFirestoreInstance();
     const progressPath = getUserWeeklyProgressPath(user.uid);
     const completedQuery = query(
       collection(firestore, progressPath),

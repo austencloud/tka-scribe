@@ -83,10 +83,8 @@ export async function initializeGamification(): Promise<void> {
 export async function trackXP(
   action:
     | "sequence_created"
-    | "sequence_generated"
     | "concept_learned"
     | "drill_completed"
-    | "sequence_explored"
     | "daily_login"
     | "daily_challenge_completed"
     | "feedback_submitted",

@@ -21,7 +21,7 @@ import {
   orderBy,
   limit,
 } from "firebase/firestore";
-import { auth, firestore } from "../../../auth/firebase";
+import { auth, getFirestoreInstance } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import {
   getUserAchievementsPath,
@@ -90,6 +90,7 @@ export class AchievementService implements IAchievementService {
    * Initialize user XP document in Firestore if it doesn't exist
    */
   private async initializeUserXP(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const xpDocRef = doc(firestore, getUserXPPath(userId));
     const xpDoc = await getDoc(xpDocRef);
 
@@ -130,6 +131,7 @@ export class AchievementService implements IAchievementService {
    * Uses a single batch query instead of individual reads for each achievement
    */
   private async initializeUserAchievements(userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementsCollectionRef = collection(firestore, achievementsPath);
 
@@ -256,16 +258,12 @@ export class AchievementService implements IAchievementService {
     switch (action) {
       case "sequence_created":
         return XP_REWARDS.SEQUENCE_CREATED;
-      case "sequence_generated":
-        return XP_REWARDS.SEQUENCE_GENERATED;
       case "sequence_published":
         return XP_REWARDS.SEQUENCE_PUBLISHED;
       case "concept_learned":
         return XP_REWARDS.CONCEPT_LEARNED;
       case "drill_completed":
         return XP_REWARDS.DRILL_COMPLETED;
-      case "sequence_explored":
-        return XP_REWARDS.SEQUENCE_EXPLORED;
       case "daily_login":
         return XP_REWARDS.DAILY_LOGIN;
       case "daily_challenge_completed":
@@ -336,6 +334,7 @@ export class AchievementService implements IAchievementService {
     action: XPActionType,
     metadata?: XPEventMetadata
   ): Promise<{ newLevel?: number }> {
+    const firestore = await getFirestoreInstance();
     const xpDocRef = doc(firestore, getUserXPPath(userId));
 
     // Get current XP
@@ -404,6 +403,7 @@ export class AchievementService implements IAchievementService {
     xpGained: number,
     metadata?: XPEventMetadata
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const eventsPath = getUserXPEventsPath(userId);
     const eventRef = doc(collection(firestore, eventsPath));
 
@@ -501,11 +501,9 @@ export class AchievementService implements IAchievementService {
       Achievement["requirement"]["type"][]
     > = {
       sequence_created: ["sequence_count", "letter_usage", "sequence_length"],
-      sequence_generated: ["generation_count"],
       sequence_published: ["specific_action"],
       concept_learned: ["concept_completion"],
       drill_completed: ["specific_action"],
-      sequence_explored: ["gallery_exploration"],
       daily_login: ["daily_streak"],
       daily_challenge_completed: ["specific_action"],
       achievement_unlocked: [],
@@ -540,6 +538,7 @@ export class AchievementService implements IAchievementService {
     action: XPActionType,
     metadata?: XPEventMetadata
   ): Promise<boolean> {
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(userId);
     const achievementDocRef = doc(
       firestore,
@@ -634,14 +633,8 @@ export class AchievementService implements IAchievementService {
       case "sequence_count":
         return action === "sequence_created" ? 1 : 0;
 
-      case "generation_count":
-        return action === "sequence_generated" ? 1 : 0;
-
       case "concept_completion":
         return action === "concept_learned" ? 1 : 0;
-
-      case "gallery_exploration":
-        return action === "sequence_explored" ? 1 : 0;
 
       case "daily_streak":
         // Handled by StreakService, check metadata
@@ -699,6 +692,7 @@ export class AchievementService implements IAchievementService {
     }
 
     // Fall back to Firestore
+    const firestore = await getFirestoreInstance();
     const xpDocRef = doc(firestore, getUserXPPath(user.uid));
     const xpDoc = await getDoc(xpDocRef);
 
@@ -728,6 +722,7 @@ export class AchievementService implements IAchievementService {
       return ALL_ACHIEVEMENTS.map((a) => ({ ...a, userProgress: null }));
     }
 
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(user.uid);
     const achievementsSnapshot = await getDocs(
       collection(firestore, achievementsPath)
@@ -756,6 +751,7 @@ export class AchievementService implements IAchievementService {
     const user = auth.currentUser;
     if (!user) return [];
 
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(user.uid);
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
@@ -779,6 +775,7 @@ export class AchievementService implements IAchievementService {
     const user = auth.currentUser;
     if (!user) return null;
 
+    const firestore = await getFirestoreInstance();
     const achievementsPath = getUserAchievementsPath(user.uid);
     const achievementDocRef = doc(
       firestore,

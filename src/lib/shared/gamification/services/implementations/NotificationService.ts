@@ -19,7 +19,7 @@ import {
   writeBatch,
   serverTimestamp,
 } from "firebase/firestore";
-import { auth, firestore } from "../../../auth/firebase";
+import { auth, getFirestoreInstance } from "../../../auth/firebase";
 import { db } from "../../../persistence/database/TKADatabase";
 import { getUserNotificationsPath } from "../../data/firestore-collections";
 import type { AchievementNotification } from '../../domain/models/achievement-models';
@@ -167,6 +167,7 @@ export class NotificationService implements INotificationService {
     // Save to Firestore if user is logged in
     if (user) {
       try {
+        const firestore = await getFirestoreInstance();
         const notificationsPath = getUserNotificationsPath(user.uid);
         const notificationRef = doc(
           firestore,
@@ -197,6 +198,7 @@ export class NotificationService implements INotificationService {
         .toArray();
     }
 
+    const firestore = await getFirestoreInstance();
     const notificationsPath = getUserNotificationsPath(user.uid);
     const unreadQuery = query(
       collection(firestore, notificationsPath),
@@ -220,6 +222,7 @@ export class NotificationService implements INotificationService {
     // Update Firestore if user is logged in
     if (user) {
       try {
+        const firestore = await getFirestoreInstance();
         const notificationsPath = getUserNotificationsPath(user.uid);
         const notificationRef = doc(
           firestore,
@@ -252,6 +255,7 @@ export class NotificationService implements INotificationService {
     // Update Firestore if user is logged in
     if (user) {
       try {
+        const firestore = await getFirestoreInstance();
         const notificationsPath = getUserNotificationsPath(user.uid);
         const unreadQuery = query(
           collection(firestore, notificationsPath),
@@ -287,6 +291,7 @@ export class NotificationService implements INotificationService {
         .toArray();
     }
 
+    const firestore = await getFirestoreInstance();
     const notificationsPath = getUserNotificationsPath(user.uid);
     const historyQuery = query(
       collection(firestore, notificationsPath),
@@ -309,6 +314,7 @@ export class NotificationService implements INotificationService {
     // Clear Firestore if user is logged in
     if (user) {
       try {
+        const firestore = await getFirestoreInstance();
         const notificationsPath = getUserNotificationsPath(user.uid);
         const allQuery = query(collection(firestore, notificationsPath));
 

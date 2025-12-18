@@ -14,7 +14,7 @@ import {
   setDoc,
   getDoc,
 } from "firebase/firestore";
-import { firestore } from "../../../../auth/firebase";
+import { getFirestoreInstance } from "../../../../auth/firebase";
 import { db } from "../../../../persistence/database/TKADatabase";
 import {
   getUserXPPath,
@@ -34,14 +34,10 @@ export class XPTracker {
     switch (action) {
       case "sequence_created":
         return XP_REWARDS.SEQUENCE_CREATED;
-      case "sequence_generated":
-        return XP_REWARDS.SEQUENCE_GENERATED;
       case "concept_learned":
         return XP_REWARDS.CONCEPT_LEARNED;
       case "drill_completed":
         return XP_REWARDS.DRILL_COMPLETED;
-      case "sequence_explored":
-        return XP_REWARDS.SEQUENCE_EXPLORED;
       case "daily_login":
         return XP_REWARDS.DAILY_LOGIN;
       case "daily_challenge_completed":
@@ -105,6 +101,7 @@ export class XPTracker {
     action: XPActionType,
     metadata?: XPEventMetadata
   ): Promise<{ newLevel?: number }> {
+    const firestore = await getFirestoreInstance();
     const xpDocRef = doc(firestore, getUserXPPath(userId));
 
     // Get current XP
@@ -168,6 +165,7 @@ export class XPTracker {
     xpGained: number,
     metadata?: XPEventMetadata
   ): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const eventsPath = getUserXPEventsPath(userId);
     const eventRef = doc(collection(firestore, eventsPath));
 
