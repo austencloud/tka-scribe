@@ -1,4 +1,4 @@
-export type QualityLevel = "high" | "medium" | "low" | "minimal";
+export type QualityLevel = "high" | "medium" | "low" | "minimal" | "ultra-minimal";
 export type Dimensions = {
   width: number;
   height: number;

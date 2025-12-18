@@ -64,6 +64,14 @@ export const CoreBackgroundConfig = {
  * Quality level configurations
  */
 export const QUALITY_CONFIGS = {
+  "ultra-minimal": {
+    maxParticles: 5, // Extremely sparse for lowest-end devices
+    animationFrameRate: 10, // Slowest frame rate for minimal CPU usage
+    enableBlur: false,
+    enableGlow: false,
+    particleSize: 1,
+    densityMultiplier: 0.1, // Minimal particle density
+  },
   minimal: {
     maxParticles: 20,
     animationFrameRate: 15,

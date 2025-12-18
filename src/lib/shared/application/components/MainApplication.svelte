@@ -10,6 +10,8 @@
   import InboxSubscriptionProvider from "../../inbox/components/InboxSubscriptionProvider.svelte";
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
   import { myFeedbackDetailState } from "$lib/features/feedback/state/my-feedback-detail-state.svelte";
+  import OnboardingExperience from "../../onboarding/components/OnboardingExperience.svelte";
+  import { onboardingState } from "../../onboarding/state/onboarding-state.svelte";
 
   import { TYPES } from "../../inversify/types";
 
@@ -90,6 +92,9 @@
   // My Feedback Detail drawer state (controlled via global myFeedbackDetailState)
   let feedbackDetailItem = $derived(myFeedbackDetailState.selectedItem);
   let showFeedbackDetail = $derived(myFeedbackDetailState.isOpen);
+
+  // Onboarding state (for first-time users)
+  let showOnboarding = $derived(onboardingState.shouldShow);
 
   // Resolve services when container is available
   $effect(() => {
@@ -300,6 +305,14 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 
+  // Trigger onboarding for first-time authenticated users
+  $effect(() => {
+    if (isAuthenticated && isInitialized && !authLoading) {
+      // Check if this is first time and trigger onboarding
+      onboardingState.triggerIfFirstTime();
+    }
+  });
+
   // Create a serialized key for background settings to detect actual changes
   const backgroundSettingsKey = $derived(
     JSON.stringify({
@@ -340,7 +353,7 @@
   <!-- Background Canvas - Uses reactive settings -->
   {#if settings.backgroundEnabled}
     <BackgroundCanvas
-      backgroundType={settings.backgroundType || BackgroundType.NIGHT_SKY}
+      backgroundType={settings.backgroundType || BackgroundType.SOLID_COLOR}
       quality={settings.backgroundQuality || "medium"}
       backgroundColor={settings.backgroundColor || "#000000"}
       {...settings.gradientColors
@@ -367,6 +380,14 @@
     <!-- Auth Gate: Show landing page for logged-out users -->
     <LandingPage />
   {:else if isAuthenticated}
+    <!-- Onboarding overlay for first-time users -->
+    {#if showOnboarding}
+      <OnboardingExperience
+        onComplete={() => onboardingState.markCompleted()}
+        onSkip={() => onboardingState.markSkipped()}
+      />
+    {/if}
+
     <!-- Main Interface - Full app for authenticated users -->
     <MainInterface />
 

@@ -16,28 +16,14 @@ export class BackgroundConfigurationService
    * and performance characteristics.
    */
   detectAppropriateQuality(): QualityLevel {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) {
-      return "minimal";
-    }
-
-    // Check device memory (if available)
+    // Check device memory (if available) - ultra-minimal for extremely low memory
     const deviceMemory = (navigator as Navigator & { deviceMemory?: number })
       .deviceMemory;
-    if (deviceMemory && deviceMemory < 4) {
-      return "low";
+    if (deviceMemory && deviceMemory < 2) {
+      return "ultra-minimal"; // <2GB RAM = absolute lowest tier
     }
 
-    // Check hardware concurrency (CPU cores)
-    const hardwareConcurrency = navigator.hardwareConcurrency || 2;
-    if (hardwareConcurrency < 4) {
-      return "medium";
-    }
-
-    // Check connection type (if available)
+    // Check connection type (if available) - ultra-minimal for slowest connections
     const connection = (
       navigator as Navigator & {
         connection?: {
@@ -47,12 +33,34 @@ export class BackgroundConfigurationService
     ).connection;
     if (connection) {
       const effectiveType = connection.effectiveType;
-      if (effectiveType === "slow-2g" || effectiveType === "2g") {
+      if (effectiveType === "slow-2g") {
+        return "ultra-minimal"; // Slowest connection
+      }
+      if (effectiveType === "2g") {
         return "minimal";
       }
       if (effectiveType === "3g") {
         return "low";
       }
+    }
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) {
+      return "minimal";
+    }
+
+    // Check device memory (mid-range)
+    if (deviceMemory && deviceMemory < 4) {
+      return "low"; // 2-4GB RAM
+    }
+
+    // Check hardware concurrency (CPU cores)
+    const hardwareConcurrency = navigator.hardwareConcurrency || 2;
+    if (hardwareConcurrency < 4) {
+      return "medium";
     }
 
     // Check screen size and pixel density

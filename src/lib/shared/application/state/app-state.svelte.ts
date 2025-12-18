@@ -31,11 +31,13 @@ export function getSettings() {
   if (!initialized) {
     // console.log("🔍 Returning default settings (services not initialized yet)");
     // Return default settings if not initialized
+    // Use solidColor (black) to avoid flash while settings load
     return {
       gridMode: GridMode.DIAMOND,
-      backgroundType: BackgroundType.NIGHT_SKY,
+      backgroundType: BackgroundType.SOLID_COLOR,
       backgroundQuality: "medium" as const,
       backgroundEnabled: true,
+      backgroundColor: "#000000",
     };
   }
   // Return the reactive settings object directly (NOT a snapshot)

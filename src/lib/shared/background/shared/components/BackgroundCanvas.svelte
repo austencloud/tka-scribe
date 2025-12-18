@@ -17,9 +17,9 @@ backgrounds are visible simultaneously during the transition.
 
   // Props
   const {
-    backgroundType = "nightSky" as BackgroundType,
+    backgroundType = "solidColor" as BackgroundType,
     quality = "medium" as QualityLevel,
-    backgroundColor,
+    backgroundColor = "#000000",
     gradientColors,
     gradientDirection,
     thumbnailMode = false,
@@ -215,6 +215,16 @@ backgrounds are visible simultaneously during the transition.
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    // OPTIMIZATION: Skip animation loop for static backgrounds (solid color/gradient)
+    // These backgrounds don't animate, so we just render once and exit
+    const isStaticBackground = backgroundType === "solid-color" || backgroundType === "linear-gradient";
+    if (isStaticBackground) {
+      // Render once and skip the animation loop
+      const dimensions = { width: canvas.width, height: canvas.height };
+      system.draw(ctx, dimensions);
+      return;
+    }
 
     let lastTimestamp = 0;
 

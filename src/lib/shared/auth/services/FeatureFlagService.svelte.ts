@@ -10,8 +10,8 @@
  * - featureFlagService.canAccessTab('create', 'assembler') // Check tab access
  */
 
-import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
-import { firestore } from "../firebase";
+import { doc, getDoc, setDoc, onSnapshot, type Firestore } from "firebase/firestore";
+import { getFirestoreInstance } from "../firebase";
 import { type UserRole, hasRolePrivilege } from '../domain/models/UserRole';
 import {
   type FeatureId,
@@ -71,6 +71,15 @@ const _state = $state<FeatureFlagState>({
 // Cleanup functions
 let unsubscribeGlobalFlags: (() => void) | null = null;
 let unsubscribeUserOverrides: (() => void) | null = null;
+
+// Lazy-loaded Firestore instance (cached after first load)
+let firestoreCache: Firestore | null = null;
+async function getFirestore(): Promise<Firestore> {
+  if (!firestoreCache) {
+    firestoreCache = await getFirestoreInstance();
+  }
+  return firestoreCache;
+}
 
 // ============================================================================
 // FEATURE FLAG GENERATION
@@ -402,6 +411,7 @@ export const featureFlagService = {
    */
   async fetchUserData(userId: string): Promise<void> {
     try {
+      const firestore = await getFirestore();
       const userDocRef = doc(firestore, `users/${userId}`);
       const userDoc = await getDoc(userDocRef);
 
@@ -435,8 +445,9 @@ export const featureFlagService = {
    * Subscribe to user-specific feature overrides
    */
   subscribeToUserOverrides(userId: string): void {
-    const userDocRef = doc(firestore, `users/${userId}`);
-    unsubscribeUserOverrides = onSnapshot(
+    getFirestore().then((firestore) => {
+      const userDocRef = doc(firestore, `users/${userId}`);
+      unsubscribeUserOverrides = onSnapshot(
       userDocRef,
       (_snapshot) => {
         if (_snapshot.exists()) {
@@ -458,21 +469,23 @@ export const featureFlagService = {
           }
         }
       },
-      (_error) => {
-        console.warn(
-          "⚠️ [FeatureFlagService] User overrides subscription error:",
-          _error
-        );
-      }
-    );
+        (_error) => {
+          console.warn(
+            "⚠️ [FeatureFlagService] User overrides subscription error:",
+            _error
+          );
+        }
+      );
+    });
   },
 
   /**
    * Subscribe to global feature flags
    */
   subscribeToGlobalFlags(): void {
-    const globalFlagsRef = doc(firestore, "config/featureFlags");
-    unsubscribeGlobalFlags = onSnapshot(
+    getFirestore().then((firestore) => {
+      const globalFlagsRef = doc(firestore, "config/featureFlags");
+      unsubscribeGlobalFlags = onSnapshot(
       globalFlagsRef,
       (snapshot) => {
         if (snapshot.exists()) {
@@ -480,13 +493,14 @@ export const featureFlagService = {
           _state.globalOverrides = data.overrides || {};
         }
       },
-      (_error) => {
-        // Don't warn - config may not exist yet
-        console.debug(
-          "[FeatureFlagService] Global flags not found (this is normal for new deployments)"
-        );
-      }
-    );
+        (_error) => {
+          // Don't warn - config may not exist yet
+          console.debug(
+            "[FeatureFlagService] Global flags not found (this is normal for new deployments)"
+          );
+        }
+      );
+    });
   },
 
   // ===== Admin Functions =====
@@ -499,6 +513,7 @@ export const featureFlagService = {
       throw new Error("Only admins can change user roles");
     }
 
+    const firestore = await getFirestore();
     const userDocRef = doc(firestore, `users/${targetUserId}`);
     await setDoc(
       userDocRef,
@@ -522,6 +537,7 @@ export const featureFlagService = {
       throw new Error("Only admins can change user feature overrides");
     }
 
+    const firestore = await getFirestore();
     const userDocRef = doc(firestore, `users/${targetUserId}`);
     await setDoc(
       userDocRef,
@@ -543,6 +559,7 @@ export const featureFlagService = {
       throw new Error("Only admins can change global feature flags");
     }
 
+    const firestore = await getFirestore();
     const globalFlagsRef = doc(firestore, "config/featureFlags");
     const currentDoc = await getDoc(globalFlagsRef);
     const currentData = currentDoc.exists()

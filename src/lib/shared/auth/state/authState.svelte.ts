@@ -149,6 +149,17 @@ export function initializeAuthListener() {
     async (user) => {
       _state.loading = true;
 
+      // CRITICAL: Initialize Firestore before any services try to use it
+      // This prevents race condition errors with the lazy-loaded Firestore Proxy
+      if (user) {
+        try {
+          const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+          await getFirestoreInstance();
+        } catch (error) {
+          console.error("❌ [authState] Failed to initialize Firestore:", error);
+        }
+      }
+
       let isAdmin = false;
       let role: UserRole = "user";
 
@@ -232,8 +243,11 @@ export function initializeAuthListener() {
 
         // Initialize settings Firebase sync (non-blocking)
         try {
-          void import("../../settings/state/SettingsState.svelte").then(
-            (settingsModule) => {
+          void import("$lib/shared/settings/state/SettingsState.svelte").then(
+            async (settingsModule) => {
+              // Ensure Firestore is initialized before settings sync
+              const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+              await getFirestoreInstance();
               void settingsModule.settingsService.initializeFirebaseSync();
             }
           );
@@ -241,9 +255,27 @@ export function initializeAuthListener() {
           // Silently fail - settings sync is non-critical
         }
 
+        // Initialize onboarding Firebase sync (non-blocking)
+        try {
+          void import("$lib/shared/onboarding/config/storage-keys").then(
+            async (onboardingModule) => {
+              // Ensure Firestore is initialized before onboarding sync
+              const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+              await getFirestoreInstance();
+              void onboardingModule.syncOnboardingToCloud();
+            }
+          );
+        } catch {
+          // Silently fail - onboarding sync is non-critical
+        }
+
         // Initialize system collections (Favorites, etc.) - non-blocking
         try {
-          void import("../../inversify/di").then(async ({ loadFeatureModule, tryResolve }) => {
+          void import("$lib/shared/inversify/di").then(async ({ loadFeatureModule, tryResolve }) => {
+            // Ensure Firestore is initialized before collection operations
+            const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+            await getFirestoreInstance();
+
             await loadFeatureModule("library");
             const collectionService = tryResolve<{ ensureSystemCollections?: () => Promise<void> }>(TYPES.ICollectionService);
             if (collectionService?.ensureSystemCollections) {
