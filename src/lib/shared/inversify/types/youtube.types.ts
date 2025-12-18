@@ -1,10 +1,13 @@
 /**
- * YouTube Service Type Identifiers
+ * Audio Service Type Identifiers
  *
- * DI tokens for YouTube audio services used in the Compose module.
+ * DI tokens for audio library services used in the Compose module.
  */
 
-export const YouTubeTypes = {
-  IYouTubeSearchService: Symbol.for("IYouTubeSearchService"),
-  IYouTubeAudioService: Symbol.for("IYouTubeAudioService"),
+export const AudioTypes = {
+  IAudioLibraryService: Symbol.for("IAudioLibraryService"),
+  IAudioStorageService: Symbol.for("IAudioStorageService"),
 } as const;
+
+// Legacy export for backwards compatibility
+export const YouTubeTypes = AudioTypes;

@@ -1,28 +1,31 @@
 /**
- * YouTube Module
+ * Audio Module
  *
- * Inversify DI module for YouTube audio services.
+ * Inversify DI module for audio library services.
  */
 
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { YouTubeSearchService } from "../../../features/compose/compose/phases/audio/youtube/services/implementations/YouTubeSearchService";
-import { YouTubeAudioService } from "../../../features/compose/compose/phases/audio/youtube/services/implementations/YouTubeAudioService";
-import { YouTubeTypes } from "../types";
+import { AudioLibraryService } from "../../../features/compose/compose/phases/audio/library/services/implementations/AudioLibraryService";
+import { AudioStorageService } from "../../../features/compose/compose/phases/audio/library/services/implementations/AudioStorageService";
+import { AudioTypes } from "../types/youtube.types";
 
 /**
- * YouTube DI module
+ * Audio DI module
  */
-export const youtubeModule = new ContainerModule(
+export const audioModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     options
-      .bind(YouTubeTypes.IYouTubeSearchService)
-      .to(YouTubeSearchService)
+      .bind(AudioTypes.IAudioLibraryService)
+      .to(AudioLibraryService)
       .inSingletonScope();
 
     options
-      .bind(YouTubeTypes.IYouTubeAudioService)
-      .to(YouTubeAudioService)
+      .bind(AudioTypes.IAudioStorageService)
+      .to(AudioStorageService)
       .inSingletonScope();
   }
 );
+
+// Legacy export for backwards compatibility
+export const youtubeModule = audioModule;
