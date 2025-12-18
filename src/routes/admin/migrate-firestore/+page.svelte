@@ -6,7 +6,7 @@
    * to normalize start position data.
    */
 
-  import { auth, firestore } from "$lib/shared/auth/firebase";
+  import { auth, getFirestoreInstance } from "$lib/shared/auth/firebase";
   import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   import { onMount } from "svelte";
 
@@ -80,6 +80,7 @@
     userId = user.uid;
 
     try {
+      const firestore = await getFirestoreInstance();
       console.log(`🔍 Fetching sequences from Firestore for user ${user.uid}...`);
       const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
       const snapshot = await getDocs(sequencesRef);
@@ -126,6 +127,7 @@
     errorCount = 0;
 
     try {
+      const firestore = await getFirestoreInstance();
       console.log(`✍️  Starting migration for user ${user.uid}...`);
       const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
       const snapshot = await getDocs(sequencesRef);

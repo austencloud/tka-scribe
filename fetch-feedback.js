@@ -1,25 +1,7 @@
 /**
  * Feedback Queue Manager
  *
- * Usage:
- *   node fetch-feedback.js              - Auto-claim next "new" item (by priority)
- *   node fetch-feedback.js low          - Claim next LOW priority item only
- *   node fetch-feedback.js medium       - Claim next MEDIUM priority item only
- *   node fetch-feedback.js high         - Claim next HIGH priority item only
- *   node fetch-feedback.js list         - List all feedback with status
- *   node fetch-feedback.js prioritize   - Auto-prioritize all unprioritized items
- *   node fetch-feedback.js prioritize --dry-run - Preview prioritization without changes
- *   node fetch-feedback.js <id>         - View specific feedback
- *   node fetch-feedback.js <id> <status> "notes" - Update status
- *   node fetch-feedback.js <id> title "new title" - Update title
- *   node fetch-feedback.js <id> priority <low|medium|high> - Update priority
- *   node fetch-feedback.js <id> resolution "notes" - Add resolution notes (summary of how it was fixed)
- *   node fetch-feedback.js <id> subtask add "title" "description" - Add subtask
- *   node fetch-feedback.js <id> subtask <subtaskId> <status> - Update subtask status
- *   node fetch-feedback.js <id> subtask list - List subtasks
- *   node fetch-feedback.js <id> defer "2026-03-15" "Reason" - Defer until date
- *   node fetch-feedback.js <id> internal-only true/false - Mark as internal-only (excluded from user changelog)
- *   node fetch-feedback.js delete <id>  - Delete feedback item
+ * Run `node fetch-feedback.js help` to see all available commands.
  *
  * Workflow:
  *   1. Agent runs with no args → claims next unclaimed feedback (prioritized: no priority > high > medium > low)
@@ -1063,6 +1045,470 @@ async function setInternalOnly(docId, isInternalOnly) {
   }
 }
 
+/**
+ * Show help documentation
+ */
+function showHelp() {
+  console.log(`
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                        FEEDBACK QUEUE MANAGER                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+QUEUE COMMANDS
+──────────────────────────────────────────────────────────────────────────────
+  (no args)              Auto-claim next "new" item (by priority)
+  low | medium | high    Claim next item with specific priority only
+  claim <id>             Claim a specific item by ID
+  unclaim <id>           Release a claimed item back to "new" status
+  list                   List all feedback grouped by status
+  stats                  Show queue statistics summary
+  search <query>         Search feedback by keyword in title/description
+
+ITEM MANAGEMENT
+──────────────────────────────────────────────────────────────────────────────
+  <id>                   View specific feedback details
+  <id> <status> "notes"  Update status (new, in-progress, in-review, completed, archived)
+  <id> title "text"      Update title
+  <id> priority <p>      Update priority (low, medium, high)
+  <id> resolution "text" Add resolution notes (what was done)
+  <id> internal-only <t> Mark as internal (true) or user-facing (false)
+  <id> defer "YYYY-MM-DD" "reason"  Defer until date
+  delete <id>            Permanently delete feedback item
+
+SUBTASKS
+──────────────────────────────────────────────────────────────────────────────
+  <id> subtask list                     List all subtasks
+  <id> subtask add "title" "desc"       Add a subtask
+  <id> subtask <subId> <status>         Update subtask status
+
+CREATE FEEDBACK
+──────────────────────────────────────────────────────────────────────────────
+  add --title "T" --description "D" [options]
+  create "title" "description" [type] [module] [tab]
+
+  Options for 'add':
+    --title "text"        Required: Title of the feedback
+    --description "text"  Required: Description
+    --type <type>         bug, feature, enhancement, general (default: enhancement)
+    --priority <p>        low, medium, high
+    --module <name>       Module name (e.g., compose, create)
+    --tab <name>          Tab name
+    --internal-only       Mark as internal (not user-facing)
+    --user <name>         User identifier (default: austen)
+
+AUTO-PRIORITIZE
+──────────────────────────────────────────────────────────────────────────────
+  prioritize             Auto-assign priorities to unprioritized items
+  prioritize --dry-run   Preview without making changes
+  prioritize --json      Output raw JSON for AI analysis
+
+WORKFLOW
+──────────────────────────────────────────────────────────────────────────────
+  1. Run with no args to claim next item → status becomes "in-progress"
+  2. Work on the item, optionally breaking into subtasks
+  3. Move to "in-review" when done: <id> in-review "Fixed by doing X"
+  4. Admin marks "completed" after testing: <id> completed "Verified"
+  5. Release batches completed items → "archived" with version tag
+
+EXAMPLES
+──────────────────────────────────────────────────────────────────────────────
+  node fetch-feedback.js                     # Claim next item
+  node fetch-feedback.js high                # Claim next high-priority
+  node fetch-feedback.js abc123              # View item abc123
+  node fetch-feedback.js abc123 in-review "Fixed overflow bug"
+  node fetch-feedback.js search "button"     # Find feedback about buttons
+  node fetch-feedback.js stats               # See queue overview
+  node fetch-feedback.js add --title "Fix X" --description "Details" --type bug
+`);
+}
+
+/**
+ * Unclaim a feedback item (release back to queue)
+ */
+async function unclaimFeedback(docId) {
+  try {
+    const docRef = db.collection('feedback').doc(docId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      console.log(`\n  ❌ Feedback not found: ${docId}\n`);
+      return null;
+    }
+
+    const item = doc.data();
+    if (item.status !== 'in-progress') {
+      console.log(`\n  ⚠️  Item is not in-progress (current: ${item.status}). Cannot unclaim.\n`);
+      return null;
+    }
+
+    await docRef.update({
+      status: 'new',
+      claimedAt: admin.firestore.FieldValue.delete(),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  🔓 FEEDBACK UNCLAIMED\n`);
+    console.log('─'.repeat(70));
+    console.log(`  ID: ${docId}`);
+    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Status: new (back in queue)`);
+    console.log('\n' + '='.repeat(70) + '\n');
+
+    return { id: docId, status: 'new' };
+
+  } catch (error) {
+    console.error('\n  Error unclaiming feedback:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Claim a specific feedback item by ID
+ */
+async function claimSpecificFeedback(docId) {
+  try {
+    const docRef = db.collection('feedback').doc(docId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      console.log(`\n  ❌ Feedback not found: ${docId}\n`);
+      return null;
+    }
+
+    const item = doc.data();
+
+    // Check if already claimed
+    if (item.status === 'in-progress') {
+      const claimedAt = item.claimedAt?.toDate?.() ? item.claimedAt.toDate().toLocaleString() : 'Unknown';
+      console.log(`\n  ⚠️  Item already in-progress (claimed: ${claimedAt})`);
+      console.log(`  Use 'unclaim ${docId}' first if you want to reclaim it.\n`);
+      return null;
+    }
+
+    // Check if in terminal state
+    if (['completed', 'archived'].includes(item.status)) {
+      console.log(`\n  ⚠️  Item is ${item.status}. Cannot claim completed/archived items.\n`);
+      return null;
+    }
+
+    await docRef.update({
+      status: 'in-progress',
+      claimedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Output the claimed item details (reuse display logic)
+    const createdAt = item.createdAt?.toDate?.()
+      ? item.createdAt.toDate().toLocaleString()
+      : 'Unknown date';
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  🎯 CLAIMED FEEDBACK\n`);
+    console.log('─'.repeat(70));
+    console.log(`  ID: ${docId}`);
+    console.log(`  Type: ${item.type || 'N/A'}`);
+    console.log(`  Priority: ${item.priority || 'N/A'}`);
+    console.log(`  User: ${item.userDisplayName || item.userEmail || 'Anonymous'}`);
+    console.log(`  Created: ${createdAt}`);
+    console.log('─'.repeat(70));
+    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log('─'.repeat(70));
+    console.log(`  Description:\n`);
+    console.log(`  ${item.description || 'No description'}`);
+    console.log('─'.repeat(70));
+    console.log(`  Module: ${item.capturedModule || 'Unknown'}`);
+    console.log(`  Tab: ${item.capturedTab || 'Unknown'}`);
+
+    if (item.adminNotes) {
+      console.log('─'.repeat(70));
+      console.log(`  Previous Notes: ${item.adminNotes}`);
+    }
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  To resolve: node fetch-feedback.js ${docId} in-review "Your notes here"\n`);
+
+    return { id: docId, ...item };
+
+  } catch (error) {
+    console.error('\n  Error claiming feedback:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Search feedback by keyword
+ */
+async function searchFeedback(query) {
+  try {
+    const snapshot = await db.collection('feedback')
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    if (snapshot.empty) {
+      console.log('\n  No feedback found in the database.\n');
+      return [];
+    }
+
+    const queryLower = query.toLowerCase();
+    const matches = snapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(item => {
+        const title = (item.title || '').toLowerCase();
+        const desc = (item.description || '').toLowerCase();
+        const notes = (item.adminNotes || '').toLowerCase();
+        const module = (item.capturedModule || '').toLowerCase();
+        return title.includes(queryLower) ||
+               desc.includes(queryLower) ||
+               notes.includes(queryLower) ||
+               module.includes(queryLower);
+      });
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  🔍 SEARCH RESULTS for "${query}"\n`);
+    console.log('─'.repeat(70));
+
+    if (matches.length === 0) {
+      console.log(`  No feedback found matching "${query}"\n`);
+    } else {
+      console.log(`  Found ${matches.length} item(s):\n`);
+
+      matches.forEach(item => {
+        const statusIcon = {
+          'new': '🆕',
+          'in-progress': '🔄',
+          'in-review': '👁️',
+          'completed': '✅',
+          'archived': '📦'
+        }[item.status] || '❓';
+
+        const priorityIcon = {
+          'high': '🔴',
+          'medium': '🟡',
+          'low': '🟢'
+        }[item.priority] || '⚪';
+
+        const title = (item.title || 'No title').substring(0, 50);
+        console.log(`  ${statusIcon} ${priorityIcon} ${item.id.substring(0, 8)}... | ${title}${item.title?.length > 50 ? '...' : ''}`);
+      });
+    }
+
+    console.log('\n' + '='.repeat(70) + '\n');
+    return matches;
+
+  } catch (error) {
+    console.error('\n  Error searching feedback:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Show queue statistics
+ */
+async function showStats() {
+  try {
+    const snapshot = await db.collection('feedback').get();
+
+    if (snapshot.empty) {
+      console.log('\n  No feedback in the database.\n');
+      return;
+    }
+
+    const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    // Count by status
+    const byStatus = { new: 0, 'in-progress': 0, 'in-review': 0, completed: 0, archived: 0 };
+    items.forEach(item => {
+      const status = item.status || 'new';
+      if (byStatus.hasOwnProperty(status)) {
+        byStatus[status]++;
+      } else if (['resolved', 'deferred'].includes(status)) {
+        byStatus.archived++;
+      } else {
+        byStatus.new++;
+      }
+    });
+
+    // Count by type
+    const byType = {};
+    items.forEach(item => {
+      const type = item.type || 'general';
+      byType[type] = (byType[type] || 0) + 1;
+    });
+
+    // Count by priority (only non-archived)
+    const activeItems = items.filter(i => !['completed', 'archived', 'resolved', 'deferred'].includes(i.status));
+    const byPriority = { high: 0, medium: 0, low: 0, unset: 0 };
+    activeItems.forEach(item => {
+      const priority = item.priority || 'unset';
+      if (byPriority.hasOwnProperty(priority)) {
+        byPriority[priority]++;
+      } else {
+        byPriority.unset++;
+      }
+    });
+
+    // Find stale items
+    const staleItems = items.filter(item => {
+      if (item.status !== 'in-progress') return false;
+      if (!item.claimedAt?.toDate?.()) return false;
+      return (Date.now() - item.claimedAt.toDate().getTime()) > STALE_CLAIM_MS;
+    });
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  📊 FEEDBACK QUEUE STATISTICS\n`);
+    console.log('─'.repeat(70));
+
+    console.log(`\n  BY STATUS:`);
+    console.log(`    🆕 New:          ${byStatus.new.toString().padStart(3)}`);
+    console.log(`    🔄 In Progress:  ${byStatus['in-progress'].toString().padStart(3)}${staleItems.length > 0 ? ` (${staleItems.length} stale)` : ''}`);
+    console.log(`    👁️  In Review:    ${byStatus['in-review'].toString().padStart(3)}`);
+    console.log(`    ✅ Completed:    ${byStatus.completed.toString().padStart(3)}`);
+    console.log(`    📦 Archived:     ${byStatus.archived.toString().padStart(3)}`);
+    console.log(`    ─────────────────────`);
+    console.log(`    📝 Total:        ${items.length.toString().padStart(3)}`);
+
+    console.log(`\n  BY TYPE:`);
+    Object.entries(byType).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
+      console.log(`    ${type.padEnd(12)} ${count.toString().padStart(3)}`);
+    });
+
+    console.log(`\n  ACTIVE BY PRIORITY:`);
+    console.log(`    🔴 High:     ${byPriority.high.toString().padStart(3)}`);
+    console.log(`    🟡 Medium:   ${byPriority.medium.toString().padStart(3)}`);
+    console.log(`    🟢 Low:      ${byPriority.low.toString().padStart(3)}`);
+    if (byPriority.unset > 0) {
+      console.log(`    ⚪ Unset:    ${byPriority.unset.toString().padStart(3)}  ← run 'prioritize' to assign`);
+    }
+
+    // Actionable summary
+    console.log('\n' + '─'.repeat(70));
+    const actionable = byStatus.new + byStatus['in-review'];
+    if (actionable > 0) {
+      console.log(`\n  📌 ${actionable} item(s) need attention (${byStatus.new} new, ${byStatus['in-review']} awaiting review)`);
+    }
+    if (byStatus.completed > 0) {
+      console.log(`  🚀 ${byStatus.completed} item(s) ready for release`);
+    }
+    if (staleItems.length > 0) {
+      console.log(`  ⚠️  ${staleItems.length} stale in-progress item(s) (claimed >2h ago)`);
+    }
+
+    console.log('\n' + '='.repeat(70) + '\n');
+
+  } catch (error) {
+    console.error('\n  Error fetching stats:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Add feedback with flag-based syntax
+ */
+async function addFeedback(args) {
+  // Parse flags
+  const flags = {};
+  let i = 0;
+  while (i < args.length) {
+    if (args[i].startsWith('--')) {
+      const flag = args[i].substring(2);
+      if (flag === 'internal-only') {
+        flags.isInternalOnly = true;
+        i++;
+      } else if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
+        flags[flag] = args[i + 1];
+        i += 2;
+      } else {
+        i++;
+      }
+    } else {
+      i++;
+    }
+  }
+
+  // Validate required fields
+  if (!flags.title) {
+    console.log('\n  ❌ Missing required --title\n');
+    console.log('  Usage: node fetch-feedback.js add --title "Title" --description "Desc" [options]');
+    console.log('  Options: --type, --priority, --module, --tab, --internal-only, --user\n');
+    return null;
+  }
+
+  if (!flags.description) {
+    console.log('\n  ❌ Missing required --description\n');
+    return null;
+  }
+
+  // Validate type
+  const validTypes = ['bug', 'feature', 'enhancement', 'general'];
+  const type = flags.type || 'enhancement';
+  if (!validTypes.includes(type)) {
+    console.log(`\n  ⚠️  Invalid type "${type}". Valid: ${validTypes.join(', ')}\n`);
+    return null;
+  }
+
+  // Validate priority if provided
+  const validPriorities = ['low', 'medium', 'high'];
+  if (flags.priority && !validPriorities.includes(flags.priority)) {
+    console.log(`\n  ⚠️  Invalid priority "${flags.priority}". Valid: ${validPriorities.join(', ')}\n`);
+    return null;
+  }
+
+  // User lookup (default to Austen)
+  const AUSTEN_USER = {
+    userId: 'PBp3GSBO6igCKPwJyLZNmVEmamI3',
+    userDisplayName: 'Austen Cloud',
+    userEmail: 'austencloud@gmail.com',
+    userPhotoURL: 'https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c'
+  };
+
+  const feedbackData = {
+    title: flags.title,
+    description: flags.description,
+    type,
+    status: 'new',
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    userId: AUSTEN_USER.userId,
+    userDisplayName: AUSTEN_USER.userDisplayName,
+    userEmail: AUSTEN_USER.userEmail,
+    userPhotoURL: AUSTEN_USER.userPhotoURL
+  };
+
+  if (flags.priority) {
+    feedbackData.priority = flags.priority;
+  }
+  if (flags.module) {
+    feedbackData.capturedModule = flags.module;
+  }
+  if (flags.tab) {
+    feedbackData.capturedTab = flags.tab;
+  }
+  if (flags.isInternalOnly) {
+    feedbackData.isInternalOnly = true;
+  }
+
+  try {
+    const docRef = await db.collection('feedback').add(feedbackData);
+
+    console.log('\n' + '='.repeat(70));
+    console.log(`\n  ✅ FEEDBACK CREATED\n`);
+    console.log('─'.repeat(70));
+    console.log(`  ID: ${docRef.id}`);
+    console.log(`  Title: ${flags.title}`);
+    console.log(`  Type: ${type}`);
+    if (flags.priority) console.log(`  Priority: ${flags.priority}`);
+    if (flags.module) console.log(`  Module: ${flags.module}`);
+    if (flags.tab) console.log(`  Tab: ${flags.tab}`);
+    if (flags.isInternalOnly) console.log(`  Internal Only: YES`);
+    console.log('\n' + '='.repeat(70) + '\n');
+
+    return { id: docRef.id, ...feedbackData };
+
+  } catch (error) {
+    console.error('\n  Error creating feedback:', error.message);
+    throw error;
+  }
+}
+
 // Parse command line arguments
 const args = process.argv.slice(2);
 
@@ -1072,12 +1518,43 @@ async function main() {
   if (args.length === 0) {
     // No args: claim next item
     await claimNextFeedback();
+  } else if (args[0] === 'help' || args[0] === '--help' || args[0] === '-h') {
+    // Show help
+    showHelp();
   } else if (validPriorities.includes(args[0])) {
     // Priority filter: claim next item with specified priority
     await claimNextFeedback(args[0]);
   } else if (args[0] === 'list') {
     // List all feedback
     await listAllFeedback();
+  } else if (args[0] === 'stats') {
+    // Show queue statistics
+    await showStats();
+  } else if (args[0] === 'search') {
+    // Search: search <query>
+    if (!args[1]) {
+      console.log('\n  Usage: node fetch-feedback.js search <query>\n');
+      console.log('  Example: node fetch-feedback.js search "button"\n');
+      return;
+    }
+    await searchFeedback(args.slice(1).join(' '));
+  } else if (args[0] === 'claim') {
+    // Claim specific: claim <id>
+    if (!args[1]) {
+      console.log('\n  Usage: node fetch-feedback.js claim <id>\n');
+      return;
+    }
+    await claimSpecificFeedback(args[1]);
+  } else if (args[0] === 'unclaim') {
+    // Unclaim: unclaim <id>
+    if (!args[1]) {
+      console.log('\n  Usage: node fetch-feedback.js unclaim <id>\n');
+      return;
+    }
+    await unclaimFeedback(args[1]);
+  } else if (args[0] === 'add') {
+    // Add with flags: add --title "X" --description "Y" [options]
+    await addFeedback(args.slice(1));
   } else if (args[0] === 'delete') {
     // Delete: delete <id>
     if (!args[1]) {
@@ -1105,16 +1582,26 @@ async function main() {
       return;
     }
 
+    // Use Austen's actual user info so avatars work correctly
+    const AUSTEN_USER = {
+      userId: 'PBp3GSBO6igCKPwJyLZNmVEmamI3',
+      userDisplayName: 'Austen Cloud',
+      userEmail: 'austencloud@gmail.com',
+      userPhotoURL: 'https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c'
+    };
+
     const docRef = await db.collection('feedback').add({
       title,
-      content: description,
+      description: description,
       type,
-      module,
-      tab,
+      capturedModule: module,
+      capturedTab: tab,
       status: 'new',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      userName: 'Claude Agent',
-      userId: 'claude-agent'
+      userId: AUSTEN_USER.userId,
+      userDisplayName: AUSTEN_USER.userDisplayName,
+      userEmail: AUSTEN_USER.userEmail,
+      userPhotoURL: AUSTEN_USER.userPhotoURL
     });
 
     console.log('\n======================================================================');
