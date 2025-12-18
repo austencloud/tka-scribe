@@ -1,0 +1,161 @@
+/**
+ * Onboarding Storage Keys
+ *
+ * Centralized storage key constants for onboarding persistence.
+ *
+ * NOTE: localStorage is used for synchronous access (to avoid UI flash).
+ * The OnboardingPersistenceService syncs localStorage with Firebase for
+ * authenticated users. Use `markModuleOnboardingComplete()` which calls
+ * the service when available.
+ */
+
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IOnboardingPersistenceService } from "../services/contracts/IOnboardingPersistenceService";
+
+// Lazy service resolution to avoid circular dependencies
+let _onboardingService: IOnboardingPersistenceService | null = null;
+let _serviceResolved = false;
+
+function getOnboardingService(): IOnboardingPersistenceService | null {
+  if (_serviceResolved) return _onboardingService;
+
+  try {
+    // Dynamic import to avoid circular dependency
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const di = require("$lib/shared/inversify/di") as { resolve: <T>(type: symbol) => T };
+    _onboardingService = di.resolve<IOnboardingPersistenceService>(
+      TYPES.IOnboardingPersistenceService
+    );
+  } catch {
+    // Service not available (e.g., container not initialized yet)
+    _onboardingService = null;
+  }
+  _serviceResolved = true;
+  return _onboardingService;
+}
+
+// ============================================================================
+// APP-WIDE ONBOARDING
+// ============================================================================
+
+/** localStorage key for app-wide onboarding completion status */
+export const ONBOARDING_COMPLETED_KEY = "tka-onboarding-completed";
+
+/** localStorage key for app-wide onboarding completion timestamp */
+export const ONBOARDING_COMPLETED_AT_KEY = "tka-onboarding-completed-at";
+
+/** localStorage key for app-wide onboarding skip (user chose to skip) */
+export const ONBOARDING_SKIPPED_KEY = "tka-onboarding-skipped";
+
+// ============================================================================
+// PER-MODULE ONBOARDING
+// ============================================================================
+
+/** Generate localStorage key for module onboarding completion */
+export function getModuleOnboardingKey(moduleId: string): string {
+  return `tka-${moduleId}-onboarding-completed`;
+}
+
+/** Generate localStorage key for module onboarding timestamp */
+export function getModuleOnboardingTimestampKey(moduleId: string): string {
+  return `tka-${moduleId}-onboarding-completed-at`;
+}
+
+/** Pre-defined keys for each module */
+export const MODULE_ONBOARDING_KEYS = {
+  discover: "tka-discover-onboarding-completed",
+  learn: "tka-learn-onboarding-completed",
+  compose: "tka-compose-onboarding-completed",
+  train: "tka-train-onboarding-completed",
+  library: "tka-library-onboarding-completed",
+} as const;
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+
+/**
+ * Check if module onboarding has been completed
+ */
+export function hasCompletedModuleOnboarding(moduleId: string): boolean {
+  const key = getModuleOnboardingKey(moduleId);
+  return localStorage.getItem(key) === "true";
+}
+
+/**
+ * Mark module onboarding as completed.
+ * Updates localStorage immediately (synchronous) and syncs to Firebase (async).
+ */
+export function markModuleOnboardingComplete(moduleId: string): void {
+  // Always update localStorage immediately for synchronous access
+  const key = getModuleOnboardingKey(moduleId);
+  const timestampKey = getModuleOnboardingTimestampKey(moduleId);
+  localStorage.setItem(key, "true");
+  localStorage.setItem(timestampKey, new Date().toISOString());
+
+  // Also sync to Firebase via service (non-blocking)
+  const service = getOnboardingService();
+  if (service) {
+    void service.markModuleCompleted(moduleId);
+  }
+}
+
+/**
+ * Reset module onboarding (for testing/replaying)
+ */
+export function resetModuleOnboarding(moduleId: string): void {
+  const key = getModuleOnboardingKey(moduleId);
+  const timestampKey = getModuleOnboardingTimestampKey(moduleId);
+  localStorage.removeItem(key);
+  localStorage.removeItem(timestampKey);
+
+  // Also sync to Firebase via service (non-blocking)
+  const service = getOnboardingService();
+  if (service) {
+    void service.resetModule(moduleId);
+  }
+}
+
+/**
+ * Reset all onboarding (app-wide + all modules)
+ */
+export function resetAllOnboarding(): void {
+  // App-wide
+  localStorage.removeItem(ONBOARDING_COMPLETED_KEY);
+  localStorage.removeItem(ONBOARDING_COMPLETED_AT_KEY);
+  localStorage.removeItem(ONBOARDING_SKIPPED_KEY);
+
+  // Per-module
+  Object.values(MODULE_ONBOARDING_KEYS).forEach((key) => {
+    localStorage.removeItem(key);
+    localStorage.removeItem(key.replace("-completed", "-completed-at"));
+  });
+
+  // Also sync to Firebase via service (non-blocking)
+  const service = getOnboardingService();
+  if (service) {
+    void service.resetAll();
+  }
+}
+
+/**
+ * Sync onboarding status from Firebase to localStorage.
+ * Call this when a user authenticates to load their cloud-stored onboarding progress.
+ */
+export async function syncOnboardingFromCloud(): Promise<void> {
+  const service = getOnboardingService();
+  if (service) {
+    await service.loadStatus();
+  }
+}
+
+/**
+ * Sync onboarding status from localStorage to Firebase.
+ * Call this when a user authenticates to merge their local progress with cloud.
+ */
+export async function syncOnboardingToCloud(): Promise<void> {
+  const service = getOnboardingService();
+  if (service) {
+    await service.syncLocalToCloud();
+  }
+}
