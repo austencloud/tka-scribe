@@ -19,10 +19,14 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   import OptionsCard from "$lib/shared/components/parameter-cards/OptionsCard.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
+  // Local filter cards
+  import CAPTypeFilterCard from "./CAPTypeFilterCard.svelte";
+
   let {
     currentFilter = { type: "all", value: null },
     startPosition = null,
     endPosition = null,
+    capTypeCounts = {},
     onFilterChange = () => {},
     onOpenLetterSheet = () => {},
     onOpenOptionsSheet = () => {},
@@ -30,6 +34,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     currentFilter?: { type: string; value: ExploreFilterValue };
     startPosition?: PictographData | null;
     endPosition?: PictographData | null;
+    capTypeCounts?: Record<string, number>;
     onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
     onOpenLetterSheet?: () => void;
     onOpenOptionsSheet?: () => void;
@@ -63,6 +68,9 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     currentFilter.type === "length" ? (currentFilter.value as number) : null
   );
   const isFavoritesActive = $derived(currentFilter.type === "favorites");
+  const currentCapType = $derived(
+    currentFilter.type === "cap_type" ? (currentFilter.value as string) : null
+  );
 
   // Handlers
   function handleLevelChange(level: DifficultyLevel | null) {
@@ -86,6 +94,14 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
       onFilterChange("all");
     } else {
       onFilterChange("length", length);
+    }
+  }
+
+  function handleCapTypeChange(value: string | null) {
+    if (value === null) {
+      onFilterChange("all");
+    } else {
+      onFilterChange("cap_type", value);
     }
   }
 </script>
@@ -118,7 +134,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     <LetterCard
       value={currentLetter}
       onOpenSheet={onOpenLetterSheet}
-      gridColumnSpan={3}
+      gridColumnSpan={2}
       cardIndex={3}
     />
 
@@ -127,8 +143,16 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
       mode="stepper"
       allowNull={true}
       onChange={handleLengthChange}
-      gridColumnSpan={3}
+      gridColumnSpan={2}
       cardIndex={4}
+    />
+
+    <CAPTypeFilterCard
+      currentValue={currentCapType}
+      onValueChange={handleCapTypeChange}
+      {capTypeCounts}
+      gridColumnSpan={2}
+      cardIndex={5}
     />
   </div>
 </div>

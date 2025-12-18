@@ -65,6 +65,7 @@
   currentFilter={galleryState.currentFilter}
   currentSortMethod={galleryState.currentSortMethod}
   availableSections={galleryState.availableNavigationSections}
+  capTypeCounts={galleryState.capTypeCounts}
   onFilterChange={galleryState.handleFilterChange}
   onSortMethodChange={(method) => galleryState.handleSortChange(method, "asc")}
   onSectionClick={(sectionId) => {

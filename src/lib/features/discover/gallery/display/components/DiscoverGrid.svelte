@@ -111,7 +111,7 @@
 
   function getCoverUrl(sequence: SequenceData) {
     const firstThumbnail = sequence?.thumbnails?.[0];
-    if (!firstThumbnail) return undefined;
+    if (!firstThumbnail || !thumbnailService) return undefined;
     try {
       return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
     } catch (error) {

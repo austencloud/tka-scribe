@@ -131,6 +131,29 @@ export function createExploreState() {
     return Array.from(lengths).sort((a, b) => a - b);
   });
 
+  // Computed: CAP type counts for filtering
+  const capTypeCounts = $derived.by(() => {
+    const counts: Record<string, number> = {};
+    let circularCount = 0;
+    const total = allSequences.length;
+
+    for (const seq of allSequences) {
+      if (seq.isCircular) {
+        circularCount++;
+        if (seq.capType) {
+          counts[seq.capType] = (counts[seq.capType] ?? 0) + 1;
+        }
+      }
+    }
+
+    // Add meta counts for filtering options
+    counts["_total"] = total;
+    counts["_circular"] = circularCount;
+    counts["_non_circular"] = total - circularCount;
+
+    return counts;
+  });
+
   // Load all sequences and generate navigation
   async function loadAllSequences(): Promise<void> {
     try {
@@ -487,6 +510,9 @@ export function createExploreState() {
     },
     get availableSequenceLengths() {
       return availableSequenceLengths;
+    },
+    get capTypeCounts() {
+      return capTypeCounts;
     },
     get isAnimationModalOpen() {
       return isAnimationModalOpen;

@@ -11,6 +11,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 import type { IDiscoverFilterService } from "../contracts/IDiscoverFilterService";
+import { CAPType, CAP_TYPE_LABELS } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
 // Constants
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -52,6 +53,8 @@ export class DiscoverFilterService implements IDiscoverFilterService {
         return this.filterByFavorites(sequences);
       case ExploreFilterType.RECENT:
         return this.filterByRecent(sequences);
+      case ExploreFilterType.CAP_TYPE:
+        return this.filterByCAPType(sequences, filterValue);
       default:
         return sequences;
     }
@@ -72,6 +75,8 @@ export class DiscoverFilterService implements IDiscoverFilterService {
         return this.getUniqueAuthors(sequences);
       case ExploreFilterType.GRID_MODE:
         return GRID_MODE_OPTIONS;
+      case ExploreFilterType.CAP_TYPE:
+        return this.getCAPTypeOptions(sequences);
       default:
         return [];
     }
@@ -355,6 +360,49 @@ export class DiscoverFilterService implements IDiscoverFilterService {
     });
   }
 
+  /**
+   * Filter sequences by CAP type (Circular Arrangement Pattern)
+   * Supports special values:
+   * - "circular" - all circular sequences regardless of CAP type
+   * - "non_circular" - all non-circular sequences
+   * - "circular_untyped" - circular sequences without a detected CAP type
+   * - specific CAPType enum values
+   */
+  private filterByCAPType(
+    sequences: SequenceData[],
+    filterValue: ExploreFilterValue
+  ): SequenceData[] {
+    if (!filterValue) {
+      return sequences;
+    }
+
+    const filterStr = String(filterValue);
+
+    // Special case: filter all circular sequences
+    if (filterStr === "circular" || filterStr === "all_circular") {
+      return sequences.filter((seq) => seq.isCircular === true);
+    }
+
+    // Special case: filter all non-circular sequences
+    if (filterStr === "non_circular") {
+      return sequences.filter((seq) => !seq.isCircular);
+    }
+
+    // Special case: circular but no specific CAP type detected
+    if (filterStr === "circular_untyped") {
+      return sequences.filter((seq) => seq.isCircular && !seq.capType);
+    }
+
+    // Filter by specific CAP type
+    return sequences.filter((seq) => {
+      // Must be circular
+      if (!seq.isCircular) return false;
+
+      // Check capType field
+      return seq.capType === filterStr;
+    });
+  }
+
   // ============================================================================
   // Helper Methods
   // ============================================================================
@@ -369,6 +417,51 @@ export class DiscoverFilterService implements IDiscoverFilterService {
     }
 
     return Array.from(authors).sort();
+  }
+
+  /**
+   * Get available CAP type options with counts
+   * Returns array of strings in format: "cap_type_value" or "circular" for all circular
+   */
+  private getCAPTypeOptions(sequences: SequenceData[]): string[] {
+    const options: string[] = [];
+
+    // Count circular sequences
+    const circularCount = sequences.filter((s) => s.isCircular).length;
+    if (circularCount > 0) {
+      options.push("circular"); // "All Circular" option
+    }
+
+    // Count by CAP type
+    const capTypeCounts = new Map<string, number>();
+    for (const seq of sequences) {
+      if (seq.capType) {
+        const current = capTypeCounts.get(seq.capType) ?? 0;
+        capTypeCounts.set(seq.capType, current + 1);
+      }
+    }
+
+    // Add CAP types that have sequences (sorted by label)
+    const sortedTypes = Array.from(capTypeCounts.keys()).sort((a, b) => {
+      const labelA = CAP_TYPE_LABELS[a as CAPType] ?? a;
+      const labelB = CAP_TYPE_LABELS[b as CAPType] ?? b;
+      return labelA.localeCompare(labelB);
+    });
+
+    options.push(...sortedTypes);
+
+    return options;
+  }
+
+  /**
+   * Get count of sequences matching a CAP type
+   * Useful for displaying counts in filter UI
+   */
+  getCAPTypeCount(sequences: SequenceData[], capType: string): number {
+    if (capType === "circular" || capType === "all_circular") {
+      return sequences.filter((s) => s.isCircular).length;
+    }
+    return sequences.filter((s) => s.capType === capType).length;
   }
 
   /**

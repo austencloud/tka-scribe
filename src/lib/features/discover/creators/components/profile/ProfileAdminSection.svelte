@@ -7,7 +7,7 @@
    */
 
   import { doc, updateDoc, writeBatch } from "firebase/firestore";
-  import { firestore } from "$lib/shared/auth/firebase";
+  import { getFirestoreInstance } from "$lib/shared/auth/firebase";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import { ROLE_DISPLAY, ROLE_HIERARCHY } from "$lib/shared/auth/domain/models/UserRole";
   import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
@@ -31,6 +31,7 @@
     actionError = null;
 
     try {
+      const firestore = await getFirestoreInstance();
       const userRef = doc(firestore, "users", userProfile.id);
       await updateDoc(userRef, {
         role: newRole,
@@ -52,6 +53,7 @@
     actionError = null;
 
     try {
+      const firestore = await getFirestoreInstance();
       const currentlyDisabled = userProfile.isDisabled ?? false;
       const userRef = doc(firestore, "users", userProfile.id);
       await updateDoc(userRef, {
@@ -74,6 +76,7 @@
     actionError = null;
 
     try {
+      const firestore = await getFirestoreInstance();
       const batch = writeBatch(firestore);
 
       // Reset user stats
