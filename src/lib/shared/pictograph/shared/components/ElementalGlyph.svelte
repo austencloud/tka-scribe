@@ -122,11 +122,12 @@ Based on legacy elemental_glyph.py implementation.
     cursor: pointer;
   }
 
-  .elemental-glyph.interactive:hover {
-    opacity: 0.7;
+  /* When visible, maintain full opacity even on hover */
+  .elemental-glyph.visible.interactive:hover {
+    opacity: 0.9;
   }
 
-  /* In preview mode, dim hover state for "off" elements */
+  /* When not visible in preview mode, dim on hover */
   .elemental-glyph.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
   }

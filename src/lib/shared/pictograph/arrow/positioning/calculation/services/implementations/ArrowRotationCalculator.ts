@@ -295,7 +295,6 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       return null;
     }
 
-    console.log(`🔍 [RotationOverride] Checking ${letter} ${motion.color} ${motionType} at ${location}`);
 
     return RotationOverrideChecker.checkAndApplyOverride(
       motion,

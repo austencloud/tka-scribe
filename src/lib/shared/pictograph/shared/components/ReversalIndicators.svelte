@@ -180,11 +180,12 @@ colored according to the motion that is reversing between pictographs.
     cursor: pointer;
   }
 
-  .reversal-indicators.interactive:hover {
-    opacity: 0.7;
+  /* When visible, maintain full opacity even on hover */
+  .reversal-indicators.visible.interactive:hover {
+    opacity: 0.9;
   }
 
-  /* In preview mode, dim hover state for "off" elements */
+  /* When not visible in preview mode, dim on hover */
   .reversal-indicators.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
   }

@@ -120,11 +120,12 @@ Based on legacy vtg_glyph.py and vtg_glyph_renderer.py implementations.
     cursor: pointer;
   }
 
-  .vtg-glyph.interactive:hover {
-    opacity: 0.7;
+  /* When visible, maintain full opacity even on hover */
+  .vtg-glyph.visible.interactive:hover {
+    opacity: 0.9;
   }
 
-  /* In preview mode, dim hover state for "off" elements */
+  /* When not visible in preview mode, dim on hover */
   .vtg-glyph.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
   }

@@ -3,13 +3,31 @@
  *
  * Replicates the sophisticated visibility system from the legacy desktop app.
  * Manages complex dependencies between motion visibility and dependent glyphs.
+ *
+ * Persistence: Settings are saved to AppSettings and synced via SettingsState
+ * to localStorage (immediate) and Firebase (authenticated users).
  */
 
 import type { AppSettings } from "../../../settings/domain/AppSettings";
 import { MotionColor } from "../domain/enums/pictograph-enums";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+import { browser } from "$app/environment";
 
 const debug = createComponentLogger("VisibilityManager");
+
+// Lazy import to avoid circular dependencies
+// Using 'any' for the service type to avoid complex generic constraints
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let settingsServiceInstance: any = null;
+
+async function getSettingsService() {
+  if (!browser) return null;
+  if (!settingsServiceInstance) {
+    const { settingsService } = await import("../../../settings/state/SettingsState.svelte");
+    settingsServiceInstance = settingsService;
+  }
+  return settingsServiceInstance;
+}
 
 type VisibilityObserver = () => void;
 
@@ -79,6 +97,55 @@ export class VisibilityStateManager {
     this.observers.set("non_radial", new Set());
     this.observers.set("all", new Set());
     this.observers.set("buttons", new Set());
+
+    // Load persisted settings asynchronously (browser only)
+    if (browser) {
+      this.loadPersistedSettings();
+    }
+  }
+
+  /**
+   * Load visibility settings from persisted storage
+   */
+  private async loadPersistedSettings(): Promise<void> {
+    const service = await getSettingsService();
+    if (!service?.settings?.visibility) return;
+
+    const v = service.settings.visibility;
+    debug.log("Loading persisted visibility settings", v);
+
+    // Apply persisted settings (only if they exist)
+    if (v.tkaGlyph !== undefined) this.settings.tkaGlyph = v.tkaGlyph;
+    if (v.vtgGlyph !== undefined) this.settings.vtgGlyph = v.vtgGlyph;
+    if (v.elementalGlyph !== undefined) this.settings.elementalGlyph = v.elementalGlyph;
+    if (v.positionsGlyph !== undefined) this.settings.positionsGlyph = v.positionsGlyph;
+    if (v.reversalIndicators !== undefined) this.settings.reversalIndicators = v.reversalIndicators;
+    if (v.turnNumbers !== undefined) this.settings.turnNumbers = v.turnNumbers;
+    if (v.nonRadialPoints !== undefined) this.settings.nonRadialPoints = v.nonRadialPoints;
+
+    // Notify observers that settings have been loaded
+    this.notifyObservers(["all"]);
+  }
+
+  /**
+   * Persist current visibility settings to storage
+   */
+  private async persistSettings(): Promise<void> {
+    const service = await getSettingsService();
+    if (!service) return;
+
+    const visibilitySettings = {
+      tkaGlyph: this.settings.tkaGlyph,
+      vtgGlyph: this.settings.vtgGlyph,
+      elementalGlyph: this.settings.elementalGlyph,
+      positionsGlyph: this.settings.positionsGlyph,
+      reversalIndicators: this.settings.reversalIndicators,
+      turnNumbers: this.settings.turnNumbers,
+      nonRadialPoints: this.settings.nonRadialPoints,
+    };
+
+    debug.log("Persisting visibility settings", visibilitySettings);
+    await service.updateSetting("visibility", visibilitySettings);
   }
 
   /**
@@ -285,6 +352,8 @@ export class VisibilityStateManager {
         "Notifying observers for glyph change"
       );
       this.notifyObservers(["glyph"]);
+      // Persist to storage (async, non-blocking)
+      void this.persistSettings();
     }
   }
 
@@ -321,6 +390,8 @@ export class VisibilityStateManager {
   setNonRadialVisibility(visible: boolean): void {
     this.settings.nonRadialPoints = visible;
     this.notifyObservers(["non_radial"]);
+    // Persist to storage (async, non-blocking)
+    void this.persistSettings();
   }
 
   // ============================================================================

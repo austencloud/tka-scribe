@@ -146,9 +146,11 @@
 
   const effectiveShowTurnNumbers = $derived.by(() => {
     visibilityUpdateCount;
-    return showTurnNumbers !== undefined
-      ? showTurnNumbers
-      : visibilityManager.getGlyphVisibility("turnNumbers");
+    if (showTurnNumbers !== undefined) return showTurnNumbers;
+    // Turn numbers are now independent of TKA - they use their own visibility setting.
+    // When TKA is off but turn numbers are on, they render in standalone mode (shifted left).
+    // This applies to both preview mode and normal pictograph rendering.
+    return visibilityManager.getRawGlyphVisibility("turnNumbers");
   });
 
   // =============================================================================
@@ -526,7 +528,7 @@
             pictographData={pictographState.effectivePictographData}
             visible={effectiveShowTurnNumbers}
             {previewMode}
-            standalone={!effectiveShowTKA}
+            standalone={!effectiveShowTKA && !previewMode}
             onToggle={onToggleTurnNumbers}
           />
 
@@ -633,7 +635,7 @@
               pictographData={pictographState.effectivePictographData}
               visible={effectiveShowTurnNumbers}
               {previewMode}
-              standalone={!effectiveShowTKA}
+              standalone={!effectiveShowTKA && !previewMode}
               onToggle={onToggleTurnNumbers}
             />
 

@@ -256,11 +256,12 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     pointer-events: auto;
   }
 
-  .turns-column.interactive:hover {
-    opacity: 0.7;
+  /* When visible, maintain full opacity even on hover */
+  .turns-column.visible.interactive:hover {
+    opacity: 0.9;
   }
 
-  /* In preview mode, dim hover state for "off" elements */
+  /* When not visible in preview mode, dim on hover */
   .turns-column.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
   }

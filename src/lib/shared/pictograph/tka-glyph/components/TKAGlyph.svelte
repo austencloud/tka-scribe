@@ -300,11 +300,12 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
     cursor: pointer;
   }
 
-  .tka-glyph.interactive:hover {
-    opacity: 0.7;
+  /* When visible, maintain full opacity even on hover */
+  .tka-glyph.visible.interactive:hover {
+    opacity: 0.9;
   }
 
-  /* In preview mode, dim hover state for "off" elements */
+  /* When not visible in preview mode, dim on hover */
   .tka-glyph.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
   }
