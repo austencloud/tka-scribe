@@ -38,6 +38,12 @@ service firebase.storage {
       allow read: if true;
     }
 
+    // User audio files - users can only access their own audio
+    match /users/{userId}/audio/{allPaths=**} {
+      // Allow authenticated users to read/write their own audio files
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
     // Default: deny all other access
     match /{allPaths=**} {
       allow read, write: if false;
