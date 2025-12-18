@@ -10,12 +10,10 @@
     sections = [],
     currentSection = "",
     onSectionChange = () => {},
-    moduleColor = "#667eea",
   } = $props<{
     sections: Section[];
     currentSection: string;
     onSectionChange?: (sectionId: string) => void;
-    moduleColor?: string;
   }>();
 
   let popoverElement: HTMLElement | null = null;
@@ -72,7 +70,6 @@
   popovertarget="tab-overflow-popover"
   aria-label="Select tab"
   aria-expanded={isOpen}
-  style="--module-color: {moduleColor}"
   onclick={handleTriggerClick}
 >
   <span class="current-tab-icon">{@html currentSectionData?.icon || ""}</span>
@@ -86,7 +83,6 @@
   id="tab-overflow-popover"
   popover="auto"
   class="tab-overflow-popover"
-  style="--module-color: {moduleColor}"
 >
   <div class="tab-grid">
     {#each sections as section}
@@ -97,9 +93,9 @@
         disabled={section.disabled}
         onclick={() => handleSectionClick(section)}
         style="--section-color: {section.color ||
-          moduleColor}; --section-gradient: {section.gradient ||
+          'var(--theme-accent)'}; --section-gradient: {section.gradient ||
           section.color ||
-          moduleColor}"
+          'var(--theme-accent)'}"
       >
         <span class="tab-icon">{@html section.icon}</span>
         <span class="tab-label">{section.label}</span>
@@ -125,21 +121,12 @@
     flex: 1 1 0%;
     max-width: 240px;
 
-    /* 2026 design: Solid surface with subtle module tint */
-    background: color-mix(
-      in srgb,
-      var(--module-color, #667eea) 12%,
-      hsl(240 10% 12%)
-    );
-    border: 1px solid
-      color-mix(
-        in srgb,
-        var(--module-color, #667eea) 30%,
-        hsl(0 0% 100% / 0.15)
-      );
+    /* Use global theme system */
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
 
-    color: hsl(0 0% 100% / 0.9);
+    color: var(--theme-text, #ffffff);
     font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.01em;
@@ -157,14 +144,10 @@
   .tab-picker-trigger:hover {
     background: color-mix(
       in srgb,
-      var(--module-color, #667eea) 18%,
-      hsl(240 10% 14%)
+      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 100%,
+      var(--theme-accent, #6366f1) 10%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--module-color, #667eea) 40%,
-      hsl(0 0% 100% / 0.2)
-    );
+    border-color: var(--theme-accent, #6366f1);
   }
 
   .tab-picker-trigger:active {
@@ -179,7 +162,7 @@
   }
 
   .current-tab-icon :global(i) {
-    background: var(--module-color, #667eea);
+    background: var(--theme-accent, #6366f1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -224,17 +207,12 @@
     max-height: 60vh;
     overflow-y: auto;
 
-    /* 2026 design: Elevated glass morphism */
-    background: linear-gradient(
-      160deg,
-      color-mix(in srgb, var(--module-color, #667eea) 10%, hsl(240 8% 14%)) 0%,
-      color-mix(in srgb, var(--module-color, #667eea) 5%, hsl(240 6% 10%)) 100%
-    );
+    /* Use global theme system for elevated surface */
+    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.04));
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
-    border: 1px solid
-      color-mix(in srgb, var(--module-color, #667eea) 25%, hsl(0 0% 100% / 0.1));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px 16px 0 0; /* Round top corners only */
     border-bottom: none; /* No border at bottom edge */
     padding: 16px 12px calc(12px + env(safe-area-inset-bottom, 0px)); /* Safe area for home indicator */
@@ -299,20 +277,11 @@
     padding: 16px 12px;
     min-height: 80px;
 
-    background: color-mix(
-      in srgb,
-      var(--section-color, #667eea) 8%,
-      hsl(240 8% 10%)
-    );
-    border: 1px solid
-      color-mix(
-        in srgb,
-        var(--section-color, #667eea) 20%,
-        hsl(0 0% 100% / 0.08)
-      );
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
 
-    color: hsl(0 0% 100% / 0.85);
+    color: var(--theme-text, #ffffff);
     font-size: 12px;
     font-weight: 500;
 
@@ -329,14 +298,10 @@
   .tab-option:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--section-color, #667eea) 15%,
-      hsl(240 8% 12%)
+      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 100%,
+      var(--theme-accent, #6366f1) 10%
     );
-    border-color: color-mix(
-      in srgb,
-      var(--section-color, #667eea) 30%,
-      hsl(0 0% 100% / 0.15)
-    );
+    border-color: var(--theme-accent, #6366f1);
   }
 
   .tab-option:active:not(:disabled) {
@@ -346,13 +311,13 @@
   .tab-option.active {
     background: color-mix(
       in srgb,
-      var(--section-color, #667eea) 20%,
-      hsl(240 8% 14%)
+      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 100%,
+      var(--theme-accent, #6366f1) 20%
     );
-    border-color: var(--section-color, #667eea);
+    border-color: var(--theme-accent, #6366f1);
     box-shadow:
       0 0 0 2px
-        color-mix(in srgb, var(--section-color, #667eea) 25%, transparent),
+        color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.1);
   }
 
@@ -385,7 +350,7 @@
     top: 8px;
     right: 8px;
     font-size: 12px;
-    color: var(--section-color, #667eea);
+    color: var(--theme-accent, #6366f1);
   }
 
   /* ============================================================================
@@ -435,12 +400,12 @@
 
   /* Focus visible for keyboard navigation */
   .tab-picker-trigger:focus-visible {
-    outline: 2px solid var(--module-color, #667eea);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 
   .tab-option:focus-visible {
-    outline: 2px solid var(--section-color, #667eea);
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 </style>

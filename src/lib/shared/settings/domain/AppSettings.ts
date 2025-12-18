@@ -9,6 +9,15 @@ import type { PropType } from "../../pictograph/prop/domain/enums/PropType";
 import type { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import type { BackgroundType } from "../../background/shared/domain/enums/background-enums";
 
+/**
+ * Prop Preset - A saved prop configuration for quick switching
+ */
+export interface PropPreset {
+  bluePropType: PropType;
+  redPropType: PropType;
+  catDogMode: boolean;
+}
+
 export interface AppSettings {
   // Metadata for sync tracking (not persisted to Firebase)
   _localTimestamp?: number;
@@ -19,6 +28,8 @@ export interface AppSettings {
   bluePropType?: PropType; // Per-color prop type for blue motions
   redPropType?: PropType; // Per-color prop type for red motions
   catDogMode?: boolean; // Whether CatDog Mode is enabled in prop type settings
+  propPresets?: PropPreset[]; // Up to 6 saved prop configurations
+  selectedPresetIndex?: number; // Index of currently active preset (0-5)
   backupFrequency?: string;
   enableFades?: boolean;
   growSequence?: boolean;
@@ -54,6 +65,17 @@ export interface AppSettings {
     exportQuality?: "low" | "medium" | "high";
     exportFormat?: "PNG" | "JPG" | "WebP";
     defaultPaperSize?: "A4" | "Letter" | "Legal" | "Tabloid";
+  };
+
+  // Pictograph Visibility Settings
+  visibility?: {
+    tkaGlyph?: boolean;
+    vtgGlyph?: boolean;
+    elementalGlyph?: boolean;
+    positionsGlyph?: boolean;
+    reversalIndicators?: boolean;
+    turnNumbers?: boolean;
+    nonRadialPoints?: boolean;
   };
 }
 

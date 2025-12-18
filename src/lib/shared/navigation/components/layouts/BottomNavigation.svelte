@@ -1,6 +1,8 @@
 <!-- BottomNavigation - Portrait/Bottom Navigation Layout -->
 <script lang="ts">
   import { onMount } from "svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { Section } from "$lib/shared/navigation/domain/types";
   import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
   import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
@@ -15,11 +17,7 @@
   import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
-  // Get current module color for themed navigation (fixed: was returning function)
-  let moduleColor = $derived(
-    MODULE_DEFINITIONS.find((m) => m.id === navigationState.currentModule)
-      ?.color ?? "#667eea"
-  );
+  // Module color no longer needed - using global theme system
 
   let {
     sections = [],
@@ -52,6 +50,9 @@
   let navElement = $state<HTMLElement | null>(null);
   let peekHasAnimated = $state(false);
   let availableWidth = $state(0);
+  let backButtonLongPressTimer: ReturnType<typeof setTimeout> | null = null;
+  let backButtonSuppressClick = $state(false);
+  let hapticService: IHapticFeedbackService | undefined;
 
   // Calculate required width for all tabs
   // Each section button needs: min 48px base + 8px gap
@@ -97,6 +98,31 @@
     quickFeedbackState.open();
   }
 
+  function startBackButtonLongPress(event: PointerEvent) {
+    if (event.pointerType === "mouse") return;
+    clearBackButtonLongPress();
+    backButtonLongPressTimer = setTimeout(() => {
+      backButtonSuppressClick = true;
+      handleSettingsLongPress();
+    }, 500);
+  }
+
+  function clearBackButtonLongPress() {
+    if (backButtonLongPressTimer) {
+      clearTimeout(backButtonLongPressTimer);
+      backButtonLongPressTimer = null;
+    }
+  }
+
+  function handleBackButtonClick(event: MouseEvent | TouchEvent) {
+    if (backButtonSuppressClick) {
+      backButtonSuppressClick = false;
+      return;
+    }
+    hapticService?.trigger("selection");
+    onSettingsTap();
+  }
+
   // Derived badge counts for inbox tabs - must be $derived for reactivity
   const isInboxModule = $derived(navigationState.currentModule === "inbox");
   const messagesBadgeCount = $derived(
@@ -120,6 +146,17 @@
   }
 
   onMount(() => {
+    try {
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch (error) {
+      console.warn(
+        "BottomNavigation: Failed to resolve IHapticFeedbackService",
+        error
+      );
+    }
+
     // Set up ResizeObserver to measure navigation height and width
     let resizeObserver: ResizeObserver | null = null;
     if (navElement) {
@@ -169,7 +206,6 @@
   class:hidden={!isUIVisible}
   class:floating={isDashboard}
   bind:this={navElement}
-  style="--module-color: {moduleColor}"
 >
   <!-- Module Switcher Button (Left) - now shown even in settings for consistent home/back affordance -->
   {#if showModuleSwitcher}
@@ -183,7 +219,6 @@
         {sections}
         {currentSection}
         {onSectionChange}
-        {moduleColor}
       />
     </div>
   {:else}
@@ -217,7 +252,11 @@
       <!-- Back Button - shown when in settings to return to previous module -->
       <button
         class="nav-back-button"
-        onclick={onSettingsTap}
+        onclick={handleBackButtonClick}
+        onpointerdown={startBackButtonLongPress}
+        onpointerup={clearBackButtonLongPress}
+        onpointerleave={clearBackButtonLongPress}
+        onpointercancel={clearBackButtonLongPress}
         aria-label="Go back"
       >
         <i class="fas fa-chevron-left"></i>
@@ -268,16 +307,11 @@
     align-items: center;
     gap: var(--nav-gap);
 
-    /* 2026 design: Solid confident surface with subtle module tint */
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--module-color, #667eea) 8%, hsl(240 6% 10%)) 0%,
-      color-mix(in srgb, var(--module-color, #667eea) 4%, hsl(240 6% 8%)) 100%
-    );
+    /* Use global theme system for consistent navigation appearance */
+    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.04));
 
-    /* Subtle top edge highlight instead of harsh border */
-    border-top: 1px solid
-      color-mix(in srgb, var(--module-color, #667eea) 25%, hsl(0 0% 100% / 0.1));
+    /* Subtle top edge with theme stroke */
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     box-shadow:
       0 -1px 0 0 hsl(0 0% 0% / 0.3),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.05);
@@ -414,9 +448,9 @@
     min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
-    border: 1px solid var(--module-color, #667eea);
+    border: 1px solid var(--theme-accent, #6366f1);
     border-radius: 50%;
-    color: var(--module-color, #667eea);
+    color: var(--theme-accent, #6366f1);
     cursor: pointer;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
     touch-action: manipulation;
@@ -429,7 +463,7 @@
 
   .nav-back-button:hover {
     opacity: 0.85;
-    background: color-mix(in srgb, var(--module-color, #667eea) 15%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
   }
 
   .nav-back-button:active {
@@ -459,7 +493,7 @@
     border-radius: 12px;
   }
 
-  /* Special buttons (Settings) - solid module-colored */
+  /* Special buttons (Settings) - using global theme accent */
   .bottom-navigation :global(.nav-button.special) {
     flex: 0 0 auto;
     width: var(--min-touch-target);
@@ -468,7 +502,7 @@
     min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
-    border: 1px solid var(--module-color, #667eea);
+    border: 1px solid var(--theme-accent, #6366f1);
     border-radius: 50%;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
     touch-action: manipulation;
@@ -489,7 +523,7 @@
   .bottom-navigation :global(.nav-button.special.active) {
     background: color-mix(
       in srgb,
-      var(--module-color, #667eea) 15%,
+      var(--theme-accent, #6366f1) 15%,
       transparent
     );
   }
@@ -500,14 +534,14 @@
     display: none;
   }
 
-  /* Solid module-colored gear icon */
+  /* Theme-colored gear icon */
   .bottom-navigation :global(.nav-button.special .nav-icon) {
     font-size: 22px;
   }
 
   .bottom-navigation :global(.nav-button.special .nav-icon i) {
-    color: var(--module-color, #667eea);
-    -webkit-text-fill-color: var(--module-color, #667eea);
+    color: var(--theme-accent, #6366f1);
+    -webkit-text-fill-color: var(--theme-accent, #6366f1);
   }
 
   /* ============================================================================

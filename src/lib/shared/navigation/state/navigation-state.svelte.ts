@@ -43,6 +43,7 @@ import {
   CURRENT_CREATE_MODE_KEY,
   CURRENT_LEARN_MODE_KEY,
   PREVIOUS_MODULE_SESSION_KEY,
+  PREVIOUS_TAB_SESSION_KEY,
 } from "../config/storage-keys";
 
 // Re-export for backwards compatibility
@@ -96,8 +97,18 @@ export function createNavigationState() {
   // At this point, tabs should animate in to show they're available
   let isCreateTutorialOnChoiceStep = $state<boolean>(false);
 
+  // Generic module onboarding visibility tracking (for all modules except Create which has its own)
+  // When true, the module's tabs are hidden in the sidebar
+  let moduleOnboardingVisible = $state<Record<string, boolean>>({});
+
+  // Track when a module's onboarding is on the choice step (tabs should animate in)
+  let moduleOnboardingOnChoiceStep = $state<Record<string, boolean>>({});
+
   // Track previous module for settings toggle behavior
   let previousModule = $state<ModuleId | null>(loadPreviousModuleFromSession());
+
+  // Track previous tab for feedback context (last tab before current navigation)
+  let previousTab = $state<string>(loadPreviousTabFromSession());
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Lazy Service Resolution (for when DI container is available)
@@ -124,6 +135,22 @@ export function createNavigationState() {
       sessionStorage.setItem(PREVIOUS_MODULE_SESSION_KEY, moduleId);
     } else {
       sessionStorage.removeItem(PREVIOUS_MODULE_SESSION_KEY);
+    }
+  }
+
+  // Helper to load previous tab from sessionStorage
+  function loadPreviousTabFromSession(): string {
+    if (typeof sessionStorage === "undefined") return "";
+    return sessionStorage.getItem(PREVIOUS_TAB_SESSION_KEY) || "";
+  }
+
+  // Helper to persist previous tab to sessionStorage
+  function savePreviousTabToSession(tabId: string) {
+    if (typeof sessionStorage === "undefined") return;
+    if (tabId) {
+      sessionStorage.setItem(PREVIOUS_TAB_SESSION_KEY, tabId);
+    } else {
+      sessionStorage.removeItem(PREVIOUS_TAB_SESSION_KEY);
     }
   }
 
@@ -299,17 +326,19 @@ export function createNavigationState() {
   function setCurrentModule(moduleId: ModuleId, targetTab?: string) {
     if (MODULE_DEFINITIONS.some((m) => m.id === moduleId)) {
       const previousModuleLocal = currentModule;
+      const previousTabLocal = activeTab;
 
-      // Track previous module for settings toggle behavior
-      // Only save when entering settings from a non-settings module
-      // Persist to sessionStorage so it survives HMR
-      if (moduleId === "settings" && currentModule !== "settings") {
-        previousModule = currentModule;
-        savePreviousModuleToSession(currentModule);
-      } else if (currentModule === "settings" && moduleId !== "settings") {
-        // Clear previous module when leaving settings
-        previousModule = null;
-        savePreviousModuleToSession(null);
+      // Track previous module/tab for feedback context
+      // Save current location when LEAVING it (unless leaving feedback/settings)
+      // This ensures previous always reflects where user was before opening feedback
+      if (currentModule !== moduleId) {
+        // Only save if leaving a "real" location (not feedback/settings)
+        if (currentModule && currentModule !== "feedback" && currentModule !== "settings") {
+          previousModule = currentModule;
+          previousTab = activeTab;
+          savePreviousModuleToSession(currentModule);
+          savePreviousTabToSession(activeTab);
+        }
       }
 
       currentModule = moduleId;
@@ -497,6 +526,9 @@ export function createNavigationState() {
     get previousModule() {
       return previousModule;
     },
+    get previousTab() {
+      return previousTab;
+    },
 
     // Tab configurations
     get createTabs() {
@@ -592,6 +624,56 @@ export function createNavigationState() {
     },
     setCreateTutorialOnChoiceStep(onChoiceStep: boolean) {
       isCreateTutorialOnChoiceStep = onChoiceStep;
+    },
+
+    // Generic module onboarding visibility (for modules other than Create)
+    /**
+     * Check if a module's onboarding is currently visible
+     * @param moduleId The module to check
+     * @returns true if onboarding is visible, false otherwise
+     */
+    isModuleOnboardingVisible(moduleId: string): boolean {
+      return moduleOnboardingVisible[moduleId] ?? false;
+    },
+
+    /**
+     * Set whether a module's onboarding is visible
+     * @param moduleId The module to set
+     * @param visible Whether onboarding should be visible
+     */
+    setModuleOnboardingVisible(moduleId: string, visible: boolean) {
+      moduleOnboardingVisible = {
+        ...moduleOnboardingVisible,
+        [moduleId]: visible,
+      };
+      // Reset choice step when hiding onboarding
+      if (!visible) {
+        moduleOnboardingOnChoiceStep = {
+          ...moduleOnboardingOnChoiceStep,
+          [moduleId]: false,
+        };
+      }
+    },
+
+    /**
+     * Check if a module's onboarding is on the choice step
+     * @param moduleId The module to check
+     * @returns true if on choice step, false otherwise
+     */
+    isModuleOnboardingOnChoiceStep(moduleId: string): boolean {
+      return moduleOnboardingOnChoiceStep[moduleId] ?? false;
+    },
+
+    /**
+     * Set whether a module's onboarding is on the choice step
+     * @param moduleId The module to set
+     * @param onChoiceStep Whether on the choice step
+     */
+    setModuleOnboardingOnChoiceStep(moduleId: string, onChoiceStep: boolean) {
+      moduleOnboardingOnChoiceStep = {
+        ...moduleOnboardingOnChoiceStep,
+        [moduleId]: onChoiceStep,
+      };
     },
 
     // Panel persistence per tab (key format: "moduleId:tabId")

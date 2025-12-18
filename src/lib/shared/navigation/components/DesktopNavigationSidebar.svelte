@@ -71,7 +71,7 @@
 
   // Check if Create module tutorial is active (hides Create tabs until choice step)
   // We check localStorage directly to avoid flash of tabs before state initializes
-  const hasCompletedTutorial = $derived(() => {
+  const hasCompletedCreateTutorial = $derived(() => {
     if (typeof localStorage === "undefined") return true;
     return localStorage.getItem("tka-create-method-selected") === "true";
   });
@@ -80,11 +80,18 @@
   // This prevents the flash of tabs on initial load
   const isCreateTutorialActive = $derived(
     navigationState.currentModule === "create" &&
-      (navigationState.isCreationMethodSelectorVisible || !hasCompletedTutorial())
+      (navigationState.isCreationMethodSelectorVisible || !hasCompletedCreateTutorial())
   );
   const isOnTutorialChoiceStep = $derived(
     navigationState.isCreateTutorialOnChoiceStep
   );
+
+  // Check if a module's onboarding has been completed (for modules other than Create)
+  // Returns a function that checks localStorage directly to avoid flash
+  function hasCompletedModuleOnboarding(moduleId: string): boolean {
+    if (typeof localStorage === "undefined") return true;
+    return localStorage.getItem(`tka-${moduleId}-onboarding-completed`) === "true";
+  }
 
   // Get filtered settings sections using feature flag service
   const filteredSettingsSections = $derived(
@@ -194,14 +201,35 @@
     navigationState.setActiveTab(section.id);
   }
 
+  // Modules that have onboarding (excluding Create which has its own handling)
+  const modulesWithOnboarding = ["discover", "learn", "compose", "train", "library"];
+
   // Filter sections based on module-specific rules (e.g., admin-only tabs)
   // Uses featureFlagService.canAccessTab() for role-based access control
-  // For Create module: tabs hidden during tutorial, revealed on choice step
+  // For modules with onboarding: tabs hidden until onboarding completed or on choice step
   function getFilteredSections(module: ModuleDefinition): Section[] {
     // Hide Create module tabs during tutorial (until choice step)
     if (module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep) {
       return [];
     }
+
+    // Hide other module tabs during their onboarding (until choice step or completed)
+    // Use same pattern as Create: check localStorage directly to avoid flash
+    if (modulesWithOnboarding.includes(module.id)) {
+      const isOnChoiceStep = navigationState.isModuleOnboardingOnChoiceStep(module.id);
+      const hasCompleted = hasCompletedModuleOnboarding(module.id);
+      const isCurrentModule = navigationState.currentModule === module.id;
+
+      // Onboarding is active when: it's the current module AND not completed yet
+      // (mirrors Create's pattern which checks localStorage directly)
+      const isOnboardingActive = isCurrentModule && !hasCompleted;
+
+      // Hide tabs if: onboarding active AND not on choice step
+      if (isOnboardingActive && !isOnChoiceStep) {
+        return [];
+      }
+    }
+
     return module.sections.filter((section) => {
       return featureFlagService.canAccessTab(module.id, section.id);
     });
@@ -330,18 +358,21 @@
               {@const moduleColor = module.color || "#a855f7"}
               {@const filteredSections = getFilteredSections(module)}
               {@const hasTabs = isModuleActive && filteredSections.length > 0}
+              {@const isCreateInTutorialCollapsed = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
+              {@const isModuleInOnboardingCollapsed = modulesWithOnboarding.includes(module.id) && navigationState.currentModule === module.id && !hasCompletedModuleOnboarding(module.id) && !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
+              {@const forceActiveCollapsed = isCreateInTutorialCollapsed || isModuleInOnboardingCollapsed}
 
               <!-- Module Context Group: Unified visual container for module + tabs -->
               <div
                 class="module-context-group"
-                class:active={isModuleActive}
+                class:active={isModuleActive || forceActiveCollapsed}
                 class:has-tabs={hasTabs}
                 style="--module-color: {moduleColor};"
               >
                 <!-- Module Button -->
                 <CollapsedModuleButton
                   {module}
-                  isActive={isModuleActive}
+                  isActive={isModuleActive || forceActiveCollapsed}
                   onClick={() =>
                     handleModuleTap(module.id, module.disabled ?? false)}
                   {moduleColor}
@@ -380,8 +411,12 @@
             {@const isExpanded = expandedModules.has(module.id)}
             {@const moduleColor = module.color || "#a855f7"}
             {@const filteredSections = getFilteredSections(module)}
-            {@const shouldCelebrate = module.id === "create" && isOnTutorialChoiceStep && filteredSections.length > 0}
+            {@const isCreateOnChoiceStep = module.id === "create" && isOnTutorialChoiceStep}
+            {@const isModuleOnChoiceStep = modulesWithOnboarding.includes(module.id) && navigationState.isModuleOnboardingOnChoiceStep(module.id)}
+            {@const shouldCelebrate = (isCreateOnChoiceStep || isModuleOnChoiceStep) && filteredSections.length > 0}
             {@const isCreateInTutorial = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
+            {@const isModuleInOnboarding = modulesWithOnboarding.includes(module.id) && navigationState.currentModule === module.id && !hasCompletedModuleOnboarding(module.id) && !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
+            {@const forceActiveStyleLocal = isCreateInTutorial || isModuleInOnboarding}
 
             <ModuleGroup
               module={{ ...module, sections: filteredSections }}
@@ -394,7 +429,7 @@
               onModuleClick={handleModuleTap}
               onSectionClick={handleSectionTap}
               celebrateAppearance={shouldCelebrate}
-              forceActiveStyle={isCreateInTutorial}
+              forceActiveStyle={forceActiveStyleLocal}
             />
           {/each}
         {/if}

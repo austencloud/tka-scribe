@@ -25,3 +25,6 @@ export const CURRENT_LEARN_MODE_KEY = "tka-current-learn-mode";
 
 /** sessionStorage key for previous module (for settings toggle behavior, survives HMR) */
 export const PREVIOUS_MODULE_SESSION_KEY = "tka-previous-module-session";
+
+/** sessionStorage key for previous tab (for feedback context, survives HMR) */
+export const PREVIOUS_TAB_SESSION_KEY = "tka-previous-tab-session";

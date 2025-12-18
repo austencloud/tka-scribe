@@ -35,9 +35,11 @@ const OFFLINE_QUEUE_KEY = "tka-settings-offline-queue";
 
 const DEFAULT_SETTINGS: AppSettings = {
   gridMode: GridMode.DIAMOND,
-  backgroundType: BackgroundType.NIGHT_SKY,
+  // Use solidColor (black) as default to avoid flash while localStorage loads
+  backgroundType: BackgroundType.SOLID_COLOR,
   backgroundQuality: "medium",
   backgroundEnabled: true,
+  backgroundColor: "#000000", // Black background for solidColor
   hapticFeedback: true,
   reducedMotion: false,
   catDogMode: false, // Default: both hands use the same prop

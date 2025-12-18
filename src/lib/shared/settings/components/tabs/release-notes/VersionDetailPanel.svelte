@@ -49,6 +49,16 @@
   let toastType = $state<ToastType>("action");
   let toastTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  // Reset UI state when version changes (user clicked different release)
+  $effect(() => {
+    // Read version to create dependency
+    const _ = version;
+    // Reset all edit/add states
+    addingToCategory = null;
+    newEntryText = "";
+    currentlyEditingId = null;
+  });
+
   // Derived
   const isAdmin = $derived(authState.isAdmin);
   const placement = $derived(isMobile ? "bottom" : "right");
@@ -75,6 +85,10 @@
 
   // Edit state
   function startEdit(id: string) {
+    // Close any open add form when starting to edit an entry
+    if (addingToCategory) {
+      cancelAdd();
+    }
     currentlyEditingId = id;
   }
   function endEdit() {
@@ -82,6 +96,10 @@
   }
 
   function openFeedback(entry: ChangelogEntry) {
+    // Close any open add form when viewing a feedback item
+    if (addingToCategory) {
+      cancelAdd();
+    }
     if (entry.feedbackId) {
       void loadAndOpenFeedback(entry.feedbackId);
     }
@@ -108,11 +126,15 @@
   }
 
   function handlePanelClick(e: MouseEvent) {
-    if (
-      currentlyEditingId &&
-      !(e.target as HTMLElement).closest(".edit-container")
-    )
+    const target = e.target as HTMLElement;
+    // Close edit mode if clicking outside edit container
+    if (currentlyEditingId && !target.closest(".edit-container")) {
       endEdit();
+    }
+    // Close add mode if clicking outside add form (but not on the add button itself)
+    if (addingToCategory && !target.closest(".add-entry-form") && !target.closest(".add-entry-btn")) {
+      cancelAdd();
+    }
   }
 
   // Add entry
@@ -389,7 +411,8 @@
   .version-detail-body {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     padding: 24px;
     overflow-y: auto;
   }
@@ -417,7 +440,10 @@
   @media (max-width: 768px) {
     .version-detail-body {
       padding: 16px;
-      max-height: 85vh;
+      flex: 1;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
     }
   }
 </style>

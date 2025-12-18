@@ -65,7 +65,7 @@
     min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
-    border: 1px solid var(--module-color, #667eea);
+    border: 1px solid var(--theme-accent, #6366f1);
     border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
@@ -80,7 +80,7 @@
 
   .menu-button:hover {
     opacity: 0.85;
-    background: color-mix(in srgb, var(--module-color, #667eea) 15%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
   }
 
   .menu-button:active {
@@ -95,7 +95,7 @@
 
   .menu-icon {
     font-size: 20px;
-    color: var(--module-color, #667eea);
+    color: var(--theme-accent, #6366f1);
     pointer-events: none;
   }
 

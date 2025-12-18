@@ -408,6 +408,7 @@
           onTogglePositions={() => togglePicto("positions")}
           onToggleReversals={() => togglePicto("reversals")}
           onToggleNonRadial={() => togglePicto("nonRadial")}
+          onToggleTurnNumbers={() => togglePicto("turnNumbers")}
         />
       </div>
 

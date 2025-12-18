@@ -2,9 +2,10 @@
   PropTypeTab.svelte - Prop Type Selection
 
   Clean button-based interface with bottom sheet prop picker.
+  Supports up to 6 presets for quick prop switching.
 -->
 <script lang="ts">
-  import type { AppSettings } from "../../domain/AppSettings";
+  import type { AppSettings, PropPreset } from "../../domain/AppSettings";
   import { resolve } from "../../../inversify/di";
   import { TYPES } from "../../../inversify/types";
   import { PropType } from "../../../pictograph/prop/domain/enums/PropType";
@@ -17,6 +18,7 @@
   } from "./prop-type/PropTypeRegistry";
   import CatDogToggle from "./prop-type/CatDogToggle.svelte";
   import PropSelectionSheet from "./prop-type/PropSelectionSheet.svelte";
+  import PropPresetBar from "./prop-type/PropPresetBar.svelte";
 
   // Entry animation
   let isVisible = $state(false);
@@ -52,6 +54,10 @@
   let isSheetOpen = $state(false);
   let selectingHand = $state<"blue" | "red">("blue");
 
+  // Preset state (fixed 3 slots)
+  let propPresets = $state<PropPreset[]>(settings.propPresets || []);
+  let selectedPresetIndex = $state(settings.selectedPresetIndex ?? -1);
+
   // Watch for settings changes
   $effect(() => {
     const newBlueProp =
@@ -73,7 +79,84 @@
     if (!catDogMode && selectedBluePropType !== selectedRedPropType) {
       selectedRedPropType = selectedBluePropType;
     }
+
+    // Sync presets from settings
+    const newPresets = settings.propPresets || [];
+    if (JSON.stringify(newPresets) !== JSON.stringify(propPresets)) {
+      propPresets = newPresets;
+    }
+    const newSelectedIndex = settings.selectedPresetIndex ?? -1;
+    if (newSelectedIndex !== selectedPresetIndex) {
+      selectedPresetIndex = newSelectedIndex;
+    }
   });
+
+  // Preset management functions
+  function handleSelectPreset(index: number) {
+    hapticService?.trigger("selection");
+
+    const preset = propPresets[index];
+    if (!preset) return; // Empty slot - do nothing on select
+
+    selectedPresetIndex = index;
+    selectedBluePropType = preset.bluePropType;
+    selectedRedPropType = preset.redPropType;
+    catDogMode = preset.catDogMode;
+
+    // Update all settings at once
+    onUpdate?.({ key: "selectedPresetIndex", value: index });
+    onUpdate?.({ key: "bluePropType", value: preset.bluePropType });
+    onUpdate?.({ key: "redPropType", value: preset.redPropType });
+    onUpdate?.({ key: "catDogMode", value: preset.catDogMode });
+  }
+
+  function handleSaveToSlot(index: number) {
+    hapticService?.trigger("selection");
+
+    // Save current config to this slot
+    const newPreset: PropPreset = {
+      bluePropType: selectedBluePropType,
+      redPropType: selectedRedPropType,
+      catDogMode,
+    };
+
+    // Ensure array is long enough
+    const newPresets = [...propPresets];
+    while (newPresets.length <= index) {
+      newPresets.push(undefined as unknown as PropPreset);
+    }
+    newPresets[index] = newPreset;
+
+    // Clean up undefined entries but keep structure
+    const cleanedPresets = newPresets.map((p, i) => p || null).filter((p): p is PropPreset => p !== null);
+
+    propPresets = cleanedPresets;
+    selectedPresetIndex = cleanedPresets.findIndex(p =>
+      p.bluePropType === newPreset.bluePropType &&
+      p.redPropType === newPreset.redPropType &&
+      p.catDogMode === newPreset.catDogMode
+    );
+
+    onUpdate?.({ key: "propPresets", value: cleanedPresets });
+    onUpdate?.({ key: "selectedPresetIndex", value: selectedPresetIndex });
+  }
+
+  function updateCurrentPreset() {
+    // Update the currently selected preset with the current prop configuration
+    if (selectedPresetIndex < 0 || selectedPresetIndex >= propPresets.length) return;
+
+    const updatedPreset: PropPreset = {
+      bluePropType: selectedBluePropType,
+      redPropType: selectedRedPropType,
+      catDogMode,
+    };
+
+    const newPresets = [...propPresets];
+    newPresets[selectedPresetIndex] = updatedPreset;
+    propPresets = newPresets;
+
+    onUpdate?.({ key: "propPresets", value: newPresets });
+  }
 
   function toggleCatDogMode() {
     hapticService?.trigger("selection");
@@ -95,6 +178,9 @@
 
     catDogMode = newCatDogMode;
     onUpdate?.({ key: "catDogMode", value: catDogMode });
+
+    // Update preset if we have one selected
+    updateCurrentPreset();
   }
 
   function handleChangeProp() {
@@ -117,6 +203,9 @@
       selectedRedPropType = propType;
       onUpdate?.({ key: "redPropType", value: propType });
     }
+
+    // Update preset if we have one selected
+    updateCurrentPreset();
   }
 
   function toggleVariation(hand: "blue" | "red") {
@@ -140,6 +229,9 @@
       selectedRedPropType = newProp;
       onUpdate?.({ key: "redPropType", value: newProp });
     }
+
+    // Update preset if we have one selected
+    updateCurrentPreset();
   }
 
   // Display info
@@ -158,6 +250,17 @@
         <p class="panel-subtitle">Choose your flow props</p>
       </div>
     </header>
+
+    <!-- Prop Presets -->
+    <div class="presets-section">
+      <h4 class="section-label">Quick Presets</h4>
+      <PropPresetBar
+        presets={propPresets}
+        selectedIndex={selectedPresetIndex}
+        onSelectPreset={handleSelectPreset}
+        onSaveToSlot={handleSaveToSlot}
+      />
+    </div>
 
     <!-- Cat Dog Toggle -->
     <div class="mode-section">
@@ -370,6 +473,22 @@
     font-size: 13px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     font-style: italic;
+  }
+
+  /* Presets Section */
+  .presets-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .section-label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   /* Prop Display */
