@@ -20,7 +20,7 @@ import {
   serverTimestamp,
   type Timestamp,
 } from 'firebase/firestore';
-import { firestore } from '$lib/shared/auth/firebase';
+import { getFirestoreInstance } from '$lib/shared/auth/firebase';
 import type { IAnimationStorageService } from '../contracts/IAnimationStorageService';
 import type { Animation } from '../../shared/domain/Animation';
 import { createAnimation, updateAnimation } from '../../shared/domain/Animation';
@@ -59,14 +59,16 @@ export class AnimationStorageService implements IAnimationStorageService {
   /**
    * Get the Firestore collection reference for a user's animations
    */
-  private getUserAnimationsCollectionRef(userId: string) {
+  private async getUserAnimationsCollectionRef(userId: string) {
+    const firestore = await getFirestoreInstance();
     return collection(firestore, `users/${userId}/${ANIMATIONS_COLLECTION}`);
   }
 
   /**
    * Get the Firestore document reference for a specific animation
    */
-  private getAnimationDocRef(userId: string, animationId: string) {
+  private async getAnimationDocRef(userId: string, animationId: string) {
+    const firestore = await getFirestoreInstance();
     return doc(
       firestore,
       `users/${userId}/${ANIMATIONS_COLLECTION}/${animationId}`
@@ -123,7 +125,7 @@ export class AnimationStorageService implements IAnimationStorageService {
         throw new Error('Animation must have a creatorId to save');
       }
 
-      const docRef = this.getAnimationDocRef(
+      const docRef = await this.getAnimationDocRef(
         animation.creatorId,
         animation.id
       );
@@ -148,7 +150,7 @@ export class AnimationStorageService implements IAnimationStorageService {
    */
   async load(userId: string, animationId: string): Promise<Animation | null> {
     try {
-      const docRef = this.getAnimationDocRef(userId, animationId);
+      const docRef = await this.getAnimationDocRef(userId, animationId);
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
@@ -183,7 +185,7 @@ export class AnimationStorageService implements IAnimationStorageService {
     limit: number = DEFAULT_LIST_LIMIT
   ): Promise<Animation[]> {
     try {
-      const collectionRef = this.getUserAnimationsCollectionRef(userId);
+      const collectionRef = await this.getUserAnimationsCollectionRef(userId);
       const q = query(
         collectionRef,
         orderBy('updatedAt', 'desc'),
@@ -217,7 +219,7 @@ export class AnimationStorageService implements IAnimationStorageService {
    */
   async delete(userId: string, animationId: string): Promise<void> {
     try {
-      const docRef = this.getAnimationDocRef(userId, animationId);
+      const docRef = await this.getAnimationDocRef(userId, animationId);
       await deleteDoc(docRef);
 
       console.log(
@@ -278,7 +280,7 @@ export class AnimationStorageService implements IAnimationStorageService {
    */
   async exists(userId: string, animationId: string): Promise<boolean> {
     try {
-      const docRef = this.getAnimationDocRef(userId, animationId);
+      const docRef = await this.getAnimationDocRef(userId, animationId);
       const docSnap = await getDoc(docRef);
       return docSnap.exists();
     } catch (error) {
@@ -295,7 +297,7 @@ export class AnimationStorageService implements IAnimationStorageService {
    */
   async count(userId: string): Promise<number> {
     try {
-      const collectionRef = this.getUserAnimationsCollectionRef(userId);
+      const collectionRef = await this.getUserAnimationsCollectionRef(userId);
       const snapshot = await getCountFromServer(collectionRef);
       const count = snapshot.data().count;
 

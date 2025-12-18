@@ -1,0 +1,240 @@
+<script lang="ts">
+  /**
+   * ClipContextMenu - Right-click context menu for timeline clips
+   *
+   * Provides quick access to clip operations:
+   * - Cut, Copy, Paste, Delete
+   * - Duplicate
+   * - Mute/Lock toggle
+   * - Speed presets
+   * - Open inspector
+   */
+
+  import { getTimelineState } from "../state/timeline-state.svelte";
+
+  interface Props {
+    clipId: string;
+    x: number;
+    y: number;
+    onClose: () => void;
+  }
+
+  let { clipId, x, y, onClose }: Props = $props();
+
+  function getState() {
+    return getTimelineState();
+  }
+
+  // Local reactive state
+  let clip = $state<ReturnType<typeof getState>["allClips"][number] | undefined>(undefined);
+
+  // Sync from timeline state
+  $effect(() => {
+    clip = getState().allClips.find((c) => c.id === clipId);
+  });
+
+  function handleAction(action: () => void) {
+    action();
+    onClose();
+  }
+
+  // Close on click outside
+  function handleClickOutside(e: MouseEvent) {
+    if (!(e.target as HTMLElement).closest(".context-menu")) {
+      onClose();
+    }
+  }
+
+  // Close on escape
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  }
+
+  $effect(() => {
+    window.addEventListener("click", handleClickOutside);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("click", handleClickOutside);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  });
+</script>
+
+{#if clip}
+  <div
+    class="context-menu"
+    style="left: {x}px; top: {y}px"
+    role="menu"
+  >
+    <!-- Edit section -->
+    <button class="menu-item" onclick={() => handleAction(() => getState().duplicateClip(clipId))}>
+      <i class="fa-solid fa-copy"></i>
+      <span>Duplicate</span>
+      <kbd>Ctrl+D</kbd>
+    </button>
+
+    <button class="menu-item danger" onclick={() => handleAction(() => getState().removeClip(clipId))}>
+      <i class="fa-solid fa-trash"></i>
+      <span>Delete</span>
+      <kbd>Del</kbd>
+    </button>
+
+    <div class="divider"></div>
+
+    <!-- Toggle section -->
+    <button class="menu-item" onclick={() => handleAction(() => getState().updateClip(clipId, { muted: !clip?.muted }))}>
+      <i class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}"></i>
+      <span>{clip?.muted ? "Unmute" : "Mute"}</span>
+      <kbd>M</kbd>
+    </button>
+
+    <button class="menu-item" onclick={() => handleAction(() => getState().updateClip(clipId, { locked: !clip?.locked }))}>
+      <i class="fa-solid {clip?.locked ? 'fa-lock-open' : 'fa-lock'}"></i>
+      <span>{clip?.locked ? "Unlock" : "Lock"}</span>
+      <kbd>L</kbd>
+    </button>
+
+    <button class="menu-item" onclick={() => handleAction(() => getState().setClipLoop(clipId, !clip?.loop))}>
+      <i class="fa-solid fa-repeat"></i>
+      <span>{clip?.loop ? "Disable Loop" : "Enable Loop"}</span>
+    </button>
+
+    <div class="divider"></div>
+
+    <!-- Speed presets -->
+    <div class="submenu">
+      <button class="menu-item">
+        <i class="fa-solid fa-gauge"></i>
+        <span>Speed</span>
+        <i class="fa-solid fa-chevron-right submenu-arrow"></i>
+      </button>
+      <div class="submenu-content">
+        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 0.25))}>
+          <span>0.25x (Very Slow)</span>
+        </button>
+        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 0.5))}>
+          <span>0.5x (Slow)</span>
+        </button>
+        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 0.75))}>
+          <span>0.75x</span>
+        </button>
+        <button class="menu-item" class:active={clip?.playbackRate === 1} onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 1))}>
+          <span>1x (Normal)</span>
+        </button>
+        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 1.5))}>
+          <span>1.5x</span>
+        </button>
+        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 2))}>
+          <span>2x (Fast)</span>
+        </button>
+        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 4))}>
+          <span>4x (Very Fast)</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Inspector -->
+    <button class="menu-item" onclick={() => handleAction(() => getState().openClipInspector(clipId))}>
+      <i class="fa-solid fa-sliders"></i>
+      <span>Open Inspector</span>
+    </button>
+  </div>
+{/if}
+
+<style>
+  .context-menu {
+    position: fixed;
+    z-index: 1000;
+    min-width: 180px;
+    background: var(--theme-panel-bg, rgba(30, 30, 30, 0.98));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-compact, 12px);
+    text-align: left;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+  }
+
+  .menu-item:hover {
+    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
+  }
+
+  .menu-item.active {
+    background: var(--theme-accent, #4a9eff);
+  }
+
+  .menu-item.danger:hover {
+    background: rgba(255, 68, 68, 0.2);
+    color: #ff4444;
+  }
+
+  .menu-item i {
+    width: 16px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  .menu-item span {
+    flex: 1;
+  }
+
+  .menu-item kbd {
+    font-size: 10px;
+    padding: 2px 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    margin: 4px 0;
+  }
+
+  .submenu {
+    position: relative;
+  }
+
+  .submenu-arrow {
+    font-size: 10px !important;
+  }
+
+  .submenu-content {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    min-width: 140px;
+    background: var(--theme-panel-bg, rgba(30, 30, 30, 0.98));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .submenu:hover .submenu-content {
+    display: block;
+  }
+</style>

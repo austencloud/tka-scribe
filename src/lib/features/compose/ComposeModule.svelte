@@ -67,6 +67,7 @@
   // CompositionBuilder replaces old ArrangeTab with unified layout-first composition builder
   import CompositionBuilder from "./compose/CompositionBuilder.svelte";
   import BrowseTab from "./tabs/browse/BrowseTab.svelte";
+  import TimelinePanel from "./timeline/components/TimelinePanel.svelte";
 
   // Import playback overlay (for Browse tab - legacy saved compositions)
   import PlaybackOverlay from "./tabs/playback/PlaybackTab.svelte";
@@ -84,7 +85,7 @@
   // Sync current tab with navigation state
   $effect(() => {
     const section = navigationState.activeTab;
-    if (section === "arrange" || section === "browse") {
+    if (section === "arrange" || section === "browse" || section === "timeline") {
       composeState.setCurrentTab(section as ComposeTab);
     }
   });
@@ -110,7 +111,7 @@
 
     // Set default tab if none persisted or invalid
     const section = navigationState.activeTab;
-    if (!section || (section !== "arrange" && section !== "browse")) {
+    if (!section || (section !== "arrange" && section !== "browse" && section !== "timeline")) {
       navigationState.setActiveTab("arrange");
     }
 
@@ -123,7 +124,7 @@
         // For now, just navigate to the specified tab
         if (
           deepLinkData.tabId &&
-          (deepLinkData.tabId === "arrange" || deepLinkData.tabId === "browse")
+          (deepLinkData.tabId === "arrange" || deepLinkData.tabId === "browse" || deepLinkData.tabId === "timeline")
         ) {
           navigationState.setActiveTab(deepLinkData.tabId);
           composeState.setCurrentTab(deepLinkData.tabId as ComposeTab);
@@ -168,6 +169,8 @@
           <CompositionBuilder />
         {:else if isTabActive("browse")}
           <BrowseTab />
+        {:else if isTabActive("timeline")}
+          <TimelinePanel />
         {/if}
       </div>
     {/key}

@@ -16,8 +16,7 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import type { AudioTrack, AudioTrackLocal, AudioSource } from "../domain/models/AudioTrack";
 import { toLocalTrack } from "../domain/models/AudioTrack";
 import { listCachedTrackIds } from "./audio-library-persistence";
@@ -25,15 +24,14 @@ import { listCachedTrackIds } from "./audio-library-persistence";
 /**
  * Get reference to user's audio library collection
  */
-function getUserAudioCollection() {
-  const auth = getAuth();
+async function getUserAudioCollection() {
   const user = auth.currentUser;
   if (!user) {
     throw new Error("User must be authenticated to access audio library");
   }
 
-  const db = getFirestore();
-  return collection(db, "users", user.uid, "audioLibrary");
+  const firestore = await getFirestoreInstance();
+  return collection(firestore, "users", user.uid, "audioLibrary");
 }
 
 /**
@@ -53,7 +51,7 @@ export async function saveTrackMetadata(
     cloudUrl?: string;
   }
 ): Promise<void> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const docRef = doc(collectionRef, trackId);
 
   const trackData: Omit<AudioTrack, "addedAt"> & { addedAt: ReturnType<typeof serverTimestamp> } = {
@@ -82,7 +80,7 @@ export async function updateTrackMetadata(
   trackId: string,
   updates: Partial<AudioTrack>
 ): Promise<void> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const docRef = doc(collectionRef, trackId);
 
   await updateDoc(docRef, updates as any);
@@ -93,7 +91,7 @@ export async function updateTrackMetadata(
  * Load all tracks from Firestore, merged with local availability
  */
 export async function loadLibraryFromFirestore(): Promise<AudioTrackLocal[]> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const q = query(collectionRef, orderBy("addedAt", "desc"));
 
   const snapshot = await getDocs(q);
@@ -116,7 +114,7 @@ export async function loadLibraryFromFirestore(): Promise<AudioTrackLocal[]> {
  * Delete track metadata from Firestore
  */
 export async function deleteTrackMetadata(trackId: string): Promise<void> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const docRef = doc(collectionRef, trackId);
 
   await deleteDoc(docRef);
@@ -127,7 +125,7 @@ export async function deleteTrackMetadata(trackId: string): Promise<void> {
  * Update last played timestamp
  */
 export async function updateLastPlayed(trackId: string): Promise<void> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const docRef = doc(collectionRef, trackId);
 
   await updateDoc(docRef, {
@@ -139,7 +137,7 @@ export async function updateLastPlayed(trackId: string): Promise<void> {
  * Check if user has any saved tracks
  */
 export async function hasAnyTracks(): Promise<boolean> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const snapshot = await getDocs(collectionRef);
   return !snapshot.empty;
 }
@@ -148,7 +146,7 @@ export async function hasAnyTracks(): Promise<boolean> {
  * Get track count
  */
 export async function getTrackCount(): Promise<number> {
-  const collectionRef = getUserAudioCollection();
+  const collectionRef = await getUserAudioCollection();
   const snapshot = await getDocs(collectionRef);
   return snapshot.size;
 }
