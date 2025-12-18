@@ -41,6 +41,7 @@
   import BackgroundTab from "$lib/shared/settings/components/tabs/background/BackgroundTab.svelte";
   import VisibilityTab from "$lib/shared/settings/components/tabs/VisibilityTab.svelte";
   import KeyboardShortcutsTab from "$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte";
+  import SupportTab from "$lib/shared/settings/components/tabs/SupportTab.svelte";
 
   // Reactive settings - derives from getSettings() to maintain reactivity
   let settings = $derived(getSettings());
@@ -253,6 +254,8 @@
           />
         {:else if activeTab === "keyboard"}
           <KeyboardShortcutsTab />
+        {:else if activeTab === "support"}
+          <SupportTab />
         {:else}
           <!-- Fallback to profile if unknown tab -->
           <ProfileTab

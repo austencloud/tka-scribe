@@ -21,7 +21,7 @@ export interface IBackgroundPopularityService {
    */
   subscribeToPopularity(
     callback: (counts: BackgroundPopularityCounts) => void
-  ): () => void;
+  ): Promise<() => void>;
 
   /**
    * Record a background change - decrements old, increments new

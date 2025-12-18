@@ -17,7 +17,7 @@ import {
   increment,
   type Unsubscribe,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type {
   IBackgroundPopularityService,
   BackgroundPopularityCounts,
@@ -35,7 +35,8 @@ export class BackgroundPopularityService implements IBackgroundPopularityService
   /**
    * Get the Firestore document reference for popularity stats
    */
-  private getPopularityDocRef() {
+  private async getPopularityDocRef() {
+    const firestore = await getFirestoreInstance();
     return doc(firestore, STATS_COLLECTION, POPULARITY_DOC);
   }
 
@@ -53,7 +54,7 @@ export class BackgroundPopularityService implements IBackgroundPopularityService
    */
   async getPopularityCounts(): Promise<BackgroundPopularityCounts> {
     try {
-      const docRef = this.getPopularityDocRef();
+      const docRef = await this.getPopularityDocRef();
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -82,16 +83,16 @@ export class BackgroundPopularityService implements IBackgroundPopularityService
   /**
    * Subscribe to real-time popularity updates
    */
-  subscribeToPopularity(
+  async subscribeToPopularity(
     callback: (counts: BackgroundPopularityCounts) => void
-  ): () => void {
+  ): Promise<() => void> {
     // Clean up any existing subscription
     if (this.unsubscribe) {
       this.unsubscribe();
       this.unsubscribe = null;
     }
 
-    const docRef = this.getPopularityDocRef();
+    const docRef = await this.getPopularityDocRef();
 
     this.unsubscribe = onSnapshot(
       docRef,
@@ -135,7 +136,7 @@ export class BackgroundPopularityService implements IBackgroundPopularityService
     newBackground: BackgroundType | string
   ): Promise<void> {
     try {
-      const docRef = this.getPopularityDocRef();
+      const docRef = await this.getPopularityDocRef();
       const newKey = this.normalizeBackgroundKey(newBackground);
 
       const updates: Record<string, unknown> = {
@@ -165,7 +166,7 @@ export class BackgroundPopularityService implements IBackgroundPopularityService
     background: BackgroundType | string
   ): Promise<void> {
     try {
-      const docRef = this.getPopularityDocRef();
+      const docRef = await this.getPopularityDocRef();
       const key = this.normalizeBackgroundKey(background);
 
       await setDoc(

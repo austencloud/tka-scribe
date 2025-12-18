@@ -24,14 +24,14 @@ class BackgroundPopularityState {
   /**
    * Initialize the popularity tracking
    */
-  initialize(): void {
+  async initialize(): Promise<void> {
     if (!browser || this.isInitialized) return;
     this.isInitialized = true;
 
     this.service = new BackgroundPopularityService();
 
     // Subscribe to real-time updates
-    this.unsubscribe = this.service.subscribeToPopularity((newCounts) => {
+    this.unsubscribe = await this.service.subscribeToPopularity((newCounts) => {
       this.counts = newCounts;
       this.isLoading = false;
     });
@@ -81,8 +81,8 @@ class BackgroundPopularityState {
 export const backgroundPopularity = new BackgroundPopularityState();
 
 // Convenience exports for backward compatibility
-export function initializePopularityTracking(): void {
-  backgroundPopularity.initialize();
+export function initializePopularityTracking(): Promise<void> {
+  return backgroundPopularity.initialize();
 }
 
 export function cleanupPopularityTracking(): void {

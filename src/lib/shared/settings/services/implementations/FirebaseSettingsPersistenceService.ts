@@ -17,7 +17,7 @@ import {
   serverTimestamp,
   type Unsubscribe,
 } from "firebase/firestore";
-import { firestore } from "../../../auth/firebase";
+import { getFirestoreInstance } from "../../../auth/firebase";
 import { authState } from "../../../auth/state/authState.svelte";
 import type { AppSettings } from "../../domain/AppSettings";
 import type { ISettingsPersistenceService } from "../contracts/ISettingsPersistenceService";
@@ -31,11 +31,12 @@ export class FirebaseSettingsPersistenceService
   /**
    * Get the Firestore document reference for user settings
    */
-  private getSettingsDocRef() {
+  private async getSettingsDocRef() {
     const userId = authState.effectiveUserId;
     if (!userId) {
       return null;
     }
+    const firestore = await getFirestoreInstance();
     return doc(firestore, `users/${userId}/settings/preferences`);
   }
 
@@ -43,7 +44,7 @@ export class FirebaseSettingsPersistenceService
    * Load settings from Firestore
    */
   async loadSettings(): Promise<AppSettings | null> {
-    const docRef = this.getSettingsDocRef();
+    const docRef = await this.getSettingsDocRef();
     if (!docRef) {
       return null;
     }
@@ -71,7 +72,7 @@ export class FirebaseSettingsPersistenceService
    * Save settings to Firestore
    */
   async saveSettings(settings: AppSettings): Promise<void> {
-    const docRef = this.getSettingsDocRef();
+    const docRef = await this.getSettingsDocRef();
     if (!docRef) {
       console.warn(
         "⚠️ [FirebaseSettingsPersistenceService] Cannot save: No authenticated user"
@@ -101,7 +102,7 @@ export class FirebaseSettingsPersistenceService
    * Clear settings from Firestore
    */
   async clearSettings(): Promise<void> {
-    const docRef = this.getSettingsDocRef();
+    const docRef = await this.getSettingsDocRef();
     if (!docRef) {
       return;
     }
@@ -124,7 +125,7 @@ export class FirebaseSettingsPersistenceService
    * Check if settings exist in Firestore
    */
   async hasSettings(): Promise<boolean> {
-    const docRef = this.getSettingsDocRef();
+    const docRef = await this.getSettingsDocRef();
     if (!docRef) {
       return false;
     }
@@ -152,31 +153,33 @@ export class FirebaseSettingsPersistenceService
       this.unsubscribe = null;
     }
 
-    const docRef = this.getSettingsDocRef();
-    if (!docRef) {
-      return () => {}; // No-op unsubscribe
-    }
-
-    this.unsubscribe = onSnapshot(
-      docRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          // Remove Firestore metadata fields
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { updatedAt: _updatedAt, createdAt: _createdAt, clearedAt: _clearedAt, ...settings } = data;
-          if (Object.keys(settings).length > 0) {
-            callback(settings as AppSettings);
-          }
-        }
-      },
-      (error) => {
-        console.error(
-          "❌ [FirebaseSettingsPersistenceService] Snapshot listener error:",
-          error
-        );
+    // Start async subscription setup
+    this.getSettingsDocRef().then((docRef) => {
+      if (!docRef) {
+        return; // No user, no subscription
       }
-    );
+
+      this.unsubscribe = onSnapshot(
+        docRef,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            // Remove Firestore metadata fields
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { updatedAt: _updatedAt, createdAt: _createdAt, clearedAt: _clearedAt, ...settings } = data;
+            if (Object.keys(settings).length > 0) {
+              callback(settings as AppSettings);
+            }
+          }
+        },
+        (error) => {
+          console.error(
+            "❌ [FirebaseSettingsPersistenceService] Snapshot listener error:",
+            error
+          );
+        }
+      );
+    });
 
     return () => {
       if (this.unsubscribe) {
