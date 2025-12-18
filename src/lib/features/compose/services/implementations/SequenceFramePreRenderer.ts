@@ -490,6 +490,13 @@ export class SequenceFramePreRenderer {
       redTrailPoints: [],
       trailSettings: config.trailSettings,
       currentTime: timestamp,
+      visibility: {
+        gridVisible: true,
+        propsVisible: true,
+        trailsVisible: false, // No trails in pre-render
+        blueMotionVisible: true,
+        redMotionVisible: true,
+      },
     });
 
     // Capture the rendered frame as ImageBitmap

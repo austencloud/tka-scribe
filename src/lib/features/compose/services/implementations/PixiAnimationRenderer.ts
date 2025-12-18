@@ -22,7 +22,7 @@
 
 import { Container, Graphics } from "pixi.js";
 import { injectable } from "inversify";
-import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
+import type { IPixiAnimationRenderer, AnimationVisibilitySettings } from "../contracts/IPixiAnimationRenderer";
 import type { PropState } from "../../shared/domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../shared/domain/types/TrailTypes";
 import { PixiApplicationManager } from "./pixi/PixiApplicationManager";
@@ -203,6 +203,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     secondaryRedTrailPoints?: TrailPoint[];
     trailSettings: TrailSettings;
     currentTime: number;
+    visibility: AnimationVisibilitySettings;
   }): void {
     if (
       !this.appManager.isReady() ||
@@ -232,17 +233,22 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     }
 
     // Update grid visibility
-    this.spriteManager.setGridVisibility(params.gridVisible);
+    this.spriteManager.setGridVisibility(params.visibility.gridVisible);
 
-    // Render trails
-    this.trailRenderer.renderTrails(
-      params.blueTrailPoints,
-      params.redTrailPoints,
-      params.trailSettings,
-      params.currentTime,
-      !!params.blueProp,
-      !!params.redProp
-    );
+    // Render trails (only if trails are visible)
+    if (params.visibility.trailsVisible) {
+      this.trailRenderer.renderTrails(
+        params.blueTrailPoints,
+        params.redTrailPoints,
+        params.trailSettings,
+        params.currentTime,
+        !!params.blueProp && params.visibility.blueMotionVisible,
+        !!params.redProp && params.visibility.redMotionVisible
+      );
+    } else {
+      // Clear trails when hidden
+      this.trailRenderer.clearTrails();
+    }
 
     // Get textures
     const bluePropTexture = this.textureLoader.getBluePropTexture();
@@ -252,8 +258,14 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     const secondaryRedPropTexture =
       this.textureLoader.getSecondaryRedPropTexture();
 
-    // Render primary blue prop
-    if (params.blueProp && bluePropTexture && !params.trailSettings.hideProps) {
+    // Render primary blue prop (respect propsVisible and blueMotionVisible)
+    if (
+      params.blueProp &&
+      bluePropTexture &&
+      params.visibility.propsVisible &&
+      params.visibility.blueMotionVisible &&
+      !params.trailSettings.hideProps
+    ) {
       const transform = this.propRenderer.calculatePropTransform(
         params.blueProp,
         params.bluePropDimensions
@@ -269,8 +281,14 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       this.spriteManager.setPropVisibility("blue", false);
     }
 
-    // Render primary red prop
-    if (params.redProp && redPropTexture && !params.trailSettings.hideProps) {
+    // Render primary red prop (respect propsVisible and redMotionVisible)
+    if (
+      params.redProp &&
+      redPropTexture &&
+      params.visibility.propsVisible &&
+      params.visibility.redMotionVisible &&
+      !params.trailSettings.hideProps
+    ) {
       const transform = this.propRenderer.calculatePropTransform(
         params.redProp,
         params.redPropDimensions
@@ -286,10 +304,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       this.spriteManager.setPropVisibility("red", false);
     }
 
-    // Render secondary blue prop (tunnel mode)
+    // Render secondary blue prop (tunnel mode - respect visibility settings)
     if (
       params.secondaryBlueProp &&
       secondaryBluePropTexture &&
+      params.visibility.propsVisible &&
+      params.visibility.blueMotionVisible &&
       !params.trailSettings.hideProps
     ) {
       const transform = this.propRenderer.calculatePropTransform(
@@ -307,10 +327,12 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       this.spriteManager.setPropVisibility("secondaryBlue", false);
     }
 
-    // Render secondary red prop (tunnel mode)
+    // Render secondary red prop (tunnel mode - respect visibility settings)
     if (
       params.secondaryRedProp &&
       secondaryRedPropTexture &&
+      params.visibility.propsVisible &&
+      params.visibility.redMotionVisible &&
       !params.trailSettings.hideProps
     ) {
       const transform = this.propRenderer.calculatePropTransform(

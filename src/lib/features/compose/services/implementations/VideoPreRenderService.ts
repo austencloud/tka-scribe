@@ -310,6 +310,13 @@ export class VideoPreRenderService implements IVideoPreRenderService {
           redTrailPoints: [],
           trailSettings,
           currentTime: performance.now(),
+          visibility: {
+            gridVisible: true,
+            propsVisible: true,
+            trailsVisible: true,
+            blueMotionVisible: true,
+            redMotionVisible: true,
+          },
         });
 
         // Capture this frame

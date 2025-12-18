@@ -13,6 +13,9 @@
   import TempoRegionTrack from "./TempoRegionTrack.svelte";
   import ManualBeatTapper from "./ManualBeatTapper.svelte";
   import { analyzeAudioBpm } from "./bpm-analyzer";
+  import YouTubeAudioPanel from "./youtube/components/YouTubeAudioPanel.svelte";
+  import YouTubeSourceButton from "./youtube/components/YouTubeSourceButton.svelte";
+  import { youtubeAudioState } from "./youtube/state/youtube-audio-state.svelte";
 
   let {
     audioState,
@@ -145,6 +148,22 @@
   function openFilePicker() {
     fileInput?.click();
   }
+
+  function handleYouTubeAudioSelected(audioBlob: Blob, metadata: { title: string; duration: number }) {
+    // Create a File from the Blob with the track title
+    const fileName = `${metadata.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`;
+    const file = new File([audioBlob], fileName, { type: "audio/mpeg" });
+    onLoadAudio(file);
+    youtubeAudioState.close();
+  }
+
+  function openYouTubePanel() {
+    youtubeAudioState.open();
+  }
+
+  function closeYouTubePanel() {
+    youtubeAudioState.close();
+  }
 </script>
 
 <div class="audio-phase">
@@ -162,32 +181,45 @@
     <!-- Desktop Audio Editor -->
     <div class="audio-editor">
       {#if !audioState.isLoaded}
-        <!-- Drop Zone -->
-        <div
-          class="drop-zone"
-          class:dragging={isDragging}
-          ondragover={handleDragOver}
-          ondragleave={handleDragLeave}
-          ondrop={handleDrop}
-          onclick={openFilePicker}
-          onkeydown={(e) => e.key === "Enter" && openFilePicker()}
-          role="button"
-          tabindex="0"
-        >
-          <input
-            bind:this={fileInput}
-            type="file"
-            accept="audio/*"
-            onchange={handleFileSelect}
-            hidden
+        <!-- Drop Zone or YouTube Panel -->
+        {#if youtubeAudioState.isOpen}
+          <YouTubeAudioPanel
+            onAudioSelected={handleYouTubeAudioSelected}
+            onClose={closeYouTubePanel}
           />
-          <div class="drop-icon">
-            <i class="fas fa-music"></i>
+        {:else}
+          <div
+            class="drop-zone"
+            class:dragging={isDragging}
+            ondragover={handleDragOver}
+            ondragleave={handleDragLeave}
+            ondrop={handleDrop}
+            onclick={openFilePicker}
+            onkeydown={(e) => e.key === "Enter" && openFilePicker()}
+            role="button"
+            tabindex="0"
+          >
+            <input
+              bind:this={fileInput}
+              type="file"
+              accept="audio/*"
+              onchange={handleFileSelect}
+              hidden
+            />
+            <div class="drop-icon">
+              <i class="fas fa-music"></i>
+            </div>
+            <h3>Drop audio file here</h3>
+            <p>or click to browse</p>
+            <p class="formats">Supports MP3, WAV, OGG, M4A</p>
+
+            <div class="divider">
+              <span>or</span>
+            </div>
+
+            <YouTubeSourceButton onclick={(e) => { e.stopPropagation(); openYouTubePanel(); }} />
           </div>
-          <h3>Drop audio file here</h3>
-          <p>or click to browse</p>
-          <p class="formats">Supports MP3, WAV, OGG, M4A</p>
-        </div>
+        {/if}
       {:else}
         <!-- Audio Loaded - Timeline UI -->
         <div class="timeline-container">
@@ -443,6 +475,29 @@
     margin-top: 1rem;
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.4);
+  }
+
+  .drop-zone .divider {
+    display: flex;
+    align-items: center;
+    width: 60%;
+    margin: 1.5rem 0;
+    gap: 1rem;
+  }
+
+  .drop-zone .divider::before,
+  .drop-zone .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .drop-zone .divider span {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   /* Timeline Container */

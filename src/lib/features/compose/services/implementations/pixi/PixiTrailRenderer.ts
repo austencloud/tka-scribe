@@ -379,6 +379,14 @@ export class PixiTrailRenderer {
     }
   }
 
+  /**
+   * Clear all trails (used when trails visibility is toggled off)
+   */
+  clearTrails(): void {
+    this.blueTrailGraphics.clear();
+    this.redTrailGraphics.clear();
+  }
+
   destroy(): void {
     try {
       this.blueTrailGraphics.destroy();

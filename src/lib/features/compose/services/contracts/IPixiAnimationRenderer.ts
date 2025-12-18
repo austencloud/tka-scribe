@@ -9,6 +9,17 @@ import type { Application } from "pixi.js";
 import type { PropState } from "../../shared/domain/types/PropState";
 import type { TrailPoint, TrailSettings } from "../../shared/domain/types/TrailTypes";
 
+/**
+ * Visibility settings for animation rendering
+ */
+export interface AnimationVisibilitySettings {
+  gridVisible: boolean;
+  propsVisible: boolean;
+  trailsVisible: boolean;
+  blueMotionVisible: boolean;
+  redMotionVisible: boolean;
+}
+
 export interface IPixiAnimationRenderer {
   /**
    * Initialize the PixiJS application and attach it to a container
@@ -48,6 +59,7 @@ export interface IPixiAnimationRenderer {
     secondaryRedTrailPoints?: TrailPoint[];
     trailSettings: TrailSettings;
     currentTime: number;
+    visibility: AnimationVisibilitySettings;
   }): void;
 
   /**
