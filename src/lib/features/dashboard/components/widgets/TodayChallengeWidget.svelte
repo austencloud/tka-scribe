@@ -82,10 +82,14 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 24px;
     background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 10%, transparent);
     border: 1px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 22%, transparent);
     border-radius: 24px;
+    overflow: hidden;
   }
 
   .widget-header {

@@ -29,6 +29,7 @@
   import TimelineEmptyState from "./TimelineEmptyState.svelte";
   import TimelineMinimap from "./TimelineMinimap.svelte";
   import { timeToPixels } from "../domain/timeline-types";
+  import { untrack } from "svelte";
 
   // Lazy access to state and services to avoid initialization timing issues
   function getState() {
@@ -60,29 +61,42 @@
   let viewportStartTime = $state(0);
 
   // Sync local state from timeline state
+  // Use untrack for writes to prevent circular dependency
   $effect(() => {
     const state = getState();
-    pixelsPerSecond = state.viewport.pixelsPerSecond;
-    totalDuration = state.totalDuration;
-    timelineWidth = timeToPixels(totalDuration + 10, pixelsPerSecond);
-    playheadPosition = state.playhead.position;
-    isPlaying = state.playhead.isPlaying;
-    hasSelection = state.hasSelection;
-    tracks = state.project.tracks;
-    allClips = state.allClips;
-    hasClips = allClips.length > 0;
+    const pps = state.viewport.pixelsPerSecond;
+    const dur = state.totalDuration;
+    const pos = state.playhead.position;
+    const playing = state.playhead.isPlaying;
+    const hasSel = state.hasSelection;
+    const trks = state.project.tracks;
+    const clips = state.allClips;
+
+    untrack(() => {
+      pixelsPerSecond = pps;
+      totalDuration = dur;
+      timelineWidth = timeToPixels(dur + 10, pps);
+      playheadPosition = pos;
+      isPlaying = playing;
+      hasSelection = hasSel;
+      tracks = trks;
+      allClips = clips;
+      hasClips = clips.length > 0;
+    });
   });
 
   // Track container width for minimap viewport calculation using Svelte action
-  // DISABLED - testing if this causes the loop
-  function trackWidth(_node: HTMLDivElement) {
-    // const observer = new ResizeObserver((entries) => {
-    //   containerWidth = entries[0]?.contentRect.width ?? 0;
-    // });
-    // observer.observe(node);
+  function trackWidth(node: HTMLDivElement) {
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? 0;
+      untrack(() => {
+        containerWidth = width;
+      });
+    });
+    observer.observe(node);
     return {
       destroy() {
-        // observer.disconnect();
+        observer.disconnect();
       }
     };
   }
@@ -140,13 +154,15 @@
     // Add padding so we scroll before hitting the edge
     const padding = containerRect.width * 0.2;
 
-    if (playheadX > visibleRight - padding) {
-      // Scroll right
-      tracksContainer.scrollLeft = playheadX - containerRect.width + padding;
-    } else if (playheadX < visibleLeft + padding) {
-      // Scroll left
-      tracksContainer.scrollLeft = Math.max(0, playheadX - padding);
-    }
+    untrack(() => {
+      if (playheadX > visibleRight - padding) {
+        // Scroll right
+        tracksContainer.scrollLeft = playheadX - containerRect.width + padding;
+      } else if (playheadX < visibleLeft + padding) {
+        // Scroll left
+        tracksContainer.scrollLeft = Math.max(0, playheadX - padding);
+      }
+    });
   });
 
   // Handle wheel events for scroll/zoom
@@ -307,10 +323,115 @@
   }
 </script>
 
-<!-- DEBUGGING: Simplified render to find infinite loop source -->
-<div class="timeline-panel" style="padding: 20px; color: white;">
-  <h2>Timeline Panel - Debug Mode</h2>
-  <p>If you see this without errors, the issue is in one of the child components.</p>
+<div
+  class="timeline-panel"
+  bind:this={panelElement}
+  onkeydown={handleKeyDown}
+  onwheel={handleWheel}
+  tabindex="0"
+  role="application"
+  aria-label="Timeline editor"
+>
+  <!-- Top Controls Bar -->
+  <div class="controls-bar">
+    <TimelineControls />
+  </div>
+
+  <!-- Timeline Minimap (overview navigation) -->
+  <TimelineMinimap
+    {totalDuration}
+    playheadPosition={playheadPosition}
+    viewportStartTime={viewportStartTime}
+    {pixelsPerSecond}
+    {containerWidth}
+    clips={allClips}
+    onSeek={handleMinimapSeek}
+    onScroll={handleMinimapScroll}
+  />
+
+  <!-- Main Timeline Area -->
+  <div class="timeline-body">
+    <!-- Left: Track Headers -->
+    <div class="track-headers" style="width: {HEADER_WIDTH}px">
+      <div class="header-spacer">
+        <!-- Empty corner above track headers -->
+        <button class="add-track-btn" onclick={() => getState().addTrack()} title="Add Track">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+      {#each tracks as track (track.id)}
+        <TrackHeader {track} />
+      {/each}
+    </div>
+
+    <!-- Right: Timeline Content -->
+    <div class="timeline-content">
+      <!-- Time Ruler (fixed at top, scrolls horizontally with tracks) -->
+      <div
+        class="ruler-container"
+        bind:this={rulerContainer}
+      >
+        <div class="ruler-scroll-content" style="width: {timelineWidth}px">
+          <TimeRuler
+            duration={totalDuration + 10}
+            {pixelsPerSecond}
+          />
+        </div>
+      </div>
+
+      <!-- Tracks Area (scrolls both directions) -->
+      <div
+        class="tracks-container"
+        bind:this={tracksContainer}
+        use:trackWidth
+        onscroll={handleTracksScroll}
+        onclick={handleTimelineClick}
+        role="application"
+        aria-label="Timeline tracks"
+      >
+        <div
+          class="tracks-scroll-content"
+          style="width: {timelineWidth}px"
+        >
+          <!-- Snap guides -->
+          <SnapGuides
+            activeSnapTime={getSnap().activeSnapTime}
+            height={tracks.length * 80 + 60}
+          />
+
+          <!-- Playhead spans full height -->
+          <Playhead
+            position={playheadPosition}
+            {pixelsPerSecond}
+            height={tracks.length * 80}
+          />
+
+          <!-- Track Lanes -->
+          {#each tracks as track (track.id)}
+            <TrackLane
+              {track}
+              {pixelsPerSecond}
+            />
+          {/each}
+
+          <!-- Empty state or drop zone -->
+          {#if !hasClips}
+            <TimelineEmptyState onBrowseLibrary={handleBrowseLibrary} />
+          {:else}
+            <div class="drop-zone">
+              <span class="drop-hint">Drag sequences here to add clips</span>
+            </div>
+          {/if}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Waveform Track (at bottom) -->
+  <TimelineAudioTrack headerWidth={HEADER_WIDTH} />
+
+  <!-- Clip Inspector Panel (right sidebar) -->
+  <ClipInspector />
 </div>
 
 <style>

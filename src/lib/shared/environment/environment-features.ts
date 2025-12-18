@@ -110,7 +110,7 @@ export const PRODUCTION_MODULES: Record<ModuleId, boolean> = {
   create: true,
   discover: true,
   feedback: true,
-  inbox: true, // Inbox for messages and notifications
+  // inbox module retired - messages/notifications accessible via Dashboard widget drawer
   // Unreleased modules
   learn: false,
   library: false,
