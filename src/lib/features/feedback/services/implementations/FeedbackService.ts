@@ -40,6 +40,7 @@ import type {
   DeviceContext,
   StatusHistoryEntry,
 } from "../../domain/models/feedback-models";
+import { isFeedbackStatus, isFeedbackType } from "../../domain/models/feedback-models";
 import type { NotificationType } from "../../domain/models/notification-models";
 import { notificationTriggerService } from "./NotificationTriggerService";
 import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
@@ -957,10 +958,13 @@ export class FeedbackService implements IFeedbackService {
     // Map status history if present
     const statusHistoryData = data["statusHistory"] as Array<Record<string, unknown>> | undefined;
     const statusHistory: StatusHistoryEntry[] | undefined = statusHistoryData?.map((entry) => ({
-      status: entry["status"] as FeedbackStatus,
+      status: isFeedbackStatus(entry["status"]) ? entry["status"] : "new",
       timestamp: (entry["timestamp"] as Timestamp)?.toDate() || new Date(),
-      fromStatus: entry["fromStatus"] as FeedbackStatus | undefined,
+      fromStatus: isFeedbackStatus(entry["fromStatus"]) ? entry["fromStatus"] : undefined,
     }));
+
+    const type = isFeedbackType(data["type"]) ? data["type"] : "general";
+    const status = isFeedbackStatus(data["status"]) ? data["status"] : "new";
 
     return {
       id,
@@ -968,7 +972,7 @@ export class FeedbackService implements IFeedbackService {
       userEmail: data["userEmail"] as string,
       userDisplayName: data["userDisplayName"] as string,
       userPhotoURL: data["userPhotoURL"] as string | undefined,
-      type: data["type"] as FeedbackItem["type"],
+      type,
       title: data["title"] as string,
       description: data["description"] as string,
       priority: data["priority"] as FeedbackItem["priority"],
@@ -976,7 +980,7 @@ export class FeedbackService implements IFeedbackService {
       capturedModule: data["capturedModule"] as string,
       capturedTab: data["capturedTab"] as string,
       deviceContext,
-      status: (data["status"] as FeedbackStatus) || "new",
+      status,
       adminNotes: data["adminNotes"] as string | undefined,
       resolutionNotes: data["resolutionNotes"] as string | undefined,
       adminResponse,

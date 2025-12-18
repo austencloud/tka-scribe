@@ -8,7 +8,6 @@
   import {
     STATUS_CONFIG,
     TYPE_CONFIG,
-    CONFIRMATION_STATUS_CONFIG,
   } from "../../domain/models/feedback-models";
 
   const { item, isSelected, onClick } = $props<{
@@ -17,8 +16,12 @@
     onClick: () => void;
   }>();
 
-  const typeConfig = TYPE_CONFIG[item.type as FeedbackType];
-  const statusConfig = STATUS_CONFIG[item.status as FeedbackStatus];
+  const typeConfig = $derived(
+    TYPE_CONFIG[item.type as FeedbackType] ?? TYPE_CONFIG.general
+  );
+  const statusConfig = $derived(
+    STATUS_CONFIG[item.status as FeedbackStatus] ?? STATUS_CONFIG.new
+  );
 
   function formatDate(date: Date): string {
     const now = new Date();

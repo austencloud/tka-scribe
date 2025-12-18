@@ -33,6 +33,13 @@ export interface DeviceContext {
  * Feedback type classification
  */
 export type FeedbackType = "bug" | "feature" | "general";
+export const FEEDBACK_TYPES = ["bug", "feature", "general"] as const;
+export function isFeedbackType(value: unknown): value is FeedbackType {
+  return (
+    typeof value === "string" &&
+    (FEEDBACK_TYPES as readonly string[]).includes(value)
+  );
+}
 
 /**
  * Feedback priority levels
@@ -49,6 +56,19 @@ export type FeedbackStatus =
   | "in-review"    // Done, waiting for tester confirmation
   | "completed"    // Confirmed working, ready for next release
   | "archived";    // Tagged with version, historical record
+export const FEEDBACK_STATUSES = [
+  "new",
+  "in-progress",
+  "in-review",
+  "completed",
+  "archived",
+] as const;
+export function isFeedbackStatus(value: unknown): value is FeedbackStatus {
+  return (
+    typeof value === "string" &&
+    (FEEDBACK_STATUSES as readonly string[]).includes(value)
+  );
+}
 
 /**
  * Tester confirmation status after admin resolves feedback
