@@ -13,9 +13,9 @@
   import TempoRegionTrack from "./TempoRegionTrack.svelte";
   import ManualBeatTapper from "./ManualBeatTapper.svelte";
   import { analyzeAudioBpm } from "./bpm-analyzer";
-  import YouTubeAudioPanel from "./youtube/components/YouTubeAudioPanel.svelte";
-  import YouTubeSourceButton from "./youtube/components/YouTubeSourceButton.svelte";
-  import { youtubeAudioState } from "./youtube/state/youtube-audio-state.svelte";
+  import AudioLibraryPanel from "./library/components/AudioLibraryPanel.svelte";
+  import LibrarySourceButton from "./library/components/LibrarySourceButton.svelte";
+  import { audioLibraryState } from "./library/state/audio-library-state.svelte";
 
   let {
     audioState,
@@ -149,20 +149,20 @@
     fileInput?.click();
   }
 
-  function handleYouTubeAudioSelected(audioBlob: Blob, metadata: { title: string; duration: number }) {
+  function handleLibraryAudioSelected(audioBlob: Blob, metadata: { title: string; duration: number }) {
     // Create a File from the Blob with the track title
     const fileName = `${metadata.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`;
     const file = new File([audioBlob], fileName, { type: "audio/mpeg" });
     onLoadAudio(file);
-    youtubeAudioState.close();
+    audioLibraryState.close();
   }
 
-  function openYouTubePanel() {
-    youtubeAudioState.open();
+  function openLibraryPanel() {
+    audioLibraryState.open();
   }
 
-  function closeYouTubePanel() {
-    youtubeAudioState.close();
+  function closeLibraryPanel() {
+    audioLibraryState.close();
   }
 </script>
 
@@ -181,11 +181,11 @@
     <!-- Desktop Audio Editor -->
     <div class="audio-editor">
       {#if !audioState.isLoaded}
-        <!-- Drop Zone or YouTube Panel -->
-        {#if youtubeAudioState.isOpen}
-          <YouTubeAudioPanel
-            onAudioSelected={handleYouTubeAudioSelected}
-            onClose={closeYouTubePanel}
+        <!-- Drop Zone or Library Panel -->
+        {#if audioLibraryState.isOpen}
+          <AudioLibraryPanel
+            onAudioSelected={handleLibraryAudioSelected}
+            onClose={closeLibraryPanel}
           />
         {:else}
           <div
@@ -217,7 +217,9 @@
               <span>or</span>
             </div>
 
-            <YouTubeSourceButton onclick={(e) => { e.stopPropagation(); openYouTubePanel(); }} />
+            <div class="source-buttons">
+              <LibrarySourceButton onclick={(e) => { e.stopPropagation(); openLibraryPanel(); }} />
+            </div>
           </div>
         {/if}
       {:else}
@@ -498,6 +500,13 @@
     color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  .source-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
   }
 
   /* Timeline Container */
