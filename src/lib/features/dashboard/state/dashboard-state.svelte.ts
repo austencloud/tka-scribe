@@ -14,8 +14,6 @@ import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 
 interface DashboardState {
   challengeDrawerOpen: boolean;
-  supportDrawerOpen: boolean;
-  activityDrawerOpen: boolean;
   signInToastMessage: string;
   showSignInToast: boolean;
   signInToastTimeout: ReturnType<typeof setTimeout> | null;
@@ -25,8 +23,6 @@ interface DashboardState {
 function createDashboardState() {
   let state: DashboardState = $state({
     challengeDrawerOpen: false,
-    supportDrawerOpen: false,
-    activityDrawerOpen: false,
     signInToastMessage: "",
     showSignInToast: false,
     signInToastTimeout: null,
@@ -135,20 +131,6 @@ function createDashboardState() {
     },
     set challengeDrawerOpen(value: boolean) {
       state.challengeDrawerOpen = value;
-    },
-
-    get supportDrawerOpen() {
-      return state.supportDrawerOpen;
-    },
-    set supportDrawerOpen(value: boolean) {
-      state.supportDrawerOpen = value;
-    },
-
-    get activityDrawerOpen() {
-      return state.activityDrawerOpen;
-    },
-    set activityDrawerOpen(value: boolean) {
-      state.activityDrawerOpen = value;
     },
 
     get signInToastMessage() {

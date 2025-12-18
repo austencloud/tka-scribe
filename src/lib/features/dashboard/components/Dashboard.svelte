@@ -20,11 +20,10 @@
 
   // Components
   import DashboardHeader from "./DashboardHeader.svelte";
-  import DashboardMobileDrawers from "./DashboardMobileDrawers.svelte";
   import DashboardSignInToast from "./DashboardSignInToast.svelte";
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
-  import SupportWidget from "./widgets/SupportWidget.svelte";
-  import ActivityWidget from "./widgets/ActivityWidget.svelte";
+  import CommunityFeedWidget from "./widgets/CommunityFeedWidget.svelte";
+  import NotificationsWidget from "./widgets/NotificationsWidget.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
 
   // Services
@@ -99,21 +98,6 @@
     hapticService?.trigger("selection");
     await handleModuleChange("settings" as ModuleId);
   }
-
-  function openChallengeDrawer() {
-    hapticService?.trigger("selection");
-    dashboardState.challengeDrawerOpen = true;
-  }
-
-  function openSupportDrawer() {
-    hapticService?.trigger("selection");
-    dashboardState.supportDrawerOpen = true;
-  }
-
-  function openActivityDrawer() {
-    hapticService?.trigger("selection");
-    dashboardState.activityDrawerOpen = true;
-  }
 </script>
 
 <div class="dashboard" class:visible={dashboardState.isVisible}>
@@ -122,12 +106,27 @@
     isVisible={dashboardState.isVisible}
   />
 
-  <!-- SECONDARY CONTENT - Challenge, Support -->
-  <div class="secondary-grid" class:mobile={isMobile}>
-    <!-- Challenge Card -->
+  <!-- COMMUNITY HUB - Challenge, Community Feed, Notifications -->
+  <div class="community-grid" class:mobile={isMobile}>
+    <!-- Today's Challenge -->
     {#if dashboardState.isVisible}
       <section
-        class="bento-challenge"
+        class="widget-challenge"
+        transition:fly={{
+          y: 12,
+          duration: 200,
+          delay: 200,
+          easing: cubicOut,
+        }}
+      >
+        <TodayChallengeWidget />
+      </section>
+    {/if}
+
+    <!-- Community Feed - Recent sequences from others -->
+    {#if dashboardState.isVisible}
+      <section
+        class="widget-community"
         transition:fly={{
           y: 12,
           duration: 200,
@@ -135,55 +134,14 @@
           easing: cubicOut,
         }}
       >
-        {#if isMobile}
-          <button class="teaser-card" onclick={openChallengeDrawer}>
-            <div class="teaser-icon challenge">
-              <i class="fas fa-bolt"></i>
-            </div>
-            <div class="teaser-content">
-              <span class="teaser-title">Today's Challenge</span>
-              <span class="teaser-subtitle">Tap to view</span>
-            </div>
-            <i class="fas fa-chevron-right teaser-arrow"></i>
-          </button>
-        {:else}
-          <TodayChallengeWidget />
-        {/if}
+        <CommunityFeedWidget />
       </section>
     {/if}
 
-    <!-- Support Card -->
+    <!-- Notifications Preview -->
     {#if dashboardState.isVisible}
       <section
-        class="bento-support"
-        transition:fly={{
-          y: 12,
-          duration: 200,
-          delay: 350,
-          easing: cubicOut,
-        }}
-      >
-        {#if isMobile}
-          <button class="teaser-card" onclick={openSupportDrawer}>
-            <div class="teaser-icon support">
-              <i class="fas fa-heart"></i>
-            </div>
-            <div class="teaser-content">
-              <span class="teaser-title">Support TKA</span>
-              <span class="teaser-subtitle">Help keep this free</span>
-            </div>
-            <i class="fas fa-chevron-right teaser-arrow"></i>
-          </button>
-        {:else}
-          <SupportWidget />
-        {/if}
-      </section>
-    {/if}
-
-    <!-- Activity Card -->
-    {#if dashboardState.isVisible}
-      <section
-        class="bento-activity"
+        class="widget-notifications"
         transition:fly={{
           y: 12,
           duration: 200,
@@ -191,35 +149,10 @@
           easing: cubicOut,
         }}
       >
-        {#if isMobile}
-          <button class="teaser-card" onclick={openActivityDrawer}>
-            <div class="teaser-icon activity">
-              <i class="fas fa-layer-group"></i>
-            </div>
-            <div class="teaser-content">
-              <span class="teaser-title">Your Creations</span>
-              <span class="teaser-subtitle">Sequences & favorites</span>
-            </div>
-            <i class="fas fa-chevron-right teaser-arrow"></i>
-          </button>
-        {:else}
-          <ActivityWidget />
-        {/if}
+        <NotificationsWidget />
       </section>
     {/if}
   </div>
-
-  <DashboardMobileDrawers
-    challengeDrawerOpen={dashboardState.challengeDrawerOpen}
-    supportDrawerOpen={dashboardState.supportDrawerOpen}
-    activityDrawerOpen={dashboardState.activityDrawerOpen}
-    onChallengeDrawerChange={(open: boolean) =>
-      (dashboardState.challengeDrawerOpen = open)}
-    onSupportDrawerChange={(open: boolean) =>
-      (dashboardState.supportDrawerOpen = open)}
-    onActivityDrawerChange={(open: boolean) =>
-      (dashboardState.activityDrawerOpen = open)}
-  />
 
   <DashboardSignInToast
     message={dashboardState.signInToastMessage}
@@ -310,30 +243,25 @@
   }
 
   /* ========================================
-     2026 DASHBOARD - Modules First
-     Clean, focused navigation hub
+     2026 DASHBOARD - Community Hub
+     Scrollable, engagement-focused layout
      ======================================== */
 
   .dashboard {
+    box-sizing: border-box;
     width: 100%;
+    max-width: 1200px;
     height: 100%;
     padding: 24px;
+    padding-bottom: 40px;
+    margin: 0 auto;
+    overflow-x: hidden;
     overflow-y: auto;
     opacity: 0;
     transition: opacity 300ms ease;
     display: flex;
     flex-direction: column;
     gap: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
-
-    /* Hide scrollbar but keep functionality */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-  }
-
-  .dashboard::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
   }
 
   .dashboard.visible {
@@ -341,137 +269,71 @@
   }
 
   /* ========================================
-     SECONDARY GRID - Profile, Challenge, Support, Settings
+     COMMUNITY GRID - Widgets layout
      ======================================== */
 
-  .secondary-grid {
+  .community-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto;
     gap: 20px;
-    margin-top: 8px;
-  }
-
-  .secondary-grid.mobile {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  /* ========================================
-     CHALLENGE & SUPPORT CARDS
-     ======================================== */
-
-  .bento-challenge,
-  .bento-support,
-  .bento-activity {
-    min-height: auto;
-  }
-
-  /* Teaser Card Style (Mobile) */
-  .teaser-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
     width: 100%;
-    min-height: 72px;
-    padding: 16px 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    border-radius: 18px;
-    cursor: pointer;
-    transition: background var(--duration-fast, 150ms) var(--ease-out);
-    text-align: left;
+    min-width: 0;
   }
 
-  .teaser-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+  /* Challenge spans full width on first row */
+  .widget-challenge {
+    grid-column: 1 / -1;
+    min-width: 0;
   }
 
-  .teaser-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
-    border-radius: 14px;
-    font-size: 20px;
-    flex-shrink: 0;
+  /* Community and Notifications side by side */
+  .widget-community,
+  .widget-notifications {
+    min-height: 280px;
+    min-width: 0;
   }
 
-  .teaser-icon.challenge {
-    background: color-mix(
-      in srgb,
-      var(--semantic-warning, #f59e0b) 15%,
-      transparent
-    );
-    color: var(--semantic-warning, #f59e0b);
+  .community-grid.mobile {
+    grid-template-columns: 1fr;
   }
 
-  .teaser-icon.support {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
-      transparent
-    );
-    color: var(--theme-accent-strong, #8b5cf6);
-  }
-
-  .teaser-icon.activity {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent, #6366f1) 15%,
-      transparent
-    );
-    color: var(--theme-accent, #6366f1);
-  }
-
-  .teaser-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .teaser-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-  }
-
-  .teaser-subtitle {
-    font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-  }
-
-  .teaser-arrow {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 14px;
+  .community-grid.mobile .widget-challenge,
+  .community-grid.mobile .widget-community,
+  .community-grid.mobile .widget-notifications {
+    grid-column: 1;
   }
 
   /* ========================================
      RESPONSIVE BREAKPOINTS
      ======================================== */
 
-  @media (max-width: 1024px) {
-    .secondary-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
   @media (max-width: 768px) {
     .dashboard {
       padding: 16px;
+      padding-bottom: 32px;
       gap: 20px;
     }
 
-    .secondary-grid {
-      grid-template-columns: 1fr;
+    .community-grid {
+      gap: 16px;
     }
   }
 
   @media (max-width: 480px) {
     .dashboard {
       padding: 12px;
+      padding-bottom: 24px;
       gap: 16px;
+    }
+
+    .community-grid {
+      gap: 12px;
+    }
+
+    .widget-community,
+    .widget-notifications {
+      min-height: 240px;
     }
   }
 

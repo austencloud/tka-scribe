@@ -14,11 +14,13 @@
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
 
   // State
-  let isLoading = $state(true);
   let sessionDuration = $state(0);
 
   // Services
   let sessionService: ISessionTrackingService | null = null;
+
+  // Use library's loading state directly
+  const isLoading = $derived(libraryState.isLoading);
 
   // Derived from library state - these are meaningful to users!
   const totalSequences = $derived(libraryState.sequences.length);
@@ -76,7 +78,11 @@
 
   onMount(() => {
     sessionService = tryResolve<ISessionTrackingService>(TYPES.ISessionTrackingService);
-    isLoading = false;
+
+    // Ensure library sequences are loaded
+    if (authState.isAuthenticated && libraryState.sequences.length === 0 && !libraryState.isLoading) {
+      libraryState.loadSequences();
+    }
 
     // Update session duration every second
     const interval = setInterval(() => {
@@ -123,6 +129,17 @@
   async function createNew() {
     await handleModuleChange("create", "constructor");
   }
+
+  // Get thumbnail URL from sequence with fallback
+  function getThumbnailUrl(sequence: typeof mostRecentSequence): string | null {
+    if (!sequence) return null;
+    // Check thumbnails array first (SequenceData standard)
+    if (sequence.thumbnails && sequence.thumbnails.length > 0) {
+      return sequence.thumbnails[0] ?? null;
+    }
+    // Fall back to thumbnailUrl field (backward compatibility)
+    return (sequence as any).thumbnailUrl ?? null;
+  }
 </script>
 
 <div class="activity-widget">
@@ -165,33 +182,48 @@
           {/if}
         </div>
 
-        <!-- Most Recent / Continue -->
-        {#if mostRecentSequence}
-          <button class="continue-card" onclick={continueSequence}>
-            <div class="continue-icon">
-              <i class="fas fa-play"></i>
-            </div>
-            <div class="continue-info">
-              <span class="continue-label">Continue</span>
-              <span class="continue-name">{mostRecentSequence.name || mostRecentSequence.word || 'Untitled'}</span>
-            </div>
-            <i class="fas fa-chevron-right continue-arrow"></i>
-          </button>
-        {/if}
+        <!-- Sequence Cards Row -->
+        <div class="sequence-cards">
+          <!-- Most Recent / Continue -->
+          {#if mostRecentSequence}
+            {@const thumbnailUrl = getThumbnailUrl(mostRecentSequence)}
+            <button class="sequence-card" onclick={continueSequence}>
+              <div class="card-thumbnail">
+                {#if thumbnailUrl}
+                  <img src={thumbnailUrl} alt="Continue sequence" />
+                {:else}
+                  <div class="thumbnail-placeholder">
+                    <i class="fas fa-layer-group"></i>
+                  </div>
+                {/if}
+              </div>
+              <div class="card-label">
+                <i class="fas fa-play"></i>
+                <span>Continue</span>
+              </div>
+            </button>
+          {/if}
 
-        <!-- "On This Day" Revisit -->
-        {#if revisitSequence}
-          <button class="revisit-card" onclick={revisitOldSequence}>
-            <div class="revisit-icon">
-              <i class="fas fa-clock-rotate-left"></i>
-            </div>
-            <div class="revisit-info">
-              <span class="revisit-label">{revisitSequence.label}</span>
-              <span class="revisit-name">{revisitSequence.sequence.name || revisitSequence.sequence.word || 'Untitled'}</span>
-            </div>
-            <i class="fas fa-chevron-right revisit-arrow"></i>
-          </button>
-        {/if}
+          <!-- "On This Day" Revisit -->
+          {#if revisitSequence}
+            {@const revisitThumbnailUrl = getThumbnailUrl(revisitSequence.sequence)}
+            <button class="sequence-card revisit" onclick={revisitOldSequence}>
+              <div class="card-thumbnail">
+                {#if revisitThumbnailUrl}
+                  <img src={revisitThumbnailUrl} alt="Revisit sequence" />
+                {:else}
+                  <div class="thumbnail-placeholder revisit">
+                    <i class="fas fa-clock-rotate-left"></i>
+                  </div>
+                {/if}
+              </div>
+              <div class="card-label revisit">
+                <i class="fas fa-clock-rotate-left"></i>
+                <span>{revisitSequence.label}</span>
+              </div>
+            </button>
+          {/if}
+        </div>
 
         <!-- Current Session (subtle) -->
         {#if sessionDuration > 60000}
@@ -356,127 +388,92 @@
     color: var(--semantic-success, #22c55e);
   }
 
-  /* Continue Card */
-  .continue-card {
+  /* Sequence Cards - Thumbnail-first design */
+  .sequence-cards {
     display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .sequence-card {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 10px 14px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-radius: 12px;
+    gap: 8px;
+    padding: 10px;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    border-radius: 16px;
     cursor: pointer;
     transition: all 150ms ease;
+    flex: 1;
+    min-width: 140px;
+    max-width: 220px;
   }
 
-  .continue-card:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 18%, transparent);
-    transform: translateX(2px);
+  .sequence-card:hover {
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 14%, transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .continue-icon {
+  .sequence-card.revisit {
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 8%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+  }
+
+  .sequence-card.revisit:hover {
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 14%, transparent);
+  }
+
+  .card-thumbnail {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent);
+  }
+
+  .card-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumbnail-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: var(--theme-accent, #6366f1);
-    border-radius: 8px;
-    color: white;
-    font-size: 12px;
+    width: 100%;
+    height: 100%;
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    color: var(--theme-accent, #6366f1);
+    font-size: 32px;
   }
 
-  .continue-info {
-    flex: 1;
+  .thumbnail-placeholder.revisit {
+    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    color: var(--semantic-warning, #f59e0b);
+  }
+
+  .card-label {
     display: flex;
-    flex-direction: column;
-    gap: 1px;
-    text-align: left;
-    min-width: 0;
-  }
-
-  .continue-label {
-    font-size: 0.6875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--theme-accent, #6366f1);
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
 
-  .continue-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .continue-arrow {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 12px;
-  }
-
-  /* Revisit Card - "On This Day" style */
-  .revisit-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 10px 14px;
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 150ms ease;
-  }
-
-  .revisit-card:hover {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 16%, transparent);
-    transform: translateX(2px);
-  }
-
-  .revisit-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
-    border-radius: 8px;
+  .card-label.revisit {
     color: var(--semantic-warning, #f59e0b);
-    font-size: 14px;
   }
 
-  .revisit-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    text-align: left;
-    min-width: 0;
-  }
-
-  .revisit-label {
-    font-size: 0.6875rem;
-    color: var(--semantic-warning, #f59e0b);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-weight: 600;
-  }
-
-  .revisit-name {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .revisit-arrow {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 12px;
+  .card-label i {
+    font-size: 10px;
   }
 
   /* Session Note */
@@ -561,10 +558,31 @@
       font-size: 1.25rem;
     }
 
+    .sequence-card {
+      min-width: 120px;
+      max-width: 180px;
+    }
+
     .view-all-btn {
       min-height: 44px;
       padding: 12px 16px;
       font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sequence-cards {
+      gap: 12px;
+    }
+
+    .sequence-card {
+      padding: 8px;
+      min-width: 100px;
+      max-width: 160px;
+    }
+
+    .card-label {
+      font-size: 0.6875rem;
     }
   }
 
@@ -579,14 +597,12 @@
     }
 
     .view-all-btn,
-    .continue-card,
-    .revisit-card {
+    .sequence-card {
       transition: none;
     }
 
     .view-all-btn:hover,
-    .continue-card:hover,
-    .revisit-card:hover {
+    .sequence-card:hover {
       transform: none;
     }
   }
