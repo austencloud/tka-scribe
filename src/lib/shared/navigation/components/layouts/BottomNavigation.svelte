@@ -15,7 +15,6 @@
   } from "../../state/navigation-state.svelte";
   import { galleryPanelManager } from "$lib/features/discover/shared/state/gallery-panel-state.svelte";
   import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
-  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
   // Module color no longer needed - using global theme system
 
@@ -123,28 +122,6 @@
     onSettingsTap();
   }
 
-  // Derived badge counts for inbox tabs - must be $derived for reactivity
-  const isInboxModule = $derived(navigationState.currentModule === "inbox");
-  const messagesBadgeCount = $derived(
-    isInboxModule ? inboxState.unreadMessageCount : 0
-  );
-  const notificationsBadgeCount = $derived(
-    isInboxModule ? inboxState.unreadNotificationCount : 0
-  );
-
-  /**
-   * Get badge count for a section (only inbox tabs have badges)
-   */
-  function getSectionBadgeCount(sectionId: string): number {
-    if (sectionId === "messages") {
-      return messagesBadgeCount;
-    }
-    if (sectionId === "notifications") {
-      return notificationsBadgeCount;
-    }
-    return 0;
-  }
-
   onMount(() => {
     try {
       hapticService = resolve<IHapticFeedbackService>(
@@ -236,11 +213,6 @@
           type="section"
           onClick={() => handleSectionClick(section)}
           ariaLabel={section.label}
-          badgeCount={section.id === "messages"
-            ? messagesBadgeCount
-            : section.id === "notifications"
-              ? notificationsBadgeCount
-              : 0}
         />
       {/each}
     </div>

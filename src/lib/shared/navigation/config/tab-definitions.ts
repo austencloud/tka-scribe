@@ -182,7 +182,7 @@ export const BUILD_TABS = CREATE_TABS; // Legacy name
 export const COLLECTION_TABS = LIBRARY_TABS; // Legacy name
 
 // Compose module tabs configuration
-// Arrange (mode selection + sequence config) | Browse (saved compositions)
+// Arrange (mode selection + sequence config) | Browse (saved compositions) | Timeline (DAW-style editor)
 // Note: Playback is an overlay, not a tab - triggered from Arrange or Browse
 export const ANIMATE_TABS: Section[] = [
   {
@@ -200,6 +200,14 @@ export const ANIMATE_TABS: Section[] = [
     description: "Explore saved compositions",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)",
+  },
+  {
+    id: "timeline",
+    label: "Timeline",
+    icon: '<i class="fas fa-timeline"></i>',
+    description: "DAW-style timeline editor for precise clip arrangement",
+    color: "#f59e0b",
+    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
   },
 ];
 
@@ -403,6 +411,14 @@ export const SETTINGS_TABS: Section[] = [
     description: "Keyboard shortcuts and customization",
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "support",
+    label: "Support",
+    icon: '<i class="fas fa-heart"></i>',
+    description: "Support TKA development",
+    color: "#ec4899",
+    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
   },
 ];
 

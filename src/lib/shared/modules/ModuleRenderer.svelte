@@ -50,7 +50,7 @@
     animate: () => import("../../features/compose/ComposeModule.svelte"),
     train: () => import("../../features/train/components/TrainModule.svelte"),
     library: () => import("../../features/library/LibraryModule.svelte"),
-    inbox: () => import("../../features/inbox/InboxModule.svelte"),
+    // inbox module retired - Messages/notifications accessible via Dashboard widget drawer
     edit: () => import("../../features/edit/EditModule.svelte"),
     word_card: () =>
       import("../../features/word-card/components/WordCardTab.svelte"),

@@ -13,7 +13,6 @@ import {
   ANIMATE_TABS,
   TRAIN_TABS,
   LIBRARY_TABS,
-  INBOX_TABS,
   FEEDBACK_TABS,
   ML_TRAINING_TABS,
   ADMIN_TABS,
@@ -86,15 +85,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     isMain: true,
     sections: LIBRARY_TABS,
   },
-  {
-    id: "inbox",
-    label: "Inbox",
-    icon: '<i class="fas fa-inbox" style="color: #6366f1;"></i>',
-    color: "#6366f1", // Indigo - communication/messages
-    description: "Messages and notifications",
-    isMain: true,
-    sections: INBOX_TABS,
-  },
+  // Removed: inbox module (Messages/notifications accessible via Dashboard widget drawer)
   // Removed: account module (merged into Dashboard - profile widget handles auth)
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
   // Removed: write and word_card modules (not currently in use)

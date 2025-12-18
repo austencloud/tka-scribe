@@ -31,7 +31,6 @@ export type ModuleId =
   | "compose"
   | "train"
   | "library"
-  | "inbox"
   | "feedback"
   | "ml-training"
   | "admin"

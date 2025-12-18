@@ -186,15 +186,6 @@
   tabindex="0"
   aria-label="{notification.message}{!notification.read ? ' (unread)' : ''}"
 >
-  <!-- Unread indicator (animates out when marked as read) -->
-  {#if !notification.read || justMarkedRead}
-    <span
-      class="unread-dot"
-      class:fading-out={justMarkedRead}
-      aria-hidden="true"
-    ></span>
-  {/if}
-
   <!-- Icon -->
   <div class="icon" style="--icon-color: {getColor(notification.type)}">
     <i class="fas {getIcon(notification.type)}"></i>
@@ -271,34 +262,6 @@
     100% {
       background: transparent;
       transform: scale(1);
-    }
-  }
-
-  /* Unread dot indicator */
-  .unread-dot {
-    position: absolute;
-    left: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
-    background: var(--theme-accent, #3b82f6);
-    border-radius: 50%;
-    /* No pulsing animation - static dot */
-  }
-
-  .unread-dot.fading-out {
-    animation: dotFadeOut 0.8s ease-out forwards;
-  }
-
-  @keyframes dotFadeOut {
-    0% {
-      opacity: 1;
-      transform: translateY(-50%) scale(1);
-    }
-    100% {
-      opacity: 0;
-      transform: translateY(-50%) scale(0);
     }
   }
 
@@ -380,7 +343,6 @@
     .notification-item,
     .icon,
     .chevron,
-    .unread-dot,
     .message {
       transition: none !important;
       animation: none !important;
@@ -388,10 +350,6 @@
 
     .notification-item.just-marked-read {
       animation: none !important;
-    }
-
-    .unread-dot.fading-out {
-      display: none;
     }
 
     .just-marked-read .message {
