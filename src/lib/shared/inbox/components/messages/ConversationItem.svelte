@@ -6,7 +6,7 @@
 	 */
 
 	import { onMount } from "svelte";
-	import type { ConversationPreview } from "$lib/shared/messaging";
+	import type { ConversationPreview } from "$lib/shared/messaging/domain/models/conversation-models";
 	import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
 	import { formatRelativeTime, truncateText } from "../../utils/format";
 	import { resolve } from "$lib/shared/inversify/di";

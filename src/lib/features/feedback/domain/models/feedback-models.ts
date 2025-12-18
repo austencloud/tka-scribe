@@ -5,6 +5,31 @@
  */
 
 /**
+ * Device context data captured on feedback submission
+ */
+export interface DeviceContext {
+  // Device & Browser
+  userAgent: string;
+  platform: string;
+  isTouchDevice: boolean;
+
+  // Viewport & Screen
+  viewportWidth: number;
+  viewportHeight: number;
+  screenWidth: number;
+  screenHeight: number;
+  devicePixelRatio: number;
+
+  // App Context
+  appVersion: string;
+  currentModule?: string;
+  currentTab?: string;
+
+  // Timestamp
+  capturedAt: Date;
+}
+
+/**
  * Feedback type classification
  */
 export type FeedbackType = "bug" | "feature" | "general";
@@ -73,6 +98,7 @@ export interface FeedbackItem {
   // Context (auto-captured)
   capturedModule: string;
   capturedTab: string;
+  deviceContext?: DeviceContext; // Browser/device info for debugging
 
   // Admin management
   status: FeedbackStatus;

@@ -1,55 +1,64 @@
 /**
  * Feedback Context Tracker
  *
- * Tracks the last module:tab the user was on before opening the Feedback module.
- * This provides automatic context for feedback submissions.
+ * Provides access to the user's location when submitting feedback.
+ * Handles two scenarios:
+ * 1. Quick feedback (overlay) - user is still on their current module
+ * 2. Feedback module - user navigated away, use previous module
  */
 
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
-// Tracked context - simple variables (not using $state to avoid rune conflicts)
-let lastModule = "";
-let lastTab = "";
-
 /**
  * Update the tracked context.
- * Call this from the FeedbackModule whenever navigation changes.
+ * @deprecated No longer needed - navigation state tracks previous module/tab automatically
  */
 export function updateFeedbackContext() {
-  const currentModule = navigationState.currentModule;
-  const currentTab = navigationState.activeTab;
-
-  // Only update context when NOT on the feedback module
-  if (currentModule !== "feedback") {
-    lastModule = currentModule;
-    lastTab = currentTab;
-  }
+  // No-op: navigation state now tracks this globally
 }
 
 /**
- * Get the captured context (last module:tab before feedback)
+ * Get the captured context (module:tab where user is/was)
  */
 export function getCapturedContext() {
   return {
     get module() {
-      return lastModule;
+      return getCapturedModule();
     },
     get tab() {
-      return lastTab;
+      return getCapturedTab();
     },
   };
 }
 
 /**
- * Get the captured module
+ * Get the captured module (where user is/was when submitting feedback)
+ * - If on feedback module: use previous (where they came from)
+ * - If on any other module (quick feedback): use current (where they are)
  */
 export function getCapturedModule(): string {
-  return lastModule;
+  const current = navigationState.currentModule;
+
+  // Quick feedback: user is still on their module (not on feedback module)
+  if (current !== "feedback") {
+    return current;
+  }
+
+  // Feedback module: user navigated here, use where they came from
+  return navigationState.previousModule || current;
 }
 
 /**
- * Get the captured tab
+ * Get the captured tab (tab user is/was on when submitting feedback)
  */
 export function getCapturedTab(): string {
-  return lastTab;
+  const current = navigationState.currentModule;
+
+  // Quick feedback: user is still on their module
+  if (current !== "feedback") {
+    return navigationState.activeTab;
+  }
+
+  // Feedback module: use where they came from
+  return navigationState.previousTab || navigationState.activeTab;
 }

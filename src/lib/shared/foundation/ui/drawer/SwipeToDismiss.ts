@@ -279,6 +279,23 @@ export class SwipeToDismiss {
       (this.options.placement === "right" && deltaX > 0) ||
       (this.options.placement === "left" && deltaX < 0);
 
+    // Check if user is swiping in the scroll direction (opposite of dismiss)
+    const isSwipingInScrollDirection =
+      (this.options.placement === "bottom" && deltaY < 0) ||
+      (this.options.placement === "top" && deltaY > 0) ||
+      (this.options.placement === "right" && deltaX < 0) ||
+      (this.options.placement === "left" && deltaX > 0);
+
+    // If user is swiping in the scroll direction (opposite of dismiss),
+    // abort the drag to let native scroll take over.
+    // This applies whether or not we detected a scrollable container,
+    // since the detection can fail in complex flex layouts.
+    if (isSwipingInScrollDirection && (absDeltaY > movementThreshold || absDeltaX > movementThreshold)) {
+      this.isDragging = false;
+      this.options.onDragChange?.(0, 1, false);
+      return; // Let native scroll handle it
+    }
+
     // If there's a scrollable container and scroll is NOT at the dismiss boundary,
     // and user is swiping in the dismiss direction, abort the drag and let scroll happen
     if (this.scrollableContainer && !this.scrollAtBoundary && isSwipingInDismissDirection) {
@@ -300,17 +317,10 @@ export class SwipeToDismiss {
       }
     }
 
-    // Prevent default for valid drag directions (only if scroll is at boundary)
-    if (this.scrollAtBoundary || !this.scrollableContainer) {
-      if (this.options.placement === "bottom" && deltaY > 0) {
-        event.preventDefault();
-      } else if (this.options.placement === "top" && deltaY < 0) {
-        event.preventDefault();
-      } else if (this.options.placement === "right" && deltaX > 0) {
-        event.preventDefault();
-      } else if (this.options.placement === "left" && deltaX < 0) {
-        event.preventDefault();
-      }
+    // Prevent default for valid drag directions (only if scroll is at boundary OR no scrollable container)
+    // AND only when swiping in dismiss direction
+    if ((this.scrollAtBoundary || !this.scrollableContainer) && isSwipingInDismissDirection) {
+      event.preventDefault();
     }
 
     // Report drag progress

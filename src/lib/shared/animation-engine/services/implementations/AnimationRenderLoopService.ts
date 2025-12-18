@@ -159,6 +159,13 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
 			secondaryRedTrailPoints: effectiveTrailsVisible && effectiveRedMotionVisible ? trailPoints.secondaryRed : [],
 			trailSettings,
 			currentTime,
+			visibility: {
+				gridVisible: effectiveGridVisible,
+				propsVisible: effectivePropsVisible,
+				trailsVisible: effectiveTrailsVisible,
+				blueMotionVisible: effectiveBlueMotionVisible,
+				redMotionVisible: effectiveRedMotionVisible,
+			},
 		});
 	}
 

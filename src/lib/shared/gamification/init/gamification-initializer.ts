@@ -22,6 +22,11 @@ async function ensureGamificationLoaded(): Promise<void> {
 
 export async function initializeGamification(): Promise<void> {
   try {
+    // CRITICAL: Initialize Firestore before any services try to use it
+    // This prevents race condition errors with the lazy-loaded Firestore Proxy
+    const { getFirestoreInstance } = await import("../../auth/firebase");
+    await getFirestoreInstance();
+
     // Ensure gamification module is loaded
     await ensureGamificationLoaded();
 
@@ -88,6 +93,10 @@ export async function trackXP(
   metadata?: XPEventMetadata
 ): Promise<void> {
   try {
+    // CRITICAL: Ensure Firestore is initialized
+    const { getFirestoreInstance } = await import("../../auth/firebase");
+    await getFirestoreInstance();
+
     // Ensure gamification module is loaded
     await ensureGamificationLoaded();
 

@@ -6,7 +6,8 @@
    * Uses preview mode state for View As feature support
    */
 
-  import type { Conversation, Message } from "$lib/shared/messaging";
+  import type { Conversation } from "$lib/shared/messaging/domain/models/conversation-models";
+  import type { Message } from "$lib/shared/messaging/domain/models/message-models";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import MessageBubble from "./MessageBubble.svelte";

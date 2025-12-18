@@ -37,12 +37,14 @@ import type {
   TesterConfirmationStatus,
   AdminResponse,
   TesterConfirmation,
+  DeviceContext,
 } from "../../domain/models/feedback-models";
 import type { NotificationType } from "../../domain/models/notification-models";
 import { notificationTriggerService } from "./NotificationTriggerService";
 import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
 import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
 import type { MessageAttachment } from "$lib/shared/messaging/domain/models/message-models";
+import { captureDeviceContext } from "../../utils/device-context-capturer";
 
 // Admin user ID for feedback conversations (austencloud)
 const ADMIN_USER_ID = "PBp3GSBO6igCKPwJyLZNmVEmamI3";
@@ -125,6 +127,9 @@ export class FeedbackService implements IFeedbackService {
     // Generate title from description if not provided
     const title = formData.title?.trim() || this.generateTitleFromDescription(formData.description);
 
+    // Capture device context
+    const deviceContext = captureDeviceContext(capturedModule, capturedTab);
+
     const feedbackData = {
       // User info (use effective user for proper attribution in preview mode)
       userId: effectiveUser.uid,
@@ -142,6 +147,7 @@ export class FeedbackService implements IFeedbackService {
       // Context (auto-captured, not user-reported)
       capturedModule,
       capturedTab,
+      deviceContext,
 
       // Admin management
       status: "new" as FeedbackStatus,
@@ -840,6 +846,25 @@ export class FeedbackService implements IFeedbackService {
         }
       : undefined;
 
+    // Map device context if present
+    const deviceContextData = data["deviceContext"] as Record<string, unknown> | undefined;
+    const deviceContext: DeviceContext | undefined = deviceContextData
+      ? {
+          userAgent: deviceContextData["userAgent"] as string,
+          platform: deviceContextData["platform"] as string,
+          isTouchDevice: deviceContextData["isTouchDevice"] as boolean,
+          viewportWidth: deviceContextData["viewportWidth"] as number,
+          viewportHeight: deviceContextData["viewportHeight"] as number,
+          screenWidth: deviceContextData["screenWidth"] as number,
+          screenHeight: deviceContextData["screenHeight"] as number,
+          devicePixelRatio: deviceContextData["devicePixelRatio"] as number,
+          appVersion: deviceContextData["appVersion"] as string,
+          currentModule: deviceContextData["currentModule"] as string | undefined,
+          currentTab: deviceContextData["currentTab"] as string | undefined,
+          capturedAt: (deviceContextData["capturedAt"] as Timestamp)?.toDate() || new Date(),
+        }
+      : undefined;
+
     return {
       id,
       userId: data["userId"] as string,
@@ -853,6 +878,7 @@ export class FeedbackService implements IFeedbackService {
       imageUrls: data["imageUrls"] as string[] | undefined,
       capturedModule: data["capturedModule"] as string,
       capturedTab: data["capturedTab"] as string,
+      deviceContext,
       status: (data["status"] as FeedbackStatus) || "new",
       adminNotes: data["adminNotes"] as string | undefined,
       resolutionNotes: data["resolutionNotes"] as string | undefined,

@@ -5,7 +5,7 @@
 	 * Single message bubble with read receipts, animations, and rich attachments
 	 */
 
-	import type { Message } from "$lib/shared/messaging";
+	import type { Message } from "$lib/shared/messaging/domain/models/message-models";
 	import { formatTime } from "../../utils/format";
 	import FeedbackMessageCard from "./FeedbackMessageCard.svelte";
 
