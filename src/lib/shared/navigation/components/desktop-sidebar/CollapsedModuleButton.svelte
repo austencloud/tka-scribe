@@ -5,7 +5,7 @@
   import type { ModuleDefinition } from "../../domain/types";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import NotificationBadge from "../NotificationBadge.svelte";
-  import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
+  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
   let {
     module,
@@ -23,31 +23,8 @@
 
   const isDisabled = $derived(module.disabled ?? false);
 
-  // Notification state for dashboard module
-  const notificationState =
-    module.id === "dashboard" ? createNotificationState() : null;
-
-  onMount(() => {
-    // Initialize notifications for dashboard module
-    if (module.id === "dashboard" && authState.isAuthenticated) {
-      notificationState?.init();
-    }
-
-    return () => {
-      notificationState?.cleanup();
-    };
-  });
-
-  // Watch auth state changes to init/cleanup notifications
-  $effect(() => {
-    if (module.id === "dashboard") {
-      if (authState.isAuthenticated) {
-        notificationState?.init();
-      } else {
-        notificationState?.cleanup();
-      }
-    }
-  });
+  // Get total unread count from inbox (notifications + messages)
+  const inboxUnreadCount = $derived(inboxState.totalUnreadCount);
 
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
@@ -83,9 +60,9 @@
       <span class="module-icon">{@html module.icon}</span>
     {/if}
 
-    <!-- Notification Badge for Dashboard Module -->
-    {#if module.id === "dashboard" && notificationState}
-      <NotificationBadge count={notificationState.unreadCount} />
+    <!-- Notification Badge for Inbox Module -->
+    {#if module.id === "inbox" && inboxUnreadCount > 0}
+      <NotificationBadge count={inboxUnreadCount} />
     {/if}
   </div>
 

@@ -7,7 +7,7 @@
   import type { ModuleDefinition } from "../../domain/types";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import NotificationBadge from "../NotificationBadge.svelte";
-  import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
+  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
   let {
     module,
@@ -16,6 +16,7 @@
     isCollapsed,
     onClick,
     hasSections = false,
+    insideGlassContainer = false,
   } = $props<{
     module: ModuleDefinition;
     isActive: boolean;
@@ -23,38 +24,18 @@
     isCollapsed: boolean;
     onClick: () => void;
     hasSections?: boolean;
+    insideGlassContainer?: boolean;
   }>();
 
   let hapticService: IHapticFeedbackService | undefined;
 
-  // Notification state for dashboard module
-  const notificationState =
-    module.id === "dashboard" ? createNotificationState() : null;
+  // Get total unread count from inbox (notifications + messages)
+  const inboxUnreadCount = $derived(inboxState.totalUnreadCount);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
       TYPES.IHapticFeedbackService
     );
-
-    // Initialize notifications for dashboard module
-    if (module.id === "dashboard" && authState.isAuthenticated) {
-      notificationState?.init();
-    }
-
-    return () => {
-      notificationState?.cleanup();
-    };
-  });
-
-  // Watch auth state changes to init/cleanup notifications
-  $effect(() => {
-    if (module.id === "dashboard") {
-      if (authState.isAuthenticated) {
-        notificationState?.init();
-      } else {
-        notificationState?.cleanup();
-      }
-    }
   });
 
   function handleClick() {
@@ -81,12 +62,14 @@
   class:disabled={isDisabled}
   class:sidebar-collapsed={isCollapsed}
   class:has-sections={hasSections}
+  class:inside-glass={insideGlassContainer}
   onclick={handleClick}
   aria-label={module.label}
   aria-expanded={isExpanded}
   aria-current={isActive ? "page" : undefined}
   aria-disabled={isDisabled}
   disabled={isDisabled}
+  style="--module-color: {module.color || '#6366f1'};"
 >
   <div class="icon-wrapper">
     {#if showProfilePicture}
@@ -101,9 +84,9 @@
       <span class="module-icon">{@html module.icon}</span>
     {/if}
 
-    <!-- Notification Badge for Dashboard Module -->
-    {#if module.id === "dashboard" && notificationState}
-      <NotificationBadge count={notificationState.unreadCount} />
+    <!-- Notification Badge for Inbox Module (only when not expanded) -->
+    {#if module.id === "inbox" && !isExpanded && inboxUnreadCount > 0}
+      <NotificationBadge count={inboxUnreadCount} />
     {/if}
   </div>
   {#if !isCollapsed}
@@ -205,11 +188,21 @@
     display: none; /* No shimmer on non-interactive state */
   }
 
-  /* Active module indicator - minimal, just the accent bar */
+  /* Active module indicator - glass effect with module color */
   .module-button.active {
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: color-mix(in srgb, var(--module-color) 15%, rgba(0, 0, 0, 0.25));
+    border-color: color-mix(in srgb, var(--module-color) 35%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--module-color) 20%, transparent) inset,
+      0 2px 12px color-mix(in srgb, var(--module-color) 18%, transparent);
+  }
+
+  /* When inside glass container, remove inner styling (container provides visual feedback) */
+  .module-button.active.inside-glass {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
   }
 
   /* When both active AND expanded, blend completely (acts as section header) */
@@ -231,8 +224,8 @@
     border-radius: 0 3px 3px 0;
     background: linear-gradient(
       180deg,
-      var(--theme-accent, #6366f1),
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent)
+      var(--module-color, #6366f1),
+      color-mix(in srgb, var(--module-color, #6366f1) 50%, transparent)
     );
   }
 
@@ -249,9 +242,9 @@
     border-radius: 3px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent),
-      var(--theme-accent, #6366f1),
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent)
+      color-mix(in srgb, var(--module-color, #6366f1) 50%, transparent),
+      var(--module-color, #6366f1),
+      color-mix(in srgb, var(--module-color, #6366f1) 50%, transparent)
     );
   }
 

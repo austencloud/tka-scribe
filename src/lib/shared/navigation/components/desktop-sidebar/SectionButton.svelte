@@ -2,11 +2,13 @@
 <!-- Individual section/tab button within a module -->
 <script lang="ts">
   import type { Section } from "../../domain/types";
+  import NotificationBadge from "../NotificationBadge.svelte";
 
-  let { section, isActive, onClick } = $props<{
+  let { section, isActive, onClick, badgeCount = 0 } = $props<{
     section: Section;
     isActive: boolean;
     onClick: () => void;
+    badgeCount?: number;
   }>();
 </script>
 
@@ -22,7 +24,12 @@
     section.color ||
     'var(--muted-foreground)'};"
 >
-  <span class="section-icon">{@html section.icon}</span>
+  <div class="icon-wrapper">
+    <span class="section-icon">{@html section.icon}</span>
+    {#if badgeCount > 0}
+      <NotificationBadge count={badgeCount} />
+    {/if}
+  </div>
   <span class="section-label">{section.label}</span>
 </button>
 
@@ -70,6 +77,14 @@
   .section-button.disabled {
     opacity: 0.3;
     cursor: not-allowed;
+  }
+
+  /* Icon wrapper - for badge positioning */
+  .icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .section-icon {

@@ -5,6 +5,7 @@
   import type { ModuleDefinition, Section } from "../../domain/types";
   import ModuleButton from "./ModuleButton.svelte";
   import SectionsList from "./SectionsList.svelte";
+  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
   let {
     module,
@@ -41,6 +42,15 @@
   // Show active styling if we have sections OR if forced (e.g., during tutorial)
   const showActiveStyle = $derived(hasSections || forceActiveStyle);
 
+  // Badge counts for inbox sections
+  const inboxBadgeCounts = $derived.by(() => {
+    if (module.id !== "inbox") return {};
+    return {
+      notifications: inboxState.unreadNotificationCount,
+      messages: inboxState.unreadMessageCount,
+    };
+  });
+
   // Scroll the expanded module into view when it expands
   $effect(() => {
     if (isExpanded && hasSections && !isCollapsed && moduleGroupElement) {
@@ -72,6 +82,7 @@
     {isExpanded}
     {isCollapsed}
     {hasSections}
+    insideGlassContainer={showActiveStyle}
     onClick={() => onModuleClick(module.id, isDisabled)}
   />
 
@@ -84,6 +95,7 @@
       {isActive}
       {onSectionClick}
       {celebrateAppearance}
+      badgeCounts={inboxBadgeCounts}
     />
   {/if}
 </div>

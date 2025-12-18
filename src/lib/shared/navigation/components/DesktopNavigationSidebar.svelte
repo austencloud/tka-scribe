@@ -58,7 +58,7 @@
   $effect(() => {
     // When module changes from external source (Dashboard, deep link, etc.),
     // collapse others and expand only the current module
-    if (currentModule && !expandedModules.has(currentModule)) {
+    if (currentModule) {
       expandedModules = new Set([currentModule]);
     }
   });
@@ -361,12 +361,13 @@
               {@const isCreateInTutorialCollapsed = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
               {@const isModuleInOnboardingCollapsed = modulesWithOnboarding.includes(module.id) && navigationState.currentModule === module.id && !hasCompletedModuleOnboarding(module.id) && !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
               {@const forceActiveCollapsed = isCreateInTutorialCollapsed || isModuleInOnboardingCollapsed}
+              {@const shouldShowGlassContainer = (isModuleActive || forceActiveCollapsed) && (hasTabs || module.id === "dashboard")}
 
               <!-- Module Context Group: Unified visual container for module + tabs -->
               <div
                 class="module-context-group"
                 class:active={isModuleActive || forceActiveCollapsed}
-                class:has-tabs={hasTabs}
+                class:has-tabs={shouldShowGlassContainer}
                 style="--module-color: {moduleColor};"
               >
                 <!-- Module Button -->
@@ -416,7 +417,7 @@
             {@const shouldCelebrate = (isCreateOnChoiceStep || isModuleOnChoiceStep) && filteredSections.length > 0}
             {@const isCreateInTutorial = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
             {@const isModuleInOnboarding = modulesWithOnboarding.includes(module.id) && navigationState.currentModule === module.id && !hasCompletedModuleOnboarding(module.id) && !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
-            {@const forceActiveStyleLocal = isCreateInTutorial || isModuleInOnboarding}
+            {@const forceActiveStyleLocal = isCreateInTutorial || isModuleInOnboarding || module.id === "dashboard"}
 
             <ModuleGroup
               module={{ ...module, sections: filteredSections }}

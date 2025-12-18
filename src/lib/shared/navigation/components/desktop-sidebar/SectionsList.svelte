@@ -13,6 +13,7 @@
     isActive,
     onSectionClick,
     celebrateAppearance = false,
+    badgeCounts = {},
   } = $props<{
     sections: Section[];
     currentSection: string;
@@ -20,6 +21,7 @@
     isActive: boolean;
     onSectionClick: (moduleId: string, section: Section) => void;
     celebrateAppearance?: boolean;
+    badgeCounts?: Record<string, number>;
   }>();
 </script>
 
@@ -47,6 +49,7 @@
         {section}
         isActive={isSectionActive}
         onClick={() => onSectionClick(moduleId, section)}
+        badgeCount={badgeCounts[section.id] || 0}
       />
     </div>
   {/each}
