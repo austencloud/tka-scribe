@@ -42,8 +42,8 @@ export function createSpotlightState() {
     navigationState = {
       hasMultipleVariations: totalVariations > 1,
       totalVariations,
-      canGoPrev: currentIndex > 0,
-      canGoNext: currentIndex < totalVariations - 1,
+      canGoPrev: totalVariations > 1,
+      canGoNext: totalVariations > 1,
     };
   }
 
@@ -190,7 +190,9 @@ export function createSpotlightState() {
 
     goToPreviousVariation(): void {
       if (navigationState.canGoPrev) {
-        displayState.currentVariationIndex--;
+        const totalVariations = navigationState.totalVariations;
+        // Circular navigation: wrap to last when on first
+        displayState.currentVariationIndex = (displayState.currentVariationIndex - 1 + totalVariations) % totalVariations;
         resetImageState();
         updateNavigationState();
       }
@@ -198,7 +200,9 @@ export function createSpotlightState() {
 
     goToNextVariation(): void {
       if (navigationState.canGoNext) {
-        displayState.currentVariationIndex++;
+        const totalVariations = navigationState.totalVariations;
+        // Circular navigation: wrap to first when on last
+        displayState.currentVariationIndex = (displayState.currentVariationIndex + 1) % totalVariations;
         resetImageState();
         updateNavigationState();
       }

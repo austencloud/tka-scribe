@@ -61,10 +61,10 @@
     return types;
   });
 
-  // Image navigation
+  // Image navigation - circular navigation (always enabled if more than 1 image)
   const totalImages = $derived(sequence?.thumbnails?.length ?? 0);
-  const canGoPrevImage = $derived(currentImageIndex > 0);
-  const canGoNextImage = $derived(currentImageIndex < totalImages - 1);
+  const canGoPrevImage = $derived(totalImages > 1);
+  const canGoNextImage = $derived(totalImages > 1);
 
   // Current thumbnail URL
   const currentThumbnailUrl = $derived.by(() => {
@@ -119,14 +119,16 @@
   function prevImage() {
     if (canGoPrevImage) {
       hapticService?.trigger("selection");
-      currentImageIndex--;
+      // Circular navigation: wrap to last image when on first
+      currentImageIndex = (currentImageIndex - 1 + totalImages) % totalImages;
     }
   }
 
   function nextImage() {
     if (canGoNextImage) {
       hapticService?.trigger("selection");
-      currentImageIndex++;
+      // Circular navigation: wrap to first image when on last
+      currentImageIndex = (currentImageIndex + 1) % totalImages;
     }
   }
 
@@ -222,7 +224,6 @@
           <div class="image-nav">
             <button
               class="nav-arrow"
-              disabled={!canGoPrevImage}
               onclick={(e) => { e.stopPropagation(); prevImage(); }}
               aria-label="Previous variation"
             >
@@ -233,7 +234,6 @@
             <span class="image-counter">{currentImageIndex + 1} / {totalImages}</span>
             <button
               class="nav-arrow"
-              disabled={!canGoNextImage}
               onclick={(e) => { e.stopPropagation(); nextImage(); }}
               aria-label="Next variation"
             >
@@ -463,12 +463,7 @@
     height: 20px;
   }
 
-  .nav-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .nav-arrow:not(:disabled):hover {
+  .nav-arrow:hover {
     background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
   }
 

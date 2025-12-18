@@ -121,9 +121,7 @@ import { TYPES } from "$lib/shared/inversify/types";
     {#if spotlightState.hasMultipleVariations}
       <button
         class="nav-arrow prev"
-        class:disabled={!spotlightState.canGoPrev}
         onclick={goToPreviousVariation}
-        disabled={!spotlightState.canGoPrev}
         aria-label="Previous variation"
       >
         <span class="arrow-icon">‹</span>
@@ -131,9 +129,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <button
         class="nav-arrow next"
-        class:disabled={!spotlightState.canGoNext}
         onclick={goToNextVariation}
-        disabled={!spotlightState.canGoNext}
         aria-label="Next variation"
       >
         <span class="arrow-icon">›</span>
@@ -338,11 +334,6 @@ import { TYPES } from "$lib/shared/inversify/types";
     background: rgba(0, 0, 0, 0.9);
     border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-50%) scale(1.1);
-  }
-
-  .nav-arrow.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
   }
 
   .nav-arrow.prev {
