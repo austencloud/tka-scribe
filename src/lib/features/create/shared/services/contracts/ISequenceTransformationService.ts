@@ -23,6 +23,25 @@ export interface ISequenceTransformationService {
   mirrorSequence(sequence: SequenceData): SequenceData;
 
   /**
+   * Flip sequence vertically (flip north/south)
+   * - Flips all positions using horizontal mirror map
+   * - Flips all locations (north ↔ south)
+   * - Reverses rotation directions (cw ↔ ccw)
+   * - Grid mode stays the same
+   */
+  flipSequence(sequence: SequenceData): SequenceData;
+
+  /**
+   * Invert sequence rotation directions and motion types
+   * - Flips all rotation directions (cw ↔ ccw)
+   * - Flips all motion types (PRO ↔ ANTI)
+   * - Positions and locations stay the same
+   * - Looks up new letters based on changed rotation directions and motion types
+   * - Changes the actual letters of the sequence
+   */
+  invertSequence(sequence: SequenceData): Promise<SequenceData>;
+
+  /**
    * Swap blue and red colors (reversal flags)
    */
   swapColors(sequence: SequenceData): SequenceData;

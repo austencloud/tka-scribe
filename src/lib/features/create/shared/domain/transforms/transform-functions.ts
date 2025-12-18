@@ -8,7 +8,7 @@
 
 import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /** Mirror a grid location across the vertical center line */
@@ -22,6 +22,21 @@ function mirrorLocation(loc: GridLocation): GridLocation {
     [GridLocation.NORTHWEST]: GridLocation.NORTHEAST,
     [GridLocation.SOUTHEAST]: GridLocation.SOUTHWEST,
     [GridLocation.SOUTHWEST]: GridLocation.SOUTHEAST,
+  };
+  return map[loc];
+}
+
+/** Flip a grid location across the horizontal center line */
+function flipLocation(loc: GridLocation): GridLocation {
+  const map: Record<GridLocation, GridLocation> = {
+    [GridLocation.NORTH]: GridLocation.SOUTH,
+    [GridLocation.SOUTH]: GridLocation.NORTH,
+    [GridLocation.EAST]: GridLocation.EAST,
+    [GridLocation.WEST]: GridLocation.WEST,
+    [GridLocation.NORTHEAST]: GridLocation.SOUTHEAST,
+    [GridLocation.SOUTHEAST]: GridLocation.NORTHEAST,
+    [GridLocation.NORTHWEST]: GridLocation.SOUTHWEST,
+    [GridLocation.SOUTHWEST]: GridLocation.NORTHWEST,
   };
   return map[loc];
 }
@@ -104,4 +119,44 @@ export function applyRewind(data: PictographData): PictographData {
     }
   }
   return { ...data, id: `${data.id}-rewound`, motions: newMotions };
+}
+
+/** Apply flip transform to pictograph (flip north/south) */
+export function applyFlip(data: PictographData): PictographData {
+  const newMotions: Partial<Record<MotionColor, MotionData>> = {};
+  for (const [color, motion] of Object.entries(data.motions)) {
+    if (motion) {
+      newMotions[color as MotionColor] = createMotionData({
+        ...motion,
+        startLocation: flipLocation(motion.startLocation),
+        endLocation: flipLocation(motion.endLocation),
+        arrowLocation: motion.arrowLocation ? flipLocation(motion.arrowLocation) : motion.startLocation,
+        rotationDirection: flipRotation(motion.rotationDirection),
+      });
+    }
+  }
+  return { ...data, id: `${data.id}-flipped`, motions: newMotions };
+}
+
+/** Apply invert transform to pictograph (flip rotation directions and motion types) */
+export function applyInvert(data: PictographData): PictographData {
+  const newMotions: Partial<Record<MotionColor, MotionData>> = {};
+  for (const [color, motion] of Object.entries(data.motions)) {
+    if (motion) {
+      // Flip motion type (PRO ↔ ANTI, others stay same)
+      let invertedMotionType = motion.motionType;
+      if (motion.motionType === MotionType.PRO) {
+        invertedMotionType = MotionType.ANTI;
+      } else if (motion.motionType === MotionType.ANTI) {
+        invertedMotionType = MotionType.PRO;
+      }
+
+      newMotions[color as MotionColor] = createMotionData({
+        ...motion,
+        motionType: invertedMotionType,
+        rotationDirection: flipRotation(motion.rotationDirection),
+      });
+    }
+  }
+  return { ...data, id: `${data.id}-inverted`, motions: newMotions };
 }

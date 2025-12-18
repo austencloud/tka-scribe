@@ -30,7 +30,7 @@ import { createBeatData } from "../../domain/factories/createBeatData";
 import { createStartPositionData } from "../../domain/factories/createStartPositionData";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
 import { LOCATION_MAP_EIGHTH_CW } from "../../../generate/circular/domain/constants/circular-position-maps";
-import { VERTICAL_MIRROR_POSITION_MAP, VERTICAL_MIRROR_LOCATION_MAP, SWAPPED_POSITION_MAP } from "../../../generate/circular/domain/constants/strict-cap-position-maps";
+import { VERTICAL_MIRROR_POSITION_MAP, VERTICAL_MIRROR_LOCATION_MAP, SWAPPED_POSITION_MAP, HORIZONTAL_MIRROR_POSITION_MAP, HORIZONTAL_MIRROR_LOCATION_MAP } from "../../../generate/circular/domain/constants/strict-cap-position-maps";
 
 @injectable()
 export class SequenceTransformationService
@@ -262,6 +262,143 @@ export class SequenceTransformationService
   }
 
   /**
+   * Flip sequence horizontally (north ↔ south)
+   * - Flips all positions using horizontal mirror map
+   * - Flips all locations (flips north/south)
+   * - Reverses rotation directions (cw ↔ ccw)
+   * - Grid mode stays the same
+   */
+  flipSequence(sequence: SequenceData): SequenceData {
+    const flippedBeats = sequence.beats.map((beat) => this.flipBeat(beat));
+
+    // Also flip the start position if it exists (both fields for compatibility)
+    const flippedStartPosition = sequence.startPosition
+      ? this.flipPictograph(sequence.startPosition)
+      : undefined;
+    const flippedStartingPositionBeat = sequence.startingPositionBeat
+      ? this.flipPictograph(sequence.startingPositionBeat)
+      : undefined;
+
+    return updateSequenceData(sequence, {
+      beats: flippedBeats,
+      ...(flippedStartPosition && { startPosition: flippedStartPosition }),
+      ...(flippedStartingPositionBeat && {
+        startingPositionBeat: flippedStartingPositionBeat,
+      }),
+    });
+  }
+
+  /**
+   * Flip pictograph data (works for both beats and start positions)
+   */
+  private flipPictograph(data: BeatData | StartPositionData): BeatData | StartPositionData {
+    if (isBeat(data)) {
+      return this.flipBeat(data);
+    } else {
+      return this.flipStartPosition(data);
+    }
+  }
+
+  /**
+   * Flip a start position horizontally
+   */
+  private flipStartPosition(startPos: StartPositionData): StartPositionData {
+    // Flip motions (same logic as flipBeat but without beat-specific fields)
+    const flippedMotions = { ...startPos.motions };
+
+    // Flip blue motion
+    if (startPos.motions[MotionColor.BLUE]) {
+      const blueMotion = startPos.motions[MotionColor.BLUE];
+      flippedMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        startLocation: HORIZONTAL_MIRROR_LOCATION_MAP[blueMotion.startLocation],
+        endLocation: HORIZONTAL_MIRROR_LOCATION_MAP[blueMotion.endLocation],
+        arrowLocation: HORIZONTAL_MIRROR_LOCATION_MAP[blueMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
+      };
+    }
+
+    // Flip red motion
+    if (startPos.motions[MotionColor.RED]) {
+      const redMotion = startPos.motions[MotionColor.RED];
+      flippedMotions[MotionColor.RED] = {
+        ...redMotion,
+        startLocation: HORIZONTAL_MIRROR_LOCATION_MAP[redMotion.startLocation],
+        endLocation: HORIZONTAL_MIRROR_LOCATION_MAP[redMotion.endLocation],
+        arrowLocation: HORIZONTAL_MIRROR_LOCATION_MAP[redMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
+      };
+    }
+
+    return createStartPositionData({
+      ...startPos,
+      motions: flippedMotions,
+      gridPosition: startPos.gridPosition
+        ? HORIZONTAL_MIRROR_POSITION_MAP[startPos.gridPosition]
+        : null,
+    });
+  }
+
+  /**
+   * Flip a single beat horizontally
+   */
+  private flipBeat(beat: BeatData): BeatData {
+    if (beat.isBlank || !beat) {
+      return beat;
+    }
+
+    // Flip positions (handle undefined as null)
+    const flippedStartPosition = beat.startPosition
+      ? HORIZONTAL_MIRROR_POSITION_MAP[beat.startPosition]
+      : null;
+    const flippedEndPosition = beat.endPosition
+      ? HORIZONTAL_MIRROR_POSITION_MAP[beat.endPosition]
+      : null;
+
+    // Flip motions
+    const flippedMotions = { ...beat.motions };
+
+    // Flip blue motion
+    if (beat.motions[MotionColor.BLUE]) {
+      const blueMotion = beat.motions[MotionColor.BLUE];
+      flippedMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        startLocation: HORIZONTAL_MIRROR_LOCATION_MAP[blueMotion.startLocation],
+        endLocation: HORIZONTAL_MIRROR_LOCATION_MAP[blueMotion.endLocation],
+        arrowLocation: HORIZONTAL_MIRROR_LOCATION_MAP[blueMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
+      };
+    }
+
+    // Flip red motion
+    if (beat.motions[MotionColor.RED]) {
+      const redMotion = beat.motions[MotionColor.RED];
+      flippedMotions[MotionColor.RED] = {
+        ...redMotion,
+        startLocation: HORIZONTAL_MIRROR_LOCATION_MAP[redMotion.startLocation],
+        endLocation: HORIZONTAL_MIRROR_LOCATION_MAP[redMotion.endLocation],
+        arrowLocation: HORIZONTAL_MIRROR_LOCATION_MAP[redMotion.arrowLocation],
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
+      };
+    }
+
+    return createBeatData({
+      ...beat,
+      startPosition: flippedStartPosition,
+      endPosition: flippedEndPosition,
+      motions: flippedMotions,
+    });
+  }
+
+  /**
    * Swap colors (blue ↔ red)
    * - Swaps entire blue and red motion data
    * - Swaps blue and red reversal states
@@ -374,6 +511,161 @@ export class SequenceTransformationService
       gridPosition: startPos.gridPosition
         ? SWAPPED_POSITION_MAP[startPos.gridPosition]
         : null,
+    });
+  }
+
+  /**
+   * Invert sequence rotation directions
+   * - Flips all rotation directions (cw ↔ ccw)
+   * - Looks up new letters based on changed rotation directions
+   * - Positions and locations stay the same
+   * - Changes the actual letters of the sequence
+   */
+  async invertSequence(sequence: SequenceData): Promise<SequenceData> {
+    if (sequence.beats.length === 0) {
+      return sequence;
+    }
+
+    const gridMode = sequence.gridMode ?? GridMode.DIAMOND;
+    const invertedBeats: BeatData[] = [];
+
+    for (const beat of sequence.beats) {
+      const invertedBeat = await this.invertBeat(beat, gridMode);
+      invertedBeats.push(invertedBeat);
+    }
+
+    // Also invert the start position if it exists
+    const invertedStartPosition = sequence.startPosition
+      ? this.invertStartPosition(sequence.startPosition)
+      : undefined;
+    const invertedStartingPositionBeat = sequence.startingPositionBeat
+      ? this.invertStartPosition(sequence.startingPositionBeat)
+      : undefined;
+
+    return updateSequenceData(sequence, {
+      beats: invertedBeats,
+      ...(invertedStartPosition && { startPosition: invertedStartPosition }),
+      ...(invertedStartingPositionBeat && {
+        startingPositionBeat: invertedStartingPositionBeat,
+      }),
+    });
+  }
+
+  /**
+   * Invert a single beat's rotation directions and motion types, then look up new letter
+   * - Flips rotation direction (cw ↔ ccw)
+   * - Flips motion type (PRO ↔ ANTI)
+   * - Keeps start/end positions the same
+   */
+  private async invertBeat(
+    beat: BeatData,
+    gridMode: GridMode
+  ): Promise<BeatData> {
+    if (beat.isBlank || !beat) {
+      return beat;
+    }
+
+    // Invert motion types and rotation directions
+    const invertedMotions = { ...beat.motions };
+
+    // Invert blue motion
+    if (beat.motions[MotionColor.BLUE]) {
+      const blueMotion = beat.motions[MotionColor.BLUE];
+      invertedMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        motionType: this.invertMotionType(blueMotion.motionType),
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
+      };
+    }
+
+    // Invert red motion
+    if (beat.motions[MotionColor.RED]) {
+      const redMotion = beat.motions[MotionColor.RED];
+      invertedMotions[MotionColor.RED] = {
+        ...redMotion,
+        motionType: this.invertMotionType(redMotion.motionType),
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
+      };
+    }
+
+    // Look up the correct letter from the pictograph dataset
+    let correctLetter: Letter | null = beat.letter ?? null;
+    if (invertedMotions[MotionColor.BLUE] && invertedMotions[MotionColor.RED]) {
+      try {
+        const foundLetter =
+          await this.motionQueryHandler.findLetterByMotionConfiguration(
+            invertedMotions[MotionColor.BLUE],
+            invertedMotions[MotionColor.RED],
+            gridMode
+          );
+        if (foundLetter) {
+          correctLetter = foundLetter as Letter;
+        }
+      } catch (error) {
+        console.warn(
+          `Failed to find letter for inverted beat ${beat.beatNumber}:`,
+          error
+        );
+      }
+    }
+
+    return createBeatData({
+      ...beat,
+      letter: correctLetter,
+      motions: invertedMotions,
+    });
+  }
+
+  /**
+   * Invert motion type (PRO ↔ ANTI, others stay the same)
+   */
+  private invertMotionType(motionType: MotionType): MotionType {
+    if (motionType === MotionType.PRO) {
+      return MotionType.ANTI;
+    } else if (motionType === MotionType.ANTI) {
+      return MotionType.PRO;
+    }
+    // FLOAT, DASH, STATIC stay the same
+    return motionType;
+  }
+
+  /**
+   * Invert a start position's rotation directions and motion types (no letter lookup needed)
+   */
+  private invertStartPosition(startPos: StartPositionData): StartPositionData {
+    const invertedMotions = { ...startPos.motions };
+
+    // Invert blue motion
+    if (startPos.motions[MotionColor.BLUE]) {
+      const blueMotion = startPos.motions[MotionColor.BLUE];
+      invertedMotions[MotionColor.BLUE] = {
+        ...blueMotion,
+        motionType: this.invertMotionType(blueMotion.motionType),
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
+      };
+    }
+
+    // Invert red motion
+    if (startPos.motions[MotionColor.RED]) {
+      const redMotion = startPos.motions[MotionColor.RED];
+      invertedMotions[MotionColor.RED] = {
+        ...redMotion,
+        motionType: this.invertMotionType(redMotion.motionType),
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
+      };
+    }
+
+    return createStartPositionData({
+      ...startPos,
+      motions: invertedMotions,
     });
   }
 

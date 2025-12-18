@@ -9,6 +9,8 @@
     isTransforming: boolean;
     showEditInConstructor: boolean;
     onMirror: () => void;
+    onFlip: () => void;
+    onInvert: () => void;
     onRotateCW: () => void;
     onRotateCCW: () => void;
     onSwap: () => void;
@@ -23,6 +25,8 @@
     isTransforming,
     showEditInConstructor,
     onMirror,
+    onFlip,
+    onInvert,
     onRotateCW,
     onRotateCCW,
     onSwap,
@@ -36,7 +40,7 @@
 </script>
 
 <div class="transforms-grid" class:disabled>
-  <!-- Row 1: Mirror | Swap Hands -->
+  <!-- Row 1: Mirror | Flip -->
   <button class="grid-btn mirror" onclick={onMirror} {disabled}>
     <div class="btn-icon"><i class="fas fa-left-right"></i></div>
     <div class="btn-text">
@@ -45,6 +49,15 @@
     </div>
   </button>
 
+  <button class="grid-btn flip" onclick={onFlip} {disabled}>
+    <div class="btn-icon"><i class="fas fa-up-down"></i></div>
+    <div class="btn-text">
+      <span class="btn-label">Flip</span>
+      <span class="btn-desc">Flip up & down</span>
+    </div>
+  </button>
+
+  <!-- Row 2: Swap Hands | Invert -->
   <button class="grid-btn swap" onclick={onSwap} {disabled}>
     <div class="btn-icon"><i class="fas fa-arrows-rotate"></i></div>
     <div class="btn-text">
@@ -53,7 +66,15 @@
     </div>
   </button>
 
-  <!-- Row 2: Rotate Left | Rotate Right -->
+  <button class="grid-btn invert" onclick={onInvert} {disabled}>
+    <div class="btn-icon"><i class="fas fa-repeat"></i></div>
+    <div class="btn-text">
+      <span class="btn-label">Invert</span>
+      <span class="btn-desc">Reverse turns</span>
+    </div>
+  </button>
+
+  <!-- Row 3: Rotate Left | Rotate Right -->
   <button class="grid-btn rotate" onclick={onRotateCCW} {disabled}>
     <div class="btn-icon"><i class="fas fa-rotate-left"></i></div>
     <div class="btn-text">
@@ -70,7 +91,7 @@
     </div>
   </button>
 
-  <!-- Row 3: Rewind | Preview -->
+  <!-- Row 4: Rewind | Preview -->
   <button class="grid-btn rewind" onclick={onRewind} {disabled}>
     <div class="btn-icon"><i class="fas fa-backward"></i></div>
     <div class="btn-text">

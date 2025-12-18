@@ -193,6 +193,63 @@ export function createSequenceTransformOperations(
       }
     },
 
+    async flipSequence() {
+      if (!coreState.currentSequence || !sequenceTransformationService) return;
+
+      try {
+        console.log("🔄 Flipping sequence...");
+        const flippedSequence = sequenceTransformationService.flipSequence(
+          coreState.currentSequence
+        );
+        console.log("✅ Got flipped sequence:", flippedSequence);
+        coreState.setCurrentSequence(flippedSequence);
+        console.log("✅ Updated core state with flipped sequence");
+
+        // Update selection state with transformed start position so UI re-renders
+        if (flippedSequence.startPosition) {
+          selectionState.setStartPosition(flippedSequence.startPosition);
+        }
+
+        coreState.clearError();
+
+        // Persist the transformed sequence
+        await onSave?.();
+        console.log("✅ Flip complete and saved");
+      } catch (error) {
+        console.error("❌ Flip error:", error);
+        handleError("Failed to flip sequence", error);
+      }
+    },
+
+    async invertSequence() {
+      if (!coreState.currentSequence || !sequenceTransformationService) return;
+
+      try {
+        console.log("🔄 Inverting sequence rotation directions...");
+        const invertedSequence =
+          await sequenceTransformationService.invertSequence(
+            coreState.currentSequence
+          );
+        console.log("✅ Got inverted sequence:", invertedSequence);
+        coreState.setCurrentSequence(invertedSequence);
+        console.log("✅ Updated core state with inverted sequence");
+
+        // Update selection state with transformed start position so UI re-renders
+        if (invertedSequence.startPosition) {
+          selectionState.setStartPosition(invertedSequence.startPosition);
+        }
+
+        coreState.clearError();
+
+        // Persist the transformed sequence
+        await onSave?.();
+        console.log("✅ Invert complete and saved");
+      } catch (error) {
+        console.error("❌ Invert error:", error);
+        handleError("Failed to invert sequence", error);
+      }
+    },
+
     validateSequence(): ValidationResult | null {
       if (!coreState.currentSequence || !sequenceValidationService) return null;
       return sequenceValidationService.validateSequence(

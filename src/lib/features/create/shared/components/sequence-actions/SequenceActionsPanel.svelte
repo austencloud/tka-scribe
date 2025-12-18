@@ -313,6 +313,28 @@
     }
   }
 
+  async function handleFlip() {
+    if (!sequence || isTransforming) return;
+    isTransforming = true;
+    hapticService?.trigger("selection");
+    try {
+      await activeSequenceState.flipSequence();
+    } finally {
+      isTransforming = false;
+    }
+  }
+
+  async function handleInvert() {
+    if (!sequence || isTransforming) return;
+    isTransforming = true;
+    hapticService?.trigger("selection");
+    try {
+      await activeSequenceState.invertSequence();
+    } finally {
+      isTransforming = false;
+    }
+  }
+
   function handlePreview() {
     if (!sequence) return;
     hapticService?.trigger("selection");
@@ -510,6 +532,8 @@
           {isTransforming}
           showEditInConstructor={!isInConstructTab}
           onMirror={handleMirror}
+          onFlip={handleFlip}
+          onInvert={handleInvert}
           onRotateCW={handleRotateCW}
           onRotateCCW={handleRotateCCW}
           onSwap={handleSwap}

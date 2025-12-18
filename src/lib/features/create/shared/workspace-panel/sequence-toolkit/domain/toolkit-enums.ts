@@ -4,6 +4,8 @@
 export enum ToolOperationType {
   // Transform operations
   MIRROR = "mirror",
+  FLIP = "flip",
+  INVERT = "invert",
   ROTATE_CLOCKWISE = "rotate_clockwise",
   ROTATE_COUNTERCLOCKWISE = "rotate_counterclockwise",
   SWAP_COLORS = "swap_colors",
