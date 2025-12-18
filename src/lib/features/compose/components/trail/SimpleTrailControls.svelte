@@ -11,10 +11,14 @@
     TrailMode,
     TrackingMode,
   } from "../../../../shared/animation-engine/state/animation-settings-state.svelte";
+  import {
+    getAnimationVisibilityManager,
+    type TrailStyle,
+  } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
   import { isBilateralProp } from "$lib/shared/pictograph/prop/domain/enums/PropClassification";
   import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
-  type TrailPreset = "none" | "subtle" | "vivid";
+  const animationVisibilityManager = getAnimationVisibilityManager();
 
   interface Props {
     /** @deprecated Use bluePropType and redPropType instead */
@@ -48,22 +52,26 @@
     animationSettings.trail.trackingMode === TrackingMode.BOTH_ENDS
   );
 
-  // Determine current preset from settings
-  const currentPreset = $derived.by((): TrailPreset => {
-    const trail = animationSettings.trail;
-    if (!trail.enabled || trail.mode === TrailMode.OFF) return "none";
-    if (trail.lineWidth <= 2.5 && trail.maxOpacity <= 0.7) return "subtle";
-    return "vivid";
+  // Get current trail style from visibility manager (global state)
+  let currentPreset = $state<TrailStyle>("subtle");
+
+  // Sync with visibility manager on mount and changes
+  $effect(() => {
+    currentPreset = animationVisibilityManager.getTrailStyle();
   });
 
   // Only show the bilateral toggle when trails are enabled
   const showEndToggle = $derived(
-    showBilateralToggle && currentPreset !== "none"
+    showBilateralToggle && currentPreset !== "off"
   );
 
-  function setPreset(preset: TrailPreset) {
+  function setPreset(preset: TrailStyle) {
+    // Update global visibility state
+    animationVisibilityManager.setTrailStyle(preset);
+
+    // Apply detailed trail appearance settings
     switch (preset) {
-      case "none":
+      case "off":
         animationSettings.setTrailMode(TrailMode.OFF);
         break;
       case "subtle":
@@ -100,8 +108,8 @@
   <div class="preset-buttons">
     <button
       class="preset-btn"
-      class:active={currentPreset === "none"}
-      onclick={() => setPreset("none")}
+      class:active={currentPreset === "off"}
+      onclick={() => setPreset("off")}
       type="button"
     >
       Off

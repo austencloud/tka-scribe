@@ -79,9 +79,10 @@ export class CanvasRenderer implements ICanvasRenderer {
     ctx: CanvasRenderingContext2D,
     canvasSize: number,
     letterImage: HTMLImageElement,
-    letterViewBoxDimensions: { width: number; height: number }
+    letterViewBoxDimensions: { width: number; height: number },
+    opacity: number = 1
   ): void {
-    this.drawLetter(ctx, canvasSize, letterImage, letterViewBoxDimensions);
+    this.drawLetter(ctx, canvasSize, letterImage, letterViewBoxDimensions, opacity);
   }
 
   /**
@@ -91,9 +92,10 @@ export class CanvasRenderer implements ICanvasRenderer {
   renderBeatNumberToCanvas(
     ctx: CanvasRenderingContext2D,
     canvasSize: number,
-    beatNumber: number | null
+    beatNumber: number | null,
+    opacity: number = 1
   ): void {
-    this.drawBeatNumber(ctx, canvasSize, beatNumber);
+    this.drawBeatNumber(ctx, canvasSize, beatNumber, opacity);
   }
 
   /**
@@ -183,7 +185,8 @@ export class CanvasRenderer implements ICanvasRenderer {
     ctx: CanvasRenderingContext2D,
     canvasSize: number,
     letterImage: HTMLImageElement,
-    letterViewBoxDimensions: { width: number; height: number }
+    letterViewBoxDimensions: { width: number; height: number },
+    opacity: number = 1
   ): void {
 
     const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
@@ -197,7 +200,11 @@ export class CanvasRenderer implements ICanvasRenderer {
     const scaledWidth = letterViewBoxDimensions.width * gridScaleFactor;
     const scaledHeight = letterViewBoxDimensions.height * gridScaleFactor;
 
+    // Apply opacity for crossfade effects
+    ctx.save();
+    ctx.globalAlpha = opacity;
     ctx.drawImage(letterImage, x, y, scaledWidth, scaledHeight);
+    ctx.restore();
   }
 
   /**
@@ -208,7 +215,8 @@ export class CanvasRenderer implements ICanvasRenderer {
   private drawBeatNumber(
     ctx: CanvasRenderingContext2D,
     canvasSize: number,
-    beatNumber: number | null
+    beatNumber: number | null,
+    opacity: number = 1
   ): void {
     if (beatNumber === null) return;
 
@@ -225,6 +233,9 @@ export class CanvasRenderer implements ICanvasRenderer {
     const displayText = isStart ? "Start" : beatNumber.toString();
 
     ctx.save();
+
+    // Apply opacity for crossfade effects
+    ctx.globalAlpha = opacity;
 
     // Set font style to match BeatNumber.svelte
     ctx.font = `bold ${fontSize}px Georgia, serif`;

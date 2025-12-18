@@ -164,10 +164,10 @@ export function createAnimatorCanvasState(
 	let pixiError = $state<string | null>(null);
 
 	// Visibility state (initialized from manager if provided, otherwise defaults)
-	let gridVisible = $state(visibilityManager?.getVisibility("grid") ?? true);
+	let gridVisible = $state(visibilityManager?.isGridVisible() ?? true);
 	let beatNumbersVisible = $state(visibilityManager?.getVisibility("beatNumbers") ?? true);
 	let propsVisible = $state(visibilityManager?.getVisibility("props") ?? true);
-	let trailsVisible = $state(visibilityManager?.getVisibility("trails") ?? true);
+	let trailsVisible = $state(visibilityManager?.isTrailsVisible() ?? true);
 	let tkaGlyphVisible = $state(visibilityManager?.getVisibility("tkaGlyph") ?? true);
 	let turnNumbersVisible = $state(visibilityManager?.getVisibility("turnNumbers") ?? true);
 	let blueMotionVisible = $state(visibilityManager?.getVisibility("blueMotion") ?? true);
@@ -359,22 +359,28 @@ export function createAnimatorCanvasState(
 			pixiError = error;
 		},
 
-		updateVisibility(key: keyof AnimationVisibilitySettings, visible: boolean) {
-			if (key === "grid") gridVisible = visible;
-			if (key === "beatNumbers") beatNumbersVisible = visible;
-			if (key === "props") propsVisible = visible;
-			if (key === "trails") trailsVisible = visible;
-			if (key === "tkaGlyph") tkaGlyphVisible = visible;
-			if (key === "turnNumbers") turnNumbersVisible = visible;
-			if (key === "blueMotion") blueMotionVisible = visible;
-			if (key === "redMotion") redMotionVisible = visible;
+		updateVisibility(key: string, visible: boolean | string) {
+			// Handle boolean visibility settings
+			if (key === "beatNumbers" && typeof visible === "boolean") beatNumbersVisible = visible;
+			if (key === "props" && typeof visible === "boolean") propsVisible = visible;
+			if (key === "tkaGlyph" && typeof visible === "boolean") tkaGlyphVisible = visible;
+			if (key === "turnNumbers" && typeof visible === "boolean") turnNumbersVisible = visible;
+			if (key === "blueMotion" && typeof visible === "boolean") blueMotionVisible = visible;
+			if (key === "redMotion" && typeof visible === "boolean") redMotionVisible = visible;
+			// gridMode and trailStyle are now managed separately (string enums, not booleans)
+			if (key === "gridMode" && typeof visible === "string") {
+				gridVisible = visible !== "none";
+			}
+			if (key === "trailStyle" && typeof visible === "string") {
+				trailsVisible = visible !== "off";
+			}
 		},
 
 		syncVisibilityFromManager(manager: AnimationVisibilityStateManager) {
-			gridVisible = manager.getVisibility("grid");
+			gridVisible = manager.isGridVisible();
 			beatNumbersVisible = manager.getVisibility("beatNumbers");
 			propsVisible = manager.getVisibility("props");
-			trailsVisible = manager.getVisibility("trails");
+			trailsVisible = manager.isTrailsVisible();
 			tkaGlyphVisible = manager.getVisibility("tkaGlyph");
 			turnNumbersVisible = manager.getVisibility("turnNumbers");
 			blueMotionVisible = manager.getVisibility("blueMotion");

@@ -144,6 +144,17 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       // Track the current letter to avoid reloading the same glyph for consecutive frames
       let currentLetter: Letter | null = null;
       let currentGlyph: LetterOverlayAssets | null = null;
+      let currentBeatNumber: number | null = null;
+
+      // Track previous frame's letter and beat number for crossfade
+      let previousLetter: Letter | null = null;
+      let previousGlyph: LetterOverlayAssets | null = null;
+      let previousBeatNumber: number | null = null;
+
+      // Crossfade configuration (matches GlyphOverlay.svelte)
+      const CROSSFADE_DURATION_MS = 200;
+      const crossfadeDurationFrames = Math.ceil((CROSSFADE_DURATION_MS / 1000) * fps);
+      let framesSinceTransition = 0;
 
       for (let i = 0; i < totalFrames; i++) {
         if (this.shouldCancel) {
@@ -167,36 +178,93 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         // Get the letter for the current beat
         const beatLetter = this.getLetterForBeat(beat, panelState);
 
-        // Load the glyph if the letter changed
-        if (beatLetter !== currentLetter) {
-          currentLetter = beatLetter;
-          currentGlyph = beatLetter
-            ? await this.loadLetterGlyph(beatLetter)
-            : null;
-        }
-
         // Calculate beat number for display (matches AnimatorCanvas logic)
         const beatNumber = this.getBeatNumberForFrame(beat, panelState);
 
-        // Render the glyph on top of the OFFSCREEN canvas (not the visible one!)
+        // Detect transitions (letter or beat number changed)
+        const letterChanged = beatLetter !== currentLetter;
+        const beatNumberChanged = beatNumber !== currentBeatNumber;
+        const transitionDetected = letterChanged || beatNumberChanged;
+
+        if (transitionDetected) {
+          // Store previous state for crossfade
+          previousLetter = currentLetter;
+          previousGlyph = currentGlyph;
+          previousBeatNumber = currentBeatNumber;
+
+          // Update current state
+          currentLetter = beatLetter;
+          currentBeatNumber = beatNumber;
+
+          // Load new glyph if letter changed
+          if (letterChanged) {
+            currentGlyph = beatLetter
+              ? await this.loadLetterGlyph(beatLetter)
+              : null;
+          }
+
+          // Reset crossfade counter
+          framesSinceTransition = 0;
+        }
+
+        // Calculate crossfade opacities (linear fade over 200ms)
+        const inCrossfade = framesSinceTransition < crossfadeDurationFrames;
+        const fadeProgress = inCrossfade
+          ? framesSinceTransition / crossfadeDurationFrames
+          : 1;
+
+        const fadeOutOpacity = Math.max(0, 1 - fadeProgress); // 1 → 0
+        const fadeInOpacity = Math.min(1, fadeProgress); // 0 → 1
+
+        // Render fading-out glyph (if in crossfade and previous exists)
+        if (inCrossfade && previousGlyph?.image && fadeOutOpacity > 0) {
+          this.canvasRenderer.renderLetterToCanvas(
+            offscreenCtx,
+            actualCanvasSize,
+            previousGlyph.image,
+            previousGlyph.dimensions,
+            fadeOutOpacity
+          );
+        }
+
+        // Render fading-in glyph (current glyph)
         if (currentGlyph?.image) {
+          const opacity = inCrossfade ? fadeInOpacity : 1;
           this.canvasRenderer.renderLetterToCanvas(
             offscreenCtx,
             actualCanvasSize,
             currentGlyph.image,
-            currentGlyph.dimensions
+            currentGlyph.dimensions,
+            opacity
           );
         }
 
-        // Render the beat number overlay
-        this.canvasRenderer.renderBeatNumberToCanvas(
-          offscreenCtx,
-          actualCanvasSize,
-          beatNumber
-        );
+        // Render fading-out beat number (if in crossfade and previous exists)
+        if (inCrossfade && previousBeatNumber !== null && fadeOutOpacity > 0) {
+          this.canvasRenderer.renderBeatNumberToCanvas(
+            offscreenCtx,
+            actualCanvasSize,
+            previousBeatNumber,
+            fadeOutOpacity
+          );
+        }
+
+        // Render fading-in beat number (current beat number)
+        if (currentBeatNumber !== null) {
+          const opacity = inCrossfade ? fadeInOpacity : 1;
+          this.canvasRenderer.renderBeatNumberToCanvas(
+            offscreenCtx,
+            actualCanvasSize,
+            currentBeatNumber,
+            opacity
+          );
+        }
 
         // Capture from the offscreen canvas (not the visible one!)
         await exporter.addFrame(offscreenCanvas);
+
+        // Increment crossfade frame counter
+        framesSinceTransition++;
 
         onProgress({
           progress: (i + 1) / totalFrames,

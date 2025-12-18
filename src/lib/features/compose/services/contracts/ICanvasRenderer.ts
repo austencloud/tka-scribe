@@ -29,21 +29,25 @@ export interface ICanvasRenderer {
    * Render a letter glyph onto the canvas at the standard position
    * @param letterImage - The letter image to render
    * @param letterViewBoxDimensions - ViewBox dimensions from the letter SVG
+   * @param opacity - Optional opacity for crossfade effects (0-1, default: 1)
    */
   renderLetterToCanvas(
     ctx: CanvasRenderingContext2D,
     canvasSize: number,
     letterImage: HTMLImageElement,
-    letterViewBoxDimensions: { width: number; height: number }
+    letterViewBoxDimensions: { width: number; height: number },
+    opacity?: number
   ): void;
 
   /**
    * Render a beat number onto the canvas at the standard position (top-left)
    * @param beatNumber - The beat number to render (0 = "Start", null = no render)
+   * @param opacity - Optional opacity for crossfade effects (0-1, default: 1)
    */
   renderBeatNumberToCanvas(
     ctx: CanvasRenderingContext2D,
     canvasSize: number,
-    beatNumber: number | null
+    beatNumber: number | null,
+    opacity?: number
   ): void;
 }
