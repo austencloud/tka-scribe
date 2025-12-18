@@ -28,7 +28,7 @@ import type {
   ChangelogEntry,
 } from "../../domain/models/version-models";
 import { PRE_RELEASE_VERSION } from "../../domain/models/version-models";
-import type { FeedbackType } from "../../domain/models/feedback-models";
+import { isFeedbackType } from "../../domain/models/feedback-models";
 
 const VERSIONS_COLLECTION = "versions";
 const FEEDBACK_COLLECTION = "feedback";
@@ -64,7 +64,7 @@ export class VersionService implements IVersionService {
       const data = docSnap.data();
       return {
         id: docSnap.id,
-        type: data["type"] as FeedbackType,
+        type: isFeedbackType(data["type"]) ? data["type"] : "general",
         title: data["title"] as string,
         description: this.truncateDescription(data["description"] as string),
         createdAt: data["createdAt"],
@@ -114,7 +114,7 @@ export class VersionService implements IVersionService {
     const summary: FeedbackSummary = { bugs: 0, features: 0, general: 0 };
 
     completedDocs.forEach((docSnap) => {
-      const type = docSnap.data()["type"] as FeedbackType;
+      const type = isFeedbackType(docSnap.data()["type"]) ? docSnap.data()["type"] : "general";
       if (type === "bug") summary.bugs++;
       else if (type === "feature") summary.features++;
       else summary.general++;
@@ -276,7 +276,7 @@ export class VersionService implements IVersionService {
       const data = docSnap.data();
       return {
         id: docSnap.id,
-        type: data["type"] as FeedbackType,
+        type: isFeedbackType(data["type"]) ? data["type"] : "general",
         title: data["title"] as string,
         description: this.truncateDescription(data["description"] as string),
         createdAt: data["createdAt"],
@@ -322,7 +322,7 @@ export class VersionService implements IVersionService {
     const summary: FeedbackSummary = { bugs: 0, features: 0, general: 0 };
 
     unversionedDocs.forEach((docSnap) => {
-      const type = docSnap.data()["type"] as FeedbackType;
+      const type = isFeedbackType(docSnap.data()["type"]) ? docSnap.data()["type"] : "general";
       if (type === "bug") summary.bugs++;
       else if (type === "feature") summary.features++;
       else summary.general++;

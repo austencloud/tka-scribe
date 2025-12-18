@@ -14,6 +14,16 @@
   import { getFirestoreInstance } from "$lib/shared/auth/firebase";
   import { collection, doc, setDoc, getDocs, deleteDoc, type Firestore } from "firebase/firestore";
 
+  // BeatGrid imports for real pictograph rendering
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+  import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
+  import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+  import { GridLocation, GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+
   // Firebase Firestore instance (lazy loaded)
   let firestore: Firestore | null = null;
 
@@ -68,6 +78,30 @@
     thumbnails: string[];
     sequenceLength: number;
     gridMode: string;
+    fullMetadata?: {
+      sequence?: RawBeatData[];
+    };
+  }
+
+  // Raw beat data from sequence-index.json
+  interface RawBeatData {
+    beat?: number;
+    letter?: string;
+    start_pos?: string;
+    end_pos?: string;
+    sequence_start_position?: string;
+    blue_attributes?: RawMotionAttributes;
+    red_attributes?: RawMotionAttributes;
+  }
+
+  interface RawMotionAttributes {
+    motion_type?: string;
+    start_loc?: string;
+    end_loc?: string;
+    start_ori?: string;
+    end_ori?: string;
+    prop_rot_dir?: string;
+    turns?: number | string;
   }
 
   interface CAPDesignation {
@@ -96,6 +130,11 @@
   let pendingDesignations = $state<CAPDesignation[]>([]);  // Multiple designations being built
   let copiedToast = $state(false);
   let syncStatus = $state<"synced" | "syncing" | "error">("synced");
+
+  // Parsed beat data for BeatGrid rendering
+  let parsedBeats = $state<BeatData[]>([]);
+  let parsedStartPosition = $state<StartPositionData | null>(null);
+  let selectedBeatNumber = $state<number | null>(null);
 
   // Firebase collection reference
   const CAP_LABELS_COLLECTION = "cap-labels";
@@ -164,6 +203,232 @@
     labeled: labels.size,
     remaining: circularSequences.length - labels.size,
   });
+
+  // ============================================================================
+  // Beat Data Conversion Functions
+  // ============================================================================
+
+  function parseMotionType(value: string | undefined): MotionType {
+    const str = String(value || "").toLowerCase();
+    switch (str) {
+      case "pro": return MotionType.PRO;
+      case "anti": return MotionType.ANTI;
+      case "float": return MotionType.FLOAT;
+      case "dash": return MotionType.DASH;
+      case "static": return MotionType.STATIC;
+      default: return MotionType.STATIC;
+    }
+  }
+
+  function parseLocation(value: string | undefined): GridLocation {
+    const str = String(value || "").toUpperCase();
+    const locationMap: Record<string, GridLocation> = {
+      N: GridLocation.NORTH,
+      NORTH: GridLocation.NORTH,
+      E: GridLocation.EAST,
+      EAST: GridLocation.EAST,
+      S: GridLocation.SOUTH,
+      SOUTH: GridLocation.SOUTH,
+      W: GridLocation.WEST,
+      WEST: GridLocation.WEST,
+      NE: GridLocation.NORTHEAST,
+      NORTHEAST: GridLocation.NORTHEAST,
+      SE: GridLocation.SOUTHEAST,
+      SOUTHEAST: GridLocation.SOUTHEAST,
+      SW: GridLocation.SOUTHWEST,
+      SOUTHWEST: GridLocation.SOUTHWEST,
+      NW: GridLocation.NORTHWEST,
+      NORTHWEST: GridLocation.NORTHWEST,
+    };
+    return locationMap[str] ?? GridLocation.NORTH;
+  }
+
+  function parseGridPosition(value: string | undefined): GridPosition | null {
+    if (!value) return null;
+    const str = String(value).toLowerCase();
+    const enumKey = str.toUpperCase();
+    const positionValue = GridPosition[enumKey as keyof typeof GridPosition];
+    if (positionValue) return positionValue;
+    for (const key in GridPosition) {
+      if (GridPosition[key as keyof typeof GridPosition] === str) {
+        return str as GridPosition;
+      }
+    }
+    return null;
+  }
+
+  function parseOrientation(value: string | undefined): Orientation {
+    const str = String(value || "").toLowerCase();
+    switch (str) {
+      case "in": return Orientation.IN;
+      case "out": return Orientation.OUT;
+      case "clock": case "clockwise": return Orientation.CLOCK;
+      case "counter": case "counterclockwise": return Orientation.COUNTER;
+      default: return Orientation.IN;
+    }
+  }
+
+  function parseRotationDirection(value: string | undefined): RotationDirection {
+    const str = String(value || "").toLowerCase();
+    switch (str) {
+      case "cw": case "clockwise": return RotationDirection.CLOCKWISE;
+      case "ccw": case "counterclockwise": case "counter_clockwise": return RotationDirection.COUNTER_CLOCKWISE;
+      case "no_rotation": case "norotation": return RotationDirection.NO_ROTATION;
+      default: return RotationDirection.NO_ROTATION;
+    }
+  }
+
+  function parseTurns(value: string | number | undefined): number | "fl" {
+    if (value === "fl" || value === "float") return "fl";
+    const num = Number(value);
+    return isNaN(num) ? 0 : num;
+  }
+
+  function convertRawToBeats(
+    sequenceName: string,
+    rawSequence: RawBeatData[],
+    gridMode: GridMode
+  ): { beats: BeatData[]; startPosition: StartPositionData | null } {
+    if (!rawSequence || rawSequence.length === 0) {
+      return { beats: [], startPosition: null };
+    }
+
+    // Check if first element is start position (has sequence_start_position field)
+    const firstElement = rawSequence[0];
+    const hasStartPosition = firstElement && "sequence_start_position" in firstElement;
+
+    // Parse start position if present
+    let startPosition: StartPositionData | null = null;
+    if (hasStartPosition && firstElement) {
+      const blueAttrs = firstElement.blue_attributes;
+      const redAttrs = firstElement.red_attributes;
+      const gridPosition = parseGridPosition(firstElement.sequence_start_position);
+
+      startPosition = {
+        id: `start-${sequenceName}`,
+        isStartPosition: true as const,
+        letter: (firstElement.letter as Letter | null) ?? null,
+        gridPosition,
+        startPosition: gridPosition,
+        endPosition: null,
+        motions: {
+          [MotionColor.BLUE]: blueAttrs
+            ? createMotionData({
+                color: MotionColor.BLUE,
+                motionType: parseMotionType(blueAttrs.motion_type),
+                startLocation: parseLocation(blueAttrs.start_loc),
+                endLocation: parseLocation(blueAttrs.end_loc),
+                startOrientation: parseOrientation(blueAttrs.start_ori),
+                endOrientation: parseOrientation(blueAttrs.end_ori),
+                rotationDirection: parseRotationDirection(blueAttrs.prop_rot_dir),
+                turns: parseTurns(blueAttrs.turns),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation: parseLocation(blueAttrs.start_loc) || GridLocation.NORTH,
+                gridMode,
+              })
+            : undefined,
+          [MotionColor.RED]: redAttrs
+            ? createMotionData({
+                color: MotionColor.RED,
+                motionType: parseMotionType(redAttrs.motion_type),
+                startLocation: parseLocation(redAttrs.start_loc),
+                endLocation: parseLocation(redAttrs.end_loc),
+                startOrientation: parseOrientation(redAttrs.start_ori),
+                endOrientation: parseOrientation(redAttrs.end_ori),
+                rotationDirection: parseRotationDirection(redAttrs.prop_rot_dir),
+                turns: parseTurns(redAttrs.turns),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation: parseLocation(redAttrs.start_loc) || GridLocation.SOUTH,
+                gridMode,
+              })
+            : undefined,
+        },
+      };
+    }
+
+    // Parse beats (skip first if it's start position)
+    const beatElements = hasStartPosition ? rawSequence.slice(1) : rawSequence;
+    // Also skip any metadata elements (those without blue/red attributes)
+    const actualBeats = beatElements.filter(el => el.blue_attributes || el.red_attributes);
+
+    const beats: BeatData[] = actualBeats.map((step, index) => {
+      const blueAttrs = step.blue_attributes;
+      const redAttrs = step.red_attributes;
+
+      return {
+        id: `beat-${sequenceName}-${index + 1}`,
+        letter: step.letter as Letter ?? null,
+        startPosition: parseGridPosition(step.start_pos) || parseGridPosition(step.sequence_start_position),
+        endPosition: parseGridPosition(step.end_pos),
+        motions: {
+          [MotionColor.BLUE]: blueAttrs
+            ? createMotionData({
+                color: MotionColor.BLUE,
+                motionType: parseMotionType(blueAttrs.motion_type),
+                startLocation: parseLocation(blueAttrs.start_loc),
+                endLocation: parseLocation(blueAttrs.end_loc),
+                startOrientation: parseOrientation(blueAttrs.start_ori),
+                endOrientation: parseOrientation(blueAttrs.end_ori),
+                rotationDirection: parseRotationDirection(blueAttrs.prop_rot_dir),
+                turns: parseTurns(blueAttrs.turns),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation: parseLocation(blueAttrs.start_loc) || GridLocation.NORTH,
+                gridMode,
+              })
+            : undefined,
+          [MotionColor.RED]: redAttrs
+            ? createMotionData({
+                color: MotionColor.RED,
+                motionType: parseMotionType(redAttrs.motion_type),
+                startLocation: parseLocation(redAttrs.start_loc),
+                endLocation: parseLocation(redAttrs.end_loc),
+                startOrientation: parseOrientation(redAttrs.start_ori),
+                endOrientation: parseOrientation(redAttrs.end_ori),
+                rotationDirection: parseRotationDirection(redAttrs.prop_rot_dir),
+                turns: parseTurns(redAttrs.turns),
+                isVisible: true,
+                propType: PropType.STAFF,
+                arrowLocation: parseLocation(redAttrs.start_loc) || GridLocation.SOUTH,
+                gridMode,
+              })
+            : undefined,
+        },
+        beatNumber: Number(step.beat || index + 1),
+        duration: 1.0,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+      } as BeatData;
+    });
+
+    return { beats, startPosition };
+  }
+
+  // Update parsed beats when current sequence changes
+  $effect(() => {
+    if (currentSequence?.fullMetadata?.sequence) {
+      const gridMode = currentSequence.gridMode === "box" ? GridMode.BOX : GridMode.DIAMOND;
+      const { beats, startPosition } = convertRawToBeats(
+        currentSequence.word,
+        currentSequence.fullMetadata.sequence,
+        gridMode
+      );
+      parsedBeats = beats;
+      parsedStartPosition = startPosition;
+      selectedBeatNumber = null;
+    } else {
+      parsedBeats = [];
+      parsedStartPosition = null;
+      selectedBeatNumber = null;
+    }
+  });
+
+  function handleBeatClick(beatNumber: number) {
+    selectedBeatNumber = selectedBeatNumber === beatNumber ? null : beatNumber;
+  }
 
 
   onMount(async () => {
@@ -589,14 +854,25 @@
           </button>
         </div>
 
-        {#if currentThumbnailUrl}
+        <!-- BeatGrid with real Pictographs -->
+        {#if parsedBeats.length > 0}
+          <div class="beat-grid-wrapper">
+            <BeatGrid
+              beats={parsedBeats}
+              startPosition={parsedStartPosition}
+              onBeatClick={handleBeatClick}
+              {selectedBeatNumber}
+            />
+          </div>
+        {:else if currentThumbnailUrl}
+          <!-- Fallback to thumbnail if no beat data -->
           <img
             src={currentThumbnailUrl}
             alt={currentSequence.word}
             class="thumbnail"
           />
         {:else}
-          <div class="no-thumbnail">No thumbnail</div>
+          <div class="no-thumbnail">No beat data available</div>
         {/if}
 
         {#if currentLabel}
@@ -901,6 +1177,17 @@
 
   .copy-json-btn:hover {
     background: rgba(255, 255, 255, 0.15);
+  }
+
+  .beat-grid-wrapper {
+    width: 100%;
+    min-height: 300px;
+    max-height: 500px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .thumbnail {
