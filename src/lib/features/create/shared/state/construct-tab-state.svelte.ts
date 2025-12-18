@@ -15,10 +15,6 @@ import { createHMRState } from "$lib/shared/utils/hmr-state-backup";
 import { createSimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { CreateTabDraft } from "../domain/models/CreateTabDraft";
-import { createTabDraftsState_instance } from "./create-tab-drafts-state.svelte";
-import { libraryState } from "$lib/features/library/state/library-state.svelte";
-import type { LibrarySequence } from "$lib/features/library/domain/models/LibrarySequence";
 
 const debug = createComponentLogger("ConstructTabState");
 import type { BeatData } from "../domain/models/BeatData";
@@ -85,11 +81,6 @@ export function createConstructTabState(
   );
   let isInitialized = $state(hmrBackup.initialValue.isInitialized);
   let isContinuousOnly = $state(false); // Filter state for option viewer
-
-  // Start screen state - shows before start position picker
-  // Flow: Start Screen → Start Position Picker → Option Viewer
-  let showStartScreen = $state(true);
-  let gridMode = $state<GridMode>(GridMode.DIAMOND);
 
   // Construct tab has its own independent sequence state
   // IMPORTANT: Pass tabId="constructor" to ensure persistence loads/saves only constructor's data
@@ -197,15 +188,6 @@ export function createConstructTabState(
   const hasError = $derived(error !== null);
   const canSelectOptions = $derived(selectedStartPosition !== null);
 
-  // Draft and library integration
-  const currentDraft = $derived(createTabDraftsState_instance.getDraftForTab("constructor"));
-  const recentLibrarySequences = $derived(
-    libraryState.sequences
-      .filter((s) => s.beats && s.beats.length > 0) // Only sequences with beats
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-      .slice(0, 5) // Top 5 recent
-  );
-
   const shouldShowStartPositionPicker = $derived(() => {
     // Don't return any state until initialization is complete
     if (!isInitialized) return null;
@@ -215,9 +197,17 @@ export function createConstructTabState(
     // This prevents the bug where Option Viewer shows "No options available" when
     // there's nothing to show options for.
     if (sequenceState) {
-      const hasNoData =
-        !sequenceState.hasStartPosition &&
-        sequenceState.getCurrentSequenceData().length === 0;
+      const currentSeqData = sequenceState.getCurrentSequenceData();
+      const hasStartPos = sequenceState.hasStartPosition;
+
+      // Also check currentSequence.beats directly as a backup
+      // getCurrentSequenceData() can return empty in some edge cases
+      const currentSeq = sequenceState.currentSequence;
+      const directBeatsLength = currentSeq?.beats?.length ?? 0;
+
+      // Has data if we have start position OR beats (from either source)
+      const hasNoData = !hasStartPos && currentSeqData.length === 0 && directBeatsLength === 0;
+
       if (hasNoData) {
         return true; // Force Start Position Picker when there's no data
       }
@@ -276,7 +266,16 @@ export function createConstructTabState(
     });
 
     // Initialize persistence and restore state if available
-    if (sequencePersistenceService && sequenceState) {
+    // BUT skip if there's a pending edit from Discover gallery - that takes priority
+    const hasPendingEdit = localStorage.getItem("tka-pending-edit-sequence") !== null;
+
+    if (hasPendingEdit) {
+      // Just initialize without loading saved state
+      if (sequenceState) {
+        await sequenceState.initializeWithPersistence();
+      }
+      // Don't set showStartPositionPicker here - let the pending edit effect handle it
+    } else if (sequencePersistenceService && sequenceState) {
       try {
         await sequenceState.initializeWithPersistence();
 
@@ -491,132 +490,6 @@ export function createConstructTabState(
   }
 
   // ============================================================================
-  // START SCREEN METHODS
-  // ============================================================================
-
-  /**
-   * Set grid mode (called from start screen)
-   */
-  function setGridMode(mode: GridMode) {
-    gridMode = mode;
-  }
-
-  /**
-   * Start a new sequence (hides start screen, shows start position picker)
-   */
-  async function startNewSequence() {
-    // Save current work as draft before starting new
-    if (sequenceState?.hasSequence()) {
-      const currentSequence = sequenceState.currentSequence;
-      if (currentSequence) {
-        createTabDraftsState_instance.saveDraft(
-          "constructor",
-          currentSequence,
-          gridMode
-        );
-      }
-    }
-
-    // Clear current sequence
-    await clearSequenceCompletely();
-
-    // Hide start screen, show start position picker
-    showStartScreen = false;
-  }
-
-  /**
-   * Continue from a saved draft
-   */
-  async function continueDraft(draft: CreateTabDraft) {
-    if (!sequenceState) return;
-
-    try {
-      // Set grid mode from draft
-      gridMode = draft.gridMode;
-      startPositionStateService.setGridMode(draft.gridMode);
-
-      // Load draft sequence into state
-      sequenceState.setCurrentSequence(draft.sequence);
-
-      // Set start position if available
-      const startPos = draft.sequence.startPosition || draft.sequence.startingPositionBeat;
-      if (startPos) {
-        sequenceState.setSelectedStartPosition(startPos);
-        setSelectedStartPosition(startPos);
-        startPositionStateService.setSelectedPosition(startPos);
-        setShowStartPositionPicker(false);
-      }
-
-      // Hide start screen
-      showStartScreen = false;
-    } catch (err) {
-      console.error("❌ ConstructTabState: Failed to continue draft:", err);
-      setError(err instanceof Error ? err.message : "Failed to load draft");
-    }
-  }
-
-  /**
-   * Delete the current draft
-   */
-  function deleteDraft() {
-    createTabDraftsState_instance.deleteDraft("constructor");
-  }
-
-  /**
-   * Load a library sequence to extend
-   */
-  async function loadLibrarySequence(librarySequence: LibrarySequence) {
-    if (!sequenceState) return;
-
-    try {
-      // Build sequence data from library sequence
-      const sequenceData = {
-        id: `sequence-${Date.now()}`,
-        name: librarySequence.name || `Sequence from ${librarySequence.word || "Library"}`,
-        word: librarySequence.word,
-        gridMode: librarySequence.gridMode || GridMode.DIAMOND,
-        beats: librarySequence.beats || [],
-        startPosition: librarySequence.beats?.[0] || null,
-        startingPositionBeat: librarySequence.beats?.[0] || null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        difficulty: librarySequence.difficulty,
-        length: librarySequence.beats?.length || 0,
-      };
-
-      // Set grid mode from library sequence
-      const seqGridMode = librarySequence.gridMode || GridMode.DIAMOND;
-      gridMode = seqGridMode;
-      startPositionStateService.setGridMode(seqGridMode);
-
-      // Load sequence into state
-      sequenceState.setCurrentSequence(sequenceData);
-
-      // Set start position from first beat
-      const startPos = librarySequence.beats?.[0];
-      if (startPos) {
-        sequenceState.setSelectedStartPosition(startPos);
-        setSelectedStartPosition(startPos);
-        startPositionStateService.setSelectedPosition(startPos);
-        setShowStartPositionPicker(false);
-      }
-
-      // Hide start screen (don't show start position picker - sequence already has start)
-      showStartScreen = false;
-    } catch (err) {
-      console.error("❌ ConstructTabState: Failed to load library sequence:", err);
-      setError(err instanceof Error ? err.message : "Failed to load sequence");
-    }
-  }
-
-  /**
-   * Show start screen (e.g., when sequence is cleared)
-   */
-  function showStartScreenAgain() {
-    showStartScreen = true;
-  }
-
-  // ============================================================================
   // DERIVED STATE - REMOVED
   // ============================================================================
 
@@ -672,20 +545,6 @@ export function createConstructTabState(
       return sequenceState;
     },
 
-    // Start screen state
-    get showStartScreen() {
-      return showStartScreen;
-    },
-    get gridMode() {
-      return gridMode;
-    },
-    get currentDraft() {
-      return currentDraft;
-    },
-    get recentLibrarySequences() {
-      return recentLibrarySequences;
-    },
-
     // Sub-states
     get startPositionStateService() {
       return startPositionStateService;
@@ -729,14 +588,6 @@ export function createConstructTabState(
     restorePickerStateAfterUndo,
     syncPickerStateWithSequence,
     syncGridModeFromSequence,
-
-    // Start screen methods
-    setGridMode,
-    startNewSequence,
-    continueDraft,
-    deleteDraft,
-    loadLibrarySequence,
-    showStartScreenAgain,
 
     // Event handlers
     handleStartPositionSelected,

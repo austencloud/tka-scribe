@@ -4,16 +4,18 @@
   Pure UI component that displays StartPositionPicker or OptionPicker
   based on the current sequence state. Receives all state and handlers as props.
 
+  Flow: Start Position Picker → Option Viewer
+
   Uses instant content swap - the workspace expansion is the "hero" animation.
 -->
 <script lang="ts">
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import OptionViewer from "$lib/features/create/construct/option-picker/option-viewer/components/OptionViewer.svelte";
   import StartPositionPicker from "$lib/features/create/construct/start-position-picker/components/StartPositionPicker.svelte";
   import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
 
-  // Props - simplified with unified service
+  // Props
   let {
     shouldShowStartPositionPicker,
     startPositionState,
@@ -46,7 +48,6 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 </script>
 
 <div class="construct-tab-content" data-testid="construct-tab-content" data-picker-mode={shouldShowStartPositionPicker ? "start-position" : "options"}>
-  <!-- Main Content (always visible) -->
   <div class="content-container">
     <div class="construct-scroll-area transparent-scroll">
       <!-- Instant swap - workspace expansion is the visual transition -->

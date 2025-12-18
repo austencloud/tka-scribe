@@ -45,6 +45,7 @@
   import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
   import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
   import VideoRecordCoordinator from "./coordinators/VideoRecordCoordinator.svelte";
+  import SaveToLibraryPanel from "./SaveToLibraryPanel.svelte";
   import { SessionManager } from "../services/SessionManager.svelte";
   import { AutosaveService } from "../services/AutosaveService";
   import { SequencePersistenceService } from "../services/SequencePersistenceService";
@@ -74,6 +75,7 @@
   let creationMethodPersistence: ICreationMethodPersistenceService | null =
     $state(null);
   let effectCoordinator: ICreateModuleEffectCoordinator | null = $state(null);
+  let deepLinkService: import("../services/contracts/IDeepLinkSequenceService").IDeepLinkSequenceService | null = $state(null);
   let CreateModuleState: CreateModuleState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
 
@@ -212,6 +214,10 @@
   // Track previous module and tab to detect navigation changes
   let previousModule = $state<string | null>(null);
   let previousTab = $state<string | null>(null);
+
+  // Flag to track if we've already processed the pending edit during this session
+  // Prevents re-loading if user navigates away and back
+  let pendingEditProcessed = $state(false);
 
   // Track previous panel open state to detect user-initiated closes
   let previousPanelOpen = $state<string | null>(null);
@@ -358,6 +364,70 @@
     previousTab = currentTab;
   });
 
+  // Check for pending edits from Discover gallery when on create module
+  // This handles the case where user clicks Edit from Discover gallery
+  $effect(() => {
+    const currentModule = navigationState.currentModule;
+
+    // Only process when we're on the create module
+    if (currentModule !== "create") {
+      return;
+    }
+
+    // Check if services are ready
+    if (!deepLinkService || !CreateModuleState || !constructTabState || !servicesInitialized) {
+      return;
+    }
+
+    // Skip if we've already processed a pending edit this session
+    if (pendingEditProcessed) {
+      return;
+    }
+
+    // Check for pending edit from Discover gallery
+    const hasPending = deepLinkService.hasPendingEdit();
+
+    if (hasPending) {
+      // Mark as processed BEFORE loading to prevent double-processing
+      pendingEditProcessed = true;
+
+      deepLinkService.loadFromPendingEdit(
+        (sequence) => {
+          // IMPORTANT: Set directly on constructor tab's sequence state, NOT through
+          // the getter which uses navigationState.activeTab. The view transition might
+          // not have completed setting activeTab to "constructor" yet, causing the
+          // sequence to be set on the wrong tab's state (or fallback state).
+          const constructorSequenceState = constructTabState?.sequenceState;
+          if (constructorSequenceState) {
+            constructorSequenceState.setCurrentSequence(sequence);
+
+            // Sync picker state with the newly loaded sequence
+            // This ensures hasStartPosition and getCurrentSequenceData() are properly evaluated
+            constructTabState.syncPickerStateWithSequence();
+          } else {
+            // Fallback to the getter-based approach if constructTabState isn't available
+            CreateModuleState!.sequenceState.setCurrentSequence(sequence);
+          }
+
+          // Mark creation method as selected since we're loading a sequence
+          if (!hasSelectedCreationMethod) {
+            hasSelectedCreationMethod = true;
+            creationMethodPersistence?.markMethodSelected();
+          }
+          // Explicitly hide the creation method selector - the visibility sync effect
+          // might not re-run in time due to Svelte 5's reactive tracking
+          navigationState.setCreationMethodSelectorVisible(false);
+
+          // Tell the construct tab to show the option viewer (not start position picker)
+          // since we're loading an existing sequence
+          if (constructTabState?.setShowStartPositionPicker) {
+            constructTabState.setShowStartPositionPicker(false);
+          }
+        }
+      );
+    }
+  });
+
   // Setup all managed effects using EffectCoordinator (includes URL sync)
   $effect(() => {
     if (
@@ -498,6 +568,7 @@
         handlers = result.handlers;
         creationMethodPersistence = result.creationMethodPersistence;
         effectCoordinator = result.effectCoordinator;
+        deepLinkService = result.deepLinkService;
 
         // Ensure state is initialized before setting reference
         if (!CreateModuleState || !constructTabState) {
@@ -888,6 +959,13 @@
 
   <!-- Customize Options Coordinator -->
   <CustomizeCoordinator />
+
+  <!-- Save to Library Panel - Rendered at root level to avoid stacking context issues -->
+  <SaveToLibraryPanel
+    show={panelState.isSaveToLibraryPanelOpen}
+    word={currentDisplayWord}
+    onClose={() => panelState.closeSaveToLibraryPanel()}
+  />
 
   <!-- Sequence Transfer Confirmation Dialog -->
   <TransferConfirmDialog
