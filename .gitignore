@@ -25,6 +25,10 @@ dist/
 serviceAccountKey.json
 *-firebase-adminsdk-*.json
 
+# YouTube cookies (NEVER commit these!)
+youtube-cookies.txt
+*cookies*.txt
+
 # Logs
 logs
 *.log

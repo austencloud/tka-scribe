@@ -29,6 +29,8 @@ import { PWAEngagementService } from "../../mobile/services/implementations/PWAE
 import { PWAInstallDismissalService } from "../../mobile/services/implementations/PWAInstallDismissalService";
 import { SettingsState } from "../../settings/state/SettingsState.svelte.js";
 import { FirebaseSettingsPersistenceService } from "../../settings/services/implementations/FirebaseSettingsPersistenceService";
+import { OnboardingPersistenceService } from "../../onboarding/services/implementations/OnboardingPersistenceService";
+import { TagService } from "../../../features/library/services/implementations/TagService";
 import { TYPES } from "../types";
 
 export const coreModule = new ContainerModule(
@@ -77,6 +79,15 @@ export const coreModule = new ContainerModule(
       .bind(TYPES.ISettingsPersistenceService)
       .to(FirebaseSettingsPersistenceService)
       .inSingletonScope();
+
+    // === ONBOARDING SERVICES ===
+    options
+      .bind(TYPES.IOnboardingPersistenceService)
+      .to(OnboardingPersistenceService)
+      .inSingletonScope();
+
+    // === LIBRARY SERVICES ===
+    options.bind(TYPES.ITagService).to(TagService).inSingletonScope();
 
     // === STATE SERVICES ===
     options.bind(TYPES.IAppState).toConstantValue(createAppState());

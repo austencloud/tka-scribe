@@ -67,9 +67,20 @@
       }
     })();
 
-    // ⚡ CRITICAL: Initialize Firebase Auth listener immediately
-    // This is required to catch auth state changes from social sign-in
-    authState.initialize();
+    // ⚡ CRITICAL: Initialize Firestore BEFORE auth listener
+    // This prevents race conditions when services try to use Firestore
+    (async () => {
+      try {
+        const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+        await getFirestoreInstance();
+      } catch (error) {
+        console.error("❌ [App Init] Firestore initialization failed:", error);
+      }
+
+      // ⚡ CRITICAL: Initialize Firebase Auth listener AFTER Firestore is ready
+      // This is required to catch auth state changes from social sign-in
+      authState.initialize();
+    })();
 
     // Note: Sequence restoration tester removed (now integrated into services)
 

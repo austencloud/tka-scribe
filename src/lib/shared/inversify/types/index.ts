@@ -57,6 +57,7 @@ import { MessagingTypes } from "./messaging.types";
 import { RenderingTypes } from "./rendering.types";
 import { TrainTypes } from "./train.types";
 import { UITypes } from "./ui.types";
+import { YouTubeTypes } from "./youtube.types";
 
 // Re-export domain-specific types for granular imports
 export {
@@ -78,6 +79,7 @@ export {
   RenderingTypes,
   TrainTypes,
   UITypes,
+  YouTubeTypes,
 };
 
 /**
@@ -113,6 +115,7 @@ export const TYPES = {
   ...LibraryTypes,
   ...FeedbackTypes,
   ...MessagingTypes,
+  ...YouTubeTypes,
 } as const;
 
 // Type helper for getting service types

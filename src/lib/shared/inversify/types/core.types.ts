@@ -27,6 +27,9 @@ export const CoreTypes = {
   ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
   IBackgroundPopularityService: Symbol.for("IBackgroundPopularityService"),
 
+  // Onboarding Services
+  IOnboardingPersistenceService: Symbol.for("IOnboardingPersistenceService"),
+
   // Device & Resource
   IDeviceDetector: Symbol.for("IDeviceDetector"),
   IResourceTracker: Symbol.for("IResourceTracker"),
@@ -47,6 +50,9 @@ export const CoreTypes = {
   IApplicationStateService: Symbol.for("IApplicationStateService"),
   IMainTabState: Symbol.for("IMainTabState"),
   IPerformanceMetricsState: Symbol.for("IPerformanceMetricsState"),
+
+  // Library Services
+  ITagService: Symbol.for("ITagService"),
 
   // Utility
   IBetaDetectionService: Symbol.for("IBetaDetectionService"),

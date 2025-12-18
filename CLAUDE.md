@@ -31,6 +31,27 @@ This project follows a **2025+ AI-assisted development approach**:
 
 ## Technical Stack & Patterns
 
+### Import Strategy: No Barrel Exports
+**CRITICAL: Never use barrel exports (index.ts files that re-export other modules).**
+
+**Why we removed them:**
+- Barrel exports cause massive bundle bloat in Vite
+- Importing one item from a barrel loads and evaluates the entire barrel
+- Network requests skyrocket (especially in dev mode)
+- Tree-shaking doesn't work reliably with re-exports
+- Harder to trace dependencies
+
+**What to do instead:**
+- **Always import directly from source files** using relative paths
+- Example: `import { MyComponent } from '../../components/MyComponent.svelte'`
+- NOT: `import { MyComponent } from '../../components'`
+
+**Rules:**
+- Never create `index.ts` files in `src/` directory
+- If you see an `index.ts` that re-exports, flag it for removal
+- Direct imports are more verbose but vastly better for performance
+- IDEs handle relative imports just fine with autocomplete
+
 ### Svelte 5
 - Use **runes** (`$state`, `$derived`, `$effect`) not legacy reactive syntax
 - Use `$props()` with TypeScript interfaces
@@ -201,6 +222,14 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 
 ### Memory sync
 - CLAUDE.md is the source of truth;
+
+### Playwright Usage (IMPORTANT)
+**DO NOT use Playwright for navigation or snapshots unless explicitly instructed.**
+- Playwright snapshots are token-expensive (can consume 20k+ tokens per snapshot)
+- Never proactively navigate with Playwright to "test" or "verify" fixes
+- Only use Playwright when the user explicitly says to use it AND provides specific instructions
+- If user wants to test, let THEM navigate in the browser - don't do it automatically
+- Trust the user to test and report back
 
 ---
 

@@ -709,7 +709,11 @@
       "Bash(\"src/lib/shared/components/thumbnail/thumbnail-types.ts\" )",
       "Bash(\"src/lib/shared/components/thumbnail/index.ts\")",
       "Bash(src/lib/shared/navigation/ )",
-      "Bash(src/lib/shared/MainInterface.svelte)"
+      "Bash(src/lib/shared/MainInterface.svelte)",
+      "Bash(cmd //c \"tasklist /FI \"\"IMAGENAME eq node.exe\"\"\")",
+      "Bash(firebase init:*)",
+      "Bash(firebase functions:list:*)",
+      "Bash(firebase functions:log:*)"
     ],
     "deny": [],
     "ask": []

@@ -47,6 +47,7 @@ export {
   RenderingTypes,
   TrainTypes,
   UITypes,
+  YouTubeTypes,
   // Type helper
   type ServiceType,
 } from "./types/index";

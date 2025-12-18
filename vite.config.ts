@@ -207,6 +207,7 @@ export default defineConfig({
   define: {
     __DEFINES__: JSON.stringify({}),
     __APP_VERSION__: JSON.stringify(packageJson.version),
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(packageJson.version),
   },
   plugins: [
     sveltekit({
@@ -320,7 +321,7 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 5173,
-    strictPort: false, // ⚡ Auto-increment port if taken (faster dev workflow)
+    strictPort: true, // 📱 Mobile debugging requires consistent port (ADB reverse tcp:5173)
     headers: {
       // Enable OAuth popups to communicate with parent window
       "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
