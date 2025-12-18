@@ -13,6 +13,7 @@ import type { BeatData } from "../../../../features/create/shared/domain/models/
 import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { GridPositionGroup } from "../../../pictograph/grid/domain/enums/grid-enums";
 import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
+import type { CAPType } from "../../../../features/create/generate/circular/domain/models/circular-models";
 
 export interface SequenceData {
   readonly id: string;
@@ -43,6 +44,8 @@ export interface SequenceData {
    */
   readonly isFavorite: boolean;
   readonly isCircular: boolean;
+  /** Detected Circular Arrangement Pattern type (populated by migration/save) */
+  readonly capType?: CAPType | null;
   readonly difficultyLevel?: string;
   readonly tags: readonly string[];
   readonly metadata: Record<string, unknown>;
@@ -77,6 +80,7 @@ export function createSequenceData(
     thumbnails: data.thumbnails ?? [],
     isFavorite: data.isFavorite ?? false,
     isCircular: data.isCircular ?? false,
+    ...(data.capType !== undefined && { capType: data.capType }),
     tags: data.tags ?? [],
     metadata: data.metadata ?? {},
     ...(data.sequenceLength !== undefined && {

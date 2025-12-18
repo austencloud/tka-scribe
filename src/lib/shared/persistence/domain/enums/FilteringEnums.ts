@@ -19,4 +19,6 @@ export enum ExploreFilterType {
   RECENT = "recent",
   FAVORITES = "favorites",
   ALL_SEQUENCES = "all_sequences",
+  /** Filter by circular sequences and CAP type */
+  CAP_TYPE = "cap_type",
 }

@@ -14,7 +14,7 @@ import type {
 } from "../contracts/ICreateModuleEffectCoordinator";
 import {
   createAutoEditPanelEffect,
-  createAutoSequenceActionsEffect,
+  createAutoBeatEditorEffect,
 } from "../../state/managers/AutoEditPanelManager.svelte";
 import { createCurrentWordDisplayEffect } from "../../state/managers/CurrentWordDisplayManager.svelte";
 import { createLayoutEffects } from "../../state/managers/LayoutManager.svelte";
@@ -79,12 +79,12 @@ export class CreateModuleEffectCoordinator
     });
     cleanups.push(autoEditCleanup);
 
-    // Auto Sequence Actions panel effects (single beat + auto-open/close)
-    const autoSequenceActionsCleanup = createAutoSequenceActionsEffect({
+    // Auto Beat Editor panel effects (opens when beat is clicked)
+    const autoBeatEditorCleanup = createAutoBeatEditorEffect({
       CreateModuleState,
       panelState,
     });
-    cleanups.push(autoSequenceActionsCleanup);
+    cleanups.push(autoBeatEditorCleanup);
 
     // PWA engagement tracking
     const pwaCleanup = createPWAEngagementEffect({ CreateModuleState });

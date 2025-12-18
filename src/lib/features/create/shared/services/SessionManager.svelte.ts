@@ -21,7 +21,7 @@ import {
   serverTimestamp,
   type Timestamp,
 } from "firebase/firestore";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import {
   createSequenceSession,
   generateDeviceId,
@@ -62,6 +62,7 @@ export class SessionManager {
     };
 
     // Save to Firestore
+    const firestore = await getFirestoreInstance();
     const sessionRef = doc(
       firestore,
       `users/${user.uid}/sessions/${session.sessionId}`
@@ -87,6 +88,7 @@ export class SessionManager {
       throw new Error("User must be authenticated");
     }
 
+    const firestore = await getFirestoreInstance();
     const sessionRef = doc(
       firestore,
       `users/${user.uid}/sessions/${this.currentSession.sessionId}`
@@ -139,6 +141,7 @@ export class SessionManager {
     const user = auth.currentUser;
     if (!user) return [];
 
+    const firestore = await getFirestoreInstance();
     const sessionsRef = collection(firestore, `users/${user.uid}/sessions`);
     const q = query(sessionsRef, where("deviceId", "==", this.deviceId));
 
@@ -163,6 +166,7 @@ export class SessionManager {
     const user = auth.currentUser;
     if (!user) return null;
 
+    const firestore = await getFirestoreInstance();
     const sessionRef = doc(firestore, `users/${user.uid}/sessions/${sessionId}`);
     const snapshot = await getDoc(sessionRef);
 

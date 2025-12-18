@@ -76,15 +76,22 @@ export class SequenceImportService implements ISequenceImportService {
       `PNG steps for sequence ${id}`
     );
 
+    // Filter out start position entries (marked with sequence_start_position)
+    const actualBeats = validatedSteps.filter(
+      (step) => !step.sequence_start_position
+    );
+
     // Convert validated steps to beats (no more type assertions needed!)
-    const beats: BeatData[] = validatedSteps.map((step) => {
+    const beats: BeatData[] = actualBeats.map((step, index) => {
+      // Derive beat number from array index if not present in metadata
+      const beatNumber = step.beat ?? index + 1;
       // Extract attributes with proper typing
       const blueAttrs = step.blue_attributes;
       const redAttrs = step.red_attributes;
 
       // Create the pictograph data first
       const pictographData = createPictographData({
-        id: `pictograph-${step.beat}`,
+        id: `pictograph-${beatNumber}`,
         motions: {
           blue: createMotionData({
             color: MotionColor.BLUE,
@@ -119,8 +126,8 @@ export class SequenceImportService implements ISequenceImportService {
       // Return BeatData that extends PictographData
       return {
         ...pictographData, // Spread PictographData properties
-        id: `${step.beat}-${step.letter}`,
-        beatNumber: step.beat, // Guaranteed to be positive number
+        id: `${beatNumber}-${step.letter}`,
+        beatNumber, // Derived from array index or metadata
         duration: 1,
         blueReversal: false,
         redReversal: false,

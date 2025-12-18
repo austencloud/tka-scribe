@@ -19,7 +19,7 @@ import {
   serverTimestamp,
   type Timestamp,
 } from "firebase/firestore";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /**
@@ -103,6 +103,7 @@ export class SequencePersistenceService {
       source: "created" as const, // Mark as user-created
     };
 
+    const firestore = await getFirestoreInstance();
     const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
     console.log("[SequencePersistenceService] Writing to Firestore path:", sequenceRef.path);
     
@@ -134,6 +135,7 @@ export class SequencePersistenceService {
       throw new Error("User must be authenticated");
     }
 
+    const firestore = await getFirestoreInstance();
     const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
     
     // Flatten structure to match LibrarySequence format
@@ -164,6 +166,7 @@ export class SequencePersistenceService {
     const user = auth.currentUser;
     if (!user) return null;
 
+    const firestore = await getFirestoreInstance();
     const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
     const snapshot = await getDoc(sequenceRef);
 
@@ -179,6 +182,7 @@ export class SequencePersistenceService {
     const user = auth.currentUser;
     if (!user) return [];
 
+    const firestore = await getFirestoreInstance();
     const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
     const q = query(
       sequencesRef,
@@ -197,6 +201,7 @@ export class SequencePersistenceService {
     const user = auth.currentUser;
     if (!user) return [];
 
+    const firestore = await getFirestoreInstance();
     const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
     const snapshot = await getDocs(sequencesRef);
 
@@ -210,6 +215,7 @@ export class SequencePersistenceService {
     const user = auth.currentUser;
     if (!user) return false;
 
+    const firestore = await getFirestoreInstance();
     const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
     const snapshot = await getDoc(sequenceRef);
 

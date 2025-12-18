@@ -43,6 +43,7 @@
   import EditCoordinator from "./coordinators/EditCoordinator.svelte";
   import CustomizeCoordinator from "./coordinators/CustomizeCoordinator.svelte";
   import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
+  import BeatEditorCoordinator from "./coordinators/BeatEditorCoordinator.svelte";
   import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
   import VideoRecordCoordinator from "./coordinators/VideoRecordCoordinator.svelte";
   import SaveToLibraryPanel from "./SaveToLibraryPanel.svelte";
@@ -949,6 +950,9 @@
 
   <!-- Sequence Actions Coordinator -->
   <SequenceActionsCoordinator />
+
+  <!-- Beat Editor Coordinator - Opens when clicking a pictograph -->
+  <BeatEditorCoordinator />
 
   <!-- Animation Coordinator - Rendered outside stacking context to appear above navigation -->
   {#if CreateModuleState}

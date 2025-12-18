@@ -67,8 +67,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
     gap: 12px;
+    padding: 32px 16px;
     color: rgba(255, 255, 255, 0.4);
     text-align: center;
   }
@@ -84,10 +84,8 @@
   }
 
   .beat-controls {
-    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 16px;
   }
 

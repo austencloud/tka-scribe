@@ -96,13 +96,21 @@ const PngMotionAttributesSchema = z.object({
 });
 
 export const PngStepSchema = z.object({
+  // beat is optional - will be derived from array index if not present
   beat: z
     .number()
     .int()
-    .nonnegative("PNG beat number must be non-negative (0 or positive)"),
+    .nonnegative("PNG beat number must be non-negative (0 or positive)")
+    .optional(),
   letter: z.string().min(1, "PNG letter cannot be empty"),
   blue_attributes: PngMotionAttributesSchema.optional(), // snake_case to match PNG
   red_attributes: PngMotionAttributesSchema.optional(), // snake_case to match PNG
+  // These fields are present in newer metadata format
+  start_pos: z.string().optional(),
+  end_pos: z.string().optional(),
+  timing: z.string().optional(),
+  direction: z.string().optional(),
+  sequence_start_position: z.string().optional(), // Marks start position entry
 });
 
 export const PngMetadataArraySchema = z.array(PngStepSchema);

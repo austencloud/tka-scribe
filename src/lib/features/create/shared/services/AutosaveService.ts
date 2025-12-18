@@ -19,7 +19,7 @@ import {
   serverTimestamp,
   type Timestamp,
 } from "firebase/firestore";
-import { firestore, auth } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import { createDraftSequence, type DraftSequence } from "../domain/DraftSequence";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
@@ -47,6 +47,7 @@ export class AutosaveService {
       updatedAt: serverTimestamp() as Timestamp,
     };
 
+    const firestore = await getFirestoreInstance();
     const draftRef = doc(firestore, `users/${user.uid}/drafts/${sessionId}`);
     await setDoc(draftRef, draft, { merge: true });
 
@@ -60,6 +61,7 @@ export class AutosaveService {
     const user = auth.currentUser;
     if (!user) return null;
 
+    const firestore = await getFirestoreInstance();
     const draftRef = doc(firestore, `users/${user.uid}/drafts/${sessionId}`);
     const snapshot = await getDoc(draftRef);
 
@@ -75,6 +77,7 @@ export class AutosaveService {
     const user = auth.currentUser;
     if (!user) return;
 
+    const firestore = await getFirestoreInstance();
     const draftRef = doc(firestore, `users/${user.uid}/drafts/${sessionId}`);
     await deleteDoc(draftRef);
   }
@@ -86,6 +89,7 @@ export class AutosaveService {
     const user = auth.currentUser;
     if (!user) return [];
 
+    const firestore = await getFirestoreInstance();
     const draftsRef = collection(firestore, `users/${user.uid}/drafts`);
     const snapshot = await getDocs(draftsRef);
 
@@ -148,6 +152,7 @@ export class AutosaveService {
     cutoffDate.setDate(cutoffDate.getDate() - daysOld);
     const cutoffTimestamp = cutoffDate.getTime();
 
+    const firestore = await getFirestoreInstance();
     const draftsRef = collection(firestore, `users/${user.uid}/drafts`);
     const snapshot = await getDocs(draftsRef);
 
