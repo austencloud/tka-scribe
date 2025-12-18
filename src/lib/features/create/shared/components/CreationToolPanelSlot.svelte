@@ -110,12 +110,13 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
         <div class="sub-tab-content">
           {#if activeToolPanel === "assembler"}
             <!-- Assembler Mode - Simplified tap-based hand path builder -->
-            {@const assemblerSeq = createModuleState.assemblerTabState?.sequenceState?.currentSequence}
+            {@const assemblerTabState = createModuleState.assemblerTabState}
+            {@const assemblerSeq = assemblerTabState?.sequenceState?.currentSequence}
             {@const existingStartBeat = assemblerSeq?.startingPositionBeat || assemblerSeq?.startPosition || null}
             {@const existingBeatsArray = assemblerSeq?.beats || []}
             {@const hasExistingAssemblerData = !!(existingStartBeat || existingBeatsArray.length > 0)}
             <AssemblerTab
-              initialGridMode={createModuleState.assemblerTabState?.sequenceState?.gridMode}
+              initialGridMode={assemblerTabState?.sequenceState?.gridMode}
               hasExistingSequence={hasExistingAssemblerData}
               existingStartPositionBeat={existingStartBeat}
               existingBeats={existingBeatsArray}

@@ -10,7 +10,6 @@
   import WordLabel from "./WordLabel.svelte";
   import UndoButton from "../../shared/components/buttons/UndoButton.svelte";
   import SaveToLibraryButton from "../../shared/components/buttons/SaveToLibraryButton.svelte";
-  import SaveToLibraryPanel from "../../../components/SaveToLibraryPanel.svelte";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
   let {
@@ -53,17 +52,9 @@
     );
   });
 
-  // Library save handlers - use panelState for mutual exclusivity with other panels
+  // Library save handler - use panelState for mutual exclusivity with other panels
   function handleSaveButtonClick() {
     panelState.openSaveToLibraryPanel(); // This calls closeAllPanels() first
-  }
-
-  function handleSaveClose() {
-    panelState.closeSaveToLibraryPanel();
-  }
-
-  function handleSaveComplete(sequenceId: string) {
-    logger.success("Sequence saved with ID:", sequenceId);
   }
 
   const currentSequence = $derived(sequenceState.currentSequence);
@@ -137,12 +128,6 @@
     </div>
   </div>
 </div>
-
-<SaveToLibraryPanel
-  show={panelState.isSaveToLibraryPanelOpen}
-  onClose={handleSaveClose}
-  onSaveComplete={handleSaveComplete}
-/>
 
 <style>
   .sequence-container {

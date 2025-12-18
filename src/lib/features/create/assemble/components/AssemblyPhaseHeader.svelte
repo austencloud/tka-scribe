@@ -5,6 +5,9 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
 -->
 <script lang="ts">
   import type { HandPathPhase } from "../state/handpath-assemble-state.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   const {
     phase,
@@ -17,6 +20,16 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     redPathLength: number;
     onBack?: () => void;
   }>();
+
+  // Resolve haptic feedback service
+  const hapticService = resolve<IHapticFeedbackService>(
+    TYPES.IHapticFeedbackService
+  );
+
+  function handleBack() {
+    hapticService?.trigger("selection");
+    onBack?.();
+  }
 
   // Phase display info
   const phaseInfo = $derived.by(() => {
@@ -82,7 +95,7 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
 <div class="phase-header" style:--phase-color={phaseInfo.color}>
   <!-- Back button -->
   {#if onBack && phase !== "blue"}
-    <button class="back-button" onclick={onBack} aria-label="Go back">
+    <button class="back-button" onclick={handleBack} aria-label="Go back">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
         <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>

@@ -14,6 +14,7 @@ import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type { ISequencePersistenceService } from "../../services/contracts/ISequencePersistenceService";
 import type { IUndoService } from "../../services/contracts/IUndoService";
 import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+import type { IDeepLinkSequenceService } from "../../services/contracts/IDeepLinkSequenceService";
 import type { OptionHistoryManager } from "./option-history-manager.svelte";
 
 type ConstructTabState =
@@ -122,20 +123,30 @@ export function createCreateModulePersistenceController({
     const tabSequenceState = getSequenceStateFor(panel);
     tabSequenceState.updateCachedActiveTab(panel);
 
-    // Check if there's a pending deep link - if so, skip restoring saved state
-    // This prevents overwriting deep link sequences with empty/old persisted state
+    // Check if there's a pending deep link OR pending edit - if so, skip restoring saved state
+    // This prevents overwriting deep link/pending edit sequences with empty/old persisted state
     let hasDeepLink = false;
+    let hasPendingEdit = false;
+    let pendingEditWasProcessed = false;
     try {
       const { resolve } = await import("$lib/shared/inversify/di");
       const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
+
+      // Also check for pending edit from Discover gallery (stored in localStorage)
+      hasPendingEdit = localStorage.getItem("tka-pending-edit-sequence") !== null;
+
+      // CRITICAL: Also check session flag - pending edit may have already been processed
+      // (and localStorage cleared) by the $effect before this function runs
+      const deepLinkSequenceService = resolve<IDeepLinkSequenceService>(TYPES.IDeepLinkSequenceService);
+      pendingEditWasProcessed = deepLinkSequenceService.wasPendingEditProcessedThisSession();
     } catch {
       // Service not available - assume no deep link
       void 0; // Suppress unused catch binding warning
     }
 
-    if (hasDeepLink) {
+    if (hasDeepLink || hasPendingEdit || pendingEditWasProcessed) {
       return;
     }
 

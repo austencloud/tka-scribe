@@ -6,6 +6,9 @@ Supports enabled/disabled states and highlights current position.
 -->
 <script lang="ts">
   import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   const { position, enabled, isCurrent, onSelect } = $props<{
     position: GridLocation;
@@ -13,6 +16,11 @@ Supports enabled/disabled states and highlights current position.
     isCurrent: boolean;
     onSelect: (position: GridLocation) => void;
   }>();
+
+  // Resolve haptic feedback service
+  const hapticService = resolve<IHapticFeedbackService>(
+    TYPES.IHapticFeedbackService
+  );
 
   // Map GridLocation to display label
   const positionLabels: Record<GridLocation, string> = {
@@ -30,6 +38,7 @@ Supports enabled/disabled states and highlights current position.
 
   function handleClick() {
     if (enabled) {
+      hapticService?.trigger("selection");
       onSelect(position);
     }
   }

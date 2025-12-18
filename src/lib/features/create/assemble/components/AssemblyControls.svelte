@@ -9,6 +9,9 @@ Shows contextual action buttons based on current phase:
 -->
 <script lang="ts">
   import type { HandPathPhase } from "../state/handpath-assemble-state.svelte";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   const {
     phase,
@@ -32,11 +35,36 @@ Shows contextual action buttons based on current phase:
     onReset: () => void;
   }>();
 
+  // Resolve haptic feedback service
+  const hapticService = resolve<IHapticFeedbackService>(
+    TYPES.IHapticFeedbackService
+  );
+
   // Show undo only when there's something to undo
   const canUndo = $derived(
     (phase === "blue" && bluePathLength > 0) ||
     (phase === "red" && redPathLength > 0)
   );
+
+  function handleUndo() {
+    hapticService?.trigger("selection");
+    onUndo();
+  }
+
+  function handleNextHand() {
+    hapticService?.trigger("selection");
+    onNextHand();
+  }
+
+  function handleComplete() {
+    hapticService?.trigger("selection");
+    onComplete();
+  }
+
+  function handleReset() {
+    hapticService?.trigger("selection");
+    onReset();
+  }
 </script>
 
 <div class="assembly-controls">
@@ -45,7 +73,7 @@ Shows contextual action buttons based on current phase:
     <div class="controls-row">
       <button
         class="control-button secondary"
-        onclick={onUndo}
+        onclick={handleUndo}
         disabled={!canUndo}
         aria-label="Undo last position"
       >
@@ -57,7 +85,7 @@ Shows contextual action buttons based on current phase:
 
       <button
         class="control-button primary blue"
-        onclick={onNextHand}
+        onclick={handleNextHand}
         disabled={!canProceedToRed}
       >
         <span>Next: Red Hand</span>
@@ -76,7 +104,7 @@ Shows contextual action buttons based on current phase:
     <div class="controls-row">
       <button
         class="control-button secondary"
-        onclick={onUndo}
+        onclick={handleUndo}
         disabled={!canUndo}
         aria-label="Undo last position"
       >
@@ -88,7 +116,7 @@ Shows contextual action buttons based on current phase:
 
       <button
         class="control-button primary red"
-        onclick={onComplete}
+        onclick={handleComplete}
         disabled={!canComplete}
       >
         <span>Choose Rotation</span>
@@ -107,7 +135,7 @@ Shows contextual action buttons based on current phase:
     <div class="controls-row centered">
       <button
         class="control-button primary green"
-        onclick={onReset}
+        onclick={handleReset}
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
           <path d="M4 10C4 6.68629 6.68629 4 10 4C12.2208 4 14.1599 5.21171 15.1973 7M16 10C16 13.3137 13.3137 16 10 16C7.77915 16 5.84008 14.7883 4.80269 13M15 4V7H12M5 16V13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

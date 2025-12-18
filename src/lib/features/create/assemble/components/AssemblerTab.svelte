@@ -5,8 +5,8 @@ Integrates HandPathOrchestrator with the Create module's workspace.
 Handles real-time workspace updates and sequence completion.
 -->
 <script lang="ts">
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import HandPathOrchestrator from "./HandPathOrchestrator.svelte";
 
   const {

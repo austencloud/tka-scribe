@@ -6,6 +6,9 @@ Shown when sequence is empty.
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   const { gridMode, onStart, onGridModeChange } = $props<{
     gridMode: GridMode;
@@ -14,6 +17,21 @@ Shown when sequence is empty.
   }>();
 
   const isDiamond = $derived(gridMode === GridMode.DIAMOND);
+
+  // Resolve haptic feedback service
+  const hapticService = resolve<IHapticFeedbackService>(
+    TYPES.IHapticFeedbackService
+  );
+
+  function handleStart() {
+    hapticService?.trigger("selection");
+    onStart();
+  }
+
+  function handleGridModeChange(mode: GridMode) {
+    hapticService?.trigger("selection");
+    onGridModeChange(mode);
+  }
 </script>
 
 <div class="assembly-welcome">
@@ -76,7 +94,7 @@ Shown when sequence is empty.
         <button
           class="mode-button"
           class:active={isDiamond}
-          onclick={() => onGridModeChange(GridMode.DIAMOND)}
+          onclick={() => handleGridModeChange(GridMode.DIAMOND)}
         >
           <span class="mode-icon">◇</span>
           Diamond
@@ -84,7 +102,7 @@ Shown when sequence is empty.
         <button
           class="mode-button"
           class:active={!isDiamond}
-          onclick={() => onGridModeChange(GridMode.BOX)}
+          onclick={() => handleGridModeChange(GridMode.BOX)}
         >
           <span class="mode-icon">□</span>
           Box
@@ -93,7 +111,7 @@ Shown when sequence is empty.
     </div>
 
     <!-- Start Button -->
-    <button class="start-button" onclick={onStart}>
+    <button class="start-button" onclick={handleStart}>
       <span class="button-text">Start Building</span>
       <span class="button-icon">→</span>
     </button>

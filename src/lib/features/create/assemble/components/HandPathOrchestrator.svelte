@@ -2,7 +2,7 @@
 HandPathOrchestrator.svelte - Main orchestrator for hand path assembly
 
 Complete user flow:
-1. Start screen (with draft/grid mode selection) - lets user start or continue
+1. Welcome screen (with grid mode selection) - explains the mode
 2. Blue hand phase - tap positions on grid to build blue hand path
 3. Red hand phase - tap positions to build red hand path (must match blue length)
 4. Rotation selection - choose CW or CCW for shift motions
@@ -27,28 +27,17 @@ Integrates all Assembly components and manages state transitions.
   import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
   import { createHandPathAssembleState, type HandPathAssembleState } from "../state/handpath-assemble-state.svelte";
-  import type { CreateTabDraft } from "../../shared/domain/models/CreateTabDraft";
-  import CreationStartScreen from "../../shared/components/start-screen/CreationStartScreen.svelte";
-  import type { HowItWorksStep } from "../../shared/components/start-screen/HowItWorksSection.svelte";
+  import AssemblyWelcome from "./AssemblyWelcome.svelte";
   import AssemblyPhaseHeader from "./AssemblyPhaseHeader.svelte";
   import AssemblyControls from "./AssemblyControls.svelte";
   import HandPathGrid from "./HandPathGrid.svelte";
   import RotationSelector from "./RotationSelector.svelte";
-  import { fade } from "svelte/transition";
 
   const {
     initialGridMode = GridMode.DIAMOND,
     hasExistingSequence = false,
     existingStartPositionBeat = null,
     existingBeats = [],
-    // Start screen props
-    showStartScreen = true,
-    gridMode = GridMode.DIAMOND,
-    currentDraft = null,
-    onStartNew,
-    onContinueDraft,
-    onDeleteDraft,
-    onGridModeChange,
     // Sequence callbacks
     onSequenceComplete,
     onSequenceUpdate,
@@ -59,14 +48,6 @@ Integrates all Assembly components and manages state transitions.
     hasExistingSequence?: boolean;
     existingStartPositionBeat?: PictographData | null;
     existingBeats?: PictographData[];
-    // Start screen props
-    showStartScreen?: boolean;
-    gridMode?: GridMode;
-    currentDraft?: CreateTabDraft | null;
-    onStartNew?: () => void;
-    onContinueDraft?: (draft: CreateTabDraft) => void;
-    onDeleteDraft?: (draft: CreateTabDraft) => void;
-    onGridModeChange?: (mode: GridMode) => void;
     // Sequence callbacks
     onSequenceComplete?: (sequence: PictographData[]) => void;
     onSequenceUpdate?: (sequence: PictographData[]) => void;
@@ -74,15 +55,11 @@ Integrates all Assembly components and manages state transitions.
     onStartPositionSet?: (startPosition: PictographData) => void;
   }>();
 
-  // Assemble tab accent color
-  const ASSEMBLE_ACCENT = "#f97316"; // Orange for Assemble
+  // Local state for whether user has started building
+  let hasStarted = $state(hasExistingSequence);
 
-  // How it works steps for Assemble mode
-  const howItWorksSteps: HowItWorksStep[] = [
-    { number: 1, text: "Trace blue hand path", color: "#3b82f6" },
-    { number: 2, text: "Trace red hand path", color: "#ef4444" },
-    { number: 3, text: "Choose rotation direction", color: "#a855f7" },
-  ];
+  // Grid mode (managed locally)
+  let gridMode = $state(initialGridMode);
 
   // Extract GridLocation from a pictograph's blue motion
   function extractBlueLocation(pictograph: PictographData | null | undefined, useEnd: boolean = false): GridLocation | null {
@@ -131,12 +108,6 @@ Integrates all Assembly components and manages state transitions.
     })
   );
 
-  // Re-create state when gridMode changes from parent
-  $effect(() => {
-    if (gridMode !== assemblyState.gridMode) {
-      assemblyState = createHandPathAssembleState({ gridMode });
-    }
-  });
   const currentPhase = $derived(assemblyState.currentPhase);
   const bluePathLength = $derived(assemblyState.blueHandPath.length);
   const redPathLength = $derived(assemblyState.redHandPath.length);
@@ -151,7 +122,7 @@ Integrates all Assembly components and manages state transitions.
 
   // Update header text when phase changes
   $effect(() => {
-    if (showStartScreen) {
+    if (!hasStarted) {
       onHeaderTextChange?.("Hand Path Builder");
       return;
     }
@@ -174,24 +145,15 @@ Integrates all Assembly components and manages state transitions.
     onHeaderTextChange?.(text);
   });
 
-  // Handle starting from start screen
-  function handleStartNew() {
-    onStartNew?.();
+  // Handle starting from welcome screen
+  function handleStart() {
+    hasStarted = true;
   }
 
-  // Handle continuing from draft
-  function handleContinueDraft(draft: CreateTabDraft) {
-    onContinueDraft?.(draft);
-  }
-
-  // Handle deleting draft
-  function handleDeleteDraft(draft: CreateTabDraft) {
-    onDeleteDraft?.(draft);
-  }
-
-  // Handle grid mode change (from start screen)
+  // Handle grid mode change (from welcome screen)
   function handleGridModeChange(mode: GridMode) {
-    onGridModeChange?.(mode);
+    gridMode = mode;
+    assemblyState = createHandPathAssembleState({ gridMode: mode });
   }
 
   // Handle position selection on grid
@@ -316,40 +278,23 @@ Integrates all Assembly components and manages state transitions.
 
   // Full reset (back to welcome screen)
   function handleFullReset() {
-    hasStarted = false;
     assemblyState.reset();
     onSequenceUpdate?.([]);
+    hasStarted = false;
   }
 </script>
 
 <div class="handpath-orchestrator">
-  {#if showStartScreen}
-    <!-- Start Screen -->
-    <div class="start-screen-phase" in:fade={{ duration: 300 }}>
-      <CreationStartScreen
-        title="Hand Path Builder"
-        description="Build sequences by tracing hand paths on the grid"
-        accentColor={ASSEMBLE_ACCENT}
-        howItWorksSteps={howItWorksSteps}
-        draft={currentDraft}
-        onContinueDraft={handleContinueDraft}
-        onDeleteDraft={handleDeleteDraft}
-        gridMode={gridMode}
-        onGridModeChange={handleGridModeChange}
-        onStartNew={handleStartNew}
-        startButtonLabel="Start Building"
-      >
-        {#snippet icon()}
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4m-18 0v10a2 2 0 0 0 2 2h4m-6-12h18m-18 6h18M9 21h10a2 2 0 0 0 2-2v-4m-12 6V9" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="12" r="3" fill="currentColor" opacity="0.3"/>
-          </svg>
-        {/snippet}
-      </CreationStartScreen>
-    </div>
+  {#if !hasStarted}
+    <!-- Welcome Screen -->
+    <AssemblyWelcome
+      {gridMode}
+      onStart={handleStart}
+      onGridModeChange={handleGridModeChange}
+    />
   {:else}
     <!-- Building Phases -->
-    <div class="build-phases" in:fade={{ duration: 300 }}>
+    <div class="build-phases">
       <!-- Phase Header -->
       <AssemblyPhaseHeader
         phase={currentPhase}
@@ -441,12 +386,6 @@ Integrates all Assembly components and manages state transitions.
     width: 100%;
     overflow: hidden;
     background: transparent;
-  }
-
-  .welcome-phase {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
   }
 
   .build-phases {

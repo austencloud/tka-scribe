@@ -111,20 +111,24 @@ export function createSequenceState(services: SequenceStateServices) {
   // ============================================================================
 
   async function initializeWithPersistence(): Promise<void> {
-    // Check if there's a pending deep link - if so, skip persistence restoration
-    // This prevents overwriting deep link sequences with old saved state
+    // Check if there's a pending deep link OR pending edit - if so, skip persistence restoration
+    // This prevents overwriting deep link/pending edit sequences with old saved state
     let hasDeepLink = false;
+    let hasPendingEdit = false;
     try {
       const { resolve } = await import("$lib/shared/inversify/di");
       const { TYPES } = await import("$lib/shared/inversify/types");
       const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
+
+      // Also check for pending edit from Discover gallery (stored in localStorage)
+      hasPendingEdit = localStorage.getItem("tka-pending-edit-sequence") !== null;
     } catch {
       // Service not available - assume no deep link
       void 0; // Suppress unused catch binding warning
     }
 
-    if (hasDeepLink) {
+    if (hasDeepLink || hasPendingEdit) {
       // Still initialize the coordinator but don't load saved state
       await persistenceCoordinator.initialize();
       return;
@@ -275,8 +279,11 @@ export function createSequenceState(services: SequenceStateServices) {
     }
 
     // Update start position from sequence
-    if (sequence?.startingPositionBeat) {
-      selectionState.setStartPosition(sequence.startingPositionBeat);
+    // Check both startingPositionBeat (full beat format) and startPosition (raw position data)
+    // Sequences from Discover gallery may only have startPosition
+    const startPosBeat = sequence?.startingPositionBeat || sequence?.startPosition;
+    if (startPosBeat) {
+      selectionState.setStartPosition(startPosBeat);
     } else {
       selectionState.setStartPosition(null);
     }
@@ -608,6 +615,8 @@ export function createSequenceState(services: SequenceStateServices) {
     setStartPosition: (startPosition: BeatData) =>
       transformOperations.setStartPosition(startPosition),
     mirrorSequence: () => transformOperations.mirrorSequence(),
+    flipSequence: () => transformOperations.flipSequence(),
+    invertSequence: () => transformOperations.invertSequence(),
     swapColors: () => transformOperations.swapColors(),
     rotateSequence: (direction: "clockwise" | "counterclockwise") =>
       transformOperations.rotateSequence(direction),
