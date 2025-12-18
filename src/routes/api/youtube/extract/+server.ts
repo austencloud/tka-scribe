@@ -6,10 +6,12 @@
  */
 
 import { json, error } from "@sveltejs/kit";
-import { FIREBASE_FUNCTIONS_URL } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request, locals }) => {
+  const FIREBASE_FUNCTIONS_URL = env.FIREBASE_FUNCTIONS_URL;
+
   if (!FIREBASE_FUNCTIONS_URL) {
     console.error("FIREBASE_FUNCTIONS_URL environment variable not set");
     throw error(500, "Audio extraction service not configured");
