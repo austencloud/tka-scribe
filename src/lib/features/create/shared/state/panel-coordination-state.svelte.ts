@@ -106,6 +106,12 @@ export interface PanelCoordinationState {
   openSequenceActionsPanel(): void;
   closeSequenceActionsPanel(): void;
 
+  // Beat Editor Panel State (non-modal - allows click-through to pictographs)
+  get isBeatEditorPanelOpen(): boolean;
+
+  openBeatEditorPanel(): void;
+  closeBeatEditorPanel(): void;
+
   // Tool Panel Dimensions (for sizing other panels)
   get toolPanelHeight(): number;
   setToolPanelHeight(height: number): void;
@@ -199,6 +205,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Sequence Actions panel state (persisted)
   let isSequenceActionsPanelOpen = $state(sequenceActionsPanelPersistence.load());
 
+  // Beat Editor panel state (non-modal - doesn't participate in closeAllPanels)
+  let isBeatEditorPanelOpen = $state(false);
+
   // Auto-save panel open states
   $effect.root(() => {
     $effect(() => {
@@ -260,6 +269,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     isVideoRecordPanelOpen = false;
     isFilterPanelOpen = false;
     isSequenceActionsPanelOpen = false;
+    isBeatEditorPanelOpen = false;
 
     isCAPPanelOpen = false;
     capSelectedComponents = null;
@@ -443,6 +453,21 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     closeSequenceActionsPanel() {
       console.log(`[panel-coordination] closeSequenceActionsPanel called, stack:`, new Error().stack);
       isSequenceActionsPanelOpen = false;
+    },
+
+    // Beat Editor Panel Getters (non-modal)
+    get isBeatEditorPanelOpen() {
+      return isBeatEditorPanelOpen;
+    },
+
+    openBeatEditorPanel() {
+      // Beat Editor is non-modal - it does NOT close other panels
+      // This allows the user to click on pictographs while the panel is open
+      isBeatEditorPanelOpen = true;
+    },
+
+    closeBeatEditorPanel() {
+      isBeatEditorPanelOpen = false;
     },
 
     // Tool Panel Dimensions

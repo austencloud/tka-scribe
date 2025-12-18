@@ -1,42 +1,30 @@
 <!--
   SequenceActionsPanel.svelte
 
-  Main orchestrator for sequence editing.
-  Composes: SequenceActionsHeader, TurnsEditMode, TransformsGridMode, TransformHelpSheet
+  Panel for sequence-wide operations: transforms, patterns, autocomplete.
+  Individual beat editing (turns, rotation) is handled by BeatEditorPanel.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import {
-    MotionColor,
-    MotionType,
-    RotationDirection,
-  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import type { BeatData } from "../../domain/models/BeatData";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
+  import type { IAutocompleteService, AutocompleteAnalysis } from "../../services/contracts/IAutocompleteService";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
-  import { createPersistenceHelper } from "$lib/shared/state/utils/persistent-state";
   import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
-  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { isTesterOrAbove } from "$lib/shared/auth/domain/models/UserRole";
   import { toast } from "$lib/shared/toast/state/toast-state.svelte";
   import { areSequencesEqual } from "../../utils/sequence-comparison";
+  import { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
   import SequencePreviewDialog from "./SequencePreviewDialog.svelte";
-  import TurnsEditMode from "./TurnsEditMode.svelte";
-  import StartPositionEditMode from "./StartPositionEditMode.svelte";
   import TransformsGridMode from "./TransformsGridMode.svelte";
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
   import TurnPatternDrawer from "./TurnPatternDrawer.svelte";
-  import PictographInspectModal from "./PictographInspectModal.svelte";
+  import RotationDirectionDrawer from "./RotationDirectionDrawer.svelte";
+  import AutocompleteDrawer from "./AutocompleteDrawer.svelte";
   import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import { setGridRotationDirection } from "$lib/shared/pictograph/grid/state/grid-rotation-state.svelte";
-
-  type EditMode = "turns" | "transforms";
 
   interface Props {
     show: boolean;
@@ -44,12 +32,6 @@
   }
 
   let { show, onClose }: Props = $props();
-
-  // Persistence
-  const modePersistence = createPersistenceHelper({
-    key: "tka_sequence_actions_panel_mode",
-    defaultValue: "transforms" as EditMode,
-  });
 
   // Context and state
   const ctx = getCreateModuleContext();
@@ -64,116 +46,45 @@
   );
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
 
-  // Check if user can see inspector (admin or tester only)
-  const canViewInspector = $derived(isTesterOrAbove(featureFlagService.effectiveRole));
-
   // Panel height for drawer content
-  // On desktop: only used for reference (drawer uses CSS top/bottom positioning)
-  // On mobile: used to determine drawer height from bottom
   const panelHeight = $derived(
     panelState.navigationBarHeight + panelState.toolPanelHeight
   );
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
-  let beatOperationsService: IBeatOperationsService | null = $state(null);
+  let autocompleteService: IAutocompleteService | null = $state(null);
 
   // Local state
   let isOpen = $state(show);
-  let currentMode = $state<EditMode>(modePersistence.load());
   let isTransforming = $state(false);
   let showConfirmDialog = $state(false);
   let pendingSequenceTransfer = $state<any>(null);
   let showHelpSheet = $state(false);
   let showTurnPatternDrawer = $state(false);
-  let showInspectModal = $state(false);
-  let lastTrackedBeatNumber = $state<number | null>(null);
+  let showRotationDirectionDrawer = $state(false);
+  let showAutocompleteDrawer = $state(false);
+  let autocompleteAnalysis = $state<AutocompleteAnalysis | null>(null);
+  let isAutocompleting = $state(false);
 
   // Sync isOpen with show prop
   $effect(() => {
     isOpen = show;
   });
 
-  // Auto-save current mode
-  $effect(() => {
-    void currentMode;
-    modePersistence.setupAutoSave(currentMode);
-  });
-
-  // Auto-switch to turns mode when beat selected
+  // Beat selection state (for displaying in beat grid)
   const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
-  const selectedBeatData = $derived(activeSequenceState.selectedBeatData);
-
-  // Only auto-switch to turns mode when a NEW beat is selected (not when reopening panel)
-  $effect(() => {
-    if (
-      show &&
-      selectedBeatNumber !== null &&
-      selectedBeatNumber !== lastTrackedBeatNumber
-    ) {
-      currentMode = "turns";
-      lastTrackedBeatNumber = selectedBeatNumber;
-    } else if (selectedBeatNumber === null) {
-      lastTrackedBeatNumber = null;
-    }
-  });
-
-  // Beat editing derived state
   const hasSelection = $derived(selectedBeatNumber !== null);
-  const isStartPositionSelected = $derived(selectedBeatNumber === 0);
-  const blueMotion = $derived(selectedBeatData?.motions?.[MotionColor.BLUE]);
-  const redMotion = $derived(selectedBeatData?.motions?.[MotionColor.RED]);
 
-  const normalizeTurns = (turns: number | string | undefined): number =>
-    turns === "fl" ? -0.5 : Number(turns) || 0;
-
-  const currentBlueTurns = $derived(normalizeTurns(blueMotion?.turns));
-  const currentRedTurns = $derived(normalizeTurns(redMotion?.turns));
-  const displayBlueTurns = $derived(
-    blueMotion?.turns === "fl" ? "fl" : currentBlueTurns
-  );
-  const displayRedTurns = $derived(
-    redMotion?.turns === "fl" ? "fl" : currentRedTurns
-  );
-  // Determine if rotation can be shown for each prop
-  // Disabled for:
-  // - Float motions (turns == -0.5)
-  // - Static or Dash motions with 0 turns
-  const showBlueRotation = $derived.by(() => {
-    if (currentBlueTurns < 0) return false; // Float motion
-    if (
-      (blueMotion?.motionType === MotionType.STATIC ||
-        blueMotion?.motionType === MotionType.DASH) &&
-      currentBlueTurns === 0
-    ) {
-      return false; // Static/Dash with 0 turns
+  // Autocomplete availability - check if sequence can be completed
+  const canAutocomplete = $derived.by(() => {
+    if (!sequence || !autocompleteService) return false;
+    try {
+      const analysis = autocompleteService.analyzeSequence(sequence);
+      return analysis.canComplete;
+    } catch {
+      return false;
     }
-    return true;
-  });
-
-  const showRedRotation = $derived.by(() => {
-    if (currentRedTurns < 0) return false; // Float motion
-    if (
-      (redMotion?.motionType === MotionType.STATIC ||
-        redMotion?.motionType === MotionType.DASH) &&
-      currentRedTurns === 0
-    ) {
-      return false; // Static/Dash with 0 turns
-    }
-    return true;
-  });
-  const blueRotation = $derived(
-    blueMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
-  );
-  const redRotation = $derived(
-    redMotion?.rotationDirection ?? RotationDirection.NO_ROTATION
-  );
-
-  const beatLabel = $derived.by(() => {
-    if (selectedBeatNumber === null) return "";
-    return selectedBeatNumber === 0
-      ? "Start Position"
-      : `Beat ${selectedBeatNumber}`;
   });
 
   onMount(() => {
@@ -181,84 +92,13 @@
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
-    } catch (e) {
-      /* Optional service */
-    }
+    } catch { /* Optional service */ }
     try {
-      beatOperationsService = resolve<IBeatOperationsService>(
-        TYPES.IBeatOperationsService
+      autocompleteService = resolve<IAutocompleteService>(
+        TYPES.IAutocompleteService
       );
-    } catch (e) {
-      /* Optional service */
-    }
+    } catch { /* Optional service */ }
   });
-
-  // Beat editing handlers
-  function handleTurnsChange(color: MotionColor, delta: number) {
-    console.log(
-      `[SequenceActionsPanel] handleTurnsChange called: color=${color}, delta=${delta}, selectedBeatNumber=${selectedBeatNumber}`
-    );
-    if (selectedBeatNumber === null || !beatOperationsService) {
-      console.log(
-        `[SequenceActionsPanel] Early return: selectedBeatNumber=${selectedBeatNumber}, beatOperationsService=${!!beatOperationsService}`
-      );
-      return;
-    }
-    hapticService?.trigger("selection");
-
-    const currentTurns =
-      color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
-    // Cap turns between -0.5 (float) and 3 (max)
-    const newNumericTurns = Math.min(3, Math.max(-0.5, currentTurns + delta));
-    const newTurns: number | "fl" =
-      newNumericTurns === -0.5 ? "fl" : newNumericTurns;
-
-    console.log(
-      `[SequenceActionsPanel] Calling beatOperationsService.updateBeatTurns: beatNumber=${selectedBeatNumber}, color=${color}, turns=${newTurns}`
-    );
-    // Use BeatOperationsService to handle motion type updates, float conversion, etc.
-    beatOperationsService.updateBeatTurns(
-      selectedBeatNumber,
-      color,
-      newTurns,
-      CreateModuleState,
-      panelState
-    );
-    console.log(`[SequenceActionsPanel] updateBeatTurns completed`);
-  }
-
-  function handleRotationChange(
-    color: MotionColor,
-    direction: RotationDirection
-  ) {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
-    hapticService?.trigger("selection");
-
-    // Use BeatOperationsService to handle motion type flipping and letter recalculation
-    // Map enum to string representation for the service
-    const directionString =
-      direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
-    beatOperationsService.updateRotationDirection(
-      selectedBeatNumber,
-      color,
-      directionString,
-      CreateModuleState,
-      panelState
-    );
-  }
-
-  function handleOrientationChange(color: MotionColor, orientation: string) {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
-    hapticService?.trigger("selection");
-
-    beatOperationsService.updateBeatOrientation(
-      selectedBeatNumber,
-      color,
-      orientation,
-      CreateModuleState,
-      panelState
-    );
-  }
 
   // Transform handlers
   async function handleMirror() {
@@ -367,6 +207,75 @@
     hapticService?.trigger("success");
   }
 
+  function handleRotationDirection() {
+    hapticService?.trigger("selection");
+    showRotationDirectionDrawer = true;
+  }
+
+  function handleRotationDirectionApply(result: { sequence: any; warnings?: readonly string[] }) {
+    // Update the active sequence with the pattern-applied sequence
+    activeSequenceState.setCurrentSequence(result.sequence);
+
+    // Log any warnings
+    if (result.warnings && result.warnings.length > 0) {
+      console.log("[RotationDirection] Applied with warnings:", result.warnings);
+    }
+
+    hapticService?.trigger("success");
+  }
+
+  function handleAutocomplete() {
+    if (!sequence || !autocompleteService) return;
+    hapticService?.trigger("selection");
+
+    // Analyze the sequence to get available CAP options
+    const analysis = autocompleteService.analyzeSequence(sequence);
+    console.log("[Autocomplete] Analysis:", analysis);
+
+    if (!analysis.canComplete) {
+      toast.warning("Cannot autocomplete this sequence");
+      return;
+    }
+
+    // Store the analysis and show the drawer
+    autocompleteAnalysis = analysis;
+    showAutocompleteDrawer = true;
+  }
+
+  async function handleAutocompleteApply(capType: CAPType) {
+    if (!sequence || !autocompleteService || isAutocompleting) return;
+    isAutocompleting = true;
+    hapticService?.trigger("selection");
+
+    try {
+      console.log("[Autocomplete] Applying CAP:", capType);
+      console.log("[Autocomplete] Before - beats:", sequence.beats?.length);
+
+      const completedSequence = await autocompleteService.autocompleteSequence(sequence, { capType });
+      console.log("[Autocomplete] After - beats:", completedSequence.beats?.length);
+
+      if (completedSequence.beats?.length === sequence.beats?.length) {
+        console.warn("[Autocomplete] No new beats were added!");
+        toast.warning("No completion beats generated");
+        return;
+      }
+
+      activeSequenceState.setCurrentSequence(completedSequence);
+      hapticService?.trigger("success");
+      toast.success(`Completed with ${capType.replace(/_/g, ' ')}! Added ${(completedSequence.beats?.length || 0) - (sequence.beats?.length || 0)} beats`);
+
+      // Close the drawer on success
+      showAutocompleteDrawer = false;
+      autocompleteAnalysis = null;
+    } catch (error) {
+      console.error("[Autocomplete] Failed:", error);
+      toast.error("Could not complete sequence");
+      hapticService?.trigger("error");
+    } finally {
+      isAutocompleting = false;
+    }
+  }
+
   function handleEditInConstructor() {
     if (!sequence) return;
     hapticService?.trigger("selection");
@@ -434,25 +343,12 @@
   function handleBeatSelect(beatNumber: number) {
     hapticService?.trigger("selection");
     activeSequenceState.selectBeat(beatNumber);
+    // Opening Beat Editor is handled by the auto-open effect
   }
 
-  function handleBeatDelete() {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
-    hapticService?.trigger("warning");
-
-    // For start position (0), clear the start position
-    if (selectedBeatNumber === 0) {
-      activeSequenceState.setStartPosition(null);
-      activeSequenceState.clearSelection();
-      return;
-    }
-
-    // For regular beats, remove the beat
-    const beatIndex = selectedBeatNumber - 1;
-    beatOperationsService.removeBeat(beatIndex, CreateModuleState);
-
-    // Clear selection after deletion
-    activeSequenceState.clearSelection();
+  function handleOpenBeatEditor() {
+    hapticService?.trigger("selection");
+    panelState.openBeatEditorPanel();
   }
 </script>
 
@@ -465,84 +361,27 @@
   closeOnBackdrop={true}
   focusTrap={false}
   lockScroll={false}
-  ariaLabel="Sequence editor panel"
+  ariaLabel="Sequence actions panel"
   onClose={handleClose}
 >
   <div class="editor-panel">
-    <!-- Delete button for turns mode - positioned at top right of entire panel -->
-    {#if currentMode === "turns" && hasSelection}
-      <button
-        class="panel-delete-button"
-        onclick={handleBeatDelete}
-        aria-label={isStartPositionSelected ? "Delete start position" : "Delete selected beat"}
-        title={isStartPositionSelected ? "Delete start position" : "Delete this beat"}
-      >
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    {/if}
-
-    <!-- Compact header: mode toggle + beat label + actions in one row -->
+    <!-- Simple header with title and actions -->
     <div class="compact-header">
-      <div class="mode-toggle">
-        <button
-          class="mode-btn"
-          class:active={currentMode === "turns"}
-          onclick={() => (currentMode = "turns")}
-        >
-          <i class="fas fa-sliders-h"></i>
-          <span class="mode-label">Turns</span>
-        </button>
-        <button
-          class="mode-btn"
-          class:active={currentMode === "transforms"}
-          onclick={() => (currentMode = "transforms")}
-        >
-          <i class="fas fa-wand-magic-sparkles"></i>
-          <span class="mode-label">Transforms</span>
-        </button>
-      </div>
-
-      {#if currentMode === "turns" && hasSelection}
-        <span class="beat-label">{beatLabel}</span>
-      {/if}
+      <h2 class="panel-title">Sequence Actions</h2>
 
       <div class="header-actions">
-        {#if currentMode === "turns" && hasSelection && selectedBeatData && canViewInspector}
-          <button
-            class="icon-btn inspect"
-            onclick={() => (showInspectModal = true)}
-            aria-label="Inspect pictograph metadata"
-            title="Inspect"
-          >
-            <i class="fas fa-magnifying-glass"></i>
-          </button>
-        {/if}
-        {#if currentMode === "transforms"}
-          <button
-            class="icon-btn help"
-            onclick={() => (showHelpSheet = true)}
-            aria-label="Help"
-          >
-            <i class="fas fa-circle-question"></i>
-          </button>
-        {/if}
+        <button
+          class="icon-btn help"
+          onclick={() => (showHelpSheet = true)}
+          aria-label="Help"
+        >
+          <i class="fas fa-circle-question"></i>
+        </button>
         <button class="icon-btn close" onclick={handleClose} aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
       </div>
     </div>
-
-    <!-- Desktop preview: shows selected beat pictograph above controls -->
-    {#if isSideBySideLayout && currentMode === "turns" && hasSelection && selectedBeatData}
-      <div class="desktop-preview-section">
-        <div class="preview-pictograph">
-          <Pictograph
-            pictographData={selectedBeatData}
-            disableContentTransitions={true}
-          />
-        </div>
-      </div>
-    {/if}
 
     <!-- Beat grid display: shows on mobile at 50% height -->
     {#if hasSequence && isSideBySideLayout === false && sequence}
@@ -560,42 +399,27 @@
     {/if}
 
     <div class="controls-content">
-      {#if currentMode === "turns"}
-        {#if isStartPositionSelected}
-          <StartPositionEditMode
-            startPositionData={selectedBeatData}
-            onOrientationChange={handleOrientationChange}
-          />
-        {:else}
-          <TurnsEditMode
-            {hasSelection}
-            blueTurns={displayBlueTurns}
-            redTurns={displayRedTurns}
-            {blueRotation}
-            {redRotation}
-            {showBlueRotation}
-            {showRedRotation}
-            onTurnsChange={handleTurnsChange}
-            onRotationChange={handleRotationChange}
-          />
-        {/if}
-      {:else}
-        <TransformsGridMode
-          {hasSequence}
-          {isTransforming}
-          showEditInConstructor={!isInConstructTab}
-          onMirror={handleMirror}
-          onFlip={handleFlip}
-          onInvert={handleInvert}
-          onRotateCW={handleRotateCW}
-          onRotateCCW={handleRotateCCW}
-          onSwap={handleSwap}
-          onRewind={handleRewind}
-          onPreview={handlePreview}
-          onTurnPattern={handleTurnPattern}
-          onEditInConstructor={handleEditInConstructor}
-        />
-      {/if}
+      <TransformsGridMode
+        {hasSequence}
+        {hasSelection}
+        {isTransforming}
+        {canAutocomplete}
+        {isAutocompleting}
+        showEditInConstructor={!isInConstructTab}
+        onTurns={handleOpenBeatEditor}
+        onMirror={handleMirror}
+        onFlip={handleFlip}
+        onInvert={handleInvert}
+        onRotateCW={handleRotateCW}
+        onRotateCCW={handleRotateCCW}
+        onSwap={handleSwap}
+        onRewind={handleRewind}
+        onPreview={handlePreview}
+        onTurnPattern={handleTurnPattern}
+        onRotationDirection={handleRotationDirection}
+        onAutocomplete={handleAutocomplete}
+        onEditInConstructor={handleEditInConstructor}
+      />
     </div>
   </div>
 </CreatePanelDrawer>
@@ -626,13 +450,23 @@
   onApply={handleTurnPatternApply}
 />
 
-{#if canViewInspector}
-  <PictographInspectModal
-    show={showInspectModal}
-    beatData={selectedBeatData}
-    onClose={() => (showInspectModal = false)}
-  />
-{/if}
+<RotationDirectionDrawer
+  bind:isOpen={showRotationDirectionDrawer}
+  {sequence}
+  onClose={() => (showRotationDirectionDrawer = false)}
+  onApply={handleRotationDirectionApply}
+/>
+
+<AutocompleteDrawer
+  bind:isOpen={showAutocompleteDrawer}
+  analysis={autocompleteAnalysis}
+  isApplying={isAutocompleting}
+  onClose={() => {
+    showAutocompleteDrawer = false;
+    autocompleteAnalysis = null;
+  }}
+  onApply={handleAutocompleteApply}
+/>
 
 <style>
   .editor-panel {
@@ -643,101 +477,24 @@
     position: relative;
   }
 
-  .panel-delete-button {
-    position: absolute;
-    top: 60px;
-    right: 12px;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    z-index: 10;
-
-    background: linear-gradient(135deg, var(--semantic-warning, #ff9800) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #ff9800) 30%, transparent);
-    color: white;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-warning, #ff9800) 40%, transparent);
-  }
-
-  .panel-delete-button:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, transparent);
-    transform: scale(1.05);
-  }
-
-  .panel-delete-button:active {
-    transform: scale(0.95);
-  }
-
-  .panel-delete-button i {
-    font-size: 1.1rem;
-  }
-
-  /* Compact header - saves ~60px vs separate header rows */
+  /* Compact header */
   .compact-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding: 4px 12px;
+    padding: 8px 12px;
     background: rgba(15, 20, 30, 0.95);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     height: var(--min-touch-target);
     flex-shrink: 0;
   }
 
-  .mode-toggle {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
-  .mode-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 0 12px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid transparent;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.15s ease;
-    height: var(--min-touch-target);
-    min-width: var(--min-touch-target);
-  }
-
-  .mode-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .mode-btn.active {
-    background: rgba(6, 182, 212, 0.2);
-    border-color: rgba(6, 182, 212, 0.5);
-    color: #06b6d4;
-  }
-
-  .mode-btn i {
-    font-size: 14px;
-  }
-
-  .beat-label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    text-align: center;
-    min-width: 0;
+  .panel-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .header-actions {
@@ -770,18 +527,6 @@
     color: rgba(255, 255, 255, 0.9);
   }
 
-  .icon-btn.inspect {
-    background: rgba(6, 182, 212, 0.15);
-    color: rgba(6, 182, 212, 0.8);
-    border-color: rgba(6, 182, 212, 0.3);
-  }
-
-  .icon-btn.inspect:hover {
-    background: rgba(6, 182, 212, 0.25);
-    color: #06b6d4;
-    border-color: rgba(6, 182, 212, 0.5);
-  }
-
   .icon-btn.close {
     background: linear-gradient(
       135deg,
@@ -799,20 +544,10 @@
     );
   }
 
-  /* Narrow screens: hide mode labels */
+  /* Narrow screens */
   @media (max-width: 400px) {
-    .mode-label {
-      display: none;
-    }
-
-    .mode-btn {
-      padding: 0 10px;
-      height: var(--min-touch-target);
-      min-width: var(--min-touch-target);
-    }
-
     .compact-header {
-      padding: 2px 10px;
+      padding: 4px 10px;
     }
 
     .icon-btn {
@@ -839,32 +574,8 @@
     }
   }
 
-  /* Desktop preview section - shows pictograph above controls */
-  .desktop-preview-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.15);
-    flex: 1;
-    min-height: 0;
-  }
-
-  .preview-pictograph {
-    width: 100%;
-    height: 100%;
-    max-width: 400px;
-    max-height: 400px;
-    aspect-ratio: 1;
-    background: rgba(0, 0, 0, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
   .controls-content {
-    flex-shrink: 0;
+    flex: 1;
     min-height: 180px;
     padding: 12px;
     display: flex;
@@ -872,20 +583,9 @@
     overflow-y: auto;
   }
 
-  /* When no preview section, controls can expand */
-  .editor-panel:not(:has(.desktop-preview-section)) .controls-content {
-    flex: 1;
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .mode-btn,
-    .icon-btn,
-    .panel-delete-button {
+    .icon-btn {
       transition: none;
-    }
-    .panel-delete-button:hover,
-    .panel-delete-button:active {
-      transform: none;
     }
   }
 </style>

@@ -1,26 +1,27 @@
 <!--
-  TurnPatternDrawer.svelte
+  RotationDirectionDrawer.svelte
 
-  Drawer for saving and applying turn patterns.
-  - Save: Extract turns from current sequence and save
-  - Apply: Browse and apply saved patterns
+  Drawer for saving and applying rotation direction patterns.
+  - Save: Extract rotation directions from current sequence and save
+  - Apply: Browse and apply saved patterns or templates
 -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import { turnPatternState } from "../../state/turn-pattern-state.svelte.ts";
-  import { TurnPatternService } from "../../services/implementations/TurnPatternService";
+  import { rotationDirectionPatternState } from "../../state/rotation-direction-pattern-state.svelte.ts";
+  import { RotationDirectionPatternService } from "../../services/implementations/RotationDirectionPatternService";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { TurnPattern } from "../../domain/models/TurnPatternData";
-  import { formatTurnValue } from "../../domain/models/TurnPatternData";
+  import type { RotationDirectionPattern } from "../../domain/models/RotationDirectionPatternData";
+  import { formatRotationValue } from "../../domain/models/RotationDirectionPatternData";
   import {
     getTemplatesForBeatCount,
-    getComplexityInfo,
+    getTemplatesByCategory,
+    getCategoryInfo,
     templateToPattern,
     createUniformPattern,
-    type PatternComplexity,
-    type TurnValue,
-  } from "../../domain/templates/turn-pattern-templates";
+    type TemplateCategory,
+    type RotationDirectionTemplateDefinition,
+  } from "../../domain/templates/rotation-direction-templates";
 
   interface Props {
     isOpen: boolean;
@@ -36,14 +37,14 @@
   let savingPattern = $state(false);
   let applyingPattern = $state(false);
   let errorMessage = $state<string | null>(null);
-  let complexityFilter = $state<PatternComplexity | "all">("all");
+  let categoryFilter = $state<TemplateCategory | "all">("all");
 
-  const turnPatternService = new TurnPatternService();
+  const rotationPatternService = new RotationDirectionPatternService();
 
   // Load patterns when drawer opens
   $effect(() => {
-    if (isOpen && authState.user?.uid && !turnPatternState.initialized) {
-      turnPatternState.loadPatterns(authState.user.uid);
+    if (isOpen && authState.user?.uid && !rotationDirectionPatternState.initialized) {
+      rotationDirectionPatternState.loadPatterns(authState.user.uid);
     }
   });
 
@@ -54,16 +55,16 @@
     errorMessage = null;
 
     // Auto-generate name if empty
-    const finalName = patternName.trim() || `Pattern ${new Date().toLocaleTimeString()}`;
+    const finalName = patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
 
-    turnPatternState
+    rotationDirectionPatternState
       .savePattern(finalName, authState.user.uid, sequence)
       .then((saved) => {
         if (saved) {
           patternName = "";
           mode = "apply";
         } else {
-          errorMessage = turnPatternState.error ?? "Failed to save pattern";
+          errorMessage = rotationDirectionPatternState.error ?? "Failed to save pattern";
         }
       })
       .finally(() => {
@@ -71,42 +72,71 @@
       });
   }
 
-  function handleApplyPattern(pattern: TurnPattern) {
+  async function handleApplyPattern(pattern: RotationDirectionPattern) {
     if (!sequence) return;
 
     applyingPattern = true;
     errorMessage = null;
 
-    const result = turnPatternService.applyPattern(pattern, sequence);
+    try {
+      const result = await rotationPatternService.applyPattern(pattern, sequence);
 
-    if (result.success && result.sequence) {
-      onApply({
-        sequence: result.sequence,
-        warnings: result.warnings,
-      });
-      // Keep drawer open to allow applying multiple patterns
-    } else {
-      errorMessage = result.error ?? "Failed to apply pattern";
+      if (result.success && result.sequence) {
+        onApply({
+          sequence: result.sequence,
+          warnings: result.warnings,
+        });
+        // Keep drawer open to allow applying multiple patterns
+      } else {
+        errorMessage = result.error ?? "Failed to apply pattern";
+      }
+    } catch (error) {
+      errorMessage = error instanceof Error ? error.message : "Failed to apply pattern";
+    } finally {
+      applyingPattern = false;
     }
-
-    applyingPattern = false;
   }
 
-  function handleDeletePattern(pattern: TurnPattern) {
+  function handleApplyUniform(direction: "cw" | "ccw") {
+    if (!sequence || !authState.user?.uid) return;
+
+    const pattern = createUniformPattern(
+      sequence.beats.length,
+      direction,
+      authState.user.uid
+    );
+    handleApplyPattern(pattern);
+  }
+
+  function handleApplyTemplate(template: RotationDirectionTemplateDefinition) {
+    if (!sequence || !authState.user?.uid) return;
+
+    const pattern = templateToPattern(template, authState.user.uid, sequence.beats.length);
+    handleApplyPattern(pattern);
+  }
+
+  function handleDeletePattern(pattern: RotationDirectionPattern) {
     if (!authState.user?.uid) return;
-    turnPatternState.deletePattern(pattern.id, authState.user.uid);
+    rotationDirectionPatternState.deletePattern(pattern.id, authState.user.uid);
   }
 
   function handleClose() {
     errorMessage = null;
     onClose();
   }
+
+  // Get color class for rotation value display
+  function getRotationColorClass(value: string): string {
+    if (value === "CW") return "cw";
+    if (value === "CC") return "ccw";
+    return "none";
+  }
 </script>
 
-<Drawer bind:isOpen placement="right" onclose={handleClose} class="turn-pattern-drawer">
-  <div class="turn-pattern-drawer-content">
+<Drawer bind:isOpen placement="right" onclose={handleClose} class="rotation-direction-drawer">
+  <div class="rotation-direction-drawer-content">
     <header class="drawer-header">
-      <h2>Turn Patterns</h2>
+      <h2>Rotation Direction</h2>
       <button class="close-btn" onclick={handleClose}>
         <i class="fas fa-times"></i>
       </button>
@@ -147,15 +177,25 @@
             <h3>Current Pattern ({sequence.beats.length} beats)</h3>
             <div class="preview-grid">
               {#each sequence.beats as beat, i}
+                {@const blueRotation = formatRotationValue(
+                  beat.motions?.blue?.rotationDirection === "cw" ? "cw" :
+                  beat.motions?.blue?.rotationDirection === "ccw" ? "ccw" :
+                  beat.motions?.blue ? "none" : null
+                )}
+                {@const redRotation = formatRotationValue(
+                  beat.motions?.red?.rotationDirection === "cw" ? "cw" :
+                  beat.motions?.red?.rotationDirection === "ccw" ? "ccw" :
+                  beat.motions?.red ? "none" : null
+                )}
                 <div class="preview-beat">
                   <span class="beat-num">{i + 1}</span>
-                  <div class="turn-pair">
-                    <span class="turn-value blue">
-                      {formatTurnValue(beat.motions?.blue?.turns ?? null)}
+                  <div class="rotation-pair">
+                    <span class="rotation-value {getRotationColorClass(blueRotation)} blue">
+                      {blueRotation}
                     </span>
                     <span class="separator">|</span>
-                    <span class="turn-value red">
-                      {formatTurnValue(beat.motions?.red?.turns ?? null)}
+                    <span class="rotation-value {getRotationColorClass(redRotation)} red">
+                      {redRotation}
                     </span>
                   </div>
                 </div>
@@ -188,7 +228,7 @@
     {:else}
       <!-- Apply mode -->
       <div class="apply-section">
-        {#if turnPatternState.isLoading}
+        {#if rotationDirectionPatternState.isLoading}
           <div class="loading">
             <i class="fas fa-spinner fa-spin"></i>
             Loading patterns...
@@ -198,92 +238,96 @@
           {#if sequence && sequence.beats.length > 0}
             <div class="uniform-section">
               <h3>Uniform</h3>
-              <p class="section-desc">Apply same turn value to all beats</p>
+              <p class="section-desc">Apply same direction to all beats</p>
               <div class="uniform-buttons">
-                {#each [0, 1, 2, 3] as turnValue}
-                  {@const uniformTemplate = createUniformPattern(sequence.beats.length, turnValue)}
-                  {@const uniformPattern = authState.user ? templateToPattern(uniformTemplate, authState.user.uid) : null}
-                  {@const complexityInfo = getComplexityInfo(uniformTemplate.complexity)}
-                  {#if uniformPattern}
-                    <button
-                      class="uniform-btn"
-                      style="--glass-color: {complexityInfo.color}"
-                      onclick={() => handleApplyPattern(uniformPattern)}
-                    >
-                      {turnValue}
-                    </button>
-                  {/if}
-                {/each}
+                <button
+                  class="uniform-btn cw"
+                  onclick={() => handleApplyUniform("cw")}
+                  disabled={applyingPattern}
+                >
+                  <i class="fas fa-rotate-right"></i>
+                  All CW
+                </button>
+                <button
+                  class="uniform-btn ccw"
+                  onclick={() => handleApplyUniform("ccw")}
+                  disabled={applyingPattern}
+                >
+                  <i class="fas fa-rotate-left"></i>
+                  All CCW
+                </button>
               </div>
             </div>
           {/if}
 
           <!-- Templates section -->
           {@const allTemplates = sequence ? getTemplatesForBeatCount(sequence.beats.length) : []}
-          {@const filteredTemplates = complexityFilter === "all"
-            ? allTemplates
-            : allTemplates.filter(t => t.complexity === complexityFilter)}
-          {#if allTemplates.length > 0}
+          {@const nonUniformTemplates = allTemplates.filter(t => t.category !== "uniform")}
+          {@const filteredTemplates = categoryFilter === "all"
+            ? nonUniformTemplates
+            : nonUniformTemplates.filter(t => t.category === categoryFilter)}
+
+          {#if nonUniformTemplates.length > 0}
             <div class="templates-section">
               <div class="templates-header">
                 <h3>Patterns</h3>
-                <!-- Complexity filter -->
-                <div class="complexity-filter">
+                <!-- Category filter -->
+                <div class="category-filter">
                   <button
                     class="filter-btn"
-                    class:active={complexityFilter === "all"}
-                    onclick={() => complexityFilter = "all"}
+                    class:active={categoryFilter === "all"}
+                    onclick={() => categoryFilter = "all"}
                   >All</button>
-                  {#each ["simple", "medium", "complex"] as level}
-                    {@const info = getComplexityInfo(level as PatternComplexity)}
-                    <button
-                      class="filter-btn"
-                      class:active={complexityFilter === level}
-                      onclick={() => complexityFilter = level as PatternComplexity}
-                      style="--filter-color: {info.color}"
-                    >
-                      <span class="complexity-dot" style="background: {info.color}"></span>
-                      {info.label}
-                    </button>
+                  {#each ["alternating", "split-hand", "split-half"] as category}
+                    {@const info = getCategoryInfo(category as TemplateCategory)}
+                    {@const hasTemplates = nonUniformTemplates.some(t => t.category === category)}
+                    {#if hasTemplates}
+                      <button
+                        class="filter-btn"
+                        class:active={categoryFilter === category}
+                        onclick={() => categoryFilter = category as TemplateCategory}
+                        style="--filter-color: {info.color}"
+                      >
+                        <span class="category-dot" style="background: {info.color}"></span>
+                        {info.label}
+                      </button>
+                    {/if}
                   {/each}
                 </div>
               </div>
 
               <div class="patterns-list">
                 {#each filteredTemplates as template}
-                  {@const pattern = authState.user ? templateToPattern(template, authState.user.uid) : null}
-                  {@const complexityInfo = getComplexityInfo(template.complexity)}
-                  {#if pattern}
-                    <div
-                      class="pattern-item template complexity-{template.complexity}"
-                      style="--glass-color: {complexityInfo.color}"
-                      onclick={() => handleApplyPattern(pattern)}
-                      role="button"
-                      tabindex="0"
-                      onkeydown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleApplyPattern(pattern);
-                        }
-                      }}
-                    >
-                      <div class="pattern-info">
-                        <span class="pattern-name">{pattern.name}</span>
-                        <span class="pattern-desc">{template.description}</span>
-                      </div>
+                  {@const categoryInfo = getCategoryInfo(template.category)}
+                  <div
+                    class="pattern-item template"
+                    style="--glass-color: {categoryInfo.color}"
+                    onclick={() => handleApplyTemplate(template)}
+                    role="button"
+                    tabindex="0"
+                    onkeydown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleApplyTemplate(template);
+                      }
+                    }}
+                  >
+                    <div class="pattern-info">
+                      <span class="pattern-name">{template.name}</span>
+                      <span class="pattern-desc">{template.description}</span>
                     </div>
-                  {/if}
+                  </div>
                 {/each}
 
                 {#if filteredTemplates.length === 0}
-                  <p class="empty-filter-message">No {complexityFilter} patterns available</p>
+                  <p class="empty-filter-message">No {categoryFilter} patterns available</p>
                 {/if}
               </div>
             </div>
           {/if}
 
           <!-- User's saved patterns -->
-          {#if turnPatternState.patterns.length === 0}
+          {#if rotationDirectionPatternState.patterns.length === 0}
             <p class="empty-message">
               No saved patterns yet. Save a pattern from the current sequence or try a template above.
             </p>
@@ -291,7 +335,7 @@
             <div class="saved-patterns-section">
               <h3>Your Patterns</h3>
               <div class="patterns-list">
-                {#each turnPatternState.patterns as pattern}
+                {#each rotationDirectionPatternState.patterns as pattern}
                   {@const isDisabled = applyingPattern || !sequence || sequence.beats.length !== pattern.beatCount}
                   <div
                     class="pattern-item"
@@ -337,7 +381,7 @@
 </Drawer>
 
 <style>
-  .turn-pattern-drawer-content {
+  .rotation-direction-drawer-content {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -391,7 +435,7 @@
 
   .tab.active {
     color: var(--theme-text, #fff);
-    border-bottom: 2px solid #14b8a6;
+    border-bottom: 2px solid #f59e0b;
   }
 
   .tab:hover:not(.active) {
@@ -456,10 +500,10 @@
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
   }
 
-  .turn-pair {
+  .rotation-pair {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
   }
 
   .separator {
@@ -467,19 +511,33 @@
     font-size: 0.7rem;
   }
 
-  .turn-value {
+  .rotation-value {
     font-family: monospace;
     display: inline-block;
     min-width: 20px;
     text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
   }
 
-  .turn-value.blue {
-    color: #60a5fa;
+  .rotation-value.cw {
+    color: #06b6d4; /* cyan */
   }
 
-  .turn-value.red {
-    color: #f87171;
+  .rotation-value.ccw {
+    color: #f59e0b; /* amber */
+  }
+
+  .rotation-value.none {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .rotation-value.blue {
+    /* Additional blue tint for blue hand */
+  }
+
+  .rotation-value.red {
+    /* Additional red tint for red hand */
   }
 
   .save-form {
@@ -507,7 +565,7 @@
     justify-content: center;
     gap: 8px;
     padding: 12px;
-    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     border: none;
     border-radius: 8px;
     color: white;
@@ -555,7 +613,7 @@
 
   .pattern-item:hover:not(.disabled) {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(20, 184, 166, 0.4);
+    border-color: rgba(245, 158, 11, 0.4);
   }
 
   .pattern-item.disabled {
@@ -584,7 +642,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #14b8a6;
+    color: #f59e0b;
     font-size: 1rem;
   }
 
@@ -629,20 +687,43 @@
 
   .uniform-btn {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     padding: 12px 8px;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    background: color-mix(in srgb, var(--glass-color) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--glass-color) 30%, transparent);
     border-radius: 8px;
-    color: var(--theme-text, #fff);
     cursor: pointer;
     transition: all 0.15s;
   }
 
-  .uniform-btn:hover {
-    background: color-mix(in srgb, var(--glass-color) 20%, transparent);
-    border-color: color-mix(in srgb, var(--glass-color) 50%, transparent);
+  .uniform-btn.cw {
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    color: var(--theme-text, #fff);
+  }
+
+  .uniform-btn.cw:hover:not(:disabled) {
+    background: rgba(6, 182, 212, 0.25);
+    border-color: rgba(6, 182, 212, 0.5);
+  }
+
+  .uniform-btn.ccw {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: var(--theme-text, #fff);
+  }
+
+  .uniform-btn.ccw:hover:not(:disabled) {
+    background: rgba(245, 158, 11, 0.25);
+    border-color: rgba(245, 158, 11, 0.5);
+  }
+
+  .uniform-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   /* Templates section */
@@ -666,8 +747,8 @@
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
   }
 
-  /* Complexity filter */
-  .complexity-filter {
+  /* Category filter */
+  .category-filter {
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
@@ -697,7 +778,7 @@
     border-color: var(--filter-color, rgba(255, 255, 255, 0.3));
   }
 
-  .complexity-dot {
+  .category-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;

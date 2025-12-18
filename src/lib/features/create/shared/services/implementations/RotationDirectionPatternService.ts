@@ -1,0 +1,566 @@
+/**
+ * Rotation Direction Pattern Service Implementation
+ *
+ * Handles extraction, application, and persistence of rotation direction patterns.
+ * Rotation direction patterns capture rotation direction (CW/CCW) per beat to transform sequences.
+ *
+ * Key difference from Turn Pattern Service:
+ * - Turn patterns modify the NUMBER of turns (0, 1, 2, fl, etc.)
+ * - This service modifies the DIRECTION of rotation (CW vs CCW)
+ * - This service NEVER adds or removes turns - only changes direction where rotation exists
+ *
+ * Critical behavior when applying:
+ * - PRO/ANTI flip when rotation direction changes (matches RotationDirectionHandler)
+ * - Floats are skipped (they have no rotation)
+ * - DASH/STATIC at 0 turns are skipped (don't add rotation)
+ */
+
+import {
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  doc,
+  deleteDoc,
+  addDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { injectable } from "inversify";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { BeatData } from "../../domain/models/BeatData";
+import type {
+  RotationDirectionPattern,
+  RotationDirectionPatternCreateData,
+  RotationDirectionPatternEntry,
+  RotationDirectionValue,
+} from "../../domain/models/RotationDirectionPatternData";
+import type {
+  IRotationDirectionPatternService,
+  RotationDirectionPatternApplyResult,
+} from "../contracts/IRotationDirectionPatternService";
+import {
+  createMotionData,
+  type MotionData,
+} from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+  type Orientation,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { createBeatData } from "../../domain/factories/createBeatData";
+import { createComponentLogger } from "$lib/shared/utils/debug-logger";
+
+const logger = createComponentLogger("RotationDirectionPatternService");
+
+@injectable()
+export class RotationDirectionPatternService
+  implements IRotationDirectionPatternService
+{
+  /**
+   * Extract a rotation direction pattern from a sequence
+   *
+   * Rules for extraction:
+   * - FLOAT → "none" (floats have no rotation)
+   * - STATIC @ 0 turns → "none"
+   * - DASH @ 0 turns → "none"
+   * - PRO/ANTI/DASH/STATIC with turns > 0 → actual direction ("cw" or "ccw")
+   */
+  extractPattern(
+    sequence: SequenceData,
+    name: string
+  ): RotationDirectionPatternCreateData {
+    const entries: RotationDirectionPatternEntry[] = [];
+
+    for (let i = 0; i < sequence.beats.length; i++) {
+      const beat = sequence.beats[i];
+      if (!beat) continue;
+
+      const blueMotion = beat.motions?.blue;
+      const redMotion = beat.motions?.red;
+
+      entries.push({
+        beatIndex: i,
+        blue: blueMotion ? this.extractRotationDirection(blueMotion) : null,
+        red: redMotion ? this.extractRotationDirection(redMotion) : null,
+      });
+    }
+
+    return {
+      name,
+      userId: "", // Will be set when saving
+      beatCount: sequence.beats.length,
+      entries,
+    };
+  }
+
+  /**
+   * Extract rotation direction value from a single motion
+   */
+  private extractRotationDirection(motion: MotionData): RotationDirectionValue {
+    const { motionType, turns, rotationDirection } = motion;
+
+    // Float motions have no rotation
+    if (motionType === MotionType.FLOAT) {
+      return "none";
+    }
+
+    // STATIC or DASH at 0 turns have no rotation
+    if (
+      (motionType === MotionType.STATIC || motionType === MotionType.DASH) &&
+      turns === 0
+    ) {
+      return "none";
+    }
+
+    // Motions with no rotation direction
+    if (rotationDirection === RotationDirection.NO_ROTATION) {
+      return "none";
+    }
+
+    // Return actual rotation direction
+    if (rotationDirection === RotationDirection.CLOCKWISE) {
+      return "cw";
+    }
+    if (rotationDirection === RotationDirection.COUNTER_CLOCKWISE) {
+      return "ccw";
+    }
+
+    return "none";
+  }
+
+  /**
+   * Apply a rotation direction pattern to a sequence
+   *
+   * Key behavior: NEVER adds or removes turns - only modifies direction
+   */
+  async applyPattern(
+    pattern: RotationDirectionPattern,
+    sequence: SequenceData
+  ): Promise<RotationDirectionPatternApplyResult> {
+    // Validate beat count match
+    const validation = this.validateForSequence(pattern, sequence);
+    if (!validation.valid) {
+      return { success: false, error: validation.error };
+    }
+
+    const warnings: string[] = [];
+    let modifiedBeats = 0;
+    const modifiedBeatIndices: number[] = [];
+
+    // Step 1: Apply all rotation direction changes
+    const updatedBeats: BeatData[] = sequence.beats.map((beat, beatIndex) => {
+      const entry = pattern.entries.find((e) => e.beatIndex === beatIndex);
+      if (!entry) return beat;
+
+      let beatModified = false;
+      const updatedMotions = { ...beat.motions };
+
+      // Apply blue rotation direction
+      if (entry.blue !== null && beat.motions?.blue) {
+        const result = this.applyRotationToMotion(
+          entry.blue,
+          beat.motions.blue,
+          MotionColor.BLUE,
+          beatIndex
+        );
+        if (result.motion) {
+          updatedMotions.blue = result.motion;
+          beatModified = true;
+        }
+        if (result.warning) {
+          warnings.push(`Beat ${beatIndex + 1} blue: ${result.warning}`);
+        }
+      }
+
+      // Apply red rotation direction
+      if (entry.red !== null && beat.motions?.red) {
+        const result = this.applyRotationToMotion(
+          entry.red,
+          beat.motions.red,
+          MotionColor.RED,
+          beatIndex
+        );
+        if (result.motion) {
+          updatedMotions.red = result.motion;
+          beatModified = true;
+        }
+        if (result.warning) {
+          warnings.push(`Beat ${beatIndex + 1} red: ${result.warning}`);
+        }
+      }
+
+      if (beatModified) {
+        modifiedBeats++;
+        modifiedBeatIndices.push(beatIndex);
+        return { ...beat, motions: updatedMotions };
+      }
+      return beat;
+    });
+
+    // Step 2: Propagate orientations forward through the sequence
+    this.propagateOrientations(updatedBeats);
+
+    // Step 3: Look up correct letters for all modified beats
+    const gridMode = sequence.gridMode ?? GridMode.DIAMOND;
+    await this.recalculateLettersForBeats(updatedBeats, modifiedBeatIndices, gridMode);
+
+    // Create updated sequence
+    const updatedSequence: SequenceData = {
+      ...sequence,
+      beats: updatedBeats,
+    };
+
+    logger.log(
+      `Applied rotation pattern "${pattern.name}" - modified ${modifiedBeats} beats`
+    );
+
+    return {
+      success: true,
+      sequence: updatedSequence,
+      modifiedBeats,
+      warnings: warnings.length > 0 ? warnings : undefined,
+    };
+  }
+
+  /**
+   * Recalculate letters for modified beats using the pictograph dataset
+   */
+  private async recalculateLettersForBeats(
+    beats: BeatData[],
+    modifiedBeatIndices: number[],
+    gridMode: GridMode
+  ): Promise<void> {
+    let motionQueryHandler: IMotionQueryHandler | null = null;
+    try {
+      motionQueryHandler = resolve<IMotionQueryHandler>(TYPES.IMotionQueryHandler);
+    } catch (e) {
+      logger.warn("Could not resolve IMotionQueryHandler - letters will not be updated");
+      return;
+    }
+
+    for (const beatIndex of modifiedBeatIndices) {
+      const beat = beats[beatIndex];
+      if (!beat) continue;
+
+      const blueMotion = beat.motions?.blue;
+      const redMotion = beat.motions?.red;
+
+      if (!blueMotion || !redMotion) continue;
+
+      try {
+        const foundLetter = await motionQueryHandler.findLetterByMotionConfiguration(
+          blueMotion,
+          redMotion,
+          gridMode
+        );
+
+        if (foundLetter) {
+          const newLetter = foundLetter as Letter;
+          if (newLetter !== beat.letter) {
+            logger.log(
+              `Beat ${beatIndex + 1}: Updated letter "${beat.letter}" → "${newLetter}"`
+            );
+            beats[beatIndex] = createBeatData({
+              ...beat,
+              letter: newLetter,
+            });
+          }
+        } else {
+          logger.warn(
+            `Beat ${beatIndex + 1}: Could not find letter for modified motion configuration`
+          );
+        }
+      } catch (error) {
+        logger.warn(
+          `Beat ${beatIndex + 1}: Error looking up letter:`,
+          error
+        );
+      }
+    }
+  }
+
+  /**
+   * Apply rotation direction to a single motion
+   *
+   * Skip logic:
+   * - FLOAT → skip (floats have no rotation)
+   * - STATIC @ 0 turns → skip (no rotation to modify)
+   * - DASH @ 0 turns → skip (don't add turns)
+   * - DASH @ turns > 0 + "none" → skip (don't remove turns)
+   * - PRO/ANTI + "none" → skip (don't convert to static/dash)
+   *
+   * Apply logic:
+   * - PRO/ANTI getting CW/CCW → flip motion type if direction changes
+   * - DASH with turns getting CW/CCW → apply direction
+   */
+  private applyRotationToMotion(
+    patternValue: RotationDirectionValue,
+    currentMotion: MotionData,
+    color: MotionColor,
+    beatIndex: number
+  ): { motion: MotionData | null; warning?: string } {
+    const { motionType, turns, rotationDirection } = currentMotion;
+
+    // FLOAT: skip (floats have no rotation)
+    if (motionType === MotionType.FLOAT) {
+      return { motion: null, warning: "Skipped float (no rotation)" };
+    }
+
+    // STATIC @ 0 turns: skip (no rotation to modify)
+    if (motionType === MotionType.STATIC && turns === 0) {
+      return { motion: null, warning: "Skipped static@0 (no rotation)" };
+    }
+
+    // DASH @ 0 turns: skip (don't add turns)
+    if (motionType === MotionType.DASH && turns === 0) {
+      return { motion: null, warning: "Skipped dash@0 (no rotation)" };
+    }
+
+    // Pattern value is "none": skip (don't remove rotation)
+    if (patternValue === "none") {
+      return { motion: null };
+    }
+
+    // Convert pattern value to enum
+    const newRotationDirection =
+      patternValue === "cw"
+        ? RotationDirection.CLOCKWISE
+        : RotationDirection.COUNTER_CLOCKWISE;
+
+    // Skip if already at this rotation direction
+    if (rotationDirection === newRotationDirection) {
+      return { motion: null };
+    }
+
+    // CRITICAL: Flip motion type when rotation direction changes (PRO ↔ ANTI)
+    let newMotionType = motionType;
+    if (motionType === MotionType.PRO) {
+      newMotionType = MotionType.ANTI;
+      logger.log(`Beat ${beatIndex + 1} ${color}: Flipping PRO → ANTI`);
+    } else if (motionType === MotionType.ANTI) {
+      newMotionType = MotionType.PRO;
+      logger.log(`Beat ${beatIndex + 1} ${color}: Flipping ANTI → PRO`);
+    }
+    // Note: DASH, STATIC don't flip
+
+    // Recalculate end orientation
+    const orientationCalculator = resolve<IOrientationCalculator>(
+      TYPES.IOrientationCalculator
+    );
+    const tempMotion = createMotionData({
+      ...currentMotion,
+      rotationDirection: newRotationDirection,
+      motionType: newMotionType,
+    });
+    const newEndOrientation = orientationCalculator.calculateEndOrientation(
+      tempMotion,
+      color
+    );
+
+    return {
+      motion: createMotionData({
+        ...currentMotion,
+        rotationDirection: newRotationDirection,
+        motionType: newMotionType,
+        endOrientation: newEndOrientation,
+      }),
+    };
+  }
+
+  /**
+   * Propagate orientations forward through the sequence
+   * Ensures each beat's startOrientation matches the previous beat's endOrientation
+   */
+  private propagateOrientations(beats: BeatData[]): void {
+    for (let i = 0; i < beats.length - 1; i++) {
+      const currentBeat = beats[i];
+      const nextBeat = beats[i + 1];
+      if (!currentBeat || !nextBeat) continue;
+
+      // Propagate blue motion orientation
+      if (currentBeat.motions?.blue && nextBeat.motions?.blue) {
+        const currentEndOrientation = currentBeat.motions.blue.endOrientation;
+        const nextStartOrientation = nextBeat.motions.blue.startOrientation;
+
+        if (currentEndOrientation !== nextStartOrientation) {
+          const updatedNextMotion = this.updateMotionStartOrientation(
+            nextBeat.motions.blue,
+            currentEndOrientation,
+            MotionColor.BLUE
+          );
+
+          beats[i + 1] = {
+            ...nextBeat,
+            motions: {
+              ...nextBeat.motions,
+              blue: updatedNextMotion,
+            },
+          };
+        }
+      }
+
+      // Propagate red motion orientation
+      if (currentBeat.motions?.red && nextBeat.motions?.red) {
+        const currentEndOrientation = currentBeat.motions.red.endOrientation;
+        const nextStartOrientation = nextBeat.motions.red.startOrientation;
+
+        if (currentEndOrientation !== nextStartOrientation) {
+          const updatedNextMotion = this.updateMotionStartOrientation(
+            nextBeat.motions.red,
+            currentEndOrientation,
+            MotionColor.RED
+          );
+
+          // Get latest beat data (might have been updated for blue already)
+          const latestNextBeat = beats[i + 1];
+          if (!latestNextBeat) continue;
+          beats[i + 1] = {
+            ...latestNextBeat,
+            motions: {
+              ...latestNextBeat.motions,
+              red: updatedNextMotion,
+            },
+          };
+        }
+      }
+    }
+  }
+
+  /**
+   * Update a motion's start orientation and recalculate end orientation
+   */
+  private updateMotionStartOrientation(
+    motion: MotionData,
+    newStartOrientation: Orientation,
+    color: MotionColor
+  ): MotionData {
+    const orientationCalculator = resolve<IOrientationCalculator>(
+      TYPES.IOrientationCalculator
+    );
+
+    const tempMotion = createMotionData({
+      ...motion,
+      startOrientation: newStartOrientation,
+    });
+
+    const newEndOrientation = orientationCalculator.calculateEndOrientation(
+      tempMotion,
+      color
+    );
+
+    return createMotionData({
+      ...motion,
+      startOrientation: newStartOrientation,
+      endOrientation: newEndOrientation,
+    });
+  }
+
+  /**
+   * Save a rotation direction pattern to Firebase
+   */
+  async savePattern(
+    data: RotationDirectionPatternCreateData,
+    userId: string
+  ): Promise<RotationDirectionPattern> {
+    const firestore = await getFirestoreInstance();
+    const patternsRef = collection(
+      firestore,
+      "users",
+      userId,
+      "rotationDirectionPatterns"
+    );
+
+    const docData = {
+      name: data.name,
+      userId,
+      beatCount: data.beatCount,
+      entries: data.entries,
+      createdAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(patternsRef, docData);
+
+    logger.log(`Saved rotation pattern "${data.name}" with ID ${docRef.id}`);
+
+    return {
+      id: docRef.id,
+      name: data.name,
+      userId,
+      beatCount: data.beatCount,
+      entries: data.entries,
+      createdAt: null as any, // Will be populated by Firestore
+    };
+  }
+
+  /**
+   * Load all rotation direction patterns for a user
+   */
+  async loadPatterns(userId: string): Promise<RotationDirectionPattern[]> {
+    const firestore = await getFirestoreInstance();
+    const patternsRef = collection(
+      firestore,
+      "users",
+      userId,
+      "rotationDirectionPatterns"
+    );
+    const q = query(patternsRef, orderBy("createdAt", "desc"));
+
+    const snapshot = await getDocs(q);
+    const patterns: RotationDirectionPattern[] = [];
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      patterns.push({
+        id: doc.id,
+        name: data.name,
+        userId: data.userId,
+        beatCount: data.beatCount,
+        entries: data.entries,
+        createdAt: data.createdAt,
+      });
+    });
+
+    logger.log(`Loaded ${patterns.length} rotation patterns for user ${userId}`);
+    return patterns;
+  }
+
+  /**
+   * Delete a rotation direction pattern
+   */
+  async deletePattern(patternId: string, userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
+    const patternRef = doc(
+      firestore,
+      "users",
+      userId,
+      "rotationDirectionPatterns",
+      patternId
+    );
+    await deleteDoc(patternRef);
+    logger.log(`Deleted rotation pattern ${patternId}`);
+  }
+
+  /**
+   * Validate that a pattern can be applied to a sequence
+   */
+  validateForSequence(
+    pattern: RotationDirectionPattern,
+    sequence: SequenceData
+  ): { valid: boolean; error?: string } {
+    if (pattern.beatCount !== sequence.beats.length) {
+      return {
+        valid: false,
+        error: `Pattern has ${pattern.beatCount} beats but sequence has ${sequence.beats.length} beats`,
+      };
+    }
+    return { valid: true };
+  }
+}

@@ -77,11 +77,19 @@ export function createAutoEditPanelEffect(
 }
 
 /**
- * Creates auto-open/close effect for Sequence Actions panel on beat selection
- * Uses selection-change tracking to prevent fighting with manual panel close
+ * Creates auto-open effect for Beat Editor panel on beat selection
+ *
+ * IMPORTANT: This only AUTO-OPENS the panel when a beat is selected.
+ * It does NOT auto-close when selection is cleared - this prevents
+ * the panel from flickering during beat operations (delete, transforms)
+ * that temporarily clear selection.
+ *
+ * The panel is closed when:
+ * - User explicitly closes it (close button, swipe, etc.)
+ *
  * @returns Cleanup function
  */
-export function createAutoSequenceActionsEffect(
+export function createAutoBeatEditorEffect(
   config: AutoEditPanelConfig
 ): () => void {
   const { CreateModuleState, panelState } = config;
@@ -98,24 +106,33 @@ export function createAutoSequenceActionsEffect(
       // Only act when selection CHANGES (prevents fight with manual close)
       if (selectedBeatNumber !== lastSelectedBeat) {
         if (selectedBeatNumber !== null) {
-          // New beat selected → auto-open panel
-          console.log(`[AutoEditPanelManager] Beat selected, auto-opening panel`);
-          panelState.openSequenceActionsPanel();
+          // New beat selected → auto-open Beat Editor panel
+          console.log(`[AutoEditPanelManager] Beat selected, auto-opening Beat Editor`);
+          panelState.openBeatEditorPanel();
           getLogger().log(
-            `Auto-opening Sequence Actions panel for beat ${selectedBeatNumber}`
-          );
-        } else {
-          // Beat deselected → auto-close panel
-          console.log(`[AutoEditPanelManager] Beat deselected, auto-closing panel`);
-          panelState.closeSequenceActionsPanel();
-          getLogger().log(
-            `Auto-closing Sequence Actions panel (no beat selected)`
+            `Auto-opening Beat Editor panel for beat ${selectedBeatNumber}`
           );
         }
+        // NOTE: We deliberately do NOT auto-close the panel when selection becomes null.
+        // This prevents panel flickering during beat operations that temporarily clear selection.
+        // The panel will be closed when the user explicitly closes it.
         lastSelectedBeat = selectedBeatNumber;
       }
     });
   });
+}
+
+/**
+ * @deprecated Use createAutoBeatEditorEffect instead
+ * Kept for backward compatibility during migration
+ */
+export function createAutoSequenceActionsEffect(
+  config: AutoEditPanelConfig
+): () => void {
+  getLogger().warn(
+    "createAutoSequenceActionsEffect is deprecated. Use createAutoBeatEditorEffect instead."
+  );
+  return createAutoBeatEditorEffect(config);
 }
 
 /**

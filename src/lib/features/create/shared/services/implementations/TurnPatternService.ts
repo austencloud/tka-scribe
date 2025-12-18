@@ -15,7 +15,7 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
-import { firestore } from "$lib/shared/auth/firebase";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { injectable } from "inversify";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
@@ -416,6 +416,7 @@ export class TurnPatternService implements ITurnPatternService {
     data: TurnPatternCreateData,
     userId: string
   ): Promise<TurnPattern> {
+    const firestore = await getFirestoreInstance();
     const patternsRef = collection(firestore, "users", userId, "turnPatterns");
 
     const docData = {
@@ -444,6 +445,7 @@ export class TurnPatternService implements ITurnPatternService {
    * Load all turn patterns for a user
    */
   async loadPatterns(userId: string): Promise<TurnPattern[]> {
+    const firestore = await getFirestoreInstance();
     const patternsRef = collection(firestore, "users", userId, "turnPatterns");
     const q = query(patternsRef, orderBy("createdAt", "desc"));
 
@@ -470,6 +472,7 @@ export class TurnPatternService implements ITurnPatternService {
    * Delete a turn pattern
    */
   async deletePattern(patternId: string, userId: string): Promise<void> {
+    const firestore = await getFirestoreInstance();
     const patternRef = doc(firestore, "users", userId, "turnPatterns", patternId);
     await deleteDoc(patternRef);
     logger.log(`Deleted pattern ${patternId}`);

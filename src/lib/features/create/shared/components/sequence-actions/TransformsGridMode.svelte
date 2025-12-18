@@ -6,8 +6,12 @@
 <script lang="ts">
   interface Props {
     hasSequence: boolean;
+    hasSelection: boolean;
     isTransforming: boolean;
+    canAutocomplete?: boolean;
+    isAutocompleting?: boolean;
     showEditInConstructor: boolean;
+    onTurns: () => void;
     onMirror: () => void;
     onFlip: () => void;
     onInvert: () => void;
@@ -17,13 +21,19 @@
     onRewind: () => void;
     onPreview: () => void;
     onTurnPattern: () => void;
+    onRotationDirection: () => void;
+    onAutocomplete?: () => void;
     onEditInConstructor: () => void;
   }
 
   let {
     hasSequence,
+    hasSelection = false,
     isTransforming,
+    canAutocomplete = false,
+    isAutocompleting = false,
     showEditInConstructor,
+    onTurns,
     onMirror,
     onFlip,
     onInvert,
@@ -33,13 +43,35 @@
     onRewind,
     onPreview,
     onTurnPattern,
+    onRotationDirection,
+    onAutocomplete,
     onEditInConstructor,
   }: Props = $props();
 
-  const disabled = $derived(isTransforming || !hasSequence);
+  const disabled = $derived(isTransforming || isAutocompleting || !hasSequence);
 </script>
 
 <div class="transforms-grid" class:disabled>
+  <!-- Row 0: Edit Turns (full width, highlighted when beat selected) -->
+  <button
+    class="grid-btn turns-edit full-width"
+    class:highlighted={hasSelection}
+    onclick={onTurns}
+    disabled={!hasSelection}
+  >
+    <div class="btn-icon"><i class="fas fa-sliders-h"></i></div>
+    <div class="btn-text">
+      <span class="btn-label">Edit Turns</span>
+      <span class="btn-desc">
+        {#if hasSelection}
+          Adjust turns & rotation
+        {:else}
+          Select a beat first
+        {/if}
+      </span>
+    </div>
+  </button>
+
   <!-- Row 1: Mirror | Flip -->
   <button class="grid-btn mirror" onclick={onMirror} {disabled}>
     <div class="btn-icon"><i class="fas fa-left-right"></i></div>
@@ -108,7 +140,7 @@
     </div>
   </button>
 
-  <!-- Row 4: Turn Pattern (full width) -->
+  <!-- Row 5: Turn Pattern (full width) -->
   <button class="grid-btn turns full-width" onclick={onTurnPattern} disabled={!hasSequence}>
     <div class="btn-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
     <div class="btn-text">
@@ -117,7 +149,44 @@
     </div>
   </button>
 
-  <!-- Row 5: Edit in Constructor (full width) -->
+  <!-- Row 6: Rotation Direction (full width) -->
+  <button class="grid-btn rotation-dir full-width" onclick={onRotationDirection} disabled={!hasSequence}>
+    <div class="btn-icon"><i class="fas fa-compass"></i></div>
+    <div class="btn-text">
+      <span class="btn-label">Rotation Direction</span>
+      <span class="btn-desc">Apply CW/CCW patterns</span>
+    </div>
+  </button>
+
+  <!-- Row 7: Autocomplete (full width) - always shown, grayed out when not available -->
+  {#if onAutocomplete}
+    <button
+      class="grid-btn autocomplete full-width"
+      class:unavailable={!canAutocomplete}
+      onclick={onAutocomplete}
+      disabled={!hasSequence || isAutocompleting || !canAutocomplete}
+    >
+      <div class="btn-icon">
+        {#if isAutocompleting}
+          <i class="fas fa-spinner fa-spin"></i>
+        {:else}
+          <i class="fas fa-circle-check"></i>
+        {/if}
+      </div>
+      <div class="btn-text">
+        <span class="btn-label">{isAutocompleting ? "Completing..." : "Autocomplete"}</span>
+        <span class="btn-desc">
+          {#if !canAutocomplete}
+            Complete a partial sequence first
+          {:else}
+            Complete sequence to start position
+          {/if}
+        </span>
+      </div>
+    </button>
+  {/if}
+
+  <!-- Row 6: Edit in Constructor (full width) -->
   {#if showEditInConstructor}
     <button class="grid-btn edit full-width" onclick={onEditInConstructor} disabled={!hasSequence} data-testid="edit-in-constructor">
       <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
@@ -375,6 +444,18 @@
   }
   .grid-btn.turns .btn-icon { background: #14b8a6; color: white; }
 
+  /* Rotation Direction - Amber */
+  .grid-btn.rotation-dir {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  .grid-btn.rotation-dir:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.1));
+    border-color: rgba(245, 158, 11, 0.5);
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
+  }
+  .grid-btn.rotation-dir .btn-icon { background: #f59e0b; color: white; }
+
   /* Edit - Blue */
   .grid-btn.edit {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
@@ -386,6 +467,69 @@
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
   }
   .grid-btn.edit .btn-icon { background: #3b82f6; color: white; }
+
+  /* Autocomplete - Emerald */
+  .grid-btn.autocomplete {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.08));
+    border: 1px solid rgba(16, 185, 129, 0.4);
+  }
+  .grid-btn.autocomplete:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.15));
+    border-color: rgba(16, 185, 129, 0.6);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+  }
+  .grid-btn.autocomplete .btn-icon { background: #10b981; color: white; }
+
+  /* Edit Turns - Cyan (highlighted when beat selected) */
+  .grid-btn.turns-edit {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(6, 182, 212, 0.05));
+    border: 1px solid rgba(6, 182, 212, 0.2);
+  }
+  .grid-btn.turns-edit:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.1));
+    border-color: rgba(6, 182, 212, 0.4);
+    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.15);
+  }
+  .grid-btn.turns-edit .btn-icon { background: rgba(6, 182, 212, 0.3); color: #06b6d4; }
+
+  /* Highlighted state when beat is selected */
+  .grid-btn.turns-edit.highlighted {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(6, 182, 212, 0.12));
+    border: 2px solid rgba(6, 182, 212, 0.6);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+  }
+  .grid-btn.turns-edit.highlighted:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.35), rgba(6, 182, 212, 0.18));
+    border-color: rgba(6, 182, 212, 0.8);
+    box-shadow: 0 4px 24px rgba(6, 182, 212, 0.3);
+  }
+  .grid-btn.turns-edit.highlighted .btn-icon { background: #06b6d4; color: white; }
+
+  /* Disabled state for turns-edit */
+  .grid-btn.turns-edit:disabled {
+    opacity: 0.4;
+  }
+  .grid-btn.turns-edit:disabled .btn-icon {
+    background: rgba(100, 100, 100, 0.3);
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Autocomplete unavailable state - grayed out */
+  .grid-btn.autocomplete.unavailable {
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.1), rgba(100, 100, 100, 0.05));
+    border: 1px solid rgba(100, 100, 100, 0.2);
+    opacity: 0.5;
+  }
+  .grid-btn.autocomplete.unavailable .btn-icon {
+    background: rgba(100, 100, 100, 0.4);
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .grid-btn.autocomplete.unavailable .btn-label {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .grid-btn.autocomplete.unavailable .btn-desc {
+    color: rgba(255, 255, 255, 0.35);
+  }
 
   /* Extra narrow: Reduce gaps */
   @media (max-width: 360px) {
