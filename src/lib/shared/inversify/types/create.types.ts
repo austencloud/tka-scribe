@@ -46,4 +46,7 @@ export const CreateTypes = {
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),
   ISwipeDetectionService: Symbol.for("ISwipeDetectionService"),
   IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
+
+  // Autocomplete
+  IAutocompleteService: Symbol.for("IAutocompleteService"),
 } as const;

@@ -49,4 +49,7 @@ export const GenerationTypes = {
   ICAPTypeService: Symbol.for("ICAPTypeService"),
   IGenerationOrchestrationService: Symbol.for("IGenerationOrchestrationService"),
   IPresetFormatterService: Symbol.for("IPresetFormatterService"),
+
+  // CAP Detection (reverse of generation - detect CAP type from existing sequence)
+  ICAPDetectionService: Symbol.for("ICAPDetectionService"),
 } as const;

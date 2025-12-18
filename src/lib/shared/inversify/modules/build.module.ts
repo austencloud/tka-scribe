@@ -5,13 +5,11 @@ import { SequenceIndexService } from "../../../features/create/shared/services/i
 import { SequencePersistenceService } from "../../../features/create/shared/services/implementations/SequencePersistenceService";
 import { WorkbenchService } from "../../../features/create/shared/workspace-panel/shared/services/implementations/WorkbenchService";
 import { SequenceExportService } from "../../../features/create/shared/services/implementations/SequenceExportService";
-import { SequenceDeletionService } from "../../../features/create/shared/workspace-panel/sequence-toolkit/services/implementations/SequenceDeletionService";
-import { SequenceTransformService } from "../../../features/create/shared/workspace-panel/sequence-toolkit/services/implementations/SequenceTransformService";
 import { SequenceAnalysisService } from "../../../features/create/shared/services/implementations/SequenceAnalysisService";
 import { CreateModuleHandlers } from "../../../features/create/shared/services/implementations/CreateModuleHandlers";
 import { CreateModuleLayoutService } from "../../../features/create/shared/layout/services/CreateModuleLayoutService";
 import { SequenceStatisticsService } from "../../../features/create/shared/services/implementations/SequenceStatisticsService";
-import { SequenceTransformationService } from "../../../features/create/shared/services/implementations/SequenceTransformationService";
+import { SequenceTransformationService } from "../../../features/create/shared/services/implementations/sequence-transforms/SequenceTransformationService";
 import { SequenceValidationService } from "../../../features/create/shared/services/implementations/SequenceValidationService";
 import { UndoService } from "../../../features/create/shared/services/implementations/UndoService";
 import { BeatOperationsService } from "../../../features/create/shared/services/implementations/BeatOperationsService";
@@ -54,6 +52,7 @@ import { BeatConverterService } from "../../../features/create/generate/shared/s
 import { BeatGenerationOrchestrator } from "../../../features/create/generate/shared/services/implementations/BeatGenerationOrchestrator";
 import { CAPParameterProvider } from "../../../features/create/generate/shared/services/implementations/CAPParameterProvider";
 import { CAPTypeService } from "../../../features/create/generate/shared/services/implementations/CAPTypeService";
+import { CAPDetectionService } from "../../../features/create/generate/circular/services/implementations/CAPDetectionService";
 import { CardConfigurationService } from "../../../features/create/generate/shared/services/implementations/CardConfigurationService";
 import { GenerationOrchestrationService } from "../../../features/create/generate/shared/services/implementations/GenerationOrchestrationService";
 import { PictographFilterService } from "../../../features/create/generate/shared/services/implementations/PictographFilterService";
@@ -70,6 +69,7 @@ import { OptionOrganizer } from "../../../features/create/construct/option-picke
 import { OptionLoader } from "../../../features/create/construct/option-picker/services/implementations/OptionLoader";
 import { OptionTransitionCoordinator } from "../../../features/create/construct/option-picker/services/implementations/OptionTransitionCoordinator";
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
+import { AutocompleteService } from "../../../features/create/shared/services/implementations/AutocompleteService";
 
 export const createModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -198,6 +198,7 @@ export const createModule = new ContainerModule(
       .to(ResponsiveTypographyService);
     options.bind(TYPES.ICardConfigurationService).to(CardConfigurationService);
     options.bind(TYPES.ICAPTypeService).to(CAPTypeService);
+    options.bind(TYPES.ICAPDetectionService).to(CAPDetectionService);
 
     // Generation Orchestration Services (SRP Refactoring - Dec 2024)
     options
@@ -232,8 +233,9 @@ export const createModule = new ContainerModule(
       .bind(TYPES.ISequencePersistenceService)
       .to(SequencePersistenceService);
     options.bind(TYPES.ISequenceIndexService).to(SequenceIndexService);
-    options.bind(TYPES.ISequenceDeletionService).to(SequenceDeletionService);
-    options.bind(TYPES.ISequenceTransformService).to(SequenceTransformService);
+
+    // === AUTOCOMPLETE SERVICE ===
+    options.bind(TYPES.IAutocompleteService).to(AutocompleteService);
 
     // === LAYOUT SERVICES ===
     // Note: PrintablePageLayoutService handled in word-card module

@@ -90,21 +90,8 @@
   <FeedbackHeader {detailState} {readOnly} {onClose} />
 
   <div class="admin-feedback-body">
-    <!-- Title - Simple inline edit at top, click to edit -->
-    <input
-      type="text"
-      class="title-input"
-      bind:value={detailState.editTitle}
-      onblur={() => detailState.handleFieldBlur()}
-      placeholder="Untitled feedback..."
-      readonly={readOnly}
-    />
-
-    <!-- Metadata Card - User info -->
-    <FeedbackMetadataCard {detailState} {isMobile} />
-
-    <!-- Resolution Summary - Show for completed/archived feedback -->
-    {#if (item.status === "completed" || item.status === "archived") && (item.resolutionNotes || item.adminNotes)}
+    <!-- Resolution Summary - Show for in-review/completed/archived feedback -->
+    {#if (item.status === "in-review" || item.status === "completed" || item.status === "archived") && (item.resolutionNotes || item.adminNotes)}
       <section class="section resolution-section">
         <h3 class="section-title">
           <i class="fas fa-check-circle"></i>
@@ -125,6 +112,19 @@
         </div>
       </section>
     {/if}
+
+    <!-- Title - Simple inline edit at top, click to edit -->
+    <input
+      type="text"
+      class="title-input"
+      bind:value={detailState.editTitle}
+      onblur={() => detailState.handleFieldBlur()}
+      placeholder="Untitled feedback..."
+      readonly={readOnly}
+    />
+
+    <!-- Metadata Card - User info -->
+    <FeedbackMetadataCard {detailState} {isMobile} />
 
     <!-- Description Section - Primary content -->
     <section class="section">

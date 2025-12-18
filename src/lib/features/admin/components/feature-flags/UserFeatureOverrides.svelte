@@ -5,7 +5,7 @@
 	 */
 
 	import { collection, query, getDocs, limit } from 'firebase/firestore';
-	import { firestore } from '../../../../shared/auth/firebase';
+	import { getFirestoreInstance } from '../../../../shared/auth/firebase';
 	import { featureFlagService } from '../../../../shared/auth/services/FeatureFlagService.svelte';
 	import type { FeatureFlagConfig, FeatureId } from "$lib/shared/auth/domain/models/FeatureFlag";
 	import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
@@ -55,6 +55,7 @@
 		isSearchingUsers = true;
 
 		try {
+			const firestore = await getFirestoreInstance();
 			const searchTerm = userSearchQuery.toLowerCase();
 			const usersRef = collection(firestore, 'users');
 			const q = query(usersRef, limit(200));

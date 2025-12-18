@@ -15,7 +15,7 @@ import { MotionCalculator } from "../../../features/compose/services/implementat
 import { PropInterpolator as PropInterpolationService } from "../../../features/compose/services/implementations/PropInterpolator";
 import { SequenceAnimationOrchestrator } from "../../../features/compose/services/implementations/SequenceAnimationOrchestrator";
 import { SequenceLoopabilityChecker } from "../../../features/compose/services/implementations/SequenceLoopabilityChecker";
-import { SequenceNormalizationService } from "../../../features/compose/services/implementations/SequenceNormalizationService";
+// SequenceNormalizationService moved to data.module.ts (Tier 1) - required by ISequenceService
 import { SVGGenerator } from "../../../features/compose/services/implementations/SVGGenerator";
 import { TrailCaptureService } from "../../../features/compose/services/implementations/TrailCaptureService";
 import { TunnelModeSequenceManager } from "../../../features/compose/services/implementations/TunnelModeSequenceManager";
@@ -58,9 +58,7 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);
 
     // === MODE-SPECIFIC SERVICES ===
-    options
-      .bind(TYPES.ISequenceNormalizationService)
-      .to(SequenceNormalizationService);
+    // ISequenceNormalizationService moved to data.module.ts (Tier 1) - required by ISequenceService
     options
       .bind(TYPES.ITunnelModeSequenceManager)
       .to(TunnelModeSequenceManager);

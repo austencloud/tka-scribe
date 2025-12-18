@@ -6,7 +6,7 @@
   import { feedbackService } from "../../services/implementations/FeedbackService";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
-  import { firestore } from "$lib/shared/auth/firebase";
+  import { getFirestoreInstance } from "$lib/shared/auth/firebase";
   import {
     collection,
     query,
@@ -63,6 +63,7 @@
   async function loadAllArchivedItems() {
     isLoadingAll = true;
     try {
+      const firestore = await getFirestoreInstance();
       // Query Firestore directly for all archived items
       const q = query(
         collection(firestore, "feedback"),

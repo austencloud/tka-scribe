@@ -88,7 +88,7 @@
         <i class="fas fa-times"></i>
       </button>
     </header>
-    <div class="drawer-content">
+    <div class="filter-drawer-content">
       <FilterOptionGrid
         options={statusOptions}
         selectedValue={manageState.filters.status}
@@ -123,7 +123,7 @@
         <i class="fas fa-times"></i>
       </button>
     </header>
-    <div class="drawer-content">
+    <div class="filter-drawer-content">
       <FilterOptionGrid
         options={priorityOptions}
         selectedValue={manageState.filters.priority}
@@ -190,7 +190,7 @@
     transform: scale(0.95);
   }
 
-  .drawer-content {
+  .filter-drawer-content {
     flex: 1;
     overflow-y: auto;
     padding: 13px;

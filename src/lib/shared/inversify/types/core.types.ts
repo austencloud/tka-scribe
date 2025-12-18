@@ -13,8 +13,6 @@ export const CoreTypes = {
   ISequenceStatisticsService: Symbol.for("ISequenceStatisticsService"),
   ISequenceTransformationService: Symbol.for("ISequenceTransformationService"),
   ISequenceImportService: Symbol.for("ISequenceImportService"),
-  ISequenceDeletionService: Symbol.for("ISequenceDeletionService"),
-  ISequenceTransformService: Symbol.for("ISequenceTransformService"),
   ISequenceExportService: Symbol.for("ISequenceExportService"),
   ISequencePersistenceService: Symbol.for("ISequencePersistenceService"),
 

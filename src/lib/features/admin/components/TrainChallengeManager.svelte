@@ -10,7 +10,7 @@
   import type { TrainChallenge } from "$lib/features/train/domain/models/TrainChallengeModels";
   import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
   import { PracticeMode } from "$lib/features/train/domain/enums/TrainEnums";
-  import { firestore } from "$lib/shared/auth/firebase";
+  import { getFirestoreInstance } from "$lib/shared/auth/firebase";
   import { collection, addDoc, serverTimestamp } from "firebase/firestore";
   import { getTrainChallengesPath } from "$lib/shared/gamification/data/firestore-collections";
   import { SEED_CHALLENGES } from "$lib/features/train/data/seed-challenges";
@@ -72,6 +72,7 @@
     creating = true;
 
     try {
+      const firestore = await getFirestoreInstance();
       const challengesPath = getTrainChallengesPath();
       const challengeData: Partial<TrainChallenge> = {
         title: formData.title,
@@ -141,6 +142,7 @@
     seeding = true;
 
     try {
+      const firestore = await getFirestoreInstance();
       const challengesPath = getTrainChallengesPath();
       const challengesRef = collection(firestore, challengesPath);
 

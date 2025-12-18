@@ -17,6 +17,7 @@ import { SequenceService } from "../../../features/create/shared/services/implem
 import { SequenceDomainService } from "../../../features/create/shared/services/implementations/SequenceDomainService";
 import { ReversalDetectionService } from "../../../features/create/shared/services/implementations/ReversalDetectionService";
 import { SequenceImportService } from "../../../features/create/shared/services/implementations/SequenceImportService";
+import { SequenceNormalizationService } from "../../../features/compose/services/implementations/SequenceNormalizationService";
 
 export const dataModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -42,6 +43,8 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.ISequenceDomainService).to(SequenceDomainService);
     options.bind(TYPES.IReversalDetectionService).to(ReversalDetectionService);
     options.bind(TYPES.ISequenceImportService).to(SequenceImportService);
+    // ISequenceNormalizationService moved here - required by ISequenceService
+    options.bind(TYPES.ISequenceNormalizationService).to(SequenceNormalizationService);
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundManager).to(BackgroundManager);
