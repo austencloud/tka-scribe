@@ -46,20 +46,20 @@
     /* Desktop: 48px, Mobile: 48px minimum (iOS/Android touch target guidelines) */
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: none;
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent); /* Subtle blue tint for primary action */
+    background: linear-gradient(135deg, #a78bfa 0%, color-mix(in srgb, #a78bfa 85%, #8b5cf6) 100%); /* Purple gradient */
+    border: 1px solid color-mix(in srgb, #a78bfa 30%, transparent);
     backdrop-filter: blur(10px);
     border-radius: 50%;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px color-mix(in srgb, #a78bfa 40%, transparent);
   }
 
   .play-button:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, #a78bfa 85%, #8b5cf6) 0%, color-mix(in srgb, #a78bfa 70%, #8b5cf6) 100%);
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 16px color-mix(in srgb, #a78bfa 60%, transparent);
   }
 
   .play-button:active {
@@ -134,8 +134,8 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .play-button {
-      background: color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
-      border: 2px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
+      background: color-mix(in srgb, #a78bfa 30%, transparent);
+      border: 2px solid color-mix(in srgb, #a78bfa 70%, transparent);
     }
   }
 

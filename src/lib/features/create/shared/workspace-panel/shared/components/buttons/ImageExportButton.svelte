@@ -60,22 +60,15 @@
     font-size: 18px;
     color: var(--theme-text, #ffffff);
 
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent),
-      color-mix(in srgb, #ec4899 90%, transparent)
-    );
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-    box-shadow:
-      0 2px 8px color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 35%, transparent),
-      0 6px 18px color-mix(in srgb, #ec4899 25%, transparent);
+    background: linear-gradient(135deg, #22d3ee 0%, color-mix(in srgb, #22d3ee 85%, #06b6d4) 100%);
+    border: 1px solid color-mix(in srgb, #22d3ee 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, #22d3ee 40%, transparent);
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
-    box-shadow:
-      0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 45%, transparent),
-      0 8px 22px color-mix(in srgb, #ec4899 35%, transparent);
+    background: linear-gradient(135deg, color-mix(in srgb, #22d3ee 85%, #06b6d4) 0%, color-mix(in srgb, #22d3ee 70%, #06b6d4) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, #22d3ee 60%, transparent);
   }
 
   .panel-button:active:not(:disabled) {
@@ -95,14 +88,8 @@
   }
 
   .image-export-button.active {
-    background: linear-gradient(
-      135deg,
-      var(--theme-accent-strong, #8b5cf6),
-      #ec4899
-    );
-    box-shadow:
-      0 4px 14px color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 55%, transparent),
-      0 10px 26px color-mix(in srgb, #ec4899 40%, transparent);
+    background: linear-gradient(135deg, #22d3ee, #06b6d4);
+    box-shadow: 0 6px 20px color-mix(in srgb, #22d3ee 70%, transparent);
   }
 
   /* Mobile responsive - ALWAYS 48px minimum per iOS/Android guidelines */

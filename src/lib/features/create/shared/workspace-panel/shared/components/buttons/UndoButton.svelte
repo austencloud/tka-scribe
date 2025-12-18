@@ -125,17 +125,16 @@
     font-size: 18px;
     color: var(--theme-text, #ffffff);
 
-    /* Professional glass styling matching ButtonPanel */
-    background: var(--theme-card-bg, rgba(100, 116, 139, 0.8));
-    border: 1px solid var(--theme-stroke, rgba(148, 163, 184, 0.3));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    /* Purple gradient matching SaveToLibraryButton */
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, var(--theme-accent-strong, #4f46e5)) 100%);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
-  .undo-button:hover {
+  .undo-button:hover:not(:disabled) {
     transform: scale(1.05);
-    background: var(--theme-card-hover-bg, rgba(100, 116, 139, 0.9));
-    border-color: var(--theme-stroke-strong, rgba(148, 163, 184, 0.4));
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, var(--theme-accent-strong, #4f46e5)) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 70%, var(--theme-accent-strong, #4f46e5)) 100%);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
   }
 
   .undo-button:active {
@@ -158,9 +157,8 @@
   .undo-button:disabled:hover,
   .undo-button.disabled:hover {
     transform: none;
-    background: var(--theme-card-bg, rgba(100, 116, 139, 0.8));
-    border-color: var(--theme-stroke, rgba(148, 163, 184, 0.3));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, var(--theme-accent-strong, #4f46e5)) 100%);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
