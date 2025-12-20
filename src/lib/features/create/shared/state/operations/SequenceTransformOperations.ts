@@ -250,6 +250,34 @@ export function createSequenceTransformOperations(
       }
     },
 
+    async shiftStartPosition(targetBeatNumber: number) {
+      if (!coreState.currentSequence || !sequenceTransformationService) return;
+
+      try {
+        console.log(`🔄 Shifting start position to beat ${targetBeatNumber}...`);
+        const shiftedSequence = sequenceTransformationService.shiftStartPosition(
+          coreState.currentSequence,
+          targetBeatNumber
+        );
+        console.log("✅ Got shifted sequence:", shiftedSequence);
+        coreState.setCurrentSequence(shiftedSequence);
+
+        // Update selection state with new start position so UI re-renders
+        if (shiftedSequence.startPosition) {
+          selectionState.setStartPosition(shiftedSequence.startPosition);
+        }
+
+        coreState.clearError();
+
+        // Persist the transformed sequence
+        await onSave?.();
+        console.log("✅ Shift start position complete and saved");
+      } catch (error) {
+        console.error("❌ Shift start position error:", error);
+        handleError("Failed to shift start position", error);
+      }
+    },
+
     validateSequence(): ValidationResult | null {
       if (!coreState.currentSequence || !sequenceValidationService) return null;
       return sequenceValidationService.validateSequence(

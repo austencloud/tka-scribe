@@ -15,6 +15,7 @@
   import { toast } from "$lib/shared/toast/state/toast-state.svelte";
   import { areSequencesEqual } from "../../utils/sequence-comparison";
   import { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+  import { isAdmin } from "$lib/shared/auth/state/authState.svelte";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
   import SequencePreviewDialog from "./SequencePreviewDialog.svelte";
@@ -66,6 +67,11 @@
   let showAutocompleteDrawer = $state(false);
   let autocompleteAnalysis = $state<AutocompleteAnalysis | null>(null);
   let isAutocompleting = $state(false);
+  let showShiftConfirmDialog = $state(false);
+  let pendingShiftBeatNumber = $state<number | null>(null);
+
+  // Shift start mode uses panelState for cross-component coordination
+  const isShiftStartMode = $derived(panelState.isShiftStartMode);
 
   // Sync isOpen with show prop
   $effect(() => {
@@ -86,6 +92,9 @@
       return false;
     }
   });
+
+  // Shift start availability - need at least 2 beats
+  const canShiftStart = $derived(sequence && sequence.beats && sequence.beats.length >= 2);
 
   onMount(() => {
     try {
@@ -350,6 +359,120 @@
     hapticService?.trigger("selection");
     panelState.openBeatEditorPanel();
   }
+
+  function handleShiftStart() {
+    if (!sequence || !canShiftStart) return;
+    hapticService?.trigger("selection");
+    console.log("[SequenceActionsPanel] Entering shift start mode");
+    panelState.enterShiftStartMode(handleShiftStartBeatSelect);
+    console.log("[SequenceActionsPanel] Shift mode state:", {
+      isShiftStartMode: panelState.isShiftStartMode,
+      hasHandler: !!panelState.shiftStartHandler,
+    });
+    toast.info("Tap the beat you want to play first — it will become Beat 1");
+  }
+
+  function handleShiftStartBeatSelect(beatNumber: number) {
+    if (!sequence || beatNumber < 1) return;
+    hapticService?.trigger("selection");
+
+    // No-op if selecting beat 1
+    if (beatNumber === 1) {
+      toast.info("That's already Beat 1");
+      panelState.exitShiftStartMode();
+      return;
+    }
+
+    // For circular sequences, shift immediately
+    if (sequence.isCircular) {
+      executeShiftStart(beatNumber);
+    } else {
+      // For non-circular, show confirmation
+      pendingShiftBeatNumber = beatNumber;
+      showShiftConfirmDialog = true;
+    }
+  }
+
+  async function executeShiftStart(beatNumber: number) {
+    if (!sequence || isTransforming) return;
+    isTransforming = true;
+
+    try {
+      await activeSequenceState.shiftStartPosition(beatNumber);
+      const beatsRemoved = sequence.isCircular ? 0 : beatNumber - 1;
+      if (beatsRemoved > 0) {
+        toast.success(`Shifted start. Removed ${beatsRemoved} beat${beatsRemoved > 1 ? 's' : ''}.`);
+      } else {
+        toast.success(`Beat ${beatNumber} is now beat 1`);
+      }
+      hapticService?.trigger("success");
+    } catch (error) {
+      console.error("[ShiftStart] Failed:", error);
+      toast.error("Could not shift start position");
+      hapticService?.trigger("error");
+    } finally {
+      isTransforming = false;
+      panelState.exitShiftStartMode();
+      pendingShiftBeatNumber = null;
+      showShiftConfirmDialog = false;
+    }
+  }
+
+  function cancelShiftStart() {
+    panelState.exitShiftStartMode();
+    pendingShiftBeatNumber = null;
+    showShiftConfirmDialog = false;
+  }
+
+  async function handleCopySequenceJson() {
+    if (!sequence) return;
+    hapticService?.trigger("selection");
+
+    try {
+      // Create minimal representation - strip placement data fluff
+      const minimalSequence = {
+        name: sequence.name,
+        word: sequence.word,
+        isCircular: sequence.isCircular,
+        gridMode: sequence.gridMode,
+        propType: sequence.propType,
+        startPosition: minimalBeat(sequence.startPosition || sequence.startingPositionBeat),
+        beats: sequence.beats.map(minimalBeat),
+      };
+
+      const jsonString = JSON.stringify(minimalSequence, null, 2);
+      await navigator.clipboard.writeText(jsonString);
+      toast.success("Sequence JSON copied to clipboard");
+    } catch (error) {
+      console.error("Failed to copy sequence JSON:", error);
+      toast.error("Failed to copy to clipboard");
+    }
+  }
+
+  function minimalMotion(motion: any) {
+    if (!motion) return null;
+    return {
+      type: motion.motionType,
+      dir: motion.rotationDirection,
+      start: motion.startLocation,
+      end: motion.endLocation,
+      turns: motion.turns,
+      startOri: motion.startOrientation,
+      endOri: motion.endOrientation,
+    };
+  }
+
+  function minimalBeat(beat: any) {
+    if (!beat) return null;
+    return {
+      beat: beat.beatNumber,
+      letter: beat.letter,
+      start: beat.startPosition,
+      end: beat.endPosition,
+      blue: minimalMotion(beat.motions?.blue),
+      red: minimalMotion(beat.motions?.red),
+    };
+  }
 </script>
 
 <CreatePanelDrawer
@@ -370,6 +493,16 @@
       <h2 class="panel-title">Sequence Actions</h2>
 
       <div class="header-actions">
+        {#if isAdmin() && hasSequence}
+          <button
+            class="icon-btn copy"
+            onclick={handleCopySequenceJson}
+            aria-label="Copy sequence JSON"
+            title="Copy sequence JSON"
+          >
+            <i class="fas fa-code"></i>
+          </button>
+        {/if}
         <button
           class="icon-btn help"
           onclick={() => (showHelpSheet = true)}
@@ -385,15 +518,22 @@
 
     <!-- Beat grid display: shows on mobile at 50% height -->
     {#if hasSequence && isSideBySideLayout === false && sequence}
-      <div class="beat-grid-section">
+      <div class="beat-grid-section" class:shift-mode={isShiftStartMode}>
+        {#if isShiftStartMode}
+          <div class="shift-mode-banner">
+            <span>Tap the beat to play first — it becomes Beat 1</span>
+            <button class="cancel-btn" onclick={cancelShiftStart}>Cancel</button>
+          </div>
+        {/if}
         <BeatGrid
           beats={sequence.beats}
           startPosition={sequence.startPosition ||
             sequence.startingPositionBeat ||
             null}
           {selectedBeatNumber}
-          onBeatClick={handleBeatSelect}
-          onStartClick={() => handleBeatSelect(0)}
+          onBeatClick={isShiftStartMode ? handleShiftStartBeatSelect : handleBeatSelect}
+          onStartClick={() => isShiftStartMode ? null : handleBeatSelect(0)}
+          onBeatLongPress={isShiftStartMode ? undefined : handlePreview}
         />
       </div>
     {/if}
@@ -405,6 +545,7 @@
         {isTransforming}
         {canAutocomplete}
         {isAutocompleting}
+        {canShiftStart}
         showEditInConstructor={!isInConstructTab}
         onTurns={handleOpenBeatEditor}
         onMirror={handleMirror}
@@ -414,10 +555,10 @@
         onRotateCCW={handleRotateCCW}
         onSwap={handleSwap}
         onRewind={handleRewind}
-        onPreview={handlePreview}
         onTurnPattern={handleTurnPattern}
         onRotationDirection={handleRotationDirection}
         onAutocomplete={handleAutocomplete}
+        onShiftStart={handleShiftStart}
         onEditInConstructor={handleEditInConstructor}
       />
     </div>
@@ -468,6 +609,29 @@
   onApply={handleAutocompleteApply}
 />
 
+<!-- Shift Start Confirmation Dialog (non-circular sequences) -->
+{#if showShiftConfirmDialog && pendingShiftBeatNumber !== null}
+  <div class="shift-confirm-overlay" role="dialog" aria-modal="true">
+    <div class="shift-confirm-dialog">
+      <h3>Shift Start Position</h3>
+      <p>
+        This will permanently remove beat{pendingShiftBeatNumber - 1 > 1 ? 's' : ''} 1{pendingShiftBeatNumber - 1 > 1 ? `-${pendingShiftBeatNumber - 1}` : ''}.
+      </p>
+      <div class="dialog-actions">
+        <button class="dialog-btn cancel" onclick={cancelShiftStart}>
+          Cancel
+        </button>
+        <button
+          class="dialog-btn confirm"
+          onclick={() => executeShiftStart(pendingShiftBeatNumber!)}
+        >
+          Shift Start
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
   .editor-panel {
     display: flex;
@@ -517,6 +681,18 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
+  .icon-btn.copy {
+    background: rgba(59, 130, 246, 0.15);
+    color: rgba(59, 130, 246, 0.8);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .icon-btn.copy:hover {
+    background: rgba(59, 130, 246, 0.25);
+    color: rgba(59, 130, 246, 1);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
   .icon-btn.help {
     background: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.6);
@@ -559,12 +735,119 @@
 
   /* Beat grid section - visible on mobile only, takes 50% height */
   .beat-grid-section {
-    flex: 0 0 50%;
+    flex: 0 0 40%;
     min-height: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.02);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .beat-grid-section.shift-mode {
+    border-color: rgba(6, 182, 212, 0.5);
+    background: rgba(6, 182, 212, 0.05);
+  }
+
+  .shift-mode-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(6, 182, 212, 0.15);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+    color: #06b6d4;
+    font-size: 0.85rem;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .shift-mode-banner .cancel-btn {
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .shift-mode-banner .cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Shift confirm dialog */
+  .shift-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+  }
+
+  .shift-confirm-dialog {
+    background: rgba(30, 35, 45, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 320px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .shift-confirm-dialog h3 {
+    margin: 0 0 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #06b6d4;
+  }
+
+  .shift-confirm-dialog p {
+    margin: 0 0 20px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.5;
+  }
+
+  .dialog-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .dialog-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    min-width: 80px;
+  }
+
+  .dialog-btn.cancel {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+
+  .dialog-btn.cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .dialog-btn.confirm {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    border: none;
+    color: white;
+  }
+
+  .dialog-btn.confirm:hover {
+    background: linear-gradient(135deg, #22d3ee, #06b6d4);
   }
 
   /* Desktop (side-by-side): hide beat grid section */

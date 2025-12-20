@@ -51,6 +51,13 @@ export interface CustomizeOptions {
 }
 
 export interface PanelCoordinationState {
+  // Shift Start Mode State
+  get isShiftStartMode(): boolean;
+  get shiftStartHandler(): ((beatNumber: number) => void) | null;
+
+  enterShiftStartMode(handler: (beatNumber: number) => void): void;
+  exitShiftStartMode(): void;
+
   // Edit Panel State
   get isEditPanelOpen(): boolean;
   get editPanelBeatIndex(): number | null;
@@ -176,6 +183,10 @@ export interface PanelCoordinationState {
 }
 
 export function createPanelCoordinationState(): PanelCoordinationState {
+  // Shift start mode state
+  let isShiftStartMode = $state(false);
+  let shiftStartHandler = $state<((beatNumber: number) => void) | null>(null);
+
   // Edit panel state
   let isEditPanelOpen = $state(false);
   let editPanelBeatIndex = $state<number | null>(null);
@@ -255,6 +266,10 @@ export function createPanelCoordinationState(): PanelCoordinationState {
    * This ensures only ONE panel is open at a time, preventing state conflicts
    */
   function closeAllPanels() {
+    // Exit shift start mode
+    isShiftStartMode = false;
+    shiftStartHandler = null;
+
     // Close all modal/slide panels
     isEditPanelOpen = false;
     editPanelBeatIndex = null;
@@ -286,6 +301,24 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   }
 
   return {
+    // Shift Start Mode Getters
+    get isShiftStartMode() {
+      return isShiftStartMode;
+    },
+    get shiftStartHandler() {
+      return shiftStartHandler;
+    },
+
+    enterShiftStartMode(handler: (beatNumber: number) => void) {
+      isShiftStartMode = true;
+      shiftStartHandler = handler;
+    },
+
+    exitShiftStartMode() {
+      isShiftStartMode = false;
+      shiftStartHandler = null;
+    },
+
     // Edit Panel Getters
     get isEditPanelOpen() {
       return isEditPanelOpen;

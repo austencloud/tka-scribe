@@ -22,7 +22,8 @@ import {
 	rotateSequence,
 	colorSwapSequence,
 	invertSequence,
-	rewindSequence
+	rewindSequence,
+	shiftStartPosition
 } from "./sequence-transforms";
 
 @injectable()
@@ -65,5 +66,9 @@ export class SequenceTransformationService implements ISequenceTransformationSer
 
 	async rewindSequence(sequence: SequenceData): Promise<SequenceData> {
 		return rewindSequence(sequence, this.motionQueryHandler);
+	}
+
+	shiftStartPosition(sequence: SequenceData, targetBeatNumber: number): SequenceData {
+		return shiftStartPosition(sequence, targetBeatNumber);
 	}
 }

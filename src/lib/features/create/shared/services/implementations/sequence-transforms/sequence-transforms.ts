@@ -65,15 +65,29 @@ export function duplicateSequence(sequence: SequenceData, newName?: string): Seq
 export function mirrorSequence(sequence: SequenceData): SequenceData {
 	const mirroredBeats = sequence.beats.map(mirrorBeat);
 
-	const mirroredStartPosition =
-		sequence.startPosition && !isBeat(sequence.startPosition)
-			? mirrorStartPosition(sequence.startPosition)
-			: sequence.startPosition;
+	// Handle start position - could be BeatData or StartPositionData
+	let mirroredStartPosition = sequence.startPosition;
+	if (sequence.startPosition) {
+		if (isBeat(sequence.startPosition)) {
+			// Start position stored as BeatData - use mirrorBeat
+			mirroredStartPosition = mirrorBeat(sequence.startPosition);
+		} else {
+			// Start position stored as StartPositionData - use mirrorStartPosition
+			mirroredStartPosition = mirrorStartPosition(sequence.startPosition);
+		}
+	}
 
-	const mirroredStartingPositionBeat =
-		sequence.startingPositionBeat && !isBeat(sequence.startingPositionBeat)
-			? mirrorStartPosition(sequence.startingPositionBeat)
-			: sequence.startingPositionBeat;
+	// Handle startingPositionBeat - could be BeatData or StartPositionData
+	let mirroredStartingPositionBeat = sequence.startingPositionBeat;
+	if (sequence.startingPositionBeat) {
+		if (isBeat(sequence.startingPositionBeat)) {
+			// Start position stored as BeatData - use mirrorBeat
+			mirroredStartingPositionBeat = mirrorBeat(sequence.startingPositionBeat);
+		} else {
+			// Start position stored as StartPositionData - use mirrorStartPosition
+			mirroredStartingPositionBeat = mirrorStartPosition(sequence.startingPositionBeat);
+		}
+	}
 
 	return updateSequenceData(sequence, {
 		beats: mirroredBeats,
@@ -88,15 +102,29 @@ export function mirrorSequence(sequence: SequenceData): SequenceData {
 export function flipSequence(sequence: SequenceData): SequenceData {
 	const flippedBeats = sequence.beats.map(flipBeat);
 
-	const flippedStartPosition =
-		sequence.startPosition && !isBeat(sequence.startPosition)
-			? flipStartPosition(sequence.startPosition)
-			: sequence.startPosition;
+	// Handle start position - could be BeatData or StartPositionData
+	let flippedStartPosition = sequence.startPosition;
+	if (sequence.startPosition) {
+		if (isBeat(sequence.startPosition)) {
+			// Start position stored as BeatData - use flipBeat
+			flippedStartPosition = flipBeat(sequence.startPosition);
+		} else {
+			// Start position stored as StartPositionData - use flipStartPosition
+			flippedStartPosition = flipStartPosition(sequence.startPosition);
+		}
+	}
 
-	const flippedStartingPositionBeat =
-		sequence.startingPositionBeat && !isBeat(sequence.startingPositionBeat)
-			? flipStartPosition(sequence.startingPositionBeat)
-			: sequence.startingPositionBeat;
+	// Handle startingPositionBeat - could be BeatData or StartPositionData
+	let flippedStartingPositionBeat = sequence.startingPositionBeat;
+	if (sequence.startingPositionBeat) {
+		if (isBeat(sequence.startingPositionBeat)) {
+			// Start position stored as BeatData - use flipBeat
+			flippedStartingPositionBeat = flipBeat(sequence.startingPositionBeat);
+		} else {
+			// Start position stored as StartPositionData - use flipStartPosition
+			flippedStartingPositionBeat = flipStartPosition(sequence.startingPositionBeat);
+		}
+	}
 
 	return updateSequenceData(sequence, {
 		beats: flippedBeats,
@@ -115,15 +143,29 @@ export function rotateSequence(
 ): SequenceData {
 	const rotatedBeats = sequence.beats.map((beat) => rotateBeat(beat, rotationAmount, positionDeriver));
 
-	const rotatedStartPosition =
-		sequence.startPosition && !isBeat(sequence.startPosition)
-			? rotateStartPosition(sequence.startPosition, rotationAmount)
-			: sequence.startPosition;
+	// Handle start position - could be BeatData or StartPositionData
+	let rotatedStartPosition = sequence.startPosition;
+	if (sequence.startPosition) {
+		if (isBeat(sequence.startPosition)) {
+			// Start position stored as BeatData - use rotateBeat
+			rotatedStartPosition = rotateBeat(sequence.startPosition, rotationAmount, positionDeriver);
+		} else {
+			// Start position stored as StartPositionData - use rotateStartPosition
+			rotatedStartPosition = rotateStartPosition(sequence.startPosition, rotationAmount);
+		}
+	}
 
-	const rotatedStartingPositionBeat =
-		sequence.startingPositionBeat && !isBeat(sequence.startingPositionBeat)
-			? rotateStartPosition(sequence.startingPositionBeat, rotationAmount)
-			: sequence.startingPositionBeat;
+	// Handle startingPositionBeat - could be BeatData or StartPositionData
+	let rotatedStartingPositionBeat = sequence.startingPositionBeat;
+	if (sequence.startingPositionBeat) {
+		if (isBeat(sequence.startingPositionBeat)) {
+			// Start position stored as BeatData - use rotateBeat
+			rotatedStartingPositionBeat = rotateBeat(sequence.startingPositionBeat, rotationAmount, positionDeriver);
+		} else {
+			// Start position stored as StartPositionData - use rotateStartPosition
+			rotatedStartingPositionBeat = rotateStartPosition(sequence.startingPositionBeat, rotationAmount);
+		}
+	}
 
 	const currentGridMode = sequence.gridMode ?? GridMode.DIAMOND;
 	const newGridMode = getToggledGridMode(currentGridMode, rotationAmount);
@@ -142,15 +184,29 @@ export function rotateSequence(
 export function colorSwapSequence(sequence: SequenceData): SequenceData {
 	const swappedBeats = sequence.beats.map(colorSwapBeat);
 
-	const swappedStartPosition =
-		sequence.startPosition && !isBeat(sequence.startPosition)
-			? colorSwapStartPosition(sequence.startPosition)
-			: sequence.startPosition;
+	// Handle start position - could be BeatData or StartPositionData
+	let swappedStartPosition = sequence.startPosition;
+	if (sequence.startPosition) {
+		if (isBeat(sequence.startPosition)) {
+			// Start position stored as BeatData - use colorSwapBeat
+			swappedStartPosition = colorSwapBeat(sequence.startPosition);
+		} else {
+			// Start position stored as StartPositionData - use colorSwapStartPosition
+			swappedStartPosition = colorSwapStartPosition(sequence.startPosition);
+		}
+	}
 
-	const swappedStartingPositionBeat =
-		sequence.startingPositionBeat && !isBeat(sequence.startingPositionBeat)
-			? colorSwapStartPosition(sequence.startingPositionBeat)
-			: sequence.startingPositionBeat;
+	// Handle startingPositionBeat - could be BeatData or StartPositionData
+	let swappedStartingPositionBeat = sequence.startingPositionBeat;
+	if (sequence.startingPositionBeat) {
+		if (isBeat(sequence.startingPositionBeat)) {
+			// Start position stored as BeatData - use colorSwapBeat
+			swappedStartingPositionBeat = colorSwapBeat(sequence.startingPositionBeat);
+		} else {
+			// Start position stored as StartPositionData - use colorSwapStartPosition
+			swappedStartingPositionBeat = colorSwapStartPosition(sequence.startingPositionBeat);
+		}
+	}
 
 	return updateSequenceData(sequence, {
 		beats: swappedBeats,
@@ -177,15 +233,29 @@ export async function invertSequence(
 		invertedBeats.push(invertedBeat);
 	}
 
-	const invertedStartPosition =
-		sequence.startPosition && !isBeat(sequence.startPosition)
-			? invertStartPosition(sequence.startPosition, orientationCalculator)
-			: sequence.startPosition;
+	// Handle start position - could be BeatData or StartPositionData
+	let invertedStartPosition = sequence.startPosition;
+	if (sequence.startPosition) {
+		if (isBeat(sequence.startPosition)) {
+			// Start position stored as BeatData - use invertBeat
+			invertedStartPosition = await invertBeat(sequence.startPosition, gridMode, motionQueryHandler);
+		} else {
+			// Start position stored as StartPositionData - use invertStartPosition
+			invertedStartPosition = invertStartPosition(sequence.startPosition, orientationCalculator);
+		}
+	}
 
-	const invertedStartingPositionBeat =
-		sequence.startingPositionBeat && !isBeat(sequence.startingPositionBeat)
-			? invertStartPosition(sequence.startingPositionBeat, orientationCalculator)
-			: sequence.startingPositionBeat;
+	// Handle startingPositionBeat - could be BeatData or StartPositionData
+	let invertedStartingPositionBeat = sequence.startingPositionBeat;
+	if (sequence.startingPositionBeat) {
+		if (isBeat(sequence.startingPositionBeat)) {
+			// Start position stored as BeatData - use invertBeat
+			invertedStartingPositionBeat = await invertBeat(sequence.startingPositionBeat, gridMode, motionQueryHandler);
+		} else {
+			// Start position stored as StartPositionData - use invertStartPosition
+			invertedStartingPositionBeat = invertStartPosition(sequence.startingPositionBeat, orientationCalculator);
+		}
+	}
 
 	const invertedSequence = updateSequenceData(sequence, {
 		beats: invertedBeats,
@@ -231,9 +301,95 @@ export async function rewindSequence(
 }
 
 /**
+ * Shift the start position of a sequence.
+ * For circular: rotates beats so target beat's end becomes new start.
+ * For non-circular: truncates beats before target.
+ */
+export function shiftStartPosition(
+	sequence: SequenceData,
+	targetBeatNumber: number
+): SequenceData {
+	if (targetBeatNumber < 1 || targetBeatNumber > sequence.beats.length) {
+		return sequence;
+	}
+
+	// No-op if targeting beat 1
+	if (targetBeatNumber === 1) {
+		return sequence;
+	}
+
+	if (sequence.isCircular) {
+		return shiftCircularSequence(sequence, targetBeatNumber);
+	} else {
+		return truncateToNewStart(sequence, targetBeatNumber);
+	}
+}
+
+/**
+ * Shift a circular sequence by rotating beats.
+ * Target beat becomes the new beat 1.
+ * The beat BEFORE target's end position becomes the new start.
+ */
+function shiftCircularSequence(
+	sequence: SequenceData,
+	targetBeatNumber: number
+): SequenceData {
+	// New start position is the beat BEFORE target's end position
+	// (which is the same as target beat's start position)
+	const beatBeforeTarget = sequence.beats[targetBeatNumber - 2];
+	const newStartPosition = beatBeforeTarget
+		? createStartPositionFromBeatEnd(beatBeforeTarget)
+		: sequence.startPosition || sequence.startingPositionBeat;
+
+	// Rotate beats: target and after come first, then everything before target
+	const fromTarget = sequence.beats.slice(targetBeatNumber - 1);
+	const beforeTarget = sequence.beats.slice(0, targetBeatNumber - 1);
+	const rotatedBeats = [...fromTarget, ...beforeTarget];
+
+	// Renumber beats
+	const renumberedBeats = rotatedBeats.map((beat, index) =>
+		createBeatData({ ...beat, beatNumber: index + 1 })
+	);
+
+	return updateSequenceData(sequence, {
+		beats: renumberedBeats,
+		startPosition: newStartPosition,
+		startingPositionBeat: newStartPosition
+	});
+}
+
+/**
+ * Truncate a non-circular sequence to a new start point.
+ * Removes beats before the target beat.
+ */
+function truncateToNewStart(
+	sequence: SequenceData,
+	targetBeatNumber: number
+): SequenceData {
+	// New start position from beat BEFORE target
+	const beatBeforeTarget = sequence.beats[targetBeatNumber - 2]!;
+	const newStartPosition = createStartPositionFromBeatEnd(beatBeforeTarget);
+
+	// Keep only beats from target onwards
+	const keptBeats = sequence.beats.slice(targetBeatNumber - 1);
+
+	// Renumber
+	const renumberedBeats = keptBeats.map((beat, index) =>
+		createBeatData({ ...beat, beatNumber: index + 1 })
+	);
+
+	return updateSequenceData(sequence, {
+		beats: renumberedBeats,
+		startPosition: newStartPosition,
+		startingPositionBeat: newStartPosition,
+		isCircular: false // No longer circular after truncation
+	});
+}
+
+/**
  * Create a start position from a beat's end state.
  */
-function createStartPositionFromBeatEnd(beat: BeatData): BeatData {
+export function createStartPositionFromBeatEnd(beat: BeatData): BeatData {
 	const blueMotion = beat.motions[MotionColor.BLUE];
 	const redMotion = beat.motions[MotionColor.RED];
 

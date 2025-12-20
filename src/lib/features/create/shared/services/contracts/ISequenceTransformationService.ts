@@ -59,4 +59,11 @@ export interface ISequenceTransformationService {
    * - Looks up correct letters from pictograph dataset based on rewound motion configuration
    */
   rewindSequence(sequence: SequenceData): Promise<SequenceData>;
+
+  /**
+   * Shift the start position of a sequence
+   * - For circular: rotates beats so target beat's end becomes new start
+   * - For non-circular: truncates beats before target
+   */
+  shiftStartPosition(sequence: SequenceData, targetBeatNumber: number): SequenceData;
 }
