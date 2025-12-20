@@ -139,22 +139,22 @@
     position: absolute;
     top: 0;
     width: 1px;
-    transition: opacity 0.1s ease;
+    transition: all 0.15s ease;
   }
 
-  /* Beat marker guides - purple */
+  /* Beat marker guides - purple/info color */
   .snap-guide.beat {
-    background: rgba(139, 92, 246, 0.15);
+    background: color-mix(in srgb, var(--semantic-info, #4a9eff) 15%, transparent);
   }
 
-  /* Grid guides - gray */
+  /* Grid guides - subtle theme stroke */
   .snap-guide.grid {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
-  /* Clip edge guides - blue */
+  /* Clip edge guides - accent */
   .snap-guide.clip {
-    background: rgba(74, 158, 255, 0.15);
+    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
   }
 
   /* Active snap indicator - bright and prominent */
@@ -164,35 +164,43 @@
   }
 
   .snap-guide.active.beat {
-    background: rgba(139, 92, 246, 0.8);
-    box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+    background: color-mix(in srgb, var(--semantic-info, #4a9eff) 80%, white);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-info, #4a9eff) 60%, transparent),
+                0 0 20px color-mix(in srgb, var(--semantic-info, #4a9eff) 30%, transparent);
   }
 
   .snap-guide.active.clip {
-    background: rgba(74, 158, 255, 0.8);
-    box-shadow: 0 0 8px rgba(74, 158, 255, 0.6);
+    background: var(--theme-accent, #4a9eff);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 60%, transparent),
+                0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
   .snap-guide.active.grid {
-    background: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    background: var(--theme-text, rgba(255, 255, 255, 0.6));
+    box-shadow: 0 0 8px color-mix(in srgb, var(--theme-text, white) 40%, transparent),
+                0 0 16px color-mix(in srgb, var(--theme-text, white) 20%, transparent);
   }
 
   .snap-guide.active.playhead {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    background: var(--theme-text, rgba(255, 255, 255, 0.9));
+    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-text, white) 60%, transparent),
+                0 0 20px color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   .snap-label {
     position: absolute;
     top: 4px;
     left: 6px;
-    padding: 2px 6px;
-    background: rgba(0, 0, 0, 0.8);
+    padding: 3px 8px;
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
     font-size: 10px;
-    font-weight: 500;
-    color: white;
+    font-weight: 600;
+    color: var(--theme-text, white);
     white-space: nowrap;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 </style>

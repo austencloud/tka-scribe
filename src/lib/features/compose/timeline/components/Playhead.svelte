@@ -93,14 +93,17 @@
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
-    color: #ff4444;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
-    transition: transform 0.1s ease;
+    color: var(--semantic-error, #ff4444);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
+            drop-shadow(0 0 6px color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent));
+    transition: all 0.2s ease;
   }
 
   .playhead:hover .playhead-head,
   .playhead.dragging .playhead-head {
-    transform: translateX(-50%) scale(1.2);
+    transform: translateX(-50%) scale(1.3);
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 12px color-mix(in srgb, var(--semantic-error, #ff4444) 70%, transparent));
   }
 
   .playhead-line {
@@ -109,12 +112,15 @@
     left: 0;
     width: 1px;
     height: 100%;
-    background: #ff4444;
-    box-shadow: 0 0 4px rgba(255, 68, 68, 0.5);
+    background: var(--semantic-error, #ff4444);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent),
+                0 0 12px color-mix(in srgb, var(--semantic-error, #ff4444) 30%, transparent);
   }
 
   .playhead.dragging .playhead-line {
     width: 2px;
     left: -0.5px;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-error, #ff4444) 60%, transparent),
+                0 0 16px color-mix(in srgb, var(--semantic-error, #ff4444) 40%, transparent);
   }
 </style>

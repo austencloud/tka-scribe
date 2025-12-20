@@ -32,17 +32,19 @@
     justify-content: center;
     pointer-events: none;
     z-index: 5;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   .status-overlay.muted {
-    background: rgba(0, 0, 0, 0.4);
-    color: rgba(255, 255, 255, 0.6);
+    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 60%, transparent);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 16px;
   }
 
   .status-overlay.locked {
-    background: rgba(0, 0, 0, 0.2);
-    color: rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 30%, transparent);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 14px;
   }
 </style>

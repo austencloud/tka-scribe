@@ -123,7 +123,11 @@ export class AudioStorageService implements IAudioStorageService {
         throw new Error("Invalid storage URL");
       }
 
-      const path = decodeURIComponent(pathMatch[1]);
+      const rawPath = pathMatch[1];
+      if (!rawPath) {
+        throw new Error("Invalid storage URL");
+      }
+      const path = decodeURIComponent(rawPath);
       const storageRef = ref(storage, path);
 
       await deleteObject(storageRef);

@@ -38,6 +38,57 @@ import { createViewportActions } from "./actions/viewport-actions";
 import { createUIStateActions } from "./actions/ui-state-actions";
 
 // ============================================================================
+// Project Deduplication Helper
+// ============================================================================
+
+/**
+ * Deduplicate clips and tracks within a project to prevent Svelte each_key_duplicate errors.
+ * Removes items with duplicate IDs, keeping the first occurrence.
+ */
+function deduplicateProjectClips(proj: TimelineProject): TimelineProject {
+  // First deduplicate tracks by ID
+  const seenTrackIds = new Set<string>();
+  const dedupedTracks = proj.tracks.filter((track) => {
+    if (seenTrackIds.has(track.id)) {
+      console.warn(`[Timeline] Removed duplicate track ID: ${track.id}`);
+      return false;
+    }
+    seenTrackIds.add(track.id);
+    return true;
+  });
+
+  // Then deduplicate clips within each track
+  const tracksWithDedupedClips = dedupedTracks.map((track) => {
+    const seenClipIds = new Set<string>();
+    const dedupedClips = track.clips.filter((clip) => {
+      if (seenClipIds.has(clip.id)) {
+        console.warn(`[Timeline] Removed duplicate clip ID in track ${track.id}: ${clip.id}`);
+        return false;
+      }
+      seenClipIds.add(clip.id);
+      return true;
+    });
+    return { ...track, clips: dedupedClips };
+  });
+
+  // Also check for clips that exist across multiple tracks (shouldn't happen)
+  const allClipIds = new Set<string>();
+  const finalTracks = tracksWithDedupedClips.map((track) => {
+    const uniqueClips = track.clips.filter((clip) => {
+      if (allClipIds.has(clip.id)) {
+        console.warn(`[Timeline] Removed cross-track duplicate clip ID: ${clip.id}`);
+        return false;
+      }
+      allClipIds.add(clip.id);
+      return true;
+    });
+    return { ...track, clips: uniqueClips };
+  });
+
+  return { ...proj, tracks: finalTracks };
+}
+
+// ============================================================================
 // State Factory
 // ============================================================================
 
@@ -48,8 +99,9 @@ export function createTimelineState() {
   // Core State
   // =========================================================================
 
+  // Load project from storage and deduplicate to prevent Svelte each_key_duplicate errors
   let project = $state<TimelineProject>(
-    loadFromStorage(TIMELINE_STORAGE_KEYS.PROJECT, createProject())
+    deduplicateProjectClips(loadFromStorage(TIMELINE_STORAGE_KEYS.PROJECT, createProject()))
   );
 
   let playhead = $state<PlayheadState>(createDefaultPlayheadState());
@@ -84,7 +136,19 @@ export function createTimelineState() {
   );
 
   const selectedClip = $derived(selectedClips.length === 1 ? selectedClips[0] : null);
-  const allClips = $derived(project.tracks.flatMap((t) => t.clips));
+  // Deduplicate clips by ID to prevent Svelte each_key_duplicate errors
+  const allClips = $derived.by(() => {
+    const clips = project.tracks.flatMap((t) => t.clips);
+    const seenIds = new Set<string>();
+    return clips.filter((clip) => {
+      if (seenIds.has(clip.id)) {
+        console.warn(`[Timeline] Filtered duplicate clip ID in allClips: ${clip.id}`);
+        return false;
+      }
+      seenIds.add(clip.id);
+      return true;
+    });
+  });
   const clipEdges = $derived(allClips.flatMap((c) => [c.startTime, getClipEndTime(c)]));
   const totalDuration = $derived(calculateProjectDuration(project));
   const hasSelection = $derived(selection.selectedClipIds.length > 0);
@@ -165,7 +229,8 @@ export function createTimelineState() {
   }
 
   function loadProject(newProject: TimelineProject) {
-    project = newProject;
+    // Deduplicate clips before loading to prevent render errors
+    project = deduplicateProjectClips(newProject);
     selection = createDefaultSelectionState();
     playhead = createDefaultPlayheadState();
     saveProject();
@@ -269,7 +334,12 @@ export function createTimelineState() {
   // Clip Mutations
   // =========================================================================
 
-  function addClip(sequence: SequenceData, trackId: string, startTime: TimeSeconds): TimelineClip {
+  function addClip(
+    sequence: SequenceData,
+    trackId: string,
+    startTime: TimeSeconds,
+    options?: Partial<TimelineClip>
+  ): TimelineClip {
     const track = project.tracks.find((t) => t.id === trackId);
     if (!track) {
       console.error(`Track ${trackId} not found`);
@@ -277,7 +347,7 @@ export function createTimelineState() {
     }
 
     const snappedStart = snapTime(startTime, project.snap, [], clipEdges, playhead.position);
-    const clip = createClip(sequence, trackId, snappedStart);
+    const clip = createClip(sequence, trackId, snappedStart, options);
 
     project = {
       ...project,
@@ -343,17 +413,25 @@ export function createTimelineState() {
     saveProject();
   }
 
-  function moveClip(clipId: string, newStartTime: TimeSeconds, newTrackId?: string) {
-    const snappedTime = snapTime(
-      newStartTime,
-      project.snap,
-      [],
-      clipEdges.filter((t) => {
-        const clip = allClips.find((c) => c.id === clipId);
-        return clip ? t !== clip.startTime && t !== getClipEndTime(clip) : true;
-      }),
-      playhead.position
-    );
+  function moveClip(
+    clipId: string,
+    newStartTime: TimeSeconds,
+    newTrackId?: string,
+    options?: { skipSnap?: boolean }
+  ) {
+    // Apply snap unless explicitly skipped (e.g., when caller already snapped)
+    const finalTime = options?.skipSnap
+      ? newStartTime
+      : snapTime(
+          newStartTime,
+          project.snap,
+          [],
+          clipEdges.filter((t) => {
+            const clip = allClips.find((c) => c.id === clipId);
+            return clip ? t !== clip.startTime && t !== getClipEndTime(clip) : true;
+          }),
+          playhead.position
+        );
 
     if (newTrackId) {
       const clip = allClips.find((c) => c.id === clipId);
@@ -365,7 +443,7 @@ export function createTimelineState() {
           if (t.id === clip.trackId) {
             return { ...t, clips: t.clips.filter((c) => c.id !== clipId) };
           } else if (t.id === newTrackId) {
-            const movedClip = { ...clip, trackId: newTrackId, startTime: snappedTime };
+            const movedClip = { ...clip, trackId: newTrackId, startTime: finalTime };
             return { ...t, clips: [...t.clips, movedClip].sort((a, b) => a.startTime - b.startTime) };
           }
           return t;
@@ -373,7 +451,7 @@ export function createTimelineState() {
         updatedAt: new Date(),
       };
     } else {
-      updateClip(clipId, { startTime: snappedTime });
+      updateClip(clipId, { startTime: finalTime });
     }
     saveProject();
   }

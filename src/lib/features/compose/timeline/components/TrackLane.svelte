@@ -22,6 +22,19 @@
     return getTimelineState();
   }
 
+  // Deduplicate clips by ID to prevent Svelte each_key_duplicate errors
+  const deduplicatedClips = $derived.by(() => {
+    const seenIds = new Set<string>();
+    return track.clips.filter((clip) => {
+      if (seenIds.has(clip.id)) {
+        console.warn(`[TrackLane] Filtered duplicate clip ID: ${clip.id}`);
+        return false;
+      }
+      seenIds.add(clip.id);
+      return true;
+    });
+  });
+
   // Local reactive state
   let isDimmed = $state(false);
   let selectedClipIds = $state<string[]>([]);
@@ -72,7 +85,7 @@
   <div class="grid-lines"></div>
 
   <!-- Clips -->
-  {#each track.clips as clip (clip.id)}
+  {#each deduplicatedClips as clip (clip.id)}
     <TimelineClip
       {clip}
       {pixelsPerSecond}
@@ -91,18 +104,18 @@
 <style>
   .track-lane {
     position: relative;
-    background: #0e0e12;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: opacity 0.2s ease;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    transition: all 0.2s ease;
   }
 
   /* Alternating track colors for visual distinction */
   .track-lane:nth-child(odd) {
-    background: #101016;
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
   }
 
   .track-lane.dimmed {
-    opacity: 0.4;
+    opacity: 0.35;
   }
 
   .track-lane.locked {
@@ -113,13 +126,13 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    /* Subtle vertical grid lines */
+    /* Subtle vertical grid lines using theme */
     background-image: repeating-linear-gradient(
       90deg,
       transparent 0,
       transparent calc(100% - 1px),
-      rgba(255, 255, 255, 0.03) calc(100% - 1px),
-      rgba(255, 255, 255, 0.03) 100%
+      var(--theme-stroke, rgba(255, 255, 255, 0.08)) calc(100% - 1px),
+      var(--theme-stroke, rgba(255, 255, 255, 0.08)) 100%
     );
     background-size: 50px 100%; /* Adjusts with zoom via parent */
   }
@@ -130,9 +143,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.3);
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.3));
-    font-size: 20px;
+    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 70%, transparent);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    font-size: 24px;
     pointer-events: none;
   }
 </style>

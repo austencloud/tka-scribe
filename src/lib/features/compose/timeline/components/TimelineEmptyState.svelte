@@ -65,15 +65,17 @@
     height: 64px;
     border-radius: 50%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   .empty-icon i {
     font-size: 24px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
   .empty-title {
@@ -86,8 +88,9 @@
   .empty-description {
     margin: 0 0 20px 0;
     font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     max-width: 280px;
+    line-height: 1.5;
   }
 
   .empty-actions {
@@ -100,13 +103,14 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--theme-accent, #4a9eff);
     font-size: var(--font-size-compact, 12px);
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
 
   .action-btn.primary {
@@ -115,14 +119,22 @@
   }
 
   .action-btn.primary:hover {
-    background: var(--theme-accent-hover, #3a8eef);
-    transform: translateY(-1px);
+    background: var(--theme-accent-strong, #3a7ed0);
+    border-color: var(--theme-accent-strong, #3a7ed0);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
+                0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+  }
+
+  .action-btn.primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
 
   .empty-hints {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .hint {
@@ -130,7 +142,7 @@
     align-items: center;
     gap: 8px;
     font-size: 11px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .hint i {
@@ -139,10 +151,12 @@
   }
 
   .hint kbd {
-    padding: 2px 6px;
+    padding: 3px 7px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border-radius: 3px;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 4px;
     font-family: monospace;
     font-size: 10px;
+    font-weight: 600;
   }
 </style>

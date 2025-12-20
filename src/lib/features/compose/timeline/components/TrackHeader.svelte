@@ -139,22 +139,23 @@
     align-items: center;
     gap: 4px;
     padding: 0 8px;
-    background: #16161e;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: opacity 0.2s ease;
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    transition: all 0.2s ease;
     position: relative;
   }
 
   .track-header.dimmed {
-    opacity: 0.5;
+    opacity: 0.45;
   }
 
   .color-indicator {
     width: 4px;
     height: 60%;
     border-radius: 2px;
-    background: var(--track-color, #868e96);
+    background: var(--track-color, var(--theme-accent, #868e96));
     flex-shrink: 0;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--track-color, var(--theme-accent, #868e96)) 40%, transparent);
   }
 
   .track-name {
@@ -165,6 +166,7 @@
 
   .name-text {
     font-size: var(--font-size-compact, 12px);
+    font-weight: 500;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     white-space: nowrap;
     overflow: hidden;
@@ -176,11 +178,12 @@
     width: 100%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
     border: 1px solid var(--theme-accent, #4a9eff);
-    border-radius: 3px;
-    padding: 2px 4px;
+    border-radius: 4px;
+    padding: 3px 6px;
     font-size: var(--font-size-compact, 12px);
     color: var(--theme-text, white);
     outline: none;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
   .track-controls {
@@ -190,51 +193,57 @@
   }
 
   .track-btn {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     font-size: 9px;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.1s ease;
+    transition: all 0.2s ease;
     flex-shrink: 0;
   }
 
   .track-btn:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    transform: scale(1.05);
   }
 
   .track-btn.active {
     background: var(--theme-accent, #4a9eff);
+    border-color: var(--theme-accent-strong, #3a7ed0);
     color: white;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 35%, transparent);
   }
 
   .track-btn.solo.active {
-    background: #ffd43b;
+    background: var(--semantic-warning, #ffd43b);
+    border-color: #ffb800;
     color: #1a1a1a;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-warning, #ffd43b) 35%, transparent);
   }
 
   .delete-btn {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-    border: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid transparent;
     background: transparent;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
     cursor: pointer;
     font-size: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
     flex-shrink: 0;
     margin-left: 2px;
   }
@@ -244,7 +253,10 @@
   }
 
   .delete-btn:hover {
-    background: rgba(255, 68, 68, 0.2);
-    color: #ff4444;
+    background: color-mix(in srgb, var(--semantic-error, #ff4444) 20%, transparent);
+    border-color: var(--semantic-error, #ff4444);
+    color: var(--semantic-error, #ff4444);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-error, #ff4444) 30%, transparent);
+    transform: scale(1.05);
   }
 </style>

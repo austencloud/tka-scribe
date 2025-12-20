@@ -30,12 +30,14 @@
 
   // Generate tick marks
   const ticks = $derived.by(() => {
-    const result: Array<{ time: number; major: boolean; x: number }> = [];
+    const result: Array<{ id: string; time: number; major: boolean; x: number }> = [];
     const interval = tickInterval;
     const major = majorInterval;
 
+    let index = 0;
     for (let t = 0; t <= duration; t += interval) {
       result.push({
+        id: `tick-${index++}`, // Use unique index-based ID to avoid floating point key issues
         time: t,
         major: t % major === 0,
         x: t * pixelsPerSecond,
@@ -59,7 +61,7 @@
 </script>
 
 <div class="time-ruler">
-  {#each ticks as tick (tick.time)}
+  {#each ticks as tick (tick.id)}
     <div
       class="tick"
       class:major={tick.major}
@@ -77,7 +79,7 @@
   .time-ruler {
     position: relative;
     height: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
   }
 
   .tick {
@@ -91,27 +93,28 @@
 
   .tick-line {
     width: 1px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .tick:not(.major) .tick-line {
-    height: 8px;
+    height: 10px;
     margin-top: auto;
   }
 
   .tick.major .tick-line {
-    height: 12px;
+    height: 14px;
     margin-top: auto;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
   }
 
   .tick-label {
     position: absolute;
-    top: 4px;
-    font-size: 10px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    top: 6px;
+    font-size: 11px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     white-space: nowrap;
     transform: translateX(-50%);
     font-variant-numeric: tabular-nums;
+    font-weight: 500;
   }
 </style>

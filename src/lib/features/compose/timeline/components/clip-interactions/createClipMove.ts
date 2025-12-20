@@ -2,11 +2,14 @@
  * createClipMove - Composable for clip move (reposition) drag behavior
  *
  * Returns event handlers for dragging a clip to a new timeline position.
+ * Supports cross-track dragging to move clips between tracks.
+ * Uses TimelineSnapService for proper snapping behavior.
  */
 
 import type { TimelineClip } from "../../domain/timeline-types";
 import { pixelsToTime } from "../../domain/timeline-types";
 import { getTimelineState } from "../../state/timeline-state.svelte";
+import { getTimelineSnapService } from "../../services/implementations/TimelineSnapService";
 
 export interface ClipMoveHandlers {
   handleMoveStart: (e: MouseEvent) => void;
@@ -15,6 +18,8 @@ export interface ClipMoveHandlers {
 export interface ClipMoveCallbacks {
   onDragStart: () => void;
   onDragEnd: () => void;
+  /** Called during drag with target track ID (for visual feedback) */
+  onTrackChange?: (targetTrackId: string | null) => void;
 }
 
 export function createClipMove(
@@ -23,23 +28,102 @@ export function createClipMove(
   callbacks: ClipMoveCallbacks
 ): ClipMoveHandlers {
   let dragStartX = 0;
+  let dragStartY = 0;
   let dragStartValue = 0;
+  let originalTrackId = "";
+  let currentTargetTrackId: string | null = null;
+  let dragClipId: string | null = null; // Store clip ID for lookup during drag
 
   function getState() {
     return getTimelineState();
   }
 
+  function getSnapService() {
+    return getTimelineSnapService();
+  }
+
+  /** Get clip by ID from state (survives component remount) */
+  function getClipById(id: string): TimelineClip | undefined {
+    return getState().allClips.find(c => c.id === id);
+  }
+
+  /**
+   * Get the track at a given Y position relative to the tracks container
+   * Returns the track ID or null if outside track bounds
+   */
+  function getTrackAtY(clientY: number): string | null {
+    const state = getState();
+    const tracks = state.project.tracks;
+
+    // Find the tracks container element
+    const tracksContainer = document.querySelector('.tracks-scroll-content');
+    if (!tracksContainer) return null;
+
+    const containerRect = tracksContainer.getBoundingClientRect();
+    const relativeY = clientY - containerRect.top + (tracksContainer.parentElement?.scrollTop ?? 0);
+
+    // Calculate cumulative heights to find which track
+    let cumulativeHeight = 0;
+    for (const track of tracks) {
+      const trackHeight = track.height;
+      if (relativeY >= cumulativeHeight && relativeY < cumulativeHeight + trackHeight) {
+        return track.id;
+      }
+      cumulativeHeight += trackHeight;
+    }
+
+    // If below all tracks, return the last track
+    if (tracks.length > 0 && relativeY >= cumulativeHeight) {
+      return tracks[tracks.length - 1]?.id ?? null;
+    }
+
+    return null;
+  }
+
   function handleMoveUpdate(e: MouseEvent) {
-    const clip = getClip();
+    if (!dragClipId) return;
+
+    // Get current clip state by ID (survives component remount during cross-track drag)
+    const clip = getClipById(dragClipId);
     if (!clip) return;
 
+    // Horizontal movement - calculate proposed position
     const deltaX = e.clientX - dragStartX;
     const deltaTime = pixelsToTime(deltaX, getPixelsPerSecond());
-    const newStartTime = Math.max(0, dragStartValue + deltaTime);
-    getState().moveClip(clip.id, newStartTime);
+    const proposedTime = Math.max(0, dragStartValue + deltaTime);
+
+    // Apply snap using the snap service
+    const snapService = getSnapService();
+    const snapResult = snapService.previewSnap(proposedTime, [dragClipId]);
+    const snappedTime = snapResult.time;
+
+    // Vertical movement - detect target track
+    const targetTrackId = getTrackAtY(e.clientY);
+
+    // Track changed - notify for visual feedback
+    if (targetTrackId !== currentTargetTrackId) {
+      currentTargetTrackId = targetTrackId;
+      callbacks.onTrackChange?.(targetTrackId);
+    }
+
+    // Move clip to snapped position (and track if different) - live update!
+    // Use skipSnap since we already applied snap via the snap service
+    if (targetTrackId && targetTrackId !== clip.trackId) {
+      // Moving to a different track - include track ID
+      getState().moveClip(dragClipId, snappedTime, targetTrackId, { skipSnap: true });
+    } else {
+      // Same track - just update position
+      getState().moveClip(dragClipId, snappedTime, undefined, { skipSnap: true });
+    }
   }
 
   function handleMoveEnd() {
+    // Clean up snap service state
+    getSnapService().endDrag();
+
+    // All movement already happened during drag - just clean up
+    dragClipId = null;
+    currentTargetTrackId = null;
     callbacks.onDragEnd();
     window.removeEventListener("mousemove", handleMoveUpdate);
     window.removeEventListener("mouseup", handleMoveEnd);
@@ -52,8 +136,16 @@ export function createClipMove(
     e.preventDefault();
     e.stopPropagation();
 
+    // Store clip ID for lookup during drag (survives component remount)
+    dragClipId = clip.id;
     dragStartX = e.clientX;
+    dragStartY = e.clientY;
     dragStartValue = clip.startTime;
+    originalTrackId = clip.trackId;
+    currentTargetTrackId = null;
+
+    // Initialize snap service for this drag operation
+    getSnapService().startDrag([clip.id]);
 
     callbacks.onDragStart();
     getState().selectClip(clip.id);
