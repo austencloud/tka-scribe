@@ -275,10 +275,12 @@
   .community-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-rows: auto 1fr; /* First row auto, second row fills remaining space */
     gap: 20px;
     width: 100%;
     min-width: 0;
+    flex: 1; /* Fill available vertical space in dashboard */
+    min-height: 0;
   }
 
   /* Challenge spans full width on first row */
@@ -287,11 +289,20 @@
     min-width: 0;
   }
 
-  /* Community and Notifications side by side */
+  /* Community and Notifications side by side - fill the row */
   .widget-community,
   .widget-notifications {
     min-height: 280px;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Make widget contents fill their containers */
+  .widget-community > :global(*),
+  .widget-notifications > :global(*) {
+    flex: 1;
+    min-height: 0;
   }
 
   .community-grid.mobile {

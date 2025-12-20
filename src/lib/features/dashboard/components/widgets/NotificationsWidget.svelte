@@ -1,20 +1,34 @@
 <script lang="ts">
   /**
-   * NotificationsWidget - Preview of messages and notifications
-   * Quick access to inbox from the dashboard
+   * InboxWidget - Mini inbox with tab switching
+   * Shows messages or alerts based on selected tab
+   * Clicking items opens the full drawer
    */
 
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
 
-  // Derived state
+  // Local tab state for widget view
+  let activeTab = $state<"messages" | "alerts">("alerts");
+
+  // Derived state from inbox
+  const conversations = $derived(inboxState.conversations.slice(0, 5));
+  const notifications = $derived(inboxState.notifications.slice(0, 5));
   const unreadMessages = $derived(inboxState.unreadMessageCount);
   const unreadNotifications = $derived(inboxState.unreadNotificationCount);
-  const totalUnread = $derived(inboxState.totalUnreadCount);
-  const recentNotifications = $derived(inboxState.notifications.slice(0, 3));
 
-  function openInbox(tab?: "messages" | "notifications") {
-    inboxState.open(tab);
+  // Check if there's any content to show
+  const hasContent = $derived(
+    activeTab === "messages" ? conversations.length > 0 : notifications.length > 0
+  );
+
+  function openDrawerToMessages() {
+    inboxState.open("messages");
+  }
+
+  function openDrawerToNotifications() {
+    inboxState.open("notifications");
   }
 
   function formatTimeAgo(date: Date | string): string {
@@ -33,129 +47,172 @@
   }
 </script>
 
-<div class="notifications-widget">
-  <div class="widget-header">
-    <div class="header-icon" class:has-unread={totalUnread > 0}>
-      <i class="fas fa-bell"></i>
-      {#if totalUnread > 0}
-        <span class="badge">{totalUnread > 99 ? "99+" : totalUnread}</span>
+<div class="inbox-widget">
+  <!-- Tab buttons -->
+  <div class="tab-buttons">
+    <button
+      class="tab-btn"
+      class:active={activeTab === "messages"}
+      onclick={() => (activeTab = "messages")}
+    >
+      <i class="fas fa-envelope"></i>
+      <span>Messages</span>
+      {#if unreadMessages > 0}
+        <span class="badge">{unreadMessages > 99 ? "99+" : unreadMessages}</span>
       {/if}
-    </div>
-    <h3>Notifications</h3>
+    </button>
+
+    <button
+      class="tab-btn"
+      class:active={activeTab === "alerts"}
+      onclick={() => (activeTab = "alerts")}
+    >
+      <i class="fas fa-bell"></i>
+      <span>Alerts</span>
+      {#if unreadNotifications > 0}
+        <span class="badge">{unreadNotifications > 99 ? "99+" : unreadNotifications}</span>
+      {/if}
+    </button>
   </div>
 
-  <div class="widget-content">
+  <!-- Content area -->
+  <div class="content-area">
     {#if !authState.isAuthenticated}
       <div class="empty-state">
         <i class="fas fa-user-circle"></i>
-        <p>Sign in to see notifications</p>
+        <p>Sign in to see your inbox</p>
       </div>
-    {:else if totalUnread === 0 && recentNotifications.length === 0}
+    {:else if !hasContent}
       <div class="empty-state">
-        <i class="fas fa-inbox"></i>
-        <p>You're all caught up!</p>
-        <span class="empty-hint">No new notifications</span>
+        <i class="fas {activeTab === 'messages' ? 'fa-envelope' : 'fa-bell'}"></i>
+        <p>No {activeTab === "messages" ? "messages" : "alerts"} yet</p>
+      </div>
+    {:else if activeTab === "messages"}
+      <!-- Messages list -->
+      <div class="item-list">
+        {#each conversations as conversation}
+          <button
+            class="list-item"
+            class:unread={conversation.unreadCount > 0}
+            onclick={openDrawerToMessages}
+          >
+            <RobustAvatar
+              src={conversation.otherParticipant.avatar}
+              name={conversation.otherParticipant.displayName}
+              size="sm"
+              alt={conversation.otherParticipant.displayName}
+            />
+            <div class="item-content">
+              <div class="item-header">
+                <span class="item-name">{conversation.otherParticipant.displayName}</span>
+                <span class="item-time">{formatTimeAgo(conversation.updatedAt)}</span>
+              </div>
+              <span class="item-preview">
+                {conversation.lastMessage?.content || "No messages yet"}
+              </span>
+            </div>
+            {#if conversation.unreadCount > 0}
+              <span class="unread-dot"></span>
+            {/if}
+          </button>
+        {/each}
       </div>
     {:else}
-      <div class="notification-list">
-        <!-- Quick stats -->
-        <div class="stats-row">
-          <button class="stat-pill" class:has-items={unreadMessages > 0} onclick={() => openInbox("messages")}>
-            <i class="fas fa-envelope"></i>
-            <span>{unreadMessages} messages</span>
+      <!-- Alerts list -->
+      <div class="item-list">
+        {#each notifications as notification}
+          <button
+            class="list-item"
+            class:unread={!notification.read}
+            onclick={openDrawerToNotifications}
+          >
+            <div class="item-icon">
+              {#if notification.type === "message-received"}
+                <i class="fas fa-envelope"></i>
+              {:else if notification.type.startsWith("feedback-")}
+                <i class="fas fa-comment-dots"></i>
+              {:else if notification.type === "achievement-unlocked"}
+                <i class="fas fa-trophy"></i>
+              {:else if notification.type === "sequence-liked"}
+                <i class="fas fa-heart"></i>
+              {:else if notification.type === "user-followed"}
+                <i class="fas fa-user-plus"></i>
+              {:else}
+                <i class="fas fa-bell"></i>
+              {/if}
+            </div>
+            <div class="item-content">
+              <span class="item-preview">{notification.message}</span>
+              <span class="item-time">{formatTimeAgo(notification.createdAt)}</span>
+            </div>
+            {#if !notification.read}
+              <span class="unread-dot"></span>
+            {/if}
           </button>
-          <button class="stat-pill" class:has-items={unreadNotifications > 0} onclick={() => openInbox("notifications")}>
-            <i class="fas fa-bell"></i>
-            <span>{unreadNotifications} alerts</span>
-          </button>
-        </div>
-
-        <!-- Recent notifications preview -->
-        {#if recentNotifications.length > 0}
-          <div class="recent-list">
-            {#each recentNotifications as notification}
-              <button class="notification-item" class:unread={!notification.read} onclick={() => openInbox("notifications")}>
-                <div class="notification-icon">
-                  {#if notification.type === "message-received"}
-                    <i class="fas fa-envelope"></i>
-                  {:else if notification.type.startsWith("feedback-")}
-                    <i class="fas fa-comment-dots"></i>
-                  {:else if notification.type === "achievement-unlocked"}
-                    <i class="fas fa-trophy"></i>
-                  {:else if notification.type === "sequence-liked"}
-                    <i class="fas fa-heart"></i>
-                  {:else if notification.type === "user-followed"}
-                    <i class="fas fa-user-plus"></i>
-                  {:else}
-                    <i class="fas fa-bell"></i>
-                  {/if}
-                </div>
-                <div class="notification-content">
-                  <span class="notification-title">{notification.message}</span>
-                  <span class="notification-time">{formatTimeAgo(notification.createdAt)}</span>
-                </div>
-              </button>
-            {/each}
-          </div>
-        {/if}
+        {/each}
       </div>
     {/if}
   </div>
-
-  <button class="view-all-btn" onclick={() => openInbox()}>
-    <span>Open Inbox</span>
-    <i class="fas fa-arrow-right"></i>
-  </button>
 </div>
 
 <style>
-  .notifications-widget {
+  .inbox-widget {
     display: flex;
     flex-direction: column;
     height: 100%;
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
-    padding: 24px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 22%, transparent);
-    border-radius: 24px;
+    padding: 16px;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 18%, transparent);
+    border-radius: 20px;
     overflow: hidden;
   }
 
-  .widget-header {
+  /* ========================================
+     TAB BUTTONS
+     ======================================== */
+  .tab-buttons {
     display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 20px;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-bottom: 12px;
   }
 
-  .header-icon {
-    position: relative;
+  .tab-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border-radius: 14px;
-    color: var(--semantic-info, #3b82f6);
-    font-size: 18px;
+    gap: 8px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
   }
 
-  .header-icon.has-unread {
-    animation: pulse-subtle 2s infinite;
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
-  @keyframes pulse-subtle {
-    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent); }
-    50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--semantic-info, #3b82f6) 0%, transparent); }
+  .tab-btn.active {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+  }
+
+  .tab-btn i {
+    font-size: 14px;
   }
 
   .badge {
-    position: absolute;
-    top: -4px;
-    right: -4px;
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
@@ -169,18 +226,15 @@
     justify-content: center;
   }
 
-  .widget-header h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-  }
-
-  .widget-content {
+  /* ========================================
+     CONTENT AREA
+     ======================================== */
+  .content-area {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 80px;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .empty-state {
@@ -190,88 +244,39 @@
     justify-content: center;
     gap: 8px;
     text-align: center;
-    padding: 20px;
+    padding: 24px 16px;
     flex: 1;
   }
 
   .empty-state i {
-    font-size: 32px;
-    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    font-size: 28px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-  }
-
-  .empty-hint {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
-  /* Stats row */
-  .stats-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    min-width: 0;
-    width: 100%;
-  }
-
-  .stat-pill {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px 12px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 150ms ease;
-  }
-
-  .stat-pill span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .stat-pill.has-items {
-    color: var(--semantic-info, #3b82f6);
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, transparent);
-  }
-
-  .stat-pill:hover {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 18%, transparent);
-    transform: translateY(-1px);
-  }
-
-  .stat-pill i {
-    font-size: 12px;
-  }
-
-  /* Recent notifications */
-  .recent-list {
+  /* ========================================
+     ITEM LIST
+     ======================================== */
+  .item-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    min-width: 0;
-    width: 100%;
+    gap: 4px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
-  .notification-item {
+  .list-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 6%, transparent);
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid transparent;
     border-radius: 10px;
     cursor: pointer;
@@ -280,32 +285,34 @@
     min-width: 0;
     width: 100%;
     box-sizing: border-box;
-  }
-
-  .notification-item:hover {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
-  }
-
-  .notification-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
-  }
-
-  .notification-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border-radius: 8px;
-    color: var(--semantic-info, #3b82f6);
-    font-size: 14px;
     flex-shrink: 0;
   }
 
-  .notification-content {
+  .list-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .list-item.unread {
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+  }
+
+  /* Icon for alerts */
+  .item-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--semantic-info, #3b82f6);
+    font-size: 13px;
+  }
+
+  .item-content {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -313,88 +320,67 @@
     min-width: 0;
   }
 
-  .notification-title {
+  .item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .item-name {
     font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .notification-time {
+  .item-preview {
+    font-size: 0.75rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-time {
     font-size: 0.6875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    flex-shrink: 0;
   }
 
-  .view-all-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-height: var(--min-touch-target);
-    padding: 14px 20px;
-    background: linear-gradient(
-      135deg,
-      var(--semantic-info, #3b82f6) 0%,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, black) 100%
-    );
-    border: none;
-    border-radius: 14px;
-    color: white;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 150ms ease;
-    margin-top: auto;
+  .unread-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--semantic-info, #3b82f6);
+    border-radius: 50%;
+    flex-shrink: 0;
   }
 
-  .view-all-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-  }
-
-  .view-all-btn i {
-    font-size: 14px;
-  }
-
+  /* ========================================
+     RESPONSIVE
+     ======================================== */
   @media (max-width: 768px) {
-    .notifications-widget {
-      padding: 20px;
-      border-radius: 20px;
+    .inbox-widget {
+      padding: 14px;
+      border-radius: 16px;
     }
 
-    .header-icon {
-      width: 40px;
-      height: 40px;
-      font-size: 16px;
+    .tab-btn {
+      padding: 10px 12px;
+      font-size: 0.8125rem;
     }
 
-    .widget-header h3 {
-      font-size: 1rem;
-    }
-
-    .view-all-btn {
-      min-height: 44px;
-      padding: 12px 16px;
-      font-size: 0.875rem;
+    .tab-btn i {
+      font-size: 13px;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .header-icon.has-unread {
-      animation: none;
-    }
-
-    .stat-pill,
-    .notification-item,
-    .view-all-btn {
+    .tab-btn,
+    .list-item {
       transition: none;
-    }
-
-    .stat-pill:hover,
-    .view-all-btn:hover {
-      transform: none;
     }
   }
 </style>
