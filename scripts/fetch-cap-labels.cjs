@@ -106,6 +106,24 @@ function formatDesignation(d) {
   return d.components.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(' + ');
 }
 
+function formatSectionBeats(beats) {
+  if (!beats || beats.length === 0) return '';
+  if (beats.length === 1) return `Beat ${beats[0]}`;
+  const sorted = [...beats].sort((a, b) => a - b);
+  // Check if consecutive
+  let isConsecutive = true;
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] !== sorted[i - 1] + 1) {
+      isConsecutive = false;
+      break;
+    }
+  }
+  if (isConsecutive) {
+    return `Beats ${sorted[0]}-${sorted[sorted.length - 1]}`;
+  }
+  return `Beats ${sorted.join(', ')}`;
+}
+
 function printLabel(label) {
   console.log('\n' + '='.repeat(50));
   console.log(`Sequence: ${label.word}`);
@@ -114,12 +132,39 @@ function printLabel(label) {
   if (label.isFreeform) {
     console.log('Type: Freeform (no recognizable pattern)');
   } else if (label.designations && label.designations.length > 0) {
-    console.log('Designations:');
+    console.log('Designations (Whole Sequence):');
     label.designations.forEach((d, i) => {
       const formatted = formatDesignation(d);
       console.log(`  ${i + 1}. ${formatted}`);
       if (d.capType) {
         console.log(`     CAP Type: ${d.capType}`);
+      }
+    });
+  }
+
+  // Print sections if present
+  if (label.sections && label.sections.length > 0) {
+    console.log('\nSections:');
+    label.sections.forEach((s, i) => {
+      const beats = formatSectionBeats(s.beats);
+      const components = formatDesignation(s);
+      const baseWord = s.baseWord ? ` [${s.baseWord.toUpperCase()}]` : '';
+      console.log(`  ${i + 1}. ${beats}: ${components}${baseWord}`);
+      if (s.capType) {
+        console.log(`     CAP Type: ${s.capType}`);
+      }
+    });
+  }
+
+  // Print beat pairs if present
+  if (label.beatPairs && label.beatPairs.length > 0) {
+    console.log('\nBeat Pairs:');
+    label.beatPairs.forEach((bp, i) => {
+      const transformation = bp.confirmedTransformation || 'unknown';
+      const detected = bp.detectedTransformations?.join(', ') || '';
+      console.log(`  ${i + 1}. Beat ${bp.keyBeat} ↔ Beat ${bp.correspondingBeat}: ${transformation}`);
+      if (detected && detected !== transformation) {
+        console.log(`     (Detected: ${detected})`);
       }
     });
   }
