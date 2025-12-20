@@ -6,6 +6,7 @@ export const AUTUMN_PARTICLE_COUNTS = {
   medium: 70,
   low: 45,
   minimal: 20,
+  "ultra-minimal": 10,
 } as const;
 
 export const AUTUMN_PHYSICS = {

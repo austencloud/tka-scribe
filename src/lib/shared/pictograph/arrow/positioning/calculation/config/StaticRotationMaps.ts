@@ -61,18 +61,20 @@ export const staticNonRadialCounterClockwiseMap: Record<GridLocation, number> =
  */
 
 // Static from RADIAL (IN/OUT) override angles
+// NOTE: cw and ccw should have the SAME angle because SVG mirroring
+// handles the visual difference when pictographs are transformed.
 export const staticRadialOverrideMap: Record<
   GridLocation,
   Record<string, number>
 > = {
-  [GridLocation.NORTH]: { cw: 0, ccw: 180 },
-  [GridLocation.EAST]: { cw: 90, ccw: 270 },
-  [GridLocation.SOUTH]: { cw: 180, ccw: 0  },
-  [GridLocation.WEST]: { cw: 270, ccw: 90 },
-  [GridLocation.NORTHEAST]: { cw: 225, ccw: 135 },
-  [GridLocation.SOUTHEAST]: { cw: 315, ccw: 45 },
-  [GridLocation.SOUTHWEST]: { cw: 45, ccw: 315 },
-  [GridLocation.NORTHWEST]: { cw: 135, ccw: 225 },
+  [GridLocation.NORTH]: { cw: 180, ccw: 180 },
+  [GridLocation.EAST]: { cw: 270, ccw: 270 },
+  [GridLocation.SOUTH]: { cw: 0, ccw: 0 },
+  [GridLocation.WEST]: { cw: 90, ccw: 90 },
+  [GridLocation.NORTHEAST]: { cw: 135, ccw: 135 },
+  [GridLocation.SOUTHEAST]: { cw: 45, ccw: 45 },
+  [GridLocation.SOUTHWEST]: { cw: 315, ccw: 315 },
+  [GridLocation.NORTHWEST]: { cw: 225, ccw: 225 },
 };
 
 // Static from NON-RADIAL (CLOCK/COUNTER) override angles

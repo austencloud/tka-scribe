@@ -5,6 +5,7 @@ export const FIREFLY_COUNTS: Record<QualityLevel, number> = {
 	medium: 14,  // +20% from 12
 	low: 10,     // +20% from 8
 	minimal: 6,  // +20% from 5
+	"ultra-minimal": 3,
 } as const;
 
 export const FIREFLY_PHYSICS = {
@@ -81,7 +82,7 @@ export const FIREFLY_BACKGROUND_GRADIENT = [
 
 // Stars in the upper sky area
 export const STAR_CONFIG = {
-	COUNT: { high: 40, medium: 25, low: 15, minimal: 8 } as Record<QualityLevel, number>,
+	COUNT: { high: 40, medium: 25, low: 15, minimal: 8, "ultra-minimal": 4 } as Record<QualityLevel, number>,
 	ZONE_BOTTOM: 0.4, // Stars only in top 40% of screen
 	SIZE_MIN: 0.5,
 	SIZE_RANGE: 1.5,
