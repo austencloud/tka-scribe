@@ -43,7 +43,10 @@ export class PropTextureService implements IPropTextureService {
 	}
 
 	async loadPropTextures(bluePropType: string, redPropType: string): Promise<void> {
-		if (!this.renderer || !this.svgGenerator) return;
+		if (!this.renderer || !this.svgGenerator) {
+			console.warn('[PropTextureService] Cannot load textures - renderer or svgGenerator not initialized');
+			return;
+		}
 
 		try {
 			// Load textures for both prop colors

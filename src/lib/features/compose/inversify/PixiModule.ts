@@ -16,10 +16,10 @@ export const pixiModule = new ContainerModule(
     const { bind, isBound } = options;
 
     // Pixi Animation Renderer - guard against duplicate bindings
+    // NOT a singleton - each AnimatorCanvas instance needs its own renderer
     if (!isBound(TYPES.IPixiAnimationRenderer)) {
       bind<IPixiAnimationRenderer>(TYPES.IPixiAnimationRenderer)
-        .to(PixiAnimationRenderer)
-        .inSingletonScope();
+        .to(PixiAnimationRenderer);
     }
   }
 );

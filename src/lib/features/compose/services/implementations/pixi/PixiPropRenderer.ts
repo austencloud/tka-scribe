@@ -20,7 +20,6 @@ const INWARD_FACTOR = 1.0; // No inward adjustment - use exact grid coordinates
 
 export class PixiPropRenderer {
   private currentSize: number;
-  private hasLoggedFirstTransform = false;
 
   constructor(currentSize: number) {
     this.currentSize = currentSize;
@@ -70,29 +69,6 @@ export class PixiPropRenderer {
     const propWidth = propDimensions.width * gridScaleFactor;
     const propHeight = propDimensions.height * gridScaleFactor;
 
-    // Debug endpoint calculation (disabled - too noisy for every frame)
-    // const staffHalfWidth = (propDimensions.width / 2) * gridScaleFactor;
-    // const leftEndX = x - Math.cos(propState.staffRotationAngle) * staffHalfWidth;
-    // const leftEndY = y - Math.sin(propState.staffRotationAngle) * staffHalfWidth;
-    // const rightEndX = x + Math.cos(propState.staffRotationAngle) * staffHalfWidth;
-    // const rightEndY = y + Math.sin(propState.staffRotationAngle) * staffHalfWidth;
-    // console.log(`🎯 PROP ENDPOINTS: Left=(${leftEndX.toFixed(1)}, ${leftEndY.toFixed(1)}), Right=(${rightEndX.toFixed(1)}, ${rightEndY.toFixed(1)}), Rotation=${(propState.staffRotationAngle * 180 / Math.PI).toFixed(1)}°`);
-
-    // Debug: Log first transform calculation
-    if (!this.hasLoggedFirstTransform) {
-      console.log(`[PixiPropRenderer] calculatePropTransform:`, {
-        currentSize: this.currentSize,
-        gridScaleFactor,
-        scaledHalfwayRadius,
-        inputPropDims: { width: propDimensions.width, height: propDimensions.height },
-        outputPropDims: { width: propWidth, height: propHeight },
-        position: { x, y },
-        VIEWBOX_SIZE,
-        GRID_HALFWAY_POINT_OFFSET
-      });
-      this.hasLoggedFirstTransform = true;
-    }
-
     return {
       x,
       y,
@@ -129,7 +105,6 @@ export class PixiPropRenderer {
    * Update canvas size for position calculations
    */
   updateSize(newSize: number): void {
-    console.log(`[PixiPropRenderer] updateSize: ${this.currentSize} -> ${newSize}`);
     this.currentSize = newSize;
   }
 

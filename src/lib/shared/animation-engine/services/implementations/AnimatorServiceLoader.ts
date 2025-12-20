@@ -32,6 +32,7 @@ export class AnimatorServiceLoader implements IAnimatorServiceLoader {
 
 			// Get container and resolve services
 			const container = await getContainerInstance();
+
 			const services: AnimatorServices = {
 				svgGenerator: container.get<ISVGGenerator>(TYPES.ISVGGenerator),
 				settingsService: container.get<ISettingsState>(TYPES.ISettingsState),
@@ -46,9 +47,17 @@ export class AnimatorServiceLoader implements IAnimatorServiceLoader {
 				),
 			};
 
+			if (!services.svgGenerator) {
+				console.error('[AnimatorServiceLoader] CRITICAL: container.get() returned null/undefined for ISVGGenerator!');
+				return {
+					success: false,
+					error: 'DI container returned null for ISVGGenerator (this is a container bug)'
+				};
+			}
+
 			return { success: true, services };
 		} catch (err) {
-			console.error("Failed to load animator services:", err);
+			console.error("[AnimatorServiceLoader] Failed to load animator services:", err);
 			return {
 				success: false,
 				error: err instanceof Error ? err.message : "Unknown error",

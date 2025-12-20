@@ -95,11 +95,9 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     );
     this.trailRenderer = new PixiTrailRenderer(this.trailContainer);
     this.propRenderer = new PixiPropRenderer(size);
-    console.log(`[PixiAnimationRenderer] Initialized with size: ${size}`);
   }
 
   async resize(newSize: number): Promise<void> {
-    console.log(`[PixiAnimationRenderer] resize called with: ${newSize}`);
     this.appManager.resize(newSize);
     this.spriteManager?.resizeAllSprites(newSize);
     this.propRenderer?.updateSize(newSize);
@@ -130,9 +128,6 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       propType,
       blueColor,
       redColor
-    );
-    console.log(
-      `[PixiAnimationRenderer] Loaded secondary prop textures for ${propType} (blue: ${blueColor}, red: ${redColor})`
     );
   }
 
@@ -211,6 +206,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       !this.trailRenderer ||
       !this.propRenderer
     ) {
+      console.warn('[PixiAnimationRenderer] renderScene skipped - not ready');
       return;
     }
 

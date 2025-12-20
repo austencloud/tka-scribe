@@ -16,6 +16,7 @@ export class PixiApplicationManager {
   private app: Application | null = null;
   private currentSize: number = 500;
   private isInitialized: boolean = false;
+  private pendingRenderRetry: number | null = null;
 
   async initialize(
     container: HTMLElement,
@@ -91,21 +92,44 @@ export class PixiApplicationManager {
     this.app.renderer.resize(newSize, newSize);
   }
 
+  private hasLoggedRenderPipeError = false;
+  private hasLoggedSuccessfulRender = false;
+
   render(): void {
-    if (!this.isInitialized || !this.app?.renderer) return;
+    if (!this.isInitialized || !this.app?.renderer) {
+      console.warn('[PixiApplicationManager] Skipped render - not initialized or no renderer');
+      return;
+    }
 
     try {
-      // Guard against invalid renderer state (can happen during resize/context loss)
-      const renderer = this.app.renderer;
-      if (!renderer.renderTarget || !renderer.renderPipes) {
-        console.warn('[PixiApplicationManager] Renderer not ready for rendering');
+      const stage = this.app.stage;
+      if (!stage || stage.destroyed) {
+        if (!this.hasLoggedRenderPipeError) {
+          console.warn('[PixiApplicationManager] Stage is null or destroyed');
+          this.hasLoggedRenderPipeError = true;
+        }
+        this.isInitialized = false;
         return;
       }
 
-      this.app.renderer.render(this.app.stage);
+      // Reset error flag on successful render preparation
+      this.hasLoggedRenderPipeError = false;
+
+      // Debug: log successful render once
+      if (!this.hasLoggedSuccessfulRender) {
+        console.log('[PixiApplicationManager] Attempting first render...');
+        this.hasLoggedSuccessfulRender = true;
+      }
+
+      this.app.renderer.render(stage);
     } catch (error) {
-      // Catch WebGL errors like null alphaMode (texture/context issues)
-      console.error('[PixiApplicationManager] Render error:', error);
+      // Catch WebGL errors like context loss or invalid state
+      if (!this.hasLoggedRenderPipeError) {
+        console.error('[PixiApplicationManager] Render error:', error);
+        this.hasLoggedRenderPipeError = true;
+      }
+      // Don't stop render loop on errors - renderer might recover
+      // this.isInitialized = false;
     }
   }
 
@@ -129,6 +153,12 @@ export class PixiApplicationManager {
     if (!this.app || !this.isInitialized) return;
 
     try {
+      // Cancel any pending render retries
+      if (this.pendingRenderRetry !== null) {
+        cancelAnimationFrame(this.pendingRenderRetry);
+        this.pendingRenderRetry = null;
+      }
+
       // CRITICAL: Remove canvas from DOM before destroying
       const canvas = this.app.canvas;
       if (canvas.parentElement) {
