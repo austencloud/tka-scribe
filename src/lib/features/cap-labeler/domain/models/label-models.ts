@@ -1,0 +1,109 @@
+/**
+ * Domain models for CAP labeling and filtering
+ */
+
+import type { ComponentId } from "../constants/cap-components";
+import type { SliceSize } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import type { SectionDesignation } from "./section-models";
+import type { BeatPairRelationship } from "./beatpair-models";
+
+/**
+ * Transformation interval - when does a transformation apply?
+ *
+ * For a sequence divided into sections (e.g., 4 quarters for 16 beats):
+ * - "halved": transformation applies at midpoint (sections 1-2 same, 3-4 transformed)
+ * - "quartered": transformation applies every quarter
+ * - "none": transformation doesn't apply
+ * - Custom patterns for complex sequences (e.g., "1,3" means sections 1 and 3 are base, 2 and 4 are transformed)
+ */
+export type TransformationInterval = "none" | "halved" | "quartered" | string;
+
+/**
+ * Section grouping patterns - which sections share the same base vs transformed
+ *
+ * For 4 sections (quarters):
+ * - "1-2_3-4": sections 1-2 are base, 3-4 are transformed (halved pattern)
+ * - "1-3_2-4": sections 1,3 are base, 2,4 are transformed (alternating/opposite pattern)
+ * - "1-4_2-3": sections 1,4 are base, 2,3 are transformed (diagonal pattern)
+ * - "1_2_3_4": all different (progressive, e.g., each quarter rotated from previous)
+ */
+export type SectionGrouping = string;
+
+/**
+ * Per-transformation interval configuration
+ * Allows each transformation type to have its own interval
+ */
+export interface TransformationIntervals {
+  rotation?: TransformationInterval;
+  swap?: TransformationInterval;
+  mirror?: TransformationInterval;
+  flip?: TransformationInterval;
+  invert?: TransformationInterval;
+}
+
+/**
+ * Extended CAP Designation with per-transformation intervals
+ */
+export interface CAPDesignation {
+  components: ComponentId[];
+  capType: string | null;
+
+  /** @deprecated Use transformationIntervals.rotation instead */
+  sliceSize?: SliceSize | null;
+
+  /** Per-transformation interval configuration */
+  transformationIntervals?: TransformationIntervals;
+
+  /** Section grouping pattern (e.g., "1-2_3-4" for halved swap) */
+  sectionGrouping?: SectionGrouping;
+}
+
+export interface LabeledSequence {
+  word: string;
+  designations: CAPDesignation[]; // Multiple valid designations (whole sequence)
+  sections?: SectionDesignation[]; // Section-based designations
+  beatPairs?: BeatPairRelationship[]; // Beat-pair relationships
+  isFreeform: boolean; // Circular but no recognizable pattern
+  isUnknown?: boolean; // Needs further analysis/review
+  labeledAt: string;
+  notes: string;
+}
+
+export type FilterMode = "all" | "unlabeled" | "labeled" | "unknown";
+
+/**
+ * Helper: Get human-readable description of transformation intervals
+ */
+export function describeTransformationIntervals(intervals: TransformationIntervals): string {
+  const parts: string[] = [];
+
+  if (intervals.rotation && intervals.rotation !== "none") {
+    parts.push(`rot:${intervals.rotation}`);
+  }
+  if (intervals.swap && intervals.swap !== "none") {
+    parts.push(`swap:${intervals.swap}`);
+  }
+  if (intervals.mirror && intervals.mirror !== "none") {
+    parts.push(`mir:${intervals.mirror}`);
+  }
+  if (intervals.flip && intervals.flip !== "none") {
+    parts.push(`flip:${intervals.flip}`);
+  }
+  if (intervals.invert && intervals.invert !== "none") {
+    parts.push(`inv:${intervals.invert}`);
+  }
+
+  return parts.join(" + ") || "none";
+}
+
+/**
+ * Helper: Parse section grouping string
+ * Returns array of section groups (each group contains section numbers that share the same base)
+ *
+ * Example: "1-3_2-4" returns [[1,3], [2,4]]
+ */
+export function parseSectionGrouping(grouping: SectionGrouping): number[][] {
+  return grouping.split("_").map(group =>
+    group.split("-").map(n => parseInt(n, 10))
+  );
+}
