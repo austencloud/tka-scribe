@@ -7,7 +7,7 @@
   Uses the shared animation engine with BPM preset controls.
 -->
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, untrack } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import BpmChips from "$lib/features/compose/components/controls/BpmChips.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -40,6 +40,9 @@
 
   // Animation state
   const animationState = createAnimationPanelState();
+
+  // Track last loaded sequence to prevent re-loading same sequence
+  let lastLoadedSequenceId: string | null = null;
 
   // Local reactive state for UI
   let isPlaying = $state(false);
@@ -93,7 +96,8 @@
     return null;
   });
 
-  let gridMode = $derived(animationState.sequenceData?.gridMode ?? sequence?.gridMode);
+  // Prefer sequence prop's gridMode (always current) over animation state (may be stale during switch)
+  let gridMode = $derived(sequence?.gridMode ?? animationState.sequenceData?.gridMode);
 
   // Load services on mount
   onMount(async () => {
@@ -104,9 +108,6 @@
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
       playbackController = resolve<IAnimationPlaybackController>(TYPES.IAnimationPlaybackController);
       servicesReady = true;
-
-      // Load and start animation
-      await loadAnimation();
     } catch (err) {
       console.error("Failed to initialize animation player:", err);
       error = "Failed to load animation";
@@ -118,7 +119,27 @@
     playbackController?.dispose();
   });
 
-  async function loadAnimation() {
+  // Watch for sequence changes and reload animation
+  // Only triggers when sequence ID changes, not on every state update
+  $effect(() => {
+    const sequenceId = sequence?.id || sequence?.word || sequence?.name;
+
+    if (sequence && servicesReady && sequenceId !== lastLoadedSequenceId) {
+      // Use untrack to avoid creating dependency on isPlaying
+      untrack(() => {
+        // Stop any currently playing animation
+        if (animationState.isPlaying) {
+          playbackController?.togglePlayback();
+        }
+        // Reset state and reload
+        animationState.reset();
+        lastLoadedSequenceId = sequenceId ?? null;
+        loadAnimation(autoPlay);
+      });
+    }
+  });
+
+  async function loadAnimation(shouldAutoPlay: boolean = false) {
     if (!sequenceService || !playbackController || !sequence) return;
 
     loading = true;
@@ -142,8 +163,8 @@
 
       // Note: playbackController.initialize() already sets normalized sequence data on the state
 
-      // Auto-start if enabled
-      if (autoPlay) {
+      // Auto-start only if explicitly requested (initial load with autoPlay prop)
+      if (shouldAutoPlay) {
         setTimeout(() => {
           playbackController?.togglePlayback();
         }, 300);

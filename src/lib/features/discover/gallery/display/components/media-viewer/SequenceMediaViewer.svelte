@@ -102,11 +102,14 @@
     }
   });
 
-  // Reset indices when sequence changes
+  // Reset to image view when sequence changes
   $effect(() => {
     if (sequence) {
       currentImageIndex = 0;
       currentVideoIndex = 0;
+      // Always reset to image view when switching sequences
+      // User can click the image to animate if they want
+      activeMediaType = "image";
     }
   });
 

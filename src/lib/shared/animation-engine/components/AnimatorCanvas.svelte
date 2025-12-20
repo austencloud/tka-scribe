@@ -1,8 +1,61 @@
 <!--
-AnimatorCanvas.svelte
+AnimatorCanvas.svelte - PixiJS WebGL Animation Canvas
 
-PixiJS-powered canvas component for rendering animated prop positions.
-Handles prop visualization, trail effects, and glyph rendering using WebGL.
+================================================================================
+ARCHITECTURAL NOTE - READ BEFORE ATTEMPTING TO REFACTOR
+================================================================================
+
+This component is ~700 lines. That is INTENTIONAL and OPTIMAL.
+
+PREVIOUS REFACTOR ATTEMPTS FAILED:
+A v2 version attempted to split this into coordinators (AnimatorTextureCoordinator,
+AnimatorPrecomputationCoordinator, AnimatorRenderCoordinator) plus utility files.
+Result: 1,200+ total lines (vs 700) with no reduction in complexity - just
+indirection. The coordinators were thin pass-throughs that added overhead
+without meaningful abstraction. That approach was abandoned and deleted.
+
+WHY THIS COMPONENT CANNOT BE MEANINGFULLY SPLIT:
+
+PixiJS WebGL rendering has inherent lifecycle coupling:
+
+1. CANVAS ELEMENT must exist before PixiJS can initialize
+2. TEXTURE LOADING must happen after PixiJS init but before rendering
+3. STATE SYNC (visibility, props, trails) must trigger re-renders
+4. RENDER LOOP needs access to all the above
+
+These are phases of a single lifecycle, not separable responsibilities.
+Splitting them creates artificial boundaries that require complex coordination.
+
+WHAT IS ALREADY WELL-FACTORED (the actual work is in services):
+
+- AnimatorCanvasInitializer     → PixiJS bootstrap sequence
+- AnimationRenderLoopService    → Frame rendering logic
+- PropTextureService            → Prop SVG → texture conversion
+- GlyphTextureService           → TKA glyph → texture conversion
+- AnimationVisibilitySyncService → Visibility state subscriptions
+- TrailSettingsSyncService      → Trail settings subscriptions
+- PropTypeChangeService         → Prop type change detection
+- SequenceCacheService          → Cache lifecycle management
+- GlyphTransitionService        → Letter cross-fade animations
+- CanvasResizeService           → Container resize handling
+- AnimationPrecomputationService → Path/frame pre-computation
+
+The component's role is ORCHESTRATION: wiring services together with
+Svelte 5 $effect() calls. The ~20 $effect() blocks are the minimum
+needed to connect reactive props to imperative WebGL operations.
+
+DO NOT:
+- Try to split this into smaller components (lifecycle coupling prevents it)
+- Create "coordinator" wrapper classes (they just add indirection)
+- Extract $effect() blocks to separate files (breaks reactivity context)
+
+DO:
+- Extract NEW discrete services when adding features
+- Keep the orchestration logic here
+- Add to existing services when extending functionality
+
+Last audit: 2025-12-20
+================================================================================
 -->
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
@@ -101,7 +154,28 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // Load animator services on-demand (using extracted loader)
   async function loadAnimatorServices(): Promise<boolean> {
     const result = await loadServices();
+
     if (result.success) {
+      // CRITICAL: Validate that required services are actually present
+      if (!result.services?.svgGenerator) {
+        console.error('[AnimatorCanvas] CRITICAL: DI container returned success but svgGenerator is null!');
+        console.error('[AnimatorCanvas] Services returned:', result.services);
+        pixiError = 'Failed to load SVG generator service';
+        return false;
+      }
+
+      if (!result.services?.orchestrator) {
+        console.error('[AnimatorCanvas] CRITICAL: DI container returned success but orchestrator is null!');
+        pixiError = 'Failed to load animation orchestrator service';
+        return false;
+      }
+
+      if (!result.services?.trailCaptureService) {
+        console.error('[AnimatorCanvas] CRITICAL: DI container returned success but trailCaptureService is null!');
+        pixiError = 'Failed to load trail capture service';
+        return false;
+      }
+
       svgGenerator = result.services.svgGenerator;
       settingsService = result.services.settingsService;
       orchestrator = result.services.orchestrator;
@@ -110,6 +184,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
       servicesReady = true;
       return true;
     }
+    console.error('[AnimatorCanvas] Failed to load services:', result.error);
+    pixiError = result.error || 'Failed to load animator services';
     return false;
   }
 
@@ -210,6 +286,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
   // Unique instance ID for debugging multiple canvas instances
   const instanceId = Math.random().toString(36).substring(2, 8);
   let containerElement: HTMLDivElement;
+  let hasLoggedFrameParams = false;
 
   // Resize handler (extracted utility)
   let canvasResizeService: ICanvasResizeService | null = null;
@@ -525,7 +602,21 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
   // Initialize prop texture service
   function initializePropTextureService() {
-    if (!pixiRenderer || !svgGenerator) return;
+    // Validate dependencies with specific error messages
+    if (!pixiRenderer) {
+      const error = 'Cannot initialize PropTextureService: pixiRenderer is null';
+      console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
+      pixiError = error;
+      return;
+    }
+
+    if (!svgGenerator) {
+      const error = 'Cannot initialize PropTextureService: svgGenerator is null (DI container may have failed to load it)';
+      console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
+      console.error('[AnimatorCanvas] This usually means the "animate" feature module did not register ISVGGenerator properly');
+      pixiError = error;
+      return;
+    }
 
     propTextureService = new PropTextureService();
     propTextureService.initialize(pixiRenderer, svgGenerator);
@@ -541,7 +632,12 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
   // Wrapper for prop texture loading
   async function loadPropTextures() {
-    await propTextureService?.loadPropTextures(
+    if (!propTextureService) {
+      console.error('[AnimatorCanvas] CRITICAL: Cannot load prop textures - propTextureService is null');
+      return;
+    }
+
+    await propTextureService.loadPropTextures(
       currentBluePropType,
       currentRedPropType
     );
@@ -594,7 +690,7 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
 
   // Helper to create frame params for render loop
   function getFrameParams(): RenderFrameParams {
-    return {
+    const params = {
       beatData,
       currentBeat,
       trailSettings,
@@ -617,6 +713,8 @@ Handles prop visualization, trail effects, and glyph rendering using WebGL.
         redMotionVisible: redMotionVisibleFromManager,
       },
     };
+
+    return params;
   }
 
   // Initialize render loop service

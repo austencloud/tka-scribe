@@ -125,6 +125,16 @@ export class ArrowGridCoordinateService implements IArrowGridCoordinateService {
           );
         }
       });
+
+      // Box mode: Map intercardinal locations to nearest cardinal layer2 points
+      // In box mode, hands are at NE/SE/SW/NW but layer2 is at N/E/S/W
+      // When a shift arrow needs positioning at an intercardinal, use nearest cardinal
+      if (layer2Points[GridLocation.NORTH] && layer2Points[GridLocation.EAST]) {
+        layer2Points[GridLocation.NORTHEAST] = layer2Points[GridLocation.NORTH];
+        layer2Points[GridLocation.SOUTHEAST] = layer2Points[GridLocation.EAST];
+        layer2Points[GridLocation.SOUTHWEST] = layer2Points[GridLocation.SOUTH];
+        layer2Points[GridLocation.NORTHWEST] = layer2Points[GridLocation.WEST];
+      }
     }
 
     return layer2Points;

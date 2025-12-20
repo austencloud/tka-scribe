@@ -213,6 +213,11 @@ export class SwipeToDismiss {
   private handleTouchStart(event: TouchEvent | MouseEvent) {
     if (!this.options.dismissible) return;
 
+    // Ignore right-click (context menu) - allow browser default behavior
+    if (event instanceof MouseEvent && event.button !== 0) {
+      return;
+    }
+
     // Only process if this drawer is the top drawer (prevents nested drawer conflicts)
     if (this.options.drawerId && !isTopDrawer(this.options.drawerId)) {
       return;

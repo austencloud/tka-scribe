@@ -13,7 +13,7 @@
 // DIFFICULTY LEVEL
 // ============================================================================
 
-export type DifficultyLevel = 1 | 2 | 3;
+export type DifficultyLevel = 1 | 2 | 3 | 4 | 5;
 
 export interface DifficultyLevelConfig {
   level: DifficultyLevel;
@@ -28,19 +28,19 @@ export const DIFFICULTY_LEVELS: Record<DifficultyLevel, DifficultyLevelConfig> =
   1: {
     level: 1,
     name: "No Turns",
-    description: "Beginner-friendly sequences",
+    description: "Plain white and black",
     gradient: `radial-gradient(ellipse at top left,
-      rgb(186, 230, 253) 0%,
-      rgb(125, 211, 252) 30%,
-      rgb(56, 189, 248) 70%,
-      rgb(14, 165, 233) 100%)`,
-    shadowColor: "199deg 89% 48%",
+      rgb(255, 255, 255) 0%,
+      rgb(226, 232, 240) 30%,
+      rgb(148, 163, 184) 70%,
+      rgb(51, 65, 85) 100%)`,
+    shadowColor: "220deg 13% 40%",
     textColor: "black",
   },
   2: {
     level: 2,
     name: "Whole Turns",
-    description: "Intermediate complexity",
+    description: "Shimmery silver",
     gradient: `radial-gradient(ellipse at top left,
       rgb(226, 232, 240) 0%,
       rgb(148, 163, 184) 30%,
@@ -52,7 +52,7 @@ export const DIFFICULTY_LEVELS: Record<DifficultyLevel, DifficultyLevelConfig> =
   3: {
     level: 3,
     name: "Half Turns",
-    description: "Advanced sequences",
+    description: "Glinting gold",
     gradient: `radial-gradient(ellipse at top left,
       rgb(254, 240, 138) 0%,
       rgb(253, 224, 71) 20%,
@@ -62,6 +62,34 @@ export const DIFFICULTY_LEVELS: Record<DifficultyLevel, DifficultyLevelConfig> =
       rgb(161, 98, 7) 100%)`,
     shadowColor: "45deg 93% 47%",
     textColor: "black",
+  },
+  4: {
+    level: 4,
+    name: "Skews",
+    description: "Fiery red",
+    gradient: `radial-gradient(ellipse at top left,
+      rgb(254, 202, 202) 0%,
+      rgb(252, 165, 165) 20%,
+      rgb(248, 113, 113) 40%,
+      rgb(239, 68, 68) 60%,
+      rgb(220, 38, 38) 80%,
+      rgb(185, 28, 28) 100%)`,
+    shadowColor: "0deg 84% 60%",
+    textColor: "white",
+  },
+  5: {
+    level: 5,
+    name: "Center",
+    description: "Cosmic purple",
+    gradient: `radial-gradient(ellipse at top left,
+      rgb(221, 214, 254) 0%,
+      rgb(196, 181, 253) 20%,
+      rgb(167, 139, 250) 40%,
+      rgb(139, 92, 246) 60%,
+      rgb(124, 58, 237) 80%,
+      rgb(109, 40, 217) 100%)`,
+    shadowColor: "258deg 90% 66%",
+    textColor: "white",
   },
 };
 

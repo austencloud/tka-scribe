@@ -35,6 +35,13 @@
     pointer-events: none !important;
   }
 
+  /* Beat Editor panel backdrop - transparent and non-interactive to allow clicking other beats */
+  .drawer-overlay.beat-editor-backdrop {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    pointer-events: none !important;
+  }
+
   /* Settings panel backdrop - modern frosted glass with blur */
   /* Override desktop sidebar constraint since settings drawer covers sidebar */
   .drawer-overlay.settings-backdrop,
@@ -159,7 +166,9 @@
     right: 0;
     bottom: 0;
     height: 100vh;
+    height: 100dvh; /* Modern browsers: accounts for browser chrome */
     max-height: 100vh;
+    max-height: 100dvh;
     width: var(--sheet-width, min(600px, 90vw));
     border-left: var(
       --sheet-border-strong,

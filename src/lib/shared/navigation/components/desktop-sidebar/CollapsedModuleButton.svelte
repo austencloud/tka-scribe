@@ -1,9 +1,9 @@
 <!-- Collapsed Module Button Component -->
 <!-- Icon-only module button for collapsed sidebar activity bar (VS Code style) -->
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { ModuleDefinition } from "../../domain/types";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import NotificationBadge from "../NotificationBadge.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
 
@@ -26,14 +26,27 @@
   // Get total unread count from inbox (notifications + messages)
   const inboxUnreadCount = $derived(inboxState.totalUnreadCount);
 
+  // Get effective user info (previewed user takes priority over actual user)
+  const effectivePhotoURL = $derived(
+    userPreviewState.isActive && userPreviewState.data.profile?.photoURL
+      ? userPreviewState.data.profile.photoURL
+      : authState.user?.photoURL || null
+  );
+
+  const effectiveDisplayName = $derived(
+    userPreviewState.isActive && userPreviewState.data.profile?.displayName
+      ? userPreviewState.data.profile.displayName
+      : authState.user?.displayName || "User"
+  );
+
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
     module.id === "dashboard" &&
       authState.isAuthenticated &&
-      authState.user?.photoURL
+      effectivePhotoURL
   );
-  const profilePictureUrl = $derived(authState.user?.photoURL || "");
-  const profileDisplayName = $derived(authState.user?.displayName || "User");
+  const profilePictureUrl = $derived(effectivePhotoURL || "");
+  const profileDisplayName = $derived(effectiveDisplayName);
 </script>
 
 <button

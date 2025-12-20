@@ -298,6 +298,9 @@
             // Activate focus trap after animation starts (element is in DOM)
             if (trapFocus && drawerElement) {
               focusTrap.activate(drawerElement);
+            } else if (drawerElement) {
+              // Even without focus trap, focus the drawer for proper interaction
+              drawerElement.focus();
             }
           });
         });
@@ -462,6 +465,7 @@
     data-state={dataState}
     data-snap-index={currentSnapIndex}
     data-drawer-id={drawerId}
+    tabindex="-1"
     {role}
     aria-modal="true"
     aria-labelledby={labelledBy}
