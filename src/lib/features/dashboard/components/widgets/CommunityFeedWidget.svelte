@@ -120,10 +120,12 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 24px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 22%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, var(--theme-panel-bg, rgba(0, 0, 0, 0.5)));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 24px;
     overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .widget-header {
@@ -139,7 +141,7 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
     border-radius: 14px;
     color: var(--theme-accent, #6366f1);
     font-size: 18px;

@@ -460,14 +460,14 @@
   </div>
 {/snippet}
 
-<!-- Snippet: Monitors Area (horizontal layout: Source | Program) -->
+<!-- Snippet: Monitors Area (horizontal layout: Program | Source) -->
 {#snippet monitorsContent()}
   <div class="monitors-area">
     <PanelGroup
       direction="horizontal"
       panels={[
-        { id: "source", content: sourceMonitorContent, defaultSize: 1, minSize: 200 },
         { id: "program", content: programMonitorContent, defaultSize: 1, minSize: 200 },
+        { id: "source", content: sourceMonitorContent, defaultSize: 1, minSize: 200 },
       ]}
       bind:sizes={monitorSizes}
     />

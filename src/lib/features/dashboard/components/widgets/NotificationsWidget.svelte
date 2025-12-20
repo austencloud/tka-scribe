@@ -164,10 +164,12 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 16px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 18%, transparent);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, var(--theme-panel-bg, rgba(0, 0, 0, 0.5)));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 20px;
     overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   /* ========================================
@@ -187,8 +189,8 @@
     justify-content: center;
     gap: 8px;
     padding: 12px 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.875rem;
@@ -198,13 +200,13 @@
   }
 
   .tab-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   .tab-btn.active {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
@@ -276,7 +278,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
     border: 1px solid transparent;
     border-radius: 10px;
     cursor: pointer;
@@ -289,13 +291,13 @@
   }
 
   .list-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .list-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, var(--theme-card-bg, rgba(0, 0, 0, 0.2)));
+    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   /* Icon for alerts */
@@ -303,7 +305,7 @@
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
     display: flex;
     align-items: center;
     justify-content: center;

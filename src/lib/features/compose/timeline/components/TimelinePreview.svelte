@@ -14,6 +14,8 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { getTimelinePlaybackService } from "../services/implementations/TimelinePlaybackService";
+  import { getTimelineState } from "../state/timeline-state.svelte";
   import type { TimelineClip } from "../domain/timeline-types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { ISequenceAnimationOrchestrator } from "../../services/contracts/ISequenceAnimationOrchestrator";
@@ -39,6 +41,18 @@
     pixelsPerSecond = 50,
     bpm = 60,
   }: Props = $props();
+
+  // Playback service access
+  function getPlayback() {
+    return getTimelinePlaybackService();
+  }
+
+  function getState() {
+    return getTimelineState();
+  }
+
+  // Total duration for scrubber
+  const totalDuration = $derived(getState().totalDuration || 60);
 
   // Animation orchestrator for calculating prop states
   let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
@@ -288,6 +302,41 @@
       </div>
     {/if}
   </div>
+
+  <!-- Transport Controls -->
+  <div class="transport-controls">
+    <!-- Scrubber -->
+    <div class="scrubber">
+      <input
+        type="range"
+        min="0"
+        max={totalDuration}
+        step="0.01"
+        value={playheadPosition}
+        oninput={(e) => getPlayback().seek(parseFloat((e.target as HTMLInputElement).value))}
+        class="scrub-slider"
+      />
+    </div>
+
+    <!-- Control buttons -->
+    <div class="control-buttons">
+      <button class="transport-btn" onclick={() => getPlayback().goToStart()} title="Go to start (Home)">
+        <i class="fas fa-backward-fast"></i>
+      </button>
+      <button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)">
+        <i class="fas fa-backward-step"></i>
+      </button>
+      <button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"}>
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+      </button>
+      <button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)">
+        <i class="fas fa-forward-step"></i>
+      </button>
+      <button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)">
+        <i class="fas fa-forward-fast"></i>
+      </button>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -427,5 +476,82 @@
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(0.95); }
+  }
+
+  /* Transport Controls */
+  .transport-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .scrubber {
+    width: 100%;
+  }
+
+  .scrub-slider {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .scrub-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--theme-accent, #4a9eff);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  .scrub-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+  }
+
+  .control-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .transport-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s ease;
+  }
+
+  .transport-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .transport-btn.play-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(74, 158, 255, 0.2);
+    color: var(--theme-accent, #4a9eff);
+    font-size: 14px;
+  }
+
+  .transport-btn.play-btn:hover {
+    background: rgba(74, 158, 255, 0.3);
   }
 </style>

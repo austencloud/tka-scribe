@@ -3,6 +3,7 @@
    * TrackHeader - Track name and controls (mute, solo, lock)
    *
    * Displayed to the left of each track lane.
+   * Controls are hidden behind a three-dots menu for cleaner UI.
    */
 
   import type { TimelineTrack } from "../domain/timeline-types";
@@ -30,6 +31,22 @@
     isDimmed = hasSoloedTrack && !track.solo;
     trackCount = state.project.tracks.length;
   });
+
+  // Controls menu visibility
+  let showControls = $state(false);
+  let menuRef: HTMLDivElement;
+
+  function toggleControls(e: MouseEvent) {
+    e.stopPropagation();
+    showControls = !showControls;
+  }
+
+  // Close menu when clicking outside
+  function handleClickOutside(e: MouseEvent) {
+    if (showControls && menuRef && !menuRef.contains(e.target as Node)) {
+      showControls = false;
+    }
+  }
 
   // Editable name
   let isEditing = $state(false);
@@ -60,6 +77,8 @@
   }
 </script>
 
+<svelte:window onclick={handleClickOutside} />
+
 <div
   class="track-header"
   class:dimmed={isDimmed}
@@ -84,51 +103,80 @@
     {/if}
   </div>
 
-  <!-- Track controls -->
-  <div class="track-controls">
-    <!-- Mute -->
+  <!-- Status indicators (always visible when active) -->
+  <div class="status-indicators">
+    {#if track.muted}
+      <span class="status-badge muted" title="Muted">M</span>
+    {/if}
+    {#if track.solo}
+      <span class="status-badge solo" title="Solo">S</span>
+    {/if}
+    {#if track.locked}
+      <span class="status-badge locked" title="Locked"><i class="fa-solid fa-lock"></i></span>
+    {/if}
+  </div>
+
+  <!-- Controls menu -->
+  <div class="controls-menu" bind:this={menuRef}>
+    <!-- Three-dots toggle button -->
     <button
-      class="track-btn"
-      class:active={track.muted}
-      onclick={() => getState().setTrackMuted(track.id, !track.muted)}
-      title="Mute track (M)"
-      aria-label={track.muted ? "Unmute track" : "Mute track"}
+      class="menu-toggle"
+      class:active={showControls}
+      onclick={toggleControls}
+      title="Track options"
+      aria-label="Toggle track options"
     >
-      M
+      <i class="fa-solid fa-ellipsis"></i>
     </button>
 
-    <!-- Solo -->
-    <button
-      class="track-btn solo"
-      class:active={track.solo}
-      onclick={() => getState().setTrackSolo(track.id, !track.solo)}
-      title="Solo track (S)"
-      aria-label={track.solo ? "Unsolo track" : "Solo track"}
-    >
-      S
-    </button>
+    <!-- Expandable controls panel -->
+    {#if showControls}
+      <div class="controls-panel">
+        <!-- Mute -->
+        <button
+          class="track-btn"
+          class:active={track.muted}
+          onclick={() => getState().setTrackMuted(track.id, !track.muted)}
+          title="Mute track (M)"
+          aria-label={track.muted ? "Unmute track" : "Mute track"}
+        >
+          M
+        </button>
 
-    <!-- Lock -->
-    <button
-      class="track-btn"
-      class:active={track.locked}
-      onclick={() => getState().updateTrack(track.id, { locked: !track.locked })}
-      title="Lock track"
-      aria-label={track.locked ? "Unlock track" : "Lock track"}
-    >
-      <i class="fa-solid fa-lock" style="font-size: 9px"></i>
-    </button>
+        <!-- Solo -->
+        <button
+          class="track-btn solo"
+          class:active={track.solo}
+          onclick={() => getState().setTrackSolo(track.id, !track.solo)}
+          title="Solo track (S)"
+          aria-label={track.solo ? "Unsolo track" : "Solo track"}
+        >
+          S
+        </button>
 
-    <!-- Delete button (shown on hover) -->
-    {#if trackCount > 1}
-      <button
-        class="delete-btn"
-        onclick={() => getState().removeTrack(track.id)}
-        title="Delete track"
-        aria-label="Delete track"
-      >
-        <i class="fa-solid fa-trash"></i>
-      </button>
+        <!-- Lock -->
+        <button
+          class="track-btn"
+          class:active={track.locked}
+          onclick={() => getState().updateTrack(track.id, { locked: !track.locked })}
+          title="Lock track"
+          aria-label={track.locked ? "Unlock track" : "Lock track"}
+        >
+          <i class="fa-solid fa-lock" style="font-size: 9px"></i>
+        </button>
+
+        <!-- Delete button -->
+        {#if trackCount > 1}
+          <button
+            class="delete-btn"
+            onclick={() => getState().removeTrack(track.id)}
+            title="Delete track"
+            aria-label="Delete track"
+          >
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        {/if}
+      </div>
     {/if}
   </div>
 </div>
@@ -137,7 +185,7 @@
   .track-header {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     padding: 0 8px;
     background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
@@ -186,15 +234,106 @@
     box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
-  .track-controls {
+  /* Status indicators - always visible when state is active */
+  .status-indicators {
     display: flex;
     gap: 2px;
     flex-shrink: 0;
   }
 
+  .status-badge {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    font-size: 8px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .status-badge.muted {
+    background: var(--theme-accent, #4a9eff);
+    color: white;
+  }
+
+  .status-badge.solo {
+    background: var(--semantic-warning, #ffd43b);
+    color: #1a1a1a;
+  }
+
+  .status-badge.locked {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 7px;
+  }
+
+  /* Controls menu container */
+  .controls-menu {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+  }
+
+  .menu-toggle:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .menu-toggle.active {
+    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 20%, transparent);
+    border-color: var(--theme-accent, #4a9eff);
+    color: var(--theme-accent, #4a9eff);
+  }
+
+  /* Controls panel - slides out */
+  .controls-panel {
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 2px;
+    padding: 4px 6px;
+    background: var(--theme-card-bg, rgba(20, 20, 25, 0.95));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    margin-right: 4px;
+    animation: slideIn 0.15s ease-out;
+    z-index: 10;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-50%) translateX(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+  }
+
   .track-btn {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 4px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -205,7 +344,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     flex-shrink: 0;
   }
 
@@ -231,25 +370,20 @@
   }
 
   .delete-btn {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 4px;
     border: 1px solid transparent;
     background: transparent;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
     font-size: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     flex-shrink: 0;
-    margin-left: 2px;
-  }
-
-  .track-header:hover .delete-btn {
-    opacity: 1;
+    margin-left: 4px;
   }
 
   .delete-btn:hover {
