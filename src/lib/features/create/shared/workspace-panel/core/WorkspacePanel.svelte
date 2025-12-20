@@ -8,6 +8,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { onMount } from "svelte";
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
@@ -139,6 +140,12 @@
     }
   }
 
+  // Handle long-press on beat to open fullscreen preview
+  function handleBeatLongPress() {
+    if (!sequenceState?.currentSequence) return;
+    openSpotlightWithBeatGrid(sequenceState.currentSequence);
+  }
+
   // Initialize services on mount
   onMount(() => {
     beatOperationsService = resolve<IBeatOperationsService>(
@@ -174,6 +181,7 @@
           onBeatSelected={handleBeatSelected}
           onStartPositionSelected={handleStartPositionSelected}
           onBeatDelete={handleBeatDelete}
+          onBeatLongPress={handleBeatLongPress}
           selectedBeatNumber={localSelectedBeatNumber}
           practiceBeatNumber={practiceBeatIndex}
           {isSideBySideLayout}

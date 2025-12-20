@@ -12,23 +12,29 @@
     index = 0,
     onClick,
     onDelete,
+    onLongPress,
     shouldAnimate = false,
     isSelected = false,
     isPracticeBeat = false,
     shouldOrbitAroundCenter = false,
     // Active mode for context-aware messaging
     activeMode = null,
+    // Custom highlight style (for multi-select, section highlighting, etc.)
+    highlightStyle = null,
   } = $props<{
     beat: BeatData;
     index?: number;
     onClick?: () => void;
     onDelete?: () => void;
+    onLongPress?: () => void;
     shouldAnimate?: boolean;
     isSelected?: boolean;
     isPracticeBeat?: boolean;
     shouldOrbitAroundCenter?: boolean;
     // Active mode
     activeMode?: BuildModeId | null;
+    // Custom highlight style
+    highlightStyle?: { bg: string; border: string } | null;
   }>();
 
   // Services
@@ -66,6 +72,12 @@
   let hasAnimated = $state(false);
   let currentAnimationName = $state("gentleBloom");
   let previousBeatId = beat.id;
+
+  // Long-press detection
+  const LONG_PRESS_DURATION = 500; // ms
+  let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  let isLongPressing = $state(false);
+  let longPressTriggered = $state(false);
 
   // Track when new pictograph data arrives for fade-in animation
   let enableTransitionsForNewData = $state(false);
@@ -181,6 +193,55 @@
       }
     }
   }
+
+  // Long-press handlers
+  function handlePointerDown(event: PointerEvent) {
+    if (!onLongPress) return;
+
+    isLongPressing = true;
+    longPressTriggered = false;
+
+    longPressTimer = setTimeout(() => {
+      if (isLongPressing) {
+        longPressTriggered = true;
+        hapticService?.trigger("success");
+        onLongPress();
+      }
+    }, LONG_PRESS_DURATION);
+  }
+
+  function handlePointerUp() {
+    cancelLongPress();
+
+    // If long press was triggered, don't also trigger click
+    if (longPressTriggered) {
+      longPressTriggered = false;
+      return;
+    }
+  }
+
+  function handlePointerLeave() {
+    cancelLongPress();
+  }
+
+  function handlePointerCancel() {
+    cancelLongPress();
+  }
+
+  function cancelLongPress() {
+    isLongPressing = false;
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+
+  // Prevent context menu when long-press handler is active
+  function handleContextMenu(event: MouseEvent) {
+    if (onLongPress) {
+      event.preventDefault();
+    }
+  }
 </script>
 
 <div
@@ -189,13 +250,22 @@
   class:animate={shouldAnimateIn}
   class:selected={isSelected}
   class:practice-beat={isPracticeBeat}
+  class:highlighted={!!highlightStyle}
+  class:long-pressing={isLongPressing}
   class:anim-gentleBloom={currentAnimationName === "gentleBloom"}
   class:anim-softCascade={currentAnimationName === "softCascade"}
   class:anim-springPop={currentAnimationName === "springPop"}
   class:anim-microFade={currentAnimationName === "microFade"}
   class:anim-glassBlur={currentAnimationName === "glassBlur"}
+  style:--highlight-bg={highlightStyle?.bg}
+  style:--highlight-border={highlightStyle?.border}
   onclick={handleClick}
   onkeydown={handleKeyDown}
+  onpointerdown={handlePointerDown}
+  onpointerup={handlePointerUp}
+  onpointerleave={handlePointerLeave}
+  onpointercancel={handlePointerCancel}
+  oncontextmenu={handleContextMenu}
   onanimationend={handleAnimationEnd}
   role="button"
   tabindex="0"
@@ -270,6 +340,13 @@
     transform: scale(1.02);
   }
 
+  /* Visual feedback during long-press */
+  .beat-cell.long-pressing {
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+  }
+
   /* Elevated Luxury - 2025/2026 Selection State */
   .beat-cell.selected {
     /* Ensure it appears above other beats */
@@ -307,6 +384,30 @@
       0 0 30px rgba(251, 191, 36, 0.7),
       0 12px 48px rgba(251, 191, 36, 0.4),
       0 0 0 1px rgba(251, 191, 36, 0.3);
+  }
+
+  /* Custom highlight styling (multi-select, section highlighting, etc.) */
+  .beat-cell.highlighted {
+    position: relative;
+    z-index: 5;
+    border: 3px solid var(--highlight-border, rgba(59, 130, 246, 0.8));
+    border-radius: 8px;
+    box-shadow: 0 0 16px var(--highlight-border, rgba(59, 130, 246, 0.5));
+  }
+
+  /* Colored overlay on top of pictograph content */
+  .beat-cell.highlighted::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--highlight-bg, rgba(59, 130, 246, 0.35));
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .beat-cell.highlighted:hover::after {
+    background: var(--highlight-bg, rgba(59, 130, 246, 0.45));
   }
 
   /* Practice beat styling - gold border with pulse animation */

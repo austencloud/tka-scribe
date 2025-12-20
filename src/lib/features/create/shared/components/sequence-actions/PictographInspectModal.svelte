@@ -12,6 +12,9 @@
   import type { IArrowPositioningOrchestrator } from "$lib/shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
   import type { ISpecialPlacementService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ISpecialPlacementService";
   import type { IRotationAngleOverrideKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
+  import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
+  import { SpecialPlacementOriKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -31,6 +34,15 @@
   let blueRotationOverride = $state<{ hasOverride: boolean } | null>(null);
   let redRotationOverride = $state<{ hasOverride: boolean } | null>(null);
 
+  // Lookup keys for debugging - shows exactly what keys are used for special placement lookup
+  let lookupKeys = $state<{
+    gridMode: string;
+    oriKey: string;
+    turnsTuple: string;
+    blueRotationOverrideKey: string | null;
+    redRotationOverrideKey: string | null;
+  } | null>(null);
+
   // Calculate arrow positions when modal opens
   $effect(() => {
     if (show && beatData) {
@@ -39,6 +51,7 @@
       calculatedData = null;
       blueRotationOverride = null;
       redRotationOverride = null;
+      lookupKeys = null;
     }
   });
 
@@ -70,11 +83,80 @@
 
       // Check rotation overrides for each motion
       await checkRotationOverrides(pictographData);
+
+      // Calculate lookup keys for debugging
+      calculateLookupKeys(pictographData);
     } catch (err) {
       console.error("Failed to calculate arrow positions:", err);
       calculatedData = beatData; // Fallback to raw data
     } finally {
       isCalculating = false;
+    }
+  }
+
+  function calculateLookupKeys(pictographData: PictographData) {
+    try {
+      const tupleGenerator = resolve<ITurnsTupleGeneratorService>(
+        TYPES.ITurnsTupleGeneratorService
+      );
+      const gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
+      const rotationKeyGenerator = resolve<IRotationAngleOverrideKeyGenerator>(
+        TYPES.IRotationAngleOverrideKeyGenerator
+      );
+      const oriKeyGenerator = new SpecialPlacementOriKeyGenerator();
+
+      const blueMotion = pictographData.motions?.[MotionColor.BLUE];
+      const redMotion = pictographData.motions?.[MotionColor.RED];
+
+      // Calculate grid mode
+      let gridMode = "diamond";
+      if (blueMotion && redMotion) {
+        gridMode = gridModeDeriver.deriveGridMode(blueMotion, redMotion);
+      }
+
+      // Calculate orientation key (uses blue motion by default)
+      let oriKey = "unknown";
+      if (blueMotion) {
+        oriKey = oriKeyGenerator.generateOrientationKey(blueMotion, pictographData);
+      }
+
+      // Calculate turns tuple
+      const turnsTuple = tupleGenerator.generateTurnsTuple(pictographData);
+
+      // Calculate rotation override keys for each motion (only for STATIC/DASH)
+      let blueRotationOverrideKey: string | null = null;
+      let redRotationOverrideKey: string | null = null;
+
+      if (blueMotion) {
+        const motionType = blueMotion.motionType?.toLowerCase();
+        if (motionType === "static" || motionType === "dash") {
+          blueRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
+            blueMotion,
+            pictographData
+          );
+        }
+      }
+
+      if (redMotion) {
+        const motionType = redMotion.motionType?.toLowerCase();
+        if (motionType === "static" || motionType === "dash") {
+          redRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
+            redMotion,
+            pictographData
+          );
+        }
+      }
+
+      lookupKeys = {
+        gridMode,
+        oriKey,
+        turnsTuple,
+        blueRotationOverrideKey,
+        redRotationOverrideKey,
+      };
+    } catch (err) {
+      console.error("Failed to calculate lookup keys:", err);
+      lookupKeys = null;
     }
   }
 
@@ -335,6 +417,55 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                 <span class="val mono small">{displayData?.id ?? "—"}</span>
               </div>
             </div>
+
+            <!-- Lookup Keys Section -->
+            {#if lookupKeys}
+              <div class="subsection lookup-keys-section">
+                <div class="subsection-header">
+                  <h4>
+                    <i class="fas fa-key"></i>
+                    Lookup Keys
+                  </h4>
+                  <button
+                    class="copy-btn small"
+                    onclick={() => copyToClipboard(
+                      `Grid Mode: ${lookupKeys.gridMode}\nOri Key: ${lookupKeys.oriKey}\nTurns Tuple: ${lookupKeys.turnsTuple}\nBlue Rot Key: ${lookupKeys.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`,
+                      "keys"
+                    )}
+                    title="Copy Lookup Keys"
+                  >
+                    <i class="fas fa-copy"></i>
+                    {#if copiedSection === "keys"}<span class="copied-label">!</span>{/if}
+                  </button>
+                </div>
+                <div class="data-block compact">
+                  <div class="data-row key-row">
+                    <span class="key">Grid Mode</span>
+                    <span class="val mono key-val">{lookupKeys.gridMode}</span>
+                  </div>
+                  <div class="data-row key-row">
+                    <span class="key">Ori Key</span>
+                    <span class="val mono key-val">{lookupKeys.oriKey}</span>
+                  </div>
+                  <div class="data-row key-row highlight-key">
+                    <span class="key">Turns Tuple</span>
+                    <span class="val mono key-val">{lookupKeys.turnsTuple}</span>
+                  </div>
+                  {#if lookupKeys.blueRotationOverrideKey}
+                    <div class="data-row key-row blue-key">
+                      <span class="key">Blue Rot Key</span>
+                      <span class="val mono key-val">{lookupKeys.blueRotationOverrideKey}</span>
+                    </div>
+                  {/if}
+                  {#if lookupKeys.redRotationOverrideKey}
+                    <div class="data-row key-row red-key">
+                      <span class="key">Red Rot Key</span>
+                      <span class="val mono key-val">{lookupKeys.redRotationOverrideKey}</span>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {/if}
           </section>
 
           <!-- Blue Motion Column -->
@@ -847,6 +978,80 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
     color: rgba(255, 255, 255, 0.6);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+  }
+
+  /* Lookup Keys Section */
+  .lookup-keys-section {
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  .subsection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .subsection-header h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #06b6d4;
+  }
+
+  .subsection-header h4 i {
+    font-size: 0.7rem;
+  }
+
+  .copy-btn.small {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .data-row.key-row {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .key-val {
+    font-size: 0.8rem;
+    color: #22d3ee;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .data-row.highlight-key {
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+
+  .data-row.highlight-key .key-val {
+    color: #67e8f9;
+    font-weight: 600;
+  }
+
+  .data-row.blue-key {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+
+  .data-row.blue-key .key-val {
+    color: #60a5fa;
+  }
+
+  .data-row.red-key {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  .data-row.red-key .key-val {
+    color: #f87171;
   }
 
   .empty-state {

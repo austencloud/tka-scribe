@@ -2,9 +2,14 @@
   TurnsEditMode.svelte
 
   The "Turns" tab content - allows editing turns and rotation for a selected beat.
+  Uses PropControlPair for consistent blue/red card layout.
 -->
 <script lang="ts">
-  import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    MotionColor,
+    RotationDirection,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import PropControlPair from "./PropControlPair.svelte";
   import PropTurnsControl from "./PropTurnsControl.svelte";
 
   interface Props {
@@ -15,6 +20,7 @@
     redRotation: RotationDirection;
     showBlueRotation: boolean;
     showRedRotation: boolean;
+    stacked?: boolean;
     onTurnsChange: (color: MotionColor, delta: number) => void;
     onRotationChange: (color: MotionColor, direction: RotationDirection) => void;
   }
@@ -27,10 +33,10 @@
     redRotation,
     showBlueRotation,
     showRedRotation,
+    stacked = false,
     onTurnsChange,
     onRotationChange,
   }: Props = $props();
-
 </script>
 
 {#if !hasSelection}
@@ -39,8 +45,8 @@
     <p>Tap a beat in the sequence to edit its turns</p>
   </div>
 {:else}
-  <div class="beat-controls">
-    <div class="prop-row">
+  <PropControlPair {stacked}>
+    {#snippet blueContent()}
       <PropTurnsControl
         color="blue"
         turns={blueTurns}
@@ -49,6 +55,8 @@
         onTurnsChange={(delta) => onTurnsChange(MotionColor.BLUE, delta)}
         onRotationChange={(dir) => onRotationChange(MotionColor.BLUE, dir)}
       />
+    {/snippet}
+    {#snippet redContent()}
       <PropTurnsControl
         color="red"
         turns={redTurns}
@@ -57,8 +65,8 @@
         onTurnsChange={(delta) => onTurnsChange(MotionColor.RED, delta)}
         onRotationChange={(dir) => onRotationChange(MotionColor.RED, dir)}
       />
-    </div>
-  </div>
+    {/snippet}
+  </PropControlPair>
 {/if}
 
 <style>
@@ -81,16 +89,5 @@
   .empty-state p {
     font-size: 0.9rem;
     margin: 0;
-  }
-
-  .beat-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .prop-row {
-    display: flex;
-    gap: 12px;
   }
 </style>

@@ -49,7 +49,11 @@ export function calculateGridLayout(
   _deviceDetector: IDeviceDetector | null,
   config: GridSizingConfig = {}
 ): GridLayout {
-  const sizing = { ...DEFAULT_SIZING, ...config };
+  // Filter out undefined values from config to prevent overriding defaults with undefined
+  const filteredConfig = Object.fromEntries(
+    Object.entries(config).filter(([_, v]) => v !== undefined)
+  );
+  const sizing = { ...DEFAULT_SIZING, ...filteredConfig };
 
   // Determine columns: use manual override if provided, otherwise calculate automatically
   let maxColumns: number;
@@ -83,7 +87,7 @@ export function calculateGridLayout(
   if (containerWidth > 0 && containerHeight > 0) {
     // Grid gap between cells (must match CSS gap value in BeatGrid.svelte)
     const gridGap = 1;
-    
+
     // Scroll container padding (horizontal padding from beat-grid-scroll in BeatGrid.svelte)
     const scrollContainerPadding = 8; // 4px on each side
 

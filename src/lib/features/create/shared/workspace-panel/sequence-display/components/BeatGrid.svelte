@@ -30,6 +30,7 @@
     onBeatClick,
     onStartClick,
     onBeatDelete,
+    onBeatLongPress,
     selectedBeatNumber = null, // 0=start, 1=first beat, 2=second beat, etc.
     removingBeatIndex = null,
     removingBeatIndices = new Set<number>(),
@@ -42,12 +43,18 @@
     isSpotlightMode = false,
     // Manual column override (null = auto)
     manualColumnCount = null,
+    // Highlighted beats for multi-select/section highlighting
+    highlightedBeats = null,
+    // Height sizing threshold: grids with this many rows or fewer will consider height when sizing
+    // Default 4 (workspace mode), use higher values (e.g., 20) for fixed-height containers
+    heightSizingRowThreshold = undefined,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
     startPosition?: StartPositionData | BeatData | null;
     onBeatClick?: (beatNumber: number) => void;
     onStartClick?: () => void;
     onBeatDelete?: (beatNumber: number) => void;
+    onBeatLongPress?: () => void;
     selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     removingBeatIndex?: number | null;
     removingBeatIndices?: Set<number>;
@@ -60,6 +67,11 @@
     isSpotlightMode?: boolean;
     // Manual column override (null = auto)
     manualColumnCount?: number | null;
+    // Highlighted beats for multi-select/section highlighting (beatNumber -> style)
+    highlightedBeats?: Map<number, { bg: string; border: string }> | null;
+    // Height sizing threshold: grids with this many rows or fewer will consider height when sizing
+    // Default 4 (workspace mode), use higher values (e.g., 20) for fixed-height containers
+    heightSizingRowThreshold?: number;
   }>();
 
   const placeholderBeat = createBeatData({
@@ -93,7 +105,7 @@
         widthPaddingRatio: isSpotlightMode ? 1.0 : undefined,
         heightPaddingRatio: isSpotlightMode ? 1.0 : undefined,
         // Always consider height in spotlight mode to prevent vertical overflow
-        heightSizingRowThreshold: isSpotlightMode ? 9999 : undefined,
+        heightSizingRowThreshold: isSpotlightMode ? 9999 : heightSizingRowThreshold,
         // Manual column override
         manualColumnCount,
       }
@@ -376,6 +388,7 @@
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === 0}
               {activeMode}
+              onLongPress={onBeatLongPress}
             />
           </div>
         {/if}
@@ -408,11 +421,13 @@
               {index}
               onClick={() => handleBeatClick(beat.beatNumber)}
               onDelete={() => onBeatDelete?.(beat.beatNumber)}
+              onLongPress={onBeatLongPress}
               shouldAnimate={shouldAnimateBeat}
               isSelected={selectedBeatNumber === beat.beatNumber}
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === beat.beatNumber}
               {activeMode}
+              highlightStyle={highlightedBeats?.get(beat.beatNumber) ?? null}
             />
           </div>
         {/each}
@@ -458,6 +473,7 @@
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === 0}
               {activeMode}
+              onLongPress={onBeatLongPress}
             />
           </div>
         {/if}
@@ -490,11 +506,13 @@
               {index}
               onClick={() => handleBeatClick(beat.beatNumber)}
               onDelete={() => onBeatDelete?.(beat.beatNumber)}
+              onLongPress={onBeatLongPress}
               shouldAnimate={shouldAnimateBeat}
               isSelected={selectedBeatNumber === beat.beatNumber}
               {shouldOrbitAroundCenter}
               isPracticeBeat={practiceBeatNumber === beat.beatNumber}
               {activeMode}
+              highlightStyle={highlightedBeats?.get(beat.beatNumber) ?? null}
             />
           </div>
         {/each}
@@ -545,8 +563,7 @@
   .beat-grid-scroll {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: visible;
     display: flex;
     justify-content: center;
     align-items: center;

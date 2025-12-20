@@ -18,6 +18,7 @@ import type { ICAPParameterProvider } from "$lib/features/create/generate/shared
 import type { IPictographFilterService } from "$lib/features/create/generate/shared/services/contracts/IPictographFilterService";
 import type { ISequenceMetadataService } from "$lib/features/create/generate/shared/services/contracts/ISequenceMetadataService";
 import type { ITurnManagementService } from "$lib/features/create/generate/shared/services/contracts/ITurnManagementService";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { SliceSize } from "../../domain/models/circular-models";
 import { CAPType } from "../../domain/models/circular-models";
 import type { IPartialSequenceGenerator } from "../contracts/IPartialSequenceGenerator";
@@ -374,7 +375,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     blueRotationDirection: string,
     redRotationDirection: string,
     gridMode: GridMode,
-    propType: string,
+    propType: PropType,
     avoidEndPosition?: GridPosition
   ): Promise<BeatData> {
     // Get all options

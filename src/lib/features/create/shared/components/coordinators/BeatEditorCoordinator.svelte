@@ -50,6 +50,10 @@
   const activeSequenceState = $derived(CreateModuleState.getActiveTabSequenceState());
   const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
   const selectedBeatData = $derived(activeSequenceState.selectedBeatData);
+  const sequence = $derived(activeSequenceState.currentSequence);
+
+  // Animation state for deletion visualization
+  const removingBeatIndices = $derived(activeSequenceState.getRemovingBeatIndices());
 
   // Derived state for turns calculations
   const blueMotion = $derived(selectedBeatData?.motions?.[MotionColor.BLUE]);
@@ -124,12 +128,17 @@
       return;
     }
 
-    // For regular beats, remove the beat
+    // For regular beats, remove the beat with animation
+    // NOTE: Don't clear selection here - the animation callback in BeatRemovalHandler
+    // will select the appropriate next beat after the animation completes.
+    // This prevents the mobile Beat Editor controls from disappearing during deletion.
     const beatIndex = selectedBeatNumber - 1;
     beatOperationsService.removeBeat(beatIndex, CreateModuleState);
+  }
 
-    // Clear selection after deletion
-    activeSequenceState.clearSelection();
+  function handleBeatSelect(beatNumber: number) {
+    hapticService?.trigger("selection");
+    activeSequenceState.selectBeat(beatNumber);
   }
 
   // Debug effect to track panel visibility
@@ -142,9 +151,12 @@
   {isOpen}
   {selectedBeatNumber}
   {selectedBeatData}
+  {sequence}
+  {removingBeatIndices}
   onClose={handleClose}
   onTurnsChange={handleTurnsChange}
   onRotationChange={handleRotationChange}
   onOrientationChange={handleOrientationChange}
+  onBeatSelect={handleBeatSelect}
   onDelete={handleBeatDelete}
 />

@@ -621,6 +621,8 @@ export function createSequenceState(services: SequenceStateServices) {
     rotateSequence: (direction: "clockwise" | "counterclockwise") =>
       transformOperations.rotateSequence(direction),
     rewindSequence: () => transformOperations.rewindSequence(),
+    shiftStartPosition: (targetBeatNumber: number) =>
+      transformOperations.shiftStartPosition(targetBeatNumber),
     duplicateSequence: (newName?: string) =>
       transformOperations.duplicateSequence(newName),
     validateCurrentSequence: (): ValidationResult | null =>

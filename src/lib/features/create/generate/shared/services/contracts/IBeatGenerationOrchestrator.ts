@@ -9,6 +9,7 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
 import type { PropContinuity } from "../../domain/models/generate-models";
 import type { TurnAllocation } from "./ITurnAllocator";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
 export interface BeatGenerationOptions {
   level: number;
@@ -17,7 +18,7 @@ export interface BeatGenerationOptions {
   blueRotationDirection: string;
   redRotationDirection: string;
   gridMode: GridMode;
-  propType: string;
+  propType: PropType;
   /** Optional: Required end position for this beat (used for last beat with end position constraint) */
   requiredEndPosition?: string;
 }

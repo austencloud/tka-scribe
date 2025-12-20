@@ -255,27 +255,16 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
       }
 
       console.log(
-        `🎬 Starting REVERSE staggered fade-out for ${beatsToRemove} beats starting from index ${beatIndex}`
+        `🎬 Starting simultaneous fade-out for ${beatsToRemove} beats starting from index ${beatIndex}`
       );
 
-      const staggerDelay = 200;
-      const fadeAnimationDuration = 250; // Updated to match new faster animation
-      const reversedIndices = [...removingIndices].reverse();
+      const fadeAnimationDuration = 250;
 
-      // Start animations
-      animationState.startRemovingBeats([]);
-      reversedIndices.forEach((index, arrayIndex) => {
-        setTimeout(() => {
-          animationState.addRemovingBeat(index);
-          console.log(
-            `🎭 Fading out beat ${index} (${arrayIndex + 1}/${beatsToRemove}) - REVERSE ORDER`
-          );
-        }, arrayIndex * staggerDelay);
-      });
+      // Add ALL beats to removing set at once - they all fade simultaneously
+      animationState.startRemovingBeats(removingIndices);
+      console.log(`🎭 Fading out all ${beatsToRemove} beats simultaneously`);
 
-      // Remove beats after animations
-      const totalAnimationTime =
-        (beatsToRemove - 1) * staggerDelay + fadeAnimationDuration;
+      // Remove beats after fade animation completes
       setTimeout(() => {
         try {
           if (!coreState.currentSequence) return;
@@ -289,24 +278,26 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
             updatedSequence = reversalDetectionService.processReversals(updatedSequence);
           }
           coreState.setCurrentSequence(updatedSequence);
-          selectionState.clearSelection();
+          // NOTE: Don't clear selection here - the onComplete callback will select the appropriate next beat
+          // This prevents the mobile Beat Editor controls from disappearing during the animation
           coreState.clearError();
           onSave?.().catch((err) =>
             console.error("Failed to auto-save after beat removal:", err)
           );
 
+          // Small delay for visual feedback before completing
           setTimeout(() => {
             animationState.endRemovingBeats();
             console.log(
-              `✅ Reverse staggered removal complete for ${beatsToRemove} beats`
+              `✅ Simultaneous removal complete for ${beatsToRemove} beats`
             );
             onComplete?.();
-          }, 200); // Updated to match new faster animation
+          }, 50);
         } catch (error) {
           handleError("Failed to remove beat and subsequent beats", error);
           animationState.endRemovingBeats();
         }
-      }, totalAnimationTime);
+      }, fadeAnimationDuration);
     },
 
     updateBeat(beatIndex: number, beatData: Partial<BeatData>) {

@@ -4,27 +4,39 @@
   Panel for editing individual beats (turns, rotation, orientation).
   Opens directly when clicking a pictograph, or via "Edit Turns" in Sequence Actions.
   Non-modal - allows clicking through to other pictographs while open.
+
+  Mobile: Full-height panel with beat grid at top, stacked controls at bottom
+  Desktop: Side panel with pictograph preview, horizontal controls
 -->
 <script lang="ts">
-  import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
+  import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import TurnsEditMode from "./TurnsEditMode.svelte";
   import StartPositionEditMode from "./StartPositionEditMode.svelte";
+  import PictographInspectModal from "./PictographInspectModal.svelte";
+  import PictographEditorSheet from "./PictographEditorSheet.svelte";
+  import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
   import type { BeatData } from "../../domain/models/BeatData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import {
     MotionColor,
     MotionType,
     RotationDirection,
   } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { isAdmin } from "$lib/shared/auth/state/authState.svelte";
+  import { getCreateModuleContext } from "../../context/create-module-context";
 
   interface Props {
     isOpen: boolean;
     selectedBeatNumber: number | null;
     selectedBeatData: BeatData | null;
+    sequence?: SequenceData | null;
+    removingBeatIndices?: Set<number>;
     onClose: () => void;
     onTurnsChange: (color: MotionColor, delta: number) => void;
     onRotationChange: (color: MotionColor, direction: RotationDirection) => void;
     onOrientationChange: (color: MotionColor, orientation: string) => void;
+    onBeatSelect?: (beatNumber: number) => void;
     onDelete?: () => void;
   }
 
@@ -32,12 +44,20 @@
     isOpen = $bindable(),
     selectedBeatNumber,
     selectedBeatData,
+    sequence = null,
+    removingBeatIndices = new Set<number>(),
     onClose,
     onTurnsChange,
     onRotationChange,
     onOrientationChange,
+    onBeatSelect,
     onDelete,
   }: Props = $props();
+
+  // Get layout context for responsive behavior
+  const ctx = getCreateModuleContext();
+  const { layout, panelState } = ctx;
+  const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
 
   // Derived state
   const hasSelection = $derived(selectedBeatNumber !== null);
@@ -98,30 +118,74 @@
       : `Beat ${selectedBeatNumber}`;
   });
 
+  // Inspect modal state (admin-only)
+  let showInspectModal = $state(false);
+  let showEditorSheet = $state(false);
+
   function handleClose() {
     onClose();
   }
+
+  function handleBeatClick(beatNumber: number) {
+    onBeatSelect?.(beatNumber);
+  }
+
+  function handleOpenInspect() {
+    showInspectModal = true;
+  }
+
+  function handleCloseInspect() {
+    showInspectModal = false;
+  }
+
+  function handleOpenEditor() {
+    showEditorSheet = true;
+  }
+
+  function handleCloseEditor() {
+    showEditorSheet = false;
+  }
 </script>
 
-<Drawer
+<CreatePanelDrawer
   bind:isOpen
-  placement="right"
-  onclose={handleClose}
-  class="beat-editor-panel"
-  trapFocus={false}
-  setInertOnSiblings={false}
+  panelName="beat-editor"
+  fullHeightOnMobile={true}
+  showHandle={true}
   closeOnBackdrop={false}
+  focusTrap={false}
+  ariaLabel="Beat editor panel"
+  onClose={handleClose}
 >
-  <div class="drawer-content">
-    <header class="drawer-header">
+  <div class="editor-panel" class:desktop={isSideBySideLayout}>
+    <!-- Header -->
+    <header class="panel-header">
       <div class="header-info">
         <h2>Beat Editor</h2>
         <span class="subtitle">{beatLabel}</span>
       </div>
       <div class="header-actions">
+        {#if isAdmin() && hasSelection && selectedBeatData}
+          <button
+            class="icon-btn editor"
+            onclick={handleOpenEditor}
+            aria-label="Edit pictograph"
+            title="Edit pictograph (admin)"
+          >
+            <i class="fa-solid fa-pen-ruler"></i>
+          </button>
+          <button
+            class="icon-btn inspect"
+            onclick={handleOpenInspect}
+            aria-label="Inspect pictograph data"
+            title="Inspect pictograph data (dev)"
+          >
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        {/if}
         {#if onDelete && hasSelection}
           <button
-            class="delete-btn"
+            class="icon-btn delete"
             onclick={onDelete}
             aria-label={isStartPositionSelected ? "Delete start position" : "Delete beat"}
             title={isStartPositionSelected ? "Delete start position" : "Delete this beat"}
@@ -129,22 +193,38 @@
             <i class="fa-solid fa-trash"></i>
           </button>
         {/if}
-        <button class="close-btn" onclick={handleClose}>
+        <button class="icon-btn close" onclick={handleClose}>
           <i class="fas fa-times"></i>
         </button>
       </div>
     </header>
 
-    <!-- Pictograph Preview -->
-    {#if hasSelection && selectedBeatData}
+    <!-- Mobile layout: Beat grid at top -->
+    {#if !isSideBySideLayout && sequence}
+      <div class="beat-grid-section">
+        <BeatGrid
+          beats={sequence.beats ?? []}
+          startPosition={sequence.startPosition || sequence.startingPositionBeat || null}
+          {selectedBeatNumber}
+          {removingBeatIndices}
+          onBeatClick={handleBeatClick}
+          onStartClick={() => handleBeatClick(0)}
+          onBeatDelete={() => onDelete?.()}
+        />
+      </div>
+    {/if}
+
+    <!-- Desktop layout: Pictograph Preview -->
+    {#if isSideBySideLayout && hasSelection && selectedBeatData}
       <div class="preview-section">
         <div class="pictograph-container">
-          <Pictograph pictographData={selectedBeatData} />
+          <Pictograph pictographData={selectedBeatData} disableContentTransitions={true} />
         </div>
       </div>
     {/if}
 
-    <div class="controls-container">
+    <!-- Controls - different layout for mobile vs desktop -->
+    <div class="controls-section" class:mobile={!isSideBySideLayout}>
       {#if !hasSelection}
         <div class="no-selection">
           <i class="fas fa-hand-pointer"></i>
@@ -153,6 +233,7 @@
       {:else if isStartPositionSelected}
         <StartPositionEditMode
           startPositionData={selectedBeatData}
+          stacked={!isSideBySideLayout}
           {onOrientationChange}
         />
       {:else}
@@ -164,30 +245,58 @@
           {redRotation}
           {showBlueRotation}
           {showRedRotation}
+          stacked={!isSideBySideLayout}
           {onTurnsChange}
           {onRotationChange}
         />
       {/if}
     </div>
   </div>
-</Drawer>
+</CreatePanelDrawer>
+
+<!-- Inspect Modal (admin-only) -->
+<PictographInspectModal
+  show={showInspectModal}
+  beatData={selectedBeatData}
+  onClose={handleCloseInspect}
+/>
+
+<!-- Editor Sheet (admin-only) -->
+<PictographEditorSheet
+  isOpen={showEditorSheet}
+  beatData={selectedBeatData}
+  onClose={handleCloseEditor}
+/>
 
 <style>
-  .drawer-content {
+  /* ============================================================================
+     EDITOR PANEL - Full-height layout for both mobile and desktop
+     Uses container queries to adapt to available space
+     ============================================================================ */
+
+  .editor-panel {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 100%;
-    background: var(--theme-panel-bg, rgba(20, 20, 25, 0.95));
-    color: var(--theme-text, #fff);
+    overflow: hidden;
+    position: relative;
+    container-type: size;
+    container-name: beat-editor;
   }
 
-  .drawer-header {
+  /* ============================================================================
+     HEADER - Compact header matching SequenceActionsPanel
+     ============================================================================ */
+
+  .panel-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(15, 20, 30, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 44px;
     flex-shrink: 0;
   }
 
@@ -197,10 +306,11 @@
     gap: 2px;
   }
 
-  .drawer-header h2 {
+  .panel-header h2 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .subtitle {
@@ -211,70 +321,132 @@
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
-  .delete-btn {
+  /* ============================================================================
+     ICON BUTTONS - Consistent button styling
+     ============================================================================ */
+
+  .icon-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     border-radius: 50%;
     cursor: pointer;
+    font-size: 16px;
     transition: all 0.15s ease;
-    background: linear-gradient(135deg, var(--semantic-warning, #ff9800) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #ff9800) 30%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .icon-btn.editor {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-color: rgba(245, 158, 11, 0.3);
     color: white;
   }
 
-  .delete-btn:hover {
+  .icon-btn.editor:hover {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    transform: scale(1.05);
+  }
+
+  .icon-btn.inspect {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    border-color: rgba(6, 182, 212, 0.3);
+    color: white;
+  }
+
+  .icon-btn.inspect:hover {
+    background: linear-gradient(135deg, #22d3ee, #06b6d4);
+    transform: scale(1.05);
+  }
+
+  .icon-btn.delete {
+    background: linear-gradient(135deg, var(--semantic-warning, #ff9800) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%);
+    border-color: color-mix(in srgb, var(--semantic-warning, #ff9800) 30%, transparent);
+    color: white;
+  }
+
+  .icon-btn.delete:hover {
     background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%);
     transform: scale(1.05);
   }
 
-  .delete-btn i {
-    font-size: 0.95rem;
-  }
-
-  .close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  .icon-btn.close {
     background: linear-gradient(135deg, rgba(100, 100, 120, 0.85), rgba(70, 70, 90, 0.85));
-    border: 1px solid rgba(255, 255, 255, 0.15);
     color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.15s ease;
   }
 
-  .close-btn:hover {
+  .icon-btn.close:hover {
     background: linear-gradient(135deg, rgba(120, 120, 140, 0.95), rgba(90, 90, 110, 0.95));
   }
 
-  /* Pictograph Preview Section */
+  /* ============================================================================
+     BEAT GRID SECTION - Mobile only, flexible height
+     Takes ALL available space - controls sit at bottom with natural size
+     ============================================================================ */
+
+  .beat-grid-section {
+    flex: 1 1 auto; /* Grow to fill ALL available space */
+    min-height: 120px; /* Minimum usable height for beat grid */
+    /* No max-height - let it grow to fill space */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ============================================================================
+     PREVIEW SECTION - Desktop only, pictograph preview
+     ============================================================================ */
+
   .preview-section {
-    padding: 16px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: rgba(0, 0, 0, 0.2);
-    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.1);
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+    /* Enable container queries for responsive pictograph sizing */
+    container-type: size;
   }
 
   .pictograph-container {
-    width: min(200px, 50vw);
+    /* Size based on smaller dimension - fills the space as a square */
+    width: min(90cqw, 90cqh, 450px);
+    height: min(90cqw, 90cqh, 450px);
     aspect-ratio: 1;
+    /* Subtle container styling */
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
   }
 
-  .controls-container {
-    padding: 16px;
-    overflow-y: auto;
+  /* ============================================================================
+     CONTROLS SECTION - Bottom controls area
+     Must always fit both Blue and Red controls on mobile
+     ============================================================================ */
+
+  .controls-section {
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    flex-shrink: 0;
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg, rgba(20, 20, 25, 0.95));
+  }
+
+  /* Mobile: controls take only what they need - beat grid fills the rest */
+  .controls-section.mobile {
+    flex: 0 0 auto; /* Don't grow - take natural size only */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: auto; /* Allow scrolling if absolutely necessary */
   }
 
   .no-selection {
@@ -296,5 +468,46 @@
   .no-selection p {
     margin: 0;
     font-size: 0.9rem;
+  }
+
+  /* ============================================================================
+     CONTAINER QUERY ADJUSTMENTS - Responsive to actual available space
+     ============================================================================ */
+
+  /* Small container height (< 600px) - compact mode */
+  @container beat-editor (max-height: 600px) {
+    .beat-grid-section {
+      min-height: 80px; /* Smaller minimum on tight screens */
+    }
+
+    .controls-section.mobile {
+      padding: 6px;
+    }
+  }
+
+  /* Medium container height (600-700px) */
+  @container beat-editor (min-height: 600px) and (max-height: 700px) {
+    .controls-section.mobile {
+      padding: 8px;
+    }
+  }
+
+  /* Fallback for browsers without container query support */
+  @supports not (container-type: size) {
+    @media (max-height: 700px) {
+      .controls-section.mobile {
+        padding: 8px;
+      }
+    }
+  }
+
+  /* ============================================================================
+     REDUCED MOTION
+     ============================================================================ */
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon-btn {
+      transition: none;
+    }
   }
 </style>

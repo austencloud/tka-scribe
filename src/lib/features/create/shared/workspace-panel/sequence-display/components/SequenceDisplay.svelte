@@ -17,6 +17,7 @@
     onBeatSelected,
     onStartPositionSelected,
     onBeatDelete,
+    onBeatLongPress,
     selectedBeatNumber = null,
     practiceBeatNumber = null,
     isSideBySideLayout = false,
@@ -28,6 +29,7 @@
     onBeatSelected?: (beatNumber: number) => void;
     onStartPositionSelected?: () => void;
     onBeatDelete?: (beatNumber: number) => void;
+    onBeatLongPress?: () => void;
     selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     practiceBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     isSideBySideLayout?: boolean;
@@ -62,6 +64,7 @@
   const removingBeatIndex = $derived(sequenceState.getRemovingBeatIndex());
   const removingBeatIndices = $derived(sequenceState.getRemovingBeatIndices());
   const isClearing = $derived(sequenceState.getIsClearing());
+  const isShiftStartMode = $derived(panelState.isShiftStartMode);
 
   // Convert selectedStartPosition (PictographData) to BeatData format for BeatGrid
   const startPositionBeat = $derived(() => {
@@ -80,6 +83,20 @@
 
   function handleBeatClick(beatNumber: number) {
     hapticService?.trigger("selection");
+
+    console.log("[SequenceDisplay] handleBeatClick", {
+      beatNumber,
+      isShiftStartMode: panelState.isShiftStartMode,
+      hasHandler: !!panelState.shiftStartHandler,
+    });
+
+    // If in shift start mode, use the shift handler instead of normal selection
+    if (panelState.isShiftStartMode && panelState.shiftStartHandler) {
+      console.log("[SequenceDisplay] Calling shift start handler");
+      panelState.shiftStartHandler(beatNumber);
+      return;
+    }
+
     onBeatSelected?.(beatNumber);
   }
 
@@ -108,13 +125,14 @@
         </div>
       </div>
 
-      <div class="beat-grid-wrapper">
+      <div class="beat-grid-wrapper" class:shift-mode={isShiftStartMode}>
         <BeatGrid
           beats={currentSequence?.beats ?? []}
           startPosition={startPositionBeat() ?? undefined}
           onBeatClick={handleBeatClick}
           onStartClick={handleStartPositionClick}
           {onBeatDelete}
+          {onBeatLongPress}
           {selectedBeatNumber}
           {removingBeatIndex}
           {removingBeatIndices}
@@ -206,5 +224,11 @@
     height: 100%;
     flex: 1 1 auto;
     min-height: 0;
+    border-radius: 12px;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .beat-grid-wrapper.shift-mode {
+    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.2);
   }
 </style>
