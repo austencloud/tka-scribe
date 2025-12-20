@@ -45,6 +45,7 @@ import { ArrowTypes } from "./arrow.types";
 import { AudioTypes } from "./audio.types";
 import { AuthTypes } from "./auth.types";
 import { BackgroundTypes } from "./background.types";
+import { CAPLabelerTypes } from "./cap-labeler.types";
 import { CoreTypes } from "./core.types";
 import { CreateTypes } from "./create.types";
 import { DiscoverTypes } from "./discover.types";
@@ -67,6 +68,7 @@ export {
   AudioTypes,
   AuthTypes,
   BackgroundTypes,
+  CAPLabelerTypes,
   CoreTypes,
   CreateTypes,
   DiscoverTypes,
@@ -116,6 +118,7 @@ export const TYPES = {
   ...LibraryTypes,
   ...FeedbackTypes,
   ...MessagingTypes,
+  ...CAPLabelerTypes,
 } as const;
 
 // Type helper for getting service types

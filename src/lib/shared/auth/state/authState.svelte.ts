@@ -1,20 +1,22 @@
 /**
  * AuthState - Core authentication state management using Svelte 5 runes
- * 
+ *
  * This module manages the global authentication state and orchestrates auth operations
  * using injected services from the DI container. It does NOT use Svelte 4 stores (writables).
- * 
+ *
  * Responsibilities:
  * - Reactive auth state ($state rune)
  * - Firebase onAuthStateChanged listener
  * - Role & permission resolution
  * - Sign out orchestration
  * - Email/display name updates
- * 
+ *
  * Extracted responsibilities (now services):
  * - Profile picture management → IProfilePictureService
- * - User document CRUD → IUserDocumentService  
- * - Admin impersonation → IImpersonationService
+ * - User document CRUD → IUserDocumentService
+ *
+ * Preview mode integration:
+ * - getEffectiveUserId/Role/Admin check userPreviewState for admin preview mode
  */
 
 import {
@@ -33,8 +35,9 @@ import { tryResolve } from "../../inversify/di";
 // Service imports
 import type { IProfilePictureService } from "../services/contracts/IProfilePictureService";
 import type { IUserDocumentService } from "../services/contracts/IUserDocumentService";
-import type { IImpersonationService } from "../services/contracts/IImpersonationService";
 import { auth } from "../firebase";
+// Preview state for admin "View As" feature
+import { userPreviewState } from "../../debug/state/user-preview-state.svelte";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 import { featureFlagService } from "../services/FeatureFlagService.svelte";
 import type { UserRole } from "../domain/models/UserRole";
@@ -60,23 +63,21 @@ let _state = $state<AuthState>({
 let cleanupAuthListener: (() => void) | null = null;
 
 /**
- * Get the effective user ID (impersonated or actual)
+ * Get the effective user ID (previewed user or actual)
  */
 export function getEffectiveUserId(): string | null {
-  const impersonationService = tryResolve<IImpersonationService>(TYPES.IImpersonationService);
-  if (impersonationService?.isImpersonating()) {
-    return impersonationService.getImpersonatedUser()?.uid ?? null;
+  if (userPreviewState.isActive && userPreviewState.data.profile) {
+    return userPreviewState.data.profile.uid;
   }
   return _state.user?.uid ?? null;
 }
 
 /**
- * Get the effective user role (impersonated or actual)
+ * Get the effective user role (previewed user or actual)
  */
 export function getEffectiveRole(): UserRole {
-  const impersonationService = tryResolve<IImpersonationService>(TYPES.IImpersonationService);
-  if (impersonationService?.isImpersonating()) {
-    return impersonationService.getImpersonatedUser()?.role ?? "user";
+  if (userPreviewState.isActive && userPreviewState.data.profile?.role) {
+    return userPreviewState.data.profile.role as UserRole;
   }
   return _state.role;
 }
@@ -85,9 +86,8 @@ export function getEffectiveRole(): UserRole {
  * Check if the effective user is an admin
  */
 export function isEffectiveAdmin(): boolean {
-  const impersonationService = tryResolve<IImpersonationService>(TYPES.IImpersonationService);
-  if (impersonationService?.isImpersonating()) {
-    return impersonationService.getImpersonatedUser()?.role === "admin";
+  if (userPreviewState.isActive && userPreviewState.data.profile) {
+    return userPreviewState.data.profile.role === "admin";
   }
   return _state.isAdmin;
 }

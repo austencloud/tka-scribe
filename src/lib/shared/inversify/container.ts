@@ -497,6 +497,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await loadIfNeeded("inbox", () => import("./modules/inbox.module"));
         break;
 
+      case "cap-labeler":
+        // CAP labeler (test route) - load on-demand
+        await loadIfNeeded("cap-labeler", () => import("./modules/cap-labeler.module"));
+        break;
+
       default:
         // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
         console.warn(`Unknown feature module: ${feature}`);

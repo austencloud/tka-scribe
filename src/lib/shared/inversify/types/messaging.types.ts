@@ -1,10 +1,9 @@
 /**
  * Messaging Service Type Identifiers
  *
- * Services for user-to-user messaging and conversations.
+ * Note: MessagingService and ConversationService use singleton exports
+ * directly instead of DI resolution. This file exists for consistency
+ * but contains no types.
  */
 
-export const MessagingTypes = {
-  IMessagingService: Symbol.for("IMessagingService"),
-  IConversationService: Symbol.for("IConversationService"),
-} as const;
+export const MessagingTypes = {} as const;

@@ -7,7 +7,7 @@
 
 import { injectable } from "inversify";
 import { doc, getDoc } from "firebase/firestore";
-import { getFirestoreInstance } from "../../firebase";
+import { firestore } from "../../firebase";
 import type { IImpersonationService, ImpersonatedUser } from "../contracts/IImpersonationService";
 import type { UserRole } from "../../domain/models/UserRole";
 
@@ -23,7 +23,6 @@ export class ImpersonationService implements IImpersonationService {
    */
   async startImpersonation(userId: string): Promise<ImpersonatedUser> {
     try {
-      const firestore = await getFirestoreInstance();
       const userDocRef = doc(firestore, `users/${userId}`);
       const userDoc = await getDoc(userDocRef);
 
