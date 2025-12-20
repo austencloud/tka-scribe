@@ -407,20 +407,95 @@ words:
     - name: "OR"
       mnemonic: "Open Road"
 
-# CAPs (Continuous Assembly Patterns)
+# CAPs (Circular Arrangement Patterns)
+# Sequences that return to their starting position through specific transformations
 caps:
-  types:
-    mirrored:
-      description: "Second repetition reflects the first"
-      changes: "rotation direction"
-      
+  definition: |
+    A CAP is a circular sequence - one that returns to its starting position.
+    CAPs are classified by which transformation(s) bring the sequence home.
+    A single sequence may satisfy multiple transformation paths (OR relationship).
+
+  # The 5 base components that can combine to form CAP types
+  base_components:
     rotated:
-      description: "Each repetition ends in rotated variation"
-      typical_rotation: "90 degrees"
-      
+      description: "Positions rotate around the grid to return home"
+      key_insight: |
+        Rotated means COMPLETING the full rotation, not just reaching a rotated midpoint.
+        The second half must CONTINUE rotating in the same direction to return home.
+      variants:
+        halved:
+          slice_size: "180°"
+          pattern: "Two halves, each rotates 180°, completing 360° total"
+          mental_model: |
+            Like a clock hand moving continuously:
+            - Starts at 12 o'clock (0°)
+            - First half reaches 6 o'clock (180°)
+            - Second half CONTINUES to 12 o'clock (360°)
+            NOT: going 0°→180° then reversing back 180°→0° (that's Rewound)
+        quartered:
+          slice_size: "90°"
+          pattern: "Four quarters, each rotates 90°, completing 360° total"
+          mental_model: "Clock hand: 12→3→6→9→12 (continuing same direction)"
+
+    mirrored:
+      description: "Positions mirror vertically to return home"
+      axis: "Vertical axis through center"
+      effect: "Left-right positions swap across the vertical midline"
+
+    flipped:
+      description: "Positions mirror horizontally to return home"
+      axis: "Horizontal axis through center"
+      effect: "Top-bottom positions swap across the horizontal midline"
+      note: "Same concept as mirrored but along perpendicular axis"
+
     swapped:
-      description: "Each repetition swaps roles of right/left hands"
-      effect: "Changes body motion significantly"
+      description: "Blue and Red hands swap roles"
+      effect: "What blue hand did, red hand now does (and vice versa)"
+      note: "Changes body motion significantly"
+
+    inverted:
+      description: "Motion types flip between PRO and ANTI"
+      effect: "Prospin becomes antispin, antispin becomes prospin"
+
+    rewound:
+      description: "Second half plays in reverse - hands trace back"
+      key_insight: |
+        The hands retrace their path backwards to return home.
+        Like pressing rewind on a video.
+      distinction_from_rotated: |
+        Rewound: Hands reverse direction to go back
+        Rotated: Hands continue same rotational direction forward
+
+  # How components combine to form named CAP types
+  compound_types:
+    strict_rotated: ["rotated"]
+    strict_mirrored: ["mirrored"]
+    strict_swapped: ["swapped"]
+    mirrored_swapped: ["mirrored", "swapped"]
+    rotated_swapped: ["rotated", "swapped"]
+    mirrored_rotated: ["mirrored", "rotated"]
+    # Additional combinations with inverted
+    inverted_rotated: ["inverted", "rotated"]
+    inverted_mirrored: ["inverted", "mirrored"]
+    inverted_swapped: ["inverted", "swapped"]
+    inverted_mirrored_swapped: ["inverted", "mirrored", "swapped"]
+    # Rewound combinations
+    rewound_inverted: ["rewound", "inverted"]
+
+  # Key learnings from manual labeling sessions
+  learnings:
+    - sequence: "AABB"
+      valid_designations:
+        - ["rewound", "inverted"]
+        - ["mirrored", "swapped", "inverted"]
+      note: |
+        NOT rotated - although positions at beat 2 are 180° from start,
+        the return happens via rewinding/mirroring, not continued rotation.
+
+  # Freeform sequences
+  freeform:
+    description: "Circular sequences that don't fit any recognizable CAP pattern"
+    note: "Still returns to start, just not via standard transformations"
 
 # Reversals
 reversals:
