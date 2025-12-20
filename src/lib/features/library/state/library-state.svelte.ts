@@ -168,6 +168,7 @@ class LibraryStateManager {
 			// Organization
 			collectionIds: [] as readonly string[],
 			tagIds: [] as readonly string[],
+			sequenceTags: [],
 
 			// Engagement metrics
 			forkCount: 0,

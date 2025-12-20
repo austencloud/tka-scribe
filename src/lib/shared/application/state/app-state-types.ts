@@ -1,1 +1,5 @@
-export type InfoBackground = "deepOcean" | "snowfall" | "nightSky";
+export type InfoBackground =
+  | "deepOcean"
+  | "snowfall"
+  | "nightSky"
+  | "solidColor";

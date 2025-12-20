@@ -49,9 +49,10 @@ export async function migrateSequenceTags(
 ): Promise<TagMigrationResult> {
 	// Case 1: Already migrated (has sequenceTags)
 	if ("sequenceTags" in sequence && sequence.sequenceTags && sequence.sequenceTags.length > 0) {
+		const sequenceTags = [...sequence.sequenceTags];
 		return {
-			sequenceTags: sequence.sequenceTags,
-			tagIds: sequence.sequenceTags.map((st) => st.tagId),
+			sequenceTags,
+			tagIds: sequenceTags.map((st) => st.tagId),
 			migrated: false,
 		};
 	}
@@ -117,7 +118,14 @@ export async function batchMigrateSequenceTags(
 	const results: TagMigrationResult[] = [];
 
 	for (let i = 0; i < sequences.length; i++) {
-		const result = await migrateSequenceTags(sequences[i], tagService);
+		const sequence = sequences[i];
+		if (!sequence) {
+			if (onProgress) {
+				onProgress(i + 1, sequences.length);
+			}
+			continue;
+		}
+		const result = await migrateSequenceTags(sequence, tagService);
 		results.push(result);
 
 		if (onProgress) {
