@@ -526,11 +526,13 @@
     position: relative;
     background: transparent;
     border-radius: 12px;
-    overflow: hidden;
+    overflow: hidden; /* Clip for rounded corners - scroll happens in child */
     width: 100%;
     height: 100%;
     flex: 1 1 auto;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Spotlight mode: container becomes flexbox to center the grid */
@@ -563,19 +565,59 @@
   .beat-grid-scroll {
     width: 100%;
     max-width: 100%;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: auto;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding: 0 4px;
+    flex-direction: column; /* Column for margin:auto vertical centering */
+    flex: 1 1 auto;
+    min-height: 0; /* Critical for flex overflow scrolling */
+    padding: 4px;
     box-sizing: border-box;
+
+    /* Always-visible thin scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
   }
 
-  /* When scrollbar is present, align to top instead of center */
+  /* Webkit scrollbar styling (Chrome, Safari, Edge) */
+  .beat-grid-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .beat-grid-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .beat-grid-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .beat-grid-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Mobile: make scrollbar more visible */
+  @media (max-width: 768px) {
+    .beat-grid-scroll {
+      scrollbar-width: auto;
+      scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.15);
+    }
+
+    .beat-grid-scroll::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .beat-grid-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  /* When scrollbar is present, add right padding to prevent content clipping */
   .beat-grid-scroll.has-scrollbar {
-    align-items: flex-start;
-    justify-content: center; /* Keep horizontal centering */
+    padding-right: 12px;
   }
 
   .beat-grid {
@@ -584,7 +626,8 @@
     grid-auto-rows: var(--cell-size);
     gap: 1px; /* Subtle separator between pictographs - background shows through */
     max-width: 100%;
-    margin: 0;
+    /* margin:auto centers both horizontally and vertically in block container */
+    margin: auto;
     padding: 0;
     box-sizing: border-box;
     opacity: 1;

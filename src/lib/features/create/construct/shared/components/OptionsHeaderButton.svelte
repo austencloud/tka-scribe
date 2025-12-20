@@ -149,7 +149,7 @@
 
   /* Compact mode: Reduced height for tight spaces */
   .options-header-button.compact {
-    min-height: var(--min-touch-target);
+    min-height: var(--alt-touch-target);
   }
 
   .options-header-button.compact .header-title {
@@ -199,7 +199,7 @@
 
     /* Extra compact on mobile when compact mode is active */
     .options-header-button.compact {
-      min-height: var(--min-touch-target);
+      min-height: var(--alt-touch-target);
     }
 
     .options-header-button.compact .header-title {

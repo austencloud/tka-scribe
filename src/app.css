@@ -138,6 +138,7 @@ h6 {
 
   /* Touch Target - WCAG 2.5.5 AAA compliant (48px minimum) */
   --min-touch-target: 48px;
+  --alt-touch-target: 40px; /* For less critical elements */
 
   /* Enhanced Shadow System */
   --shadow-glass:

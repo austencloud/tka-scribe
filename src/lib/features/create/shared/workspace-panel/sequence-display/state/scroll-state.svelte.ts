@@ -15,12 +15,15 @@ export function createScrollState() {
 
   /**
    * Check if container has vertical scrollbar
+   * Uses a threshold to avoid false positives from tiny overflow (rounding, padding, etc.)
    */
   function checkScrollbar() {
     if (!scrollContainerRef) return;
 
+    // Only consider it "has scrollbar" if overflow exceeds threshold (e.g., at least 1 row of content)
+    const overflowThreshold = 30; // pixels - enough to indicate real scrollable content
     const hasScrollbar =
-      scrollContainerRef.scrollHeight > scrollContainerRef.clientHeight;
+      scrollContainerRef.scrollHeight > scrollContainerRef.clientHeight + overflowThreshold;
 
     if (hasScrollbar !== hasVerticalScrollbar) {
       hasVerticalScrollbar = hasScrollbar;

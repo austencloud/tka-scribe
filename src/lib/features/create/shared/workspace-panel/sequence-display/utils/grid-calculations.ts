@@ -29,11 +29,11 @@ export interface GridSizingConfig {
 }
 
 const DEFAULT_SIZING: Omit<Required<GridSizingConfig>, 'manualColumnCount'> & { manualColumnCount: number | null } = {
-  minCellSize: 50,
+  minCellSize: 40, // Reduced from 50px to allow fitting more rows on small screens
   maxCellSize: 200,
   widthPaddingRatio: 0.95,
   heightPaddingRatio: 0.92, // Conservative to account for all container padding and gaps
-  heightSizingRowThreshold: 4,
+  heightSizingRowThreshold: 8, // Try to fit up to 8 rows (32 beats with 4 cols) before allowing scroll
   columnBreakpoint: 650,
   isSideBySideLayout: false,
   manualColumnCount: null,
