@@ -353,7 +353,7 @@ async function createReleaseAnnouncement(version, changelogEntries, adminUserId)
     showAsModal: true,
     createdBy: adminUserId,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    actionUrl: '/settings?tab=whats-new',
+    actionUrl: '/settings?tab=ReleaseNotes',
     actionLabel: 'View Full Release Notes'
   });
 
