@@ -51,6 +51,79 @@
     });
   });
 
+  // Handle pending navigation from dashboard widgets
+  $effect(() => {
+    if (inboxState.isOpen && inboxState.pendingConversationId) {
+      const conversationId = inboxState.pendingConversationId;
+      inboxState.clearPendingNavigation();
+      // Use setTimeout to ensure state is settled before loading
+      setTimeout(() => {
+        handleConversationSelect(conversationId);
+      }, 50);
+    }
+  });
+
+  $effect(() => {
+    if (inboxState.isOpen && inboxState.pendingNotificationId) {
+      const notificationId = inboxState.pendingNotificationId;
+      inboxState.clearPendingNavigation();
+      // Handle notification action
+      setTimeout(() => {
+        handleNotificationAction(notificationId);
+      }, 50);
+    }
+  });
+
+  // Handle notification-specific actions (navigate to relevant location)
+  async function handleNotificationAction(notificationId: string) {
+    const notification = inboxState.notifications.find(n => n.id === notificationId);
+    if (!notification) return;
+
+    // Close inbox first for most navigations
+    const shouldCloseInbox = !["feedback-resolved", "feedback-in-progress", "feedback-needs-info", "feedback-response"].includes(notification.type);
+
+    switch (notification.type) {
+      case "message-received": {
+        // Open the conversation directly
+        const msgNotification = notification as any;
+        if (msgNotification.conversationId) {
+          handleConversationSelect(msgNotification.conversationId);
+        }
+        break;
+      }
+      case "sequence-liked": {
+        // Navigate to discover gallery
+        inboxState.close();
+        await handleModuleChange("discover" as ModuleId, "gallery");
+        break;
+      }
+      case "user-followed": {
+        // Navigate to discover creators
+        inboxState.close();
+        await handleModuleChange("discover" as ModuleId, "creators");
+        break;
+      }
+      case "achievement-unlocked": {
+        // Navigate to collect/achievements
+        inboxState.close();
+        await handleModuleChange("collect" as ModuleId);
+        break;
+      }
+      case "feedback-resolved":
+      case "feedback-in-progress":
+      case "feedback-needs-info":
+      case "feedback-response": {
+        // Navigate to feedback module with the specific feedback item
+        inboxState.close();
+        await handleModuleChange("feedback" as ModuleId, "my-feedback");
+        break;
+      }
+      default:
+        // For unknown types, just stay in notifications list
+        break;
+    }
+  }
+
   // Create a derived value that tracks preview mode (View As feature)
   const currentUserId = $derived(
     userPreviewState.isActive && userPreviewState.data.profile
@@ -239,12 +312,20 @@
             isLoading={inboxState.isLoadingNotifications}
           />
         {/if}
-      {:else if inboxState.currentView === "thread" && inboxState.selectedConversation}
-        <MessageThread
-          conversation={inboxState.selectedConversation}
-          messages={inboxState.messages}
-          isLoading={inboxState.isLoadingMessages}
-        />
+      {:else if inboxState.currentView === "thread"}
+        {#if inboxState.selectedConversation}
+          <MessageThread
+            conversation={inboxState.selectedConversation}
+            messages={inboxState.messages}
+            isLoading={inboxState.isLoadingMessages}
+          />
+        {:else}
+          <!-- Loading state while conversation loads -->
+          <div class="thread-loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Loading conversation...</span>
+          </div>
+        {/if}
       {:else if inboxState.currentView === "compose"}
         <NewMessageSheet
           recipientId={inboxState.composeRecipientId}
@@ -255,21 +336,7 @@
       {/if}
     </section>
 
-    <!-- Bottom Navigation on mobile -->
-    {#if isMobile}
-      <div class="inbox-bottom-nav">
-        <BottomNavigation
-          {sections}
-          {currentSection}
-          onSectionChange={handleNavSectionChange}
-          onModuleSwitcherTap={handleModuleSwitcherTap}
-          onSettingsTap={handleSettingsTap}
-          {isSettingsActive}
-          showModuleSwitcher={true}
-          showSettings={true}
-        />
-      </div>
-    {/if}
+
   </div>
 </Drawer>
 
@@ -347,6 +414,22 @@
     overflow-x: hidden;
   }
 
+  .thread-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 100%;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 0.875rem;
+  }
+
+  .thread-loading i {
+    font-size: 24px;
+    color: var(--theme-accent, #6366f1);
+  }
+
   .inbox-bottom-nav {
     flex-shrink: 0;
     border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -363,9 +446,7 @@
       width: 100% !important;
     }
 
-    .inbox-container {
-      max-height: 85vh;
-    }
+
 
     /* When expanded (thread/compose view), fill the viewport */
     :global(.drawer-content.inbox-drawer.inbox-expanded) {

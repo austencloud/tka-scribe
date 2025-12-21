@@ -49,6 +49,11 @@ class InboxState {
 	composeRecipientId = $state<string | null>(null);
 	composeRecipientName = $state<string | null>(null);
 
+	// Pending navigation - allows dashboard widgets to request direct navigation
+	// The InboxDrawer will pick this up and handle the actual loading
+	pendingConversationId = $state<string | null>(null);
+	pendingNotificationId = $state<string | null>(null);
+
 	// Derived state - using $derived.by for proper reactivity
 	totalUnreadCount = $derived.by(() => {
 		return this.unreadMessageCount + this.unreadNotificationCount;
@@ -86,6 +91,49 @@ class InboxState {
 	selectConversation(conversation: Conversation) {
 		this.selectedConversation = conversation;
 		this.currentView = "thread";
+	}
+
+	/**
+	 * Open inbox directly to a specific conversation
+	 * Used from dashboard widgets for one-click access
+	 */
+	openToConversation(conversation: Conversation) {
+		this.isOpen = true;
+		this.activeTab = "messages";
+		this.selectedConversation = conversation;
+		this.currentView = "thread";
+	}
+
+	/**
+	 * Open inbox directly to a specific conversation by ID
+	 * Opens directly to thread view (shows loading state while conversation loads)
+	 */
+	openToConversationById(conversationId: string) {
+		this.pendingConversationId = conversationId;
+		this.isOpen = true;
+		this.activeTab = "messages";
+		this.currentView = "thread"; // Go directly to thread view
+		this.isLoadingMessages = true; // Show loading state
+		// InboxDrawer will detect pendingConversationId and load the conversation
+	}
+
+	/**
+	 * Open inbox to handle a specific notification
+	 * Sets pendingNotificationId so InboxDrawer can handle the action
+	 */
+	openToNotification(notificationId: string) {
+		this.pendingNotificationId = notificationId;
+		this.isOpen = true;
+		this.activeTab = "notifications";
+		// InboxDrawer will detect pendingNotificationId and handle the action
+	}
+
+	/**
+	 * Clear pending navigation after it's been handled
+	 */
+	clearPendingNavigation() {
+		this.pendingConversationId = null;
+		this.pendingNotificationId = null;
 	}
 
 	backToList() {
