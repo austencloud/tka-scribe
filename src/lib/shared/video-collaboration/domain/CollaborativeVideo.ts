@@ -35,6 +35,8 @@ export interface CollaborationInvite {
   readonly userId: string;
   /** Display name at time of invite (for UI) */
   readonly displayName?: string;
+  /** Optional invite message */
+  readonly message?: string;
   /** When the invite was sent */
   readonly invitedAt: Date;
   /** Who sent the invite */
@@ -190,7 +192,8 @@ export function addCollaborationInvite(
   video: CollaborativeVideo,
   userId: string,
   invitedBy: string,
-  displayName?: string
+  displayName?: string,
+  message?: string
 ): CollaborativeVideo {
   // Don't invite if already a collaborator
   if (video.collaborators.some((c) => c.userId === userId)) {
@@ -205,6 +208,7 @@ export function addCollaborationInvite(
   const invite: CollaborationInvite = {
     userId,
     displayName,
+    message,
     invitedAt: new Date(),
     invitedBy,
     status: "pending",

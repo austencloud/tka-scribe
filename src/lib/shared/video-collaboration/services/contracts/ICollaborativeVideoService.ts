@@ -53,7 +53,8 @@ export interface ICollaborativeVideoService {
   inviteCollaborator(
     videoId: string,
     userId: string,
-    displayName?: string
+    displayName?: string,
+    message?: string
   ): Promise<void>;
 
   /**

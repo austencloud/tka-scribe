@@ -102,6 +102,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
       return {
         userId: invite.userId as string,
         displayName: invite.displayName as string | undefined,
+        message: invite.message as string | undefined,
         invitedAt: invitedAtField?.toDate?.() ?? new Date(),
         invitedBy: invite.invitedBy as string,
         status: invite.status as "pending" | "accepted" | "declined" | "expired",
@@ -155,6 +156,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
       pendingInvites: video.pendingInvites.map((i) => ({
         userId: i.userId,
         displayName: i.displayName ?? null,
+        message: i.message ?? null,
         invitedAt: i.invitedAt,
         invitedBy: i.invitedBy,
         status: i.status,
@@ -255,7 +257,8 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   async inviteCollaborator(
     videoId: string,
     userId: string,
-    displayName?: string
+    displayName?: string,
+    message?: string
   ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const currentUserId = this.getUserId();
@@ -283,6 +286,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
     const invite: CollaborationInvite = {
       userId,
       displayName,
+      message,
       invitedAt: new Date(),
       invitedBy: currentUserId,
       status: "pending",
@@ -293,6 +297,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
       pendingInvites: arrayUnion({
         userId: invite.userId,
         displayName: invite.displayName ?? null,
+        message: invite.message ?? null,
         invitedAt: invite.invitedAt,
         invitedBy: invite.invitedBy,
         status: invite.status,
@@ -352,6 +357,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
       pendingInvites: updatedInvites.map((i) => ({
         userId: i.userId,
         displayName: i.displayName ?? null,
+        message: i.message ?? null,
         invitedAt: i.invitedAt,
         invitedBy: i.invitedBy,
         status: i.status,
@@ -392,6 +398,7 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
       pendingInvites: updatedInvites.map((i) => ({
         userId: i.userId,
         displayName: i.displayName ?? null,
+        message: i.message ?? null,
         invitedAt: i.invitedAt,
         invitedBy: i.invitedBy,
         status: i.status,

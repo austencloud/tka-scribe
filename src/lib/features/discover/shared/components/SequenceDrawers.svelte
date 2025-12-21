@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { CollaborativeVideo } from "$lib/shared/video-collaboration/domain/CollaborativeVideo";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import SequenceDetailContent from "../../gallery/display/components/SequenceDetailContent.svelte";
+  import InviteCollaboratorsPanel from "$lib/shared/video-collaboration/components/InviteCollaboratorsPanel.svelte";
   import ViewPresetsSheet from "../../gallery/filtering/components/ViewPresetsSheet.svelte";
   import SortJumpSheet from "../../gallery/navigation/components/SortJumpSheet.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
@@ -46,6 +48,8 @@
   // State for sub-sheets
   let isLetterSheetOpen = $state(false);
   let isOptionsSheetOpen = $state(false);
+  let isInvitePanelOpen = $state(false);
+  let inviteVideo = $state<CollaborativeVideo | null>(null);
 
   // Position filter state
   let startPosition = $state<PictographData | null>(null);
@@ -107,6 +111,16 @@
     startPosition = null;
     endPosition = null;
     onFilterChange("all");
+  }
+
+  function handleInviteCollaborators(video: CollaborativeVideo) {
+    inviteVideo = video;
+    isInvitePanelOpen = true;
+  }
+
+  function handleCloseInvitePanel() {
+    isInvitePanelOpen = false;
+    inviteVideo = null;
   }
 </script>
 
@@ -297,6 +311,7 @@
     onOpenChange={(open) => {
       // Only close if drawer is actually closing AND we're not in a panel transition
       if (!open && galleryPanelManager.isDetailOpen) {
+        handleCloseInvitePanel();
         onCloseDetailPanel();
       }
     }}
@@ -307,11 +322,24 @@
           sequence={galleryPanelManager.activeSequence}
           onClose={onCloseDetailPanel}
           onAction={onDetailPanelAction}
+          onInviteCollaborators={handleInviteCollaborators}
         />
       </div>
     {/if}
   </Drawer>
 </div>
+
+<!-- Invite Collaborators Panel -->
+{#if inviteVideo}
+  <div style:--drawer-width={isMobile ? "min(720px, 95vw)" : "min(520px, 45vw)"}>
+    <InviteCollaboratorsPanel
+      show={isInvitePanelOpen}
+      placement={isMobile ? "bottom" : "right"}
+      video={inviteVideo}
+      onClose={handleCloseInvitePanel}
+    />
+  </div>
+{/if}
 
 <style>
   /* Style the detail drawer with dynamic width and integrated appearance */
@@ -640,5 +668,26 @@
     padding: 0;
     overflow-y: auto;
     max-height: calc(100vh - 80px);
+  }
+
+  :global(.invite-collaborators-panel.drawer-content[data-placement="right"]) {
+    width: var(--drawer-width, min(520px, 45vw));
+    transition:
+      transform 350ms cubic-bezier(0.32, 0.72, 0, 1),
+      opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
+    top: 0 !important;
+    height: 100vh !important;
+    background: var(--theme-panel-bg, #14141e) !important;
+    border: none !important;
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
+    border-radius: 0 !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
+  }
+
+  :global(.invite-collaborators-panel.drawer-content[data-placement="bottom"]) {
+    max-height: 90vh !important;
+    border-top-left-radius: 16px !important;
+    border-top-right-radius: 16px !important;
+    background: var(--theme-panel-bg, #14141e) !important;
   }
 </style>

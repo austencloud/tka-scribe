@@ -15,6 +15,7 @@
   import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
+  import AvatarImage from "$lib/features/discover/creators/components/profile/AvatarImage.svelte";
 
   const {
     show = false,
@@ -178,11 +179,12 @@
           {#each video.collaborators as collaborator}
             <div class="collaborator-item">
               <div class="user-avatar">
-                {#if collaborator.avatarUrl}
-                  <img src={collaborator.avatarUrl} alt="" />
-                {:else}
-                  <i class="fas fa-user"></i>
-                {/if}
+                <AvatarImage
+                  src={collaborator.avatarUrl}
+                  name={collaborator.displayName || "User"}
+                  alt=""
+                  size={40}
+                />
               </div>
               <div class="user-info">
                 <span class="user-name">{collaborator.displayName || "Unknown"}</span>
@@ -273,6 +275,10 @@
 </Drawer>
 
 <style>
+  :global(.invite-sheet) {
+    --sheet-z-index: 1200;
+  }
+
   .invite-sheet__container {
     display: flex;
     flex-direction: column;

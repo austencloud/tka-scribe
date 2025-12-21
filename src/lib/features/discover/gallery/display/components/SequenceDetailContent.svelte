@@ -22,6 +22,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   import SequenceVideosSection from "$lib/shared/video-collaboration/components/SequenceVideosSection.svelte";
   import VideoUploadSheet from "$lib/shared/video-collaboration/components/VideoUploadSheet.svelte";
   import type { CollaborativeVideo } from "$lib/shared/video-collaboration/domain/CollaborativeVideo";
+  import { auth } from "$lib/shared/auth/firebase";
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -34,10 +35,12 @@ Used by both desktop side panel and mobile slide-up overlay.
     sequence,
     onClose = () => {},
     onAction = () => {},
+    onInviteCollaborators,
   } = $props<{
     sequence: SequenceData;
     onClose?: () => void;
     onAction?: (action: string, sequence: SequenceData) => void;
+    onInviteCollaborators?: (video: CollaborativeVideo) => void;
   }>();
 
   // Services - resolved lazily to ensure feature module is loaded
@@ -100,6 +103,10 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   // Check if we have creator info to display
   const hasCreatorInfo = $derived(Boolean(sequence.ownerId));
+  const currentUserId = $derived(auth.currentUser?.uid);
+  const canInviteToVideo = $derived(
+    Boolean(selectedVideo && currentUserId === selectedVideo.creatorId)
+  );
 </script>
 
 <div class="detail-content">
@@ -293,9 +300,23 @@ Used by both desktop side panel and mobile slide-up overlay.
           <i class="fas fa-video"></i>
           <span>Performance Video</span>
         </div>
-        <button class="video-player-close" onclick={closeVideoPlayer} aria-label="Close video">
-          <i class="fas fa-times"></i>
-        </button>
+        <div class="video-player-actions">
+          {#if canInviteToVideo && onInviteCollaborators}
+            <button
+              class="video-player-invite"
+              onclick={() => {
+                onInviteCollaborators(selectedVideo);
+                closeVideoPlayer();
+              }}
+            >
+              <i class="fas fa-user-plus"></i>
+              Invite
+            </button>
+          {/if}
+          <button class="video-player-close" onclick={closeVideoPlayer} aria-label="Close video">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
       </header>
       <div class="video-player-content">
         <video
@@ -667,6 +688,32 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   .video-player-title i {
     color: var(--semantic-info, #3b82f6);
+  }
+
+  .video-player-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .video-player-invite {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .video-player-invite:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
   }
 
   .video-player-close {
