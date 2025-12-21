@@ -131,6 +131,37 @@
       );
     }
   });
+
+  // Derived: Current beat data (handles start position and beat indexing correctly)
+  const currentBeatData = $derived.by(() => {
+    if (!animationState.sequenceData) return null;
+
+    const currentBeat = animationState.currentBeat;
+
+    // Handle start position case explicitly
+    if (
+      currentBeat === 0 &&
+      !animationState.isPlaying &&
+      animationState.sequenceData.startPosition
+    ) {
+      return animationState.sequenceData.startPosition;
+    }
+
+    // For beats, use direct indexing with clamping
+    if (
+      animationState.sequenceData.beats &&
+      animationState.sequenceData.beats.length > 0
+    ) {
+      const beatIndex = Math.floor(currentBeat);
+      const clampedIndex = Math.max(
+        0,
+        Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
+      );
+      return animationState.sequenceData.beats[clampedIndex] || null;
+    }
+
+    return null;
+  });
 </script>
 
 <div class="canvas-section">
@@ -150,9 +181,7 @@
       redProp={animationState.redPropState}
       gridVisible={true}
       gridMode={animationState.sequenceData?.gridMode ?? null}
-      beatData={animationState.sequenceData?.beats[
-        animationState.currentBeat - 1
-      ] || null}
+      beatData={currentBeatData}
       currentBeat={animationState.currentBeat}
       sequenceData={animationState.sequenceData}
     />

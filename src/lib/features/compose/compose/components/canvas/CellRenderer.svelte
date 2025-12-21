@@ -119,20 +119,22 @@
     }
   }
 
-  // Current letter derived from animation state
-  const currentLetter = $derived.by(() => {
+  // Current beat data derived from animation state
+  const currentBeatData = $derived.by(() => {
     if (!animationState.sequenceData) return null;
 
     const currentBeat = animationState.currentBeat;
 
+    // Handle start position case explicitly
     if (
       currentBeat === 0 &&
       !animationState.isPlaying &&
       animationState.sequenceData.startPosition
     ) {
-      return animationState.sequenceData.startPosition.letter || null;
+      return animationState.sequenceData.startPosition;
     }
 
+    // For beats, use direct indexing with clamping
     if (
       animationState.sequenceData.beats &&
       animationState.sequenceData.beats.length > 0
@@ -142,10 +144,15 @@
         0,
         Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
       );
-      return animationState.sequenceData.beats[clampedIndex]?.letter || null;
+      return animationState.sequenceData.beats[clampedIndex] || null;
     }
 
     return null;
+  });
+
+  // Current letter derived from beat data
+  const currentLetter = $derived.by(() => {
+    return currentBeatData?.letter || null;
   });
 
   onDestroy(() => {
@@ -179,7 +186,7 @@
         gridVisible={true}
         gridMode={animationState.sequenceData.gridMode ?? null}
         letter={currentLetter}
-        beatData={animationState.sequenceData.beats[animationState.currentBeat - 1] || null}
+        beatData={currentBeatData}
         currentBeat={animationState.currentBeat}
         sequenceData={animationState.sequenceData}
       />

@@ -290,20 +290,22 @@
     secondaryAnimationState.setStepPlaybackStepSize(stepPlaybackStepSize);
   });
 
-  // Derived: Current letters for both sequences
-  let primaryLetter = $derived.by(() => {
+  // Derived: Current beat data for primary sequence
+  let primaryBeatData = $derived.by(() => {
     if (!primaryAnimationState.sequenceData) return null;
 
     const currentBeat = primaryAnimationState.currentBeat;
 
+    // Handle start position case explicitly
     if (
       currentBeat === 0 &&
       !primaryAnimationState.isPlaying &&
       primaryAnimationState.sequenceData.startPosition
     ) {
-      return primaryAnimationState.sequenceData.startPosition.letter || null;
+      return primaryAnimationState.sequenceData.startPosition;
     }
 
+    // For beats, use direct indexing with clamping
     if (
       primaryAnimationState.sequenceData.beats &&
       primaryAnimationState.sequenceData.beats.length > 0
@@ -313,12 +315,15 @@
         0,
         Math.min(beatIndex, primaryAnimationState.sequenceData.beats.length - 1)
       );
-      return (
-        primaryAnimationState.sequenceData.beats[clampedIndex]?.letter || null
-      );
+      return primaryAnimationState.sequenceData.beats[clampedIndex] || null;
     }
 
     return null;
+  });
+
+  // Derived: Current letters for both sequences
+  let primaryLetter = $derived.by(() => {
+    return primaryBeatData?.letter || null;
   });
 
   let secondaryLetter = $derived.by(() => {
@@ -384,9 +389,7 @@
       gridVisible={true}
       gridMode={primaryAnimationState.sequenceData?.gridMode ?? null}
       letter={primaryLetter}
-      beatData={primaryAnimationState.sequenceData?.beats[
-        primaryAnimationState.currentBeat - 1
-      ] || null}
+      beatData={primaryBeatData}
       currentBeat={primaryAnimationState.currentBeat}
       sequenceData={primaryAnimationState.sequenceData}
       {trailSettings}
