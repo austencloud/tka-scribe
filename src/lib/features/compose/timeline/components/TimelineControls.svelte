@@ -79,76 +79,6 @@
 </script>
 
 <div class="timeline-controls">
-  <!-- Transport Section -->
-  <div class="transport-section">
-    <!-- Go to start -->
-    <button
-      class="control-btn"
-      onclick={() => getPlayback().goToStart()}
-      title="Go to start (Home)"
-      aria-label="Go to start"
-    >
-      <i class="fa-solid fa-backward-step"></i>
-    </button>
-
-    <!-- Shuttle reverse (J) -->
-    <button
-      class="control-btn"
-      class:active={isPlaying && playheadDirection === -1}
-      onclick={() => getPlayback().shuttleReverse()}
-      title="Shuttle reverse (J)"
-      aria-label="Shuttle reverse"
-    >
-      <i class="fa-solid fa-backward"></i>
-    </button>
-
-    <!-- Play/Pause (K/Space) -->
-    <button
-      class="control-btn play-btn"
-      class:playing={isPlaying}
-      onclick={() => getPlayback().togglePlayPause()}
-      title={isPlaying ? "Pause (K/Space)" : "Play (K/Space)"}
-      aria-label={isPlaying ? "Pause" : "Play"}
-    >
-      {#if isPlaying}
-        <i class="fa-solid fa-pause"></i>
-      {:else}
-        <i class="fa-solid fa-play"></i>
-      {/if}
-    </button>
-
-    <!-- Shuttle forward (L) -->
-    <button
-      class="control-btn"
-      class:active={isPlaying && playheadDirection === 1 && shuttleSpeed > 1}
-      onclick={() => getPlayback().shuttleForward()}
-      title="Shuttle forward (L)"
-      aria-label="Shuttle forward"
-    >
-      <i class="fa-solid fa-forward"></i>
-    </button>
-
-    <!-- Stop -->
-    <button
-      class="control-btn"
-      onclick={() => getPlayback().stop()}
-      title="Stop"
-      aria-label="Stop"
-    >
-      <i class="fa-solid fa-stop"></i>
-    </button>
-
-    <!-- Go to end -->
-    <button
-      class="control-btn"
-      onclick={() => getPlayback().goToEnd()}
-      title="Go to end (End)"
-      aria-label="Go to end"
-    >
-      <i class="fa-solid fa-forward-step"></i>
-    </button>
-  </div>
-
   <!-- Time Display -->
   <div class="time-display">
     <span class="current-time">{currentTimeDisplay}</span>
@@ -230,16 +160,10 @@
     gap: 8px;
   }
 
-  .transport-section,
   .zoom-section {
     display: flex;
     align-items: center;
     gap: 4px;
-  }
-
-  .transport-section {
-    padding-right: 12px;
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
   .control-btn {

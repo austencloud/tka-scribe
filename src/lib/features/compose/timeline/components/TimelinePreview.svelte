@@ -81,6 +81,18 @@
         return clip;
       }
     }
+
+    // Debug: log when no clip is found but clips exist
+    if (clips.length > 0) {
+      const firstClip = clips[0];
+      console.log('[TimelinePreview] No clip at playhead:', {
+        playheadPosition,
+        firstClipStartTime: firstClip.startTime,
+        firstClipEnd: firstClip.startTime + firstClip.duration,
+        clipCount: clips.length
+      });
+    }
+
     return null;
   });
 

@@ -128,7 +128,7 @@
   tabindex="0"
 >
   <div class="minimap-track">
-    <!-- Clip indicators (simplified view of clips) -->
+    <!-- Clip indicators (simplified view - muted uniform color) -->
     <div class="clip-indicators">
       {#each clips as clip (clip.id)}
         {@const startPercent = (clip.startTime / totalDuration) * 100}
@@ -136,7 +136,6 @@
         <div
           class="clip-indicator"
           style="left: {startPercent}%; width: {endPercent - startPercent}%;"
-          style:background={clip.color || "rgba(74, 158, 255, 0.5)"}
         ></div>
       {/each}
     </div>
@@ -171,8 +170,8 @@
 
   .minimap-track {
     position: relative;
-    height: 20px;
-    background: #0e0e12;
+    height: 16px;
+    background: var(--theme-panel-elevated-bg, #0e0e12);
     border-radius: 3px;
     overflow: hidden;
   }
@@ -188,8 +187,10 @@
     top: 4px;
     bottom: 4px;
     border-radius: 2px;
-    opacity: 0.6;
     min-width: 2px;
+    /* Muted uniform color for subtle appearance */
+    background: var(--theme-accent, #4a9eff);
+    opacity: 0.25;
   }
 
   .viewport-indicator {

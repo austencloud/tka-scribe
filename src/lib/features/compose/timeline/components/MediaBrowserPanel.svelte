@@ -280,6 +280,26 @@
     }
   }
 
+  // Handle drag start for drag & drop to timeline
+  function handleDragStart(e: DragEvent, sequence: SequenceData) {
+    if (!e.dataTransfer) return;
+
+    // Set drag data synchronously (must be sync for dragstart)
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      ...sequence,
+      _needsFullLoad: true // Flag to indicate TrackLane should load full data
+    }));
+
+    // Set a drag image
+    const img = (e.target as HTMLElement).querySelector('img');
+    if (img) {
+      e.dataTransfer.setDragImage(img, 40, 40);
+    }
+
+    console.log('[MediaBrowser] Started dragging:', sequence.word || sequence.name);
+  }
+
   // Reset pagination when filters change
   $effect(() => {
     // Track filter changes
@@ -517,8 +537,10 @@
           class="sequence-item"
           class:loading={isLoading}
           onclick={() => handleSequenceClick(sequence)}
-          title="{sequence.word || sequence.name} - Click to preview"
+          title="{sequence.word || sequence.name} - Click to preview, drag to timeline"
           disabled={!!loadingSequenceId}
+          draggable="true"
+          ondragstart={(e) => handleDragStart(e, sequence)}
         >
           <div class="item-thumb">
             {#if coverUrl}
@@ -1273,23 +1295,16 @@
     box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
-  /* Sequence list */
+  /* Sequence list - always 2 columns for larger thumbnails */
   .sequence-list {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 12px;
+    padding: 16px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 16px;
     align-content: start;
-  }
-
-  /* 3 columns for wider panels */
-  @media (min-width: 400px) {
-    .sequence-list {
-      grid-template-columns: repeat(3, 1fr);
-    }
   }
 
   /* Custom scrollbar styling - always visible */

@@ -272,50 +272,52 @@
     {/if}
   </div>
 
-  <!-- Transport Controls -->
-  {#if sequence}
-    <div class="transport-controls">
-      <!-- Scrubber -->
-      <div class="scrubber">
-        <input
-          type="range"
-          min="0"
-          max={totalBeats - 0.01}
-          step="0.01"
-          value={currentBeat}
-          oninput={handleScrub}
-          class="scrub-slider"
-        />
-      </div>
+  <!-- Transport Controls (always visible for layout consistency) -->
+  <div class="transport-controls">
+    <!-- Scrubber -->
+    <div class="scrubber">
+      <input
+        type="range"
+        min="0"
+        max={sequence ? totalBeats - 0.01 : 1}
+        step="0.01"
+        value={currentBeat}
+        oninput={handleScrub}
+        class="scrub-slider"
+        disabled={!sequence}
+      />
+    </div>
 
-      <!-- Control buttons -->
+    <!-- Control buttons wrapper for centering -->
+    <div class="control-buttons-wrapper">
+      <!-- Centered transport buttons -->
       <div class="control-buttons">
-        <button class="transport-btn" onclick={goToStart} title="Go to start">
+        <button class="transport-btn" onclick={goToStart} title="Go to start" disabled={!sequence}>
           <i class="fas fa-backward-fast"></i>
         </button>
-        <button class="transport-btn" onclick={stepBackward} title="Previous beat">
+        <button class="transport-btn" onclick={stepBackward} title="Previous beat" disabled={!sequence}>
           <i class="fas fa-backward-step"></i>
         </button>
-        <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"}>
+        <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
           <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
         </button>
-        <button class="transport-btn" onclick={stepForward} title="Next beat">
+        <button class="transport-btn" onclick={stepForward} title="Next beat" disabled={!sequence}>
           <i class="fas fa-forward-step"></i>
         </button>
-        <button class="transport-btn" onclick={goToEnd} title="Go to end">
+        <button class="transport-btn" onclick={goToEnd} title="Go to end" disabled={!sequence}>
           <i class="fas fa-forward-fast"></i>
         </button>
+      </div>
 
-        <div class="spacer"></div>
-
-        <!-- Add to timeline button -->
+      <!-- Add to timeline button (only when sequence loaded) -->
+      {#if sequence}
         <button class="add-btn" onclick={handleAddToTimeline} title="Add to timeline at playhead">
           <i class="fas fa-plus"></i>
           <span>Add</span>
         </button>
-      </div>
+      {/if}
     </div>
-  {/if}
+  </div>
 </div>
 
 <style>
@@ -487,9 +489,26 @@
     transform: scale(1.2);
   }
 
+  .scrub-slider:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .scrub-slider:disabled::-webkit-slider-thumb {
+    cursor: not-allowed;
+  }
+
+  .control-buttons-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
   .control-buttons {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
   }
 
@@ -508,9 +527,14 @@
     transition: all 0.15s ease;
   }
 
-  .transport-btn:hover {
+  .transport-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
     color: white;
+  }
+
+  .transport-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
   }
 
   .transport-btn.play-btn {
@@ -521,15 +545,13 @@
     font-size: 14px;
   }
 
-  .transport-btn.play-btn:hover {
+  .transport-btn.play-btn:hover:not(:disabled) {
     background: rgba(255, 212, 59, 0.3);
   }
 
-  .spacer {
-    flex: 1;
-  }
-
   .add-btn {
+    position: absolute;
+    right: 0;
     display: flex;
     align-items: center;
     gap: 6px;

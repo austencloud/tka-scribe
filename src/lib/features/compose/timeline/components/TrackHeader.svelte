@@ -24,6 +24,13 @@
   let isDimmed = $state(false);
   let trackCount = $state(1);
 
+  // Track is empty if no clips
+  const isEmpty = $derived(track.clips.length === 0);
+
+  // Dynamic height: collapsed when empty, full when has clips
+  const COLLAPSED_HEIGHT = 40;
+  const effectiveHeight = $derived(isEmpty ? COLLAPSED_HEIGHT : track.height);
+
   // Sync local state from timeline state
   $effect(() => {
     const state = getState();
@@ -82,7 +89,8 @@
 <div
   class="track-header"
   class:dimmed={isDimmed}
-  style="height: {track.height}px; --track-color: {track.color}"
+  class:empty={isEmpty}
+  style="height: {effectiveHeight}px; --track-color: {track.color}"
 >
   <!-- Color indicator -->
   <div class="color-indicator"></div>
@@ -189,12 +197,16 @@
     padding: 0 8px;
     background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    transition: all 0.2s ease;
+    transition: height 0.2s ease, opacity 0.2s ease;
     position: relative;
   }
 
   .track-header.dimmed {
     opacity: 0.45;
+  }
+
+  .track-header.empty {
+    opacity: 0.7;
   }
 
   .color-indicator {

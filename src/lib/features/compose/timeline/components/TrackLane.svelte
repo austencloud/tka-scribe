@@ -10,6 +10,9 @@
   import { getTimelineState } from "../state/timeline-state.svelte";
   import TimelineClip from "./TimelineClip.svelte";
   import { timeToPixels } from "../domain/timeline-types";
+  import { tryResolve, loadFeatureModule } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
 
   interface Props {
     track: TimelineTrack;
@@ -35,9 +38,17 @@
     });
   });
 
+  // Track is empty if no clips
+  const isEmpty = $derived(track.clips.length === 0);
+
+  // Dynamic height: collapsed when empty, full when has clips
+  const COLLAPSED_HEIGHT = 40;
+  const effectiveHeight = $derived(isEmpty ? COLLAPSED_HEIGHT : track.height);
+
   // Local reactive state
   let isDimmed = $state(false);
   let selectedClipIds = $state<string[]>([]);
+  let isDragOver = $state(false);
 
   // Sync local state from timeline state
   $effect(() => {
@@ -48,17 +59,50 @@
   });
 
   // Handle drop of sequence onto track
-  function handleDrop(e: DragEvent) {
+  async function handleDrop(e: DragEvent) {
     e.preventDefault();
     const data = e.dataTransfer?.getData("application/json");
     if (!data) return;
 
     try {
-      const sequence = JSON.parse(data);
+      const sequenceData = JSON.parse(data);
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
       const x = e.clientX - rect.left;
+      // getBoundingClientRect already accounts for scroll (returns screen coords)
+      // so x is the correct pixel position within the timeline's coordinate space
       const time = x / pixelsPerSecond;
+
+      console.log('[TrackLane] Drop calculation:', {
+        clientX: e.clientX,
+        rectLeft: rect.left,
+        x,
+        pixelsPerSecond,
+        calculatedTime: time,
+        viewportScrollX: getState().viewport.scrollX
+      });
+
+      // If sequence needs full load, fetch it first
+      let sequence = sequenceData;
+      if (sequenceData._needsFullLoad) {
+        console.log('[TrackLane] Loading full sequence data for:', sequenceData.word || sequenceData.name);
+        try {
+          await loadFeatureModule("discover");
+          const loader = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
+          if (loader) {
+            const fullSequence = await loader.loadFullSequenceData(
+              sequenceData.word || sequenceData.name || sequenceData.id
+            );
+            if (fullSequence) {
+              sequence = fullSequence;
+            }
+          }
+        } catch (loadErr) {
+          console.warn('[TrackLane] Could not load full sequence, using metadata:', loadErr);
+        }
+      }
+
       getState().addClip(sequence, track.id, time);
+      console.log('[TrackLane] Added clip from drop:', sequence.word || sequence.name);
     } catch (err) {
       console.error("Failed to parse dropped sequence:", err);
     }
@@ -68,6 +112,16 @@
     e.preventDefault();
     e.dataTransfer!.dropEffect = "copy";
   }
+
+  function handleDragEnter(e: DragEvent) {
+    e.preventDefault();
+    isDragOver = true;
+  }
+
+  function handleDragLeave(e: DragEvent) {
+    e.preventDefault();
+    isDragOver = false;
+  }
 </script>
 
 <div
@@ -75,9 +129,13 @@
   class:muted={track.muted}
   class:dimmed={isDimmed}
   class:locked={track.locked}
-  style="height: {track.height}px"
-  ondrop={handleDrop}
+  class:empty={isEmpty}
+  class:drag-over={isDragOver}
+  style="height: {effectiveHeight}px"
+  ondrop={(e) => { isDragOver = false; handleDrop(e); }}
   ondragover={handleDragOver}
+  ondragenter={handleDragEnter}
+  ondragleave={handleDragLeave}
   role="list"
   aria-label="Track {track.name}"
 >
@@ -106,7 +164,7 @@
     position: relative;
     background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    transition: all 0.2s ease;
+    transition: height 0.2s ease, opacity 0.2s ease, background 0.2s ease;
   }
 
   /* Alternating track colors for visual distinction */
@@ -120,6 +178,25 @@
 
   .track-lane.locked {
     pointer-events: none;
+  }
+
+  /* Empty track - collapsed but still a valid drop target */
+  .track-lane.empty {
+    border-style: dashed;
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 50%, transparent);
+  }
+
+  .track-lane.empty:hover {
+    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 8%, transparent);
+    border-color: var(--theme-accent, #4a9eff);
+  }
+
+  /* Drag over state - show drop target highlight */
+  .track-lane.drag-over {
+    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent) !important;
+    border-color: var(--theme-accent, #4a9eff);
+    box-shadow: inset 0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 20%, transparent);
   }
 
   .grid-lines {
