@@ -21,9 +21,11 @@
   // Components
   import DashboardHeader from "./DashboardHeader.svelte";
   import DashboardSignInToast from "./DashboardSignInToast.svelte";
+  import AnnouncementBanner from "./AnnouncementBanner.svelte";
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
   import CommunityFeedWidget from "./widgets/CommunityFeedWidget.svelte";
-  import NotificationsWidget from "./widgets/NotificationsWidget.svelte";
+  import MessagesWidget from "./widgets/MessagesWidget.svelte";
+  import AlertsWidget from "./widgets/AlertsWidget.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
 
   // Services
@@ -106,9 +108,14 @@
     isVisible={dashboardState.isVisible}
   />
 
-  <!-- COMMUNITY HUB - Challenge, Community Feed, Notifications -->
+  <!-- Announcement Banner (when there are active announcements) -->
+  {#if dashboardState.isVisible}
+    <AnnouncementBanner />
+  {/if}
+
+  <!-- COMMUNITY HUB - Challenge, Community Feed, Messages, Alerts -->
   <div class="community-grid" class:mobile={isMobile}>
-    <!-- Today's Challenge -->
+    <!-- Today's Challenge - Full Width -->
     {#if dashboardState.isVisible}
       <section
         class="widget-challenge"
@@ -130,7 +137,7 @@
         transition:fly={{
           y: 12,
           duration: 200,
-          delay: 300,
+          delay: 250,
           easing: cubicOut,
         }}
       >
@@ -138,18 +145,33 @@
       </section>
     {/if}
 
-    <!-- Notifications Preview -->
+    <!-- Messages - Direct messages -->
     {#if dashboardState.isVisible}
       <section
-        class="widget-notifications"
+        class="widget-messages"
         transition:fly={{
           y: 12,
           duration: 200,
-          delay: 400,
+          delay: 300,
           easing: cubicOut,
         }}
       >
-        <NotificationsWidget />
+        <MessagesWidget />
+      </section>
+    {/if}
+
+    <!-- Alerts - Notifications feed -->
+    {#if dashboardState.isVisible}
+      <section
+        class="widget-alerts"
+        transition:fly={{
+          y: 12,
+          duration: 200,
+          delay: 350,
+          easing: cubicOut,
+        }}
+      >
+        <AlertsWidget />
       </section>
     {/if}
   </div>
@@ -274,7 +296,7 @@
 
   .community-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: auto 1fr; /* First row auto, second row fills remaining space */
     gap: 20px;
     width: 100%;
@@ -289,9 +311,10 @@
     min-width: 0;
   }
 
-  /* Community and Notifications side by side - fill the row */
+  /* Community, Messages, Alerts - three columns */
   .widget-community,
-  .widget-notifications {
+  .widget-messages,
+  .widget-alerts {
     min-height: 280px;
     min-width: 0;
     display: flex;
@@ -300,18 +323,32 @@
 
   /* Make widget contents fill their containers */
   .widget-community > :global(*),
-  .widget-notifications > :global(*) {
+  .widget-messages > :global(*),
+  .widget-alerts > :global(*) {
     flex: 1;
     min-height: 0;
   }
 
+  /* Tablet: 2 columns with Messages and Alerts side by side */
+  @media (max-width: 1024px) {
+    .community-grid:not(.mobile) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .community-grid:not(.mobile) .widget-community {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Mobile: single column */
   .community-grid.mobile {
     grid-template-columns: 1fr;
   }
 
   .community-grid.mobile .widget-challenge,
   .community-grid.mobile .widget-community,
-  .community-grid.mobile .widget-notifications {
+  .community-grid.mobile .widget-messages,
+  .community-grid.mobile .widget-alerts {
     grid-column: 1;
   }
 

@@ -164,12 +164,13 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 16px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, var(--theme-panel-bg, rgba(0, 0, 0, 0.5)));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 20px;
     overflow: hidden;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }
 
   /* ========================================
