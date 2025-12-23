@@ -77,7 +77,10 @@
 
       // Close panel immediately and show toast simultaneously
       handleClose();
-      toast.success("Feedback submitted! Thank you for helping improve TKA Scribe.", 3000);
+      toast.success(
+        "Feedback submitted! Thank you for helping improve TKA Scribe.",
+        3000
+      );
 
       // Reset the shared state after panel is closed
       resetSharedFeedbackSubmitState();
@@ -168,7 +171,11 @@
     --accent: var(--theme-accent-strong, #6366f1);
     --text-primary: var(--theme-text, rgba(255, 255, 255, 0.95));
     --text-secondary: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    --text-muted: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%, transparent);
+    --text-muted: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      transparent
+    );
     --border-subtle: var(--theme-stroke, rgba(255, 255, 255, 0.1));
     --bg-subtle: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     --bg-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
@@ -359,7 +366,11 @@
   }
 
   .panel-body::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 60%,
+      transparent
+    );
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════

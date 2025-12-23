@@ -1,7 +1,10 @@
 <!-- FeedbackDetailPanel - Refactored with service-based architecture and Svelte 5 runes -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { FeedbackItem, FeedbackPriority } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackPriority,
+  } from "../../domain/models/feedback-models";
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { createFeedbackDetailState } from "../../state/feedback-detail-state.svelte";
   import { PRIORITY_CONFIG } from "../../domain/models/feedback-models";
@@ -50,19 +53,30 @@
   }
 
   // Priority cycling for mobile
-  const priorityOrder: (FeedbackPriority | "")[] = ["", "low", "medium", "high", "critical"];
-  const currentPriorityIndex = $derived(priorityOrder.indexOf(detailState.editPriority || ""));
+  const priorityOrder: (FeedbackPriority | "")[] = [
+    "",
+    "low",
+    "medium",
+    "high",
+    "critical",
+  ];
+  const currentPriorityIndex = $derived(
+    priorityOrder.indexOf(detailState.editPriority || "")
+  );
 
   function cyclePriority(direction: "up" | "down") {
-    const newIndex = direction === "up"
-      ? Math.min(currentPriorityIndex + 1, priorityOrder.length - 1)
-      : Math.max(currentPriorityIndex - 1, 0);
+    const newIndex =
+      direction === "up"
+        ? Math.min(currentPriorityIndex + 1, priorityOrder.length - 1)
+        : Math.max(currentPriorityIndex - 1, 0);
     detailState.editPriority = priorityOrder[newIndex] as FeedbackPriority;
     void detailState.saveChanges();
   }
 
   const currentPriorityConfig = $derived(
-    detailState.editPriority ? PRIORITY_CONFIG[detailState.editPriority as FeedbackPriority] : null
+    detailState.editPriority
+      ? PRIORITY_CONFIG[detailState.editPriority as FeedbackPriority]
+      : null
   );
 
   // Update state when item changes (real-time updates from parent)
@@ -151,7 +165,11 @@
             onclick={() => openImageViewer(0)}
           >
             <i class="fas fa-images"></i>
-            <span>View {item.imageUrls.length} screenshot{item.imageUrls.length > 1 ? "s" : ""}</span>
+            <span
+              >View {item.imageUrls.length} screenshot{item.imageUrls.length > 1
+                ? "s"
+                : ""}</span
+            >
             <i class="fas fa-chevron-right"></i>
           </button>
         {:else}
@@ -202,7 +220,8 @@
           </button>
           <span
             class="priority-value"
-            style="--priority-color: {currentPriorityConfig?.color || '#6b7280'}"
+            style="--priority-color: {currentPriorityConfig?.color ||
+              '#6b7280'}"
           >
             {#if currentPriorityConfig}
               <i class="fas {currentPriorityConfig.icon}"></i>
@@ -215,7 +234,8 @@
             type="button"
             class="cycle-btn"
             onclick={() => cyclePriority("up")}
-            disabled={readOnly || currentPriorityIndex >= priorityOrder.length - 1}
+            disabled={readOnly ||
+              currentPriorityIndex >= priorityOrder.length - 1}
             aria-label="Raise priority"
           >
             <i class="fas fa-chevron-up"></i>
@@ -306,7 +326,11 @@
     --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));
     --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
     --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%, transparent);
+    --fb-text-subtle: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%,
+      transparent
+    );
     --fb-warning: #f59e0b;
 
     display: flex;
@@ -436,8 +460,13 @@
      ═══════════════════════════════════════════════════════════════════════════ */
   .resolution-section {
     padding: var(--fb-space-md);
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 8%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
     border-radius: var(--fb-radius-md);
   }
 
@@ -459,7 +488,11 @@
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 15%,
+      transparent
+    );
     border-radius: 999px;
     color: var(--semantic-success, #10b981);
     font-size: var(--fb-text-xs);
@@ -507,7 +540,11 @@
   }
 
   .priority-chip.active {
-    background: color-mix(in srgb, var(--priority-color, #6b7280) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--priority-color, #6b7280) 15%,
+      transparent
+    );
     border-color: var(--priority-color, #6b7280);
     color: var(--priority-color, #6b7280);
     font-weight: 600;

@@ -23,7 +23,9 @@ export class FeedbackSortingService implements IFeedbackSortingService {
     });
   }
 
-  groupByStatus(items: FeedbackItem[]): Record<"new" | "in-progress" | "in-review" | "completed", FeedbackItem[]> {
+  groupByStatus(
+    items: FeedbackItem[]
+  ): Record<"new" | "in-progress" | "in-review" | "completed", FeedbackItem[]> {
     const grouped: Record<string, FeedbackItem[]> = {
       new: [],
       "in-progress": [],

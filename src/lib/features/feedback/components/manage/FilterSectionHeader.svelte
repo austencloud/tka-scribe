@@ -15,11 +15,7 @@
   }: Props = $props();
 </script>
 
-<button
-  type="button"
-  class="filter-section-header"
-  onclick={onToggle}
->
+<button type="button" class="filter-section-header" onclick={onToggle}>
   <h3 class="filter-section-title">{title}</h3>
   {#if isActive}
     <span class="section-active-dot"></span>

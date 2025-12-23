@@ -257,7 +257,12 @@
     background: linear-gradient(
       135deg,
       var(--theme-accent-strong, #6366f1) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 80%, var(--theme-accent-strong, #8b5cf6)) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, #6366f1) 80%,
+          var(--theme-accent-strong, #8b5cf6)
+        )
+        100%
     );
     flex-shrink: 0;
     margin-top: 4px;

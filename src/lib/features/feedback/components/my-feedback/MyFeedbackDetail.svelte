@@ -29,7 +29,11 @@
     item: FeedbackItem | null;
     isOpen?: boolean;
     onClose: () => void;
-    onUpdate: (feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>;
+    onUpdate: (
+      feedbackId: string,
+      updates: { type?: FeedbackType; description?: string },
+      appendMode?: boolean
+    ) => Promise<FeedbackItem>;
     onDelete: (feedbackId: string) => Promise<void>;
   }>();
 
@@ -43,7 +47,9 @@
 
   // Responsive placement
   let isMobile = $state(false);
-  const placement = $derived(isMobile ? "bottom" : "right") as "bottom" | "right";
+  const placement = $derived(isMobile ? "bottom" : "right") as
+    | "bottom"
+    | "right";
 
   onMount(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
@@ -72,11 +78,15 @@
     }
   });
 
-  const typeConfig = $derived(item ? TYPE_CONFIG[item.type as FeedbackType] : null);
-  const statusConfig = $derived(item ? STATUS_CONFIG[item.status as FeedbackStatus] : null);
-  const priorityConfig = $derived(item?.priority
-    ? PRIORITY_CONFIG[item.priority as FeedbackPriority]
-    : null);
+  const typeConfig = $derived(
+    item ? TYPE_CONFIG[item.type as FeedbackType] : null
+  );
+  const statusConfig = $derived(
+    item ? STATUS_CONFIG[item.status as FeedbackStatus] : null
+  );
+  const priorityConfig = $derived(
+    item?.priority ? PRIORITY_CONFIG[item.priority as FeedbackPriority] : null
+  );
 
   // Preview mode = read-only, no editing allowed
   const isPreviewMode = $derived(preview.isReadOnly);
@@ -86,7 +96,9 @@
 
   // Can edit if new, in-progress, or in-review (not completed/archived) AND not in preview mode
   const canEdit = $derived(
-    item && !isPreviewMode && ["new", "in-progress", "in-review"].includes(item.status)
+    item &&
+      !isPreviewMode &&
+      ["new", "in-progress", "in-review"].includes(item.status)
   );
 
   // Full edit mode only for "new" status, otherwise append mode
@@ -121,7 +133,10 @@
     });
   }
 
-  async function handleSave(updates: { type?: FeedbackType; description: string }, appendMode: boolean) {
+  async function handleSave(
+    updates: { type?: FeedbackType; description: string },
+    appendMode: boolean
+  ) {
     if (!item) return;
     await onUpdate(item.id, updates, appendMode);
   }
@@ -177,7 +192,10 @@
               <i class="fas {typeConfig.icon}"></i>
               <span class="badge-label">{typeConfig.label}</span>
             </span>
-            <span class="status-badge" style="--badge-color: {statusConfig.color}">
+            <span
+              class="status-badge"
+              style="--badge-color: {statusConfig.color}"
+            >
               <i class="fas {statusConfig.icon}"></i>
               <span class="badge-label">{statusConfig.label}</span>
             </span>
@@ -352,7 +370,10 @@
             <i class="fas fa-trash-alt"></i>
           </div>
           <h3>Delete Feedback?</h3>
-          <p>This action cannot be undone. Your feedback will be permanently removed.</p>
+          <p>
+            This action cannot be undone. Your feedback will be permanently
+            removed.
+          </p>
           <div class="dialog-actions">
             <button
               class="cancel-btn"
@@ -404,8 +425,16 @@
   /* Drawer sizing and z-index (must be above bottom nav z-index: 100) */
   :global(.drawer-content.feedback-detail-drawer) {
     --sheet-width: min(520px, 95vw);
-    --sheet-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40));
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.40)) !important;
+    --sheet-bg: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.4)
+    );
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.4)
+    ) !important;
     width: var(--sheet-width) !important;
     z-index: 110 !important;
   }
@@ -479,7 +508,11 @@
   }
 
   .action-button.edit:hover {
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 50%,
+      transparent
+    );
     color: var(--theme-accent, #3b82f6);
   }
 
@@ -505,15 +538,28 @@
     padding: 4px 10px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--badge-color) 40%, var(--theme-card-bg, rgba(20, 20, 25, 0.9))),
-      color-mix(in srgb, var(--badge-color) 25%, var(--theme-card-bg, rgba(15, 15, 20, 0.9)))
+      color-mix(
+        in srgb,
+        var(--badge-color) 40%,
+        var(--theme-card-bg, rgba(20, 20, 25, 0.9))
+      ),
+      color-mix(
+        in srgb,
+        var(--badge-color) 25%,
+        var(--theme-card-bg, rgba(15, 15, 20, 0.9))
+      )
     );
     border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
     border-radius: 14px;
     font-size: 0.75rem;
     font-weight: 500;
     color: var(--badge-color);
-    box-shadow: 0 2px 6px color-mix(in srgb, var(--badge-color) 20%, var(--theme-shadow-color, black));
+    box-shadow: 0 2px 6px
+      color-mix(
+        in srgb,
+        var(--badge-color) 20%,
+        var(--theme-shadow-color, black)
+      );
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -638,11 +684,14 @@
       color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent) 0%,
       color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent) 100%
     );
-    border: 1.5px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    border: 1.5px solid
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
     border-radius: 10px;
     box-shadow:
-      0 4px 16px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
+      0 4px 16px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
   }
 
   .response-message {
@@ -796,8 +845,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .delete-confirm-dialog .dialog-content {

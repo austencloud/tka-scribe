@@ -30,9 +30,7 @@
     style="--badge-color: {detailState.typeConfig.color}"
     onclick={cycleType}
     disabled={readOnly}
-    title={readOnly
-      ? detailState.typeConfig.label
-      : "Click to change type"}
+    title={readOnly ? detailState.typeConfig.label : "Click to change type"}
   >
     <i class="fas {detailState.typeConfig.icon}"></i>
     <span>{detailState.typeConfig.label}</span>

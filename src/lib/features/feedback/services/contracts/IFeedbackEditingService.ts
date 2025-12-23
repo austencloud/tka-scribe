@@ -5,7 +5,11 @@
  * Provides utilities for tracking changes, validating fields, and restoring from snapshots.
  */
 
-import type { FeedbackItem, FeedbackType, FeedbackPriority } from "../../domain/models/feedback-models";
+import type {
+  FeedbackItem,
+  FeedbackType,
+  FeedbackPriority,
+} from "../../domain/models/feedback-models";
 
 /**
  * Snapshot of feedback state for change detection

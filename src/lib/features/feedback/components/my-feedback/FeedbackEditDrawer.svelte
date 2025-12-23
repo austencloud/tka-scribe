@@ -1,8 +1,15 @@
 <!-- FeedbackEditDrawer - Drawer for editing user's own feedback -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import type { FeedbackItem, FeedbackType, FeedbackStatus } from "../../domain/models/feedback-models";
-  import { TYPE_CONFIG, STATUS_CONFIG } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackType,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
+  import {
+    TYPE_CONFIG,
+    STATUS_CONFIG,
+  } from "../../domain/models/feedback-models";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
   import { onMount } from "svelte";
@@ -11,7 +18,10 @@
     isOpen: boolean;
     item: FeedbackItem;
     appendMode?: boolean;
-    onSave: (updates: { type?: FeedbackType; description: string }, appendMode: boolean) => Promise<void>;
+    onSave: (
+      updates: { type?: FeedbackType; description: string },
+      appendMode: boolean
+    ) => Promise<void>;
   }
 
   let {
@@ -26,7 +36,9 @@
   let isSideBySide = $state(false);
 
   onMount(() => {
-    layoutService = tryResolve<IResponsiveLayoutService>(TYPES.IResponsiveLayoutService);
+    layoutService = tryResolve<IResponsiveLayoutService>(
+      TYPES.IResponsiveLayoutService
+    );
     if (layoutService) {
       isSideBySide = layoutService.shouldUseSideBySideLayout();
       // Subscribe to layout changes
@@ -68,7 +80,7 @@
 
   // Combined validation
   const canSave = $derived(
-    appendMode ? isValidAppend : (isValidFullEdit && hasChangesFullEdit)
+    appendMode ? isValidAppend : isValidFullEdit && hasChangesFullEdit
   );
 
   async function handleSave() {
@@ -81,10 +93,13 @@
       if (appendMode) {
         await onSave({ description: additionalNotes.trim() }, true);
       } else {
-        await onSave({
-          type: editType,
-          description: editDescription.trim(),
-        }, false);
+        await onSave(
+          {
+            type: editType,
+            description: editDescription.trim(),
+          },
+          false
+        );
       }
       isOpen = false;
     } catch (err) {
@@ -109,7 +124,10 @@
   class="feedback-edit-drawer {isSideBySide ? 'side-panel' : 'bottom-sheet'}"
   showHandle={!isSideBySide}
 >
-  <div class="edit-drawer-content" style="--active-type-color: {currentTypeConfig.color}">
+  <div
+    class="edit-drawer-content"
+    style="--active-type-color: {currentTypeConfig.color}"
+  >
     <header class="drawer-header">
       <h2>{appendMode ? "Add Notes" : "Edit Feedback"}</h2>
       <button
@@ -127,16 +145,26 @@
         <!-- Append Mode: Show original + add notes -->
         <div class="append-info">
           <i class="fas fa-info-circle"></i>
-          <span>This feedback is <strong style="color: {statusConfig.color}">{statusConfig.label.toLowerCase()}</strong>. You can add additional notes below.</span>
+          <span
+            >This feedback is <strong style="color: {statusConfig.color}"
+              >{statusConfig.label.toLowerCase()}</strong
+            >. You can add additional notes below.</span
+          >
         </div>
 
         <!-- Original Description (read-only) -->
         <div class="field">
           <span class="field-label">Original Feedback</span>
           <div class="original-description">
-            <span class="type-indicator" style="--type-color: {currentTypeConfig.color}">
+            <span
+              class="type-indicator"
+              style="--type-color: {currentTypeConfig.color}"
+            >
               <i class="fas {currentTypeConfig.icon}"></i>
-              {currentTypeConfig.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}
+              {currentTypeConfig.label
+                .replace(" Report", "")
+                .replace(" Request", "")
+                .replace(" Feedback", "")}
             </span>
             <p>{item.description}</p>
           </div>
@@ -144,7 +172,9 @@
 
         <!-- Additional Notes -->
         <div class="field">
-          <label for="additional-notes" class="field-label">Additional Notes</label>
+          <label for="additional-notes" class="field-label"
+            >Additional Notes</label
+          >
           <div class="textarea-wrapper">
             <textarea
               id="additional-notes"
@@ -155,7 +185,10 @@
             ></textarea>
           </div>
           <div class="field-hint">
-            <span class="char-count" class:met={additionalNotes.trim().length >= 5}>
+            <span
+              class="char-count"
+              class:met={additionalNotes.trim().length >= 5}
+            >
               {#if additionalNotes.trim().length < 5}
                 {5 - additionalNotes.trim().length} more needed
               {:else}
@@ -181,7 +214,10 @@
               >
                 <i class="fas {config.icon}"></i>
                 <span class="segment-label">
-                  {config.label.replace(" Report", "").replace(" Request", "").replace(" Feedback", "")}
+                  {config.label
+                    .replace(" Report", "")
+                    .replace(" Request", "")
+                    .replace(" Feedback", "")}
                 </span>
               </button>
             {/each}
@@ -201,7 +237,10 @@
             ></textarea>
           </div>
           <div class="field-hint">
-            <span class="char-count" class:met={editDescription.trim().length >= 10}>
+            <span
+              class="char-count"
+              class:met={editDescription.trim().length >= 10}
+            >
               {#if editDescription.trim().length < 10}
                 {10 - editDescription.trim().length} more needed
               {:else}
@@ -273,13 +312,15 @@
   }
 
   /* Side panel: No scroll on content, let flex handle expansion */
-  :global(.drawer-content.feedback-edit-drawer.side-panel) .edit-drawer-content {
+  :global(.drawer-content.feedback-edit-drawer.side-panel)
+    .edit-drawer-content {
     overflow: visible;
     height: 100%;
   }
 
   /* Bottom sheet: Allow scroll for limited height */
-  :global(.drawer-content.feedback-edit-drawer.bottom-sheet) .edit-drawer-content {
+  :global(.drawer-content.feedback-edit-drawer.bottom-sheet)
+    .edit-drawer-content {
     overflow-y: auto;
     max-height: calc(85vh - 40px);
   }
@@ -331,8 +372,13 @@
     align-items: flex-start;
     gap: 10px;
     padding: 12px 14px;
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 10%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent);
     border-radius: 10px;
     font-size: 0.875rem;
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
@@ -467,7 +513,12 @@
 
   .textarea-wrapper {
     background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
-    border: 1.5px solid color-mix(in srgb, var(--active-type-color) 20%, var(--theme-stroke, rgba(255, 255, 255, 0.1)));
+    border: 1.5px solid
+      color-mix(
+        in srgb,
+        var(--active-type-color) 20%,
+        var(--theme-stroke, rgba(255, 255, 255, 0.1))
+      );
     border-radius: 10px;
     transition: border-color 0.2s ease;
     flex: 1;
@@ -525,8 +576,13 @@
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: 8px;
     color: var(--semantic-error, #ef4444);
     font-size: 0.875rem;
@@ -568,14 +624,19 @@
   }
 
   .save-btn {
-    background: linear-gradient(135deg, var(--active-type-color), color-mix(in srgb, var(--active-type-color), black 10%));
+    background: linear-gradient(
+      135deg,
+      var(--active-type-color),
+      color-mix(in srgb, var(--active-type-color), black 10%)
+    );
     border: none;
     color: white;
   }
 
   .save-btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--active-type-color) 30%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--active-type-color) 30%, transparent);
   }
 
   .save-btn:disabled {

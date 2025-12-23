@@ -23,7 +23,10 @@ import {
   onSnapshot,
   type Unsubscribe,
 } from "firebase/firestore";
-import { getFirestoreInstance, getStorageInstance } from "$lib/shared/auth/firebase";
+import {
+  getFirestoreInstance,
+  getStorageInstance,
+} from "$lib/shared/auth/firebase";
 import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
 import type { FirebaseStorage } from "firebase/storage";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
@@ -40,7 +43,10 @@ import type {
   DeviceContext,
   StatusHistoryEntry,
 } from "../../domain/models/feedback-models";
-import { isFeedbackStatus, isFeedbackType } from "../../domain/models/feedback-models";
+import {
+  isFeedbackStatus,
+  isFeedbackType,
+} from "../../domain/models/feedback-models";
 import type { NotificationType } from "../../domain/models/notification-models";
 import { notificationTriggerService } from "./NotificationTriggerService";
 import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
@@ -62,7 +68,11 @@ export class FeedbackService implements IFeedbackService {
 
     // Try to get first sentence (up to . ! or ?)
     const sentenceMatch = trimmed.match(/^[^.!?]+[.!?]?/);
-    if (sentenceMatch && sentenceMatch[0].length >= 10 && sentenceMatch[0].length <= 80) {
+    if (
+      sentenceMatch &&
+      sentenceMatch[0].length >= 10 &&
+      sentenceMatch[0].length <= 80
+    ) {
       return sentenceMatch[0].trim();
     }
 
@@ -84,7 +94,9 @@ export class FeedbackService implements IFeedbackService {
    * Returns the public download URL
    */
   private async uploadImage(file: File, feedbackId: string): Promise<string> {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const { ref, uploadBytes, getDownloadURL } = await import(
+      "firebase/storage"
+    );
     const storage = await getStorageInstance();
 
     // Create unique filename
@@ -113,22 +125,26 @@ export class FeedbackService implements IFeedbackService {
     }
 
     // Use effective user (respects preview mode for proper attribution)
-    const effectiveUser = userPreviewState.isActive && userPreviewState.data.profile
-      ? {
-          uid: userPreviewState.data.profile.uid,
-          email: userPreviewState.data.profile.email || "",
-          displayName: userPreviewState.data.profile.displayName || "Unknown User",
-          photoURL: userPreviewState.data.profile.photoURL || null,
-        }
-      : {
-          uid: user.uid,
-          email: user.email || "",
-          displayName: user.displayName || user.email || "Anonymous",
-          photoURL: user.photoURL || null,
-        };
+    const effectiveUser =
+      userPreviewState.isActive && userPreviewState.data.profile
+        ? {
+            uid: userPreviewState.data.profile.uid,
+            email: userPreviewState.data.profile.email || "",
+            displayName:
+              userPreviewState.data.profile.displayName || "Unknown User",
+            photoURL: userPreviewState.data.profile.photoURL || null,
+          }
+        : {
+            uid: user.uid,
+            email: user.email || "",
+            displayName: user.displayName || user.email || "Anonymous",
+            photoURL: user.photoURL || null,
+          };
 
     // Generate title from description if not provided
-    const title = formData.title?.trim() || this.generateTitleFromDescription(formData.description);
+    const title =
+      formData.title?.trim() ||
+      this.generateTitleFromDescription(formData.description);
 
     // Capture device context
     const deviceContext = captureDeviceContext(capturedModule, capturedTab);
@@ -162,12 +178,15 @@ export class FeedbackService implements IFeedbackService {
     };
 
     // Create document first to get ID
-    const docRef = await addDoc(collection(firestore, COLLECTION_NAME), feedbackData);
+    const docRef = await addDoc(
+      collection(firestore, COLLECTION_NAME),
+      feedbackData
+    );
 
     // Upload images if provided
     if (images && images.length > 0) {
       const imageUrls = await Promise.all(
-        images.map(file => this.uploadImage(file, docRef.id))
+        images.map((file) => this.uploadImage(file, docRef.id))
       );
 
       // Update document with image URLs
@@ -184,27 +203,46 @@ export class FeedbackService implements IFeedbackService {
 
     // Send message to admin with feedback attachment (don't await - non-blocking)
     // Use effective user ID (respects preview mode)
-    const effectiveUserId = userPreviewState.isActive && userPreviewState.data.profile
-      ? userPreviewState.data.profile.uid
-      : user.uid;
+    const effectiveUserId =
+      userPreviewState.isActive && userPreviewState.data.profile
+        ? userPreviewState.data.profile.uid
+        : user.uid;
 
     // Only send if the effective user is not the admin themselves
     if (effectiveUserId !== ADMIN_USER_ID) {
-      console.log("[FeedbackService] User is not admin, sending feedback message...", {
-        effectiveUserId,
-        authUserId: user.uid,
-        adminId: ADMIN_USER_ID,
-        isPreviewMode: userPreviewState.isActive,
-        feedbackId: docRef.id
-      });
-      this.sendFeedbackMessage(docRef.id, title, formData.type, formData.description)
-        .then(() => console.log("[FeedbackService] ✓ Feedback message sent successfully"))
-        .catch((err) => console.error("[FeedbackService] ✗ Failed to send feedback message:", err));
+      console.log(
+        "[FeedbackService] User is not admin, sending feedback message...",
+        {
+          effectiveUserId,
+          authUserId: user.uid,
+          adminId: ADMIN_USER_ID,
+          isPreviewMode: userPreviewState.isActive,
+          feedbackId: docRef.id,
+        }
+      );
+      this.sendFeedbackMessage(
+        docRef.id,
+        title,
+        formData.type,
+        formData.description
+      )
+        .then(() =>
+          console.log("[FeedbackService] ✓ Feedback message sent successfully")
+        )
+        .catch((err) =>
+          console.error(
+            "[FeedbackService] ✗ Failed to send feedback message:",
+            err
+          )
+        );
     } else {
-      console.log("[FeedbackService] User is admin, skipping feedback message", {
-        effectiveUserId,
-        isPreviewMode: userPreviewState.isActive
-      });
+      console.log(
+        "[FeedbackService] User is admin, skipping feedback message",
+        {
+          effectiveUserId,
+          isPreviewMode: userPreviewState.isActive,
+        }
+      );
     }
 
     return docRef.id;
@@ -221,15 +259,18 @@ export class FeedbackService implements IFeedbackService {
     description: string
   ): Promise<void> {
     try {
-      console.log("[FeedbackService] Getting/creating conversation with admin...");
+      console.log(
+        "[FeedbackService] Getting/creating conversation with admin..."
+      );
 
       // Get or create conversation with admin
-      const { conversation, isNew } = await conversationService.getOrCreateConversation(ADMIN_USER_ID);
+      const { conversation, isNew } =
+        await conversationService.getOrCreateConversation(ADMIN_USER_ID);
 
       console.log("[FeedbackService] Conversation ready:", {
         conversationId: conversation.id,
         isNew,
-        participants: conversation.participants
+        participants: conversation.participants,
       });
 
       // Create feedback attachment
@@ -245,7 +286,9 @@ export class FeedbackService implements IFeedbackService {
         },
       };
 
-      console.log("[FeedbackService] Sending message with feedback attachment...");
+      console.log(
+        "[FeedbackService] Sending message with feedback attachment..."
+      );
 
       // Send message with attachment
       await messagingService.sendMessage({
@@ -254,9 +297,15 @@ export class FeedbackService implements IFeedbackService {
         attachments: [feedbackAttachment],
       });
 
-      console.log("[FeedbackService] ✓ Message sent to conversation:", conversation.id);
+      console.log(
+        "[FeedbackService] ✓ Message sent to conversation:",
+        conversation.id
+      );
     } catch (error) {
-      console.error("[FeedbackService] ✗ Failed to send feedback message:", error);
+      console.error(
+        "[FeedbackService] ✗ Failed to send feedback message:",
+        error
+      );
       throw error;
     }
   }
@@ -327,7 +376,10 @@ export class FeedbackService implements IFeedbackService {
     return this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
   }
 
-  async updateStatus(feedbackId: string, status: FeedbackStatus): Promise<void> {
+  async updateStatus(
+    feedbackId: string,
+    status: FeedbackStatus
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
 
@@ -386,8 +438,7 @@ export class FeedbackService implements IFeedbackService {
 
     // Check if this is the same transition
     const isSameTransition =
-      lastEntry.fromStatus === fromStatus &&
-      lastEntry.status === toStatus;
+      lastEntry.fromStatus === fromStatus && lastEntry.status === toStatus;
 
     if (!isSameTransition) return true;
 
@@ -409,7 +460,11 @@ export class FeedbackService implements IFeedbackService {
     });
   }
 
-  async deferFeedback(feedbackId: string, deferredUntil: Date, notes: string): Promise<void> {
+  async deferFeedback(
+    feedbackId: string,
+    deferredUntil: Date,
+    notes: string
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
     await updateDoc(docRef, {
@@ -429,12 +484,9 @@ export class FeedbackService implements IFeedbackService {
 
   async updateFeedback(
     feedbackId: string,
-    updates: Partial<Pick<FeedbackItem,
-      | "type"
-      | "title"
-      | "description"
-      | "priority"
-    >>
+    updates: Partial<
+      Pick<FeedbackItem, "type" | "title" | "description" | "priority">
+    >
   ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
@@ -446,8 +498,10 @@ export class FeedbackService implements IFeedbackService {
 
     if (updates.type !== undefined) updateData["type"] = updates.type;
     if (updates.title !== undefined) updateData["title"] = updates.title;
-    if (updates.description !== undefined) updateData["description"] = updates.description;
-    if (updates.priority !== undefined) updateData["priority"] = updates.priority || null;
+    if (updates.description !== undefined)
+      updateData["description"] = updates.description;
+    if (updates.priority !== undefined)
+      updateData["priority"] = updates.priority || null;
 
     await updateDoc(docRef, updateData);
   }
@@ -554,9 +608,11 @@ export class FeedbackService implements IFeedbackService {
 
     // If tester confirms, move to archived. If needs work, back to in-progress
     const newStatus: FeedbackStatus =
-      status === "confirmed" ? "archived" :
-      status === "needs-work" ? "in-progress" :
-      "in-review"; // Keep in review if no-response
+      status === "confirmed"
+        ? "archived"
+        : status === "needs-work"
+          ? "in-progress"
+          : "in-review"; // Keep in review if no-response
 
     await updateDoc(docRef, {
       testerConfirmation,
@@ -588,7 +644,9 @@ export class FeedbackService implements IFeedbackService {
     let count = 0;
     snapshot.docs.forEach((docSnap) => {
       const data = docSnap.data();
-      const confirmation = data["testerConfirmation"] as TesterConfirmation | undefined;
+      const confirmation = data["testerConfirmation"] as
+        | TesterConfirmation
+        | undefined;
       if (!confirmation || confirmation.status === "pending") {
         count++;
       }
@@ -639,7 +697,8 @@ export class FeedbackService implements IFeedbackService {
       feedbackId,
       feedback.title,
       "feedback-resolved",
-      message || "Your feedback has been addressed! Please confirm if it works for you."
+      message ||
+        "Your feedback has been addressed! Please confirm if it works for you."
     );
 
     // Initialize tester confirmation as pending
@@ -686,7 +745,10 @@ export class FeedbackService implements IFeedbackService {
           const items: FeedbackItem[] = [];
           snapshot.docs.forEach((docSnap) => {
             try {
-              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              const item = this.mapDocToFeedbackItem(
+                docSnap.id,
+                docSnap.data()
+              );
               items.push(item);
             } catch (err) {
               console.error(`Failed to map feedback item ${docSnap.id}:`, err);
@@ -711,7 +773,10 @@ export class FeedbackService implements IFeedbackService {
           const items: FeedbackItem[] = [];
           snapshot.docs.forEach((docSnap) => {
             try {
-              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              const item = this.mapDocToFeedbackItem(
+                docSnap.id,
+                docSnap.data()
+              );
               items.push(item);
             } catch (err) {
               console.error(`Failed to map feedback item ${docSnap.id}:`, err);
@@ -760,12 +825,16 @@ export class FeedbackService implements IFeedbackService {
     // Only allow editing for certain statuses
     const editableStatuses = ["new", "in-progress", "in-review"];
     if (!editableStatuses.includes(feedback.status)) {
-      throw new Error("Cannot edit feedback that has been completed or archived");
+      throw new Error(
+        "Cannot edit feedback that has been completed or archived"
+      );
     }
 
     // If not "new", only allow appending (not full replacement)
     if (feedback.status !== "new" && !appendMode) {
-      throw new Error("Can only add notes to feedback that is already being processed");
+      throw new Error(
+        "Can only add notes to feedback that is already being processed"
+      );
     }
 
     // Build update object
@@ -782,7 +851,9 @@ export class FeedbackService implements IFeedbackService {
       if (updates.description !== undefined) {
         updateData["description"] = updates.description;
         // Also regenerate title from description
-        updateData["title"] = this.generateTitleFromDescription(updates.description);
+        updateData["title"] = this.generateTitleFromDescription(
+          updates.description
+        );
       }
     } else {
       // Append mode - can only add notes to the end
@@ -837,7 +908,10 @@ export class FeedbackService implements IFeedbackService {
           const items: FeedbackItem[] = [];
           snapshot.docs.forEach((docSnap) => {
             try {
-              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              const item = this.mapDocToFeedbackItem(
+                docSnap.id,
+                docSnap.data()
+              );
               items.push(item);
             } catch (err) {
               console.error(`Failed to map feedback item ${docSnap.id}:`, err);
@@ -860,7 +934,10 @@ export class FeedbackService implements IFeedbackService {
           const items: FeedbackItem[] = [];
           snapshot.docs.forEach((docSnap) => {
             try {
-              const item = this.mapDocToFeedbackItem(docSnap.id, docSnap.data());
+              const item = this.mapDocToFeedbackItem(
+                docSnap.id,
+                docSnap.data()
+              );
               items.push(item);
             } catch (err) {
               console.error(`Failed to map feedback item ${docSnap.id}:`, err);
@@ -917,17 +994,23 @@ export class FeedbackService implements IFeedbackService {
     data: Record<string, unknown>
   ): FeedbackItem {
     // Map admin response if present
-    const adminResponseData = data["adminResponse"] as Record<string, unknown> | undefined;
+    const adminResponseData = data["adminResponse"] as
+      | Record<string, unknown>
+      | undefined;
     const adminResponse: AdminResponse | undefined = adminResponseData
       ? {
           message: adminResponseData["message"] as string,
-          respondedAt: (adminResponseData["respondedAt"] as Timestamp)?.toDate() || new Date(),
+          respondedAt:
+            (adminResponseData["respondedAt"] as Timestamp)?.toDate() ||
+            new Date(),
           respondedBy: adminResponseData["respondedBy"] as string,
         }
       : undefined;
 
     // Map tester confirmation if present
-    const confirmationData = data["testerConfirmation"] as Record<string, unknown> | undefined;
+    const confirmationData = data["testerConfirmation"] as
+      | Record<string, unknown>
+      | undefined;
     const testerConfirmation: TesterConfirmation | undefined = confirmationData
       ? {
           status: confirmationData["status"] as TesterConfirmationStatus,
@@ -937,7 +1020,9 @@ export class FeedbackService implements IFeedbackService {
       : undefined;
 
     // Map device context if present
-    const deviceContextData = data["deviceContext"] as Record<string, unknown> | undefined;
+    const deviceContextData = data["deviceContext"] as
+      | Record<string, unknown>
+      | undefined;
     const deviceContext: DeviceContext | undefined = deviceContextData
       ? {
           userAgent: deviceContextData["userAgent"] as string,
@@ -949,19 +1034,28 @@ export class FeedbackService implements IFeedbackService {
           screenHeight: deviceContextData["screenHeight"] as number,
           devicePixelRatio: deviceContextData["devicePixelRatio"] as number,
           appVersion: deviceContextData["appVersion"] as string,
-          currentModule: deviceContextData["currentModule"] as string | undefined,
+          currentModule: deviceContextData["currentModule"] as
+            | string
+            | undefined,
           currentTab: deviceContextData["currentTab"] as string | undefined,
-          capturedAt: (deviceContextData["capturedAt"] as Timestamp)?.toDate() || new Date(),
+          capturedAt:
+            (deviceContextData["capturedAt"] as Timestamp)?.toDate() ||
+            new Date(),
         }
       : undefined;
 
     // Map status history if present
-    const statusHistoryData = data["statusHistory"] as Array<Record<string, unknown>> | undefined;
-    const statusHistory: StatusHistoryEntry[] | undefined = statusHistoryData?.map((entry) => ({
-      status: isFeedbackStatus(entry["status"]) ? entry["status"] : "new",
-      timestamp: (entry["timestamp"] as Timestamp)?.toDate() || new Date(),
-      fromStatus: isFeedbackStatus(entry["fromStatus"]) ? entry["fromStatus"] : undefined,
-    }));
+    const statusHistoryData = data["statusHistory"] as
+      | Array<Record<string, unknown>>
+      | undefined;
+    const statusHistory: StatusHistoryEntry[] | undefined =
+      statusHistoryData?.map((entry) => ({
+        status: isFeedbackStatus(entry["status"]) ? entry["status"] : "new",
+        timestamp: (entry["timestamp"] as Timestamp)?.toDate() || new Date(),
+        fromStatus: isFeedbackStatus(entry["fromStatus"])
+          ? entry["fromStatus"]
+          : undefined,
+      }));
 
     const type = isFeedbackType(data["type"]) ? data["type"] : "general";
     const status = isFeedbackStatus(data["status"]) ? data["status"] : "new";
@@ -989,9 +1083,12 @@ export class FeedbackService implements IFeedbackService {
       updatedAt: (data["updatedAt"] as Timestamp)?.toDate() || undefined,
       fixedInVersion: data["fixedInVersion"] as string | undefined,
       archivedAt: (data["archivedAt"] as Timestamp)?.toDate() || undefined,
-      deferredUntil: (data["deferredUntil"] as Timestamp)?.toDate() || undefined,
-      reactivatedAt: (data["reactivatedAt"] as Timestamp)?.toDate() || undefined,
-      reactivatedFrom: (data["reactivatedFrom"] as Timestamp)?.toDate() || undefined,
+      deferredUntil:
+        (data["deferredUntil"] as Timestamp)?.toDate() || undefined,
+      reactivatedAt:
+        (data["reactivatedAt"] as Timestamp)?.toDate() || undefined,
+      reactivatedFrom:
+        (data["reactivatedFrom"] as Timestamp)?.toDate() || undefined,
       statusHistory,
       isDeleted: data["isDeleted"] as boolean | undefined,
       deletedAt: (data["deletedAt"] as Timestamp)?.toDate() || undefined,

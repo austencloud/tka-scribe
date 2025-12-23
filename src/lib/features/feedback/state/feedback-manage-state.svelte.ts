@@ -165,7 +165,9 @@ export function createFeedbackManageState() {
       await feedbackService.updateStatus(feedbackId, status);
       // Update local state
       items = items.map((item) =>
-        item.id === feedbackId ? { ...item, status, updatedAt: new Date() } : item
+        item.id === feedbackId
+          ? { ...item, status, updatedAt: new Date() }
+          : item
       );
       if (selectedItem?.id === feedbackId) {
         selectedItem = { ...selectedItem, status, updatedAt: new Date() };
@@ -186,7 +188,11 @@ export function createFeedbackManageState() {
           : item
       );
       if (selectedItem?.id === feedbackId) {
-        selectedItem = { ...selectedItem, adminNotes: notes, updatedAt: new Date() };
+        selectedItem = {
+          ...selectedItem,
+          adminNotes: notes,
+          updatedAt: new Date(),
+        };
       }
     } catch (err) {
       console.error("Failed to update admin notes:", err);
@@ -252,9 +258,7 @@ export function createFeedbackManageState() {
     try {
       const updated = await feedbackService.getFeedback(feedbackId);
       if (updated) {
-        items = items.map((item) =>
-          item.id === feedbackId ? updated : item
-        );
+        items = items.map((item) => (item.id === feedbackId ? updated : item));
         if (selectedItem?.id === feedbackId) {
           selectedItem = updated;
         }
@@ -268,7 +272,10 @@ export function createFeedbackManageState() {
     searchQuery = query;
   }
 
-  async function generateTitle(feedbackId: string, description: string): Promise<string | null> {
+  async function generateTitle(
+    feedbackId: string,
+    description: string
+  ): Promise<string | null> {
     if (isGeneratingTitle) return null;
 
     isGeneratingTitle = true;
@@ -288,7 +295,9 @@ export function createFeedbackManageState() {
 
         // Update local state
         items = items.map((item) =>
-          item.id === feedbackId ? { ...item, title, updatedAt: new Date() } : item
+          item.id === feedbackId
+            ? { ...item, title, updatedAt: new Date() }
+            : item
         );
         if (selectedItem?.id === feedbackId) {
           selectedItem = { ...selectedItem, title, updatedAt: new Date() };
@@ -307,7 +316,11 @@ export function createFeedbackManageState() {
   /**
    * Defer feedback to be reactivated at a future date
    */
-  async function deferFeedback(feedbackId: string, deferDate: string, notes: string) {
+  async function deferFeedback(
+    feedbackId: string,
+    deferDate: string,
+    notes: string
+  ) {
     try {
       const deferredUntil = new Date(deferDate);
       await feedbackService.deferFeedback(feedbackId, deferredUntil, notes);

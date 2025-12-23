@@ -116,7 +116,11 @@
   }
 
   .filter-option.selected {
-    background: color-mix(in srgb, var(--option-color, #10b981) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--option-color, #10b981) 10%,
+      transparent
+    );
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 

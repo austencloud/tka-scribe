@@ -22,7 +22,9 @@
       />
       <span class="user-name">{detailState.item.userDisplayName}</span>
       <span class="separator">•</span>
-      <span class="time-relative">{detailState.formatRelativeTime(detailState.item.createdAt)}</span>
+      <span class="time-relative"
+        >{detailState.formatRelativeTime(detailState.item.createdAt)}</span
+      >
     </div>
   {:else}
     <!-- Desktop: Full card -->
@@ -39,8 +41,12 @@
         <span class="user-email">{detailState.item.userEmail}</span>
       </div>
       <div class="user-time">
-        <span class="time-relative">{detailState.formatRelativeTime(detailState.item.createdAt)}</span>
-        <span class="time-absolute">{detailState.formatDate(detailState.item.createdAt)}</span>
+        <span class="time-relative"
+          >{detailState.formatRelativeTime(detailState.item.createdAt)}</span
+        >
+        <span class="time-absolute"
+          >{detailState.formatDate(detailState.item.createdAt)}</span
+        >
       </div>
     </div>
   {/if}

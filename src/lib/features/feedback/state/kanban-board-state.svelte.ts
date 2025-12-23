@@ -1,5 +1,8 @@
 import type { FeedbackManageState } from "./feedback-manage-state.svelte";
-import type { FeedbackItem, FeedbackStatus } from "../domain/models/feedback-models";
+import type {
+  FeedbackItem,
+  FeedbackStatus,
+} from "../domain/models/feedback-models";
 import { STATUS_CONFIG } from "../domain/models/feedback-models";
 import type { IFeedbackSortingService } from "../services/contracts/IFeedbackSortingService";
 import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
@@ -7,7 +10,12 @@ import type { IStorageService } from "$lib/shared/foundation/services/contracts/
 type KanbanStatus = "new" | "in-progress" | "in-review" | "completed";
 
 const STORAGE_KEY = "tka-feedback-manage-active-status";
-const KANBAN_STATUSES: KanbanStatus[] = ["new", "in-progress", "in-review", "completed"];
+const KANBAN_STATUSES: KanbanStatus[] = [
+  "new",
+  "in-progress",
+  "in-review",
+  "completed",
+];
 
 export interface KanbanBoardState {
   activeStatus: FeedbackStatus;

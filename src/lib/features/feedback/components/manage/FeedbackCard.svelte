@@ -328,7 +328,11 @@
     --fb-border-hover: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
     --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
     --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    --fb-text-subtle: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
 
     /* Spring animation */
     --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -422,8 +426,16 @@
   }
 
   .feedback-card.selected {
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 10%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 10%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 30%,
+      transparent
+    );
   }
 
   .feedback-card.just-selected {

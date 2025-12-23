@@ -84,25 +84,41 @@ export function createFilterBarUIState(manageState: FeedbackManageState) {
 
   return {
     // Sheet state & controls
-    get isSheetOpen() { return isSheetOpen; },
-    get isSheetAnimating() { return isSheetAnimating; },
-    get activeSection() { return activeSection; },
+    get isSheetOpen() {
+      return isSheetOpen;
+    },
+    get isSheetAnimating() {
+      return isSheetAnimating;
+    },
+    get activeSection() {
+      return activeSection;
+    },
     openSheet,
     closeSheet,
     toggleSection,
 
     // Drawer state & controls
-    get isStatusDrawerOpen() { return isStatusDrawerOpen; },
-    get isPriorityDrawerOpen() { return isPriorityDrawerOpen; },
+    get isStatusDrawerOpen() {
+      return isStatusDrawerOpen;
+    },
+    get isPriorityDrawerOpen() {
+      return isPriorityDrawerOpen;
+    },
     openStatusDrawer,
     closeStatusDrawer,
     openPriorityDrawer,
     closePriorityDrawer,
 
     // Derived
-    get currentStatusLabel() { return currentStatusLabel(); },
-    get currentPriorityLabel() { return currentPriorityLabel(); },
-    get activeFilterCount() { return activeFilterCount; },
+    get currentStatusLabel() {
+      return currentStatusLabel();
+    },
+    get currentPriorityLabel() {
+      return currentPriorityLabel();
+    },
+    get activeFilterCount() {
+      return activeFilterCount;
+    },
   };
 }
 

@@ -153,7 +153,11 @@
 
     /* ===== COLORS ===== */
     --kc-text: var(--theme-text, rgba(255, 255, 255, 0.95));
-    --kc-text-muted: color-mix(in srgb, var(--theme-text, rgba(255, 255, 255, 0.95)) 75%, transparent);
+    --kc-text-muted: color-mix(
+      in srgb,
+      var(--theme-text, rgba(255, 255, 255, 0.95)) 75%,
+      transparent
+    );
     --kc-text-subtle: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 
     /* ===== TRANSITIONS ===== */

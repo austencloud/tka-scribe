@@ -16,7 +16,12 @@
 
   const { boardState, manageState, onOpenArchive }: Props = $props();
 
-  const KANBAN_STATUSES = ["new", "in-progress", "in-review", "completed"] as const;
+  const KANBAN_STATUSES = [
+    "new",
+    "in-progress",
+    "in-review",
+    "completed",
+  ] as const;
   const ARCHIVE_STATUS = "archived" as const;
 
   function handleDragStart(item: FeedbackItem) {
@@ -52,7 +57,10 @@
   }
 
   async function handleDrop(status: any) {
-    console.log("[KanbanDesktopView] Drop handler called", { status, draggedItem: boardState.draggedItem?.id });
+    console.log("[KanbanDesktopView] Drop handler called", {
+      status,
+      draggedItem: boardState.draggedItem?.id,
+    });
 
     if (!boardState.draggedItem) {
       console.log("[KanbanDesktopView] No dragged item, returning");
@@ -72,7 +80,7 @@
       console.log("[KanbanDesktopView] Updating status", {
         id: boardState.draggedItem.id,
         from: boardState.draggedItem.status,
-        to: status
+        to: status,
       });
       try {
         await manageState.updateStatus(boardState.draggedItem.id, status);
@@ -97,12 +105,17 @@
     }
 
     const targetStatus = boardState.getColumnAtPosition(x, y);
-    console.log("[KanbanDesktopView] Target status from touch position:", targetStatus);
+    console.log(
+      "[KanbanDesktopView] Target status from touch position:",
+      targetStatus
+    );
 
     if (targetStatus) {
       await handleDrop(targetStatus);
     } else {
-      console.log("[KanbanDesktopView] No valid drop target at touch position, clearing drag state");
+      console.log(
+        "[KanbanDesktopView] No valid drop target at touch position, clearing drag state"
+      );
       boardState.setDraggedItem(null);
       boardState.setDragOverColumn(null);
     }

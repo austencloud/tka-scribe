@@ -6,7 +6,12 @@
  * Uses $state for reactive primitives, $derived for computed values, $effect for side effects.
  */
 
-import type { FeedbackItem, FeedbackType, FeedbackPriority, FeedbackStatus } from "../domain/models/feedback-models";
+import type {
+  FeedbackItem,
+  FeedbackType,
+  FeedbackPriority,
+  FeedbackStatus,
+} from "../domain/models/feedback-models";
 import type { FeedbackManageState } from "./feedback-manage-state.svelte";
 import type { IFeedbackEditingService } from "../services/contracts/IFeedbackEditingService";
 import type { IFeedbackFormattingService } from "../services/contracts/IFeedbackFormattingService";
@@ -23,11 +28,17 @@ export function createFeedbackDetailState(
   readOnly: boolean = false
 ) {
   // Resolve services via DI
-  const editingService = tryResolve<IFeedbackEditingService>(TYPES.IFeedbackEditingService);
-  const formattingService = tryResolve<IFeedbackFormattingService>(TYPES.IFeedbackFormattingService);
+  const editingService = tryResolve<IFeedbackEditingService>(
+    TYPES.IFeedbackEditingService
+  );
+  const formattingService = tryResolve<IFeedbackFormattingService>(
+    TYPES.IFeedbackFormattingService
+  );
 
   if (!editingService || !formattingService) {
-    throw new Error("Required feedback services not registered in DI container");
+    throw new Error(
+      "Required feedback services not registered in DI container"
+    );
   }
 
   // Type-narrow services (TypeScript doesn't recognize throw as type guard)
@@ -64,7 +75,7 @@ export function createFeedbackDetailState(
 
   // Admin response state
   let adminResponseMessage = $state(item.adminResponse?.message || "");
-  let isSendingResponse = $state(false);
+  const isSendingResponse = $state(false);
   let showResponseForm = $state(false);
 
   // Derived state - configs from TYPE_CONFIG and PRIORITY_CONFIG
@@ -172,7 +183,8 @@ export function createFeedbackDetailState(
   }
 
   async function handleStatusChange(status: FeedbackStatus) {
-    if (readOnly || !manageState || isUpdatingStatus || item.status === status) return;
+    if (readOnly || !manageState || isUpdatingStatus || item.status === status)
+      return;
     isUpdatingStatus = true;
     lastUpdatedStatus = status;
     try {

@@ -14,7 +14,12 @@
 
   const { boardState, manageState, onOpenArchive }: Props = $props();
 
-  const KANBAN_STATUSES = ["new", "in-progress", "in-review", "completed"] as const;
+  const KANBAN_STATUSES = [
+    "new",
+    "in-progress",
+    "in-review",
+    "completed",
+  ] as const;
 
   function handleDragStart(item: FeedbackItem) {
     boardState.setDraggedItem(item);

@@ -5,7 +5,11 @@
  */
 
 import { versionService } from "../services/implementations/VersionService";
-import type { AppVersion, VersionFeedbackItem, ChangelogEntry } from "../domain/models/version-models";
+import type {
+  AppVersion,
+  VersionFeedbackItem,
+  ChangelogEntry,
+} from "../domain/models/version-models";
 import { generateFromFeedback } from "../services/changelog/changelog-generator";
 
 export interface VersionState {
@@ -77,9 +81,11 @@ export function createVersionState(): VersionState {
     error = null;
 
     try {
-      selectedVersionFeedback = await versionService.getVersionFeedback(version);
+      selectedVersionFeedback =
+        await versionService.getVersionFeedback(version);
     } catch (e) {
-      error = e instanceof Error ? e.message : "Failed to load version feedback";
+      error =
+        e instanceof Error ? e.message : "Failed to load version feedback";
       console.error("Failed to load version feedback:", e);
     } finally {
       isLoading = false;
@@ -131,7 +137,10 @@ export function createVersionState(): VersionState {
     }
   }
 
-  async function updateReleaseNotes(version: string, releaseNotes: string): Promise<void> {
+  async function updateReleaseNotes(
+    version: string,
+    releaseNotes: string
+  ): Promise<void> {
     error = null;
 
     try {
@@ -162,7 +171,8 @@ export function createVersionState(): VersionState {
       await loadUnversionedCount();
       return count;
     } catch (e) {
-      error = e instanceof Error ? e.message : "Failed to tag existing feedback";
+      error =
+        e instanceof Error ? e.message : "Failed to tag existing feedback";
       console.error("Failed to tag existing feedback:", e);
       throw e;
     } finally {

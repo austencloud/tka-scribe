@@ -17,7 +17,9 @@
   <div class="item-content">
     <div class="item-header">
       <span class="item-label">{label}</span>
-      <span class="item-status" aria-hidden="true">{enabled ? "On" : "Off"}</span>
+      <span class="item-status" aria-hidden="true"
+        >{enabled ? "On" : "Off"}</span
+      >
     </div>
     <p class="item-description">{description}</p>
   </div>
@@ -35,7 +37,10 @@
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 14px;
     cursor: pointer;
-    transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
     text-align: left;
     box-shadow: var(--theme-shadow, 0 6px 16px rgba(0, 0, 0, 0.28));
     -webkit-tap-highlight-color: transparent;
@@ -65,7 +70,11 @@
   .preference-item.enabled {
     background: linear-gradient(
       150deg,
-      color-mix(in srgb, var(--theme-card-bg, #111728) 80%, var(--theme-accent, #34d399)),
+      color-mix(
+        in srgb,
+        var(--theme-card-bg, #111728) 80%,
+        var(--theme-accent, #34d399)
+      ),
       var(--theme-card-bg, #111728)
     );
     border-color: var(--theme-accent, rgba(110, 231, 183, 0.5));
@@ -75,7 +84,11 @@
   .preference-item.enabled:hover:not(:disabled) {
     background: linear-gradient(
       150deg,
-      color-mix(in srgb, var(--theme-card-hover-bg, #131a2e) 75%, var(--theme-accent, #34d399)),
+      color-mix(
+        in srgb,
+        var(--theme-card-hover-bg, #131a2e) 75%,
+        var(--theme-accent, #34d399)
+      ),
       var(--theme-panel-bg, #0e1426)
     );
     border-color: var(--theme-accent-strong, rgba(110, 231, 183, 0.6));
@@ -123,7 +136,11 @@
 
   .preference-item.enabled .item-status {
     color: #0d1b2a;
-    background: linear-gradient(135deg, var(--theme-accent, #6ee7b7), var(--theme-accent-strong, #2dd4bf));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6ee7b7),
+      var(--theme-accent-strong, #2dd4bf)
+    );
     border-color: transparent;
     box-shadow: none;
   }

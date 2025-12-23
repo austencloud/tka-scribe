@@ -5,7 +5,10 @@
  * Provides utilities for subtask manipulation, blocking, and progress tracking.
  */
 
-import type { FeedbackSubtask, SubtaskStatus } from "../../domain/models/feedback-models";
+import type {
+  FeedbackSubtask,
+  SubtaskStatus,
+} from "../../domain/models/feedback-models";
 
 /**
  * Service contract for feedback subtask operations

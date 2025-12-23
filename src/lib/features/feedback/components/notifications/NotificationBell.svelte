@@ -60,13 +60,13 @@
       isLoading = testPreviewState.isLoading;
       // Show popup for important notification types
       activePopup = notifications.find(
-        (n) => !n.read && (
-          n.type === "feedback-resolved" ||
-          n.type === "feedback-needs-info" ||
-          n.type === "achievement-unlocked" ||
-          n.type === "system-announcement" ||
-          n.type === "message-received"
-        )
+        (n) =>
+          !n.read &&
+          (n.type === "feedback-resolved" ||
+            n.type === "feedback-needs-info" ||
+            n.type === "achievement-unlocked" ||
+            n.type === "system-announcement" ||
+            n.type === "message-received")
       ) as UserNotification | null;
       return;
     }
@@ -85,13 +85,13 @@
 
         // Show popup for important notification types
         const candidate = updated.find(
-          (n) => !n.read && (
-            n.type === "feedback-resolved" ||
-            n.type === "feedback-needs-info" ||
-            n.type === "achievement-unlocked" ||
-            n.type === "system-announcement" ||
-            n.type === "message-received"
-          )
+          (n) =>
+            !n.read &&
+            (n.type === "feedback-resolved" ||
+              n.type === "feedback-needs-info" ||
+              n.type === "achievement-unlocked" ||
+              n.type === "system-announcement" ||
+              n.type === "message-received")
         );
         if (candidate && candidate.id !== activePopup?.id) {
           activePopup = candidate;
@@ -149,7 +149,9 @@
     }
 
     // Clean up dismissing state
-    dismissingIds = new Set([...dismissingIds].filter((id) => id !== notificationId));
+    dismissingIds = new Set(
+      [...dismissingIds].filter((id) => id !== notificationId)
+    );
   }
 
   // Navigate to context-specific location based on notification type
@@ -657,7 +659,8 @@
   .dismiss-btn:focus-visible {
     opacity: 1;
     outline: none;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   .notification-icon {

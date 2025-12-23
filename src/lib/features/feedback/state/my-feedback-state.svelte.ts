@@ -8,7 +8,10 @@
  * Uses real-time Firestore subscription for automatic updates.
  */
 
-import type { FeedbackItem, FeedbackType } from "../domain/models/feedback-models";
+import type {
+  FeedbackItem,
+  FeedbackType,
+} from "../domain/models/feedback-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
@@ -32,7 +35,9 @@ export function createMyFeedbackState() {
 
   // Derived: Items in progress
   const inProgress = $derived(
-    items.filter((item) => item.status === "in-progress" || item.status === "in-review")
+    items.filter(
+      (item) => item.status === "in-progress" || item.status === "in-review"
+    )
   );
 
   // Derived: Completed items
@@ -41,18 +46,17 @@ export function createMyFeedbackState() {
   );
 
   // Derived: New/pending items
-  const pending = $derived(
-    items.filter((item) => item.status === "new")
-  );
+  const pending = $derived(items.filter((item) => item.status === "new"));
 
   /**
    * Subscribe to real-time feedback updates for the current user
    */
   function subscribe() {
     // Use previewed user ID when preview mode is active, otherwise use actual user
-    const effectiveUserId = userPreviewState.isActive && userPreviewState.data.profile
-      ? userPreviewState.data.profile.uid
-      : authState.user?.uid;
+    const effectiveUserId =
+      userPreviewState.isActive && userPreviewState.data.profile
+        ? userPreviewState.data.profile.uid
+        : authState.user?.uid;
 
     if (!effectiveUserId) {
       console.warn("[MyFeedbackState] No user ID available for subscription");
@@ -82,7 +86,7 @@ export function createMyFeedbackState() {
 
         // Update selected item if it changed
         if (selectedItem) {
-          const updated = newItems.find(item => item.id === selectedItem!.id);
+          const updated = newItems.find((item) => item.id === selectedItem!.id);
           if (updated) {
             selectedItem = updated;
           }
@@ -119,12 +123,20 @@ export function createMyFeedbackState() {
       throw new Error("Cannot edit in preview mode");
     }
 
-    const updatedItem = await feedbackService.updateUserFeedback(feedbackId, updates, appendMode);
+    const updatedItem = await feedbackService.updateUserFeedback(
+      feedbackId,
+      updates,
+      appendMode
+    );
 
     // Update in local state
     const index = items.findIndex((i) => i.id === feedbackId);
     if (index !== -1) {
-      items = [...items.slice(0, index), updatedItem, ...items.slice(index + 1)];
+      items = [
+        ...items.slice(0, index),
+        updatedItem,
+        ...items.slice(index + 1),
+      ];
     }
 
     // Update selected item if it's the one being edited
@@ -171,15 +183,29 @@ export function createMyFeedbackState() {
 
   return {
     // State (getters)
-    get items() { return items; },
-    get isLoading() { return isLoading; },
-    get error() { return error; },
-    get selectedItem() { return selectedItem; },
+    get items() {
+      return items;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get error() {
+      return error;
+    },
+    get selectedItem() {
+      return selectedItem;
+    },
 
     // Derived
-    get inProgress() { return inProgress; },
-    get completed() { return completed; },
-    get pending() { return pending; },
+    get inProgress() {
+      return inProgress;
+    },
+    get completed() {
+      return completed;
+    },
+    get pending() {
+      return pending;
+    },
 
     // Actions
     subscribe,

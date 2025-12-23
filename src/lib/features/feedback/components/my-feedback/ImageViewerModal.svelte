@@ -61,7 +61,12 @@
     <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
     <div class="viewer-container" onclick={(e) => e.stopPropagation()}>
       <!-- Close button -->
-      <button class="close-btn" onclick={onClose} type="button" aria-label="Close">
+      <button
+        class="close-btn"
+        onclick={onClose}
+        type="button"
+        aria-label="Close"
+      >
         <i class="fas fa-times"></i>
       </button>
 
@@ -83,10 +88,20 @@
 
       <!-- Navigation arrows -->
       {#if images.length > 1}
-        <button class="nav-btn prev" onclick={handlePrev} type="button" aria-label="Previous">
+        <button
+          class="nav-btn prev"
+          onclick={handlePrev}
+          type="button"
+          aria-label="Previous"
+        >
           <i class="fas fa-chevron-left"></i>
         </button>
-        <button class="nav-btn next" onclick={handleNext} type="button" aria-label="Next">
+        <button
+          class="nav-btn next"
+          onclick={handleNext}
+          type="button"
+          aria-label="Next"
+        >
           <i class="fas fa-chevron-right"></i>
         </button>
       {/if}

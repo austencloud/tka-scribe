@@ -4,12 +4,7 @@
  * Manages user notification preferences in Firestore.
  */
 
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { NotificationPreferences } from "../../domain/models/notification-models";
 import { DEFAULT_NOTIFICATION_PREFERENCES } from "../../domain/models/notification-models";
@@ -138,4 +133,5 @@ export class NotificationPreferencesService {
 }
 
 // Export singleton instance
-export const notificationPreferencesService = new NotificationPreferencesService();
+export const notificationPreferencesService =
+  new NotificationPreferencesService();

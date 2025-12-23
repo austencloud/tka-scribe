@@ -140,7 +140,10 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--theme-panel-bg, linear-gradient(180deg, #1e1e24 0%, #16161a 100%));
+    background: var(
+      --theme-panel-bg,
+      linear-gradient(180deg, #1e1e24 0%, #16161a 100%)
+    );
   }
 
   .drawer-header {

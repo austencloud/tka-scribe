@@ -24,4 +24,8 @@ export const CATEGORY_ADD_LABELS: Record<ChangelogCategory, string> = {
   improved: "Add improvement",
 };
 
-export const CHANGELOG_CATEGORIES: ChangelogCategory[] = ["fixed", "added", "improved"];
+export const CHANGELOG_CATEGORIES: ChangelogCategory[] = [
+  "fixed",
+  "added",
+  "improved",
+];

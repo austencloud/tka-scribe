@@ -4,7 +4,11 @@
   import { createFeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import { createVersionState } from "../../state/version-state.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
-  import { notificationTargetState, getNotificationTargetFeedback, setNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
+  import {
+    notificationTargetState,
+    getNotificationTargetFeedback,
+    setNotificationTargetFeedback,
+  } from "../../state/notification-action-state.svelte";
   import { onMount } from "svelte";
   import FeedbackKanbanBoard from "./FeedbackKanbanBoard.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
@@ -33,7 +37,10 @@
     const urlFeedbackId = urlParams.get("openFeedback");
 
     if (urlFeedbackId) {
-      console.log("[FeedbackManageTab] onMount: Found URL param openFeedback:", urlFeedbackId);
+      console.log(
+        "[FeedbackManageTab] onMount: Found URL param openFeedback:",
+        urlFeedbackId
+      );
       pendingTargetId = urlFeedbackId;
       // Clear the URL param
       urlParams.delete("openFeedback");
@@ -45,7 +52,10 @@
       // Fallback to notification target state
       const targetId = getNotificationTargetFeedback();
       if (targetId) {
-        console.log("[FeedbackManageTab] onMount: Found notification target:", targetId);
+        console.log(
+          "[FeedbackManageTab] onMount: Found notification target:",
+          targetId
+        );
         pendingTargetId = targetId;
         setNotificationTargetFeedback(null);
       }
@@ -192,7 +202,11 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: color-mix(in srgb, var(--theme-panel-bg, #000) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #000) 30%,
+      transparent
+    );
   }
 
   .release-panel-container > :global(*) {

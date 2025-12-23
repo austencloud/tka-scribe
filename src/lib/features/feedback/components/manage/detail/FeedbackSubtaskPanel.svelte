@@ -10,14 +10,18 @@
 
   const { subtasks }: Props = $props();
 
-  const subtaskService = tryResolve<IFeedbackSubtaskService>(TYPES.IFeedbackSubtaskService);
+  const subtaskService = tryResolve<IFeedbackSubtaskService>(
+    TYPES.IFeedbackSubtaskService
+  );
 
   function isBlocked(subtask: FeedbackSubtask): boolean {
     if (!subtaskService) return false;
     return subtaskService.isSubtaskBlocked(subtask, subtasks);
   }
 
-  const completedCount = $derived(subtasks.filter((s: FeedbackSubtask) => s.status === "completed").length);
+  const completedCount = $derived(
+    subtasks.filter((s: FeedbackSubtask) => s.status === "completed").length
+  );
 </script>
 
 {#if subtasks.length > 0}
@@ -119,12 +123,20 @@
 
   .subtask-item.in-progress {
     border-color: var(--theme-accent, #3b82f6);
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 5%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 5%,
+      transparent
+    );
   }
 
   .subtask-item.blocked {
     border-color: var(--semantic-warning, #f59e0b);
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 5%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 5%,
+      transparent
+    );
   }
 
   .subtask-status-icon {

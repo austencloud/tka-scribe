@@ -99,7 +99,10 @@ export class VersionService implements IVersionService {
     return firstDoc ? (firstDoc.data()["version"] as string) : null;
   }
 
-  async prepareRelease(version: string, changelogEntries?: ChangelogEntry[]): Promise<void> {
+  async prepareRelease(
+    version: string,
+    changelogEntries?: ChangelogEntry[]
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     // 1. Get all completed feedback (ready for release)
     const q2 = query(
@@ -114,7 +117,9 @@ export class VersionService implements IVersionService {
     const summary: FeedbackSummary = { bugs: 0, features: 0, general: 0 };
 
     completedDocs.forEach((docSnap) => {
-      const type = isFeedbackType(docSnap.data()["type"]) ? docSnap.data()["type"] : "general";
+      const type = isFeedbackType(docSnap.data()["type"])
+        ? docSnap.data()["type"]
+        : "general";
       if (type === "bug") summary.bugs++;
       else if (type === "feature") summary.features++;
       else summary.general++;
@@ -151,19 +156,29 @@ export class VersionService implements IVersionService {
     await batch.commit();
   }
 
-  async updateReleaseNotes(version: string, releaseNotes: string): Promise<void> {
+  async updateReleaseNotes(
+    version: string,
+    releaseNotes: string
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     await updateDoc(versionRef, { releaseNotes });
   }
 
-  async updateChangelogEntries(version: string, changelogEntries: ChangelogEntry[]): Promise<void> {
+  async updateChangelogEntries(
+    version: string,
+    changelogEntries: ChangelogEntry[]
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     await updateDoc(versionRef, { changelogEntries });
   }
 
-  async updateChangelogEntry(version: string, index: number, updatedEntry: ChangelogEntry): Promise<void> {
+  async updateChangelogEntry(
+    version: string,
+    index: number,
+    updatedEntry: ChangelogEntry
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     const versionDoc = await getDoc(versionRef);
@@ -173,7 +188,8 @@ export class VersionService implements IVersionService {
     }
 
     const data = versionDoc.data();
-    const changelogEntries = (data['changelogEntries'] as ChangelogEntry[]) || [];
+    const changelogEntries =
+      (data["changelogEntries"] as ChangelogEntry[]) || [];
 
     if (index < 0 || index >= changelogEntries.length) {
       throw new Error(`Invalid changelog entry index: ${index}`);
@@ -185,7 +201,10 @@ export class VersionService implements IVersionService {
     await updateDoc(versionRef, { changelogEntries });
   }
 
-  async addChangelogEntry(version: string, entry: ChangelogEntry): Promise<void> {
+  async addChangelogEntry(
+    version: string,
+    entry: ChangelogEntry
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
     const versionDoc = await getDoc(versionRef);
@@ -195,7 +214,8 @@ export class VersionService implements IVersionService {
     }
 
     const data = versionDoc.data();
-    const changelogEntries = (data['changelogEntries'] as ChangelogEntry[]) || [];
+    const changelogEntries =
+      (data["changelogEntries"] as ChangelogEntry[]) || [];
 
     changelogEntries.push(entry);
 
@@ -212,7 +232,8 @@ export class VersionService implements IVersionService {
     }
 
     const data = versionDoc.data();
-    const changelogEntries = (data['changelogEntries'] as ChangelogEntry[]) || [];
+    const changelogEntries =
+      (data["changelogEntries"] as ChangelogEntry[]) || [];
 
     if (index < 0 || index >= changelogEntries.length) {
       throw new Error(`Invalid changelog entry index: ${index}`);
@@ -231,24 +252,52 @@ export class VersionService implements IVersionService {
     const firestore = await getFirestoreInstance();
     const changelogEntries: ChangelogEntry[] = [
       // Bug Fixes
-      { category: 'fixed', text: 'Sequences now load correctly when you open them from the gallery' },
-      { category: 'fixed', text: 'The app no longer freezes when switching between modules' },
-      { category: 'fixed', text: 'Your progress is now saved properly when you close the app' },
+      {
+        category: "fixed",
+        text: "Sequences now load correctly when you open them from the gallery",
+      },
+      {
+        category: "fixed",
+        text: "The app no longer freezes when switching between modules",
+      },
+      {
+        category: "fixed",
+        text: "Your progress is now saved properly when you close the app",
+      },
       // New Features
-      { category: 'added', text: 'You can now see version history and release notes right here!' },
-      { category: 'added', text: 'Submit feedback directly from the app - tap the Feedback tab' },
-      { category: 'added', text: 'Track the status of your submitted feedback' },
-      { category: 'added', text: 'Get notified when your reported issues are fixed' },
+      {
+        category: "added",
+        text: "You can now see version history and release notes right here!",
+      },
+      {
+        category: "added",
+        text: "Submit feedback directly from the app - tap the Feedback tab",
+      },
+      {
+        category: "added",
+        text: "Track the status of your submitted feedback",
+      },
+      {
+        category: "added",
+        text: "Get notified when your reported issues are fixed",
+      },
       // Improvements
-      { category: 'improved', text: 'Navigation is smoother and more responsive' },
-      { category: 'improved', text: 'The app loads faster on first visit' },
-      { category: 'improved', text: 'Better error messages when something goes wrong' },
+      {
+        category: "improved",
+        text: "Navigation is smoother and more responsive",
+      },
+      { category: "improved", text: "The app loads faster on first visit" },
+      {
+        category: "improved",
+        text: "Better error messages when something goes wrong",
+      },
     ];
 
-    const versionRef = doc(firestore, VERSIONS_COLLECTION, '0.1.0');
+    const versionRef = doc(firestore, VERSIONS_COLLECTION, "0.1.0");
     await updateDoc(versionRef, {
       changelogEntries,
-      releaseNotes: 'The first official beta release! This version introduces the feedback system so you can help us make the app better.',
+      releaseNotes:
+        "The first official beta release! This version introduces the feedback system so you can help us make the app better.",
     });
   }
 
@@ -322,7 +371,9 @@ export class VersionService implements IVersionService {
     const summary: FeedbackSummary = { bugs: 0, features: 0, general: 0 };
 
     unversionedDocs.forEach((docSnap) => {
-      const type = isFeedbackType(docSnap.data()["type"]) ? docSnap.data()["type"] : "general";
+      const type = isFeedbackType(docSnap.data()["type"])
+        ? docSnap.data()["type"]
+        : "general";
       if (type === "bug") summary.bugs++;
       else if (type === "feature") summary.features++;
       else summary.general++;
@@ -352,7 +403,10 @@ export class VersionService implements IVersionService {
     return unversionedDocs.length;
   }
 
-  private truncateDescription(description: string, maxLength: number = 100): string {
+  private truncateDescription(
+    description: string,
+    maxLength: number = 100
+  ): string {
     if (description.length <= maxLength) {
       return description;
     }
@@ -368,8 +422,12 @@ export class VersionService implements IVersionService {
   }
 
   private mapDocToAppVersion(data: Record<string, unknown>): AppVersion {
-    const summaryData = data["feedbackSummary"] as Record<string, number> | undefined;
-    const changelogData = data["changelogEntries"] as ChangelogEntry[] | undefined;
+    const summaryData = data["feedbackSummary"] as
+      | Record<string, number>
+      | undefined;
+    const changelogData = data["changelogEntries"] as
+      | ChangelogEntry[]
+      | undefined;
     const releaseNotes = data["releaseNotes"] as string | undefined;
 
     return {

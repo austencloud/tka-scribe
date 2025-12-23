@@ -3,7 +3,11 @@
   import { onMount, onDestroy } from "svelte";
   import { createMyFeedbackState } from "../../state/my-feedback-state.svelte";
   import { myFeedbackDetailState } from "../../state/my-feedback-detail-state.svelte";
-  import { notificationTargetState, takeNotificationTargetFeedback, setNotificationTargetFeedback } from "../../state/notification-action-state.svelte";
+  import {
+    notificationTargetState,
+    takeNotificationTargetFeedback,
+    setNotificationTargetFeedback,
+  } from "../../state/notification-action-state.svelte";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import MyFeedbackList from "./MyFeedbackList.svelte";
@@ -33,7 +37,9 @@
 
     // Wait for items to load, then find and select the target
     targetCheckInterval = setInterval(() => {
-      const targetItem = state.items.find((item) => item.id === targetFeedbackId);
+      const targetItem = state.items.find(
+        (item) => item.id === targetFeedbackId
+      );
       if (targetItem) {
         myFeedbackDetailState.selectItem(targetItem);
         pendingTargetId = null;
@@ -45,7 +51,9 @@
     setTimeout(() => {
       cleanupTargetInterval();
       if (pendingTargetId) {
-        console.warn(`[MyFeedbackTab] Could not find target feedback: ${pendingTargetId}`);
+        console.warn(
+          `[MyFeedbackTab] Could not find target feedback: ${pendingTargetId}`
+        );
         pendingTargetId = null;
       }
     }, 10000);
@@ -89,7 +97,10 @@
     let targetFeedbackId: string | null = null;
 
     if (urlFeedbackId) {
-      console.log("[MyFeedbackTab] onMount: Found URL param openFeedback:", urlFeedbackId);
+      console.log(
+        "[MyFeedbackTab] onMount: Found URL param openFeedback:",
+        urlFeedbackId
+      );
       targetFeedbackId = urlFeedbackId;
       // Clear the URL param
       urlParams.delete("openFeedback");
@@ -99,7 +110,9 @@
       window.history.replaceState({}, "", newUrl);
     } else {
       // Fallback to notification target state or persisted ID
-      targetFeedbackId = takeNotificationTargetFeedback() || myFeedbackDetailState.getPersistedFeedbackId();
+      targetFeedbackId =
+        takeNotificationTargetFeedback() ||
+        myFeedbackDetailState.getPersistedFeedbackId();
     }
 
     // First, ensure auth is ready, then load feedback
@@ -114,7 +127,7 @@
   // Reload when preview user changes
   $effect(() => {
     const currentPreviewUserId = preview.isActive
-      ? preview.profile?.uid ?? null
+      ? (preview.profile?.uid ?? null)
       : null;
 
     if (currentPreviewUserId !== lastPreviewUserId) {
@@ -146,13 +159,13 @@
   // Show preview indicator
   const isPreviewMode = $derived(preview.isActive);
   const previewUserName = $derived(
-    preview.profile?.displayName ||
-    preview.profile?.email ||
-    "User"
+    preview.profile?.displayName || preview.profile?.email || "User"
   );
 
   // Selected item for highlighting in list (synced from shared state)
-  const selectedItemId = $derived(myFeedbackDetailState.selectedItem?.id ?? null);
+  const selectedItemId = $derived(
+    myFeedbackDetailState.selectedItem?.id ?? null
+  );
 </script>
 
 <div class="my-feedback-tab">
@@ -170,8 +183,14 @@
           <i class="fas fa-list-check"></i>
         </div>
         <div class="header-text">
-          <h1>{isPreviewMode ? `${previewUserName}'s Feedback` : "My Feedback"}</h1>
-          <p>{isPreviewMode ? "Viewing this user's submitted feedback" : "View your submissions and their resolution status"}</p>
+          <h1>
+            {isPreviewMode ? `${previewUserName}'s Feedback` : "My Feedback"}
+          </h1>
+          <p>
+            {isPreviewMode
+              ? "Viewing this user's submitted feedback"
+              : "View your submissions and their resolution status"}
+          </p>
         </div>
       </div>
     </header>
@@ -202,7 +221,7 @@
         <div class="feedback-layout">
           <MyFeedbackList
             items={state.items}
-            selectedItemId={selectedItemId}
+            {selectedItemId}
             onSelect={(item) => myFeedbackDetailState.selectItem(item)}
             isLoading={state.isLoading}
           />

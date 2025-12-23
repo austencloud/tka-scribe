@@ -174,9 +174,14 @@ export class NotificationTriggerService {
    * Get notification types that should be treated as duplicates of each other
    * For example, feedback-response and feedback-resolved are redundant
    */
-  private getEquivalentNotificationTypes(type: NotificationType): NotificationType[] {
+  private getEquivalentNotificationTypes(
+    type: NotificationType
+  ): NotificationType[] {
     // feedback-response and feedback-resolved are equivalent - user only needs one
-    const responseResolvedGroup: NotificationType[] = ["feedback-response", "feedback-resolved"];
+    const responseResolvedGroup: NotificationType[] = [
+      "feedback-response",
+      "feedback-resolved",
+    ];
 
     if (responseResolvedGroup.includes(type)) {
       return responseResolvedGroup;
@@ -330,7 +335,8 @@ export class NotificationTriggerService {
     }
 
     try {
-      const preferences = await notificationPreferencesService.getPreferences(userId);
+      const preferences =
+        await notificationPreferencesService.getPreferences(userId);
       const prefKey = getPreferenceKeyForType(type);
 
       if (!prefKey) {
@@ -351,7 +357,14 @@ export class NotificationTriggerService {
    */
   private async createNotification(
     userId: string,
-    notification: Omit<FeedbackNotification | SequenceNotification | SocialNotification | MessageNotification | SystemNotification, "id">
+    notification: Omit<
+      | FeedbackNotification
+      | SequenceNotification
+      | SocialNotification
+      | MessageNotification
+      | SystemNotification,
+      "id"
+    >
   ): Promise<string> {
     const firestore = await getFirestoreInstance();
     const userNotificationsRef = collection(

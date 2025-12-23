@@ -2,15 +2,21 @@
 <script lang="ts">
   import { STATUS_CONFIG } from "../../domain/models/feedback-models";
 
-  const { isDropTarget, isDragActive, onDragOver, onDragLeave, onDrop, onOpenArchive } =
-    $props<{
-      isDropTarget: boolean;
-      isDragActive: boolean;
-      onDragOver: () => void;
-      onDragLeave: () => void;
-      onDrop: () => void;
-      onOpenArchive: () => void;
-    }>();
+  const {
+    isDropTarget,
+    isDragActive,
+    onDragOver,
+    onDragLeave,
+    onDrop,
+    onOpenArchive,
+  } = $props<{
+    isDropTarget: boolean;
+    isDragActive: boolean;
+    onDragOver: () => void;
+    onDragLeave: () => void;
+    onDrop: () => void;
+    onOpenArchive: () => void;
+  }>();
 
   const ARCHIVE_STATUS = "archived" as const;
 </script>

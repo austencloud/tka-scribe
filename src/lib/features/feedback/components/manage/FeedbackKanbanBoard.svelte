@@ -6,7 +6,12 @@
   import { createKanbanBoardState } from "../../state/kanban-board-state.svelte";
   import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
   import type { IFeedbackSortingService } from "../../services/contracts/IFeedbackSortingService";
-  import { tryResolve, TYPES, loadFeatureModule, ensureContainerInitialized } from "$lib/shared/inversify/di";
+  import {
+    tryResolve,
+    TYPES,
+    loadFeatureModule,
+    ensureContainerInitialized,
+  } from "$lib/shared/inversify/di";
   import KanbanMobileView from "./KanbanMobileView.svelte";
   import KanbanDesktopView from "./KanbanDesktopView.svelte";
 
@@ -34,15 +39,23 @@
         await loadFeatureModule("feedback");
 
         // Now resolve services - feedback module is ready
-        sortingService = tryResolve<IFeedbackSortingService>(TYPES.IFeedbackSortingService);
+        sortingService = tryResolve<IFeedbackSortingService>(
+          TYPES.IFeedbackSortingService
+        );
         storageService = tryResolve<IStorageService>(TYPES.IStorageService);
 
         if (!sortingService) {
-          console.error(`[FeedbackKanbanBoard] Failed to resolve IFeedbackSortingService after feedback module load`);
+          console.error(
+            `[FeedbackKanbanBoard] Failed to resolve IFeedbackSortingService after feedback module load`
+          );
           return;
         }
 
-        boardState = createKanbanBoardState(manageState, sortingService, storageService);
+        boardState = createKanbanBoardState(
+          manageState,
+          sortingService,
+          storageService
+        );
 
         // Set up ResizeObserver to detect mobile view (< 652px container width)
         const boardElement = document.querySelector(".kanban-board");
@@ -92,7 +105,10 @@
   }
 </script>
 
-<div class="kanban-board" style="--active-color: {boardState?.activeStatusColor}">
+<div
+  class="kanban-board"
+  style="--active-color: {boardState?.activeStatusColor}"
+>
   {#if boardState}
     {#if boardState.isMobileView}
       <KanbanMobileView {boardState} {manageState} {onOpenArchive} />
@@ -172,7 +188,8 @@
                 type="date"
                 class="date-input"
                 value={boardState.deferDate}
-                onchange={(e) => boardState?.setDeferDate(e.currentTarget.value)}
+                onchange={(e) =>
+                  boardState?.setDeferDate(e.currentTarget.value)}
                 min={new Date().toISOString().split("T")[0]}
                 required
               />
@@ -187,7 +204,8 @@
                 id="defer-notes"
                 class="notes-input"
                 value={boardState.deferNotes}
-                onchange={(e) => boardState?.setDeferNotes(e.currentTarget.value)}
+                onchange={(e) =>
+                  boardState?.setDeferNotes(e.currentTarget.value)}
                 placeholder="Why are you deferring this? (e.g., 'Wait for Svelte 6', 'Revisit after Q1')"
                 rows="3"
               ></textarea>
@@ -248,7 +266,11 @@
 
     /* ===== COLORS ===== */
     --kb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
-    --kb-text-muted: color-mix(in srgb, var(--theme-text, rgba(255, 255, 255, 0.95)) 75%, transparent);
+    --kb-text-muted: color-mix(
+      in srgb,
+      var(--theme-text, rgba(255, 255, 255, 0.95)) 75%,
+      transparent
+    );
     --kb-text-subtle: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
 
     /* ===== TRANSITIONS ===== */

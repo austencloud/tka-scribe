@@ -14,7 +14,10 @@ import type {
   FeedbackType,
 } from "../domain/models/feedback-models";
 import { feedbackService } from "../services/implementations/FeedbackService";
-import { getCapturedModule, getCapturedTab } from "./feedback-context-tracker.svelte";
+import {
+  getCapturedModule,
+  getCapturedTab,
+} from "./feedback-context-tracker.svelte";
 
 const FORM_STORAGE_KEY = "tka-feedback-form-draft";
 
@@ -40,11 +43,14 @@ function persistFormData(data: FeedbackFormData): void {
   try {
     // Only persist if there's actual content
     if (data.title.trim() || data.description.trim()) {
-      localStorage.setItem(FORM_STORAGE_KEY, JSON.stringify({
-        type: data.type,
-        title: data.title,
-        description: data.description,
-      }));
+      localStorage.setItem(
+        FORM_STORAGE_KEY,
+        JSON.stringify({
+          type: data.type,
+          title: data.title,
+          description: data.description,
+        })
+      );
     } else {
       localStorage.removeItem(FORM_STORAGE_KEY);
     }
@@ -70,11 +76,13 @@ export function createFeedbackSubmitState() {
   const persisted = getPersistedFormData();
 
   // Form data (simplified - just type, title, description)
-  let formData = $state<FeedbackFormData>(persisted ?? {
-    type: "general",
-    title: "",
-    description: "",
-  });
+  let formData = $state<FeedbackFormData>(
+    persisted ?? {
+      type: "general",
+      title: "",
+      description: "",
+    }
+  );
 
   // Attached images
   let images = $state<File[]>([]);
@@ -116,7 +124,8 @@ export function createFeedbackSubmitState() {
     if (!formData.description.trim()) {
       errors.description = "Description is required";
     } else if (formData.description.trim().length < 10) {
-      errors.description = "Please provide a bit more detail (at least 10 characters)";
+      errors.description =
+        "Please provide a bit more detail (at least 10 characters)";
     }
 
     formErrors = errors;

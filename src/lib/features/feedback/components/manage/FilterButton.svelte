@@ -68,7 +68,11 @@
   }
 
   .filter-button.active {
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 15%,
+      transparent
+    );
     border-color: var(--semantic-success, #10b981);
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
@@ -84,7 +88,11 @@
   .filter-button.panel .panel-arrow {
     font-size: 0.7em;
     margin-left: 6px;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 

@@ -272,7 +272,11 @@
     gap: 12px;
     margin-top: 4px;
     font-size: 0.75rem;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
   }
 
   .has-response {

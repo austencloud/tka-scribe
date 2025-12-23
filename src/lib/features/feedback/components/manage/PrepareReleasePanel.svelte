@@ -577,13 +577,18 @@
   }
 
   .primary-btn {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6), var(--theme-accent-strong, #6366f1));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #8b5cf6),
+      var(--theme-accent-strong, #6366f1)
+    );
     color: white;
   }
 
   .primary-btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .primary-btn:disabled {

@@ -9,7 +9,10 @@ import { injectable } from "inversify";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { IFeedbackSubtaskService } from "../contracts/IFeedbackSubtaskService";
-import type { FeedbackSubtask, SubtaskStatus } from "../../domain/models/feedback-models";
+import type {
+  FeedbackSubtask,
+  SubtaskStatus,
+} from "../../domain/models/feedback-models";
 
 @injectable()
 export class FeedbackSubtaskService implements IFeedbackSubtaskService {
@@ -44,18 +47,19 @@ export class FeedbackSubtaskService implements IFeedbackSubtaskService {
     _subtaskId: string,
     _status: SubtaskStatus
   ): Promise<void> {
-    throw new Error("Not yet implemented - requires fetch-modify-replace pattern");
+    throw new Error(
+      "Not yet implemented - requires fetch-modify-replace pattern"
+    );
   }
 
   /**
    * Delete a subtask
    * Note: Firestore limitation - deferred to Phase 3
    */
-  async deleteSubtask(
-    _feedbackId: string,
-    _subtaskId: string
-  ): Promise<void> {
-    throw new Error("Not yet implemented - requires fetch-modify-replace pattern");
+  async deleteSubtask(_feedbackId: string, _subtaskId: string): Promise<void> {
+    throw new Error(
+      "Not yet implemented - requires fetch-modify-replace pattern"
+    );
   }
 
   /**

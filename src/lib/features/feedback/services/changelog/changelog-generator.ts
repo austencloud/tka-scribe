@@ -8,16 +8,19 @@
  * Transforms technical language into plain user-facing descriptions.
  */
 
-import type { ChangelogEntry, ChangelogCategory } from "../../domain/models/version-models";
+import type {
+  ChangelogEntry,
+  ChangelogCategory,
+} from "../../domain/models/version-models";
 import type { VersionFeedbackItem } from "../../domain/models/version-models";
 
 /**
  * Parsed conventional commit
  */
 interface ParsedCommit {
-  type: string;       // feat, fix, refactor, chore, etc.
-  scope?: string;     // (nav), (feedback), etc.
-  message: string;    // The actual message
+  type: string; // feat, fix, refactor, chore, etc.
+  scope?: string; // (nav), (feedback), etc.
+  message: string; // The actual message
   isBreaking: boolean;
 }
 
@@ -40,7 +43,11 @@ function parseCommit(message: string): ParsedCommit | null {
     if (lowerMsg.includes("fix") || lowerMsg.includes("bug")) {
       return { type: "fix", message, isBreaking: false };
     }
-    if (lowerMsg.includes("add") || lowerMsg.includes("new") || lowerMsg.includes("feature")) {
+    if (
+      lowerMsg.includes("add") ||
+      lowerMsg.includes("new") ||
+      lowerMsg.includes("feature")
+    ) {
       return { type: "feat", message, isBreaking: false };
     }
     return null; // Can't categorize
@@ -61,7 +68,10 @@ function humanizeMessage(parsed: ParsedCommit): string {
   let msg = parsed.message;
 
   // Remove technical prefixes
-  msg = msg.replace(/^(Add|Implement|Create|Update|Fix|Improve|Enhance)\s+/i, "");
+  msg = msg.replace(
+    /^(Add|Implement|Create|Update|Fix|Improve|Enhance)\s+/i,
+    ""
+  );
 
   // Capitalize first letter
   msg = msg.charAt(0).toUpperCase() + msg.slice(1);
@@ -69,14 +79,14 @@ function humanizeMessage(parsed: ParsedCommit): string {
   // Clean up scope references
   if (parsed.scope) {
     const scopeMap: Record<string, string> = {
-      "nav": "navigation",
-      "auth": "authentication",
-      "ui": "interface",
-      "discover": "discovery",
-      "animate": "animations",
-      "create": "creation tools",
-      "feedback": "feedback system",
-      "settings": "settings",
+      nav: "navigation",
+      auth: "authentication",
+      ui: "interface",
+      discover: "discovery",
+      animate: "animations",
+      create: "creation tools",
+      feedback: "feedback system",
+      settings: "settings",
     };
     // Don't include scope in message, it's too technical
   }
@@ -89,12 +99,16 @@ function humanizeMessage(parsed: ParsedCommit): string {
       }
       break;
     case "feat":
-      if (!msg.toLowerCase().startsWith("added") && !msg.toLowerCase().startsWith("new")) {
+      if (
+        !msg.toLowerCase().startsWith("added") &&
+        !msg.toLowerCase().startsWith("new")
+      ) {
         msg = "Added " + msg.charAt(0).toLowerCase() + msg.slice(1);
       }
       break;
     case "perf":
-      msg = "Improved performance of " + msg.charAt(0).toLowerCase() + msg.slice(1);
+      msg =
+        "Improved performance of " + msg.charAt(0).toLowerCase() + msg.slice(1);
       break;
   }
 
@@ -128,13 +142,24 @@ function isUserFacing(parsed: ParsedCommit): boolean {
 
   // Check for internal indicators in the message
   const internalKeywords = [
-    "barrel", "export", "import", "type", "interface",
-    "cleanup", "lint", "format", "dependency", "dependencies",
-    "tsconfig", "eslint", "prettier", "config"
+    "barrel",
+    "export",
+    "import",
+    "type",
+    "interface",
+    "cleanup",
+    "lint",
+    "format",
+    "dependency",
+    "dependencies",
+    "tsconfig",
+    "eslint",
+    "prettier",
+    "config",
   ];
 
   const lowerMsg = parsed.message.toLowerCase();
-  if (internalKeywords.some(kw => lowerMsg.includes(kw))) {
+  if (internalKeywords.some((kw) => lowerMsg.includes(kw))) {
     return false;
   }
 
@@ -144,7 +169,9 @@ function isUserFacing(parsed: ParsedCommit): boolean {
 /**
  * Generate changelog entries from git commits
  */
-export function generateFromCommits(commitMessages: string[]): ChangelogEntry[] {
+export function generateFromCommits(
+  commitMessages: string[]
+): ChangelogEntry[] {
   const entries: ChangelogEntry[] = [];
 
   for (const message of commitMessages) {
@@ -165,8 +192,10 @@ export function generateFromCommits(commitMessages: string[]): ChangelogEntry[] 
 /**
  * Generate changelog entries from completed feedback items
  */
-export function generateFromFeedback(items: VersionFeedbackItem[]): ChangelogEntry[] {
-  return items.map(item => {
+export function generateFromFeedback(
+  items: VersionFeedbackItem[]
+): ChangelogEntry[] {
+  return items.map((item) => {
     // Determine category from feedback type
     let category: ChangelogCategory;
     switch (item.type) {
@@ -187,7 +216,11 @@ export function generateFromFeedback(items: VersionFeedbackItem[]): ChangelogEnt
     const lowerText = text.toLowerCase();
     if (category === "fixed" && !lowerText.startsWith("fixed")) {
       text = "Fixed " + text.charAt(0).toLowerCase() + text.slice(1);
-    } else if (category === "added" && !lowerText.startsWith("added") && !lowerText.startsWith("new")) {
+    } else if (
+      category === "added" &&
+      !lowerText.startsWith("added") &&
+      !lowerText.startsWith("new")
+    ) {
       text = "Added " + text.charAt(0).toLowerCase() + text.slice(1);
     }
 
@@ -208,11 +241,13 @@ export function mergeEntries(
 
   // Add commit entries that don't seem to duplicate feedback
   for (const commitEntry of fromCommits) {
-    const isDuplicate = merged.some(feedbackEntry => {
+    const isDuplicate = merged.some((feedbackEntry) => {
       // Simple similarity check - could be improved
-      const feedbackWords = new Set(feedbackEntry.text.toLowerCase().split(/\s+/));
+      const feedbackWords = new Set(
+        feedbackEntry.text.toLowerCase().split(/\s+/)
+      );
       const commitWords = commitEntry.text.toLowerCase().split(/\s+/);
-      const overlap = commitWords.filter(w => feedbackWords.has(w)).length;
+      const overlap = commitWords.filter((w) => feedbackWords.has(w)).length;
       return overlap / commitWords.length > 0.5; // 50% word overlap = likely duplicate
     });
 

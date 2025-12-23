@@ -9,21 +9,21 @@
  */
 export type NotificationType =
   // Feedback-related notifications
-  | "feedback-resolved"      // Admin marked feedback as resolved
-  | "feedback-in-progress"   // Admin started working on feedback
-  | "feedback-needs-info"    // Admin needs more info from tester
-  | "feedback-response"      // Admin sent a message
+  | "feedback-resolved" // Admin marked feedback as resolved
+  | "feedback-in-progress" // Admin started working on feedback
+  | "feedback-needs-info" // Admin needs more info from tester
+  | "feedback-response" // Admin sent a message
   // Sequence engagement notifications
-  | "sequence-liked"         // Someone liked your sequence
+  | "sequence-liked" // Someone liked your sequence
   // Social notifications
-  | "user-followed"          // Someone followed you
-  | "achievement-unlocked"   // User unlocked an achievement
+  | "user-followed" // Someone followed you
+  | "achievement-unlocked" // User unlocked an achievement
   // Messaging notifications
-  | "message-received"       // Someone sent you a direct message
+  | "message-received" // Someone sent you a direct message
   // Admin notifications
-  | "admin-new-user-signup"  // A new user signed up (admin-only)
+  | "admin-new-user-signup" // A new user signed up (admin-only)
   // System notifications
-  | "system-announcement";   // Important system announcements
+  | "system-announcement"; // Important system announcements
 
 /**
  * Base notification interface
@@ -47,7 +47,11 @@ export interface BaseNotification {
  * Feedback-related notification
  */
 export interface FeedbackNotification extends BaseNotification {
-  type: "feedback-resolved" | "feedback-in-progress" | "feedback-needs-info" | "feedback-response";
+  type:
+    | "feedback-resolved"
+    | "feedback-in-progress"
+    | "feedback-needs-info"
+    | "feedback-response";
   feedbackId: string;
   feedbackTitle: string;
   fromUserId: string;
@@ -176,7 +180,9 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
 /**
  * Map notification type to preference key
  */
-export function getPreferenceKeyForType(type: NotificationType): keyof NotificationPreferences | null {
+export function getPreferenceKeyForType(
+  type: NotificationType
+): keyof NotificationPreferences | null {
   const typeToKey: Record<string, keyof NotificationPreferences> = {
     "feedback-resolved": "feedbackResolved",
     "feedback-in-progress": "feedbackInProgress",

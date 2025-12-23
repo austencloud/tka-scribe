@@ -222,7 +222,11 @@
     --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));
     --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
     --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    --fb-text-subtle: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 70%, transparent);
+    --fb-text-subtle: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 70%,
+      transparent
+    );
 
     display: flex;
     flex-direction: column;

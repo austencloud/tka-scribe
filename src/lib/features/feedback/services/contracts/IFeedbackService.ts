@@ -54,7 +54,11 @@ export interface IFeedbackService {
   /**
    * Defer feedback to be reactivated at a future date (admin)
    */
-  deferFeedback(feedbackId: string, deferredUntil: Date, notes: string): Promise<void>;
+  deferFeedback(
+    feedbackId: string,
+    deferredUntil: Date,
+    notes: string
+  ): Promise<void>;
 
   /**
    * Delete feedback item (admin)
@@ -67,12 +71,9 @@ export interface IFeedbackService {
    */
   updateFeedback(
     feedbackId: string,
-    updates: Partial<Pick<FeedbackItem,
-      | "type"
-      | "title"
-      | "description"
-      | "priority"
-    >>
+    updates: Partial<
+      Pick<FeedbackItem, "type" | "title" | "description" | "priority">
+    >
   ): Promise<void>;
 
   /**

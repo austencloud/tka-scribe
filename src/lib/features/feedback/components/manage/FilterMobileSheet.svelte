@@ -102,9 +102,7 @@
   ];
 </script>
 
-<svelte:window
-  onkeydown={uiState.isSheetOpen ? handleKeydown : undefined}
-/>
+<svelte:window onkeydown={uiState.isSheetOpen ? handleKeydown : undefined} />
 
 {#if uiState.isSheetOpen}
   <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
@@ -288,7 +286,10 @@
     right: 0;
     bottom: 0;
     max-height: 85vh;
-    background: var(--theme-panel-bg, linear-gradient(180deg, #1e1e24 0%, #16161a 100%));
+    background: var(
+      --theme-panel-bg,
+      linear-gradient(180deg, #1e1e24 0%, #16161a 100%)
+    );
     border-radius: 20px 20px 0 0;
     display: flex;
     flex-direction: column;
@@ -367,7 +368,11 @@
     margin-left: auto;
     margin-right: 8px;
     padding: 4px 8px;
-    background: color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #10b981) 15%,
+      transparent
+    );
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
@@ -485,13 +490,19 @@
   }
 
   .sheet-btn.primary {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%, var(--semantic-success, #10b981) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%,
+      var(--semantic-success, #10b981) 100%
+    );
     color: white;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
   }
 
   .sheet-btn.primary:hover {
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--semantic-success, #10b981) 35%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--semantic-success, #10b981) 35%, transparent);
     transform: translateY(-1px);
   }
 

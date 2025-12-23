@@ -167,7 +167,8 @@
     outline: none;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
     border-color: var(--semantic-success, #10b981);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
   }
 
   .search-clear {
@@ -246,7 +247,11 @@
     justify-content: center;
     width: var(--fb-icon-btn);
     height: var(--fb-icon-btn);
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 12%,
+      transparent
+    );
     border: none;
     border-radius: 50%;
     color: var(--semantic-error, #ef4444);
@@ -257,7 +262,11 @@
   }
 
   .clear-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 20%,
+      transparent
+    );
   }
 
   /* ===== CONTAINER QUERY: Hide filters on mobile (tabs serve as filter) ===== */

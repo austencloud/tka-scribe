@@ -1,10 +1,7 @@
 <script lang="ts">
   import type { FeedbackDetailState } from "../../../state/feedback-detail-state.svelte";
 
-  const {
-    detailState,
-    readOnly = false,
-  } = $props<{
+  const { detailState, readOnly = false } = $props<{
     detailState: FeedbackDetailState;
     readOnly?: boolean;
   }>();
@@ -77,7 +74,8 @@
     gap: var(--fb-space-xs);
     padding: var(--fb-space-sm) var(--fb-space-md);
     background: transparent;
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: var(--fb-radius-md);
     color: var(--semantic-error, #ef4444);
     cursor: pointer;
@@ -88,7 +86,11 @@
   }
 
   .delete-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 10%,
+      transparent
+    );
     opacity: 1;
   }
 
@@ -98,8 +100,13 @@
     flex-direction: column;
     gap: var(--fb-space-md);
     padding: var(--fb-space-md);
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 5%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 5%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     border-radius: var(--fb-radius-md);
   }
 

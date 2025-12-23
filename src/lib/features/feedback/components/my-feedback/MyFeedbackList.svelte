@@ -12,13 +12,12 @@
   } from "../../domain/models/feedback-models";
   import MyFeedbackCard from "./MyFeedbackCard.svelte";
 
-  const { items, selectedItemId, onSelect, isLoading } =
-    $props<{
-      items: FeedbackItem[];
-      selectedItemId: string | null;
-      onSelect: (item: FeedbackItem) => void;
-      isLoading: boolean;
-    }>();
+  const { items, selectedItemId, onSelect, isLoading } = $props<{
+    items: FeedbackItem[];
+    selectedItemId: string | null;
+    onSelect: (item: FeedbackItem) => void;
+    isLoading: boolean;
+  }>();
 
   // Filter state - default to "new" as most actionable
   let selectedStatus = $state<FeedbackStatus>("new");
@@ -26,7 +25,12 @@
   // Load persisted filter state on mount
   onMount(() => {
     const stored = localStorage.getItem("my-feedback-filter");
-    if (stored && ["new", "in-progress", "in-review", "completed", "archived"].includes(stored)) {
+    if (
+      stored &&
+      ["new", "in-progress", "in-review", "completed", "archived"].includes(
+        stored
+      )
+    ) {
       selectedStatus = stored as FeedbackStatus;
     }
   });
@@ -93,7 +97,9 @@
     {#if filteredItems.length === 0 && !isLoading}
       <div class="empty-filter">
         <i class="fas fa-filter"></i>
-        <span>No {STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span>
+        <span
+          >No {STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span
+        >
       </div>
     {/if}
 
@@ -150,9 +156,18 @@
     background: linear-gradient(
       135deg,
       var(--theme-card-hover-bg, rgba(40, 40, 50, 0.98)) 0%,
-      color-mix(in srgb, var(--theme-card-hover-bg, rgba(40, 40, 50, 0.98)) 90%, white) 100%
+      color-mix(
+          in srgb,
+          var(--theme-card-hover-bg, rgba(40, 40, 50, 0.98)) 90%,
+          white
+        )
+        100%
     );
-    border-color: color-mix(in srgb, var(--theme-text, rgba(255, 255, 255, 0.95)) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-text, rgba(255, 255, 255, 0.95)) 30%,
+      transparent
+    );
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
   }
@@ -240,7 +255,11 @@
     justify-content: center;
     gap: 8px;
     padding: 32px;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
     text-align: center;
   }
 

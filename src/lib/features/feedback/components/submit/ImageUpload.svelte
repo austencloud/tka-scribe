@@ -206,15 +206,24 @@
 
   .upload-button:hover:not(:disabled) {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.25)) 150%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.25)) 150%,
+      transparent
+    );
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .upload-button.dragging {
     border-color: var(--theme-accent-strong, #6366f1);
-    background: color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #6366f1) 15%,
+      transparent
+    );
     color: var(--theme-accent-strong, #6366f1);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong, #6366f1) 20%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 20%, transparent);
   }
 
   .upload-button:disabled {

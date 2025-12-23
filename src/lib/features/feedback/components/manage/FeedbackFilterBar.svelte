@@ -201,7 +201,8 @@
     outline: none;
     border-color: var(--semantic-success, #10b981);
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
   }
 
   .search-wrapper:focus-within .search-icon {
@@ -275,7 +276,11 @@
   }
 
   .clear-filters-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 10%,
+      transparent
+    );
     color: var(--semantic-error, #ef4444);
   }
 

@@ -19,7 +19,10 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
-import type { UserNotification, TesterNotification } from "../../domain/models/notification-models";
+import type {
+  UserNotification,
+  TesterNotification,
+} from "../../domain/models/notification-models";
 
 const USERS_COLLECTION = "users";
 const NOTIFICATIONS_SUBCOLLECTION = "notifications";
@@ -68,13 +71,18 @@ export class NotificationService {
 
     const snapshot = await getDocs(q);
 
-    return snapshot.docs.map((docSnap) => this.mapDocToNotification(docSnap.id, docSnap.data()));
+    return snapshot.docs.map((docSnap) =>
+      this.mapDocToNotification(docSnap.id, docSnap.data())
+    );
   }
 
   /**
    * Map Firestore document to notification object
    */
-  private mapDocToNotification(id: string, data: Record<string, unknown>): UserNotification {
+  private mapDocToNotification(
+    id: string,
+    data: Record<string, unknown>
+  ): UserNotification {
     const baseNotification = {
       id,
       userId: data["userId"] as string,
@@ -201,7 +209,10 @@ export class NotificationService {
   /**
    * Delete a single notification
    */
-  async deleteNotification(userId: string, notificationId: string): Promise<void> {
+  async deleteNotification(
+    userId: string,
+    notificationId: string
+  ): Promise<void> {
     const firestore = await getFirestoreInstance();
     const notificationRef = doc(
       firestore,
@@ -229,9 +240,7 @@ export class NotificationService {
     const q = query(notificationsRef, where("read", "==", true));
     const snapshot = await getDocs(q);
 
-    const deletes = snapshot.docs.map((docSnap) =>
-      deleteDoc(docSnap.ref)
-    );
+    const deletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
 
     await Promise.all(deletes);
   }
@@ -250,9 +259,7 @@ export class NotificationService {
 
     const snapshot = await getDocs(notificationsRef);
 
-    const deletes = snapshot.docs.map((docSnap) =>
-      deleteDoc(docSnap.ref)
-    );
+    const deletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
 
     await Promise.all(deletes);
   }
@@ -284,9 +291,14 @@ export class NotificationService {
       );
 
       // Build query with or without limit based on maxCount
-      const q = maxCount > 0
-        ? query(notificationsRef, orderBy("createdAt", "desc"), limit(maxCount))
-        : query(notificationsRef, orderBy("createdAt", "desc"));
+      const q =
+        maxCount > 0
+          ? query(
+              notificationsRef,
+              orderBy("createdAt", "desc"),
+              limit(maxCount)
+            )
+          : query(notificationsRef, orderBy("createdAt", "desc"));
 
       this.unsubscribe = onSnapshot(q, (snapshot) => {
         const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>

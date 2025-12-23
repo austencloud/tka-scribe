@@ -4,7 +4,11 @@
  * Contract for app version tracking and release management.
  */
 
-import type { AppVersion, VersionFeedbackItem, ChangelogEntry } from "../../domain/models/version-models";
+import type {
+  AppVersion,
+  VersionFeedbackItem,
+  ChangelogEntry,
+} from "../../domain/models/version-models";
 
 export interface IVersionService {
   /**
@@ -27,7 +31,10 @@ export interface IVersionService {
    * - Tags all completed feedback with the new version and archives them
    * - Creates a version record with summary and changelog entries
    */
-  prepareRelease(version: string, changelogEntries?: ChangelogEntry[]): Promise<void>;
+  prepareRelease(
+    version: string,
+    changelogEntries?: ChangelogEntry[]
+  ): Promise<void>;
 
   /**
    * Update release notes for an existing version
@@ -37,12 +44,19 @@ export interface IVersionService {
   /**
    * Update changelog entries for an existing version
    */
-  updateChangelogEntries(version: string, changelogEntries: ChangelogEntry[]): Promise<void>;
+  updateChangelogEntries(
+    version: string,
+    changelogEntries: ChangelogEntry[]
+  ): Promise<void>;
 
   /**
    * Update a single changelog entry within a version
    */
-  updateChangelogEntry(version: string, index: number, updatedEntry: ChangelogEntry): Promise<void>;
+  updateChangelogEntry(
+    version: string,
+    index: number,
+    updatedEntry: ChangelogEntry
+  ): Promise<void>;
 
   /**
    * Add a new changelog entry to a version

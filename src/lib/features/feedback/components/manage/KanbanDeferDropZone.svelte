@@ -1,14 +1,20 @@
 <!-- Deferred drop zone for deferring feedback items -->
 <script lang="ts">
-  const { isDropTarget, isDragActive, deferredCount, onDragOver, onDragLeave, onDrop } =
-    $props<{
-      isDropTarget: boolean;
-      isDragActive: boolean;
-      deferredCount: number;
-      onDragOver: () => void;
-      onDragLeave: () => void;
-      onDrop: () => void;
-    }>();
+  const {
+    isDropTarget,
+    isDragActive,
+    deferredCount,
+    onDragOver,
+    onDragLeave,
+    onDrop,
+  } = $props<{
+    isDropTarget: boolean;
+    isDragActive: boolean;
+    deferredCount: number;
+    onDragOver: () => void;
+    onDragLeave: () => void;
+    onDrop: () => void;
+  }>();
 </script>
 
 <div

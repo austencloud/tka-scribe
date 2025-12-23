@@ -23,7 +23,9 @@
   }
 
   // Sort history by timestamp (newest first)
-  const sortedHistory = $derived([...history].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
+  const sortedHistory = $derived(
+    [...history].sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+  );
 </script>
 
 {#if sortedHistory.length > 0}
@@ -34,7 +36,8 @@
     </h3>
     <div class="timeline">
       {#each sortedHistory as entry}
-        {@const config = STATUS_CONFIG[entry.status as keyof typeof STATUS_CONFIG]}
+        {@const config =
+          STATUS_CONFIG[entry.status as keyof typeof STATUS_CONFIG]}
         <div class="timeline-entry">
           <div class="timeline-dot" style="background: {config.color}">
             <i class="fas {config.icon}"></i>
@@ -67,7 +70,11 @@
     margin: 0;
     font-size: 0.75rem;
     font-weight: 600;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%,
+      transparent
+    );
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }

@@ -51,11 +51,11 @@ export type FeedbackPriority = "low" | "medium" | "high" | "critical";
  * 4 Kanban columns + archived (hidden, versioned)
  */
 export type FeedbackStatus =
-  | "new"          // Unclaimed, ready to be picked up
-  | "in-progress"  // Agent is working on it
-  | "in-review"    // Done, waiting for tester confirmation
-  | "completed"    // Confirmed working, ready for next release
-  | "archived";    // Tagged with version, historical record
+  | "new" // Unclaimed, ready to be picked up
+  | "in-progress" // Agent is working on it
+  | "in-review" // Done, waiting for tester confirmation
+  | "completed" // Confirmed working, ready for next release
+  | "archived"; // Tagged with version, historical record
 export const FEEDBACK_STATUSES = [
   "new",
   "in-progress",
@@ -74,9 +74,9 @@ export function isFeedbackStatus(value: unknown): value is FeedbackStatus {
  * Tester confirmation status after admin resolves feedback
  */
 export type TesterConfirmationStatus =
-  | "pending"      // Waiting for tester to confirm
-  | "confirmed"    // Tester confirms fix works
-  | "needs-work"   // Tester says it needs more work
+  | "pending" // Waiting for tester to confirm
+  | "confirmed" // Tester confirms fix works
+  | "needs-work" // Tester says it needs more work
   | "no-response"; // Tester hasn't responded after timeout
 
 /**
@@ -235,10 +235,18 @@ export const CONFIRMATION_STATUS_CONFIG: Record<
   TesterConfirmationStatus,
   { label: string; color: string; icon: string }
 > = {
-  pending: { label: "Awaiting Confirmation", color: "#f59e0b", icon: "fa-clock" },
+  pending: {
+    label: "Awaiting Confirmation",
+    color: "#f59e0b",
+    icon: "fa-clock",
+  },
   confirmed: { label: "Confirmed Working", color: "#10b981", icon: "fa-check" },
   "needs-work": { label: "Needs More Work", color: "#ef4444", icon: "fa-redo" },
-  "no-response": { label: "No Response", color: "#6b7280", icon: "fa-question" },
+  "no-response": {
+    label: "No Response",
+    color: "#6b7280",
+    icon: "fa-question",
+  },
 };
 
 /**
@@ -265,18 +273,18 @@ export const TYPE_CONFIG: Record<
     label: "Bug Report",
     color: "#ef4444",
     icon: "fa-bug",
-    placeholder: "What went wrong? Describe the issue in detail..."
+    placeholder: "What went wrong? Describe the issue in detail...",
   },
   feature: {
     label: "Feature Request",
     color: "#8b5cf6",
     icon: "fa-lightbulb",
-    placeholder: "Describe the feature and how it would help you..."
+    placeholder: "Describe the feature and how it would help you...",
   },
   general: {
     label: "General Feedback",
     color: "#3b82f6",
     icon: "fa-comment",
-    placeholder: "Share your thoughts, suggestions, or observations..."
+    placeholder: "Share your thoughts, suggestions, or observations...",
   },
 };

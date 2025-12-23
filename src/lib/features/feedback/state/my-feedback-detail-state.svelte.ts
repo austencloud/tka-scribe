@@ -6,33 +6,49 @@
  * This allows the drawer to be rendered outside the tab's stacking context.
  */
 
-import type { FeedbackItem, FeedbackType } from "../domain/models/feedback-models";
+import type {
+  FeedbackItem,
+  FeedbackType,
+} from "../domain/models/feedback-models";
 
 // Singleton state
 let selectedItem = $state<FeedbackItem | null>(null);
-let updateHandler = $state<((feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>) | null>(null);
-let deleteHandler = $state<((feedbackId: string) => Promise<void>) | null>(null);
+let updateHandler = $state<
+  | ((
+      feedbackId: string,
+      updates: { type?: FeedbackType; description?: string },
+      appendMode?: boolean
+    ) => Promise<FeedbackItem>)
+  | null
+>(null);
+let deleteHandler = $state<((feedbackId: string) => Promise<void>) | null>(
+  null
+);
 
 // URL persistence helpers
 function updateURLParam(feedbackId: string | null) {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
   const url = new URL(window.location.href);
   if (feedbackId) {
-    url.searchParams.set('feedback', feedbackId);
+    url.searchParams.set("feedback", feedbackId);
   } else {
-    url.searchParams.delete('feedback');
+    url.searchParams.delete("feedback");
   }
-  window.history.replaceState({}, '', url.toString());
+  window.history.replaceState({}, "", url.toString());
 }
 
 function getURLParam(): string | null {
-  if (typeof window === 'undefined') return null;
-  return new URL(window.location.href).searchParams.get('feedback');
+  if (typeof window === "undefined") return null;
+  return new URL(window.location.href).searchParams.get("feedback");
 }
 
 export const myFeedbackDetailState = {
-  get selectedItem() { return selectedItem; },
-  get isOpen() { return selectedItem !== null; },
+  get selectedItem() {
+    return selectedItem;
+  },
+  get isOpen() {
+    return selectedItem !== null;
+  },
 
   // Get the persisted feedback ID from URL
   getPersistedFeedbackId(): string | null {
@@ -52,7 +68,11 @@ export const myFeedbackDetailState = {
 
   // Register handlers from MyFeedbackTab
   setHandlers(
-    onUpdate: (feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean) => Promise<FeedbackItem>,
+    onUpdate: (
+      feedbackId: string,
+      updates: { type?: FeedbackType; description?: string },
+      appendMode?: boolean
+    ) => Promise<FeedbackItem>,
     onDelete: (feedbackId: string) => Promise<void>
   ) {
     updateHandler = onUpdate;
@@ -65,7 +85,11 @@ export const myFeedbackDetailState = {
   },
 
   // Proxy methods for the detail component
-  async updateItem(feedbackId: string, updates: { type?: FeedbackType; description?: string }, appendMode?: boolean): Promise<FeedbackItem> {
+  async updateItem(
+    feedbackId: string,
+    updates: { type?: FeedbackType; description?: string },
+    appendMode?: boolean
+  ): Promise<FeedbackItem> {
     if (!updateHandler) throw new Error("Update handler not registered");
     const updated = await updateHandler(feedbackId, updates, appendMode);
     // Update the selected item with new data
@@ -80,5 +104,5 @@ export const myFeedbackDetailState = {
     await deleteHandler(feedbackId);
     // Close the drawer after deletion
     selectedItem = null;
-  }
+  },
 };

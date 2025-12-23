@@ -11,19 +11,35 @@
 
   const { detailState, readOnly = false, isMobile = false }: Props = $props();
 
-  const statusConfig = $derived(STATUS_CONFIG[detailState.item.status as FeedbackStatus]);
-  const statuses = Object.entries(STATUS_CONFIG) as [FeedbackStatus, typeof statusConfig][];
+  const statusConfig = $derived(
+    STATUS_CONFIG[detailState.item.status as FeedbackStatus]
+  );
+  const statuses = Object.entries(STATUS_CONFIG) as [
+    FeedbackStatus,
+    typeof statusConfig,
+  ][];
 
   // Status cycling for mobile
-  const statusOrder: FeedbackStatus[] = ["new", "in-progress", "in-review", "completed", "archived"];
-  const currentStatusIndex = $derived(statusOrder.indexOf(detailState.item.status as FeedbackStatus));
-  const currentConfig = $derived(STATUS_CONFIG[detailState.item.status as FeedbackStatus]);
+  const statusOrder: FeedbackStatus[] = [
+    "new",
+    "in-progress",
+    "in-review",
+    "completed",
+    "archived",
+  ];
+  const currentStatusIndex = $derived(
+    statusOrder.indexOf(detailState.item.status as FeedbackStatus)
+  );
+  const currentConfig = $derived(
+    STATUS_CONFIG[detailState.item.status as FeedbackStatus]
+  );
 
   function cycleStatus(direction: "prev" | "next") {
     if (readOnly) return;
-    const newIndex = direction === "next"
-      ? Math.min(currentStatusIndex + 1, statusOrder.length - 1)
-      : Math.max(currentStatusIndex - 1, 0);
+    const newIndex =
+      direction === "next"
+        ? Math.min(currentStatusIndex + 1, statusOrder.length - 1)
+        : Math.max(currentStatusIndex - 1, 0);
     detailState.handleStatusChange(statusOrder[newIndex]);
   }
 </script>
@@ -45,10 +61,7 @@
       >
         <i class="fas fa-chevron-left"></i>
       </button>
-      <span
-        class="status-value"
-        style="--status-color: {currentConfig.color}"
-      >
+      <span class="status-value" style="--status-color: {currentConfig.color}">
         <i class="fas {currentConfig.icon}"></i>
         {currentConfig.label}
       </span>

@@ -22,7 +22,7 @@ export const notificationTargetState = {
     const id = targetFeedbackId;
     targetFeedbackId = null;
     return id;
-  }
+  },
 };
 
 /**

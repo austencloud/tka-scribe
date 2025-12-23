@@ -1,6 +1,9 @@
 <!-- FeedbackReplyPanel - Inline reply form for feedback-needs-info -->
 <script lang="ts">
-  import type { FeedbackItem, FeedbackStatus } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
   import { STATUS_CONFIG } from "../../domain/models/feedback-models";
 
   interface Props {
@@ -58,7 +61,8 @@
       </h3>
       <p class="header-hint">
         {#if (item.status as string) === "feedback-needs-info"}
-          The team needs more information to resolve this. Add clarification or details below.
+          The team needs more information to resolve this. Add clarification or
+          details below.
         {:else if (item.status as string) === "feedback-response"}
           The team sent a response. You can reply with additional information.
         {/if}
@@ -234,7 +238,11 @@
   .reply-textarea {
     width: 100%;
     padding: 10px 12px;
-    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 80%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 80%,
+      transparent
+    );
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
@@ -247,9 +255,18 @@
 
   .reply-textarea:focus {
     outline: none;
-    background: color-mix(in srgb, var(--theme-panel-bg, #12121a) 90%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 60%, transparent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 90%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 60%,
+      transparent
+    );
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
   }
 
   .reply-textarea:disabled {
@@ -264,7 +281,11 @@
 
   .char-count {
     font-size: 0.75rem;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      transparent
+    );
     transition: color 0.2s ease;
   }
 
