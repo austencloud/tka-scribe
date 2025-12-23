@@ -1,7 +1,7 @@
 /**
  * Strict Inverted CAP Executor
  *
- * Executes the strict inverted CAP (Circular Arrangement Pattern) by:
+ * Executes the strict inverted CAP (Continuous Assembly Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
  * 2. Using inverted letters (opposite motion types)
  * 3. Generating the remaining beats to complete the circular pattern

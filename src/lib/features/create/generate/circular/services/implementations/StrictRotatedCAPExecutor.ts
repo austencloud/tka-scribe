@@ -1,7 +1,7 @@
 /**
  * Strict Rotated CAP Executor
  *
- * Executes the strict rotated CAP (Circular Arrangement Pattern) by:
+ * Executes the strict rotated CAP (Continuous Assembly Pattern) by:
  * 1. Taking a partial sequence (first half or quarter)
  * 2. Applying rotational transformations to each beat
  * 3. Generating the remaining beats to complete the circular pattern

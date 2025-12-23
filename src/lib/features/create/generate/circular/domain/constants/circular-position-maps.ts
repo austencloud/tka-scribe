@@ -1,5 +1,5 @@
 /**
- * Circular Position Maps for CAP (Circular Arrangement Pattern) Generation
+ * Circular Position Maps for CAP (Continuous Assembly Pattern) Generation
  *
  * These maps define the valid end positions for circular sequences based on rotation angles.
  * - Halved CAPs: 180° rotation (position +4 or -4)

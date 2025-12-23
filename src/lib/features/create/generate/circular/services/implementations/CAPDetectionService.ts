@@ -1,7 +1,7 @@
 /**
  * CAP Detection Service Implementation
  *
- * Analyzes sequences to detect their Circular Arrangement Pattern (CAP) type.
+ * Analyzes sequences to detect their Continuous Assembly Pattern (CAP) type.
  * This is the reverse of CAP generation - given a sequence, determine what
  * CAP type (if any) it follows.
  *
@@ -26,6 +26,9 @@ import { TYPES } from "$lib/shared/inversify/types";
 import {
   HALVED_CAPS,
   QUARTERED_CAPS,
+  QUARTER_POSITION_MAP_CW,
+  QUARTER_POSITION_MAP_CCW,
+  HALF_POSITION_MAP,
 } from "../../domain/constants/circular-position-maps";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
@@ -148,22 +151,17 @@ export class CAPDetectionService implements ICAPDetectionService {
 
   /**
    * Determine slice size based on sequence length and position patterns
+   *
+   * Key insight: For quartered rotation, compare START positions of first beat
+   * of each quarter. If q1→q2→q3→q4 follows 90° rotation, it's quartered.
    */
   private determineSliceSize(beats: readonly BeatData[]): SliceSize {
     const length = beats.length;
 
-    // Check if length is divisible by 4 (potential quartered)
+    // Check quartered FIRST (more specific)
     if (length >= 4 && length % 4 === 0) {
-      // Verify quartered pattern by checking position pairs
-      const quarterLength = length / 4;
-      const firstBeat = beats[0];
-      const quarterBeat = beats[quarterLength];
-
-      if (firstBeat?.startPosition && quarterBeat?.endPosition) {
-        const key = `${firstBeat.startPosition},${quarterBeat.endPosition}`;
-        if (QUARTERED_CAPS.has(key)) {
-          return SliceSize.QUARTERED;
-        }
+      if (this.detectsQuarteredRotation(beats)) {
+        return SliceSize.QUARTERED;
       }
     }
 
@@ -172,7 +170,42 @@ export class CAPDetectionService implements ICAPDetectionService {
   }
 
   /**
+   * Detect quartered (90°) rotation by comparing START positions of each quarter
+   */
+  private detectsQuarteredRotation(beats: readonly BeatData[]): boolean {
+    const length = beats.length;
+    if (length < 4 || length % 4 !== 0) return false;
+
+    const quarterLength = length / 4;
+
+    // Get start positions of first beat of each quarter
+    const q1Start = beats[0]?.startPosition;
+    const q2Start = beats[quarterLength]?.startPosition;
+    const q3Start = beats[quarterLength * 2]?.startPosition;
+    const q4Start = beats[quarterLength * 3]?.startPosition;
+
+    if (!q1Start || !q2Start || !q3Start || !q4Start) return false;
+
+    // Check clockwise rotation: q1 → q2 → q3 → q4 follows QUARTER_CW
+    const cwMatch =
+      QUARTER_POSITION_MAP_CW[q1Start as GridPosition] === q2Start &&
+      QUARTER_POSITION_MAP_CW[q2Start as GridPosition] === q3Start &&
+      QUARTER_POSITION_MAP_CW[q3Start as GridPosition] === q4Start;
+
+    // Check counter-clockwise rotation
+    const ccwMatch =
+      QUARTER_POSITION_MAP_CCW[q1Start as GridPosition] === q2Start &&
+      QUARTER_POSITION_MAP_CCW[q2Start as GridPosition] === q3Start &&
+      QUARTER_POSITION_MAP_CCW[q3Start as GridPosition] === q4Start;
+
+    return cwMatch || ccwMatch;
+  }
+
+  /**
    * Detect if sequence follows rotation transformation
+   *
+   * For halved: Compare START position of first beat vs START position of half beat
+   * For quartered: Already detected in determineSliceSize via detectsQuarteredRotation
    */
   private detectsRotation(
     beats: readonly BeatData[],
@@ -180,26 +213,21 @@ export class CAPDetectionService implements ICAPDetectionService {
   ): boolean {
     const length = beats.length;
 
-    if (sliceSize === SliceSize.HALVED && length >= 2 && length % 2 === 0) {
-      const halfLength = length / 2;
-      const firstBeat = beats[0];
-      const halfBeat = beats[halfLength - 1]; // End of first half
-
-      if (firstBeat?.startPosition && halfBeat?.endPosition) {
-        const key = `${firstBeat.startPosition},${halfBeat.endPosition}`;
-        return HALVED_CAPS.has(key);
-      }
+    // Quartered rotation is detected via slice size determination
+    if (sliceSize === SliceSize.QUARTERED) {
+      return this.detectsQuarteredRotation(beats);
     }
 
-    if (sliceSize === SliceSize.QUARTERED && length >= 4 && length % 4 === 0) {
-      const quarterLength = length / 4;
-      const firstBeat = beats[0];
-      const quarterBeat = beats[quarterLength - 1]; // End of first quarter
+    // Halved rotation: compare START positions of first beat of each half
+    if (sliceSize === SliceSize.HALVED && length >= 2 && length % 2 === 0) {
+      const halfLength = length / 2;
+      const h1Start = beats[0]?.startPosition;
+      const h2Start = beats[halfLength]?.startPosition;
 
-      if (firstBeat?.startPosition && quarterBeat?.endPosition) {
-        const key = `${firstBeat.startPosition},${quarterBeat.endPosition}`;
-        return QUARTERED_CAPS.has(key);
-      }
+      if (!h1Start || !h2Start) return false;
+
+      // Check if h2 start is 180° rotated from h1 start
+      return HALF_POSITION_MAP[h1Start as GridPosition] === h2Start;
     }
 
     return false;
@@ -234,42 +262,53 @@ export class CAPDetectionService implements ICAPDetectionService {
 
   /**
    * Detect if sequence follows swapping transformation (blue/red exchange)
+   *
+   * Key insight: Only detect swap if hands have different motion types.
+   * If both hands have the same motion type, swapping is meaningless
+   * and would cause false positives (e.g., AKIΦ being detected as swapped).
    */
   private detectsSwapping(beats: readonly BeatData[]): boolean {
     const length = beats.length;
     if (length < 2 || length % 2 !== 0) return false;
 
     const halfLength = length / 2;
+    let swapCount = 0;
+    let checkCount = 0;
+    let hasDifferentMotionTypes = false;
 
-    for (let i = 0; i < halfLength; i++) {
+    for (let i = 0; i < Math.min(halfLength, 4); i++) {
       const firstBeat = beats[i];
       const secondBeat = beats[halfLength + i];
 
-      if (!firstBeat?.endPosition || !secondBeat?.endPosition) continue;
-
-      // Check position swap pattern
-      const expectedPosition =
-        SWAPPED_POSITION_MAP[firstBeat.endPosition as GridPosition];
-
-      if (secondBeat.endPosition !== expectedPosition) {
-        return false;
-      }
-
-      // Check if motions are swapped (blue becomes red, red becomes blue)
-      const firstBlue = firstBeat.motions?.[MotionColor.BLUE];
-      const firstRed = firstBeat.motions?.[MotionColor.RED];
-      const secondBlue = secondBeat.motions?.[MotionColor.BLUE];
-      const secondRed = secondBeat.motions?.[MotionColor.RED];
+      const firstBlue = firstBeat?.motions?.[MotionColor.BLUE];
+      const firstRed = firstBeat?.motions?.[MotionColor.RED];
+      const secondBlue = secondBeat?.motions?.[MotionColor.BLUE];
+      const secondRed = secondBeat?.motions?.[MotionColor.RED];
 
       if (firstBlue && firstRed && secondBlue && secondRed) {
-        // Second blue should match first red's motion type
-        if (secondBlue.motionType !== firstRed.motionType) return false;
-        // Second red should match first blue's motion type
-        if (secondRed.motionType !== firstBlue.motionType) return false;
+        checkCount++;
+
+        // Check if hands have different motion types (meaningful swap)
+        if (firstBlue.motionType !== firstRed.motionType) {
+          hasDifferentMotionTypes = true;
+        }
+
+        // Second blue should match first red, second red should match first blue
+        if (
+          secondBlue.motionType === firstRed.motionType &&
+          secondRed.motionType === firstBlue.motionType
+        ) {
+          swapCount++;
+        }
       }
     }
 
-    return true;
+    // Only report swap if:
+    // 1. Majority of beats show swap pattern
+    // 2. Hands have different motion types (swap is meaningful)
+    return (
+      checkCount > 0 && swapCount >= checkCount * 0.75 && hasDifferentMotionTypes
+    );
   }
 
   /**

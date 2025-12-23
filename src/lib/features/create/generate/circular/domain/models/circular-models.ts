@@ -1,14 +1,14 @@
 /**
  * Circular Generation Models
  *
- * Type definitions for circular word (CAP - Circular Arrangement Pattern) generation.
+ * Type definitions for circular word (CAP - Continuous Assembly Pattern) generation.
  */
 
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
  * CAP Type Enum
- * Defines the different types of circular arrangement patterns
+ * Defines the different types of Continuous Assembly Patterns
  */
 export enum CAPType {
   /** Strict rotated - rotates positions around the grid */

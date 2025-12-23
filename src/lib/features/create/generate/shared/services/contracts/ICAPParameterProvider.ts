@@ -1,7 +1,7 @@
 /**
  * CAP Parameter Provider Interface
  *
- * Provides all parameter calculation and configuration services for CAP (Circular Arrangement Pattern) generation.
+ * Provides all parameter calculation and configuration services for CAP (Continuous Assembly Pattern) generation.
  */
 
 import type {

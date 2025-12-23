@@ -2,7 +2,7 @@
 
 ## Overview
 
-I've successfully implemented the **Strict Rotated CAP (Circular Arrangement Pattern)** generation system for the web app, matching the logic from the legacy desktop application. While automated testing is blocked by DI container issues (missing TYPES symbols), I can demonstrate the implementation logic and explain why it should work correctly.
+I've successfully implemented the **Strict Rotated CAP (Continuous Assembly Pattern)** generation system for the web app, matching the logic from the legacy desktop application. While automated testing is blocked by DI container issues (missing TYPES symbols), I can demonstrate the implementation logic and explain why it should work correctly.
 
 ## What Was Implemented
 

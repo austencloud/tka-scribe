@@ -4,7 +4,7 @@ import type { SliceSize } from "../../domain/models/circular-models";
 /**
  * Common interface for all CAP executors
  *
- * Provides a consistent contract for executing Circular Arrangement Patterns
+ * Provides a consistent contract for executing Continuous Assembly Patterns
  * regardless of the specific transformation type (rotated, mirrored, swapped, etc.)
  *
  * NOTE: Some executors only support halved mode (mirrored, swapped, inverted)

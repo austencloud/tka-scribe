@@ -1,7 +1,7 @@
 /**
  * Rotated Inverted CAP Executor
  *
- * Executes the rotated-inverted CAP (Circular Arrangement Pattern) by combining:
+ * Executes the rotated-inverted CAP (Continuous Assembly Pattern) by combining:
  * 1. ROTATED: Rotate locations based on handpath direction (90°, 180°, or 270°)
  * 2. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
  *

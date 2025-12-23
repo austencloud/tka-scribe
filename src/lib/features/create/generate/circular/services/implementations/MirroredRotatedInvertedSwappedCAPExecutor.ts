@@ -1,7 +1,7 @@
 /**
  * Mirrored Rotated Inverted Swapped CAP Executor
  *
- * Executes the mirrored-rotated-inverted-swapped CAP (Circular Arrangement Pattern) by composing
+ * Executes the mirrored-rotated-inverted-swapped CAP (Continuous Assembly Pattern) by composing
  * FOUR CAP operations sequentially:
  * 1. ROTATED: Apply strict rotation with user-selected slice size (halved or quartered)
  * 2. MIRRORED + SWAPPED + INVERTED: Apply all three transformations together

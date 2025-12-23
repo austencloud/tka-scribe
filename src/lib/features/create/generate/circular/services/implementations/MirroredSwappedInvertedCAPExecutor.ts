@@ -1,7 +1,7 @@
 /**
  * Mirrored Swapped Inverted CAP Executor
  *
- * Executes the mirrored-swapped-inverted CAP (Circular Arrangement Pattern) by combining:
+ * Executes the mirrored-swapped-inverted CAP (Continuous Assembly Pattern) by combining:
  * 1. MIRRORED: Mirror locations vertically (E↔W)
  * 2. SWAPPED: Blue does what Red did, Red does what Blue did
  * 3. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI)

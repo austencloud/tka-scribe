@@ -1,7 +1,7 @@
 /**
  * Strict Mirrored CAP Executor
  *
- * Executes the strict mirrored CAP (Circular Arrangement Pattern) by:
+ * Executes the strict mirrored CAP (Continuous Assembly Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
  * 2. Applying vertical mirroring transformations to each beat
  * 3. Generating the remaining beats to complete the circular pattern

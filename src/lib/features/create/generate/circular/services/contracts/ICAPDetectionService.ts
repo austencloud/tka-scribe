@@ -1,7 +1,7 @@
 /**
  * CAP Detection Service Contract
  *
- * Service for detecting and classifying Circular Arrangement Patterns (CAPs)
+ * Service for detecting and classifying Continuous Assembly Patterns (CAPs)
  * in existing sequences. This is the reverse of CAP generation - given a sequence,
  * determine what CAP type (if any) it follows.
  */

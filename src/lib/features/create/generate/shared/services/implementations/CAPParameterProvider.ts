@@ -1,7 +1,7 @@
 /**
  * CAP Parameter Provider
  *
- * Provides all parameter calculation and configuration services for CAP (Circular Arrangement Pattern) generation.
+ * Provides all parameter calculation and configuration services for CAP (Continuous Assembly Pattern) generation.
  * Consolidates inverted letter mapping, rotation direction determination, and turn intensity allocation.
  *
  * Replaces:

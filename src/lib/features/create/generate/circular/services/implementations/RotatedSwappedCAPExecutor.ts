@@ -1,7 +1,7 @@
 /**
  * Rotated Swapped CAP Executor
  *
- * Executes the rotated-swapped CAP (Circular Arrangement Pattern) by combining:
+ * Executes the rotated-swapped CAP (Continuous Assembly Pattern) by combining:
  * 1. SWAPPED: Blue does what Red did, Red does what Blue did
  * 2. ROTATED: Rotate locations based on handpath direction (90°, 180°, or 270°)
  *

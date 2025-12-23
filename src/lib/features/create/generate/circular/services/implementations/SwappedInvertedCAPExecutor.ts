@@ -1,7 +1,7 @@
 /**
  * Swapped Inverted CAP Executor
  *
- * Executes the swapped-inverted CAP (Circular Arrangement Pattern) by combining:
+ * Executes the swapped-inverted CAP (Continuous Assembly Pattern) by combining:
  * 1. SWAPPED: Blue does what Red did, Red does what Blue did
  * 2. INVERTED: Flip letters, flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
  *
