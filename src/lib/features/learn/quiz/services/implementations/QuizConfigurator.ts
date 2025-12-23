@@ -5,9 +5,23 @@
  * for working with different lesson types and quiz modes.
  */
 
-import { LESSON_CONFIGS, LESSON_INFO, LESSON_TYPE_NAMES, QUIZ_DEFAULTS, QUIZ_MODE_NAMES } from '../../domain/constants/quiz-constants';
-import { QuizAnswerFormat, QuizMode, QuizQuestionFormat, QuizType } from '../../domain/enums/quiz-enums';
-import { type QuizConfig, type QuizInfo } from '../../domain/models/quiz-models';
+import {
+  LESSON_CONFIGS,
+  LESSON_INFO,
+  LESSON_TYPE_NAMES,
+  QUIZ_DEFAULTS,
+  QUIZ_MODE_NAMES,
+} from "../../domain/constants/quiz-constants";
+import {
+  QuizAnswerFormat,
+  QuizMode,
+  QuizQuestionFormat,
+  QuizType,
+} from "../../domain/enums/quiz-enums";
+import {
+  type QuizConfig,
+  type QuizInfo,
+} from "../../domain/models/quiz-models";
 
 export class QuizConfigurator {
   /**

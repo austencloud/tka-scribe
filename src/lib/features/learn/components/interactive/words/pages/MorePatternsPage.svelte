@@ -3,15 +3,21 @@
   import WordsLessonNav from "../components/WordsLessonNav.svelte";
   import { wordGGGG, wordCCCC } from "../domain/demo-words";
 
-  let { ggggBeatIndex, ccccBeatIndex, onBack, onNext, onGGGGBeatChange, onCCCCBeatChange } =
-    $props<{
-      ggggBeatIndex: number;
-      ccccBeatIndex: number;
-      onBack: () => void;
-      onNext: () => void;
-      onGGGGBeatChange: (index: number) => void;
-      onCCCCBeatChange: (index: number) => void;
-    }>();
+  let {
+    ggggBeatIndex,
+    ccccBeatIndex,
+    onBack,
+    onNext,
+    onGGGGBeatChange,
+    onCCCCBeatChange,
+  } = $props<{
+    ggggBeatIndex: number;
+    ccccBeatIndex: number;
+    onBack: () => void;
+    onNext: () => void;
+    onGGGGBeatChange: (index: number) => void;
+    onCCCCBeatChange: (index: number) => void;
+  }>();
 </script>
 
 <div class="page">

@@ -7,8 +7,6 @@ Simple inline display showing journey position
   import { CONCEPT_CATEGORIES } from "../domain/concepts";
   import type { LearnConcept } from "../domain/types";
 
-
-
   let {
     previousConcept,
     nextConcept,

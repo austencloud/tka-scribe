@@ -7,24 +7,39 @@ Shows:
 - Clean, minimal design
 -->
 <script lang="ts">
-  import { TKA_CONCEPTS, CONCEPT_CATEGORIES, getConceptsByCategory } from "../domain/concepts";
+  import {
+    TKA_CONCEPTS,
+    CONCEPT_CATEGORIES,
+    getConceptsByCategory,
+  } from "../domain/concepts";
   import type { LearningProgress, ConceptCategory } from "../domain/types";
 
-  let { progress }: {
+  let {
+    progress,
+  }: {
     progress: LearningProgress;
   } = $props();
 
   const totalConcepts = TKA_CONCEPTS.length;
   const completedCount = $derived(progress.completedConcepts.size);
-  const progressPercent = $derived(Math.round((completedCount / totalConcepts) * 100));
+  const progressPercent = $derived(
+    Math.round((completedCount / totalConcepts) * 100)
+  );
 
   // Category segments for the arc
-  const categories: ConceptCategory[] = ["foundation", "letters", "combinations", "advanced"];
+  const categories: ConceptCategory[] = [
+    "foundation",
+    "letters",
+    "combinations",
+    "advanced",
+  ];
 
   const categoryData = $derived(
     categories.map((cat) => {
       const concepts = getConceptsByCategory(cat);
-      const completed = concepts.filter((c) => progress.completedConcepts.has(c.id)).length;
+      const completed = concepts.filter((c) =>
+        progress.completedConcepts.has(c.id)
+      ).length;
       return {
         key: cat,
         name: CONCEPT_CATEGORIES[cat].name,
@@ -111,11 +126,7 @@ Shows:
         {@const y1 = size / 2 + (radius - strokeWidth / 2 - 2) * Math.sin(rad)}
         {@const x2 = size / 2 + (radius + strokeWidth / 2 + 2) * Math.cos(rad)}
         {@const y2 = size / 2 + (radius + strokeWidth / 2 + 2) * Math.sin(rad)}
-        <line
-          {x1} {y1} {x2} {y2}
-          stroke="rgb(20, 20, 28)"
-          stroke-width="3"
-        />
+        <line {x1} {y1} {x2} {y2} stroke="rgb(20, 20, 28)" stroke-width="3" />
       {/if}
     {/each}
   </svg>

@@ -11,7 +11,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
 // CRITICAL: Import container to ensure it loads
 import { resolve } from "$lib/shared/inversify/di";
-import type { ICodexService } from '../services/contracts/ICodexService';
+import type { ICodexService } from "../services/contracts/ICodexService";
 
 // Container is now loaded successfully - debug messages removed
 

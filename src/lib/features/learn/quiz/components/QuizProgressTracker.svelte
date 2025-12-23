@@ -10,8 +10,6 @@
   import { QuizMode } from "../domain/enums/quiz-enums";
   import type { QuizProgress } from "../domain/models/quiz-models";
 
-
-
   // Props using Svelte 5 runes
   let {
     progress,

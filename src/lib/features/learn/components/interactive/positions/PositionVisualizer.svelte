@@ -3,9 +3,9 @@ PositionVisualizer - Interactive 8-point grid showing two hand positions
 Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   type HandPosition = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
   type PositionType = "alpha" | "beta" | "gamma";
@@ -31,7 +31,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   );
 
   // Grid point coordinates (8-point grid)
-  const GRID_POINTS: Record<HandPosition, { x: number; y: number; label: string }> = {
+  const GRID_POINTS: Record<
+    HandPosition,
+    { x: number; y: number; label: string }
+  > = {
     N: { x: 50, y: 12, label: "N" },
     NE: { x: 82, y: 22, label: "NE" },
     E: { x: 92, y: 50, label: "E" },
@@ -44,10 +47,14 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   // Opposite point pairs (for Alpha detection)
   const OPPOSITE_PAIRS: Record<string, string> = {
-    N: "S", S: "N",
-    E: "W", W: "E",
-    NE: "SW", SW: "NE",
-    NW: "SE", SE: "NW",
+    N: "S",
+    S: "N",
+    E: "W",
+    W: "E",
+    NE: "SW",
+    SW: "NE",
+    NW: "SE",
+    SE: "NW",
   };
 
   // Adjacent point pairs (for Gamma detection - 90° apart)
@@ -72,12 +79,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   // Position type colors
   const POSITION_COLORS: Record<PositionType, string> = {
     alpha: "#FF6B6B", // Red/coral for opposite
-    beta: "#4ECDC4",  // Teal for same
+    beta: "#4ECDC4", // Teal for same
     gamma: "#FFE66D", // Yellow for right angle
   };
 
   // Hand colors
-  const LEFT_HAND_COLOR = "#4A9EFF";  // Blue
+  const LEFT_HAND_COLOR = "#4A9EFF"; // Blue
   const RIGHT_HAND_COLOR = "#FF4A9E"; // Pink
 
   let selectingHand = $state<"left" | "right" | null>(null);
@@ -111,7 +118,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     onPositionChange?.(leftHand as HandPosition, rightHand as HandPosition);
   }
 
-  function getDistance(p1: { x: number; y: number }, p2: { x: number; y: number }) {
+  function getDistance(
+    p1: { x: number; y: number },
+    p2: { x: number; y: number }
+  ) {
     return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
   }
 
@@ -145,7 +155,9 @@ import { TYPES } from "$lib/shared/inversify/types";
           <i class="fa-solid fa-rotate-right"></i>
         {/if}
       </span>
-      <span class="badge-text">{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+      <span class="badge-text"
+        >{type.charAt(0).toUpperCase() + type.slice(1)}</span
+      >
     </div>
   {/if}
 
@@ -188,14 +200,22 @@ import { TYPES } from "$lib/shared/inversify/types";
         class="grid-point"
         class:clickable={interactive}
         onclick={() => handlePointClick(key as HandPosition)}
-        onkeydown={(e) => (e.key === "Enter" || e.key === " ") && handlePointClick(key as HandPosition)}
+        onkeydown={(e) =>
+          (e.key === "Enter" || e.key === " ") &&
+          handlePointClick(key as HandPosition)}
         role={interactive ? "button" : "img"}
         tabindex={interactive ? 0 : -1}
         aria-label={point.label}
       >
         <!-- Hit area -->
         {#if interactive}
-          <circle cx={point.x} cy={point.y} r="8" fill="transparent" class="hit-area" />
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r="8"
+            fill="transparent"
+            class="hit-area"
+          />
         {/if}
 
         <!-- Base point (empty if not a hand) -->
@@ -232,7 +252,13 @@ import { TYPES } from "$lib/shared/inversify/types";
             opacity="0.25"
             class="hand-glow"
           />
-          <circle cx={point.x} cy={point.y} r="5" fill={LEFT_HAND_COLOR} class="hand-point left" />
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r="5"
+            fill={LEFT_HAND_COLOR}
+            class="hand-point left"
+          />
         {:else if isRightHand}
           <!-- Right hand -->
           <circle
@@ -243,7 +269,13 @@ import { TYPES } from "$lib/shared/inversify/types";
             opacity="0.25"
             class="hand-glow"
           />
-          <circle cx={point.x} cy={point.y} r="5" fill={RIGHT_HAND_COLOR} class="hand-point right" />
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r="5"
+            fill={RIGHT_HAND_COLOR}
+            class="hand-point right"
+          />
         {/if}
 
         <!-- Point label -->
@@ -362,8 +394,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes handPulse {
-    0%, 100% { opacity: 0.25; }
-    50% { opacity: 0.4; }
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
 
   .hand-point {
@@ -375,8 +412,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes dashMove {
-    from { stroke-dashoffset: 0; }
-    to { stroke-dashoffset: 12; }
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: 12;
+    }
   }
 
   .point-label {

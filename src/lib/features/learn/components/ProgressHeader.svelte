@@ -8,7 +8,10 @@ Shows:
 -->
 <script lang="ts">
   import type { LearningProgress } from "../domain/types";
-  import { CONCEPT_CATEGORIES, getConceptsByCategory } from "../domain/concepts";
+  import {
+    CONCEPT_CATEGORIES,
+    getConceptsByCategory,
+  } from "../domain/concepts";
 
   let { progress }: { progress: LearningProgress } = $props();
 
@@ -34,7 +37,8 @@ Shows:
           ...CONCEPT_CATEGORIES[cat],
           completed,
           total: concepts.length,
-          percent: concepts.length > 0 ? (completed / concepts.length) * 100 : 0,
+          percent:
+            concepts.length > 0 ? (completed / concepts.length) * 100 : 0,
         };
       }
     )

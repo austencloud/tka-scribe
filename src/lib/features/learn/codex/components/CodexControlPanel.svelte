@@ -5,9 +5,9 @@ Provides sleek control buttons and orientation selector for
 rotating, mirroring, and color-swapping pictographs.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Props
@@ -77,8 +77,17 @@ import { TYPES } from "$lib/shared/inversify/types";
         {/each}
       </select>
       <span class="select-icon">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"/>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
         </svg>
       </span>
     </div>
@@ -91,11 +100,20 @@ import { TYPES } from "$lib/shared/inversify/types";
         title="Rotate 90° clockwise"
         aria-label="Rotate pictographs"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 2v6h-6"/>
-          <path d="M3 12a9 9 0 0115-6.7L21 8"/>
-          <path d="M3 22v-6h6"/>
-          <path d="M21 12a9 9 0 01-15 6.7L3 16"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 2v6h-6" />
+          <path d="M3 12a9 9 0 0115-6.7L21 8" />
+          <path d="M3 22v-6h6" />
+          <path d="M21 12a9 9 0 01-15 6.7L3 16" />
         </svg>
       </button>
 
@@ -105,13 +123,22 @@ import { TYPES } from "$lib/shared/inversify/types";
         title="Mirror horizontally"
         aria-label="Mirror pictographs"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M8 3H5a2 2 0 00-2 2v14a2 2 0 002 2h3"/>
-          <path d="M16 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3"/>
-          <path d="M12 20v2"/>
-          <path d="M12 14v2"/>
-          <path d="M12 8v2"/>
-          <path d="M12 2v2"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M8 3H5a2 2 0 00-2 2v14a2 2 0 002 2h3" />
+          <path d="M16 3h3a2 2 0 012 2v14a2 2 0 01-2 2h-3" />
+          <path d="M12 20v2" />
+          <path d="M12 14v2" />
+          <path d="M12 8v2" />
+          <path d="M12 2v2" />
         </svg>
       </button>
 
@@ -121,11 +148,20 @@ import { TYPES } from "$lib/shared/inversify/types";
         title="Swap colors"
         aria-label="Swap colors"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="8" r="5" fill="rgba(239, 68, 68, 0.6)"/>
-          <circle cx="16" cy="16" r="5" fill="rgba(59, 130, 246, 0.6)"/>
-          <path d="M13 7l3 3-3 3"/>
-          <path d="M11 17l-3-3 3-3"/>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="8" cy="8" r="5" fill="rgba(239, 68, 68, 0.6)" />
+          <circle cx="16" cy="16" r="5" fill="rgba(59, 130, 246, 0.6)" />
+          <path d="M13 7l3 3-3 3" />
+          <path d="M11 17l-3-3 3-3" />
         </svg>
       </button>
     </div>
@@ -164,7 +200,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.9);
-    font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-family: var(
+      --font-sans,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif
+    );
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -181,7 +223,8 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .orientation-selector:focus {
     border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .orientation-selector option {

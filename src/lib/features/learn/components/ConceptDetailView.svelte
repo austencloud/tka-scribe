@@ -2,9 +2,9 @@
 ConceptDetailView - Direct view of concept content
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { LearnConcept, ConceptProgress } from "../domain/types";
   import { conceptProgressService } from "../services/ConceptProgressService";
@@ -84,11 +84,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
 <div class="concept-detail">
   <!-- Simple back button -->
-  <button
-    class="back-button"
-    onclick={handleBackButton}
-    aria-label="Go back"
-  >
+  <button class="back-button" onclick={handleBackButton} aria-label="Go back">
     <span class="back-icon">‹</span>
     <span class="back-text">Back</span>
   </button>
@@ -104,18 +100,18 @@ import { TYPES } from "$lib/shared/inversify/types";
             onBack={handleClose}
           />
         {:else if concept.id === "hand-positions"}
-        <PositionsConceptExperience onComplete={handlePracticeComplete} />
-      {:else if concept.id === "hand-motions"}
-        <MotionsConceptExperience onComplete={handlePracticeComplete} />
-      {:else if concept.id === "vtg-fundamentals"}
-        <VTGConceptExperience onComplete={handlePracticeComplete} />
-      {:else if concept.id === "words-alpha-beta"}
-        <WordsConceptExperience onComplete={handlePracticeComplete} />
-      {:else if concept.id === "staff-positions"}
-        <StaffConceptExperience onComplete={handlePracticeComplete} />
-      {:else if concept.id === "type1-abc-ghi"}
-        <Type1ConceptExperience onComplete={handlePracticeComplete} />
-      {/if}
+          <PositionsConceptExperience onComplete={handlePracticeComplete} />
+        {:else if concept.id === "hand-motions"}
+          <MotionsConceptExperience onComplete={handlePracticeComplete} />
+        {:else if concept.id === "vtg-fundamentals"}
+          <VTGConceptExperience onComplete={handlePracticeComplete} />
+        {:else if concept.id === "words-alpha-beta"}
+          <WordsConceptExperience onComplete={handlePracticeComplete} />
+        {:else if concept.id === "staff-positions"}
+          <StaffConceptExperience onComplete={handlePracticeComplete} />
+        {:else if concept.id === "type1-abc-ghi"}
+          <Type1ConceptExperience onComplete={handlePracticeComplete} />
+        {/if}
       {:else}
         <!-- Coming Soon placeholder -->
         <div class="coming-soon">

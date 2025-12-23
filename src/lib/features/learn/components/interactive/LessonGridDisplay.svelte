@@ -142,7 +142,8 @@ Uses the actual GridSvg component for consistency with the rest of the app.
     }
     50% {
       transform: scale(1.02);
-      box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+      box-shadow: 0 4px 16px
+        color-mix(in srgb, var(--theme-accent) 20%, transparent);
     }
   }
 

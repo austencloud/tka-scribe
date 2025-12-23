@@ -21,7 +21,9 @@ Displays:
     totalCount?: number;
   } = $props();
 
-  const categoryInfo = $derived(CONCEPT_CATEGORIES[category as ConceptCategory]);
+  const categoryInfo = $derived(
+    CONCEPT_CATEGORIES[category as ConceptCategory]
+  );
 </script>
 
 <div class="category-divider" style="--category-color: {categoryInfo.color}">
@@ -43,7 +45,8 @@ Displays:
     font-size: 1rem;
     line-height: 1;
     color: var(--category-color);
-    text-shadow: 0 0 12px color-mix(in srgb, var(--category-color) 40%, transparent);
+    text-shadow: 0 0 12px
+      color-mix(in srgb, var(--category-color) 40%, transparent);
   }
 
   .name {

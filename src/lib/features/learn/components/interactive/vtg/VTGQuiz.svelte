@@ -3,9 +3,9 @@ VTGQuiz - Quiz to identify VTG modes from animations
 User watches animation and identifies which VTG mode is being shown
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import VTGVisualizer from "./VTGVisualizer.svelte";
 
   let { onComplete } = $props<{
@@ -29,8 +29,18 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   // Quiz questions - each VTG mode appears twice
   const QUESTIONS: VTGMode[] = [
-    "SS", "TS", "SO", "TO", "QS", "QO",
-    "SS", "TS", "SO", "TO", "QS", "QO",
+    "SS",
+    "TS",
+    "SO",
+    "TO",
+    "QS",
+    "QO",
+    "SS",
+    "TS",
+    "SO",
+    "TO",
+    "QS",
+    "QO",
   ];
 
   // Shuffle the questions
@@ -84,11 +94,13 @@ import { TYPES } from "$lib/shared/inversify/types";
     onComplete?.();
   }
 
-  const score = $derived(Math.round((correctCount / quizQuestions.length) * 100));
+  const score = $derived(
+    Math.round((correctCount / quizQuestions.length) * 100)
+  );
   const isPassing = $derived(score >= 70);
 
   function getModeInfo(m: VTGMode) {
-    return VTG_MODES.find(v => v.mode === m)!;
+    return VTG_MODES.find((v) => v.mode === m)!;
   }
 </script>
 
@@ -96,15 +108,24 @@ import { TYPES } from "$lib/shared/inversify/types";
   {#if !quizComplete}
     <!-- Quiz in progress -->
     <div class="quiz-header">
-      <span class="progress">Question {currentQuestionIndex + 1} of {quizQuestions.length}</span>
-      <span class="score">Score: {correctCount}/{currentQuestionIndex + (showResult ? 1 : 0)}</span>
+      <span class="progress"
+        >Question {currentQuestionIndex + 1} of {quizQuestions.length}</span
+      >
+      <span class="score"
+        >Score: {correctCount}/{currentQuestionIndex +
+          (showResult ? 1 : 0)}</span
+      >
     </div>
 
     {#if currentQuestion}
       <div class="question-area">
         <p class="question-prompt">What VTG mode is this?</p>
 
-        <VTGVisualizer mode={currentQuestion} showLabels={true} autoPlay={false} />
+        <VTGVisualizer
+          mode={currentQuestion}
+          showLabels={true}
+          autoPlay={false}
+        />
       </div>
 
       <div class="answers-grid">
@@ -132,7 +153,10 @@ import { TYPES } from "$lib/shared/inversify/types";
       </div>
 
       {#if showResult}
-        <div class="result-feedback" class:correct={selectedAnswer === currentQuestion}>
+        <div
+          class="result-feedback"
+          class:correct={selectedAnswer === currentQuestion}
+        >
           {#if selectedAnswer === currentQuestion}
             <i class="fa-solid fa-check-circle"></i>
             <span>Correct! It's {currentQuestion}.</span>
@@ -143,12 +167,13 @@ import { TYPES } from "$lib/shared/inversify/types";
         </div>
 
         <button class="next-button" onclick={nextQuestion}>
-          {currentQuestionIndex < quizQuestions.length - 1 ? "Next Question" : "See Results"}
+          {currentQuestionIndex < quizQuestions.length - 1
+            ? "Next Question"
+            : "See Results"}
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       {/if}
     {/if}
-
   {:else}
     <!-- Quiz complete -->
     <div class="results">
@@ -170,7 +195,9 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <div class="score-display">
         <span class="score-value" class:passing={isPassing}>{score}%</span>
-        <span class="score-label">{correctCount} of {quizQuestions.length} correct</span>
+        <span class="score-label"
+          >{correctCount} of {quizQuestions.length} correct</span
+        >
       </div>
 
       <div class="mode-review">
@@ -226,7 +253,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .score {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   /* Question area */
@@ -284,14 +311,14 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .answer-button.correct {
     background: rgba(74, 222, 128, 0.15);
-    border-color: #4ADE80;
-    color: #4ADE80;
+    border-color: #4ade80;
+    color: #4ade80;
   }
 
   .answer-button.incorrect {
     background: rgba(248, 113, 113, 0.15);
-    border-color: #F87171;
-    color: #F87171;
+    border-color: #f87171;
+    color: #f87171;
   }
 
   .mode-code {
@@ -328,13 +355,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   .result-feedback.correct {
     background: rgba(74, 222, 128, 0.15);
     border: 1px solid rgba(74, 222, 128, 0.3);
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .result-feedback:not(.correct) {
     background: rgba(248, 113, 113, 0.15);
     border: 1px solid rgba(248, 113, 113, 0.3);
-    color: #F87171;
+    color: #f87171;
   }
 
   .result-feedback i {
@@ -348,10 +375,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 0.5rem;
     padding: 0.875rem 2rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.25) 0%, rgba(6, 182, 212, 0.25) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.25) 0%,
+      rgba(6, 182, 212, 0.25) 100%
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     border-radius: 10px;
-    color: #22D3EE;
+    color: #22d3ee;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -359,7 +390,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.35) 0%, rgba(6, 182, 212, 0.35) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.35) 0%,
+      rgba(6, 182, 212, 0.35) 100%
+    );
     border-color: rgba(34, 211, 238, 0.6);
   }
 
@@ -385,12 +420,12 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .results-icon.passing {
     background: rgba(74, 222, 128, 0.15);
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .results-icon:not(.passing) {
     background: rgba(251, 146, 60, 0.15);
-    color: #FB923C;
+    color: #fb923c;
   }
 
   .results-title {
@@ -413,11 +448,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .score-value.passing {
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .score-value:not(.passing) {
-    color: #FB923C;
+    color: #fb923c;
   }
 
   .score-label {
@@ -477,7 +512,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, rgba(74, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(74, 222, 128, 0.3) 0%,
+      rgba(34, 197, 94, 0.3) 100%
+    );
     border: 2px solid rgba(74, 222, 128, 0.5);
     border-radius: 12px;
     color: white;
@@ -488,7 +527,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .finish-button:hover {
-    background: linear-gradient(135deg, rgba(74, 222, 128, 0.4) 0%, rgba(34, 197, 94, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(74, 222, 128, 0.4) 0%,
+      rgba(34, 197, 94, 0.4) 100%
+    );
     border-color: rgba(74, 222, 128, 0.7);
     transform: translateY(-2px);
   }

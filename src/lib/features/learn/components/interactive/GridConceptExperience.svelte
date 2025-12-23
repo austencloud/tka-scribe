@@ -360,7 +360,8 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   .next-button:hover {
     background: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     border-color: color-mix(in srgb, var(--theme-accent) 80%, transparent);
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 8px 24px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .next-button:active {

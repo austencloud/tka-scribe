@@ -11,8 +11,15 @@ import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { QuizAnswerFormat, QuizQuestionFormat, QuizType } from '../../domain/enums/quiz-enums';
-import { type QuizAnswerOption, type QuizQuestionData } from '../../domain/models/quiz-models';
+import {
+  QuizAnswerFormat,
+  QuizQuestionFormat,
+  QuizType,
+} from "../../domain/enums/quiz-enums";
+import {
+  type QuizAnswerOption,
+  type QuizQuestionData,
+} from "../../domain/models/quiz-models";
 
 export class QuestionGeneratorService {
   private static letterQueryHandler: ILetterQueryHandler | null = null;

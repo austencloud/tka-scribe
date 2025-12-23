@@ -3,9 +3,9 @@ VTGVisualizer - Animated visualization of VTG (Velocity-Timing-Direction) modes
 Shows how hands coordinate their movements in different VTG patterns
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   type VTGMode = "SS" | "TS" | "SO" | "TO" | "QS" | "QO";
 
@@ -24,54 +24,57 @@ import { TYPES } from "$lib/shared/inversify/types";
   );
 
   // VTG mode info
-  const VTG_INFO: Record<VTGMode, {
-    name: string;
-    color: string;
-    direction: string;
-    timing: string;
-    description: string;
-  }> = {
+  const VTG_INFO: Record<
+    VTGMode,
+    {
+      name: string;
+      color: string;
+      direction: string;
+      timing: string;
+      description: string;
+    }
+  > = {
     SS: {
       name: "Split-Same",
       color: "#22D3EE",
       direction: "Split (opposite directions)",
       timing: "Same (synchronized)",
-      description: "Hands move in opposite directions at the same time"
+      description: "Hands move in opposite directions at the same time",
     },
     TS: {
       name: "Together-Same",
       color: "#4ADE80",
       direction: "Together (same direction)",
       timing: "Same (synchronized)",
-      description: "Hands move in the same direction at the same time"
+      description: "Hands move in the same direction at the same time",
     },
     SO: {
       name: "Same-Opposite",
       color: "#F472B6",
       direction: "Same direction",
       timing: "Opposite (staggered half-beat)",
-      description: "Hands move same direction, but staggered timing"
+      description: "Hands move same direction, but staggered timing",
     },
     TO: {
       name: "Together-Opposite",
       color: "#FB923C",
       direction: "Together (same direction)",
       timing: "Opposite (staggered)",
-      description: "Hands move together but start at opposite times"
+      description: "Hands move together but start at opposite times",
     },
     QS: {
       name: "Quarter-Same",
       color: "#A78BFA",
       direction: "Same direction",
       timing: "Quarter (90� offset)",
-      description: "Hands move same direction with quarter-beat offset"
+      description: "Hands move same direction with quarter-beat offset",
     },
     QO: {
       name: "Quarter-Opposite",
       color: "#F59E0B",
       direction: "Opposite directions",
       timing: "Quarter (90� offset)",
-      description: "Hands move opposite with quarter-beat timing"
+      description: "Hands move opposite with quarter-beat timing",
     },
   };
 
@@ -84,7 +87,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   let hasPlayed = $state(false);
 
   // Get timing offset for each hand based on VTG mode
-  function getHandProgress(baseProgress: number, isLeft: boolean, vtgMode: VTGMode): number {
+  function getHandProgress(
+    baseProgress: number,
+    isLeft: boolean,
+    vtgMode: VTGMode
+  ): number {
     switch (vtgMode) {
       case "SS": // Split-Same: both move at same time
       case "TS": // Together-Same: both move at same time
@@ -101,7 +108,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   // Get position based on progress (oscillating movement)
-  function getPosition(progress: number, isLeft: boolean, vtgMode: VTGMode): { x: number; y: number } {
+  function getPosition(
+    progress: number,
+    isLeft: boolean,
+    vtgMode: VTGMode
+  ): { x: number; y: number } {
     const centerX = 50;
     const centerY = 50;
     const radius = 25;
@@ -114,7 +125,9 @@ import { TYPES } from "$lib/shared/inversify/types";
       // Split: hands move in opposite directions
       const direction = isLeft ? 1 : -1;
       return {
-        x: centerX + Math.cos(angle * direction) * radius * (isLeft ? -0.6 : 0.6),
+        x:
+          centerX +
+          Math.cos(angle * direction) * radius * (isLeft ? -0.6 : 0.6),
         y: centerY + Math.sin(angle) * radius * 0.4,
       };
     } else {
@@ -155,7 +168,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       const elapsed = Date.now() - startTime;
       animationProgress = (elapsed % duration) / duration;
 
-      if (elapsed < duration * 2) { // Run 2 full cycles
+      if (elapsed < duration * 2) {
+        // Run 2 full cycles
         requestAnimationFrame(animate);
       } else {
         animationProgress = 0;
@@ -190,9 +204,31 @@ import { TYPES } from "$lib/shared/inversify/types";
   <!-- Animation canvas -->
   <svg viewBox="0 0 100 100" class="vtg-canvas">
     <!-- Background grid -->
-    <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5" stroke-dasharray="2 2" />
-    <line x1="20" y1="50" x2="80" y2="50" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" />
-    <line x1="50" y1="20" x2="50" y2="80" stroke="rgba(255,255,255,0.08)" stroke-width="0.5" />
+    <circle
+      cx="50"
+      cy="50"
+      r="30"
+      fill="none"
+      stroke="rgba(255,255,255,0.1)"
+      stroke-width="0.5"
+      stroke-dasharray="2 2"
+    />
+    <line
+      x1="20"
+      y1="50"
+      x2="80"
+      y2="50"
+      stroke="rgba(255,255,255,0.08)"
+      stroke-width="0.5"
+    />
+    <line
+      x1="50"
+      y1="20"
+      x2="50"
+      y2="80"
+      stroke="rgba(255,255,255,0.08)"
+      stroke-width="0.5"
+    />
 
     <!-- Center point -->
     <circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.2)" />
@@ -202,8 +238,20 @@ import { TYPES } from "$lib/shared/inversify/types";
       {#if true}
         {@const left = leftPos()}
         {@const right = rightPos()}
-        <circle cx={left.x} cy={left.y} r="4" fill={LEFT_HAND_COLOR} opacity="0.15" />
-        <circle cx={right.x} cy={right.y} r="4" fill={RIGHT_HAND_COLOR} opacity="0.15" />
+        <circle
+          cx={left.x}
+          cy={left.y}
+          r="4"
+          fill={LEFT_HAND_COLOR}
+          opacity="0.15"
+        />
+        <circle
+          cx={right.x}
+          cy={right.y}
+          r="4"
+          fill={RIGHT_HAND_COLOR}
+          opacity="0.15"
+        />
       {/if}
     {/if}
 
@@ -248,8 +296,22 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <!-- Labels -->
       {#if showLabels}
-        <text x={left.x} y={left.y - 12} text-anchor="middle" fill={LEFT_HAND_COLOR} font-size="5" font-weight="600">L</text>
-        <text x={right.x} y={right.y - 12} text-anchor="middle" fill={RIGHT_HAND_COLOR} font-size="5" font-weight="600">R</text>
+        <text
+          x={left.x}
+          y={left.y - 12}
+          text-anchor="middle"
+          fill={LEFT_HAND_COLOR}
+          font-size="5"
+          font-weight="600">L</text
+        >
+        <text
+          x={right.x}
+          y={right.y - 12}
+          text-anchor="middle"
+          fill={RIGHT_HAND_COLOR}
+          font-size="5"
+          font-weight="600">R</text
+        >
       {/if}
     {/if}
   </svg>
@@ -331,8 +393,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes pulseGlow {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.35; }
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.35;
+    }
   }
 
   .hand-point {
@@ -370,10 +437,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.2) 0%,
+      rgba(6, 182, 212, 0.2) 100%
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     border-radius: 10px;
-    color: #22D3EE;
+    color: #22d3ee;
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
@@ -382,7 +453,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .play-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
     border-color: rgba(34, 211, 238, 0.6);
   }
 

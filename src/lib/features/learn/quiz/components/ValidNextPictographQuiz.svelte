@@ -385,7 +385,8 @@
 
   .retry-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   /* ===========================================
@@ -493,7 +494,8 @@
     background: rgba(255, 255, 255, 0.1);
     border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .answer-btn:active:not(:disabled) {

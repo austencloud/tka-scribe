@@ -3,9 +3,9 @@ MotionIdentificationQuiz - Quiz to identify motion types from animations
 User must play animation first, then identify the motion type (1-6)
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import MotionVisualizer from "./MotionVisualizer.svelte";
 
   let { onComplete } = $props<{
@@ -33,23 +33,119 @@ import { TYPES } from "$lib/shared/inversify/types";
   // Quiz questions covering all 6 motion types
   const QUESTIONS: QuizQuestion[] = [
     // Type 1: Dual-Shift
-    { leftStart: "N", leftEnd: "E", rightStart: "S", rightEnd: "W", leftMotion: "shift", rightMotion: "shift", correctAnswer: 1 },
-    { leftStart: "E", leftEnd: "S", rightStart: "W", rightEnd: "N", leftMotion: "shift", rightMotion: "shift", correctAnswer: 1 },
+    {
+      leftStart: "N",
+      leftEnd: "E",
+      rightStart: "S",
+      rightEnd: "W",
+      leftMotion: "shift",
+      rightMotion: "shift",
+      correctAnswer: 1,
+    },
+    {
+      leftStart: "E",
+      leftEnd: "S",
+      rightStart: "W",
+      rightEnd: "N",
+      leftMotion: "shift",
+      rightMotion: "shift",
+      correctAnswer: 1,
+    },
     // Type 2: Shift
-    { leftStart: "N", leftEnd: "E", rightStart: "S", rightEnd: "S", leftMotion: "shift", rightMotion: "static", correctAnswer: 2 },
-    { leftStart: "W", leftEnd: "W", rightStart: "E", rightEnd: "S", leftMotion: "static", rightMotion: "shift", correctAnswer: 2 },
+    {
+      leftStart: "N",
+      leftEnd: "E",
+      rightStart: "S",
+      rightEnd: "S",
+      leftMotion: "shift",
+      rightMotion: "static",
+      correctAnswer: 2,
+    },
+    {
+      leftStart: "W",
+      leftEnd: "W",
+      rightStart: "E",
+      rightEnd: "S",
+      leftMotion: "static",
+      rightMotion: "shift",
+      correctAnswer: 2,
+    },
     // Type 3: Cross-Shift
-    { leftStart: "N", leftEnd: "E", rightStart: "S", rightEnd: "N", leftMotion: "shift", rightMotion: "dash", correctAnswer: 3 },
-    { leftStart: "E", leftEnd: "W", rightStart: "S", rightEnd: "E", leftMotion: "dash", rightMotion: "shift", correctAnswer: 3 },
+    {
+      leftStart: "N",
+      leftEnd: "E",
+      rightStart: "S",
+      rightEnd: "N",
+      leftMotion: "shift",
+      rightMotion: "dash",
+      correctAnswer: 3,
+    },
+    {
+      leftStart: "E",
+      leftEnd: "W",
+      rightStart: "S",
+      rightEnd: "E",
+      leftMotion: "dash",
+      rightMotion: "shift",
+      correctAnswer: 3,
+    },
     // Type 4: Dash
-    { leftStart: "N", leftEnd: "S", rightStart: "E", rightEnd: "E", leftMotion: "dash", rightMotion: "static", correctAnswer: 4 },
-    { leftStart: "W", leftEnd: "W", rightStart: "S", rightEnd: "N", leftMotion: "static", rightMotion: "dash", correctAnswer: 4 },
+    {
+      leftStart: "N",
+      leftEnd: "S",
+      rightStart: "E",
+      rightEnd: "E",
+      leftMotion: "dash",
+      rightMotion: "static",
+      correctAnswer: 4,
+    },
+    {
+      leftStart: "W",
+      leftEnd: "W",
+      rightStart: "S",
+      rightEnd: "N",
+      leftMotion: "static",
+      rightMotion: "dash",
+      correctAnswer: 4,
+    },
     // Type 5: Dual-Dash
-    { leftStart: "N", leftEnd: "S", rightStart: "S", rightEnd: "N", leftMotion: "dash", rightMotion: "dash", correctAnswer: 5 },
-    { leftStart: "E", leftEnd: "W", rightStart: "W", rightEnd: "E", leftMotion: "dash", rightMotion: "dash", correctAnswer: 5 },
+    {
+      leftStart: "N",
+      leftEnd: "S",
+      rightStart: "S",
+      rightEnd: "N",
+      leftMotion: "dash",
+      rightMotion: "dash",
+      correctAnswer: 5,
+    },
+    {
+      leftStart: "E",
+      leftEnd: "W",
+      rightStart: "W",
+      rightEnd: "E",
+      leftMotion: "dash",
+      rightMotion: "dash",
+      correctAnswer: 5,
+    },
     // Type 6: Static
-    { leftStart: "N", leftEnd: "N", rightStart: "S", rightEnd: "S", leftMotion: "static", rightMotion: "static", correctAnswer: 6 },
-    { leftStart: "E", leftEnd: "E", rightStart: "W", rightEnd: "W", leftMotion: "static", rightMotion: "static", correctAnswer: 6 },
+    {
+      leftStart: "N",
+      leftEnd: "N",
+      rightStart: "S",
+      rightEnd: "S",
+      leftMotion: "static",
+      rightMotion: "static",
+      correctAnswer: 6,
+    },
+    {
+      leftStart: "E",
+      leftEnd: "E",
+      rightStart: "W",
+      rightEnd: "W",
+      leftMotion: "static",
+      rightMotion: "static",
+      correctAnswer: 6,
+    },
   ];
 
   // Shuffle questions
@@ -74,14 +170,15 @@ import { TYPES } from "$lib/shared/inversify/types";
   const currentQuestion = $derived(quizQuestions[currentQuestionIndex]);
 
   // Motion type info for answer buttons
-  const MOTION_TYPES: { num: MotionTypeNumber; name: string; color: string }[] = [
-    { num: 1, name: "Dual-Shift", color: "#22D3EE" },
-    { num: 2, name: "Shift", color: "#4ADE80" },
-    { num: 3, name: "Cross-Shift", color: "#F472B6" },
-    { num: 4, name: "Dash", color: "#FB923C" },
-    { num: 5, name: "Dual-Dash", color: "#A78BFA" },
-    { num: 6, name: "Static", color: "#94A3B8" },
-  ];
+  const MOTION_TYPES: { num: MotionTypeNumber; name: string; color: string }[] =
+    [
+      { num: 1, name: "Dual-Shift", color: "#22D3EE" },
+      { num: 2, name: "Shift", color: "#4ADE80" },
+      { num: 3, name: "Cross-Shift", color: "#F472B6" },
+      { num: 4, name: "Dash", color: "#FB923C" },
+      { num: 5, name: "Dual-Dash", color: "#A78BFA" },
+      { num: 6, name: "Static", color: "#94A3B8" },
+    ];
 
   function selectAnswer(answer: MotionTypeNumber) {
     if (showResult || !currentQuestion) return;
@@ -113,7 +210,9 @@ import { TYPES } from "$lib/shared/inversify/types";
     onComplete?.();
   }
 
-  const score = $derived(Math.round((correctCount / quizQuestions.length) * 100));
+  const score = $derived(
+    Math.round((correctCount / quizQuestions.length) * 100)
+  );
   const isPassing = $derived(score >= 70);
 </script>
 
@@ -121,8 +220,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   {#if !quizComplete}
     <!-- Quiz in progress -->
     <div class="quiz-header">
-      <span class="progress">Question {currentQuestionIndex + 1} of {quizQuestions.length}</span>
-      <span class="score">Score: {correctCount}/{currentQuestionIndex + (showResult ? 1 : 0)}</span>
+      <span class="progress"
+        >Question {currentQuestionIndex + 1} of {quizQuestions.length}</span
+      >
+      <span class="score"
+        >Score: {correctCount}/{currentQuestionIndex +
+          (showResult ? 1 : 0)}</span
+      >
     </div>
 
     {#if currentQuestion}
@@ -167,23 +271,29 @@ import { TYPES } from "$lib/shared/inversify/types";
       </div>
 
       {#if showResult}
-        <div class="result-feedback" class:correct={selectedAnswer === currentQuestion.correctAnswer}>
+        <div
+          class="result-feedback"
+          class:correct={selectedAnswer === currentQuestion.correctAnswer}
+        >
           {#if selectedAnswer === currentQuestion.correctAnswer}
             <i class="fa-solid fa-check-circle"></i>
             <span>Correct! It's Type {currentQuestion.correctAnswer}.</span>
           {:else}
             <i class="fa-solid fa-times-circle"></i>
-            <span>Not quite. The answer is Type {currentQuestion.correctAnswer}.</span>
+            <span
+              >Not quite. The answer is Type {currentQuestion.correctAnswer}.</span
+            >
           {/if}
         </div>
 
         <button class="next-button" onclick={nextQuestion}>
-          {currentQuestionIndex < quizQuestions.length - 1 ? "Next Question" : "See Results"}
+          {currentQuestionIndex < quizQuestions.length - 1
+            ? "Next Question"
+            : "See Results"}
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       {/if}
     {/if}
-
   {:else}
     <!-- Quiz complete -->
     <div class="results">
@@ -205,7 +315,9 @@ import { TYPES } from "$lib/shared/inversify/types";
 
       <div class="score-display">
         <span class="score-value" class:passing={isPassing}>{score}%</span>
-        <span class="score-label">{correctCount} of {quizQuestions.length} correct</span>
+        <span class="score-label"
+          >{correctCount} of {quizQuestions.length} correct</span
+        >
       </div>
 
       <div class="type-review">
@@ -261,7 +373,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .score {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   /* Question area */
@@ -319,14 +431,14 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .answer-button.correct {
     background: rgba(74, 222, 128, 0.15);
-    border-color: #4ADE80;
-    color: #4ADE80;
+    border-color: #4ade80;
+    color: #4ade80;
   }
 
   .answer-button.incorrect {
     background: rgba(248, 113, 113, 0.15);
-    border-color: #F87171;
-    color: #F87171;
+    border-color: #f87171;
+    color: #f87171;
   }
 
   .type-num {
@@ -374,13 +486,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   .result-feedback.correct {
     background: rgba(74, 222, 128, 0.15);
     border: 1px solid rgba(74, 222, 128, 0.3);
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .result-feedback:not(.correct) {
     background: rgba(248, 113, 113, 0.15);
     border: 1px solid rgba(248, 113, 113, 0.3);
-    color: #F87171;
+    color: #f87171;
   }
 
   .result-feedback i {
@@ -394,10 +506,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 0.5rem;
     padding: 0.875rem 2rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.25) 0%, rgba(6, 182, 212, 0.25) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.25) 0%,
+      rgba(6, 182, 212, 0.25) 100%
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     border-radius: 10px;
-    color: #22D3EE;
+    color: #22d3ee;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -405,7 +521,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .next-button:hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.35) 0%, rgba(6, 182, 212, 0.35) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.35) 0%,
+      rgba(6, 182, 212, 0.35) 100%
+    );
     border-color: rgba(34, 211, 238, 0.6);
   }
 
@@ -431,12 +551,12 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .results-icon.passing {
     background: rgba(74, 222, 128, 0.15);
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .results-icon:not(.passing) {
     background: rgba(251, 146, 60, 0.15);
-    color: #FB923C;
+    color: #fb923c;
   }
 
   .results-title {
@@ -459,11 +579,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .score-value.passing {
-    color: #4ADE80;
+    color: #4ade80;
   }
 
   .score-value:not(.passing) {
-    color: #FB923C;
+    color: #fb923c;
   }
 
   .score-label {
@@ -528,7 +648,11 @@ import { TYPES } from "$lib/shared/inversify/types";
     align-items: center;
     gap: 0.5rem;
     padding: 1rem 2.5rem;
-    background: linear-gradient(135deg, rgba(74, 222, 128, 0.3) 0%, rgba(34, 197, 94, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(74, 222, 128, 0.3) 0%,
+      rgba(34, 197, 94, 0.3) 100%
+    );
     border: 2px solid rgba(74, 222, 128, 0.5);
     border-radius: 12px;
     color: white;
@@ -539,7 +663,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .finish-button:hover {
-    background: linear-gradient(135deg, rgba(74, 222, 128, 0.4) 0%, rgba(34, 197, 94, 0.4) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(74, 222, 128, 0.4) 0%,
+      rgba(34, 197, 94, 0.4) 100%
+    );
     border-color: rgba(74, 222, 128, 0.7);
     transform: translateY(-2px);
   }

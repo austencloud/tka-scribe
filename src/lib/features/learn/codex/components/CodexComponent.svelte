@@ -271,7 +271,8 @@
     width: 32px;
     height: 32px;
     border: 3px solid rgba(255, 255, 255, 0.1);
-    border-left: 3px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
+    border-left: 3px solid
+      color-mix(in srgb, var(--theme-accent) 80%, transparent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

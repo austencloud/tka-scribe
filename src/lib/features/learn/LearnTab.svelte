@@ -89,7 +89,11 @@ Navigation via bottom tabs (mobile-first UX pattern)
     // Map navigation modes to active mode
     if (navMode === "concepts") {
       activeMode = "concepts";
-    } else if (navMode === "quiz" || navMode === "drills" || navMode === "play") {
+    } else if (
+      navMode === "quiz" ||
+      navMode === "drills" ||
+      navMode === "play"
+    ) {
       activeMode = "play";
     } else if (navMode === "codex") {
       activeMode = "codex";
@@ -173,32 +177,32 @@ Navigation via bottom tabs (mobile-first UX pattern)
     />
   </div>
 {:else}
-<div class="learn-tab">
-  <!-- Content area - instant tab switching -->
-  <div class="content-container">
-    {#key activeMode}
-      <div class="mode-panel">
-        {#if isModeActive("concepts")}
-          {#if selectedConcept}
-            <!-- Key by openCount to force remount on each open -->
-            {#key conceptOpenCount}
-              <ConceptDetailView
-                concept={selectedConcept}
-                onClose={handleBackToPath}
-              />
-            {/key}
-          {:else}
-            <ConceptPathView onConceptClick={handleConceptClick} />
+  <div class="learn-tab">
+    <!-- Content area - instant tab switching -->
+    <div class="content-container">
+      {#key activeMode}
+        <div class="mode-panel">
+          {#if isModeActive("concepts")}
+            {#if selectedConcept}
+              <!-- Key by openCount to force remount on each open -->
+              {#key conceptOpenCount}
+                <ConceptDetailView
+                  concept={selectedConcept}
+                  onClose={handleBackToPath}
+                />
+              {/key}
+            {:else}
+              <ConceptPathView onConceptClick={handleConceptClick} />
+            {/if}
+          {:else if isModeActive("play")}
+            <QuizTab />
+          {:else if isModeActive("codex")}
+            <CodexTab />
           {/if}
-        {:else if isModeActive("play")}
-          <QuizTab />
-        {:else if isModeActive("codex")}
-          <CodexTab />
-        {/if}
-      </div>
-    {/key}
+        </div>
+      {/key}
+    </div>
   </div>
-</div>
 {/if}
 
 <style>

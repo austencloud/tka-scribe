@@ -193,7 +193,11 @@ Shows all pictographs for a selected letter with:
     font-size: 1.5rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
-    background: linear-gradient(135deg, #a78bfa 0%, var(--theme-accent-strong, #8b5cf6) 100%);
+    background: linear-gradient(
+      135deg,
+      #a78bfa 0%,
+      var(--theme-accent-strong, #8b5cf6) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -213,8 +217,13 @@ Shows all pictographs for a selected letter with:
   .explanation-section {
     margin-bottom: 2rem;
     padding: 1.25rem;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 8%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
     border-radius: 12px;
     backdrop-filter: blur(10px);
   }

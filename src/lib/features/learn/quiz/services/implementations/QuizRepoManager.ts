@@ -9,9 +9,13 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ICodexLetterMappingRepo } from "../../../codex/services/contracts/ICodexLetterMappingRepo";
 import type { LetterCategory } from "../../../codex/domain/types/codex-types";
-import type { QuizConfig } from '../../domain/models/quiz-models';
-import { QuizAnswerFormat, QuizQuestionFormat, QuizType } from '../../domain/enums/quiz-enums';
-import type { IQuizRepoManager } from '../contracts/IQuizRepository';
+import type { QuizConfig } from "../../domain/models/quiz-models";
+import {
+  QuizAnswerFormat,
+  QuizQuestionFormat,
+  QuizType,
+} from "../../domain/enums/quiz-enums";
+import type { IQuizRepoManager } from "../contracts/IQuizRepository";
 
 @injectable()
 export class QuizRepoManager implements IQuizRepoManager {

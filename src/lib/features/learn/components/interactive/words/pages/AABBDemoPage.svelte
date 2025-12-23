@@ -3,7 +3,14 @@
   import WordsLessonNav from "../components/WordsLessonNav.svelte";
   import { wordAABB } from "../domain/demo-words";
 
-  let { isAnimating, beatIndex, onBack, onNext, onToggleAnimation, onBeatChange } = $props<{
+  let {
+    isAnimating,
+    beatIndex,
+    onBack,
+    onNext,
+    onToggleAnimation,
+    onBeatChange,
+  } = $props<{
     isAnimating: boolean;
     beatIndex: number;
     onBack: () => void;
@@ -29,7 +36,7 @@
       animationSpeed={1200}
       showLetterLabel={true}
       showBeatNumber={true}
-      onBeatChange={onBeatChange}
+      {onBeatChange}
     />
 
     <div class="demo-controls">

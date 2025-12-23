@@ -12,8 +12,15 @@
   import { TYPES } from "$lib/shared/inversify/types";
   // TODO: Fix service import - temporarily commented out
   // import { QuestionGeneratorService } from "../../services/implementations";
-  import type { QuizAnswerOption, QuizQuestionData } from "../domain/models/quiz-models";
-  import { QuizAnswerFormat, QuizQuestionFormat, QuizType } from "../domain/enums/quiz-enums";
+  import type {
+    QuizAnswerOption,
+    QuizQuestionData,
+  } from "../domain/models/quiz-models";
+  import {
+    QuizAnswerFormat,
+    QuizQuestionFormat,
+    QuizType,
+  } from "../domain/enums/quiz-enums";
   // Events are now handled via callbacks in props
   import AnswerButton from "./AnswerButton.svelte";
   import AnswerPictograph from "./AnswerPictograph.svelte";
@@ -391,7 +398,8 @@
 
   .next-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .loading {

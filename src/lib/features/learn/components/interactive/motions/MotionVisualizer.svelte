@@ -3,10 +3,10 @@ MotionVisualizer - Animated visualization of hand motions on 4-point diamond gri
 Shows shift (adjacent), dash (opposite), and static (stay) motions with animated arrows
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
 
   type HandPosition = "N" | "E" | "S" | "W";
   type MotionType = "shift" | "dash" | "static";
@@ -49,13 +49,40 @@ import { TYPES } from "$lib/shared/inversify/types";
   };
 
   // Motion type names and colors
-  const MOTION_TYPE_INFO: Record<MotionTypeNumber, { name: string; color: string; description: string }> = {
-    1: { name: "Dual-Shift", color: "#22D3EE", description: "Both hands shift to adjacent points" },
-    2: { name: "Shift", color: "#4ADE80", description: "One hand shifts, one stays still" },
-    3: { name: "Cross-Shift", color: "#F472B6", description: "One hand shifts, one dashes" },
-    4: { name: "Dash", color: "#FB923C", description: "One hand dashes, one stays still" },
-    5: { name: "Dual-Dash", color: "#A78BFA", description: "Both hands dash to opposite points" },
-    6: { name: "Static", color: "#94A3B8", description: "Both hands remain still" },
+  const MOTION_TYPE_INFO: Record<
+    MotionTypeNumber,
+    { name: string; color: string; description: string }
+  > = {
+    1: {
+      name: "Dual-Shift",
+      color: "#22D3EE",
+      description: "Both hands shift to adjacent points",
+    },
+    2: {
+      name: "Shift",
+      color: "#4ADE80",
+      description: "One hand shifts, one stays still",
+    },
+    3: {
+      name: "Cross-Shift",
+      color: "#F472B6",
+      description: "One hand shifts, one dashes",
+    },
+    4: {
+      name: "Dash",
+      color: "#FB923C",
+      description: "One hand dashes, one stays still",
+    },
+    5: {
+      name: "Dual-Dash",
+      color: "#A78BFA",
+      description: "Both hands dash to opposite points",
+    },
+    6: {
+      name: "Static",
+      color: "#94A3B8",
+      description: "Both hands remain still",
+    },
   };
 
   // Motion colors
@@ -130,9 +157,10 @@ import { TYPES } from "$lib/shared/inversify/types";
       const progress = Math.min(elapsed / duration, 1);
 
       // Ease-in-out curve
-      animationProgress = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+      animationProgress =
+        progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
       if (progress < 1) {
         requestAnimationFrame(animate);
@@ -189,7 +217,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   <!-- Motion type badge -->
   {#if showMotionType}
     {@const typeNum = motionType as MotionTypeNumber}
-    <div class="motion-badge" style="--badge-color: {MOTION_TYPE_INFO[typeNum].color}">
+    <div
+      class="motion-badge"
+      style="--badge-color: {MOTION_TYPE_INFO[typeNum].color}"
+    >
       <span class="badge-number">Type {typeNum}</span>
       <span class="badge-name">{MOTION_TYPE_INFO[typeNum].name}</span>
     </div>
@@ -206,15 +237,43 @@ import { TYPES } from "$lib/shared/inversify/types";
     />
 
     <!-- Grid lines -->
-    <line x1="50" y1="15" x2="50" y2="85" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" />
-    <line x1="15" y1="50" x2="85" y2="50" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" />
+    <line
+      x1="50"
+      y1="15"
+      x2="50"
+      y2="85"
+      stroke="rgba(255, 255, 255, 0.1)"
+      stroke-width="0.5"
+    />
+    <line
+      x1="15"
+      y1="50"
+      x2="85"
+      y2="50"
+      stroke="rgba(255, 255, 255, 0.1)"
+      stroke-width="0.5"
+    />
 
     <!-- Arrow markers -->
     <defs>
-      <marker id="arrow-left" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <marker
+        id="arrow-left"
+        markerWidth="6"
+        markerHeight="6"
+        refX="5"
+        refY="3"
+        orient="auto"
+      >
         <polygon points="0,0 6,3 0,6" fill={LEFT_HAND_COLOR} opacity="0.7" />
       </marker>
-      <marker id="arrow-right" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <marker
+        id="arrow-right"
+        markerWidth="6"
+        markerHeight="6"
+        refX="5"
+        refY="3"
+        orient="auto"
+      >
         <polygon points="0,0 6,3 0,6" fill={RIGHT_HAND_COLOR} opacity="0.7" />
       </marker>
     </defs>
@@ -322,12 +381,18 @@ import { TYPES } from "$lib/shared/inversify/types";
     {@const leftMotionType = leftMotion as MotionType}
     {@const rightMotionType = rightMotion as MotionType}
     <div class="motion-legend">
-      <div class="legend-item" style="--motion-color: {MOTION_COLORS[leftMotionType]}">
+      <div
+        class="legend-item"
+        style="--motion-color: {MOTION_COLORS[leftMotionType]}"
+      >
         <div class="legend-dot" style="background: {LEFT_HAND_COLOR}"></div>
         <span class="legend-label">Left:</span>
         <span class="legend-motion">{leftMotionType}</span>
       </div>
-      <div class="legend-item" style="--motion-color: {MOTION_COLORS[rightMotionType]}">
+      <div
+        class="legend-item"
+        style="--motion-color: {MOTION_COLORS[rightMotionType]}"
+      >
         <div class="legend-dot" style="background: {RIGHT_HAND_COLOR}"></div>
         <span class="legend-label">Right:</span>
         <span class="legend-motion">{rightMotionType}</span>
@@ -400,8 +465,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes pulseGlow {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.35; }
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.35;
+    }
   }
 
   .hand-point {
@@ -448,10 +518,14 @@ import { TYPES } from "$lib/shared/inversify/types";
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.2) 0%,
+      rgba(6, 182, 212, 0.2) 100%
+    );
     border: 1px solid rgba(34, 211, 238, 0.4);
     border-radius: 10px;
-    color: #22D3EE;
+    color: #22d3ee;
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
@@ -460,7 +534,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .play-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
     border-color: rgba(34, 211, 238, 0.6);
   }
 

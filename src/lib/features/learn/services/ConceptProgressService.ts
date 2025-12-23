@@ -5,8 +5,12 @@
  * Handles concept unlocking, progress tracking, and persistence.
  */
 
-import { TKA_CONCEPTS, isConceptUnlocked } from '../domain/concepts';
-import { type ConceptProgress, type ConceptStatus, type LearningProgress } from '../domain/types';
+import { TKA_CONCEPTS, isConceptUnlocked } from "../domain/concepts";
+import {
+  type ConceptProgress,
+  type ConceptStatus,
+  type LearningProgress,
+} from "../domain/types";
 
 const STORAGE_KEY = "tka_learning_progress";
 

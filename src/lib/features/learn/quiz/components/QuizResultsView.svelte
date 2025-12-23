@@ -1,8 +1,8 @@
 <!-- QuizResultsView - Refactored with service architecture -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { QuizResults } from "../domain/models/quiz-models";
   import type { IQuizResultsAnalyzer } from "../QuizResultsAnalyzer";
@@ -64,17 +64,18 @@ import { TYPES } from "$lib/shared/inversify/types";
     <div class="results-content">
       <div class="results-card glass-surface">
         <QuizPerformanceGrade
-          grade={analyzer?.getPerformanceGrade(
-            results.accuracyPercentage
-          ) || { grade: "F", color: "#dc2626", message: "Try again!" }}
+          grade={analyzer?.getPerformanceGrade(results.accuracyPercentage) || {
+            grade: "F",
+            color: "#dc2626",
+            message: "Try again!",
+          }}
           accuracy={results.accuracyPercentage}
         />
 
         <!-- Performance Feedback -->
         <div class="feedback-section">
           <p class="feedback-text">
-            {analyzer?.getPerformanceFeedback(results) ||
-              "Keep practicing!"}
+            {analyzer?.getPerformanceFeedback(results) || "Keep practicing!"}
           </p>
         </div>
 
@@ -86,16 +87,14 @@ import { TYPES } from "$lib/shared/inversify/types";
           correctAnswers={results.correctAnswers}
           incorrectGuesses={results.incorrectGuesses}
           totalQuestions={results.totalQuestions}
-          completionTime={analyzer?.formatTime(
-            results.completionTimeSeconds
-          ) || "0:00"}
+          completionTime={analyzer?.formatTime(results.completionTimeSeconds) ||
+            "0:00"}
         />
 
         <div class="lesson-details">
           <p>
             <strong>Mode:</strong>
-            {analyzer?.getQuizModeDisplayName(results.quizMode) ||
-              "Unknown"}
+            {analyzer?.getQuizModeDisplayName(results.quizMode) || "Unknown"}
           </p>
           <p>
             <strong>Completed:</strong>

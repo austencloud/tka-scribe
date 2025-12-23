@@ -124,12 +124,14 @@
     background: rgba(255, 255, 255, 0.12);
     border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .control-button:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: 0 2px 6px color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    box-shadow: 0 2px 6px
+      color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   .control-button:disabled {

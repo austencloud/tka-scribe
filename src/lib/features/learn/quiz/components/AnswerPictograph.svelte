@@ -154,7 +154,8 @@
   .answer-pictograph.selected {
     background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-color: var(--theme-accent, #667eea);
-    box-shadow: 0 0 25px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 0 25px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-2px);
   }
 

@@ -5,8 +5,8 @@
 -->
 
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   // Props using Svelte 5 runes
   let {
     pictographData,

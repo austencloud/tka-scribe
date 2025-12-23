@@ -3,9 +3,9 @@ WordVisualizer - Shows a TKA word as an animated letter sequence
 Displays letters transitioning smoothly on the grid with motion arrows
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { untrack } from "svelte";
 
   type HandPosition = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
@@ -49,7 +49,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   );
 
   // Grid point coordinates (8-point grid)
-  const GRID_POINTS: Record<HandPosition, { x: number; y: number; label: string }> = {
+  const GRID_POINTS: Record<
+    HandPosition,
+    { x: number; y: number; label: string }
+  > = {
     N: { x: 50, y: 12, label: "N" },
     NE: { x: 82, y: 22, label: "NE" },
     E: { x: 92, y: 50, label: "E" },
@@ -61,7 +64,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   } as const;
 
   // Colors
-  const LEFT_HAND_COLOR = "#4A9EFF";  // Blue
+  const LEFT_HAND_COLOR = "#4A9EFF"; // Blue
   const RIGHT_HAND_COLOR = "#FF4A9E"; // Pink/Red
 
   // Animation state
@@ -75,7 +78,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   });
 
   // Interpolate position during animation
-  function interpolatePosition(start: HandPosition, end: HandPosition, progress: number) {
+  function interpolatePosition(
+    start: HandPosition,
+    end: HandPosition,
+    progress: number
+  ) {
     const startPoint = GRID_POINTS[start];
     const endPoint = GRID_POINTS[end];
     return {
@@ -89,26 +96,45 @@ import { TYPES } from "$lib/shared/inversify/types";
     const letter = currentLetter();
     if (!letter) return GRID_POINTS.N;
     if (animationProgress < 1 && animationProgress > 0) {
-      return interpolatePosition(letter.startLeft, letter.endLeft, animationProgress);
+      return interpolatePosition(
+        letter.startLeft,
+        letter.endLeft,
+        animationProgress
+      );
     }
     return GRID_POINTS[letter.endLeft as HandPosition];
   });
 
-  const rightHandPos = $derived((): { x: number; y: number; label?: string } => {
-    const letter = currentLetter();
-    if (!letter) return GRID_POINTS.S;
-    if (animationProgress < 1 && animationProgress > 0) {
-      return interpolatePosition(letter.startRight, letter.endRight, animationProgress);
+  const rightHandPos = $derived(
+    (): { x: number; y: number; label?: string } => {
+      const letter = currentLetter();
+      if (!letter) return GRID_POINTS.S;
+      if (animationProgress < 1 && animationProgress > 0) {
+        return interpolatePosition(
+          letter.startRight,
+          letter.endRight,
+          animationProgress
+        );
+      }
+      return GRID_POINTS[letter.endRight as HandPosition];
     }
-    return GRID_POINTS[letter.endRight as HandPosition];
-  });
+  );
 
   // Detect position type
-  function getPositionType(left: HandPosition, right: HandPosition): PositionType {
+  function getPositionType(
+    left: HandPosition,
+    right: HandPosition
+  ): PositionType {
     if (left === right) return "beta";
     const opposites: Record<string, string> = {
-      N: "S", S: "N", E: "W", W: "E",
-      NE: "SW", SW: "NE", NW: "SE", SE: "NW",
+      N: "S",
+      S: "N",
+      E: "W",
+      W: "E",
+      NE: "SW",
+      SW: "NE",
+      NW: "SE",
+      SE: "NW",
     };
     if (opposites[left] === right) return "alpha";
     return "gamma";
@@ -259,7 +285,12 @@ import { TYPES } from "$lib/shared/inversify/types";
       <!-- Left hand motion arrow -->
       {#if letter.startLeft !== letter.endLeft}
         <path
-          d={getMotionArrowPath(letter.startLeft, letter.endLeft, letter.leftMotion, true)}
+          d={getMotionArrowPath(
+            letter.startLeft,
+            letter.endLeft,
+            letter.leftMotion,
+            true
+          )}
           stroke={LEFT_HAND_COLOR}
           stroke-width="2"
           fill="none"
@@ -272,7 +303,12 @@ import { TYPES } from "$lib/shared/inversify/types";
       <!-- Right hand motion arrow -->
       {#if letter.startRight !== letter.endRight}
         <path
-          d={getMotionArrowPath(letter.startRight, letter.endRight, letter.rightMotion, false)}
+          d={getMotionArrowPath(
+            letter.startRight,
+            letter.endRight,
+            letter.rightMotion,
+            false
+          )}
           stroke={RIGHT_HAND_COLOR}
           stroke-width="2"
           fill="none"
@@ -287,54 +323,80 @@ import { TYPES } from "$lib/shared/inversify/types";
     {#if true}
       {@const leftPos = leftHandPos()}
       {@const rightPos = rightHandPos()}
-      {@const areSamePos = Math.abs(leftPos.x - rightPos.x) < 5 && Math.abs(leftPos.y - rightPos.y) < 5}
+      {@const areSamePos =
+        Math.abs(leftPos.x - rightPos.x) < 5 &&
+        Math.abs(leftPos.y - rightPos.y) < 5}
 
       {#if areSamePos}
-      <!-- Both hands at same position (Beta) -->
-      <circle
-        cx={leftPos.x}
-        cy={leftPos.y}
-        r="10"
-        fill={POSITION_COLORS.beta}
-        opacity="0.25"
-        class="hand-glow"
-      />
-      <circle cx={leftPos.x - 3} cy={leftPos.y} r="5" fill={LEFT_HAND_COLOR} class="hand-point" />
-      <circle cx={leftPos.x + 3} cy={leftPos.y} r="5" fill={RIGHT_HAND_COLOR} class="hand-point" />
-    {:else}
-      <!-- Left hand -->
-      <circle
-        cx={leftPos.x}
-        cy={leftPos.y}
-        r="8"
-        fill={LEFT_HAND_COLOR}
-        opacity="0.25"
-        class="hand-glow"
-      />
-      <circle cx={leftPos.x} cy={leftPos.y} r="5" fill={LEFT_HAND_COLOR} class="hand-point" />
+        <!-- Both hands at same position (Beta) -->
+        <circle
+          cx={leftPos.x}
+          cy={leftPos.y}
+          r="10"
+          fill={POSITION_COLORS.beta}
+          opacity="0.25"
+          class="hand-glow"
+        />
+        <circle
+          cx={leftPos.x - 3}
+          cy={leftPos.y}
+          r="5"
+          fill={LEFT_HAND_COLOR}
+          class="hand-point"
+        />
+        <circle
+          cx={leftPos.x + 3}
+          cy={leftPos.y}
+          r="5"
+          fill={RIGHT_HAND_COLOR}
+          class="hand-point"
+        />
+      {:else}
+        <!-- Left hand -->
+        <circle
+          cx={leftPos.x}
+          cy={leftPos.y}
+          r="8"
+          fill={LEFT_HAND_COLOR}
+          opacity="0.25"
+          class="hand-glow"
+        />
+        <circle
+          cx={leftPos.x}
+          cy={leftPos.y}
+          r="5"
+          fill={LEFT_HAND_COLOR}
+          class="hand-point"
+        />
 
-      <!-- Right hand -->
-      <circle
-        cx={rightPos.x}
-        cy={rightPos.y}
-        r="8"
-        fill={RIGHT_HAND_COLOR}
-        opacity="0.25"
-        class="hand-glow"
-      />
-      <circle cx={rightPos.x} cy={rightPos.y} r="5" fill={RIGHT_HAND_COLOR} class="hand-point" />
+        <!-- Right hand -->
+        <circle
+          cx={rightPos.x}
+          cy={rightPos.y}
+          r="8"
+          fill={RIGHT_HAND_COLOR}
+          opacity="0.25"
+          class="hand-glow"
+        />
+        <circle
+          cx={rightPos.x}
+          cy={rightPos.y}
+          r="5"
+          fill={RIGHT_HAND_COLOR}
+          class="hand-point"
+        />
 
-      <!-- Connection line -->
-      <line
-        x1={leftPos.x}
-        y1={leftPos.y}
-        x2={rightPos.x}
-        y2={rightPos.y}
-        stroke="rgba(255, 255, 255, 0.2)"
-        stroke-width="1"
-        stroke-dasharray="3 2"
-        class="connection-line"
-      />
+        <!-- Connection line -->
+        <line
+          x1={leftPos.x}
+          y1={leftPos.y}
+          x2={rightPos.x}
+          y2={rightPos.y}
+          stroke="rgba(255, 255, 255, 0.2)"
+          stroke-width="1"
+          stroke-dasharray="3 2"
+          class="connection-line"
+        />
       {/if}
     {/if}
 
@@ -424,8 +486,13 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes handPulse {
-    0%, 100% { opacity: 0.25; }
-    50% { opacity: 0.4; }
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
 
   .motion-arrow {
@@ -448,8 +515,12 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   @keyframes dashMove {
-    from { stroke-dashoffset: 0; }
-    to { stroke-dashoffset: 10; }
+    from {
+      stroke-dashoffset: 0;
+    }
+    to {
+      stroke-dashoffset: 10;
+    }
   }
 
   /* Beat navigation */
@@ -491,7 +562,7 @@ import { TYPES } from "$lib/shared/inversify/types";
   .beat-dot.active {
     background: rgba(34, 211, 238, 0.25);
     border-color: rgba(34, 211, 238, 0.6);
-    color: #22D3EE;
+    color: #22d3ee;
   }
 
   .beat-number {

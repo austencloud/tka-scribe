@@ -11,12 +11,13 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import {
-  LOCATION_MAP_EIGHTH_CW,
-} from "../../../../create/generate/circular/domain/constants/circular-position-maps";
+import { LOCATION_MAP_EIGHTH_CW } from "../../../../create/generate/circular/domain/constants/circular-position-maps";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
@@ -54,7 +55,11 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
    * - Updates positions based on swapped locations
    */
   colorSwapAllPictographs(pictographs: PictographData[]): PictographData[] {
-    console.log("⚫⚪ Applying color swap to", pictographs.length, "pictographs");
+    console.log(
+      "⚫⚪ Applying color swap to",
+      pictographs.length,
+      "pictographs"
+    );
     return pictographs.map((p) => this.colorSwapPictograph(p));
   }
 
@@ -90,11 +95,16 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
     const newGridMode =
       currentGridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
 
-    const rotatedMotions: Partial<Record<MotionColor, MotionData | undefined>> = {};
+    const rotatedMotions: Partial<Record<MotionColor, MotionData | undefined>> =
+      {};
 
     // Rotate blue motion
     if (blueMotion) {
-      const { arrowPlacementData: _arrowPlacementData, propPlacementData: _propPlacementData, ...motionWithoutPlacement } = blueMotion;
+      const {
+        arrowPlacementData: _arrowPlacementData,
+        propPlacementData: _propPlacementData,
+        ...motionWithoutPlacement
+      } = blueMotion;
       rotatedMotions[MotionColor.BLUE] = createMotionData({
         ...motionWithoutPlacement,
         startLocation: LOCATION_MAP_EIGHTH_CW[blueMotion.startLocation],
@@ -106,7 +116,11 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
 
     // Rotate red motion
     if (redMotion) {
-      const { arrowPlacementData: _arrowPlacementData, propPlacementData: _propPlacementData, ...motionWithoutPlacement } = redMotion;
+      const {
+        arrowPlacementData: _arrowPlacementData,
+        propPlacementData: _propPlacementData,
+        ...motionWithoutPlacement
+      } = redMotion;
       rotatedMotions[MotionColor.RED] = createMotionData({
         ...motionWithoutPlacement,
         startLocation: LOCATION_MAP_EIGHTH_CW[redMotion.startLocation],
@@ -136,7 +150,9 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
     const blueMotion = pictograph.motions[MotionColor.BLUE];
     const redMotion = pictograph.motions[MotionColor.RED];
 
-    const mirroredMotions: Partial<Record<MotionColor, MotionData | undefined>> = {};
+    const mirroredMotions: Partial<
+      Record<MotionColor, MotionData | undefined>
+    > = {};
 
     // Mirror blue motion
     if (blueMotion) {
@@ -145,7 +161,9 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
         startLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.startLocation],
         endLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.endLocation],
         arrowLocation: VERTICAL_MIRROR_LOCATION_MAP[blueMotion.arrowLocation],
-        rotationDirection: this.reverseRotationDirection(blueMotion.rotationDirection),
+        rotationDirection: this.reverseRotationDirection(
+          blueMotion.rotationDirection
+        ),
       };
     }
 
@@ -156,7 +174,9 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
         startLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.startLocation],
         endLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.endLocation],
         arrowLocation: VERTICAL_MIRROR_LOCATION_MAP[redMotion.arrowLocation],
-        rotationDirection: this.reverseRotationDirection(redMotion.rotationDirection),
+        rotationDirection: this.reverseRotationDirection(
+          redMotion.rotationDirection
+        ),
       };
     }
 
@@ -184,7 +204,8 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
     const redMotion = pictograph.motions[MotionColor.RED];
 
     // Swap the motions
-    const swappedMotions: Partial<Record<MotionColor, MotionData | undefined>> = {};
+    const swappedMotions: Partial<Record<MotionColor, MotionData | undefined>> =
+      {};
 
     if (redMotion) {
       swappedMotions[MotionColor.BLUE] = {
@@ -219,7 +240,9 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
   /**
    * Reverse rotation direction (cw ↔ ccw)
    */
-  private reverseRotationDirection(direction: RotationDirection): RotationDirection {
+  private reverseRotationDirection(
+    direction: RotationDirection
+  ): RotationDirection {
     if (direction === RotationDirection.CLOCKWISE) {
       return RotationDirection.COUNTER_CLOCKWISE;
     } else if (direction === RotationDirection.COUNTER_CLOCKWISE) {

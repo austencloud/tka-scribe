@@ -5,10 +5,15 @@
  * Handles both fixed question and countdown quiz modes.
  */
 
-import { QuizMode, QuizType } from '../../domain/enums/quiz-enums';
-import { type QuizProgress, type QuizResults, type QuizSession, type QuizTimerState } from '../../domain/models/quiz-models';
+import { QuizMode, QuizType } from "../../domain/enums/quiz-enums";
+import {
+  type QuizProgress,
+  type QuizResults,
+  type QuizSession,
+  type QuizTimerState,
+} from "../../domain/models/quiz-models";
 import { injectable } from "inversify";
-import type { IQuizSessionService } from '../contracts/IQuizSessionService';
+import type { IQuizSessionService } from "../contracts/IQuizSessionService";
 import { QuizConfigurator } from "./QuizConfigurator";
 
 @injectable()

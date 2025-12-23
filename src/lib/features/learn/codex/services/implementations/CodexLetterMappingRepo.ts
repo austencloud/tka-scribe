@@ -13,7 +13,7 @@ import type {
   CodexLetterRow,
 } from "../../domain/models/codex-models";
 import { createLetterMapping } from "../../domain/models/codex-models";
-import type { ICodexLetterMappingRepo } from '../contracts/ICodexLetterMappingRepo';
+import type { ICodexLetterMappingRepo } from "../contracts/ICodexLetterMappingRepo";
 
 @injectable()
 export class CodexLetterMappingRepo implements ICodexLetterMappingRepo {

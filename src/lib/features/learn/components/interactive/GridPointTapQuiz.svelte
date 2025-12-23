@@ -199,7 +199,10 @@ Provides instant visual feedback (correct = green glow, wrong = red shake).
   </div>
 
   <!-- Grid with clickable points -->
-  <div class="grid-wrapper" class:feedback-correct={feedbackState === "correct"}>
+  <div
+    class="grid-wrapper"
+    class:feedback-correct={feedbackState === "correct"}
+  >
     <svg viewBox="0 0 950 950" class="quiz-grid">
       <!-- White background -->
       <rect width="950" height="950" fill="white" rx="8" />

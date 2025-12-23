@@ -8,9 +8,9 @@ Provides quiz functionality for learning TKA notation:
 - Codex integration for reference
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { getContainerInstance } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { getContainerInstance } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onDestroy, onMount } from "svelte";
   import type { ICodexService } from "../../codex/services/contracts/ICodexService";
   import { QuizMode, QuizType } from "../domain/enums/quiz-enums";
@@ -21,7 +21,6 @@ import { TYPES } from "$lib/shared/inversify/types";
   import QuizResultsView from "./QuizResultsView.svelte";
   import QuizSelectorView from "./QuizSelectorView.svelte";
   import QuizWorkspaceView from "./QuizWorkspaceView.svelte";
-
 
   // Import learn components
 
@@ -190,8 +189,12 @@ import { TYPES } from "$lib/shared/inversify/types";
       const container = await getContainerInstance();
       codexService = container.get<ICodexService>(TYPES.ICodexService);
       quizRepo = container.get<IQuizRepoManager>(TYPES.IQuizRepoManager);
-      quizSessionService = container.get<IQuizSessionService>(TYPES.IQuizSessionService);
-      hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      quizSessionService = container.get<IQuizSessionService>(
+        TYPES.IQuizSessionService
+      );
+      hapticService = container.get<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
 
       // Initialize quiz repository
       await quizRepo.initialize();
