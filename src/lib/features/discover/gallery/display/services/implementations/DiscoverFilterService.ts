@@ -376,7 +376,7 @@ export class DiscoverFilterService implements IDiscoverFilterService {
   }
 
   /**
-   * Filter sequences by CAP type (Circular Arrangement Pattern)
+   * Filter sequences by CAP type (Continuous Assembly Pattern)
    * Supports special values:
    * - "circular" - all circular sequences regardless of CAP type
    * - "non_circular" - all non-circular sequences

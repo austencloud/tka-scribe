@@ -23,6 +23,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   import VideoUploadSheet from "$lib/shared/video-collaboration/components/VideoUploadSheet.svelte";
   import type { CollaborativeVideo } from "$lib/shared/video-collaboration/domain/CollaborativeVideo";
   import { auth } from "$lib/shared/auth/firebase";
+  import ShareHubDrawer from "$lib/shared/share-hub/components/ShareHubDrawer.svelte";
 
   let hapticService: IHapticFeedbackService | null = null;
 
@@ -30,6 +31,9 @@ Used by both desktop side panel and mobile slide-up overlay.
   let showUploadSheet = $state(false);
   let videosKey = $state(0); // For refreshing videos section
   let selectedVideo = $state<CollaborativeVideo | null>(null);
+
+  // Share Hub state
+  let showShareHub = $state(false);
 
   const {
     sequence,
@@ -59,9 +63,14 @@ Used by both desktop side panel and mobile slide-up overlay.
   function handleAction(action: string) {
     hapticService?.trigger("selection");
 
-    // Handle video-specific actions locally
+    // Handle local actions
     if (action === "upload-video") {
       showUploadSheet = true;
+      return;
+    }
+
+    if (action === "share") {
+      showShareHub = true;
       return;
     }
 
@@ -242,6 +251,27 @@ Used by both desktop side panel and mobile slide-up overlay.
 
     <button
       class="action-btn"
+      onclick={() => handleAction("share")}
+      aria-label="Share sequence"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    </button>
+
+    <button
+      class="action-btn"
       onclick={() => handleAction("delete")}
       aria-label="Delete sequence"
     >
@@ -288,6 +318,13 @@ Used by both desktop side panel and mobile slide-up overlay.
   {sequence}
   onClose={() => (showUploadSheet = false)}
   onUploaded={handleVideoUploaded}
+/>
+
+<!-- Share Hub Drawer -->
+<ShareHubDrawer
+  bind:isOpen={showShareHub}
+  {sequence}
+  onClose={() => (showShareHub = false)}
 />
 
 <!-- Video Player Modal -->

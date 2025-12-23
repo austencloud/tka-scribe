@@ -17,7 +17,10 @@ import type { IDiscoverMetadataExtractor } from "../contracts/IDiscoverMetadataE
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
-import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  GridLocation,
+  GridPosition,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { createMotionData } from "../../../../../../shared/pictograph/shared/domain/models/MotionData";
 import {
   MotionColor,
@@ -370,55 +373,89 @@ export class DiscoverLoader implements IDiscoverLoader {
 
     if (!startPosEntry) return null;
 
-    const blueAttrs = startPosEntry["blue_attributes"] as
-      | Record<string, unknown>
-      | undefined;
-    const redAttrs = startPosEntry["red_attributes"] as
-      | Record<string, unknown>
-      | undefined;
+    // Handle both camelCase (blueAttributes) and snake_case (blue_attributes)
+    const blueAttrs = (startPosEntry["blueAttributes"] ||
+      startPosEntry["blue_attributes"]) as Record<string, unknown> | undefined;
+    const redAttrs = (startPosEntry["redAttributes"] ||
+      startPosEntry["red_attributes"]) as Record<string, unknown> | undefined;
+
+    // Extract grid position from endPos field (e.g., "alpha1", "beta5")
+    const gridPosition = this.parseGridPosition(
+      startPosEntry["endPos"] || startPosEntry["end_pos"]
+    );
+
+    // Helper to get attribute with camelCase or snake_case fallback
+    const getAttr = (
+      attrs: Record<string, unknown>,
+      camelCase: string,
+      snakeCase: string
+    ) => attrs[camelCase] ?? attrs[snakeCase];
 
     return {
       id: "start-position",
       letter: String(startPosEntry["letter"] || "α"),
-      startPosition: null,
-      endPosition: null,
+      startPosition: gridPosition,
+      endPosition: gridPosition,
       motions: {
         [MotionColor.BLUE]: blueAttrs
           ? createMotionData({
               color: MotionColor.BLUE,
-              motionType: this.parseMotionType(blueAttrs["motion_type"]),
-              startLocation: this.parseLocation(blueAttrs["start_loc"]),
-              endLocation: this.parseLocation(blueAttrs["end_loc"]),
-              startOrientation: this.parseOrientation(blueAttrs["start_ori"]),
-              endOrientation: this.parseOrientation(blueAttrs["end_ori"]),
+              motionType: this.parseMotionType(
+                getAttr(blueAttrs, "motionType", "motion_type")
+              ),
+              startLocation: this.parseLocation(
+                getAttr(blueAttrs, "startLoc", "start_loc")
+              ),
+              endLocation: this.parseLocation(
+                getAttr(blueAttrs, "endLoc", "end_loc")
+              ),
+              startOrientation: this.parseOrientation(
+                getAttr(blueAttrs, "startOri", "start_ori")
+              ),
+              endOrientation: this.parseOrientation(
+                getAttr(blueAttrs, "endOri", "end_ori")
+              ),
               rotationDirection: this.parseRotationDirection(
-                blueAttrs["prop_rot_dir"]
+                getAttr(blueAttrs, "propRotDir", "prop_rot_dir")
               ),
               turns: this.parseTurns(blueAttrs["turns"]),
               isVisible: true,
               propType: PropType.STAFF,
               arrowLocation:
-                this.parseLocation(blueAttrs["start_loc"]) ||
-                GridLocation.NORTH,
+                this.parseLocation(
+                  getAttr(blueAttrs, "startLoc", "start_loc")
+                ) || GridLocation.NORTH,
               gridMode,
             })
           : undefined,
         [MotionColor.RED]: redAttrs
           ? createMotionData({
               color: MotionColor.RED,
-              motionType: this.parseMotionType(redAttrs["motion_type"]),
-              startLocation: this.parseLocation(redAttrs["start_loc"]),
-              endLocation: this.parseLocation(redAttrs["end_loc"]),
-              startOrientation: this.parseOrientation(redAttrs["start_ori"]),
-              endOrientation: this.parseOrientation(redAttrs["end_ori"]),
+              motionType: this.parseMotionType(
+                getAttr(redAttrs, "motionType", "motion_type")
+              ),
+              startLocation: this.parseLocation(
+                getAttr(redAttrs, "startLoc", "start_loc")
+              ),
+              endLocation: this.parseLocation(
+                getAttr(redAttrs, "endLoc", "end_loc")
+              ),
+              startOrientation: this.parseOrientation(
+                getAttr(redAttrs, "startOri", "start_ori")
+              ),
+              endOrientation: this.parseOrientation(
+                getAttr(redAttrs, "endOri", "end_ori")
+              ),
               rotationDirection: this.parseRotationDirection(
-                redAttrs["prop_rot_dir"]
+                getAttr(redAttrs, "propRotDir", "prop_rot_dir")
               ),
               turns: this.parseTurns(redAttrs["turns"]),
               isVisible: true,
               propType: PropType.STAFF,
               arrowLocation:
-                this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
+                this.parseLocation(
+                  getAttr(redAttrs, "startLoc", "start_loc")
+                ) || GridLocation.SOUTH,
               gridMode,
             })
           : undefined,
@@ -473,8 +510,20 @@ export class DiscoverLoader implements IDiscoverLoader {
       cw: RotationDirection.CLOCKWISE,
       ccw: RotationDirection.COUNTER_CLOCKWISE,
       no_rot: RotationDirection.NO_ROTATION,
+      norotation: RotationDirection.NO_ROTATION, // Handle camelCase variant
     };
     return dirMap[String(value).toLowerCase()] ?? RotationDirection.NO_ROTATION;
+  }
+
+  private parseGridPosition(value: unknown): GridPosition | null {
+    if (!value) return null;
+    const str = String(value).toLowerCase();
+    // Check if the string is a valid GridPosition enum value
+    const validPositions = Object.values(GridPosition) as string[];
+    if (validPositions.includes(str)) {
+      return str as GridPosition;
+    }
+    return null;
   }
 
   private parseTurns(value: unknown): number {

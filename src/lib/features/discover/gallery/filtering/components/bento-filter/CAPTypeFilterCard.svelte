@@ -1,5 +1,5 @@
 <!--
-CAPTypeFilterCard.svelte - Card for filtering by CAP type (Circular Arrangement Pattern)
+CAPTypeFilterCard.svelte - Card for filtering by CAP type (Continuous Assembly Pattern)
 Uses shared StepperCard for consistent styling
 Options: All → Non-Circular → Circular → specific CAP types
 -->
