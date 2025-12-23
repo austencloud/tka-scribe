@@ -1,7 +1,7 @@
 /**
  * Feedback Queue Manager
  *
- * Run `node fetch-feedback.js help` to see all available commands.
+ * Run `node scripts/fetch-feedback.js.js help` to see all available commands.
  *
  * Workflow:
  *   1. Agent runs with no args → claims next unclaimed feedback (prioritized: no priority > high > medium > low)
@@ -277,7 +277,7 @@ async function claimNextFeedback(priorityFilter = null) {
               `\n  ✨ No ${priorityFilter.toUpperCase()} priority items in queue!\n`
             );
             console.log(
-              "  Run `node fetch-feedback.js list` to see all items."
+              "  Run `node scripts/fetch-feedback.js.js list` to see all items."
             );
             console.log("\n" + "=".repeat(70) + "\n");
             return null;
@@ -322,7 +322,7 @@ async function claimNextFeedback(priorityFilter = null) {
     if (!itemToClaim) {
       console.log("\n" + "=".repeat(70));
       console.log("\n  ✨ QUEUE EMPTY - No unclaimed feedback items!\n");
-      console.log("  Run `node fetch-feedback.js list` to see all items.");
+      console.log("  Run `node scripts/fetch-feedback.js.js list` to see all items.");
       console.log("\n" + "=".repeat(70) + "\n");
       return null;
     }
@@ -423,7 +423,7 @@ async function claimNextFeedback(priorityFilter = null) {
 
     console.log("\n" + "=".repeat(70));
     console.log(
-      `\n  To resolve: node fetch-feedback.js ${itemToClaim.id} in-review "Your notes here"\n`
+      `\n  To resolve: node scripts/fetch-feedback.js.js ${itemToClaim.id} in-review "Your notes here"\n`
     );
 
     return itemToClaim;
@@ -1261,13 +1261,13 @@ WORKFLOW
 
 EXAMPLES
 ──────────────────────────────────────────────────────────────────────────────
-  node fetch-feedback.js                     # Claim next item
-  node fetch-feedback.js high                # Claim next high-priority
-  node fetch-feedback.js abc123              # View item abc123
-  node fetch-feedback.js abc123 in-review "Fixed overflow bug"
-  node fetch-feedback.js search "button"     # Find feedback about buttons
-  node fetch-feedback.js stats               # See queue overview
-  node fetch-feedback.js add --title "Fix X" --description "Details" --type bug
+  node scripts/fetch-feedback.js.js                     # Claim next item
+  node scripts/fetch-feedback.js.js high                # Claim next high-priority
+  node scripts/fetch-feedback.js.js abc123              # View item abc123
+  node scripts/fetch-feedback.js.js abc123 in-review "Fixed overflow bug"
+  node scripts/fetch-feedback.js.js search "button"     # Find feedback about buttons
+  node scripts/fetch-feedback.js.js stats               # See queue overview
+  node scripts/fetch-feedback.js.js add --title "Fix X" --description "Details" --type bug
 `);
 }
 
@@ -1384,7 +1384,7 @@ async function claimSpecificFeedback(docId) {
 
     console.log("\n" + "=".repeat(70));
     console.log(
-      `\n  To resolve: node fetch-feedback.js ${docId} in-review "Your notes here"\n`
+      `\n  To resolve: node scripts/fetch-feedback.js.js ${docId} in-review "Your notes here"\n`
     );
 
     return { id: docId, ...item };
@@ -1618,7 +1618,7 @@ async function addFeedback(args) {
   if (!flags.title) {
     console.log("\n  ❌ Missing required --title\n");
     console.log(
-      '  Usage: node fetch-feedback.js add --title "Title" --description "Desc" [options]'
+      '  Usage: node scripts/fetch-feedback.js.js add --title "Title" --description "Desc" [options]'
     );
     console.log(
       "  Options: --type, --priority, --module, --tab, --internal-only, --user\n"
@@ -1730,22 +1730,22 @@ async function main() {
   } else if (args[0] === "search") {
     // Search: search <query>
     if (!args[1]) {
-      console.log("\n  Usage: node fetch-feedback.js search <query>\n");
-      console.log('  Example: node fetch-feedback.js search "button"\n');
+      console.log("\n  Usage: node scripts/fetch-feedback.js.js search <query>\n");
+      console.log('  Example: node scripts/fetch-feedback.js.js search "button"\n');
       return;
     }
     await searchFeedback(args.slice(1).join(" "));
   } else if (args[0] === "claim") {
     // Claim specific: claim <id>
     if (!args[1]) {
-      console.log("\n  Usage: node fetch-feedback.js claim <id>\n");
+      console.log("\n  Usage: node scripts/fetch-feedback.js.js claim <id>\n");
       return;
     }
     await claimSpecificFeedback(args[1]);
   } else if (args[0] === "unclaim") {
     // Unclaim: unclaim <id>
     if (!args[1]) {
-      console.log("\n  Usage: node fetch-feedback.js unclaim <id>\n");
+      console.log("\n  Usage: node scripts/fetch-feedback.js.js unclaim <id>\n");
       return;
     }
     await unclaimFeedback(args[1]);
@@ -1755,7 +1755,7 @@ async function main() {
   } else if (args[0] === "delete") {
     // Delete: delete <id>
     if (!args[1]) {
-      console.log("\n  Usage: node fetch-feedback.js delete <id>\n");
+      console.log("\n  Usage: node scripts/fetch-feedback.js.js delete <id>\n");
       return;
     }
     await deleteFeedback(args[1]);
@@ -1774,11 +1774,11 @@ async function main() {
 
     if (!title || !description) {
       console.log(
-        '\n  Usage: node fetch-feedback.js create "title" "description" [type] [module] [tab]'
+        '\n  Usage: node scripts/fetch-feedback.js.js create "title" "description" [type] [module] [tab]'
       );
       console.log("  Types: bug, feature, enhancement, general");
       console.log(
-        '  Example: node fetch-feedback.js create "Fix trail jank" "Trails appear janky..." enhancement compose playback\n'
+        '  Example: node scripts/fetch-feedback.js.js create "Fix trail jank" "Trails appear janky..." enhancement compose playback\n'
       );
       return;
     }
@@ -1824,10 +1824,10 @@ async function main() {
     // Defer: <id> defer "YYYY-MM-DD" "Reason"
     if (!args[2]) {
       console.log(
-        '\n  Usage: node fetch-feedback.js <id> defer "YYYY-MM-DD" "Reason"\n'
+        '\n  Usage: node scripts/fetch-feedback.js.js <id> defer "YYYY-MM-DD" "Reason"\n'
       );
       console.log(
-        '  Example: node fetch-feedback.js abc123 defer "2026-03-15" "Revisit after Q1"\n'
+        '  Example: node scripts/fetch-feedback.js.js abc123 defer "2026-03-15" "Revisit after Q1"\n'
       );
       return;
     }
@@ -1836,10 +1836,10 @@ async function main() {
     // Internal-only: <id> internal-only true/false
     if (!args[2]) {
       console.log(
-        "\n  Usage: node fetch-feedback.js <id> internal-only true/false\n"
+        "\n  Usage: node scripts/fetch-feedback.js.js <id> internal-only true/false\n"
       );
       console.log(
-        "  Example: node fetch-feedback.js abc123 internal-only true\n"
+        "  Example: node scripts/fetch-feedback.js.js abc123 internal-only true\n"
       );
       return;
     }
@@ -1865,7 +1865,7 @@ async function main() {
       const dependsOn = args.slice(5); // Remaining args are dependency IDs
       if (!title || !description) {
         console.log(
-          '\n  Usage: node fetch-feedback.js <id> subtask add "title" "description" [dependsOn...]\n'
+          '\n  Usage: node scripts/fetch-feedback.js.js <id> subtask add "title" "description" [dependsOn...]\n'
         );
         return;
       }
@@ -1880,7 +1880,7 @@ async function main() {
       const status = args[3];
       if (!status) {
         console.log(
-          "\n  Usage: node fetch-feedback.js <id> subtask <subtaskId> <status>\n"
+          "\n  Usage: node scripts/fetch-feedback.js.js <id> subtask <subtaskId> <status>\n"
         );
         console.log("  Valid statuses: pending, in-progress, completed\n");
         return;

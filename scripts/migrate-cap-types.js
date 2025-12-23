@@ -2,7 +2,7 @@
  * CAP Type Migration Script
  *
  * Analyzes sequences in sequence-index.json and adds capType and isCircular fields
- * based on Circular Arrangement Pattern detection.
+ * based on Continuous Assembly Pattern detection.
  *
  * Usage: node scripts/migrate-cap-types.js [--dry-run]
  *
