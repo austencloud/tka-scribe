@@ -22,10 +22,10 @@ export class UserDocumentService implements IUserDocumentService {
 
   /**
    * Create or update a user document in Firestore.
-   * 
+   *
    * This ensures every authenticated user has a corresponding Firestore document
    * that can be displayed in the users explore panel.
-   * 
+   *
    * Creates new document with initial fields if doesn't exist.
    * Updates existing document with latest auth data if exists.
    */
@@ -72,15 +72,15 @@ export class UserDocumentService implements IUserDocumentService {
         });
 
         // Notify admins of new user signup (async, non-blocking)
-        void import("$lib/features/admin/services/implementations/AdminNotificationService").then(
-          ({ adminNotificationService }) => {
-            void adminNotificationService.notifyNewUserSignup(
-              user.uid,
-              user.email,
-              displayName
-            );
-          }
-        );
+        void import(
+          "$lib/features/admin/services/implementations/AdminNotificationService"
+        ).then(({ adminNotificationService }) => {
+          void adminNotificationService.notifyNewUserSignup(
+            user.uid,
+            user.email,
+            displayName
+          );
+        });
       } else {
         // Update existing user document with latest auth data
         // Always update provider IDs and photoURL to keep them fresh

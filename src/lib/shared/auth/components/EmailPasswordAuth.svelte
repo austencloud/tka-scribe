@@ -108,7 +108,8 @@
         }
 
         await sendEmailVerification(result.user);
-        success = "Account created! Please check your email to verify your account.";
+        success =
+          "Account created! Please check your email to verify your account.";
         resetAttempts();
         await new Promise((resolve) => setTimeout(resolve, 1200));
       } else {
@@ -170,7 +171,10 @@
 </script>
 
 <div class="auth">
-  <form class="form" onsubmit={(e) => (e.preventDefault(), void handleSubmit())}>
+  <form
+    class="form"
+    onsubmit={(e) => (e.preventDefault(), void handleSubmit())}
+  >
     {#if mode === "signup"}
       <label class="label">
         Name
@@ -226,8 +230,15 @@
       {/if}
     </button>
 
-    <button class="switch" type="button" onclick={toggleMode} disabled={loading}>
-      {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
+    <button
+      class="switch"
+      type="button"
+      onclick={toggleMode}
+      disabled={loading}
+    >
+      {mode === "signin"
+        ? "Need an account? Sign up"
+        : "Already have an account? Sign in"}
     </button>
   </form>
 </div>
@@ -292,14 +303,30 @@
 
   .message.error {
     color: var(--semantic-error, #ef4444);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 60%,
+      transparent
+    );
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 12%,
+      transparent
+    );
   }
 
   .message.success {
     color: var(--semantic-success, #22c55e);
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 60%,
+      transparent
+    );
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 12%,
+      transparent
+    );
   }
 
   .submit {
@@ -307,7 +334,11 @@
     min-height: var(--min-touch-target);
     border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1), color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1),
+      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000)
+    );
     color: #fff;
     font-weight: 800;
     cursor: pointer;
@@ -334,4 +365,3 @@
     cursor: not-allowed;
   }
 </style>
-

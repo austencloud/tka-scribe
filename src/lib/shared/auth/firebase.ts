@@ -100,9 +100,8 @@ async function clearFirestoreIndexedDB(): Promise<void> {
   try {
     // Get all databases
     const databases = await indexedDB.databases();
-    const firestoreDbs = databases.filter(db =>
-      db.name?.includes("firestore") ||
-      db.name?.includes("firebase")
+    const firestoreDbs = databases.filter(
+      (db) => db.name?.includes("firestore") || db.name?.includes("firebase")
     );
 
     // Delete Firestore-related databases
@@ -160,7 +159,8 @@ export async function getFirestoreInstance(): Promise<Firestore> {
 
   // Start initialization - MUST only happen once
   firestoreInitPromise = (async () => {
-    const { getFirestore, initializeFirestore, memoryLocalCache } = await import("firebase/firestore");
+    const { getFirestore, initializeFirestore, memoryLocalCache } =
+      await import("firebase/firestore");
 
     // DEVELOPMENT: Always use memory cache to avoid HMR/IndexedDB corruption issues
     // The persistent cache with multi-tab manager causes "asyncQueue undefined" errors
@@ -173,15 +173,18 @@ export async function getFirestoreInstance(): Promise<Firestore> {
         // CRITICAL: Validate the instance is actually usable
         // After HMR terminate(), getFirestore() returns a corrupt instance
         // that still exists but has undefined internal properties
-        if (existingInstance && typeof existingInstance === 'object') {
+        if (existingInstance && typeof existingInstance === "object") {
           // Check if the instance has the expected internal structure
-          // @ts-expect-error - accessing internal Firebase property for validation
-          const hasAsyncQueue = existingInstance._firestoreClient !== undefined ||
-            // @ts-expect-error - checking another internal property
-            existingInstance._queue !== undefined;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const hasAsyncQueue =
+            (existingInstance as any)._firestoreClient !== undefined ||
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (existingInstance as any)._queue !== undefined;
 
           if (!hasAsyncQueue) {
-            debug.warn("Firestore instance exists but appears corrupted, will reinitialize");
+            debug.warn(
+              "Firestore instance exists but appears corrupted, will reinitialize"
+            );
             throw new Error("Corrupted instance detected");
           }
         }
@@ -200,7 +203,10 @@ export async function getFirestoreInstance(): Promise<Firestore> {
           return firestoreInstance;
         } catch (initError) {
           // initializeFirestore throws if already initialized - fall back to getFirestore
-          debug.warn("initializeFirestore failed, using existing instance:", initError);
+          debug.warn(
+            "initializeFirestore failed, using existing instance:",
+            initError
+          );
           firestoreInstance = getFirestore(app);
           return firestoreInstance;
         }
@@ -307,7 +313,9 @@ export async function getDatabaseInstance(): Promise<Database> {
  * Use this for file uploads (profile photos, sequence thumbnails, etc.)
  * Storage is loaded on-demand to reduce initial bundle size (~84KB saved)
  */
-export async function getStorageInstance(): Promise<import("firebase/storage").FirebaseStorage> {
+export async function getStorageInstance(): Promise<
+  import("firebase/storage").FirebaseStorage
+> {
   const { getStorage } = await import("firebase/storage");
   return getStorage(app);
 }
@@ -385,12 +393,12 @@ export const database = new Proxy({} as Database, {
     if (!_cachedDatabase) {
       throw new Error(
         "❌ Realtime Database accessed before initialization. " +
-        "Import and call getDatabaseInstance() instead, or ensure your component/service " +
-        "is only used in browser context after Firebase initialization."
+          "Import and call getDatabaseInstance() instead, or ensure your component/service " +
+          "is only used in browser context after Firebase initialization."
       );
     }
     return Reflect.get(_cachedDatabase, prop);
-  }
+  },
 });
 
 // Initialize database cache asynchronously (browser only)
@@ -412,12 +420,14 @@ export let analytics: Analytics | null = null;
 
 // Initialize analytics asynchronously (browser only)
 if (typeof window !== "undefined") {
-  getAnalyticsInstance().then((instance) => {
-    analytics = instance;
-  }).catch(() => {
-    // Silently handle analytics initialization failure
-    console.debug("[Firebase] Analytics not available");
-  });
+  getAnalyticsInstance()
+    .then((instance) => {
+      analytics = instance;
+    })
+    .catch(() => {
+      // Silently handle analytics initialization failure
+      console.debug("[Firebase] Analytics not available");
+    });
 }
 
 /**
@@ -435,7 +445,9 @@ if (import.meta.hot) {
   // This is necessary because Firebase SDK's internal Firestore cache persists
   // across HMR and returns terminated instances
   import.meta.hot.accept(() => {
-    debug.warn("HMR: firebase.ts changed - forcing page reload for clean state");
+    debug.warn(
+      "HMR: firebase.ts changed - forcing page reload for clean state"
+    );
     window.location.reload();
   });
 

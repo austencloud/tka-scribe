@@ -153,10 +153,15 @@ export function initializeAuthListener() {
       // This prevents race condition errors with the lazy-loaded Firestore Proxy
       if (user) {
         try {
-          const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+          const { getFirestoreInstance } = await import(
+            "$lib/shared/auth/firebase"
+          );
           await getFirestoreInstance();
         } catch (error) {
-          console.error("❌ [authState] Failed to initialize Firestore:", error);
+          console.error(
+            "❌ [authState] Failed to initialize Firestore:",
+            error
+          );
         }
       }
 
@@ -168,26 +173,40 @@ export function initializeAuthListener() {
           // Get user claims to determine role
           const idTokenResult = await user.getIdTokenResult(true);
           isAdmin = idTokenResult.claims.admin === true;
-          role = idTokenResult.claims.role as UserRole || "user";
+          role = (idTokenResult.claims.role as UserRole) || "user";
 
           // Create or update user document in Firestore
-          const userDocumentService = tryResolve<IUserDocumentService>(TYPES.IUserDocumentService);
+          const userDocumentService = tryResolve<IUserDocumentService>(
+            TYPES.IUserDocumentService
+          );
           if (userDocumentService) {
             try {
               await userDocumentService.createOrUpdateUserDocument(user);
             } catch (error) {
-              console.error("❌ [authState] Failed to update user document:", error);
+              console.error(
+                "❌ [authState] Failed to update user document:",
+                error
+              );
             }
           }
 
           // Update profile pictures from OAuth providers (non-blocking)
-          const profilePictureService = tryResolve<IProfilePictureService>(TYPES.IProfilePictureService);
+          const profilePictureService = tryResolve<IProfilePictureService>(
+            TYPES.IProfilePictureService
+          );
           if (profilePictureService) {
             try {
-              void profilePictureService.updateFacebookProfilePictureIfNeeded(user);
-              void profilePictureService.updateGoogleProfilePictureIfNeeded(user);
+              void profilePictureService.updateFacebookProfilePictureIfNeeded(
+                user
+              );
+              void profilePictureService.updateGoogleProfilePictureIfNeeded(
+                user
+              );
             } catch (error) {
-              console.warn("⚠️ [authState] Failed to update profile pictures:", error);
+              console.warn(
+                "⚠️ [authState] Failed to update profile pictures:",
+                error
+              );
             }
           }
 
@@ -196,7 +215,10 @@ export function initializeAuthListener() {
           try {
             await featureFlagService.initialize(user.uid, role);
           } catch (_error) {
-            console.warn("⚠️ [authState] Failed to initialize feature flags:", _error);
+            console.warn(
+              "⚠️ [authState] Failed to initialize feature flags:",
+              _error
+            );
           }
         } catch (_error) {
           console.warn("⚠️ [authState] Auth processing error:", _error);
@@ -206,7 +228,10 @@ export function initializeAuthListener() {
         try {
           await featureFlagService.initialize(null);
         } catch (_error) {
-          console.warn("⚠️ [authState] Failed to initialize feature flags:", _error);
+          console.warn(
+            "⚠️ [authState] Failed to initialize feature flags:",
+            _error
+          );
         }
       }
 
@@ -221,7 +246,9 @@ export function initializeAuthListener() {
       // Log session start for analytics (non-blocking)
       if (user) {
         try {
-          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          const activityService = tryResolve<IActivityLogService>(
+            TYPES.IActivityLogService
+          );
           if (activityService) {
             void activityService.logSessionStart();
           }
@@ -231,13 +258,17 @@ export function initializeAuthListener() {
 
         // Initialize presence tracking (non-blocking)
         try {
-          void import("../../inversify/di").then(async ({ ensureContainerInitialized, tryResolve: resolve }) => {
-            await ensureContainerInitialized(); // Ensure Tier 1 modules (including presence) are loaded
-            const presenceService = resolve<{ initialize: () => Promise<void> }>(TYPES.IPresenceService);
-            if (presenceService) {
-              void presenceService.initialize();
+          void import("../../inversify/di").then(
+            async ({ ensureContainerInitialized, tryResolve: resolve }) => {
+              await ensureContainerInitialized(); // Ensure Tier 1 modules (including presence) are loaded
+              const presenceService = resolve<{
+                initialize: () => Promise<void>;
+              }>(TYPES.IPresenceService);
+              if (presenceService) {
+                void presenceService.initialize();
+              }
             }
-          });
+          );
         } catch {
           // Silently fail - presence is non-critical
         }
@@ -247,7 +278,9 @@ export function initializeAuthListener() {
           void import("$lib/shared/settings/state/SettingsState.svelte").then(
             async (settingsModule) => {
               // Ensure Firestore is initialized before settings sync
-              const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+              const { getFirestoreInstance } = await import(
+                "$lib/shared/auth/firebase"
+              );
               await getFirestoreInstance();
               void settingsModule.settingsService.initializeFirebaseSync();
             }
@@ -261,7 +294,9 @@ export function initializeAuthListener() {
           void import("$lib/shared/onboarding/config/storage-keys").then(
             async (onboardingModule) => {
               // Ensure Firestore is initialized before onboarding sync
-              const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+              const { getFirestoreInstance } = await import(
+                "$lib/shared/auth/firebase"
+              );
               await getFirestoreInstance();
               void onboardingModule.syncOnboardingToCloud();
             }
@@ -272,17 +307,23 @@ export function initializeAuthListener() {
 
         // Initialize system collections (Favorites, etc.) - non-blocking
         try {
-          void import("$lib/shared/inversify/di").then(async ({ loadFeatureModule, tryResolve }) => {
-            // Ensure Firestore is initialized before collection operations
-            const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
-            await getFirestoreInstance();
+          void import("$lib/shared/inversify/di").then(
+            async ({ loadFeatureModule, tryResolve }) => {
+              // Ensure Firestore is initialized before collection operations
+              const { getFirestoreInstance } = await import(
+                "$lib/shared/auth/firebase"
+              );
+              await getFirestoreInstance();
 
-            await loadFeatureModule("library");
-            const collectionService = tryResolve<{ ensureSystemCollections?: () => Promise<void> }>(TYPES.ICollectionService);
-            if (collectionService?.ensureSystemCollections) {
-              void collectionService.ensureSystemCollections();
+              await loadFeatureModule("library");
+              const collectionService = tryResolve<{
+                ensureSystemCollections?: () => Promise<void>;
+              }>(TYPES.ICollectionService);
+              if (collectionService?.ensureSystemCollections) {
+                void collectionService.ensureSystemCollections();
+              }
             }
-          });
+          );
         } catch {
           // Silently fail - system collections init is non-critical
         }
@@ -345,7 +386,9 @@ export async function signOut() {
 
     // Mark user as offline in presence system before signing out
     try {
-      const presenceService = tryResolve<{ goOffline: () => Promise<void> }>(TYPES.IPresenceService);
+      const presenceService = tryResolve<{ goOffline: () => Promise<void> }>(
+        TYPES.IPresenceService
+      );
       if (presenceService) {
         await presenceService.goOffline();
       }
@@ -396,7 +439,7 @@ export async function changeEmail(newEmail: string, currentPassword: string) {
     console.error("❌ [authState] Email change error:", error);
 
     // Handle specific Firebase errors
-    if (error instanceof Error && 'code' in error) {
+    if (error instanceof Error && "code" in error) {
       const firebaseError = error as { code: string; message: string };
       if (firebaseError.code === "auth/wrong-password") {
         throw new Error("Incorrect password. Please try again.");
@@ -414,7 +457,10 @@ export async function changeEmail(newEmail: string, currentPassword: string) {
         );
       }
     } else {
-      const message = error instanceof Error ? error.message : "Failed to change email. Please try again.";
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to change email. Please try again.";
       throw new Error(message);
     }
   }
@@ -441,7 +487,10 @@ export async function updateDisplayName(displayName: string) {
     };
   } catch (error: unknown) {
     console.error("❌ [authState] Display name update error:", error);
-    const message = error instanceof Error ? error.message : "Failed to update display name. Please try again.";
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to update display name. Please try again.";
     throw new Error(message);
   }
 }
@@ -462,18 +511,36 @@ export function cleanup() {
  */
 export const authState = {
   // Direct state access (for Svelte 5 reactivity)
-  get user() { return _state.user; },
-  get loading() { return _state.loading; },
-  get initialized() { return _state.initialized; },
-  get isAdmin() { return _state.isAdmin; },
-  get role() { return _state.role; },
-  get isAuthenticated() { return _state.user !== null; },
-  
+  get user() {
+    return _state.user;
+  },
+  get loading() {
+    return _state.loading;
+  },
+  get initialized() {
+    return _state.initialized;
+  },
+  get isAdmin() {
+    return _state.isAdmin;
+  },
+  get role() {
+    return _state.role;
+  },
+  get isAuthenticated() {
+    return _state.user !== null;
+  },
+
   // Effective user helpers (as properties)
-  get effectiveUserId() { return getEffectiveUserId(); },
-  get effectiveRole() { return getEffectiveRole(); },
-  get isEffectiveAdmin() { return isEffectiveAdmin(); },
-  
+  get effectiveUserId() {
+    return getEffectiveUserId();
+  },
+  get effectiveRole() {
+    return getEffectiveRole();
+  },
+  get isEffectiveAdmin() {
+    return isEffectiveAdmin();
+  },
+
   // Function-style getters (for explicit calls)
   getUserState,
   getUser,
@@ -482,7 +549,7 @@ export const authState = {
   getRole,
   getEffectiveUserId,
   getEffectiveRole,
-  
+
   // Auth operations
   initialize: initializeAuthListener, // Alias for backward compatibility
   initializeAuthListener,

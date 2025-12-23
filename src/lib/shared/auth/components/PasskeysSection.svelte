@@ -77,11 +77,21 @@
   </div>
 
   <div class="actions">
-    <button class="primary" type="button" onclick={handleAdd} disabled={loading}>
+    <button
+      class="primary"
+      type="button"
+      onclick={handleAdd}
+      disabled={loading}
+    >
       <i class="fas fa-plus"></i>
       {loading ? "Working..." : "Add Passkey"}
     </button>
-    <button class="secondary" type="button" onclick={refresh} disabled={loading}>
+    <button
+      class="secondary"
+      type="button"
+      onclick={refresh}
+      disabled={loading}
+    >
       <i class="fas fa-rotate"></i>
       Refresh
     </button>
@@ -207,7 +217,11 @@
     margin: 0;
     padding: 10px 12px;
     border-radius: 10px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
     border: 1px solid var(--semantic-error, #ef4444);
     color: var(--semantic-error, #ef4444);
     font-size: 13px;
@@ -252,4 +266,3 @@
     white-space: nowrap;
   }
 </style>
-

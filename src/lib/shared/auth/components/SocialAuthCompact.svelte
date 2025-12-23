@@ -55,7 +55,9 @@
     <button
       class="social-compact-button social-compact-button--google"
       onclick={handleGoogleClick}
-      aria-label={mode === "signin" ? "Sign in with Google" : "Sign up with Google"}
+      aria-label={mode === "signin"
+        ? "Sign in with Google"
+        : "Sign up with Google"}
     >
       <GoogleIcon />
       Google

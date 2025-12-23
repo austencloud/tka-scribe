@@ -111,5 +111,4 @@ export interface IAuthService {
    * @returns true if verified, false otherwise
    */
   isEmailVerified(): boolean;
-
 }

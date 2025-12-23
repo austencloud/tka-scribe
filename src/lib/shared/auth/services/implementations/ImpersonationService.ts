@@ -8,7 +8,10 @@
 import { injectable } from "inversify";
 import { doc, getDoc } from "firebase/firestore";
 import { getFirestoreInstance } from "../../firebase";
-import type { IImpersonationService, ImpersonatedUser } from "../contracts/IImpersonationService";
+import type {
+  IImpersonationService,
+  ImpersonatedUser,
+} from "../contracts/IImpersonationService";
 import type { UserRole } from "../../domain/models/UserRole";
 
 @injectable()
@@ -17,7 +20,7 @@ export class ImpersonationService implements IImpersonationService {
 
   /**
    * Start impersonating a user (admin only).
-   * 
+   *
    * @param userId - The UID of the user to impersonate
    * @returns Promise with impersonated user data
    */
@@ -44,7 +47,10 @@ export class ImpersonationService implements IImpersonationService {
 
       return this._impersonatedUser;
     } catch (error) {
-      console.error(`❌ [ImpersonationService] Failed to start impersonation:`, error);
+      console.error(
+        `❌ [ImpersonationService] Failed to start impersonation:`,
+        error
+      );
       throw error;
     }
   }

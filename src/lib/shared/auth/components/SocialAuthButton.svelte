@@ -112,7 +112,9 @@
     color: var(--theme-text, #fff);
     font-weight: 700;
     cursor: pointer;
-    transition: transform 0.15s ease, background 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      background 0.15s ease;
   }
 
   .btn:hover:not(:disabled) {
@@ -131,4 +133,3 @@
     color: var(--semantic-error, #ef4444);
   }
 </style>
-

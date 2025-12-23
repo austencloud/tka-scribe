@@ -13,9 +13,9 @@ import type { IProfilePictureService } from "../contracts/IProfilePictureService
 export class ProfilePictureService implements IProfilePictureService {
   /**
    * Update Facebook profile picture to high resolution if needed.
-   * 
+   *
    * Facebook Graph API provides higher resolution pictures than the default Firebase photoURL.
-   * 
+   *
    * IMPORTANT: We SKIP this if user has a Google account linked, because:
    * 1. Google photos are more reliable (don't require access tokens)
    * 2. Facebook Graph API often returns default silhouettes without proper auth
@@ -69,15 +69,15 @@ export class ProfilePictureService implements IProfilePictureService {
 
   /**
    * Update Google profile picture if needed.
-   * 
+   *
    * Google profile pictures from Firebase Auth contain signed tokens that can expire.
    * Instead of modifying the URL (which can break the signature), we use the
    * provider's photoURL directly which is refreshed on each authentication.
-   * 
+   *
    * IMPORTANT: Google photos are preferred over Facebook because:
    * 1. They don't require access tokens
    * 2. Facebook Graph API often returns default silhouettes
-   * 
+   *
    * Note: We no longer modify the URL size parameter (s96-c -> s400-c) because
    * this was causing stale/broken image URLs. The default 96px image is used
    * and CSS handles scaling.
@@ -97,7 +97,9 @@ export class ProfilePictureService implements IProfilePictureService {
       // This fixes the issue where Facebook's broken silhouette overwrites Google photos
       if (googleData.photoURL) {
         // Check if current photoURL is NOT a Google URL (e.g., it's a Facebook URL)
-        const isCurrentlyGoogle = user.photoURL?.includes("googleusercontent.com");
+        const isCurrentlyGoogle = user.photoURL?.includes(
+          "googleusercontent.com"
+        );
         const isSameAsProvider = user.photoURL === googleData.photoURL;
 
         // Update if: no photo, not Google, or different from fresh Google URL

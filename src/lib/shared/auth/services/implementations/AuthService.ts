@@ -133,7 +133,8 @@ export class AuthService implements IAuthService {
 
     if (!email?.trim()) throw new Error("Email is required");
     if (!password) throw new Error("Password is required");
-    if (password.length < 8) throw new Error("Password must be at least 8 characters");
+    if (password.length < 8)
+      throw new Error("Password must be at least 8 characters");
 
     const credential = EmailAuthProvider.credential(email.trim(), password);
     await linkWithCredential(currentUser, credential);
@@ -156,4 +157,3 @@ export class AuthService implements IAuthService {
     return !!auth.currentUser?.emailVerified;
   }
 }
-

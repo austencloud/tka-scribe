@@ -10,9 +10,15 @@
  * - featureFlagService.canAccessTab('create', 'assembler') // Check tab access
  */
 
-import { doc, getDoc, setDoc, onSnapshot, type Firestore } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot,
+  type Firestore,
+} from "firebase/firestore";
 import { getFirestoreInstance } from "../firebase";
-import { type UserRole, hasRolePrivilege } from '../domain/models/UserRole';
+import { type UserRole, hasRolePrivilege } from "../domain/models/UserRole";
 import {
   type FeatureId,
   type FeatureFlagConfig,
@@ -20,7 +26,7 @@ import {
   moduleIdToFeatureId,
   tabIdToFeatureId,
   getDefaultFeatureRole,
-} from '../domain/models/FeatureFlag';
+} from "../domain/models/FeatureFlag";
 import type { ModuleId } from "../../navigation/domain/types";
 import { MODULE_DEFINITIONS } from "../../navigation/state/navigation-state.svelte";
 import { isModuleEnabledInEnvironment } from "../../environment/environment-features";
@@ -101,7 +107,9 @@ function generateFeatureFlagsFromModules(): FeatureFlagConfig[] {
     flags.push({
       id: moduleFeatureId,
       name: `${module.label} Module`,
-      description: module.description || `Access to ${module.label.toLowerCase()} features`,
+      description:
+        module.description ||
+        `Access to ${module.label.toLowerCase()} features`,
       minimumRole: moduleRole,
       enabled: true,
       category: "module",
@@ -115,7 +123,8 @@ function generateFeatureFlagsFromModules(): FeatureFlagConfig[] {
       flags.push({
         id: tabFeatureId,
         name: `${section.label} Tab`,
-        description: section.description || `${section.label} in ${module.label}`,
+        description:
+          section.description || `${section.label} in ${module.label}`,
         minimumRole: tabRole,
         enabled: true,
         category: "tab",
@@ -351,11 +360,15 @@ export const featureFlagService = {
   /** Set debug role override (admin only) */
   setDebugRoleOverride(role: UserRole | null): void {
     if (_state.userRole !== "admin") {
-      console.warn("⚠️ [FeatureFlagService] Only admins can set debug role override");
+      console.warn(
+        "⚠️ [FeatureFlagService] Only admins can set debug role override"
+      );
       return;
     }
     _state.debugRoleOverride = role;
-    console.log(`🔧 [FeatureFlagService] Debug role override set to: ${role || "none"}`);
+    console.log(
+      `🔧 [FeatureFlagService] Debug role override set to: ${role || "none"}`
+    );
   },
 
   /** Clear debug role override */
@@ -373,7 +386,10 @@ export const featureFlagService = {
    * @param userId - The user ID to initialize for (null for anonymous)
    * @param initialRole - The user's role from auth token claims (if available)
    */
-  async initialize(userId: string | null, initialRole?: UserRole): Promise<void> {
+  async initialize(
+    userId: string | null,
+    initialRole?: UserRole
+  ): Promise<void> {
     _state.loading = true;
 
     try {
@@ -442,7 +458,8 @@ export const featureFlagService = {
         if (data["featureOverrides"]) {
           _state.userOverrides = {
             enabledFeatures: data["featureOverrides"]["enabledFeatures"] || [],
-            disabledFeatures: data["featureOverrides"]["disabledFeatures"] || [],
+            disabledFeatures:
+              data["featureOverrides"]["disabledFeatures"] || [],
           };
         }
       }
@@ -458,27 +475,29 @@ export const featureFlagService = {
     getFirestore().then((firestore) => {
       const userDocRef = doc(firestore, `users/${userId}`);
       unsubscribeUserOverrides = onSnapshot(
-      userDocRef,
-      (_snapshot) => {
-        if (_snapshot.exists()) {
-          const data = _snapshot.data();
+        userDocRef,
+        (_snapshot) => {
+          if (_snapshot.exists()) {
+            const data = _snapshot.data();
 
-          // Update role
-          if (data["role"]) {
-            _state.userRole = data["role"] as UserRole;
-          } else if (data["isAdmin"] === true) {
-            _state.userRole = "admin";
-          }
+            // Update role
+            if (data["role"]) {
+              _state.userRole = data["role"] as UserRole;
+            } else if (data["isAdmin"] === true) {
+              _state.userRole = "admin";
+            }
 
-          // Update feature overrides
-          if (data["featureOverrides"]) {
-            _state.userOverrides = {
-              enabledFeatures: data["featureOverrides"]["enabledFeatures"] || [],
-              disabledFeatures: data["featureOverrides"]["disabledFeatures"] || [],
-            };
+            // Update feature overrides
+            if (data["featureOverrides"]) {
+              _state.userOverrides = {
+                enabledFeatures:
+                  data["featureOverrides"]["enabledFeatures"] || [],
+                disabledFeatures:
+                  data["featureOverrides"]["disabledFeatures"] || [],
+              };
+            }
           }
-        }
-      },
+        },
         (_error) => {
           console.warn(
             "⚠️ [FeatureFlagService] User overrides subscription error:",
@@ -496,13 +515,13 @@ export const featureFlagService = {
     getFirestore().then((firestore) => {
       const globalFlagsRef = doc(firestore, "config/featureFlags");
       unsubscribeGlobalFlags = onSnapshot(
-      globalFlagsRef,
-      (snapshot) => {
-        if (snapshot.exists()) {
-          const data = snapshot.data() as GlobalFeatureFlags;
-          _state.globalOverrides = data.overrides || {};
-        }
-      },
+        globalFlagsRef,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data() as GlobalFeatureFlags;
+            _state.globalOverrides = data.overrides || {};
+          }
+        },
         (_error) => {
           // Don't warn - config may not exist yet
           console.debug(
@@ -574,7 +593,11 @@ export const featureFlagService = {
     const currentDoc = await getDoc(globalFlagsRef);
     const currentData = currentDoc.exists()
       ? (currentDoc.data() as GlobalFeatureFlags)
-      : { overrides: {} as Partial<Record<FeatureId, Partial<FeatureFlagConfig>>> };
+      : {
+          overrides: {} as Partial<
+            Record<FeatureId, Partial<FeatureFlagConfig>>
+          >,
+        };
 
     const currentOverride = currentData.overrides[featureId] ?? {};
 

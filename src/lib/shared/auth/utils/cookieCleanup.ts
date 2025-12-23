@@ -7,5 +7,6 @@
 
 export async function cleanupOldCookies(): Promise<void> {
   // Delete cookies from old Netlify deployment
-  document.cookie = "*=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=tkaflowarts.netlify.app; path=/;";
+  document.cookie =
+    "*=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=tkaflowarts.netlify.app; path=/;";
 }

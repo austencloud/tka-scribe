@@ -1,4 +1,7 @@
-import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
+import {
+  startAuthentication,
+  startRegistration,
+} from "@simplewebauthn/browser";
 import type {
   AuthenticationResponseJSON,
   PublicKeyCredentialCreationOptionsJSON,
@@ -58,7 +61,9 @@ export async function listPasskeys(): Promise<PasskeyListResponse> {
   });
 }
 
-export async function registerPasskey(params?: { name?: string }): Promise<void> {
+export async function registerPasskey(params?: {
+  name?: string;
+}): Promise<void> {
   const options = await apiFetch<PublicKeyCredentialCreationOptionsJSON>(
     "/api/webauthn/registration/options",
     { method: "POST" }
