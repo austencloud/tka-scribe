@@ -115,7 +115,10 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
         return null;
       }
     } catch (error) {
-      console.error("❌ Failed to read weekly challenge from Firestore:", error);
+      console.error(
+        "❌ Failed to read weekly challenge from Firestore:",
+        error
+      );
       return null;
     }
   }
@@ -163,8 +166,10 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
     }
 
     const data = progressDoc.data() as Record<string, unknown>;
-    const startedAt = data['startedAt'] as { toDate?: () => Date } | undefined;
-    const completedAt = data['completedAt'] as { toDate?: () => Date } | undefined;
+    const startedAt = data["startedAt"] as { toDate?: () => Date } | undefined;
+    const completedAt = data["completedAt"] as
+      | { toDate?: () => Date }
+      | undefined;
     return {
       ...data,
       startedAt: startedAt?.toDate?.() || new Date(),
@@ -172,9 +177,7 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
     } as UserWeeklyChallengeProgress;
   }
 
-  async updateWeeklyProgress(
-    progressDelta: number
-  ): Promise<{
+  async updateWeeklyProgress(progressDelta: number): Promise<{
     completed: boolean;
     progress: UserWeeklyChallengeProgress;
     bonusEarned: boolean;
@@ -277,7 +280,11 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
       // Cache locally
       await db.userWeeklyProgress.put(updatedProgress);
 
-      return { completed: false, progress: updatedProgress, bonusEarned: false };
+      return {
+        completed: false,
+        progress: updatedProgress,
+        bonusEarned: false,
+      };
     }
   }
 
@@ -291,7 +298,9 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
       throw new Error("No weekly challenge available");
     }
 
-    const result = await this.updateWeeklyProgress(challenge.requirement.target);
+    const result = await this.updateWeeklyProgress(
+      challenge.requirement.target
+    );
 
     const bonusXP = result.bonusEarned
       ? Math.floor(challenge.xpReward * (challenge.bonusMultiplier || 0.5))
@@ -403,12 +412,12 @@ export class WeeklyChallengeService implements IWeeklyChallengeService {
 
     snapshot.docs.forEach((doc) => {
       const data = doc.data() as Record<string, unknown>;
-      if (data['bonusEarned']) {
+      if (data["bonusEarned"]) {
         totalBonusesEarned++;
       }
       completedWeeks.push({
-        year: data['year'] as number,
-        weekNumber: data['weekNumber'] as number,
+        year: data["year"] as number,
+        weekNumber: data["weekNumber"] as number,
       });
     });
 

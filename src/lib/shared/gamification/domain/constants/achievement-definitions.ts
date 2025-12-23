@@ -5,7 +5,7 @@
  * These are the "templates" that users can unlock.
  */
 
-import type { Achievement } from '../models/achievement-models';
+import type { Achievement } from "../models/achievement-models";
 
 // ============================================================================
 // CREATOR ACHIEVEMENTS (Building Sequences)

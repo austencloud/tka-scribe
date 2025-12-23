@@ -24,4 +24,3 @@ export function getActiveSkillById(skillId: string): SkillProgression | null {
   const skill = getSkillByIdFromDefinitions(skillId);
   return skill?.isActive ? skill : null;
 }
-

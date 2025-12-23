@@ -94,4 +94,3 @@ export function computeSkillProgressUpdate(params: {
     xpAwarded,
   };
 }
-

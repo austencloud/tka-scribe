@@ -4,11 +4,16 @@
  * Call this once on app startup to initialize all gamification services.
  */
 
-import { resolve, TYPES, loadSharedModules, loadFeatureModule } from '../../inversify/di';
-import type { IAchievementService } from '../services/contracts/IAchievementService';
-import type { IDailyChallengeService } from '../services/contracts/IDailyChallengeService';
-import type { IStreakService } from '../services/contracts/IStreakService';
-import type { XPEventMetadata } from '../domain/models/achievement-models';
+import {
+  resolve,
+  TYPES,
+  loadSharedModules,
+  loadFeatureModule,
+} from "../../inversify/di";
+import type { IAchievementService } from "../services/contracts/IAchievementService";
+import type { IDailyChallengeService } from "../services/contracts/IDailyChallengeService";
+import type { IStreakService } from "../services/contracts/IStreakService";
+import type { XPEventMetadata } from "../domain/models/achievement-models";
 
 // Track if gamification is loaded to avoid redundant imports
 let gamificationLoaded = false;
@@ -16,7 +21,7 @@ let gamificationLoaded = false;
 async function ensureGamificationLoaded(): Promise<void> {
   if (gamificationLoaded) return;
   await loadSharedModules(); // Ensure base services are ready
-  await loadFeatureModule('gamification'); // Load gamification module
+  await loadFeatureModule("gamification"); // Load gamification module
   gamificationLoaded = true;
 }
 

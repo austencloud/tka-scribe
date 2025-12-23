@@ -115,4 +115,3 @@ export function findRelevantSkills(params: {
 
   return results;
 }
-

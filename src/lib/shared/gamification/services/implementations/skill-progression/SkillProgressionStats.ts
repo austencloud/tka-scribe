@@ -111,4 +111,3 @@ export function calculateSkillStats(params: {
     byCategory,
   };
 }
-

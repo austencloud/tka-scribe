@@ -193,7 +193,9 @@ export const DIFFICULTY_ORDER: ChallengeDifficulty[] = [
  * Get the sort index for a difficulty level.
  * Lower index = easier difficulty.
  */
-export function getDifficultySortIndex(difficulty: ChallengeDifficulty): number {
+export function getDifficultySortIndex(
+  difficulty: ChallengeDifficulty
+): number {
   const index = DIFFICULTY_ORDER.indexOf(difficulty);
   return index >= 0 ? index : DIFFICULTY_ORDER.length;
 }
@@ -279,7 +281,12 @@ export interface NotificationData {
 
 export interface AchievementNotification {
   id: string;
-  type: "achievement" | "level_up" | "challenge_complete" | "streak_milestone" | "xp_gain";
+  type:
+    | "achievement"
+    | "level_up"
+    | "challenge_complete"
+    | "streak_milestone"
+    | "xp_gain";
   title: string;
   message: string;
   icon?: string;

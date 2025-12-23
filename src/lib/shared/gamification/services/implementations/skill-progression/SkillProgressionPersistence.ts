@@ -86,8 +86,14 @@ export async function persistSkillProgressLevelCompletion(params: {
   skillCompleted: boolean;
   cache: Map<string, UserSkillProgress>;
 }): Promise<void> {
-  const { userId, skillId, updatedProgress, completedLevels, skillCompleted, cache } =
-    params;
+  const {
+    userId,
+    skillId,
+    updatedProgress,
+    completedLevels,
+    skillCompleted,
+    cache,
+  } = params;
 
   const firestore = await getFirestoreInstance();
   const progressPath = getUserSkillProgressPath(userId);
@@ -127,4 +133,3 @@ export async function persistSkillProgressIncrement(params: {
   cache.set(skillId, updatedProgress);
   await db.userSkillProgress.put(updatedProgress);
 }
-

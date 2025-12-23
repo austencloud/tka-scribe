@@ -18,7 +18,8 @@ export function getAvailableSkills(params: {
   const { completedSkillIds, userLevel } = params;
 
   return ALL_SKILLS.filter(
-    (skill) => skill.isActive && isSkillUnlocked(skill, completedSkillIds, userLevel)
+    (skill) =>
+      skill.isActive && isSkillUnlocked(skill, completedSkillIds, userLevel)
   );
 }
 
@@ -61,4 +62,3 @@ export function getLockedSkills(params: {
 
   return locked;
 }
-

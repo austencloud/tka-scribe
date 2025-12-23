@@ -177,7 +177,10 @@ export interface LeaderboardData {
 // CHALLENGE DASHBOARD MODELS
 // ============================================================================
 
-import type { DailyChallenge, UserChallengeProgress } from "./achievement-models";
+import type {
+  DailyChallenge,
+  UserChallengeProgress,
+} from "./achievement-models";
 
 export interface ChallengeDashboard {
   daily: {
@@ -237,7 +240,8 @@ export function getWeekDates(
   const jan1 = new Date(year, 0, 1);
   // Calculate the first Monday of the year
   const dayOfWeek = jan1.getDay();
-  const daysToMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek;
+  const daysToMonday =
+    dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek;
   const firstMonday = new Date(year, 0, 1 + daysToMonday);
 
   // Calculate the Monday of the requested week

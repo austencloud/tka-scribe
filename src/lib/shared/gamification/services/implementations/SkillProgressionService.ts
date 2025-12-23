@@ -24,9 +24,7 @@ import { calculateSkillStats } from "./skill-progression/SkillProgressionStats";
 import { getRecommendedSkills } from "./skill-progression/SkillProgressionRecommendations";
 import { findRelevantSkills } from "./skill-progression/SkillProgressionRelevantSkills";
 import { getCompletedSkillIdsFromProgress } from "./skill-progression/SkillProgressionCompletedSkills";
-import {
-  loadAllUserSkillProgress,
-} from "./skill-progression/SkillProgressionPersistence";
+import { loadAllUserSkillProgress } from "./skill-progression/SkillProgressionPersistence";
 import {
   getActiveSkillById,
   getActiveSkills,
@@ -83,7 +81,9 @@ export class SkillProgressionService implements ISkillProgressionService {
     return getActiveSkills();
   }
 
-  async getSkillsByCategory(category: SkillCategory): Promise<SkillProgression[]> {
+  async getSkillsByCategory(
+    category: SkillCategory
+  ): Promise<SkillProgression[]> {
     return getActiveSkillsByCategory(category);
   }
 
@@ -101,7 +101,9 @@ export class SkillProgressionService implements ISkillProgressionService {
     return getAvailableSkillsForUser({ completedSkillIds, userLevel });
   }
 
-  async getLockedSkills(): ReturnType<ISkillProgressionService["getLockedSkills"]> {
+  async getLockedSkills(): ReturnType<
+    ISkillProgressionService["getLockedSkills"]
+  > {
     const user = auth.currentUser;
     if (!user) return [];
 
@@ -130,7 +132,10 @@ export class SkillProgressionService implements ISkillProgressionService {
   ): ReturnType<ISkillProgressionService["getUserProgressByCategory"]> {
     const allProgress = await this.getAllUserProgress();
     const categorySkills = await this.getSkillsByCategory(category);
-    return getUserProgressByCategoryFromProgress({ allProgress, categorySkills });
+    return getUserProgressByCategoryFromProgress({
+      allProgress,
+      categorySkills,
+    });
   }
 
   async startSkill(skillId: string): Promise<UserSkillProgress> {

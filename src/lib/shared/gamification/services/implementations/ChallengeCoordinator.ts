@@ -6,7 +6,12 @@
  */
 
 import { inject, injectable } from "inversify";
-import type { DailyChallenge, UserChallengeProgress, XPActionType, XPEventMetadata } from '../../domain/models/achievement-models';
+import type {
+  DailyChallenge,
+  UserChallengeProgress,
+  XPActionType,
+  XPEventMetadata,
+} from "../../domain/models/achievement-models";
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,
@@ -129,15 +134,21 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     totalXP: number;
     currentLevel: number;
   }> {
-    const [todayChallenge, todayProgress, weekChallenge, weekProgress, streak, xp] =
-      await Promise.all([
-        this._dailyChallengeService.getTodayChallenge(),
-        this._dailyChallengeService.getChallengeProgress(),
-        this._weeklyChallengeService.getCurrentWeekChallenge(),
-        this._weeklyChallengeService.getWeeklyProgress(),
-        this._streakService.getCurrentStreak(),
-        this._achievementService.getUserXP(),
-      ]);
+    const [
+      todayChallenge,
+      todayProgress,
+      weekChallenge,
+      weekProgress,
+      streak,
+      xp,
+    ] = await Promise.all([
+      this._dailyChallengeService.getTodayChallenge(),
+      this._dailyChallengeService.getChallengeProgress(),
+      this._weeklyChallengeService.getCurrentWeekChallenge(),
+      this._weeklyChallengeService.getWeeklyProgress(),
+      this._streakService.getCurrentStreak(),
+      this._achievementService.getUserXP(),
+    ]);
 
     return {
       dailyProgress: {
@@ -270,7 +281,8 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
 
     let xpAwarded = 0;
     if (result.completed) {
-      const challenge = await this._weeklyChallengeService.getCurrentWeekChallenge();
+      const challenge =
+        await this._weeklyChallengeService.getCurrentWeekChallenge();
       xpAwarded = challenge?.xpReward ?? 0;
       if (result.bonusEarned && challenge?.bonusMultiplier) {
         xpAwarded += Math.floor(xpAwarded * challenge.bonusMultiplier);
@@ -284,10 +296,11 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     };
   }
 
-  async getWeeklyHistory(
-    weeks: number = 8
-  ): Promise<
-    Array<{ challenge: WeeklyChallenge; progress: UserWeeklyChallengeProgress | null }>
+  async getWeeklyHistory(weeks: number = 8): Promise<
+    Array<{
+      challenge: WeeklyChallenge;
+      progress: UserWeeklyChallengeProgress | null;
+    }>
   > {
     return this._weeklyChallengeService.getWeeklyChallengeHistory(weeks);
   }
@@ -306,12 +319,13 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
       progress?: UserSkillProgress;
     }>;
   }> {
-    const [inProgress, available, completed, recommendations] = await Promise.all([
-      this._skillProgressionService.getSkillsInProgress(),
-      this._skillProgressionService.getAvailableSkills(),
-      this._skillProgressionService.getMasteredSkills(),
-      this._skillProgressionService.getRecommendedSkills(5),
-    ]);
+    const [inProgress, available, completed, recommendations] =
+      await Promise.all([
+        this._skillProgressionService.getSkillsInProgress(),
+        this._skillProgressionService.getAvailableSkills(),
+        this._skillProgressionService.getMasteredSkills(),
+        this._skillProgressionService.getRecommendedSkills(5),
+      ]);
 
     // Filter out in-progress and completed from available
     const inProgressIds = new Set(inProgress.map((s) => s.skill.skillId));
@@ -395,18 +409,23 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     }>;
   }> {
     // Track with achievement service for XP
-    const xpResult = await this._achievementService.trackAction(action, metadata);
+    const xpResult = await this._achievementService.trackAction(
+      action,
+      metadata
+    );
 
     // Track daily challenge progress if applicable
     let dailyChallengeProgress:
       | { completed: boolean; progress: number }
       | undefined;
-    const dailyChallenge = await this._dailyChallengeService.getTodayChallenge();
-    if (dailyChallenge && this._matchesChallengeType(dailyChallenge.type, action)) {
-      const dailyResult = await this._dailyChallengeService.updateChallengeProgress(
-        1,
-        metadata
-      );
+    const dailyChallenge =
+      await this._dailyChallengeService.getTodayChallenge();
+    if (
+      dailyChallenge &&
+      this._matchesChallengeType(dailyChallenge.type, action)
+    ) {
+      const dailyResult =
+        await this._dailyChallengeService.updateChallengeProgress(1, metadata);
       dailyChallengeProgress = {
         completed: dailyResult.completed,
         progress: dailyResult.progress.progress,
@@ -419,11 +438,12 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
       | undefined;
     const weeklyChallenge =
       await this._weeklyChallengeService.getCurrentWeekChallenge();
-    if (weeklyChallenge && this._matchesChallengeType(weeklyChallenge.type, action)) {
-      const weeklyResult = await this._weeklyChallengeService.updateWeeklyProgress(
-        1,
-        metadata
-      );
+    if (
+      weeklyChallenge &&
+      this._matchesChallengeType(weeklyChallenge.type, action)
+    ) {
+      const weeklyResult =
+        await this._weeklyChallengeService.updateWeeklyProgress(1, metadata);
       weeklyChallengeProgress = {
         completed: weeklyResult.completed,
         progress: weeklyResult.progress.progress,
@@ -434,10 +454,10 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     const skillResults = await this._skillProgressionService.trackAction(
       this._mapActionTypeToSkillAction(action),
       {
-        letter: metadata?.['letter'] as string | undefined,
-        conceptId: metadata?.['conceptId'] as string | undefined,
-        quizScore: metadata?.['quizScore'] as number | undefined,
-        sequenceId: metadata?.['sequenceId'] as string | undefined,
+        letter: metadata?.["letter"] as string | undefined,
+        conceptId: metadata?.["conceptId"] as string | undefined,
+        quizScore: metadata?.["quizScore"] as number | undefined,
+        sequenceId: metadata?.["sequenceId"] as string | undefined,
       }
     );
 
@@ -512,7 +532,8 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     }> = [];
 
     // Check daily challenge status
-    const dailyComplete = await this._dailyChallengeService.isTodayChallengeComplete();
+    const dailyComplete =
+      await this._dailyChallengeService.isTodayChallengeComplete();
     if (!dailyComplete) {
       const { timeRemaining } = await this.getTodaysChallenge();
       if (timeRemaining && timeRemaining.hours < 4) {
@@ -642,10 +663,7 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
   private _mapActionTypeToSkillAction(
     action: XPActionType
   ): SkillProgressActionType {
-    const mappings: Record<
-      XPActionType,
-      SkillProgressActionType
-    > = {
+    const mappings: Record<XPActionType, SkillProgressActionType> = {
       sequence_created: "sequence_created",
       sequence_published: "sequence_created",
       concept_learned: "drill_completed",

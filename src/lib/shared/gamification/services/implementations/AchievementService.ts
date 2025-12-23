@@ -661,11 +661,12 @@ export class AchievementService implements IAchievementService {
         if (req.metadata?.action && action === req.metadata.action) return 1;
         return 0;
 
-      case "challenge_count":
+      case "challenge_count": {
         if (action !== "train_challenge_completed") return 0;
         const requiredType = req.metadata?.challengeType;
         if (!requiredType) return 1;
         return metadata?.challengeType === requiredType ? 1 : 0;
+      }
 
       case "feedback_count":
         return action === "feedback_submitted" ? 1 : 0;

@@ -106,10 +106,11 @@ export interface IChallengeCoordinator {
   /**
    * Get weekly challenge history
    */
-  getWeeklyHistory(
-    weeks?: number
-  ): Promise<
-    Array<{ challenge: WeeklyChallenge; progress: UserWeeklyChallengeProgress | null }>
+  getWeeklyHistory(weeks?: number): Promise<
+    Array<{
+      challenge: WeeklyChallenge;
+      progress: UserWeeklyChallengeProgress | null;
+    }>
   >;
 
   // ============================================================================
@@ -220,7 +221,11 @@ export interface IChallengeCoordinator {
    */
   getPendingNotifications(): Promise<
     Array<{
-      type: "daily_reminder" | "weekly_reminder" | "streak_at_risk" | "bonus_expiring";
+      type:
+        | "daily_reminder"
+        | "weekly_reminder"
+        | "streak_at_risk"
+        | "bonus_expiring";
       message: string;
       actionLabel?: string;
       priority: "low" | "medium" | "high";

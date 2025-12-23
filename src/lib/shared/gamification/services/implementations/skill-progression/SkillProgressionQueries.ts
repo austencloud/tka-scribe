@@ -25,8 +25,10 @@ export async function getSkillsInProgressFromProgress(params: {
 }): Promise<Array<{ skill: SkillProgression; progress: UserSkillProgress }>> {
   const { allProgress, getSkillById } = params;
 
-  const result: Array<{ skill: SkillProgression; progress: UserSkillProgress }> =
-    [];
+  const result: Array<{
+    skill: SkillProgression;
+    progress: UserSkillProgress;
+  }> = [];
 
   for (const [skillId, progress] of allProgress) {
     if (!progress.isCompleted && progress.currentLevel > 0) {
@@ -45,7 +47,9 @@ export async function getRecentCompletionsFromProgress(params: {
   getSkillById: (skillId: string) => Promise<SkillProgression | null>;
   now: Date;
   daysBack: number;
-}): Promise<Array<{ skill: SkillProgression; level: number; completedAt: Date }>> {
+}): Promise<
+  Array<{ skill: SkillProgression; level: number; completedAt: Date }>
+> {
   const { allProgress, getSkillById, now, daysBack } = params;
 
   const since = new Date(now);
@@ -74,6 +78,7 @@ export async function getRecentCompletionsFromProgress(params: {
     }
   }
 
-  return completions.sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime());
+  return completions.sort(
+    (a, b) => b.completedAt.getTime() - a.completedAt.getTime()
+  );
 }
-

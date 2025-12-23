@@ -34,4 +34,3 @@ export function firestoreDataToUserSkillProgress(params: {
     completedAt: toDateOrUndefined(completedAt),
   };
 }
-

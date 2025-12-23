@@ -27,4 +27,3 @@ export function getCategoryPossibleLevels(params: {
   const { categorySkills } = params;
   return categorySkills.reduce((sum, s) => sum + s.totalLevels, 0);
 }
-

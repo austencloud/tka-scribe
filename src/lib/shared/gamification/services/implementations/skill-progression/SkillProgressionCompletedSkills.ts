@@ -13,4 +13,3 @@ export function getCompletedSkillIdsFromProgress(
 
   return completed;
 }
-

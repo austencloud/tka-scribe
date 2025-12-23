@@ -20,8 +20,16 @@ import {
   getUserXPPath,
   getUserXPEventsPath,
 } from "../../../data/firestore-collections";
-import { calculateLevelFromXP, XP_REWARDS } from '../../../domain/constants/xp-constants';
-import type { UserXP, XPActionType, XPGainEvent, XPEventMetadata } from '../../../domain/models/achievement-models';
+import {
+  calculateLevelFromXP,
+  XP_REWARDS,
+} from "../../../domain/constants/xp-constants";
+import type {
+  UserXP,
+  XPActionType,
+  XPGainEvent,
+  XPEventMetadata,
+} from "../../../domain/models/achievement-models";
 
 export class XPTracker {
   /**

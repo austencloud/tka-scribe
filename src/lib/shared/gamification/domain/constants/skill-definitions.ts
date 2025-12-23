@@ -263,7 +263,9 @@ export const CONCEPT_MASTERY_SKILLS: SkillProgression[] = [
     skillCategory: "concept_mastery" as SkillCategory,
     description: "Master Type 4-6 letters (Dash, Dual-Dash, Static)",
     icon: "fa-circle-dot",
-    levels: createConceptMasteryLevels("Advanced Letters", ["type456-dash-static"]),
+    levels: createConceptMasteryLevels("Advanced Letters", [
+      "type456-dash-static",
+    ]),
     totalLevels: 3,
     prerequisiteSkillIds: ["concept_letter_types"],
     minimumUserLevel: 6,
@@ -322,7 +324,9 @@ export const CONCEPT_MASTERY_SKILLS: SkillProgression[] = [
     skillCategory: "concept_mastery" as SkillCategory,
     description: "Master all 6 motion types completely",
     icon: "fa-bolt",
-    levels: createConceptMasteryLevels("Motion Mastery", ["motion-type-mastery"]),
+    levels: createConceptMasteryLevels("Motion Mastery", [
+      "motion-type-mastery",
+    ]),
     totalLevels: 3,
     prerequisiteSkillIds: ["concept_caps"],
     minimumUserLevel: 10,

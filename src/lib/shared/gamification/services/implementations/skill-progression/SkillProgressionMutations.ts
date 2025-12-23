@@ -18,7 +18,9 @@ import {
 type UpdateSkillProgressResult = Awaited<
   ReturnType<ISkillProgressionService["updateSkillProgress"]>
 >;
-type TrackActionResult = Awaited<ReturnType<ISkillProgressionService["trackAction"]>>;
+type TrackActionResult = Awaited<
+  ReturnType<ISkillProgressionService["trackAction"]>
+>;
 
 export async function startSkillForUser(params: {
   userId: string;
@@ -29,8 +31,14 @@ export async function startSkillForUser(params: {
   getAvailableSkills: () => Promise<SkillProgression[]>;
   log?: (message: string) => void;
 }): Promise<UserSkillProgress> {
-  const { userId, skillId, cache, getSkillById, getUserProgress, getAvailableSkills } =
-    params;
+  const {
+    userId,
+    skillId,
+    cache,
+    getSkillById,
+    getUserProgress,
+    getAvailableSkills,
+  } = params;
   const log = params.log ?? console.log;
 
   const skill = await getSkillById(skillId);
@@ -184,7 +192,9 @@ export async function updateSkillProgressForUser(params: {
 }
 
 export async function trackSkillActionForUser(params: {
-  findRelevantSkills: () => Promise<Array<{ skill: SkillProgression; progressDelta: number }>>;
+  findRelevantSkills: () => Promise<
+    Array<{ skill: SkillProgression; progressDelta: number }>
+  >;
   updateSkillProgress: (
     skillId: string,
     progressDelta: number

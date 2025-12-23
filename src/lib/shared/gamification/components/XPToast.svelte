@@ -6,10 +6,7 @@
    * Appears briefly (2.5 seconds) with a gentle fade animation.
    */
 
-  import {
-    xpToastQueue,
-    removeXPToast,
-  } from "../state/xp-toast-state.svelte";
+  import { xpToastQueue, removeXPToast } from "../state/xp-toast-state.svelte";
 
   // Track which toasts are currently animating out
   let exitingToasts = $state<Set<string>>(new Set());
@@ -70,7 +67,8 @@
     background: color-mix(in srgb, var(--theme-shadow, #000) 75%, transparent);
     backdrop-filter: blur(8px);
     border-radius: 16px;
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
     box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2));
     animation: fadeInUp 0.3s ease-out;
   }
@@ -151,13 +149,21 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
     }
   }
 </style>
