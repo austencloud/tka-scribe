@@ -22,34 +22,37 @@ export type TrailSettingsUpdateCallback = (settings: TrailSettings) => void;
  * Service for syncing trail settings
  */
 export interface ITrailSettingsSyncService {
-	/**
-	 * Initialize the service with dependencies
-	 */
-	initialize(
-		trailCaptureService: ITrailCaptureService | null,
-		renderTrigger: RenderTriggerCallback
-	): void;
+  /**
+   * Initialize the service with dependencies
+   */
+  initialize(
+    trailCaptureService: ITrailCaptureService | null,
+    renderTrigger: RenderTriggerCallback
+  ): void;
 
-	/**
-	 * Set callback for local settings updates
-	 */
-	setSettingsUpdateCallback(callback: TrailSettingsUpdateCallback): void;
+  /**
+   * Set callback for local settings updates
+   */
+  setSettingsUpdateCallback(callback: TrailSettingsUpdateCallback): void;
 
-	/**
-	 * Handle trail settings change - updates service, saves to localStorage if needed
-	 * @param settings Current trail settings
-	 * @param hasExternalSettings Whether settings come from external source
-	 */
-	handleSettingsChange(settings: TrailSettings, hasExternalSettings: boolean): void;
+  /**
+   * Handle trail settings change - updates service, saves to localStorage if needed
+   * @param settings Current trail settings
+   * @param hasExternalSettings Whether settings come from external source
+   */
+  handleSettingsChange(
+    settings: TrailSettings,
+    hasExternalSettings: boolean
+  ): void;
 
-	/**
-	 * Handle external settings sync - updates local settings from external source
-	 * @param externalSettings External settings to sync (undefined if not provided)
-	 */
-	handleExternalSettingsSync(externalSettings: TrailSettings | undefined): void;
+  /**
+   * Handle external settings sync - updates local settings from external source
+   * @param externalSettings External settings to sync (undefined if not provided)
+   */
+  handleExternalSettingsSync(externalSettings: TrailSettings | undefined): void;
 
-	/**
-	 * Clean up resources
-	 */
-	dispose(): void;
+  /**
+   * Clean up resources
+   */
+  dispose(): void;
 }

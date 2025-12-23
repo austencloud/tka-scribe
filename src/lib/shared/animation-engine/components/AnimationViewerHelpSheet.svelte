@@ -84,7 +84,9 @@
           Tips
         </h4>
         <ul class="tips-list">
-          <li>Use the step buttons to analyze specific positions in the animation</li>
+          <li>
+            Use the step buttons to analyze specific positions in the animation
+          </li>
           <li>Toggle motion visibility to focus on one prop at a time</li>
           <li>Adjust BPM to slow down complex sequences for study</li>
           <li>Enable trails to visualize the motion path over time</li>

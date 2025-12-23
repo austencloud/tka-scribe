@@ -16,29 +16,29 @@ export type CacheClearCallback = () => void;
  * Service for managing sequence-related cache lifecycle
  */
 export interface ISequenceCacheService {
-	/**
-	 * Set callback for when caches need to be cleared
-	 */
-	setClearCallback(callback: CacheClearCallback): void;
+  /**
+   * Set callback for when caches need to be cleared
+   */
+  setClearCallback(callback: CacheClearCallback): void;
 
-	/**
-	 * Update with new sequence data - clears caches if sequence changed
-	 * @returns The new sequence ID if changed, null otherwise
-	 */
-	handleSequenceChange(sequenceData: SequenceData | null): string | null;
+  /**
+   * Update with new sequence data - clears caches if sequence changed
+   * @returns The new sequence ID if changed, null otherwise
+   */
+  handleSequenceChange(sequenceData: SequenceData | null): string | null;
 
-	/**
-	 * Handle playback state change - clears pre-rendered frames when stopped
-	 */
-	handlePlaybackChange(isPlaying: boolean): void;
+  /**
+   * Handle playback state change - clears pre-rendered frames when stopped
+   */
+  handlePlaybackChange(isPlaying: boolean): void;
 
-	/**
-	 * Get current sequence ID
-	 */
-	getCurrentSequenceId(): string | null;
+  /**
+   * Get current sequence ID
+   */
+  getCurrentSequenceId(): string | null;
 
-	/**
-	 * Clean up resources
-	 */
-	dispose(): void;
+  /**
+   * Clean up resources
+   */
+  dispose(): void;
 }

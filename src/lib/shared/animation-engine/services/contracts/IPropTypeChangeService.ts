@@ -10,9 +10,9 @@ import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISe
  * Current prop types
  */
 export interface PropTypeState {
-	bluePropType: string;
-	redPropType: string;
-	legacyPropType: string;
+  bluePropType: string;
+  redPropType: string;
+  legacyPropType: string;
 }
 
 /**
@@ -29,29 +29,29 @@ export type TextureReloadCallback = () => void;
  * Service for handling prop type changes
  */
 export interface IPropTypeChangeService {
-	/**
-	 * Set callback for state changes
-	 */
-	setStateCallback(callback: PropTypeStateCallback): void;
+  /**
+   * Set callback for state changes
+   */
+  setStateCallback(callback: PropTypeStateCallback): void;
 
-	/**
-	 * Set callback for texture reload trigger
-	 */
-	setTextureReloadCallback(callback: TextureReloadCallback): void;
+  /**
+   * Set callback for texture reload trigger
+   */
+  setTextureReloadCallback(callback: TextureReloadCallback): void;
 
-	/**
-	 * Check for prop type changes from settings
-	 * @param settingsService The settings service to read from
-	 */
-	checkForChanges(settingsService: ISettingsState | null): void;
+  /**
+   * Check for prop type changes from settings
+   * @param settingsService The settings service to read from
+   */
+  checkForChanges(settingsService: ISettingsState | null): void;
 
-	/**
-	 * Get current state
-	 */
-	getState(): PropTypeState;
+  /**
+   * Get current state
+   */
+  getState(): PropTypeState;
 
-	/**
-	 * Clean up resources
-	 */
-	dispose(): void;
+  /**
+   * Clean up resources
+   */
+  dispose(): void;
 }

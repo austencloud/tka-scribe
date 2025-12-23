@@ -10,14 +10,14 @@
  * All visibility settings as a single object
  */
 export interface AnimationVisibilityState {
-	grid: boolean;
-	beatNumbers: boolean;
-	props: boolean;
-	trails: boolean;
-	tkaGlyph: boolean;
-	turnNumbers: boolean;
-	blueMotion: boolean;
-	redMotion: boolean;
+  grid: boolean;
+  beatNumbers: boolean;
+  props: boolean;
+  trails: boolean;
+  tkaGlyph: boolean;
+  turnNumbers: boolean;
+  blueMotion: boolean;
+  redMotion: boolean;
 }
 
 /**
@@ -29,19 +29,19 @@ export type VisibilityStateCallback = (state: AnimationVisibilityState) => void;
  * Service for syncing animation visibility state
  */
 export interface IAnimationVisibilitySyncService {
-	/**
-	 * Get current visibility state
-	 */
-	getState(): AnimationVisibilityState;
+  /**
+   * Get current visibility state
+   */
+  getState(): AnimationVisibilityState;
 
-	/**
-	 * Subscribe to visibility changes
-	 * @returns Unsubscribe function
-	 */
-	subscribe(callback: VisibilityStateCallback): () => void;
+  /**
+   * Subscribe to visibility changes
+   * @returns Unsubscribe function
+   */
+  subscribe(callback: VisibilityStateCallback): () => void;
 
-	/**
-	 * Clean up resources
-	 */
-	dispose(): void;
+  /**
+   * Clean up resources
+   */
+  dispose(): void;
 }

@@ -201,11 +201,27 @@ export function registerAnimationShortcuts(
  * Animation viewer shortcut definitions for display in help
  */
 export const ANIMATION_SHORTCUTS = [
-  { key: "Space", label: "Play / Pause", description: "Toggle animation playback" },
-  { key: "←", label: "Previous Beat", description: "Move backward one full beat" },
+  {
+    key: "Space",
+    label: "Play / Pause",
+    description: "Toggle animation playback",
+  },
+  {
+    key: "←",
+    label: "Previous Beat",
+    description: "Move backward one full beat",
+  },
   { key: "→", label: "Next Beat", description: "Move forward one full beat" },
-  { key: "Shift + ←", label: "Half Beat Back", description: "Move backward half a beat" },
-  { key: "Shift + →", label: "Half Beat Forward", description: "Move forward half a beat" },
+  {
+    key: "Shift + ←",
+    label: "Half Beat Back",
+    description: "Move backward half a beat",
+  },
+  {
+    key: "Shift + →",
+    label: "Half Beat Forward",
+    description: "Move forward half a beat",
+  },
   { key: "B", label: "Toggle Blue", description: "Show/hide blue motion path" },
   { key: "R", label: "Toggle Red", description: "Show/hide red motion path" },
   { key: "Esc", label: "Close", description: "Close the animation viewer" },

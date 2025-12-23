@@ -209,6 +209,14 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
 >
   {#if letter}
     <TKAGlyph {letter} {pictographData} x={50} y={800} scale={1} />
-    <TurnsColumn {turnsTuple} {letter} {pictographData} x={50} y={800} scale={1} visible={true} />
+    <TurnsColumn
+      {turnsTuple}
+      {letter}
+      {pictographData}
+      x={50}
+      y={800}
+      scale={1}
+      visible={true}
+    />
   {/if}
 </svg>

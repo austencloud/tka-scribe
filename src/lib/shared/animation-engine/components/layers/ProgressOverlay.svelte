@@ -73,7 +73,9 @@ Shows pre-render progress and perfect playback badge.
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .progress-bar {

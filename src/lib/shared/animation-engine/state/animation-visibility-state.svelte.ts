@@ -62,7 +62,10 @@ export class AnimationVisibilityStateManager {
         return JSON.parse(stored) as AnimationVisibilitySettings;
       }
     } catch (err) {
-      console.warn("Failed to load animation visibility from localStorage:", err);
+      console.warn(
+        "Failed to load animation visibility from localStorage:",
+        err
+      );
     }
     return null;
   }
@@ -246,7 +249,8 @@ export class AnimationVisibilityStateManager {
 }
 
 // Global singleton instance
-let globalAnimationVisibilityManager: AnimationVisibilityStateManager | null = null;
+let globalAnimationVisibilityManager: AnimationVisibilityStateManager | null =
+  null;
 
 /**
  * Get or create the global animation visibility state manager

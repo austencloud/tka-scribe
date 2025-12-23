@@ -75,16 +75,10 @@ Last audit: 2025-12-20
     DEFAULT_CANVAS_SIZE,
     type ICanvasResizeService,
   } from "../services/contracts/ICanvasResizeService";
-  import {
-    loadAnimatorServices as loadServices,
-  } from "../services/implementations/AnimatorServiceLoader";
+  import { loadAnimatorServices as loadServices } from "../services/implementations/AnimatorServiceLoader";
   import type { AnimatorServices } from "../services/contracts/IAnimatorServiceLoader";
-  import {
-    type TrailSettings,
-  } from "../domain/types/TrailTypes";
-  import {
-    loadTrailSettings,
-  } from "$lib/features/compose/utils/animation-panel-persistence";
+  import { type TrailSettings } from "../domain/types/TrailTypes";
+  import { loadTrailSettings } from "$lib/features/compose/utils/animation-panel-persistence";
   import { GlyphTextureService } from "../services/implementations/GlyphTextureService";
   import type { IGlyphTextureService } from "../services/contracts/IGlyphTextureService";
   import { PropTextureService } from "../services/implementations/PropTextureService";
@@ -158,21 +152,27 @@ Last audit: 2025-12-20
     if (result.success) {
       // CRITICAL: Validate that required services are actually present
       if (!result.services?.svgGenerator) {
-        console.error('[AnimatorCanvas] CRITICAL: DI container returned success but svgGenerator is null!');
-        console.error('[AnimatorCanvas] Services returned:', result.services);
-        pixiError = 'Failed to load SVG generator service';
+        console.error(
+          "[AnimatorCanvas] CRITICAL: DI container returned success but svgGenerator is null!"
+        );
+        console.error("[AnimatorCanvas] Services returned:", result.services);
+        pixiError = "Failed to load SVG generator service";
         return false;
       }
 
       if (!result.services?.orchestrator) {
-        console.error('[AnimatorCanvas] CRITICAL: DI container returned success but orchestrator is null!');
-        pixiError = 'Failed to load animation orchestrator service';
+        console.error(
+          "[AnimatorCanvas] CRITICAL: DI container returned success but orchestrator is null!"
+        );
+        pixiError = "Failed to load animation orchestrator service";
         return false;
       }
 
       if (!result.services?.trailCaptureService) {
-        console.error('[AnimatorCanvas] CRITICAL: DI container returned success but trailCaptureService is null!');
-        pixiError = 'Failed to load trail capture service';
+        console.error(
+          "[AnimatorCanvas] CRITICAL: DI container returned success but trailCaptureService is null!"
+        );
+        pixiError = "Failed to load trail capture service";
         return false;
       }
 
@@ -184,8 +184,8 @@ Last audit: 2025-12-20
       servicesReady = true;
       return true;
     }
-    console.error('[AnimatorCanvas] Failed to load services:', result.error);
-    pixiError = result.error || 'Failed to load animator services';
+    console.error("[AnimatorCanvas] Failed to load services:", result.error);
+    pixiError = result.error || "Failed to load animator services";
     return false;
   }
 
@@ -418,11 +418,16 @@ Last audit: 2025-12-20
       instanceId,
     });
     precomputationService.setStateCallback((state) => {
-      if (state.pathCacheData !== undefined) pathCacheData = state.pathCacheData;
-      if (state.isCachePrecomputing !== undefined) isCachePrecomputing = state.isCachePrecomputing;
-      if (state.isPreRendering !== undefined) isPreRendering = state.isPreRendering;
-      if (state.preRenderProgress !== undefined) preRenderProgress = state.preRenderProgress;
-      if (state.preRenderedFramesReady !== undefined) preRenderedFramesReady = state.preRenderedFramesReady;
+      if (state.pathCacheData !== undefined)
+        pathCacheData = state.pathCacheData;
+      if (state.isCachePrecomputing !== undefined)
+        isCachePrecomputing = state.isCachePrecomputing;
+      if (state.isPreRendering !== undefined)
+        isPreRendering = state.isPreRendering;
+      if (state.preRenderProgress !== undefined)
+        preRenderProgress = state.preRenderProgress;
+      if (state.preRenderedFramesReady !== undefined)
+        preRenderedFramesReady = state.preRenderedFramesReady;
     });
   }
 
@@ -434,7 +439,11 @@ Last audit: 2025-12-20
   let settingsLoaded = $state(false);
   $effect(() => {
     // Settings are "loaded" once prop types differ from defaults or settings service confirms
-    if (currentBluePropType !== "staff" || currentRedPropType !== "staff" || settingsService?.currentSettings) {
+    if (
+      currentBluePropType !== "staff" ||
+      currentRedPropType !== "staff" ||
+      settingsService?.currentSettings
+    ) {
       settingsLoaded = true;
     }
   });
@@ -453,9 +462,8 @@ Last audit: 2025-12-20
       redPropType: currentRedPropType,
     });
     // Initialize trail settings sync with capture service
-    trailSettingsSyncService?.initialize(
-      trailCaptureService,
-      () => renderLoopService?.triggerRender(getFrameParams)
+    trailSettingsSyncService?.initialize(trailCaptureService, () =>
+      renderLoopService?.triggerRender(getFrameParams)
     );
   });
 
@@ -582,11 +590,21 @@ Last audit: 2025-12-20
         startRenderLoop: () => renderLoopService?.triggerRender(getFrameParams),
       },
       {
-        onPixiLoading: (loading) => { pixiLoading = loading; },
-        onPixiError: (error) => { pixiError = error; },
-        onPixiRendererReady: (renderer) => { pixiRenderer = renderer; },
-        onInitialized: (initialized) => { isInitialized = initialized; },
-        onCanvasReady: (canvas) => { onCanvasReady?.(canvas); },
+        onPixiLoading: (loading) => {
+          pixiLoading = loading;
+        },
+        onPixiError: (error) => {
+          pixiError = error;
+        },
+        onPixiRendererReady: (renderer) => {
+          pixiRenderer = renderer;
+        },
+        onInitialized: (initialized) => {
+          isInitialized = initialized;
+        },
+        onCanvasReady: (canvas) => {
+          onCanvasReady?.(canvas);
+        },
       }
     );
 
@@ -594,8 +612,12 @@ Last audit: 2025-12-20
       renderLoopService?.stop();
       canvasResizeService?.teardown();
       canvasInitializer.destroy({
-        onCanvasReady: (canvas) => { onCanvasReady?.(canvas); },
-        onInitialized: (initialized) => { isInitialized = initialized; },
+        onCanvasReady: (canvas) => {
+          onCanvasReady?.(canvas);
+        },
+        onInitialized: (initialized) => {
+          isInitialized = initialized;
+        },
       });
     };
   });
@@ -604,16 +626,20 @@ Last audit: 2025-12-20
   function initializePropTextureService() {
     // Validate dependencies with specific error messages
     if (!pixiRenderer) {
-      const error = 'Cannot initialize PropTextureService: pixiRenderer is null';
+      const error =
+        "Cannot initialize PropTextureService: pixiRenderer is null";
       console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
       pixiError = error;
       return;
     }
 
     if (!svgGenerator) {
-      const error = 'Cannot initialize PropTextureService: svgGenerator is null (DI container may have failed to load it)';
+      const error =
+        "Cannot initialize PropTextureService: svgGenerator is null (DI container may have failed to load it)";
       console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
-      console.error('[AnimatorCanvas] This usually means the "animate" feature module did not register ISVGGenerator properly');
+      console.error(
+        '[AnimatorCanvas] This usually means the "animate" feature module did not register ISVGGenerator properly'
+      );
       pixiError = error;
       return;
     }
@@ -633,7 +659,9 @@ Last audit: 2025-12-20
   // Wrapper for prop texture loading
   async function loadPropTextures() {
     if (!propTextureService) {
-      console.error('[AnimatorCanvas] CRITICAL: Cannot load prop textures - propTextureService is null');
+      console.error(
+        "[AnimatorCanvas] CRITICAL: Cannot load prop textures - propTextureService is null"
+      );
       return;
     }
 
@@ -683,7 +711,11 @@ Last audit: 2025-12-20
 
   // Load pending glyph once initialized
   $effect(() => {
-    if (isInitialized && glyphTextureService?.getPendingGlyph() && pixiRenderer) {
+    if (
+      isInitialized &&
+      glyphTextureService?.getPendingGlyph() &&
+      pixiRenderer
+    ) {
       glyphTextureService.processPendingGlyph();
     }
   });

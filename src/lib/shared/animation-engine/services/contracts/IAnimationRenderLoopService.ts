@@ -19,101 +19,101 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
  * Configuration for render loop initialization
  */
 export interface RenderLoopConfig {
-	pixiRenderer: IPixiAnimationRenderer;
-	trailCaptureService: ITrailCaptureService | null;
-	pathCache: AnimationPathCache | null;
-	canvasSize: number;
+  pixiRenderer: IPixiAnimationRenderer;
+  trailCaptureService: ITrailCaptureService | null;
+  pathCache: AnimationPathCache | null;
+  canvasSize: number;
 }
 
 /**
  * Prop dimensions for rendering
  */
 export interface PropDimensions {
-	width: number;
-	height: number;
+  width: number;
+  height: number;
 }
 
 /**
  * Visibility settings for render
  */
 export interface RenderVisibilitySettings {
-	gridVisible: boolean;
-	propsVisible: boolean;
-	trailsVisible: boolean;
-	blueMotionVisible: boolean;
-	redMotionVisible: boolean;
+  gridVisible: boolean;
+  propsVisible: boolean;
+  trailsVisible: boolean;
+  blueMotionVisible: boolean;
+  redMotionVisible: boolean;
 }
 
 /**
  * Props state for rendering
  */
 export interface RenderPropsState {
-	blueProp: PropState | null;
-	redProp: PropState | null;
-	secondaryBlueProp: PropState | null;
-	secondaryRedProp: PropState | null;
-	bluePropDimensions: PropDimensions;
-	redPropDimensions: PropDimensions;
+  blueProp: PropState | null;
+  redProp: PropState | null;
+  secondaryBlueProp: PropState | null;
+  secondaryRedProp: PropState | null;
+  bluePropDimensions: PropDimensions;
+  redPropDimensions: PropDimensions;
 }
 
 /**
  * Parameters for a single render frame
  */
 export interface RenderFrameParams {
-	beatData: StartPositionData | BeatData | null;
-	currentBeat: number;
-	trailSettings: TrailSettings;
-	gridVisible: boolean;
-	gridMode: GridMode | null;
-	letter: Letter | null;
-	props: RenderPropsState;
-	visibility: RenderVisibilitySettings;
+  beatData: StartPositionData | BeatData | null;
+  currentBeat: number;
+  trailSettings: TrailSettings;
+  gridVisible: boolean;
+  gridMode: GridMode | null;
+  letter: Letter | null;
+  props: RenderPropsState;
+  visibility: RenderVisibilitySettings;
 }
 
 /**
  * Service for managing the animation render loop
  */
 export interface IAnimationRenderLoopService {
-	/**
-	 * Initialize the render loop with required dependencies
-	 */
-	initialize(config: RenderLoopConfig): void;
+  /**
+   * Initialize the render loop with required dependencies
+   */
+  initialize(config: RenderLoopConfig): void;
 
-	/**
-	 * Update configuration (e.g., canvas resized, path cache changed)
-	 */
-	updateConfig(config: Partial<RenderLoopConfig>): void;
+  /**
+   * Update configuration (e.g., canvas resized, path cache changed)
+   */
+  updateConfig(config: Partial<RenderLoopConfig>): void;
 
-	/**
-	 * Start the render loop
-	 * @param getFrameParams - Callback to get current frame parameters
-	 */
-	start(getFrameParams: () => RenderFrameParams): void;
+  /**
+   * Start the render loop
+   * @param getFrameParams - Callback to get current frame parameters
+   */
+  start(getFrameParams: () => RenderFrameParams): void;
 
-	/**
-	 * Stop the render loop
-	 */
-	stop(): void;
+  /**
+   * Stop the render loop
+   */
+  stop(): void;
 
-	/**
-	 * Check if the loop is currently running
-	 */
-	isRunning(): boolean;
+  /**
+   * Check if the loop is currently running
+   */
+  isRunning(): boolean;
 
-	/**
-	 * Trigger a single render frame
-	 * @param params - Frame parameters
-	 */
-	renderFrame(params: RenderFrameParams): void;
+  /**
+   * Trigger a single render frame
+   * @param params - Frame parameters
+   */
+  renderFrame(params: RenderFrameParams): void;
 
-	/**
-	 * Mark that a render is needed and ensure loop is running
-	 * @param getFrameParams - Callback to get current frame parameters
-	 */
-	triggerRender(getFrameParams: () => RenderFrameParams): void;
+  /**
+   * Mark that a render is needed and ensure loop is running
+   * @param getFrameParams - Callback to get current frame parameters
+   */
+  triggerRender(getFrameParams: () => RenderFrameParams): void;
 
-	/**
-	 * Clean up resources
-	 */
-	dispose(): void;
+  /**
+   * Clean up resources
+   */
+  dispose(): void;
 }

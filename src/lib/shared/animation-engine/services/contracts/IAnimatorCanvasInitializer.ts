@@ -12,63 +12,65 @@ import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enu
  * Initialization result
  */
 export interface InitializationResult {
-	success: boolean;
-	error?: string;
-	canvas?: HTMLCanvasElement | null;
+  success: boolean;
+  error?: string;
+  canvas?: HTMLCanvasElement | null;
 }
 
 /**
  * Callbacks for initialization state updates
  */
 export interface InitializerCallbacks {
-	onPixiLoading: (loading: boolean) => void;
-	onPixiError: (error: string | null) => void;
-	onPixiRendererReady: (renderer: IPixiAnimationRenderer) => void;
-	onInitialized: (initialized: boolean) => void;
-	onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
+  onPixiLoading: (loading: boolean) => void;
+  onPixiError: (error: string | null) => void;
+  onPixiRendererReady: (renderer: IPixiAnimationRenderer) => void;
+  onInitialized: (initialized: boolean) => void;
+  onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
 }
 
 /**
  * Dependencies required for initialization
  */
 export interface InitializerDependencies {
-	containerElement: HTMLDivElement;
-	backgroundAlpha: number;
-	gridMode: GridMode | null;
-	loadAnimatorServices: () => Promise<boolean>;
-	initializePrecomputationService: () => void;
-	initializePropTextureService: () => void;
-	initializeResizeService: () => void;
-	initializeGlyphTextureService: () => void;
-	initializeRenderLoopService: () => void;
-	loadPropTextures: () => Promise<void>;
-	startRenderLoop: () => void;
+  containerElement: HTMLDivElement;
+  backgroundAlpha: number;
+  gridMode: GridMode | null;
+  loadAnimatorServices: () => Promise<boolean>;
+  initializePrecomputationService: () => void;
+  initializePropTextureService: () => void;
+  initializeResizeService: () => void;
+  initializeGlyphTextureService: () => void;
+  initializeRenderLoopService: () => void;
+  loadPropTextures: () => Promise<void>;
+  startRenderLoop: () => void;
 }
 
 /**
  * Service for orchestrating AnimatorCanvas initialization
  */
 export interface IAnimatorCanvasInitializer {
-	/**
-	 * Run the full initialization sequence
-	 */
-	initialize(
-		deps: InitializerDependencies,
-		callbacks: InitializerCallbacks
-	): Promise<InitializationResult>;
+  /**
+   * Run the full initialization sequence
+   */
+  initialize(
+    deps: InitializerDependencies,
+    callbacks: InitializerCallbacks
+  ): Promise<InitializationResult>;
 
-	/**
-	 * Clean up and destroy resources
-	 */
-	destroy(callbacks: Pick<InitializerCallbacks, 'onCanvasReady' | 'onInitialized'>): void;
+  /**
+   * Clean up and destroy resources
+   */
+  destroy(
+    callbacks: Pick<InitializerCallbacks, "onCanvasReady" | "onInitialized">
+  ): void;
 
-	/**
-	 * Get the current PixiJS renderer (if initialized)
-	 */
-	getRenderer(): IPixiAnimationRenderer | null;
+  /**
+   * Get the current PixiJS renderer (if initialized)
+   */
+  getRenderer(): IPixiAnimationRenderer | null;
 
-	/**
-	 * Check if initialization is complete
-	 */
-	isReady(): boolean;
+  /**
+   * Check if initialization is complete
+   */
+  isReady(): boolean;
 }
